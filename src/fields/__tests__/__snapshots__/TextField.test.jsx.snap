@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TextField render a <div /> 1`] = `
+<div
+  className="form-group form-group-text"
+>
+  <div
+    className="form-group-inner"
+    style={
+      Object {
+        "display": "block",
+      }
+    }
+  >
+    <input
+      className="field-text form-control"
+      disabled={false}
+      id={null}
+      name={null}
+      onChange={[Function]}
+      placeholder={null}
+      type="text"
+      value=""
+    />
+  </div>
+</div>
+`;
