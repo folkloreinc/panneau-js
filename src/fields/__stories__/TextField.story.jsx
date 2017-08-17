@@ -14,7 +14,7 @@ storiesOf('TextField', module)
     .add('with label', () => (
         <TextField
             label="Label"
-            helpText="This is help"
+            helpText="This is an help text"
             onChange={action('change')}
         />
     ))

@@ -4,7 +4,7 @@ import { configure } from '@storybook/react';
 import '../src/styles/bootstrap.scss';
 
 // Load stories
-const req = require.context('../src', true, /__stories__/);
+const req = require.context('../src', true, /\.story\.jsx?$/);
 function loadStories() {
     req.keys().forEach(filename => req(filename));
 }
