@@ -1,28 +1,26 @@
 import React from 'react';
-/* eslint-disable import/no-extraneous-dependencies */
-import { action } from '@storybook/addon-actions';
-/* eslint-enable import/no-extraneous-dependencies */
+import { action } from '@storybook/addon-actions';// eslint-disable-line import/no-extraneous-dependencies
+
 import storiesOf from '../../../.storybook/storiesOf';
 import TextField from '../TextField';
 
 storiesOf('TextField', module)
     .add('simple', () => (
         <TextField
-            onChange={action('change')}
-        />
-    ))
-    .add('with label', () => (
-        <TextField
             label="Label"
             helpText="This is an help text"
+            placeholder="This is a placeholder..."
             onChange={action('change')}
         />
     ))
     .add('with suffix and prefix', () => (
         <TextField
             label="Label"
-            prefix="Money"
+            helpText="This is an help text"
+            placeholder="0.00"
+            prefix="Total"
             suffix="$"
+            align="right"
             onChange={action('change')}
         />
     ));

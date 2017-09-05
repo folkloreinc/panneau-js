@@ -3,7 +3,7 @@ const webpackMerge = require('webpack-merge');
 const webpack = require('webpack');
 const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
 const webpackConfig = require('./webpack.config.base');
 /* eslint-enable import/no-extraneous-dependencies */
 
@@ -19,6 +19,8 @@ module.exports = env => (
 
         output: {
             path: outputPath,
+            libraryTarget: 'umd',
+            library: 'Microdoc',
         },
 
         plugins: [
@@ -40,18 +42,15 @@ module.exports = env => (
                 },
                 comments: false,
             }),
-            /**
-             * Dynamically generate index.html page
-             */
-            new HtmlWebpackPlugin({
-                filename: 'index.html',
-                template: 'index.html.ejs',
-                env: 'dev',
-                inject: false,
-            }),
         ],
 
         cache: false,
+
+        externals: [
+            nodeExternals({
+                whitelist: ['ckeditor', 'react-ace', /^brace/],
+            }),
+        ],
 
     })
 );

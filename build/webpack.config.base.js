@@ -7,7 +7,7 @@ const publicPath = '/';
 
 module.exports = (env) => {
     const CSS_FILENAME = env === 'dev' ? '[name]-[contenthash].css' : '[name].css';
-    const CSS_NAME = env === 'dev' ? '[name]_[local]' : '[name]_[local]';
+    const CSS_NAME = env === 'dev' ? 'panneau-[name]-[local]' : 'panneau-[name]-[local]';
     const IMAGE_FILENAME = env === 'dev' ? 'img/[name]-[hash:6].[ext]' : 'img/[name].[ext]';
     const FONT_FILENAME = env === 'dev' ? 'fonts/[name]-[hash:6].[ext]' : 'fonts/[name].[ext]';
     const IMAGE_PUBLIC_PATH = env === 'dev' ? '' : '../';

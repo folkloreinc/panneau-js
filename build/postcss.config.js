@@ -1,7 +1,6 @@
 const config = require('./config');
 
-module.exports = ({ options }) =>
-Object.assign(
+module.exports = ({ options }) => Object.assign(
     {},
     config.postcss,
     (

@@ -33,6 +33,9 @@ const propTypes = {
         PropTypes.string,
         PropTypes.object,
     ]),
+    align: PropTypes.oneOf(
+        ['left', 'right', 'center'],
+    ),
     disabled: PropTypes.bool,
     ckeditorCustomConfig: PropTypes.object,
 };
@@ -47,6 +50,7 @@ const defaultProps = {
 
     prefix: null,
     suffix: null,
+    align: null,
     disabled: false,
     ckeditorCustomConfig: {},
 };
@@ -122,11 +126,18 @@ class TextField extends Component {
             value,
             prefix,
             suffix,
+            align,
             disabled,
             ...other
         } = this.props;
 
         const defaultValue = TextField.parse(value);
+
+        const fieldClassNames = classNames({
+            'field-text': true,
+            'form-control': true,
+            [`text-${align}`]: align !== null,
+        });
 
         let field = null;
         if (type === 'textarea') {
@@ -143,7 +154,7 @@ class TextField extends Component {
                 <input
                     id={name}
                     type={type}
-                    className="field-text form-control"
+                    className={fieldClassNames}
                     name={name}
                     value={defaultValue}
                     placeholder={placeholder}

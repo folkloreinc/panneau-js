@@ -1,0 +1,58 @@
+.formGroup {
+    :global {
+        .btn {
+            height: 32px;
+            padding: 2px;
+        }
+    }
+
+    .swatch {
+        display: block;
+        width: 30px;
+        height: 20px;
+        border: solid 1px #ddd;
+        border-radius: 2px;
+
+        background-image:
+          -moz-linear-gradient(45deg, #ddd 25%, transparent 25%),
+          -moz-linear-gradient(-45deg, #ddd 25%, transparent 25%),
+          -moz-linear-gradient(45deg, transparent 75%, #ddd 75%),
+          -moz-linear-gradient(-45deg, transparent 75%, #ddd 75%);
+        background-image:
+          -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, #ddd), color-stop(.25, transparent)),
+          -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #ddd), color-stop(.25, transparent)),
+          -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, #ddd)),
+          -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #ddd));
+
+        background-size: 10px 10px;
+        -webkit-background-size: 10px 11px; /* override value for shitty webkit */
+
+        background-position:0 0, 5px 0, 5px -5px, 0px 5px;
+    }
+
+    .popover {
+        position: absolute;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .cover {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        appearance: none;
+        border: none;
+    }
+
+    .container {
+        position: relative;
+        white-space: nowrap;
+    }
+}

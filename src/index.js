@@ -1,3 +1,15 @@
-import Component from './Component';
+import FormGroup from './FormGroup';
 
-export default Component;
+import SelectField from './fields/SelectField';
+import TextField from './fields/TextField';
+import ColorField from './fields/ColorField';
+import CodeField from './fields/CodeField';
+
+export {
+    FormGroup,
+
+    SelectField,
+    TextField,
+    ColorField,
+    CodeField,
+};

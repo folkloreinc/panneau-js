@@ -10,7 +10,10 @@
                 ["css-modules-transform", {
                     "preprocessCss": "./build/process-scss.js",
                     "extensions": [".css", ".scss"],
-                    "generateScopedName": "[name]_[local]"
+                    "generateScopedName": "panneau_[name]_[local]"
+                }],
+                ["./build/babel-plugin-transform-require-ignore", {
+                    "extensions": [".global.scss"]
                 }]
             ]
         },
@@ -30,9 +33,7 @@
             "targets": {
                 "browsers": [
                     "> 1%",
-                    "last 2 versions",
-                    "ios >= 7",
-                    "ie >= 9"
+                    "last 2 versions"
                 ]
             },
             "useBuiltIns": true

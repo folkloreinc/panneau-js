@@ -6,14 +6,14 @@ module.exports = {
     browsersync: {
         server: {
             baseDir: [
-    './.tmp',
-    './examples'
-],
+                './.tmp',
+                './examples',
+            ],
             index: 'index.html',
         },
         files: [
-    'examples/**'
-],
+            'examples/**',
+        ],
         ghostMode: false,
     },
 
