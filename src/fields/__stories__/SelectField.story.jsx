@@ -3,6 +3,7 @@ import { action } from '@storybook/addon-actions';// eslint-disable-line import/
 
 import storiesOf from '../../../.storybook/storiesOf';
 import SelectField from '../SelectField';
+import KeepValue from '../../../.storybook/KeepValue';
 
 const options = [
     {
@@ -19,28 +20,34 @@ const options = [
     },
 ];
 
-storiesOf('SelectField', module)
+storiesOf('Fields/Select', module)
     .add('simple', () => (
-        <SelectField
-            label="Label"
-            options={options}
-            onChange={action('change')}
-        />
-    ))
-    .add('not clearable', () => (
-        <SelectField
-            label="Label"
-            options={options}
-            clearable={false}
-            value={2}
-            onChange={action('change')}
-        />
-    ))
-    .add('cannot be empty', () => (
-        <SelectField
-            label="Label"
-            options={options}
-            canBeEmpty={false}
-            onChange={action('change')}
-        />
+        <div>
+            <KeepValue>
+                <SelectField
+                    label="Label"
+                    options={options}
+                    value={3}
+                    onChange={action('change')}
+                />
+            </KeepValue>
+            <KeepValue>
+                <SelectField
+                    label="Not clearable"
+                    options={options}
+                    clearable={false}
+                    addEmptyOption
+                    value={2}
+                    onChange={action('change')}
+                />
+            </KeepValue>
+            <KeepValue>
+                <SelectField
+                    label="Cannot be empty"
+                    options={options}
+                    canBeEmpty={false}
+                    onChange={action('change')}
+                />
+            </KeepValue>
+        </div>
     ));

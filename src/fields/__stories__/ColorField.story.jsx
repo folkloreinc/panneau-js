@@ -3,19 +3,25 @@ import { action } from '@storybook/addon-actions';// eslint-disable-line import/
 
 import storiesOf from '../../../.storybook/storiesOf';
 import ColorField from '../ColorField';
+import KeepValue from '../../../.storybook/KeepValue';
 
-storiesOf('ColorField', module)
+storiesOf('Fields/Color', module)
     .add('simple', () => (
-        <ColorField
-            label="Label"
-            onChange={action('change')}
-        />
-    ))
-    .add('disabled', () => (
-        <ColorField
-            label="Label"
-            value="#FFCC00"
-            disabled
-            onChange={action('change')}
-        />
+        <div>
+            <KeepValue>
+                <ColorField
+                    label="Label"
+                    onChange={action('change')}
+                />
+            </KeepValue>
+            <KeepValue>
+                <ColorField
+                    label="Disabled"
+                    value="#FFCC00"
+                    disabled
+                    onChange={action('change')}
+                />
+            </KeepValue>
+        </div>
+
     ));

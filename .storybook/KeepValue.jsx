@@ -8,7 +8,7 @@ const propTypes = {
 const defaultProps = {
 };
 
-class StateField extends Component {
+class KeepValue extends Component {
     constructor(props) {
         super(props);
 
@@ -38,7 +38,7 @@ class StateField extends Component {
     }
 }
 
-StateField.propTypes = propTypes;
-StateField.defaultProps = defaultProps;
+KeepValue.propTypes = propTypes;
+KeepValue.defaultProps = defaultProps;
 
-export default StateField;
+export default KeepValue;

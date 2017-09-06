@@ -87,7 +87,7 @@ class SelectField extends Component {
         if (getValueFromOption !== null) {
             return getValueFromOption(opt);
         }
-        return isObject(opt) ? (opt.value || null) : opt;
+        return isObject(opt) && typeof opt.value !== 'undefined' ? opt.value : opt;
     }
 
     render() {
@@ -107,7 +107,7 @@ class SelectField extends Component {
 
         const selectOptions = [].concat(options);
         if (canBeEmpty && addEmptyOption) {
-            selectOptions.push(emptyOption);
+            selectOptions.unshift(emptyOption);
         }
 
         const shouldTakeFirstValue = !canBeEmpty && value === null && selectOptions.length > 0;

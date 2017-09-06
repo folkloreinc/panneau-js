@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';// eslint-disable-line import/
 import storiesOf from '../../../.storybook/storiesOf';
 import CodeField from '../CodeField';
 
-storiesOf('CodeField', module)
+storiesOf('Fields/Code', module)
     .add('simple', () => (
         <CodeField
             label="Label"

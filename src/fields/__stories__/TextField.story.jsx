@@ -3,15 +3,27 @@ import { action } from '@storybook/addon-actions';// eslint-disable-line import/
 
 import storiesOf from '../../../.storybook/storiesOf';
 import TextField from '../TextField';
+import KeepValue from '../../../.storybook/KeepValue';
 
-storiesOf('TextField', module)
+storiesOf('Fields/Text', module)
     .add('simple', () => (
-        <TextField
-            label="Label"
-            helpText="This is an help text"
-            placeholder="This is a placeholder..."
-            onChange={action('change')}
-        />
+        <div>
+            <KeepValue>
+                <TextField
+                    label="Label"
+                    helpText="This is an help text"
+                    placeholder="This is a placeholder..."
+                    onChange={action('change')}
+                />
+            </KeepValue>
+            <KeepValue>
+                <TextField
+                    label="Disabled"
+                    disabled
+                    onChange={action('change')}
+                />
+            </KeepValue>
+        </div>
     ))
     .add('with suffix and prefix', () => (
         <TextField

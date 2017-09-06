@@ -19,7 +19,11 @@
         },
         "test": {
             "presets": [
-                "env",
+                ["env", {
+                    "targets": {
+                        "node": true
+                    }
+                }],
                 "react"
             ],
             "plugins": [
