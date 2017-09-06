@@ -1,0 +1,35 @@
+{
+    "env": {
+        "test": {
+            "presets": [
+                "env",
+                "react"
+            ]
+        }
+    },
+    "presets": [
+        ["env", {
+            "modules": false,
+            "targets": {
+                "browsers": [
+                    "> 1%",
+                    "last 2 versions"
+                ]
+            },
+            "useBuiltIns": true
+        }],
+        "react"
+    ],
+    "plugins": [
+        "syntax-dynamic-import",
+        ["transform-object-rest-spread", {
+            "useBuiltIns": true
+        }],
+        ["transform-runtime", {
+            "helpers": true,
+            "polyfill": false,
+            "regenerator": true,
+            "moduleName": "babel-runtime"
+        }]
+    ]
+}
