@@ -39,7 +39,6 @@
         "mkdir:tmp": "mkdir -p ./.tmp",
         "mkdir:dist": "mkdir -p ./dist",
         "mkdir": "npm run mkdir:tmp && npm run mkdir:dist",
-
         "lint:src": "eslint src/**.js",
         "jscs": "jscs src/**.js",
         "webpack:dist": "node -r babel-register ./node_modules/webpack/bin/webpack --env=dist  --config build/webpack.config.js --progress --colors",
@@ -51,7 +50,6 @@
         "scripts": "npm run scripts:dist && npm run scripts:compile",
         "build:js": "npm run lint && npm run scripts",
         "build:files": "npm run clean && npm run mkdir",
-
         "test": "jest",
         "lint": "npm run lint:src",
         "prepublishOnly": "npm run build",
@@ -67,6 +65,8 @@
         "classnames": "^2.2.5",
         "color": "^2.0.0",
         "font-awesome": "^4.7.0",
+        "hoist-non-react-statics": "^2.3.1",
+        "invariant": "^2.2.2",
         "lodash": "^4.17.4",
         "prop-types": "^15.5.10",
         "react": "^15.6.1",

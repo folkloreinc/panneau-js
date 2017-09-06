@@ -1,13 +1,17 @@
+import FieldsCollection from '../lib/FieldsCollection';
+
 import Select from './SelectField';
 import Text from './TextField';
 import Color from './ColorField';
 import Code from './CodeField';
-import fieldsCollection from './collection';
 
-export {
+const fields = {
     Select,
     Text,
     Color,
     Code,
-    fieldsCollection,
 };
+
+const fieldsCollection = new FieldsCollection(fields);
+
+export default fieldsCollection;
