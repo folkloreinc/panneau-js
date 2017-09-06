@@ -19,6 +19,8 @@
       "email": "hso@atelierfolklore.ca"
     }
   ],
+  "main": "dist/react-panneau.js",
+  "module": "lib/index.js",
   "scripts": {
     "test": "jest",
     "storybook": "start-storybook -p 9001 -c .storybook",
@@ -44,6 +46,7 @@
     "build:files": "npm run clean && npm run mkdir"
   },
   "dependencies": {
+    "babel-runtime": "^6.26.0",
     "brace": "^0.10.0",
     "ckeditor": "^4.7.1",
     "classnames": "^2.2.5",
@@ -84,6 +87,7 @@
     "bs-fullscreen-message": "^1.1.0",
     "commander": "^2.11.0",
     "concurrently": "^3.5.0",
+    "coveralls": "^2.13.1",
     "css-loader": "^0.28.4",
     "cssnano": "^3.10.0",
     "customizr": "^1.0.0-alpha",
@@ -105,6 +109,7 @@
     "imports-loader": "^0.7.1",
     "jest": "^20.0.4",
     "jquery": "^3.2.1",
+    "jsdom": "^11.2.0",
     "json-loader": "^0.5.7",
     "node-sass": "^4.5.3",
     "postcss-cli": "^4.1.0",
@@ -127,6 +132,18 @@
     "webpack-node-externals": "^1.6.0"
   },
   "jest": {
+    "setupFiles": [
+      "<rootDir>/src/__tests__/setup.js"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/lib/",
+      "<rootDir>/dist/",
+       "<rootDir>/src/__tests__/setup.js"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/lib/",
+      "<rootDir>/dist/"
+    ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/__mocks__/fileMock.js",
       "\\.(css|less|scss)$": "<rootDir>/src/__mocks__/styleMock.js"

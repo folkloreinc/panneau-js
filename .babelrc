@@ -10,7 +10,7 @@
                 ["css-modules-transform", {
                     "preprocessCss": "./build/process-scss.js",
                     "extensions": [".css", ".scss"],
-                    "generateScopedName": "panneau_[name]_[local]"
+                    "generateScopedName": "panneau-[name]-[local]"
                 }],
                 ["./build/babel-plugin-transform-require-ignore", {
                     "extensions": [".global.scss"]
