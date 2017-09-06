@@ -157,9 +157,6 @@
             "!**/vendor/**",
             "!**/__tests__/**",
             "!**/__stories__/**"
-        ],
-        "transform": {
-            "^.+\\.jsx?$": "babel-jest"
-        }
+        ]
     }
 }
