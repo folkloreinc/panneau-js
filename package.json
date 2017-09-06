@@ -22,20 +22,25 @@
     "main": "lib/index.js",
     "module": "es/index.js",
     "browser": "dist/react-panneau.js",
+    "files": [
+        "lib",
+        "es",
+        "dist",
+        "fields.js",
+        "index.js"
+    ],
     "scripts": {
-        "test": "jest",
         "storybook": "start-storybook -p 9001 -c .storybook",
         "storybook-deploy": "storybook-to-ghpages",
         "clean:tmp": "rm -rf ./.tmp",
-        "clean": "npm run clean:tmp && npm run clean:dist",
-        "mkdir:tmp": "mkdir -p ./.tmp",
-        "mkdir": "npm run mkdir:tmp && npm run mkdir:dist",
-        "mkdir:dist": "mkdir -p ./dist",
         "clean:dist": "rm -rf ./dist",
-        "release": "build/release.sh",
-        "start": "npm run storybook",
-        "lint:dist": "eslint src/**.js",
-        "lint": "npm run lint:dist",
+        "clean:lib": "rm -rf ./lib",
+        "clean:es": "rm -rf ./es",
+        "mkdir:tmp": "mkdir -p ./.tmp",
+        "mkdir:dist": "mkdir -p ./dist",
+        "mkdir": "npm run mkdir:tmp && npm run mkdir:dist",
+
+        "lint:src": "eslint src/**.js",
         "jscs": "jscs src/**.js",
         "webpack:dist": "node -r babel-register ./node_modules/webpack/bin/webpack --env=dist  --config build/webpack.config.js --progress --colors",
         "webpack": "npm run webpack:dist",
@@ -45,8 +50,15 @@
         "scripts:dist": "npm run webpack:dist",
         "scripts": "npm run scripts:dist && npm run scripts:compile",
         "build:js": "npm run lint && npm run scripts",
-        "build": "npm run build:files && npm run build:js && npm run clean:tmp",
-        "build:files": "npm run clean && npm run mkdir"
+        "build:files": "npm run clean && npm run mkdir",
+
+        "test": "jest",
+        "lint": "npm run lint:src",
+        "prepublishOnly": "npm run build",
+        "clean": "npm run clean:tmp && npm run clean:dist && npm run clean:lib && npm run clean:es",
+        "build": "npm run build:files && npm run build:js",
+        "start": "npm run storybook",
+        "release": "build/release.sh"
     },
     "dependencies": {
         "babel-runtime": "^6.26.0",
