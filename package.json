@@ -19,8 +19,9 @@
             "email": "hso@atelierfolklore.ca"
         }
     ],
-    "main": "dist/react-panneau.js",
-    "module": "lib/index.js",
+    "main": "lib/index.js",
+    "module": "es/index.js",
+    "browser": "dist/react-panneau.js",
     "scripts": {
         "test": "jest",
         "storybook": "start-storybook -p 9001 -c .storybook",
@@ -38,7 +39,9 @@
         "jscs": "jscs src/**.js",
         "webpack:dist": "node -r babel-register ./node_modules/webpack/bin/webpack --env=dist  --config build/webpack.config.js --progress --colors",
         "webpack": "npm run webpack:dist",
-        "scripts:compile": "BABEL_ENV=compile babel src --out-dir lib",
+        "scripts:compile:es": "BABEL_ENV=es babel src --out-dir es",
+        "scripts:compile:cjs": "BABEL_ENV=cjs babel src --out-dir lib",
+        "scripts:compile": "npm run scripts:compile:es && npm run scripts:compile:cjs",
         "scripts:dist": "npm run webpack:dist",
         "scripts": "npm run scripts:dist && npm run scripts:compile",
         "build:js": "npm run lint && npm run scripts",

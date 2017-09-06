@@ -5,7 +5,32 @@
                 "react-hot-loader/babel"
             ]
         },
-        "compile": {
+        "es": {
+            "plugins": [
+                ["css-modules-transform", {
+                    "preprocessCss": "./build/process-scss.js",
+                    "extensions": [".css", ".scss"],
+                    "generateScopedName": "panneau-[name]-[local]"
+                }],
+                ["./build/babel-plugin-transform-require-ignore", {
+                    "extensions": [".global.scss"]
+                }]
+            ]
+        },
+        "cjs": {
+            "presets": [
+                ["env", {
+                    "modules": "commonjs",
+                    "targets": {
+                        "browsers": [
+                            "> 1%",
+                            "last 2 versions"
+                        ]
+                    },
+                    "useBuiltIns": true
+                }],
+                "react"
+            ],
             "plugins": [
                 ["css-modules-transform", {
                     "preprocessCss": "./build/process-scss.js",
