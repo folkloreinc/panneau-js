@@ -151,6 +151,12 @@
       "\\.(css|less|scss)$": "<rootDir>/src/__mocks__/styleMock.js"
     },
     "collectCoverage": true,
-    "collectCoverageFrom": ["src/**/*.{js,jsx}", "!**/node_modules/**", "!**/vendor/**", "!**/__tests__/**", "!**/__stories__/**"]
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/vendor/**",
+      "!**/__tests__/**",
+      "!**/__stories__/**"
+    ]
   }
 }
