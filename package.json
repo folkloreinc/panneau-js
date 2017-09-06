@@ -65,6 +65,8 @@
     "@storybook/addon-actions": "^3.2.0",
     "@storybook/addon-info": "^3.2.5",
     "@storybook/addon-storyshots": "^3.2.5",
+    "@storybook/addons": "^3.2.6",
+    "@storybook/channels": "^3.2.0",
     "@storybook/react": "^3.2.4",
     "@storybook/storybook-deployer": "^2.0.0",
     "autoprefixer": "^7.1.2",
@@ -138,7 +140,7 @@
     "testPathIgnorePatterns": [
       "<rootDir>/lib/",
       "<rootDir>/dist/",
-       "<rootDir>/src/__tests__/setup.js"
+      "<rootDir>/src/__tests__/setup.js"
     ],
     "modulePathIgnorePatterns": [
       "<rootDir>/lib/",
