@@ -16,7 +16,7 @@ const propTypes = {
     name: PropTypes.string,
     label: PropTypes.string,
     value: valuePropTypes,
-    options: PropTypes.arrayOf(PropTypes.oneOf([
+    options: PropTypes.arrayOf(PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.shape({
             value: PropTypes.any,
