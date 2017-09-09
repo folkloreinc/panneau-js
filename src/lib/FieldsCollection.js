@@ -18,6 +18,10 @@ class FieldsCollection {
         });
     }
 
+    getFields() {
+        return this.fields;
+    }
+
     getComponent(key) {
         const normalizedKey = FieldsCollection.normalizeKey(key);
         const foundKey = Object.keys(this.fields).find(fieldKey => fieldKey === normalizedKey);

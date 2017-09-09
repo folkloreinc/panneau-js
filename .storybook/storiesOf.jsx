@@ -11,7 +11,7 @@ export default (name, module) => (
         .addDecorator(story => (
             <div className="container" style={{ marginTop: 10 }}>
                 <div className="row">
-                    <div className="col-sm-6 col-sm-offset-3">
+                    <div className="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3">
                         <KeepValue>
                             { story() }
                         </KeepValue>

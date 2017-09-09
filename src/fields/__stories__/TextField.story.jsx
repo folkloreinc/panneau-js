@@ -35,4 +35,24 @@ storiesOf('Fields/Text', module)
             align="right"
             onChange={action('change')}
         />
+    ))
+    .add('other field types', () => (
+        <div>
+            <KeepValue>
+                <TextField
+                    label="Textarea"
+                    type="textarea"
+                    onChange={action('change')}
+                />
+            </KeepValue>
+            <form>
+                <KeepValue>
+                    <TextField
+                        label="Editor"
+                        type="editor"
+                        onChange={action('change')}
+                    />
+                </KeepValue>
+            </form>
+        </div>
     ));

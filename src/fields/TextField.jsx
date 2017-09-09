@@ -37,7 +37,9 @@ const propTypes = {
         ['left', 'right', 'center'],
     ),
     disabled: PropTypes.bool,
-    ckeditorCustomConfig: PropTypes.object,
+    ckeditorConfig: PropTypes.object, // eslint-disable-line
+    ckeditorCustomConfig: PropTypes.string,
+    ckeditorBasePath: PropTypes.string,
 };
 
 const defaultProps = {
@@ -52,7 +54,9 @@ const defaultProps = {
     suffix: null,
     align: null,
     disabled: false,
-    ckeditorCustomConfig: {},
+    ckeditorConfig: null,
+    ckeditorCustomConfig: null,
+    ckeditorBasePath: 'https://cdn.ckeditor.com/4.7.2/standard/',
 };
 
 class TextField extends Component {
@@ -77,15 +81,17 @@ class TextField extends Component {
     }
 
     componentDidMount() {
-        const { type } = this.props;
+        const { type, ckeditorBasePath } = this.props;
         if (type === 'editor') {
+            window.CKEDITOR_BASEPATH = ckeditorBasePath;
             import(/* webpackChunkName: "vendor/ckeditor" */ 'ckeditor')
                 .then(() => {
+                    const { ckeditorConfig, ckeditorCustomConfig } = this.props;
                     this.ckeditor = CKEDITOR; // eslint-disable-line no-undef
-                    const editor = this.ckeditor.replace('editor');
-                    if (this.props.ckeditorCustomConfig) {
-                        editor.config = this.props.ckeditorCustomConfig;
-                    }
+                    const editor = this.ckeditor.replace(this.editor, {
+                        customConfig: ckeditorCustomConfig,
+                        ...ckeditorConfig || {},
+                    });
                     editor.on('instanceReady', this.onEditorReady);
                     editor.on('change', this.onEditorChange);
                 });
@@ -128,6 +134,7 @@ class TextField extends Component {
             suffix,
             align,
             disabled,
+            ckeditorCustomConfig,
             ...other
         } = this.props;
 
@@ -145,7 +152,7 @@ class TextField extends Component {
         } else if (type === 'editor') {
             field = (
                 <div className="editor" {...other}>
-                    <textarea id="editor" className="field-editor" name="editor" ref={(el) => { this.editor = el; }} />
+                    <textarea className="field-editor" name="editor" ref={(el) => { this.editor = el; }} />
                     <input type="hidden" name={name} value={defaultValue} />
                 </div>
             );

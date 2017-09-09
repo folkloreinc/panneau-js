@@ -51,7 +51,7 @@ const contextTypes = {
     fieldsCollection: PropTypes.instanceOf(FieldsCollection),
 };
 
-class Fields extends Component {
+class FieldsGroup extends Component {
     constructor(props) {
         super(props);
 
@@ -95,7 +95,7 @@ class Fields extends Component {
             return fieldsCollection.getComponent(key);
         }
 
-        return normalizedKey.toLowerCase() === 'fields' ? Fields : null;
+        return normalizedKey.toLowerCase() === 'fields' ? FieldsGroup : null;
     }
 
     renderNotFound(it, index) {
@@ -229,8 +229,8 @@ class Fields extends Component {
     }
 }
 
-Fields.propTypes = propTypes;
-Fields.defaultProps = defaultProps;
-Fields.contextTypes = contextTypes;
+FieldsGroup.propTypes = propTypes;
+FieldsGroup.defaultProps = defaultProps;
+FieldsGroup.contextTypes = contextTypes;
 
-export default Fields;
+export default FieldsGroup;

@@ -50,4 +50,25 @@ storiesOf('Fields/Select', module)
                 />
             </KeepValue>
         </div>
+    ))
+    .add('multiple', () => (
+        <div>
+            <KeepValue>
+                <SelectField
+                    label="Multiple"
+                    options={options}
+                    multiple
+                    onChange={action('change')}
+                />
+            </KeepValue>
+            <KeepValue>
+                <SelectField
+                    label="Multiple and creatable"
+                    options={options}
+                    multiple
+                    creatable
+                    onChange={action('change')}
+                />
+            </KeepValue>
+        </div>
     ));

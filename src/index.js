@@ -1,6 +1,6 @@
 import FieldsCollection from './lib/FieldsCollection';
 import FormGroup from './FormGroup';
-import Fields from './Fields';
+import FieldsGroup from './FieldsGroup';
 import withFieldsCollection from './withFieldsCollection';
 
 import SelectField from './fields/SelectField';
@@ -11,7 +11,7 @@ import CodeField from './fields/CodeField';
 export {
     FieldsCollection,
     FormGroup,
-    Fields,
+    FieldsGroup,
     withFieldsCollection,
 
     SelectField,
