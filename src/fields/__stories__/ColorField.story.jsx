@@ -24,4 +24,16 @@ storiesOf('Fields/Color', module)
             </KeepValue>
         </div>
 
+    ))
+    .add('with input', () => (
+        <div>
+            <KeepValue>
+                <ColorField
+                    label="Label"
+                    withInput
+                    onChange={action('change')}
+                />
+            </KeepValue>
+        </div>
+
     ));

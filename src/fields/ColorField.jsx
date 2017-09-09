@@ -18,6 +18,8 @@ import FormGroup from '../FormGroup';
 
 import styles from '../styles/fields/color.scss';
 
+import Text from './TextField';
+
 /**
  *  Class: ColorField
  *
@@ -50,16 +52,16 @@ const propTypes = {
     ]),
     value: PropTypes.string,
 
-    colors: PropTypes.array,
-    presetColors: PropTypes.array,
+    colors: PropTypes.arrayOf(PropTypes.string),
+    presetColors: PropTypes.arrayOf(PropTypes.string),
     onChange: PropTypes.func,
 
     displayColorPicker: PropTypes.bool,
     colorPosition: PropTypes.string,
-    popoverStyle: PropTypes.object,
+    popoverStyle: PropTypes.object, // eslint-disable-line
     inline: PropTypes.bool,
     disabled: PropTypes.bool,
-    inputOnly: PropTypes.bool,
+    withInput: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -78,7 +80,7 @@ const defaultProps = {
     popoverStyle: null,
     inline: true,
     disabled: false,
-    inputOnly: false,
+    withInput: false,
 };
 
 class ColorField extends Component {
@@ -109,6 +111,7 @@ class ColorField extends Component {
         super(props);
 
         this.onChange = this.onChange.bind(this);
+        this.onInputChange = this.onInputChange.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onClickClear = this.onClickClear.bind(this);
         this.onClose = this.onClose.bind(this);
@@ -123,6 +126,12 @@ class ColorField extends Component {
         const newValue = this.formatColor(value);
         if (this.props.onChange && isString(newValue) && newValue !== this.props.value) {
             this.props.onChange(newValue);
+        }
+    }
+
+    onInputChange(value) {
+        if (this.props.onChange) {
+            this.props.onChange(value);
         }
     }
 
@@ -210,6 +219,7 @@ class ColorField extends Component {
             disabled,
             presetColors,
             colorPosition,
+            withInput,
             ...other
         } = this.props;
 
@@ -226,6 +236,41 @@ class ColorField extends Component {
             'form-group-color': true,
         });
 
+        const buttonGroupClassName = classNames({
+            'btn-group': !withInput,
+            'input-group-btn': withInput,
+        });
+
+        const buttonGroup = (
+            <div className={buttonGroupClassName}>
+                <button
+                    type="button"
+                    className={classNames({
+                        btn: true,
+                        'btn-default': true,
+                        disabled,
+                    })}
+                    disabled={disabled}
+                    onClick={this.onClick}
+                >
+                    <span className={styles.swatch} style={colorStyle} />
+                </button>
+                <button
+                    type="button"
+                    className={classNames({
+                        btn: true,
+                        'btn-default': true,
+                        'btn-clear': true,
+                        disabled,
+                    })}
+                    disabled={value === null || disabled}
+                    onClick={this.onClickClear}
+                >
+                    <span className="fa fa-remove" />
+                </button>
+            </div>
+        );
+
         return (
             <FormGroup
                 name={name}
@@ -234,33 +279,17 @@ class ColorField extends Component {
                 {...other}
             >
                 <div className={styles.container}>
-                    <div className="btn-group">
-                        <button
-                            type="button"
-                            className={classNames({
-                                btn: true,
-                                'btn-default': true,
-                                disabled,
-                            })}
-                            disabled={disabled}
-                            onClick={this.onClick}
-                        >
-                            <span className={styles.swatch} style={colorStyle} />
-                        </button>
-                        <button
-                            type="button"
-                            className={classNames({
-                                btn: true,
-                                'btn-default': true,
-                                'btn-clear': true,
-                                disabled,
-                            })}
-                            disabled={value === null || disabled}
-                            onClick={this.onClickClear}
-                        >
-                            <span className="fa fa-remove" />
-                        </button>
-                    </div>
+                    { withInput ? (
+                        <div className="input-group">
+                            <Text
+                                {...other}
+                                inputOnly
+                                value={value}
+                                onChange={this.onInputChange}
+                            />
+                            { buttonGroup }
+                        </div>
+                    ) : buttonGroup }
                     { displayColorPicker ? this.renderPopover() : null }
                 </div>
             </FormGroup>

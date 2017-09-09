@@ -4,6 +4,8 @@ import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 import FormGroup from '../FormGroup';
 
+import styles from '../styles/fields/code.scss';
+
 /**
  *  Class: CodeField
  *
@@ -20,9 +22,15 @@ const propTypes = {
         PropTypes.string,
         PropTypes.object,
     ]),
-    width: PropTypes.string,
-    height: PropTypes.string,
-    parseJSON: PropTypes.bool,
+    width: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string,
+    ]),
+    height: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string,
+    ]),
+    isJson: PropTypes.bool,
     onChange: PropTypes.func,
 };
 
@@ -33,8 +41,8 @@ const defaultProps = {
     label: null,
     value: null,
     width: '100%',
-    height: '300px',
-    parseJSON: true,
+    height: 300,
+    isJson: true,
     onChange: null,
 };
 
@@ -56,7 +64,7 @@ class CodeField extends Component {
 
         this.state = {
             ready: false,
-            textValue: props.language === 'json' && props.parseJSON ? CodeField.parse(props.value) : null,
+            textValue: props.language === 'json' && props.isJson ? CodeField.parse(props.value) : null,
         };
     }
 
@@ -87,11 +95,11 @@ class CodeField extends Component {
         const {
             language,
             onChange,
-            parseJSON,
+            isJson,
             value,
         } = this.props;
 
-        if (language === 'json' && parseJSON) {
+        if (language === 'json' && isJson) {
             this.setState({
                 textValue: newValue,
             }, () => {
@@ -115,13 +123,18 @@ class CodeField extends Component {
             language,
             theme,
             value,
-            parseJSON,
+            isJson,
+            width,
+            height,
             ...props
         } = this.props;
 
         const { textValue } = this.state;
 
-        const val = language === 'json' && parseJSON ? textValue : CodeField.parse(value);
+        const val = language === 'json' && isJson ? textValue : CodeField.parse(value);
+
+        const editorWidth = isNumber(width) ? `${width}px` : width;
+        const editorHeight = isNumber(height) ? `${height}px` : height;
 
         const AceEditor = this.AceEditor;
 
@@ -131,6 +144,8 @@ class CodeField extends Component {
                 mode={language}
                 theme={theme}
                 value={val || ''}
+                width={editorWidth}
+                height={editorHeight}
                 onChange={this.onChange}
             />
         );
@@ -146,7 +161,7 @@ class CodeField extends Component {
         const { ready } = this.state;
 
         return (
-            <FormGroup className="form-group-text" name={name} label={label} {...other} >
+            <FormGroup className={`${styles.formGroup} form-group-code`} name={name} label={label} {...other} >
                 { ready ? this.renderField() : null }
             </FormGroup>
         );

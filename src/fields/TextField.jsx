@@ -36,6 +36,7 @@ const propTypes = {
     align: PropTypes.oneOf(
         ['left', 'right', 'center'],
     ),
+    inputOnly: PropTypes.bool,
     disabled: PropTypes.bool,
     ckeditorConfig: PropTypes.object, // eslint-disable-line
     ckeditorCustomConfig: PropTypes.string,
@@ -53,6 +54,7 @@ const defaultProps = {
     prefix: null,
     suffix: null,
     align: null,
+    inputOnly: false,
     disabled: false,
     ckeditorConfig: null,
     ckeditorCustomConfig: null,
@@ -134,6 +136,7 @@ class TextField extends Component {
             suffix,
             align,
             disabled,
+            inputOnly,
             ckeditorCustomConfig,
             ...other
         } = this.props;
@@ -146,18 +149,18 @@ class TextField extends Component {
             [`text-${align}`]: align !== null,
         });
 
-        let field = null;
+        let input = null;
         if (type === 'textarea') {
-            field = <textarea className="field-textarea form-control" name={name} value={defaultValue} onChange={this.onChange} disabled={disabled} />;
+            input = <textarea className="field-textarea form-control" name={name} value={defaultValue} onChange={this.onChange} disabled={disabled} />;
         } else if (type === 'editor') {
-            field = (
+            input = (
                 <div className="editor" {...other}>
                     <textarea className="field-editor" name="editor" ref={(el) => { this.editor = el; }} />
                     <input type="hidden" name={name} value={defaultValue} />
                 </div>
             );
         } else {
-            field = (
+            input = (
                 <input
                     id={name}
                     type={type}
@@ -169,6 +172,10 @@ class TextField extends Component {
                     onChange={this.onChange}
                 />
             );
+        }
+
+        if (inputOnly) {
+            return input;
         }
 
         let inputGroup = null;
@@ -193,12 +200,12 @@ class TextField extends Component {
             inputGroup = (
                 <div className={groupClassNames}>
                     { renderedPrefix }
-                    { field }
+                    { input }
                     { renderedSuffix }
                 </div>
             );
         } else {
-            inputGroup = field;
+            inputGroup = input;
         }
 
         return (
