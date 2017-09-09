@@ -30,6 +30,7 @@ const propTypes = {
         PropTypes.number,
         PropTypes.string,
     ]),
+    editorProps: PropTypes.object, // eslint-disable-line
     isJson: PropTypes.bool,
     onChange: PropTypes.func,
 };
@@ -43,6 +44,7 @@ const defaultProps = {
     width: '100%',
     height: 300,
     isJson: true,
+    editorProps: { $blockScrolling: Infinity },
     onChange: null,
 };
 
@@ -126,6 +128,7 @@ class CodeField extends Component {
             isJson,
             width,
             height,
+            editorProps,
             ...props
         } = this.props;
 
@@ -146,6 +149,7 @@ class CodeField extends Component {
                 value={val || ''}
                 width={editorWidth}
                 height={editorHeight}
+                editorProps={editorProps}
                 onChange={this.onChange}
             />
         );

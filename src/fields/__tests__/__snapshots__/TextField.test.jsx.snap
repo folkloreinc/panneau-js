@@ -1,9 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TextField render a <div /> 1`] = `
+exports[`match snapshot 1`] = `
 <div
   className="form-group form-group-text"
 >
+  <label
+    className="control-label"
+    htmlFor={null}
+  >
+    Label
+  </label>
   <div
     className="form-group-inner"
     style={
@@ -20,7 +26,7 @@ exports[`TextField render a <div /> 1`] = `
       onChange={[Function]}
       placeholder={null}
       type="text"
-      value=""
+      value="value"
     />
   </div>
 </div>

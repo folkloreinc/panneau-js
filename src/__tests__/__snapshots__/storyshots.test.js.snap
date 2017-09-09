@@ -1223,6 +1223,53 @@ exports[`Storyshots Fields/Code simple 1`] = `
                       </tr>
                       <tr>
                         <td>
+                          editorProps
+                        </td>
+                        <td>
+                          object
+                        </td>
+                        <td>
+                          no
+                        </td>
+                        <td>
+                          <span>
+                            <span
+                              style={
+                                Object {
+                                  "color": "#666",
+                                }
+                              }
+                            >
+                              {
+                              <span
+                                style={
+                                  Object {
+                                    "color": "#666",
+                                  }
+                                }
+                              >
+                                $blockScrolling
+                              </span>
+                              : 
+                              <span>
+                                <span
+                                  style={
+                                    Object {
+                                      "color": "#a11",
+                                    }
+                                  }
+                                >
+                                  Infinity
+                                </span>
+                              </span>
+                              }
+                            </span>
+                          </span>
+                        </td>
+                        <td />
+                      </tr>
+                      <tr>
+                        <td>
                           isJson
                         </td>
                         <td>

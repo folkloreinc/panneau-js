@@ -79,6 +79,7 @@ class TextField extends Component {
         this.onEditorChange = this.onEditorChange.bind(this);
 
         this.editor = null;
+        this.input = null;
         this.ckeditor = null;
     }
 
@@ -112,15 +113,15 @@ class TextField extends Component {
     }
 
     onChange(e) {
-        const newValue = e.target.value;
-        if (this.props.onChange && isString(newValue) && this.props.value !== newValue) {
+        const newValue = this.input.value;
+        if (this.props.onChange) {
             this.props.onChange(newValue);
         }
     }
 
     onEditorChange(e) {
         const newValue = e.editor.getData();
-        if (this.props.onChange && isString(newValue) && this.props.value !== newValue) {
+        if (this.props.onChange) {
             this.props.onChange(newValue);
         }
     }
@@ -151,11 +152,24 @@ class TextField extends Component {
 
         let input = null;
         if (type === 'textarea') {
-            input = <textarea className="field-textarea form-control" name={name} value={defaultValue} onChange={this.onChange} disabled={disabled} />;
+            input = (
+                <textarea
+                    className="field-textarea form-control"
+                    ref={(ref) => { this.input = ref; }}
+                    name={name}
+                    value={defaultValue}
+                    onChange={this.onChange}
+                    disabled={disabled}
+                />
+            );
         } else if (type === 'editor') {
             input = (
                 <div className="editor" {...other}>
-                    <textarea className="field-editor" name="editor" ref={(el) => { this.editor = el; }} />
+                    <textarea
+                        className="field-editor"
+                        name="editor"
+                        ref={(el) => { this.editor = el; }}
+                    />
                     <input type="hidden" name={name} value={defaultValue} />
                 </div>
             );
@@ -163,6 +177,7 @@ class TextField extends Component {
             input = (
                 <input
                     id={name}
+                    ref={(ref) => { this.input = ref; }}
                     type={type}
                     className={fieldClassNames}
                     name={name}
