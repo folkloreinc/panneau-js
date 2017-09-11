@@ -19,6 +19,7 @@ import FormGroup from '../FormGroup';
 import styles from '../styles/fields/color.scss';
 
 import Text from './TextField';
+import Popover from '../modals/Popover';
 
 /**
  *  Class: ColorField
@@ -59,7 +60,6 @@ const propTypes = {
     displayColorPicker: PropTypes.bool,
     colorPosition: PropTypes.string,
     popoverStyle: PropTypes.object, // eslint-disable-line
-    inline: PropTypes.bool,
     disabled: PropTypes.bool,
     withInput: PropTypes.bool,
 };
@@ -76,9 +76,8 @@ const defaultProps = {
     onChange: null,
 
     displayColorPicker: false,
-    colorPosition: 'right',
+    colorPosition: 'left',
     popoverStyle: null,
-    inline: true,
     disabled: false,
     withInput: false,
 };
@@ -180,32 +179,32 @@ class ColorField extends Component {
             pickerType,
             value,
             colors,
-            inline,
             presetColors,
             colorPosition,
         } = this.props;
         const Picker = components[pickerType];
         const color = ColorField.parse(value);
 
-        const popoverStyle = {
-            left: inline ? '-230px' : '62px',
-        };
+        const popoverStyle = {};
         if (colorPosition === 'left') {
-            popoverStyle.left = '-230px';
+            popoverStyle.left = '0%';
         } else if (colorPosition === 'right') {
-            popoverStyle.left = '62px';
+            popoverStyle.right = '0%';
         }
 
         return (
-            <div className={styles.popover} style={popoverStyle}>
-                <button type="button" className={styles.cover} onClick={this.onClose} />
+            <Popover
+                className={styles.popover}
+                style={popoverStyle}
+                onClose={this.onClose}
+            >
                 <Picker
                     onChangeComplete={this.onChange}
                     color={color}
                     colors={colors}
                     presetColors={presetColors}
                 />
-            </div>
+            </Popover>
         );
     }
 

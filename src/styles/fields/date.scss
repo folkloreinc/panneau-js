@@ -1,0 +1,18 @@
+.formGroup {
+
+    position: relative;
+
+    .input {
+        position: relative;
+
+        :global(.control-label) {
+            font-size: 80%;
+        }
+    }
+
+    .popover {
+        top: 100%;
+        margin-top: 5px;
+    }
+
+}

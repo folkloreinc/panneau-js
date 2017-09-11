@@ -24,15 +24,13 @@ const propTypes = {
         PropTypes.number,
     ]),
     onChange: PropTypes.func,
+    onFocus: PropTypes.func,
+    onBlur: PropTypes.func,
 
-    prefix: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.object,
-    ]),
-    suffix: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.object,
-    ]),
+    prefix: PropTypes.node,
+    suffix: PropTypes.node,
+    prefixClassName: PropTypes.string,
+    suffixClassName: PropTypes.string,
     align: PropTypes.oneOf(
         ['left', 'right', 'center'],
     ),
@@ -50,9 +48,13 @@ const defaultProps = {
     placeholder: null,
     value: null,
     onChange: null,
+    onFocus: null,
+    onBlur: null,
 
     prefix: null,
     suffix: null,
+    prefixClassName: null,
+    suffixClassName: null,
     align: null,
     inputOnly: false,
     disabled: false,
@@ -113,7 +115,7 @@ class TextField extends Component {
     }
 
     onChange(e) {
-        const newValue = this.input.value;
+        const newValue = (e.currentTarget || this.input).value;
         if (this.props.onChange) {
             this.props.onChange(newValue);
         }
@@ -126,105 +128,134 @@ class TextField extends Component {
         }
     }
 
-    render() {
+    getInput() {
+        return this.input;
+    }
+
+    renderInput() {
         const {
             type,
             name,
-            label,
             placeholder,
             value,
-            prefix,
-            suffix,
             align,
             disabled,
-            inputOnly,
-            ckeditorCustomConfig,
-            ...other
+            onFocus,
+            onBlur,
         } = this.props;
+        const inputValue = TextField.parse(value);
 
-        const defaultValue = TextField.parse(value);
-
-        const fieldClassNames = classNames({
-            'field-text': true,
+        const inputClassNames = classNames({
             'form-control': true,
+            [`field-${type}`]: true,
             [`text-${align}`]: align !== null,
         });
+
+        const inputProps = {
+            ref: (ref) => { this.input = ref; },
+            value: inputValue,
+            name,
+            id: name,
+            placeholder,
+            disabled,
+            className: inputClassNames,
+            onChange: this.onChange,
+            onFocus,
+            onBlur,
+        };
 
         let input = null;
         if (type === 'textarea') {
             input = (
                 <textarea
-                    className="field-textarea form-control"
-                    ref={(ref) => { this.input = ref; }}
-                    name={name}
-                    value={defaultValue}
-                    onChange={this.onChange}
-                    disabled={disabled}
+                    {...inputProps}
                 />
             );
         } else if (type === 'editor') {
             input = (
-                <div className="editor" {...other}>
+                <div className="editor">
                     <textarea
                         className="field-editor"
                         name="editor"
                         ref={(el) => { this.editor = el; }}
                     />
-                    <input type="hidden" name={name} value={defaultValue} />
+                    <input
+                        type="hidden"
+                        name={name}
+                        value={inputValue}
+                    />
                 </div>
             );
         } else {
             input = (
                 <input
-                    id={name}
-                    ref={(ref) => { this.input = ref; }}
+                    {...inputProps}
                     type={type}
-                    className={fieldClassNames}
-                    name={name}
-                    value={defaultValue}
-                    placeholder={placeholder}
-                    disabled={disabled}
-                    onChange={this.onChange}
                 />
             );
         }
+        return input;
+    }
 
-        if (inputOnly) {
-            return input;
-        }
+    renderInputGroup(input) {
+        const {
+            type,
+            prefix,
+            suffix,
+            prefixClassName,
+            suffixClassName,
+        } = this.props;
 
-        let inputGroup = null;
-        if (prefix || suffix) {
-            const fixClassNames = classNames({
-                'input-group-addon': isString(suffix),
-                'input-group-addon input-group-addon-small': !isString(suffix),
-            });
+        const prefixClassNames = classNames({
+            'input-group-addon': prefixClassName === null && isString(prefix),
+            'input-group-addon input-group-addon-small': prefixClassName === null && !isString(prefix),
+            [prefixClassName]: prefixClassName !== null,
+        });
 
-            const renderedPrefix = prefix ?
-                <span className={fixClassNames}>{prefix}</span> : null;
+        const suffixClassNames = classNames({
+            'input-group-addon': suffixClassName === null && isString(suffix),
+            'input-group-addon input-group-addon-small': suffixClassName === null && !isString(suffix),
+            [suffixClassName]: suffixClassName !== null,
+        });
 
-            const renderedSuffix = suffix ?
-                <span className={fixClassNames}>{suffix}</span> : null;
+        const renderedPrefix = prefix ?
+            <span className={prefixClassNames}>{prefix}</span> : null;
 
-            const groupClassNames = classNames({
-                'input-group': true,
-                'input-group-text': true,
-                [`input-group-${type}`]: true,
-            });
+        const renderedSuffix = suffix ?
+            <span className={suffixClassNames}>{suffix}</span> : null;
 
-            inputGroup = (
-                <div className={groupClassNames}>
-                    { renderedPrefix }
-                    { input }
-                    { renderedSuffix }
-                </div>
-            );
-        } else {
-            inputGroup = input;
-        }
+        const groupClassNames = classNames({
+            'input-group': true,
+            'input-group-text': true,
+            [`input-group-${type}`]: true,
+        });
 
         return (
-            <FormGroup className="form-group-text" name={name} label={label} {...other} >
+            <div className={groupClassNames}>
+                { renderedPrefix }
+                { input }
+                { renderedSuffix }
+            </div>
+        );
+    }
+
+    render() {
+        const {
+            label,
+            name,
+            prefix,
+            suffix,
+            ...other
+        } = this.props;
+        const input = this.renderInput();
+        const inputGroup = prefix || suffix ? this.renderInputGroup(input) : input;
+        return (
+            <FormGroup
+                className="form-group-text"
+                name={name}
+                label={label}
+                {...other}
+            >
                 { inputGroup }
             </FormGroup>
         );

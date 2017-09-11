@@ -31,24 +31,8 @@
     }
 
     .popover {
-        position: absolute;
-        top: 0;
-        z-index: 1000;
-    }
-
-    .cover {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        background: transparent;
-        appearance: none;
-        border: none;
+        top: 100%;
+        margin-top: 5px;
     }
 
     .container {
