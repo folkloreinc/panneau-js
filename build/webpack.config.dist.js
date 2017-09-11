@@ -30,7 +30,7 @@ module.exports = env => (
             }),
             new webpack.optimize.ModuleConcatenationPlugin(),
             new UglifyJSPlugin({
-                beautify: true,
+                beautify: false,
                 sourceMap: true,
                 mangle: {
                     screw_ie8: true,
@@ -42,13 +42,15 @@ module.exports = env => (
                 },
                 comments: false,
             }),
+            new webpack.SourceMapDevToolPlugin({
+                filename: '[file].map',
+                exclude: [/vendor\//],
+            }),
         ],
-
-        cache: false,
 
         externals: [
             nodeExternals({
-                whitelist: ['ckeditor', 'react-ace', /^brace/],
+                whitelist: ['ckeditor', 'react-ace', /^brace/, /react-dates/, 'moment'],
             }),
         ],
 

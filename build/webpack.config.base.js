@@ -65,7 +65,6 @@ module.exports = (env) => {
 
         entry: {},
 
-
         output: {
             path: outputPath,
             filename: '[name].js',
@@ -199,7 +198,6 @@ module.exports = (env) => {
             maxEntrypointSize: 300000,
         },
 
-        devtool: 'source-map',
         cache: true,
         watch: false,
     };

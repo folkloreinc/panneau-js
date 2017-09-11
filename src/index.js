@@ -7,6 +7,8 @@ import SelectField from './fields/SelectField';
 import TextField from './fields/TextField';
 import ColorField from './fields/ColorField';
 import CodeField from './fields/CodeField';
+import SliderField from './fields/SliderField';
+import DateField from './fields/DateField';
 
 export {
     FieldsCollection,
@@ -18,4 +20,6 @@ export {
     TextField,
     ColorField,
     CodeField,
+    SliderField,
+    DateField,
 };

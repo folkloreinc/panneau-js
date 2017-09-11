@@ -8,11 +8,14 @@
         :global(.control-label) {
             font-size: 80%;
         }
+
+        :global(.form-group-text) {
+            margin-bottom: 0;
+        }
     }
 
     .popover {
         top: 100%;
         margin-top: 5px;
     }
-
 }
