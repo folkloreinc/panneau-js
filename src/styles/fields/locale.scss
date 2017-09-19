@@ -1,0 +1,14 @@
+.formGroup {
+    :global(.input-group-btn) {
+        vertical-align: top;
+    }
+
+    :global(> .form-group-label) {
+        margin-bottom: 10px;
+    }
+
+    .btnGroup {
+        margin-bottom: 0;
+        margin-left: 10px;
+    }
+}

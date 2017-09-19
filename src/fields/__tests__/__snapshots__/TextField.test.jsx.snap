@@ -19,11 +19,13 @@ exports[`match snapshot 1`] = `
     }
   >
     <input
-      className="field-text form-control"
+      className="form-control field-text"
       disabled={false}
       id={null}
       name={null}
+      onBlur={null}
       onChange={[Function]}
+      onFocus={null}
       placeholder={null}
       type="text"
       value="value"

@@ -50,7 +50,7 @@ module.exports = env => (
 
         externals: [
             nodeExternals({
-                whitelist: ['ckeditor', 'react-ace', /^brace/, /react-dates/, 'moment'],
+                whitelist: ['ckeditor', 'react-ace', /^brace/, /react-dates/, 'moment', 'react-select', 'rc-switch', 'rc-slider'],
             }),
         ],
 

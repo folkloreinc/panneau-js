@@ -9,6 +9,8 @@ import ColorField from './fields/ColorField';
 import CodeField from './fields/CodeField';
 import SliderField from './fields/SliderField';
 import DateField from './fields/DateField';
+import ToggleField from './fields/ToggleField';
+import LocaleField from './fields/LocaleField';
 
 export {
     FieldsCollection,
@@ -22,4 +24,6 @@ export {
     CodeField,
     SliderField,
     DateField,
+    ToggleField,
+    LocaleField,
 };

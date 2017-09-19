@@ -2,49 +2,48 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';// eslint-disable-line import/no-extraneous-dependencies
 
 import storiesOf from '../../../.storybook/storiesOf';
-import SliderField from '../SliderField';
+import ToggleField from '../ToggleField';
 import KeepValue from '../../../.storybook/KeepValue';
 
-storiesOf('Fields/Slider', module)
+storiesOf('Fields/Toggle', module)
     .add('simple', () => (
         <div>
             <KeepValue>
-                <SliderField
+                <ToggleField
                     label="Label"
-                    value={50}
+                    helpText="This is an help text"
                     onChange={action('change')}
                 />
             </KeepValue>
+
             <KeepValue>
-                <SliderField
+                <ToggleField
                     label="Disabled"
                     disabled
-                    value={37}
+                    helpText="This is an help text"
                     onChange={action('change')}
                 />
             </KeepValue>
         </div>
-
     ))
-    .add('range', () => (
+    .add('select', () => (
         <div>
             <KeepValue>
-                <SliderField
+                <ToggleField
                     label="Label"
-                    value={[50, 60, 70]}
-                    range
+                    type="select"
+                    helpText="This is an help text"
                     onChange={action('change')}
                 />
             </KeepValue>
             <KeepValue>
-                <SliderField
+                <ToggleField
                     label="Disabled"
-                    value={[21, 57, 89]}
                     disabled
-                    range
+                    type="select"
+                    helpText="This is an help text"
                     onChange={action('change')}
                 />
             </KeepValue>
         </div>
-
     ));

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
 import isArray from 'lodash/isArray';
 
 import FormGroup from '../FormGroup';
@@ -85,7 +84,7 @@ class SliderField extends Component {
         }
 
         const SliderComponent = this.Component;
-        const sliderValue = range && isEmpty(value) ? [] : value;
+        const sliderValue = range && value === null ? [] : value;
 
         return (
             <FormGroup

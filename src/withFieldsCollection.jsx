@@ -3,12 +3,20 @@ import PropTypes from 'prop-types';
 import invariant from 'invariant';
 import hoistStatics from 'hoist-non-react-statics';
 
-import collection from './fields/collection';
+import defaultFieldsCollection from './fields/collection';
 import FieldsCollection from './lib/FieldsCollection';
 
 function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
+
+const propTypes = {
+    fieldsCollection: PropTypes.instanceOf(FieldsCollection),
+};
+
+const defaultProps = {
+    fieldsCollection: null,
+};
 
 const childContextTypes = {
     fieldsCollection: PropTypes.instanceOf(FieldsCollection),
@@ -17,6 +25,7 @@ const childContextTypes = {
 export default function withFieldsCollection(WrappedComponent, fieldsCollection, opts) {
     const options = {
         withRef: false,
+        defaultFieldsCollection,
         ...opts,
     };
     class WithFieldsCollection extends Component {
@@ -36,7 +45,11 @@ export default function withFieldsCollection(WrappedComponent, fieldsCollection,
 
         getChildContext() {
             return {
-                fieldsCollection: fieldsCollection || collection,
+                fieldsCollection: (
+                    this.props.fieldsCollection ||
+                    fieldsCollection ||
+                    options.defaultFieldsCollection
+                ),
             };
         }
 
@@ -51,11 +64,16 @@ export default function withFieldsCollection(WrappedComponent, fieldsCollection,
             }
 
             return (
-                <WrappedComponent {...props} />
+                <WrappedComponent
+                    {...props}
+                    fieldsCollection={fieldsCollection}
+                />
             );
         }
     }
 
+    WithFieldsCollection.propTypes = propTypes;
+    WithFieldsCollection.defaultProps = defaultProps;
     WithFieldsCollection.childContextTypes = childContextTypes;
     WithFieldsCollection.displayName = `withFieldsCollection(${getDisplayName(WrappedComponent)})`;
     WithFieldsCollection.WrappedComponent = WrappedComponent;

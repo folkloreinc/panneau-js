@@ -6,6 +6,8 @@ import Color from './ColorField';
 import Code from './CodeField';
 import Slider from './SliderField';
 import Date from './DateField';
+import Toggle from './ToggleField';
+import Locale from './LocaleField';
 
 const fields = {
     Select,
@@ -14,6 +16,8 @@ const fields = {
     Code,
     Slider,
     Date,
+    Toggle,
+    Locale,
 };
 
 const fieldsCollection = new FieldsCollection(fields);

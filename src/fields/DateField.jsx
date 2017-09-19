@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
-import isEmpty from 'lodash/isEmpty';
 
 import FormGroup from '../FormGroup';
 import TextField from './TextField';
@@ -47,7 +46,7 @@ const defaultProps = {
 };
 
 const getMomentOrNull = (moment, str) => {
-    if (isEmpty(str)) {
+    if (str !== null && str !== '') {
         return null;
     }
     const date = moment(str);
@@ -169,7 +168,7 @@ class DateField extends Component {
     onInputRangeChange(key, val) {
         const { value, dateFormat } = this.props;
         const { textValue, momentValue } = this.state;
-        const dateValue = !isEmpty(val) ? this.moment(val) : null;
+        const dateValue = val !== null && val !== '' ? this.moment(val) : null;
         const newTextValue = {
             ...textValue,
             [key]: val,
@@ -253,17 +252,21 @@ class DateField extends Component {
             const startSuffix = (
                 <button
                     type="button"
-                    className="btn btn-default glyphicon glyphicon-calendar"
+                    className="btn btn-default"
                     onClick={onStartClickInputButton}
-                />
+                >
+                    <span className="glyphicon glyphicon-calendar" />
+                </button>
             );
 
             const endSuffix = (
                 <button
                     type="button"
-                    className="btn btn-default glyphicon glyphicon-calendar"
+                    className="btn btn-default"
                     onClick={onEndClickInputButton}
-                />
+                >
+                    <span className="glyphicon glyphicon-calendar" />
+                </button>
             );
 
             return (
@@ -301,9 +304,11 @@ class DateField extends Component {
         const suffix = (
             <button
                 type="button"
-                className="btn btn-default glyphicon glyphicon-calendar"
+                className="btn btn-default"
                 onClick={this.onInputFocus}
-            />
+            >
+                <span className="glyphicon glyphicon-calendar" />
+            </button>
         );
 
         return (

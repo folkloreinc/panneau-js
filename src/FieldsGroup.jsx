@@ -21,7 +21,7 @@ const propTypes = {
     })),
     getFieldComponent: PropTypes.func,
     fieldsCollection: PropTypes.instanceOf(FieldsCollection),
-    fieldsComponents: PropTypes.shape({}),
+    fieldsComponents: PropTypes.object, // eslint-disable-line
     renderNotFound: PropTypes.func,
     columns: PropTypes.number,
     collapsible: PropTypes.bool,
@@ -89,8 +89,6 @@ class FieldsGroup extends Component {
                 FieldsCollection.normalizeKey(k) === normalizedKey
             ));
             return typeof fieldKey !== 'undefined' && fieldKey !== null ? fieldsComponents[fieldKey] : null;
-        } else if (fieldsCollection !== null) {
-            return fieldsCollection.getComponent(key);
         } else if (fieldsCollection !== null) {
             return fieldsCollection.getComponent(key);
         }

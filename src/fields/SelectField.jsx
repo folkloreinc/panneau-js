@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
-import Select, { Async, AsyncCreatable, Creatable } from 'react-select';
 import '../styles/vendor.global.scss';
 import FormGroup from '../FormGroup';
 
@@ -27,9 +26,10 @@ const propTypes = {
     onChange: PropTypes.func,
     onOptionsChange: PropTypes.func,
 
+    inputOnly: PropTypes.bool,
     placeholder: PropTypes.string,
     noResultsText: PropTypes.string,
-    canBeEmpty: PropTypes.bool,
+    cannotBeEmpty: PropTypes.bool,
     addEmptyOption: PropTypes.bool,
     emptyOption: PropTypes.shape({
         value: valuePropTypes,
@@ -39,8 +39,8 @@ const propTypes = {
     fetchOptions: PropTypes.func,
     async: PropTypes.bool,
     multiple: PropTypes.bool,
-    searchable: PropTypes.bool,
-    clearable: PropTypes.bool,
+    notSearchable: PropTypes.bool,
+    notClearable: PropTypes.bool,
     creatable: PropTypes.bool,
     style: PropTypes.object, // eslint-disable-line
 };
@@ -53,10 +53,11 @@ const defaultProps = {
     onChange: null,
     onOptionsChange: null,
 
+    inputOnly: false,
     getValueFromOption: null,
-    canBeEmpty: true,
-    searchable: true,
-    clearable: true,
+    cannotBeEmpty: false,
+    notSearchable: false,
+    notClearable: false,
     creatable: false,
     async: false,
     multiple: false,
@@ -87,9 +88,36 @@ class SelectField extends Component {
         this.onNewOptionClick = this.onNewOptionClick.bind(this);
         this.getValueFromOption = this.getValueFromOption.bind(this);
 
+        this.Component = null;
+
         this.state = {
             options: props.options,
+            ready: false,
         };
+    }
+
+    componentDidMount() {
+        const {
+            async,
+            creatable,
+        } = this.props;
+        let componentName;
+        if (async && creatable) {
+            componentName = 'AsyncCreatable';
+        } else if (async) {
+            componentName = 'Async';
+        } else if (creatable) {
+            componentName = 'Creatable';
+        } else {
+            componentName = 'Select';
+        }
+        import(/* webpackChunkName: "vendor/react-select/[request]" */`react-select/lib/${componentName}`)
+            .then((SliderComponent) => {
+                this.Component = SliderComponent;
+                this.setState({
+                    ready: true,
+                });
+            });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -116,17 +144,23 @@ class SelectField extends Component {
     }
 
     onChange(value) {
-        const { multiple, clearable } = this.props;
+        const { multiple, notClearable, cannotBeEmpty } = this.props;
         let newValue;
         if (multiple && value === null) {
             newValue = null;
-        } else if (multiple && value.length === 0 && clearable) {
+        } else if (multiple && value.length === 0 && !notClearable) {
             newValue = null;
         } else if (multiple) {
             newValue = value.map(this.getValueFromOption);
         } else {
             newValue = this.getValueFromOption(value);
         }
+
+        if (cannotBeEmpty && newValue === null) {
+            const selectOptions = this.getOptions();
+            newValue = selectOptions.length > 0 ? this.getValueFromOption(selectOptions[0]) : null;
+        }
+
         if (this.props.onChange) {
             this.props.onChange(newValue);
         }
@@ -138,6 +172,22 @@ class SelectField extends Component {
             return getValueFromOption(opt);
         }
         return isObject(opt) && typeof opt.value !== 'undefined' ? opt.value : opt;
+    }
+
+    getOptions() {
+        const {
+            cannotBeEmpty,
+            addEmptyOption,
+            emptyOption,
+        } = this.props;
+        const {
+            options,
+        } = this.state;
+        const selectOptions = [].concat(options);
+        if (!cannotBeEmpty && addEmptyOption) {
+            selectOptions.unshift(emptyOption);
+        }
+        return selectOptions;
     }
 
     loadOptions(input, callback) {
@@ -153,34 +203,36 @@ class SelectField extends Component {
     }
 
     render() {
+        const { ready } = this.state;
+        if (!ready) {
+            return null;
+        }
         const {
             name,
             label,
             value,
-            canBeEmpty,
+            cannotBeEmpty,
             addEmptyOption,
             emptyOption,
             style,
             async,
             creatable,
+            notSearchable,
+            notClearable,
             multiple,
-            clearable,
             ...other
         } = this.props;
 
-        const {
-            options,
-        } = this.state;
-
-        const selectOptions = [].concat(options);
-        if (canBeEmpty && addEmptyOption) {
-            selectOptions.unshift(emptyOption);
-        }
-
-        const shouldTakeFirstValue = !canBeEmpty && value === null && selectOptions.length > 0;
-        const selectValue = shouldTakeFirstValue ?
-            this.getValueFromOption(selectOptions[0]) : value;
-        const selectClearable = clearable && shouldTakeFirstValue ? false : clearable;
+        const selectOptions = this.getOptions();
+        const defaultValue = selectOptions.length > 0 ?
+            this.getValueFromOption(selectOptions[0]) : null;
+        const shouldTakeDefaultValue = cannotBeEmpty && value === null && defaultValue !== null;
+        const selectValue = shouldTakeDefaultValue ? defaultValue : value;
+        const selectClearable = cannotBeEmpty && (
+            shouldTakeDefaultValue ||
+            selectValue === defaultValue
+        ) ? false : !notClearable;
+        const selectSearchable = !notSearchable;
 
         const asyncProps = async ? {
             loadOptions: this.loadOptions,
@@ -188,16 +240,7 @@ class SelectField extends Component {
             options: selectOptions,
         };
 
-        let SelectComponent;
-        if (async && creatable) {
-            SelectComponent = AsyncCreatable;
-        } else if (async) {
-            SelectComponent = Async;
-        } else if (creatable) {
-            SelectComponent = Creatable;
-        } else {
-            SelectComponent = Select;
-        }
+        const SelectComponent = this.Component;
 
         return (
             <FormGroup
@@ -212,6 +255,7 @@ class SelectField extends Component {
                         multi={multiple}
                         {...other}
                         {...asyncProps}
+                        searchable={selectSearchable}
                         clearable={selectClearable}
                         value={selectValue}
                         onChange={this.onChange}

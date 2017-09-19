@@ -73,6 +73,7 @@
         "prop-types": "^15.5.10",
         "rc-calendar": "^9.0.3",
         "rc-slider": "^8.3.1",
+        "rc-switch": "^1.5.3",
         "react": "^15.6.1",
         "react-ace": "^5.2.0",
         "react-addons-shallow-compare": "^15.6.0",

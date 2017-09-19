@@ -35,7 +35,7 @@ storiesOf('Fields/Select', module)
                 <SelectField
                     label="Not clearable"
                     options={options}
-                    clearable={false}
+                    notClearable
                     addEmptyOption
                     value={2}
                     onChange={action('change')}
@@ -45,7 +45,16 @@ storiesOf('Fields/Select', module)
                 <SelectField
                     label="Cannot be empty"
                     options={options}
-                    canBeEmpty={false}
+                    cannotBeEmpty
+                    onChange={action('change')}
+                />
+            </KeepValue>
+            <KeepValue>
+                <SelectField
+                    label="Disabled"
+                    options={options}
+                    disabled
+                    value={2}
                     onChange={action('change')}
                 />
             </KeepValue>

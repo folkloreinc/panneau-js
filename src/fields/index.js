@@ -4,7 +4,9 @@ import Color from './ColorField';
 import Code from './CodeField';
 import Slider from './SliderField';
 import Date from './DateField';
-import fieldsCollection from './collection';
+import Toggle from './ToggleField';
+import Locale from './LocaleField';
+import FieldsCollection from './collection';
 
 export {
     Select,
@@ -13,5 +15,7 @@ export {
     Code,
     Slider,
     Date,
-    fieldsCollection,
+    Toggle,
+    Locale,
+    FieldsCollection,
 };

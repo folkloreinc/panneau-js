@@ -20,9 +20,14 @@ test('value is in <input />', () => {
         <TextField value="test" />,
     );
     expect(field.find('input').prop('value')).toEqual('test');
+
+    const nullField = shallow(
+        <TextField value={null} />,
+    );
+    expect(nullField.find('input').prop('value')).toBeNull();
 });
 
-test('simulates change event', () => {
+test('input change trigger onChange with value', () => {
     const onChange = sinon.spy();
     const wrapper = mount(
         <TextField value="test" onChange={onChange} />,

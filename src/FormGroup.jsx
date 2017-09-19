@@ -9,7 +9,9 @@ const propTypes = {
 
     className: PropTypes.string,
     name: PropTypes.string,
-    label: PropTypes.string,
+    labelPrefix: PropTypes.node,
+    label: PropTypes.node,
+    labelSuffix: PropTypes.node,
     errors: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.array,
@@ -30,7 +32,9 @@ const defaultProps = {
 
     className: 'text',
     name: null,
+    labelPrefix: null,
     label: null,
+    labelSuffix: null,
     errors: [],
     helpText: null,
 
@@ -52,10 +56,6 @@ class FormGroup extends Component {
         this.state = {
             collapsed: this.props.collapsed,
         };
-    }
-
-    componentWillReceiveProps() {
-
     }
 
     onCollapseChange(e) {
@@ -101,7 +101,15 @@ class FormGroup extends Component {
     }
 
     renderLabel() {
-        const { name, label, large, small, collapsible } = this.props;
+        const {
+            label,
+            labelPrefix,
+            labelSuffix,
+            name,
+            large,
+            small,
+            collapsible,
+        } = this.props;
 
         const caret = (
             <span className={this.state.collapsed ? 'dropright' : 'dropdown'}>
@@ -110,19 +118,29 @@ class FormGroup extends Component {
         );
 
         const link = collapsible ? (
-            <button className="no-btn-style no-link" onClick={this.onCollapseChange}>{caret} {label}</button>
+            <button type="button" className="no-btn-style no-link" onClick={this.onCollapseChange}>{caret} {label}</button>
         ) : label;
+
+        if (link === null) {
+            return null;
+        }
 
         const labelClasses = classNames({
             'control-label': true,
             'smaller-text': small,
         });
 
-        const renderedLabel = large ?
-            <h4 className="control-label">{link}</h4> :
-            <label htmlFor={name} className={labelClasses}>{link}</label>;
-
-        return link ? renderedLabel : null;
+        return (
+            <div className="form-group-label">
+                { labelPrefix }
+                { large ? (
+                    <h4 className="control-label">{link}</h4>
+                ) : (
+                    <label htmlFor={name} className={labelClasses}>{link}</label>
+                ) }
+                { labelSuffix }
+            </div>
+        );
     }
 
     render() {
