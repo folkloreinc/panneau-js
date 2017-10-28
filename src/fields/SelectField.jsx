@@ -113,7 +113,7 @@ class SelectField extends Component {
         }
         import(/* webpackChunkName: "vendor/react-select/[request]" */`react-select/lib/${componentName}`)
             .then((SliderComponent) => {
-                this.Component = SliderComponent;
+                this.Component = SliderComponent.default;
                 this.setState({
                     ready: true,
                 });

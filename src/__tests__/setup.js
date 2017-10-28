@@ -1,7 +1,14 @@
-const JSDOM = require('jsdom').JSDOM;
+import { configure } from 'enzyme';
+import { JSDOM } from 'jsdom';
+import Adapter from 'enzyme-adapter-react-16';
 
-const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
-const window = jsdom.window;
+// Enzyme
+configure({
+    adapter: new Adapter(),
+});
+
+// JSDOM
+const { window } = new JSDOM('<!doctype html><html><body></body></html>');
 
 function copyProps(src, target) {
     const props = Object.getOwnPropertyNames(src)

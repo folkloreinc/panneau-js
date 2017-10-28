@@ -17,7 +17,10 @@ const propTypes = {
     locale: PropTypes.string,
     className: PropTypes.string,
     locales: PropTypes.arrayOf(PropTypes.string),
-    FieldComponent: PropTypes.instanceOf(Component),
+    FieldComponent: PropTypes.oneOfType([
+        PropTypes.instanceOf(Component),
+        PropTypes.func,
+    ]),
     renderField: PropTypes.func,
     children: PropTypes.func,
 };
@@ -86,6 +89,7 @@ class LocaleField extends Component {
             onChange,
             renderField,
             children,
+            FieldComponent,
             ...props
         } = this.props;
 
@@ -99,7 +103,6 @@ class LocaleField extends Component {
             value: fieldValue,
         };
         const renderFieldMethod = renderField || children || null;
-        const FieldComponent = this.props.FieldComponent;
 
         return (
             <div key={key} className="form-group-locale-field" style={style}>
