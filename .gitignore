@@ -2,7 +2,3 @@ node_modules
 *.log
 .tmp
 .sass-cache
-/coverage
-/lib
-/es
-/dist

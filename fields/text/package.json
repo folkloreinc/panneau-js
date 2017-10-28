@@ -1,0 +1,39 @@
+{
+    "name": "react-panneau/fields/text",
+    "version": "0.1.0",
+    "author": {
+        "name": "Folklore",
+        "email": "info@atelierfolklore.ca"
+    },
+    "contributors": [
+        {
+            "name": "David Mongeau-Petitpas",
+            "email": "dmp@atelierfolklore.ca"
+        },
+        {
+            "name": "Nicolas Roy-Bourdages",
+            "email": "nrb@atelierfolklore.ca"
+        },
+        {
+            "name": "Hugo St-Onge",
+            "email": "hso@atelierfolklore.ca"
+        }
+    ],
+    "main": "lib/index.js",
+    "module": "es/index.js",
+    "browser": "dist/react-panneau.js",
+    "files": [
+        "lib",
+        "es",
+        "dist",
+        "index.js"
+    ],
+    "scripts": {
+
+    },
+    "dependencies": {
+        "react": "^16.0.0",
+        "react-dom": "^16.0.0",
+        "react-panneau": "^0.1.0"
+    }
+}

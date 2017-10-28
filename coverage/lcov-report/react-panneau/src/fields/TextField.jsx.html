@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for react-panneau/src/fields/TextField.jsx</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">All files</a> / <a href="index.html">react-panneau/src/fields</a> TextField.jsx
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">58.49% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>31/53</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">38.24% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>13/34</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">40% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/10</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">58.49% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>31/53</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import isNumber from 'lodash/isNumber';
+import isString from 'lodash/isString';
+import isArray from 'lodash/isArray';
+import FormGroup from '../FormGroup';
+&nbsp;
+/**
+ *  Class: TextField
+ *
+ *  @param {string,number,array} value
+ *  @return {string} newValue
+ */
+const propTypes = {
+    type: PropTypes.oneOf(
+        ['text', 'email', 'password', 'url', 'number', 'textarea', 'editor'],
+    ),
+    name: PropTypes.string,
+    label: PropTypes.string,
+    placeholder: PropTypes.string,
+    value: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
+    onChange: PropTypes.func,
+&nbsp;
+    prefix: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object,
+    ]),
+    suffix: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object,
+    ]),
+    align: PropTypes.oneOf(
+        ['left', 'right', 'center'],
+    ),
+    disabled: PropTypes.bool,
+    ckeditorCustomConfig: PropTypes.object,
+};
+&nbsp;
+const defaultProps = {
+    type: 'text',
+    name: null,
+    label: null,
+    placeholder: null,
+    value: null,
+    onChange: null,
+&nbsp;
+    prefix: null,
+    suffix: null,
+    align: null,
+    disabled: false,
+    ckeditorCustomConfig: {},
+};
+&nbsp;
+class TextField extends Component {
+    static parse(value) {
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (isString(value) || isNumber(value)) {
+<span class="cstat-no" title="statement not covered" >            return value;</span>
+        } else <span class="missing-if-branch" title="if path not taken" >I</span>if (isArray(value)) {
+<span class="cstat-no" title="statement not covered" >            return value.join(' ');</span>
+        }
+        return ''; // Empty string for the input field
+    }
+&nbsp;
+    constructor(props) {
+        super(props);
+&nbsp;
+        this.onChange = this.onChange.bind(this);
+        this.onEditorReady = this.onEditorReady.bind(this);
+        this.onEditorChange = this.onEditorChange.bind(this);
+&nbsp;
+        this.editor = null;
+        this.ckeditor = null;
+    }
+&nbsp;
+    componentDidMount() {
+        const { type } = this.props;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (type === 'editor') {
+<span class="cstat-no" title="statement not covered" >            import(/* webpackChunkName: "vendor/ckeditor" */ 'ckeditor')</span>
+                .then(<span class="fstat-no" title="function not covered" >()</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    this.ckeditor = CKEDITOR; </span>// eslint-disable-line no-undef
+                    const editor = <span class="cstat-no" title="statement not covered" >this.ckeditor.replace('editor');</span>
+<span class="cstat-no" title="statement not covered" >                    if (this.props.ckeditorCustomConfig) {</span>
+<span class="cstat-no" title="statement not covered" >                        editor.config = this.props.ckeditorCustomConfig;</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    editor.on('instanceReady', this.onEditorReady);</span>
+<span class="cstat-no" title="statement not covered" >                    editor.on('change', this.onEditorChange);</span>
+                });
+        }
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    co</span>mponentWillUnmount() {
+        const { type } = <span class="cstat-no" title="statement not covered" >this.props;</span>
+<span class="cstat-no" title="statement not covered" >        if (type === 'editor') {</span>
+<span class="cstat-no" title="statement not covered" >            this.ckeditor.remove(this.editor);</span>
+        }
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    on</span>EditorReady(e) {
+<span class="cstat-no" title="statement not covered" >        e.editor.setData(this.props.value);</span>
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    on</span>Change(e) {
+        const newValue = <span class="cstat-no" title="statement not covered" >e.target.value;</span>
+<span class="cstat-no" title="statement not covered" >        if (this.props.onChange &amp;&amp; isString(newValue) &amp;&amp; this.props.value !== newValue) {</span>
+<span class="cstat-no" title="statement not covered" >            this.props.onChange(newValue);</span>
+        }
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    on</span>EditorChange(e) {
+        const newValue = <span class="cstat-no" title="statement not covered" >e.editor.getData();</span>
+<span class="cstat-no" title="statement not covered" >        if (this.props.onChange &amp;&amp; isString(newValue) &amp;&amp; this.props.value !== newValue) {</span>
+<span class="cstat-no" title="statement not covered" >            this.props.onChange(newValue);</span>
+        }
+    }
+&nbsp;
+    render() {
+        const {
+            type,
+            name,
+            label,
+            placeholder,
+            value,
+            prefix,
+            suffix,
+            align,
+            disabled,
+            ...other
+        } = this.props;
+&nbsp;
+        const defaultValue = TextField.parse(value);
+&nbsp;
+        const fieldClassNames = classNames({
+            'field-text': true,
+            'form-control': true,
+            [`text-${align}`]: align !== null,
+        });
+&nbsp;
+        let field = null;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (type === 'textarea') {
+<span class="cstat-no" title="statement not covered" >            field = &lt;textarea className="field-textarea form-control" name={name} value={defaultValue} onChange={this.onChange} disabled={disabled} /&gt;;</span>
+        } else <span class="missing-if-branch" title="if path not taken" >I</span>if (type === 'editor') {
+<span class="cstat-no" title="statement not covered" >            field = (</span>
+                &lt;div className="editor" {...other}&gt;
+                    &lt;textarea id="editor" className="field-editor" name="editor" ref={<span class="fstat-no" title="function not covered" >(e</span>l) =&gt; { <span class="cstat-no" title="statement not covered" >this.editor = el; </span>}} /&gt;
+                    &lt;input type="hidden" name={name} value={defaultValue} /&gt;
+                &lt;/div&gt;
+            );
+        } else {
+            field = (
+                &lt;input
+                    id={name}
+                    type={type}
+                    className={fieldClassNames}
+                    name={name}
+                    value={defaultValue}
+                    placeholder={placeholder}
+                    disabled={disabled}
+                    onChange={this.onChange}
+                /&gt;
+            );
+        }
+&nbsp;
+        let inputGroup = null;
+        if (prefix || suffix) {
+            const fixClassNames = classNames({
+                'input-group-addon': isString(suffix),
+                'input-group-addon input-group-addon-small': !isString(suffix),
+            });
+&nbsp;
+            const renderedPrefix = prefix ?
+                &lt;span className={fixClassNames}&gt;{prefix}&lt;/span&gt; : <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
+&nbsp;
+            const renderedSuffix = suffix ?
+                &lt;span className={fixClassNames}&gt;{suffix}&lt;/span&gt; : <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
+&nbsp;
+            const groupClassNames = classNames({
+                'input-group': true,
+                'input-group-text': true,
+                [`input-group-${type}`]: true,
+            });
+&nbsp;
+            inputGroup = (
+                &lt;div className={groupClassNames}&gt;
+                    { renderedPrefix }
+                    { field }
+                    { renderedSuffix }
+                &lt;/div&gt;
+            );
+        } else {
+            inputGroup = field;
+        }
+&nbsp;
+        return (
+            &lt;FormGroup className="form-group-text" name={name} label={label} {...other} &gt;
+                { inputGroup }
+            &lt;/FormGroup&gt;
+        );
+    }
+}
+&nbsp;
+TextField.propTypes = propTypes;
+TextField.defaultProps = defaultProps;
+&nbsp;
+export default TextField;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Tue Sep 05 2017 22:28:34 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

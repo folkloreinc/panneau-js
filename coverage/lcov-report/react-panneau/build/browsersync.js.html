@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for react-panneau/build/browsersync.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">react-panneau/build</a> browsersync.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/53</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/8</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/3</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/53</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable import/no-extraneous-dependencies */
+const BrowserSync <span class="cstat-no" title="statement not covered" >= require('browser-sync'</span>);
+const webpack <span class="cstat-no" title="statement not covered" >= require('webpack'</span>);
+const webpackDevMiddleware <span class="cstat-no" title="statement not covered" >= require('webpack-dev-middleware'</span>);
+const webpackHotMiddleware <span class="cstat-no" title="statement not covered" >= require('webpack-hot-middleware'</span>);
+const proxyMiddleware <span class="cstat-no" title="statement not covered" >= require('proxy-middleware'</span>);
+const servestaticMiddleware <span class="cstat-no" title="statement not covered" >= require('serve-static'</span>);
+const stripAnsi <span class="cstat-no" title="statement not covered" >= require('strip-ansi'</span>);
+const url <span class="cstat-no" title="statement not covered" >= require('url'</span>);
+const path <span class="cstat-no" title="statement not covered" >= require('path'</span>);
+const fs <span class="cstat-no" title="statement not covered" >= require('fs'</span>);
+const _ <span class="cstat-no" title="statement not covered" >= require('lodash'</span>);
+/* eslint-enable import/no-extraneous-dependencies */
+&nbsp;
+const config <span class="cstat-no" title="statement not covered" >= require('./config'</span>);
+const createWebpackConfig <span class="cstat-no" title="statement not covered" >= require('./webpack.config'</span>);
+&nbsp;
+const webpackConfig <span class="cstat-no" title="statement not covered" >= createWebpackConfig('dev'</span>);
+const browserSyncConfig <span class="cstat-no" title="statement not covered" >= _.get(config, 'browsersync', {}</span>);
+const webpackMiddlewareConfig <span class="cstat-no" title="statement not covered" >= _.get(config, 'webpackMiddleware', {}</span>);
+&nbsp;
+const browserSync <span class="cstat-no" title="statement not covered" >= BrowserSync.create(</span>);
+const bundler <span class="cstat-no" title="statement not covered" >= webpack(webpackConfig</span>);
+&nbsp;
+/**
+ * Reload all devices when bundle is complete
+ * or send a fullscreen error message to the browser instead
+ */
+<span class="cstat-no" title="statement not covered" >bundler.plugin('done', <span class="fstat-no" title="function not covered" >(s</span>tats) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (stats.hasErrors() || stats.hasWarnings()) {</span>
+<span class="cstat-no" title="statement not covered" >        return browserSync.sockets.emit('fullscreen:message', {</span>
+            title: 'Webpack Error:',
+            body: stripAnsi(stats.toString()),
+            timeout: 100000,
+        });
+    }
+<span class="cstat-no" title="statement not covered" >    return null;</span>
+    
+});
+&nbsp;
+/**
+ * Browser sync options
+ */
+const browserSyncOptions <span class="cstat-no" title="statement not covered" >= _.merge({</span>
+    logFileChanges: false,
+&nbsp;
+    middleware: [],
+&nbsp;
+    plugins: [
+        'bs-fullscreen-message',
+    ],
+}, browserSyncConfig);
+&nbsp;
+/**
+ * Webpack middleware options
+ */
+const webpackMiddlewareOptions <span class="cstat-no" title="statement not covered" >= _.merge({</span>
+    publicPath: webpackConfig.output.publicPath,
+}, webpackMiddlewareConfig);
+&nbsp;
+/**
+ * Webpack middleware
+ */
+const webpackMiddleware <span class="cstat-no" title="statement not covered" >= webpackDevMiddleware(bundler, webpackMiddlewareOptions</span>);
+<span class="cstat-no" title="statement not covered" >browserSyncOptions.middleware.push(webpackMiddleware);</span>
+<span class="cstat-no" title="statement not covered" >browserSyncOptions.middleware.push(webpackHotMiddleware(bundler));</span>
+&nbsp;
+&nbsp;
+/**
+ * Proxy
+ */
+<span class="cstat-no" title="statement not covered" >if (browserSyncOptions.proxy) {</span>
+    const proxyHost <span class="cstat-no" title="statement not covered" >= url.parse(browserSyncOptions.proxy</span>);
+<span class="cstat-no" title="statement not covered" >    browserSyncOptions.proxy = null;</span>
+<span class="cstat-no" title="statement not covered" >    browserSyncOptions.open = 'external';</span>
+<span class="cstat-no" title="statement not covered" >    delete browserSyncOptions.proxy;</span>
+&nbsp;
+    /**
+     * Static middleware
+     */
+    const baseDirs <span class="cstat-no" title="statement not covered" >= _.get(browserSyncOptions, 'server.baseDir', []</span>);
+    const serveStaticMiddlewares <span class="cstat-no" title="statement not covered" >= {</span>};
+<span class="cstat-no" title="statement not covered" >    for (let i = 0, bl = baseDirs.length; i &lt; bl; i += 1) {</span>
+<span class="cstat-no" title="statement not covered" >        serveStaticMiddlewares[baseDirs[i]] = servestaticMiddleware(baseDirs[i]);</span>
+    }
+    const staticMiddleware <span class="cstat-no" title="statement not covered" >= (req, r<span class="fstat-no" title="function not covered" >es, next) =&gt; {</span></span>
+        const requestUrl <span class="cstat-no" title="statement not covered" >= url.parse(req.url</span>);
+        const urlPath <span class="cstat-no" title="statement not covered" >= requestUrl.pathnam</span>e;
+&nbsp;
+        const staticMiddlewareKey <span class="cstat-no" title="statement not covered" >= Object.keys(serveStaticMiddlewares).fin<span class="fstat-no" title="function not covered" >d(</span>(key) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            try {</span>
+                const stats <span class="cstat-no" title="statement not covered" >= fs.lstatSync(path.join(key, urlPath)</span>);
+<span class="cstat-no" title="statement not covered" >                return stats.isFile();</span>
+            } catch (e) {
+                // console.error(e);
+            }
+<span class="cstat-no" title="statement not covered" >            return false;</span>
+        });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        if (staticMiddlewareKey) {</span>
+<span class="cstat-no" title="statement not covered" >            return serveStaticMiddlewares[staticMiddlewareKey](req, res, next);</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        return next();</span>
+    };
+<span class="cstat-no" title="statement not covered" >    browserSyncOptions.middleware.push(staticMiddleware);</span>
+&nbsp;
+    /**
+     * Proxy middleware
+     */
+    const proxyMiddlewareOptions <span class="cstat-no" title="statement not covered" >= url.parse(`http://${proxyHost.host}`</span>);
+<span class="cstat-no" title="statement not covered" >    proxyMiddlewareOptions.preserveHost = true;</span>
+<span class="cstat-no" title="statement not covered" >    proxyMiddlewareOptions.via = 'browserSync';</span>
+<span class="cstat-no" title="statement not covered" >    browserSyncOptions.middleware.push(proxyMiddleware(proxyMiddlewareOptions));</span>
+}
+&nbsp;
+/**
+ * Start webpack
+ */
+<span class="cstat-no" title="statement not covered" >browserSync.init(browserSyncOptions);</span>
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Tue Sep 05 2017 22:28:34 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

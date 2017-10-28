@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/FieldsGroup.jsx</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">All files</a> / <a href="index.html">src</a> FieldsGroup.jsx
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/136</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/68</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/21</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/88</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235</td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React,<span class="cstat-no" title="statement not covered" > { Component } from 'react';<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>
+import PropTypes <span class="cstat-no" title="statement not covered" >from 'prop-types';<span class="cstat-no" title="statement not covered" ></span></span>
+import get <span class="cstat-no" title="statement not covered" >from 'lodash/get';<span class="cstat-no" title="statement not covered" ></span></span>
+import set <span class="cstat-no" title="statement not covered" >from 'lodash/set';<span class="cstat-no" title="statement not covered" ></span></span>
+&nbsp;
+import FormGroup <span class="cstat-no" title="statement not covered" >from './FormGroup';<span class="cstat-no" title="statement not covered" ></span></span>
+import FieldsCollection <span class="cstat-no" title="statement not covered" >from './lib/FieldsCollection';<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span></span>
+&nbsp;
+const propTypes <span class="cstat-no" title="statement not covered" >= {</span>
+    name: PropTypes.string,
+    label: PropTypes.string,
+    value: PropTypes.oneOfType([
+        PropTypes.object,
+    ]),
+    errors: PropTypes.oneOfType([
+        PropTypes.object,
+    ]),
+    fields: PropTypes.arrayOf(PropTypes.shape({
+        type: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+    })),
+    getFieldComponent: PropTypes.func,
+    fieldsCollection: PropTypes.instanceOf(FieldsCollection),
+    fieldsComponents: PropTypes.object, // eslint-disable-line
+    renderNotFound: PropTypes.func,
+    columns: PropTypes.number,
+    collapsible: PropTypes.bool,
+    collapsibleTypes: PropTypes.arrayOf(PropTypes.string),
+    collapsed: PropTypes.bool,
+    onChange: PropTypes.func,
+};
+&nbsp;
+const defaultProps <span class="cstat-no" title="statement not covered" >= {</span>
+    name: null,
+    label: null,
+    value: null,
+    errors: null,
+    fields: [],
+    getFieldComponent: null,
+    fieldsCollection: null,
+    fieldsComponents: null,
+    renderNotFound: null,
+    columns: null,
+    collapsible: false,
+    collapsibleTypes: [],
+    collapsed: false,
+    onChange: null,
+};
+&nbsp;
+const contextTypes <span class="cstat-no" title="statement not covered" >= {</span>
+    fieldsCollection: PropTypes.instanceOf(FieldsCollection),
+};
+&nbsp;
+class FieldsGr<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >ou</span>p extends Component {<span class="cstat-no" title="statement not covered" ></span></span>
+    construct<span class="fstat-no" title="function not covered" >or(props) {<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ></span></span></span>
+        super(props);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        this.renderField = this.renderField.bind(this);<span class="cstat-no" title="statement not covered" ></span></span>
+    }<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span>
+&nbsp;
+    onChange(key, value) {
+        const hasKey = ty<span class="cstat-no" title="statement not covered" >peof key !== 'undefined' &amp;&amp; key !== null;</span>
+        const currentValue = th<span class="cstat-no" title="statement not covered" >is.props.value || {};</span>
+        const newValue = {<span class="cstat-no" title="statement not covered" ></span>
+            ...currentValue,
+            ...(!hasKey ? value : null),
+        };
+        if (<span class="cstat-no" title="statement not covered" >hasKey) {</span>
+            set(<span class="cstat-no" title="statement not covered" >newValue, key, value);</span>
+        }
+        if (<span class="cstat-no" title="statement not covered" >this.props.onChange) {</span>
+            this<span class="cstat-no" title="statement not covered" >.props.onChange(newValue);</span>
+        }
+    }<span class="fstat-no" title="function not covered" ></span>
+&nbsp;
+    getFieldComponent(key) {
+        cons<span class="cstat-no" title="statement not covered" >t { fieldsC</span>omponents, getField<span class="cstat-no" title="statement not covered" >Component } = this.props</span>;<span class="cstat-no" title="statement not covered" ></span>
+        const fieldsCollection = (
+<span class="cstat-no" title="statement not covered" >            this.props.fieldsCollection ||</span>
+            this.context.fieldsCollection ||
+            null
+        );
+        const normalizedKey = Fi<span class="cstat-no" title="statement not covered" >eldsCollection.normalizeKey(key);</span>
+&nbsp;
+        if (<span class="cstat-no" title="statement not covered" >getFieldComponent !== null) {</span>
+            retu<span class="cstat-no" title="statement not covered" >rn getFieldComponent(key);</span>
+        } else if (<span class="cstat-no" title="statement not covered" >fieldsComponents !== null) {</span>
+            const fieldKey = Ob<span class="cstat-no" title="statement not covered" >ject.keys(fieldsComponents).find(k <span class="fstat-no" title="function not covered" >=&gt;</span> (<span class="cstat-no" title="statement not covered" ></span></span>
+                FieldsCollection.normalizeKey(k) === normalizedKey
+            ));
+            retu<span class="cstat-no" title="statement not covered" >rn typeof fieldKey !== 'undefined' &amp;&amp; fieldKey !== null ? fieldsComponents[fieldKey] : null;</span>
+        } else if (<span class="cstat-no" title="statement not covered" >fieldsCollection !== null) {</span>
+            retu<span class="cstat-no" title="statement not covered" >rn fieldsCollection.getComponent(key);</span>
+        }
+&nbsp;
+        retu<span class="cstat-no" title="statement not covered" >rn normalizedKey.toLowerCase() === 'fields' ? FieldsGroup : null;</span>
+    }<span class="fstat-no" title="function not covered" ></span>
+&nbsp;
+    renderNotFound(it, index) {
+        const { renderNotFoun<span class="cstat-no" title="statement not covered" >d } = this.props;</span>
+        const { typ<span class="cstat-no" title="statement not covered" >e, name </span>} = it;<span class="cstat-no" title="statement not covered" ></span>
+&nbsp;
+        if (<span class="cstat-no" title="statement not covered" >renderNotFound !== null) {</span>
+            retu<span class="cstat-no" title="statement not covered" >rn this.renderNotFound(it, index);</span>
+        }
+&nbsp;
+        retu<span class="cstat-no" title="statement not covered" >rn (</span>
+            &lt;div&gt;NOT FOUND: Field { name } of type { type }&lt;/div&gt;
+        );
+    }<span class="fstat-no" title="function not covered" ></span>
+&nbsp;
+    renderField(it, index) {<span class="cstat-no" title="statement not covered" ></span>
+        cons<span class="cstat-no" title="statement not covered" >t { value, </span>errors, <span class="cstat-no" title="statement not covered" >collapsibleTyp</span>es } = th<span class="cstat-no" title="statement not covered" >is.props;<span class="cstat-no" title="statement not covered" ></span></span>
+        const { typ<span class="cstat-no" title="statement not covered" >e, name,</span> hidden<span class="cstat-no" title="statement not covered" >, defaul</span>tValue, .<span class="cstat-no" title="statement not covered" >..props } </span>= it;<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ></span></span>
+        const extraProps = it<span class="cstat-no" title="statement not covered" >.props || {};</span>
+&nbsp;
+        if (<span class="cstat-no" title="statement not covered" >hidden === true) {</span>
+            retu<span class="cstat-no" title="statement not covered" >rn null;</span>
+        }
+&nbsp;
+        const FieldComponent = th<span class="cstat-no" title="statement not covered" >is.getFieldComponent(type);</span>
+        if (<span class="cstat-no" title="statement not covered" >FieldComponent === null) {</span>
+            retu<span class="cstat-no" title="statement not covered" >rn this.renderNotFound(it, index);</span>
+        }
+&nbsp;
+        const fieldDefaultValue = ty<span class="cstat-no" title="statement not covered" >peof defaultValue !== 'undefined' ? defaultValue : undefined;</span>
+        const fieldValue = va<span class="cstat-no" title="statement not covered" >lue &amp;&amp; name ? get(value, name, fieldDefaultValue) : value;</span>
+        const fieldErrors = er<span class="cstat-no" title="statement not covered" >rors &amp;&amp; name ? get(errors, name, undefined) : errors;</span>
+        const fieldCollapsible = co<span class="cstat-no" title="statement not covered" >llapsibleTypes.indexOf(type) !== -1 || it.collapsible;</span>
+        const fieldCollapsed = it<span class="cstat-no" title="statement not covered" >.collapsed || (fieldCollapsible &amp;&amp; typeof fieldValue === 'undefined');</span>
+        const key = `$<span class="cstat-no" title="statement not covered" >{name}${type}${index}${this.props.name}`;</span>
+&nbsp;
+        retu<span class="cstat-no" title="statement not covered" >rn (</span>
+            &lt;FieldComponent
+                {...props}
+                collapsible={fieldCollapsible}
+                collapsed={fieldCollapsed}
+                {...extraProps}
+                key={key}
+                name={name}
+                value={fieldValue}
+                errors={fieldErrors}
+                onChange={(val) =&gt; {<span class="fstat-no" title="function not covered" ></span>
+                    this<span class="cstat-no" title="statement not covered" >.onChange(name, val);</span>
+                }}
+            /&gt;
+        );
+    }<span class="fstat-no" title="function not covered" ></span>
+&nbsp;
+    renderColumns(fields, columns) {<span class="cstat-no" title="statement not covered" ></span>
+        const remainingFields = []<span class="cstat-no" title="statement not covered" >.concat(fields);</span>
+        const fieldsWithoutColumns = fi<span class="cstat-no" title="statement not covered" >elds.reduce((t<span class="fstat-no" title="function not covered" >ot</span>al, field) =&gt; (<span class="cstat-no" title="statement not covered" ></span></span>
+            typeof field.column === 'undefined' ? (total + 1) : total
+        ), 0);
+        const fieldsByColumn = Ma<span class="cstat-no" title="statement not covered" >th.ceil(fieldsWithoutColumns / columns);</span>
+        const cols = []<span class="cstat-no" title="statement not covered" >;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span>
+        for (let colIndex = 0; colIndex &lt; columns; colIndex += 1) {
+            const col = []<span class="cstat-no" title="statement not covered" >;</span>
+            const colFields = re<span class="cstat-no" title="statement not covered" >mainingFields.filter(fi<span class="fstat-no" title="function not covered" >el</span>d =&gt; (<span class="cstat-no" title="statement not covered" ></span></span>
+                typeof field.column !== 'undefined' &amp;&amp; field.column === colIndex
+            ));
+            if (<span class="cstat-no" title="statement not covered" >colFields.length &gt; 0) {</span>
+                colF<span class="cstat-no" title="statement not covered" >ields.forEach((col<span class="fstat-no" title="function not covered" >Fi</span>eld) =&gt; {</span>
+                    const index = fi<span class="cstat-no" title="statement not covered" >elds.findIndex(fi<span class="fstat-no" title="function not covered" >el</span>d =&gt; field === c<span class="cstat-no" title="statement not covered" >olField);</span></span>
+                    col.<span class="cstat-no" title="statement not covered" >push(this.renderField(colField, index));</span>
+                    const remainingIndex = re<span class="cstat-no" title="statement not covered" >mainingFields.findIndex(fi<span class="fstat-no" title="function not covered" >el</span>d =&gt; field === c<span class="cstat-no" title="statement not covered" >olField);</span></span>
+                    if (<span class="cstat-no" title="statement not covered" >remainingIndex !== -1) {</span>
+                        rema<span class="cstat-no" title="statement not covered" >iningFields.splice(1, remainingIndex);</span>
+                    }
+                });
+            } else {
+                for <span class="cstat-no" title="statement not covered" >(let i = 0; i &lt; fieldsByColumn; i += 1) {</span>
+                    const remainingIndex = re<span class="cstat-no" title="statement not covered" >mainingFields.findIndex(fi<span class="fstat-no" title="function not covered" >el</span>d =&gt; (<span class="cstat-no" title="statement not covered" ></span></span>
+                        typeof field.column === 'undefined'
+                    ));
+                    if (<span class="cstat-no" title="statement not covered" >remainingIndex !== -1) {<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span></span>
+                        const colField = remain<span class="cstat-no" title="statement not covered" >ingFields[remainingIndex];</span>
+                        const index = fields<span class="cstat-no" title="statement not covered" >.findIndex(field <span class="fstat-no" title="function not covered" >=&gt;</span> field === colFi<span class="cstat-no" title="statement not covered" >eld);</span></span>
+                        col.push<span class="cstat-no" title="statement not covered" >(this.renderField(colField, index));</span>
+                        remainin<span class="cstat-no" title="statement not covered" >gFields.splice(1, remainingIndex);</span>
+                    }
+                }
+            }
+            cols<span class="cstat-no" title="statement not covered" >.push((</span>
+                &lt;div className={`col-sm-${12 / columns}`} key={`col-${colIndex}`}&gt;
+                    { col }<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ></span></span>
+                &lt;/div&gt;
+            ));
+        }
+&nbsp;
+        retu<span class="cstat-no" title="statement not covered" >rn (</span>
+            &lt;div className="field-group"&gt;
+                &lt;div className="row"&gt;
+                    { cols }
+                &lt;/div&gt;
+            &lt;/div&gt;
+        );
+    }<span class="fstat-no" title="function not covered" ></span>
+&nbsp;
+    renderFields(fields) {
+        const { column<span class="cstat-no" title="statement not covered" >s } = this.props;</span>
+        if (<span class="cstat-no" title="statement not covered" >columns !== null) {</span>
+            retu<span class="cstat-no" title="statement not covered" >rn this.renderColumns(fields, columns);</span>
+        }
+        retu<span class="cstat-no" title="statement not covered" >rn (</span>
+            &lt;div className="field-group"&gt;
+                { fields.map(this.renderField) }
+            &lt;/div&gt;
+        );
+    }<span class="fstat-no" title="function not covered" ></span>
+&nbsp;
+    render() {
+        const {
+            label,
+            fields,
+            collapsible,
+            collapsed,
+        } = <span class="cstat-no" title="statement not covered" >this.props;<span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ></span></span></span></span></span>
+&nbsp;
+        const fieldsGroup = th<span class="cstat-no" title="statement not covered" >is.renderFields(fields);</span>
+&nbsp;
+        retu<span class="cstat-no" title="statement not covered" >rn label !== null ? (</span>
+            &lt;FormGroup label={label} collapsible={collapsible} collapsed={collapsed}&gt;
+                { fieldsGroup }
+            &lt;/FormGroup&gt;
+        ) : fieldsGroup;
+    }<span class="cstat-no" title="statement not covered" ></span>
+}
+&nbsp;
+<span class="cstat-no" title="statement not covered" >FieldsGroup.propTypes = propTypes;</span>
+<span class="cstat-no" title="statement not covered" >FieldsGroup.defaultProps = defaultProps;</span>
+<span class="cstat-no" title="statement not covered" >FieldsGroup.contextTypes = contextTypes;<span class="cstat-no" title="statement not covered" ></span></span>
+&nbsp;
+export default FieldsGroup;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Sat Oct 28 2017 13:57:59 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

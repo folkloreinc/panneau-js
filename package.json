@@ -1,6 +1,7 @@
 {
     "name": "react-panneau",
     "version": "0.1.0",
+    "private": true,
     "author": {
         "name": "Folklore",
         "email": "info@atelierfolklore.ca"
@@ -56,7 +57,8 @@
         "clean": "npm run clean:tmp && npm run clean:dist && npm run clean:lib && npm run clean:es",
         "build": "npm run build:files && npm run build:js",
         "start": "npm run storybook",
-        "release": "build/release.sh"
+        "release": "build/release.sh",
+        "publish": "lerna publish"
     },
     "dependencies": {
         "babel-runtime": "^6.26.0",
@@ -105,7 +107,6 @@
         "babel-preset-env": "^1.6.1",
         "babel-preset-react": "^6.24.1",
         "babel-register": "^6.24.1",
-        "bootstrap-sass": "^3.3.7",
         "brfs": "^1.4.3",
         "browser-sync": "^2.18.13",
         "bs-fullscreen-message": "^1.1.0",
@@ -136,6 +137,7 @@
         "jquery": "^3.2.1",
         "jsdom": "^11.3.0",
         "json-loader": "^0.5.7",
+        "lerna": "^2.4.0",
         "node-sass": "^4.5.3",
         "postcss-cli": "^4.1.1",
         "postcss-loader": "^2.0.8",
@@ -159,29 +161,29 @@
     },
     "jest": {
         "setupFiles": [
-            "<rootDir>/src/__tests__/shim.js",
-            "<rootDir>/src/__tests__/setup.js"
+            "<rootDir>/__tests__/shim.js",
+            "<rootDir>/__tests__/setup.js"
         ],
         "testPathIgnorePatterns": [
-            "<rootDir>/lib/",
-            "<rootDir>/es/",
-            "<rootDir>/dist/",
-            "<rootDir>/src/__tests__/shim.js",
-            "<rootDir>/src/__tests__/setup.js",
-            "<rootDir>/src/__tests__/storyshots.test.js"
+            "<rootDir>/**/lib/",
+            "<rootDir>/**/es/",
+            "<rootDir>/**/dist/",
+            "<rootDir>/__tests__/shim.js",
+            "<rootDir>/__tests__/setup.js",
+            "<rootDir>/__tests__/storyshots.test.js"
         ],
         "modulePathIgnorePatterns": [
-            "<rootDir>/lib/",
-            "<rootDir>/dist/",
-            "<rootDir>/es/"
+            "<rootDir>/**/lib/",
+            "<rootDir>/**/dist/",
+            "<rootDir>/**/es/"
         ],
         "moduleNameMapper": {
-            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/__mocks__/fileMock.js",
-            "\\.(css|less|scss)$": "<rootDir>/src/__mocks__/styleMock.js"
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+            "\\.(css|less|scss)$": "<rootDir>/__mocks__/styleMock.js"
         },
         "collectCoverage": true,
         "collectCoverageFrom": [
-            "src/**/*.{js,jsx}",
+            "**/src/**/*.{js,jsx}",
             "!**/node_modules/**",
             "!**/vendor/**",
             "!**/__tests__/**",
