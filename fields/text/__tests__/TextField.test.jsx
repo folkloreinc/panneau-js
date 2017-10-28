@@ -2,7 +2,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
-import TextField from '../TextField';
+import TextField from '../src/TextField';
 
 test('match snapshot', () => {
     const component = renderer.create((

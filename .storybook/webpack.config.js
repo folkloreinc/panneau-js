@@ -51,7 +51,6 @@ module.exports = {
                     postCssLoader,
                     sassLoader,
                 ],
-                include: path.resolve(__dirname, '../src/'),
             },
             {
                 test: /\.scss$/,
@@ -69,7 +68,6 @@ module.exports = {
                     postCssLoader,
                     sassLoader,
                 ],
-                include: path.resolve(__dirname, '../src/'),
             },
             {
                 test: /\.(ttf|eot|woff|woff2|otf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,

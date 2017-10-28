@@ -1,5 +1,5 @@
 {
-    "name": "react-panneau",
+    "name": "@react-panneau/form-group",
     "version": "0.1.0",
     "author": {
         "name": "Folklore",
@@ -21,7 +21,7 @@
     ],
     "main": "lib/index.js",
     "module": "es/index.js",
-    "browser": "dist/react-panneau.js",
+    "browser": "dist/react-panneau-form-group.js",
     "files": [
         "lib",
         "es",
@@ -38,12 +38,9 @@
     },
     "dependencies": {
         "babel-runtime": "^6.26.0",
-        "bootstrap-sass": "^3.3.7",
-        "font-awesome": "^4.7.0",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
-        "react-markdown": "^2.5.0",
-        "@react-panneau/fields": "^0.1.0"
+        "react-markdown": "^2.5.0"
     },
     "devDependencies": {
         "prop-types": "^15.6.0",

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 import isArray from 'lodash/isArray';
-import { FormGroup } from 'react-panneau';
+import FormGroup from '@react-panneau/form-group';
 
 /**
  *  Class: TextField
@@ -13,9 +13,9 @@ import { FormGroup } from 'react-panneau';
  *  @return {string} newValue
  */
 const propTypes = {
-    type: PropTypes.oneOf(
-        ['text', 'email', 'password', 'url', 'number', 'textarea', 'editor'],
-    ),
+    type: PropTypes.oneOf([
+        'text', 'email', 'password', 'url', 'number', 'textarea', 'editor',
+    ]),
     name: PropTypes.string,
     label: PropTypes.string,
     placeholder: PropTypes.string,
@@ -31,9 +31,9 @@ const propTypes = {
     suffix: PropTypes.node,
     prefixClassName: PropTypes.string,
     suffixClassName: PropTypes.string,
-    align: PropTypes.oneOf(
-        ['left', 'right', 'center'],
-    ),
+    align: PropTypes.oneOf([
+        'left', 'right', 'center',
+    ]),
     inputOnly: PropTypes.bool,
     disabled: PropTypes.bool,
     ckeditorConfig: PropTypes.object, // eslint-disable-line
@@ -80,6 +80,7 @@ class TextField extends Component {
         this.onEditorReady = this.onEditorReady.bind(this);
         this.onEditorChange = this.onEditorChange.bind(this);
 
+        this.importCanceled = false;
         this.editor = null;
         this.input = null;
         this.ckeditor = null;
@@ -91,6 +92,9 @@ class TextField extends Component {
             window.CKEDITOR_BASEPATH = ckeditorBasePath;
             import(/* webpackChunkName: "vendor/ckeditor" */ 'ckeditor')
                 .then(() => {
+                    if (this.importCanceled) {
+                        return;
+                    }
                     const { ckeditorConfig, ckeditorCustomConfig } = this.props;
                     this.ckeditor = CKEDITOR; // eslint-disable-line no-undef
                     const editor = this.ckeditor.replace(this.editor, {
@@ -105,6 +109,7 @@ class TextField extends Component {
 
     componentWillUnmount() {
         const { type } = this.props;
+        this.importCanceled = true;
         if (type === 'editor') {
             this.ckeditor.remove(this.editor);
         }

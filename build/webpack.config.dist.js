@@ -12,11 +12,6 @@ const outputPath = path.join(process.env.PWD, 'dist/');
 module.exports = env => (
     webpackMerge(webpackConfig(env), {
 
-        entry: {
-            'react-panneau': './index',
-        },
-
-
         output: {
             path: outputPath,
             libraryTarget: 'umd',

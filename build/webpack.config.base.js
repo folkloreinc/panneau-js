@@ -30,7 +30,7 @@ module.exports = (env) => {
             options: {
                 sourceMap: true,
                 config: {
-                    path: path.join(process.env.PWD, './build/postcss.config.js'),
+                    path: path.join(__dirname, './postcss.config.js'),
                     ctx: {
                         env,
                     },
@@ -187,10 +187,10 @@ module.exports = (env) => {
             reasons: true,
             modulesSort: 'size',
             children: true,
-            chunk: true,
+            chunks: true,
             chunkModules: true,
             chunkOrigins: true,
-            chunkSort: 'size',
+            chunksSort: 'size',
         },
 
         performance: {
