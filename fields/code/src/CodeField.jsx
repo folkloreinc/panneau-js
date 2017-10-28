@@ -4,7 +4,7 @@ import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 import FormGroup from '@react-panneau/form-group';
 
-import styles from './code.scss';
+import styles from './styles.scss';
 
 /**
  *  Class: CodeField
@@ -135,15 +135,13 @@ class CodeField extends Component {
             editorProps,
             ...props
         } = this.props;
-
         const { textValue } = this.state;
+        const { AceEditor } = this;
 
         const val = language === 'json' && isJson ? textValue : CodeField.parse(value);
 
         const editorWidth = isNumber(width) ? `${width}px` : width;
         const editorHeight = isNumber(height) ? `${height}px` : height;
-
-        const AceEditor = this.AceEditor;
 
         return (
             <AceEditor

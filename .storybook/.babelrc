@@ -9,7 +9,6 @@
     },
     "presets": [
         ["env", {
-            "modules": false,
             "targets": {
                 "browsers": [
                     "> 1%",
@@ -21,6 +20,6 @@
     ],
     "plugins": [
         "syntax-dynamic-import",
-        ["transform-object-rest-spread"]
+        "transform-object-rest-spread"
     ]
 }

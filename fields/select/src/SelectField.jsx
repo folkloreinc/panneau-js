@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
 import FormGroup from '@react-panneau/form-group';
-import './select.global.scss';
+import './vendor.global.scss';
 
 const valuePropTypes = PropTypes.oneOfType([
     PropTypes.string,

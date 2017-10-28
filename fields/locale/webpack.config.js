@@ -6,10 +6,10 @@ const webpackConfig = require('../../build/webpack.config.dist');
 module.exports = env => (
     webpackMerge(webpackConfig(env), {
         entry: {
-            'react-panneau-field-select': './index',
+            'react-panneau-field-locale': './index',
         },
         output: {
-            library: 'ReactPanneauSelectField',
+            library: 'ReactPanneauLocaleField',
         },
     })
 );

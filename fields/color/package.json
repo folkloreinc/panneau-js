@@ -1,5 +1,5 @@
 {
-    "name": "@react-panneau/field-text",
+    "name": "@react-panneau/field-color",
     "version": "0.1.0",
     "author": {
         "name": "Folklore",
@@ -21,7 +21,7 @@
     ],
     "main": "lib/index.js",
     "module": "es/index.js",
-    "browser": "dist/react-panneau-field-text.js",
+    "browser": "dist/react-panneau-field-color.js",
     "files": [
         "lib",
         "es",
@@ -38,11 +38,13 @@
     },
     "dependencies": {
         "babel-runtime": "^6.26.0",
-        "ckeditor": "^4.7.3",
         "classnames": "^2.2.5",
+        "color": "^2.0.0",
         "lodash": "^4.17.4",
+        "react-color": "^2.13.8",
         "@react-panneau/form-group": "^0.1.0",
-        "@react-panneau/field-locale": "^0.1.0"
+        "@react-panneau/field-text": "^0.1.0",
+        "@react-panneau/modal-popover": "^0.1.0"
     },
     "devDependencies": {
         "prop-types": "^15.6.0",
