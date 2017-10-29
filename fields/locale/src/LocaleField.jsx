@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
-import FormGroup from '@react-panneau/form-group';
+import FormGroup from '@panneau/form-group';
 
 import styles from './styles.scss';
 

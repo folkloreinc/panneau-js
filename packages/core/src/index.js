@@ -1,4 +1,4 @@
-import fieldsCollection from '@react-panneau/fields';
+import fieldsCollection from '@panneau/fields';
 import Panneau from './Panneau';
 
 const panneau = new Panneau({

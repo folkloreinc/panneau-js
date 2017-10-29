@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
-import FormGroup from '@react-panneau/form-group';
-import TextField from '@react-panneau/field-text';
-import Popover from '@react-panneau/modal-popover';
+import FormGroup from '@panneau/form-group';
+import TextField from '@panneau/field-text';
+import Popover from '@panneau/modal-popover';
 import styles from './styles.scss';
 import './vendor.global.scss';
 

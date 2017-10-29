@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import set from 'lodash/set';
-import FormGroup from '@react-panneau/form-group';
+import FormGroup from '@panneau/form-group';
 
 import FieldsCollection from './lib/FieldsCollection';
 

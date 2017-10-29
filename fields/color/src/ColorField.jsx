@@ -14,9 +14,9 @@ import {
 import Color from 'color';
 import isString from 'lodash/isString';
 import classNames from 'classnames';
-import FormGroup from '@react-panneau/form-group';
-import Text from '@react-panneau/field-text';
-import Popover from '@react-panneau/modal-popover';
+import FormGroup from '@panneau/form-group';
+import Text from '@panneau/field-text';
+import Popover from '@panneau/modal-popover';
 
 import styles from './styles.scss';
 

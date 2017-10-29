@@ -6,7 +6,7 @@ const webpackConfig = require('../../build/webpack.config.dist');
 module.exports = env => (
     webpackMerge(webpackConfig(env), {
         entry: {
-            'react-panneau-field-color': './index',
+            'panneau-field-color': './index',
         },
         output: {
             library: 'ReactPanneauColorField',

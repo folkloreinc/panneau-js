@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
-import SelectField from '@react-panneau/field-select';
-import FormGroup from '@react-panneau/form-group';
+import SelectField from '@panneau/field-select';
+import FormGroup from '@panneau/form-group';
 import './vendor.global.scss';
 
 /**

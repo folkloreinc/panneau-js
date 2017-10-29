@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 import isArray from 'lodash/isArray';
-import FormGroup from '@react-panneau/form-group';
+import FormGroup from '@panneau/form-group';
 
 /**
  *  Class: TextField

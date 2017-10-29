@@ -1,5 +1,5 @@
 import React from 'react';
-import LocaleField from '@react-panneau/field-locale';
+import LocaleField from '@panneau/field-locale';
 
 import TextField from './TextField';
 

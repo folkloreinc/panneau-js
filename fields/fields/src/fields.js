@@ -1,10 +1,10 @@
-import Text, { TextLocale } from '@react-panneau/field-text';
-import Code from '@react-panneau/field-code';
-import Select from '@react-panneau/field-select';
-import Color from '@react-panneau/field-color';
-import Date from '@react-panneau/field-date';
-import Slider from '@react-panneau/field-slider';
-import Toggle from '@react-panneau/field-toggle';
+import Text, { TextLocale } from '@panneau/field-text';
+import Code from '@panneau/field-code';
+import Select from '@panneau/field-select';
+import Color from '@panneau/field-color';
+import Date from '@panneau/field-date';
+import Slider from '@panneau/field-slider';
+import Toggle from '@panneau/field-toggle';
 
 import FieldsCollection from './lib/FieldsCollection';
 

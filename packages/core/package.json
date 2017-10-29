@@ -1,5 +1,5 @@
 {
-    "name": "react-panneau",
+    "name": "@panneau/core",
     "version": "0.2.4",
     "author": {
         "name": "Folklore",
@@ -21,7 +21,7 @@
     ],
     "main": "lib/index.js",
     "module": "es/index.js",
-    "browser": "dist/react-panneau.js",
+    "browser": "dist/panneau.js",
     "files": [
         "lib",
         "es",
@@ -40,7 +40,7 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@react-panneau/fields": "^0.2.4",
+        "@panneau/fields": "^0.2.4",
         "babel-runtime": "^6.26.0",
         "bootstrap-sass": "^3.3.7",
         "classnames": "^2.2.5",

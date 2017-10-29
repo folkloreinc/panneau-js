@@ -6,7 +6,7 @@ const webpackConfig = require('../../build/webpack.config.dist');
 module.exports = env => (
     webpackMerge(webpackConfig(env), {
         entry: {
-            'react-panneau-modal-popover': './index',
+            'panneau-modal-popover': './index',
         },
         output: {
             library: 'ReactPanneauModalPopover',

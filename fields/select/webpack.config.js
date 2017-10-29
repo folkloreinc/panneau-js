@@ -6,7 +6,7 @@ const webpackConfig = require('../../build/webpack.config.dist');
 module.exports = env => (
     webpackMerge(webpackConfig(env), {
         entry: {
-            'react-panneau-field-select': './index',
+            'panneau-field-select': './index',
         },
         output: {
             library: 'ReactPanneauSelectField',

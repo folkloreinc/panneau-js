@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isArray from 'lodash/isArray';
-import FormGroup from '@react-panneau/form-group';
+import FormGroup from '@panneau/form-group';
 import './vendor.global.scss';
 
 const propTypes = {

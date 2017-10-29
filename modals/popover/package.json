@@ -1,5 +1,5 @@
 {
-    "name": "@react-panneau/modal-popover",
+    "name": "@panneau/modal-popover",
     "version": "0.2.4",
     "author": {
         "name": "Folklore",
@@ -21,7 +21,6 @@
     ],
     "main": "lib/index.js",
     "module": "es/index.js",
-    "browser": "dist/react-panneau-modal-popover.js",
     "files": [
         "lib",
         "es",
