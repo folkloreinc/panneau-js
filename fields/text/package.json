@@ -27,6 +27,7 @@
         "dist"
     ],
     "scripts": {
+        "storybook": "start-storybook -p 9008 -c .storybook",
         "clean": "rm -rf dist && rm -rf lib && rm -rf es",
         "webpack:dist": "node -r babel-register ../../node_modules/.bin/webpack --config ./webpack.config.js --progress --colors",
         "webpack": "npm run webpack:dist",
@@ -34,7 +35,8 @@
         "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib",
         "babel": "npm run babel:es && npm run babel:cjs",
         "build": "npm run webpack && npm run babel",
-        "prepare": "npm run clean && npm run build"
+        "prepare": "npm run clean && npm run build",
+        "start": "npm run storybook"
     },
     "dependencies": {
         "babel-runtime": "^6.26.0",
