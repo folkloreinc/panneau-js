@@ -1,5 +1,5 @@
 {
-    "name": "panneau",
+    "name": "react-panneau",
     "private": true,
     "homepage": "https://github.com/Folkloreatelier/react-panneau",
     "author": {
@@ -150,5 +150,10 @@
             "!**/__tests__/**",
             "!**/__stories__/**"
         ]
+    },
+    "storybook-deployer": {
+        "gitUsername": "Folklore",
+        "gitEmail": "info@atelierfolklore.ca",
+        "commitMessage": "Deploy Storybook to GitHub Pages"
     }
 }
