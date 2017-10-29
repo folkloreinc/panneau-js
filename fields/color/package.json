@@ -1,6 +1,6 @@
 {
     "name": "@react-panneau/field-color",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "author": {
         "name": "Folklore",
         "email": "info@atelierfolklore.ca"
@@ -39,9 +39,9 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@react-panneau/field-text": "^0.2.2",
-        "@react-panneau/form-group": "^0.2.2",
-        "@react-panneau/modal-popover": "^0.2.2",
+        "@react-panneau/field-text": "^0.2.3",
+        "@react-panneau/form-group": "^0.2.3",
+        "@react-panneau/modal-popover": "^0.2.3",
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.5",
         "color": "^2.0.0",
