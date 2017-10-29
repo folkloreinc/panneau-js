@@ -145,7 +145,7 @@
             "^@panneau\/form-group": "<rootDir>/fields/form-group/src/index.js",
             "^@panneau\/modal-(.*)": "<rootDir>/modals/$1/src/index.js",
             "^@panneau\/core": "<rootDir>/packages/core/src/index.js",
-            "^panneau$": "<rootDir>/packages/panneau/src/index.js",
+            "^panneau$": "<rootDir>/packages/panneau/src/index.js"
         },
         "collectCoverage": true,
         "collectCoverageFrom": [
