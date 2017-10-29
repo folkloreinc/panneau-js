@@ -1,6 +1,6 @@
 {
     "name": "@react-panneau/fields",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "author": {
         "name": "Folklore",
         "email": "info@atelierfolklore.ca"
@@ -39,19 +39,19 @@
         "start": "npm run storybook"
     },
     "dependencies": {
+        "@react-panneau/field-code": "^0.2.0",
+        "@react-panneau/field-color": "^0.2.0",
+        "@react-panneau/field-date": "^0.2.0",
+        "@react-panneau/field-select": "^0.2.0",
+        "@react-panneau/field-slider": "^0.2.0",
+        "@react-panneau/field-text": "^0.2.0",
+        "@react-panneau/field-toggle": "^0.2.0",
+        "@react-panneau/form-group": "^0.2.0",
         "babel-runtime": "^6.26.0",
         "hoist-non-react-statics": "^2.3.1",
         "invariant": "^2.2.2",
         "lodash": "^4.17.4",
-        "prop-types": "^15.6.0",
-        "@react-panneau/form-group": "^0.1.0",
-        "@react-panneau/field-text": "^0.1.0",
-        "@react-panneau/field-code": "^0.1.0",
-        "@react-panneau/field-select": "^0.1.0",
-        "@react-panneau/field-color": "^0.1.0",
-        "@react-panneau/field-date": "^0.1.0",
-        "@react-panneau/field-slider": "^0.1.0",
-        "@react-panneau/field-toggle": "^0.1.0"
+        "prop-types": "^15.6.0"
     },
     "devDependencies": {
         "react": ">=15.0.0 || ^16.0.0",
