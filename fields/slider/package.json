@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-slider",
-    "version": "0.2.4",
+    "version": "0.3.0",
     "author": {
         "name": "Folklore",
         "email": "info@atelierfolklore.ca"
@@ -39,7 +39,7 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/form-group": "^0.2.4",
+        "@panneau/form-group": "^0.3.0",
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
