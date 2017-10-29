@@ -1,1 +1,1 @@
-import '../packages/react-panneau/src/styles/vendor.global.scss';
+import '../packages/core/src/styles/vendor.global.scss';

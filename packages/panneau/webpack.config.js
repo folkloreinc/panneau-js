@@ -9,7 +9,7 @@ module.exports = env => (
             panneau: './index',
         },
         output: {
-            library: 'Panneau',
+            library: 'panneau',
         },
     })
 );

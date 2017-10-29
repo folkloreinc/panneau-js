@@ -1,0 +1,9 @@
+{
+    "presets": [
+        "../../build/babel-preset.js"
+    ],
+    "ignore": [
+        "src/__tests__/**",
+        "src/__stories__/**"
+    ]
+}
