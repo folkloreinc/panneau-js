@@ -1,6 +1,6 @@
 {
     "name": "panneau",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "author": {
         "name": "Folklore",
         "email": "info@atelierfolklore.ca"
@@ -40,7 +40,7 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/core": "^0.3.2",
+        "@panneau/core": "^0.3.3",
         "@panneau/fields": "^0.3.2",
         "babel-runtime": "^6.26.0",
         "bootstrap-sass": "^3.3.7",
