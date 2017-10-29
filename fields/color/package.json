@@ -27,7 +27,7 @@
         "dist"
     ],
     "scripts": {
-        "storybook": "start-storybook -p 9008 -c ../../.storybook-package",
+        "storybook": "../../node_modules/.bin/start-storybook -p 9008 -c ../../.storybook-package",
         "clean": "rm -rf dist && rm -rf lib && rm -rf es",
         "webpack:dist": "node -r babel-register ../../node_modules/.bin/webpack --config ./webpack.config.js --progress --colors",
         "webpack": "npm run webpack:dist",
@@ -50,7 +50,6 @@
         "@react-panneau/modal-popover": "^0.1.0"
     },
     "devDependencies": {
-        "@storybook/react": "^3.3.0-alpha.2",
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
     },

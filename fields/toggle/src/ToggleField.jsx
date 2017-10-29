@@ -16,6 +16,7 @@ const propTypes = {
     type: PropTypes.oneOf(['switch', 'select']),
     name: PropTypes.string,
     label: PropTypes.string,
+    helpText: PropTypes.string,
     value: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number,
@@ -23,12 +24,10 @@ const propTypes = {
     ]),
     onChange: PropTypes.func,
 
-    selectOptions: PropTypes.arrayOf(
-        PropTypes.shape({
-            value: PropTypes.any,
-            label: PropTypes.string,
-        }),
-    ),
+    selectOptions: PropTypes.arrayOf(PropTypes.shape({
+        value: PropTypes.any,
+        label: PropTypes.string,
+    })),
     clearable: PropTypes.bool,
     canBeEmpty: PropTypes.bool,
     collapsed: PropTypes.bool,
@@ -39,6 +38,7 @@ const defaultProps = {
     type: 'switch',
     name: null,
     label: '',
+    helpText: null,
     value: null,
     onChange: null,
     selectOptions: [
@@ -132,6 +132,7 @@ class ToggleField extends Component {
             canBeEmpty,
             value,
             selectOptions,
+            helpText,
             ...other
         } = this.props;
         const SwitchComponent = this.Component;
