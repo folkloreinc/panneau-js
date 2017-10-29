@@ -5,5 +5,10 @@
     "fields/*",
     "packages/*"
   ],
+  "commands": {
+    "publish": {
+      "allowBranch": "master"
+    }
+  },
   "version": "0.2.3"
 }
