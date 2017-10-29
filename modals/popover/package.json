@@ -34,7 +34,8 @@
         "babel:es": "BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es",
         "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib",
         "babel": "npm run babel:es && npm run babel:cjs",
-        "prepare": "npm run clean && npm run webpack && npm run babel"
+        "build": "npm run webpack && npm run babel",
+        "prepare": "npm run clean && npm run build"
     },
     "dependencies": {
         "babel-runtime": "^6.26.0",
@@ -43,6 +44,10 @@
         "lodash": "^4.17.4"
     },
     "devDependencies": {
+        "@storybook/addon-actions": "^3.3.0-alpha.2",
+        "@storybook/addon-info": "^3.3.0-alpha.2",
+        "@storybook/addons": "^3.3.0-alpha.2",
+        "@storybook/react": "^3.3.0-alpha.2",
         "prop-types": "^15.6.0",
         "react": "^16.0.0",
         "react-dom": "^16.0.0"
