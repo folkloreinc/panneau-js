@@ -35,50 +35,67 @@ const sassLoader = {
     options: {
         sourceMap: true,
         includePaths: [
-            './node_modules',
+            path.join(process.env.PWD, './node_modules'),
         ],
     },
 };
 
-module.exports = {
-    module: {
-        rules: [
+module.exports = (storybookBaseConfig, configType) => {
+
+    storybookBaseConfig.resolve.alias = {
+        '@react-panneau/form-group': path.resolve(__dirname, '../fields/form-group/src/index'),
+        '@react-panneau/field-date': path.resolve(__dirname, '../fields/date/src/index'),
+        '@react-panneau/field-text': path.resolve(__dirname, '../fields/text/src/index'),
+        '@react-panneau/field-select': path.resolve(__dirname, '../fields/select/src/index'),
+        '@react-panneau/field-locale': path.resolve(__dirname, '../fields/locale/src/index'),
+        '@react-panneau/field-color': path.resolve(__dirname, '../fields/color/src/index'),
+        '@react-panneau/field-code': path.resolve(__dirname, '../fields/code/src/index'),
+        '@react-panneau/field-toggle': path.resolve(__dirname, '../fields/toggle/src/index'),
+        '@react-panneau/field-switch': path.resolve(__dirname, '../fields/switch/src/index'),
+        '@react-panneau/field-slider': path.resolve(__dirname, '../fields/slider/src/index'),
+        '@react-panneau/modal-popover': path.resolve(__dirname, '../modals/popover/src/index'),
+    };
+
+    storybookBaseConfig.module.rules[0].exclude.push(/node_modules/);
+
+    storybookBaseConfig.module.rules.push({
+        test: /\.global\.scss$/,
+        loaders: [
+            styleLoader,
+            cssLoader,
+            postCssLoader,
+            sassLoader,
+        ],
+    });
+
+    storybookBaseConfig.module.rules.push({
+        test: /\.scss$/,
+        exclude: /\.global\.scss$/,
+        loaders: [
+            styleLoader,
             {
-                test: /\.global\.scss$/,
-                loaders: [
-                    styleLoader,
-                    cssLoader,
-                    postCssLoader,
-                    sassLoader,
-                ],
-            },
-            {
-                test: /\.scss$/,
-                exclude: /\.global\.scss$/,
-                loaders: [
-                    styleLoader,
-                    {
-                        ...cssLoader,
-                        options: {
-                            ...cssLoader.options,
-                            modules: true,
-                            importLoaders: 2,
-                        },
-                    },
-                    postCssLoader,
-                    sassLoader,
-                ],
-            },
-            {
-                test: /\.(ttf|eot|woff|woff2|otf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: 'url-loader',
-                include: /fonts\//,
+                ...cssLoader,
                 options: {
-                    limit: 1000,
-                    name: 'fonts/[name]-[hash:6].[ext]',
-                    publicPath: '',
+                    ...cssLoader.options,
+                    modules: true,
+                    importLoaders: 2,
                 },
             },
+            postCssLoader,
+            sassLoader,
         ],
-    },
+    });
+
+    storybookBaseConfig.module.rules.push({
+        test: /\.(ttf|eot|woff|woff2|otf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'url-loader',
+        include: /fonts\//,
+        options: {
+            limit: 1000,
+            name: 'fonts/[name]-[hash:6].[ext]',
+            publicPath: '',
+        },
+    });
+
+    return storybookBaseConfig;
 };

@@ -21,7 +21,6 @@
     ],
     "main": "lib/index.js",
     "module": "es/index.js",
-    "browser": "dist/react-panneau-field-date.js",
     "files": [
         "lib",
         "es",
@@ -41,6 +40,7 @@
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
         "moment": "^2.19.1",
+        "react-addons-shallow-compare": "^15.6.2",
         "react-dates": "^15.0.0",
         "@react-panneau/form-group": "^0.1.0",
         "@react-panneau/field-text": "^0.1.0",

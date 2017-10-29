@@ -42,7 +42,7 @@ module.exports = (env) => {
             options: {
                 sourceMap: true,
                 includePaths: [
-                    './node_modules',
+                    path.join(process.env.PWD, './node_modules'),
                 ],
             },
         },
@@ -85,20 +85,7 @@ module.exports = (env) => {
                 {
                     test: /\.jsx?$/,
                     loader: 'babel-loader',
-                    exclude: [
-                        path.join(__dirname, '../node_modules'),
-                    ],
-                    options: {
-                        forceEnv: env,
-                        cacheDirectory: true,
-                    },
-                },
-                {
-                    test: /react-draw\/src/,
-                    loader: 'babel-loader',
-                    include: [
-                        path.join(__dirname, '../node_modules/react-draw'),
-                    ],
+                    exclude: /node_modules/,
                     options: {
                         forceEnv: env,
                         cacheDirectory: true,
@@ -107,24 +94,16 @@ module.exports = (env) => {
                 {
                     test: /\.json$/,
                     loader: 'json-loader',
-                    exclude: [
-                        path.join(__dirname, '../node_modules'),
-                    ],
+                    exclude: /node_modules/,
                 },
                 {
                     test: /\.html$/,
                     loader: 'html-loader',
-                    exclude: [
-                        path.join(__dirname, '../node_modules'),
-                    ],
+                    exclude: /node_modules/,
                 },
                 {
                     test: /\.svg$/,
-                    exclude: [
-                        path.join(__dirname, '../node_modules'),
-                        path.join(__dirname, '../.tmp'),
-                        path.join(__dirname, '../src/img/icons'),
-                    ],
+                    exclude: /node_modules/,
                     use: [
                         `babel-loader?forceEnv=${env}&cacheDirectory`,
                         'svg-react-loader',

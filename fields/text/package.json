@@ -21,7 +21,6 @@
     ],
     "main": "lib/index.js",
     "module": "es/index.js",
-    "browser": "dist/react-panneau-field-text.js",
     "files": [
         "lib",
         "es",
