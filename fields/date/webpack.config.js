@@ -9,7 +9,7 @@ module.exports = env => (
             'panneau-field-date': './index',
         },
         output: {
-            library: 'ReactPanneauDateField',
+            library: 'PanneauDateField',
         },
     })
 );

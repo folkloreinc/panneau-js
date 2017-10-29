@@ -1,6 +1,7 @@
 {
     "name": "@panneau/field-toggle",
     "version": "0.3.2",
+    "homepage": "https://github.com/Folkloreatelier/react-panneau",
     "author": {
         "name": "Folklore",
         "email": "info@atelierfolklore.ca"

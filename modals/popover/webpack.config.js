@@ -9,7 +9,7 @@ module.exports = env => (
             'panneau-modal-popover': './index',
         },
         output: {
-            library: 'ReactPanneauModalPopover',
+            library: 'PanneauModalPopover',
         },
     })
 );

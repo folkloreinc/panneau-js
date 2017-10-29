@@ -1,6 +1,7 @@
 {
     "name": "@panneau/core",
     "version": "0.3.3",
+    "homepage": "https://github.com/Folkloreatelier/react-panneau",
     "author": {
         "name": "Folklore",
         "email": "info@atelierfolklore.ca"
@@ -39,7 +40,6 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/fields": "^0.3.2",
         "babel-runtime": "^6.26.0",
         "bootstrap-sass": "^3.3.7",
         "classnames": "^2.2.5",

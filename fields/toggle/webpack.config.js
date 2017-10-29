@@ -9,7 +9,7 @@ module.exports = env => (
             'panneau-field-toggle': './index',
         },
         output: {
-            library: 'ReactPanneauToggleField',
+            library: 'PanneauToggleField',
         },
     })
 );

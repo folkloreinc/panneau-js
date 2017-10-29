@@ -9,7 +9,7 @@ module.exports = env => (
             'panneau-fields': './index',
         },
         output: {
-            library: 'ReactPanneauFields',
+            library: 'PanneauFields',
         },
     })
 );

@@ -1,6 +1,7 @@
 {
     "name": "panneau",
     "version": "0.3.3",
+    "homepage": "https://github.com/Folkloreatelier/react-panneau",
     "author": {
         "name": "Folklore",
         "email": "info@atelierfolklore.ca"
@@ -50,8 +51,33 @@
         "prop-types": "^15.6.0"
     },
     "devDependencies": {
+        "@panneau/field-code": "^0.3.2",
+        "@panneau/field-color": "^0.3.2",
+        "@panneau/field-date": "^0.3.2",
+        "@panneau/field-locale": "^0.3.2",
+        "@panneau/field-select": "^0.3.2",
+        "@panneau/field-slider": "^0.3.2",
+        "@panneau/field-text": "^0.3.2",
+        "@panneau/field-toggle": "^0.3.2",
+        "@panneau/form-group": "^0.3.2",
+        "@panneau/modal-popover": "^0.3.2",
+        "brace": "^0.10.0",
+        "ckeditor": "^4.7.3",
+        "color": "^2.0.0",
+        "consolidated-events": "^1.1.1",
+        "hoist-non-react-statics": "^2.3.1",
+        "invariant": "^2.2.2",
+        "moment": "^2.19.1",
+        "rc-slider": "^8.3.5",
+        "rc-switch": "^1.5.3",
         "react": ">=15.0.0 || ^16.0.0",
-        "react-dom": ">=15.0.0 || ^16.0.0"
+        "react-ace": "^5.4.0",
+        "react-addons-shallow-compare": "^15.6.2",
+        "react-color": "^2.13.8",
+        "react-dates": "^15.0.0",
+        "react-dom": ">=15.0.0 || ^16.0.0",
+        "react-markdown": "^2.5.0",
+        "react-select": "^1.0.0-rc.10"
     },
     "peerDependencies": {
         "react": ">=15.0.0 || ^16.0.0",

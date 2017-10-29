@@ -9,7 +9,7 @@ module.exports = env => (
             'panneau-field-color': './index',
         },
         output: {
-            library: 'ReactPanneauColorField',
+            library: 'PanneauColorField',
         },
     })
 );

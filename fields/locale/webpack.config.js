@@ -9,7 +9,7 @@ module.exports = env => (
             'panneau-field-locale': './index',
         },
         output: {
-            library: 'ReactPanneauLocaleField',
+            library: 'PanneauLocaleField',
         },
     })
 );

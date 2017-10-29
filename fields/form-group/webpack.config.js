@@ -9,7 +9,7 @@ module.exports = env => (
             'panneau-form-group': './index',
         },
         output: {
-            library: 'ReactPanneauFormGroup',
+            library: 'PanneauFormGroup',
         },
     })
 );

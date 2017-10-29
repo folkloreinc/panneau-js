@@ -9,7 +9,7 @@ module.exports = env => (
             'panneau-field-slider': './index',
         },
         output: {
-            library: 'ReactPanneauSliderField',
+            library: 'PanneauSliderField',
         },
     })
 );
