@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "0.3.2",
+    "version": "0.3.4",
     "homepage": "https://github.com/Folkloreatelier/react-panneau",
     "author": {
         "name": "Folklore",
@@ -40,14 +40,14 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/field-code": "^0.3.2",
-        "@panneau/field-color": "^0.3.2",
-        "@panneau/field-date": "^0.3.2",
-        "@panneau/field-select": "^0.3.2",
-        "@panneau/field-slider": "^0.3.2",
-        "@panneau/field-text": "^0.3.2",
-        "@panneau/field-toggle": "^0.3.2",
-        "@panneau/form-group": "^0.3.2",
+        "@panneau/field-code": "^0.3.4",
+        "@panneau/field-color": "^0.3.4",
+        "@panneau/field-date": "^0.3.4",
+        "@panneau/field-select": "^0.3.4",
+        "@panneau/field-slider": "^0.3.4",
+        "@panneau/field-text": "^0.3.4",
+        "@panneau/field-toggle": "^0.3.4",
+        "@panneau/form-group": "^0.3.4",
         "babel-runtime": "^6.26.0",
         "hoist-non-react-statics": "^2.3.1",
         "invariant": "^2.2.2",
