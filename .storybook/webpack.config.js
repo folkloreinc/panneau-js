@@ -20,7 +20,7 @@ module.exports = (storybookBaseConfig, configType) => {
                 .concat(Object.keys(packageJSON.dependencies))
                 .concat(Object.keys(packageJSON.devDependencies));
             dependencies.forEach((name) => {
-                if (name.match(/^\@react-panneau/)) {
+                if (name.match(/^\@panneau/)) {
                     return;
                 }
                 const aliasPath = path.resolve(__dirname, `../node_modules/${name}`)
