@@ -131,17 +131,29 @@
             "<rootDir>/__tests__/setup.js"
         ],
         "testPathIgnorePatterns": [
-            "<rootDir>/**/lib/",
-            "<rootDir>/**/es/",
-            "<rootDir>/**/dist/",
+            "<rootDir>/fields/*/lib/",
+            "<rootDir>/fields/*/es/",
+            "<rootDir>/fields/*/dist/",
+            "<rootDir>/modals/*/lib/",
+            "<rootDir>/modals/*/es/",
+            "<rootDir>/modals/*/dist/",
+            "<rootDir>/packages/*/lib/",
+            "<rootDir>/packages/*/es/",
+            "<rootDir>/packages/*/dist/",
             "<rootDir>/__tests__/shim.js",
             "<rootDir>/__tests__/setup.js",
             "<rootDir>/__tests__/storyshots.test.js"
         ],
         "modulePathIgnorePatterns": [
-            "<rootDir>/**/lib/",
-            "<rootDir>/**/dist/",
-            "<rootDir>/**/es/"
+            "<rootDir>/fields/*/lib/",
+            "<rootDir>/fields/*/es/",
+            "<rootDir>/fields/*/dist/",
+            "<rootDir>/modals/*/lib/",
+            "<rootDir>/modals/*/es/",
+            "<rootDir>/modals/*/dist/",
+            "<rootDir>/packages/*/lib/",
+            "<rootDir>/packages/*/es/",
+            "<rootDir>/packages/*/dist/"
         ],
         "moduleNameMapper": {
             "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
@@ -149,7 +161,9 @@
         },
         "collectCoverage": true,
         "collectCoverageFrom": [
-            "**/src/**/*.{js,jsx}",
+            "fields/*/src/**/*.{js,jsx}",
+            "modals/*/src/**/*.{js,jsx}",
+            "packages/*/src/**/*.{js,jsx}",
             "!**/node_modules/**",
             "!**/vendor/**",
             "!**/__tests__/**",
