@@ -28,6 +28,7 @@
         "clean:package-lock": "lerna exec -- rm -f ./package-lock.json",
         "clean:packages": "lerna run clean",
         "clean": "lerna clean --yes && npm run clean:packages && npm run clean:package-lock",
+        "build": "lerna run build",
         "publish": "lerna publish",
         "start": "npm run storybook"
     },
