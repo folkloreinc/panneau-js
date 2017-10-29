@@ -140,7 +140,12 @@
         ],
         "moduleNameMapper": {
             "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-            "\\.(css|less|scss)$": "<rootDir>/__mocks__/styleMock.js"
+            "\\.(css|less|scss)$": "<rootDir>/__mocks__/styleMock.js",
+            "^@panneau\/field-(.*)": "<rootDir>/fields/$1/src/index.js",
+            "^@panneau\/form-group": "<rootDir>/fields/form-group/src/index.js",
+            "^@panneau\/modal-(.*)": "<rootDir>/modals/$1/src/index.js",
+            "^@panneau\/core": "<rootDir>/packages/core/src/index.js",
+            "^panneau$": "<rootDir>/packages/panneau/src/index.js",
         },
         "collectCoverage": true,
         "collectCoverageFrom": [
