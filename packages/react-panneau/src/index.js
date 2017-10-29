@@ -1,7 +1,13 @@
 import fieldsCollection from '@react-panneau/fields';
+import Panneau from './Panneau';
 
-const Panneau = {
-    fields: fieldsCollection,
+const panneau = new Panneau({
+    fieldsCollection,
+});
+
+export {
+    Panneau,
+    fieldsCollection,
 };
 
-export default Panneau;
+export default panneau;

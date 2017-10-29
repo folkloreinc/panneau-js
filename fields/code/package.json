@@ -27,7 +27,7 @@
         "dist"
     ],
     "scripts": {
-        "storybook": "start-storybook -p 9008 -c .storybook",
+        "storybook": "start-storybook -p 9008 -c ../../.storybook-package",
         "clean": "rm -rf dist && rm -rf lib && rm -rf es",
         "webpack:dist": "node -r babel-register ../../node_modules/.bin/webpack --config ./webpack.config.js --progress --colors",
         "webpack": "npm run webpack:dist",
@@ -43,21 +43,16 @@
         "brace": "^0.10.0",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
+        "prop-types": "^15.6.0",
         "react-ace": "^5.4.0",
         "@react-panneau/form-group": "^0.1.0"
     },
     "devDependencies": {
-        "@storybook/addon-actions": "^3.3.0-alpha.2",
-        "@storybook/addon-info": "^3.3.0-alpha.2",
-        "@storybook/addons": "^3.3.0-alpha.2",
         "@storybook/react": "^3.3.0-alpha.2",
-        "babel-runtime": "^6.26.0",
-        "prop-types": "^15.6.0",
-        "react": "^16.0.0",
-        "react-dom": "^16.0.0"
+        "react": ">=15.0.0 || ^16.0.0",
+        "react-dom": ">=15.0.0 || ^16.0.0"
     },
     "peerDependencies": {
-        "prop-types": "^15.6.0",
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
     }

@@ -1,9 +1,9 @@
 import { configure } from '@storybook/react';
-import '../../../.storybook/imports';
+import '../.storybook/imports';
 
 // Load stories
 function loadStories() {
-    require('glob-loader!./stories.pattern');
+    require('./getStories');
 }
 
 configure(loadStories, module);
