@@ -56,6 +56,20 @@ module.exports = (storybookBaseConfig, configType) => {
         '@react-panneau/modal-popover': path.resolve(__dirname, '../modals/popover/src/index'),
     };
 
+    const packageJSON = require('../package.json');
+    const exactPackages = [
+        'lodash',
+        'babel-runtime',
+    ];
+    Object.keys(packageJSON.dependencies).forEach((name) => {
+        const aliasPath = path.resolve(__dirname, `../node_modules/${name}`)
+        if (exactPackages.indexOf(name) !== -1) {
+            storybookBaseConfig.resolve.alias[`${name}$`] = aliasPath;
+        } else {
+            storybookBaseConfig.resolve.alias[name] = aliasPath;
+        }
+    });
+
     storybookBaseConfig.module.rules[0].exclude.push(/node_modules/);
 
     storybookBaseConfig.module.rules.push({
