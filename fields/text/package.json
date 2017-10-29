@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-text",
-    "version": "0.3.4",
+    "version": "0.3.5",
     "homepage": "https://github.com/Folkloreatelier/react-panneau",
     "author": {
         "name": "Folklore",
@@ -40,8 +40,8 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/field-locale": "^0.3.4",
-        "@panneau/form-group": "^0.3.4",
+        "@panneau/field-locale": "^0.3.5",
+        "@panneau/form-group": "^0.3.5",
         "babel-runtime": "^6.26.0",
         "ckeditor": "^4.7.3",
         "classnames": "^2.2.5",
