@@ -81,9 +81,10 @@ class TextField extends Component {
         this.onEditorChange = this.onEditorChange.bind(this);
 
         this.importCanceled = false;
-        this.editor = null;
-        this.input = null;
         this.ckeditor = null;
+        this.editor = null;
+        this.refInput = null;
+        this.refInputGroup = null;
     }
 
     componentDidMount() {
@@ -120,7 +121,7 @@ class TextField extends Component {
     }
 
     onChange(e) {
-        const newValue = (e.currentTarget || this.input).value;
+        const newValue = (e.currentTarget || this.refInput).value;
         if (this.props.onChange) {
             this.props.onChange(newValue);
         }
@@ -133,8 +134,12 @@ class TextField extends Component {
         }
     }
 
-    getInput() {
-        return this.input;
+    getInputRef() {
+        return this.refInput;
+    }
+
+    getInputGroupRef() {
+        return this.refInputGroup;
     }
 
     renderInput() {
@@ -157,7 +162,7 @@ class TextField extends Component {
         });
 
         const inputProps = {
-            ref: (ref) => { this.input = ref; },
+            ref: (ref) => { this.refInput = ref; },
             value: inputValue,
             name,
             id: name,
@@ -236,7 +241,10 @@ class TextField extends Component {
         });
 
         return (
-            <div className={groupClassNames}>
+            <div
+                className={groupClassNames}
+                ref={(ref) => { this.refInputGroup = ref; }}
+            >
                 { renderedPrefix }
                 { input }
                 { renderedSuffix }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
+import 'react-dates/initialize';
 import FormGroup from '@panneau/form-group';
 import TextField from '@panneau/field-text';
 import Popover from '@panneau/modal-popover';
@@ -71,12 +72,14 @@ class DateField extends Component {
         this.onFocusChange = this.onFocusChange.bind(this);
         this.onInputFocus = this.onInputFocus.bind(this);
         this.onInputRangeFocus = this.onInputRangeFocus.bind(this);
+        this.onButtonClick = this.onButtonClick.bind(this);
         this.onClose = this.onClose.bind(this);
         this.Component = null;
         this.moment = null;
         this.input = null;
         this.startInput = null;
         this.endInput = null;
+        this.refContainer = null;
 
         this.state = {
             ready: false,
@@ -84,7 +87,6 @@ class DateField extends Component {
             focusedInput: 'startDate',
             momentValue: null,
             textValue: null,
-            focused: null,
         };
     }
 
@@ -203,6 +205,12 @@ class DateField extends Component {
         });
     }
 
+    onButtonClick() {
+        this.setState(state => ({
+            opened: !state.opened,
+        }));
+    }
+
     onInputRangeFocus(key) {
         this.setState({
             opened: true,
@@ -212,9 +220,9 @@ class DateField extends Component {
 
     onClose(e) {
         if (
-            (this.input !== null && e.target === this.input.getInput()) ||
-            (this.startInput !== null && e.target === this.startInput.getInput()) ||
-            (this.endInput !== null && e.target === this.endInput.getInput())
+            (this.input !== null && e.target === this.input.getInputGroupRef()) ||
+            (this.startInput !== null && e.target === this.startInput.getInputGroupRef()) ||
+            (this.endInput !== null && e.target === this.endInput.getInputGroupRef())
         ) {
             return;
         }
@@ -304,7 +312,7 @@ class DateField extends Component {
             <button
                 type="button"
                 className="btn btn-default"
-                onClick={this.onInputFocus}
+                onClick={this.onButtonClick}
             >
                 <span className="glyphicon glyphicon-calendar" />
             </button>
@@ -338,31 +346,41 @@ class DateField extends Component {
             placeholder,
             ...other
         } = this.props;
-        const { momentValue, focusedInput } = this.state;
+        const { momentValue, focusedInput, opened } = this.state;
 
         const DateComponent = this.Component;
 
         const pickerProps = type === 'daterange' ? {
-            startDate: momentValue.start,
-            endDate: momentValue.end,
+            startDate: momentValue.start || undefined,
+            endDate: momentValue.end || undefined,
             onDatesChange: this.onRangeChange,
             focusedInput,
             numberOfMonths: 2,
             onFocusChange: this.onFocusChange,
         } : {
-            date: momentValue,
+            date: momentValue || undefined,
             onDateChange: this.onChange,
+            autoFocus: false,
+            showInput: false,
             focused: true,
+            isFocused: opened,
+            keepOpenOnDateSelect: true,
+
         };
 
         return (
             <Popover
                 className={styles.popover}
+                element={this.refContainer}
+                blurElement={this.refContainer}
+                visible={opened}
                 onClose={this.onClose}
+                closeOnBlur
+                noUi
             >
                 <DateComponent
-                    {...pickerProps}
                     {...other}
+                    {...pickerProps}
                 />
             </Popover>
         );
@@ -391,8 +409,13 @@ class DateField extends Component {
                 name={name}
                 label={label}
             >
-                { this.renderInput() }
-                { opened ? this.renderPopover() : null }
+                <div
+                    className={styles.container}
+                    ref={(ref) => { this.refContainer = ref; }}
+                >
+                    { this.renderInput() }
+                    { opened ? this.renderPopover() : true }
+                </div>
             </FormGroup>
         );
     }

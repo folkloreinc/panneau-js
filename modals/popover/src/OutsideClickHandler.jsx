@@ -4,11 +4,13 @@ import { addEventListener, removeEventListener } from 'consolidated-events';
 
 const propTypes = {
     children: PropTypes.node,
+    root: PropTypes.instanceOf(Element),
     onOutsideClick: PropTypes.func,
 };
 
 const defaultProps = {
-    children: <span />,
+    children: (<span />),
+    root: null,
     onOutsideClick() {},
 };
 
@@ -36,9 +38,10 @@ export default class OutsideClickHandler extends React.Component {
     }
 
     onOutsideClick(e) {
-        const { onOutsideClick } = this.props;
+        const { onOutsideClick, root } = this.props;
         const { childNode } = this;
-        const isDescendantOfRoot = childNode && childNode.contains(e.target);
+        const rootNode = root || childNode;
+        const isDescendantOfRoot = rootNode && rootNode.contains(e.target);
         if (!isDescendantOfRoot) {
             onOutsideClick(e);
         }

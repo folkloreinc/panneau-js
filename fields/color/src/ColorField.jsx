@@ -75,7 +75,7 @@ const defaultProps = {
     onChange: null,
 
     displayColorPicker: false,
-    colorPosition: 'left',
+    colorPosition: 'auto',
     popoverStyle: null,
     disabled: false,
     withInput: false,
@@ -109,11 +109,15 @@ class ColorField extends Component {
         super(props);
 
         this.onChange = this.onChange.bind(this);
+        this.onInputFocus = this.onInputFocus.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onClickClear = this.onClickClear.bind(this);
         this.onClose = this.onClose.bind(this);
         this.formatColor = this.formatColor.bind(this);
+
+        this.refContainer = null;
+        this.refButton = null;
 
         this.state = {
             displayColorPicker: props.displayColorPicker,
@@ -133,20 +137,26 @@ class ColorField extends Component {
         }
     }
 
+    onInputFocus() {
+        this.setState(() => ({
+            displayColorPicker: true,
+        }));
+    }
+
     onClickClear() {
         this.props.onChange(null);
     }
 
     onClick() {
-        this.setState({
+        this.setState(() => ({
             displayColorPicker: !this.state.displayColorPicker,
-        });
+        }));
     }
 
     onClose() {
-        this.setState({
+        this.setState(() => ({
             displayColorPicker: false,
-        });
+        }));
     }
 
     formatColor(color) {
@@ -180,22 +190,23 @@ class ColorField extends Component {
             colors,
             presetColors,
             colorPosition,
+            withInput,
         } = this.props;
+        const { displayColorPicker } = this.state;
         const Picker = components[pickerType];
         const color = ColorField.parse(value);
-
-        const popoverStyle = {};
-        if (colorPosition === 'left') {
-            popoverStyle.left = '0%';
-        } else if (colorPosition === 'right') {
-            popoverStyle.right = '0%';
-        }
 
         return (
             <Popover
                 className={styles.popover}
-                style={popoverStyle}
                 onClose={this.onClose}
+                visible={displayColorPicker}
+                element={withInput ? this.refContainer : this.refButton}
+                elementPlacement={colorPosition}
+                offsetX="2px"
+                blurElement={withInput ? this.refContainer : this.refButton}
+                closeOnBlur
+                noUi
             >
                 <Picker
                     onChangeComplete={this.onChange}
@@ -221,8 +232,6 @@ class ColorField extends Component {
             ...other
         } = this.props;
 
-        const { displayColorPicker } = this.state;
-
         const color = ColorField.parse(value);
 
         const colorStyle = {
@@ -240,7 +249,10 @@ class ColorField extends Component {
         });
 
         const buttonGroup = (
-            <div className={buttonGroupClassName}>
+            <div
+                className={buttonGroupClassName}
+                ref={(ref) => { this.refButton = ref; }}
+            >
                 <button
                     type="button"
                     className={classNames({
@@ -276,19 +288,23 @@ class ColorField extends Component {
                 className={formGroupClassName}
                 {...other}
             >
-                <div className={styles.container}>
+                <div
+                    className={styles.container}
+                    ref={(ref) => { this.refContainer = ref; }}
+                >
                     { withInput ? (
                         <div className="input-group">
                             <Text
                                 {...other}
                                 inputOnly
                                 value={value}
+                                onFocus={this.onInputFocus}
                                 onChange={this.onInputChange}
                             />
                             { buttonGroup }
                         </div>
                     ) : buttonGroup }
-                    { displayColorPicker ? this.renderPopover() : null }
+                    { this.renderPopover() }
                 </div>
             </FormGroup>
         );

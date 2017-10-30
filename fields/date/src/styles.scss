@@ -15,7 +15,10 @@
     }
 
     .popover {
-        top: 100%;
-        margin-top: 5px;
+    }
+
+    .container {
+        display: inline-block;
+        position: relative;
     }
 }
