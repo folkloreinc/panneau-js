@@ -1,6 +1,6 @@
 {
     "name": "panneau",
-    "version": "0.3.5",
+    "version": "0.3.6",
     "homepage": "https://github.com/Folkloreatelier/react-panneau",
     "author": {
         "name": "Folklore",
@@ -42,7 +42,7 @@
     },
     "dependencies": {
         "@panneau/core": "^0.3.5",
-        "@panneau/fields": "^0.3.5",
+        "@panneau/fields": "^0.3.6",
         "babel-runtime": "^6.26.0",
         "bootstrap-sass": "^3.3.7",
         "classnames": "^2.2.5",
@@ -52,15 +52,15 @@
     },
     "devDependencies": {
         "@panneau/field-code": "^0.3.5",
-        "@panneau/field-color": "^0.3.5",
-        "@panneau/field-date": "^0.3.5",
+        "@panneau/field-color": "^0.3.6",
+        "@panneau/field-date": "^0.3.6",
         "@panneau/field-locale": "^0.3.5",
         "@panneau/field-select": "^0.3.5",
         "@panneau/field-slider": "^0.3.5",
-        "@panneau/field-text": "^0.3.5",
+        "@panneau/field-text": "^0.3.6",
         "@panneau/field-toggle": "^0.3.5",
         "@panneau/form-group": "^0.3.5",
-        "@panneau/modal-popover": "^0.3.5",
+        "@panneau/modal-popover": "^0.3.6",
         "brace": "^0.10.0",
         "ckeditor": "^4.7.3",
         "color": "^2.0.0",
