@@ -29,7 +29,7 @@
         "clean:packages": "lerna run clean",
         "clean": "lerna clean --yes && npm run clean:packages && npm run clean:package-lock",
         "build": "lerna run build",
-        "publish": "lerna publish",
+        "publish": "npm run storybook-deploy && lerna publish",
         "start": "npm run storybook"
     },
     "devDependencies": {
