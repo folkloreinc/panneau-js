@@ -1,7 +1,18 @@
 {
     "name": "@panneau/field-code",
     "version": "0.3.5",
-    "homepage": "https://github.com/Folkloreatelier/react-panneau",
+    "description": "Code field for Panneau",
+    "keywords": [
+        "react",
+        "javascript",
+        "form",
+        "dashboard"
+    ],
+    "homepage": "https://github.com/Folkloreatelier/react-panneau/tree/master/fields/code",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Folkloreatelier/react-panneau.git"
+    },
     "author": {
         "name": "Folklore",
         "email": "info@atelierfolklore.ca"

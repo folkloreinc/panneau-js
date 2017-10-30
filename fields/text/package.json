@@ -1,7 +1,18 @@
 {
     "name": "@panneau/field-text",
     "version": "0.3.5",
-    "homepage": "https://github.com/Folkloreatelier/react-panneau",
+    "description": "Text field for Panneau",
+    "keywords": [
+        "react",
+        "javascript",
+        "form",
+        "dashboard"
+    ],
+    "homepage": "https://github.com/Folkloreatelier/react-panneau/tree/master/fields/text",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Folkloreatelier/react-panneau.git"
+    },
     "author": {
         "name": "Folklore",
         "email": "info@atelierfolklore.ca"

@@ -1,7 +1,18 @@
 {
     "name": "panneau",
     "version": "0.3.5",
+    "description": "Framework to build dashboard and administration panels",
+    "keywords": [
+        "react",
+        "javascript",
+        "form",
+        "dashboard"
+    ],
     "homepage": "https://github.com/Folkloreatelier/react-panneau",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Folkloreatelier/react-panneau.git"
+    },
     "author": {
         "name": "Folklore",
         "email": "info@atelierfolklore.ca"

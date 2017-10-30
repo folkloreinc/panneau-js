@@ -1,2 +1,7 @@
 /lib
 /dist
+**/lib/
+**/dist/
+**/es/
+node_modules
+packages/generator-panneau/src/generators/*/templates/**
