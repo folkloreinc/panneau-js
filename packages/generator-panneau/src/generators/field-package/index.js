@@ -205,6 +205,28 @@ class FieldPackageGenerator extends Generator {
             },
         };
     }
+
+    get install() {
+        return {
+            lerna() {
+                if (this.options['skip-install']) {
+                    return;
+                }
+
+                const { name } = this.options;
+
+                const done = this.async();
+                this.spawnCommand(
+                    'lerna',
+                    [
+                        'bootstrap',
+                        '--scope',
+                        `@panneau/field-${name}`,
+                    ],
+                ).on('close', done);
+            },
+        };
+    }
 }
 
 module.exports = FieldPackageGenerator;
