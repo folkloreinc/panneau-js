@@ -1,0 +1,52 @@
+{
+    "name": "generator-panneau",
+    "version": "0.3.5",
+    "description": "Yeoman generator for Panneau",
+    "keywords": [
+        "yeoman-generator"
+    ],
+    "homepage": "https://github.com/Folkloreatelier/panneau-js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Folkloreatelier/panneau-js.git"
+    },
+    "author": {
+        "name": "Folklore",
+        "email": "info@atelierfolklore.ca"
+    },
+    "contributors": [
+        {
+            "name": "David Mongeau-Petitpas",
+            "email": "dmp@atelierfolklore.ca"
+        },
+        {
+            "name": "Nicolas Roy-Bourdages",
+            "email": "nrb@atelierfolklore.ca"
+        },
+        {
+            "name": "Hugo St-Onge",
+            "email": "hso@atelierfolklore.ca"
+        }
+    ],
+    "main": "lib/generators/app/index.js",
+    "files": [
+        "lib"
+    ],
+    "scripts": {
+        "clean": "rm -rf lib",
+        "copy:templates": "find src/ -type d | grep -i templates$ | sed 's/src\\/\\///g' | xargs -I{} cp -r \"src/{}\" \"lib/{}\"",
+        "babel": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore story.js,test.js",
+        "build": "npm run babel && npm run copy:templates",
+        "prepare": "npm run clean && npm run build"
+    },
+    "dependencies": {
+        "babel-runtime": "^6.26.0",
+        "chalk": "^2.1.0",
+        "change-case": "^3.0.1",
+        "glob": "^7.0.6",
+        "lodash": "^4.17.4",
+        "yeoman-generator": "^2.0.1",
+        "yeoman-remote": "^1.0.1"
+    },
+    "devDependencies": {}
+}

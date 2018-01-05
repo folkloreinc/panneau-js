@@ -1,7 +1,18 @@
 {
     "name": "@panneau/form-group",
     "version": "0.3.5",
-    "homepage": "https://github.com/Folkloreatelier/react-panneau",
+    "description": "Form group for Panneau",
+    "keywords": [
+        "react",
+        "javascript",
+        "form",
+        "dashboard"
+    ],
+    "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/fields/form-group",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Folkloreatelier/panneau-js.git"
+    },
     "author": {
         "name": "Folklore",
         "email": "info@atelierfolklore.ca"

@@ -1,5 +1,5 @@
 {
-    "name": "react-panneau",
+    "name": "panneau",
     "private": true,
     "homepage": "https://github.com/Folkloreatelier/react-panneau",
     "author": {
@@ -102,12 +102,12 @@
         "raw-loader": "^0.5.1",
         "rc-slider": "^8.3.5",
         "rc-switch": "^1.5.3",
-        "react": "^16.0.0",
+        "react": ">=15.0.0 || ^16.0.0",
         "react-ace": "^5.4.0",
         "react-addons-shallow-compare": "^15.6.2",
         "react-color": "^2.13.8",
         "react-dates": "^15.0.0",
-        "react-dom": "^16.0.0",
+        "react-dom": ">=15.0.0 || ^16.0.0",
         "react-markdown": "^2.5.0",
         "react-select": "^1.0.0-rc.10",
         "react-test-renderer": "^16.0.0",

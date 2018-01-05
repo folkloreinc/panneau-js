@@ -1,7 +1,18 @@
 {
     "name": "@panneau/field-select",
     "version": "0.3.5",
-    "homepage": "https://github.com/Folkloreatelier/react-panneau",
+    "description": "Select field for Panneau",
+    "keywords": [
+        "react",
+        "javascript",
+        "form",
+        "dashboard"
+    ],
+    "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/fields/select",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Folkloreatelier/panneau-js.git"
+    },
     "author": {
         "name": "Folklore",
         "email": "info@atelierfolklore.ca"
