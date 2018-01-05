@@ -5,10 +5,10 @@
     "keywords": [
         "yeoman-generator"
     ],
-    "homepage": "https://github.com/Folkloreatelier/react-panneau",
+    "homepage": "https://github.com/Folkloreatelier/panneau-js",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Folkloreatelier/react-panneau.git"
+        "url": "git+https://github.com/Folkloreatelier/panneau-js.git"
     },
     "author": {
         "name": "Folklore",

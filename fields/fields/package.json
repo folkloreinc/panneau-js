@@ -8,10 +8,10 @@
         "form",
         "dashboard"
     ],
-    "homepage": "https://github.com/Folkloreatelier/react-panneau/tree/master/fields/fields",
+    "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/fields/fields",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Folkloreatelier/react-panneau.git"
+        "url": "git+https://github.com/Folkloreatelier/panneau-js.git"
     },
     "author": {
         "name": "Folklore",
