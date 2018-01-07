@@ -74,33 +74,22 @@ class Container extends Component {
 Container.propTypes = propTypes;
 Container.defaultProps = defaultProps;
 
-// Select intl locale
-const selectLocale = props => props.selectLocale || (
-    props.locale ? props.locale : null
-);
-
-// Select intl messages
-const selectMessages = props => props.selectTexts || (
-    props.texts ? props.texts : null
-);
+// Select intl
+const selectLocale = props => (props.locale ? props.locale : null);
+const selectMessages = props => (props.texts ? props.texts : null);
 
 // Select routes for the url generator
-const selectRoutes = props => props.selectRoutes || (
-    props.routes ? props.routes : null
-);
+const selectRoutes = props => (props.routes ? props.routes : null);
 
 // Creating routes
 const selectRouterRoutes = props => (
-    props.routerRoutes ?
-        props.routerRoutes : createRoutes(props.urlGenerator)
+    props.routerRoutes ? props.routerRoutes : createRoutes(props.urlGenerator)
 );
 
 // Creating store from props
 const createStore = ({ getStoreInitialState, ...props }) => createStoreBase(
     getStoreInitialState(props),
-    [
-        routerMiddleware(props.history),
-    ],
+    [routerMiddleware(props.history)],
 );
 
 const WithStoreContainer = createStoreContainer(createStore)(Container);
