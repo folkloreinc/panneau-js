@@ -23,6 +23,13 @@ storiesOf('Fields/Text', module)
                     onChange={action('change')}
                 />
             </KeepValue>
+            <KeepValue>
+                <TextField
+                    label="With an error"
+                    errors="This field is invalid"
+                    onChange={action('change')}
+                />
+            </KeepValue>
         </div>
     ))
     .add('with suffix and prefix', () => (

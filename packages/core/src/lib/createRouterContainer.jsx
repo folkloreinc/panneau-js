@@ -6,6 +6,7 @@ import {
     browserHistory,
     createMemoryHistory,
 } from 'react-router';
+console.log(createMemoryHistory);
 
 function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';

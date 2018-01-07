@@ -1,0 +1,10 @@
+@import '@panneau/core/src/styles/variables';
+
+.container {
+
+    &:global(.has-error) {
+        :global(.Select-control) {
+            border-color: $state-danger-text;
+        }
+    }
+}

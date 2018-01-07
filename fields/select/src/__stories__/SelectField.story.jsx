@@ -58,6 +58,15 @@ storiesOf('Fields/Select', module)
                     onChange={action('change')}
                 />
             </KeepValue>
+            <KeepValue>
+                <SelectField
+                    label="With an error"
+                    options={options}
+                    errors="This value is invalid"
+                    value={1}
+                    onChange={action('change')}
+                />
+            </KeepValue>
         </div>
     ))
     .add('multiple', () => (

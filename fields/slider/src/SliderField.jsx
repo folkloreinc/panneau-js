@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import isArray from 'lodash/isArray';
 import FormGroup from '@panneau/form-group';
 import './vendor.global.scss';
+import styles from './styles.scss';
 
 const propTypes = {
     name: PropTypes.string,
@@ -89,7 +91,10 @@ class SliderField extends Component {
         return (
             <FormGroup
                 {...other}
-                className="form-group-slider"
+                className={classNames({
+                    'form-group-slider': true,
+                    [styles.container]: true,
+                })}
                 name={name}
                 label={label}
             >
