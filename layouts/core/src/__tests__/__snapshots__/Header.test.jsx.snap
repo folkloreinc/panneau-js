@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`match snapshot 1`] = `
+<div
+  className={undefined}
+>
+  <div
+    className={undefined}
+  >
+    <nav
+      className="navbar navbar-default"
+    >
+      <div
+        className="container-fluid"
+      >
+        <div
+          className="navbar-header"
+        >
+          <button
+            aria-expanded="false"
+            className="navbar-toggle collapsed"
+            onClick={[Function]}
+            type="button"
+          >
+            <span
+              className="sr-only"
+            >
+              Menu
+            </span>
+            <span
+              className="icon-bar"
+            />
+            <span
+              className="icon-bar"
+            />
+            <span
+              className="icon-bar"
+            />
+          </button>
+          <a
+            className="navbar-brand"
+            href="#"
+            onClick={[Function]}
+          >
+            Panneau
+          </a>
+        </div>
+        <div
+          className="collapse navbar-collapse"
+        >
+          <ul
+            className="nav navbar-nav"
+          />
+          <ul
+            className="nav navbar-nav navbar-right"
+          />
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+`;

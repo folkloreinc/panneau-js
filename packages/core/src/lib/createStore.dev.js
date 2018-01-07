@@ -10,9 +10,9 @@ export default (initialState, middlewares) => {
     const reducer = combineReducers(reducers);
     const sessionId = typeof window !== 'undefined' ? window.location.href.match(/[?&]debug_session=([^&#]+)\b/) : null;
     const enhancer = compose(
-        applyMiddleware(...middlewares, thunk, promise),
+        applyMiddleware(...(middlewares || []), thunk, promise),
         DevTools.instrument(),
         persistState(sessionId),
     );
-    return createStore(reducer, initialState, enhancer);
+    return createStore(reducer, initialState || {}, enhancer);
 };

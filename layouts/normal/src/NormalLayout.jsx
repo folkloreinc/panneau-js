@@ -21,14 +21,16 @@ const propTypes = {
             PropTypes.object,
         ]),
     }),
-    gotoHome: PropTypes.func.isRequired,
-    goto: PropTypes.func.isRequired,
+    gotoHome: PropTypes.func,
+    goto: PropTypes.func,
 };
 
 const defaultProps = {
     children: null,
     applicationDefinition: null,
     definition: null,
+    gotoHome: null,
+    goto: null,
 };
 
 class NormalLayout extends Component {
@@ -51,17 +53,16 @@ class NormalLayout extends Component {
             goto,
         } = this.props;
 
+        const title = get(applicationDefinition, 'name', 'Panneau');
         const header = get(definition, 'header', true);
         const footer = get(definition, 'footer', true);
-
-        console.log(applicationDefinition);
 
         return (
             <div className={styles.container}>
                 { header !== false ? (
                     <div className={styles.header}>
                         <Header
-                            title={applicationDefinition.name}
+                            title={title}
                             {...header}
                             gotoHome={gotoHome}
                             goto={goto}
