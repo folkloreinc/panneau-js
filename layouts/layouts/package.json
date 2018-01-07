@@ -1,17 +1,17 @@
 {
-    "name": "",
-    "version": "",
-    "description": "",
+    "name": "@panneau/layouts",
+    "version": "0.3.7",
+    "description": "Layouts for Panneau",
     "keywords": [
         "react",
         "javascript",
         "form",
         "dashboard"
     ],
-    "homepage": "https://github.com/Folkloreatelier/react-panneau/tree/master/fields/text",
+    "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/layouts/layouts",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Folkloreatelier/react-panneau.git"
+        "url": "git+https://github.com/Folkloreatelier/panneau-js.git"
     },
     "author": {
         "name": "Folklore",
@@ -51,9 +51,11 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/form-group": "^0.3.5",
+        "@panneau/core": "^0.3.7",
+        "@panneau/layout-normal": "^0.3.7",
         "babel-runtime": "^6.26.0",
-        "classnames": "^2.2.5",
+        "hoist-non-react-statics": "^2.3.1",
+        "invariant": "^2.2.2",
         "lodash": "^4.17.4",
         "prop-types": "^15.6.0"
     },

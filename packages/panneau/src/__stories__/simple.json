@@ -1,0 +1,51 @@
+{
+    "name": "Simple Panneau",
+
+    "layout": {
+        "type": "normal",
+        "header": {
+            "navbar": {
+                "items": [
+                    {
+                        "id": "users",
+                        "type": "resource",
+                        "resource": "users"
+                    },
+                    {
+                        "id": "user",
+                        "type": "user",
+                        "position": "right"
+                    }
+                ]
+            }
+        },
+        "footer": true
+    },
+
+    "resources": [
+        {
+            "id": "users",
+            "name": "Users",
+            "forms": {
+                "type": "normal",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Name"
+                    },
+                    {
+                        "name": "email",
+                        "type": "email",
+                        "label": "Email"
+                    },
+                    {
+                        "name": "password",
+                        "type": "password",
+                        "label": "Password"
+                    }
+                ]
+            }
+        }
+    ]
+}

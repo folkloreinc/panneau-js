@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import invariant from 'invariant';
 import hoistStatics from 'hoist-non-react-statics';
 
-import FieldsCollection from './lib/FieldsCollection';
+import FieldsCollection from './FieldsCollection';
 import defaultFieldsCollection from './fields';
 
 function getDisplayName(WrappedComponent) {
@@ -42,9 +42,6 @@ export default function withFieldsCollection(opts) {
             constructor(props) {
                 super(props);
                 this.wrappedInstance = null;
-                this.state = {
-                    fieldsCollection: options.fieldsCollection,
-                };
             }
 
             getChildContext() {

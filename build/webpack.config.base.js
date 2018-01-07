@@ -1,5 +1,6 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpackUtils = require('./webpackUtils');
 
 const contextPath = path.join(process.env.PWD, 'src/');
 const outputPath = path.join(process.env.PWD, '.tmp/');
@@ -56,6 +57,7 @@ module.exports = (env) => {
             sourceMap: true,
             importLoaders: 1,
             localIdentName: CSS_NAME,
+            getLocalIdent: webpackUtils.getLocalIdent,
         },
     };
 

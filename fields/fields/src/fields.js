@@ -6,7 +6,7 @@ import Date from '@panneau/field-date';
 import Slider from '@panneau/field-slider';
 import Toggle from '@panneau/field-toggle';
 
-import FieldsCollection from './lib/FieldsCollection';
+import FieldsCollection from './FieldsCollection';
 
 const fieldsCollection = new FieldsCollection({
     Text,

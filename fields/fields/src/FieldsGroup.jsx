@@ -4,7 +4,7 @@ import get from 'lodash/get';
 import set from 'lodash/set';
 import FormGroup from '@panneau/form-group';
 
-import FieldsCollection from './lib/FieldsCollection';
+import FieldsCollection from './FieldsCollection';
 
 const propTypes = {
     name: PropTypes.string,

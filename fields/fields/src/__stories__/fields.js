@@ -6,7 +6,7 @@ import Date from '../../../date/src/index';
 import Slider from '../../../slider/src/index';
 import Toggle from '../../../toggle/src/index';
 
-import FieldsCollection from '../lib/FieldsCollection';
+import FieldsCollection from '../FieldsCollection';
 
 const fieldsCollection = new FieldsCollection({
     Text,

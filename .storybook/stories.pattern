@@ -1,1 +1,1 @@
-../{fields,modals,packages}/*/src/__stories__/*.story.jsx
+../{fields,modals,packages,layouts}/*/src/__stories__/*.story.jsx

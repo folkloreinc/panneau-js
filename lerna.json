@@ -3,7 +3,8 @@
   "packages": [
     "modals/*",
     "fields/*",
-    "packages/*"
+    "packages/*",
+    "layouts/*"
   ],
   "commands": {
     "publish": {

@@ -1,5 +1,8 @@
 const path = require('path');
 const glob = require('glob');
+const fs = require('fs');
+const webpack = require('webpack');
+const webpackUtils = require('../build/webpackUtils');
 
 const CSS_NAME = 'panneau-[name]-[local]';
 
@@ -17,13 +20,13 @@ module.exports = (storybookBaseConfig, configType) => {
             const packageJSON = require(path.resolve(packagePath, './package.json'));
             alias[packageJSON.name] = path.resolve(packagePath, './src/index');
             const dependencies = []
-                .concat(Object.keys(packageJSON.dependencies))
-                .concat(Object.keys(packageJSON.devDependencies));
+                .concat(Object.keys(packageJSON.dependencies || {}))
+                .concat(Object.keys(packageJSON.devDependencies || {}));
             dependencies.forEach((name) => {
-                if (name.match(/^\@panneau/)) {
+                const aliasPath = path.resolve(__dirname, `../node_modules/${name}`);
+                if (name.match(/^\@panneau/) || !fs.existsSync(aliasPath)) {
                     return;
                 }
-                const aliasPath = path.resolve(__dirname, `../node_modules/${name}`)
                 if (exactPackages.indexOf(name) !== -1) {
                     alias[`${name}$`] = aliasPath;
                 } else {
@@ -50,6 +53,7 @@ module.exports = (storybookBaseConfig, configType) => {
         options: {
             sourceMap: true,
             localIdentName: CSS_NAME,
+            getLocalIdent: webpackUtils.getLocalIdent,
         },
     };
 
@@ -72,6 +76,10 @@ module.exports = (storybookBaseConfig, configType) => {
             sourceMap: true,
             includePaths: [
                 path.resolve(__dirname, '../node_modules'),
+                path.resolve(__dirname, '../fields/toggle/node_modules'),
+                path.resolve(__dirname, '../fields/date/node_modules'),
+                path.resolve(__dirname, '../fields/select/node_modules'),
+                path.resolve(__dirname, '../fields/slider/node_modules'),
             ],
         },
     };
@@ -121,6 +129,11 @@ module.exports = (storybookBaseConfig, configType) => {
         loader: 'babel-loader',
         exclude: /node_modules/,
     });
+
+    storybookBaseConfig.plugins.push(new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('development'),
+        __DEV__: JSON.stringify(true),
+    }));
 
     return storybookBaseConfig;
 };

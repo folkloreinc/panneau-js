@@ -1,4 +1,4 @@
-import FieldsCollection from './lib/FieldsCollection';
+import FieldsCollection from './FieldsCollection';
 import FieldsGroup from './FieldsGroup';
 import withFieldsCollection from './withFieldsCollection';
 import fieldsCollection from './fields';
