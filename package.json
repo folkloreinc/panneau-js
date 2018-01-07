@@ -109,6 +109,7 @@
         "react-router-redux": "^4.0.8",
         "react-test-renderer": "^16.0.0",
         "redux": "^3.7.2",
+        "redux-devtools": "^3.4.1",
         "redux-promise": "^0.5.3",
         "redux-thunk": "^2.2.0",
         "sass-loader": "^6.0.6",
