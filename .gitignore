@@ -2,6 +2,7 @@ node_modules
 *.log
 .tmp
 .sass-cache
+.DS_Store
 /coverage
 /out*
 /_book
