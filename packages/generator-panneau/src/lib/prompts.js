@@ -40,12 +40,16 @@ export const generators = {
     message: 'What generator?',
     choices: [
         {
+            name: 'Field package',
+            value: 'field-package',
+        },
+        {
             name: 'Layout package',
             value: 'layout-package',
         },
         {
-            name: 'Field package',
-            value: 'field-package',
+            name: 'List package',
+            value: 'list-package',
         },
         {
             name: 'Modal package',

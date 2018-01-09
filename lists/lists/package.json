@@ -1,14 +1,14 @@
 {
-    "name": "",
-    "version": "",
-    "description": "",
+    "name": "@panneau/lists",
+    "version": "0.3.7",
+    "description": "Lists for Panneau",
     "keywords": [
         "react",
         "javascript",
         "form",
         "dashboard"
     ],
-    "homepage": "https://github.com/Folkloreatelier/panneau-js",
+    "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/layouts/layouts",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Folkloreatelier/panneau-js.git"
@@ -52,8 +52,10 @@
     },
     "dependencies": {
         "@panneau/core": "^0.3.7",
+        "@panneau/list-table": "^0.3.7",
         "babel-runtime": "^6.26.0",
-        "classnames": "^2.2.5",
+        "hoist-non-react-statics": "^2.3.1",
+        "invariant": "^2.2.2",
         "lodash": "^4.17.4",
         "prop-types": "^15.6.0"
     },

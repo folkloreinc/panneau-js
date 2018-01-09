@@ -13,7 +13,7 @@ class ListPackageGenerator extends PackageGenerator {
             packagesPath: './lists',
             packageDescription: 'lists',
             packageDependencies: [
-
+                '@panneau/list@^0.3.7',
             ],
             namePrompt: listNamePrompt,
         }, ...args);

@@ -14,7 +14,7 @@ const defaultProps = {
     pagination: true,
 };
 
-class <%= componentName %> extends Component {
+class TableList extends Component {
     constructor(props) {
         super(props);
 
@@ -60,7 +60,7 @@ class <%= componentName %> extends Component {
     }
 }
 
-<%= componentName %>.propTypes = propTypes;
-<%= componentName %>.defaultProps = defaultProps;
+TableList.propTypes = propTypes;
+TableList.defaultProps = defaultProps;
 
-export default <%= componentName %>;
+export default TableList;

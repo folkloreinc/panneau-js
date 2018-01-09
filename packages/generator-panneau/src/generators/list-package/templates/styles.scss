@@ -1,15 +1,11 @@
 @import '@panneau/core/src/styles/variables';
 
 .container {
-    .header {
-        position: relative;
-    }
-
-    .content {
+    .items {
         position: relative;
     }
     
-    .footer {
+    .item {
         position: relative;
     }
 }
