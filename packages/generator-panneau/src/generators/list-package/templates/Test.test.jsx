@@ -4,21 +4,16 @@ import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
 import <%= componentName %> from '../<%= componentName %>';
 
+const items = [
+
+];
+
 test('match snapshot', () => {
     const component = renderer.create((
         <<%= componentName %>
-            label="Label"
-            value="value"
+            items={items}
         />
     ));
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
-});
-
-test('value is in <input />', () => {
-    const field = shallow(<<%= componentName %> value="test" />);
-    expect(field.find('input').prop('value')).toEqual('test');
-
-    const nullField = shallow(<<%= componentName %> value={null} />);
-    expect(nullField.find('input').prop('value')).toEqual('');
 });
