@@ -1,15 +1,16 @@
 {
-  "lerna": "2.4.0",
-  "packages": [
-    "modals/*",
-    "fields/*",
-    "packages/*",
-    "layouts/*"
-  ],
-  "commands": {
-    "publish": {
-      "allowBranch": "master"
-    }
-  },
-  "version": "0.3.7"
+    "lerna": "2.4.0",
+    "packages": [
+        "fields/*",
+        "lists/*",
+        "modals/*",
+        "packages/*",
+        "layouts/*"
+    ],
+    "commands": {
+        "publish": {
+            "allowBranch": "master"
+        }
+    },
+    "version": "0.3.7"
 }

@@ -16,16 +16,22 @@ export const fieldName = {
     message: 'What is the name of the field?',
 };
 
-export const modalName = {
+export const listName = {
     type: 'input',
     name: 'name',
-    message: 'What is the name of the modal?',
+    message: 'What is the name of the list?',
 };
 
 export const layoutName = {
     type: 'input',
     name: 'name',
     message: 'What is the name of the layout?',
+};
+
+export const modalName = {
+    type: 'input',
+    name: 'name',
+    message: 'What is the name of the modal?',
 };
 
 export const generators = {
