@@ -1,29 +1,60 @@
 class ComponentsCollection {
     static normalizeKey(key) {
-        return key.replace(/[^A-Za-z0-9]/gi, '').toLowerCase();
+        return key.replace(/[^A-Za-z0-9.]/gi, '').toLowerCase();
     }
 
     constructor(components) {
         this.components = {};
-        this.addComponents(components);
+        this.addComponents(components || {});
     }
 
-    addComponent(key, Component) {
-        this.components[ComponentsCollection.normalizeKey(key)] = Component;
+    addComponent(key, Component, namespace) {
+        const componentKey = ComponentsCollection.normalizeKey((
+            `${typeof namespace !== 'undefined' ? `${namespace}.` : ''}${key}`
+        ));
+        this.components[componentKey] = Component;
     }
 
-    addComponents(components) {
-        Object.keys(components || {}).forEach((key) => {
-            this.addComponent(key, components[key]);
+    addComponents(components, namespace) {
+        const items = components instanceof ComponentsCollection
+            ? components.getComponents() : components;
+        Object.keys(items).forEach((key) => {
+            this.addComponent(key, items[key], namespace);
         });
     }
 
-    getComponents() {
-        return this.components;
+    getCollection(namespace) {
+        const components = this.getComponents(namespace);
+        const collection = new ComponentsCollection(components);
+        return collection;
     }
 
-    setComponents(components) {
-        this.components = components;
+    getComponents(namespace) {
+        return Object.keys(this.components).reduce((components, key) => {
+            if (typeof namespace !== 'undefined') {
+                const matches = key.match(new RegExp(`^${namespace}\.(.*)$`));
+                return matches ? {
+                    ...components,
+                    [matches[1]]: this.components[key],
+                } : components;
+            }
+            return {
+                ...components,
+                [key]: this.components[key],
+            };
+        }, {});
+    }
+
+    setComponents(components, namespace) {
+        const items = components instanceof ComponentsCollection
+            ? components.getComponents() : components;
+        if (typeof namespace !== 'undefined') {
+            Object.keys(items).forEach((key) => {
+                this.components[`${namespace}.${key}`] = items[key];
+            });
+        } else {
+            this.components = items;
+        }
         return this;
     }
 

@@ -9,10 +9,7 @@ import Container from './Container';
 
 const propTypes = {
     locale: PropTypes.string,
-    fieldsCollection: PropTypes.shape({
-        getComponent: PropTypes.func,
-    }),
-    layoutsCollection: PropTypes.shape({
+    componentsCollection: PropTypes.shape({
         getComponent: PropTypes.func,
     }),
     definition: PropTypes.shape({
@@ -24,13 +21,24 @@ const propTypes = {
 
 const defaultProps = {
     locale: 'en',
-    fieldsCollection: null,
-    layoutsCollection: null,
+    componentsCollection: null,
     definition: null,
     routes,
     texts: {
 
     },
+};
+
+const childContextTypes = {
+    componentsCollection: PropTypes.shape({
+        getComponent: PropTypes.func,
+    }),
+    fieldsCollection: PropTypes.shape({
+        getComponent: PropTypes.func,
+    }),
+    layoutsCollection: PropTypes.shape({
+        getComponent: PropTypes.func,
+    }),
 };
 
 class Panneau extends Component {
@@ -43,11 +51,18 @@ class Panneau extends Component {
         this.store = null;
     }
 
-    getStoreInitialState({ urlGenerator, ...props }) {
-        console.log(props);
+    getChildContext() {
+        const { componentsCollection } = this.props;
+        return {
+            componentsCollection,
+            fieldsCollection: componentsCollection.getCollection('fields'),
+            layoutsCollection: componentsCollection.getCollection('layouts'),
+        };
+    }
+
+    getStoreInitialState({ urlGenerator }) {
         const {
-            fieldsCollection,
-            layoutsCollection,
+            componentsCollection,
             definition,
         } = this.props;
         const cleanDefinition = parseDefinition(definition, {
@@ -57,8 +72,7 @@ class Panneau extends Component {
         return {
             panneau: {
                 definition: cleanDefinition,
-                fieldsCollection,
-                layoutsCollection,
+                componentsCollection,
             },
             layout: {
                 definition: {
@@ -70,8 +84,6 @@ class Panneau extends Component {
 
     render() {
         const {
-            fieldsCollection,
-            layoutsCollection,
             definition,
             ...props
         } = this.props;
@@ -88,5 +100,6 @@ class Panneau extends Component {
 
 Panneau.propTypes = propTypes;
 Panneau.defaultProps = defaultProps;
+Panneau.childContextTypes = childContextTypes;
 
 export default Panneau;

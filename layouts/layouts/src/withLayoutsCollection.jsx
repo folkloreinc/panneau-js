@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import invariant from 'invariant';
 import hoistStatics from 'hoist-non-react-statics';
 
-import LayoutsCollection from './LayoutsCollection';
 import defaultLayoutsCollection from './layouts';
 
 function getDisplayName(WrappedComponent) {
@@ -11,7 +10,9 @@ function getDisplayName(WrappedComponent) {
 }
 
 const propTypes = {
-    layoutsCollection: PropTypes.instanceOf(LayoutsCollection),
+    layoutsCollection: PropTypes.shape({
+        getComponent: PropTypes.func,
+    }),
 };
 
 const defaultProps = {
@@ -19,7 +20,9 @@ const defaultProps = {
 };
 
 const childContextTypes = {
-    layoutsCollection: PropTypes.instanceOf(LayoutsCollection),
+    layoutsCollection: PropTypes.shape({
+        getComponent: PropTypes.func,
+    }),
 };
 
 export default function withLayoutsCollection(opts) {

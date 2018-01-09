@@ -36,7 +36,7 @@ Layout.defaultProps = defaultProps;
 
 const mapStateToProps = ({ layout, panneau }) => ({
     applicationDefinition: panneau.definition,
-    layoutsCollection: panneau.layoutsCollection,
+    layoutsCollection: panneau.componentsCollection.getCollection('layouts'),
     ...layout,
 });
 

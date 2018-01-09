@@ -1,3 +1,5 @@
+import { ComponentsCollection } from '@panneau/core';
+
 import Text, { TextLocale } from '../../../text/src/index';
 import Code from '../../../code/src/index';
 import Select from '../../../select/src/index';
@@ -6,9 +8,7 @@ import Date from '../../../date/src/index';
 import Slider from '../../../slider/src/index';
 import Toggle from '../../../toggle/src/index';
 
-import FieldsCollection from '../FieldsCollection';
-
-const fieldsCollection = new FieldsCollection({
+const fieldsCollection = new ComponentsCollection({
     Text,
     TextLocale,
     Code,

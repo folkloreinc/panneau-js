@@ -124,9 +124,7 @@
             "<rootDir>/__tests__/setup.js"
         ],
         "testPathIgnorePatterns": [
-            "<rootDir>/(fields|modals|packages|layouts)/*/lib/",
-            "<rootDir>/(fields|modals|packages|layouts)/*/es/",
-            "<rootDir>/(fields|modals|packages|layouts)/*/dist/",
+            "<rootDir>/(fields|modals|packages|layouts|lists)/*/(lib|es|dist)/",
             "<rootDir>/packages/generator-panneau/lib/",
             "<rootDir>/packages/generator-panneau/src/templates/",
             "<rootDir>/packages/generator-panneau/src/generators/*",
@@ -135,9 +133,7 @@
             "<rootDir>/__tests__/storyshots.test.js"
         ],
         "modulePathIgnorePatterns": [
-            "<rootDir>/(fields|modals|packages|layouts)/*/lib/",
-            "<rootDir>/(fields|modals|packages|layouts)/*/es/",
-            "<rootDir>/(fields|modals|packages|layouts)/*/dist/"
+            "<rootDir>/(fields|modals|packages|layouts|lists)/*/(lib|es|dist)/"
         ],
         "moduleNameMapper": {
             "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
@@ -147,14 +143,18 @@
             "^@panneau/form-group": "<rootDir>/fields/form-group/src/index.js",
             "^@panneau/modal-(.*)": "<rootDir>/modals/$1/src/index.js",
             "^@panneau/layout-(.*)": "<rootDir>/layouts/$1/src/index.js",
+            "^@panneau/list-(.*)": "<rootDir>/lists/$1/src/index.js",
+            "^@panneau/list": "<rootDir>/lists/core/src/index.js",
+            "^@panneau/lists": "<rootDir>/lists/lists/src/index.js",
             "^@panneau/layout": "<rootDir>/layouts/core/src/index.js",
             "^@panneau/layouts": "<rootDir>/layouts/layouts/src/index.js",
+            "^@panneau/modalss": "<rootDir>/modalss/modalss/src/index.js",
             "^@panneau/core": "<rootDir>/packages/core/src/index.js",
             "^panneau$": "<rootDir>/packages/panneau/src/index.js"
         },
         "collectCoverage": true,
         "collectCoverageFrom": [
-            "(fields|modals|packages)/*/src/**/*.{js,jsx}",
+            "(fields|modals|packages|layouts|lists)/*/src/**/*.{js,jsx}",
             "!**/node_modules/**",
             "!**/vendor/**",
             "!**/templates/**",

@@ -45,6 +45,10 @@ module.exports = (env) => {
                 includePaths: [
                     path.join(process.env.PWD, './node_modules'),
                     path.join(__dirname, '../node_modules'),
+                    path.join(__dirname, '../fields/fields/node_modules'),
+                    path.join(__dirname, '../layouts/layouts/node_modules'),
+                    path.join(__dirname, '../lists/lists/node_modules'),
+                    path.join(__dirname, '../modals/modals/node_modules'),
                 ],
             },
         },
@@ -159,6 +163,10 @@ module.exports = (env) => {
             modules: [
                 path.join(process.env.PWD, './node_modules'),
                 path.join(__dirname, '../node_modules'),
+                path.join(__dirname, '../fields/fields/node_modules'),
+                path.join(__dirname, '../layouts/layouts/node_modules'),
+                path.join(__dirname, '../lists/lists/node_modules'),
+                path.join(__dirname, '../modals/modals/node_modules'),
             ],
         },
 
