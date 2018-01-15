@@ -56,6 +56,7 @@
         "@panneau/fields": "^0.3.7",
         "@panneau/layouts": "^0.3.7",
         "@panneau/lists": "^0.3.7",
+        "@panneau/forms": "^0.3.7",
         "babel-runtime": "^6.26.0",
         "bootstrap-sass": "^3.3.7",
         "classnames": "^2.2.5",
@@ -68,6 +69,7 @@
         "@panneau/field-locale": "^0.3.7",
         "@panneau/layout": "^0.3.7",
         "@panneau/list": "^0.3.7",
+        "@panneau/form": "^0.3.7",
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
     },

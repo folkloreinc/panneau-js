@@ -22,6 +22,12 @@ export const listName = {
     message: 'What is the name of the list?',
 };
 
+export const formName = {
+    type: 'input',
+    name: 'name',
+    message: 'What is the name of the form?',
+};
+
 export const layoutName = {
     type: 'input',
     name: 'name',
@@ -46,6 +52,10 @@ export const generators = {
         {
             name: 'Layout package',
             value: 'layout-package',
+        },
+        {
+            name: 'Form package',
+            value: 'form-package',
         },
         {
             name: 'List package',
