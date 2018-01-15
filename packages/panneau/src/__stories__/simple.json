@@ -22,6 +22,16 @@
         "footer": true
     },
 
+    "routes": {
+        "resource.index": "/:resource",
+        "resource.create": "/:resource/create",
+        "resource.store": "/:resource",
+        "resource.show": "/:resource/:id",
+        "resource.edit": "/:resource/:id/edit",
+        "resource.update": "/:resource/:id",
+        "resource.destroy": "/:resource/:id"
+    },
+
     "resources": [
         {
             "id": "users",

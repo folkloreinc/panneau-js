@@ -83,7 +83,7 @@ const selectRoutes = props => (props.routes ? props.routes : null);
 
 // Creating routes
 const selectRouterRoutes = props => (
-    props.routerRoutes ? props.routerRoutes : createRoutes(props.urlGenerator)
+    props.routerRoutes ? props.routerRoutes : createRoutes(props.urlGenerator, props.definition)
 );
 
 // Creating store from props

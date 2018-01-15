@@ -39,6 +39,9 @@ const childContextTypes = {
     layoutsCollection: PropTypes.shape({
         getComponent: PropTypes.func,
     }),
+    listsCollection: PropTypes.shape({
+        getComponent: PropTypes.func,
+    }),
 };
 
 class Panneau extends Component {
@@ -57,6 +60,7 @@ class Panneau extends Component {
             componentsCollection,
             fieldsCollection: componentsCollection.getCollection('fields'),
             layoutsCollection: componentsCollection.getCollection('layouts'),
+            listsCollection: componentsCollection.getCollection('lists'),
         };
     }
 
