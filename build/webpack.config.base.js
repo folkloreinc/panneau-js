@@ -166,6 +166,7 @@ module.exports = (env) => {
                 path.join(__dirname, '../fields/fields/node_modules'),
                 path.join(__dirname, '../layouts/layouts/node_modules'),
                 path.join(__dirname, '../lists/lists/node_modules'),
+                path.join(__dirname, '../forms/forms/node_modules'),
                 path.join(__dirname, '../modals/modals/node_modules'),
             ],
         },

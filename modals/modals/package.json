@@ -8,7 +8,7 @@
         "form",
         "dashboard"
     ],
-    "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/layouts/layouts",
+    "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/modals/modals",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Folkloreatelier/panneau-js.git"

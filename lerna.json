@@ -3,6 +3,7 @@
     "packages": [
         "fields/*",
         "lists/*",
+        "forms/*",
         "modals/*",
         "packages/*",
         "layouts/*"

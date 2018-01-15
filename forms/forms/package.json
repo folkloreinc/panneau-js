@@ -1,5 +1,5 @@
 {
-    "name": "@panneau/lists",
+    "name": "@panneau/forms",
     "version": "0.3.7",
     "description": "Lists for Panneau",
     "keywords": [
@@ -8,7 +8,7 @@
         "form",
         "dashboard"
     ],
-    "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/lists/lists",
+    "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/forms/forms",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Folkloreatelier/panneau-js.git"
@@ -52,7 +52,7 @@
     },
     "dependencies": {
         "@panneau/core": "^0.3.7",
-        "@panneau/list-table": "^0.3.7",
+        "@panneau/form-normal": "^0.3.7",
         "babel-runtime": "^6.26.0",
         "hoist-non-react-statics": "^2.3.1",
         "invariant": "^2.2.2",
