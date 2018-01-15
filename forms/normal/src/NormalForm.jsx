@@ -15,7 +15,7 @@ const propTypes = {
         id: PropTypes.string,
         type: PropTypes.string,
         label: PropTypes.string,
-        classNames: PropTypes.string,
+        className: PropTypes.string,
         onClick: PropTypes.func,
     })),
     submitForm: PropTypes.shape({
@@ -35,7 +35,7 @@ const defaultProps = {
             id: 'submit',
             type: 'submit',
             label: 'OK',
-            classNames: classNames({
+            className: classNames({
                 'btn-primary': true,
             }),
         },

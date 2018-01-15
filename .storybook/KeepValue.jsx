@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import get from 'lodash/get';
 
 const propTypes = {
     children: PropTypes.node.isRequired,
+    valueName: PropTypes.string,
+    onChangeName: PropTypes.string,
+    onChange: PropTypes.func,
 };
 
 const defaultProps = {
+    valueName: 'value',
+    onChangeName: 'onChange',
+    onChange: null,
 };
 
 class KeepValue extends Component {
@@ -15,25 +22,31 @@ class KeepValue extends Component {
         this.onChange = this.onChange.bind(this);
 
         this.state = {
-            value: props.children.props.value || null,
+            value: get(props.children.props, props.valueName, null),
         };
     }
 
     onChange(value) {
+        const { children, onChangeName, onChange } = this.props;
         this.setState({
             value,
         }, () => {
-            const props = this.props.children.props;
-            if (props.onChange !== null) {
-                props.onChange(value);
+            const childrenOnChange = get(children.props, onChangeName, null)
+            if (childrenOnChange !== null) {
+                childrenOnChange(value);
+            }
+
+            if (onChange !== null) {
+                onChange(value);
             }
         });
     }
 
     render() {
-        return React.cloneElement(this.props.children, {
-            value: this.state.value,
-            onChange: this.onChange,
+        const { children, valueName, onChangeName } = this.props;
+        return React.cloneElement(children, {
+            [valueName]: this.state.value,
+            [onChangeName]: this.onChange,
         });
     }
 }
