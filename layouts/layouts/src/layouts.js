@@ -1,8 +1,7 @@
+import { ComponentsCollection } from '@panneau/core';
 import Normal from '@panneau/layout-normal';
 
-import LayoutsCollection from './LayoutsCollection';
-
-const collection = new LayoutsCollection({
+const collection = new ComponentsCollection({
     Normal,
 });
 

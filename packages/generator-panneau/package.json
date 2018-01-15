@@ -43,7 +43,7 @@
         "babel-runtime": "^6.26.0",
         "chalk": "^2.1.0",
         "change-case": "^3.0.1",
-        "glob": "^7.0.6",
+        "glob": "^7.1.2",
         "lodash": "^4.17.4",
         "yeoman-generator": "^2.0.1",
         "yeoman-remote": "^1.0.1"

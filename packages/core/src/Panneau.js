@@ -4,18 +4,19 @@ import {
     hydrate as hydrateReact,
 } from 'react-dom';
 
+import ComponentsCollection from './lib/ComponentsCollection';
 import PanneauComponent from './components/Panneau';
 
 /**
  * Panneau Application
  */
 class Panneau {
-    static setDefaultFieldsCollection(fieldsCollection) {
-        Panneau.defaultFieldsCollection = fieldsCollection;
-    }
-
-    static setDefaultLayoutsCollection(layoutsCollection) {
-        Panneau.defaultLayoutsCollection = layoutsCollection;
+    static setDefaultComponentsCollection(componentsCollection, namespace) {
+        if (typeof namespace !== 'undefined') {
+            Panneau.defaultComponentsCollection.setComponents(componentsCollection, namespace);
+        } else {
+            Panneau.defaultComponentsCollection = componentsCollection;
+        }
     }
 
     /**
@@ -25,22 +26,19 @@ class Panneau {
      */
     constructor(definition, options) {
         this.options = {
-            fieldsCollection: Panneau.defaultFieldsCollection,
-            layoutsCollection: Panneau.defaultLayoutsCollection,
+            componentsCollection: Panneau.defaultComponentsCollection,
             ...options,
         };
 
         this.onRendered = this.onRendered.bind(this);
 
         const {
-            fieldsCollection,
-            layoutsCollection,
+            componentsCollection,
         } = this.options;
 
         this.element = null;
         this.definition = definition;
-        this.fieldsCollection = fieldsCollection;
-        this.layoutsCollection = layoutsCollection;
+        this.componentsCollection = componentsCollection;
     }
 
     render(element) {
@@ -61,8 +59,7 @@ class Panneau {
 
     getRootProps() {
         const props = {
-            fieldsCollection: this.fieldsCollection,
-            layoutsCollection: this.layoutsCollection,
+            componentsCollection: this.componentsCollection,
             definition: this.definition,
         };
 
@@ -93,41 +90,28 @@ class Panneau {
     }
 
     /**
-     * Set the Fields collection
-     * @param {FieldsCollection} fieldsCollection The new fields collection
+     * Set the components collection
+     * @param {ComponentsCollection} fieldsCollection The new fields collection
      */
-    setFieldsCollection(fieldsCollection) {
-        this.fieldsCollection = fieldsCollection;
+    setComponentsCollection(componentsCollection, namespace) {
+        if (typeof namespace !== 'undefined') {
+            this.componentsCollection.setComponents(componentsCollection, namespace);
+        } else {
+            this.componentsCollection = componentsCollection;
+        }
         return this;
     }
 
     /**
-     * Get the fields collection
-     * @return {FieldsCollection} The fields collection used by this instance
+     * Get the components collection
+     * @return {ComponentsCollection} The fields collection used by this instance
      */
-    getFieldsCollection() {
-        return this.fieldsCollection;
-    }
-
-    /**
-     * Set the Layouts collection
-     * @param {LayoutsCollection} layoutsCollection The new layouts collection
-     */
-    setLayoutsCollection(layoutsCollection) {
-        this.layoutsCollection = layoutsCollection;
-        return this;
-    }
-
-    /**
-     * Get the layouts collection
-     * @return {LayoutsCollection} The layouts collection used by this instance
-     */
-    getLayoutsCollection() {
-        return this.layoutsCollection;
+    getComponentsCollection(namespace) {
+        return typeof namespace !== 'undefined' ?
+            this.componentsCollection.getCollection(namespace) : this.componentsCollection;
     }
 }
 
-Panneau.defaultFieldsCollection = null;
-Panneau.defaultLayoutsCollection = null;
+Panneau.defaultComponentsCollection = new ComponentsCollection();
 
 export default Panneau;

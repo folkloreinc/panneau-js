@@ -17,6 +17,7 @@ module.exports = (storybookBaseConfig, configType) => {
     lernaConfig.packages.forEach((packagesPath) => {
         const packages = glob.sync(path.join(__dirname, '../', packagesPath));
         packages.forEach((packagePath) => {
+            storybookBaseConfig.resolve.modules.push(path.resolve(packagePath, './node_modules'));
             const packageJSON = require(path.resolve(packagePath, './package.json'));
             alias[packageJSON.name] = path.resolve(packagePath, './src/index');
             const dependencies = []

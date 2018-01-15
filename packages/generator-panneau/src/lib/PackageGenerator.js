@@ -1,7 +1,7 @@
 import Generator from 'yeoman-generator';
 import chalk from 'chalk';
 import merge from 'lodash/merge';
-import path from 'path';
+import { join as joinPath } from 'path';
 import { pascal as pascalCase } from 'change-case';
 
 const generatorPackageJSON = require('../../package.json');
@@ -58,7 +58,7 @@ class PackageGenerator extends Generator {
 
     templatePath(templatePath) {
         const specificPath = super.templatePath(templatePath);
-        const generalPath = path.join(__dirname, '../templates/', templatePath);
+        const generalPath = joinPath(__dirname, '../templates/', templatePath);
         return this.fs.exists(specificPath) ? specificPath : generalPath;
     }
 
@@ -120,13 +120,16 @@ class PackageGenerator extends Generator {
                 newPackage.name = `@panneau/${this.packagePrefix}${name}`;
                 newPackage.version = version;
                 newPackage.description = `${prettyName}${this.packageDescription !== '' ? ` ${this.packageDescription}` : ''} for Panneau`;
-                newPackage.homepage = `https://github.com/Folkloreatelier/panneau-js/tree/master/${path.join(rootPath, name).replace(/^\.?\//, '')}`;
+                newPackage.homepage = `https://github.com/Folkloreatelier/panneau-js/tree/master/${joinPath(rootPath, name).replace(/^\.?\//, '')}`;
                 newPackage.dependencies = {
-                    ...(templatePackage.dependencies || null)
-                }
-                packageDependencies.forEach((dependency) => {
-                    const dependencyMatches = dependency.match(/^(.+?)@([\^\~]?[0-9\.v\-a-z]+)$/);
-                    newPackage.dependencies[dependencyMatches[1]] = dependencyMatches[2];
+                    ...(templatePackage.dependencies || null),
+                };
+                this.packageDependencies.forEach((dependency) => {
+                    const dependencyMatches = dependency.match(/^(.+?)@([\^~]?[0-9.v\-a-z]+)$/);
+                    newPackage.dependencies = {
+                        ...newPackage.dependencies,
+                        [dependencyMatches[1]]: dependencyMatches[2],
+                    };
                 });
                 this.fs.writeJSON(destPath, merge(templatePackage, currentPackage, newPackage));
             },
@@ -230,6 +233,22 @@ class PackageGenerator extends Generator {
                     name,
                     componentName,
                     prettyName,
+                });
+            },
+
+            styles() {
+                const {
+                    path,
+                    name,
+                    componentName,
+                } = this.options;
+
+                const srcPath = this.templatePath('styles.scss');
+                const destPath = this.destinationPath(`${path}/${name}/src/styles.scss`);
+
+                this.fs.copyTpl(srcPath, destPath, {
+                    name,
+                    componentName,
                 });
             },
         };

@@ -44,6 +44,11 @@ module.exports = (env) => {
                 sourceMap: true,
                 includePaths: [
                     path.join(process.env.PWD, './node_modules'),
+                    path.join(__dirname, '../node_modules'),
+                    path.join(__dirname, '../fields/fields/node_modules'),
+                    path.join(__dirname, '../layouts/layouts/node_modules'),
+                    path.join(__dirname, '../lists/lists/node_modules'),
+                    path.join(__dirname, '../modals/modals/node_modules'),
                 ],
             },
         },
@@ -157,8 +162,11 @@ module.exports = (env) => {
             extensions: ['.js', '.jsx', '.es6'],
             modules: [
                 path.join(process.env.PWD, './node_modules'),
-                path.join(process.env.PWD, './web_modules'),
-                path.join(process.env.PWD, './bower_components'),
+                path.join(__dirname, '../node_modules'),
+                path.join(__dirname, '../fields/fields/node_modules'),
+                path.join(__dirname, '../layouts/layouts/node_modules'),
+                path.join(__dirname, '../lists/lists/node_modules'),
+                path.join(__dirname, '../modals/modals/node_modules'),
             ],
         },
 
