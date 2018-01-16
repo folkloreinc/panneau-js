@@ -63,7 +63,8 @@ class ResourceApi {
             body: body !== null ? JSON.stringify(body) : null,
         })
             .then(response => throwResponseError(response))
-            .catch(error => throwValidationError(error));
+            .catch(error => throwValidationError(error))
+            .then(response => response.json());
     }
 
     getActionPath(action, id = undefined) {
