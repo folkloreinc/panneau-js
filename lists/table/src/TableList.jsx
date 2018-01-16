@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { pascal as pascalCase } from 'change-case';
 import classNames from 'classnames';
+import { ListActions } from '@panneau/list';
 import omit from 'lodash/omit';
 import get from 'lodash/get';
 
@@ -47,16 +48,24 @@ class TableList extends Component {
         this.renderTableHeader = this.renderTableHeader.bind(this);
         this.renderTableHeaderColumn = this.renderTableHeaderColumn.bind(this);
         this.renderTableBody = this.renderTableBody.bind(this);
+        this.renderTableBodyRow = this.renderTableBodyRow.bind(this);
+        this.renderTableBodyColumn = this.renderTableBodyColumn.bind(this);
+        this.getTableBodyButtonsColumn = this.getTableBodyButtonsColumn.bind(this);
+        this.renderTableButton = this.renderTableButton.bind(this);
+        this.renderTableButtonIcon = this.renderTableButtonIcon.bind(this);
     }
 
     // eslint-disable-next-line react/sort-comp
     renderTable(columns, items) {
         const header = this.renderTableHeader(columns);
         const body = this.renderTableBody(columns, items);
+        const tableClassNames = classNames({
+            table: true,
+        });
 
         return (
             <table
-                className="table"
+                className={tableClassNames}
             >
                 { header }
                 { body }
@@ -80,7 +89,7 @@ class TableList extends Component {
         const columnMethodName = `getTableHeader${pascalCase(column.id)}Column`;
         if (typeof this[columnMethodName] === 'function') {
             return this[columnMethodName](column, index);
-        } else if (this.getTableHeaderColumn) {
+        } else if (typeof this.getTableHeaderColumn === 'function') {
             return this.getTableHeaderColumn(column, index);
         }
 
@@ -136,8 +145,8 @@ class TableList extends Component {
     }
 
     renderTableBodyColumn(it, column, rowIndex, colIndex) {
-        const columnMethodName = `renderTableBody${pascalCase(column.id)}Column`;
-        if (typeof this[columnMethodName] === 'function') {
+        const columnMethodName = `renderTableBody${pascalCase(column.type)}Column`;
+        if (typeof column.type !== 'undefined' && typeof this[columnMethodName] === 'function') {
             return this[columnMethodName](it, column, rowIndex, colIndex);
         }
 
