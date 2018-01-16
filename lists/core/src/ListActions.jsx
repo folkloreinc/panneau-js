@@ -5,14 +5,14 @@ import get from 'lodash/get';
 
 const propTypes = {
     item: PropTypes.shape({}).isRequired,
-    onClick: PropTypes.func.isRequired, // e, action, index
+    onClick: PropTypes.func.isRequired,
     className: PropTypes.string,
     actions: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string,
         label: PropTypes.string,
         icon: PropTypes.string,
         className: PropTypes.string,
-        onClick: PropTypes.func, // e seulement
+        onClick: PropTypes.func,
     })),
 };
 
@@ -21,14 +21,34 @@ const defaultProps = {
     actions: [
         {
             id: 'show',
+            label: 'Show',
         },
         {
             id: 'edit',
+            label: 'Edit',
+            className: 'btn-primary',
         },
         {
             id: 'delete',
+            label: 'Delete',
+            className: 'btn-danger',
+            icon: 'remove',
         },
     ],
+};
+
+const renderButtonIcon = (icon) => {
+    const iconClassNames = classNames({
+        glyphicon: true,
+        [`glyphicon-${icon}`]: true,
+    });
+
+    return (
+        <span
+            className={iconClassNames}
+            aria-hidden="true"
+        />
+    );
 };
 
 const ListActions = ({
@@ -45,20 +65,28 @@ const ListActions = ({
     >
         {
             actions.map((it) => {
-                const { onClick: actionOnClick, id: action } = it;
+                // @TODO cleanup the constant names ?
+                const {
+                    label,
+                    icon,
+                    onClick: actionOnClick,
+                    id: action,
+                } = it;
                 const { id } = item;
 
                 const key = `btn_action_${action}_${id}`;
 
                 const buttonClassName = get(it, 'className', null);
                 const buttonClassNames = classNames({
+                    btn: true,
+                    'btn-default': true,
                     [buttonClassName]: buttonClassName !== null,
                 });
                 const buttonOnClick = (e) => {
                     if (actionOnClick) {
                         actionOnClick(e);
                     } else {
-                        onClick(e, it, id);
+                        onClick(e, it);
                     }
                 };
 
@@ -67,7 +95,10 @@ const ListActions = ({
                         key={key}
                         className={buttonClassNames}
                         onClick={buttonOnClick}
-                    />
+                    >
+                        { icon && renderButtonIcon(icon) }
+                        { label }
+                    </button>
                 );
             })
         }

@@ -22,6 +22,8 @@
         "footer": true
     },
 
+    "endpointHost": "https://f644c43f-4459-4dc9-b86b-4356f5157172.mock.pstmn.io",
+
     "routes": {
         "resource.index": "/:resource",
         "resource.create": "/:resource/create",
@@ -36,6 +38,9 @@
         {
             "id": "users",
             "name": "Users",
+            "methods": {
+                "edit": true
+            },
             "forms": {
                 "type": "normal",
                 "fields": [
@@ -64,6 +69,11 @@
                         "path": "id",
                         "label": "ID",
                         "width": 50
+                    },
+                    {
+                        "id": "name",
+                        "path": "name",
+                        "label": "Name"
                     },
                     {
                         "id": "email",

@@ -18,7 +18,7 @@ const propTypes = {
         type: PropTypes.string,
         width: PropTypes.number,
     })),
-    onTableButtonClick: PropTypes.func,
+    onClickActions: PropTypes.func,
 };
 
 const defaultProps = {
@@ -37,13 +37,14 @@ const defaultProps = {
             type: 'actions',
         },
     ],
-    onTableButtonClick: null,
+    onClickActions: null,
 };
 
 class TableList extends Component {
     constructor(props) {
         super(props);
 
+        this.onClickActions = this.onClickActions.bind(this);
         this.renderTable = this.renderTable.bind(this);
         this.renderTableHeader = this.renderTableHeader.bind(this);
         this.renderTableHeaderColumn = this.renderTableHeaderColumn.bind(this);
@@ -53,6 +54,12 @@ class TableList extends Component {
         this.getTableBodyButtonsColumn = this.getTableBodyButtonsColumn.bind(this);
         this.renderTableButton = this.renderTableButton.bind(this);
         this.renderTableButtonIcon = this.renderTableButtonIcon.bind(this);
+    }
+
+    onClickActions(e, action, it, rowIndex) {
+        if (this.props.onClickActions) {
+            this.props.onClickActions(e, action, it, rowIndex);
+        }
     }
 
     // eslint-disable-next-line react/sort-comp
@@ -162,6 +169,21 @@ class TableList extends Component {
                 {...props}
             >
                 { data }
+            </td>
+        );
+    }
+
+    renderTableBodyActionsColumn(it, column, rowIndex, colIndex) {
+        const key = `row_${rowIndex}_actions`;
+        return (
+            <td
+                key={key}
+            >
+                <ListActions
+                    item={it}
+                    onClick={(e, action) => this.onClickActions(e, action, it, rowIndex)}
+                    {...column}
+                />
             </td>
         );
     }
