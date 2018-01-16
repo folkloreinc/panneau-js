@@ -63,10 +63,15 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
         };
     };
 
-    const parseResources = resources => resources.map(resource => ({
-        ...resource,
-        api: new ResourceApi(resource, urlGenerator),
-    }));
+    const parseResources = resources => resources.map((resource) => {
+        const endpointHost = get(rootDefinition, 'endpointHost', '/');
+        return {
+            ...resource,
+            api: new ResourceApi(resource, urlGenerator, {
+                host: endpointHost,
+            }),
+        };
+    });
 
     const parseLayout = (definition) => {
         const header = get(definition, 'header', true);

@@ -1,4 +1,5 @@
 import get from 'lodash/get';
+import trimEnd from 'lodash/trimEnd';
 import isObject from 'lodash/isObject';
 import 'whatwg-fetch';
 
@@ -13,6 +14,7 @@ class ResourceApi {
         this.urlGenerator = urlGenerator;
         this.options = {
             idParamName: 'id',
+            host: '/',
             ...opts,
         };
     }
@@ -72,9 +74,10 @@ class ResourceApi {
             id,
         });
         const path = get(this.resource, `routes.${action}`, defaultPath);
-        const { idParamName } = this.options;
+        const { idParamName, host } = this.options;
         const idPattern = new RegExp(`:${idParamName}([/](.*)?)?$`, 'i');
-        return path.replace(idPattern, id);
+        const fullPath = trimEnd(host, '/') + path;
+        return fullPath.replace(idPattern, id);
     }
 }
 
