@@ -28,27 +28,27 @@ class ResourceApi {
     }
 
     create() {
-        return this.callApi('index', 'get');
+        return this.callApi('create', 'get');
     }
 
     store(data) {
-        return this.callApi('index', 'post', data);
+        return this.callApi('store', 'post', data);
     }
 
     show(id) {
-        return this.callApi('index', 'get', id);
+        return this.callApi('show', 'get', id);
     }
 
     edit(id) {
-        return this.callApi('index', 'get', id);
+        return this.callApi('edit', 'get', id);
     }
 
     update(id, data) {
-        return this.callApi('index', 'put', id, data);
+        return this.callApi('update', 'put', id, data);
     }
 
     destroy(id) {
-        return this.callApi('index', 'delete', id);
+        return this.callApi('destroy', 'delete', id);
     }
 
     callApi(action, method, id = undefined, data = undefined) {
