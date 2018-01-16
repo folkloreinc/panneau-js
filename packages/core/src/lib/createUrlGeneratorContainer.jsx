@@ -22,7 +22,6 @@ export default function createUrlGeneratorContainer(selectRoutes, opts) {
 
     return (WrappedComponent) => {
         class UrlGeneratorContainer extends Component {
-
             static getWrappedInstance() {
                 invariant(
                     options.withRef,

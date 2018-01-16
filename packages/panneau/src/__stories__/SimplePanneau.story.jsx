@@ -4,6 +4,8 @@ import { PanneauComponent as Panneau, ComponentsCollection } from '@panneau/core
 import fieldsCollection from '@panneau/fields';
 import layoutsCollection from '@panneau/layouts';
 import listsCollection from '@panneau/lists';
+import formsCollection from '@panneau/forms';
+import modalsCollection from '@panneau/modals';
 
 import storiesOf from '../../../../.storybook/storiesOf';
 
@@ -13,9 +15,8 @@ const componentsCollection = new ComponentsCollection();
 componentsCollection.addComponents(fieldsCollection, 'fields');
 componentsCollection.addComponents(layoutsCollection, 'layouts');
 componentsCollection.addComponents(listsCollection, 'lists');
-
-console.log(componentsCollection.getCollection());
-console.log(componentsCollection.getCollection('layouts'));
+componentsCollection.addComponents(formsCollection, 'forms');
+componentsCollection.addComponents(modalsCollection, 'modals');
 
 storiesOf('Panneau/Simple', module, {
     colWidth: 12,

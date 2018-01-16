@@ -55,6 +55,26 @@
                         "label": "Password"
                     }
                 ]
+            },
+            "lists": {
+                "type": "table",
+                "cols": [
+                    {
+                        "id": "id",
+                        "path": "id",
+                        "label": "ID",
+                        "width": 50
+                    },
+                    {
+                        "id": "email",
+                        "path": "email",
+                        "label": "Email"
+                    },
+                    {
+                        "id": "actions",
+                        "type": "actions"
+                    }
+                ]
             }
         }
     ]

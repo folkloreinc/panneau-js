@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 
-import routes from '../defaults/routes.json';
+import defaultRoutes from '../defaults/routes.json';
 import parseDefinition from '../lib/parseDefinition';
 
 import Container from './Container';
@@ -23,7 +23,7 @@ const defaultProps = {
     locale: 'en',
     componentsCollection: null,
     definition: null,
-    routes,
+    routes: defaultRoutes,
     texts: {
 
     },
@@ -73,6 +73,7 @@ class Panneau extends Component {
             urlGenerator,
         });
         const layoutDefinition = get(cleanDefinition, 'layout', null);
+        console.log(cleanDefinition);
         return {
             panneau: {
                 definition: cleanDefinition,
@@ -86,17 +87,34 @@ class Panneau extends Component {
         };
     }
 
+    getRoutes() {
+        const { routes, definition } = this.props;
+        const definitionRoutes = get(definition, 'routes', {});
+        const resources = get(definition, 'resources', {})
+            .filter(it => typeof it.routes !== 'undefined');
+        const resourcesRoutes = resources.reduce((totalRoutes, resource) => ({
+            ...totalRoutes,
+            ...(Object.keys(resource.routes).reduce((mapRoutes, name) => ({
+                ...mapRoutes,
+                [`resource.${resource.id}.${name}`]: resource.routes[name],
+            }), {})),
+        }), {});
+        return {
+            ...routes,
+            ...definitionRoutes,
+            ...resourcesRoutes,
+        };
+    }
+
     render() {
-        const {
-            definition,
-            ...props
-        } = this.props;
+        const routes = this.getRoutes();
 
         return (
             <Container
+                {...this.props}
                 ref={(ref) => { this.refContainer = ref; }}
                 getStoreInitialState={this.getStoreInitialState}
-                {...props}
+                routes={routes}
             />
         );
     }

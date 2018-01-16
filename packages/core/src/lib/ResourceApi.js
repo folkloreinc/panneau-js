@@ -1,12 +1,20 @@
+import get from 'lodash/get';
+import isObject from 'lodash/isObject';
 import 'whatwg-fetch';
 
+import {
+    throwResponseError,
+    throwValidationError,
+} from './requests';
+
 class ResourceApi {
-    constructor(resource, opts) {
+    constructor(resource, urlGenerator, opts) {
+        this.resource = resource;
+        this.urlGenerator = urlGenerator;
         this.options = {
             idParamName: 'id',
             ...opts,
         };
-        this.resource = resource;
     }
 
     definition() {
@@ -25,42 +33,48 @@ class ResourceApi {
         return this.callApi('index', 'post', data);
     }
 
-    show() {
-        return this.callApi('index', 'get');
+    show(id) {
+        return this.callApi('index', 'get', id);
     }
 
-    edit() {
-        return this.callApi('index', 'get');
+    edit(id) {
+        return this.callApi('index', 'get', id);
     }
 
-    update(data) {
-        return this.callApi('index', 'put', data);
+    update(id, data) {
+        return this.callApi('index', 'put', id, data);
     }
 
-    destroy() {
-        return this.callApi('index', 'delete');
+    destroy(id) {
+        return this.callApi('index', 'delete', id);
     }
 
-    callApi(action, method, data = undefined) {
-        const path = this.getActionPath(action);
+    callApi(action, method, id = undefined, data = undefined) {
+        const path = this.getActionPath(action, id);
+        const body = (isObject(id) ? id : data) || null;
         return fetch(path, {
             method: method.toUpperCase(),
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
             },
-            body: JSON.stringify(data),
-        });
+            body: body !== null ? JSON.stringify(body) : null,
+        })
+            .then(response => throwResponseError(response))
+            .catch(error => throwValidationError(error));
     }
 
-    getActionPath(action) {
-        const path = this.resource.getRoutes()[action];
+    getActionPath(action, id = undefined) {
+        const { urlGenerator } = this;
+        const resource = get(this.resource, 'id');
+        const defaultPath = urlGenerator.route(`resource.${action}`, {
+            resource,
+            id,
+        });
+        const path = get(this.resource, `routes.${action}`, defaultPath);
         const { idParamName } = this.options;
-        const regex = new RegExp(`:${idParamName}`, 'i');
-        if (path.match(regex) !== null) {
-            return path.replace(regex, this.resource.getId());
-        }
-        return path;
+        const idPattern = new RegExp(`:${idParamName}([/](.*)?)?$`, 'i');
+        return path.replace(idPattern, id);
     }
 }
 

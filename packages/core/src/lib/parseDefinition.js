@@ -1,5 +1,6 @@
 import get from 'lodash/get';
-import isObject from 'lodash/isObject';
+
+import ResourceApi from './ResourceApi';
 
 const parseDefinition = (rootDefinition, { urlGenerator }) => {
     const parseNavbarItem = (definition) => {
@@ -22,12 +23,12 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
                                 resource: resource.id,
                             }),
                         },
-                        {
-                            type: 'divider',
-                        },
+                        { type: 'divider' },
                         {
                             label: 'Add a new user',
-                            link: urlGenerator.route('resource.create'),
+                            link: urlGenerator.route('resource.create', {
+                                resource: resource.id,
+                            }),
                         },
                     ] : null,
                 };
@@ -62,6 +63,11 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
         };
     };
 
+    const parseResources = resources => resources.map(resource => ({
+        ...resource,
+        api: new ResourceApi(resource, urlGenerator),
+    }));
+
     const parseLayout = (definition) => {
         const header = get(definition, 'header', true);
         const footer = get(definition, 'footer', false);
@@ -72,9 +78,11 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
         };
     };
 
+    const resources = get(rootDefinition, 'resources', []);
     const layout = get(rootDefinition, 'layout', null);
     return {
         ...rootDefinition,
+        resources: parseResources(resources),
         layout: parseLayout(layout),
     };
 };

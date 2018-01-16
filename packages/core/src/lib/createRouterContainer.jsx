@@ -6,7 +6,6 @@ import {
     browserHistory,
     createMemoryHistory,
 } from 'react-router';
-console.log(createMemoryHistory);
 
 function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -42,7 +41,6 @@ export default function createRouterContainer(
 
     return (WrappedComponent) => {
         class RouterContainer extends Component {
-
             static getWrappedInstance() {
                 invariant(
                     options.withRef,

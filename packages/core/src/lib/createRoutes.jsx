@@ -9,8 +9,6 @@ import ResourceCreate from '../components/pages/ResourceCreate';
 import ResourceEdit from '../components/pages/ResourceEdit';
 import ResourceDelete from '../components/pages/ResourceDelete';
 
-import defaultRoutes from '../defaults/routes.json';
-
 const generateRoutesForResource = (routesDefinition, id) => (
     <Route
         key={`resource-route-${id}`}
@@ -23,25 +21,24 @@ const generateRoutesForResource = (routesDefinition, id) => (
 );
 
 export default (urlGenerator, definition) => {
-    const routes = get(definition, 'routes', defaultRoutes);
-    const resources = get(definition, 'resources', []);
-    const filteredRoutes = Object
-        .keys(routes)
-        .filter(key => key.match(/^resource./))
-        .reduce((map, key) => ({
-            ...map,
-            [key.replace(/^resource./, '')]: routes[key],
-        }), {});
+    const defaultRoutes = {
+        index: urlGenerator.route('resource.index'),
+        create: urlGenerator.route('resource.create'),
+        edit: urlGenerator.route('resource.edit'),
+        delete: urlGenerator.route('resource.delete'),
+    };
+
+    const resourcesWithRoutes = get(definition, 'resources', [])
+        .filter(resource => typeof resource.routes !== 'undefined');
 
     return (
         <Route component={Layout}>
             <Route path="/" component={Home} />
             {
-                generateRoutesForResource(filteredRoutes, 'default')
+                generateRoutesForResource(defaultRoutes, 'default')
             }
             {
-                resources
-                    .filter(resource => typeof resource.routes !== 'undefined')
+                resourcesWithRoutes
                     .map(resource => generateRoutesForResource(resource.routes, resource.id))
             }
         </Route>

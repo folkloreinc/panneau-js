@@ -1,5 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
+import ResourceForm from './ResourceForm';
 
 const propTypes = {
 
@@ -9,11 +10,14 @@ const defaultProps = {
 
 };
 
-const HomePage = () => (
-    <div>Home</div>
+const ResourceEdit = props => (
+    <ResourceForm
+        action="edit"
+        {...props}
+    />
 );
 
-HomePage.propTypes = propTypes;
-HomePage.defaultProps = defaultProps;
+ResourceEdit.propTypes = propTypes;
+ResourceEdit.defaultProps = defaultProps;
 
-export default HomePage;
+export default ResourceEdit;

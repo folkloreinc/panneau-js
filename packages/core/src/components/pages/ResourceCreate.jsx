@@ -1,5 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
+import ResourceForm from './ResourceForm';
 
 const propTypes = {
 
@@ -9,11 +10,14 @@ const defaultProps = {
 
 };
 
-const HomePage = () => (
-    <div>Create</div>
+const ResourceCreate = props => (
+    <ResourceForm
+        action="create"
+        {...props}
+    />
 );
 
-HomePage.propTypes = propTypes;
-HomePage.defaultProps = defaultProps;
+ResourceCreate.propTypes = propTypes;
+ResourceCreate.defaultProps = defaultProps;
 
-export default HomePage;
+export default ResourceCreate;
