@@ -56,6 +56,8 @@ class NormalForm extends Component {
 
         this.onFieldsValueChange = this.onFieldsValueChange.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
+        this.onFormSubmitComplete = this.onFormSubmitComplete.bind(this);
+        this.onFormSubmitError = this.onFormSubmitError.bind(this);
 
         this.state = {
             value: props.value,
@@ -102,7 +104,7 @@ class NormalForm extends Component {
             e.preventDefault();
             submitForm(value)
                 .then(this.onFormSubmitComplete)
-                .then(this.onFormSubmitError);
+                .catch(this.onFormSubmitError);
         }
     }
 

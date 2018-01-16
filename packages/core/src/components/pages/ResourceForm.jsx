@@ -24,7 +24,7 @@ const propTypes = {
         id: PropTypes.number,
     }),
     errors: PropTypes.arrayOf(PropTypes.string),
-    formData: PropTypes.shape({}),
+    formValue: PropTypes.shape({}),
     formErrors: PropTypes.objectOf(PropTypes.array),
 };
 
@@ -32,7 +32,7 @@ const defaultProps = {
     action: 'create',
     item: null,
     errors: null,
-    formData: null,
+    formValue: null,
     formErrors: null,
 };
 
@@ -42,13 +42,15 @@ class ResourceForm extends Component {
 
         this.onItemLoaded = this.onItemLoaded.bind(this);
         this.onItemLoadError = this.onItemLoadError.bind(this);
-        this.onItemSaved = this.onItemSaved.bind(this);
-        this.onItemSaveError = this.onItemSaveError.bind(this);
+        this.onFormValueChange = this.onFormValueChange.bind(this);
+        this.onFormComplete = this.onFormComplete.bind(this);
+        this.onFormErrors = this.onFormErrors.bind(this);
+        this.submitForm = this.submitForm.bind(this);
 
         this.state = {
             item: props.item,
             errors: props.errors,
-            formData: props.formData || props.item,
+            formValue: props.formValue || props.item,
             formErrors: props.formErrors,
         };
     }
@@ -90,14 +92,20 @@ class ResourceForm extends Component {
         });
     }
 
-    onItemSaved(item) {
+    onFormValueChange(value) {
         this.setState({
-            item,
-            formData: null,
+            formValue: value,
         });
     }
 
-    onItemSaveError(errors) {
+    onFormComplete(item) {
+        this.setState({
+            item,
+            formValue: null,
+        });
+    }
+
+    onFormErrors(errors) {
         this.setState({
             formErrors: errors,
         });
@@ -105,11 +113,9 @@ class ResourceForm extends Component {
 
     submitForm() {
         const { action, resource } = this.props;
-        const { item, formData } = this.state;
-        (action === 'create' ?
-            resource.api.store(formData) : resource.api.update(item.id, formData))
-            .then(this.onItemSaved)
-            .catch(this.onItemSaveError);
+        const { item, formValue } = this.state;
+        return (action === 'create' ?
+            resource.api.store(formValue) : resource.api.update(item.id, formValue));
     }
 
     renderHeader() {
@@ -148,7 +154,7 @@ class ResourceForm extends Component {
 
     renderForm() {
         const { resource, formsCollection } = this.props;
-        const { formData, formErrors } = this.state;
+        const { formValue, formErrors } = this.state;
         const form = get(resource, 'forms.index', get(resource, 'forms', {}));
         const { type, ...formProps } = form;
         const FormComponent = formsCollection.getComponent(type || 'normal');
@@ -160,9 +166,12 @@ class ResourceForm extends Component {
         return FormComponent !== null ? (
             <div className={formClassNames}>
                 <FormComponent
-                    value={formData}
+                    value={formValue}
                     errors={formErrors}
                     submitForm={this.submitForm}
+                    onValueChange={this.onFormValueChange}
+                    onComplete={this.onFormComplete}
+                    onErrors={this.onFormErrors}
                     {...formProps}
                 />
             </div>
