@@ -153,9 +153,9 @@ class ResourceForm extends Component {
     }
 
     renderForm() {
-        const { resource, formsCollection } = this.props;
+        const { action, resource, formsCollection } = this.props;
         const { formValue, formErrors } = this.state;
-        const form = get(resource, 'forms.index', get(resource, 'forms', {}));
+        const form = get(resource, `forms.${action}`, get(resource, 'forms', {}));
         const { type, ...formProps } = form;
         const FormComponent = formsCollection.getComponent(type || 'normal');
 
