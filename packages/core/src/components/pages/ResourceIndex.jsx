@@ -38,6 +38,7 @@ class ResourceIndex extends Component {
         this.onItemsLoaded = this.onItemsLoaded.bind(this);
         this.onItemsLoadError = this.onItemsLoadError.bind(this);
         this.onItemActions = this.onItemActions.bind(this);
+        this.onItemDeleted = this.onItemDeleted.bind(this);
 
         this.state = {
             items: props.items,
@@ -97,9 +98,28 @@ class ResourceIndex extends Component {
                 gotoResourceShow(it.id);
             }
         } else if (action.id === 'delete') {
-            if (gotoResourceDelete !== null) {
-                gotoResourceDelete(it.id);
-            }
+            this.deleteItem(it.id);
+            // if (gotoResourceDelete !== null) {
+            //     gotoResourceDelete(it.id);
+            // }
+        }
+    }
+
+    onItemDeleted({ id }) {
+        this.setState({
+            items: this.state.items.filter(it => it.id !== id),
+        });
+    }
+
+    deleteItem(id) {
+        const { resource } = this.props;
+        const { name } = resource;
+        // @TODO quick implementation; instead, use a pretty modal or something
+        // eslint-disable-next-line no-alert
+        if (window.confirm(`Are you sure you want to delete item ID ${id} from ${name}?`)) {
+            resource.api
+                .destroy(id)
+                .then(this.onItemDeleted);
         }
     }
 
@@ -187,10 +207,6 @@ const mapStateToProps = ({ panneau }, { params, location }) => {
         )) || null,
     };
 };
-
-// const makeDispatch = (action) => (resource, id) => {
-//
-// };
 
 const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
     gotoResourceEdit: (resource, id) => dispatch(push(urlGenerator.route('resource.edit', {
