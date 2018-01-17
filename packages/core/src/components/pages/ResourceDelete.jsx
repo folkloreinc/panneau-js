@@ -10,7 +10,7 @@ const defaultProps = {
 };
 
 const HomePage = () => (
-    <div>Home</div>
+    <div>Delete resource</div>
 );
 
 HomePage.propTypes = propTypes;

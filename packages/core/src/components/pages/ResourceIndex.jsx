@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
+import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import classNames from 'classnames';
 
 import withComponentsCollection from '../../lib/withComponentsCollection';
+import withUrlGenerator from '../../lib/withUrlGenerator';
 
 import styles from '../../styles/pages/resource-index.scss';
 
@@ -16,11 +18,17 @@ const propTypes = {
     resource: PropTypes.shape({}).isRequired,
     items: PropTypes.arrayOf(PropTypes.object),
     errors: PropTypes.arrayOf(PropTypes.string),
+    gotoResourceEdit: PropTypes.func,
+    gotoResourceShow: PropTypes.func,
+    gotoResourceDelete: PropTypes.func,
 };
 
 const defaultProps = {
     items: [],
     errors: null,
+    gotoResourceEdit: PropTypes.func,
+    gotoResourceShow: PropTypes.func,
+    gotoResourceDelete: PropTypes.func,
 };
 
 class ResourceIndex extends Component {
@@ -29,6 +37,7 @@ class ResourceIndex extends Component {
 
         this.onItemsLoaded = this.onItemsLoaded.bind(this);
         this.onItemsLoadError = this.onItemsLoadError.bind(this);
+        this.onItemActions = this.onItemActions.bind(this);
 
         this.state = {
             items: props.items,
@@ -70,6 +79,22 @@ class ResourceIndex extends Component {
         this.setState({
             errors,
         });
+    }
+
+    onItemActions(e, action, it) {
+        if (action.id === 'edit') {
+            if (this.props.gotoResourceEdit) {
+                this.props.gotoResourceEdit(it.id);
+            }
+        } else if (action.id === 'show') {
+            if (this.props.gotoResourceShow) {
+                this.props.gotoResourceShow(it.id);
+            }
+        } else if (action.id === 'delete') {
+            if (this.props.gotoResourceDelete) {
+                this.props.gotoResourceDelete(it.id);
+            }
+        }
     }
 
     renderHeader() {
@@ -122,6 +147,7 @@ class ResourceIndex extends Component {
             <div className={listClassNames}>
                 <ListComponent
                     items={items}
+                    onClickActions={this.onItemActions}
                     {...listProps}
                 />
             </div>
@@ -156,13 +182,51 @@ const mapStateToProps = ({ panneau }, { params, location }) => {
     };
 };
 
+// const makeDispatch = (action) => (resource, id) => {
+//
+// };
+
+const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
+    gotoResourceEdit: (resource, id) => dispatch(push(urlGenerator.route('resource.edit', {
+        resource: resource.id,
+        id,
+    }))),
+    gotoResourceShow: (resource, id) => dispatch(push(urlGenerator.route('resource.edit', {
+        resource: resource.id,
+        id,
+    }))),
+    gotoResourceDelete: (resource, id) => dispatch(push(urlGenerator.route('resource.delete', {
+        resource: resource.id,
+        id,
+    }))),
+});
+
+const mergeProps = (
+    stateProps,
+    {
+        gotoResourceEdit,
+        gotoResourceShow,
+        gotoResourceDelete,
+        ...dispatchProps
+    },
+    ownProps,
+) => ({
+    ...ownProps,
+    ...stateProps,
+    ...dispatchProps,
+    gotoResourceEdit: id => gotoResourceEdit(stateProps.resource, id),
+    gotoResourceShow: id => gotoResourceShow(stateProps.resource, id),
+    gotoResourceDelete: id => gotoResourceDelete(stateProps.resource, id),
+});
+
 const mapCollectionToProps = collection => ({
     listsCollection: collection.getCollection('lists'),
 });
 
-const WithStateComponent = connect(mapStateToProps)(ResourceIndex);
+const WithStateComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(ResourceIndex);
 const WithRouterContainer = withRouter(WithStateComponent);
 const WithComponentsCollectionContainer = withComponentsCollection((
     mapCollectionToProps
 ))(WithRouterContainer);
-export default WithComponentsCollectionContainer;
+const WithUrlGeneratorContainer = withUrlGenerator()(WithComponentsCollectionContainer);
+export default WithUrlGeneratorContainer;
