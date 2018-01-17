@@ -2,6 +2,7 @@
 import Panneau from './Panneau';
 import ComponentsCollection from './lib/ComponentsCollection';
 import createStore from './lib/createStore';
+import { ResponseError, ValidationError } from './lib/requests';
 import {
     Panneau as PanneauComponent,
     Container as ContainerComponent,
@@ -12,6 +13,8 @@ export {
     PanneauComponent,
     ContainerComponent,
     createStore,
+    ResponseError,
+    ValidationError,
 };
 
 /** The main Panneau application class */

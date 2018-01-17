@@ -82,17 +82,23 @@ class ResourceIndex extends Component {
     }
 
     onItemActions(e, action, it) {
+        const {
+            gotoResourceEdit,
+            gotoResourceShow,
+            gotoResourceDelete,
+        } = this.props;
+
         if (action.id === 'edit') {
-            if (this.props.gotoResourceEdit) {
-                this.props.gotoResourceEdit(it.id);
+            if (gotoResourceEdit !== null) {
+                gotoResourceEdit(it.id);
             }
         } else if (action.id === 'show') {
-            if (this.props.gotoResourceShow) {
-                this.props.gotoResourceShow(it.id);
+            if (gotoResourceShow !== null) {
+                gotoResourceShow(it.id);
             }
         } else if (action.id === 'delete') {
-            if (this.props.gotoResourceDelete) {
-                this.props.gotoResourceDelete(it.id);
+            if (gotoResourceDelete !== null) {
+                gotoResourceDelete(it.id);
             }
         }
     }
