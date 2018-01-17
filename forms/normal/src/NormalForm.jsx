@@ -11,6 +11,8 @@ const propTypes = {
     fields: PropTypes.arrayOf(PropTypes.object),
     value: PropTypes.shape({}),
     errors: PropTypes.objectOf(PropTypes.array),
+    generalError: PropTypes.string,
+    generalErrorDefaultMessage: PropTypes.string,
     buttons: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string,
         type: PropTypes.string,
@@ -41,6 +43,8 @@ const defaultProps = {
     fields: [],
     value: null,
     errors: null,
+    generalError: null,
+    generalErrorDefaultMessage: 'Sorry, an error occured.',
     submitForm: null,
     onValueChange: null,
     onSubmit: null,
@@ -60,6 +64,7 @@ class NormalForm extends Component {
         this.state = {
             value: props.value,
             errors: props.errors,
+            generalError: props.generalError,
         };
     }
 
@@ -113,13 +118,21 @@ class NormalForm extends Component {
         }
     }
 
-    onFormSubmitError(errors) {
-        const { onErrors } = this.props;
+    onFormSubmitError(error) {
+        const { onErrors, generalErrorDefaultMessage } = this.props;
+
         if (onErrors !== null) {
-            onErrors(errors);
-        } else {
+            onErrors(error);
+        }
+
+        if (error.name === 'ValidationError') {
             this.setState({
-                errors,
+                errors: error.responseData,
+            });
+        } else {
+            // @TODO
+            this.setState({
+                generalError: generalErrorDefaultMessage,
             });
         }
     }

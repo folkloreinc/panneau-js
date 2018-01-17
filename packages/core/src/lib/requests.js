@@ -1,37 +1,47 @@
 export class ResponseError extends Error {
-    constructor(message, response) {
+    constructor(message, responseData, status) {
         super(message);
         this.name = 'ResponseError';
-        this.response = response;
-        this.status = response.status;
+        this.responseData = responseData;
+        this.status = status;
     }
 
-    getResponse() {
-        return this.response;
+    getResponseData() {
+        return this.responseData;
     }
 }
 
 export class ValidationError extends ResponseError {
-    constructor(message, response) {
-        super(message, response);
+    constructor(message, responseData, status) {
+        super(message, responseData, status);
         this.name = 'ValidationError';
     }
 
     getErrors() {
-        return this.response.json();
+        return this.responseData;
     }
 }
 
-export const throwResponseError = (response) => {
+export const getResponseAndDataObject = response => new Promise((resolve) => {
+    response.json().then((data) => {
+        resolve({
+            data,
+            response,
+        });
+    });
+});
+
+export const throwResponseError = (responseObject) => {
+    const { response, data } = responseObject;
     if (response.status >= 200 && response.status < 300) {
-        return response;
+        return data;
     }
-    throw new ResponseError(response.statusText, response);
+    throw new ResponseError(response.statusText, data, response.status);
 };
 
 export const throwValidationError = (error) => {
     if (error.name === 'ResponseError' && error.status === 422) {
-        throw new ValidationError(error.message, error.response);
+        throw new ValidationError(error.message, error.responseData, error.status);
     }
     throw error;
 };

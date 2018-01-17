@@ -4,6 +4,7 @@ import isObject from 'lodash/isObject';
 import 'whatwg-fetch';
 
 import {
+    getResponseAndDataObject,
     throwResponseError,
     throwValidationError,
 } from './requests';
@@ -62,9 +63,9 @@ class ResourceApi {
             },
             body: body !== null ? JSON.stringify(body) : null,
         })
-            .then(response => throwResponseError(response))
-            .catch(error => throwValidationError(error))
-            .then(response => response.json());
+            .then(getResponseAndDataObject)
+            .then(responseObject => throwResponseError(responseObject))
+            .catch(error => throwValidationError(error));
     }
 
     getActionPath(action, id = undefined) {
