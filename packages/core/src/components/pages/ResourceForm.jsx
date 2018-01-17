@@ -14,7 +14,7 @@ const propTypes = {
         getComponent: PropTypes.func,
     }).isRequired,
     params: PropTypes.shape({
-        id: PropTypes.number,
+        id: PropTypes.string,
     }).isRequired,
     action: PropTypes.string,
     resource: PropTypes.shape({
