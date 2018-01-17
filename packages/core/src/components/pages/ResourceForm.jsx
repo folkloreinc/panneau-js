@@ -158,6 +158,16 @@ class ResourceForm extends Component {
         const form = get(resource, `forms.${action}`, get(resource, 'forms', {}));
         const { type, ...formProps } = form;
         const FormComponent = formsCollection.getComponent(type || 'normal');
+        const buttons = [
+            {
+                id: 'submit',
+                type: 'submit',
+                label: action === 'edit' ? 'Save' : 'OK',
+                className: classNames({
+                    'btn-primary': true,
+                }),
+            },
+        ];
 
         const formClassNames = classNames({
             [styles.form]: true,
@@ -166,6 +176,7 @@ class ResourceForm extends Component {
         return FormComponent !== null ? (
             <div className={formClassNames}>
                 <FormComponent
+                    buttons={buttons}
                     value={formValue}
                     errors={formErrors}
                     submitForm={this.submitForm}
