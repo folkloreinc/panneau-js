@@ -82,7 +82,7 @@ class ResourceForm extends Component {
 
     onItemLoaded(item) {
         this.setState({
-            formValue: item,
+            item,
         });
     }
 
@@ -190,6 +190,8 @@ class ResourceForm extends Component {
     }
 
     render() {
+        const { item } = this.state;
+
         const containerClassNames = classNames({
             [styles.container]: true,
         });
@@ -198,7 +200,7 @@ class ResourceForm extends Component {
             <div className={containerClassNames}>
                 { this.renderHeader() }
                 { this.renderErrors() }
-                { this.renderForm() }
+                { item !== null && this.renderForm() }
             </div>
         );
     }
