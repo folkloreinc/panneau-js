@@ -191,6 +191,8 @@ class ResourceForm extends Component {
 
     render() {
         const { item } = this.state;
+        const { action } = this.props;
+        const needsForm = item !== null || action === 'create';
 
         const containerClassNames = classNames({
             [styles.container]: true,
@@ -200,7 +202,7 @@ class ResourceForm extends Component {
             <div className={containerClassNames}>
                 { this.renderHeader() }
                 { this.renderErrors() }
-                { item !== null && this.renderForm() }
+                { needsForm && this.renderForm() }
             </div>
         );
     }
