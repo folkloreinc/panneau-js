@@ -18,9 +18,7 @@ const propTypes = {
         className: PropTypes.string,
         onClick: PropTypes.func,
     })),
-    submitForm: PropTypes.shape({
-        then: PropTypes.func.isRequired,
-    }),
+    submitForm: PropTypes.func,
     onValueChange: PropTypes.func,
     onSubmit: PropTypes.func,
     onErrors: PropTypes.func,

@@ -82,7 +82,7 @@ class ResourceForm extends Component {
 
     onItemLoaded(item) {
         this.setState({
-            item,
+            formValue: item,
         });
     }
 
@@ -154,7 +154,7 @@ class ResourceForm extends Component {
 
     renderForm() {
         const { action, resource, formsCollection } = this.props;
-        const { formValue, formErrors } = this.state;
+        const { item, formValue, formErrors } = this.state;
         const form = get(resource, `forms.${action}`, get(resource, 'forms', {}));
         const { type, ...formProps } = form;
         const FormComponent = formsCollection.getComponent(type || 'normal');
@@ -177,7 +177,7 @@ class ResourceForm extends Component {
             <div className={formClassNames}>
                 <FormComponent
                     buttons={buttons}
-                    value={formValue}
+                    value={formValue || item}
                     errors={formErrors}
                     submitForm={this.submitForm}
                     onValueChange={this.onFormValueChange}
