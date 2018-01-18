@@ -213,7 +213,7 @@ const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
         resource: resource.id,
         id,
     }))),
-    gotoResourceShow: (resource, id) => dispatch(push(urlGenerator.route('resource.edit', {
+    gotoResourceShow: (resource, id) => dispatch(push(urlGenerator.route('resource.show', {
         resource: resource.id,
         id,
     }))),

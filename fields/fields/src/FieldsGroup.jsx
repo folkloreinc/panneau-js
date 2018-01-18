@@ -29,6 +29,7 @@ const propTypes = {
     collapsibleTypes: PropTypes.arrayOf(PropTypes.string),
     collapsed: PropTypes.bool,
     onChange: PropTypes.func,
+    readOnly: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -46,6 +47,7 @@ const defaultProps = {
     collapsibleTypes: [],
     collapsed: false,
     onChange: null,
+    readOnly: false,
 };
 
 const contextTypes = {
@@ -114,7 +116,12 @@ class FieldsGroup extends Component {
     }
 
     renderField(it, index) {
-        const { value, errors, collapsibleTypes } = this.props;
+        const {
+            value,
+            errors,
+            collapsibleTypes,
+            readOnly,
+        } = this.props;
         const {
             type,
             name,
@@ -149,6 +156,7 @@ class FieldsGroup extends Component {
                 key={key}
                 name={name}
                 value={fieldValue}
+                disabled={readOnly}
                 errors={fieldErrors}
                 onChange={(val) => {
                     this.onChange(name, val);

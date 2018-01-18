@@ -26,6 +26,7 @@ const propTypes = {
     errors: PropTypes.arrayOf(PropTypes.string),
     formValue: PropTypes.shape({}),
     formErrors: PropTypes.objectOf(PropTypes.array),
+    readOnly: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -34,6 +35,7 @@ const defaultProps = {
     errors: null,
     formValue: null,
     formErrors: null,
+    readOnly: false,
 };
 
 class ResourceForm extends Component {
@@ -57,7 +59,7 @@ class ResourceForm extends Component {
 
     componentDidMount() {
         const { action, resource, params } = this.props;
-        if (action === 'edit') {
+        if (action === 'edit' || action === 'show') {
             resource.api.show(params.id)
                 .then(this.onItemLoaded)
                 .catch(this.onItemLoadError);
@@ -168,12 +170,12 @@ class ResourceForm extends Component {
     }
 
     renderForm() {
-        const { action, resource, formsCollection } = this.props;
+        const { action, resource, formsCollection, readOnly } = this.props;
         const { item, formValue, formErrors } = this.state;
         const form = get(resource, `forms.${action}`, get(resource, 'forms', {}));
         const { type, ...formProps } = form;
         const FormComponent = formsCollection.getComponent(type || 'normal');
-        const buttons = [
+        const buttons = readOnly ? [] : [
             {
                 id: 'submit',
                 type: 'submit',
@@ -191,6 +193,7 @@ class ResourceForm extends Component {
         return FormComponent !== null ? (
             <div className={formClassNames}>
                 <FormComponent
+                    readOnly={readOnly}
                     buttons={buttons}
                     value={formValue || item}
                     errors={formErrors}

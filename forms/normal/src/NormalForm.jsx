@@ -25,6 +25,7 @@ const propTypes = {
     onSubmit: PropTypes.func,
     onErrors: PropTypes.func,
     onComplete: PropTypes.func,
+    readOnly: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -50,6 +51,7 @@ const defaultProps = {
     onSubmit: null,
     onErrors: null,
     onComplete: null,
+    readOnly: false,
 };
 
 class NormalForm extends Component {
@@ -136,10 +138,11 @@ class NormalForm extends Component {
     }
 
     renderFields() {
-        const { fields } = this.props;
+        const { fields, readOnly } = this.props;
         const { value, errors } = this.state;
         return (
             <FieldsGroup
+                readOnly={readOnly}
                 fields={fields}
                 value={value}
                 errors={errors}
