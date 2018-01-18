@@ -106,9 +106,19 @@ class ResourceForm extends Component {
     }
 
     onFormErrors(errors) {
-        this.setState({
-            formErrors: errors,
-        });
+        if (errors.name === 'ValidationError') {
+            this.setState({
+                formErrors: errors.responseData,
+            });
+        } else if (errors.name === 'ResponseError') {
+            this.setState({
+                errors: [errors.responseData.error],
+            });
+        } else {
+            this.setState({
+                errors,
+            });
+        }
     }
 
     submitForm() {

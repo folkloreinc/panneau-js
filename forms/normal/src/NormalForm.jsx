@@ -123,9 +123,7 @@ class NormalForm extends Component {
 
         if (onErrors !== null) {
             onErrors(error);
-        }
-
-        if (error.name === 'ValidationError') {
+        } else if (error.name === 'ValidationError') {
             this.setState({
                 errors: error.responseData,
             });
