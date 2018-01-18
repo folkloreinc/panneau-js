@@ -7,7 +7,7 @@ import classNames from 'classnames';
 
 import withComponentsCollection from '../../lib/withComponentsCollection';
 
-import styles from '../../styles/pages/resource-index.scss';
+import styles from '../../styles/pages/resource-form.scss';
 
 const propTypes = {
     formsCollection: PropTypes.shape({
@@ -137,11 +137,16 @@ class ResourceForm extends Component {
 
         const errorsClassNames = classNames({
             [styles.errors]: true,
+            alert: true,
+            'alert-danger': true,
         });
 
         /* eslint-disable react/no-array-index-key */
-        return errors !== null && errors.length > 1 ? (
+        return errors !== null && errors.length > 0 ? (
             <div className={errorsClassNames}>
+                <strong>
+                    The following error{errors.length > 1 ? 's' : null} occured:
+                </strong>
                 <ul>
                     { errors.map((error, index) => (
                         <li key={`error-${index}`}>{ error }</li>
