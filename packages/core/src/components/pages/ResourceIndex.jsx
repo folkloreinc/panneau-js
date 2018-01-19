@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import classNames from 'classnames';
 
+import { Pagination } from '@panneau/list';
 import withComponentsCollection from '../../lib/withComponentsCollection';
 import withUrlGenerator from '../../lib/withUrlGenerator';
 
@@ -180,6 +181,19 @@ class ResourceIndex extends Component {
         ) : null;
     }
 
+    // eslint-disable-next-line class-methods-use-this
+    renderPagination() {
+        return (
+            <Pagination
+                interval={1}
+                lastPage={10}
+                perPage={1}
+                currentPage={1}
+                url="/"
+            />
+        );
+    }
+
     render() {
         const containerClassNames = classNames({
             [styles.container]: true,
@@ -189,6 +203,7 @@ class ResourceIndex extends Component {
             <div className={containerClassNames}>
                 { this.renderHeader() }
                 { this.renderList() }
+                { this.renderPagination() }
             </div>
         );
     }
