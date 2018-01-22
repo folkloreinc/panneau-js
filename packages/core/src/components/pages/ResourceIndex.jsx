@@ -185,11 +185,11 @@ class ResourceIndex extends Component {
     renderPagination() {
         return (
             <Pagination
-                interval={1}
-                lastPage={10}
+                total={20}
                 perPage={1}
-                currentPage={1}
-                url="/"
+                currentPage={3}
+                lastPage={10}
+                url="/?page=1"
             />
         );
     }

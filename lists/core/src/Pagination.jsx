@@ -9,7 +9,6 @@ const propTypes = {
     lastPage: PropTypes.number,
     url: PropTypes.string,
     pageParamName: PropTypes.string,
-    interval: PropTypes.number,
     showArrows: PropTypes.bool,
     onClickPage: PropTypes.func,
     onClickPrevious: PropTypes.func,
@@ -23,22 +22,28 @@ const defaultProps = {
     lastPage: 0,
     url: '',
     pageParamName: 'page',
-    interval: null,
     showArrows: true,
     onClickPage: null,
     onClickPrevious: null,
     onClickNext: null,
 };
 
+const generateUrl = (page, url, pageParamName) => {
+    const finalUrl = url.replace(/(page=)[^&]+/, `${pageParamName}=${page}`);
+    return finalUrl;
+};
+
 const PreviousLink = ({
     currentPage,
     lastPage,
     url,
+    pageParamName,
     onClick,
 }) => {
     const isFirstPage = currentPage === 1;
     const previousPage = isFirstPage ? lastPage : currentPage - 1;
     const onClickPrevious = !isFirstPage ? e => onClick(e, previousPage) : null;
+    const linkUrl = isFirstPage ? '#' : generateUrl(previousPage, url, pageParamName);
 
     const itemClassNames = classNames({
         disabled: isFirstPage,
@@ -49,7 +54,7 @@ const PreviousLink = ({
             className={itemClassNames}
         >
             <a
-                href={isFirstPage ? '#' : url}
+                href={linkUrl}
                 onClick={onClickPrevious}
                 aria-label="Previous"
             >
@@ -67,11 +72,13 @@ const NextLink = ({
     currentPage,
     lastPage,
     url,
+    pageParamName,
     onClick,
 }) => {
     const isLastPage = currentPage === lastPage;
     const nextPage = isLastPage ? 1 : currentPage + 1;
     const onClickNext = !isLastPage ? e => onClick(e, nextPage) : null;
+    const linkUrl = generateUrl(nextPage, url, pageParamName);
 
     const itemClassNames = classNames({
         disabled: isLastPage,
@@ -82,12 +89,12 @@ const NextLink = ({
             className={itemClassNames}
         >
             <a
-                href={url}
+                href={linkUrl}
                 onClick={onClickNext}
                 aria-label="Next"
             >
                 <span
-                    aria-hidden
+                    aria-hidden="true"
                 >
                     &raquo;
                 </span>
@@ -100,10 +107,11 @@ const PageLinks = ({
     interval,
     currentPage,
     lastPage,
+    url,
+    pageParamName,
     onClick,
 }) => {
     const links = [];
-    console.log(interval, lastPage);
     if (interval && lastPage > interval) {
         const middle = Math.floor(interval / 2);
         let visibleStart = Math.max(1, currentPage - middle);
@@ -118,6 +126,8 @@ const PageLinks = ({
                     key="page_1"
                     page={1}
                     currentPage={currentPage}
+                    url={url}
+                    pageParamName={pageParamName}
                     onClick={onClick}
                 />
             ));
@@ -138,6 +148,8 @@ const PageLinks = ({
                     key={`page_${i}`}
                     page={i}
                     currentPage={currentPage}
+                    url={url}
+                    pageParamName={pageParamName}
                     onClick={onClick}
                 />
             ));
@@ -158,6 +170,8 @@ const PageLinks = ({
                     key={`page_${lastPage}`}
                     page={lastPage}
                     currentPage={currentPage}
+                    url={url}
+                    pageParamName={pageParamName}
                     onClick={onClick}
                 />
             ));
@@ -169,6 +183,8 @@ const PageLinks = ({
                     key={`page_${ii}`}
                     page={ii}
                     currentPage={currentPage}
+                    url={url}
+                    pageParamName={pageParamName}
                     onClick={onClick}
                 />
             ));
@@ -178,9 +194,14 @@ const PageLinks = ({
     return links;
 };
 
-const PageLink = ({ page, currentPage, onClick }) => {
-    // const url = this.url(page);
-    const url = 'lolmagie';
+const PageLink = ({
+    page,
+    currentPage,
+    url,
+    pageParamName,
+    onClick,
+}) => {
+    const linkUrl = generateUrl(page, url, pageParamName);
     const onClickPage = e => onClick(e, page);
 
     const itemClassNames = classNames({
@@ -192,7 +213,7 @@ const PageLink = ({ page, currentPage, onClick }) => {
             className={itemClassNames}
         >
             <a
-                href={url}
+                href={linkUrl}
                 onClick={onClickPage}
             >
                 { page }
@@ -207,6 +228,7 @@ const PageDots = (page) => {
         disabled: true,
     });
 
+    /* eslint-disable jsx-a11y/anchor-is-valid */
     return (
         <li
             key={key}
@@ -219,6 +241,7 @@ const PageDots = (page) => {
             </a>
         </li>
     );
+    /* eslint-enable jsx-a11y/anchor-is-valid */
 };
 
 const Pagination = ({
@@ -228,16 +251,11 @@ const Pagination = ({
     lastPage,
     url,
     pageParamName,
-    interval,
     showArrows,
     onClickPage,
     onClickPrevious,
     onClickNext,
 }) => {
-    const previousLinkUrl = '';
-    const nextLinkUrl = '';
-    // this.props.url.replace(/(page\=)[^\&]+/, '$1'+page);
-
     const listClassNames = classNames({
         pagination: true,
     });
@@ -250,14 +268,17 @@ const Pagination = ({
                 <PreviousLink
                     currentPage={currentPage}
                     lastPage={lastPage}
-                    url={previousLinkUrl}
+                    url={url}
+                    pageParamName={pageParamName}
                     onClick={onClickPrevious}
                 />
                 { showArrows && (
                     <PageLinks
-                        interval={interval}
+                        perPage={perPage}
                         currentPage={currentPage}
                         lastPage={lastPage}
+                        url={url}
+                        pageParamName={pageParamName}
                         onClick={onClickPage}
                     />
                 )}
@@ -265,7 +286,8 @@ const Pagination = ({
                     <NextLink
                         currentPage={currentPage}
                         lastPage={lastPage}
-                        url={nextLinkUrl}
+                        url={url}
+                        pageParamName={pageParamName}
                         onClick={onClickNext}
                     />
                 )}
