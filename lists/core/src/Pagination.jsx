@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 const propTypes = {
-    total: PropTypes.number,
     perPage: PropTypes.number,
     currentPage: PropTypes.number,
     lastPage: PropTypes.number,
@@ -104,7 +103,7 @@ const NextLink = ({
 };
 
 const PageLinks = ({
-    interval,
+    perPage,
     currentPage,
     lastPage,
     url,
@@ -112,12 +111,12 @@ const PageLinks = ({
     onClick,
 }) => {
     const links = [];
-    if (interval && lastPage > interval) {
-        const middle = Math.floor(interval / 2);
+    if (perPage && lastPage > perPage) {
+        const middle = Math.floor(perPage / 2);
         let visibleStart = Math.max(1, currentPage - middle);
-        const visibleEnd = Math.min(lastPage, (visibleStart + interval) - 1);
-        if (visibleEnd - visibleStart < interval && visibleStart !== 1) {
-            visibleStart = Math.max(1, (visibleEnd - interval) + 1);
+        const visibleEnd = Math.min(lastPage, (visibleStart + perPage) - 1);
+        if (visibleEnd - visibleStart < perPage && visibleStart !== 1) {
+            visibleStart = Math.max(1, (visibleEnd - perPage) + 1);
         }
 
         if (visibleStart > 1) {
@@ -245,7 +244,6 @@ const PageDots = (page) => {
 };
 
 const Pagination = ({
-    total,
     perPage,
     currentPage,
     lastPage,
