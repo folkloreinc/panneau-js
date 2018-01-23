@@ -1,6 +1,6 @@
 {
     "name": "panneau",
-    "version": "0.3.7",
+    "version": "0.3.10",
     "description": "Framework to build dashboard and administration panels",
     "keywords": [
         "react",
@@ -28,7 +28,7 @@
         },
         {
             "name": "Hugo St-Onge",
-            "email": "hso@atelierfolklore.ca"
+            "email": "hugostonge@gmail.com"
         }
     ],
     "main": "lib/index.js",
@@ -52,12 +52,12 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/core": "^0.3.7",
-        "@panneau/fields": "^0.3.7",
-        "@panneau/forms": "^0.3.7",
-        "@panneau/layouts": "^0.3.7",
-        "@panneau/lists": "^0.3.7",
-        "@panneau/modals": "^0.3.7",
+        "@panneau/core": "^0.3.10",
+        "@panneau/fields": "^0.3.10",
+        "@panneau/forms": "^0.3.10",
+        "@panneau/layouts": "^0.3.10",
+        "@panneau/lists": "^0.3.10",
+        "@panneau/modals": "^0.3.10",
         "babel-runtime": "^6.26.0",
         "bootstrap-sass": "^3.3.7",
         "classnames": "^2.2.5",
@@ -67,10 +67,10 @@
         "react-intl": "^2.4.0"
     },
     "devDependencies": {
-        "@panneau/field-locale": "^0.3.7",
-        "@panneau/form": "^0.3.7",
-        "@panneau/layout": "^0.3.7",
-        "@panneau/list": "^0.3.7",
+        "@panneau/field-locale": "^0.3.10",
+        "@panneau/form": "^0.3.10",
+        "@panneau/layout": "^0.3.10",
+        "@panneau/list": "^0.3.10",
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
     },

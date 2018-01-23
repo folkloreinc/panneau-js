@@ -1,6 +1,6 @@
 {
     "name": "generator-panneau",
-    "version": "0.3.7",
+    "version": "0.3.10",
     "description": "Yeoman generator for Panneau",
     "keywords": [
         "yeoman-generator"
@@ -25,7 +25,7 @@
         },
         {
             "name": "Hugo St-Onge",
-            "email": "hso@atelierfolklore.ca"
+            "email": "hugostonge@gmail.com"
         }
     ],
     "main": "lib/generators/app/index.js",
