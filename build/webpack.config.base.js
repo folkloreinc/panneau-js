@@ -1,5 +1,6 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpackUtils = require('./webpackUtils');
 
 const contextPath = path.join(process.env.PWD, 'src/');
 const outputPath = path.join(process.env.PWD, '.tmp/');
@@ -43,6 +44,11 @@ module.exports = (env) => {
                 sourceMap: true,
                 includePaths: [
                     path.join(process.env.PWD, './node_modules'),
+                    path.join(__dirname, '../node_modules'),
+                    path.join(__dirname, '../fields/fields/node_modules'),
+                    path.join(__dirname, '../layouts/layouts/node_modules'),
+                    path.join(__dirname, '../lists/lists/node_modules'),
+                    path.join(__dirname, '../modals/modals/node_modules'),
                 ],
             },
         },
@@ -56,6 +62,7 @@ module.exports = (env) => {
             sourceMap: true,
             importLoaders: 1,
             localIdentName: CSS_NAME,
+            getLocalIdent: webpackUtils.getLocalIdent,
         },
     };
 
@@ -155,8 +162,12 @@ module.exports = (env) => {
             extensions: ['.js', '.jsx', '.es6'],
             modules: [
                 path.join(process.env.PWD, './node_modules'),
-                path.join(process.env.PWD, './web_modules'),
-                path.join(process.env.PWD, './bower_components'),
+                path.join(__dirname, '../node_modules'),
+                path.join(__dirname, '../fields/fields/node_modules'),
+                path.join(__dirname, '../layouts/layouts/node_modules'),
+                path.join(__dirname, '../lists/lists/node_modules'),
+                path.join(__dirname, '../forms/forms/node_modules'),
+                path.join(__dirname, '../modals/modals/node_modules'),
             ],
         },
 

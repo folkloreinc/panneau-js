@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import FormGroup from '@panneau/form-group';
-
-import FieldsCollection from './lib/FieldsCollection';
+import { ComponentsCollection } from '@panneau/core';
 
 const propTypes = {
     name: PropTypes.string,
@@ -20,7 +19,9 @@ const propTypes = {
         name: PropTypes.string.isRequired,
     })),
     getFieldComponent: PropTypes.func,
-    fieldsCollection: PropTypes.instanceOf(FieldsCollection),
+    fieldsCollection: PropTypes.shape({
+        getComponent: PropTypes.func,
+    }),
     fieldsComponents: PropTypes.object, // eslint-disable-line
     renderNotFound: PropTypes.func,
     columns: PropTypes.number,
@@ -28,6 +29,7 @@ const propTypes = {
     collapsibleTypes: PropTypes.arrayOf(PropTypes.string),
     collapsed: PropTypes.bool,
     onChange: PropTypes.func,
+    readOnly: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -45,10 +47,13 @@ const defaultProps = {
     collapsibleTypes: [],
     collapsed: false,
     onChange: null,
+    readOnly: false,
 };
 
 const contextTypes = {
-    fieldsCollection: PropTypes.instanceOf(FieldsCollection),
+    fieldsCollection: PropTypes.shape({
+        getComponent: PropTypes.func,
+    }),
 };
 
 class FieldsGroup extends Component {
@@ -80,13 +85,13 @@ class FieldsGroup extends Component {
             this.context.fieldsCollection ||
             null
         );
-        const normalizedKey = FieldsCollection.normalizeKey(key);
+        const normalizedKey = ComponentsCollection.normalizeKey(key);
 
         if (getFieldComponent !== null) {
             return getFieldComponent(key);
         } else if (fieldsComponents !== null) {
             const fieldKey = Object.keys(fieldsComponents).find(k => (
-                FieldsCollection.normalizeKey(k) === normalizedKey
+                ComponentsCollection.normalizeKey(k) === normalizedKey
             ));
             return typeof fieldKey !== 'undefined' && fieldKey !== null ? fieldsComponents[fieldKey] : null;
         } else if (fieldsCollection !== null) {
@@ -111,7 +116,12 @@ class FieldsGroup extends Component {
     }
 
     renderField(it, index) {
-        const { value, errors, collapsibleTypes } = this.props;
+        const {
+            value,
+            errors,
+            collapsibleTypes,
+            readOnly,
+        } = this.props;
         const {
             type,
             name,
@@ -146,6 +156,7 @@ class FieldsGroup extends Component {
                 key={key}
                 name={name}
                 value={fieldValue}
+                disabled={readOnly}
                 errors={fieldErrors}
                 onChange={(val) => {
                     this.onChange(name, val);

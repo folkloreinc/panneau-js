@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
+import pick from 'lodash/pick';
+import omit from 'lodash/omit';
+import classNames from 'classnames';
 import FormGroup from '@panneau/form-group';
 import './vendor.global.scss';
+import styles from './styles.scss';
 
 const valuePropTypes = PropTypes.oneOfType([
     PropTypes.string,
@@ -216,8 +220,6 @@ class SelectField extends Component {
             return null;
         }
         const {
-            name,
-            label,
             value,
             cannotBeEmpty,
             addEmptyOption,
@@ -231,6 +233,8 @@ class SelectField extends Component {
             ...other
         } = this.props;
 
+        const groupProps = pick(this.props, Object.keys(FormGroup.propTypes));
+        const selectProps = omit(other, Object.keys(FormGroup.propTypes));
         const selectOptions = this.getOptions();
         const defaultValue = selectOptions.length > 0 ?
             this.getValueFromOption(selectOptions[0]) : null;
@@ -253,9 +257,10 @@ class SelectField extends Component {
         return (
             <FormGroup
                 {...other}
-                className="form-group-select"
-                name={name}
-                label={label}
+                className={classNames({
+                    'form-group-select': true,
+                    [styles.container]: true,
+                })}
             >
                 <div style={style}>
                     <SelectComponent

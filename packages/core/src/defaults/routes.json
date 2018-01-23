@@ -1,0 +1,9 @@
+{
+    "resource.index": "/:resource",
+    "resource.show": "/:resource/:id",
+    "resource.create": "/:resource/create",
+    "resource.edit": "/:resource/:id/edit",
+    "resource.store": "/:resource",
+    "resource.update": "/:resource/:id",
+    "resource.delete": "/:resource/:id"
+}

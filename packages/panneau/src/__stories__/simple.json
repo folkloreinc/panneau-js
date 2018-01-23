@@ -1,0 +1,91 @@
+{
+    "name": "Simple Panneau",
+
+    "layout": {
+        "type": "normal",
+        "header": {
+            "navbar": {
+                "items": [
+                    {
+                        "id": "users",
+                        "type": "resource",
+                        "resource": "users"
+                    },
+                    {
+                        "id": "user",
+                        "type": "user",
+                        "position": "right"
+                    }
+                ]
+            }
+        },
+        "footer": true
+    },
+
+    "endpointHost": "https://f644c43f-4459-4dc9-b86b-4356f5157172.mock.pstmn.io",
+
+    "routes": {
+        "resource.index": "/:resource",
+        "resource.create": "/:resource/create",
+        "resource.store": "/:resource",
+        "resource.show": "/:resource/:id",
+        "resource.edit": "/:resource/:id/edit",
+        "resource.update": "/:resource/:id",
+        "resource.destroy": "/:resource/:id"
+    },
+
+    "resources": [
+        {
+            "id": "users",
+            "name": "Users",
+            "methods": {
+                "edit": true
+            },
+            "forms": {
+                "type": "normal",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Name"
+                    },
+                    {
+                        "name": "email",
+                        "type": "email",
+                        "label": "Email"
+                    },
+                    {
+                        "name": "password",
+                        "type": "password",
+                        "label": "Password"
+                    }
+                ]
+            },
+            "lists": {
+                "type": "table",
+                "cols": [
+                    {
+                        "id": "id",
+                        "path": "id",
+                        "label": "ID",
+                        "width": 50
+                    },
+                    {
+                        "id": "name",
+                        "path": "name",
+                        "label": "Name"
+                    },
+                    {
+                        "id": "email",
+                        "path": "email",
+                        "label": "Email"
+                    },
+                    {
+                        "id": "actions",
+                        "type": "actions"
+                    }
+                ]
+            }
+        }
+    ]
+}

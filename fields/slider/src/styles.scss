@@ -1,0 +1,15 @@
+@import '@panneau/core/src/styles/_variables';
+
+.container {
+    position: relative;
+
+    &:global(.has-error) {
+        :global(.rc-slider-track) {
+            background: $state-danger-text;
+        }
+
+        :global(.rc-slider-handle) {
+            border-color: $state-danger-text;
+        }
+    }
+}

@@ -51,6 +51,7 @@
         "start": "npm run storybook"
     },
     "dependencies": {
+        "@panneau/core": "^0.3.7",
         "@panneau/field-code": "^0.3.7",
         "@panneau/field-color": "^0.3.7",
         "@panneau/field-date": "^0.3.7",

@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 import isArray from 'lodash/isArray';
+import pick from 'lodash/pick';
 import FormGroup from '@panneau/form-group';
 
 /**
@@ -254,20 +255,16 @@ class TextField extends Component {
 
     render() {
         const {
-            label,
-            name,
             prefix,
             suffix,
-            ...other
         } = this.props;
+        const groupProps = pick(this.props, Object.keys(FormGroup.propTypes));
         const input = this.renderInput();
         const inputGroup = prefix || suffix ? this.renderInputGroup(input) : input;
         return (
             <FormGroup
                 className="form-group-text"
-                name={name}
-                label={label}
-                {...other}
+                {...groupProps}
             >
                 { inputGroup }
             </FormGroup>

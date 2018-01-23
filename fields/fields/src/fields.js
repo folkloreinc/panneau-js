@@ -1,4 +1,11 @@
-import Text, { TextLocale } from '@panneau/field-text';
+import { ComponentsCollection } from '@panneau/core';
+import Text, {
+    TextLocale,
+    Textarea,
+    Editor,
+    Email,
+    Password,
+} from '@panneau/field-text';
 import Code from '@panneau/field-code';
 import Select from '@panneau/field-select';
 import Color from '@panneau/field-color';
@@ -6,10 +13,12 @@ import Date from '@panneau/field-date';
 import Slider from '@panneau/field-slider';
 import Toggle from '@panneau/field-toggle';
 
-import FieldsCollection from './lib/FieldsCollection';
-
-const fieldsCollection = new FieldsCollection({
+const fieldsCollection = new ComponentsCollection({
     Text,
+    Textarea,
+    Editor,
+    Email,
+    Password,
     TextLocale,
     Code,
     Select,

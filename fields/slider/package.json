@@ -51,14 +51,17 @@
         "start": "npm run storybook"
     },
     "dependencies": {
+        "@panneau/core": "^0.3.7",
         "@panneau/form-group": "^0.3.7",
         "babel-runtime": "^6.26.0",
+        "bootstrap-sass": "^3.3.7",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
         "prop-types": "^15.6.0",
         "rc-slider": "^8.3.5"
     },
     "devDependencies": {
+        "font-awesome": "^4.7.0",
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
     },

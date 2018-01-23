@@ -23,6 +23,14 @@ storiesOf('Fields/Slider', module)
                     onChange={action('change')}
                 />
             </KeepValue>
+            <KeepValue>
+                <SliderField
+                    label="With an error"
+                    value={90}
+                    errors="This value is invalid"
+                    onChange={action('change')}
+                />
+            </KeepValue>
         </div>
 
     ))
