@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "0.3.10",
+    "version": "0.3.11",
     "description": "Fields group for Panneau",
     "keywords": [
         "react",
@@ -51,15 +51,15 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/core": "^0.3.10",
-        "@panneau/field-code": "^0.3.10",
-        "@panneau/field-color": "^0.3.10",
-        "@panneau/field-date": "^0.3.10",
-        "@panneau/field-select": "^0.3.10",
-        "@panneau/field-slider": "^0.3.10",
-        "@panneau/field-text": "^0.3.10",
-        "@panneau/field-toggle": "^0.3.10",
-        "@panneau/form-group": "^0.3.10",
+        "@panneau/core": "^0.3.11",
+        "@panneau/field-code": "^0.3.11",
+        "@panneau/field-color": "^0.3.11",
+        "@panneau/field-date": "^0.3.11",
+        "@panneau/field-select": "^0.3.11",
+        "@panneau/field-slider": "^0.3.11",
+        "@panneau/field-text": "^0.3.11",
+        "@panneau/field-toggle": "^0.3.11",
+        "@panneau/form-group": "^0.3.11",
         "babel-runtime": "^6.26.0",
         "hoist-non-react-statics": "^2.3.1",
         "invariant": "^2.2.2",
