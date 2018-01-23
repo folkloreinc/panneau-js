@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import classNames from 'classnames';
 
-import { Pagination } from '@panneau/list';
 import withComponentsCollection from '../../lib/withComponentsCollection';
 import withUrlGenerator from '../../lib/withUrlGenerator';
 
@@ -183,6 +182,8 @@ class ResourceIndex extends Component {
 
     // eslint-disable-next-line class-methods-use-this
     renderPagination() {
+        const { listsCollection } = this.props;
+        const Pagination = listsCollection.getComponent('pagination');
         return (
             <Pagination
                 total={20}
