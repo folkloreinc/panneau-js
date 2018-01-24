@@ -44,13 +44,13 @@ class Panneau {
     render(element) {
         this.element = element || this.element;
         const root = this.getRootElement();
-        renderReact(element, root, this.onRendered);
+        renderReact(root, element, this.onRendered);
     }
 
     hydrate(element) {
         this.element = element || this.element;
         const root = this.getRootElement();
-        hydrateReact(element, root, this.onRendered);
+        hydrateReact(root, element, this.onRendered);
     }
 
     onRendered() {
