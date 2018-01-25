@@ -1,4 +1,5 @@
 import get from 'lodash/get';
+import trimEnd from 'lodash/trimEnd';
 
 import ResourceApi from './ResourceApi';
 
@@ -11,21 +12,22 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
             const resources = get(rootDefinition, 'resources', []);
             const resource = resources.find(it => it.id === resourceName) || null;
             if (resource) {
+                const resourceActionsLabel = get(resource, 'name', resourceName);
                 return {
-                    label: get(resource, 'name', resourceName),
+                    label: resourceActionsLabel,
                     link: urlGenerator.route('resource.index', {
                         resource: resource.id,
                     }),
                     items: dropdown ? [
                         {
-                            label: 'View all users',
+                            label: `View all ${resourceActionsLabel.toLowerCase()}`,
                             link: urlGenerator.route('resource.index', {
                                 resource: resource.id,
                             }),
                         },
                         { type: 'divider' },
                         {
-                            label: 'Add a new user',
+                            label: `Add a new ${trimEnd(resourceActionsLabel.toLowerCase(), 's')}`, // naive
                             link: urlGenerator.route('resource.create', {
                                 resource: resource.id,
                             }),
