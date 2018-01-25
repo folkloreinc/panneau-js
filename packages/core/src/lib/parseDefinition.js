@@ -12,23 +12,24 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
             const resources = get(rootDefinition, 'resources', []);
             const resource = resources.find(it => it.id === resourceName) || null;
             if (resource) {
+                const routeKeyPrefix = get(resource, 'routes', null) ? `resource.${resource.id}` : 'resource';
                 const resourceActionsLabel = get(resource, 'name', resourceName);
                 return {
                     label: resourceActionsLabel,
-                    link: urlGenerator.route('resource.index', {
+                    link: urlGenerator.route(`${routeKeyPrefix}.index`, {
                         resource: resource.id,
                     }),
                     items: dropdown ? [
                         {
                             label: `View all ${resourceActionsLabel.toLowerCase()}`,
-                            link: urlGenerator.route('resource.index', {
+                            link: urlGenerator.route(`${routeKeyPrefix}.index`, {
                                 resource: resource.id,
                             }),
                         },
                         { type: 'divider' },
                         {
                             label: `Add a new ${trimEnd(resourceActionsLabel.toLowerCase(), 's')}`, // naive
-                            link: urlGenerator.route('resource.create', {
+                            link: urlGenerator.route(`${routeKeyPrefix}.create`, {
                                 resource: resource.id,
                             }),
                         },
