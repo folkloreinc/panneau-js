@@ -90,7 +90,7 @@ class Panneau extends Component {
     getRoutes() {
         const { routes, definition } = this.props;
         const definitionRoutes = get(definition, 'routes', {});
-        const resources = get(definition, 'resources', {})
+        const resources = get(definition, 'resources', [])
             .filter(it => typeof it.routes !== 'undefined');
         const resourcesRoutes = resources.reduce((totalRoutes, resource) => ({
             ...totalRoutes,
