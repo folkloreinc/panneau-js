@@ -12,6 +12,7 @@ import Color from '@panneau/field-color';
 import Date from '@panneau/field-date';
 import Slider from '@panneau/field-slider';
 import Toggle from '@panneau/field-toggle';
+import Items from '@panneau/field-items';
 
 const fieldsCollection = new ComponentsCollection({
     Text,
@@ -26,6 +27,7 @@ const fieldsCollection = new ComponentsCollection({
     Date,
     Slider,
     Toggle,
+    Items,
 });
 
 export default fieldsCollection;

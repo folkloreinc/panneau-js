@@ -5,7 +5,7 @@ import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
 import fieldsCollection from './fields';
 import FieldsGroup from '../FieldsGroup';
-import withFieldsCollection from '../withFieldsCollection';
+import withFieldsCollection from '../../../fields/src/withFieldsCollection';
 
 const FieldsGroupWithCollection = withFieldsCollection({
     fieldsCollection,

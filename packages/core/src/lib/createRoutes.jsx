@@ -36,7 +36,7 @@ export default (urlGenerator, definition) => {
 
     return (
         <Route component={Layout}>
-            <Route path="/" component={Home} />
+            <Route path="/panneau" component={Home} />
             {
                 generateRoutesForResource(defaultRoutes, 'default')
             }

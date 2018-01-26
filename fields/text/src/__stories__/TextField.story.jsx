@@ -4,6 +4,7 @@ import { action } from '@storybook/addon-actions';// eslint-disable-line import/
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
 import TextField from '../TextField';
+import TextLocaleField from '../TextLocaleField';
 
 storiesOf('Fields/Text', module)
     .add('simple', () => (
@@ -45,6 +46,12 @@ storiesOf('Fields/Text', module)
     ))
     .add('other field types', () => (
         <div>
+            <KeepValue>
+                <TextLocaleField
+                    label="Textlocale"
+                    onChange={action('change')}
+                />
+            </KeepValue>
             <KeepValue>
                 <TextField
                     label="Textarea"

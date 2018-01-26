@@ -204,7 +204,7 @@ class ResourceIndex extends Component {
             <div className={containerClassNames}>
                 { this.renderHeader() }
                 { this.renderList() }
-                { this.renderPagination() }
+                { /*this.renderPagination()*/ }
             </div>
         );
     }
