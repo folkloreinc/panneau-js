@@ -194,7 +194,7 @@ class <%= componentName %> extends Component {
                 <div className={formClassNames}>
                     <form
                         action={action}
-                        methd={method}
+                        method={method}
                         onSubmit={this.onFormSubmit}
                     >
                         <div className={fieldsClassNames}>
