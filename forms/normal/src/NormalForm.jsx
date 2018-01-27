@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { FieldsGroup } from '@panneau/fields';
+import FieldsGroup from '@panneau/fields-group';
 
 import styles from './styles.scss';
 

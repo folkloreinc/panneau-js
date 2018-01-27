@@ -14,7 +14,7 @@ class ListPackageGenerator extends PackageGenerator {
             packageDescription: 'forms',
             packageDependencies: [
                 '@panneau/form@^0.3.7',
-                '@panneau/fields@^0.3.7',
+                '@panneau/fields-group@^0.3.7',
             ],
             namePrompt: formNamePrompt,
         }, ...args);
