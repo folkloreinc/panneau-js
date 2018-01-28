@@ -7,6 +7,8 @@ import parseDefinition from '../lib/parseDefinition';
 
 import Container from './Container';
 
+import '../styles/vendor.global.scss';
+
 const propTypes = {
     locale: PropTypes.string,
     componentsCollection: PropTypes.shape({
