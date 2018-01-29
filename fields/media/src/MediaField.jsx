@@ -169,7 +169,7 @@ class MediaField extends Component {
             inputOnly,
             ...other
         } = this.props;
-        console.log('----------',value);
+
         const input = !value || value === PENDING_VALUE ?
             this.renderButton() : this.renderInput();
 
