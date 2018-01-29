@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "0.3.19",
+    "version": "0.3.20",
     "description": "Fields group for Panneau",
     "keywords": [
         "react",
@@ -59,7 +59,7 @@
         "@panneau/field-select": "^0.3.18",
         "@panneau/field-slider": "^0.3.18",
         "@panneau/field-text": "^0.3.17",
-        "@panneau/field-toggle": "^0.3.18",
+        "@panneau/field-toggle": "^0.3.20",
         "@panneau/form-group": "^0.3.12",
         "babel-runtime": "^6.26.0",
         "hoist-non-react-statics": "^2.3.1",
