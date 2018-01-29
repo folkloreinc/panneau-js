@@ -45,7 +45,6 @@ class Popover extends Component {
 
         this.onOutsideClick = this.onOutsideClick.bind(this);
         this.updatePopoverStyle = this.updatePopoverStyle.bind(this);
-        this.updatePopoverStyle = this.updatePopoverStyle.bind(this);
 
         this.popper = null;
         this.refPopover = null;
@@ -77,6 +76,13 @@ class Popover extends Component {
         const visibleChanged = this.props.visible !== prevProps.visible;
         if (visibleChanged && this.props.visible) {
             this.popper.scheduleUpdate();
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.popper !== null) {
+            this.popper.destroy();
+            this.popper = null;
         }
     }
 
