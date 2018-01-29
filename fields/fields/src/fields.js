@@ -13,6 +13,9 @@ import Date from '@panneau/field-date';
 import Slider from '@panneau/field-slider';
 import Toggle from '@panneau/field-toggle';
 import Items from '@panneau/field-items';
+import MediaField, {
+    PictureField,
+} from '@panneau/field-media';
 
 const fieldsCollection = new ComponentsCollection({
     Text,
@@ -28,6 +31,8 @@ const fieldsCollection = new ComponentsCollection({
     Slider,
     Toggle,
     Items,
+    MediaField,
+    PictureField,
 });
 
 export default fieldsCollection;
