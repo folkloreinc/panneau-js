@@ -140,7 +140,7 @@ class ToggleField extends Component {
         return (
             <SwitchComponent
                 {...other}
-                value={val}
+                checked={val}
                 onChange={this.onChange}
             />
         );
