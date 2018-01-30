@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-group",
-    "version": "0.3.23",
+    "version": "0.3.25",
     "description": "Form group for Panneau",
     "keywords": [
         "react",
