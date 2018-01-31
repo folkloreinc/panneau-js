@@ -48,7 +48,8 @@ storiesOf('Fields/Text', module)
         <div>
             <KeepValue>
                 <TextLocaleField
-                    label="Textlocale"
+                    label="TextLocale"
+                    locales={['fr', 'en', 'es']}
                     onChange={action('change')}
                 />
             </KeepValue>
