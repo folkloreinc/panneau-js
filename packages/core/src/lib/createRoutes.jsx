@@ -34,9 +34,11 @@ export default (urlGenerator, definition) => {
     const resourcesWithRoutes = get(definition, 'resources', [])
         .filter(resource => typeof resource.routes !== 'undefined');
 
+    const homePath = urlGenerator.route('home');
+
     return (
         <Route component={Layout}>
-            <Route path="/" component={Home} />
+            <Route path={homePath} component={Home} />
             {
                 generateRoutesForResource(defaultRoutes, 'default')
             }
