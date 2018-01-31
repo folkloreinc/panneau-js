@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
+import 'bootstrap.native';
 
 import defaultRoutes from '../defaults/routes.json';
 import parseDefinition from '../lib/parseDefinition';
