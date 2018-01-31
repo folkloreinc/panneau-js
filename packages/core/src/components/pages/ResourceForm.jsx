@@ -218,9 +218,15 @@ class ResourceForm extends Component {
 
         return (
             <div className={containerClassNames}>
-                { this.renderHeader() }
-                { this.renderErrors() }
-                { needsForm && this.renderForm() }
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-8 col-md-offset-2">
+                            { this.renderHeader() }
+                            { this.renderErrors() }
+                            { needsForm && this.renderForm() }
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }

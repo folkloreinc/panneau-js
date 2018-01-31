@@ -35,6 +35,7 @@ const defaultProps = {
             id: 'actions',
             label: 'Actions',
             type: 'actions',
+            align: 'right',
         },
     ],
     onClickActions: null,
@@ -175,9 +176,13 @@ class TableList extends Component {
 
     renderTableBodyActionsColumn(it, column, rowIndex, colIndex) {
         const key = `row_${rowIndex}_actions`;
+        const align = get(column, 'align', null);
         return (
             <td
                 key={key}
+                className={classNames({
+                    [`text-${align}`]: align !== null,
+                })}
             >
                 <ListActions
                     item={it}
