@@ -45,6 +45,11 @@ if (compiling) {
     plugins.push([path.join(__dirname, './babel-plugin-transform-require-ignore'), {
         extensions: ['.global.scss'],
     }]);
+    if (BABEL_ENV === 'es') {
+        plugins.push(['react-intl', {
+            messagesDir: './intl/messages/',
+        }]);
+    }
 }
 
 module.exports = {

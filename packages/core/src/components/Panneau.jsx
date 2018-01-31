@@ -19,7 +19,7 @@ const propTypes = {
         layout: PropTypes.object,
     }),
     routes: PropTypes.objectOf(PropTypes.string),
-    texts: PropTypes.objectOf(PropTypes.string),
+    messages: PropTypes.objectOf(PropTypes.string),
 };
 
 const defaultProps = {
@@ -27,9 +27,7 @@ const defaultProps = {
     componentsCollection: null,
     definition: null,
     routes: defaultRoutes,
-    texts: {
-
-    },
+    messages: {},
 };
 
 const childContextTypes = {
@@ -76,7 +74,6 @@ class Panneau extends Component {
             urlGenerator,
         });
         const layoutDefinition = get(cleanDefinition, 'layout', null);
-        console.log(cleanDefinition);
         return {
             panneau: {
                 definition: cleanDefinition,

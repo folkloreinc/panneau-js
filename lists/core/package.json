@@ -36,17 +36,19 @@
   "files": [
     "lib",
     "es",
-    "dist"
+    "dist",
+    "intl"
   ],
   "scripts": {
     "storybook": "../../node_modules/.bin/start-storybook -p 9008 -c ../../.storybook-package",
-    "clean": "rm -rf dist && rm -rf lib && rm -rf es",
+    "clean": "rm -rf dist && rm -rf lib && rm -rf es && rm -rf intl",
     "webpack:dist": "node -r babel-register ../../node_modules/.bin/webpack --config ./webpack.config.js --progress --colors",
     "webpack": "npm run webpack:dist",
     "babel:es": "BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es --ignore story.js,test.js",
     "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore story.js,test.js",
     "babel": "npm run babel:es && npm run babel:cjs",
-    "build": "npm run webpack && npm run babel",
+    "intl": "node ../../build/buildPackageTranslations",
+    "build": "npm run webpack && npm run babel && npm run intl",
     "prepare": "npm run clean && npm run build",
     "start": "npm run storybook"
   },
@@ -55,7 +57,8 @@
     "babel-runtime": "^6.26.0",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
-    "prop-types": "^15.6.0"
+    "prop-types": "^15.6.0",
+    "react-intl": "^2.4.0"
   },
   "devDependencies": {
     "react": ">=15.0.0 || ^16.0.0",
