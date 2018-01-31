@@ -76,7 +76,7 @@ Container.defaultProps = defaultProps;
 
 // Select intl
 const selectLocale = props => (props.locale ? props.locale : null);
-const selectMessages = props => (props.texts ? props.texts : null);
+const selectMessages = props => (props.messages ? props.messages : null);
 
 // Select routes for the url generator
 const selectRoutes = props => (props.routes ? props.routes : null);

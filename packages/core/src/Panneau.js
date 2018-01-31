@@ -57,8 +57,10 @@ class Panneau {
             componentsCollection,
         } = this.options;
 
-        const defaultMessages = get(Panneau.defaultLocaleMessages, this.locale, {});
         this.locale = locale;
+
+        const defaultMessages = get(Panneau.defaultLocaleMessages, this.locale, {});
+
         this.messages = get(messages, this.locale, defaultMessages);
         this.element = null;
         this.definition = definition;
