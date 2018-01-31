@@ -221,9 +221,15 @@ class ResourceIndex extends Component {
 
         return (
             <div className={containerClassNames}>
-                { this.renderHeader() }
-                { this.renderList() }
-                { /*this.renderPagination()*/ }
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-8 col-md-offset-2">
+                            { this.renderHeader() }
+                            { this.renderList() }
+                            { /*this.renderPagination()*/ }
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
