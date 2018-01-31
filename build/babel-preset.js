@@ -40,7 +40,7 @@ if (compiling) {
     plugins.push(['css-modules-transform', {
         preprocessCss: path.join(__dirname, './process-scss.js'),
         extensions: ['.css', '.scss'],
-        generateScopedName: 'panneau-[name]-[local]',
+        generateScopedName: path.join(__dirname, './generateScopedName.js'),
     }]);
     plugins.push([path.join(__dirname, './babel-plugin-transform-require-ignore'), {
         extensions: ['.global.scss'],
