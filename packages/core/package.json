@@ -1,6 +1,6 @@
 {
     "name": "@panneau/core",
-    "version": "0.3.28",
+    "version": "0.3.29",
     "description": "Core utilities of the Panneau package",
     "keywords": [
         "react",
