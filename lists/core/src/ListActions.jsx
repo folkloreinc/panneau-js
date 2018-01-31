@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import get from 'lodash/get';
+// import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
     item: PropTypes.shape({}).isRequired,
@@ -21,16 +22,16 @@ const defaultProps = {
     actions: [
         {
             id: 'show',
-            label: 'Show',
+            label: 'list.action.show',
         },
         {
             id: 'edit',
-            label: 'Edit',
+            label: 'list.action.edit',
             className: 'btn-primary',
         },
         {
             id: 'delete',
-            label: 'Delete',
+            label: 'list.action.delete',
             className: 'btn-danger',
             icon: 'remove',
         },
@@ -97,7 +98,9 @@ const ListActions = ({
                         onClick={buttonOnClick}
                     >
                         { icon && renderButtonIcon(icon) }
-                        { label }
+                        <FormattedMessage
+                            id={label}
+                        />
                     </button>
                 );
             })
