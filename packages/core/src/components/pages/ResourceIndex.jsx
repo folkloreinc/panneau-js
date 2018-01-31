@@ -16,6 +16,7 @@ const propTypes = {
         getComponent: PropTypes.func,
     }).isRequired,
     resource: PropTypes.shape({}).isRequired,
+    location: PropTypes.shape({}).isRequired,
     items: PropTypes.arrayOf(PropTypes.object),
     errors: PropTypes.arrayOf(PropTypes.string),
     gotoResourceEdit: PropTypes.func,
@@ -47,11 +48,7 @@ class ResourceIndex extends Component {
     }
 
     componentDidMount() {
-        const { resource } = this.props;
-        resource.api
-            .index()
-            .then(this.onItemsLoaded)
-            .catch(this.onItemsLoadError);
+        this.loadItems();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -62,11 +59,25 @@ class ResourceIndex extends Component {
             });
         }
 
+        const locationChanged = nextProps.location !== this.props.location;
+        if (locationChanged) {
+            this.setState({
+                items: null,
+            });
+        }
+
         const errorsChanged = nextProps.errors !== this.props.errors;
         if (errorsChanged) {
             this.setState({
                 errors: nextProps.errors,
             });
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const itemsChanged = prevState.items !== this.state.items;
+        if (itemsChanged && this.state.items === null) {
+            this.loadItems();
         }
     }
 
@@ -109,6 +120,14 @@ class ResourceIndex extends Component {
         this.setState({
             items: this.state.items.filter(it => it.id !== id),
         });
+    }
+
+    loadItems() {
+        const { resource } = this.props;
+        resource.api
+            .index()
+            .then(this.onItemsLoaded)
+            .catch(this.onItemsLoadError);
     }
 
     deleteItem(id) {
@@ -172,7 +191,7 @@ class ResourceIndex extends Component {
         return ListComponent !== null ? (
             <div className={listClassNames}>
                 <ListComponent
-                    items={items}
+                    items={items || []}
                     onClickActions={this.onItemActions}
                     {...listProps}
                 />
