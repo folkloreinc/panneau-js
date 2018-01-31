@@ -5,6 +5,13 @@ import listsCollection from '@panneau/lists';
 import formsCollection from '@panneau/forms';
 import modalsCollection from '@panneau/modals';
 
+import enMessages from '../intl/lang/en.json';
+import frMessages from '../intl/lang/fr.json';
+
+// Set messages
+Panneau.setDefaultLocaleMessages('en', enMessages);
+Panneau.setDefaultLocaleMessages('fr', frMessages);
+
 // Set default components
 Panneau.setDefaultComponentsCollection(fieldsCollection, 'fields');
 Panneau.setDefaultComponentsCollection(layoutsCollection, 'layouts');

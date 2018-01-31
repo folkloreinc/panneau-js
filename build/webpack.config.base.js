@@ -1,6 +1,6 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const webpackUtils = require('./webpackUtils');
+const getLocalIdent = require('./getLocalIdent');
 
 const contextPath = path.join(process.env.PWD, 'src/');
 const outputPath = path.join(process.env.PWD, '.tmp/');
@@ -45,6 +45,7 @@ module.exports = (env) => {
                 includePaths: [
                     path.join(process.env.PWD, './node_modules'),
                     path.join(__dirname, '../node_modules'),
+                    path.join(__dirname, '../fields/select/node_modules'),
                     path.join(__dirname, '../fields/fields/node_modules'),
                     path.join(__dirname, '../layouts/layouts/node_modules'),
                     path.join(__dirname, '../lists/lists/node_modules'),
@@ -62,7 +63,7 @@ module.exports = (env) => {
             sourceMap: true,
             importLoaders: 1,
             localIdentName: CSS_NAME,
-            getLocalIdent: webpackUtils.getLocalIdent,
+            getLocalIdent,
         },
     };
 
@@ -173,13 +174,13 @@ module.exports = (env) => {
 
         stats: {
             colors: true,
-            modules: true,
+            modules: false,
             reasons: true,
             modulesSort: 'size',
-            children: true,
-            chunks: true,
-            chunkModules: true,
-            chunkOrigins: true,
+            children: false,
+            chunks: false,
+            chunkModules: false,
+            chunkOrigins: false,
             chunksSort: 'size',
         },
 

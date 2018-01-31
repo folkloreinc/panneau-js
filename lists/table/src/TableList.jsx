@@ -161,7 +161,7 @@ class TableList extends Component {
         const key = `row_${id}_${column.id}`;
         const data = get(it, column.path, null);
 
-        const props = omit(column, ['value', 'label', 'name']);
+        const props = omit(column, ['value', 'label', 'name', 'path']);
 
         return (
             <td
@@ -196,7 +196,7 @@ class TableList extends Component {
             buttons.push(this.renderTableButton(it, button, rowIndex, colIndex, btnIndex));
         });
 
-        const props = omit(column, ['value', 'label', 'name', 'className']);
+        const props = omit(column, ['value', 'label', 'name', 'className', 'path']);
 
         const tdClassNames = classNames({
             'text-right': true,

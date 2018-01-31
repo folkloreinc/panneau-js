@@ -3,6 +3,8 @@ import {
     render as renderReact,
     hydrate as hydrateReact,
 } from 'react-dom';
+import isObject from 'lodash/isObject';
+import get from 'lodash/get';
 
 import ComponentsCollection from './lib/ComponentsCollection';
 import PanneauComponent from './components/Panneau';
@@ -19,6 +21,21 @@ class Panneau {
         }
     }
 
+    static setDefaultLocaleMessages(locale, messages) {
+        if (isObject(locale)) {
+            Panneau.defaultLocaleMessages = {
+                ...locale,
+            };
+        } else {
+            Panneau.defaultLocaleMessages = {
+                ...Panneau.defaultLocaleMessages,
+                [locale]: {
+                    ...messages,
+                },
+            };
+        }
+    }
+
     /**
      * Create a new panneau environment
      * @param  {object} definition The definition of the Panneau instance
@@ -27,15 +44,22 @@ class Panneau {
     constructor(definition, options) {
         this.options = {
             componentsCollection: Panneau.defaultComponentsCollection,
+            locale: 'en',
+            messages: null,
             ...options,
         };
 
         this.onRendered = this.onRendered.bind(this);
 
         const {
+            locale,
+            messages,
             componentsCollection,
         } = this.options;
 
+        const defaultMessages = get(Panneau.defaultLocaleMessages, this.locale, {});
+        this.locale = locale;
+        this.messages = get(messages, this.locale, defaultMessages);
         this.element = null;
         this.definition = definition;
         this.componentsCollection = componentsCollection;
@@ -53,17 +77,16 @@ class Panneau {
         hydrateReact(root, element, this.onRendered);
     }
 
-    onRendered() {
-
-    }
+    // eslint-disable-next-line
+    onRendered() {}
 
     getRootProps() {
-        const props = {
+        return {
             componentsCollection: this.componentsCollection,
             definition: this.definition,
+            locale: this.locale,
+            messages: this.messages,
         };
-
-        return props;
     }
 
     getRootElement() {
@@ -113,5 +136,6 @@ class Panneau {
 }
 
 Panneau.defaultComponentsCollection = new ComponentsCollection();
+Panneau.defaultLocaleMessages = {};
 
 export default Panneau;
