@@ -1,7 +1,22 @@
 import get from 'lodash/get';
 import trimEnd from 'lodash/trimEnd';
+import { defineMessages } from 'react-intl';
 
 import ResourceApi from './ResourceApi';
+import messageWithValues from './messageWithValues';
+
+const messages = defineMessages({
+    navbarViewAll: {
+        id: 'packages.core.lib.definition.navbar.view',
+        description: 'The label for a resource "view all" navbar menu',
+        defaultMessage: 'View all { resourceLabel }',
+    },
+    navbarAddNew: {
+        id: 'packages.core.lib.definition.navbar.new',
+        description: 'The label for a resource "add new" navbar menu',
+        defaultMessage: 'Add a new { resourceLabel }',
+    },
+});
 
 const parseDefinition = (rootDefinition, { urlGenerator }) => {
     const parseNavbarItem = (definition) => {
@@ -21,14 +36,18 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
                     }),
                     items: dropdown ? [
                         {
-                            label: `View all ${resourceActionsLabel.toLowerCase()}`,
+                            label: messageWithValues(messages.navbarViewAll, {
+                                resourceLabel: resourceActionsLabel.toLowerCase(),
+                            }),
                             link: urlGenerator.route(`${routeKeyPrefix}.index`, {
                                 resource: resource.id,
                             }),
                         },
                         { type: 'divider' },
                         {
-                            label: `Add a new ${trimEnd(resourceActionsLabel.toLowerCase(), 's')}`, // naive
+                            label: messageWithValues(messages.navbarAddNew, {
+                                resourceLabel: trimEnd(resourceActionsLabel.toLowerCase(), 's'), // naive
+                            }),
                             link: urlGenerator.route(`${routeKeyPrefix}.create`, {
                                 resource: resource.id,
                             }),

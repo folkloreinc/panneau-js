@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isString from 'lodash/isString';
 
 const propTypes = {
     title: PropTypes.string,
@@ -79,6 +81,7 @@ class Navbar extends Component {
         const { dropdownOpenedIndex } = this.state;
         const link = get(it, 'link', '#');
         const divider = get(it, 'type', 'item') === 'divider';
+        const label = get(it, 'label', '');
         const items = get(it, 'items', null);
         const linkProps = it.dropdown ? {
             role: 'button',
@@ -105,7 +108,9 @@ class Navbar extends Component {
                         {...linkProps}
                         onClick={e => this.onClickItem(e, it, index, position)}
                     >
-                        { it.label } { it.dropdown ? (<span className="caret" />) : null }
+                        {isString(label) ? label : (
+                            <FormattedMessage {...label} />
+                        )} { it.dropdown ? (<span className="caret" />) : null }
                     </a>
                 ) : null }
                 { it.dropdown ? (
