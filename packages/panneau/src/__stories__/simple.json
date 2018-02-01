@@ -25,6 +25,7 @@
     "endpointHost": "https://f644c43f-4459-4dc9-b86b-4356f5157172.mock.pstmn.io",
 
     "routes": {
+        "home": "/",
         "resource.index": "/:resource",
         "resource.create": "/:resource/create",
         "resource.store": "/:resource",
