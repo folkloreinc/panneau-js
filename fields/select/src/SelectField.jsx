@@ -91,7 +91,7 @@ class SelectField extends Component {
         this.onChange = this.onChange.bind(this);
         this.onNewOptionClick = this.onNewOptionClick.bind(this);
         this.getValueFromOption = this.getValueFromOption.bind(this);
-
+        this.loadOptions = this.loadOptions.bind(this);
         this.importCanceled = false;
         this.Component = null;
 

@@ -6,5 +6,5 @@
     "packages.core.components.pages.create.buttons.submit": "Créer",
     "packages.core.components.pages.edit.buttons.submit": "Sauvegarder",
     "packages.core.lib.definition.navbar.view": "Voir tout les {resourceLabel}",
-    "packages.core.lib.definition.navbar.new": "Ajouter un nouvel {resourceLabel}"
+    "packages.core.lib.definition.navbar.new": "Ajouter un nouveau {resourceLabel}"
 }
