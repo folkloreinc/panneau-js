@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-select",
-    "version": "0.3.34",
+    "version": "0.3.35",
     "description": "Select field for Panneau",
     "keywords": [
         "react",
