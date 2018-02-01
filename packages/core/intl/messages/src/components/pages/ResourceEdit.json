@@ -1,0 +1,7 @@
+[
+  {
+    "id": "packages.core.components.pages.edit.buttons.submit",
+    "description": "The label of the \"save\" form button",
+    "defaultMessage": "Save"
+  }
+]

@@ -1,5 +1,8 @@
 {
     "list.actions.show": "Voir",
     "list.actions.edit": "Modifier",
-    "list.actions.delete": "Supprimer"
+    "list.actions.delete": "Supprimer",
+    "forms.normal.buttons.submit": "Sauvegarder",
+    "packages.core.components.pages.create.buttons.submit": "Créer",
+    "packages.core.components.pages.edit.buttons.submit": "Sauvegarder"
 }
