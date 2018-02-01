@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import isString from 'lodash/isString';
+import { FormattedMessage, defineMessages } from 'react-intl';
 import FieldsGroup from '@panneau/fields-group';
 
 import styles from './styles.scss';
+
+const messages = defineMessages({
+    save: {
+        id: 'forms.normal.buttons.submit',
+        description: 'The label of the "save" form button',
+        defaultMessage: 'Save',
+    },
+});
 
 const propTypes = {
     action: PropTypes.string,
@@ -16,7 +26,14 @@ const propTypes = {
     buttons: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string,
         type: PropTypes.string,
-        label: PropTypes.string,
+        label: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.shape({
+                id: PropTypes.string,
+                description: PropTypes.string,
+                defaultMessage: PropTypes.string,
+            }),
+        ]),
         className: PropTypes.string,
         onClick: PropTypes.func,
     })),
@@ -35,7 +52,7 @@ const defaultProps = {
         {
             id: 'submit',
             type: 'submit',
-            label: 'OK',
+            label: messages.save,
             className: classNames({
                 'btn-primary': true,
             }),
@@ -173,7 +190,9 @@ class NormalForm extends Component {
                         })}
                         onClick={onClick || null}
                     >
-                        { label }
+                        {isString(label) ? label : (
+                            <FormattedMessage {...label} />
+                        )}
                     </button>
                 )) }
 

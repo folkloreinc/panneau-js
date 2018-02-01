@@ -1,0 +1,7 @@
+[
+  {
+    "id": "forms.normal.buttons.submit",
+    "description": "The label of the \"save\" form button",
+    "defaultMessage": "Save"
+  }
+]
