@@ -1,6 +1,7 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';// eslint-disable-line import/no-extraneous-dependencies
 import { withFieldsCollection } from '@panneau/fields';
+import { IntlProvider } from 'react-intl';
 
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
@@ -29,17 +30,53 @@ const submitAction = action('onSubmit');
 storiesOf('Forms/Normal', module)
     .add('simple', () => (
         <div>
-            <KeepValue
-                onChangeName="onValueChange"
-                onChange={action('onValueChange')}
+            <IntlProvider
+                locale="en"
             >
-                <NormalFormWithFields
-                    fields={fields}
-                    onSubmit={(e, value) => {
-                        e.preventDefault();
-                        return submitAction(value);
-                    }}
-                />
-            </KeepValue>
+                <KeepValue
+                    onChangeName="onValueChange"
+                    onChange={action('onValueChange')}
+                >
+                    <NormalFormWithFields
+                        fields={fields}
+                        onSubmit={(e, value) => {
+                            e.preventDefault();
+                            return submitAction(value);
+                        }}
+                    />
+                </KeepValue>
+            </IntlProvider>
+        </div>
+    ))
+    .add('with custom button', () => (
+        <div>
+            <IntlProvider
+                locale="en"
+                messages={{
+                    'forms.normal.__stories__.test1': 'Custom button 1',
+                }}
+            >
+                <KeepValue
+                    onChangeName="onValueChange"
+                    onChange={action('onValueChange')}
+                >
+                    <NormalFormWithFields
+                        fields={fields}
+                        buttons={[
+                            {
+                                label: {
+                                    id: 'forms.normal.__stories__.test1',
+                                    defaultMessage: 'Default test label 1',
+                                },
+                                className: 'btn-success',
+                            },
+                        ]}
+                        onSubmit={(e, value) => {
+                            e.preventDefault();
+                            return submitAction(value);
+                        }}
+                    />
+                </KeepValue>
+            </IntlProvider>
         </div>
     ));

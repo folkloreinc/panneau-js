@@ -1,0 +1,7 @@
+[
+  {
+    "id": "packages.core.components.pages.create.buttons.submit",
+    "description": "The label of the \"create\" form button",
+    "defaultMessage": "Create"
+  }
+]
