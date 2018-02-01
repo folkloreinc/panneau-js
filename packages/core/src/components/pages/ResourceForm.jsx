@@ -23,6 +23,20 @@ const propTypes = {
     item: PropTypes.shape({
         id: PropTypes.number,
     }),
+    buttons: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string,
+        type: PropTypes.string,
+        label: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.shape({
+                id: PropTypes.string,
+                description: PropTypes.string,
+                defaultMessage: PropTypes.string,
+            }),
+        ]),
+        className: PropTypes.string,
+        onClick: PropTypes.func,
+    })),
     errors: PropTypes.arrayOf(PropTypes.string),
     formValue: PropTypes.shape({}),
     formErrors: PropTypes.objectOf(PropTypes.array),
@@ -36,6 +50,14 @@ const defaultProps = {
     formValue: null,
     formErrors: null,
     readOnly: false,
+    buttons: [
+        {
+            id: 'submit',
+            type: 'submit',
+            label: 'Save',
+            className: 'btn-primary',
+        },
+    ],
 };
 
 class ResourceForm extends Component {
@@ -170,21 +192,22 @@ class ResourceForm extends Component {
     }
 
     renderForm() {
-        const { action, resource, formsCollection, readOnly } = this.props;
-        const { item, formValue, formErrors } = this.state;
+        const {
+            action,
+            resource,
+            formsCollection,
+            readOnly,
+            buttons,
+        } = this.props;
+        const {
+            item,
+            formValue,
+            formErrors,
+        } = this.state;
         const form = get(resource, `forms.${action}`, get(resource, 'forms', {}));
         const { type, ...formProps } = form;
         const FormComponent = formsCollection.getComponent(type || 'normal');
-        const buttons = readOnly ? [] : [
-            {
-                id: 'submit',
-                type: 'submit',
-                label: action === 'edit' ? 'Save' : 'OK',
-                className: classNames({
-                    'btn-primary': true,
-                }),
-            },
-        ];
+        const formButtons = readOnly ? [] : buttons;
 
         const formClassNames = classNames({
             [styles.form]: true,
@@ -194,7 +217,7 @@ class ResourceForm extends Component {
             <div className={formClassNames}>
                 <FormComponent
                     readOnly={readOnly}
-                    buttons={buttons}
+                    buttons={formButtons}
                     value={formValue || item}
                     errors={formErrors}
                     submitForm={this.submitForm}
