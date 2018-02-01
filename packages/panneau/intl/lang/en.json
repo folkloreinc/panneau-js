@@ -4,5 +4,7 @@
     "list.actions.delete": "Delete",
     "forms.normal.buttons.submit": "Save",
     "packages.core.components.pages.create.buttons.submit": "Create",
-    "packages.core.components.pages.edit.buttons.submit": "Save"
+    "packages.core.components.pages.edit.buttons.submit": "Save",
+    "packages.core.lib.definition.navbar.view": "View all {resourceLabel}",
+    "packages.core.lib.definition.navbar.new": "Add a new {resourceLabel}"
 }
