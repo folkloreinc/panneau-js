@@ -1,7 +1,8 @@
-const messageWithValues = (messageDescriptor, values) => (
-    Object.assign(messageDescriptor, {
-        values,
-    })
-);
+const messageWithValues = (messageDescriptor, values) => ({
+    ...messageDescriptor,
+    values: {
+        ...values,
+    },
+});
 
 export default messageWithValues;
