@@ -121,5 +121,8 @@
         "gitUsername": "Folklore",
         "gitEmail": "info@atelierfolklore.ca",
         "commitMessage": "Deploy Storybook to GitHub Pages"
+    },
+    "dependencies": {
+        "array-flatten": "^2.1.1"
     }
 }
