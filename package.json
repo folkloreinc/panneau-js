@@ -44,6 +44,7 @@
         "@storybook/react": "^3.3.6",
         "@storybook/storybook-deployer": "^2.0.0",
         "autoprefixer": "^7.1.6",
+        "array-flatten": "^2.1.1",
         "babel-cli": "^6.26.0",
         "babel-core": "^6.26.0",
         "babel-eslint": "^8.2.1",
@@ -122,7 +123,5 @@
         "gitEmail": "info@atelierfolklore.ca",
         "commitMessage": "Deploy Storybook to GitHub Pages"
     },
-    "dependencies": {
-        "array-flatten": "^2.1.1"
-    }
+    "dependencies": {}
 }
