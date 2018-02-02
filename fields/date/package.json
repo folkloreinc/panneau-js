@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-date",
-    "version": "0.3.28",
+    "version": "0.3.36",
     "description": "Date field for Panneau",
     "keywords": [
         "react",
