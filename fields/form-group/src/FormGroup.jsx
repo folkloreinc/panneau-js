@@ -21,6 +21,7 @@ const propTypes = {
     large: PropTypes.bool,
     small: PropTypes.bool,
     inline: PropTypes.bool,
+    asPanel: PropTypes.bool,
 
     collapsible: PropTypes.bool,
     collapsed: PropTypes.bool,
@@ -41,6 +42,7 @@ const defaultProps = {
     large: false,
     small: false,
     inline: false,
+    asPanel: false,
 
     collapsible: false,
     collapsed: false,
@@ -108,6 +110,7 @@ class FormGroup extends Component {
             name,
             large,
             small,
+            asPanel,
             collapsible,
         } = this.props;
 
@@ -125,13 +128,18 @@ class FormGroup extends Component {
             return null;
         }
 
+        const labelContainerClasses = classNames({
+            'form-group-label': true,
+            'panel-heading': asPanel,
+        });
+
         const labelClasses = classNames({
-            'control-label': true,
+            'control-label': !asPanel,
             'smaller-text': small,
         });
 
         return (
-            <div className="form-group-label">
+            <div className={labelContainerClasses}>
                 { labelPrefix }
                 { large ? (
                     <h4 className="control-label">{link}</h4>
@@ -150,6 +158,7 @@ class FormGroup extends Component {
             className,
             errors,
             inputOnly,
+            asPanel,
             collapsible,
         } = this.props;
 
@@ -166,12 +175,15 @@ class FormGroup extends Component {
             'form-group-collapsible': collapsible,
             'has-error': errors && errors.length,
             'has-padding-bottom': inline,
+            panel: asPanel && !inline,
+            'panel-default': asPanel && !inline,
             ...customClassNames,
         });
 
         const formGroupInnerClassNames = classNames({
             'form-group-inner': true,
             'form-group-collapsible-inner': collapsible,
+            'panel-body': asPanel && !inline,
         });
 
         const innerStyle = {
