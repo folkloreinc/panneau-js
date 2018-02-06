@@ -154,7 +154,7 @@ class ResourceForm extends Component {
         const { action, resource } = this.props;
         const { item, formValue } = this.state;
         return (action === 'create' ?
-            resource.api.store(formValue) : resource.api.update(item.id, formValue));
+            resource.api.store(formValue) : resource.api.update(item.id, formValue || item));
     }
 
     renderHeader() {
