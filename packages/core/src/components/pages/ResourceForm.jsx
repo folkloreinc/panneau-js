@@ -41,6 +41,7 @@ const propTypes = {
     formValue: PropTypes.shape({}),
     formErrors: PropTypes.objectOf(PropTypes.array),
     readOnly: PropTypes.bool,
+    onFormComplete: PropTypes.func,
 };
 
 const defaultProps = {
@@ -50,6 +51,7 @@ const defaultProps = {
     formValue: null,
     formErrors: null,
     readOnly: false,
+    onFormComplete: null,
     buttons: [
         {
             id: 'submit',
@@ -127,6 +129,9 @@ class ResourceForm extends Component {
             item,
             formValue: null,
         });
+        if (this.props.onFormComplete) {
+            this.props.onFormComplete(item);
+        }
     }
 
     onFormErrors(errors) {
