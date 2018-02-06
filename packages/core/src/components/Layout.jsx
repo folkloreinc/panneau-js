@@ -4,6 +4,8 @@ import get from 'lodash/get';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
+import withUrlGenerator from '../lib/withUrlGenerator';
+
 const propTypes = {
     layoutsCollection: PropTypes.shape({
         getComponent: PropTypes.func,
@@ -40,10 +42,11 @@ const mapStateToProps = ({ layout, panneau }) => ({
     ...layout,
 });
 
-const mapDispatchToProps = dispatch => ({
-    gotoHome: () => dispatch(push('/')),
+const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
+    gotoHome: () => dispatch(push(urlGenerator.route('home'))),
     goto: path => dispatch(push(path)),
 });
 
 const WithStoreContainer = connect(mapStateToProps, mapDispatchToProps)(Layout);
-export default WithStoreContainer;
+const WithUrlGenerator = withUrlGenerator()(WithStoreContainer);
+export default WithUrlGenerator;
