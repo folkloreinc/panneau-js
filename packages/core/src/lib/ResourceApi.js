@@ -55,13 +55,31 @@ class ResourceApi {
     callApi(action, method, id = undefined, data = undefined) {
         const path = this.getActionPath(action, id);
         const body = (isObject(id) ? id : data) || null;
+        const methodUpperCase = method.toUpperCase();
+        let finalMethod;
+        let finalBody;
+        switch (methodUpperCase) {
+        case 'PUT':
+        case 'PATCH':
+        case 'DELETE':
+            finalMethod = 'POST';
+            finalBody = {
+                ...body,
+                _method: methodUpperCase, // Laravel magic
+            };
+            break;
+        default:
+            finalMethod = methodUpperCase;
+            finalBody = body;
+            break;
+        }
         return fetch(path, {
-            method: method.toUpperCase(),
+            method: finalMethod,
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
             },
-            body: body !== null ? JSON.stringify(body) : null,
+            body: finalBody !== null ? JSON.stringify(finalBody) : null,
         })
             .then(getResponseAndDataObject)
             .then(responseObject => throwResponseError(responseObject))
