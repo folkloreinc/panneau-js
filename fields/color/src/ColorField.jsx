@@ -204,7 +204,7 @@ class ColorField extends Component {
                 element={withInput ? this.refContainer : this.refButton}
                 elementPlacement={colorPosition}
                 offsetX="2px"
-                blurElement={withInput ? this.refContainer : this.refButton}
+                blurElement={withInput ? this.refContainer : null}
                 closeOnBlur
                 noUi
             >
