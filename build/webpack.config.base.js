@@ -11,8 +11,8 @@ module.exports = (env) => {
     const CSS_NAME = env === 'dev' ? 'panneau-[name]-[local]' : 'panneau-[name]-[local]';
     const IMAGE_FILENAME = env === 'dev' ? 'img/[name]-[hash:6].[ext]' : 'img/[name].[ext]';
     const FONT_FILENAME = env === 'dev' ? 'fonts/[name]-[hash:6].[ext]' : 'fonts/[name].[ext]';
-    const IMAGE_PUBLIC_PATH = env === 'dev' ? '' : '../';
-    const FONT_PUBLIC_PATH = env === 'dev' ? '' : '../';
+    const IMAGE_PUBLIC_PATH = env === 'dev' ? '' : '';
+    const FONT_PUBLIC_PATH = env === 'dev' ? '' : '';
 
     const extractPlugin = new ExtractTextPlugin({
         filename: CSS_FILENAME,

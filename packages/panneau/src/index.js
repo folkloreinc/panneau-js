@@ -31,4 +31,9 @@ export {
     panneau,
 };
 
-export default () => panneau;
+export default (el) => {
+    if (typeof el !== 'undefined') {
+        panneau.render(el);
+    }
+    return panneau;
+};
