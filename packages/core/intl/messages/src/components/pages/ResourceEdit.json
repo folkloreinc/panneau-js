@@ -1,6 +1,6 @@
 [
   {
-    "id": "packages.core.components.pages.edit.buttons.submit",
+    "id": "core.buttons.resources.edit",
     "description": "The label of the \"save\" form button",
     "defaultMessage": "Save"
   }

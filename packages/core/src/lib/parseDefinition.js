@@ -7,12 +7,12 @@ import messageWithValues from './messageWithValues';
 
 const messages = defineMessages({
     navbarViewAll: {
-        id: 'packages.core.lib.definition.navbar.view',
+        id: 'core.navbar.resources.index',
         description: 'The label for a resource "view all" navbar menu',
         defaultMessage: 'View all { resourceLabel }',
     },
     navbarAddNew: {
-        id: 'packages.core.lib.definition.navbar.new',
+        id: 'core.navbar.resources.create',
         description: 'The label for a resource "add new" navbar menu',
         defaultMessage: 'Add a new { resourceLabel }',
     },

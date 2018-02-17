@@ -5,7 +5,7 @@ import ResourceForm from './ResourceForm';
 
 const messages = defineMessages({
     save: {
-        id: 'packages.core.components.pages.edit.buttons.submit',
+        id: 'core.buttons.resources.edit',
         description: 'The label of the "save" form button',
         defaultMessage: 'Save',
     },

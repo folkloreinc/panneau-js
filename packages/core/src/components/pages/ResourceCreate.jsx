@@ -11,7 +11,7 @@ import ResourceForm from './ResourceForm';
 
 const messages = defineMessages({
     create: {
-        id: 'packages.core.components.pages.create.buttons.submit',
+        id: 'core.buttons.resources.create',
         description: 'The label of the "create" form button',
         defaultMessage: 'Create',
     },
