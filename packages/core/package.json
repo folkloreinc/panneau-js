@@ -72,7 +72,8 @@
         "redux-devtools-log-monitor": "^1.4.0",
         "redux-promise": "^0.5.3",
         "redux-thunk": "^2.2.0",
-        "whatwg-fetch": "^2.0.3"
+        "whatwg-fetch": "^2.0.3",
+        "wolfy87-eventemitter": "^5.2.4"
     },
     "devDependencies": {
         "react": ">=15.0.0 || ^16.0.0",

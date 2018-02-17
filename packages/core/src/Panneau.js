@@ -3,6 +3,7 @@ import {
     render as renderReact,
     hydrate as hydrateReact,
 } from 'react-dom';
+import EventEmitter from 'wolfy87-eventemitter';
 import isObject from 'lodash/isObject';
 import get from 'lodash/get';
 
@@ -12,7 +13,7 @@ import PanneauComponent from './components/Panneau';
 /**
  * Panneau Application
  */
-class Panneau {
+class Panneau extends EventEmitter {
     static setDefaultComponentsCollection(componentsCollection, namespace) {
         if (typeof namespace !== 'undefined') {
             Panneau.defaultComponentsCollection.setComponents(componentsCollection, namespace);
@@ -42,45 +43,49 @@ class Panneau {
      * @param  {object} options Options for the new Panneau instance
      */
     constructor(definition, options) {
+        super();
+        
         this.options = {
             componentsCollection: Panneau.defaultComponentsCollection,
             locale: 'en',
             messages: null,
-            ...options,
         };
 
         this.onRendered = this.onRendered.bind(this);
+        this.onHydrated = this.onHydrated.bind(this);
 
-        const {
-            locale,
-            messages,
-            componentsCollection,
-        } = this.options;
-
-        this.locale = locale;
-
-        const defaultMessages = get(Panneau.defaultLocaleMessages, this.locale, {});
-
-        this.messages = get(messages, this.locale, defaultMessages);
         this.element = null;
+        this.rendered = false;
         this.definition = definition;
-        this.componentsCollection = componentsCollection;
+        this.locale = null;
+        this.messages = {};
+        this.componentsCollection = null;
+        this.setOptions(options);
+    }
+
+    onRendered() {
+        this.emit('rendered', this.element);
+    }
+    
+    onHydrated() {
+        this.emit('hydrated', this.element);
     }
 
     render(element) {
+        this.rendered = true;
         this.element = element || this.element;
         const root = this.getRootElement();
-        renderReact(root, element, this.onRendered);
+        renderReact(root, this.element, this.onRendered);
+        this.emit('render', this.element);
     }
 
     hydrate(element) {
+        this.rendered = false;
         this.element = element || this.element;
         const root = this.getRootElement();
-        hydrateReact(root, element, this.onRendered);
+        hydrateReact(root, this.element, this.onHydrated);
+        this.emit('hydrate', this.element);
     }
-
-    // eslint-disable-next-line
-    onRendered() {}
 
     getRootProps() {
         return {
@@ -98,8 +103,48 @@ class Panneau {
     }
 
     /**
-     * Set the Fields collection
-     * @param {object} definition The new fields collection
+     * Set the options
+     * @param {object} options The new options
+     * @return {this}
+     */
+    setOptions(options) {
+        this.options = {
+            ...this.options,
+            ...options
+        };
+        
+        const {
+            locale,
+            messages,
+            componentsCollection,
+        } = this.options;
+        
+        this.locale = locale;
+        this.messages = {
+            ...get(Panneau.defaultLocaleMessages, this.locale, {}),
+            ...get(messages, this.locale, {}),
+        };
+        this.componentsCollection = componentsCollection;
+        
+        if (this.rendered) {
+            this.render();
+        }
+        
+        return this;
+    }
+
+    /**
+     * Get the options
+     * @return {object} The options
+     */
+    getOptions() {
+        return this.options;
+    }
+
+    /**
+     * Set the definition
+     * @param {object} definition The new definition
+     * @return {this}
      */
     setDefinition(definition) {
         this.definition = definition;
@@ -107,8 +152,8 @@ class Panneau {
     }
 
     /**
-     * Get the fields collection
-     * @return {object} The fields collection used by this instance
+     * Get the definition
+     * @return {object} The definition
      */
     getDefinition() {
         return this.definition;
