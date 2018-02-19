@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { pascal as pascalCase } from 'change-case';
 import classNames from 'classnames';
-import { ListActions } from '@panneau/list';
+import { ListActions, ListEmpty } from '@panneau/list';
 import omit from 'lodash/omit';
 import get from 'lodash/get';
 
@@ -115,6 +115,14 @@ class TableList extends Component {
     }
 
     renderTableBody(columns, items) {
+        if (!items || !items.length) {
+            return (
+                <tbody>
+                    { this.renderTableBodyNoItemsRow(columns) }
+                </tbody>
+            );
+        }
+
         const bodyRows = [];
         items.forEach((it, index) => {
             bodyRows.push(this.renderTableBodyRow(columns, it, index));
@@ -124,6 +132,25 @@ class TableList extends Component {
             <tbody>
                 { bodyRows }
             </tbody>
+        );
+    }
+
+    renderTableBodyNoItemsRow(columns) {
+        const { emptyListText } = this.props;
+        const colspan = columns.length;
+        return (
+            <tr>
+                <td
+                    className={classNames({
+                        [styles.emptyRow]: true,
+                    })}
+                    colSpan={colspan}
+                >
+                    <ListEmpty
+                        label={emptyListText}
+                    />
+                </td>
+            </tr>
         );
     }
 
