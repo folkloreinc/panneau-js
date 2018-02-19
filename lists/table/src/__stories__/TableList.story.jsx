@@ -22,4 +22,11 @@ storiesOf('Lists/Table', module)
                 />
             </IntlProvider>
         </div>
+    ))
+    .add('empty', () => (
+        <div>
+            <IntlProvider locale="en">
+                <TableList />
+            </IntlProvider>
+        </div>
     ));
