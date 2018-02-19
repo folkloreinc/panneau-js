@@ -50,6 +50,7 @@ const propTypes = {
     name: PropTypes.string,
     value: PropTypes.array,
     label: PropTypes.string,
+    helpText: PropTypes.string,
 
     types: PropTypes.array,
 
@@ -85,6 +86,7 @@ const defaultProps = {
     label: '',
     value: [],
     types: null,
+    helpText: null,
 
     collapsible: false,
     collapsed: false,
@@ -446,6 +448,7 @@ class ItemsField extends Component {
             collapsible,
             collapsed,
             label,
+            helpText,
         } = this.props;
         const value = this.props.value || [];
         const listProps = {};
@@ -470,6 +473,7 @@ class ItemsField extends Component {
                 collapsible={collapsible}
                 collapsed={collapsed}
                 style={boxStyle}
+                helpText={helpText}
             >
                 { hasAddButton ? this.renderAddButton() : null }
                 { sortable ? (
