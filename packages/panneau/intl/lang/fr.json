@@ -2,6 +2,7 @@
     "list.actions.show": "Voir",
     "list.actions.edit": "Modifier",
     "list.actions.delete": "Supprimer",
+    "list.empty": "Aucun élément",
     "forms.normal.buttons.submit": "Sauvegarder",
     "core.buttons.resources.create": "Créer",
     "core.buttons.resources.edit": "Sauvegarder",
