@@ -128,6 +128,7 @@ class ResourceForm extends Component {
         this.setState({
             item,
             formValue: null,
+            formErrors: null,
         });
         if (this.props.onFormComplete) {
             this.props.onFormComplete(item);
