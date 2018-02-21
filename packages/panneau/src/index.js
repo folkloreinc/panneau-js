@@ -19,8 +19,6 @@ Panneau.setDefaultComponentsCollection(listsCollection, 'lists');
 Panneau.setDefaultComponentsCollection(formsCollection, 'forms');
 Panneau.setDefaultComponentsCollection(modalsCollection, 'modals');
 
-const panneau = new Panneau();
-
 export {
     Panneau,
     fieldsCollection,
@@ -28,9 +26,9 @@ export {
     listsCollection,
     formsCollection,
     modalsCollection,
-    panneau,
 };
 
+const panneau = new Panneau();
 export default (el) => {
     if (typeof el !== 'undefined') {
         panneau.render(el);

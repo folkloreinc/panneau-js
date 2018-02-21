@@ -61,9 +61,9 @@ module.exports = env => (
             }),
             new webpack.optimize.ModuleConcatenationPlugin(),
             new UglifyJSPlugin({
+                sourceMap: true,
                 uglifyOptions: {
                     beautify: false,
-                    sourceMap: true,
                     mangle: {
                         keep_fnames: true,
                     },

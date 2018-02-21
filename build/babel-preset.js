@@ -2,6 +2,7 @@ const path = require('path');
 
 const BABEL_ENV = process.env.BABEL_ENV || process.env.NODE_ENV || '';
 const compiling = BABEL_ENV === 'es' || BABEL_ENV === 'cjs';
+const umd = BABEL_ENV === 'umd';
 
 const presets = [
     ['env', {
@@ -21,13 +22,16 @@ const plugins = [
     ['transform-object-rest-spread', {
         useBuiltIns: true,
     }],
-    ['transform-runtime', {
+];
+
+if (!umd) {
+    plugins.push(['transform-runtime', {
         helpers: true,
         polyfill: false,
         regenerator: true,
         moduleName: 'babel-runtime',
-    }],
-];
+    }]);
+}
 
 if (BABEL_ENV === 'dev') {
     plugins.push('react-hot-loader/babel');

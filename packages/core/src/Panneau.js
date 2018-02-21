@@ -44,7 +44,7 @@ class Panneau extends EventEmitter {
      */
     constructor(definition, options) {
         super();
-        
+
         this.options = {
             componentsCollection: Panneau.defaultComponentsCollection,
             locale: 'en',
@@ -66,7 +66,7 @@ class Panneau extends EventEmitter {
     onRendered() {
         this.emit('rendered', this.element);
     }
-    
+
     onHydrated() {
         this.emit('hydrated', this.element);
     }
@@ -112,24 +112,24 @@ class Panneau extends EventEmitter {
             ...this.options,
             ...options
         };
-        
+
         const {
             locale,
             messages,
             componentsCollection,
         } = this.options;
-        
+
         this.locale = locale;
         this.messages = {
             ...get(Panneau.defaultLocaleMessages, this.locale, {}),
             ...get(messages, this.locale, {}),
         };
         this.componentsCollection = componentsCollection;
-        
+
         if (this.rendered) {
             this.render();
         }
-        
+
         return this;
     }
 
@@ -157,6 +157,20 @@ class Panneau extends EventEmitter {
      */
     getDefinition() {
         return this.definition;
+    }
+
+    /**
+     * Alias to work with components collection
+     * @return {ComponentsCollection} The components collection
+     */
+    components(key, value) {
+        if (typeof value !== 'undefined') {
+            this.componentsCollection.addComponent(key, value)
+            return this;
+        } else if (typeof key !== 'undefined') {
+            return this.componentsCollection.getComponent(key);
+        }
+        return this.componentsCollection;
     }
 
     /**
