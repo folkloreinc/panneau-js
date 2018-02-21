@@ -52,6 +52,7 @@ module.exports = env => (
             path: outputPath,
             libraryTarget: 'umd',
             library: 'panneau',
+            libraryExport: 'default',
         },
 
         plugins: [
