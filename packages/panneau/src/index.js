@@ -19,19 +19,19 @@ Panneau.setDefaultComponentsCollection(listsCollection, 'lists');
 Panneau.setDefaultComponentsCollection(formsCollection, 'forms');
 Panneau.setDefaultComponentsCollection(modalsCollection, 'modals');
 
-export {
-    Panneau,
-    fieldsCollection,
-    layoutsCollection,
-    listsCollection,
-    formsCollection,
-    modalsCollection,
-};
-
+// Exports main function
 const panneau = new Panneau();
-export default (el) => {
+module.exports = (el) => {
     if (typeof el !== 'undefined') {
         panneau.render(el);
     }
     return panneau;
 };
+
+// Exports other pieces
+module.exports.Panneau = Panneau;
+module.exports.fieldsCollection = fieldsCollection;
+module.exports.layoutsCollection = layoutsCollection;
+module.exports.listsCollection = listsCollection;
+module.exports.formsCollection = formsCollection;
+module.exports.modalsCollection = modalsCollection;
