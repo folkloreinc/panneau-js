@@ -1,6 +1,6 @@
 {
     "name": "panneau",
-    "version": "0.3.59",
+    "version": "0.3.60",
     "description": "Framework to build dashboard and administration panels",
     "keywords": [
         "react",
