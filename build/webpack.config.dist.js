@@ -15,7 +15,7 @@ module.exports = env => (
         output: {
             path: outputPath,
             libraryTarget: 'umd',
-            library: 'Microdoc',
+            library: 'Panneau',
         },
 
         plugins: [

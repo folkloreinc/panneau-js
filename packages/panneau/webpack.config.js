@@ -3,8 +3,8 @@ const webpackMerge = require('webpack-merge');
 const webpackConfig = require('../../build/webpack.config.panneau');
 /* eslint-enable import/no-extraneous-dependencies */
 
-module.exports = env => (
-    webpackMerge(webpackConfig(env), {
+module.exports = () => (
+    webpackMerge(webpackConfig('umd'), {
         entry: {
             panneau: './index',
         },
