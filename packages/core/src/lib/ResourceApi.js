@@ -74,6 +74,7 @@ class ResourceApi {
             break;
         }
         return fetch(path, {
+            credentials: 'include',
             method: finalMethod,
             headers: {
                 'Content-Type': 'application/json',
