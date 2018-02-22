@@ -8,6 +8,10 @@ import modalsCollection from '@panneau/modals';
 import enMessages from '../intl/lang/en.json';
 import frMessages from '../intl/lang/fr.json';
 
+/* eslint-disable */
+__webpack_public_path__ = PANNEAU_ASSETS_PATH || '/';
+/* eslint-enable */
+
 // Set messages
 Panneau.setDefaultLocaleMessages('en', enMessages);
 Panneau.setDefaultLocaleMessages('fr', frMessages);
