@@ -18,6 +18,12 @@ const fields = [
         label: 'Text field',
     },
     {
+        type: 'textlocale',
+        name: 'textlocale',
+        label: 'Text locale field',
+        locales: ['fr', 'en'],
+    },
+    {
         type: 'select',
         name: 'select',
         label: 'Select field',
