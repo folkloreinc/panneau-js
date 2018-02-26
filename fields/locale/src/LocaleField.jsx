@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import get from 'lodash/get';
+import omit from 'lodash/omit';
 import isEmpty from 'lodash/isEmpty';
 import FormGroup from '@panneau/form-group';
 
@@ -163,6 +164,8 @@ class LocaleField extends Component {
             </span>
         ) : null;
 
+        const propsWithoutErrors = omit(props, 'errors');
+
         const groupClassName = classNames({
             [styles.formGroup]: true,
             [className]: className !== null,
@@ -172,7 +175,7 @@ class LocaleField extends Component {
                 label={label}
                 labelSuffix={labelSuffix}
                 className={groupClassName}
-                {...props}
+                {...propsWithoutErrors}
             >
                 { fields }
             </FormGroup>
