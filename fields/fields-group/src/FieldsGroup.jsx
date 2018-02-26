@@ -142,7 +142,20 @@ class FieldsGroup extends Component {
 
         const fieldDefaultValue = typeof defaultValue !== 'undefined' ? defaultValue : undefined;
         const fieldValue = value && name ? get(value, name, fieldDefaultValue) : value;
-        const fieldErrors = errors && name ? get(errors, name, undefined) : errors;
+        let fieldErrors = errors && name ? Object.entries(errors).reduce((acc, [key, errs]) => {
+            const escapedName = name.replace('.', '\\.');
+            const regexp = RegExp(`^${escapedName}\\.|^${escapedName}$`);
+            if (regexp.test(key)) {
+                return [
+                    ...acc,
+                    ...errs,
+                ];
+            }
+            return acc;
+        }, []) : errors;
+        if (Array.isArray(fieldErrors) && fieldErrors.length === 0) {
+            fieldErrors = undefined;
+        }
         const fieldCollapsible = collapsibleTypes.indexOf(type) !== -1 || it.collapsible;
         const fieldCollapsed = it.collapsed || (fieldCollapsible && typeof fieldValue === 'undefined');
         const key = `${name}${type}${index}${this.props.name}`;
