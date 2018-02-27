@@ -4,12 +4,22 @@ import { withRouter } from 'react-router';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
+import isString from 'lodash/isString';
 import classNames from 'classnames';
+import { defineMessages, FormattedMessage } from 'react-intl';
 
 import withComponentsCollection from '../../lib/withComponentsCollection';
 import withUrlGenerator from '../../lib/withUrlGenerator';
 
 import styles from '../../styles/pages/resource-index.scss';
+
+const messages = defineMessages({
+    add: {
+        id: 'core.buttons.resources.add',
+        description: 'The label of the "add" index button',
+        defaultMessage: 'Add',
+    },
+});
 
 const propTypes = {
     listsCollection: PropTypes.shape({
@@ -19,6 +29,16 @@ const propTypes = {
     location: PropTypes.shape({}).isRequired,
     items: PropTypes.arrayOf(PropTypes.object),
     errors: PropTypes.arrayOf(PropTypes.string),
+    showAddButton: PropTypes.bool,
+    addButtonLabel: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+            id: PropTypes.string,
+            description: PropTypes.string,
+            defaultMessage: PropTypes.string,
+        }),
+    ]),
+    gotoResourceCreate: PropTypes.func,
     gotoResourceEdit: PropTypes.func,
     gotoResourceShow: PropTypes.func,
     gotoResourceDelete: PropTypes.func,
@@ -27,6 +47,9 @@ const propTypes = {
 const defaultProps = {
     items: [],
     errors: null,
+    showAddButton: true,
+    addButtonLabel: messages.add,
+    gotoResourceCreate: PropTypes.func,
     gotoResourceEdit: PropTypes.func,
     gotoResourceShow: PropTypes.func,
     gotoResourceDelete: PropTypes.func,
@@ -40,6 +63,7 @@ class ResourceIndex extends Component {
         this.onItemsLoadError = this.onItemsLoadError.bind(this);
         this.onItemActions = this.onItemActions.bind(this);
         this.onItemDeleted = this.onItemDeleted.bind(this);
+        this.onClickAdd = this.onClickAdd.bind(this);
 
         this.state = {
             items: props.items,
@@ -93,6 +117,13 @@ class ResourceIndex extends Component {
         });
     }
 
+    onClickAdd() {
+        const {
+            gotoResourceCreate,
+        } = this.props;
+        gotoResourceCreate();
+    }
+
     onItemActions(e, action, it) {
         const {
             gotoResourceEdit,
@@ -143,15 +174,63 @@ class ResourceIndex extends Component {
     }
 
     renderHeader() {
-        const { resource } = this.props;
-
-        const headerClassNames = classNames({
-            [styles.header]: true,
-        });
+        const {
+            resource,
+            showAddButton,
+            addButtonLabel,
+        } = this.props;
 
         return (
-            <div className={headerClassNames}>
-                <h1>{ resource.name }</h1>
+            <div
+                className={classNames({
+                    [styles.header]: true,
+                })}
+            >
+                <div
+                    className={classNames({
+                        [styles.cols]: true,
+                    })}
+                >
+                    <div
+                        className={classNames({
+                            [styles.col]: true,
+                        })}
+                    >
+                        <h1
+                            className={classNames({
+                                [styles.title]: true,
+                            })}
+                        >
+                            { resource.name }
+                        </h1>
+                    </div>
+                    <div
+                        className={classNames({
+                            [styles.col]: true,
+                            'text-right': true,
+                        })}
+                    >
+                        { showAddButton ? (
+                            <div
+                                className={classNames({
+                                    'btn-group': true,
+                                })}
+                            >
+                                <button
+                                    className={classNames({
+                                        btn: true,
+                                        'btn-primary': true,
+                                    })}
+                                    onClick={this.onClickAdd}
+                                >
+                                    {isString(addButtonLabel) ? addButtonLabel : (
+                                        <FormattedMessage {...addButtonLabel} />
+                                    )}
+                                </button>
+                            </div>
+                        ) : null }
+                    </div>
+                </div>
                 { this.renderErrors() }
             </div>
         );
@@ -250,6 +329,9 @@ const mapStateToProps = ({ panneau }, { params, location }) => {
 };
 
 const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
+    gotoResourceCreate: resource => dispatch(push(urlGenerator.route('resource.create', {
+        resource: resource.id,
+    }))),
     gotoResourceEdit: (resource, id) => dispatch(push(urlGenerator.route('resource.edit', {
         resource: resource.id,
         id,
@@ -267,6 +349,7 @@ const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
 const mergeProps = (
     stateProps,
     {
+        gotoResourceCreate,
         gotoResourceEdit,
         gotoResourceShow,
         gotoResourceDelete,
@@ -277,6 +360,7 @@ const mergeProps = (
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
+    gotoResourceCreate: () => gotoResourceCreate(stateProps.resource),
     gotoResourceEdit: id => gotoResourceEdit(stateProps.resource, id),
     gotoResourceShow: id => gotoResourceShow(stateProps.resource, id),
     gotoResourceDelete: id => gotoResourceDelete(stateProps.resource, id),

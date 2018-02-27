@@ -1,0 +1,7 @@
+[
+  {
+    "id": "core.buttons.resources.add",
+    "description": "The label of the \"add\" index button",
+    "defaultMessage": "Add"
+  }
+]
