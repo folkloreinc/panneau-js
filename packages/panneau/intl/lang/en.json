@@ -6,6 +6,7 @@
     "forms.normal.buttons.submit": "Save",
     "core.buttons.resources.create": "Create",
     "core.buttons.resources.edit": "Save",
+    "core.buttons.resources.add": "Add",
     "core.navbar.resources.index": "View all {resourceLabel}",
     "core.navbar.resources.create": "Add a new {resourceLabel}"
 }
