@@ -96,7 +96,6 @@ module.exports = (env) => {
                     exclude: /node_modules/,
                     options: {
                         forceEnv: env,
-                        envName: env,
                         cacheDirectory: true,
                     },
                 },
