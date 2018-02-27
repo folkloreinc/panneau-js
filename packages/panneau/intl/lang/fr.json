@@ -6,6 +6,7 @@
     "forms.normal.buttons.submit": "Sauvegarder",
     "core.buttons.resources.create": "Créer",
     "core.buttons.resources.edit": "Sauvegarder",
+    "core.buttons.resources.add": "Ajouter",
     "core.navbar.resources.index": "Voir tout les {resourceLabel}",
     "core.navbar.resources.create": "Ajouter un nouveau {resourceLabel}"
 }

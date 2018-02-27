@@ -1,6 +1,24 @@
 @import '../variables';
 
 .container {
+    .header {
+        margin-bottom: 20px;
+
+        .title {
+            margin: 0;
+        }
+
+        .cols {
+            display: table;
+            width: 100%;
+        }
+
+        .col {
+            display: table-cell;
+            vertical-align: middle;
+        }
+    }
+
     .list {
         position: relative;
     }

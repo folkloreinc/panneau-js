@@ -1,6 +1,7 @@
 {
     "core.buttons.resources.create": "Créer",
     "core.buttons.resources.edit": "Enregistrer",
+    "core.buttons.resources.add": "Ajouter",
     "core.navbar.resources.index": "Voir tous les {resourceLabel}",
     "core.navbar.resources.create": "Ajouter un {resourceLabel}"
 }
