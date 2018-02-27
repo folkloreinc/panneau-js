@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "0.3.63",
+    "version": "0.3.64",
     "description": "Fields group for Panneau",
     "keywords": [
         "react",
@@ -53,13 +53,13 @@
     "dependencies": {
         "@panneau/core": "^0.3.59",
         "@panneau/field-code": "^0.3.59",
-        "@panneau/field-color": "^0.3.59",
-        "@panneau/field-date": "^0.3.59",
+        "@panneau/field-color": "^0.3.64",
+        "@panneau/field-date": "^0.3.64",
         "@panneau/field-items": "^0.3.63",
         "@panneau/field-media": "^0.3.59",
         "@panneau/field-select": "^0.3.59",
         "@panneau/field-slider": "^0.3.59",
-        "@panneau/field-text": "^0.3.59",
+        "@panneau/field-text": "^0.3.64",
         "@panneau/field-toggle": "^0.3.59",
         "@panneau/form-group": "^0.3.59",
         "babel-runtime": "^6.26.0",
