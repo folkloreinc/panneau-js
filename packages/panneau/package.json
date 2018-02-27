@@ -1,6 +1,6 @@
 {
     "name": "panneau",
-    "version": "0.3.66",
+    "version": "0.3.67",
     "description": "Framework to build dashboard and administration panels",
     "keywords": [
         "react",
@@ -53,13 +53,13 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/core": "^0.3.59",
-        "@panneau/fields": "^0.3.64",
-        "@panneau/fields-group": "^0.3.63",
-        "@panneau/forms": "^0.3.64",
-        "@panneau/layouts": "^0.3.59",
-        "@panneau/lists": "^0.3.59",
-        "@panneau/modals": "^0.3.59",
+        "@panneau/core": "^0.3.67",
+        "@panneau/fields": "^0.3.67",
+        "@panneau/fields-group": "^0.3.67",
+        "@panneau/forms": "^0.3.67",
+        "@panneau/layouts": "^0.3.67",
+        "@panneau/lists": "^0.3.67",
+        "@panneau/modals": "^0.3.67",
         "babel-runtime": "^6.26.0",
         "bootstrap-sass": "^3.3.7",
         "classnames": "^2.2.5",
@@ -70,9 +70,9 @@
     },
     "devDependencies": {
         "@panneau/field-locale": "^0.3.64",
-        "@panneau/form": "^0.3.59",
+        "@panneau/form": "^0.3.67",
         "@panneau/layout": "^0.3.59",
-        "@panneau/list": "^0.3.59",
+        "@panneau/list": "^0.3.67",
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
     },
