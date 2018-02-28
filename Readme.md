@@ -37,3 +37,28 @@ This package is splitted in multiple packages that can be used independently.
 | Package Name | Description | Links |
 | ------------ | ----------- | ----- |
 | [@panneau/modal-popover](https://github.com/Folkloreatelier/panneau-js/tree/master/modals/popover) | Popover |  [Documentation](https://github.com/Folkloreatelier/panneau-js/tree/master/modals/popover/) - [Examples](https://folkloreatelier.github.io/panneau-js/?selectedKind=Modals%2FPopover&selectedStory=simple) |
+
+
+## Development
+
+### Installation
+
+1. If you don't have lerna, you should install it globally:
+```bash
+npm install -g lerna
+```
+
+2. Install all dependencies:
+```bash
+lerna bootstrap --hoist
+```
+
+#### Note
+Do not use npm directly to install the dependencies. Since the repository is managed by Lerna, to avoir conflicts, it's best to use the `bootstrap` command to let it install everything.
+
+In case you have problems with dependencies, you can always clean every node_modules folder with these commands:
+
+```bash
+rm -rf node_modules
+lerna clean
+```
