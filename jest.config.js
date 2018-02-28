@@ -7,9 +7,12 @@ const packagesIgnorePatterns = lernaJson.packages.map(packagePath => (
     `<rootDir>/${packagePath}/(lib|es|dist)/`
 ));
 
-const coveragePatterns = lernaJson.packages.map(packagePath => (
-    `<rootDir>/${packagePath}/*/src/**/*.{js,jsx}`
-));
+const coveragePatterns = lernaJson.packages.reduce((items, packageGlob) => ([
+    ...items,
+    ...(glob.sync(packageGlob).map(packagePath => (
+        `${packagePath}/src/**/*.{js,jsx}`
+    ))),
+]), []);
 
 const moduleNameMapper = lernaJson.packages.reduce((totalMap, packageGlob) => {
     const packagePaths = glob.sync(packageGlob);
