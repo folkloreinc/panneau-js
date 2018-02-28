@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-
-import withUrlGenerator from '../lib/withUrlGenerator';
+import { withUrlGenerator } from '@folklore/react-app';
 
 const propTypes = {
     layoutsCollection: PropTypes.shape({

@@ -6,6 +6,44 @@ exports[`match snapshot 1`] = `
 >
   <div
     className="undefined"
-  />
+  >
+    <table
+      className="table"
+    >
+      <thead>
+        <tr>
+          <th
+            id="id"
+            width={50}
+          >
+            ID
+          </th>
+          <th
+            align="right"
+            id="actions"
+            type="actions"
+          >
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td
+            className="undefined"
+            colSpan={2}
+          >
+            <div
+              className="well well-sm text-center"
+            >
+              <span>
+                No items
+              </span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 `;

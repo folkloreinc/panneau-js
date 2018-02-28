@@ -1,33 +1,37 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
+import { Route, Switch } from 'react-router';
 import 'bootstrap.native';
 
-import defaultRoutes from '../defaults/routes.json';
-import parseDefinition from '../lib/parseDefinition';
+import createContainer from '../lib/createContainer';
 
-import Container from './Container';
+import Layout from './Layout';
+import Home from './pages/Home';
+import ResourceIndex from './pages/ResourceIndex';
+import ResourceCreate from './pages/ResourceCreate';
+import ResourceShow from './pages/ResourceShow';
+import ResourceEdit from './pages/ResourceEdit';
+import ResourceDelete from './pages/ResourceDelete';
 
 import '../styles/vendor.global.scss';
 
 const propTypes = {
-    locale: PropTypes.string,
+    urlGenerator: PropTypes.shape({
+        route: PropTypes.func,
+    }).isRequired,
     componentsCollection: PropTypes.shape({
         getComponent: PropTypes.func,
     }),
     definition: PropTypes.shape({
         layout: PropTypes.object,
+        routes: PropTypes.objectOf(PropTypes.string),
     }),
-    routes: PropTypes.objectOf(PropTypes.string),
-    messages: PropTypes.objectOf(PropTypes.string),
 };
 
 const defaultProps = {
-    locale: 'en',
     componentsCollection: null,
     definition: null,
-    routes: defaultRoutes,
-    messages: {},
 };
 
 const childContextTypes = {
@@ -49,10 +53,7 @@ class Panneau extends Component {
     constructor(props) {
         super(props);
 
-        this.getStoreInitialState = this.getStoreInitialState.bind(this);
-
-        this.refContainer = null;
-        this.store = null;
+        this.renderResourceRoutes = this.renderResourceRoutes.bind(this);
     }
 
     getChildContext() {
@@ -65,57 +66,42 @@ class Panneau extends Component {
         };
     }
 
-    getStoreInitialState({ urlGenerator }) {
-        const {
-            componentsCollection,
-            definition,
-        } = this.props;
-        const cleanDefinition = parseDefinition(definition, {
-            urlGenerator,
-        });
-        const layoutDefinition = get(cleanDefinition, 'layout', null);
-        return {
-            panneau: {
-                definition: cleanDefinition,
-                componentsCollection,
-            },
-            layout: {
-                definition: {
-                    ...layoutDefinition,
-                },
-            },
-        };
-    }
-
-    getRoutes() {
-        const { routes, definition } = this.props;
-        const definitionRoutes = get(definition, 'routes', {});
-        const resources = get(definition, 'resources', [])
-            .filter(it => typeof it.routes !== 'undefined');
-        const resourcesRoutes = resources.reduce((totalRoutes, resource) => ({
-            ...totalRoutes,
-            ...(Object.keys(resource.routes).reduce((mapRoutes, name) => ({
-                ...mapRoutes,
-                [`resource.${resource.id}.${name}`]: resource.routes[name],
-            }), {})),
-        }), {});
-        return {
-            ...routes,
-            ...definitionRoutes,
-            ...resourcesRoutes,
-        };
+    // eslint-disable-next-line class-methods-use-this
+    renderResourceRoutes(routes, id) {
+        return (
+            <Switch key={`resource-route-${id}`}>
+                <Route exact path={routes.index} component={ResourceIndex} />
+                <Route exact path={routes.create} component={ResourceCreate} />
+                <Route exact path={routes.show} component={ResourceShow} />
+                <Route exact path={routes.edit} component={ResourceEdit} />
+                <Route exact path={routes.delete} component={ResourceDelete} />
+            </Switch>
+        );
     }
 
     render() {
-        const routes = this.getRoutes();
+        const { urlGenerator, definition } = this.props;
+
+        const defaultResourceRoutes = {
+            index: urlGenerator.route('resource.index'),
+            create: urlGenerator.route('resource.create'),
+            show: urlGenerator.route('resource.show'),
+            edit: urlGenerator.route('resource.edit'),
+            delete: urlGenerator.route('resource.delete'),
+        };
+
+        const resourcesWithRoutes = get(definition, 'resources', []).filter((
+            resource => typeof resource.routes !== 'undefined'
+        ));
 
         return (
-            <Container
-                {...this.props}
-                ref={(ref) => { this.refContainer = ref; }}
-                getStoreInitialState={this.getStoreInitialState}
-                routes={routes}
-            />
+            <Layout>
+                <Route exact path={urlGenerator.route('home')} component={Home} />
+                {this.renderResourceRoutes(defaultResourceRoutes, 'default')}
+                {resourcesWithRoutes.map(resource => (
+                    this.renderResourceRoutes(resource.routes, resource.id)
+                ))}
+            </Layout>
         );
     }
 }
@@ -124,4 +110,4 @@ Panneau.propTypes = propTypes;
 Panneau.defaultProps = defaultProps;
 Panneau.childContextTypes = childContextTypes;
 
-export default Panneau;
+export default createContainer(Panneau);

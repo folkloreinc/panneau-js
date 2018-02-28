@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`match snapshot 1`] = `
+<div
+  className="undefined"
+>
+  <div
+    className="undefined"
+  >
+    <form
+      action=""
+      method="POST"
+      onSubmit={[Function]}
+    >
+      <div
+        className="undefined"
+      >
+        <div
+          className="field-group"
+        />
+      </div>
+      <div
+        className="undefined"
+      >
+        <div
+          className={undefined}
+        >
+          <button
+            className="btn btn-primary undefined"
+            onClick={null}
+            type="submit"
+          >
+            <span>
+              Save
+            </span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+`;

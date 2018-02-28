@@ -58,9 +58,7 @@
     "lodash": "^4.17.4",
     "pascal-case": "^2.0.1",
     "prop-types": "^15.6.0",
-    "react-intl": "^2.4.0",
-    "react-redux": "^5.0.6",
-    "react-router-redux": "^4.0.8"
+    "react-intl": "^2.4.0"
   },
   "devDependencies": {
     "react": ">=15.0.0 || ^16.0.0",

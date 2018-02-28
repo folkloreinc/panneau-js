@@ -13,8 +13,10 @@ const propTypes = {
     formsCollection: PropTypes.shape({
         getComponent: PropTypes.func,
     }).isRequired,
-    params: PropTypes.shape({
-        id: PropTypes.string,
+    match: PropTypes.shape({
+        params: PropTypes.shape({
+            id: PropTypes.string,
+        }),
     }).isRequired,
     action: PropTypes.string,
     resource: PropTypes.shape({
@@ -82,9 +84,10 @@ class ResourceForm extends Component {
     }
 
     componentDidMount() {
-        const { action, resource, params } = this.props;
+        const { action, resource, match } = this.props;
         if (action === 'edit' || action === 'show') {
-            resource.api.show(params.id)
+            const id = get(match, 'params.id');
+            resource.api.show(id)
                 .then(this.onItemLoaded)
                 .catch(this.onItemLoadError);
         }
@@ -264,9 +267,9 @@ class ResourceForm extends Component {
 ResourceForm.propTypes = propTypes;
 ResourceForm.defaultProps = defaultProps;
 
-const mapStateToProps = ({ panneau }, { action, params, location }) => {
+const mapStateToProps = ({ panneau }, { action, match, location }) => {
     const resources = get(panneau, 'definition.resources', []);
-    const resourceId = get(params, 'resource', null);
+    const resourceId = get(match, 'params.resource', null);
     return {
         resource: resources.find(it => (
             (resourceId !== null && it.id === resourceId) ||

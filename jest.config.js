@@ -18,7 +18,7 @@ const moduleNameMapper = lernaJson.packages.reduce((totalMap, packageGlob) => {
         const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
         return {
             ...map,
-            [packageJson.name]: `<rootDir>/${packagePath}/src/index.js`,
+            [`${packageJson.name}$`]: `<rootDir>/${packagePath}/src/index.js`,
         };
     }, {});
     return {
