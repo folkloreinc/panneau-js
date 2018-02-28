@@ -1,4 +1,5 @@
 {
+    "home": "/",
     "resource.index": "/:resource",
     "resource.show": "/:resource/:id",
     "resource.create": "/:resource/create",

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Header, Footer } from '@panneau/layout';
 import get from 'lodash/get';
-import { connect } from 'react-redux';
 
 import styles from './styles.scss';
 
@@ -40,9 +39,7 @@ class NormalLayout extends Component {
         this.onHeaderClickMenuItem = this.onHeaderClickMenuItem.bind(this);
     }
 
-    onHeaderClickMenuItem() {
-
-    }
+    onHeaderClickMenuItem() {}
 
     render() {
         const {
@@ -90,13 +87,4 @@ class NormalLayout extends Component {
 NormalLayout.propTypes = propTypes;
 NormalLayout.defaultProps = defaultProps;
 
-const mapStateToProps = () => ({
-
-});
-
-const mapDispatchToProps = () => ({
-
-});
-
-const WithStoreContainer = connect(mapStateToProps, mapDispatchToProps)(NormalLayout);
-export default WithStoreContainer;
+export default NormalLayout;

@@ -7,9 +7,9 @@ import get from 'lodash/get';
 import isString from 'lodash/isString';
 import classNames from 'classnames';
 import { defineMessages, FormattedMessage } from 'react-intl';
+import { withUrlGenerator } from '@folklore/react-app';
 
 import withComponentsCollection from '../../lib/withComponentsCollection';
-import withUrlGenerator from '../../lib/withUrlGenerator';
 
 import styles from '../../styles/pages/resource-index.scss';
 

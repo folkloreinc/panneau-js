@@ -1,8 +1,9 @@
 import React from 'react';
+/* eslint-disable import/no-extraneous-dependencies */
 import renderer from 'react-test-renderer';
-import { shallow, mount } from 'enzyme';
-import sinon from 'sinon';
-import FieldsGroupField from '../FieldsGroupField';
+import { shallow } from 'enzyme';
+/* eslint-enable import/no-extraneous-dependencies */
+import FieldsGroupField from '../FieldsGroup';
 
 test('match snapshot', () => {
     const component = renderer.create((

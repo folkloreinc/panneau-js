@@ -1,7 +1,8 @@
 import React from 'react';
+/* eslint-disable import/no-extraneous-dependencies */
 import renderer from 'react-test-renderer';
-import { shallow, mount } from 'enzyme';
-import sinon from 'sinon';
+import { IntlProvider } from 'react-intl';
+/* eslint-enable import/no-extraneous-dependencies */
 import TableList from '../TableList';
 
 const items = [
@@ -10,9 +11,11 @@ const items = [
 
 test('match snapshot', () => {
     const component = renderer.create((
-        <TableList
-            items={items}
-        />
+        <IntlProvider locale="en">
+            <TableList
+                items={items}
+            />
+        </IntlProvider>
     ));
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();

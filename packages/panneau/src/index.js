@@ -9,7 +9,8 @@ import enMessages from '../intl/lang/en.json';
 import frMessages from '../intl/lang/fr.json';
 
 /* eslint-disable */
-__webpack_public_path__ = PANNEAU_ASSETS_PATH || '/';
+/* istanbul ignore next */
+__webpack_public_path__ = typeof PANNEAU_ASSETS_PATH !== 'undefined' ? PANNEAU_ASSETS_PATH : '/';
 /* eslint-enable */
 
 // Set messages
