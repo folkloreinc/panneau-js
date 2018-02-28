@@ -37,6 +37,7 @@
         "start": "npm run storybook"
     },
     "devDependencies": {
+        "@folklore/react-app": "^0.1.10",
         "@storybook/addon-actions": "^3.3.14",
         "@storybook/addon-info": "^3.3.14",
         "@storybook/addon-storyshots": "^3.3.14",
