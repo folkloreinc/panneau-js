@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import moment from 'moment';
 
-import containerClassNames from './styles.scss';
-import partialClassNames from './styles.scss';
+import styles from './styles.scss';
 
 const propTypes = {
     media: PropTypes.shape({
@@ -57,10 +56,7 @@ class Media extends Component {
 
     componentDidMount() {
         const {
-            media,
-            getThumbnail,
-            onLoad,
-            loadTimeout,
+            media, getThumbnail, onLoad, loadTimeout,
         } = this.props;
         const thumbnail = getThumbnail ? getThumbnail(media) : null;
         if (thumbnail && !Media.isLoaded(thumbnail)) {
@@ -87,11 +83,7 @@ class Media extends Component {
     }
 
     onThumbnailLoad() {
-        const {
-            media,
-            getThumbnail,
-            onLoad,
-        } = this.props;
+        const { media, getThumbnail, onLoad } = this.props;
 
         Media.addLoaded(getThumbnail(media));
 
@@ -116,68 +108,74 @@ class Media extends Component {
         const icon = getIcon ? getIcon(media) : null;
 
         const fieldClassNames = classNames({
-            [partialClassNames.container]: true,
-            [partialClassNames.vertical]: vertical,
+            [styles.container]: true,
+            [styles.vertical]: vertical,
             [className]: className !== null,
         });
 
         const containerClassName = classNames({
-            [containerClassNames.table]: !vertical,
-            [containerClassNames.fullWidth]: true,
+            [styles.table]: !vertical,
+            [styles.fullWidth]: true,
         });
 
         const thumbnailClassNames = classNames({
-            [containerClassNames.cell]: !vertical,
-            [containerClassNames.middle]: !vertical,
-            [partialClassNames.thumbnail]: true,
+            [styles.cell]: !vertical,
+            [styles.middle]: !vertical,
+            [styles.thumbnail]: true,
         });
 
         const labelClassNames = classNames({
-            [containerClassNames.cell]: !vertical,
-            [containerClassNames.middle]: !vertical,
+            [styles.cell]: !vertical,
+            [styles.middle]: !vertical,
         });
 
-        const labelContainerClassNames = classNames({
-            [containerClassNames.table]: true,
-            [containerClassNames.fullWidth]: true,
+        const labelstyles = classNames({
+            [styles.table]: true,
+            [styles.fullWidth]: true,
         });
 
         const detailsClassNames = classNames({
-            [containerClassNames.cell]: true,
-            [containerClassNames.middle]: true,
-            [partialClassNames.details]: true,
+            [styles.cell]: true,
+            [styles.middle]: true,
+            [styles.details]: true,
         });
 
         const actionsClassNames = classNames({
-            [containerClassNames.cell]: true,
-            [containerClassNames.middle]: true,
-            [partialClassNames.actions]: true,
+            [styles.cell]: true,
+            [styles.middle]: true,
+            [styles.actions]: true,
         });
 
         return (
-            <div
-                className={fieldClassNames}
-            >
+            <div className={fieldClassNames}>
                 <div className={containerClassName}>
-                    { thumbnail ? (
+                    {thumbnail ? (
                         <div
                             className={thumbnailClassNames}
                             style={{
                                 backgroundImage: `url("${thumbnail}")`,
                             }}
                         />
-                    ) : icon }
+                    ) : (
+                        icon
+                    )}
                     <div className={labelClassNames}>
-                        <div className={labelContainerClassNames}>
+                        <div className={labelstyles}>
                             <div className={detailsClassNames}>
-                                { renderDetails ? renderDetails(media, (
-                                    <div className={partialClassNames.commons}>
-                                        <h4 className={partialClassNames.name}>{ media.name }</h4>
-                                        <div className={partialClassNames.date}>
-                                            { moment(media.created_at, 'YYYY-MM-DD HH::mm:ss').format('D MMM YYYY, H:mm') }
-                                        </div>
-                                    </div>
-                                )) : null }
+                                {renderDetails
+                                    ? renderDetails(
+                                        media,
+                                        <div className={styles.commons}>
+                                            <h4 className={styles.name}>{media.name}</h4>
+                                            <div className={styles.date}>
+                                                {moment(
+                                                    media.created_at,
+                                                    'YYYY-MM-DD HH::mm:ss',
+                                                ).format('D MMM YYYY, H:mm')}
+                                            </div>
+                                        </div>,
+                                    )
+                                    : null}
                             </div>
                             <div className={actionsClassNames}>
                                 <div className="btn-group">
@@ -188,7 +186,7 @@ class Media extends Component {
                                     >
                                         <span className="fa fa-trash" />
                                     </button>
-                                    { selectable ? (
+                                    {selectable ? (
                                         <button
                                             type="button"
                                             className="btn btn-default"
@@ -196,7 +194,7 @@ class Media extends Component {
                                         >
                                             <span className="fa fa-plus" />
                                         </button>
-                                    ) : null }
+                                    ) : null}
                                 </div>
                             </div>
                         </div>

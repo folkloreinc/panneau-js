@@ -53,7 +53,7 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@folklore/react-app": "^0.1.4",
+        "@folklore/react-app": "^0.1.10",
         "babel-runtime": "^6.26.0",
         "bootstrap-sass": "^3.3.7",
         "bootstrap.native": "^2.0.21",

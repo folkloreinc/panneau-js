@@ -2,14 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import { Route, Switch } from 'react-router';
-import { createAppContainer } from '@folklore/react-app';
-import createBrowserHistory from 'history/createBrowserHistory';
-import createMemoryHistory from 'history/createMemoryHistory';
 import 'bootstrap.native';
 
-import defaultRoutes from '../defaults/routes.json';
-import reducers from '../reducers/index';
-import parseDefinition from '../lib/parseDefinition';
+import createContainer from '../lib/createContainer';
 
 import Layout from './Layout';
 import Home from './pages/Home';
@@ -75,11 +70,11 @@ class Panneau extends Component {
     renderResourceRoutes(routes, id) {
         return (
             <Switch key={`resource-route-${id}`}>
-                <Route path={routes.index} component={ResourceIndex} />
-                <Route path={routes.create} component={ResourceCreate} />
-                <Route path={routes.show} component={ResourceShow} />
-                <Route path={routes.edit} component={ResourceEdit} />
-                <Route path={routes.delete} component={ResourceDelete} />
+                <Route exact path={routes.index} component={ResourceIndex} />
+                <Route exact path={routes.create} component={ResourceCreate} />
+                <Route exact path={routes.show} component={ResourceShow} />
+                <Route exact path={routes.edit} component={ResourceEdit} />
+                <Route exact path={routes.delete} component={ResourceDelete} />
             </Switch>
         );
     }
@@ -115,73 +110,4 @@ Panneau.propTypes = propTypes;
 Panneau.defaultProps = defaultProps;
 Panneau.childContextTypes = childContextTypes;
 
-/**
- * Container
- */
-const containerPropTypes = {
-    memoryRouter: PropTypes.bool,
-    routes: PropTypes.objectOf(PropTypes.string),
-};
-
-const containerDefaultProps = {
-    memoryRouter: false,
-    routes: defaultRoutes,
-};
-
-const createRouterHistory = ({ memoryRouter }) => (
-    memoryRouter ? createMemoryHistory() : createBrowserHistory()
-);
-
-const getStoreReducers = () => reducers;
-
-const getStoreInitialState = ({ urlGenerator, componentsCollection, definition }) => {
-    const cleanDefinition = parseDefinition(definition, {
-        urlGenerator,
-    });
-    const layoutDefinition = get(cleanDefinition, 'layout', null);
-    return {
-        panneau: {
-            definition: cleanDefinition,
-            componentsCollection,
-        },
-        layout: {
-            definition: {
-                ...layoutDefinition,
-            },
-        },
-    };
-};
-
-const getUrlGeneratorRoutes = ({ routes, definition }) => {
-    const definitionRoutes = get(definition, 'routes', {});
-    const resources = get(definition, 'resources', []).filter((
-        it => typeof it.routes !== 'undefined'
-    ));
-    const resourcesRoutes = resources.reduce(
-        (totalRoutes, resource) => ({
-            ...totalRoutes,
-            ...Object.keys(resource.routes).reduce(
-                (mapRoutes, name) => ({
-                    ...mapRoutes,
-                    [`resource.${resource.id}.${name}`]: resource.routes[name],
-                }),
-                {},
-            ),
-        }),
-        {},
-    );
-    return {
-        ...routes,
-        ...definitionRoutes,
-        ...resourcesRoutes,
-    };
-};
-
-export default createAppContainer({
-    propTypes: containerPropTypes,
-    defaultProps: containerDefaultProps,
-    createRouterHistory,
-    getUrlGeneratorRoutes,
-    getStoreReducers,
-    getStoreInitialState,
-})(Panneau);
+export default createContainer(Panneau);

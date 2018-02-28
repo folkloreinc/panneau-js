@@ -1,18 +1,21 @@
 import React from 'react';
+/* eslint-disable import/no-extraneous-dependencies */
 import renderer from 'react-test-renderer';
-import { shallow, mount } from 'enzyme';
-import sinon from 'sinon';
+/* eslint-enable import/no-extraneous-dependencies */
+import { IntlProvider } from 'react-intl';
 import NormalForm from '../NormalForm';
 
-const items = [
+const fields = [
 
 ];
 
 test('match snapshot', () => {
     const component = renderer.create((
-        <NormalForm
-            fields={fields}
-        />
+        <IntlProvider locale="en">
+            <NormalForm
+                fields={fields}
+            />
+        </IntlProvider>
     ));
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();

@@ -39,9 +39,12 @@ const propTypes = {
         PropTypes.func,
         PropTypes.object,
     ]).isRequired,
-    updateMedia: PropTypes.func.isRequired,
-    openBrowser: PropTypes.func.isRequired,
-    closeBrowser: PropTypes.func.isRequired,
+    // updateMedia: PropTypes.func.isRequired,
+    // openBrowser: PropTypes.func.isRequired,
+    // closeBrowser: PropTypes.func.isRequired,
+    updateMedia: PropTypes.func,
+    openBrowser: PropTypes.func,
+    closeBrowser: PropTypes.func,
 };
 
 const defaultProps = {
@@ -53,8 +56,12 @@ const defaultProps = {
     onChange: null,
     type: null,
     valueType: 'path',
-    MediaComponent: null,
     selectButtonLabel: 'Sélectionnez un média...',
+
+    // @TODO Remove this
+    updateMedia: null,
+    openBrowser: null,
+    closeBrowser: null,
 };
 
 

@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`match snapshot 1`] = `
+<div
+  className="form-group undefined"
+>
+  <div
+    className="form-group-label"
+  >
+    <label
+      className="control-label"
+      htmlFor="fields"
+    >
+      Label
+    </label>
+  </div>
+  <div
+    className="form-group-inner"
+    style={
+      Object {
+        "display": "block",
+      }
+    }
+  >
+    <div
+      className=""
+    >
+      <div
+        className="btn-group"
+      >
+        <button
+          aria-expanded="false"
+          aria-haspopup="true"
+          className="btn btn-default"
+          data-toggle="dropdown"
+          onClick={[Function]}
+          type="button"
+        >
+          Ajouter 
+        </button>
+      </div>
+    </div>
+    <div
+      className="list"
+    >
+      <div
+        className={undefined}
+      />
+    </div>
+  </div>
+</div>
+`;

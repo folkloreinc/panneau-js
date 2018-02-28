@@ -59,9 +59,9 @@ class ResourceCreate extends Component {
 ResourceCreate.propTypes = propTypes;
 ResourceCreate.defaultProps = defaultProps;
 
-const mapStateToProps = ({ panneau }, { params, location }) => {
+const mapStateToProps = ({ panneau }, { match, location }) => {
     const resources = get(panneau, 'definition.resources', []);
-    const resourceId = get(params, 'resource', null);
+    const resourceId = get(match, 'params.resource', null);
     return {
         resource: resources.find(it => (
             (resourceId !== null && it.id === resourceId) ||
