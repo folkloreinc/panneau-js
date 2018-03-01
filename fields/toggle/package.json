@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-toggle",
-    "version": "0.3.70",
+    "version": "0.3.71",
     "description": "Toggle field for Panneau",
     "keywords": [
         "react",
@@ -51,7 +51,7 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/field-select": "^0.3.70",
+        "@panneau/field-select": "^0.3.71",
         "@panneau/form-group": "^0.3.69",
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.5",
