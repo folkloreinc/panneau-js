@@ -1,7 +1,12 @@
 {
     "core.buttons.resources.create": "Create",
+    "core.titles.resources.create": "Create {name}",
     "core.buttons.resources.edit": "Save",
+    "core.titles.resources.edit": "Edit {name}",
+    "core.buttons.resources.save": "Save",
+    "core.titles.resources.default": "{name}",
     "core.buttons.resources.add": "Add",
+    "core.titles.resources.index": "{name}",
     "core.navbar.resources.index": "View all {resourceLabel}",
     "core.navbar.resources.create": "Add a new {resourceLabel}"
 }

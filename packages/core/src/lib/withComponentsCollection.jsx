@@ -1,51 +1,72 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import invariant from 'invariant';
 import hoistStatics from 'hoist-non-react-statics';
+
+import PanneauPropTypes from './PropTypes';
 
 function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
-const contextTypes = {
-    componentsCollection: PropTypes.shape({
-        getComponent: PropTypes.func,
-    }),
+const propTypes = {
+    componentsCollection: PanneauPropTypes.componentsCollection,
 };
 
-export default function withComponentsCollection(
-    mapCollectionToProps,
-    opts,
-) {
+const defaultProps = {
+    componentsCollection: null,
+};
+
+const contextTypes = {
+    componentsCollection: PanneauPropTypes.componentsCollection,
+};
+
+export default function withComponentsCollection(mapCollectionToProps, opts) {
     const options = {
         withRef: false,
+        childContext: false,
         ...opts,
     };
 
-    const finalMapCollectionToProps = (
-        mapCollectionToProps ||
-        (collection => ({ componentsCollection: collection }))
-    );
+    const { withRef, childContext } = options;
+
+    const defaultMapCollectionToProps = (props, context) => ({
+        componentsCollection: props.componentsCollection || context.componentsCollection || null,
+    });
+    const finalMapCollectionToProps = mapCollectionToProps || defaultMapCollectionToProps;
+
+    const propsKeys = Object.keys(finalMapCollectionToProps({}, {}));
+    const childContextTypes = childContext
+        ? {
+            ...propsKeys.reduce(
+                (propsMap, propKey) => ({
+                    ...propsMap,
+                    [propKey]: PanneauPropTypes.componentsCollection,
+                }),
+                {},
+            ),
+        }
+        : null;
 
     return (WrappedComponent) => {
         class WithComponentsCollection extends Component {
             static getWrappedInstance() {
                 invariant(
-                    options.withRef,
+                    withRef,
                     'To access the wrapped instance, you need to specify `{ withRef: true }` as the second argument of the withComponentsCollection() call.',
                 );
                 return this.wrappedInstance;
             }
 
             render() {
-                const { componentsCollection } = this.context;
-
                 const props = {
                     ...this.props,
-                    ...finalMapCollectionToProps(componentsCollection),
+                    ...finalMapCollectionToProps(
+                        this.props,
+                        this.context,
+                    ),
                 };
 
-                if (options.withRef) {
+                if (withRef) {
                     props.ref = (c) => {
                         this.wrappedInstance = c;
                     };
@@ -55,7 +76,23 @@ export default function withComponentsCollection(
             }
         }
 
+        if (childContextTypes !== null) {
+            WithComponentsCollection.prototype.getChildContext = function getChildContext() {
+                return {
+                    ...finalMapCollectionToProps(
+                        this.props,
+                        this.context,
+                    ),
+                };
+            };
+        }
+
+        WithComponentsCollection.propTypes = propTypes;
+        WithComponentsCollection.defaultProps = defaultProps;
         WithComponentsCollection.contextTypes = contextTypes;
+        if (childContextTypes !== null) {
+            WithComponentsCollection.childContextTypes = childContextTypes;
+        }
         WithComponentsCollection.displayName = `WithComponentsCollection(${getDisplayName(WrappedComponent)})`;
         WithComponentsCollection.WrappedComponent = WrappedComponent;
 

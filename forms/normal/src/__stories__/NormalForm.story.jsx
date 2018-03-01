@@ -1,13 +1,17 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';// eslint-disable-line import/no-extraneous-dependencies
+/* eslint-disable import/no-extraneous-dependencies */
+import { action } from '@storybook/addon-actions';
 import { withFieldsCollection } from '@panneau/fields';
+/* eslint-enable import/no-extraneous-dependencies */
 import { IntlProvider } from 'react-intl';
 
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
 import NormalForm from '../NormalForm';
 
-const NormalFormWithFields = withFieldsCollection()(NormalForm);
+const NormalFormWithFields = withFieldsCollection({
+    childContext: true,
+})(NormalForm);
 
 const fields = [
     {

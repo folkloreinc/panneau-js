@@ -3,5 +3,10 @@
     "id": "core.buttons.resources.create",
     "description": "The label of the \"create\" form button",
     "defaultMessage": "Create"
+  },
+  {
+    "id": "core.titles.resources.create",
+    "description": "The title of the resource create form",
+    "defaultMessage": "Create {name}"
   }
 ]

@@ -37,7 +37,6 @@ class Navbar extends Component {
 
         this.state = {
             opened: props.opened,
-            dropdownOpenedIndex: -1,
         };
     }
 
@@ -64,13 +63,6 @@ class Navbar extends Component {
     }
 
     onClickItem(e, { index, ...it }, relIndex, position) {
-        if (it.dropdown) {
-            e.preventDefault();
-            this.setState(({ dropdownOpenedIndex }) => ({
-                dropdownOpenedIndex: index !== dropdownOpenedIndex ? index : -1,
-            }));
-        }
-
         const { onClickItem } = this.props;
         if (onClickItem !== null) {
             onClickItem(e, it, index, position);
@@ -78,7 +70,6 @@ class Navbar extends Component {
     }
 
     renderItem(it, index, position) {
-        const { dropdownOpenedIndex } = this.state;
         const link = get(it, 'link', '#');
         const divider = get(it, 'type', 'item') === 'divider';
         const label = get(it, 'label', '');
@@ -96,7 +87,6 @@ class Navbar extends Component {
                 className={classNames({
                     dropdown: it.dropdown,
                     divider,
-                    open: dropdownOpenedIndex === it.index,
                 })}
             >
                 { !divider ? (

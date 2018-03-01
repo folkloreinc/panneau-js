@@ -4,6 +4,7 @@ import get from 'lodash/get';
 import { Route, Switch } from 'react-router';
 import 'bootstrap.native';
 
+import PanneauPropTypes from '../lib/PropTypes';
 import createContainer from '../lib/createContainer';
 
 import Layout from './Layout';
@@ -20,13 +21,8 @@ const propTypes = {
     urlGenerator: PropTypes.shape({
         route: PropTypes.func,
     }).isRequired,
-    componentsCollection: PropTypes.shape({
-        getComponent: PropTypes.func,
-    }),
-    definition: PropTypes.shape({
-        layout: PropTypes.object,
-        routes: PropTypes.objectOf(PropTypes.string),
-    }),
+    componentsCollection: PanneauPropTypes.componentsCollection,
+    definition: PanneauPropTypes.definition,
 };
 
 const defaultProps = {
@@ -35,18 +31,12 @@ const defaultProps = {
 };
 
 const childContextTypes = {
-    componentsCollection: PropTypes.shape({
-        getComponent: PropTypes.func,
-    }),
-    fieldsCollection: PropTypes.shape({
-        getComponent: PropTypes.func,
-    }),
-    layoutsCollection: PropTypes.shape({
-        getComponent: PropTypes.func,
-    }),
-    listsCollection: PropTypes.shape({
-        getComponent: PropTypes.func,
-    }),
+    componentsCollection: PanneauPropTypes.componentsCollection,
+    fieldsCollection: PanneauPropTypes.componentsCollection,
+    layoutsCollection: PanneauPropTypes.componentsCollection,
+    listsCollection: PanneauPropTypes.componentsCollection,
+    formsCollection: PanneauPropTypes.componentsCollection,
+    modalsCollection: PanneauPropTypes.componentsCollection,
 };
 
 class Panneau extends Component {
@@ -61,6 +51,8 @@ class Panneau extends Component {
         return {
             componentsCollection,
             fieldsCollection: componentsCollection.getCollection('fields'),
+            formsCollection: componentsCollection.getCollection('forms'),
+            modalsCollection: componentsCollection.getCollection('modals'),
             layoutsCollection: componentsCollection.getCollection('layouts'),
             listsCollection: componentsCollection.getCollection('lists'),
         };

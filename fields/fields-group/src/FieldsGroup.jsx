@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import FormGroup from '@panneau/form-group';
-import { ComponentsCollection } from '@panneau/core';
+import { ComponentsCollection, withFieldsCollection } from '@panneau/core';
 
 const propTypes = {
     name: PropTypes.string,
@@ -50,12 +50,6 @@ const defaultProps = {
     readOnly: false,
 };
 
-const contextTypes = {
-    fieldsCollection: PropTypes.shape({
-        getComponent: PropTypes.func,
-    }),
-};
-
 class FieldsGroup extends Component {
     constructor(props) {
         super(props);
@@ -79,12 +73,7 @@ class FieldsGroup extends Component {
     }
 
     getFieldComponent(key) {
-        const { fieldsComponents, getFieldComponent } = this.props;
-        const fieldsCollection = (
-            this.props.fieldsCollection ||
-            this.context.fieldsCollection ||
-            null
-        );
+        const { fieldsComponents, getFieldComponent, fieldsCollection } = this.props;
         const normalizedKey = ComponentsCollection.normalizeKey(key);
 
         if (getFieldComponent !== null) {
@@ -260,6 +249,5 @@ class FieldsGroup extends Component {
 
 FieldsGroup.propTypes = propTypes;
 FieldsGroup.defaultProps = defaultProps;
-FieldsGroup.contextTypes = contextTypes;
 
-export default FieldsGroup;
+export default withFieldsCollection()(FieldsGroup);

@@ -1,8 +1,6 @@
 import withLayoutsCollection from './withLayoutsCollection';
-import layoutsCollection from './layouts';
+import layoutsCollection from './items';
 
-export {
-    withLayoutsCollection,
-};
+export { withLayoutsCollection };
 
 export default layoutsCollection;

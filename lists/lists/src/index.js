@@ -1,8 +1,6 @@
 import withListsCollection from './withListsCollection';
-import listsCollection from './lists';
+import listsCollection from './items';
 
-export {
-    withListsCollection,
-};
+export { withListsCollection };
 
 export default listsCollection;

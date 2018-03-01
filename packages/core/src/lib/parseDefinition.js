@@ -88,6 +88,7 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
     const parseResources = resources => resources.map((resource) => {
         const endpointHost = get(rootDefinition, 'endpointHost', '/');
         return {
+            type: 'default',
             ...resource,
             api: new ResourceApi(resource, urlGenerator, {
                 host: endpointHost,

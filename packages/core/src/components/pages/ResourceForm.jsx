@@ -3,42 +3,46 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
+import isString from 'lodash/isString';
 import classNames from 'classnames';
+import { defineMessages, FormattedMessage } from 'react-intl';
 
-import withComponentsCollection from '../../lib/withComponentsCollection';
+import PanneauPropTypes from '../../lib/PropTypes';
+import withFormsCollection from '../../lib/withFormsCollection';
 
 import styles from '../../styles/pages/resource-form.scss';
 
+const messages = defineMessages({
+    save: {
+        id: 'core.buttons.resources.save',
+        description: 'The label of the "save" button',
+        defaultMessage: 'Save',
+    },
+    title: {
+        id: 'core.titles.resources.default',
+        description: 'The title of the resource form',
+        defaultMessage: '{name}',
+    },
+});
+
 const propTypes = {
-    formsCollection: PropTypes.shape({
-        getComponent: PropTypes.func,
-    }).isRequired,
+    formsCollection: PanneauPropTypes.componentsCollection.isRequired,
     match: PropTypes.shape({
         params: PropTypes.shape({
             id: PropTypes.string,
         }),
     }).isRequired,
+    location: PropTypes.shape({
+        search: PropTypes.string,
+        state: PropTypes.object,
+    }),
+    title: PanneauPropTypes.message,
     action: PropTypes.string,
-    resource: PropTypes.shape({
-
-    }).isRequired,
+    resource: PanneauPropTypes.resource.isRequired,
     item: PropTypes.shape({
         id: PropTypes.number,
     }),
-    buttons: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string,
-        type: PropTypes.string,
-        label: PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.shape({
-                id: PropTypes.string,
-                description: PropTypes.string,
-                defaultMessage: PropTypes.string,
-            }),
-        ]),
-        className: PropTypes.string,
-        onClick: PropTypes.func,
-    })),
+    buttons: PanneauPropTypes.buttons,
     errors: PropTypes.arrayOf(PropTypes.string),
     formValue: PropTypes.shape({}),
     formErrors: PropTypes.objectOf(PropTypes.array),
@@ -48,6 +52,7 @@ const propTypes = {
 
 const defaultProps = {
     action: 'create',
+    title: messages.title,
     item: null,
     errors: null,
     formValue: null,
@@ -58,7 +63,7 @@ const defaultProps = {
         {
             id: 'submit',
             type: 'submit',
-            label: 'Save',
+            label: messages.save,
             className: 'btn-primary',
         },
     ],
@@ -87,7 +92,8 @@ class ResourceForm extends Component {
         const { action, resource, match } = this.props;
         if (action === 'edit' || action === 'show') {
             const id = get(match, 'params.id');
-            resource.api.show(id)
+            resource.api
+                .show(id)
                 .then(this.onItemLoaded)
                 .catch(this.onItemLoadError);
         }
@@ -154,23 +160,49 @@ class ResourceForm extends Component {
         }
     }
 
+    getTypeFromLocation() {
+        const { location, resource } = this.props;
+        const types = get(resource, 'types', []);
+        const searchMatches = (location.search || '').match(/type=([^&]+)/);
+        const locationTypeId = get(location, 'state.type', get(searchMatches, '1', null));
+        const locationType = types.find(it => it.id === locationTypeId) || null;
+        return locationType;
+    }
+
     submitForm() {
         const { action, resource } = this.props;
         const { item, formValue } = this.state;
-        return (action === 'create' ?
-            resource.api.store(formValue) : resource.api.update(item.id, formValue || item));
+        return action === 'create'
+            ? resource.api.store(formValue)
+            : resource.api.update(item.id, formValue || item);
     }
 
     renderHeader() {
-        const { resource } = this.props;
+        const { action, resource, title } = this.props;
 
         const headerClassNames = classNames({
             [styles.header]: true,
         });
 
+        const message = get(
+            resource,
+            `messages.titles.resources.${action}`,
+            get(resource, 'messages.titles.resources.default', null),
+        );
+        const name = get(
+            resource,
+            'messages.names.a',
+            get(resource, 'messages.name', resource.name),
+        );
+        const defaultTitle = isString(title) ? (
+            title
+        ) : (
+            <FormattedMessage {...title} values={{ name }} />
+        );
+
         return (
             <div className={headerClassNames}>
-                <h1>{ resource.name }</h1>
+                <h1>{message !== null ? message : defaultTitle}</h1>
             </div>
         );
     }
@@ -187,14 +219,8 @@ class ResourceForm extends Component {
         /* eslint-disable react/no-array-index-key */
         return errors !== null && errors.length > 0 ? (
             <div className={errorsClassNames}>
-                <strong>
-                    The following error{errors.length > 1 ? 's' : null} occured:
-                </strong>
-                <ul>
-                    { errors.map((error, index) => (
-                        <li key={`error-${index}`}>{ error }</li>
-                    )) }
-                </ul>
+                <strong>The following error{errors.length > 1 ? 's' : null} occured:</strong>
+                <ul>{errors.map((error, index) => <li key={`error-${index}`}>{error}</li>)}</ul>
             </div>
         ) : null;
         /* eslint-enable react/no-array-index-key */
@@ -202,21 +228,27 @@ class ResourceForm extends Component {
 
     renderForm() {
         const {
-            action,
-            resource,
-            formsCollection,
-            readOnly,
-            buttons,
+            action, resource, formsCollection, readOnly, buttons,
         } = this.props;
-        const {
-            item,
-            formValue,
-            formErrors,
-        } = this.state;
+        const { item, formValue, formErrors } = this.state;
+        const resourceType = get(resource, 'type', 'default');
         const form = get(resource, `forms.${action}`, get(resource, 'forms', {}));
         const { type, ...formProps } = form;
         const FormComponent = formsCollection.getComponent(type || 'normal');
         const formButtons = readOnly ? [] : buttons;
+
+        if (resourceType === 'typed') {
+            const types = get(resource, 'types', []);
+            const defaultType =
+                types.find(it => get(it, 'default', false) === true) || get(types, '0', null);
+            const locationType = this.getTypeFromLocation();
+            const formType = get(item, 'type', locationType || defaultType);
+            formProps.fields = get(
+                formProps,
+                `fields.${formType !== null ? formType.id : 'default'}`,
+                get(formProps, 'fields.default', get(formProps, 'fields', [])),
+            );
+        }
 
         const formClassNames = classNames({
             [styles.form]: true,
@@ -253,9 +285,9 @@ class ResourceForm extends Component {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-8 col-md-offset-2">
-                            { this.renderHeader() }
-                            { this.renderErrors() }
-                            { needsForm && this.renderForm() }
+                            {this.renderHeader()}
+                            {this.renderErrors()}
+                            {needsForm && this.renderForm()}
                         </div>
                     </div>
                 </div>
@@ -270,22 +302,16 @@ ResourceForm.defaultProps = defaultProps;
 const mapStateToProps = ({ panneau }, { action, match, location }) => {
     const resources = get(panneau, 'definition.resources', []);
     const resourceId = get(match, 'params.resource', null);
+    const resource = resources.find(it =>
+        (resourceId !== null && it.id === resourceId) ||
+            (resourceId === null &&
+                get(it, `routes.${action}`, null) === location.pathname)) || null;
     return {
-        resource: resources.find(it => (
-            (resourceId !== null && it.id === resourceId) ||
-            (resourceId === null && get(it, `routes.${action}`, null) === location.pathname)
-        )) || null,
+        resource,
     };
 };
 
-const mapCollectionToProps = collection => ({
-    componentsCollection: collection,
-    formsCollection: collection.getCollection('forms'),
-});
-
 const WithStateComponent = connect(mapStateToProps)(ResourceForm);
 const WithRouterContainer = withRouter(WithStateComponent);
-const WithComponentsCollectionContainer = withComponentsCollection((
-    mapCollectionToProps
-))(WithRouterContainer);
-export default WithComponentsCollectionContainer;
+const WithFormsCollectionContainer = withFormsCollection()(WithRouterContainer);
+export default WithFormsCollectionContainer;

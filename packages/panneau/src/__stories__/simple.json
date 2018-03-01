@@ -7,6 +7,11 @@
             "navbar": {
                 "items": [
                     {
+                        "id": "pages",
+                        "type": "resource",
+                        "resource": "pages"
+                    },
+                    {
                         "id": "users",
                         "type": "resource",
                         "resource": "users"
@@ -42,6 +47,10 @@
             "methods": {
                 "edit": true
             },
+            "messages": {
+                "names.a": "a user",
+                "names.plural": "Users"
+            },
             "forms": {
                 "type": "normal",
                 "fields": [
@@ -61,6 +70,78 @@
                         "label": "Password"
                     }
                 ]
+            },
+            "lists": {
+                "type": "table",
+                "cols": [
+                    {
+                        "id": "id",
+                        "path": "id",
+                        "label": "ID",
+                        "width": 50
+                    },
+                    {
+                        "id": "name",
+                        "path": "name",
+                        "label": "Name"
+                    },
+                    {
+                        "id": "email",
+                        "path": "email",
+                        "label": "Email"
+                    },
+                    {
+                        "id": "actions",
+                        "type": "actions"
+                    }
+                ]
+            }
+        },
+
+        {
+            "id": "pages",
+            "name": "Pages",
+            "type": "typed",
+            "methods": {
+                "edit": true
+            },
+            "messages": {
+                "names.a": "a page",
+                "names.plural": "Pages"
+            },
+            "types": [
+                {
+                    "id": "home",
+                    "label": "Home"
+                },
+                {
+                    "id": "base",
+                    "label": "Base"
+                }
+            ],
+            "forms": {
+                "type": "normal",
+                "fields": {
+                    "home": [
+                        {
+                            "name": "title",
+                            "type": "text",
+                            "label": "Title"
+                        }
+                    ],
+                    "base": [
+                        {
+                            "name": "title",
+                            "type": "text",
+                            "label": "Title"
+                        },
+                        {
+                            "name": "description",
+                            "type": "text",
+                            "label": "Description"
+                        }
+                    ]
+                }
             },
             "lists": {
                 "type": "table",

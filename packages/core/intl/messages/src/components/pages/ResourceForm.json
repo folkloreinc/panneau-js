@@ -1,0 +1,12 @@
+[
+  {
+    "id": "core.buttons.resources.save",
+    "description": "The label of the \"save\" button",
+    "defaultMessage": "Save"
+  },
+  {
+    "id": "core.titles.resources.default",
+    "description": "The title of the resource form",
+    "defaultMessage": "{name}"
+  }
+]

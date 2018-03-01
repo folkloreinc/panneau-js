@@ -1,5 +1,5 @@
 import withModalsCollection from './withModalsCollection';
-import modalsCollection from './modals';
+import modalsCollection from './items';
 
 export {
     withModalsCollection,

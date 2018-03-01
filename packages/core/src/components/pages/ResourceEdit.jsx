@@ -9,6 +9,11 @@ const messages = defineMessages({
         description: 'The label of the "save" form button',
         defaultMessage: 'Save',
     },
+    title: {
+        id: 'core.titles.resources.edit',
+        description: 'The title of the resource edit form',
+        defaultMessage: 'Edit {name}',
+    },
 });
 
 const propTypes = {
@@ -22,6 +27,7 @@ const defaultProps = {
 const ResourceEdit = props => (
     <ResourceForm
         action="edit"
+        title={messages.title}
         buttons={[
             {
                 id: 'submit',

@@ -1,6 +1,8 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
@@ -9,7 +11,8 @@ import classNames from 'classnames';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { withUrlGenerator } from '@folklore/react-app';
 
-import withComponentsCollection from '../../lib/withComponentsCollection';
+import PanneauPropTypes from '../../lib/PropTypes';
+import withListsCollection from '../../lib/withListsCollection';
 
 import styles from '../../styles/pages/resource-index.scss';
 
@@ -17,17 +20,24 @@ const messages = defineMessages({
     add: {
         id: 'core.buttons.resources.add',
         description: 'The label of the "add" index button',
-        defaultMessage: 'Add',
+        defaultMessage: 'Add {name}',
+    },
+    title: {
+        id: 'core.titles.resources.index',
+        description: 'The title of the resource index page',
+        defaultMessage: '{name}',
     },
 });
 
 const propTypes = {
-    listsCollection: PropTypes.shape({
-        getComponent: PropTypes.func,
+    listsCollection: PanneauPropTypes.componentsCollection.isRequired,
+    urlGenerator: PropTypes.shape({
+        route: PropTypes.func,
     }).isRequired,
-    resource: PropTypes.shape({}).isRequired,
+    resource: PanneauPropTypes.resource.isRequired,
     location: PropTypes.shape({}).isRequired,
     items: PropTypes.arrayOf(PropTypes.object),
+    title: PanneauPropTypes.message,
     errors: PropTypes.arrayOf(PropTypes.string),
     showAddButton: PropTypes.bool,
     addButtonLabel: PropTypes.oneOfType([
@@ -46,6 +56,7 @@ const propTypes = {
 
 const defaultProps = {
     items: [],
+    title: messages.title,
     errors: null,
     showAddButton: true,
     addButtonLabel: messages.add,
@@ -63,7 +74,6 @@ class ResourceIndex extends Component {
         this.onItemsLoadError = this.onItemsLoadError.bind(this);
         this.onItemActions = this.onItemActions.bind(this);
         this.onItemDeleted = this.onItemDeleted.bind(this);
-        this.onClickAdd = this.onClickAdd.bind(this);
 
         this.state = {
             items: props.items,
@@ -117,18 +127,11 @@ class ResourceIndex extends Component {
         });
     }
 
-    onClickAdd() {
-        const {
-            gotoResourceCreate,
-        } = this.props;
-        gotoResourceCreate();
-    }
-
     onItemActions(e, action, it) {
         const {
             gotoResourceEdit,
             gotoResourceShow,
-            gotoResourceDelete,
+            // gotoResourceDelete,
         } = this.props;
 
         if (action.id === 'edit') {
@@ -167,41 +170,110 @@ class ResourceIndex extends Component {
         // @TODO quick implementation; instead, use a pretty modal or something
         // eslint-disable-next-line no-alert
         if (window.confirm(`Are you sure you want to delete item ID ${id} from ${name}?`)) {
-            resource.api
-                .destroy(id)
-                .then(this.onItemDeleted);
+            resource.api.destroy(id).then(this.onItemDeleted);
         }
     }
 
-    renderHeader() {
-        const {
+    renderAddButton() {
+        const { addButtonLabel, resource, urlGenerator } = this.props;
+        const resourceType = get(resource, 'type', 'default');
+        const isTyped = resourceType === 'typed';
+        const types = isTyped ? get(resource, 'types', []) : null;
+        const buttonMessage = get(
             resource,
-            showAddButton,
-            addButtonLabel,
-        } = this.props;
-
+            'messages.buttons.resources.add',
+            null,
+        );
+        const name = get(
+            resource,
+            'messages.names.a',
+            get(resource, 'messages.name', resource.name),
+        );
+        const buttonLabel = isString(addButtonLabel) ? (
+            addButtonLabel
+        ) : (
+            <FormattedMessage {...addButtonLabel} values={{ name }} />
+        );
         return (
             <div
                 className={classNames({
-                    [styles.header]: true,
+                    'btn-group': true,
                 })}
             >
-                <div
-                    className={classNames({
-                        [styles.cols]: true,
-                    })}
-                >
-                    <div
+                {isTyped ? (
+                    <button
+                        type="button"
                         className={classNames({
-                            [styles.col]: true,
+                            btn: true,
+                            'btn-primary': true,
+                            'dropdown-toggle': isTyped,
+                        })}
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                    >
+                        {buttonMessage !== null ? buttonMessage : buttonLabel} <span className="caret" />
+                    </button>
+                ) : (
+                    <Link
+                        to={urlGenerator.route('resource.create', {
+                            resource: resource.id,
+                        })}
+                        className={classNames({
+                            btn: true,
+                            'btn-primary': true,
                         })}
                     >
-                        <h1
-                            className={classNames({
-                                [styles.title]: true,
-                            })}
-                        >
-                            { resource.name }
+                        {buttonMessage !== null ? buttonMessage : buttonLabel}
+                    </Link>
+                )}
+                {isTyped ? (
+                    <ul className="dropdown-menu">
+                        {types.map(({ id, label }) => (
+                            <li key={`add-button-${id}`}>
+                                <Link
+                                    to={{
+                                        pathname: urlGenerator.route('resource.create', {
+                                            resource: resource.id,
+                                        }),
+                                        search: `?type=${id}`,
+                                        state: {
+                                            type: id,
+                                        },
+                                    }}
+                                >
+                                    {label}
+                                </Link>
+                            </li>
+                        ))}
+
+                    </ul>
+                ) : null}
+            </div>
+        );
+    }
+
+    renderHeader() {
+        const { resource, title, showAddButton } = this.props;
+
+        const message = get(resource, 'messages.titles.resources.index', null);
+        const name = get(
+            resource,
+            'messages.names.plural',
+            get(resource, 'messages.name', resource.name),
+        );
+        const defaultTitle = isString(title) ? (
+            title
+        ) : (
+            <FormattedMessage {...title} values={{ name }} />
+        );
+
+        return (
+            <div className={styles.header}>
+                <div className={styles.cols}>
+                    <div className={styles.col}>
+                        <h1 className={styles.title}>
+                            {message !== null ? message : defaultTitle}
                         </h1>
                     </div>
                     <div
@@ -210,28 +282,10 @@ class ResourceIndex extends Component {
                             'text-right': true,
                         })}
                     >
-                        { showAddButton ? (
-                            <div
-                                className={classNames({
-                                    'btn-group': true,
-                                })}
-                            >
-                                <button
-                                    className={classNames({
-                                        btn: true,
-                                        'btn-primary': true,
-                                    })}
-                                    onClick={this.onClickAdd}
-                                >
-                                    {isString(addButtonLabel) ? addButtonLabel : (
-                                        <FormattedMessage {...addButtonLabel} />
-                                    )}
-                                </button>
-                            </div>
-                        ) : null }
+                        {showAddButton ? this.renderAddButton() : null}
                     </div>
                 </div>
-                { this.renderErrors() }
+                {this.renderErrors()}
             </div>
         );
     }
@@ -246,11 +300,7 @@ class ResourceIndex extends Component {
         /* eslint-disable react/no-array-index-key */
         return errors !== null && errors.length > 1 ? (
             <div className={errorsClassNames}>
-                <ul>
-                    { errors.map((error, index) => (
-                        <li key={`error-${index}`}>{ error }</li>
-                    )) }
-                </ul>
+                <ul>{errors.map((error, index) => <li key={`error-${index}`}>{error}</li>)}</ul>
             </div>
         ) : null;
         /* eslint-enable react/no-array-index-key */
@@ -282,15 +332,7 @@ class ResourceIndex extends Component {
     renderPagination() {
         const { listsCollection } = this.props;
         const Pagination = listsCollection.getComponent('pagination');
-        return (
-            <Pagination
-                total={20}
-                perPage={1}
-                currentPage={3}
-                lastPage={10}
-                url="/?page=1"
-            />
-        );
+        return <Pagination total={20} perPage={1} currentPage={3} lastPage={10} url="/?page=1" />;
     }
 
     render() {
@@ -303,9 +345,9 @@ class ResourceIndex extends Component {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-8 col-md-offset-2">
-                            { this.renderHeader() }
-                            { this.renderList() }
-                            { /*this.renderPagination()*/ }
+                            {this.renderHeader()}
+                            {this.renderList()}
+                            {/* this.renderPagination() */}
                         </div>
                     </div>
                 </div>
@@ -321,29 +363,33 @@ const mapStateToProps = ({ panneau }, { match, location }) => {
     const resources = get(panneau, 'definition.resources', []);
     const resourceId = get(match, 'params.resource', null);
     return {
-        resource: resources.find(it => (
-            (resourceId !== null && it.id === resourceId) ||
-            (resourceId === null && get(it, 'routes.index', null) === location.pathname)
-        )) || null,
+        resource:
+            resources.find(it =>
+                (resourceId !== null && it.id === resourceId) ||
+                    (resourceId === null && get(it, 'routes.index', null) === location.pathname)) || null,
     };
 };
 
 const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
-    gotoResourceCreate: resource => dispatch(push(urlGenerator.route('resource.create', {
-        resource: resource.id,
-    }))),
-    gotoResourceEdit: (resource, id) => dispatch(push(urlGenerator.route('resource.edit', {
-        resource: resource.id,
-        id,
-    }))),
-    gotoResourceShow: (resource, id) => dispatch(push(urlGenerator.route('resource.show', {
-        resource: resource.id,
-        id,
-    }))),
-    gotoResourceDelete: (resource, id) => dispatch(push(urlGenerator.route('resource.delete', {
-        resource: resource.id,
-        id,
-    }))),
+    gotoResourceCreate: resource =>
+        dispatch(push(urlGenerator.route('resource.create', {
+            resource: resource.id,
+        }))),
+    gotoResourceEdit: (resource, id) =>
+        dispatch(push(urlGenerator.route('resource.edit', {
+            resource: resource.id,
+            id,
+        }))),
+    gotoResourceShow: (resource, id) =>
+        dispatch(push(urlGenerator.route('resource.show', {
+            resource: resource.id,
+            id,
+        }))),
+    gotoResourceDelete: (resource, id) =>
+        dispatch(push(urlGenerator.route('resource.delete', {
+            resource: resource.id,
+            id,
+        }))),
 });
 
 const mergeProps = (
@@ -366,14 +412,8 @@ const mergeProps = (
     gotoResourceDelete: id => gotoResourceDelete(stateProps.resource, id),
 });
 
-const mapCollectionToProps = collection => ({
-    listsCollection: collection.getCollection('lists'),
-});
-
 const WithStateComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(ResourceIndex);
 const WithRouterContainer = withRouter(WithStateComponent);
-const WithComponentsCollectionContainer = withComponentsCollection((
-    mapCollectionToProps
-))(WithRouterContainer);
-const WithUrlGeneratorContainer = withUrlGenerator()(WithComponentsCollectionContainer);
+const WithListsCollectionContainer = withListsCollection()(WithRouterContainer);
+const WithUrlGeneratorContainer = withUrlGenerator()(WithListsCollectionContainer);
 export default WithUrlGeneratorContainer;

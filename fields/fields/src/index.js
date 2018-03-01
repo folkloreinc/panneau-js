@@ -1,5 +1,5 @@
 import withFieldsCollection from './withFieldsCollection';
-import fieldsCollection from './fields';
+import fieldsCollection from './items';
 
 export {
     withFieldsCollection,

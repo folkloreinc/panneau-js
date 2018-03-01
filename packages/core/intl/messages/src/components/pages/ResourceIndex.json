@@ -3,5 +3,10 @@
     "id": "core.buttons.resources.add",
     "description": "The label of the \"add\" index button",
     "defaultMessage": "Add"
+  },
+  {
+    "id": "core.titles.resources.index",
+    "description": "The title of the resource index page",
+    "defaultMessage": "{name}"
   }
 ]

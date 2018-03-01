@@ -3,13 +3,8 @@ import { action } from '@storybook/addon-actions';// eslint-disable-line import/
 
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
-import fieldsCollection from './fields';
+import fieldsCollection from '../../../fields/src/items';
 import FieldsGroup from '../FieldsGroup';
-import withFieldsCollection from '../../../fields/src/withFieldsCollection';
-
-const FieldsGroupWithCollection = withFieldsCollection({
-    fieldsCollection,
-})(FieldsGroup);
 
 const fields = [
     {
@@ -43,7 +38,8 @@ const fields = [
 storiesOf('FieldsGroup', module)
     .add('simple', () => (
         <KeepValue>
-            <FieldsGroupWithCollection
+            <FieldsGroup
+                fieldsCollection={fieldsCollection}
                 fields={fields}
                 onChange={action('change')}
             />
