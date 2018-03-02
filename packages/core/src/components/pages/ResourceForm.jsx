@@ -23,6 +23,16 @@ const messages = defineMessages({
         description: 'The title of the resource form',
         defaultMessage: '{name}',
     },
+    success: {
+        id: 'core.notices.resources.success',
+        description: 'The text of the "success" form notice',
+        defaultMessage: 'Success!',
+    },
+    error: {
+        id: 'core.notices.resources.error',
+        description: 'The text of the "error" form notice',
+        defaultMessage: 'Failed. The form contains errors.',
+    },
 });
 
 const propTypes = {
@@ -85,6 +95,7 @@ class ResourceForm extends Component {
             errors: props.errors,
             formValue: props.formValue || props.item,
             formErrors: props.formErrors,
+            formNotice: props.formErrors !== null ? 'error' : null,
         };
     }
 
@@ -130,6 +141,7 @@ class ResourceForm extends Component {
     onFormValueChange(value) {
         this.setState({
             formValue: value,
+            formNotice: null,
         });
     }
 
@@ -138,6 +150,7 @@ class ResourceForm extends Component {
             item,
             formValue: null,
             formErrors: null,
+            formNotice: 'success',
         });
         if (this.props.onFormComplete) {
             this.props.onFormComplete(item);
@@ -148,6 +161,7 @@ class ResourceForm extends Component {
         if (errors.name === 'ValidationError') {
             this.setState({
                 formErrors: errors.responseData,
+                formNotice: 'error',
             });
         } else if (errors.name === 'ResponseError') {
             this.setState({
@@ -170,6 +184,10 @@ class ResourceForm extends Component {
     }
 
     submitForm() {
+        this.setState({
+            formNotice: null,
+        });
+
         const { action, resource } = this.props;
         const { item, formValue } = this.state;
         return action === 'create'
@@ -230,7 +248,9 @@ class ResourceForm extends Component {
         const {
             action, resource, formsCollection, readOnly, buttons,
         } = this.props;
-        const { item, formValue, formErrors } = this.state;
+        const {
+            item, formValue, formErrors, formNotice,
+        } = this.state;
         const resourceType = get(resource, 'type', 'default');
         const form = get(resource, `forms.${action}`, get(resource, 'forms', {}));
         const { type, ...formProps } = form;
@@ -250,6 +270,40 @@ class ResourceForm extends Component {
             );
         }
 
+        let noticeNode = null;
+        if (formNotice !== null) {
+            let formNoticeText;
+            let formNoticeType;
+            let formNoticeIcon;
+            if (formNotice === 'success') {
+                formNoticeText = messages.success;
+                formNoticeIcon = 'ok';
+                formNoticeType = 'success';
+            } else if (formNotice === 'error') {
+                formNoticeText = messages.error;
+                formNoticeIcon = 'remove';
+                formNoticeType = 'danger';
+            }
+            const noticeCellTextClassNames = classNames({
+                [`text-${formNoticeType}`]: formNoticeType,
+            });
+            const noticeCellIconClassNames = classNames({
+                [styles.noticeIcon]: true,
+                glyphicon: true,
+                [`glyphicon-${formNoticeIcon}`]: formNoticeIcon,
+            });
+            noticeNode = (
+                <span className={noticeCellTextClassNames}>
+                    <span
+                        className={noticeCellIconClassNames}
+                        aria-hidden="true"
+                    />
+                    {isString(formNoticeText) ? formNoticeText : (
+                        <FormattedMessage {...formNoticeText} />
+                    )}
+                </span>
+            );
+        }
         const formClassNames = classNames({
             [styles.form]: true,
         });
@@ -261,6 +315,7 @@ class ResourceForm extends Component {
                     buttons={formButtons}
                     value={formValue || item}
                     errors={formErrors}
+                    notice={noticeNode}
                     submitForm={this.submitForm}
                     onValueChange={this.onFormValueChange}
                     onComplete={this.onFormComplete}

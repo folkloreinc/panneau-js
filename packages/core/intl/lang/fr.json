@@ -3,5 +3,7 @@
     "core.buttons.resources.edit": "Enregistrer",
     "core.buttons.resources.add": "Ajouter",
     "core.navbar.resources.index": "Voir tous les {resourceLabel}",
-    "core.navbar.resources.create": "Ajouter un {resourceLabel}"
+    "core.navbar.resources.create": "Ajouter un {resourceLabel}",
+    "core.notices.resources.success": "Succès !",
+    "core.notices.resources.error": "Échec. Le formulaire contient des erreurs."
 }

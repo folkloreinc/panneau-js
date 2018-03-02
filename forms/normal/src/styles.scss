@@ -4,4 +4,17 @@
     .form {
         position: relative;
     }
+
+    .cols {
+        display: table;
+    }
+
+    .col {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .noticeCell {
+        padding-left: 10px;
+    }
 }
