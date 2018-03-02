@@ -149,7 +149,7 @@ class NormalForm extends Component {
         } else {
             // @TODO
             this.setState({
-                generalError: generalErrorDefaultMessage, // eslint-disable-line
+                generalError: generalErrorDefaultMessage,
             });
         }
     }
