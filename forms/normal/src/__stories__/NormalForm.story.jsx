@@ -52,7 +52,7 @@ storiesOf('Forms/Normal', module)
             </IntlProvider>
         </div>
     ))
-    .add('with custom button', () => (
+    .add('with custom button and notice', () => (
         <div>
             <IntlProvider
                 locale="en"
@@ -75,6 +75,17 @@ storiesOf('Forms/Normal', module)
                                 className: 'btn-success',
                             },
                         ]}
+                        notice={(
+                            <span
+                                className="text-info"
+                            >
+                                <span
+                                    className="glyphicon glyphicon-info-sign"
+                                    style={{ marginRight: '4px' }}
+                                />
+                                This is a notice.
+                            </span>
+                        )}
                         onSubmit={(e, value) => {
                             e.preventDefault();
                             return submitAction(value);

@@ -43,6 +43,7 @@ const propTypes = {
     onErrors: PropTypes.func,
     onComplete: PropTypes.func,
     readOnly: PropTypes.bool,
+    notice: PropTypes.node,
 };
 
 const defaultProps = {
@@ -69,6 +70,7 @@ const defaultProps = {
     onErrors: null,
     onComplete: null,
     readOnly: false,
+    notice: null,
 };
 
 class NormalForm extends Component {
@@ -149,7 +151,7 @@ class NormalForm extends Component {
         } else {
             // @TODO
             this.setState({
-                generalError: generalErrorDefaultMessage, // eslint-disable-line
+                generalError: generalErrorDefaultMessage,
             });
         }
     }
@@ -200,6 +202,11 @@ class NormalForm extends Component {
         );
     }
 
+    renderNotice() {
+        const { notice } = this.props;
+        return notice;
+    }
+
     render() {
         const {
             action,
@@ -222,6 +229,19 @@ class NormalForm extends Component {
             [styles.actions]: true,
         });
 
+        const actionsRowClassNames = classNames({
+            [styles.cols]: true,
+        });
+
+        const actionsCellClassNames = classNames({
+            [styles.col]: true,
+        });
+
+        const noticeCellClassNames = classNames({
+            [styles.col]: true,
+            [styles.noticeCell]: true,
+        });
+
         return (
             <div className={containerClassNames}>
                 <div className={formClassNames}>
@@ -233,8 +253,15 @@ class NormalForm extends Component {
                         <div className={fieldsClassNames}>
                             { this.renderFields() }
                         </div>
-                        <div className={actionsClassNames}>
-                            { this.renderActions() }
+                        <div className={actionsRowClassNames}>
+                            <div className={actionsCellClassNames}>
+                                <div className={actionsClassNames}>
+                                    { this.renderActions() }
+                                </div>
+                            </div>
+                            <div className={noticeCellClassNames}>
+                                { this.renderNotice() }
+                            </div>
                         </div>
                     </form>
                 </div>

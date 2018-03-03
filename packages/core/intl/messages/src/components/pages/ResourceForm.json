@@ -8,5 +8,15 @@
     "id": "core.titles.resources.default",
     "description": "The title of the resource form",
     "defaultMessage": "{name}"
+  },
+  {
+    "id": "core.notices.resources.success",
+    "description": "The text of the \"success\" form notice",
+    "defaultMessage": "Success!"
+  },
+  {
+    "id": "core.notices.resources.error",
+    "description": "The text of the \"error\" form notice",
+    "defaultMessage": "Failed. The form contains errors."
   }
 ]

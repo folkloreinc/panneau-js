@@ -5,8 +5,13 @@
     "list.empty": "No items",
     "forms.normal.buttons.submit": "Save",
     "core.buttons.resources.create": "Create",
+    "core.titles.resources.create": "Create {name}",
     "core.buttons.resources.edit": "Save",
-    "core.buttons.resources.add": "Add",
+    "core.titles.resources.edit": "Edit {name}",
+    "core.buttons.resources.save": "Save",
+    "core.titles.resources.default": "{name}",
+    "core.buttons.resources.add": "Add {name}",
+    "core.titles.resources.index": "{name}",
     "core.navbar.resources.index": "View all {resourceLabel}",
     "core.navbar.resources.create": "Add a new {resourceLabel}"
 }

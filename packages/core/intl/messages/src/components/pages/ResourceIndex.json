@@ -2,7 +2,7 @@
   {
     "id": "core.buttons.resources.add",
     "description": "The label of the \"add\" index button",
-    "defaultMessage": "Add"
+    "defaultMessage": "Add {name}"
   },
   {
     "id": "core.titles.resources.index",
