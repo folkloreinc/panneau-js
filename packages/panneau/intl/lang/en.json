@@ -10,6 +10,8 @@
     "core.titles.resources.edit": "Edit {name}",
     "core.buttons.resources.save": "Save",
     "core.titles.resources.default": "{name}",
+    "core.notices.resources.success": "Success!",
+    "core.notices.resources.error": "Failed. The form contains errors.",
     "core.buttons.resources.add": "Add {name}",
     "core.titles.resources.index": "{name}",
     "core.navbar.resources.index": "View all {resourceLabel}",
