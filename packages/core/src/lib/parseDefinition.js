@@ -1,10 +1,11 @@
 import get from 'lodash/get';
+import isObject from 'lodash/isObject';
 import { defineMessages } from 'react-intl';
 
 import ResourceApi from './ResourceApi';
 import messageWithValues from './messageWithValues';
 
-const messages = defineMessages({
+const intlMessages = defineMessages({
     navbarViewAll: {
         id: 'core.navbar.resources.index',
         description: 'The label for a resource "view all" navbar menu',
@@ -52,7 +53,7 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
                     items: dropdown
                         ? [
                             {
-                                label: messageWithValues(messages.navbarViewAll, {
+                                label: messageWithValues(intlMessages.navbarViewAll, {
                                     resource: resourceViewAllLabel,
                                 }),
                                 link: urlGenerator.route(`${routeKeyPrefix}.index`, {
@@ -61,7 +62,7 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
                             },
                             { type: 'divider' },
                             {
-                                label: messageWithValues(messages.navbarAddNew, {
+                                label: messageWithValues(intlMessages.navbarAddNew, {
                                     resource: resourceAddNewLabel,
                                 }),
                                 link: urlGenerator.route(`${routeKeyPrefix}.create`, {
@@ -103,14 +104,20 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
     };
 
     const parseResources = resources =>
-        resources.map((resource) => {
+        resources.map(({
+            type, messages, api, ...resource
+        }) => {
             const endpointHost = get(rootDefinition, 'endpointHost', '/');
             return {
-                type: 'default',
                 ...resource,
-                api: new ResourceApi(resource, urlGenerator, {
-                    host: endpointHost,
-                }),
+                type: type || 'default',
+                messages: isObject(messages || null) ? messages : null,
+                api: (
+                    api ||
+                    new ResourceApi(resource, urlGenerator, {
+                        host: endpointHost,
+                    })
+                ),
             };
         });
 
