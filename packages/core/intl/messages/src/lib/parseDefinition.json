@@ -2,11 +2,11 @@
   {
     "id": "core.navbar.resources.index",
     "description": "The label for a resource \"view all\" navbar menu",
-    "defaultMessage": "View all {resourceLabel}"
+    "defaultMessage": "View all {resource}"
   },
   {
     "id": "core.navbar.resources.create",
     "description": "The label for a resource \"add new\" navbar menu",
-    "defaultMessage": "Add a new {resourceLabel}"
+    "defaultMessage": "Add a new {resource}"
   }
 ]
