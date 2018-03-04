@@ -2,10 +2,10 @@
 
 exports[`match snapshot 1`] = `
 <div
-  className="undefined"
+  className={undefined}
 >
   <div
-    className="undefined"
+    className={undefined}
   >
     <form
       action=""
@@ -13,27 +13,74 @@ exports[`match snapshot 1`] = `
       onSubmit={[Function]}
     >
       <div
-        className="undefined"
+        className={undefined}
       >
         <div
           className="field-group"
-        />
+        >
+          <div
+            className="form-group form-group-text"
+          >
+            <div
+              className="form-group-label"
+            >
+              <label
+                className="control-label"
+                htmlFor="text"
+              >
+                Text
+              </label>
+            </div>
+            <div
+              className="form-group-inner"
+              style={
+                Object {
+                  "display": "block",
+                }
+              }
+            >
+              <input
+                className="form-control field-text"
+                disabled={false}
+                id="text"
+                name="text"
+                onBlur={null}
+                onChange={[Function]}
+                onFocus={null}
+                placeholder={null}
+                type="text"
+                value="Text"
+              />
+            </div>
+          </div>
+        </div>
       </div>
       <div
-        className="undefined"
+        className={undefined}
       >
         <div
           className={undefined}
         >
-          <button
-            className="btn btn-primary undefined"
-            onClick={null}
-            type="submit"
+          <div
+            className="undefined"
           >
-            <span>
-              Save
-            </span>
-          </button>
+            <div
+              className={undefined}
+            >
+              <button
+                className="btn btn-primary undefined"
+                onClick={null}
+                type="submit"
+              >
+                <span>
+                  Save
+                </span>
+              </button>
+            </div>
+          </div>
+          <div
+            className="undefined"
+          />
         </div>
       </div>
     </form>

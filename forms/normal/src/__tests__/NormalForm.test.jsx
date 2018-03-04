@@ -1,19 +1,33 @@
 import React from 'react';
 /* eslint-disable import/no-extraneous-dependencies */
 import renderer from 'react-test-renderer';
+import { withFieldsCollection } from '@panneau/fields';
 /* eslint-enable import/no-extraneous-dependencies */
 import { IntlProvider } from 'react-intl';
 import NormalForm from '../NormalForm';
 
-const fields = [
+const NormalFormWithFields = withFieldsCollection({
+    childContext: true,
+})(NormalForm);
 
+const fields = [
+    {
+        type: 'text',
+        label: 'Text',
+        name: 'text',
+    },
 ];
+
+const value = {
+    text: 'Text',
+};
 
 test('match snapshot', () => {
     const component = renderer.create((
         <IntlProvider locale="en">
-            <NormalForm
+            <NormalFormWithFields
                 fields={fields}
+                value={value}
             />
         </IntlProvider>
     ));
