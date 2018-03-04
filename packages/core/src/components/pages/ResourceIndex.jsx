@@ -359,14 +359,14 @@ class ResourceIndex extends Component {
 ResourceIndex.propTypes = propTypes;
 ResourceIndex.defaultProps = defaultProps;
 
-const mapStateToProps = ({ panneau }, { match, location }) => {
+const mapStateToProps = ({ panneau }, { match, location, urlGenerator }) => {
     const resources = get(panneau, 'definition.resources', []);
     const resourceId = get(match, 'params.resource', null);
     return {
         resource:
             resources.find(it =>
                 (resourceId !== null && it.id === resourceId) ||
-                    (resourceId === null && get(it, 'routes.index', null) === location.pathname)) || null,
+                    (resourceId === null && urlGenerator.route(`resource.${it.id}.index`) === location.pathname)) || null,
     };
 };
 

@@ -65,14 +65,14 @@ class ResourceCreate extends Component {
 ResourceCreate.propTypes = propTypes;
 ResourceCreate.defaultProps = defaultProps;
 
-const mapStateToProps = ({ panneau }, { match, location }) => {
+const mapStateToProps = ({ panneau }, { match, location, urlGenerator }) => {
     const resources = get(panneau, 'definition.resources', []);
     const resourceId = get(match, 'params.resource', null);
     return {
-        resource: resources.find(it => (
-            (resourceId !== null && it.id === resourceId) ||
-            (resourceId === null && get(it, 'routes.index', null) === location.pathname)
-        )) || null,
+        resource:
+            resources.find(it =>
+                (resourceId !== null && it.id === resourceId) ||
+                    (resourceId === null && urlGenerator.route(`resource.${it.id}.create`) === location.pathname)) || null,
     };
 };
 
