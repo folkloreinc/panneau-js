@@ -58,41 +58,77 @@ class Panneau extends Component {
         };
     }
 
+    getResourceRoutes(id) {
+        const { urlGenerator } = this.props;
+        const prefix = typeof id !== 'undefined' ? `resource.${id}` : 'resource';
+        return {
+            index: urlGenerator.route(`${prefix}.index`),
+            create: urlGenerator.route(`${prefix}.create`),
+            show: urlGenerator.route(`${prefix}.show`),
+            edit: urlGenerator.route(`${prefix}.edit`),
+            delete: urlGenerator.route(`${prefix}.delete`),
+        };
+    }
+
     // eslint-disable-next-line class-methods-use-this
     renderResourceRoutes(routes, id) {
-        return (
-            <Switch key={`resource-route-${id}`}>
-                <Route exact path={routes.index} component={ResourceIndex} />
-                <Route exact path={routes.create} component={ResourceCreate} />
-                <Route exact path={routes.show} component={ResourceShow} />
-                <Route exact path={routes.edit} component={ResourceEdit} />
-                <Route exact path={routes.delete} component={ResourceDelete} />
-            </Switch>
-        );
+        return [
+            <Route
+                key={`route-resource-${id}-index`}
+                exact
+                path={routes.index}
+                component={ResourceIndex}
+            />,
+            <Route
+                key={`route-resource-${id}-create`}
+                exact
+                path={routes.create}
+                component={ResourceCreate}
+            />,
+            <Route
+                key={`route-resource-${id}-show`}
+                exact
+                path={routes.show}
+                component={ResourceShow}
+            />,
+            <Route
+                key={`route-resource-${id}-edit`}
+                exact
+                path={routes.edit}
+                component={ResourceEdit}
+            />,
+            <Route
+                key={`route-resource-${id}-delete`}
+                exact
+                path={routes.delete}
+                component={ResourceDelete}
+            />,
+        ];
     }
 
     render() {
         const { urlGenerator, definition } = this.props;
 
-        const defaultResourceRoutes = {
-            index: urlGenerator.route('resource.index'),
-            create: urlGenerator.route('resource.create'),
-            show: urlGenerator.route('resource.show'),
-            edit: urlGenerator.route('resource.edit'),
-            delete: urlGenerator.route('resource.delete'),
-        };
+        const defaultResourceRoutes = this.getResourceRoutes();
 
-        const resourcesWithRoutes = get(definition, 'resources', []).filter((
-            resource => typeof resource.routes !== 'undefined'
-        ));
+        const resourcesWithRoutes = get(definition, 'resources', []).filter(resource => typeof resource.routes !== 'undefined');
 
         return (
             <Layout>
                 <Route exact path={urlGenerator.route('home')} component={Home} />
-                {this.renderResourceRoutes(defaultResourceRoutes, 'default')}
-                {resourcesWithRoutes.map(resource => (
-                    this.renderResourceRoutes(resource.routes, resource.id)
-                ))}
+                <Switch>
+                    {resourcesWithRoutes.reduce(
+                        (routes, resource) => [
+                            ...routes,
+                            ...this.renderResourceRoutes(
+                                this.getResourceRoutes(resource.id),
+                                resource.id,
+                            ),
+                        ],
+                        [],
+                    )}
+                    {this.renderResourceRoutes(defaultResourceRoutes, 'default')}
+                </Switch>
             </Layout>
         );
     }
