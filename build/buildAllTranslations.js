@@ -5,6 +5,7 @@ const mkdirp = require('mkdirp');
 /* eslint-enable import/no-extraneous-dependencies */
 const getPackagesPaths = require('./lib/getPackagesPaths');
 const getTranslations = require('./lib/getTranslations');
+const sortTranslations = require('./lib/sortTranslations');
 
 const langFile = path.join(process.env.PWD, './intl/lang/en.json');
 
@@ -16,5 +17,7 @@ const messages = getPackagesPaths().reduce((allMessages, packagePath) => {
     };
 }, {});
 
+const sortedMessages = sortTranslations(messages);
+
 mkdirp.sync(path.dirname(langFile));
-fs.writeFileSync(langFile, JSON.stringify(messages, null, 4));
+fs.writeFileSync(langFile, JSON.stringify(sortedMessages, null, 4));

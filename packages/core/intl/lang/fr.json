@@ -1,14 +1,14 @@
 {
-    "core.buttons.resources.create": "Créer",
-    "core.titles.resources.create": "Créer {name}",
-    "core.buttons.resources.edit": "Enregistrer",
-    "core.titles.resources.edit": "Modifier {name}",
-    "core.buttons.resources.save": "Enregistrer",
-    "core.titles.resources.default": "{name}",
-    "core.notices.resources.success": "Succès!",
-    "core.notices.resources.error": "Problème. Le formulaire contient des erreurs.",
     "core.buttons.resources.add": "Ajouter {name}",
-    "core.titles.resources.index": "{name}",
+    "core.buttons.resources.create": "Créer",
+    "core.buttons.resources.edit": "Enregistrer",
+    "core.buttons.resources.save": "Enregistrer",
+    "core.navbar.resources.create": "Ajouter {resourceLabel}",
     "core.navbar.resources.index": "Voir tous {resourceLabel}",
-    "core.navbar.resources.create": "Ajouter {resourceLabel}"
+    "core.notices.resources.error": "Problème. Le formulaire contient des erreurs.",
+    "core.notices.resources.success": "Succès!",
+    "core.titles.resources.create": "Créer {name}",
+    "core.titles.resources.default": "{name}",
+    "core.titles.resources.edit": "Modifier {name}",
+    "core.titles.resources.index": "{name}"
 }
