@@ -21,7 +21,10 @@ const propTypes = {
     method: PropTypes.string,
     fields: PropTypes.arrayOf(PropTypes.object),
     value: PropTypes.shape({}),
-    errors: PropTypes.objectOf(PropTypes.array),
+    errors: PropTypes.oneOfType([
+        PropTypes.objectOf(PropTypes.string),
+        PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
+    ]),
     generalError: PropTypes.string,
     generalErrorDefaultMessage: PropTypes.string,
     buttons: PropTypes.arrayOf(PropTypes.shape({
@@ -161,8 +164,8 @@ class NormalForm extends Component {
         const { generalError } = this.state;
 
         const errorsClassNames = classNames({
-            [styles.alert]: true,
-            [styles['alert-danger']]: true,
+            alert: true,
+            'alert-danger': true,
         });
         return (
             <div className={errorsClassNames}>
@@ -180,6 +183,7 @@ class NormalForm extends Component {
     renderFields() {
         const { fields, readOnly } = this.props;
         const { value, errors } = this.state;
+        console.log(errors);
         return (
             <FieldsGroup
                 readOnly={readOnly}

@@ -52,6 +52,33 @@ storiesOf('Forms/Normal', module)
             </IntlProvider>
         </div>
     ))
+    .add('with errors', () => (
+        <div>
+            <IntlProvider
+                locale="en"
+                messages={{
+                    'forms.normal.__stories__.test1': 'Custom button 1',
+                }}
+            >
+                <KeepValue
+                    onChangeName="onValueChange"
+                    onChange={action('onValueChange')}
+                >
+                    <NormalFormWithFields
+                        generalError="A general error"
+                        fields={fields}
+                        errors={{
+                            title: 'A field error',
+                        }}
+                        onSubmit={(e, value) => {
+                            e.preventDefault();
+                            return submitAction(value);
+                        }}
+                    />
+                </KeepValue>
+            </IntlProvider>
+        </div>
+    ))
     .add('with custom button and notice', () => (
         <div>
             <IntlProvider
@@ -68,10 +95,7 @@ storiesOf('Forms/Normal', module)
                         fields={fields}
                         buttons={[
                             {
-                                label: {
-                                    id: 'forms.normal.__stories__.test1',
-                                    defaultMessage: 'Default test label 1',
-                                },
+                                label: 'Default test label 1',
                                 className: 'btn-success',
                             },
                         ]}

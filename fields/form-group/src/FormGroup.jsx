@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import isString from 'lodash/isString';
+import isArray from 'lodash/isArray';
 import ReactMarkdown from 'react-markdown';
 
 const propTypes = {
@@ -72,7 +72,7 @@ class FormGroup extends Component {
         if (!errors || errors.length < 1) {
             return null;
         }
-        const items = isString(errors) ? [errors] : errors;
+        const items = isArray(errors) ? errors : [errors];
         return items.map(this.renderError);
     }
 
