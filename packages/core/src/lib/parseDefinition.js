@@ -1,20 +1,20 @@
 import get from 'lodash/get';
-import trimEnd from 'lodash/trimEnd';
+import isObject from 'lodash/isObject';
 import { defineMessages } from 'react-intl';
 
 import ResourceApi from './ResourceApi';
 import messageWithValues from './messageWithValues';
 
-const messages = defineMessages({
+const intlMessages = defineMessages({
     navbarViewAll: {
         id: 'core.navbar.resources.index',
         description: 'The label for a resource "view all" navbar menu',
-        defaultMessage: 'View all { resourceLabel }',
+        defaultMessage: 'View all { resource }',
     },
     navbarAddNew: {
         id: 'core.navbar.resources.create',
         description: 'The label for a resource "add new" navbar menu',
-        defaultMessage: 'Add a new { resourceLabel }',
+        defaultMessage: 'Add a new { resource }',
     },
 });
 
@@ -27,32 +27,50 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
             const resources = get(rootDefinition, 'resources', []);
             const resource = resources.find(it => it.id === resourceName) || null;
             if (resource) {
-                const routeKeyPrefix = get(resource, 'routes', null) ? `resource.${resource.id}` : 'resource';
-                const resourceActionsLabel = get(resource, 'name', resourceName);
+                const routeKeyPrefix = get(resource, 'routes', null)
+                    ? `resource.${resource.id}`
+                    : 'resource';
+                const resourceItemLabel = get(
+                    resource,
+                    'messages.names.plural',
+                    get(resource, 'name', resourceName),
+                );
+                const resourceViewAllLabel = get(
+                    resource,
+                    'messages.names.a_plural',
+                    get(resource, 'name', resourceName),
+                );
+                const resourceAddNewLabel = get(
+                    resource,
+                    'messages.names.a',
+                    get(resource, 'name', resourceName),
+                );
                 return {
-                    label: resourceActionsLabel,
+                    label: resourceItemLabel,
                     link: urlGenerator.route(`${routeKeyPrefix}.index`, {
                         resource: resource.id,
                     }),
-                    items: dropdown ? [
-                        {
-                            label: messageWithValues(messages.navbarViewAll, {
-                                resourceLabel: resourceActionsLabel.toLowerCase(),
-                            }),
-                            link: urlGenerator.route(`${routeKeyPrefix}.index`, {
-                                resource: resource.id,
-                            }),
-                        },
-                        { type: 'divider' },
-                        {
-                            label: messageWithValues(messages.navbarAddNew, {
-                                resourceLabel: trimEnd(resourceActionsLabel.toLowerCase(), 's'), // naive
-                            }),
-                            link: urlGenerator.route(`${routeKeyPrefix}.create`, {
-                                resource: resource.id,
-                            }),
-                        },
-                    ] : null,
+                    items: dropdown
+                        ? [
+                            {
+                                label: messageWithValues(intlMessages.navbarViewAll, {
+                                    resource: resourceViewAllLabel,
+                                }),
+                                link: urlGenerator.route(`${routeKeyPrefix}.index`, {
+                                    resource: resource.id,
+                                }),
+                            },
+                            { type: 'divider' },
+                            {
+                                label: messageWithValues(intlMessages.navbarAddNew, {
+                                    resource: resourceAddNewLabel,
+                                }),
+                                link: urlGenerator.route(`${routeKeyPrefix}.create`, {
+                                    resource: resource.id,
+                                }),
+                            },
+                        ]
+                        : null,
                 };
             }
         }
@@ -85,16 +103,23 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
         };
     };
 
-    const parseResources = resources => resources.map((resource) => {
-        const endpointHost = get(rootDefinition, 'endpointHost', '/');
-        return {
-            type: 'default',
-            ...resource,
-            api: new ResourceApi(resource, urlGenerator, {
-                host: endpointHost,
-            }),
-        };
-    });
+    const parseResources = resources =>
+        resources.map(({
+            type, messages, api, ...resource
+        }) => {
+            const endpointHost = get(rootDefinition, 'endpointHost', '/');
+            return {
+                ...resource,
+                type: type || 'default',
+                messages: isObject(messages || null) ? messages : null,
+                api: (
+                    api ||
+                    new ResourceApi(resource, urlGenerator, {
+                        host: endpointHost,
+                    })
+                ),
+            };
+        });
 
     const parseLayout = (definition) => {
         const header = get(definition, 'header', true);

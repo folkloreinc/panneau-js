@@ -48,8 +48,11 @@
                 "edit": true
             },
             "messages": {
-                "names.a": "a user",
-                "names.plural": "Users"
+                "names": {
+                    "a": "a user",
+                    "a_plural": "users",
+                    "plural": "Users"
+                }
             },
             "forms": {
                 "type": "normal",
@@ -106,8 +109,11 @@
                 "edit": true
             },
             "messages": {
-                "names.a": "a page",
-                "names.plural": "Pages"
+                "names": {
+                    "a": "a page",
+                    "a_plural": "pages",
+                    "plural": "Pages"
+                }
             },
             "types": [
                 {

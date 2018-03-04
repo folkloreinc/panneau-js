@@ -23,7 +23,10 @@ const field = PropTypes.shape({
 const resource = PropTypes.shape({
     id: PropTypes.string,
     type: PropTypes.string,
-    messages: PropTypes.objectOf(PropTypes.string),
+    messages: PropTypes.oneOfType([
+        PropTypes.objectOf(PropTypes.string),
+        PropTypes.objectOf(PropTypes.objectOf(PropTypes.string)),
+    ]),
     forms: PropTypes.shape({
         type: PropTypes.string,
         fields: PropTypes.oneOfType([
