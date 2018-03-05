@@ -359,12 +359,15 @@ const mapStateToProps = ({ panneau }, {
 }) => {
     const resources = get(panneau, 'definition.resources', []);
     const resourceId = get(match, 'params.resource', null);
+    const itemId = get(match, 'params.id', null);
     return {
         resource:
             resources.find(it =>
                 (resourceId !== null && it.id === resourceId) ||
                     (resourceId === null &&
-                        urlGenerator.route(`resource.${it.id}.${action}`) === location.pathname)) || null,
+                        urlGenerator.route(`resource.${it.id}.${action}`, {
+                            id: itemId,
+                        }) === location.pathname)) || null,
     };
 };
 
