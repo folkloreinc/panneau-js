@@ -8,5 +8,7 @@
     "core.buttons.resources.edit": "Sauvegarder",
     "core.buttons.resources.add": "Ajouter",
     "core.navbar.resources.index": "Voir tout les {resourceLabel}",
-    "core.navbar.resources.create": "Ajouter un nouveau {resourceLabel}"
+    "core.navbar.resources.create": "Ajouter un nouveau {resourceLabel}",
+    "core.notices.resources.success": "Success!",
+    "core.notices.resources.error": "Failed. The form contains errors."
 }
