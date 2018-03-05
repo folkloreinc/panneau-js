@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import { FormGroup, FieldsGroup } from '@panneau/field';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import ButtonGroup from './ButtonGroup';
 import AddButton from './AddButton';
@@ -56,7 +57,11 @@ const propTypes = {
     label: PropTypes.string,
     helpText: PropTypes.string,
 
-    types: PropTypes.array, // eslint-disable-line react/forbid-prop-types
+    types: PropTypes.arrayOf(PropTypes.shape({
+        type: PropTypes.string,
+        fields: PanneauPropTypes.fields,
+    })),
+    fields: PanneauPropTypes.fields,
 
     collapsible: PropTypes.bool,
     collapsed: PropTypes.bool,
@@ -90,6 +95,7 @@ const defaultProps = {
     label: '',
     value: [],
     types: null,
+    fields: null,
     helpText: null,
 
     collapsible: false,
@@ -331,15 +337,17 @@ class ItemsField extends Component {
 
     renderItem(it, index) {
         const {
-            types, value, itemsCollapsible, sortable,
+            types, fields, value, itemsCollapsible, sortable,
         } = this.props;
         const { collapsedItems } = this.state;
 
         const key = !sortable ? `item_${index}_${it.type}` : null;
         const itemValue = value[index] || null;
-        const allFields = types ? types.filter(obj => it.type === obj.name) : [];
-        const fields =
-            allFields.length && allFields[0] && allFields[0].fields ? allFields[0].fields : [];
+        const type =
+            types !== null
+                ? types.find(obj => (obj.name || obj.type || obj.id) === it.type) || null
+                : null;
+        const typeFields = type !== null ? type.fields || fields : fields;
         const itemCollapsed = itemsCollapsible && (collapsedItems[index] || false);
         const onChange = val => this.onItemChange(index, val);
 
@@ -359,7 +367,7 @@ class ItemsField extends Component {
                 })}
                 style={bodyStyle}
             >
-                <FieldsGroup value={itemValue} fields={fields} onChange={onChange} />
+                <FieldsGroup value={itemValue} fields={typeFields || []} onChange={onChange} />
             </div>
         );
 
@@ -401,10 +409,10 @@ class ItemsField extends Component {
             topElement,
         } = this.props;
 
-        const dropdownOptions = types
+        const dropdownOptions = types !== null
             ? types.map(obj => ({
                 label: obj.label,
-                value: obj.name,
+                value: (obj.name || obj.id || obj.type),
             }))
             : null;
 
