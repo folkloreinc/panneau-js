@@ -6,7 +6,10 @@ const webpackConfig = require('../../build/webpack.config.panneau');
 module.exports = () => (
     webpackMerge(webpackConfig('umd'), {
         entry: {
-            panneau: './index',
+            panneau: [
+                './path',
+                './index',
+            ],
         },
     })
 );
