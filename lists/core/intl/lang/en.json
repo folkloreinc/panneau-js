@@ -1,6 +1,6 @@
 {
-    "list.actions.show": "Show",
-    "list.actions.edit": "Edit",
     "list.actions.delete": "Delete",
+    "list.actions.edit": "Edit",
+    "list.actions.show": "Show",
     "list.empty": "No items"
 }

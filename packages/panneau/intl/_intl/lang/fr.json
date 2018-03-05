@@ -1,0 +1,19 @@
+{
+    "core.buttons.resources.add": "Ajouter {name}",
+    "core.buttons.resources.create": "Créer",
+    "core.buttons.resources.edit": "Enregistrer",
+    "core.buttons.resources.save": "Enregistrer",
+    "core.navbar.resources.create": "Ajouter {resource}",
+    "core.navbar.resources.index": "Voir tous {resource}",
+    "core.notices.resources.error": "Problème. Le formulaire contient des erreurs.",
+    "core.notices.resources.success": "Succès!",
+    "core.titles.resources.create": "Créer {name}",
+    "core.titles.resources.default": "{name}",
+    "core.titles.resources.edit": "Modifier {name}",
+    "core.titles.resources.index": "{name}",
+    "forms.normal.buttons.submit": "Sauvegarder",
+    "list.actions.delete": "Supprimer",
+    "list.actions.edit": "Modifier",
+    "list.actions.show": "Voir",
+    "list.empty": "Aucun élément"
+}

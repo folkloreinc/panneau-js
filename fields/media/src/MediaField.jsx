@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 // import { connect } from 'react-redux';
 // import isEmpty from 'lodash/isEmpty';
 
-import FormGroup from '@panneau/form-group';
+import { FormGroup } from '@panneau/field';
 
 // import getStoryFromEditor from '../../../lib/getStoryFromEditor';
 //

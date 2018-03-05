@@ -45,7 +45,7 @@ const propTypes = {
     location: PropTypes.shape({
         search: PropTypes.string,
         state: PropTypes.object,
-    }),
+    }).isRequired,
     title: PanneauPropTypes.message,
     action: PropTypes.string,
     resource: PanneauPropTypes.resource.isRequired,
@@ -294,11 +294,10 @@ class ResourceForm extends Component {
             });
             noticeNode = (
                 <span className={noticeCellTextClassNames}>
-                    <span
-                        className={noticeCellIconClassNames}
-                        aria-hidden="true"
-                    />
-                    {isString(formNoticeText) ? formNoticeText : (
+                    <span className={noticeCellIconClassNames} aria-hidden="true" />
+                    {isString(formNoticeText) ? (
+                        formNoticeText
+                    ) : (
                         <FormattedMessage {...formNoticeText} />
                     )}
                 </span>
@@ -354,15 +353,17 @@ class ResourceForm extends Component {
 ResourceForm.propTypes = propTypes;
 ResourceForm.defaultProps = defaultProps;
 
-const mapStateToProps = ({ panneau }, { action, match, location }) => {
+const mapStateToProps = ({ panneau }, {
+    action, match, location, urlGenerator,
+}) => {
     const resources = get(panneau, 'definition.resources', []);
     const resourceId = get(match, 'params.resource', null);
-    const resource = resources.find(it =>
-        (resourceId !== null && it.id === resourceId) ||
-            (resourceId === null &&
-                get(it, `routes.${action}`, null) === location.pathname)) || null;
     return {
-        resource,
+        resource:
+            resources.find(it =>
+                (resourceId !== null && it.id === resourceId) ||
+                    (resourceId === null &&
+                        urlGenerator.route(`resource.${it.id}.${action}`) === location.pathname)) || null,
     };
 };
 

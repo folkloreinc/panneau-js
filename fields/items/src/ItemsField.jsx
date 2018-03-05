@@ -2,14 +2,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {
-    SortableContainer,
-    SortableElement,
-    SortableHandle,
-    arrayMove,
-} from 'react-sortable-hoc';
-import FormGroup from '@panneau/form-group';
-import Fields from '@panneau/fields-group';
+import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
+import { FormGroup, FieldsGroup } from '@panneau/field';
 
 import ButtonGroup from './ButtonGroup';
 import AddButton from './AddButton';
@@ -23,15 +17,20 @@ const ListItemButton = () => (
 );
 const SortableListItemHandle = SortableHandle(ListItemButton);
 
-const ListItemRender = ({ renderItem, value, itemIndex }) => (
-    renderItem(value, itemIndex)
-);
+const ListItemRender = ({ renderItem, value, itemIndex }) => renderItem(value, itemIndex);
 const SortableListItemComponent = SortableElement(ListItemRender);
 
 /* eslint-disable react/no-array-index-key */
-const ListItemSortable = ({ items, placeholder, renderItem, ...props }) => (
+const listItemSortablePropTypes = {
+    items: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+    placeholder: PropTypes.node.isRequired,
+    renderItem: PropTypes.func.isRequired,
+};
+const ListItemSortable = ({
+    items, placeholder, renderItem, ...props
+}) => (
     <div className="list" {...props}>
-        { items.map((it, index) => (
+        {items.map((it, index) => (
             <SortableListItemComponent
                 key={`item_${index}_${it.type}`}
                 index={index}
@@ -39,20 +38,21 @@ const ListItemSortable = ({ items, placeholder, renderItem, ...props }) => (
                 itemIndex={index}
                 value={it}
             />
-        )) }
-        { placeholder }
+        ))}
+        {placeholder}
     </div>
 );
+ListItemSortable.propTypes = listItemSortablePropTypes;
 const SortableListComponent = SortableContainer(ListItemSortable);
 /* eslint-enable react/no-array-index-key */
 
 const propTypes = {
     name: PropTypes.string,
-    value: PropTypes.array,
+    value: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     label: PropTypes.string,
     helpText: PropTypes.string,
 
-    types: PropTypes.array,
+    types: PropTypes.array, // eslint-disable-line react/forbid-prop-types
 
     collapsible: PropTypes.bool,
     collapsed: PropTypes.bool,
@@ -66,7 +66,7 @@ const propTypes = {
     hasHeader: PropTypes.bool,
     hasAddButton: PropTypes.bool,
     hasRemoveButton: PropTypes.bool,
-    headerButtons: PropTypes.array,
+    headerButtons: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     confirmRemove: PropTypes.bool,
     confirmRemoveMessage: PropTypes.string,
 
@@ -116,7 +116,6 @@ const defaultProps = {
 };
 
 class ItemsField extends Component {
-
     constructor(props) {
         super(props);
 
@@ -155,7 +154,7 @@ class ItemsField extends Component {
     onClickRemove(e, index) {
         e.preventDefault();
         // eslint-disable-next-line no-alert
-        if (this.props.confirmRemove && !confirm(this.props.confirmRemoveMessage)) {
+        if (this.props.confirmRemove && !window.confirm(this.props.confirmRemoveMessage)) {
             return;
         }
         const items = [].concat(this.props.value || []);
@@ -164,8 +163,9 @@ class ItemsField extends Component {
     }
 
     onItemChange(index, value) {
-        const newValue = this.props.getItemValue ?
-            this.props.getItemValue(index, value, this.props.value) : {
+        const newValue = this.props.getItemValue
+            ? this.props.getItemValue(index, value, this.props.value)
+            : {
                 ...this.props.value[index],
                 ...value,
             };
@@ -199,9 +199,7 @@ class ItemsField extends Component {
             return this.props.getItemTitle(it, index);
         }
         const { types } = this.props;
-        const foundItem = types ? types.find(item => (
-            item.name === it.type
-        )) : null;
+        const foundItem = types ? types.find(item => item.name === it.type) : null;
         if (foundItem) {
             return `#${index + 1} - ${foundItem.label}`;
         }
@@ -224,9 +222,11 @@ class ItemsField extends Component {
                 newValue.push(val);
             }
         } else {
-            newValue.push(it ? {
-                type: it.value,
-            } : {});
+            newValue.push(it
+                ? {
+                    type: it.value,
+                }
+                : {});
         }
 
         this.triggerChange(newValue);
@@ -277,23 +277,21 @@ class ItemsField extends Component {
         let header;
         if (hasHeader) {
             const label = itemsCollapsible ? (
-                <button
-                    type="button"
-                    className={fieldClassNames.button}
-                    onClick={onClickCollapse}
-                >
+                <button type="button" className={fieldClassNames.button} onClick={onClickCollapse}>
                     <span className={fieldClassNames.icon}>
                         <span className="caret up" />
                     </span>
-                    <span className={fieldClassNames.text}>{ title }</span>
+                    <span className={fieldClassNames.text}>{title}</span>
                 </button>
-            ) : title;
+            ) : (
+                title
+            );
 
             header = (
                 <div className="panel-heading">
                     <div className={fieldClassNames.cols}>
                         <div className={fieldClassNames.col}>
-                            <div className={fieldClassNames.title}>{ label }</div>
+                            <div className={fieldClassNames.title}>{label}</div>
                         </div>
                         <div
                             className={classNames({
@@ -329,20 +327,15 @@ class ItemsField extends Component {
 
     renderItem(it, index) {
         const {
-            types,
-            value,
-            itemsCollapsible,
-            sortable,
+            types, value, itemsCollapsible, sortable,
         } = this.props;
         const { collapsedItems } = this.state;
 
         const key = !sortable ? `item_${index}_${it.type}` : null;
         const itemValue = value[index] || null;
-        const allFields = types ? types.filter(obj => (
-            it.type === obj.name
-        )) : [];
-        const fields = allFields.length && allFields[0] && allFields[0].fields ?
-            allFields[0].fields : [];
+        const allFields = types ? types.filter(obj => it.type === obj.name) : [];
+        const fields =
+            allFields.length && allFields[0] && allFields[0].fields ? allFields[0].fields : [];
         const itemCollapsed = itemsCollapsible && (collapsedItems[index] || false);
         const onChange = val => this.onItemChange(index, val);
 
@@ -352,7 +345,9 @@ class ItemsField extends Component {
 
         const header = this.renderItemHeader(it, index);
 
-        const body = this.props.getItemBody ? this.props.getItemBody(it, index, itemCollapsed) : (
+        const body = this.props.getItemBody ? (
+            this.props.getItemBody(it, index, itemCollapsed)
+        ) : (
             <div
                 className={classNames({
                     'panel-body': true,
@@ -360,20 +355,14 @@ class ItemsField extends Component {
                 })}
                 style={bodyStyle}
             >
-                <Fields
-                    value={itemValue}
-                    fields={fields}
-                    onChange={onChange}
-                />
+                <FieldsGroup value={itemValue} fields={fields} onChange={onChange} />
             </div>
         );
 
         let before;
         if (this.props.getItemBefore) {
             before = (
-                <div className={fieldClassNames.before}>
-                    { this.props.getItemBefore(it, index) }
-                </div>
+                <div className={fieldClassNames.before}>{this.props.getItemBefore(it, index)}</div>
             );
         }
 
@@ -390,10 +379,10 @@ class ItemsField extends Component {
 
         return (
             <div className={itemClassNames} key={key}>
-                { before }
+                {before}
                 <div className={panelClassNames}>
-                    { header }
-                    { body }
+                    {header}
+                    {body}
                 </div>
             </div>
         );
@@ -408,10 +397,12 @@ class ItemsField extends Component {
             topElement,
         } = this.props;
 
-        const dropdownOptions = types ? types.map(obj => ({
-            label: obj.label,
-            value: obj.name,
-        })) : null;
+        const dropdownOptions = types
+            ? types.map(obj => ({
+                label: obj.label,
+                value: obj.name,
+            }))
+            : null;
 
         const buttonClassNames = classNames({
             btn: true,
@@ -462,9 +453,10 @@ class ItemsField extends Component {
             width: '100%',
         };
 
-        const placeholder = value.length === 0 && !topElement ? (
-            <div className={fieldClassNames.placeholder} />
-        ) : null;
+        const placeholder =
+            value.length === 0 && !topElement ? (
+                <div className={fieldClassNames.placeholder} />
+            ) : null;
         return (
             <FormGroup
                 name={name}
@@ -475,8 +467,8 @@ class ItemsField extends Component {
                 style={boxStyle}
                 helpText={helpText}
             >
-                { hasAddButton ? this.renderAddButton() : null }
-                { sortable ? (
+                {hasAddButton ? this.renderAddButton() : null}
+                {sortable ? (
                     <SortableListComponent
                         {...listProps}
                         useDragHandle
@@ -488,10 +480,10 @@ class ItemsField extends Component {
                     />
                 ) : (
                     <div className="list" {...listProps}>
-                        { value.map(this.renderItem) }
-                        { placeholder }
+                        {value.map(this.renderItem)}
+                        {placeholder}
                     </div>
-                ) }
+                )}
             </FormGroup>
         );
     }

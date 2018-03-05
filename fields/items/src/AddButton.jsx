@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import PropTypes from 'prop-types';
 import createClassName from 'classnames';
@@ -19,11 +20,7 @@ const defaultProps = {
 };
 
 const AddButton = ({
-    label,
-    icon,
-    dropdown,
-    onClick,
-    ...props
+    label, icon, dropdown, onClick, ...props
 }) => {
     const buttonProps = {};
     if (dropdown && dropdown.length) {
@@ -34,9 +31,7 @@ const AddButton = ({
         buttonProps.onClick = onClick;
     }
     return (
-        <div
-            className="btn-group"
-        >
+        <div className="btn-group">
             <button
                 type="button"
                 className={createClassName({
@@ -50,32 +45,29 @@ const AddButton = ({
                 {...buttonProps}
                 {...props}
             >
-                { icon ? (
-                    <span className={icon} />
-                ) : null }
-                { label }
-                { dropdown && dropdown.length ? (
-                    <span className="caret" />
-                ) : null }
+                {icon ? <span className={icon} /> : null}
+                {label}
+                {dropdown && dropdown.length ? <span className="caret" /> : null}
             </button>
-            { dropdown && dropdown.length ? (
+            {dropdown && dropdown.length ? (
                 <ul className="dropdown-menu">
-                    { dropdown.map((it, index) => (
+                    {dropdown.map((it, index) => (
                         <li key={`drop_${it.label}`}>
                             <a
                                 href="#"
                                 onClick={(e) => {
                                     onClick(e, it, index);
                                 }}
-                            >{it.label}</a>
+                            >
+                                {it.label}
+                            </a>
                         </li>
-                    )) }
+                    ))}
                 </ul>
-            ) : null }
+            ) : null}
         </div>
     );
 };
-
 
 AddButton.propTypes = propTypes;
 AddButton.defaultProps = defaultProps;

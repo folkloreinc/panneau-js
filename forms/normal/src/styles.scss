@@ -5,6 +5,28 @@
         position: relative;
     }
 
+    .errors {
+        margin-bottom: 10px;
+    }
+
+    .fields {
+        position: relative;
+    }
+
+    .actions {
+        margin-top: 10px;
+    }
+
+    .buttons {
+        .button {
+            margin-right: 5px;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+
     .cols {
         display: table;
     }
@@ -14,7 +36,8 @@
         vertical-align: middle;
     }
 
-    .noticeCell {
+    .colNotice {
+        width: 100%;
         padding-left: 10px;
     }
 }

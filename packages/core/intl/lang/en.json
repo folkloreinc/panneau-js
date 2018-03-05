@@ -1,14 +1,14 @@
 {
-    "core.buttons.resources.create": "Create",
-    "core.titles.resources.create": "Create {name}",
-    "core.buttons.resources.edit": "Save",
-    "core.titles.resources.edit": "Edit {name}",
-    "core.buttons.resources.save": "Save",
-    "core.titles.resources.default": "{name}",
-    "core.notices.resources.success": "Success!",
-    "core.notices.resources.error": "Failed. The form contains errors.",
     "core.buttons.resources.add": "Add {name}",
-    "core.titles.resources.index": "{name}",
-    "core.navbar.resources.index": "View all {resourceLabel}",
-    "core.navbar.resources.create": "Add a new {resourceLabel}"
+    "core.buttons.resources.create": "Create",
+    "core.buttons.resources.edit": "Save",
+    "core.buttons.resources.save": "Save",
+    "core.navbar.resources.create": "Add a new {resource}",
+    "core.navbar.resources.index": "View all {resource}",
+    "core.notices.resources.error": "Failed. The form contains errors.",
+    "core.notices.resources.success": "Success!",
+    "core.titles.resources.create": "Create {name}",
+    "core.titles.resources.default": "{name}",
+    "core.titles.resources.edit": "Edit {name}",
+    "core.titles.resources.index": "{name}"
 }

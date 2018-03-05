@@ -6,10 +6,10 @@ const webpackConfig = require('../../build/webpack.config.dist');
 module.exports = env => (
     webpackMerge(webpackConfig(env), {
         entry: {
-            'panneau-form-group': './index',
+            'panneau-field': './index',
         },
         output: {
-            library: 'PanneauFormGroup',
+            library: 'PanneauField',
         },
     })
 );

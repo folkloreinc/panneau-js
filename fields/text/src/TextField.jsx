@@ -5,7 +5,7 @@ import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 import isArray from 'lodash/isArray';
 import pick from 'lodash/pick';
-import FormGroup from '@panneau/form-group';
+import { FormGroup } from '@panneau/field';
 
 /**
  *  Class: TextField

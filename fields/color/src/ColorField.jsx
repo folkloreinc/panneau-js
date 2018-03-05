@@ -14,7 +14,7 @@ import {
 import Color from 'color';
 import isString from 'lodash/isString';
 import classNames from 'classnames';
-import FormGroup from '@panneau/form-group';
+import { FormGroup } from '@panneau/field';
 import Text from '@panneau/field-text';
 import Popover from '@panneau/modal-popover';
 

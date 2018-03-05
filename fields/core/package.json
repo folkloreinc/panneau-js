@@ -1,14 +1,14 @@
 {
-    "name": "@panneau/form-group",
-    "version": "0.3.69",
-    "description": "Form group for Panneau",
+    "name": "@panneau/field",
+    "version": "0.3.82",
+    "description": "Field core for Panneau",
     "keywords": [
         "react",
         "javascript",
         "form",
         "dashboard"
     ],
-    "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/fields/form-group",
+    "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/fields/core",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Folkloreatelier/panneau-js.git"
@@ -51,9 +51,11 @@
         "start": "npm run storybook"
     },
     "dependencies": {
+        "@panneau/core": "^0.3.82",
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
+        "moment": "^2.21.0",
         "prop-types": "^15.6.0",
         "react-markdown": "^3.1.4"
     },

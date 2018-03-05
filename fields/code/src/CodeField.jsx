@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
-import FormGroup from '@panneau/form-group';
+import { FormGroup } from '@panneau/field';
 
 import styles from './styles.scss';
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
 import SelectField from '@panneau/field-select';
-import FormGroup from '@panneau/form-group';
+import FormGroup from '@panneau/field';
 import './vendor.global.scss';
 
 /**

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
 import 'react-dates/initialize';
-import FormGroup from '@panneau/form-group';
+import { FormGroup } from '@panneau/field';
 import TextField from '@panneau/field-text';
 import Popover from '@panneau/modal-popover';
 import styles from './styles.scss';

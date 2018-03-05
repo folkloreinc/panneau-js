@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import isString from 'lodash/isString';
+import isArray from 'lodash/isArray';
 import { FormattedMessage, defineMessages } from 'react-intl';
-import FieldsGroup from '@panneau/fields-group';
+import { FieldsGroup } from '@panneau/field';
 
 import styles from './styles.scss';
 
@@ -20,7 +21,10 @@ const propTypes = {
     method: PropTypes.string,
     fields: PropTypes.arrayOf(PropTypes.object),
     value: PropTypes.shape({}),
-    errors: PropTypes.objectOf(PropTypes.array),
+    errors: PropTypes.oneOfType([
+        PropTypes.objectOf(PropTypes.string),
+        PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
+    ]),
     generalError: PropTypes.string,
     generalErrorDefaultMessage: PropTypes.string,
     buttons: PropTypes.arrayOf(PropTypes.shape({
@@ -156,6 +160,26 @@ class NormalForm extends Component {
         }
     }
 
+    renderErrors() {
+        const { generalError } = this.state;
+
+        const errorsClassNames = classNames({
+            alert: true,
+            'alert-danger': true,
+        });
+        return (
+            <div className={errorsClassNames}>
+                {isArray(generalError) ? (
+                    <ul>
+                        {generalError.map(error => (
+                            <li key={`error-${error}`}>{ error }</li>
+                        ))}
+                    </ul>
+                ) : generalError}
+            </div>
+        );
+    }
+
     renderFields() {
         const { fields, readOnly } = this.props;
         const { value, errors } = this.state;
@@ -170,16 +194,12 @@ class NormalForm extends Component {
         );
     }
 
-    renderActions() {
+    renderButtons() {
         const { buttons } = this.props;
         return (
             <div className={styles.buttons}>
-                { buttons.map(({
-                    id,
-                    label,
-                    type,
-                    className,
-                    onClick,
+                {buttons.map(({
+                    id, label, type, className, onClick,
                 }) => (
                     <button
                         key={`actions-button-${id}`}
@@ -192,12 +212,9 @@ class NormalForm extends Component {
                         })}
                         onClick={onClick || null}
                     >
-                        {isString(label) ? label : (
-                            <FormattedMessage {...label} />
-                        )}
+                        {isString(label) ? label : <FormattedMessage {...label} />}
                     </button>
-                )) }
-
+                ))}
             </div>
         );
     }
@@ -208,59 +225,35 @@ class NormalForm extends Component {
     }
 
     render() {
-        const {
-            action,
-            method,
-        } = this.props;
-
-        const containerClassNames = classNames({
-            [styles.container]: true,
-        });
-
-        const formClassNames = classNames({
-            [styles.form]: true,
-        });
-
-        const fieldsClassNames = classNames({
-            [styles.fields]: true,
-        });
-
-        const actionsClassNames = classNames({
-            [styles.actions]: true,
-        });
-
-        const actionsRowClassNames = classNames({
-            [styles.cols]: true,
-        });
-
-        const actionsCellClassNames = classNames({
-            [styles.col]: true,
-        });
-
-        const noticeCellClassNames = classNames({
-            [styles.col]: true,
-            [styles.noticeCell]: true,
-        });
+        const { action, method } = this.props;
+        const { generalError } = this.state;
 
         return (
-            <div className={containerClassNames}>
-                <div className={formClassNames}>
-                    <form
-                        action={action}
-                        method={method}
-                        onSubmit={this.onFormSubmit}
-                    >
-                        <div className={fieldsClassNames}>
-                            { this.renderFields() }
-                        </div>
-                        <div className={actionsRowClassNames}>
-                            <div className={actionsCellClassNames}>
-                                <div className={actionsClassNames}>
-                                    { this.renderActions() }
+            <div className={styles.container}>
+                <div className={styles.form}>
+                    <form action={action} method={method} onSubmit={this.onFormSubmit}>
+                        {generalError ? (
+                            <div className={styles.errors}>{this.renderErrors()}</div>
+                        ) : null}
+                        <div className={styles.fields}>{this.renderFields()}</div>
+                        <div className={styles.actions}>
+                            <div className={styles.cols}>
+                                <div
+                                    className={classNames({
+                                        [styles.col]: true,
+                                        [styles.colActions]: true,
+                                    })}
+                                >
+                                    {this.renderButtons()}
                                 </div>
-                            </div>
-                            <div className={noticeCellClassNames}>
-                                { this.renderNotice() }
+                                <div
+                                    className={classNames({
+                                        [styles.col]: true,
+                                        [styles.colNotice]: true,
+                                    })}
+                                >
+                                    {this.renderNotice()}
+                                </div>
                             </div>
                         </div>
                     </form>

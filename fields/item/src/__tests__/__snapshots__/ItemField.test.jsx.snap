@@ -2,7 +2,7 @@
 
 exports[`match snapshot 1`] = `
 <div
-  className="form-group text"
+  className="form-group form-group-item"
 >
   <div
     className="form-group-label"
@@ -22,8 +22,10 @@ exports[`match snapshot 1`] = `
       }
     }
   >
-    <div
-      className="field-group"
+    <input
+      onChange={[Function]}
+      type="text"
+      value="value"
     />
   </div>
 </div>

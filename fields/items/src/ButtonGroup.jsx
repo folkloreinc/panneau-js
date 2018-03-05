@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 const propTypes = {
     buttons: PropTypes.arrayOf(PropTypes.shape({
@@ -18,12 +19,17 @@ const defaultProps = {
     className: null,
 };
 
-const ButtonGroup = ({ buttons, onClick, className, ...props }) => (
+const ButtonGroup = ({
+    buttons, onClick, className, ...props
+}) => (
     <div
-        className={`btn-group ${className}`}
+        className={classNames({
+            'btn-group': true,
+            [className]: className !== null,
+        })}
         {...props}
     >
-        { buttons.map((button, index) => {
+        {buttons.map((button, index) => {
             if (button.type && button.props && button.$$typeof) {
                 return React.cloneElement(button, {
                     key: `button-${button.name || button.id || index}`,
@@ -39,30 +45,23 @@ const ButtonGroup = ({ buttons, onClick, className, ...props }) => (
             };
             const buttonProps = {
                 key,
+                href: null,
                 className: 'btn btn-default',
                 onClick: onClickButton,
                 ...customProps,
             };
             return buttonProps.href !== null ? (
                 <a {...buttonProps}>
-                    { icon ? (
-                        <span className={icon} />
-                    ) : null } { button.label }
+                    {icon ? <span className={icon} /> : null} {button.label}
                 </a>
             ) : (
-                <button
-                    type="button"
-                    {...buttonProps}
-                >
-                    { icon ? (
-                        <span className={icon} />
-                    ) : null } { button.label }
+                <button type="button" {...buttonProps}>
+                    {icon ? <span className={icon} /> : null} {button.label}
                 </button>
             );
-        }) }
+        })}
     </div>
 );
-
 
 ButtonGroup.propTypes = propTypes;
 ButtonGroup.defaultProps = defaultProps;
