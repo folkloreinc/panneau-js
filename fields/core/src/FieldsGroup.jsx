@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import isArray from 'lodash/isArray';
-import FormGroup from '@panneau/form-group';
 import { ComponentsCollection, withFieldsCollection } from '@panneau/core';
+
+import FormGroup from './FormGroup';
+
+import styles from './fields-group.scss';
 
 const propTypes = {
     name: PropTypes.string,
@@ -197,14 +201,19 @@ class FieldsGroup extends Component {
                 }
             }
             cols.push((
-                <div className={`col-sm-${12 / columns}`} key={`col-${colIndex}`}>
+                <div
+                    className={classNames({
+                        [`col-sm-${12 / columns}`]: true,
+                    })}
+                    key={`col-${colIndex}`}
+                >
                     {col}
                 </div>
             ));
         }
 
         return (
-            <div className="field-group">
+            <div className={styles.group}>
                 <div className="row">{cols}</div>
             </div>
         );
@@ -215,7 +224,7 @@ class FieldsGroup extends Component {
         if (columns !== null) {
             return this.renderColumns(fields, columns);
         }
-        return <div className="field-group">{fields.map(this.renderField)}</div>;
+        return <div className={styles.group}>{fields.map(this.renderField)}</div>;
     }
 
     render() {
@@ -226,11 +235,16 @@ class FieldsGroup extends Component {
         const fieldsGroup = this.renderFields(fields);
 
         return label !== null ? (
-            <FormGroup label={label} collapsible={collapsible} collapsed={collapsed}>
+            <FormGroup
+                label={label}
+                className={styles.container}
+                collapsible={collapsible}
+                collapsed={collapsed}
+            >
                 {fieldsGroup}
             </FormGroup>
         ) : (
-            fieldsGroup
+            <div className={styles.container}>{fieldsGroup}</div>
         );
     }
 }

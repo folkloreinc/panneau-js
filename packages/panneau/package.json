@@ -55,7 +55,7 @@
     "dependencies": {
         "@panneau/core": "^0.3.77",
         "@panneau/fields": "^0.3.78",
-        "@panneau/fields-group": "^0.3.78",
+        "@panneau/field": "^0.3.78",
         "@panneau/forms": "^0.3.79",
         "@panneau/layouts": "^0.3.78",
         "@panneau/lists": "^0.3.77",

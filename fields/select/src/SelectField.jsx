@@ -4,7 +4,7 @@ import isObject from 'lodash/isObject';
 import pick from 'lodash/pick';
 import omit from 'lodash/omit';
 import classNames from 'classnames';
-import FormGroup from '@panneau/form-group';
+import { FormGroup } from '@panneau/field';
 import './vendor.global.scss';
 import styles from './styles.scss';
 

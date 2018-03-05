@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isArray from 'lodash/isArray';
-import FormGroup from '@panneau/form-group';
+import { FormGroup } from '@panneau/field';
 import './vendor.global.scss';
 import styles from './styles.scss';
 

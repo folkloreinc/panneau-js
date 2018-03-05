@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 import omit from 'lodash/omit';
 import isEmpty from 'lodash/isEmpty';
-import FormGroup from '@panneau/form-group';
+import { FormGroup } from '@panneau/field';
 
 import styles from './styles.scss';
 

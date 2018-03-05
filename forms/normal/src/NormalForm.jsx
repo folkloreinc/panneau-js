@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import isString from 'lodash/isString';
 import isArray from 'lodash/isArray';
 import { FormattedMessage, defineMessages } from 'react-intl';
-import FieldsGroup from '@panneau/fields-group';
+import { FieldsGroup } from '@panneau/field';
 
 import styles from './styles.scss';
 
