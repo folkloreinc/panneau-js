@@ -23,8 +23,11 @@ const SortableListItemComponent = SortableElement(ListItemRender);
 /* eslint-disable react/no-array-index-key */
 const listItemSortablePropTypes = {
     items: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
-    placeholder: PropTypes.node.isRequired,
+    placeholder: PropTypes.node,
     renderItem: PropTypes.func.isRequired,
+};
+const listItemSortableDefaultProps = {
+    placeholder: null,
 };
 const ListItemSortable = ({
     items, placeholder, renderItem, ...props
@@ -43,6 +46,7 @@ const ListItemSortable = ({
     </div>
 );
 ListItemSortable.propTypes = listItemSortablePropTypes;
+ListItemSortable.defaultProps = listItemSortableDefaultProps;
 const SortableListComponent = SortableContainer(ListItemSortable);
 /* eslint-enable react/no-array-index-key */
 
@@ -92,7 +96,7 @@ const defaultProps = {
     collapsed: false,
     itemsCollapsible: true,
     topElement: false,
-    sortable: false,
+    sortable: true,
 
     hasHeader: true,
     hasAddButton: true,

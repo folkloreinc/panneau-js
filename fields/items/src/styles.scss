@@ -24,68 +24,70 @@
         border-radius: 4px;
     }
 
-    .item {
-        margin-bottom: 10px;
 
-        &:first-child {
-            .before {
-                border-top: 0;
-            }
-        }
+}
 
-        &.collapsed {
-            .title {
-                :global(.caret) {
-                    transform: rotate(270deg);
-                }
-            }
+.item {
+    margin-bottom: 10px;
+
+    &:first-child {
+        .before {
+            border-top: 0;
         }
     }
 
-    .panel {
-        margin-bottom: 0;
-
-        .cols {
-            display: table;
-            width: 100%;
-        }
-
-        .col {
-            display: table-cell;
-            width: 50%;
-            vertical-align: middle;
-
-            &.right {
-                text-align: right;
-            }
-        }
-
+    &.collapsed {
         .title {
-            margin: 0;
-            font-size: 1em;
-            font-weight: bold;
-
-            .button {
-                padding: 0;
-                border: 0;
-                background: transparent;
-                appearance: none;
-            }
-
-            .icon,
-            .text {
-                display: inline-block;
-                vertical-align: middle;
-            }
-
-            .icon {
-                width: 20px;
-                text-align: left;
+            :global(.caret) {
+                transform: rotate(270deg);
             }
         }
+    }
+}
 
-        .body {
-            position: relative;
+.panel {
+    margin-bottom: 0;
+
+    .cols {
+        display: table;
+        width: 100%;
+    }
+
+    .col {
+        display: table-cell;
+        width: 50%;
+        vertical-align: middle;
+
+        &.right {
+            text-align: right;
         }
+    }
+
+    .title {
+        margin: 0;
+        font-size: 1em;
+        font-weight: bold;
+
+        .button {
+            padding: 0;
+            border: 0;
+            background: transparent;
+            appearance: none;
+        }
+
+        .icon,
+        .text {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .icon {
+            width: 20px;
+            text-align: left;
+        }
+    }
+
+    .body {
+        position: relative;
     }
 }
