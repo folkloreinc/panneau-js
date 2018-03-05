@@ -20,6 +20,8 @@ const field = PropTypes.shape({
     name: PropTypes.string,
 });
 
+const fields = PropTypes.arrayOf(field);
+
 const resource = PropTypes.shape({
     id: PropTypes.string,
     type: PropTypes.string,
@@ -30,8 +32,8 @@ const resource = PropTypes.shape({
     forms: PropTypes.shape({
         type: PropTypes.string,
         fields: PropTypes.oneOfType([
-            PropTypes.arrayOf(field),
-            PropTypes.objectOf(PropTypes.arrayOf(field)),
+            fields,
+            PropTypes.objectOf(fields),
         ]),
     }),
 });
@@ -60,6 +62,7 @@ export default {
     definition,
     resource,
     field,
+    fields,
     button,
     message,
     buttons,
