@@ -183,7 +183,6 @@ class NormalForm extends Component {
     renderFields() {
         const { fields, readOnly } = this.props;
         const { value, errors } = this.state;
-        console.log(errors);
         return (
             <FieldsGroup
                 readOnly={readOnly}
