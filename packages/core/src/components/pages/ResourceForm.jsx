@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
 import classNames from 'classnames';
+import { withUrlGenerator } from '@folklore/react-app';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import PanneauPropTypes from '../../lib/PropTypes';
@@ -370,4 +371,5 @@ const mapStateToProps = ({ panneau }, {
 const WithStateComponent = connect(mapStateToProps)(ResourceForm);
 const WithRouterContainer = withRouter(WithStateComponent);
 const WithFormsCollectionContainer = withFormsCollection()(WithRouterContainer);
-export default WithFormsCollectionContainer;
+const WithUrlGeneratorContainer = withUrlGenerator()(WithFormsCollectionContainer);
+export default WithUrlGeneratorContainer;
