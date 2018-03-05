@@ -16,41 +16,45 @@ exports[`match snapshot 1`] = `
         className={undefined}
       >
         <div
-          className="field-group"
+          className={undefined}
         >
           <div
-            className="form-group form-group-text"
+            className={undefined}
           >
             <div
-              className="form-group-label"
+              className="form-group form-group-text"
             >
-              <label
-                className="control-label"
-                htmlFor="text"
+              <div
+                className="form-group-label"
               >
-                Text
-              </label>
-            </div>
-            <div
-              className="form-group-inner"
-              style={
-                Object {
-                  "display": "block",
+                <label
+                  className="control-label"
+                  htmlFor="text"
+                >
+                  Text
+                </label>
+              </div>
+              <div
+                className="form-group-inner"
+                style={
+                  Object {
+                    "display": "block",
+                  }
                 }
-              }
-            >
-              <input
-                className="form-control field-text"
-                disabled={false}
-                id="text"
-                name="text"
-                onBlur={null}
-                onChange={[Function]}
-                onFocus={null}
-                placeholder={null}
-                type="text"
-                value="Text"
-              />
+              >
+                <input
+                  className="form-control field-text"
+                  disabled={false}
+                  id="text"
+                  name="text"
+                  onBlur={null}
+                  onChange={[Function]}
+                  onFocus={null}
+                  placeholder={null}
+                  type="text"
+                  value="Text"
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -53,7 +53,7 @@ class ItemField extends Component {
             >
                 <input
                     type="text"
-                    value={value}
+                    value={value || ''}
                     onChange={this.onChange}
                     ref={(ref) => { this.refInput = ref; }}
                 />
