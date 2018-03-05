@@ -8,7 +8,7 @@ import { ComponentsCollection, withFieldsCollection } from '@panneau/core';
 
 import FormGroup from './FormGroup';
 
-import styles from './fields-group.scss';
+import styles from './styles/fields-group.scss';
 
 const propTypes = {
     name: PropTypes.string,

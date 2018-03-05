@@ -35,7 +35,7 @@ const fields = [
     },
 ];
 
-storiesOf('FieldsGroup', module)
+storiesOf('Fields/Core/FieldsGroup', module)
     .add('simple', () => (
         <KeepValue>
             <FieldsGroup
