@@ -1,6 +1,6 @@
 {
     "name": "@panneau/lists",
-    "version": "0.3.90",
+    "version": "0.3.91",
     "description": "Lists for Panneau",
     "keywords": [
         "react",
@@ -51,9 +51,9 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/core": "^0.3.90",
-        "@panneau/list": "^0.3.90",
-        "@panneau/list-table": "^0.3.90",
+        "@panneau/core": "^0.3.91",
+        "@panneau/list": "^0.3.91",
+        "@panneau/list-table": "^0.3.91",
         "babel-runtime": "^6.26.0",
         "hoist-non-react-statics": "^2.3.1",
         "invariant": "^2.2.2",
