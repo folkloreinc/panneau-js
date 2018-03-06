@@ -1,6 +1,6 @@
 {
   "name": "@panneau/field-item",
-  "version": "0.3.91",
+  "version": "0.3.92",
   "description": "Item fields for Panneau",
   "keywords": [
     "react",
@@ -51,8 +51,8 @@
     "start": "npm run storybook"
   },
   "dependencies": {
-    "@panneau/core": "^0.3.91",
-    "@panneau/field": "^0.3.91",
+    "@panneau/core": "^0.3.92",
+    "@panneau/field": "^0.3.92",
     "babel-runtime": "^6.26.0",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",

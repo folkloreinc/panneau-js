@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-color",
-    "version": "0.3.91",
+    "version": "0.3.92",
     "description": "Color field for Panneau",
     "keywords": [
         "react",
@@ -51,8 +51,8 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/field": "^0.3.91",
-        "@panneau/field-text": "^0.3.91",
+        "@panneau/field": "^0.3.92",
+        "@panneau/field-text": "^0.3.92",
         "@panneau/modal-popover": "^0.3.89",
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.5",
