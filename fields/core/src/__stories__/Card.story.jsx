@@ -30,6 +30,12 @@ storiesOf('Fields/Core/Card', module)
             />
             <Card
                 item={itemWithThumbnail}
+                deleteIcon="glyphicon glyphicon-remove"
+                onLoad={action('load')}
+            />
+            <Card
+                item={itemWithThumbnail}
+                selectable
                 onLoad={action('load')}
             />
         </div>

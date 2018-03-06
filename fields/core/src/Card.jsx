@@ -15,6 +15,8 @@ const propTypes = {
     vertical: PropTypes.bool,
     deletable: PropTypes.bool,
     selectable: PropTypes.bool,
+    deleteIcon: PropTypes.string,
+    selectIcon: PropTypes.string,
     className: PropTypes.string,
     renderLabel: PropTypes.func,
     namePath: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
@@ -38,6 +40,8 @@ const defaultProps = {
     deletable: true,
     selectable: false,
     vertical: false,
+    deleteIcon: 'fa fa-trash',
+    selectIcon: 'fa fa-plus',
     className: null,
     renderLabel: null,
     namePath: 'name',
@@ -153,6 +157,8 @@ class Card extends Component {
             vertical,
             selectable,
             deletable,
+            deleteIcon,
+            selectIcon,
             className,
             renderLabel,
             getThumbnail,
@@ -188,7 +194,6 @@ class Card extends Component {
         const labelColClassNames = classNames({
             [styles.col]: true,
             [styles.middle]: true,
-            [styles.expand]: true,
         });
 
         const actionsColClassNames = classNames({
@@ -228,20 +233,24 @@ class Card extends Component {
                                         {deletable ? (
                                             <button
                                                 type="button"
-                                                className="btn btn-default"
+                                                className={classNames({
+                                                    btn: true,
+                                                    'btn-default': true,
+                                                    [deleteIcon]: true,
+                                                })}
                                                 onClick={onClickDelete}
-                                            >
-                                                <span className="fa fa-trash" />
-                                            </button>
+                                            />
                                         ) : null}
                                         {selectable ? (
                                             <button
                                                 type="button"
-                                                className="btn btn-default"
+                                                className={classNames({
+                                                    btn: true,
+                                                    'btn-default': true,
+                                                    [selectIcon]: true,
+                                                })}
                                                 onClick={onClickSelect}
-                                            >
-                                                <span className="fa fa-plus" />
-                                            </button>
+                                            />
                                         ) : null}
                                     </div>
                                 </div>
