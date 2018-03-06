@@ -22,14 +22,11 @@ export class ValidationError extends ResponseError {
     }
 }
 
-export const getResponseAndDataObject = response => new Promise((resolve) => {
-    response.json().then((data) => {
-        resolve({
-            data,
-            response,
-        });
-    });
-});
+export const getResponseAndDataObject = response =>
+    response.json().then(data => ({
+        data,
+        response,
+    }));
 
 export const throwResponseError = (responseObject) => {
     const { response, data } = responseObject;
