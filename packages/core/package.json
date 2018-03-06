@@ -36,7 +36,8 @@
     "files": [
         "lib",
         "es",
-        "dist"
+        "dist",
+        "src"
     ],
     "scripts": {
         "storybook": "../../node_modules/.bin/start-storybook -p 9008 -c ../../.storybook-package",
