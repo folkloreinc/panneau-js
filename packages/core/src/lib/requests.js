@@ -42,3 +42,30 @@ export const throwValidationError = (error) => {
     }
     throw error;
 };
+
+export const getJSON = (url, { headers, ...options }) =>
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+            ...(headers || null),
+        },
+        ...(options || null),
+    })
+        .then(getResponseAndDataObject)
+        .then(throwResponseError);
+
+export const postJSON = (url, data, { headers, ...options }) =>
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            ...(headers || null),
+        },
+        body: JSON.stringify(data),
+        ...(options || null),
+    })
+        .then(getResponseAndDataObject)
+        .then(throwResponseError)
+        .catch(throwValidationError);

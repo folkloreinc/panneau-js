@@ -17,6 +17,8 @@ import {
     getResponseAndDataObject,
     throwResponseError,
     throwValidationError,
+    postJSON,
+    getJSON,
 } from './lib/requests';
 
 export {
@@ -28,6 +30,8 @@ export {
     getResponseAndDataObject,
     throwResponseError,
     throwValidationError,
+    postJSON,
+    getJSON,
     withComponentsCollection,
     withFormsCollection,
     withFieldsCollection,
