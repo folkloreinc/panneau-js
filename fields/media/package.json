@@ -1,6 +1,6 @@
 {
   "name": "@panneau/field-media",
-  "version": "0.3.94",
+  "version": "0.3.95",
   "description": "Media fields for Panneau",
   "keywords": [
     "react",
@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "@panneau/core": "^0.3.94",
-    "@panneau/field": "^0.3.94",
+    "@panneau/field": "^0.3.95",
     "babel-runtime": "^6.26.0",
     "classnames": "^2.2.5",
     "immutable": "^3.8.2",
