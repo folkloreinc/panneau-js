@@ -1,6 +1,6 @@
 {
     "name": "generator-panneau",
-    "version": "0.3.82",
+    "version": "0.3.89",
     "description": "Yeoman generator for Panneau",
     "keywords": [
         "yeoman-generator"
