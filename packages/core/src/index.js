@@ -14,8 +14,11 @@ import withModalsCollection from './lib/withModalsCollection';
 import {
     ResponseError,
     ValidationError,
+    getResponseAndDataObject,
     throwResponseError,
     throwValidationError,
+    postJSON,
+    getJSON,
 } from './lib/requests';
 
 export {
@@ -24,8 +27,11 @@ export {
     PanneauComponent,
     ResponseError,
     ValidationError,
+    getResponseAndDataObject,
     throwResponseError,
     throwValidationError,
+    postJSON,
+    getJSON,
     withComponentsCollection,
     withFormsCollection,
     withFieldsCollection,
