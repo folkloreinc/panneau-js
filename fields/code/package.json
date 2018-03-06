@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-code",
-    "version": "0.3.91",
+    "version": "0.3.92",
     "description": "Code field for Panneau",
     "keywords": [
         "react",
@@ -51,7 +51,7 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/field": "^0.3.91",
+        "@panneau/field": "^0.3.92",
         "babel-runtime": "^6.26.0",
         "brace": "^0.10.0",
         "classnames": "^2.2.5",
