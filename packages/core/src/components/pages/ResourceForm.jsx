@@ -175,6 +175,17 @@ class ResourceForm extends Component {
         }
     }
 
+    getType() {
+        const { resource } = this.props;
+        const { item } = this.state;
+        const types = get(resource, 'types', []);
+        const defaultType =
+            types.find(it => get(it, 'default', false) === true) || get(types, '0', null);
+        const locationType = this.getTypeFromLocation();
+        const formType = get(item, 'type', get(locationType || defaultType || null, 'id', null));
+        return formType;
+    }
+
     getTypeFromLocation() {
         const { location, resource } = this.props;
         const types = get(resource, 'types', []);
@@ -191,9 +202,16 @@ class ResourceForm extends Component {
 
         const { action, resource } = this.props;
         const { item, formValue } = this.state;
+
+        const resourceType = get(resource, 'type', 'default');
+        const data = resourceType === 'typed' ? {
+            type: this.getType(),
+            ...(formValue || item),
+        } : formValue;
+
         return action === 'create'
-            ? resource.api.store(formValue)
-            : resource.api.update(item.id, formValue || item);
+            ? resource.api.store(data)
+            : resource.api.update(item.id, data || item);
     }
 
     renderHeader() {
@@ -259,14 +277,10 @@ class ResourceForm extends Component {
         const formButtons = readOnly ? [] : buttons;
 
         if (resourceType === 'typed') {
-            const types = get(resource, 'types', []);
-            const defaultType =
-                types.find(it => get(it, 'default', false) === true) || get(types, '0', null);
-            const locationType = this.getTypeFromLocation();
-            const formType = get(item, 'type', locationType || defaultType);
+            const formType = this.getType();
             formProps.fields = get(
                 formProps,
-                `fields.${formType !== null ? formType.id : 'default'}`,
+                `fields.${formType !== null ? formType : 'default'}`,
                 get(formProps, 'fields.default', get(formProps, 'fields', [])),
             );
         }
