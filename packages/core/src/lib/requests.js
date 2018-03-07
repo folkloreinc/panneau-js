@@ -43,8 +43,9 @@ export const throwValidationError = (error) => {
     throw error;
 };
 
-export const getJSON = (url, { headers, ...options }) =>
-    fetch(url, {
+export const getJSON = (url, opts) => {
+    const { headers, ...options } = opts || {};
+    return fetch(url, {
         method: 'GET',
         headers: {
             Accept: 'application/json',
@@ -54,9 +55,12 @@ export const getJSON = (url, { headers, ...options }) =>
     })
         .then(getResponseAndDataObject)
         .then(throwResponseError);
+};
 
-export const postJSON = (url, data, { headers, ...options }) =>
-    fetch(url, {
+
+export const postJSON = (url, data, opts) => {
+    const { headers, ...options } = opts || {};
+    return fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -69,3 +73,4 @@ export const postJSON = (url, data, { headers, ...options }) =>
         .then(getResponseAndDataObject)
         .then(throwResponseError)
         .catch(throwValidationError);
+};
