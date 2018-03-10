@@ -102,7 +102,7 @@ class TableList extends Component {
         }
 
         const key = `header_${column.name}_${index}`;
-        const props = omit(column, ['key', 'label', 'path']);
+        const props = omit(column, ['key', 'label', 'path', 'align']);
 
         return (
             <th

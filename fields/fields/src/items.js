@@ -1,11 +1,5 @@
 import { ComponentsCollection } from '@panneau/core';
-import Text, {
-    TextLocale,
-    Textarea,
-    Editor,
-    Email,
-    Password,
-} from '@panneau/field-text';
+import Text, { TextLocale, Textarea, Editor, Email, Password } from '@panneau/field-text';
 import Code from '@panneau/field-code';
 import Select from '@panneau/field-select';
 import Color from '@panneau/field-color';
@@ -13,8 +7,11 @@ import Date from '@panneau/field-date';
 import Slider from '@panneau/field-slider';
 import Toggle from '@panneau/field-toggle';
 import Items from '@panneau/field-items';
-import MediaField, {
-    PictureField,
+import Media, {
+    AudioField as Audio,
+    DocumentField as Document,
+    PictureField as Picture,
+    VideoField as Video,
 } from '@panneau/field-media';
 
 const fieldsCollection = new ComponentsCollection({
@@ -31,8 +28,11 @@ const fieldsCollection = new ComponentsCollection({
     Slider,
     Toggle,
     Items,
-    MediaField,
-    PictureField,
+    Media,
+    Audio,
+    Document,
+    Picture,
+    Video,
 });
 
 export default fieldsCollection;

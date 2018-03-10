@@ -1,0 +1,11 @@
+{
+    "fields.media.dimension_label": "Dimension",
+    "fields.media.duration_label": "Duration",
+    "fields.media.pages_label": "Pages",
+    "fields.media.size_label": "Size",
+    "fields.media.upload_audio_label": "Select an audio file...",
+    "fields.media.upload_document_label": "Select a document file...",
+    "fields.media.upload_media_label": "Select a media file...",
+    "fields.media.upload_picture_label": "Select a picture file...",
+    "fields.media.upload_video_label": "Select a video file..."
+}
