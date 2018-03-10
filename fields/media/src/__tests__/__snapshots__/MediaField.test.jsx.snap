@@ -23,16 +23,8 @@ exports[`match snapshot 1`] = `
     }
   >
     <div
-      className="form-group form-group-button"
-    >
-      <button
-        className="btn btn-default"
-        onClick={[Function]}
-        type="button"
-      >
-        Sélectionnez un média...
-      </button>
-    </div>
+      className={undefined}
+    />
   </div>
 </div>
 `;

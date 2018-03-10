@@ -19,7 +19,6 @@ exports[`match snapshot 1`] = `
             ID
           </th>
           <th
-            align="right"
             id="actions"
             type="actions"
           >
