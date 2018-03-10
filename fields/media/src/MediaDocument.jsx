@@ -1,28 +1,56 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import isString from 'lodash/isString';
+import get from 'lodash/get';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { Card } from '@panneau/field';
+import { injectIntl } from 'react-intl';
 
-import Media from './Media';
+import messages from './messages';
 
-import classNames from './styles.scss';
+import styles from './styles.scss';
 
-const MediaDocument = props => (
-    <Media
+const propTypes = {
+    intl: PropTypes.shape({
+        formatMessage: PropTypes.func,
+    }).isRequired,
+    pagesLabel: PanneauPropTypes.message,
+    sizeLabel: PanneauPropTypes.message,
+    thumbnailPath: PropTypes.string,
+    pagesPath: PropTypes.string,
+    sizePath: PropTypes.string,
+};
+
+const defaultProps = {
+    pagesLabel: messages.pages,
+    sizeLabel: messages.size,
+    thumbnailPath: 'thumbnails.0.url',
+    pagesPath: 'pages',
+    sizePath: 'original_file.size_human',
+};
+
+const MediaDocument = ({
+    intl, pagesLabel, sizeLabel, pagesPath, sizePath, ...props
+}) => (
+    <Card
+        className={styles.document}
+        getDetails={(media) => {
+            const pages = get(media, pagesPath, null);
+            const size = get(media, sizePath, null);
+            const details = {};
+            if (pages !== null) {
+                details[isString(pagesLabel) ? pagesLabel : intl.formatMessage(pagesLabel)] = pages;
+            }
+            if (size !== null) {
+                details[isString(sizeLabel) ? sizeLabel : intl.formatMessage(sizeLabel)] = size;
+            }
+            return details;
+        }}
         {...props}
-        className={classNames.document}
-        getThumbnail={media => (
-            typeof media.thumbnails !== 'undefined' && media.thumbnails.length ? media.thumbnails[0].url : null
-        )}
-        renderDetails={(media, common) => (
-            <div>
-                { common }
-                { media.pages ? (
-                    <div>Pages: { media.pages } page(s)</div>
-                ) : null}
-                { media.original_file ? (
-                    <div>Poids: { media.original_file.size_human }</div>
-                ) : null }
-            </div>
-        )}
     />
 );
 
-export default MediaDocument;
+MediaDocument.propTypes = propTypes;
+MediaDocument.defaultProps = defaultProps;
+
+export default injectIntl(MediaDocument);

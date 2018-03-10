@@ -15,33 +15,43 @@ const propTypes = {
         formatMessage: PropTypes.func,
     }).isRequired,
     dimensionLabel: PanneauPropTypes.message,
+    durationLabel: PanneauPropTypes.message,
     sizeLabel: PanneauPropTypes.message,
-    thumbnailPath: PropTypes.string,
     dimensionPath: PropTypes.string,
+    thumbnailPath: PropTypes.string,
+    durationPath: PropTypes.string,
     sizePath: PropTypes.string,
 };
 
 const defaultProps = {
     dimensionLabel: messages.dimension,
+    durationLabel: messages.duration,
     sizeLabel: messages.size,
-    thumbnailPath: 'url',
-    dimensionPath: 'dimension',
+    dimensionPath: 'dimension_human',
+    thumbnailPath: 'thumbnails.0.url',
+    durationPath: 'duration_human',
     sizePath: 'original_file.size_human',
 };
 
-const MediaDocument = ({
-    intl, dimensionLabel, sizeLabel, dimensionPath, sizePath, ...props
+const MediaVideo = ({
+    intl, dimensionLabel, durationLabel, sizeLabel, dimensionPath, durationPath, sizePath, ...props
 }) => (
     <Card
-        className={styles.picture}
+        className={styles.video}
         getDetails={(media) => {
             const dimension = get(media, dimensionPath, null);
+            const duration = get(media, durationPath, null);
             const size = get(media, sizePath, null);
             const details = {};
             if (dimension !== null) {
                 details[
                     isString(dimensionLabel) ? dimensionLabel : intl.formatMessage(dimensionLabel)
                 ] = dimension;
+            }
+            if (duration !== null) {
+                details[
+                    isString(durationLabel) ? durationLabel : intl.formatMessage(durationLabel)
+                ] = duration;
             }
             if (size !== null) {
                 details[isString(sizeLabel) ? sizeLabel : intl.formatMessage(sizeLabel)] = size;
@@ -52,7 +62,7 @@ const MediaDocument = ({
     />
 );
 
-MediaDocument.propTypes = propTypes;
-MediaDocument.defaultProps = defaultProps;
+MediaVideo.propTypes = propTypes;
+MediaVideo.defaultProps = defaultProps;
 
-export default injectIntl(MediaDocument);
+export default injectIntl(MediaVideo);

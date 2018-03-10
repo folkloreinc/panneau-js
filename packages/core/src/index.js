@@ -4,6 +4,7 @@ import { Panneau as PanneauComponent } from './components/index';
 
 import PropTypes from './lib/PropTypes';
 import ComponentsCollection from './lib/ComponentsCollection';
+import withDefinition from './lib/withDefinition';
 import withComponentsCollection from './lib/withComponentsCollection';
 import withFormsCollection from './lib/withFormsCollection';
 import withFieldsCollection from './lib/withFieldsCollection';
@@ -32,6 +33,7 @@ export {
     throwValidationError,
     postJSON,
     getJSON,
+    withDefinition,
     withComponentsCollection,
     withFormsCollection,
     withFieldsCollection,

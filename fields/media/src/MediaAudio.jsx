@@ -14,34 +14,34 @@ const propTypes = {
     intl: PropTypes.shape({
         formatMessage: PropTypes.func,
     }).isRequired,
-    dimensionLabel: PanneauPropTypes.message,
+    durationLabel: PanneauPropTypes.message,
     sizeLabel: PanneauPropTypes.message,
     thumbnailPath: PropTypes.string,
-    dimensionPath: PropTypes.string,
+    durationPath: PropTypes.string,
     sizePath: PropTypes.string,
 };
 
 const defaultProps = {
-    dimensionLabel: messages.dimension,
+    durationLabel: messages.duration,
     sizeLabel: messages.size,
-    thumbnailPath: 'url',
-    dimensionPath: 'dimension',
+    thumbnailPath: 'thumbnails.0.url',
+    durationPath: 'duration_human',
     sizePath: 'original_file.size_human',
 };
 
-const MediaDocument = ({
-    intl, dimensionLabel, sizeLabel, dimensionPath, sizePath, ...props
+const MediaAudio = ({
+    intl, durationLabel, sizeLabel, durationPath, sizePath, ...props
 }) => (
     <Card
-        className={styles.picture}
+        className={styles.audio}
         getDetails={(media) => {
-            const dimension = get(media, dimensionPath, null);
+            const duration = get(media, durationPath, null);
             const size = get(media, sizePath, null);
             const details = {};
-            if (dimension !== null) {
+            if (duration !== null) {
                 details[
-                    isString(dimensionLabel) ? dimensionLabel : intl.formatMessage(dimensionLabel)
-                ] = dimension;
+                    isString(durationLabel) ? durationLabel : intl.formatMessage(durationLabel)
+                ] = duration;
             }
             if (size !== null) {
                 details[isString(sizeLabel) ? sizeLabel : intl.formatMessage(sizeLabel)] = size;
@@ -52,7 +52,7 @@ const MediaDocument = ({
     />
 );
 
-MediaDocument.propTypes = propTypes;
-MediaDocument.defaultProps = defaultProps;
+MediaAudio.propTypes = propTypes;
+MediaAudio.defaultProps = defaultProps;
 
-export default injectIntl(MediaDocument);
+export default injectIntl(MediaAudio);

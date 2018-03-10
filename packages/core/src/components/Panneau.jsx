@@ -31,6 +31,7 @@ const defaultProps = {
 };
 
 const childContextTypes = {
+    definition: PanneauPropTypes.definition,
     componentsCollection: PanneauPropTypes.componentsCollection,
     fieldsCollection: PanneauPropTypes.componentsCollection,
     layoutsCollection: PanneauPropTypes.componentsCollection,
@@ -47,8 +48,9 @@ class Panneau extends Component {
     }
 
     getChildContext() {
-        const { componentsCollection } = this.props;
+        const { definition, componentsCollection } = this.props;
         return {
+            definition,
             componentsCollection,
             fieldsCollection: componentsCollection.getCollection('fields'),
             formsCollection: componentsCollection.getCollection('forms'),

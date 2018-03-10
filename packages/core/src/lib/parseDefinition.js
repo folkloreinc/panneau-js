@@ -134,6 +134,7 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
     const resources = get(rootDefinition, 'resources', []);
     const layout = get(rootDefinition, 'layout', null);
     return {
+        endpointUploadMedia: '/mediatheque/upload',
         ...rootDefinition,
         resources: parseResources(resources),
         layout: parseLayout(layout),
