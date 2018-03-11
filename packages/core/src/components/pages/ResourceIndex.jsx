@@ -55,7 +55,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-    items: [],
+    items: null,
     title: messages.title,
     errors: null,
     showAddButton: true,
@@ -336,6 +336,7 @@ class ResourceIndex extends Component {
     }
 
     render() {
+        const { items } = this.state;
         const containerClassNames = classNames({
             [styles.container]: true,
         });
@@ -346,7 +347,7 @@ class ResourceIndex extends Component {
                     <div className="row">
                         <div className="col-md-8 col-md-offset-2">
                             {this.renderHeader()}
-                            {this.renderList()}
+                            {items !== null ? this.renderList() : null}
                             {/* this.renderPagination() */}
                         </div>
                     </div>

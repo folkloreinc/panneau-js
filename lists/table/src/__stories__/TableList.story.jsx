@@ -13,13 +13,39 @@ const items = [
     },
 ];
 
+const columns = [
+    {
+        id: 'id',
+        path: 'id',
+        label: 'ID',
+        width: 50,
+    },
+    {
+        id: 'actions',
+        label: 'Actions',
+        type: 'actions',
+        align: 'right',
+        iconsOnly: true,
+    },
+];
+
 storiesOf('Lists/Table', module)
     .add('simple', () => (
         <div>
             <IntlProvider locale="en">
-                <TableList
-                    items={items}
-                />
+                <div>
+                    <h4>Normal</h4>
+                    <TableList
+                        items={items}
+                    />
+                    <hr />
+                    <h4>Icons only</h4>
+                    <TableList
+                        items={items}
+                        cols={columns}
+                    />
+                </div>
+
             </IntlProvider>
         </div>
     ))

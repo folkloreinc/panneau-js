@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { ListActions, ListEmpty } from '@panneau/list';
 import omit from 'lodash/omit';
 import get from 'lodash/get';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import styles from './styles.scss';
 
@@ -18,7 +19,9 @@ const propTypes = {
         type: PropTypes.string,
         width: PropTypes.number,
     })),
+    emptyListText: PanneauPropTypes.message,
     onClickActions: PropTypes.func,
+    onTableButtonClick: PropTypes.func,
 };
 
 const defaultProps = {
@@ -36,9 +39,12 @@ const defaultProps = {
             label: 'Actions',
             type: 'actions',
             align: 'right',
+            iconsOnly: false,
         },
     ],
+    emptyListText: undefined,
     onClickActions: null,
+    onTableButtonClick: null,
 };
 
 class TableList extends Component {
@@ -102,7 +108,7 @@ class TableList extends Component {
         }
 
         const key = `header_${column.name}_${index}`;
-        const props = omit(column, ['key', 'label', 'path', 'align']);
+        const props = omit(column, ['key', 'label', 'path', 'align', 'iconsOnly', 'showIcon']);
 
         return (
             <th
@@ -202,7 +208,7 @@ class TableList extends Component {
     }
 
     renderTableBodyActionsColumn(it, column, rowIndex, colIndex) {
-        const key = `row_${rowIndex}_actions`;
+        const key = `row_${rowIndex}_${colIndex}_actions`;
         const align = get(column, 'align', null);
         return (
             <td

@@ -5,6 +5,8 @@ import get from 'lodash/get';
 import isString from 'lodash/isString';
 import { FormattedMessage, defineMessages } from 'react-intl';
 
+import styles from './styles/list-actions.scss';
+
 const messages = defineMessages({
     show: {
         id: 'list.actions.show',
@@ -27,6 +29,8 @@ const propTypes = {
     item: PropTypes.shape({}).isRequired,
     onClick: PropTypes.func.isRequired,
     className: PropTypes.string,
+    iconsOnly: PropTypes.bool,
+    showIcons: PropTypes.bool,
     actions: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string,
         label: PropTypes.oneOfType([
@@ -45,20 +49,25 @@ const propTypes = {
 
 const defaultProps = {
     className: null,
+    iconsOnly: false,
+    showIcons: false,
     actions: [
         {
             id: 'show',
             label: messages.show,
+            icon: 'glyphicon glyphicon-eye-open',
         },
         {
             id: 'edit',
             label: messages.edit,
             className: 'btn-primary',
+            icon: 'glyphicon glyphicon-pencil',
         },
         {
             id: 'delete',
             label: messages.delete,
             className: 'btn-danger',
+            icon: 'glyphicon glyphicon-trash',
         },
     ],
 };
@@ -82,10 +91,13 @@ const ListActions = ({
     onClick,
     className,
     actions,
+    iconsOnly,
+    showIcons,
 }) => (
     <div
         className={classNames({
             'btn-group': true,
+            [styles.container]: true,
             [className]: className !== null,
         })}
     >
@@ -93,7 +105,7 @@ const ListActions = ({
             actions.map((it) => {
                 // @TODO cleanup the constant names ?
                 const {
-                    label,
+                    label: actionLabel,
                     icon,
                     onClick: actionOnClick,
                     id: action,
@@ -101,12 +113,17 @@ const ListActions = ({
                 const { id } = item;
 
                 const key = `btn_action_${action}_${id}`;
+                const label = isString(actionLabel) ? actionLabel : (
+                    <FormattedMessage {...actionLabel} />
+                );
 
                 const buttonClassName = get(it, 'className', null);
+                const iconClassName = get(it, 'icon', null);
                 const buttonClassNames = classNames({
                     btn: true,
                     'btn-default': true,
                     [buttonClassName]: buttonClassName !== null,
+                    [iconClassName]: iconClassName !== null && iconsOnly,
                 });
                 const buttonOnClick = (e) => {
                     if (actionOnClick) {
@@ -122,10 +139,8 @@ const ListActions = ({
                         className={buttonClassNames}
                         onClick={buttonOnClick}
                     >
-                        {icon !== null ? renderButtonIcon(icon) : null}
-                        {isString(label) ? label : (
-                            <FormattedMessage {...label} />
-                        )}
+                        {icon !== null && !iconsOnly && showIcons ? renderButtonIcon(icon) : null}
+                        {!iconsOnly ? label : null}
                     </button>
                 );
             })

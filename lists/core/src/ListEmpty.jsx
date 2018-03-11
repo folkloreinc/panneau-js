@@ -1,8 +1,8 @@
 import React from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isString from 'lodash/isString';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 const messages = defineMessages({
     empty: {
@@ -13,14 +13,7 @@ const messages = defineMessages({
 });
 
 const propTypes = {
-    label: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.shape({
-            id: PropTypes.string,
-            description: PropTypes.string,
-            defaultMessage: PropTypes.string,
-        }),
-    ]),
+    label: PanneauPropTypes.message,
 };
 
 const defaultProps = {
