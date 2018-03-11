@@ -1,12 +1,12 @@
 import React from 'react';
 import messages from './messages';
 import MediaField from './MediaField';
-import AudioComponent from './MediaAudio';
+import AudioCard from './AudioCard';
 
 const AudioField = props => (
     <MediaField
         type="audio"
-        MediaComponent={AudioComponent}
+        CardComponent={AudioCard}
         uploadButtonLabel={messages.uploadAudioLabel}
         {...props}
     />

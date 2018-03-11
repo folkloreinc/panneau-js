@@ -29,7 +29,7 @@ const defaultProps = {
     sizePath: 'original_file.size_human',
 };
 
-const MediaAudio = ({
+const AudioCard = ({
     intl, durationLabel, sizeLabel, durationPath, sizePath, ...props
 }) => (
     <Card
@@ -52,7 +52,7 @@ const MediaAudio = ({
     />
 );
 
-MediaAudio.propTypes = propTypes;
-MediaAudio.defaultProps = defaultProps;
+AudioCard.propTypes = propTypes;
+AudioCard.defaultProps = defaultProps;
 
-export default injectIntl(MediaAudio);
+export default injectIntl(AudioCard);

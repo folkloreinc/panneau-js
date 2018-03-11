@@ -33,7 +33,7 @@ const defaultProps = {
     sizePath: 'original_file.size_human',
 };
 
-const MediaVideo = ({
+const VideoCard = ({
     intl, dimensionLabel, durationLabel, sizeLabel, dimensionPath, durationPath, sizePath, ...props
 }) => (
     <Card
@@ -62,7 +62,7 @@ const MediaVideo = ({
     />
 );
 
-MediaVideo.propTypes = propTypes;
-MediaVideo.defaultProps = defaultProps;
+VideoCard.propTypes = propTypes;
+VideoCard.defaultProps = defaultProps;
 
-export default injectIntl(MediaVideo);
+export default injectIntl(VideoCard);

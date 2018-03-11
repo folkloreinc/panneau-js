@@ -1,12 +1,12 @@
 import React from 'react';
 import messages from './messages';
 import MediaField from './MediaField';
-import VideoComponent from './MediaVideo';
+import VideoCard from './VideoCard';
 
 const VideoField = props => (
     <MediaField
         type="video"
-        MediaComponent={VideoComponent}
+        CardComponent={VideoCard}
         uploadButtonLabel={messages.uploadVideoLabel}
         {...props}
     />

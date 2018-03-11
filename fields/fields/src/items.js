@@ -8,10 +8,10 @@ import Slider from '@panneau/field-slider';
 import Toggle from '@panneau/field-toggle';
 import Items from '@panneau/field-items';
 import Media, {
-    AudioField as Audio,
-    DocumentField as Document,
-    PictureField as Picture,
-    VideoField as Video,
+    Audio,
+    Document,
+    Picture,
+    Video,
 } from '@panneau/field-media';
 
 const fieldsCollection = new ComponentsCollection({

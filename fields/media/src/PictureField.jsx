@@ -1,12 +1,12 @@
 import React from 'react';
 import messages from './messages';
 import MediaField from './MediaField';
-import PictureComponent from './MediaPicture';
+import PictureCard from './PictureCard';
 
 const PictureField = props => (
     <MediaField
         type="picture"
-        MediaComponent={PictureComponent}
+        CardComponent={PictureCard}
         uploadButtonLabel={messages.uploadPictureLabel}
         {...props}
     />

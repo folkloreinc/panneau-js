@@ -1,12 +1,12 @@
 import React from 'react';
 import messages from './messages';
 import MediaField from './MediaField';
-import DocumentComponent from './MediaDocument';
+import DocumentCard from './DocumentCard';
 
 const DocumentField = props => (
     <MediaField
         type="document"
-        MediaComponent={DocumentComponent}
+        CardComponent={DocumentCard}
         uploadButtonLabel={messages.uploadDocumentLabel}
         {...props}
     />

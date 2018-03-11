@@ -14,32 +14,34 @@ const propTypes = {
     intl: PropTypes.shape({
         formatMessage: PropTypes.func,
     }).isRequired,
-    pagesLabel: PanneauPropTypes.message,
+    dimensionLabel: PanneauPropTypes.message,
     sizeLabel: PanneauPropTypes.message,
     thumbnailPath: PropTypes.string,
-    pagesPath: PropTypes.string,
+    dimensionPath: PropTypes.string,
     sizePath: PropTypes.string,
 };
 
 const defaultProps = {
-    pagesLabel: messages.pages,
+    dimensionLabel: messages.dimension,
     sizeLabel: messages.size,
-    thumbnailPath: 'thumbnails.0.url',
-    pagesPath: 'pages',
+    thumbnailPath: 'url',
+    dimensionPath: 'dimension',
     sizePath: 'original_file.size_human',
 };
 
-const MediaDocument = ({
-    intl, pagesLabel, sizeLabel, pagesPath, sizePath, ...props
+const DocumentCard = ({
+    intl, dimensionLabel, sizeLabel, dimensionPath, sizePath, ...props
 }) => (
     <Card
-        className={styles.document}
+        className={styles.picture}
         getDetails={(media) => {
-            const pages = get(media, pagesPath, null);
+            const dimension = get(media, dimensionPath, null);
             const size = get(media, sizePath, null);
             const details = {};
-            if (pages !== null) {
-                details[isString(pagesLabel) ? pagesLabel : intl.formatMessage(pagesLabel)] = pages;
+            if (dimension !== null) {
+                details[
+                    isString(dimensionLabel) ? dimensionLabel : intl.formatMessage(dimensionLabel)
+                ] = dimension;
             }
             if (size !== null) {
                 details[isString(sizeLabel) ? sizeLabel : intl.formatMessage(sizeLabel)] = size;
@@ -50,7 +52,7 @@ const MediaDocument = ({
     />
 );
 
-MediaDocument.propTypes = propTypes;
-MediaDocument.defaultProps = defaultProps;
+DocumentCard.propTypes = propTypes;
+DocumentCard.defaultProps = defaultProps;
 
-export default injectIntl(MediaDocument);
+export default injectIntl(DocumentCard);

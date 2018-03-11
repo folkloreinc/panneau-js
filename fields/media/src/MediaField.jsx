@@ -9,7 +9,7 @@ import messages from './messages';
 import styles from './styles.scss';
 
 const propTypes = {
-    MediaComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
+    CardComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
     name: PropTypes.string,
     label: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -64,12 +64,12 @@ class MediaField extends Component {
         );
     }
 
-    renderMedia() {
-        const { value, vertical, MediaComponent } = this.props;
+    renderCard() {
+        const { value, vertical, CardComponent } = this.props;
         return (
             <div className={styles.media}>
-                {MediaComponent !== null ? (
-                    <MediaComponent
+                {CardComponent !== null ? (
+                    <CardComponent
                         item={value}
                         vertical={vertical}
                         onClickDelete={this.onClickDelete}
@@ -85,7 +85,7 @@ class MediaField extends Component {
             value,
             label,
             vertical,
-            MediaComponent,
+            CardComponent,
             uploadButtonLabel,
             uploadEndpoint,
             ...other
@@ -93,7 +93,7 @@ class MediaField extends Component {
 
         return (
             <FormGroup className={styles.field} name={name} label={label} {...other}>
-                {value !== null ? this.renderMedia() : this.renderUploadButton()}
+                {value !== null ? this.renderCard() : this.renderUploadButton()}
             </FormGroup>
         );
     }
