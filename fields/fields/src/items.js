@@ -7,6 +7,8 @@ import Date from '@panneau/field-date';
 import Slider from '@panneau/field-slider';
 import Toggle from '@panneau/field-toggle';
 import Items from '@panneau/field-items';
+import Item from '@panneau/field-item';
+import Autosuggest from '@panneau/field-autosuggest';
 import Media, {
     Audio,
     Document,
@@ -33,6 +35,8 @@ const fieldsCollection = new ComponentsCollection({
     Document,
     Picture,
     Video,
+    Item,
+    Autosuggest,
 });
 
 export default fieldsCollection;
