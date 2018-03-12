@@ -14,7 +14,7 @@ const item = {
 
 const itemWithThumbnail = {
     name: 'Item with thumbnail',
-    thumbnail: 'http://lorempixel.com/400/400',
+    thumbnail: 'https://picsum.photos/400/400',
     created_at: '2017-11-01 13:33:45',
     details: {
         Size: '400x400',

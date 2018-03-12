@@ -65,7 +65,7 @@ class ItemField extends Component {
         this.renderSuggestions = this.renderSuggestions.bind(this);
 
         this.state = {
-            suggestions: props.suggestions,
+            suggestions: props.suggestions || [],
         };
     }
 
@@ -73,7 +73,7 @@ class ItemField extends Component {
         const suggestionsChanged = nextProps.suggestions !== this.props.suggestions;
         if (suggestionsChanged) {
             this.setState({
-                suggestions: nextProps.suggestions,
+                suggestions: nextProps.suggestions || [],
             });
         }
     }
