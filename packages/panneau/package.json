@@ -1,6 +1,6 @@
 {
     "name": "panneau",
-    "version": "0.3.100",
+    "version": "0.3.101",
     "description": "Framework to build dashboard and administration panels",
     "keywords": [
         "react",
@@ -55,8 +55,8 @@
     "dependencies": {
         "@panneau/core": "^0.3.99",
         "@panneau/field": "^0.3.100",
-        "@panneau/fields": "^0.3.100",
-        "@panneau/forms": "^0.3.100",
+        "@panneau/fields": "^0.3.101",
+        "@panneau/forms": "^0.3.101",
         "@panneau/layouts": "^0.3.100",
         "@panneau/lists": "^0.3.99",
         "@panneau/modals": "^0.3.99",
