@@ -16,7 +16,7 @@ const propTypes = {
     suggestions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     suggestionsEndpoint: PropTypes.string,
     suggestionValuePath: PropTypes.string,
-    suggestionSuggestionsPath: PropTypes.string,
+    suggestionTitlePath: PropTypes.string,
     suggestionDescriptionPath: PropTypes.string,
     suggestionThumbnailPath: PropTypes.string,
     getSuggestionValue: PropTypes.func,
@@ -35,7 +35,7 @@ const defaultProps = {
     suggestions: [],
     suggestionsEndpoint: null,
     suggestionValuePath: 'name',
-    suggestionSuggestionsPath: 'name',
+    suggestionTitlePath: 'name',
     suggestionDescriptionPath: 'description',
     suggestionThumbnailPath: 'thumbnail',
     getSuggestionValue: null,
@@ -155,7 +155,7 @@ class ItemField extends Component {
             getSuggestionTitle,
             getSuggestionDescription,
             getSuggestionThumbnail,
-            suggestionSuggestionsPath,
+            suggestionTitlePath,
             suggestionDescriptionPath,
             suggestionThumbnailPath,
         } = this.props;
@@ -166,7 +166,7 @@ class ItemField extends Component {
         const title =
             getSuggestionTitle !== null
                 ? getSuggestionTitle(suggestion)
-                : get(suggestion, suggestionSuggestionsPath, null);
+                : get(suggestion, suggestionTitlePath, null);
         const description =
             getSuggestionDescription !== null
                 ? getSuggestionDescription(suggestion)
