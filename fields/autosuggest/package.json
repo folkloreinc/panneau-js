@@ -1,6 +1,6 @@
 {
   "name": "@panneau/field-autosuggest",
-  "version": "0.3.100",
+  "version": "0.3.103",
   "description": "Autosuggest fields for Panneau",
   "keywords": [
     "react",
