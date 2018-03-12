@@ -11,10 +11,16 @@ import styles from './styles.scss';
 const propTypes = {
     name: PropTypes.string,
     label: PropTypes.string,
+    placeholder: PropTypes.string,
+    suggestions: PropTypes.arrayOf(PropTypes.object),
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.string]),
     autosuggestProps: PropTypes.shape({
         ...AutosuggestField.propTypes,
     }),
+    cardProps: PropTypes.shape({
+        ...Card.propTypes,
+    }),
+    cardVertical: PropTypes.bool,
     cardItemMap: PropTypes.shape({}),
     getCardItemValue: PropTypes.func,
     onChange: PropTypes.func,
@@ -24,7 +30,11 @@ const defaultProps = {
     name: null,
     label: null,
     value: null,
+    suggestions: null,
+    placeholder: '',
     autosuggestProps: null,
+    cardProps: null,
+    cardVertical: false,
     cardItemMap: null,
     getCardItemValue: null,
     onChange: null,
@@ -87,12 +97,14 @@ class ItemField extends Component {
     }
 
     renderAutosuggest() {
-        const { autosuggestProps } = this.props;
+        const { autosuggestProps, placeholder, suggestions } = this.props;
         const { inputValue } = this.state;
         return (
             <AutosuggestField
+                placeholder={placeholder}
+                suggestions={suggestions}
                 {...autosuggestProps}
-                value={inputValue || ''}
+                value={inputValue}
                 onChange={this.onInputChange}
                 onSelect={this.onSuggestionSelected}
             />
@@ -104,11 +116,16 @@ class ItemField extends Component {
     }
 
     renderCard() {
-        const { value } = this.props;
+        const { value, cardVertical, cardProps } = this.props;
         const item = this.getCardItemFromValue(value);
         return (
             <div className={styles.card}>
-                <Card item={item} onClickDelete={this.onClickDelete} />
+                <Card
+                    vertical={cardVertical}
+                    {...cardProps}
+                    item={item}
+                    onClickDelete={this.onClickDelete}
+                />
             </div>
         );
     }

@@ -18,6 +18,7 @@ const propTypes = {
     deleteIcon: PropTypes.string,
     selectIcon: PropTypes.string,
     className: PropTypes.string,
+    thumbnailSize: PropTypes.string,
     renderLabel: PropTypes.func,
     namePath: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
     detailsPath: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
@@ -40,6 +41,7 @@ const defaultProps = {
     deletable: true,
     selectable: false,
     vertical: false,
+    thumbnailSize: 'contain',
     deleteIcon: 'fa fa-trash',
     selectIcon: 'fa fa-plus',
     className: null,
@@ -160,6 +162,7 @@ class Card extends Component {
             deleteIcon,
             selectIcon,
             className,
+            thumbnailSize,
             renderLabel,
             getThumbnail,
             getIcon,
@@ -218,6 +221,7 @@ class Card extends Component {
                                 className={styles.thumbnail}
                                 style={{
                                     backgroundImage: `url("${thumbnail}")`,
+                                    backgroundSize: thumbnailSize,
                                 }}
                             />
                         </div>
