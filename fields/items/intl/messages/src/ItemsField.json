@@ -1,0 +1,12 @@
+[
+  {
+    "id": "fields.items.buttons.add",
+    "description": "The label of the \"add\" button in items field",
+    "defaultMessage": "Add"
+  },
+  {
+    "id": "fields.items.buttons.add_with_type",
+    "description": "The label of the \"add\" button with type in items field",
+    "defaultMessage": "Add {type}"
+  }
+]

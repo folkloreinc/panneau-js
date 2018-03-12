@@ -75,6 +75,7 @@ storiesOf('Fields/Select', module)
                 <SelectField
                     label="Multiple"
                     options={options}
+                    value={[2]}
                     multiple
                     onChange={action('change')}
                 />
@@ -83,6 +84,7 @@ storiesOf('Fields/Select', module)
                 <SelectField
                     label="Multiple and creatable"
                     options={options}
+                    value={[1, 3]}
                     multiple
                     creatable
                     onChange={action('change')}

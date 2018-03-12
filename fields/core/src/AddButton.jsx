@@ -2,19 +2,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import createClassName from 'classnames';
+import isString from 'lodash/isString';
+import { defineMessages, FormattedMessage } from 'react-intl';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+
+const messages = defineMessages({
+    add: {
+        id: 'fields.core.buttons.add',
+        description: 'The label of the "add" button in items field',
+        defaultMessage: 'Add',
+    },
+});
 
 const propTypes = {
     dropdown: PropTypes.arrayOf(PropTypes.shape({
         label: PropTypes.node,
     })),
-    label: PropTypes.node,
+    label: PanneauPropTypes.message,
     icon: PropTypes.string,
     onClick: PropTypes.func,
 };
 
 const defaultProps = {
     dropdown: null,
-    label: 'Ajouter',
+    label: messages.add,
     icon: null,
     onClick: null,
 };
@@ -46,7 +57,9 @@ const AddButton = ({
                 {...props}
             >
                 {icon ? <span className={icon} /> : null}
-                {label}
+                {isString(label) ? label : (
+                    <FormattedMessage {...label} />
+                )}
                 {dropdown && dropdown.length ? <span className="caret" /> : null}
             </button>
             {dropdown && dropdown.length ? (

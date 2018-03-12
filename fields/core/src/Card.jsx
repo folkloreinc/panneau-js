@@ -180,6 +180,10 @@ class Card extends Component {
             [styles.cols]: !vertical,
         });
 
+        const contentColsClassNames = classNames({
+            [styles.cols]: true,
+        });
+
         const thumbnailColClassNames = classNames({
             [styles.col]: !vertical,
             [styles.middle]: !vertical,
@@ -221,7 +225,7 @@ class Card extends Component {
                         icon
                     )}
                     <div className={infoColClassNames}>
-                        <div className={colsClassNames}>
+                        <div className={contentColsClassNames}>
                             <div className={labelColClassNames}>
                                 {renderLabel
                                     ? renderLabel(item, this.renderLabel())

@@ -3,13 +3,29 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
-import { FormGroup, FieldsGroup } from '@panneau/field';
+import { FormGroup, FieldsGroup, AddButton } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { defineMessages } from 'react-intl';
 
 import ButtonGroup from './ButtonGroup';
-import AddButton from './AddButton';
 
 import fieldClassNames from './styles.scss';
+
+const messages = defineMessages({
+    add: {
+        id: 'fields.items.buttons.add',
+        description: 'The label of the "add" button in items field',
+        defaultMessage: 'Add',
+    },
+    addWithType: {
+        id: 'fields.items.buttons.add_with_type',
+        description: 'The label of the "add" button with type in items field',
+        defaultMessage: 'Add {type}',
+        values: {
+            type: 'an item',
+        },
+    },
+});
 
 const ListItemButton = () => (
     <button type="button" className="btn btn-default">
@@ -68,8 +84,10 @@ const propTypes = {
     itemsCollapsible: PropTypes.bool,
     topElement: PropTypes.bool,
     sortable: PropTypes.bool,
-    addButtonLabelPrefix: PropTypes.string,
-    addButtonLabel: PropTypes.string,
+    addButtonLabelPrefix: PropTypes.string, // @NOTE: Backward compatibility, remove in next minor
+    addButtonLabel: PanneauPropTypes.message,
+    addWithTypeButtonLabel: PanneauPropTypes.message,
+    addButtonTypeLabel: PropTypes.string,
     addButtonLarge: PropTypes.bool,
 
     hasHeader: PropTypes.bool,
@@ -107,8 +125,10 @@ const defaultProps = {
     hasHeader: true,
     hasAddButton: true,
     hasRemoveButton: true,
-    addButtonLabelPrefix: 'Ajouter ',
-    addButtonLabel: '',
+    addButtonLabelPrefix: null, // @NOTE: Backward compatibility, remove in next minor
+    addButtonLabel: messages.add,
+    addWithTypeButtonLabel: messages.addWithType,
+    addButtonTypeLabel: null,
     addButtonLarge: false,
     headerButtons: [],
     confirmRemove: true,
@@ -404,12 +424,14 @@ class ItemsField extends Component {
         const {
             types,
             addButtonLabel,
+            addWithTypeButtonLabel,
             addButtonLabelPrefix,
             addButtonLarge,
             topElement,
         } = this.props;
 
-        const dropdownOptions = types !== null
+        const hasType = types !== null;
+        const dropdownOptions = hasType
             ? types.map(obj => ({
                 label: obj.label,
                 value: (obj.name || obj.id || obj.type),
@@ -430,10 +452,15 @@ class ItemsField extends Component {
             [fieldClassNames.large]: addButtonLarge,
         });
 
+        const intlLabel = hasType ? addWithTypeButtonLabel : addButtonLabel;
+        const label = addButtonLabelPrefix !== null ? (
+            `${addButtonLabelPrefix}${addButtonLabel}`
+        ) : intlLabel;
+
         return (
             <div className={actionsClassNames}>
                 <AddButton
-                    label={`${addButtonLabelPrefix}${addButtonLabel}`}
+                    label={label}
                     className={buttonClassNames}
                     dropdown={dropdownOptions}
                     onClick={this.onClickAdd}

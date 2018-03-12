@@ -1,5 +1,11 @@
 @import '@panneau/core/src/styles/variables';
 
 .container {
+    .select {
+        position: relative;
+    }
 
+    .card {
+        position: relative;
+    }
 }
