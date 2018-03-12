@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import isObject from 'lodash/isObject';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import { FormGroup, FieldsGroup, AddButton } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -21,9 +22,6 @@ const messages = defineMessages({
         id: 'fields.items.buttons.add_with_type',
         description: 'The label of the "add" button with type in items field',
         defaultMessage: 'Add {type}',
-        values: {
-            type: 'an item',
-        },
     },
 });
 
@@ -427,6 +425,7 @@ class ItemsField extends Component {
             addWithTypeButtonLabel,
             addButtonLabelPrefix,
             addButtonLarge,
+            addButtonTypeLabel,
             topElement,
         } = this.props;
 
@@ -452,7 +451,7 @@ class ItemsField extends Component {
             [fieldClassNames.large]: addButtonLarge,
         });
 
-        const intlLabel = hasType ? addWithTypeButtonLabel : addButtonLabel;
+        const intlLabel = addButtonTypeLabel !== null ? addWithTypeButtonLabel : addButtonLabel;
         const label = addButtonLabelPrefix !== null ? (
             `${addButtonLabelPrefix}${addButtonLabel}`
         ) : intlLabel;
@@ -460,7 +459,12 @@ class ItemsField extends Component {
         return (
             <div className={actionsClassNames}>
                 <AddButton
-                    label={label}
+                    label={isObject(label) ? {
+                        values: {
+                            type: addButtonTypeLabel,
+                        },
+                        ...label,
+                    } : label}
                     className={buttonClassNames}
                     dropdown={dropdownOptions}
                     onClick={this.onClickAdd}

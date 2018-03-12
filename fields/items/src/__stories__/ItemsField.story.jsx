@@ -36,8 +36,8 @@ const types = [
 
 storiesOf('Fields/Items', module)
     .add('with type', () => (
-        <div>
-            <IntlProvider locale="en">
+        <IntlProvider locale="en">
+            <div>
                 <KeepValue>
                     <ItemsFieldWithFields
                         types={types}
@@ -48,8 +48,19 @@ storiesOf('Fields/Items', module)
                         onChange={action('change')}
                     />
                 </KeepValue>
-            </IntlProvider>
-        </div>
+                <KeepValue>
+                    <ItemsFieldWithFields
+                        types={types}
+                        sortable
+                        fieldsCollection={fieldsCollection}
+                        addButtonTypeLabel="a custom item"
+                        label="Label"
+                        helpText="This is an help text"
+                        onChange={action('change')}
+                    />
+                </KeepValue>
+            </div>
+        </IntlProvider>
     ))
     .add('without type', () => (
         <div>
