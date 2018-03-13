@@ -18,6 +18,7 @@ const propTypes = {
     deleteIcon: PropTypes.string,
     selectIcon: PropTypes.string,
     className: PropTypes.string,
+    withoutBorder: PropTypes.bool,
     thumbnailSize: PropTypes.string,
     renderLabel: PropTypes.func,
     namePath: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
@@ -45,6 +46,7 @@ const defaultProps = {
     deleteIcon: 'fa fa-trash',
     selectIcon: 'fa fa-plus',
     className: null,
+    withoutBorder: false,
     renderLabel: null,
     namePath: 'name',
     detailsPath: 'details',
@@ -162,6 +164,7 @@ class Card extends Component {
             deleteIcon,
             selectIcon,
             className,
+            withoutBorder,
             thumbnailSize,
             renderLabel,
             getThumbnail,
@@ -176,6 +179,7 @@ class Card extends Component {
         const fieldClassNames = classNames({
             [styles.container]: true,
             [styles.vertical]: vertical,
+            [styles.withoutBorder]: withoutBorder,
             [className]: className !== null,
         });
 

@@ -22,6 +22,7 @@ const propTypes = {
     }),
     cardVertical: PropTypes.bool,
     cardItemMap: PropTypes.shape({}),
+    cardWithoutBorder: PropTypes.bool,
     getCardItemValue: PropTypes.func,
     onChange: PropTypes.func,
 };
@@ -36,6 +37,7 @@ const defaultProps = {
     cardProps: null,
     cardVertical: false,
     cardItemMap: null,
+    cardWithoutBorder: false,
     getCardItemValue: null,
     onChange: null,
 };
@@ -116,12 +118,15 @@ class ItemField extends Component {
     }
 
     renderCard() {
-        const { value, cardVertical, cardProps } = this.props;
+        const {
+            value, cardVertical, cardProps, cardWithoutBorder,
+        } = this.props;
         const item = this.getCardItemFromValue(value);
         return (
             <div className={styles.card}>
                 <Card
                     vertical={cardVertical}
+                    withoutBorder={cardWithoutBorder}
                     {...cardProps}
                     item={item}
                     onClickDelete={this.onClickDelete}

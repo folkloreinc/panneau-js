@@ -21,6 +21,7 @@ const messages = defineMessages({
         description: 'The label of the "duration" details',
         defaultMessage: 'Duration',
     },
+
     uploadMediaLabel: {
         id: 'fields.media.upload_media_label',
         description: 'The label of the "upload" button',
@@ -45,6 +46,27 @@ const messages = defineMessages({
         id: 'fields.media.upload_video_label',
         description: 'The label of the "upload" video button',
         defaultMessage: 'Select a video file...',
+    },
+
+    audioAddTypeLabel: {
+        id: 'fields.media.audio_add_type_label',
+        description: 'The type label of the "add" audios button',
+        defaultMessage: 'an audio file',
+    },
+    documentAddTypeLabel: {
+        id: 'fields.media.document_add_type_label',
+        description: 'The type label of the "add" documents button',
+        defaultMessage: 'a document file',
+    },
+    pictureAddTypeLabel: {
+        id: 'fields.media.picture_add_type_label',
+        description: 'The type label of the "add" pictures button',
+        defaultMessage: 'an image file',
+    },
+    videoAddTypeLabel: {
+        id: 'fields.media.video_add_type_label',
+        description: 'The type label of the "add" videos button',
+        defaultMessage: 'a video file',
     },
 });
 

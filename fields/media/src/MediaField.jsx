@@ -14,7 +14,8 @@ const propTypes = {
     label: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     type: PropTypes.string,
-    vertical: PropTypes.bool,
+    cardVertical: PropTypes.bool,
+    cardWithoutBorder: PropTypes.bool,
     onChange: PropTypes.func,
     uploadEndpoint: PropTypes.string,
     uploadButtonLabel: PanneauPropTypes.message,
@@ -24,7 +25,8 @@ const defaultProps = {
     name: null,
     label: null,
     value: null,
-    vertical: false,
+    cardVertical: false,
+    cardWithoutBorder: false,
     onChange: null,
     type: null,
     uploadEndpoint: null,
@@ -65,13 +67,26 @@ class MediaField extends Component {
     }
 
     renderCard() {
-        const { value, vertical, CardComponent } = this.props;
+        const {
+            name,
+            value,
+            label,
+            type,
+            cardVertical,
+            cardWithoutBorder,
+            CardComponent,
+            uploadButtonLabel,
+            uploadEndpoint,
+            ...cardProps
+        } = this.props;
         return (
             <div className={styles.media}>
                 {CardComponent !== null ? (
                     <CardComponent
+                        vertical={cardVertical}
+                        withoutBorder={cardWithoutBorder}
+                        {...cardProps}
                         item={value}
-                        vertical={vertical}
                         onClickDelete={this.onClickDelete}
                     />
                 ) : null}
@@ -84,15 +99,16 @@ class MediaField extends Component {
             name,
             value,
             label,
+            type,
             vertical,
             CardComponent,
             uploadButtonLabel,
             uploadEndpoint,
-            ...other
+            ...formGroupProps
         } = this.props;
 
         return (
-            <FormGroup className={styles.field} name={name} label={label} {...other}>
+            <FormGroup className={styles.field} name={name} label={label} {...formGroupProps}>
                 {value !== null ? this.renderCard() : this.renderUploadButton()}
             </FormGroup>
         );

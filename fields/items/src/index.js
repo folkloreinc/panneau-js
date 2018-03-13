@@ -1,5 +1,12 @@
 import ItemsField from './ItemsField';
-import ButtonGroup from './ButtonGroup';
+import SortableList from './SortableList';
+import SortableItem from './SortableItem';
+import SortableHandle from './SortableHandle';
 
-export { ButtonGroup };
+export {
+    SortableList,
+    SortableItem,
+    SortableHandle,
+};
+
 export default ItemsField;
