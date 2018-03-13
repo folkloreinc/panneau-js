@@ -54,6 +54,7 @@
     "dependencies": {
         "@panneau/core": "^0.3.99",
         "@panneau/field": "^0.3.100",
+        "@panneau/field-items": "^0.3.101",
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.5",
         "immutable": "^3.8.2",

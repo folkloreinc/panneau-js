@@ -2,29 +2,40 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import styles from './styles/button-group.scss';
+
 const propTypes = {
-    buttons: PropTypes.arrayOf(PropTypes.shape({
-        label: PropTypes.node,
-        icon: PropTypes.string,
-    })),
+    buttons: PropTypes.arrayOf(PropTypes.oneOfType([
+        PropTypes.node,
+        PropTypes.shape({
+            label: PropTypes.node,
+            icon: PropTypes.string,
+        }),
+    ])),
     href: PropTypes.string,
     onClick: PropTypes.func,
+    noWrap: PropTypes.bool,
     className: PropTypes.string,
+    buttonClassName: PropTypes.string,
 };
 
 const defaultProps = {
     buttons: [],
     href: null,
+    noWrap: false,
     onClick: null,
     className: null,
+    buttonClassName: null,
 };
 
 const ButtonGroup = ({
-    buttons, onClick, className, ...props
+    buttons, onClick, className, buttonClassName, noWrap, ...props
 }) => (
     <div
         className={classNames({
             'btn-group': true,
+            [styles.container]: true,
+            [styles.noWrap]: noWrap,
             [className]: className !== null,
         })}
         {...props}
@@ -35,19 +46,24 @@ const ButtonGroup = ({
                     key: `button-${button.name || button.id || index}`,
                 });
             }
-
-            const { label, icon, ...customProps } = button;
-            const key = `button-${button.key || button.name || button.label || button.icon}`;
-            const onClickButton = (e) => {
-                if (onClick) {
-                    onClick(e, button, index);
-                }
-            };
+            const {
+                label, icon, className: customClassName, ...customProps
+            } = button;
             const buttonProps = {
-                key,
+                key: `button-${button.key || button.name || button.label || button.icon}`,
                 href: null,
-                className: 'btn btn-default',
-                onClick: onClickButton,
+                className: classNames({
+                    btn: true,
+                    'btn-default': true,
+                    [styles.button]: true,
+                    [buttonClassName]: buttonClassName !== null,
+                    [customClassName || null]: (customClassName || null) !== null,
+                }),
+                onClick: (e) => {
+                    if (onClick) {
+                        onClick(e, button, index);
+                    }
+                },
                 ...customProps,
             };
             return buttonProps.href !== null ? (

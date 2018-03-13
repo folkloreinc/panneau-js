@@ -1,0 +1,14 @@
+.container {
+
+
+    &.noWrap {
+        white-space: nowrap;
+
+        .button {
+            display: inline-block;
+            float: none;
+        }
+
+    }
+
+}

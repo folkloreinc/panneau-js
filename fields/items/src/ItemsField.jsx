@@ -3,14 +3,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isObject from 'lodash/isObject';
-import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
-import { FormGroup, FieldsGroup, AddButton } from '@panneau/field';
+import { arrayMove } from 'react-sortable-hoc';
+import { FormGroup, FieldsGroup, AddButton, ButtonGroup } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { defineMessages } from 'react-intl';
 
-import ButtonGroup from './ButtonGroup';
+import SortableHandle from './SortableHandle';
+import SortableList from './SortableList';
 
-import fieldClassNames from './styles.scss';
+import styles from './styles.scss';
 
 const messages = defineMessages({
     add: {
@@ -24,46 +25,6 @@ const messages = defineMessages({
         defaultMessage: 'Add {type}',
     },
 });
-
-const ListItemButton = () => (
-    <button type="button" className="btn btn-default">
-        <span className="glyphicon glyphicon-resize-vertical" />
-    </button>
-);
-const SortableListItemHandle = SortableHandle(ListItemButton);
-
-const ListItemRender = ({ renderItem, value, itemIndex }) => renderItem(value, itemIndex);
-const SortableListItemComponent = SortableElement(ListItemRender);
-
-/* eslint-disable react/no-array-index-key */
-const listItemSortablePropTypes = {
-    items: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
-    placeholder: PropTypes.node,
-    renderItem: PropTypes.func.isRequired,
-};
-const listItemSortableDefaultProps = {
-    placeholder: null,
-};
-const ListItemSortable = ({
-    items, placeholder, renderItem, ...props
-}) => (
-    <div className="list" {...props}>
-        {items.map((it, index) => (
-            <SortableListItemComponent
-                key={`item_${index}_${it.type}`}
-                index={index}
-                renderItem={renderItem}
-                itemIndex={index}
-                value={it}
-            />
-        ))}
-        {placeholder}
-    </div>
-);
-ListItemSortable.propTypes = listItemSortablePropTypes;
-ListItemSortable.defaultProps = listItemSortableDefaultProps;
-const SortableListComponent = SortableContainer(ListItemSortable);
-/* eslint-enable react/no-array-index-key */
 
 const propTypes = {
     name: PropTypes.string,
@@ -82,15 +43,19 @@ const propTypes = {
     itemsCollapsible: PropTypes.bool,
     topElement: PropTypes.bool,
     sortable: PropTypes.bool,
+
     addButtonLabelPrefix: PropTypes.string, // @NOTE: Backward compatibility, remove in next minor
     addButtonLabel: PanneauPropTypes.message,
     addWithTypeButtonLabel: PanneauPropTypes.message,
     addButtonTypeLabel: PropTypes.string,
     addButtonLarge: PropTypes.bool,
 
-    hasHeader: PropTypes.bool,
-    hasAddButton: PropTypes.bool,
-    hasRemoveButton: PropTypes.bool,
+    withoutPanel: PropTypes.bool,
+    withoutHeader: PropTypes.bool,
+    withoutBorder: PropTypes.bool,
+    withoutAddButton: PropTypes.bool,
+    withoutRemoveButton: PropTypes.bool,
+
     headerButtons: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     confirmRemove: PropTypes.bool,
     confirmRemoveMessage: PropTypes.string,
@@ -100,6 +65,7 @@ const propTypes = {
     getItemTitle: PropTypes.func,
     getItemBefore: PropTypes.func,
     getItemBody: PropTypes.func,
+    getItemField: PropTypes.func,
     getItemValue: PropTypes.func,
 
     onChange: PropTypes.func,
@@ -120,9 +86,12 @@ const defaultProps = {
     topElement: false,
     sortable: true,
 
-    hasHeader: true,
-    hasAddButton: true,
-    hasRemoveButton: true,
+    withoutPanel: false,
+    withoutHeader: false,
+    withoutBorder: false,
+    withoutAddButton: false,
+    withoutRemoveButton: false,
+
     addButtonLabelPrefix: null, // @NOTE: Backward compatibility, remove in next minor
     addButtonLabel: messages.add,
     addWithTypeButtonLabel: messages.addWithType,
@@ -137,6 +106,7 @@ const defaultProps = {
     getItemTitle: null,
     getItemBefore: null,
     getItemBody: null,
+    getItemField: null,
     getItemValue: null,
 
     onChange: null,
@@ -203,6 +173,7 @@ class ItemsField extends Component {
     }
 
     onClickCollapse(e, it, index) {
+        e.preventDefault();
         const collapsedItems = [].concat(this.state.collapsedItems);
         collapsedItems[index] = !collapsedItems[index];
         this.setState({
@@ -270,150 +241,201 @@ class ItemsField extends Component {
         }
     }
 
-    renderItemHeader(it, index) {
-        const {
-            hasHeader,
-            hasRemoveButton,
-            headerButtons,
-            itemsCollapsible,
-            sortable,
-        } = this.props;
-
-        const title = this.getItemTitle(it, index);
+    renderItemActions(it, index) {
+        const { headerButtons, withoutRemoveButton, sortable } = this.props;
         const buttons = [].concat(headerButtons);
 
-        const onClickCollapse = (e) => {
-            e.preventDefault();
-            this.onClickCollapse(e, it, index);
-        };
-
-        const onClickButton = (e, button, buttonIndex) => {
-            this.onClickHeaderButton(e, button, buttonIndex, it, index);
-        };
-
         if (sortable) {
-            buttons.push(<SortableListItemHandle />);
+            buttons.push(<SortableHandle className={styles.button} />);
         }
 
-        if (hasRemoveButton) {
+        if (!withoutRemoveButton) {
             buttons.push({
                 icon: 'glyphicon glyphicon-remove',
                 onClick: e => this.onClickRemove(e, index),
             });
         }
 
-        let header;
-        if (hasHeader) {
-            const label = itemsCollapsible ? (
-                <button type="button" className={fieldClassNames.button} onClick={onClickCollapse}>
-                    <span className={fieldClassNames.icon}>
-                        <span className="caret up" />
-                    </span>
-                    <span className={fieldClassNames.text}>{title}</span>
-                </button>
-            ) : (
-                title
-            );
-
-            header = (
-                <div className="panel-heading">
-                    <div className={fieldClassNames.cols}>
-                        <div className={fieldClassNames.col}>
-                            <div className={fieldClassNames.title}>{label}</div>
-                        </div>
-                        <div
-                            className={classNames({
-                                [fieldClassNames.col]: true,
-                                [fieldClassNames.right]: true,
-                            })}
-                        >
-                            <div className="btn-group">
-                                <ButtonGroup
-                                    className="btn-group btn-group-xs"
-                                    buttons={buttons}
-                                    onClick={onClickButton}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        } else {
-            header = (
-                <div className={fieldClassNames.actions}>
-                    <ButtonGroup
-                        className="btn-group btn-group-xs"
-                        buttons={buttons}
-                        onClick={onClickButton}
-                    />
-                </div>
-            );
-        }
-
-        return header;
+        return (
+            <div className={styles.actions}>
+                <ButtonGroup
+                    className={classNames({
+                        'btn-group-xs': true,
+                        [styles.buttonGroup]: true,
+                    })}
+                    buttonClassName={styles.button}
+                    noWrap
+                    buttons={buttons}
+                    onClick={(e, button, buttonIndex) =>
+                        this.onClickHeaderButton(e, button, buttonIndex, it, index)
+                    }
+                />
+            </div>
+        );
     }
 
-    renderItem(it, index) {
-        const {
-            types, fields, value, itemsCollapsible, sortable,
-        } = this.props;
-        const { collapsedItems } = this.state;
+    renderItemBefore(it, index) {
+        const { getItemBefore } = this.props;
+        return getItemBefore !== null ? (
+            <div className={styles.before}>{getItemBefore(it, index)}</div>
+        ) : null;
+    }
 
-        const key = !sortable ? `item_${index}_${it.type}` : null;
+    renderItemTitle(it, index) {
+        const { itemsCollapsible } = this.props;
+        const title = this.getItemTitle(it, index);
+        return itemsCollapsible ? (
+            <button
+                type="button"
+                className={styles.button}
+                onClick={e => this.onClickCollapse(e, it, index)}
+            >
+                <span className={styles.icon}>
+                    <span className="caret up" />
+                </span>
+                <span className={styles.text}>{title}</span>
+            </button>
+        ) : (
+            title
+        );
+    }
+
+    renderItemHeader(it, index) {
+        const { withoutPanel } = this.props;
+        const title = this.renderItemTitle(it, index);
+        const actions = this.renderItemActions(it, index);
+
+        const headerClassNames = classNames({
+            'panel-heading': !withoutPanel,
+            [styles.header]: true,
+        });
+
+        return (
+            <div className={headerClassNames}>
+                <div className={styles.cols}>
+                    <div className={styles.col}>
+                        <div className={styles.title}>{title}</div>
+                    </div>
+                    <div
+                        className={classNames({
+                            [styles.col]: true,
+                            [styles.right]: true,
+                        })}
+                    >
+                        {actions}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    renderItemField(it, index, collapsed) {
+        const {
+            value, types, fields, getItemField,
+        } = this.props;
+
         const itemValue = value[index] || null;
         const type =
             types !== null
                 ? types.find(obj => (obj.name || obj.type || obj.id) === it.type) || null
                 : null;
         const typeFields = type !== null ? type.fields || fields : fields;
-        const itemCollapsed = itemsCollapsible && (collapsedItems[index] || false);
-        const onChange = val => this.onItemChange(index, val);
 
-        const bodyStyle = {
-            display: itemCollapsed ? 'none' : 'block',
-        };
-
-        const header = this.renderItemHeader(it, index);
-
-        const body = this.props.getItemBody ? (
-            this.props.getItemBody(it, index, itemCollapsed)
+        return getItemField !== null ? (
+            getItemField(it, index, {
+                collapsed,
+                value: itemValue,
+                fields: typeFields,
+            })
         ) : (
-            <div
-                className={classNames({
-                    'panel-body': true,
-                    [fieldClassNames.body]: true,
-                })}
-                style={bodyStyle}
-            >
-                <FieldsGroup value={itemValue} fields={typeFields || []} onChange={onChange} />
-            </div>
+            <FieldsGroup
+                value={itemValue}
+                fields={typeFields || []}
+                onChange={val => this.onItemChange(index, val)}
+            />
         );
+    }
 
-        let before;
-        if (this.props.getItemBefore) {
-            before = (
-                <div className={fieldClassNames.before}>{this.props.getItemBefore(it, index)}</div>
-            );
-        }
+    renderItemBody(it, index, collapsed) {
+        const { withoutPanel, getItemBody } = this.props;
 
-        const itemClassNames = classNames({
-            [fieldClassNames.item]: true,
-            [fieldClassNames.collapsed]: itemCollapsed,
+        const field = this.renderItemField(it, index, collapsed);
+
+        const bodyClassNames = classNames({
+            'panel-body': !withoutPanel,
+            [styles.body]: true,
         });
 
+        const bodyStyle = {
+            display: collapsed ? 'none' : 'block',
+        };
+
+        return getItemBody !== null ? (
+            getItemBody(it, index, collapsed, field)
+        ) : (
+            <div className={bodyClassNames} style={bodyStyle}>
+                {field}
+            </div>
+        );
+    }
+
+    renderItem(it, index) {
+        const {
+            withoutHeader, withoutPanel, withoutBorder, itemsCollapsible, sortable,
+        } = this.props;
+        const { collapsedItems } = this.state;
+
+        const key = !sortable ? `item_${index}_${it.type}` : null;
+        const itemCollapsed = itemsCollapsible && (collapsedItems[index] || false);
+
+        const before = this.renderItemBefore(it, index, itemCollapsed);
+        const header = !withoutHeader ? this.renderItemHeader(it, index, itemCollapsed) : null;
+        const actions = withoutHeader ? this.renderItemActions(it, index, itemCollapsed) : null;
+        const body = this.renderItemBody(it, index, itemCollapsed);
+
         const panelClassNames = classNames({
-            panel: true,
-            'panel-default': true,
-            [fieldClassNames.panel]: true,
+            panel: !withoutPanel,
+            'panel-default': !withoutPanel,
+            [styles.panel]: true,
+            [styles.withBorder]: withoutPanel && !withoutBorder,
         });
 
         return (
-            <div className={itemClassNames} key={key}>
+            <div
+                className={classNames({
+                    [styles.item]: true,
+                    [styles.collapsed]: itemCollapsed,
+                })}
+                key={key}
+            >
                 {before}
-                <div className={panelClassNames}>
-                    {header}
-                    {body}
-                </div>
+                {withoutHeader ? (
+                    <div className={panelClassNames}>
+                        <div className={styles.cols}>
+                            <div
+                                className={classNames({
+                                    [styles.col]: true,
+                                    [styles.colBody]: true,
+                                })}
+                            >
+                                {body}
+                            </div>
+                            <div
+                                className={classNames({
+                                    [styles.col]: true,
+                                    [styles.colActions]: true,
+                                })}
+                            >
+                                {actions}
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className={panelClassNames}>
+                        {header}
+                        {body}
+                    </div>
+                )}
             </div>
         );
     }
@@ -433,7 +455,7 @@ class ItemsField extends Component {
         const dropdownOptions = hasType
             ? types.map(obj => ({
                 label: obj.label,
-                value: (obj.name || obj.id || obj.type),
+                value: obj.name || obj.id || obj.type,
             }))
             : null;
 
@@ -446,25 +468,29 @@ class ItemsField extends Component {
         });
 
         const actionsClassNames = classNames({
-            [fieldClassNames.actions]: true,
-            [fieldClassNames.top]: topElement,
-            [fieldClassNames.large]: addButtonLarge,
+            [styles.actions]: true,
+            [styles.main]: true,
+            [styles.top]: topElement,
+            [styles.large]: addButtonLarge,
         });
 
         const intlLabel = addButtonTypeLabel !== null ? addWithTypeButtonLabel : addButtonLabel;
-        const label = addButtonLabelPrefix !== null ? (
-            `${addButtonLabelPrefix}${addButtonLabel}`
-        ) : intlLabel;
+        const label =
+            addButtonLabelPrefix !== null ? `${addButtonLabelPrefix}${addButtonLabel}` : intlLabel;
 
         return (
             <div className={actionsClassNames}>
                 <AddButton
-                    label={isObject(label) ? {
-                        values: {
-                            type: addButtonTypeLabel,
-                        },
-                        ...label,
-                    } : label}
+                    label={
+                        isObject(label)
+                            ? {
+                                values: {
+                                    type: addButtonTypeLabel,
+                                },
+                                ...label,
+                            }
+                            : label
+                    }
                     className={buttonClassNames}
                     dropdown={dropdownOptions}
                     onClick={this.onClickAdd}
@@ -476,7 +502,7 @@ class ItemsField extends Component {
     render() {
         const {
             name,
-            hasAddButton,
+            withoutAddButton,
             topElement,
             sortable,
             collapsible,
@@ -488,7 +514,7 @@ class ItemsField extends Component {
         const listProps = {};
 
         const formClassNames = classNames({
-            [fieldClassNames.field]: true,
+            [styles.field]: true,
         });
 
         const boxStyle = {
@@ -497,9 +523,7 @@ class ItemsField extends Component {
         };
 
         const placeholder =
-            value.length === 0 && !topElement ? (
-                <div className={fieldClassNames.placeholder} />
-            ) : null;
+            value.length === 0 && !topElement ? <div className={styles.placeholder} /> : null;
         return (
             <FormGroup
                 name={name}
@@ -510,9 +534,9 @@ class ItemsField extends Component {
                 style={boxStyle}
                 helpText={helpText}
             >
-                {hasAddButton ? this.renderAddButton() : null}
+                {!withoutAddButton ? this.renderAddButton() : null}
                 {sortable ? (
-                    <SortableListComponent
+                    <SortableList
                         {...listProps}
                         useDragHandle
                         lockAxis="y"

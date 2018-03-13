@@ -5,14 +5,18 @@ import { IntlProvider } from 'react-intl';
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
 import AudioField from '../AudioField';
+import AudiosField from '../AudiosField';
 import DocumentField from '../DocumentField';
+import DocumentsField from '../DocumentsField';
 import PictureField from '../PictureField';
+import PicturesField from '../PicturesField';
 import VideoField from '../VideoField';
+import VideosField from '../VideosField';
 
 storiesOf('Fields/Media', module)
     .add('audio', () => (
-        <div>
-            <IntlProvider locale="en">
+        <IntlProvider locale="en">
+            <div>
                 <KeepValue>
                     <AudioField
                         label="Audio"
@@ -20,12 +24,19 @@ storiesOf('Fields/Media', module)
                         onChange={action('change')}
                     />
                 </KeepValue>
-            </IntlProvider>
-        </div>
+                <KeepValue>
+                    <AudiosField
+                        label="Audios"
+                        helpText="This is an help text"
+                        onChange={action('change')}
+                    />
+                </KeepValue>
+            </div>
+        </IntlProvider>
     ))
     .add('document', () => (
-        <div>
-            <IntlProvider locale="en">
+        <IntlProvider locale="en">
+            <div>
                 <KeepValue>
                     <DocumentField
                         label="Document"
@@ -33,12 +44,19 @@ storiesOf('Fields/Media', module)
                         onChange={action('change')}
                     />
                 </KeepValue>
-            </IntlProvider>
-        </div>
+                <KeepValue>
+                    <DocumentsField
+                        label="Documents"
+                        helpText="This is an help text"
+                        onChange={action('change')}
+                    />
+                </KeepValue>
+            </div>
+        </IntlProvider>
     ))
     .add('picture', () => (
-        <div>
-            <IntlProvider locale="en">
+        <IntlProvider locale="en">
+            <div>
                 <KeepValue>
                     <PictureField
                         label="Picture"
@@ -46,12 +64,19 @@ storiesOf('Fields/Media', module)
                         onChange={action('change')}
                     />
                 </KeepValue>
-            </IntlProvider>
-        </div>
+                <KeepValue>
+                    <PicturesField
+                        label="Pictures"
+                        helpText="This is an help text"
+                        onChange={action('change')}
+                    />
+                </KeepValue>
+            </div>
+        </IntlProvider>
     ))
     .add('video', () => (
-        <div>
-            <IntlProvider locale="en">
+        <IntlProvider locale="en">
+            <div>
                 <KeepValue>
                     <VideoField
                         label="Video"
@@ -59,6 +84,13 @@ storiesOf('Fields/Media', module)
                         onChange={action('change')}
                     />
                 </KeepValue>
-            </IntlProvider>
-        </div>
+                <KeepValue>
+                    <VideosField
+                        label="Videos"
+                        helpText="This is an help text"
+                        onChange={action('change')}
+                    />
+                </KeepValue>
+            </div>
+        </IntlProvider>
     ));
