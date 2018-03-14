@@ -1,6 +1,6 @@
 {
     "name": "@panneau/layouts",
-    "version": "0.3.105",
+    "version": "0.3.108",
     "description": "Layouts for Panneau",
     "keywords": [
         "react",
@@ -52,7 +52,7 @@
     },
     "dependencies": {
         "@panneau/core": "^0.3.99",
-        "@panneau/layout-normal": "^0.3.105",
+        "@panneau/layout-normal": "^0.3.108",
         "babel-runtime": "^6.26.0",
         "hoist-non-react-statics": "^2.3.1",
         "invariant": "^2.2.2",
