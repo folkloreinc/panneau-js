@@ -145,7 +145,7 @@ class Card extends Component {
                 {details !== null ? (
                     <div className={styles.details}>
                         {Object.keys(details).map(key => (
-                            <div className={styles.detail}>
+                            <div key={`details-${key}`} className={styles.detail}>
                                 {key}: {details[key]}
                             </div>
                         ))}

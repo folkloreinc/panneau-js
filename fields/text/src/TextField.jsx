@@ -118,7 +118,7 @@ class TextField extends Component {
     }
 
     onEditorReady(e) {
-        e.editor.setData(this.props.value);
+        e.editor.setData(this.props.value || '');
     }
 
     onChange(e) {
@@ -164,7 +164,7 @@ class TextField extends Component {
 
         const inputProps = {
             ref: (ref) => { this.refInput = ref; },
-            value: inputValue,
+            value: inputValue || '',
             name,
             id: name,
             placeholder,
@@ -193,7 +193,7 @@ class TextField extends Component {
                     <input
                         type="hidden"
                         name={name}
-                        value={inputValue}
+                        value={inputValue || ''}
                     />
                 </div>
             );

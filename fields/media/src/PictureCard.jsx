@@ -29,7 +29,7 @@ const defaultProps = {
     sizePath: 'original_file.size_human',
 };
 
-const DocumentCard = ({
+const PictureCard = ({
     intl, dimensionLabel, sizeLabel, dimensionPath, sizePath, ...props
 }) => (
     <Card
@@ -52,7 +52,7 @@ const DocumentCard = ({
     />
 );
 
-DocumentCard.propTypes = propTypes;
-DocumentCard.defaultProps = defaultProps;
+PictureCard.propTypes = propTypes;
+PictureCard.defaultProps = defaultProps;
 
-export default injectIntl(DocumentCard);
+export default injectIntl(PictureCard);
