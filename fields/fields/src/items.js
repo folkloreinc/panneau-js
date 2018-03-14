@@ -11,9 +11,13 @@ import Item from '@panneau/field-item';
 import Autosuggest from '@panneau/field-autosuggest';
 import Media, {
     Audio,
+    Audios,
     Document,
+    Documents,
     Picture,
+    Pictures,
     Video,
+    Videos,
 } from '@panneau/field-media';
 
 const fieldsCollection = new ComponentsCollection({
@@ -32,9 +36,13 @@ const fieldsCollection = new ComponentsCollection({
     Items,
     Media,
     Audio,
+    Audios,
     Document,
+    Documents,
     Picture,
+    Pictures,
     Video,
+    Videos,
     Item,
     Autosuggest,
 });
