@@ -386,7 +386,7 @@ class ItemsField extends Component {
         const { collapsedItems } = this.state;
 
         const key = !sortable ? `item_${index}_${it.type}` : null;
-        const itemCollapsed = itemsCollapsible && (collapsedItems[index] || false);
+        const itemCollapsed = !withoutPanel && itemsCollapsible && (collapsedItems[index] || false);
 
         const before = this.renderItemBefore(it, index, itemCollapsed);
         const header = !withoutHeader ? this.renderItemHeader(it, index, itemCollapsed) : null;
