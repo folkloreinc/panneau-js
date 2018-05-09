@@ -511,7 +511,6 @@ class ItemsField extends Component {
             helpText,
         } = this.props;
         const value = this.props.value || [];
-        const listProps = {};
 
         const formClassNames = classNames({
             [styles.field]: true,
@@ -536,17 +535,18 @@ class ItemsField extends Component {
             >
                 {!withoutAddButton ? this.renderAddButton() : null}
                 {sortable ? (
-                    <SortableList
-                        {...listProps}
-                        useDragHandle
-                        lockAxis="y"
-                        onSortEnd={this.onSortEnd}
-                        items={value}
-                        placeholder={placeholder}
-                        renderItem={this.renderItem}
-                    />
+                    <div className={styles.list}>
+                        <SortableList
+                            useDragHandle
+                            lockAxis="y"
+                            onSortEnd={this.onSortEnd}
+                            items={value}
+                            placeholder={placeholder}
+                            renderItem={this.renderItem}
+                        />
+                    </div>
                 ) : (
-                    <div className="list" {...listProps}>
+                    <div className={styles.list}>
                         {value.map(this.renderItem)}
                         {placeholder}
                     </div>

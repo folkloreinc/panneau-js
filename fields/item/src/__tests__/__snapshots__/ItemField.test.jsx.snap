@@ -2,7 +2,7 @@
 
 exports[`match snapshot 1`] = `
 <div
-  className="form-group form-group-item"
+  className="form-group undefined"
 >
   <div
     className="form-group-label"
@@ -22,11 +22,50 @@ exports[`match snapshot 1`] = `
       }
     }
   >
-    <input
-      onChange={[Function]}
-      type="text"
-      value="value"
-    />
+    <div
+      className={undefined}
+    >
+      <div
+        className=""
+      >
+        <div
+          className="undefined"
+        >
+          <div
+            className="undefined"
+          >
+            <div
+              className="undefined"
+            >
+              <div
+                className="undefined"
+              >
+                <div
+                  className={undefined}
+                />
+              </div>
+              <div
+                className="undefined"
+              >
+                <div
+                  className="undefined"
+                >
+                  <div
+                    className="btn-group"
+                  >
+                    <button
+                      className="btn btn-default fa fa-trash"
+                      onClick={[Function]}
+                      type="button"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 `;

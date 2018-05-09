@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { SortableContainer } from 'react-sortable-hoc';
+import { SortableContainer as createSortableList } from 'react-sortable-hoc';
 
 import SortableItem from './SortableItem';
 
@@ -15,7 +15,7 @@ const defaultProps = {
     placeholder: null,
 };
 
-const ListItemSortable = ({
+const SortableList = ({
     items, placeholder, renderItem, ...props
 }) => (
     <div className="list" {...props}>
@@ -32,7 +32,7 @@ const ListItemSortable = ({
     </div>
 );
 
-ListItemSortable.propTypes = propTypes;
-ListItemSortable.defaultProps = defaultProps;
+SortableList.propTypes = propTypes;
+SortableList.defaultProps = defaultProps;
 
-export default SortableContainer(ListItemSortable);
+export default createSortableList(SortableList);

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { SortableHandle } from 'react-sortable-hoc';
+import { SortableHandle as createSortableHandle } from 'react-sortable-hoc';
 
 const propTypes = {
     className: PropTypes.string,
@@ -11,7 +11,7 @@ const defaultProps = {
     className: PropTypes.string,
 };
 
-const ListItemButton = ({ className }) => (
+const SortableHandle = ({ className }) => (
     <button
         type="button"
         className={classNames({
@@ -24,7 +24,7 @@ const ListItemButton = ({ className }) => (
     </button>
 );
 
-ListItemButton.propTypes = propTypes;
-ListItemButton.defaultProps = defaultProps;
+SortableHandle.propTypes = propTypes;
+SortableHandle.defaultProps = defaultProps;
 
-export default SortableHandle(ListItemButton);
+export default createSortableHandle(SortableHandle);
