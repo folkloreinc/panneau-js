@@ -12,7 +12,7 @@ node_js:
 
 before_install: npm install -g lerna
 
-install: lerna bootstrap
+install: lerna bootstrap --ignore-scripts
 
 script: npm test
 
