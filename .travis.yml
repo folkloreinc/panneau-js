@@ -10,9 +10,12 @@ sudo: false
 node_js:
     - "8"
 
-before_install: npm install -g lerna jest
+before_install:
+    - npm install -g lerna jest
 
-install: lerna bootstrap --ignore-scripts
+install:
+    - npm install
+    - lerna bootstrap --ignore-scripts
 
 script: npm test
 
