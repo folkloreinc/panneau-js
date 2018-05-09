@@ -1,6 +1,13 @@
 {
     "name": "Simple Panneau",
 
+    "locales": [
+        "fr",
+        "en"
+    ],
+
+    "endpointHost": "https://9eaf6b56-086d-4bad-8752-67ebd214eaea.mock.pstmn.io",
+
     "layout": {
         "type": "normal",
         "header": {
@@ -26,8 +33,6 @@
         },
         "footer": true
     },
-
-    "endpointHost": "https://9eaf6b56-086d-4bad-8752-67ebd214eaea.mock.pstmn.io",
 
     "routes": {
         "home": "/",

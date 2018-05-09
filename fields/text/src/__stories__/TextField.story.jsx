@@ -49,7 +49,11 @@ storiesOf('Fields/Text', module)
             <KeepValue>
                 <TextLocaleField
                     label="TextLocale"
-                    locales={['fr', 'en', 'es']}
+                    locales={['fr', 'en']}
+                    prefix={{
+                        fr: 'Préfixe en français',
+                        en: 'English prefix',
+                    }}
                     onChange={action('change')}
                 />
             </KeepValue>

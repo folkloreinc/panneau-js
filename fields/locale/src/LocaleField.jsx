@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 import omit from 'lodash/omit';
 import isEmpty from 'lodash/isEmpty';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { FormGroup } from '@panneau/field';
 
 import styles from './styles.scss';
@@ -21,6 +22,7 @@ const propTypes = {
         PropTypes.instanceOf(Component),
         PropTypes.func,
     ]),
+    getFieldProps: PropTypes.func,
     renderField: PropTypes.func,
     children: PropTypes.func,
 };
@@ -32,12 +34,21 @@ const defaultProps = {
     value: null,
     onChange: null,
     locale: null,
-    locales: ['en'],
+    locales: null,
     className: 'form-group-locale',
     FieldComponent: null,
+    getFieldProps: null,
     renderField: null,
     children: null,
 };
+
+const contextTypes = {
+    definition: PanneauPropTypes.definition,
+};
+
+const defaultLocales = [
+    'en',
+];
 
 class LocaleField extends Component {
     constructor(props) {
@@ -48,8 +59,8 @@ class LocaleField extends Component {
         this.renderLocaleField = this.renderLocaleField.bind(this);
         this.renderLocaleButton = this.renderLocaleButton.bind(this);
 
-        const firstLocale = props.locales !== null && props.locales.length ?
-            props.locales[0] : null;
+        const locales = this.getLocales();
+        const firstLocale = get(locales, '0', null);
         this.state = {
             locale: props.locale || firstLocale,
         };
@@ -74,6 +85,15 @@ class LocaleField extends Component {
         }
     }
 
+    getLocales() {
+        const { locales } = this.props;
+        if (locales !== null) {
+            return locales;
+        }
+        const { definition } = this.context || {};
+        return get(definition, 'locales', LocaleField.defaultLocales);
+    }
+
     renderLocaleField(locale, index) {
         const key = `input_${this.props.name.replace(/[^a-z0-9-]+/gi, '-')}_${locale}`;
         const style = {
@@ -90,6 +110,7 @@ class LocaleField extends Component {
             renderField,
             children,
             FieldComponent,
+            getFieldProps,
             ...props
         } = this.props;
 
@@ -102,17 +123,21 @@ class LocaleField extends Component {
             name: fieldName,
             value: fieldValue,
         };
+        const customProps = getFieldProps !== null ? getFieldProps(locale, fieldProps) : null;
+        const finalProps = {
+            ...fieldProps,
+            ...customProps,
+        };
         const renderFieldMethod = renderField || children || null;
-
         return (
             <div key={key} className="form-group-locale-field" style={style}>
                 { renderFieldMethod !== null ? renderFieldMethod(
                     locale,
-                    fieldProps,
+                    finalProps,
                     FieldComponent,
                     index,
                 ) : (
-                    <FieldComponent {...fieldProps} />
+                    <FieldComponent {...finalProps} />
                 ) }
             </div>
         );
@@ -143,12 +168,12 @@ class LocaleField extends Component {
 
     render() {
         const {
-            locales,
             label,
             className,
             ...props
         } = this.props;
 
+        const locales = this.getLocales();
         const fields = locales.map(this.renderLocaleField);
         const buttons = locales.map(this.renderLocaleButton);
         const buttonsClassName = classNames({
@@ -183,7 +208,9 @@ class LocaleField extends Component {
     }
 }
 
+LocaleField.defaultLocales = defaultLocales;
 LocaleField.propTypes = propTypes;
 LocaleField.defaultProps = defaultProps;
+LocaleField.contextTypes = contextTypes;
 
 export default LocaleField;
