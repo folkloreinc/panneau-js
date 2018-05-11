@@ -19,6 +19,7 @@ import Media, {
     Video,
     Videos,
 } from '@panneau/field-media';
+import Blocks from '@panneau/field-blocks';
 
 const fieldsCollection = new ComponentsCollection({
     Text,
@@ -45,6 +46,7 @@ const fieldsCollection = new ComponentsCollection({
     Videos,
     Item,
     Autosuggest,
+    Blocks,
 });
 
 export default fieldsCollection;

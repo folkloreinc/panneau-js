@@ -5,8 +5,8 @@ import classNames from 'classnames';
 import isObject from 'lodash/isObject';
 import { arrayMove } from 'react-sortable-hoc';
 import { FormGroup, FieldsGroup, AddButton, ButtonGroup } from '@panneau/field';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { defineMessages } from 'react-intl';
+import { getJSON, PropTypes as PanneauPropTypes } from '@panneau/core';
+import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 
 import SortableHandle from './SortableHandle';
 import SortableList from './SortableList';
@@ -24,9 +24,23 @@ const messages = defineMessages({
         description: 'The label of the "add" button with type in items field',
         defaultMessage: 'Add {type}',
     },
+    title: {
+        id: 'fields.items.title',
+        description: 'The title of each item',
+        defaultMessage: 'Item #{index}',
+    },
+    titleWithLabel: {
+        id: 'fields.items.title_with_label',
+        description: 'The title of each item with a label',
+        defaultMessage: 'Item #{index} - {label}',
+    },
 });
 
 const propTypes = {
+    intl: PropTypes.shape({
+        formatMessage: PropTypes.func.isRequired,
+    }).isRequired,
+
     name: PropTypes.string,
     value: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     label: PropTypes.string,
@@ -34,20 +48,26 @@ const propTypes = {
 
     types: PropTypes.arrayOf(PropTypes.shape({
         type: PropTypes.string,
-        fields: PanneauPropTypes.fields,
+        name: PropTypes.string,
+        id: PropTypes.string,
+        fields: PanneauPropTypes.fields.isRequired,
     })),
     fields: PanneauPropTypes.fields,
+    typesEndpoint: PropTypes.string,
+    fieldsEndpoint: PropTypes.string,
 
     collapsible: PropTypes.bool,
     collapsed: PropTypes.bool,
     itemsCollapsible: PropTypes.bool,
     topElement: PropTypes.bool,
     sortable: PropTypes.bool,
+    itemTitle: PanneauPropTypes.message,
+    itemTitleWithLabel: PanneauPropTypes.message,
 
     addButtonLabelPrefix: PropTypes.string, // @NOTE: Backward compatibility, remove in next minor
     addButtonLabel: PanneauPropTypes.message,
     addWithTypeButtonLabel: PanneauPropTypes.message,
-    addButtonTypeLabel: PropTypes.string,
+    addButtonTypeLabel: PanneauPropTypes.message,
     addButtonLarge: PropTypes.bool,
 
     withoutPanel: PropTypes.bool,
@@ -78,6 +98,8 @@ const defaultProps = {
     value: [],
     types: null,
     fields: null,
+    typesEndpoint: null,
+    fieldsEndpoint: null,
     helpText: null,
 
     collapsible: false,
@@ -85,6 +107,8 @@ const defaultProps = {
     itemsCollapsible: true,
     topElement: false,
     sortable: true,
+    itemTitle: messages.title,
+    itemTitleWithLabel: messages.titleWithLabel,
 
     withoutPanel: false,
     withoutHeader: false,
@@ -118,13 +142,27 @@ class ItemsField extends Component {
         super(props);
 
         this.renderItem = this.renderItem.bind(this);
+        this.onTypesLoaded = this.onTypesLoaded.bind(this);
+        this.onFieldsLoaded = this.onFieldsLoaded.bind(this);
         this.onClickAdd = this.onClickAdd.bind(this);
         this.onClickRemove = this.onClickRemove.bind(this);
         this.onSortEnd = this.onSortEnd.bind(this);
 
         this.state = {
+            types: props.types,
+            fields: props.fields,
             collapsedItems: (props.value || []).map(() => true),
         };
+    }
+
+    componentDidMount() {
+        const { typesEndpoint, fieldsEndpoint } = this.props;
+        const { types, fields } = this.state;
+        if (types === null && typesEndpoint !== null) {
+            this.loadTypes();
+        } else if (fields === null && fieldsEndpoint !== null) {
+            this.loadFields();
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -142,6 +180,43 @@ class ItemsField extends Component {
                 });
             }
         }
+
+        const typesChanged = nextProps.types !== this.props.types;
+        if (typesChanged) {
+            this.setState({
+                types: nextProps.types,
+            });
+        }
+
+        const fieldsChanged = nextProps.fields !== this.props.fields;
+        if (fieldsChanged) {
+            this.setState({
+                fields: nextProps.fields,
+            });
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const { typesEndpoint, fieldsEndpoint } = this.props;
+        const typesChanged = prevState.types !== this.state.types;
+        const fieldsChanged = prevState.fields !== this.state.fields;
+        if (typesChanged && this.state.types === null && typesEndpoint !== null) {
+            this.loadTypes();
+        } else if (fieldsChanged && this.state.fields === null && fieldsEndpoint !== null) {
+            this.loadFields();
+        }
+    }
+
+    onTypesLoaded(types) {
+        this.setState({
+            types,
+        });
+    }
+
+    onFieldsLoaded(fields) {
+        this.setState({
+            fields,
+        });
     }
 
     onClickAdd(e, it) {
@@ -194,15 +269,26 @@ class ItemsField extends Component {
     }
 
     getItemTitle(it, index) {
+        const { itemTitle, itemTitleWithLabel } = this.props;
+        const { types } = this.state;
+        // @NOTE: For backward compatibility. `id` should be used in the future
+        const foundType =
+            types !== null
+                ? types.find(item => (item.type || item.name || item.id || null) === it.type)
+                : null;
         if (this.props.getItemTitle) {
-            return this.props.getItemTitle(it, index);
+            return this.props.getItemTitle(it, index, foundType);
         }
-        const { types } = this.props;
-        const foundItem = types ? types.find(item => item.name === it.type) : null;
-        if (foundItem) {
-            return `#${index + 1} - ${foundItem.label}`;
-        }
-        return `Item #${index + 1}`;
+        const label = foundType !== null ? foundType.label : null;
+        return (
+            <FormattedMessage
+                {...(label !== null ? itemTitleWithLabel : itemTitle)}
+                values={{
+                    index: (index + 1),
+                    label,
+                }}
+            />
+        );
     }
 
     getItemProps(it, index, props) {
@@ -210,6 +296,20 @@ class ItemsField extends Component {
             return this.props.getItemProps(it, index, props);
         }
         return {};
+    }
+
+    loadTypes() {
+        const { typesEndpoint } = this.props;
+        getJSON(typesEndpoint, {
+            credentials: 'include',
+        }).then(this.onTypesLoaded);
+    }
+
+    loadFields() {
+        const { fieldsEndpoint } = this.props;
+        getJSON(fieldsEndpoint, {
+            credentials: 'include',
+        }).then(this.onFieldsLoaded);
     }
 
     addValue(it) {
@@ -330,9 +430,8 @@ class ItemsField extends Component {
     }
 
     renderItemField(it, index, collapsed) {
-        const {
-            value, types, fields, getItemField,
-        } = this.props;
+        const { value, getItemField } = this.props;
+        const { types, fields } = this.state;
 
         const itemValue = value[index] || null;
         const type =
@@ -381,7 +480,11 @@ class ItemsField extends Component {
 
     renderItem(it, index) {
         const {
-            withoutHeader, withoutPanel, withoutBorder, itemsCollapsible, sortable,
+            withoutHeader,
+            withoutPanel,
+            withoutBorder,
+            itemsCollapsible,
+            sortable,
         } = this.props;
         const { collapsedItems } = this.state;
 
@@ -442,14 +545,15 @@ class ItemsField extends Component {
 
     renderAddButton() {
         const {
-            types,
             addButtonLabel,
             addWithTypeButtonLabel,
             addButtonLabelPrefix,
             addButtonLarge,
             addButtonTypeLabel,
             topElement,
+            intl,
         } = this.props;
+        const { types } = this.state;
 
         const hasType = types !== null;
         const dropdownOptions = hasType
@@ -485,7 +589,9 @@ class ItemsField extends Component {
                         isObject(label)
                             ? {
                                 values: {
-                                    type: addButtonTypeLabel,
+                                    type: isObject(addButtonTypeLabel)
+                                        ? intl.formatMessage(addButtonTypeLabel)
+                                        : addButtonTypeLabel,
                                 },
                                 ...label,
                             }
@@ -559,4 +665,4 @@ class ItemsField extends Component {
 ItemsField.propTypes = propTypes;
 ItemsField.defaultProps = defaultProps;
 
-export default ItemsField;
+export default injectIntl(ItemsField);

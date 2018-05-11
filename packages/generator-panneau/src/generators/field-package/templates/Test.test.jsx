@@ -16,10 +16,10 @@ test('match snapshot', () => {
     expect(tree).toMatchSnapshot();
 });
 
-test('value is in <input />', () => {
-    const field = shallow(<<%= componentName %> value="test" />);
-    expect(field.find('input').prop('value')).toEqual('test');
-
-    const nullField = shallow(<<%= componentName %> value={null} />);
-    expect(nullField.find('input').prop('value')).toEqual('');
-});
+// test('value is in <input />', () => {
+//     const field = shallow(<<%= componentName %> value="test" />);
+//     expect(field.find('input').prop('value')).toEqual('test');
+//
+//     const nullField = shallow(<<%= componentName %> value={null} />);
+//     expect(nullField.find('input').prop('value')).toEqual('');
+// });

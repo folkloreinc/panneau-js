@@ -91,7 +91,7 @@ class LocaleField extends Component {
             return locales;
         }
         const { definition } = this.context || {};
-        return get(definition, 'locales', LocaleField.defaultLocales);
+        return get(definition || null, 'locales', LocaleField.defaultLocales);
     }
 
     renderLocaleField(locale, index) {

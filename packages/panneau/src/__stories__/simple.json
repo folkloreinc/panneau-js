@@ -147,6 +147,11 @@
                             "name": "title",
                             "type": "text",
                             "label": "Title"
+                        },
+                        {
+                            "name": "blocks",
+                            "type": "blocks",
+                            "label": "Blocks"
                         }
                     ],
                     "base": [
@@ -159,6 +164,11 @@
                             "name": "description",
                             "type": "text",
                             "label": "Description"
+                        },
+                        {
+                            "name": "blocks",
+                            "type": "blocks",
+                            "label": "Blocks"
                         }
                     ]
                 }
@@ -188,6 +198,20 @@
                     }
                 ]
             }
+        }
+    ],
+
+    "blocks": [
+        {
+            "id": "block",
+            "label": "Block",
+            "fields": [
+                {
+                    "name": "text",
+                    "type": "text",
+                    "label": "Text"
+                }
+            ]
         }
     ]
 }

@@ -54,6 +54,7 @@
         "@panneau/core": "^0.3.99",
         "@panneau/field": "^0.3.108",
         "@panneau/field-autosuggest": "^0.3.111",
+        "@panneau/field-blocks": "^0.3.111",
         "@panneau/field-code": "^0.3.108",
         "@panneau/field-color": "^0.3.111",
         "@panneau/field-date": "^0.3.111",
