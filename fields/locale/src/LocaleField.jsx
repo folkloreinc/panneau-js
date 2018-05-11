@@ -66,10 +66,10 @@ class LocaleField extends Component {
         };
     }
 
-    onLocaleClick(e) {
+    onLocaleClick(e, locale) {
         e.preventDefault();
         this.setState({
-            locale: e.locale,
+            locale,
         });
     }
 
@@ -154,10 +154,7 @@ class LocaleField extends Component {
             'btn-default': hasValue,
         });
 
-        const onClick = (e) => {
-            e.locale = locale;
-            this.onLocaleClick(e);
-        };
+        const onClick = e => this.onLocaleClick(e, locale);
 
         return (
             <button key={key} type="button" className={className} onClick={onClick}>
