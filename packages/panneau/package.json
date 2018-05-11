@@ -1,6 +1,6 @@
 {
     "name": "panneau",
-    "version": "0.3.114",
+    "version": "0.3.115",
     "description": "Framework to build dashboard and administration panels",
     "keywords": [
         "react",
@@ -55,8 +55,8 @@
     "dependencies": {
         "@panneau/core": "^0.3.99",
         "@panneau/field": "^0.3.108",
-        "@panneau/fields": "^0.3.114",
-        "@panneau/forms": "^0.3.114",
+        "@panneau/fields": "^0.3.115",
+        "@panneau/forms": "^0.3.115",
         "@panneau/layouts": "^0.3.108",
         "@panneau/lists": "^0.3.99",
         "@panneau/modals": "^0.3.99",
@@ -69,7 +69,7 @@
         "react-intl": "^2.4.0"
     },
     "devDependencies": {
-        "@panneau/field-locale": "^0.3.112",
+        "@panneau/field-locale": "^0.3.115",
         "@panneau/form": "^0.3.99",
         "@panneau/layout": "^0.3.108",
         "@panneau/list": "^0.3.99",
