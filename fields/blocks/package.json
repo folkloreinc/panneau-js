@@ -1,6 +1,6 @@
 {
   "name": "@panneau/field-blocks",
-  "version": "0.3.111",
+  "version": "0.3.112",
   "description": "Blocks fields for Panneau",
   "keywords": [
     "react",
@@ -53,7 +53,7 @@
   "dependencies": {
     "@panneau/core": "^0.3.7",
     "@panneau/field": "^0.3.5",
-    "@panneau/field-items": "^0.3.111",
+    "@panneau/field-items": "^0.3.112",
     "babel-runtime": "^6.26.0",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
