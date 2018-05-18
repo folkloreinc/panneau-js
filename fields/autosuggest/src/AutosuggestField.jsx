@@ -4,13 +4,13 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 import Autosuggest from 'react-autosuggest';
 import { FormGroup } from '@panneau/field';
-import { getJSON } from '@panneau/core';
+import { getJSON, PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import styles from './styles.scss';
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.string]),
     placeholder: PropTypes.string,
     suggestions: PropTypes.array, // eslint-disable-line react/forbid-prop-types

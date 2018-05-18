@@ -17,6 +17,7 @@ import classNames from 'classnames';
 import { FormGroup } from '@panneau/field';
 import Text from '@panneau/field-text';
 import Popover from '@panneau/modal-popover';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import styles from './styles.scss';
 
@@ -41,7 +42,7 @@ const components = {
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     pickerType: PropTypes.oneOf([
         'block', 'chrome', 'circle', 'compact',
         'github', 'twitter', 'sketch', 'slider',

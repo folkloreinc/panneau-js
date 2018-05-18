@@ -43,7 +43,7 @@ const propTypes = {
 
     name: PropTypes.string,
     value: PropTypes.array, // eslint-disable-line react/forbid-prop-types
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     helpText: PropTypes.string,
 
     types: PropTypes.arrayOf(PropTypes.shape({

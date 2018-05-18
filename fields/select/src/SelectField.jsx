@@ -5,6 +5,7 @@ import pick from 'lodash/pick';
 import omit from 'lodash/omit';
 import classNames from 'classnames';
 import { FormGroup } from '@panneau/field';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import './vendor.global.scss';
 import styles from './styles.scss';
 
@@ -17,7 +18,7 @@ const valuePropTypes = PropTypes.oneOfType([
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     value: valuePropTypes,
     options: PropTypes.arrayOf(PropTypes.oneOfType([
         PropTypes.string,

@@ -23,9 +23,9 @@ const messages = defineMessages({
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
-    urlLabel: PanneauPropTypes.message,
-    labelLabel: PanneauPropTypes.message,
+    label: PanneauPropTypes.label,
+    urlLabel: PanneauPropTypes.label,
+    labelLabel: PanneauPropTypes.label,
     schemes: PropTypes.arrayOf(PropTypes.string),
     value: PropTypes.shape({
         url: PropTypes.string,

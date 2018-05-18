@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 import { FormGroup } from '@panneau/field';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import styles from './styles.scss';
 
@@ -17,7 +18,7 @@ const propTypes = {
     language: PropTypes.string,
     theme: PropTypes.string,
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     value: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.object,

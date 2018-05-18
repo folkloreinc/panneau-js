@@ -38,13 +38,20 @@ const resource = PropTypes.shape({
     }),
 });
 
+const intlMessage = PropTypes.shape({
+    id: PropTypes.string,
+    description: PropTypes.string,
+    defaultMessage: PropTypes.string,
+});
+
 const message = PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.shape({
-        id: PropTypes.string,
-        description: PropTypes.string,
-        defaultMessage: PropTypes.string,
-    }),
+    intlMessage,
+]);
+
+const label = PropTypes.oneOfType([
+    PropTypes.node,
+    intlMessage,
 ]);
 
 const button = PropTypes.shape({
@@ -64,6 +71,8 @@ export default {
     field,
     fields,
     button,
+    intlMessage,
     message,
+    label,
     buttons,
 };

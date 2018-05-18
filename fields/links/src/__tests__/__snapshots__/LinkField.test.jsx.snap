@@ -29,7 +29,7 @@ exports[`match snapshot 1`] = `
         className="col-sm-8"
       >
         <div
-          className="form-group form-group-text"
+          className="form-group form-group-url"
         >
           <div
             className="form-group-label"

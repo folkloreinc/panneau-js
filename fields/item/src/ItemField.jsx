@@ -5,12 +5,13 @@ import get from 'lodash/get';
 import isObject from 'lodash/isObject';
 import { FormGroup, Card } from '@panneau/field';
 import AutosuggestField from '@panneau/field-autosuggest';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import styles from './styles.scss';
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     placeholder: PropTypes.string,
     suggestions: PropTypes.arrayOf(PropTypes.object),
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.string]),

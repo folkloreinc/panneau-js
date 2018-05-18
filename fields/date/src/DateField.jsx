@@ -5,12 +5,13 @@ import 'react-dates/initialize';
 import { FormGroup } from '@panneau/field';
 import TextField from '@panneau/field-text';
 import Popover from '@panneau/modal-popover';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import styles from './styles.scss';
 import './vendor.global.scss';
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     startLabel: PropTypes.string,
     endLabel: PropTypes.string,
     startPlaceholder: PropTypes.string,

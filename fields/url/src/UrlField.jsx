@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormGroup } from '@panneau/field';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import TextField from '@panneau/field-text';
 
 import Url from './Url';
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     value: PropTypes.string,
     schemes: PropTypes.arrayOf(PropTypes.string),
     onChange: PropTypes.func,

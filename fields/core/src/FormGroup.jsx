@@ -13,18 +13,9 @@ const propTypes = {
 
     className: PropTypes.string,
     name: PropTypes.string,
-    labelPrefix: PropTypes.oneOfType([
-        PropTypes.node,
-        PanneauPropTypes.message,
-    ]),
-    label: PropTypes.oneOfType([
-        PropTypes.node,
-        PanneauPropTypes.message,
-    ]),
-    labelSuffix: PropTypes.oneOfType([
-        PropTypes.node,
-        PanneauPropTypes.message,
-    ]),
+    labelPrefix: PanneauPropTypes.label,
+    label: PanneauPropTypes.label,
+    labelSuffix: PanneauPropTypes.label,
     errors: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.array,

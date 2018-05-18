@@ -51,6 +51,7 @@
         "start": "npm run storybook"
     },
     "dependencies": {
+        "@panneau/core": "^0.3.99",
         "@panneau/field": "^0.3.116",
         "@panneau/field-text": "^0.3.116",
         "@panneau/modal-popover": "^0.3.94",

@@ -11,7 +11,7 @@ import styles from './styles.scss';
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     helpText: PropTypes.string,
     value: PropTypes.object, // eslint-disable-line
     onChange: PropTypes.func,

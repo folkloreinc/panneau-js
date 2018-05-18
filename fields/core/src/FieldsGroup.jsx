@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import isArray from 'lodash/isArray';
-import { ComponentsCollection, withFieldsCollection } from '@panneau/core';
+import { ComponentsCollection, withFieldsCollection, PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import FormGroup from './FormGroup';
 
@@ -12,7 +12,7 @@ import styles from './styles/fields-group.scss';
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     value: PropTypes.oneOfType([PropTypes.object]),
     errors: PropTypes.oneOfType([
         PropTypes.objectOf(PropTypes.string),

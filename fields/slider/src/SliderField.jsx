@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isArray from 'lodash/isArray';
 import { FormGroup } from '@panneau/field';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import './vendor.global.scss';
 import styles from './styles.scss';
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     value: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number, // Numbers are simple and tested
