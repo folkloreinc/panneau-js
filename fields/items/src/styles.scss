@@ -84,6 +84,9 @@
             vertical-align: top;
 
             .actions {
+                position: relative;
+                top: -1px;
+                right: -1px;
                 margin-left: 5px;
             }
         }

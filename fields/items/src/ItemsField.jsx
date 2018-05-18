@@ -55,6 +55,10 @@ const propTypes = {
     fields: PanneauPropTypes.fields,
     typesEndpoint: PropTypes.string,
     fieldsEndpoint: PropTypes.string,
+    FieldComponent: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.object,
+    ]),
 
     collapsible: PropTypes.bool,
     collapsed: PropTypes.bool,
@@ -80,12 +84,12 @@ const propTypes = {
     confirmRemove: PropTypes.bool,
     confirmRemoveMessage: PropTypes.string,
 
+    renderItemField: PropTypes.func,
     getItemProps: PropTypes.func,
     getNewItemValue: PropTypes.func,
     getItemTitle: PropTypes.func,
     getItemBefore: PropTypes.func,
     getItemBody: PropTypes.func,
-    getItemField: PropTypes.func,
     getItemValue: PropTypes.func,
 
     onChange: PropTypes.func,
@@ -100,6 +104,7 @@ const defaultProps = {
     fields: null,
     typesEndpoint: null,
     fieldsEndpoint: null,
+    FieldComponent: null,
     helpText: null,
 
     collapsible: false,
@@ -125,12 +130,12 @@ const defaultProps = {
     confirmRemove: true,
     confirmRemoveMessage: 'Êtes-vous certain de vouloir enlever cet élément?',
 
+    renderItemField: null,
     getItemProps: null,
     getNewItemValue: null,
     getItemTitle: null,
     getItemBefore: null,
     getItemBody: null,
-    getItemField: null,
     getItemValue: null,
 
     onChange: null,
@@ -430,7 +435,7 @@ class ItemsField extends Component {
     }
 
     renderItemField(it, index, collapsed) {
-        const { value, getItemField } = this.props;
+        const { value, renderItemField, FieldComponent } = this.props;
         const { types, fields } = this.state;
 
         const itemValue = value[index] || null;
@@ -440,12 +445,21 @@ class ItemsField extends Component {
                 : null;
         const typeFields = type !== null ? type.fields || fields : fields;
 
-        return getItemField !== null ? (
-            getItemField(it, index, {
+        if (renderItemField !== null) {
+            return renderItemField(it, index, {
                 collapsed,
                 value: itemValue,
-                fields: typeFields,
-            })
+                fields: typeFields || [],
+                onChange: val => this.onItemChange(index, val),
+            });
+        }
+
+        return FieldComponent !== null ? (
+            <FieldComponent
+                value={itemValue}
+                fields={typeFields || []}
+                onChange={val => this.onItemChange(index, val)}
+            />
         ) : (
             <FieldsGroup
                 value={itemValue}

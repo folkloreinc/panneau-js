@@ -3,16 +3,28 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
 import ReactMarkdown from 'react-markdown';
+import { FormattedMessage } from 'react-intl';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 const propTypes = {
     children: PropTypes.node,
 
     className: PropTypes.string,
     name: PropTypes.string,
-    labelPrefix: PropTypes.node,
-    label: PropTypes.node,
-    labelSuffix: PropTypes.node,
+    labelPrefix: PropTypes.oneOfType([
+        PropTypes.node,
+        PanneauPropTypes.message,
+    ]),
+    label: PropTypes.oneOfType([
+        PropTypes.node,
+        PanneauPropTypes.message,
+    ]),
+    labelSuffix: PropTypes.oneOfType([
+        PropTypes.node,
+        PanneauPropTypes.message,
+    ]),
     errors: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.array,
@@ -121,11 +133,17 @@ class FormGroup extends Component {
             </span>
         );
 
-        const link = collapsible ? (
-            <button type="button" className="no-btn-style no-link" onClick={this.onCollapseChange}>{caret} {label}</button>
+        const labelNode = isObject(label) && typeof label.id !== 'undefined' ? (
+            <FormattedMessage {...label} />
         ) : label;
 
-        if (link === null) {
+        const link = collapsible ? (
+            <button type="button" className="no-btn-style no-link" onClick={this.onCollapseChange}>
+                {caret} {labelNode}
+            </button>
+        ) : labelNode;
+
+        if (link === null && labelPrefix === null && labelSuffix == null) {
             return null;
         }
 
@@ -141,13 +159,17 @@ class FormGroup extends Component {
 
         return (
             <div className={labelContainerClasses}>
-                { labelPrefix }
+                { isObject(labelPrefix) && typeof labelPrefix.id !== 'undefined' ? (
+                    <FormattedMessage {...labelPrefix} />
+                ) : labelPrefix }
                 { large ? (
                     <h4 className="control-label">{link}</h4>
                 ) : (
                     <label htmlFor={name} className={labelClasses}>{link}</label>
                 ) }
-                { labelSuffix }
+                { isObject(labelSuffix) && typeof labelSuffix.id !== 'undefined' ? (
+                    <FormattedMessage {...labelSuffix} />
+                ) : labelSuffix }
             </div>
         );
     }

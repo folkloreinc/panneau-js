@@ -6,6 +6,7 @@ import isString from 'lodash/isString';
 import isArray from 'lodash/isArray';
 import pick from 'lodash/pick';
 import { FormGroup } from '@panneau/field';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 /**
  *  Class: TextField
@@ -18,7 +19,10 @@ const propTypes = {
         'text', 'email', 'password', 'url', 'number', 'textarea', 'editor',
     ]),
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PropTypes.oneOfType([
+        PropTypes.node,
+        PanneauPropTypes.message,
+    ]),
     placeholder: PropTypes.string,
     value: PropTypes.oneOfType([
         PropTypes.string,
