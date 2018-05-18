@@ -11,6 +11,7 @@ import Item from '@panneau/field-item';
 import Autosuggest from '@panneau/field-autosuggest';
 import Blocks from '@panneau/field-blocks';
 import Link, { Links, LinkLocale, LinksLocale } from '@panneau/field-links';
+import Url, { UrlLocale } from '@panneau/field-url';
 import Media, {
     Audio,
     Audios,
@@ -52,6 +53,8 @@ const fieldsCollection = new ComponentsCollection({
     Links,
     LinkLocale,
     LinksLocale,
+    Url,
+    UrlLocale,
 });
 
 export default fieldsCollection;

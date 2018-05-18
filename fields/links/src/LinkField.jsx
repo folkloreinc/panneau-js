@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
 import { FormGroup } from '@panneau/field';
 import TextField from '@panneau/field-text';
+import UrlField from '@panneau/field-url';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-
-import Url from './Url';
 
 import styles from './styles.scss';
 
@@ -38,7 +37,7 @@ const propTypes = {
 const defaultProps = {
     name: null,
     label: null,
-    schemes: ['http://', 'https://', 'ftp://'],
+    schemes: undefined,
     urlLabel: messages.urlLabel,
     labelLabel: messages.labelLabel,
     value: null,
@@ -51,35 +50,13 @@ class LinkField extends Component {
 
         this.onUrlChange = this.onFieldChange.bind(this, 'url');
         this.onLabelChange = this.onFieldChange.bind(this, 'label');
-
-        this.url = new Url({
-            schemes: props.schemes,
-        });
-
-        this.state = {
-            scheme: this.url.getScheme(props.value !== null ? props.value.url || null : null),
-        };
-    }
-
-    componentWillReceiveProps(nextProps) {
-        const valueChanged = nextProps.value !== this.props.value;
-        if (valueChanged) {
-            const { value } = nextProps;
-            this.setState({
-                scheme: this.url.getScheme(value !== null ? value.url || null : null),
-            });
-        }
     }
 
     onFieldChange(key, value) {
         const { value: currentValue, onChange } = this.props;
-        const { scheme } = this.state;
         const newValue = {
             ...currentValue,
-            [key]:
-                key === 'url' && value !== null && value.length > 0
-                    ? this.url.withScheme(value, scheme)
-                    : value,
+            [key]: value,
         };
         if (onChange !== null) {
             onChange(newValue);
@@ -90,19 +67,18 @@ class LinkField extends Component {
         const {
             label, urlLabel, labelLabel, name, value, schemes, ...other
         } = this.props;
-        const { scheme } = this.state;
 
-        const urlValue = this.url.removeScheme(value !== null ? value.url || null : null);
+        const urlValue = value !== null ? value.url || null : null;
         const labelValue = value !== null ? value.label || null : null;
 
         return (
             <FormGroup className={styles.container} name={name} label={label} {...other}>
                 <div className="row">
                     <div className="col-sm-8">
-                        <TextField
-                            prefix={scheme}
+                        <UrlField
                             value={urlValue}
                             label={urlLabel}
+                            schemes={schemes}
                             onChange={this.onUrlChange}
                         />
                     </div>
