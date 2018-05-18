@@ -60,6 +60,7 @@
         "@panneau/field-date": "^0.3.115",
         "@panneau/field-item": "^0.3.111",
         "@panneau/field-items": "^0.3.113",
+        "@panneau/field-links": "^0.3.112",
         "@panneau/field-media": "^0.3.113",
         "@panneau/field-select": "^0.3.108",
         "@panneau/field-slider": "^0.3.108",

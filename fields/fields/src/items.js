@@ -9,6 +9,8 @@ import Toggle from '@panneau/field-toggle';
 import Items from '@panneau/field-items';
 import Item from '@panneau/field-item';
 import Autosuggest from '@panneau/field-autosuggest';
+import Blocks from '@panneau/field-blocks';
+import Link, { Links, LinkLocale, LinksLocale } from '@panneau/field-links';
 import Media, {
     Audio,
     Audios,
@@ -19,7 +21,6 @@ import Media, {
     Video,
     Videos,
 } from '@panneau/field-media';
-import Blocks from '@panneau/field-blocks';
 
 const fieldsCollection = new ComponentsCollection({
     Text,
@@ -47,6 +48,10 @@ const fieldsCollection = new ComponentsCollection({
     Item,
     Autosuggest,
     Blocks,
+    Link,
+    Links,
+    LinkLocale,
+    LinksLocale,
 });
 
 export default fieldsCollection;
