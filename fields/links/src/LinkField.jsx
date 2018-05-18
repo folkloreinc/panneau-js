@@ -5,6 +5,8 @@ import { FormGroup } from '@panneau/field';
 import TextField from '@panneau/field-text';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
+import Url from './Url';
+
 import styles from './styles.scss';
 
 const messages = defineMessages({
@@ -44,26 +46,27 @@ const defaultProps = {
 };
 
 class LinkField extends Component {
-    static parse(value) {
-        return value;
-    }
-
     constructor(props) {
         super(props);
 
         this.onUrlChange = this.onFieldChange.bind(this, 'url');
         this.onLabelChange = this.onFieldChange.bind(this, 'label');
 
+        this.url = new Url({
+            schemes: props.schemes,
+        });
+
         this.state = {
-            scheme: this.getScheme(props.value),
+            scheme: this.url.getScheme(props.value !== null ? props.value.url || null : null),
         };
     }
 
     componentWillReceiveProps(nextProps) {
         const valueChanged = nextProps.value !== this.props.value;
         if (valueChanged) {
+            const { value } = nextProps;
             this.setState({
-                scheme: this.getScheme(nextProps.value),
+                scheme: this.url.getScheme(value !== null ? value.url || null : null),
             });
         }
     }
@@ -73,43 +76,24 @@ class LinkField extends Component {
         const { scheme } = this.state;
         const newValue = {
             ...currentValue,
-            [key]: key === 'url' && value !== null && value.length > 0 ? this.withScheme(value, scheme) : value,
+            [key]:
+                key === 'url' && value !== null && value.length > 0
+                    ? this.url.withScheme(value, scheme)
+                    : value,
         };
         if (onChange !== null) {
             onChange(newValue);
         }
     }
 
-    getSchemesPattern() {
-        const { schemes } = this.props;
-        return new RegExp(`^(${schemes.join('|')})`, 'i');
-    }
-
-    getScheme(value) {
-        const { schemes } = this.props;
-        const schemesPattern = this.getSchemesPattern();
-        const urlValue = value !== null ? value.url || null : null;
-        const match = urlValue !== null ? urlValue.match(schemesPattern) : null;
-        return match !== null && match[1].length !== urlValue.length
-            ? match[1].toLowerCase()
-            : schemes[0];
-    }
-
-    withScheme(value, prefix) {
-        const schemesPattern = this.getSchemesPattern();
-        return value !== null && !value.match(schemesPattern) ? `${prefix}${value}` : value;
-    }
-
     render() {
         const {
-            label, urlLabel, labelLabel, name, value, ...other
+            label, urlLabel, labelLabel, name, value, schemes, ...other
         } = this.props;
         const { scheme } = this.state;
 
-        const urlValue = value !== null ? value.url || null : null;
+        const urlValue = this.url.removeScheme(value !== null ? value.url || null : null);
         const labelValue = value !== null ? value.label || null : null;
-        const schemesPattern = this.getSchemesPattern();
-        const url = urlValue !== null ? urlValue.replace(schemesPattern, '') : null;
 
         return (
             <FormGroup className={styles.container} name={name} label={label} {...other}>
@@ -117,7 +101,7 @@ class LinkField extends Component {
                     <div className="col-sm-8">
                         <TextField
                             prefix={scheme}
-                            value={url}
+                            value={urlValue}
                             label={urlLabel}
                             onChange={this.onUrlChange}
                         />
