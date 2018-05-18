@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "0.3.116",
+    "version": "0.3.117",
     "description": "Fields group for Panneau",
     "keywords": [
         "react",
@@ -60,7 +60,7 @@
         "@panneau/field-date": "^0.3.116",
         "@panneau/field-item": "^0.3.116",
         "@panneau/field-items": "^0.3.116",
-        "@panneau/field-links": "^0.3.116",
+        "@panneau/field-links": "^0.3.117",
         "@panneau/field-media": "^0.3.116",
         "@panneau/field-select": "^0.3.116",
         "@panneau/field-slider": "^0.3.116",
