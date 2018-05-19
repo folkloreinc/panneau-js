@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isObject from 'lodash/isObject';
+import isArray from 'lodash/isArray';
 import { arrayMove } from 'react-sortable-hoc';
 import { FormGroup, FieldsGroup, AddButton, ButtonGroup } from '@panneau/field';
 import { getJSON, PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -220,7 +221,7 @@ class ItemsField extends Component {
 
     onFieldsLoaded(fields) {
         this.setState({
-            fields,
+            fields: !isArray(fields) ? fields.fields : fields,
         });
     }
 
