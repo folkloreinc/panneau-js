@@ -2,17 +2,20 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isObject from 'lodash/isObject';
 import Autosuggest from 'react-autosuggest';
+import { injectIntl } from 'react-intl';
 import { FormGroup } from '@panneau/field';
 import { getJSON, PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import styles from './styles.scss';
 
 const propTypes = {
+    intl: PanneauPropTypes.intl.isRequired,
     name: PropTypes.string,
     label: PanneauPropTypes.label,
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.string]),
-    placeholder: PropTypes.string,
+    placeholder: PanneauPropTypes.message,
     suggestions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     suggestionsEndpoint: PropTypes.string,
     suggestionValuePath: PropTypes.string,
@@ -201,12 +204,15 @@ class ItemField extends Component {
     }
 
     renderInput() {
-        const { value, placeholder } = this.props;
+        const { value, placeholder, intl } = this.props;
         const { suggestions } = this.state;
+        const inputPlaceholder = placeholder || '';
         const inputProps = {
             value: value || '',
             onChange: this.onInputChange,
-            placeholder: placeholder || '',
+            placeholder: isObject(inputPlaceholder)
+                ? intl.formatMessage(inputPlaceholder)
+                : inputPlaceholder,
         };
         const theme = {
             container: classNames({
@@ -272,4 +278,4 @@ class ItemField extends Component {
 ItemField.propTypes = propTypes;
 ItemField.defaultProps = defaultProps;
 
-export default ItemField;
+export default injectIntl(ItemField);

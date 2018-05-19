@@ -62,6 +62,7 @@
         "@panneau/field-items": "^0.3.119",
         "@panneau/field-links": "^0.3.119",
         "@panneau/field-media": "^0.3.119",
+        "@panneau/field-page": "^0.3.112",
         "@panneau/field-select": "^0.3.119",
         "@panneau/field-slider": "^0.3.119",
         "@panneau/field-text": "^0.3.119",

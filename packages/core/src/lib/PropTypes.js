@@ -38,6 +38,14 @@ const resource = PropTypes.shape({
     }),
 });
 
+const urlGenerator = PropTypes.shape({
+    route: PropTypes.func.isRequired,
+});
+
+const intl = PropTypes.shape({
+    formatMessage: PropTypes.func.isRequired,
+});
+
 const intlMessage = PropTypes.shape({
     id: PropTypes.string,
     description: PropTypes.string,
@@ -71,7 +79,9 @@ export default {
     field,
     fields,
     button,
+    intl,
     intlMessage,
+    urlGenerator,
     message,
     label,
     buttons,

@@ -34,6 +34,7 @@
     "fields.media.upload_picture_label": "Select a picture file...",
     "fields.media.upload_video_label": "Select a video file...",
     "fields.media.video_add_type_label": "a video file",
+    "fields.page.placeholder": "Search for a page...",
     "forms.normal.buttons.submit": "Save",
     "list.actions.delete": "Delete",
     "list.actions.edit": "Edit",

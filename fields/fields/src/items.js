@@ -8,6 +8,7 @@ import Slider from '@panneau/field-slider';
 import Toggle from '@panneau/field-toggle';
 import Items from '@panneau/field-items';
 import Item from '@panneau/field-item';
+import Page from '@panneau/field-page';
 import Autosuggest from '@panneau/field-autosuggest';
 import Blocks from '@panneau/field-blocks';
 import Link, { Links, LinkLocale, LinksLocale } from '@panneau/field-links';
@@ -43,6 +44,7 @@ const fieldsCollection = new ComponentsCollection({
     LinkLocale,
     LinksLocale,
     Media,
+    Page,
     Password,
     Picture,
     Pictures,

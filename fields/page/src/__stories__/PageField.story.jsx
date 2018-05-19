@@ -5,29 +5,16 @@ import { IntlProvider } from 'react-intl';
 
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
-import AutosuggestField from '../AutosuggestField';
+import PageField from '../PageField';
 
-const suggestions = [
-    {
-        name: 'Item 1',
-    },
-    {
-        name: 'Item 2',
-    },
-    {
-        name: 'Item 3',
-    },
-];
-
-storiesOf('Fields/Autosuggest', module)
+storiesOf('Fields/Page', module)
     .add('simple', () => (
         <IntlProvider locale="en">
             <div>
                 <KeepValue>
-                    <AutosuggestField
+                    <PageField
                         label="Label"
                         helpText="This is an help text"
-                        suggestions={suggestions}
                         onChange={action('change')}
                     />
                 </KeepValue>

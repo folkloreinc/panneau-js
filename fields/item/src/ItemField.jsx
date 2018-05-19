@@ -12,7 +12,7 @@ import styles from './styles.scss';
 const propTypes = {
     name: PropTypes.string,
     label: PanneauPropTypes.label,
-    placeholder: PropTypes.string,
+    placeholder: PanneauPropTypes.message,
     suggestions: PropTypes.arrayOf(PropTypes.object),
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.string]),
     autosuggestProps: PropTypes.shape({
@@ -33,7 +33,7 @@ const defaultProps = {
     label: null,
     value: null,
     suggestions: null,
-    placeholder: '',
+    placeholder: null,
     autosuggestProps: null,
     cardProps: null,
     cardVertical: false,

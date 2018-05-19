@@ -1,14 +1,14 @@
 {
-  "name": "@panneau/field-autosuggest",
-  "version": "0.3.121",
-  "description": "Autosuggest fields for Panneau",
+  "name": "@panneau/field-page",
+  "version": "0.3.112",
+  "description": "Page fields for Panneau",
   "keywords": [
     "react",
     "javascript",
     "form",
     "dashboard"
   ],
-  "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/fields/autosuggest",
+  "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/fields/page",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Folkloreatelier/panneau-js.git"
@@ -46,18 +46,20 @@
     "babel:es": "BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es --ignore story.js,test.js",
     "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore story.js,test.js",
     "babel": "npm run babel:es && npm run babel:cjs",
-    "build": "npm run webpack && npm run babel",
+    "intl": "node ../../build/buildPackageTranslations",
+    "build": "npm run webpack && npm run babel && npm run intl",
     "prepare": "npm run clean && npm run build",
     "start": "npm run storybook"
   },
   "dependencies": {
-    "@panneau/core": "^0.3.119",
-    "@panneau/field": "^0.3.119",
+    "@folklore/react-app": "^0.1.15",
+    "@panneau/core": "^0.3.7",
+    "@panneau/field": "^0.3.5",
+    "@panneau/field-item": "^0.3.121",
     "babel-runtime": "^6.26.0",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0",
-    "react-autosuggest": "^9.3.4",
     "react-intl": "^2.4.0"
   },
   "devDependencies": {
