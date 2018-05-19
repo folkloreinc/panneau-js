@@ -1,6 +1,10 @@
-.formGroup {
-
+.container {
     position: relative;
+
+    .inner {
+        display: inline-block;
+        position: relative;
+    }
 
     .input {
         position: relative;
@@ -9,16 +13,8 @@
             font-size: 80%;
         }
 
-        :global(.form-group-text) {
+        :global(.form-group) {
             margin-bottom: 0;
         }
-    }
-
-    .popover {
-    }
-
-    .container {
-        display: inline-block;
-        position: relative;
     }
 }

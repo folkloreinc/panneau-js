@@ -29,6 +29,7 @@ const propTypes = {
         'daterange',
     ]),
     dateFormat: PropTypes.string,
+    pickerProps: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onChange: PropTypes.func,
 };
 
@@ -43,6 +44,7 @@ const defaultProps = {
     value: null,
     type: 'date',
     dateFormat: 'YYYY-MM-DD',
+    pickerProps: null,
     onChange: null,
 };
 
@@ -290,6 +292,7 @@ class DateField extends Component {
                                 onFocus={onStartFocus}
                                 suffix={startSuffix}
                                 suffixClassName="input-group-btn"
+                                clearable
                             />
                         </div>
                         <div className="col-xs-6">
@@ -302,6 +305,7 @@ class DateField extends Component {
                                 onFocus={onEndFocus}
                                 suffix={endSuffix}
                                 suffixClassName="input-group-btn"
+                                clearable
                             />
                         </div>
                     </div>
@@ -320,32 +324,26 @@ class DateField extends Component {
         );
 
         return (
-            <TextField
-                ref={(ref) => { this.input = ref; }}
-                value={textValue}
-                placeholder={placeholder}
-                onChange={this.onInputChange}
-                onFocus={this.onInputFocus}
-                suffix={suffix}
-                suffixClassName="input-group-btn"
-            />
+            <div className={styles.input}>
+                <TextField
+                    ref={(ref) => { this.input = ref; }}
+                    value={textValue}
+                    placeholder={placeholder}
+                    onChange={this.onInputChange}
+                    onFocus={this.onInputFocus}
+                    suffix={suffix}
+                    suffixClassName="input-group-btn"
+                    clearable
+                    inputOnly
+                />
+            </div>
         );
     }
 
     renderPopover() {
         const {
-            name,
-            label,
-            value,
             type,
-            onChange,
-            dateFormat,
-            startLabel,
-            endLabel,
-            startPlaceholder,
-            endPlaceholder,
-            placeholder,
-            ...other
+            pickerProps: customPickerProps,
         } = this.props;
         const { momentValue, focusedInput, opened } = this.state;
 
@@ -366,7 +364,6 @@ class DateField extends Component {
             focused: true,
             isFocused: opened,
             keepOpenOnDateSelect: true,
-
         };
 
         return (
@@ -380,8 +377,8 @@ class DateField extends Component {
                 noUi
             >
                 <DateComponent
-                    {...other}
                     {...pickerProps}
+                    {...customPickerProps}
                 />
             </Popover>
         );
@@ -406,12 +403,12 @@ class DateField extends Component {
         return (
             <FormGroup
                 {...other}
-                className={`form-group-date ${styles.formGroup}`}
+                className={styles.container}
                 name={name}
                 label={label}
             >
                 <div
-                    className={styles.container}
+                    className={styles.inner}
                     ref={(ref) => { this.refContainer = ref; }}
                 >
                     { this.renderInput() }
