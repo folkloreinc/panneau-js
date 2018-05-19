@@ -3,6 +3,7 @@
 .container {
     .autosuggest {
         position: relative;
+        z-index: 5;
 
         .input {
             position: relative;
