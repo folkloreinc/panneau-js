@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modals",
-    "version": "0.3.122",
+    "version": "0.3.124",
     "description": "Modals for Panneau",
     "keywords": [
         "react",
@@ -51,7 +51,7 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/core": "^0.3.122",
+        "@panneau/core": "^0.3.124",
         "@panneau/modal-popover": "^0.3.94",
         "babel-runtime": "^6.26.0",
         "hoist-non-react-statics": "^2.3.1",
