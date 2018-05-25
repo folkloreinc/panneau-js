@@ -7,6 +7,7 @@ import {
     getResponseAndDataObject,
     throwResponseError,
     throwValidationError,
+    getCSRFHeaders,
 } from './requests';
 
 class ResourceApi {
@@ -53,6 +54,7 @@ class ResourceApi {
     }
 
     callApi(action, method, id = undefined, data = undefined) {
+        const { xcsrfToken } = this.options;
         const path = this.getActionPath(action, id);
         const body = (isObject(id) ? id : data) || null;
         const methodUpperCase = method.toUpperCase();
@@ -77,6 +79,7 @@ class ResourceApi {
             credentials: 'include',
             method: finalMethod,
             headers: {
+                ...getCSRFHeaders(),
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
             },
