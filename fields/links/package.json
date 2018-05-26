@@ -1,6 +1,6 @@
 {
   "name": "@panneau/field-links",
-  "version": "0.3.125",
+  "version": "0.4.0",
   "description": "Links fields for Panneau",
   "keywords": [
     "react",
@@ -52,12 +52,12 @@
     "start": "npm run storybook"
   },
   "dependencies": {
-    "@panneau/core": "^0.3.125",
-    "@panneau/field": "^0.3.125",
-    "@panneau/field-items": "^0.3.125",
-    "@panneau/field-locale": "^0.3.125",
-    "@panneau/field-text": "^0.3.125",
-    "@panneau/field-url": "^0.3.125",
+    "@panneau/core": "^0.4.0",
+    "@panneau/field": "^0.4.0",
+    "@panneau/field-items": "^0.4.0",
+    "@panneau/field-locale": "^0.4.0",
+    "@panneau/field-text": "^0.4.0",
+    "@panneau/field-url": "^0.4.0",
     "babel-runtime": "^6.26.0",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
