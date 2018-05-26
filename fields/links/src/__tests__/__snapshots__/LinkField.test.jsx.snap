@@ -52,12 +52,16 @@ exports[`match snapshot 1`] = `
             }
           >
             <div
-              className="input-group input-group-text"
+              className="input-group"
             >
               <span
-                className="input-group-addon"
+                className="input-group-prepend"
               >
-                http://
+                <span
+                  className="input-group-text"
+                >
+                  http://
+                </span>
               </span>
               <input
                 className="form-control field-text"

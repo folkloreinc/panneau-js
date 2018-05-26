@@ -23,12 +23,16 @@ exports[`match snapshot 1`] = `
     }
   >
     <div
-      className="input-group input-group-text"
+      className="input-group"
     >
       <span
-        className="input-group-addon"
+        className="input-group-prepend"
       >
-        https://
+        <span
+          className="input-group-text"
+        >
+          https://
+        </span>
       </span>
       <input
         className="form-control field-text"

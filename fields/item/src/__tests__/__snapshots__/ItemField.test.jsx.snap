@@ -23,13 +23,13 @@ exports[`match snapshot 1`] = `
     }
   >
     <div
-      className={undefined}
+      className="mb-2 undefined"
     >
       <div
-        className=""
+        className="card"
       >
         <div
-          className="undefined"
+          className="card-body"
         >
           <div
             className="undefined"
@@ -41,23 +41,27 @@ exports[`match snapshot 1`] = `
                 className="undefined"
               >
                 <div
-                  className={undefined}
-                />
-              </div>
-              <div
-                className="undefined"
-              >
+                  className="undefined"
+                >
+                  <div
+                    className={undefined}
+                  />
+                </div>
                 <div
                   className="undefined"
                 >
                   <div
-                    className="btn-group"
+                    className="undefined"
                   >
-                    <button
-                      className="btn btn-default fa fa-trash"
-                      onClick={[Function]}
-                      type="button"
-                    />
+                    <div
+                      className="btn-group"
+                    >
+                      <button
+                        className="btn btn-light fas fa-trash"
+                        onClick={[Function]}
+                        type="button"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
