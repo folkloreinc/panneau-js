@@ -62,7 +62,7 @@
         "history": "^4.7.2",
         "hoist-non-react-statics": "^2.3.1",
         "invariant": "^2.2.2",
-        "jquery-slim": "^3.0.0",
+        "jquery": "^3.3.1",
         "js-cookie": "^2.2.0",
         "lodash": "^4.17.4",
         "popper": "^1.0.1",
@@ -80,6 +80,7 @@
         "wolfy87-eventemitter": "^5.2.4"
     },
     "devDependencies": {
+        "jquery-slim": "^3.0.0",
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0",
         "react-intl": "^2.4.0"
