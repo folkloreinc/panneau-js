@@ -55,19 +55,19 @@ const defaultProps = {
         {
             id: 'show',
             label: messages.show,
-            icon: 'glyphicon glyphicon-eye-open',
+            icon: 'fas fa-eye',
         },
         {
             id: 'edit',
             label: messages.edit,
             className: 'btn-primary',
-            icon: 'glyphicon glyphicon-pencil',
+            icon: 'fas fa-edit',
         },
         {
             id: 'delete',
             label: messages.delete,
             className: 'btn-danger',
-            icon: 'glyphicon glyphicon-trash',
+            icon: 'fas fa-trash',
         },
     ],
 };
@@ -121,7 +121,7 @@ const ListActions = ({
                 const iconClassName = get(it, 'icon', null);
                 const buttonClassNames = classNames({
                     btn: true,
-                    'btn-default': true,
+                    'btn-outline-secondary': true,
                     [buttonClassName]: buttonClassName !== null,
                     [iconClassName]: iconClassName !== null && iconsOnly,
                 });

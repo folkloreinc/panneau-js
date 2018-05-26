@@ -18,7 +18,7 @@ class MediasField extends Component {
     constructor(props) {
         super(props);
 
-        this.getItemField = this.getItemField.bind(this);
+        this.renderItemField = this.renderItemField.bind(this);
         this.getNewItemValue = this.getNewItemValue.bind(this);
     }
 
@@ -34,22 +34,7 @@ class MediasField extends Component {
 
     // eslint-disable-next-line class-methods-use-this
     getNewItemValue() {
-        return {};
-    }
-
-    getItemField(it, index, { value }) {
-        const { FieldComponent } = this.props;
-        const itemValue = !isObject(value) || Object.keys(value).length > 0 ? value : null;
-
-        return (
-            <FieldComponent
-                value={itemValue}
-                inputOnly
-                cardWithoutBorder
-                deletable={false}
-                onChange={val => this.onItemChange(index, val)}
-            />
-        );
+        return null;
     }
 
     triggerChange(newValue) {
@@ -62,10 +47,26 @@ class MediasField extends Component {
         }
     }
 
+    renderItemField(it, index, { value }) {
+        const { FieldComponent } = this.props;
+        const itemValue = !isObject(value) || Object.keys(value).length > 0 ? value : null;
+
+        return (
+            <FieldComponent
+                value={itemValue}
+                inputOnly
+                withoutMargin
+                cardWithoutBorder
+                deletable={false}
+                onChange={val => this.onItemChange(index, val)}
+            />
+        );
+    }
+
     render() {
         return (
             <ItemsField
-                getItemField={this.getItemField}
+                renderItemField={this.renderItemField}
                 getNewItemValue={this.getNewItemValue}
                 withoutPanel
                 withoutHeader

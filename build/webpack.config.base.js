@@ -170,6 +170,9 @@ module.exports = (env) => {
                 path.join(__dirname, '../forms/forms/node_modules'),
                 path.join(__dirname, '../modals/modals/node_modules'),
             ],
+            alias: {
+                jquery: require.resolve('jquery-slim'),
+            },
         },
 
         stats: {

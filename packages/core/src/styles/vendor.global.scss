@@ -1,12 +1,5 @@
 @import 'variables';
-@import '~bootstrap-sass/assets/stylesheets/bootstrap';
-@import '~font-awesome/scss/font-awesome';
-
-
-.input-group {
-    & > .input-group-btn {
-        & > .btn {
-            height: 34px;
-        }
-    }
-}
+@import '~bootstrap/scss/bootstrap';
+@import '~@fortawesome/fontawesome-free-webfonts/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free-webfonts/scss/fa-regular';
+@import '~@fortawesome/fontawesome-free-webfonts/scss/fa-solid';

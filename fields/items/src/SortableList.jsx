@@ -21,7 +21,7 @@ const SortableList = ({
     <div className="list" {...props}>
         {items.map((it, index) => (
             <SortableItem
-                key={`item_${index}_${it.type}`}
+                key={`item_${index}_${it !== null ? it.type || null : null}`}
                 index={index}
                 renderItem={renderItem}
                 itemIndex={index}

@@ -28,6 +28,10 @@ const propTypes = {
         PropTypes.string,
         PropTypes.number,
     ]),
+    errors: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.arrayOf(PropTypes.string),
+    ]),
     onChange: PropTypes.func,
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
@@ -52,6 +56,7 @@ const defaultProps = {
     label: null,
     placeholder: null,
     value: null,
+    errors: null,
     onChange: null,
     onFocus: null,
     onBlur: null,
@@ -155,6 +160,7 @@ class TextField extends Component {
             value,
             align,
             disabled,
+            errors,
             onFocus,
             onBlur,
         } = this.props;
@@ -162,6 +168,7 @@ class TextField extends Component {
 
         const inputClassNames = classNames({
             'form-control': true,
+            'is-invalid': errors !== null && errors.length > 0,
             [`field-${type}`]: true,
             [`text-${align}`]: align !== null,
         });
@@ -222,27 +229,33 @@ class TextField extends Component {
         } = this.props;
 
         const prefixClassNames = classNames({
-            'input-group-addon': prefixClassName === null && isString(prefix),
-            'input-group-addon input-group-addon-small': prefixClassName === null && !isString(prefix),
+            'input-group-prepend': prefixClassName === null,
             [prefixClassName]: prefixClassName !== null,
         });
 
         const suffixClassNames = classNames({
-            'input-group-addon': suffixClassName === null && isString(suffix),
-            'input-group-addon input-group-addon-small': suffixClassName === null && !isString(suffix),
+            'input-group-append': suffixClassName === null && !isString(suffix),
             [suffixClassName]: suffixClassName !== null,
         });
 
-        const renderedPrefix = prefix ?
-            <span className={prefixClassNames}>{prefix}</span> : null;
+        const renderedPrefix = prefix ? (
+            <span className={prefixClassNames}>
+                {isString(prefix) ? (
+                    <span className="input-group-text">{prefix}</span>
+                ) : prefix}
+            </span>
+        ) : null;
 
-        const renderedSuffix = suffix ?
-            <span className={suffixClassNames}>{suffix}</span> : null;
+        const renderedSuffix = suffix ? (
+            <span className={suffixClassNames}>
+                {isString(suffix) ? (
+                    <span className="input-group-text">{suffix}</span>
+                ) : suffix}
+            </span>
+        ) : null;
 
         const groupClassNames = classNames({
             'input-group': true,
-            'input-group-text': true,
-            [`input-group-${type}`]: true,
         });
 
         return (

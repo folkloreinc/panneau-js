@@ -33,7 +33,7 @@ const ResourceEdit = props => (
                 id: 'submit',
                 type: 'submit',
                 label: messages.save,
-                className: 'btn-primary',
+                className: 'btn-primary btn-lg',
             },
         ]}
         {...props}

@@ -9,7 +9,7 @@ const messages = defineMessages({
     label: {
         id: 'core.buttons.upload',
         description: 'The label of the "upload" button',
-        defaultMessage: 'Select a file',
+        defaultMessage: 'Select a file...',
     },
 });
 
@@ -123,7 +123,7 @@ class UploadButton extends Component {
                         type="button"
                         className={classNames({
                             btn: true,
-                            'btn-default': true,
+                            'btn-primary': true,
                         })}
                         onClick={this.onClickSelect}
                     >

@@ -16,11 +16,11 @@ const SortableHandle = ({ className }) => (
         type="button"
         className={classNames({
             btn: true,
-            'btn-default': true,
+            'btn-outline-secondary': true,
             [className]: className !== null,
         })}
     >
-        <span className="glyphicon glyphicon-resize-vertical" />
+        <span className="fas fa-arrows-alt-v" />
     </button>
 );
 

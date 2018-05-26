@@ -17,6 +17,7 @@ const propTypes = {
     selectable: PropTypes.bool,
     deleteIcon: PropTypes.string,
     selectIcon: PropTypes.string,
+    removeIcon: PropTypes.string,
     className: PropTypes.string,
     withoutBorder: PropTypes.bool,
     thumbnailSize: PropTypes.string,
@@ -43,8 +44,8 @@ const defaultProps = {
     selectable: false,
     vertical: false,
     thumbnailSize: 'contain',
-    deleteIcon: 'fa fa-trash',
-    selectIcon: 'fa fa-plus',
+    deleteIcon: 'fas fa-trash',
+    selectIcon: 'fas fa-plus',
     className: null,
     withoutBorder: false,
     renderLabel: null,
@@ -140,14 +141,36 @@ class Card extends Component {
 
         return (
             <div className={styles.label}>
-                {name !== null ? <h4 className={styles.name}>{name}</h4> : null}
-                {date !== null ? <div className={styles.date}>{date}</div> : null}
+                {name !== null ? (
+                    <h5
+                        className={classNames({
+                            'card-title': true,
+                            'mb-1': date !== null,
+                            'mb-2': date === null,
+                            [styles.name]: true,
+                        })}
+                    >
+                        {name}
+                    </h5>
+                ) : null}
+                {date !== null ? (
+                    <h6
+                        className={classNames({
+                            'card-subtitle': true,
+                            'mb-2': true,
+                            'text-muted': true,
+                            [styles.date]: true,
+                        })}
+                    >
+                        {date}
+                    </h6>
+                ) : null}
                 {details !== null ? (
                     <div className={styles.details}>
                         {Object.keys(details).map(key => (
-                            <div key={`details-${key}`} className={styles.detail}>
+                            <p key={`details-${key}`} className={styles.detail}>
                                 {key}: {details[key]}
-                            </div>
+                            </p>
                         ))}
                     </div>
                 ) : null}
@@ -174,13 +197,17 @@ class Card extends Component {
         } = this.props;
 
         const thumbnail = getThumbnail !== null ? getThumbnail(item, this.props) : null;
-        const icon = getIcon !== null ? getIcon(item, this.props) : null;
 
         const fieldClassNames = classNames({
+            card: true,
             [styles.container]: true,
             [styles.vertical]: vertical,
             [styles.withoutBorder]: withoutBorder,
             [className]: className !== null,
+        });
+
+        const bodyClassNames = classNames({
+            'card-body': true,
         });
 
         const colsClassNames = classNames({
@@ -218,52 +245,53 @@ class Card extends Component {
 
         return (
             <div className={fieldClassNames}>
-                <div className={colsClassNames}>
-                    {thumbnail ? (
-                        <div className={thumbnailColClassNames}>
-                            <div
-                                className={styles.thumbnail}
-                                style={{
-                                    backgroundImage: `url("${thumbnail}")`,
-                                    backgroundSize: thumbnailSize,
-                                }}
-                            />
-                        </div>
-                    ) : (
-                        icon
-                    )}
-                    <div className={infoColClassNames}>
-                        <div className={contentColsClassNames}>
-                            <div className={labelColClassNames}>
-                                {renderLabel
-                                    ? renderLabel(item, this.renderLabel())
-                                    : this.renderLabel()}
+                {vertical && thumbnail ? <img src={thumbnail} alt={thumbnail} /> : null}
+                <div className={bodyClassNames}>
+                    <div className={colsClassNames}>
+                        {!vertical && thumbnail ? (
+                            <div className={thumbnailColClassNames}>
+                                <div
+                                    className={styles.thumbnail}
+                                    style={{
+                                        backgroundImage: `url("${thumbnail}")`,
+                                        backgroundSize: thumbnailSize,
+                                    }}
+                                />
                             </div>
-                            <div className={actionsColClassNames}>
-                                <div className={actionsClassNames}>
-                                    <div className="btn-group">
-                                        {deletable ? (
-                                            <button
-                                                type="button"
-                                                className={classNames({
-                                                    btn: true,
-                                                    'btn-default': true,
-                                                    [deleteIcon]: true,
-                                                })}
-                                                onClick={onClickDelete}
-                                            />
-                                        ) : null}
-                                        {selectable ? (
-                                            <button
-                                                type="button"
-                                                className={classNames({
-                                                    btn: true,
-                                                    'btn-default': true,
-                                                    [selectIcon]: true,
-                                                })}
-                                                onClick={onClickSelect}
-                                            />
-                                        ) : null}
+                        ) : null}
+                        <div className={infoColClassNames}>
+                            <div className={contentColsClassNames}>
+                                <div className={labelColClassNames}>
+                                    {renderLabel
+                                        ? renderLabel(item, this.renderLabel())
+                                        : this.renderLabel()}
+                                </div>
+                                <div className={actionsColClassNames}>
+                                    <div className={actionsClassNames}>
+                                        <div className="btn-group">
+                                            {deletable ? (
+                                                <button
+                                                    type="button"
+                                                    className={classNames({
+                                                        btn: true,
+                                                        'btn-light': true,
+                                                        [deleteIcon]: true,
+                                                    })}
+                                                    onClick={onClickDelete}
+                                                />
+                                            ) : null}
+                                            {selectable ? (
+                                                <button
+                                                    type="button"
+                                                    className={classNames({
+                                                        btn: true,
+                                                        'btn-light': true,
+                                                        [selectIcon]: true,
+                                                    })}
+                                                    onClick={onClickSelect}
+                                                />
+                                            ) : null}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

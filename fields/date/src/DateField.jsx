@@ -262,27 +262,27 @@ class DateField extends Component {
             const startSuffix = (
                 <button
                     type="button"
-                    className="btn btn-default"
+                    className="btn btn-outline-secondary"
                     onClick={onStartClickInputButton}
                 >
-                    <span className="glyphicon glyphicon-calendar" />
+                    <span className="fas fa-calendar" />
                 </button>
             );
 
             const endSuffix = (
                 <button
                     type="button"
-                    className="btn btn-default"
+                    className="btn btn-outline-secondary"
                     onClick={onEndClickInputButton}
                 >
-                    <span className="glyphicon glyphicon-calendar" />
+                    <span className="fas fa-calendar" />
                 </button>
             );
 
             return (
                 <div className={styles.input}>
                     <div className="row">
-                        <div className="col-xs-6">
+                        <div className="col-sm-6">
                             <TextField
                                 ref={(ref) => { this.startInput = ref; }}
                                 label={startLabel}
@@ -291,11 +291,10 @@ class DateField extends Component {
                                 onChange={onStartChange}
                                 onFocus={onStartFocus}
                                 suffix={startSuffix}
-                                suffixClassName="input-group-btn"
                                 clearable
                             />
                         </div>
-                        <div className="col-xs-6">
+                        <div className="col-sm-6">
                             <TextField
                                 ref={(ref) => { this.endInput = ref; }}
                                 label={endLabel}
@@ -304,7 +303,6 @@ class DateField extends Component {
                                 onChange={onEndChange}
                                 onFocus={onEndFocus}
                                 suffix={endSuffix}
-                                suffixClassName="input-group-btn"
                                 clearable
                             />
                         </div>
@@ -316,10 +314,10 @@ class DateField extends Component {
         const suffix = (
             <button
                 type="button"
-                className="btn btn-default"
+                className="btn btn-outline-secondary"
                 onClick={this.onButtonClick}
             >
-                <span className="glyphicon glyphicon-calendar" />
+                <span className="fas fa-calendar" />
             </button>
         );
 
@@ -332,7 +330,6 @@ class DateField extends Component {
                     onChange={this.onInputChange}
                     onFocus={this.onInputFocus}
                     suffix={suffix}
-                    suffixClassName="input-group-btn"
                     clearable
                     inputOnly
                 />

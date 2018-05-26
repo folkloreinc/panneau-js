@@ -228,26 +228,26 @@ class ResourceIndex extends Component {
                     </Link>
                 )}
                 {isTyped ? (
-                    <ul className="dropdown-menu">
+                    <div className="dropdown-menu">
                         {types.map(({ id, label }) => (
-                            <li key={`add-button-${id}`}>
-                                <Link
-                                    to={{
-                                        pathname: urlGenerator.route('resource.create', {
-                                            resource: resource.id,
-                                        }),
-                                        search: `?type=${id}`,
-                                        state: {
-                                            type: id,
-                                        },
-                                    }}
-                                >
-                                    {label}
-                                </Link>
-                            </li>
+                            <Link
+                                key={`add-button-${id}`}
+                                to={{
+                                    pathname: urlGenerator.route('resource.create', {
+                                        resource: resource.id,
+                                    }),
+                                    search: `?type=${id}`,
+                                    state: {
+                                        type: id,
+                                    },
+                                }}
+                                className="dropdown-item"
+                            >
+                                {label}
+                            </Link>
                         ))}
 
-                    </ul>
+                    </div>
                 ) : null}
             </div>
         );

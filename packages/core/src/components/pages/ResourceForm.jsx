@@ -75,7 +75,7 @@ const defaultProps = {
             id: 'submit',
             type: 'submit',
             label: messages.save,
-            className: 'btn-primary',
+            className: 'btn-primary btn-lg',
         },
     ],
 };
@@ -289,14 +289,14 @@ class ResourceForm extends Component {
         if (formNotice !== null) {
             let formNoticeText;
             let formNoticeType;
-            let formNoticeIcon;
+            let formNoticeIcon = null;
             if (formNotice === 'success') {
                 formNoticeText = messages.success;
                 formNoticeIcon = 'ok';
                 formNoticeType = 'success';
             } else if (formNotice === 'error') {
                 formNoticeText = messages.error;
-                formNoticeIcon = 'remove';
+                formNoticeIcon = 'fas fa-check-circle';
                 formNoticeType = 'danger';
             }
             const noticeCellTextClassNames = classNames({
@@ -304,8 +304,7 @@ class ResourceForm extends Component {
             });
             const noticeCellIconClassNames = classNames({
                 [styles.noticeIcon]: true,
-                glyphicon: true,
-                [`glyphicon-${formNoticeIcon}`]: formNoticeIcon,
+                [formNoticeIcon]: formNoticeIcon !== null,
             });
             noticeNode = (
                 <span className={noticeCellTextClassNames}>

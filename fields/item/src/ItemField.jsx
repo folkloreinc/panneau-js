@@ -124,7 +124,12 @@ class ItemField extends Component {
         } = this.props;
         const item = this.getCardItemFromValue(value);
         return (
-            <div className={styles.card}>
+            <div
+                className={classNames({
+                    'mb-2': true,
+                    [styles.card]: true,
+                })}
+            >
                 <Card
                     vertical={cardVertical}
                     withoutBorder={cardWithoutBorder}

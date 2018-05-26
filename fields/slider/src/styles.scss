@@ -5,11 +5,11 @@
 
     &:global(.has-error) {
         :global(.rc-slider-track) {
-            background: $state-danger-text;
+            background: $danger;
         }
 
         :global(.rc-slider-handle) {
-            border-color: $state-danger-text;
+            border-color: $danger;
         }
     }
 }

@@ -52,7 +52,7 @@ class ResourceCreate extends Component {
                         id: 'submit',
                         type: 'submit',
                         label: messages.create,
-                        className: 'btn-primary',
+                        className: 'btn-primary btn-lg',
                     },
                 ]}
                 onFormComplete={this.onFormComplete}

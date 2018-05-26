@@ -122,6 +122,7 @@ class LocaleField extends Component {
             onChange: fieldOnChange,
             name: fieldName,
             value: fieldValue,
+            withoutMargin: true,
         };
         const customProps = getFieldProps !== null ? getFieldProps(locale, fieldProps) : null;
         const finalProps = {
@@ -151,7 +152,7 @@ class LocaleField extends Component {
             btn: true,
             active: this.state.locale === locale,
             'btn-warning': !hasValue,
-            'btn-default': hasValue,
+            'btn-success': hasValue,
         });
 
         const onClick = e => this.onLocaleClick(e, locale);
@@ -174,7 +175,7 @@ class LocaleField extends Component {
         const fields = locales.map(this.renderLocaleField);
         const buttons = locales.map(this.renderLocaleButton);
         const buttonsClassName = classNames({
-            'btn-group btn-group-xs': true,
+            'btn-group btn-group-sm': true,
             [styles.btnGroup]: true,
         });
         const labelSuffix = locales.length > 1 ? (

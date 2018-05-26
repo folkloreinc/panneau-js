@@ -56,10 +56,7 @@ const propTypes = {
     fields: PanneauPropTypes.fields,
     typesEndpoint: PropTypes.string,
     fieldsEndpoint: PropTypes.string,
-    FieldComponent: PropTypes.oneOfType([
-        PropTypes.func,
-        PropTypes.object,
-    ]),
+    FieldComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 
     collapsible: PropTypes.bool,
     collapsed: PropTypes.bool,
@@ -290,7 +287,7 @@ class ItemsField extends Component {
             <FormattedMessage
                 {...(label !== null ? itemTitleWithLabel : itemTitle)}
                 values={{
-                    index: (index + 1),
+                    index: index + 1,
                     label,
                 }}
             />
@@ -323,9 +320,7 @@ class ItemsField extends Component {
 
         if (this.props.getNewItemValue) {
             const val = this.props.getNewItemValue(it);
-            if (val !== null) {
-                newValue.push(val);
-            }
+            newValue.push(val);
         } else {
             newValue.push(it
                 ? {
@@ -351,13 +346,18 @@ class ItemsField extends Component {
         const { headerButtons, withoutRemoveButton, sortable } = this.props;
         const buttons = [].concat(headerButtons);
 
+        const buttonClassName = classNames({
+            'btn-outline-secondary': true,
+            [styles.button]: true,
+        });
+
         if (sortable) {
-            buttons.push(<SortableHandle className={styles.button} />);
+            buttons.push(<SortableHandle className={buttonClassName} />);
         }
 
         if (!withoutRemoveButton) {
             buttons.push({
-                icon: 'glyphicon glyphicon-remove',
+                icon: 'fas fa-times',
                 onClick: e => this.onClickRemove(e, index),
             });
         }
@@ -366,10 +366,10 @@ class ItemsField extends Component {
             <div className={styles.actions}>
                 <ButtonGroup
                     className={classNames({
-                        'btn-group-xs': true,
+                        'btn-group-sm': true,
                         [styles.buttonGroup]: true,
                     })}
-                    buttonClassName={styles.button}
+                    buttonClassName={buttonClassName}
                     noWrap
                     buttons={buttons}
                     onClick={(e, button, buttonIndex) =>
@@ -387,17 +387,26 @@ class ItemsField extends Component {
         ) : null;
     }
 
-    renderItemTitle(it, index) {
+    renderItemTitle(it, index, collapsed) {
         const { itemsCollapsible } = this.props;
         const title = this.getItemTitle(it, index);
         return itemsCollapsible ? (
             <button
                 type="button"
-                className={styles.button}
+                className={classNames({
+                    btn: true,
+                    [styles.button]: true,
+                })}
                 onClick={e => this.onClickCollapse(e, it, index)}
             >
                 <span className={styles.icon}>
-                    <span className="caret up" />
+                    <span
+                        className={classNames({
+                            fas: true,
+                            'fa-caret-right': collapsed,
+                            'fa-caret-down': !collapsed,
+                        })}
+                    />
                 </span>
                 <span className={styles.text}>{title}</span>
             </button>
@@ -406,28 +415,23 @@ class ItemsField extends Component {
         );
     }
 
-    renderItemHeader(it, index) {
+    renderItemHeader(it, index, collapsed) {
         const { withoutPanel } = this.props;
-        const title = this.renderItemTitle(it, index);
-        const actions = this.renderItemActions(it, index);
+        const title = this.renderItemTitle(it, index, collapsed);
+        const actions = this.renderItemActions(it, index, collapsed);
 
         const headerClassNames = classNames({
-            'panel-heading': !withoutPanel,
+            'card-header': !withoutPanel,
             [styles.header]: true,
         });
 
         return (
             <div className={headerClassNames}>
-                <div className={styles.cols}>
-                    <div className={styles.col}>
+                <div className="row">
+                    <div className="col">
                         <div className={styles.title}>{title}</div>
                     </div>
-                    <div
-                        className={classNames({
-                            [styles.col]: true,
-                            [styles.right]: true,
-                        })}
-                    >
+                    <div className="col text-right">
                         {actions}
                     </div>
                 </div>
@@ -476,7 +480,7 @@ class ItemsField extends Component {
         const field = this.renderItemField(it, index, collapsed);
 
         const bodyClassNames = classNames({
-            'panel-body': !withoutPanel,
+            'card-body': !withoutPanel,
             [styles.body]: true,
         });
 
@@ -512,8 +516,7 @@ class ItemsField extends Component {
         const body = this.renderItemBody(it, index, itemCollapsed);
 
         const panelClassNames = classNames({
-            panel: !withoutPanel,
-            'panel-default': !withoutPanel,
+            card: !withoutPanel,
             [styles.panel]: true,
             [styles.withBorder]: withoutPanel && !withoutBorder,
         });
@@ -581,8 +584,7 @@ class ItemsField extends Component {
         const buttonClassNames = classNames({
             btn: true,
             'btn-lg': addButtonLarge,
-            'btn-primary': addButtonLarge,
-            'btn-default': !addButtonLarge,
+            'btn-primary': true,
             'dropdown-toggle': types !== null && types.length,
         });
 

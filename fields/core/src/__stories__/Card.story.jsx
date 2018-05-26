@@ -30,7 +30,7 @@ storiesOf('Fields/Core/Card', module)
             />
             <Card
                 item={itemWithThumbnail}
-                deleteIcon="glyphicon glyphicon-remove"
+                deleteIcon="fas fa-times"
                 onLoad={action('load')}
             />
             <Card
