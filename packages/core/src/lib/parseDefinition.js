@@ -29,12 +29,12 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
             if (resource) {
                 const navbarViewAll = get(
                     resource,
-                    'messages.navbar.viewAll',
+                    'messages.navbar.view_all',
                     intlMessages.navbarViewAll,
                 );
                 const navbarAddNew = get(
                     resource,
-                    'messages.navbar.addNew',
+                    'messages.navbar.add_new',
                     intlMessages.navbarAddNew,
                 );
                 const routeKeyPrefix = get(resource, 'routes', null)
