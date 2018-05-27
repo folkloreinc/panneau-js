@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-media",
-    "version": "0.4.3",
+    "version": "0.4.4",
     "description": "Media fields for Panneau",
     "keywords": [
         "react",
@@ -52,9 +52,9 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/core": "^0.4.3",
-        "@panneau/field": "^0.4.3",
-        "@panneau/field-items": "^0.4.3",
+        "@panneau/core": "^0.4.4",
+        "@panneau/field": "^0.4.4",
+        "@panneau/field-items": "^0.4.4",
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.5",
         "immutable": "^3.8.2",
