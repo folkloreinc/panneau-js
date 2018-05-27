@@ -12,6 +12,9 @@ import styles from './styles.scss';
 const propTypes = {
     items: PropTypes.arrayOf(PropTypes.object),
     pagination: PropTypes.bool,
+    striped: PropTypes.bool,
+    hoverable: PropTypes.bool,
+    tableClassName: PropTypes.string,
     cols: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.required,
         label: PropTypes.string.required,
@@ -27,6 +30,9 @@ const propTypes = {
 const defaultProps = {
     items: [],
     pagination: true,
+    striped: false,
+    hoverable: true,
+    tableClassName: null,
     cols: [
         {
             id: 'id',
@@ -48,6 +54,10 @@ const defaultProps = {
 };
 
 class TableList extends Component {
+    static getColumnProps(column) {
+        return omit(column, ['id', 'key', 'label', 'path', 'align', 'iconsOnly', 'showIcon', 'className']);
+    }
+
     constructor(props) {
         super(props);
 
@@ -69,12 +79,48 @@ class TableList extends Component {
         }
     }
 
-    // eslint-disable-next-line react/sort-comp
+    getTableBodyButtonsColumn(it, column, rowIndex, colIndex) {
+        const id = get(it, 'id', rowIndex);
+        const key = `row_${id}_${column.name}`;
+        const buttons = [];
+        column.buttons.forEach((button, btnIndex) => {
+            buttons.push(this.renderTableButton(it, button, rowIndex, colIndex, btnIndex));
+        });
+
+        const props = omit(column, ['value', 'label', 'name', 'className', 'path']);
+
+        const tdClassNames = classNames({
+            'text-right': true,
+        });
+        const divClassNames = classNames({
+            [get(column, 'className', 'btn-group')]: true,
+        });
+
+        return (
+            <td
+                key={key}
+                className={tdClassNames}
+                {...props}
+            >
+                <div
+                    className={divClassNames}
+                >
+                    { buttons }
+                </div>
+            </td>
+        );
+    }
+
     renderTable(columns, items) {
+        const { striped, hoverable, tableClassName } = this.props;
         const header = this.renderTableHeader(columns);
         const body = this.renderTableBody(columns, items);
         const tableClassNames = classNames({
             table: true,
+            'table-sm': true,
+            'table-striped': striped,
+            'table-hover': hoverable,
+            [tableClassName]: tableClassName !== null,
         });
 
         return (
@@ -108,11 +154,16 @@ class TableList extends Component {
         }
 
         const key = `header_${column.name}_${index}`;
-        const props = omit(column, ['key', 'label', 'path', 'align', 'iconsOnly', 'showIcon']);
+        const props = TableList.getColumnProps(column);
+        const align = get(column, 'align', null);
 
         return (
             <th
                 key={key}
+                className={classNames({
+                    'align-middle': true,
+                    [`text-${align}`]: align !== null,
+                })}
                 {...props}
             >
                 {column.label}
@@ -195,11 +246,18 @@ class TableList extends Component {
         const key = `row_${id}_${column.id}`;
         const data = get(it, column.path, null);
 
-        const props = omit(column, ['value', 'label', 'name', 'path']);
+        const props = TableList.getColumnProps(column);
+        const align = get(column, 'align', null);
+        const columnClassName = column.className || null;
 
         return (
             <td
                 key={key}
+                className={classNames({
+                    'align-middle': true,
+                    [`text-${align}`]: align !== null,
+                    [columnClassName]: columnClassName !== null,
+                })}
                 {...props}
             >
                 { data }
@@ -209,11 +267,12 @@ class TableList extends Component {
 
     renderTableBodyActionsColumn(it, column, rowIndex, colIndex) {
         const key = `row_${rowIndex}_${colIndex}_actions`;
-        const align = get(column, 'align', null);
+        const align = get(column, 'align', 'right');
         return (
             <td
                 key={key}
                 className={classNames({
+                    'align-middle': true,
                     [`text-${align}`]: align !== null,
                 })}
             >
@@ -222,38 +281,6 @@ class TableList extends Component {
                     onClick={(e, action) => this.onClickActions(e, action, it, rowIndex)}
                     {...column}
                 />
-            </td>
-        );
-    }
-
-    getTableBodyButtonsColumn(it, column, rowIndex, colIndex) {
-        const id = get(it, 'id', rowIndex);
-        const key = `row_${id}_${column.name}`;
-        const buttons = [];
-        column.buttons.forEach((button, btnIndex) => {
-            buttons.push(this.renderTableButton(it, button, rowIndex, colIndex, btnIndex));
-        });
-
-        const props = omit(column, ['value', 'label', 'name', 'className', 'path']);
-
-        const tdClassNames = classNames({
-            'text-right': true,
-        });
-        const divClassNames = classNames({
-            [get(column, 'className', 'btn-group')]: true,
-        });
-
-        return (
-            <td
-                key={key}
-                className={tdClassNames}
-                {...props}
-            >
-                <div
-                    className={divClassNames}
-                >
-                    { buttons }
-                </div>
             </td>
         );
     }

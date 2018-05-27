@@ -6,7 +6,7 @@
         "en"
     ],
 
-    "endpointHost": "https://9eaf6b56-086d-4bad-8752-67ebd214eaea.mock.pstmn.io",
+    "endpointHost": "/api/",
 
     "layout": {
         "type": "normal",

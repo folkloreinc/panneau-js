@@ -3,17 +3,24 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
-import isString from 'lodash/isString';
+import isObject from 'lodash/isObject';
 import classNames from 'classnames';
+import { push } from 'react-router-redux';
 import { withUrlGenerator } from '@folklore/react-app';
 import { defineMessages, FormattedMessage } from 'react-intl';
+import { PulseLoader } from 'react-spinners';
 
-import PanneauPropTypes from '../../lib/PropTypes';
+import * as PanneauPropTypes from '../../lib/PropTypes';
 import withFormsCollection from '../../lib/withFormsCollection';
 
 import styles from '../../styles/pages/resource-form.scss';
 
 const messages = defineMessages({
+    cancel: {
+        id: 'core.buttons.resources.cancel',
+        description: 'The label of the "cancel" button',
+        defaultMessage: 'Cancel',
+    },
     save: {
         id: 'core.buttons.resources.save',
         description: 'The label of the "save" button',
@@ -24,12 +31,12 @@ const messages = defineMessages({
         description: 'The title of the resource form',
         defaultMessage: '{name}',
     },
-    success: {
+    successNotice: {
         id: 'core.notices.resources.success',
         description: 'The text of the "success" form notice',
         defaultMessage: 'Success!',
     },
-    error: {
+    errorNotice: {
         id: 'core.notices.resources.error',
         description: 'The text of the "error" form notice',
         defaultMessage: 'Failed. The form contains errors.',
@@ -53,11 +60,15 @@ const propTypes = {
     item: PropTypes.shape({
         id: PropTypes.number,
     }),
+    successNoticeLabel: PanneauPropTypes.label,
+    errorNoticeLabel: PanneauPropTypes.label,
     buttons: PanneauPropTypes.buttons,
+    saveButtonLabel: PanneauPropTypes.message,
     errors: PropTypes.arrayOf(PropTypes.string),
     formValue: PropTypes.shape({}),
     formErrors: PropTypes.objectOf(PropTypes.array),
     readOnly: PropTypes.bool,
+    gotoIndex: PropTypes.func.isRequired,
     onFormComplete: PropTypes.func,
 };
 
@@ -69,8 +80,15 @@ const defaultProps = {
     formValue: null,
     formErrors: null,
     readOnly: false,
-    onFormComplete: null,
+    successNoticeLabel: messages.successNotice,
+    errorNoticeLabel: messages.errorNotice,
     buttons: [
+        {
+            id: 'cancel',
+            type: 'button',
+            label: messages.cancel,
+            className: 'btn-link btn-lg',
+        },
         {
             id: 'submit',
             type: 'submit',
@@ -78,6 +96,8 @@ const defaultProps = {
             className: 'btn-primary btn-lg',
         },
     ],
+    saveButtonLabel: null,
+    onFormComplete: null,
 };
 
 class ResourceForm extends Component {
@@ -89,6 +109,7 @@ class ResourceForm extends Component {
         this.onFormValueChange = this.onFormValueChange.bind(this);
         this.onFormComplete = this.onFormComplete.bind(this);
         this.onFormErrors = this.onFormErrors.bind(this);
+        this.onClickCancel = this.onClickCancel.bind(this);
         this.submitForm = this.submitForm.bind(this);
 
         this.state = {
@@ -175,6 +196,11 @@ class ResourceForm extends Component {
         }
     }
 
+    onClickCancel(e) {
+        e.preventDefault();
+        this.props.gotoIndex();
+    }
+
     getType() {
         const { resource } = this.props;
         const { item } = this.state;
@@ -204,10 +230,13 @@ class ResourceForm extends Component {
         const { item, formValue } = this.state;
 
         const resourceType = get(resource, 'type', 'default');
-        const data = resourceType === 'typed' ? {
-            type: this.getType(),
-            ...(formValue || item),
-        } : formValue;
+        const data =
+            resourceType === 'typed'
+                ? {
+                    type: this.getType(),
+                    ...(formValue || item),
+                }
+                : formValue;
 
         return action === 'create'
             ? resource.api.store(data)
@@ -232,15 +261,23 @@ class ResourceForm extends Component {
             'messages.names.a',
             get(resource, 'messages.name', resource.name),
         );
-        const defaultTitle = isString(title) ? (
-            title
-        ) : (
-            <FormattedMessage {...title} values={{ name }} />
-        );
+        const defaultTitle =
+            isObject(title) && typeof title.id !== 'undefined' ? (
+                <FormattedMessage {...title} values={{ name }} />
+            ) : (
+                title
+            );
 
         return (
             <div className={headerClassNames}>
-                <h1 className="display-4">{message !== null ? message : defaultTitle}</h1>
+                <h1
+                    className={classNames({
+                        'display-4': true,
+                        'mb-0': true,
+                    })}
+                >
+                    {message !== null ? message : defaultTitle}
+                </h1>
             </div>
         );
     }
@@ -264,9 +301,48 @@ class ResourceForm extends Component {
         /* eslint-enable react/no-array-index-key */
     }
 
+    renderNotice() {
+        const { successNoticeLabel, errorNoticeLabel } = this.props;
+        const { formNotice } = this.state;
+        let formNoticeText;
+        let formNoticeType;
+        let formNoticeIcon = null;
+        if (formNotice === 'success') {
+            formNoticeText = successNoticeLabel;
+            formNoticeIcon = 'fas fa-check-circle';
+            formNoticeType = 'success';
+        } else if (formNotice === 'error') {
+            formNoticeText = errorNoticeLabel;
+            formNoticeIcon = 'fas fa-exclamation-circle';
+            formNoticeType = 'danger';
+        }
+        const noticeCellTextClassNames = classNames({
+            [`text-${formNoticeType}`]: formNoticeType,
+        });
+        const noticeCellIconClassNames = classNames({
+            [styles.noticeIcon]: true,
+            [formNoticeIcon]: formNoticeIcon !== null,
+        });
+        return (
+            <span className={noticeCellTextClassNames}>
+                <span className={noticeCellIconClassNames} aria-hidden="true" />
+                {isObject(formNoticeText) && typeof formNoticeText.id !== 'undefined' ? (
+                    <FormattedMessage {...formNoticeText} />
+                ) : (
+                    formNoticeText
+                )}
+            </span>
+        );
+    }
+
     renderForm() {
         const {
-            action, resource, formsCollection, readOnly, buttons,
+            action,
+            resource,
+            formsCollection,
+            readOnly,
+            buttons,
+            saveButtonLabel,
         } = this.props;
         const {
             item, formValue, formErrors, formNotice,
@@ -275,7 +351,22 @@ class ResourceForm extends Component {
         const form = get(resource, `forms.${action}`, get(resource, 'forms', {}));
         const { type, ...formProps } = form;
         const FormComponent = formsCollection.getComponent(type || 'normal');
-        const formButtons = readOnly ? [] : buttons;
+        const formButtons = readOnly
+            ? []
+            : buttons.map((button) => {
+                if (button.id === 'save' && saveButtonLabel !== null) {
+                    return {
+                        ...button,
+                        label: saveButtonLabel,
+                    };
+                } else if (button.id === 'cancel' && typeof button.onClick === 'undefined') {
+                    return {
+                        ...button,
+                        onClick: this.onClickCancel,
+                    };
+                }
+                return button;
+            });
 
         if (resourceType === 'typed') {
             const formType = this.getType();
@@ -286,38 +377,6 @@ class ResourceForm extends Component {
             );
         }
 
-        let noticeNode = null;
-        if (formNotice !== null) {
-            let formNoticeText;
-            let formNoticeType;
-            let formNoticeIcon = null;
-            if (formNotice === 'success') {
-                formNoticeText = messages.success;
-                formNoticeIcon = 'ok';
-                formNoticeType = 'success';
-            } else if (formNotice === 'error') {
-                formNoticeText = messages.error;
-                formNoticeIcon = 'fas fa-check-circle';
-                formNoticeType = 'danger';
-            }
-            const noticeCellTextClassNames = classNames({
-                [`text-${formNoticeType}`]: formNoticeType,
-            });
-            const noticeCellIconClassNames = classNames({
-                [styles.noticeIcon]: true,
-                [formNoticeIcon]: formNoticeIcon !== null,
-            });
-            noticeNode = (
-                <span className={noticeCellTextClassNames}>
-                    <span className={noticeCellIconClassNames} aria-hidden="true" />
-                    {isString(formNoticeText) ? (
-                        formNoticeText
-                    ) : (
-                        <FormattedMessage {...formNoticeText} />
-                    )}
-                </span>
-            );
-        }
         const formClassNames = classNames({
             [styles.form]: true,
         });
@@ -329,7 +388,7 @@ class ResourceForm extends Component {
                     buttons={formButtons}
                     value={formValue || item}
                     errors={formErrors}
-                    notice={noticeNode}
+                    notice={formNotice !== null ? this.renderNotice() : null}
                     submitForm={this.submitForm}
                     onValueChange={this.onFormValueChange}
                     onComplete={this.onFormComplete}
@@ -340,10 +399,24 @@ class ResourceForm extends Component {
         ) : null;
     }
 
+    // eslint-disable-next-line class-methods-use-this
+    renderLoading() {
+        return (
+            <div
+                className={classNames({
+                    'py-4': true,
+                    [styles.loading]: true,
+                })}
+            >
+                <PulseLoader loading />
+            </div>
+        );
+    }
+
     render() {
         const { item } = this.state;
         const { action } = this.props;
-        const needsForm = item !== null || action === 'create';
+        const isLoading = action !== 'create' && item === null;
 
         const containerClassNames = classNames({
             [styles.container]: true,
@@ -356,7 +429,7 @@ class ResourceForm extends Component {
                         <div className="col-md-8">
                             {this.renderHeader()}
                             {this.renderErrors()}
-                            {needsForm && this.renderForm()}
+                            {isLoading ? this.renderLoading() : this.renderForm()}
                         </div>
                     </div>
                 </div>
@@ -384,8 +457,20 @@ const mapStateToProps = ({ panneau }, {
                         }) === location.pathname)) || null,
     };
 };
-
-const WithStateComponent = connect(mapStateToProps)(ResourceForm);
+const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
+    gotoResourceIndex: resource =>
+        dispatch(push(typeof resource.routes !== 'undefined'
+            ? urlGenerator.route(`resource.${resource.id}.index`)
+            : urlGenerator.route('resource.index', {
+                resource: resource.id,
+            }))),
+});
+const mergeProps = (stateProps, { gotoResourceIndex }, ownProps) => ({
+    ...ownProps,
+    ...stateProps,
+    gotoIndex: () => gotoResourceIndex(stateProps.resource),
+});
+const WithStateComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(ResourceForm);
 const WithRouterContainer = withRouter(WithStateComponent);
 const WithFormsCollectionContainer = withFormsCollection()(WithRouterContainer);
 const WithUrlGeneratorContainer = withUrlGenerator()(WithFormsCollectionContainer);

@@ -10,8 +10,9 @@ import isString from 'lodash/isString';
 import classNames from 'classnames';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { withUrlGenerator } from '@folklore/react-app';
+import { PulseLoader } from 'react-spinners';
 
-import PanneauPropTypes from '../../lib/PropTypes';
+import * as PanneauPropTypes from '../../lib/PropTypes';
 import withListsCollection from '../../lib/withListsCollection';
 
 import styles from '../../styles/pages/resource-index.scss';
@@ -341,19 +342,34 @@ class ResourceIndex extends Component {
         return <Pagination total={20} perPage={1} currentPage={3} lastPage={10} url="/?page=1" />;
     }
 
+    // eslint-disable-next-line class-methods-use-this
+    renderLoading() {
+        return (
+            <div
+                className={classNames({
+                    'py-4': true,
+                    [styles.loading]: true,
+                })}
+            >
+                <PulseLoader loading />
+            </div>
+        );
+    }
+
     render() {
         const { items } = this.state;
         const containerClassNames = classNames({
             [styles.container]: true,
         });
+        const isLoading = items === null;
 
         return (
             <div className={containerClassNames}>
                 <div className="container">
                     <div className="row justify-content-md-center">
-                        <div className="col-md-8">
+                        <div className="col-lg-8">
                             {this.renderHeader()}
-                            {items !== null ? this.renderList() : null}
+                            {isLoading ? this.renderLoading() : this.renderList()}
                             {/* this.renderPagination() */}
                         </div>
                     </div>

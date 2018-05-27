@@ -54,7 +54,6 @@ class ResourceApi {
     }
 
     callApi(action, method, id = undefined, data = undefined) {
-        const { xcsrfToken } = this.options;
         const path = this.getActionPath(action, id);
         const body = (isObject(id) ? id : data) || null;
         const methodUpperCase = method.toUpperCase();

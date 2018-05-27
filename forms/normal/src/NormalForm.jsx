@@ -196,23 +196,25 @@ class NormalForm extends Component {
         const { buttons } = this.props;
         return (
             <div className={styles.buttons}>
-                {buttons.map(({
-                    id, label, type, className, onClick,
-                }) => (
-                    <button
-                        key={`actions-button-${id}`}
-                        type={type}
-                        className={classNames({
-                            btn: true,
-                            [className]: (className || null) !== null,
-                            [styles.button]: true,
-                            [styles[type]]: true,
-                        })}
-                        onClick={onClick || null}
-                    >
-                        {isString(label) ? label : <FormattedMessage {...label} />}
-                    </button>
-                ))}
+                <div className="btn-group">
+                    {buttons.map(({
+                        id, label, type, className, onClick,
+                    }) => (
+                        <button
+                            key={`actions-button-${id}`}
+                            type={type}
+                            className={classNames({
+                                btn: true,
+                                [className]: (className || null) !== null,
+                                [styles.button]: true,
+                                [styles[type]]: true,
+                            })}
+                            onClick={onClick || null}
+                        >
+                            {isString(label) ? label : <FormattedMessage {...label} />}
+                        </button>
+                    ))}
+                </div>
             </div>
         );
     }

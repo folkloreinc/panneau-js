@@ -97,6 +97,7 @@ const ListActions = ({
     <div
         className={classNames({
             'btn-group': true,
+            'btn-group-sm': true,
             [styles.container]: true,
             [className]: className !== null,
         })}

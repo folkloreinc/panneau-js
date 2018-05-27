@@ -1,28 +1,36 @@
 import PropTypes from 'prop-types';
 
-const componentsCollection = PropTypes.shape({
+export const componentsCollection = PropTypes.shape({
     getComponent: PropTypes.func,
     getCollection: PropTypes.func,
 });
 
-const definition = PropTypes.shape({
-    layout: PropTypes.shape({
-
-    }),
-    routes: PropTypes.objectOf(PropTypes.string),
-    resources: PropTypes.arrayOf(PropTypes.shape({
-
-    })),
+export const layoutDefinition = PropTypes.shape({
+    type: PropTypes.string,
 });
 
-const field = PropTypes.shape({
+export const resourceDefinition = PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    messages: PropTypes.objectOf(PropTypes.objectOf(PropTypes.string)),
+});
+
+export const resourcesDefinition = PropTypes.arrayOf(resourceDefinition);
+
+export const definition = PropTypes.shape({
+    layout: layoutDefinition,
+    routes: PropTypes.objectOf(PropTypes.string),
+    resources: resourcesDefinition,
+});
+
+export const field = PropTypes.shape({
     type: PropTypes.string,
     name: PropTypes.string,
 });
 
-const fields = PropTypes.arrayOf(field);
+export const fields = PropTypes.arrayOf(field);
 
-const resource = PropTypes.shape({
+export const resource = PropTypes.shape({
     id: PropTypes.string,
     type: PropTypes.string,
     messages: PropTypes.oneOfType([
@@ -38,31 +46,31 @@ const resource = PropTypes.shape({
     }),
 });
 
-const urlGenerator = PropTypes.shape({
+export const urlGenerator = PropTypes.shape({
     route: PropTypes.func.isRequired,
 });
 
-const intl = PropTypes.shape({
+export const intl = PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,
 });
 
-const intlMessage = PropTypes.shape({
+export const intlMessage = PropTypes.shape({
     id: PropTypes.string,
     description: PropTypes.string,
     defaultMessage: PropTypes.string,
 });
 
-const message = PropTypes.oneOfType([
+export const message = PropTypes.oneOfType([
     PropTypes.string,
     intlMessage,
 ]);
 
-const label = PropTypes.oneOfType([
+export const label = PropTypes.oneOfType([
     PropTypes.node,
     intlMessage,
 ]);
 
-const button = PropTypes.shape({
+export const button = PropTypes.shape({
     id: PropTypes.string,
     type: PropTypes.string,
     label: message,
@@ -70,7 +78,7 @@ const button = PropTypes.shape({
     onClick: PropTypes.func,
 });
 
-const buttons = PropTypes.arrayOf(button);
+export const buttons = PropTypes.arrayOf(button);
 
 export default {
     componentsCollection,

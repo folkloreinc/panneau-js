@@ -1,7 +1,7 @@
 {
     "core.buttons.resources.add": "Ajouter {name}",
+    "core.buttons.resources.cancel": "Annuler",
     "core.buttons.resources.create": "Créer",
-    "core.buttons.resources.edit": "Enregistrer",
     "core.buttons.resources.save": "Enregistrer",
     "core.navbar.resources.create": "Ajouter {resource}",
     "core.navbar.resources.index": "Voir tous {resource}",

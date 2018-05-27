@@ -47,14 +47,7 @@ class ResourceCreate extends Component {
             <ResourceForm
                 action="create"
                 title={messages.title}
-                buttons={[
-                    {
-                        id: 'submit',
-                        type: 'submit',
-                        label: messages.create,
-                        className: 'btn-primary btn-lg',
-                    },
-                ]}
+                saveButtonLabel={messages.create}
                 onFormComplete={this.onFormComplete}
                 {...this.props}
             />
