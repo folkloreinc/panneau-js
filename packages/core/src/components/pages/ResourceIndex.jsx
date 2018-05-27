@@ -179,11 +179,7 @@ class ResourceIndex extends Component {
         const resourceType = get(resource, 'type', 'default');
         const isTyped = resourceType === 'typed';
         const types = isTyped ? get(resource, 'types', []) : null;
-        const buttonMessage = get(
-            resource,
-            'messages.buttons.resources.add',
-            null,
-        );
+        const buttonMessage = get(resource, 'messages.buttons.resources.add', null);
         const name = get(
             resource,
             'messages.names.a',
@@ -212,7 +208,8 @@ class ResourceIndex extends Component {
                         aria-haspopup="true"
                         aria-expanded="false"
                     >
-                        {buttonMessage !== null ? buttonMessage : buttonLabel} <span className="caret" />
+                        {buttonMessage !== null ? buttonMessage : buttonLabel}{' '}
+                        <span className="caret" />
                     </button>
                 ) : (
                     <Link
@@ -246,7 +243,6 @@ class ResourceIndex extends Component {
                                 {label}
                             </Link>
                         ))}
-
                     </div>
                 ) : null}
             </div>
@@ -269,10 +265,20 @@ class ResourceIndex extends Component {
         );
 
         return (
-            <div className={styles.header}>
+            <div
+                className={classNames({
+                    'py-4': true,
+                    [styles.header]: true,
+                })}
+            >
                 <div className={styles.cols}>
                     <div className={styles.col}>
-                        <h1 className={styles.title}>
+                        <h1
+                            className={classNames({
+                                'display-4': true,
+                                [styles.title]: true,
+                            })}
+                        >
                             {message !== null ? message : defaultTitle}
                         </h1>
                     </div>
@@ -344,8 +350,8 @@ class ResourceIndex extends Component {
         return (
             <div className={containerClassNames}>
                 <div className="container">
-                    <div className="row">
-                        <div className="col-md-8 col-md-offset-2">
+                    <div className="row justify-content-md-center">
+                        <div className="col-md-8">
                             {this.renderHeader()}
                             {items !== null ? this.renderList() : null}
                             {/* this.renderPagination() */}
@@ -367,7 +373,8 @@ const mapStateToProps = ({ panneau }, { match, location, urlGenerator }) => {
         resource:
             resources.find(it =>
                 (resourceId !== null && it.id === resourceId) ||
-                    (resourceId === null && urlGenerator.route(`resource.${it.id}.index`) === location.pathname)) || null,
+                    (resourceId === null &&
+                        urlGenerator.route(`resource.${it.id}.index`) === location.pathname)) || null,
     };
 };
 

@@ -170,12 +170,10 @@ class NormalForm extends Component {
         return (
             <div className={errorsClassNames}>
                 {isArray(generalError) ? (
-                    <ul>
-                        {generalError.map(error => (
-                            <li key={`error-${error}`}>{ error }</li>
-                        ))}
-                    </ul>
-                ) : generalError}
+                    <ul>{generalError.map(error => <li key={`error-${error}`}>{error}</li>)}</ul>
+                ) : (
+                    generalError
+                )}
             </div>
         );
     }
@@ -236,16 +234,15 @@ class NormalForm extends Component {
                             <div className={styles.errors}>{this.renderErrors()}</div>
                         ) : null}
                         <div className={styles.fields}>{this.renderFields()}</div>
-                        <div className={styles.actions}>
+                        <div
+                            className={classNames({
+                                'mt-4': true,
+                                'pt-2': true,
+                                'border-top': true,
+                                [styles.actions]: true,
+                            })}
+                        >
                             <div className={styles.cols}>
-                                <div
-                                    className={classNames({
-                                        [styles.col]: true,
-                                        [styles.colActions]: true,
-                                    })}
-                                >
-                                    {this.renderButtons()}
-                                </div>
                                 <div
                                     className={classNames({
                                         [styles.col]: true,
@@ -253,6 +250,15 @@ class NormalForm extends Component {
                                     })}
                                 >
                                     {this.renderNotice()}
+                                </div>
+                                <div
+                                    className={classNames({
+                                        'text-right': true,
+                                        [styles.col]: true,
+                                        [styles.colActions]: true,
+                                    })}
+                                >
+                                    {this.renderButtons()}
                                 </div>
                             </div>
                         </div>

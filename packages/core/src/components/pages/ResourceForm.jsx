@@ -218,6 +218,7 @@ class ResourceForm extends Component {
         const { action, resource, title } = this.props;
 
         const headerClassNames = classNames({
+            'py-4': true,
             [styles.header]: true,
         });
 
@@ -239,7 +240,7 @@ class ResourceForm extends Component {
 
         return (
             <div className={headerClassNames}>
-                <h1>{message !== null ? message : defaultTitle}</h1>
+                <h1 className="display-4">{message !== null ? message : defaultTitle}</h1>
             </div>
         );
     }
@@ -351,8 +352,8 @@ class ResourceForm extends Component {
         return (
             <div className={containerClassNames}>
                 <div className="container">
-                    <div className="row">
-                        <div className="col-md-8 col-md-offset-2">
+                    <div className="row justify-content-md-center">
+                        <div className="col-md-8">
                             {this.renderHeader()}
                             {this.renderErrors()}
                             {needsForm && this.renderForm()}
