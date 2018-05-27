@@ -1,6 +1,6 @@
 {
   "name": "@panneau/field-page",
-  "version": "0.4.5",
+  "version": "0.4.7",
   "description": "Page fields for Panneau",
   "keywords": [
     "react",
@@ -53,9 +53,9 @@
   },
   "dependencies": {
     "@folklore/react-app": "^0.1.15",
-    "@panneau/core": "^0.4.5",
-    "@panneau/field": "^0.4.5",
-    "@panneau/field-item": "^0.4.5",
+    "@panneau/core": "^0.4.7",
+    "@panneau/field": "^0.4.7",
+    "@panneau/field-item": "^0.4.7",
     "babel-runtime": "^6.26.0",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",

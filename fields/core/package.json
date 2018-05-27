@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field",
-    "version": "0.4.5",
+    "version": "0.4.7",
     "description": "Field core for Panneau",
     "keywords": [
         "react",
@@ -52,7 +52,7 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/core": "^0.4.5",
+        "@panneau/core": "^0.4.7",
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.5",
         "fine-uploader": "^5.16.0",
