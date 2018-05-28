@@ -1,6 +1,6 @@
 {
   "name": "@panneau/field-blocks",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "description": "Blocks fields for Panneau",
   "keywords": [
     "react",
@@ -52,9 +52,9 @@
     "start": "npm run storybook"
   },
   "dependencies": {
-    "@panneau/core": "^0.4.8",
-    "@panneau/field": "^0.4.8",
-    "@panneau/field-items": "^0.4.8",
+    "@panneau/core": "^0.4.9",
+    "@panneau/field": "^0.4.9",
+    "@panneau/field-items": "^0.4.9",
     "babel-runtime": "^6.26.0",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
