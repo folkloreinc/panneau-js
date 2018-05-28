@@ -187,23 +187,21 @@ module.exports = {
                     // "url" loader works just like "file" loader but it also embeds
                     // assets smaller than specified size as data URLs to avoid requests.
                     {
-                        test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+                        test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/],
                         loader: require.resolve('url-loader'),
                         options: {
                             limit: 10000,
                             name: 'img/[name].[ext]',
+                            publicPath: '',
                         },
                     },
                     {
-                        test: [/\.woff$/, /\.woff2$/, /\.otf$/, /\.ttf$/, /\.otf$/, /\.svg$/],
-                        include: [
-                            /\/fonts\//,
-                            require.resolve('@fortawesome/fontawesome-free-webfonts'),
-                        ],
+                        test: [/\.woff$/, /\.woff2$/, /\.otf$/, /\.ttf$/, /\.otf$/, /\.eot$/],
                         loader: require.resolve('file-loader'),
                         options: {
                             limit: 10000,
                             name: 'fonts/[name].[ext]',
+                            publicPath: '',
                         },
                     },
                     // Process JS with Babel.
@@ -258,9 +256,8 @@ module.exports = {
                             minimize: true,
                             sourceMap: shouldUseSourceMap,
                             modules: true,
-                            localIdentName: '[name]-[local]',
                             getLocalIdent: (context, localIdentName, localName) => (
-                                getLocalIdent(localIdentName, localName, context.resourcePath)
+                                getLocalIdent(localName, context.resourcePath)
                             ),
                         }),
                         // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
@@ -293,9 +290,8 @@ module.exports = {
                                 minimize: true,
                                 sourceMap: shouldUseSourceMap,
                                 modules: true,
-                                localIdentName: '[name]-[local]',
                                 getLocalIdent: (context, localIdentName, localName) => (
-                                    getLocalIdent(localIdentName, localName, context.resourcePath)
+                                    getLocalIdent(localName, context.resourcePath)
                                 ),
                             },
                             'sass-loader',
@@ -315,6 +311,7 @@ module.exports = {
                         exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
                         options: {
                             name: 'medias/[name].[ext]',
+                            publicPath: '',
                         },
                     },
                     // ** STOP ** Are you adding a new loader?
