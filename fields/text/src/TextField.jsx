@@ -221,7 +221,6 @@ class TextField extends Component {
 
     renderInputGroup(input) {
         const {
-            type,
             prefix,
             suffix,
             prefixClassName,

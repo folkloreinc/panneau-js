@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import invariant from 'invariant';
 import hoistStatics from 'hoist-non-react-statics';
 
-import PanneauPropTypes from './PropTypes';
+import * as PanneauPropTypes from './PropTypes';
 
 function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';

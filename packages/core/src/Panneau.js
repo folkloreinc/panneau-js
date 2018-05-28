@@ -110,7 +110,7 @@ class Panneau extends EventEmitter {
     setOptions(options) {
         this.options = {
             ...this.options,
-            ...options
+            ...options,
         };
 
         const {
@@ -165,7 +165,7 @@ class Panneau extends EventEmitter {
      */
     components(key, value) {
         if (typeof value !== 'undefined') {
-            this.componentsCollection.addComponent(key, value)
+            this.componentsCollection.addComponent(key, value);
             return this;
         } else if (typeof key !== 'undefined') {
             return this.componentsCollection.getComponent(key);
