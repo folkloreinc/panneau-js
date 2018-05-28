@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
-import pick from 'lodash/pick';
-import omit from 'lodash/omit';
+// import pick from 'lodash/pick';
+// import omit from 'lodash/omit';
 import classNames from 'classnames';
 import { FormGroup } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -234,8 +234,8 @@ class SelectField extends Component {
             ...other
         } = this.props;
 
-        const groupProps = pick(this.props, Object.keys(FormGroup.propTypes));
-        const selectProps = omit(other, Object.keys(FormGroup.propTypes));
+        // const groupProps = pick(this.props, Object.keys(FormGroup.propTypes));
+        // const selectProps = omit(other, Object.keys(FormGroup.propTypes));
         const selectOptions = this.getOptions();
         const defaultValue = selectOptions.length > 0 ?
             this.getValueFromOption(selectOptions[0]) : null;

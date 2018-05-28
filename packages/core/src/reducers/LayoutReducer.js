@@ -1,6 +1,4 @@
-import {
-    SET_DEFINITION,
-} from '../actions/LayoutActions';
+import { SET_DEFINITION } from '../actions/LayoutActions';
 
 const initialState = {
     definition: null,
@@ -19,7 +17,7 @@ const LayoutReducer = (previousState, action) => {
             definition: {
                 ...action.payload,
             },
-        }
+        };
     }
     default: {
         return state;

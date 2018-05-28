@@ -32,6 +32,7 @@ class ComponentsCollection {
     getComponents(namespace) {
         return Object.keys(this.components).reduce((components, key) => {
             if (typeof namespace !== 'undefined') {
+                // eslint-disable-next-line no-useless-escape
                 const matches = key.match(new RegExp(`^${namespace}\.(.*)$`));
                 return matches ? {
                     ...components,

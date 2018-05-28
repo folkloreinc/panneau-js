@@ -17,7 +17,6 @@ const propTypes = {
     selectable: PropTypes.bool,
     deleteIcon: PropTypes.string,
     selectIcon: PropTypes.string,
-    removeIcon: PropTypes.string,
     className: PropTypes.string,
     withoutBorder: PropTypes.bool,
     thumbnailSize: PropTypes.string,
@@ -197,6 +196,7 @@ class Card extends Component {
         } = this.props;
 
         const thumbnail = getThumbnail !== null ? getThumbnail(item, this.props) : null;
+        const icon = getIcon !== null ? getIcon(item, this.props) : null; // eslint-disable-line
 
         const fieldClassNames = classNames({
             card: true,

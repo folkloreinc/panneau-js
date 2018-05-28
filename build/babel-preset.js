@@ -1,19 +1,19 @@
 const path = require('path');
 
-const BABEL_ENV = process.env.BABEL_ENV || process.env.NODE_ENV || '';
-const compiling = BABEL_ENV === 'es' || BABEL_ENV === 'cjs';
-const umd = BABEL_ENV === 'umd';
+const ENV = process.env.BABEL_ENV || process.env.NODE_ENV || '';
+const isCompiling = ENV === 'es' || ENV === 'cjs';
+const isEs = ENV === 'es';
+const isUmd = ENV === 'umd';
+const isCommonJs = ENV === 'cjs';
+const isTest = ENV === 'test';
 
 const presets = [
-    ['env', {
-        modules: BABEL_ENV === 'cjs' ? 'commonjs' : false,
+    ['env', isTest ? {} : {
+        modules: isCommonJs ? 'commonjs' : false,
         targets: {
-            browsers: [
-                '> 1%',
-                'last 2 versions',
-            ],
+            ie: 9,
         },
-        useBuiltIns: true,
+        useBuiltIns: false,
     }],
     'react',
 ];
@@ -24,7 +24,7 @@ const plugins = [
     }],
 ];
 
-if (!umd) {
+if (!isUmd) {
     plugins.push(['transform-runtime', {
         helpers: true,
         polyfill: false,
@@ -33,14 +33,11 @@ if (!umd) {
     }]);
 }
 
-if (BABEL_ENV === 'dev') {
-    plugins.push('react-hot-loader/babel');
-} else if (BABEL_ENV === 'test') {
+if (isTest) {
     plugins.push('dynamic-import-node');
-    presets[0] = 'env';
 }
 
-if (compiling) {
+if (isCompiling) {
     plugins.push(['css-modules-transform', {
         preprocessCss: path.join(__dirname, './process-scss.js'),
         extensions: ['.css', '.scss'],
@@ -49,7 +46,7 @@ if (compiling) {
     plugins.push([path.join(__dirname, './babel-plugin-transform-require-ignore'), {
         extensions: ['.global.scss'],
     }]);
-    if (BABEL_ENV === 'es') {
+    if (isEs) {
         plugins.push(['react-intl', {
             messagesDir: './intl/messages/',
         }]);
