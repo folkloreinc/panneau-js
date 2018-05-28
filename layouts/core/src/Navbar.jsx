@@ -130,7 +130,7 @@ class Navbar extends Component {
                                         this.onClickItem(e, subIt, subIndex, position)
                                     }
                                 >
-                                    {isObject(label) && typeof label.id !== 'undefined' ? (
+                                    {isObject(subIt.label) && typeof subIt.label.id !== 'undefined' ? (
                                         <FormattedMessage {...subIt.label || null} />
                                     ) : (
                                         subIt.label || ''
