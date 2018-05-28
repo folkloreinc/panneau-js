@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import get from 'lodash/get';
-import isString from 'lodash/isString';
+import isObject from 'lodash/isObject';
 
 const propTypes = {
     title: PropTypes.string,
@@ -103,7 +103,11 @@ class Navbar extends Component {
                         {...linkProps}
                         onClick={e => this.onClickItem(e, it, index, position)}
                     >
-                        {isString(label) ? label : <FormattedMessage {...label} />}{' '}
+                        {isObject(label) && typeof label.id !== 'undefined' ? (
+                            <FormattedMessage {...label} />
+                        ) : (
+                            label
+                        )}{' '}
                         {it.dropdown ? <span className="caret" /> : null}
                     </a>
                 ) : null}
@@ -126,10 +130,10 @@ class Navbar extends Component {
                                         this.onClickItem(e, subIt, subIndex, position)
                                     }
                                 >
-                                    {isString(subIt.label || '') ? (
-                                        subIt.label
-                                    ) : (
+                                    {isObject(label) && typeof label.id !== 'undefined' ? (
                                         <FormattedMessage {...subIt.label || null} />
+                                    ) : (
+                                        subIt.label || ''
                                     )}{' '}
                                     {it.dropdown ? <span className="caret" /> : null}
                                 </a>
