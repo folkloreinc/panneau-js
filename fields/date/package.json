@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-date",
-    "version": "0.4.13",
+    "version": "0.4.15",
     "description": "Date field for Panneau",
     "keywords": [
         "react",
@@ -51,10 +51,10 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/core": "^0.4.13",
-        "@panneau/field": "^0.4.13",
-        "@panneau/field-text": "^0.4.13",
-        "@panneau/modal-popover": "^0.4.10",
+        "@panneau/core": "^0.4.15",
+        "@panneau/field": "^0.4.15",
+        "@panneau/field-text": "^0.4.15",
+        "@panneau/modal-popover": "^0.4.15",
         "array-flatten": "^2.1.1",
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.5",
