@@ -13,7 +13,7 @@ const presets = [
         targets: {
             ie: 9,
         },
-        useBuiltIns: true,
+        useBuiltIns: isUmd,
     }],
     'react',
 ];

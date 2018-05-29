@@ -1,7 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const path = require('path');
 const fs = require('fs');
-const nodeExternals = require('webpack-node-externals');
 const webpackConfig = require('./webpack.config.prod');
 const getPackagesPaths = require('./lib/getPackagesPaths');
 
@@ -52,20 +51,5 @@ module.exports = {
         alias,
         modules,
     },
-    externals: [
-        nodeExternals({
-            whitelist: [
-                'ckeditor',
-                'react-ace',
-                /^brace/,
-                /react-dates/,
-                'moment',
-                'react-select',
-                'rc-switch',
-                'rc-slider',
-                /^@panneau\//,
-                /^core-js/,
-            ],
-        }),
-    ],
+    externals: [],
 };
