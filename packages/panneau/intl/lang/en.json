@@ -13,6 +13,7 @@
     "core.titles.resources.edit": "Edit {name}",
     "core.titles.resources.index": "{name}",
     "fields.blocks.add_button_type_label": "a block",
+    "fields.blocks.item_title": "Block #{index}",
     "fields.core.buttons.add": "Add",
     "fields.items.buttons.add": "Add",
     "fields.items.buttons.add_with_type": "Add {type}",
