@@ -431,9 +431,7 @@ class ItemsField extends Component {
                     <div className="col">
                         <div className={styles.title}>{title}</div>
                     </div>
-                    <div className="col text-right">
-                        {actions}
-                    </div>
+                    <div className="col text-right">{actions}</div>
                 </div>
             </div>
         );
@@ -508,7 +506,8 @@ class ItemsField extends Component {
         const { collapsedItems } = this.state;
 
         const key = !sortable ? `item_${index}_${it.type}` : null;
-        const itemCollapsed = !withoutPanel && itemsCollapsible && (collapsedItems[index] || false);
+        const itemCollapsed =
+            !withoutPanel && !withoutHeader && itemsCollapsible && (collapsedItems[index] || false);
 
         const before = this.renderItemBefore(it, index, itemCollapsed);
         const header = !withoutHeader ? this.renderItemHeader(it, index, itemCollapsed) : null;
