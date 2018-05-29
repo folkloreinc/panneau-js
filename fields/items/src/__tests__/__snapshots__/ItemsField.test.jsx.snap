@@ -32,7 +32,6 @@ exports[`match snapshot 1`] = `
           aria-expanded="false"
           aria-haspopup="true"
           className="btn btn-primary"
-          data-toggle="dropdown"
           onClick={[Function]}
           type="button"
         >

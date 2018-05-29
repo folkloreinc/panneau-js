@@ -60,31 +60,35 @@ exports[`match snapshot 1`] = `
         </div>
       </div>
       <div
-        className={undefined}
+        className="mt-4 pt-2 border-top undefined"
       >
         <div
           className={undefined}
         >
           <div
             className="undefined"
+          />
+          <div
+            className="text-right undefined"
           >
             <div
               className={undefined}
             >
-              <button
-                className="btn btn-primary undefined"
-                onClick={null}
-                type="submit"
+              <div
+                className="btn-group"
               >
-                <span>
-                  Save
-                </span>
-              </button>
+                <button
+                  className="btn btn-primary undefined"
+                  onClick={null}
+                  type="submit"
+                >
+                  <span>
+                    Save
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
-          <div
-            className="undefined"
-          />
         </div>
       </div>
     </form>

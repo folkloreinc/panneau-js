@@ -57,7 +57,7 @@ exports[`match snapshot 1`] = `
                       className="btn-group"
                     >
                       <button
-                        className="btn btn-light fas fa-trash"
+                        className="btn btn-light fas fa-times"
                         onClick={[Function]}
                         type="button"
                       />
