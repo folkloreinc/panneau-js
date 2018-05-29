@@ -50,7 +50,6 @@ const AddButton = ({
                     'btn-primary': true,
                     'dropdown-toggle': dropdown !== null && dropdown.length,
                 })}
-                data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
                 {...buttonProps}

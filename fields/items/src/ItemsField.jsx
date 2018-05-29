@@ -317,14 +317,14 @@ class ItemsField extends Component {
 
     addValue(it) {
         const newValue = [].concat(this.props.value || []);
-
+        const type = it || null;
         if (this.props.getNewItemValue) {
-            const val = this.props.getNewItemValue(it);
+            const val = this.props.getNewItemValue(type);
             newValue.push(val);
         } else {
-            newValue.push(it
+            newValue.push(type !== null
                 ? {
-                    type: it.value,
+                    type: type.value,
                 }
                 : {});
         }
