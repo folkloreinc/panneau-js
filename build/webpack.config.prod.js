@@ -8,7 +8,6 @@ const getLocalIdent = require('./utils/getLocalIdent');
 const getClientEnvironment = require('./env');
 
 const srcPath = path.join(process.env.PWD, './src');
-const indexJsPath = path.join(srcPath, './index.js');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -17,7 +16,7 @@ const publicPath = '/';
 // For these, "homepage" can be set to "." to enable relative asset paths.
 const shouldUseRelativeAssetPaths = publicPath === './';
 // Source maps are resource heavy and can cause out of memory issue for large source files.
-const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
+const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP === 'true';
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
 // Omit trailing slash as %PUBLIC_URL%/xyz looks better than %PUBLIC_URL%xyz.
@@ -207,18 +206,12 @@ module.exports = {
                     // Process JS with Babel.
                     {
                         test: /\.(js|jsx|mjs)$/,
-                        exclude: [
-                            path.join(process.env.PWD, './node_modules'),
-                            path.join(__dirname, '../node_modules'),
+                        include: [
+                            /\/src\//,
+                            path.join(process.env.PWD, './src'),
+                            require.resolve('react-intl/src/locale-data-registry'),
+                            require.resolve('babel-polyfill'),
                         ],
-                        loader: require.resolve('babel-loader'),
-                        options: {
-                            compact: true,
-                        },
-                    },
-                    {
-                        test: /\.(js|jsx|mjs)$/,
-                        include: require.resolve('react-intl/src/locale-data-registry'),
                         loader: require.resolve('babel-loader'),
                         options: {
                             compact: true,
@@ -256,9 +249,8 @@ module.exports = {
                             minimize: true,
                             sourceMap: shouldUseSourceMap,
                             modules: true,
-                            getLocalIdent: (context, localIdentName, localName) => (
-                                getLocalIdent(localName, context.resourcePath)
-                            ),
+                            getLocalIdent: (context, localIdentName, localName) =>
+                                getLocalIdent(localName, context.resourcePath),
                         }),
                         // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
                     },
@@ -290,9 +282,8 @@ module.exports = {
                                 minimize: true,
                                 sourceMap: shouldUseSourceMap,
                                 modules: true,
-                                getLocalIdent: (context, localIdentName, localName) => (
-                                    getLocalIdent(localName, context.resourcePath)
-                                ),
+                                getLocalIdent: (context, localIdentName, localName) =>
+                                    getLocalIdent(localName, context.resourcePath),
                             },
                             'sass-loader',
                         ),
@@ -361,7 +352,19 @@ module.exports = {
     ],
     externals: [
         nodeExternals({
-            whitelist: ['ckeditor', 'react-ace', /^brace/, /react-dates/, 'moment', 'react-select', 'rc-switch', 'rc-slider'],
+            whitelist: [
+                'ckeditor',
+                'react-ace',
+                /^brace/,
+                /react-dates/,
+                'moment',
+                'react-select',
+                'rc-switch',
+                'rc-slider',
+                /^core-js/,
+                /^regenerator-runtime/,
+                'babel-polyfill',
+            ],
         }),
     ],
     // Some libraries import Node modules but don't use them in the browser.
