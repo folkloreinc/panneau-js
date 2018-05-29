@@ -11,14 +11,21 @@ const messages = defineMessages({
         description: 'The block type label on the add button',
         defaultMessage: 'a block',
     },
+    title: {
+        id: 'fields.blocks.item_title',
+        description: 'The title of each block item',
+        defaultMessage: 'Block #{index}',
+    },
 });
 
 const propTypes = {
     addButtonTypeLabel: PanneauPropTypes.message,
+    itemTitle: PanneauPropTypes.message,
 };
 
 const defaultProps = {
     addButtonTypeLabel: messages.typeLabel,
+    itemTitle: messages.title,
 };
 
 const contextTypes = {
