@@ -426,7 +426,7 @@ class ResourceForm extends Component {
             <div className={containerClassNames}>
                 <div className="container">
                     <div className="row justify-content-md-center">
-                        <div className="col-md-8">
+                        <div className="col-lg-8">
                             {this.renderHeader()}
                             {this.renderErrors()}
                             {isLoading ? this.renderLoading() : this.renderForm()}
