@@ -3,5 +3,10 @@
     "id": "fields.blocks.add_button_type_label",
     "description": "The block type label on the add button",
     "defaultMessage": "a block"
+  },
+  {
+    "id": "fields.blocks.item_title",
+    "description": "The title of each block item",
+    "defaultMessage": "Block #{index}"
   }
 ]
