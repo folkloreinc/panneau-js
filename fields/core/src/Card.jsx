@@ -43,7 +43,7 @@ const defaultProps = {
     selectable: false,
     vertical: false,
     thumbnailSize: 'contain',
-    deleteIcon: 'fas fa-trash',
+    deleteIcon: 'fas fa-times',
     selectIcon: 'fas fa-plus',
     className: null,
     withoutBorder: false,
