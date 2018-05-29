@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-toggle",
-    "version": "0.4.16",
+    "version": "0.4.17",
     "description": "Toggle field for Panneau",
     "keywords": [
         "react",
@@ -52,8 +52,8 @@
     },
     "dependencies": {
         "@panneau/core": "^0.4.16",
-        "@panneau/field": "^0.4.16",
-        "@panneau/field-select": "^0.4.16",
+        "@panneau/field": "^0.4.17",
+        "@panneau/field-select": "^0.4.17",
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
