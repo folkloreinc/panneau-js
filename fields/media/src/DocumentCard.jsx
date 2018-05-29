@@ -24,7 +24,7 @@ const propTypes = {
 const defaultProps = {
     pagesLabel: messages.pages,
     sizeLabel: messages.size,
-    thumbnailPath: 'thumbnails.0.url',
+    thumbnailPath: ['thumbnail', 'thumbnails.0.url'],
     pagesPath: 'pages',
     sizePath: 'original_file.size_human',
 };

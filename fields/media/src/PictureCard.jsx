@@ -24,7 +24,7 @@ const propTypes = {
 const defaultProps = {
     dimensionLabel: messages.dimension,
     sizeLabel: messages.size,
-    thumbnailPath: 'url',
+    thumbnailPath: ['thumbnail', 'url'],
     dimensionPath: 'dimension',
     sizePath: 'original_file.size_human',
 };

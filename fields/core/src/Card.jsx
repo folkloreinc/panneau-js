@@ -3,8 +3,15 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import moment from 'moment';
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 
 import styles from './styles/card.scss';
+
+const getFromPath = (item, path) => (
+    (isArray(path)
+        ? path.map(subPath => get(item, subPath, null)).find(it => it !== null) || null
+        : get(item, path, null))
+);
 
 const propTypes = {
     item: PropTypes.shape({
@@ -53,12 +60,12 @@ const defaultProps = {
     datePath: 'created_at',
     thumbnailPath: 'thumbnail',
     iconPath: 'icon',
-    getName: (item, { namePath }) => get(item, namePath, null),
-    getDetails: (item, { detailsPath }) => get(item, detailsPath, null),
-    getThumbnail: (item, { thumbnailPath }) => get(item, thumbnailPath, null),
-    getIcon: (item, { iconPath }) => get(item, iconPath, null),
+    getName: (item, { namePath }) => getFromPath(item, namePath),
+    getDetails: (item, { detailsPath }) => getFromPath(item, detailsPath),
+    getThumbnail: (item, { thumbnailPath }) => getFromPath(item, thumbnailPath),
+    getIcon: (item, { iconPath }) => getFromPath(item, iconPath),
     getDate: (item, { datePath }) => {
-        const date = get(item, datePath, null);
+        const date = getFromPath(item, datePath);
         return date !== null
             ? moment(date, 'YYYY-MM-DD HH::mm:ss').format('D MMM YYYY, H:mm')
             : null;

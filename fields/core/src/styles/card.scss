@@ -44,6 +44,12 @@
         .details {
             font-size: .85em;
         }
+
+        p {
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
     }
 
     .actions {
