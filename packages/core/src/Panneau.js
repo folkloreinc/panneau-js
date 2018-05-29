@@ -6,6 +6,7 @@ import {
 import EventEmitter from 'wolfy87-eventemitter';
 import isObject from 'lodash/isObject';
 import get from 'lodash/get';
+import moment from 'moment';
 
 import ComponentsCollection from './lib/ComponentsCollection';
 import PanneauComponent from './components/Panneau';
@@ -125,6 +126,8 @@ class Panneau extends EventEmitter {
             ...get(messages, this.locale, {}),
         };
         this.componentsCollection = componentsCollection;
+
+        moment.locale(locale);
 
         if (this.rendered) {
             this.render();
