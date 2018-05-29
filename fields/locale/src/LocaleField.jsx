@@ -152,7 +152,7 @@ class LocaleField extends Component {
             btn: true,
             active: this.state.locale === locale,
             'btn-warning': !hasValue,
-            'btn-success': hasValue,
+            'btn-outline-secondary': hasValue,
         });
 
         const onClick = e => this.onLocaleClick(e, locale);
