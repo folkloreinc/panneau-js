@@ -64,6 +64,7 @@ module.exports = {
                 'rc-switch',
                 'rc-slider',
                 /^@panneau\//,
+                /^core-js/,
             ],
         }),
     ],
