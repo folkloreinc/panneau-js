@@ -1,6 +1,6 @@
 {
     "name": "panneau",
-    "version": "0.4.22",
+    "version": "0.4.23",
     "description": "Framework to build dashboard and administration panels",
     "keywords": [
         "react",
@@ -56,8 +56,8 @@
         "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
         "@panneau/core": "^0.4.22",
         "@panneau/field": "^0.4.22",
-        "@panneau/fields": "^0.4.22",
-        "@panneau/forms": "^0.4.22",
+        "@panneau/fields": "^0.4.23",
+        "@panneau/forms": "^0.4.23",
         "@panneau/layouts": "^0.4.22",
         "@panneau/lists": "^0.4.22",
         "@panneau/modals": "^0.4.22",
