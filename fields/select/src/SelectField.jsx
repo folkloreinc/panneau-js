@@ -29,7 +29,7 @@ const propTypes = {
     ])),
     getValueFromOption: PropTypes.func,
     onChange: PropTypes.func,
-    onOptionsChange: PropTypes.func,
+    onNewOption: PropTypes.func,
 
     inputOnly: PropTypes.bool,
     placeholder: PropTypes.string,
@@ -56,7 +56,7 @@ const defaultProps = {
     value: null,
     options: [],
     onChange: null,
-    onOptionsChange: null,
+    onNewOption: null,
 
     inputOnly: false,
     getValueFromOption: null,
@@ -98,6 +98,7 @@ class SelectField extends Component {
 
         this.state = {
             options: props.options,
+            newOptions: [],
             ready: false,
         };
     }
@@ -143,17 +144,28 @@ class SelectField extends Component {
     }
 
     onNewOptionClick(option) {
-        const { options } = this.state;
-        this.setState({
-            options: [
-                ...options,
+        const { multiple, value, onNewOption } = this.props;
+        if (onNewOption !== null) {
+            onNewOption(option);
+            return;
+        }
+
+        this.setState(({ newOptions }) => ({
+            newOptions: [
+                ...newOptions,
                 option,
             ],
-        }, () => {
-            if (this.props.onOptionsChange) {
-                this.props.onOptionsChange(this.state.options);
-            }
-        });
+        }));
+
+        let newValue;
+        if (multiple) {
+            newValue = (value || []).concat([option]).map(this.getValueFromOption);
+        } else {
+            newValue = this.getValueFromOption(option);
+        }
+        if (this.props.onChange) {
+            this.props.onChange(newValue);
+        }
     }
 
     onChange(value) {
@@ -195,8 +207,9 @@ class SelectField extends Component {
         } = this.props;
         const {
             options,
+            newOptions,
         } = this.state;
-        const selectOptions = [].concat(options);
+        const selectOptions = [].concat(options).concat(newOptions);
         if (!cannotBeEmpty && addEmptyOption) {
             selectOptions.unshift(emptyOption);
         }
@@ -231,11 +244,15 @@ class SelectField extends Component {
             notSearchable,
             notClearable,
             multiple,
+            fetchOptions,
+            loadOptions,
+            options,
+            getValueFromOption,
+            onNewOption,
+            onChange,
             ...other
         } = this.props;
 
-        // const groupProps = pick(this.props, Object.keys(FormGroup.propTypes));
-        // const selectProps = omit(other, Object.keys(FormGroup.propTypes));
         const selectOptions = this.getOptions();
         const defaultValue = selectOptions.length > 0 ?
             this.getValueFromOption(selectOptions[0]) : null;
@@ -249,6 +266,7 @@ class SelectField extends Component {
 
         const asyncProps = async ? {
             loadOptions: this.loadOptions,
+
         } : {
             options: selectOptions,
         };

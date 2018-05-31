@@ -2,6 +2,9 @@
     "id": 1,
     "type": "home",
     "data": {
-        
+        "title": {
+            "en": "Home",
+            "fr": "Accueil"
+        }
     }
 }
