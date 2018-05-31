@@ -45,12 +45,12 @@ class ResourceApi {
 
     show(id) {
         const path = this.getActionPath('show', id);
-        return this.callApi(path, 'get', id);
+        return this.callApi(path, 'get');
     }
 
     edit(id) {
         const path = this.getActionPath('edit', id);
-        return this.callApi(path, 'get', id);
+        return this.callApi(path, 'get');
     }
 
     update(id, data) {
