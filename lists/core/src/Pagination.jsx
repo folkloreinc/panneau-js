@@ -1,10 +1,18 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
+import URL from 'url-parse';
 
-const generateUrl = (page, url, pageParamName) => {
-    const finalUrl = url.replace(/(page=)[^&]+/, `${pageParamName}=${page}`);
-    return finalUrl;
+const generateUrl = (url, page, pageParamName) => {
+    const urlObject = new URL(url, {}, true);
+    urlObject.set('query', {
+        ...urlObject.query,
+        [pageParamName]: page,
+    });
+    // const finalUrl = url.match() ? url.replace(/(page=)[^&]+/, `${pageParamName}=${page}`) : ;
+    return urlObject.toString();
 };
 
 const propTypes = {
@@ -59,22 +67,23 @@ const ArrowLink = ({
     } else {
         otherPage = isDisabled ? 1 : currentPage + 1;
     }
-    const onClickPrevious = !isDisabled ? e => onClick(e, otherPage) : null;
-    const linkUrl = isDisabled ? '#' : generateUrl(otherPage, url, pageParamName);
+    const onClickPrevious = !isDisabled && onClick !== null ? e => onClick(e, otherPage) : null;
+    const linkUrl = isDisabled ? '#' : generateUrl(url, otherPage, pageParamName);
 
     const itemClassNames = classNames({
+        'page-item': true,
         disabled: isDisabled,
     });
 
     return (
         <li className={itemClassNames}>
-            <a href={linkUrl} onClick={onClickPrevious} aria-label="Previous">
+            <Link to={linkUrl} onClick={onClickPrevious} aria-label="Previous" className="page-link">
                 {type === 'previous' ? (
                     <span aria-hidden="true">&laquo;</span>
                 ) : (
                     <span aria-hidden="true">&raquo;</span>
                 )}
-            </a>
+            </Link>
         </li>
     );
 };
@@ -158,18 +167,19 @@ const PageLinks = ({
 const PageLink = ({
     page, currentPage, url, pageParamName, onClick,
 }) => {
-    const linkUrl = generateUrl(page, url, pageParamName);
-    const onClickPage = e => onClick(e, page);
+    const linkUrl = generateUrl(url, page, pageParamName);
+    const onClickPage = onClick !== null ? e => onClick(e, page) : null;
 
     const itemClassNames = classNames({
+        'page-item': true,
         active: currentPage === page,
     });
 
     return (
         <li className={itemClassNames}>
-            <a href={linkUrl} onClick={onClickPage}>
+            <Link to={linkUrl} onClick={onClickPage} className="page-link">
                 {page}
-            </a>
+            </Link>
         </li>
     );
 };
@@ -182,13 +192,14 @@ PageLink.defaultProps = linkDefaultProps;
 const PageDots = (page) => {
     const key = `dots_${page}`;
     const itemClassNames = classNames({
+        'page-item': true,
         disabled: true,
     });
 
     /* eslint-disable jsx-a11y/anchor-is-valid */
     return (
         <li key={key} className={itemClassNames}>
-            <a href="#">...</a>
+            <a href="#" className="page-link">...</a>
         </li>
     );
     /* eslint-enable jsx-a11y/anchor-is-valid */

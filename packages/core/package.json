@@ -69,6 +69,7 @@
         "popper": "^1.0.1",
         "popper.js": "^1.14.3",
         "prop-types": "^15.6.0",
+        "query-string": "^6.1.0",
         "react-intl": "^2.4.0",
         "react-redux": "^5.0.6",
         "react-router": "^4.2.0",

@@ -11,7 +11,6 @@ import styles from './styles.scss';
 
 const propTypes = {
     items: PropTypes.arrayOf(PropTypes.object),
-    pagination: PropTypes.bool,
     striped: PropTypes.bool,
     hoverable: PropTypes.bool,
     tableClassName: PropTypes.string,
@@ -29,7 +28,6 @@ const propTypes = {
 
 const defaultProps = {
     items: [],
-    pagination: true,
     striped: false,
     hoverable: true,
     tableClassName: null,

@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
 import classNames from 'classnames';
+import queryString from 'query-string';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { withUrlGenerator } from '@folklore/react-app';
 import { PulseLoader } from 'react-spinners';
@@ -78,6 +79,7 @@ class ResourceIndex extends Component {
 
         this.state = {
             items: props.items,
+            pagination: null,
             errors: props.errors,
         };
     }
@@ -116,9 +118,16 @@ class ResourceIndex extends Component {
         }
     }
 
-    onItemsLoaded(items) {
+    onItemsLoaded(data) {
+        if (this.isPaginated()) {
+            const { data: items, ...pagination } = data;
+            this.setState({
+                items,
+                pagination,
+            });
+        }
         this.setState({
-            items,
+            items: data,
         });
     }
 
@@ -157,10 +166,23 @@ class ResourceIndex extends Component {
         });
     }
 
-    loadItems() {
+    isPaginated() {
         const { resource } = this.props;
+        return get(resource, 'lists.index.pagination', get(resource, 'lists.pagination', false));
+    }
+
+    loadItems() {
+        const { resource, location } = this.props;
+        const params = {};
+        if (this.isPaginated()) {
+            const query = queryString.parse(location.search);
+            const page = query.page || null;
+            if (page !== null) {
+                params.page = page;
+            }
+        }
         resource.api
-            .index()
+            .index(params)
             .then(this.onItemsLoaded)
             .catch(this.onItemsLoadError);
     }
@@ -337,9 +359,20 @@ class ResourceIndex extends Component {
 
     // eslint-disable-next-line class-methods-use-this
     renderPagination() {
-        const { listsCollection } = this.props;
+        const { resource, listsCollection, urlGenerator } = this.props;
+        const { pagination } = this.state;
         const Pagination = listsCollection.getComponent('pagination');
-        return <Pagination total={20} perPage={1} currentPage={3} lastPage={10} url="/?page=1" />;
+        return (
+            <Pagination
+                total={pagination.total}
+                perPage={pagination.per_page}
+                currentPage={pagination.current_page}
+                lastPage={pagination.last_page}
+                url={urlGenerator.route('resource.index', {
+                    resource: resource.id,
+                })}
+            />
+        );
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -357,7 +390,7 @@ class ResourceIndex extends Component {
     }
 
     render() {
-        const { items } = this.state;
+        const { items, pagination } = this.state;
         const containerClassNames = classNames({
             [styles.container]: true,
         });
@@ -370,7 +403,7 @@ class ResourceIndex extends Component {
                         <div className="col-lg-8">
                             {this.renderHeader()}
                             {isLoading ? this.renderLoading() : this.renderList()}
-                            {/* this.renderPagination() */}
+                            {pagination !== null ? this.renderPagination() : null}
                         </div>
                     </div>
                 </div>
