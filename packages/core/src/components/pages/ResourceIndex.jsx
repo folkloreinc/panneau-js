@@ -125,6 +125,7 @@ class ResourceIndex extends Component {
                 items,
                 pagination,
             });
+            return;
         }
         this.setState({
             items: data,
