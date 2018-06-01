@@ -84,7 +84,7 @@ class TableList extends Component {
             buttons.push(this.renderTableButton(it, button, rowIndex, colIndex, btnIndex));
         });
 
-        const props = omit(column, ['value', 'label', 'name', 'className', 'path']);
+        const props = TableList.getColumnProps(column);
 
         const tdClassNames = classNames({
             'text-right': true,
