@@ -127,6 +127,7 @@ class ResourceIndex extends Component {
             this.setState({
                 items,
                 pagination,
+                isLoading: false,
             });
             return;
         }
@@ -204,12 +205,13 @@ class ResourceIndex extends Component {
         const { resource, intl, confirmDeleteMessage } = this.props;
         const { name } = resource;
         const confirmMessage = get(resource, 'messages.confirm_delete', confirmDeleteMessage);
-        const message = isObject(confirmMessage) && typeof confirmMessage.id !== 'undefined'
-            ? intl.formatMessage(confirmMessage, {
-                name,
-                id,
-            })
-            : confirmMessage;
+        const message =
+            isObject(confirmMessage) && typeof confirmMessage.id !== 'undefined'
+                ? intl.formatMessage(confirmMessage, {
+                    name,
+                    id,
+                })
+                : confirmMessage;
         // eslint-disable-next-line no-alert
         if (window.confirm(message)) {
             resource.api.destroy(id).then(this.onItemDeleted);
@@ -396,8 +398,14 @@ class ResourceIndex extends Component {
 
     // eslint-disable-next-line class-methods-use-this
     renderLoading() {
+        const { items } = this.state;
         return (
-            <div className={styles.loading}>
+            <div
+                className={classNames({
+                    [styles.loading]: true,
+                    [styles.alone]: items === null,
+                })}
+            >
                 <div className={styles.middle}>
                     <PulseLoader loading />
                 </div>
