@@ -1,9 +1,10 @@
+/* eslint-disable react/no-array-index-key */
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import get from 'lodash/get';
-import isString from 'lodash/isString';
+import isObject from 'lodash/isObject';
 
 const propTypes = {
     title: PropTypes.string,
@@ -74,42 +75,71 @@ class Navbar extends Component {
         const divider = get(it, 'type', 'item') === 'divider';
         const label = get(it, 'label', '');
         const items = get(it, 'items', null);
-        const linkProps = it.dropdown ? {
-            role: 'button',
-            'data-toggle': 'dropdown',
-            'aria-haspopup': 'true',
-            'aria-expanded': 'false',
-        } : {};
+        const linkProps = it.dropdown
+            ? {
+                role: 'button',
+                'data-toggle': 'dropdown',
+                'aria-haspopup': 'true',
+                'aria-expanded': 'false',
+            }
+            : {};
 
         return (
             <li
                 key={`item-${position}-${index}`}
                 className={classNames({
+                    'nav-item': true,
                     dropdown: it.dropdown,
                     divider,
                 })}
             >
-                { !divider ? (
+                {!divider ? (
                     <a
                         href={link}
                         className={classNames({
+                            'nav-link': true,
                             'dropdown-toggle': it.dropdown,
                         })}
                         {...linkProps}
                         onClick={e => this.onClickItem(e, it, index, position)}
                     >
-                        {isString(label) ? label : (
+                        {isObject(label) && typeof label.id !== 'undefined' ? (
                             <FormattedMessage {...label} />
-                        )} { it.dropdown ? (<span className="caret" />) : null }
+                        ) : (
+                            label
+                        )}{' '}
+                        {it.dropdown ? <span className="caret" /> : null}
                     </a>
-                ) : null }
-                { it.dropdown ? (
-                    <ul className="dropdown-menu">
-                        { items.map((subIt, subIndex) => (
-                            this.renderItem(subIt, subIndex, `${position}-${index}-dropdown`)
-                        )) }
-                    </ul>
-                ) : null }
+                ) : null}
+                {it.dropdown ? (
+                    <div className="dropdown-menu">
+                        {items.map((subIt, subIndex) =>
+                            (get(subIt, 'type', 'item') === 'divider' ? (
+                                <div
+                                    key={`subitem-${position}-${index}-${subIndex}`}
+                                    className="dropdown-divider"
+                                />
+                            ) : (
+                                <a
+                                    key={`subitem-${position}-${index}-${subIndex}`}
+                                    href={subIt.link || '#'}
+                                    className={classNames({
+                                        'dropdown-item': true,
+                                    })}
+                                    onClick={e =>
+                                        this.onClickItem(e, subIt, subIndex, position)
+                                    }
+                                >
+                                    {isObject(subIt.label) && typeof subIt.label.id !== 'undefined' ? (
+                                        <FormattedMessage {...subIt.label || null} />
+                                    ) : (
+                                        subIt.label || ''
+                                    )}{' '}
+                                    {it.dropdown ? <span className="caret" /> : null}
+                                </a>
+                            )))}
+                    </div>
+                ) : null}
             </li>
         );
     }
@@ -118,22 +148,17 @@ class Navbar extends Component {
         return (
             <ul
                 className={classNames({
-                    nav: true,
-                    'navbar-nav': true,
+                    'navbar-nav mr-auto': true,
                     'navbar-right': position === 'right',
                 })}
             >
-                { items.map((it, index) => this.renderItem(it, index, position)) }
+                {items.map((it, index) => this.renderItem(it, index, position))}
             </ul>
         );
     }
 
     render() {
-        const {
-            title,
-            titleLink,
-            items,
-        } = this.props;
+        const { title, titleLink, items } = this.props;
 
         const { opened } = this.state;
 
@@ -146,39 +171,28 @@ class Navbar extends Component {
         const rightItems = itemsWithIndex.filter(it => get(it, 'position', 'left') === 'right');
 
         return (
-            <nav className="navbar navbar-default">
-                <div className="container-fluid">
-                    <div className="navbar-header">
-                        <button
-                            type="button"
-                            className="navbar-toggle collapsed"
-                            aria-expanded="false"
-                            onClick={this.onClickHamburger}
-                        >
-                            <span className="sr-only">Menu</span>
-                            <span className="icon-bar" />
-                            <span className="icon-bar" />
-                            <span className="icon-bar" />
-                        </button>
-                        <a
-                            href={titleLink}
-                            className="navbar-brand"
-                            onClick={this.onClickTitle}
-                        >
-                            { title }
-                        </a>
-                    </div>
-
-                    <div
-                        className={classNames({
-                            collapse: true,
-                            'navbar-collapse': true,
-                            in: opened,
-                        })}
-                    >
-                        { this.renderItems(leftItems, 'left') }
-                        { this.renderItems(rightItems, 'right') }
-                    </div>
+            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <a href={titleLink} className="navbar-brand" onClick={this.onClickTitle}>
+                    {title}
+                </a>
+                <button
+                    type="button"
+                    className="navbar-toggler"
+                    aria-expanded="false"
+                    onClick={this.onClickHamburger}
+                >
+                    <span className="sr-only">Menu</span>
+                    <span className="navbar-toggler-icon" />
+                </button>
+                <div
+                    className={classNames({
+                        collapse: true,
+                        'navbar-collapse': true,
+                        show: opened,
+                    })}
+                >
+                    {this.renderItems(leftItems, 'left')}
+                    {this.renderItems(rightItems, 'right')}
                 </div>
             </nav>
         );

@@ -1,5 +1,6 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
-import { action } from '@storybook/addon-actions';// eslint-disable-line import/no-extraneous-dependencies
+import { action } from '@storybook/addon-actions';
 
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';

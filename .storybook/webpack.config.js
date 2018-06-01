@@ -9,7 +9,9 @@ const CSS_NAME = 'panneau-[name]-[local]';
 
 module.exports = (storybookBaseConfig, configType) => {
     // Alias packages
-    const alias = {};
+    const alias = {
+        jquery: require.resolve('jquery-slim'),
+    };
     const exactPackages = [
         'lodash',
         'babel-runtime',

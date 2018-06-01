@@ -1,3 +1,9 @@
-import DateField from './DateField';
+import Date from './DateField';
+import DateRange from './DateRangeField';
 
-export default DateField;
+export {
+    Date,
+    DateRange,
+};
+
+export default Date;

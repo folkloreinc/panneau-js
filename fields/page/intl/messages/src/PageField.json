@@ -1,0 +1,7 @@
+[
+  {
+    "id": "fields.page.placeholder",
+    "description": "Placeholder of the page autosuggest input",
+    "defaultMessage": "Search for a page..."
+  }
+]

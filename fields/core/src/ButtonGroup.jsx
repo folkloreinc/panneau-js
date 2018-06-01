@@ -54,7 +54,7 @@ const ButtonGroup = ({
                 href: null,
                 className: classNames({
                     btn: true,
-                    'btn-default': true,
+                    'btn-light': true,
                     [styles.button]: true,
                     [buttonClassName]: buttonClassName !== null,
                     [customClassName || null]: (customClassName || null) !== null,

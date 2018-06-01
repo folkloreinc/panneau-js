@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import { Route, Switch } from 'react-router';
-import 'bootstrap.native';
+import 'bootstrap';
 
-import PanneauPropTypes from '../lib/PropTypes';
+import * as PanneauPropTypes from '../lib/PropTypes';
 import createContainer from '../lib/createContainer';
 
 import Layout from './Layout';

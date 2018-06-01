@@ -1,12 +1,15 @@
 import get from 'lodash/get';
 import trimEnd from 'lodash/trimEnd';
+import isEmpty from 'lodash/isEmpty';
 import isObject from 'lodash/isObject';
+import queryString from 'query-string';
 import 'whatwg-fetch';
 
 import {
     getResponseAndDataObject,
     throwResponseError,
     throwValidationError,
+    getCSRFHeaders,
 } from './requests';
 
 class ResourceApi {
@@ -24,37 +27,45 @@ class ResourceApi {
         return this.callApi('definition', 'get');
     }
 
-    index() {
-        return this.callApi('index', 'get');
+    index(params = null) {
+        const query = params !== null && isObject(params) ? queryString.stringify(params) : (params || '');
+        const path = `${this.getActionPath('index')}${!isEmpty(query) ? `?${query.replace(/^\?/, '')}` : ''}`;
+        return this.callApi(path, 'get');
     }
 
     create() {
-        return this.callApi('create', 'get');
+        const path = this.getActionPath('create');
+        return this.callApi(path, 'get');
     }
 
     store(data) {
-        return this.callApi('store', 'post', data);
+        const path = this.getActionPath('store');
+        return this.callApi(path, 'post', data);
     }
 
     show(id) {
-        return this.callApi('show', 'get', id);
+        const path = this.getActionPath('show', id);
+        return this.callApi(path, 'get');
     }
 
     edit(id) {
-        return this.callApi('edit', 'get', id);
+        const path = this.getActionPath('edit', id);
+        return this.callApi(path, 'get');
     }
 
     update(id, data) {
-        return this.callApi('update', 'put', id, data);
+        const path = this.getActionPath('update', id);
+        return this.callApi(path, 'put', data);
     }
 
     destroy(id) {
-        return this.callApi('destroy', 'delete', id);
+        const path = this.getActionPath('destroy', id);
+        return this.callApi(path, 'delete');
     }
 
-    callApi(action, method, id = undefined, data = undefined) {
-        const path = this.getActionPath(action, id);
-        const body = (isObject(id) ? id : data) || null;
+    // eslint-disable-next-line class-methods-use-this
+    callApi(path, method, data = undefined) {
+        const body = data || null;
         const methodUpperCase = method.toUpperCase();
         let finalMethod;
         let finalBody;
@@ -77,6 +88,7 @@ class ResourceApi {
             credentials: 'include',
             method: finalMethod,
             headers: {
+                ...getCSRFHeaders(),
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
             },

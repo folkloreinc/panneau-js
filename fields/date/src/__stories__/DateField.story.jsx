@@ -5,6 +5,7 @@ import moment from 'moment';
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
 import DateField from '../DateField';
+import DateRangeField from '../DateRangeField';
 
 moment.locale('fr');
 
@@ -23,9 +24,8 @@ storiesOf('Fields/Date', module)
     .add('range', () => (
         <div>
             <KeepValue>
-                <DateField
+                <DateRangeField
                     label="Label"
-                    type="daterange"
                     onChange={action('change')}
                 />
             </KeepValue>

@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`match snapshot 1`] = `
+<div
+  className="form-group undefined"
+>
+  <div
+    className="form-group-label"
+  >
+    <label
+      className="control-label"
+      htmlFor={null}
+    >
+      Label
+    </label>
+  </div>
+  <div
+    className="form-group-inner"
+    style={
+      Object {
+        "display": "block",
+      }
+    }
+  >
+    <div
+      className={undefined}
+    >
+      <div
+        className="form-group undefined"
+      >
+        <div
+          className="form-group-inner"
+          style={
+            Object {
+              "display": "block",
+            }
+          }
+        >
+          <div
+            className="undefined"
+          >
+            <input
+              aria-activedescendant={null}
+              aria-autocomplete="list"
+              aria-expanded={false}
+              aria-owns="react-autowhatever-1"
+              autoComplete="off"
+              className="form-control undefined"
+              onBlur={[Function]}
+              onChange={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              placeholder="Search for a page..."
+              role="combobox"
+              type="text"
+              value=""
+            />
+            <div
+              className="undefined"
+              id="react-autowhatever-1"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

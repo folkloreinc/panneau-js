@@ -4,14 +4,15 @@ import renderer from 'react-test-renderer';
 /* eslint-enable import/no-extraneous-dependencies */
 import { IntlProvider } from 'react-intl';
 import MediaField from '../MediaField';
-import MediaDocument from '../MediaDocument';
+import DocumentCard from '../DocumentCard';
 
 test('match snapshot', () => {
     const component = renderer.create((
         <IntlProvider locale="en">
             <MediaField
+                type="document"
                 label="Label"
-                MediaComponent={MediaDocument}
+                CardComponent={DocumentCard}
             />
         </IntlProvider>
     ));

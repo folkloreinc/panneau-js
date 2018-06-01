@@ -1,6 +1,6 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import PropTypes from 'prop-types';
-import { SortableElement } from 'react-sortable-hoc';
+import { SortableElement as createSortableElement } from 'react-sortable-hoc';
 
 const propTypes = {
     renderItem: PropTypes.func.isRequired,
@@ -16,9 +16,9 @@ const defaultProps = {
     value: null,
 };
 
-const ListItemRender = ({ renderItem, value, itemIndex }) => renderItem(value, itemIndex);
+const SortableItem = ({ renderItem, value, itemIndex }) => renderItem(value, itemIndex);
 
-ListItemRender.propTypes = propTypes;
-ListItemRender.defaultProps = defaultProps;
+SortableItem.propTypes = propTypes;
+SortableItem.defaultProps = defaultProps;
 
-export default SortableElement(ListItemRender);
+export default createSortableElement(SortableItem);

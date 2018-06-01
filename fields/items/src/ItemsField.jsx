@@ -3,10 +3,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isObject from 'lodash/isObject';
+import isArray from 'lodash/isArray';
 import { arrayMove } from 'react-sortable-hoc';
 import { FormGroup, FieldsGroup, AddButton, ButtonGroup } from '@panneau/field';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { defineMessages } from 'react-intl';
+import { getJSON, PropTypes as PanneauPropTypes } from '@panneau/core';
+import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 
 import SortableHandle from './SortableHandle';
 import SortableList from './SortableList';
@@ -24,30 +25,51 @@ const messages = defineMessages({
         description: 'The label of the "add" button with type in items field',
         defaultMessage: 'Add {type}',
     },
+    title: {
+        id: 'fields.items.title',
+        description: 'The title of each item',
+        defaultMessage: 'Item #{index}',
+    },
+    titleWithLabel: {
+        id: 'fields.items.title_with_label',
+        description: 'The title of each item with a label',
+        defaultMessage: 'Item #{index} - {label}',
+    },
 });
 
 const propTypes = {
+    intl: PropTypes.shape({
+        formatMessage: PropTypes.func.isRequired,
+    }).isRequired,
+
     name: PropTypes.string,
     value: PropTypes.array, // eslint-disable-line react/forbid-prop-types
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     helpText: PropTypes.string,
 
     types: PropTypes.arrayOf(PropTypes.shape({
         type: PropTypes.string,
-        fields: PanneauPropTypes.fields,
+        name: PropTypes.string,
+        id: PropTypes.string,
+        fields: PanneauPropTypes.fields.isRequired,
     })),
     fields: PanneauPropTypes.fields,
+    typesEndpoint: PropTypes.string,
+    fieldsEndpoint: PropTypes.string,
+    FieldComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 
     collapsible: PropTypes.bool,
     collapsed: PropTypes.bool,
     itemsCollapsible: PropTypes.bool,
     topElement: PropTypes.bool,
     sortable: PropTypes.bool,
+    itemTitle: PanneauPropTypes.message,
+    itemTitleWithLabel: PanneauPropTypes.message,
 
     addButtonLabelPrefix: PropTypes.string, // @NOTE: Backward compatibility, remove in next minor
     addButtonLabel: PanneauPropTypes.message,
     addWithTypeButtonLabel: PanneauPropTypes.message,
-    addButtonTypeLabel: PropTypes.string,
+    addButtonTypeLabel: PanneauPropTypes.message,
     addButtonLarge: PropTypes.bool,
 
     withoutPanel: PropTypes.bool,
@@ -60,12 +82,12 @@ const propTypes = {
     confirmRemove: PropTypes.bool,
     confirmRemoveMessage: PropTypes.string,
 
+    renderItemField: PropTypes.func,
     getItemProps: PropTypes.func,
     getNewItemValue: PropTypes.func,
     getItemTitle: PropTypes.func,
     getItemBefore: PropTypes.func,
     getItemBody: PropTypes.func,
-    getItemField: PropTypes.func,
     getItemValue: PropTypes.func,
 
     onChange: PropTypes.func,
@@ -78,6 +100,9 @@ const defaultProps = {
     value: [],
     types: null,
     fields: null,
+    typesEndpoint: null,
+    fieldsEndpoint: null,
+    FieldComponent: null,
     helpText: null,
 
     collapsible: false,
@@ -85,6 +110,8 @@ const defaultProps = {
     itemsCollapsible: true,
     topElement: false,
     sortable: true,
+    itemTitle: messages.title,
+    itemTitleWithLabel: messages.titleWithLabel,
 
     withoutPanel: false,
     withoutHeader: false,
@@ -101,12 +128,12 @@ const defaultProps = {
     confirmRemove: true,
     confirmRemoveMessage: 'Êtes-vous certain de vouloir enlever cet élément?',
 
+    renderItemField: null,
     getItemProps: null,
     getNewItemValue: null,
     getItemTitle: null,
     getItemBefore: null,
     getItemBody: null,
-    getItemField: null,
     getItemValue: null,
 
     onChange: null,
@@ -118,13 +145,27 @@ class ItemsField extends Component {
         super(props);
 
         this.renderItem = this.renderItem.bind(this);
+        this.onTypesLoaded = this.onTypesLoaded.bind(this);
+        this.onFieldsLoaded = this.onFieldsLoaded.bind(this);
         this.onClickAdd = this.onClickAdd.bind(this);
         this.onClickRemove = this.onClickRemove.bind(this);
         this.onSortEnd = this.onSortEnd.bind(this);
 
         this.state = {
+            types: props.types,
+            fields: props.fields,
             collapsedItems: (props.value || []).map(() => true),
         };
+    }
+
+    componentDidMount() {
+        const { typesEndpoint, fieldsEndpoint } = this.props;
+        const { types, fields } = this.state;
+        if (types === null && typesEndpoint !== null) {
+            this.loadTypes();
+        } else if (fields === null && fieldsEndpoint !== null) {
+            this.loadFields();
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -142,6 +183,43 @@ class ItemsField extends Component {
                 });
             }
         }
+
+        const typesChanged = nextProps.types !== this.props.types;
+        if (typesChanged) {
+            this.setState({
+                types: nextProps.types,
+            });
+        }
+
+        const fieldsChanged = nextProps.fields !== this.props.fields;
+        if (fieldsChanged) {
+            this.setState({
+                fields: nextProps.fields,
+            });
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const { typesEndpoint, fieldsEndpoint } = this.props;
+        const typesChanged = prevState.types !== this.state.types;
+        const fieldsChanged = prevState.fields !== this.state.fields;
+        if (typesChanged && this.state.types === null && typesEndpoint !== null) {
+            this.loadTypes();
+        } else if (fieldsChanged && this.state.fields === null && fieldsEndpoint !== null) {
+            this.loadFields();
+        }
+    }
+
+    onTypesLoaded(types) {
+        this.setState({
+            types,
+        });
+    }
+
+    onFieldsLoaded(fields) {
+        this.setState({
+            fields: !isArray(fields) ? fields.fields : fields,
+        });
     }
 
     onClickAdd(e, it) {
@@ -194,15 +272,26 @@ class ItemsField extends Component {
     }
 
     getItemTitle(it, index) {
+        const { itemTitle, itemTitleWithLabel } = this.props;
+        const { types } = this.state;
+        // @NOTE: For backward compatibility. `id` should be used in the future
+        const foundType =
+            types !== null
+                ? types.find(item => (item.type || item.name || item.id || null) === it.type)
+                : null;
         if (this.props.getItemTitle) {
-            return this.props.getItemTitle(it, index);
+            return this.props.getItemTitle(it, index, foundType);
         }
-        const { types } = this.props;
-        const foundItem = types ? types.find(item => item.name === it.type) : null;
-        if (foundItem) {
-            return `#${index + 1} - ${foundItem.label}`;
-        }
-        return `Item #${index + 1}`;
+        const label = foundType !== null ? foundType.label : null;
+        return (
+            <FormattedMessage
+                {...(label !== null ? itemTitleWithLabel : itemTitle)}
+                values={{
+                    index: index + 1,
+                    label,
+                }}
+            />
+        );
     }
 
     getItemProps(it, index, props) {
@@ -212,18 +301,30 @@ class ItemsField extends Component {
         return {};
     }
 
+    loadTypes() {
+        const { typesEndpoint } = this.props;
+        getJSON(typesEndpoint, {
+            credentials: 'include',
+        }).then(this.onTypesLoaded);
+    }
+
+    loadFields() {
+        const { fieldsEndpoint } = this.props;
+        getJSON(fieldsEndpoint, {
+            credentials: 'include',
+        }).then(this.onFieldsLoaded);
+    }
+
     addValue(it) {
         const newValue = [].concat(this.props.value || []);
-
+        const type = it || null;
         if (this.props.getNewItemValue) {
-            const val = this.props.getNewItemValue(it);
-            if (val !== null) {
-                newValue.push(val);
-            }
+            const val = this.props.getNewItemValue(type);
+            newValue.push(val);
         } else {
-            newValue.push(it
+            newValue.push(type !== null
                 ? {
-                    type: it.value,
+                    type: type.value,
                 }
                 : {});
         }
@@ -245,13 +346,18 @@ class ItemsField extends Component {
         const { headerButtons, withoutRemoveButton, sortable } = this.props;
         const buttons = [].concat(headerButtons);
 
+        const buttonClassName = classNames({
+            'btn-outline-secondary': true,
+            [styles.button]: true,
+        });
+
         if (sortable) {
-            buttons.push(<SortableHandle className={styles.button} />);
+            buttons.push(<SortableHandle className={buttonClassName} />);
         }
 
         if (!withoutRemoveButton) {
             buttons.push({
-                icon: 'glyphicon glyphicon-remove',
+                icon: 'fas fa-times',
                 onClick: e => this.onClickRemove(e, index),
             });
         }
@@ -260,10 +366,10 @@ class ItemsField extends Component {
             <div className={styles.actions}>
                 <ButtonGroup
                     className={classNames({
-                        'btn-group-xs': true,
+                        'btn-group-sm': true,
                         [styles.buttonGroup]: true,
                     })}
-                    buttonClassName={styles.button}
+                    buttonClassName={buttonClassName}
                     noWrap
                     buttons={buttons}
                     onClick={(e, button, buttonIndex) =>
@@ -281,17 +387,26 @@ class ItemsField extends Component {
         ) : null;
     }
 
-    renderItemTitle(it, index) {
+    renderItemTitle(it, index, collapsed) {
         const { itemsCollapsible } = this.props;
         const title = this.getItemTitle(it, index);
         return itemsCollapsible ? (
             <button
                 type="button"
-                className={styles.button}
+                className={classNames({
+                    btn: true,
+                    [styles.button]: true,
+                })}
                 onClick={e => this.onClickCollapse(e, it, index)}
             >
                 <span className={styles.icon}>
-                    <span className="caret up" />
+                    <span
+                        className={classNames({
+                            fas: true,
+                            'fa-caret-right': collapsed,
+                            'fa-caret-down': !collapsed,
+                        })}
+                    />
                 </span>
                 <span className={styles.text}>{title}</span>
             </button>
@@ -300,39 +415,31 @@ class ItemsField extends Component {
         );
     }
 
-    renderItemHeader(it, index) {
+    renderItemHeader(it, index, collapsed) {
         const { withoutPanel } = this.props;
-        const title = this.renderItemTitle(it, index);
-        const actions = this.renderItemActions(it, index);
+        const title = this.renderItemTitle(it, index, collapsed);
+        const actions = this.renderItemActions(it, index, collapsed);
 
         const headerClassNames = classNames({
-            'panel-heading': !withoutPanel,
+            'card-header': !withoutPanel,
             [styles.header]: true,
         });
 
         return (
             <div className={headerClassNames}>
-                <div className={styles.cols}>
-                    <div className={styles.col}>
+                <div className="row">
+                    <div className="col">
                         <div className={styles.title}>{title}</div>
                     </div>
-                    <div
-                        className={classNames({
-                            [styles.col]: true,
-                            [styles.right]: true,
-                        })}
-                    >
-                        {actions}
-                    </div>
+                    <div className="col text-right">{actions}</div>
                 </div>
             </div>
         );
     }
 
     renderItemField(it, index, collapsed) {
-        const {
-            value, types, fields, getItemField,
-        } = this.props;
+        const { value, renderItemField, FieldComponent } = this.props;
+        const { types, fields } = this.state;
 
         const itemValue = value[index] || null;
         const type =
@@ -341,12 +448,21 @@ class ItemsField extends Component {
                 : null;
         const typeFields = type !== null ? type.fields || fields : fields;
 
-        return getItemField !== null ? (
-            getItemField(it, index, {
+        if (renderItemField !== null) {
+            return renderItemField(it, index, {
                 collapsed,
                 value: itemValue,
-                fields: typeFields,
-            })
+                fields: typeFields || [],
+                onChange: val => this.onItemChange(index, val),
+            });
+        }
+
+        return FieldComponent !== null ? (
+            <FieldComponent
+                value={itemValue}
+                fields={typeFields || []}
+                onChange={val => this.onItemChange(index, val)}
+            />
         ) : (
             <FieldsGroup
                 value={itemValue}
@@ -362,7 +478,7 @@ class ItemsField extends Component {
         const field = this.renderItemField(it, index, collapsed);
 
         const bodyClassNames = classNames({
-            'panel-body': !withoutPanel,
+            'card-body': !withoutPanel,
             [styles.body]: true,
         });
 
@@ -381,12 +497,17 @@ class ItemsField extends Component {
 
     renderItem(it, index) {
         const {
-            withoutHeader, withoutPanel, withoutBorder, itemsCollapsible, sortable,
+            withoutHeader,
+            withoutPanel,
+            withoutBorder,
+            itemsCollapsible,
+            sortable,
         } = this.props;
         const { collapsedItems } = this.state;
 
         const key = !sortable ? `item_${index}_${it.type}` : null;
-        const itemCollapsed = !withoutPanel && itemsCollapsible && (collapsedItems[index] || false);
+        const itemCollapsed =
+            !withoutPanel && !withoutHeader && itemsCollapsible && (collapsedItems[index] || false);
 
         const before = this.renderItemBefore(it, index, itemCollapsed);
         const header = !withoutHeader ? this.renderItemHeader(it, index, itemCollapsed) : null;
@@ -394,8 +515,7 @@ class ItemsField extends Component {
         const body = this.renderItemBody(it, index, itemCollapsed);
 
         const panelClassNames = classNames({
-            panel: !withoutPanel,
-            'panel-default': !withoutPanel,
+            card: !withoutPanel,
             [styles.panel]: true,
             [styles.withBorder]: withoutPanel && !withoutBorder,
         });
@@ -442,14 +562,15 @@ class ItemsField extends Component {
 
     renderAddButton() {
         const {
-            types,
             addButtonLabel,
             addWithTypeButtonLabel,
             addButtonLabelPrefix,
             addButtonLarge,
             addButtonTypeLabel,
             topElement,
+            intl,
         } = this.props;
+        const { types } = this.state;
 
         const hasType = types !== null;
         const dropdownOptions = hasType
@@ -462,8 +583,7 @@ class ItemsField extends Component {
         const buttonClassNames = classNames({
             btn: true,
             'btn-lg': addButtonLarge,
-            'btn-primary': addButtonLarge,
-            'btn-default': !addButtonLarge,
+            'btn-primary': true,
             'dropdown-toggle': types !== null && types.length,
         });
 
@@ -485,7 +605,9 @@ class ItemsField extends Component {
                         isObject(label)
                             ? {
                                 values: {
-                                    type: addButtonTypeLabel,
+                                    type: isObject(addButtonTypeLabel)
+                                        ? intl.formatMessage(addButtonTypeLabel)
+                                        : addButtonTypeLabel,
                                 },
                                 ...label,
                             }
@@ -511,7 +633,6 @@ class ItemsField extends Component {
             helpText,
         } = this.props;
         const value = this.props.value || [];
-        const listProps = {};
 
         const formClassNames = classNames({
             [styles.field]: true,
@@ -536,17 +657,18 @@ class ItemsField extends Component {
             >
                 {!withoutAddButton ? this.renderAddButton() : null}
                 {sortable ? (
-                    <SortableList
-                        {...listProps}
-                        useDragHandle
-                        lockAxis="y"
-                        onSortEnd={this.onSortEnd}
-                        items={value}
-                        placeholder={placeholder}
-                        renderItem={this.renderItem}
-                    />
+                    <div className={styles.list}>
+                        <SortableList
+                            useDragHandle
+                            lockAxis="y"
+                            onSortEnd={this.onSortEnd}
+                            items={value}
+                            placeholder={placeholder}
+                            renderItem={this.renderItem}
+                        />
+                    </div>
                 ) : (
-                    <div className="list" {...listProps}>
+                    <div className={styles.list}>
                         {value.map(this.renderItem)}
                         {placeholder}
                     </div>
@@ -559,4 +681,4 @@ class ItemsField extends Component {
 ItemsField.propTypes = propTypes;
 ItemsField.defaultProps = defaultProps;
 
-export default ItemsField;
+export default injectIntl(ItemsField);

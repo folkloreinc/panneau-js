@@ -24,7 +24,7 @@ const propTypes = {
 const defaultProps = {
     durationLabel: messages.duration,
     sizeLabel: messages.size,
-    thumbnailPath: 'thumbnails.0.url',
+    thumbnailPath: ['thumbnail', 'thumbnails.0.url'],
     durationPath: 'duration_human',
     sizePath: 'original_file.size_human',
 };

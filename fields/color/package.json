@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-color",
-    "version": "0.3.108",
+    "version": "0.4.31",
     "description": "Color field for Panneau",
     "keywords": [
         "react",
@@ -41,7 +41,7 @@
     "scripts": {
         "storybook": "../../node_modules/.bin/start-storybook -p 9008 -c ../../.storybook-package",
         "clean": "rm -rf dist && rm -rf lib && rm -rf es",
-        "webpack:dist": "node -r babel-register ../../node_modules/.bin/webpack --config ./webpack.config.js --progress --colors",
+        "webpack:dist": "BABEL_ENV=umd NODE_ENV=production node ../../node_modules/.bin/webpack --config ./webpack.config.js --progress --colors",
         "webpack": "npm run webpack:dist",
         "babel:es": "BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es --ignore story.js,test.js",
         "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore story.js,test.js",
@@ -51,10 +51,12 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/field": "^0.3.108",
-        "@panneau/field-text": "^0.3.108",
-        "@panneau/modal-popover": "^0.3.94",
+        "@panneau/core": "^0.4.31",
+        "@panneau/field": "^0.4.31",
+        "@panneau/field-text": "^0.4.31",
+        "@panneau/modal-popover": "^0.4.22",
         "babel-runtime": "^6.26.0",
+        "bootstrap": "^4.1.1",
         "classnames": "^2.2.5",
         "color": "^2.0.0",
         "lodash": "^4.17.4",

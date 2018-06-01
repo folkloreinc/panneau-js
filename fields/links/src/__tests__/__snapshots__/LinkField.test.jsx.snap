@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`match snapshot 1`] = `
+<div
+  className="form-group text"
+>
+  <div
+    className="form-group-label"
+  >
+    <label
+      className="control-label"
+      htmlFor={null}
+    >
+      Label
+    </label>
+  </div>
+  <div
+    className="form-group-inner"
+    style={
+      Object {
+        "display": "block",
+      }
+    }
+  >
+    <div
+      className="row"
+    >
+      <div
+        className="col-sm-8"
+      >
+        <div
+          className="form-group form-group-url"
+        >
+          <div
+            className="form-group-label"
+          >
+            <label
+              className="control-label"
+              htmlFor={null}
+            >
+              <span>
+                URL
+              </span>
+            </label>
+          </div>
+          <div
+            className="form-group-inner"
+            style={
+              Object {
+                "display": "block",
+              }
+            }
+          >
+            <div
+              className="input-group"
+            >
+              <span
+                className="input-group-prepend"
+              >
+                <span
+                  className="input-group-text"
+                >
+                  http://
+                </span>
+              </span>
+              <input
+                className="form-control field-text"
+                disabled={false}
+                id={null}
+                name={null}
+                onBlur={null}
+                onChange={[Function]}
+                onFocus={null}
+                placeholder={null}
+                type="text"
+                value="google.com"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="col-sm-4"
+      >
+        <div
+          className="form-group form-group-text"
+        >
+          <div
+            className="form-group-label"
+          >
+            <label
+              className="control-label"
+              htmlFor={null}
+            >
+              <span>
+                Label
+              </span>
+            </label>
+          </div>
+          <div
+            className="form-group-inner"
+            style={
+              Object {
+                "display": "block",
+              }
+            }
+          >
+            <input
+              className="form-control field-text"
+              disabled={false}
+              id={null}
+              name={null}
+              onBlur={null}
+              onChange={[Function]}
+              onFocus={null}
+              placeholder={null}
+              type="text"
+              value="Google"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

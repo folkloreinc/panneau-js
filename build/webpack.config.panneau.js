@@ -1,15 +1,8 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const path = require('path');
 const fs = require('fs');
-/* eslint-disable import/no-extraneous-dependencies */
-const webpackMerge = require('webpack-merge');
-const webpack = require('webpack');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const nodeExternals = require('webpack-node-externals');
-const webpackConfig = require('./webpack.config.base');
-/* eslint-enable import/no-extraneous-dependencies */
+const webpackConfig = require('./webpack.config.prod');
 const getPackagesPaths = require('./lib/getPackagesPaths');
-
-const outputPath = path.join(process.env.PWD, 'dist/');
 
 const modules = [
     path.join(process.env.PWD, './node_modules'),
@@ -45,61 +38,18 @@ getPackagesPaths().forEach((packagePath) => {
     });
 });
 
-module.exports = env => (
-    webpackMerge(webpackConfig(env), {
-
-        output: {
-            path: outputPath,
-            libraryTarget: 'umd',
-            library: 'panneau',
-            libraryExport: 'default',
-        },
-
-        plugins: [
-            new webpack.DefinePlugin({
-                'process.env.NODE_ENV': JSON.stringify('production'),
-                __DEV__: JSON.stringify(false),
-            }),
-            new webpack.optimize.ModuleConcatenationPlugin(),
-            new UglifyJSPlugin({
-                sourceMap: true,
-                uglifyOptions: {
-                    beautify: false,
-                    mangle: {
-                        keep_fnames: true,
-                    },
-                    compress: {
-                        warnings: false,
-                    },
-                    comments: false,
-                },
-            }),
-            new webpack.SourceMapDevToolPlugin({
-                filename: '[file].map',
-                exclude: [/vendor\//],
-            }),
-        ],
-
-        externals: [
-            nodeExternals({
-                whitelist: [
-                    'ckeditor',
-                    'react-ace',
-                    /^brace/,
-                    /react-dates/,
-                    'moment',
-                    'react-select',
-                    'rc-switch',
-                    'rc-slider',
-                    /^@panneau\//,
-                ],
-            }),
-        ],
-
-        resolve: {
-            alias,
-            modules,
-        },
-
-    })
-);
+module.exports = {
+    ...webpackConfig,
+    output: {
+        ...webpackConfig.output,
+        libraryTarget: 'umd',
+        library: 'panneau',
+        libraryExport: 'default',
+    },
+    resolve: {
+        ...webpackConfig.resolve,
+        alias,
+        modules,
+    },
+    externals: [],
+};

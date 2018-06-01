@@ -2,6 +2,6 @@
   {
     "id": "core.buttons.upload",
     "description": "The label of the \"upload\" button",
-    "defaultMessage": "Select a file"
+    "defaultMessage": "Select a file..."
   }
 ]

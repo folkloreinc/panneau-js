@@ -6,7 +6,7 @@ import KeepValue from './KeepValue';
 
 export default (name, module, opts) => {
     const options = {
-        colWidth: 6,
+        colWidth: 8,
         colOffset: null,
         ...opts,
     };
@@ -17,11 +17,10 @@ export default (name, module, opts) => {
             .addDecorator((story, context) => withInfo()(story)(context))
             .addDecorator(story => (
                 <div className="container" style={{ marginTop: 10 }}>
-                    <div className="row">
+                    <div className="row justify-content-md-center">
                         <div
                             className={classNames({
-                                [`col-sm-${colWidth}`]: true,
-                                [`col-sm-offset-${colOffset}`]: colOffset > 0,
+                                [`col-md-${colWidth}`]: true,
                             })}
                         >
                             <KeepValue>

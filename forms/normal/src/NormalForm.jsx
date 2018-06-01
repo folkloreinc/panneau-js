@@ -170,12 +170,10 @@ class NormalForm extends Component {
         return (
             <div className={errorsClassNames}>
                 {isArray(generalError) ? (
-                    <ul>
-                        {generalError.map(error => (
-                            <li key={`error-${error}`}>{ error }</li>
-                        ))}
-                    </ul>
-                ) : generalError}
+                    <ul>{generalError.map(error => <li key={`error-${error}`}>{error}</li>)}</ul>
+                ) : (
+                    generalError
+                )}
             </div>
         );
     }
@@ -198,23 +196,25 @@ class NormalForm extends Component {
         const { buttons } = this.props;
         return (
             <div className={styles.buttons}>
-                {buttons.map(({
-                    id, label, type, className, onClick,
-                }) => (
-                    <button
-                        key={`actions-button-${id}`}
-                        type={type}
-                        className={classNames({
-                            btn: true,
-                            [className]: (className || null) !== null,
-                            [styles.button]: true,
-                            [styles[type]]: true,
-                        })}
-                        onClick={onClick || null}
-                    >
-                        {isString(label) ? label : <FormattedMessage {...label} />}
-                    </button>
-                ))}
+                <div className="btn-group">
+                    {buttons.map(({
+                        id, label, type, className, onClick,
+                    }) => (
+                        <button
+                            key={`actions-button-${id}`}
+                            type={type}
+                            className={classNames({
+                                btn: true,
+                                [className]: (className || null) !== null,
+                                [styles.button]: true,
+                                [styles[type]]: true,
+                            })}
+                            onClick={onClick || null}
+                        >
+                            {isString(label) ? label : <FormattedMessage {...label} />}
+                        </button>
+                    ))}
+                </div>
             </div>
         );
     }
@@ -236,16 +236,15 @@ class NormalForm extends Component {
                             <div className={styles.errors}>{this.renderErrors()}</div>
                         ) : null}
                         <div className={styles.fields}>{this.renderFields()}</div>
-                        <div className={styles.actions}>
+                        <div
+                            className={classNames({
+                                'mt-4': true,
+                                'pt-2': true,
+                                'border-top': true,
+                                [styles.actions]: true,
+                            })}
+                        >
                             <div className={styles.cols}>
-                                <div
-                                    className={classNames({
-                                        [styles.col]: true,
-                                        [styles.colActions]: true,
-                                    })}
-                                >
-                                    {this.renderButtons()}
-                                </div>
                                 <div
                                     className={classNames({
                                         [styles.col]: true,
@@ -253,6 +252,15 @@ class NormalForm extends Component {
                                     })}
                                 >
                                     {this.renderNotice()}
+                                </div>
+                                <div
+                                    className={classNames({
+                                        'text-right': true,
+                                        [styles.col]: true,
+                                        [styles.colActions]: true,
+                                    })}
+                                >
+                                    {this.renderButtons()}
                                 </div>
                             </div>
                         </div>

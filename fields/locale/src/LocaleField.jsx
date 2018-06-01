@@ -4,13 +4,14 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 import omit from 'lodash/omit';
 import isEmpty from 'lodash/isEmpty';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { FormGroup } from '@panneau/field';
 
 import styles from './styles.scss';
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     helpText: PropTypes.string,
     value: PropTypes.object, // eslint-disable-line
     onChange: PropTypes.func,
@@ -21,6 +22,7 @@ const propTypes = {
         PropTypes.instanceOf(Component),
         PropTypes.func,
     ]),
+    getFieldProps: PropTypes.func,
     renderField: PropTypes.func,
     children: PropTypes.func,
 };
@@ -32,12 +34,21 @@ const defaultProps = {
     value: null,
     onChange: null,
     locale: null,
-    locales: ['en'],
+    locales: null,
     className: 'form-group-locale',
     FieldComponent: null,
+    getFieldProps: null,
     renderField: null,
     children: null,
 };
+
+const contextTypes = {
+    definition: PanneauPropTypes.definition,
+};
+
+const defaultLocales = [
+    'en',
+];
 
 class LocaleField extends Component {
     constructor(props) {
@@ -48,17 +59,17 @@ class LocaleField extends Component {
         this.renderLocaleField = this.renderLocaleField.bind(this);
         this.renderLocaleButton = this.renderLocaleButton.bind(this);
 
-        const firstLocale = props.locales !== null && props.locales.length ?
-            props.locales[0] : null;
+        const locales = this.getLocales();
+        const firstLocale = get(locales, '0', null);
         this.state = {
             locale: props.locale || firstLocale,
         };
     }
 
-    onLocaleClick(e) {
+    onLocaleClick(e, locale) {
         e.preventDefault();
         this.setState({
-            locale: e.locale,
+            locale,
         });
     }
 
@@ -72,6 +83,15 @@ class LocaleField extends Component {
         if (this.props.onChange) {
             this.props.onChange(newValue);
         }
+    }
+
+    getLocales() {
+        const { locales } = this.props;
+        if (locales !== null) {
+            return locales;
+        }
+        const { definition } = this.context || {};
+        return get(definition || null, 'locales', LocaleField.defaultLocales);
     }
 
     renderLocaleField(locale, index) {
@@ -90,6 +110,7 @@ class LocaleField extends Component {
             renderField,
             children,
             FieldComponent,
+            getFieldProps,
             ...props
         } = this.props;
 
@@ -101,18 +122,23 @@ class LocaleField extends Component {
             onChange: fieldOnChange,
             name: fieldName,
             value: fieldValue,
+            withoutMargin: true,
+        };
+        const customProps = getFieldProps !== null ? getFieldProps(locale, fieldProps) : null;
+        const finalProps = {
+            ...fieldProps,
+            ...customProps,
         };
         const renderFieldMethod = renderField || children || null;
-
         return (
             <div key={key} className="form-group-locale-field" style={style}>
                 { renderFieldMethod !== null ? renderFieldMethod(
                     locale,
-                    fieldProps,
+                    finalProps,
                     FieldComponent,
                     index,
                 ) : (
-                    <FieldComponent {...fieldProps} />
+                    <FieldComponent {...finalProps} />
                 ) }
             </div>
         );
@@ -126,13 +152,10 @@ class LocaleField extends Component {
             btn: true,
             active: this.state.locale === locale,
             'btn-warning': !hasValue,
-            'btn-default': hasValue,
+            'btn-outline-secondary': hasValue,
         });
 
-        const onClick = (e) => {
-            e.locale = locale;
-            this.onLocaleClick(e);
-        };
+        const onClick = e => this.onLocaleClick(e, locale);
 
         return (
             <button key={key} type="button" className={className} onClick={onClick}>
@@ -143,16 +166,16 @@ class LocaleField extends Component {
 
     render() {
         const {
-            locales,
             label,
             className,
             ...props
         } = this.props;
 
+        const locales = this.getLocales();
         const fields = locales.map(this.renderLocaleField);
         const buttons = locales.map(this.renderLocaleButton);
         const buttonsClassName = classNames({
-            'btn-group btn-group-xs': true,
+            'btn-group btn-group-sm': true,
             [styles.btnGroup]: true,
         });
         const labelSuffix = locales.length > 1 ? (
@@ -183,7 +206,9 @@ class LocaleField extends Component {
     }
 }
 
+LocaleField.defaultLocales = defaultLocales;
 LocaleField.propTypes = propTypes;
 LocaleField.defaultProps = defaultProps;
+LocaleField.contextTypes = contextTypes;
 
 export default LocaleField;

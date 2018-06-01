@@ -4,7 +4,7 @@
 
     &:global(.has-error) {
         :global(.Select-control) {
-            border-color: $state-danger-text;
+            border-color: $danger;
         }
     }
 }

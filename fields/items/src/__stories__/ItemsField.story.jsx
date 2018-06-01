@@ -77,4 +77,21 @@ storiesOf('Fields/Items', module)
                 </KeepValue>
             </IntlProvider>
         </div>
+    ))
+    .add('without header', () => (
+        <div>
+            <IntlProvider locale="en">
+                <KeepValue>
+                    <ItemsFieldWithFields
+                        fields={fields}
+                        sortable
+                        withoutHeader
+                        fieldsCollection={fieldsCollection}
+                        label="Label"
+                        helpText="This is an help text"
+                        onChange={action('change')}
+                    />
+                </KeepValue>
+            </IntlProvider>
+        </div>
     ));

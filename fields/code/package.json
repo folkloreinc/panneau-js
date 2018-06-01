@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-code",
-    "version": "0.3.108",
+    "version": "0.4.31",
     "description": "Code field for Panneau",
     "keywords": [
         "react",
@@ -41,7 +41,7 @@
     "scripts": {
         "storybook": "../../node_modules/.bin/start-storybook -p 9008 -c ../../.storybook-package",
         "clean": "rm -rf dist && rm -rf lib && rm -rf es",
-        "webpack:dist": "node -r babel-register ../../node_modules/.bin/webpack --config ./webpack.config.js --progress --colors",
+        "webpack:dist": "BABEL_ENV=umd NODE_ENV=production node ../../node_modules/.bin/webpack --config ./webpack.config.js --progress --colors",
         "webpack": "npm run webpack:dist",
         "babel:es": "BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es --ignore story.js,test.js",
         "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore story.js,test.js",
@@ -51,7 +51,8 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/field": "^0.3.108",
+        "@panneau/core": "^0.4.31",
+        "@panneau/field": "^0.4.31",
         "babel-runtime": "^6.26.0",
         "brace": "^0.10.0",
         "classnames": "^2.2.5",
@@ -60,6 +61,7 @@
         "react-ace": "^5.4.0"
     },
     "devDependencies": {
+        "babel-preset-es2015": "^6.24.1",
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
     },

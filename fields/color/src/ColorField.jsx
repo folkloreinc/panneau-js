@@ -17,6 +17,7 @@ import classNames from 'classnames';
 import { FormGroup } from '@panneau/field';
 import Text from '@panneau/field-text';
 import Popover from '@panneau/modal-popover';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import styles from './styles.scss';
 
@@ -41,7 +42,7 @@ const components = {
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     pickerType: PropTypes.oneOf([
         'block', 'chrome', 'circle', 'compact',
         'github', 'twitter', 'sketch', 'slider',
@@ -245,7 +246,7 @@ class ColorField extends Component {
 
         const buttonGroupClassName = classNames({
             'btn-group': !withInput,
-            'input-group-btn': withInput,
+            'input-group-append': withInput,
         });
 
         const buttonGroup = (
@@ -257,8 +258,9 @@ class ColorField extends Component {
                     type="button"
                     className={classNames({
                         btn: true,
-                        'btn-default': true,
+                        'btn-outline-light': true,
                         disabled,
+                        [styles.colorBtn]: true,
                     })}
                     disabled={disabled}
                     onClick={this.onClick}
@@ -269,14 +271,14 @@ class ColorField extends Component {
                     type="button"
                     className={classNames({
                         btn: true,
-                        'btn-default': true,
-                        'btn-clear': true,
+                        'btn-outline-secondary': true,
                         disabled,
+                        [styles.clearBtn]: true,
                     })}
                     disabled={value === null || disabled}
                     onClick={this.onClickClear}
                 >
-                    <span className="fa fa-remove" />
+                    <span className="fas fa-times" />
                 </button>
             </div>
         );

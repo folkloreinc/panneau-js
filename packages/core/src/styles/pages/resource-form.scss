@@ -1,11 +1,17 @@
 @import '../variables';
 
-.errors {
-    ul {
-        padding-left: 1.2em;
+.container {
+    .errors {
+        ul {
+            padding-left: 1.2em;
+        }
     }
-}
 
-.noticeIcon {
-    margin-right: 4px;
+    .noticeIcon {
+        margin-right: 4px;
+    }
+
+    .loading {
+        text-align: center;
+    }
 }

@@ -11,7 +11,7 @@ import styles from './styles.scss';
 const propTypes = {
     CardComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     type: PropTypes.string,
     cardVertical: PropTypes.bool,

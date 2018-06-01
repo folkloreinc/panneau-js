@@ -5,12 +5,13 @@ import 'react-dates/initialize';
 import { FormGroup } from '@panneau/field';
 import TextField from '@panneau/field-text';
 import Popover from '@panneau/modal-popover';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import styles from './styles.scss';
 import './vendor.global.scss';
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     startLabel: PropTypes.string,
     endLabel: PropTypes.string,
     startPlaceholder: PropTypes.string,
@@ -28,6 +29,7 @@ const propTypes = {
         'daterange',
     ]),
     dateFormat: PropTypes.string,
+    pickerProps: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onChange: PropTypes.func,
 };
 
@@ -42,6 +44,7 @@ const defaultProps = {
     value: null,
     type: 'date',
     dateFormat: 'YYYY-MM-DD',
+    pickerProps: null,
     onChange: null,
 };
 
@@ -259,27 +262,27 @@ class DateField extends Component {
             const startSuffix = (
                 <button
                     type="button"
-                    className="btn btn-default"
+                    className="btn btn-outline-secondary"
                     onClick={onStartClickInputButton}
                 >
-                    <span className="glyphicon glyphicon-calendar" />
+                    <span className="fas fa-calendar" />
                 </button>
             );
 
             const endSuffix = (
                 <button
                     type="button"
-                    className="btn btn-default"
+                    className="btn btn-outline-secondary"
                     onClick={onEndClickInputButton}
                 >
-                    <span className="glyphicon glyphicon-calendar" />
+                    <span className="fas fa-calendar" />
                 </button>
             );
 
             return (
                 <div className={styles.input}>
                     <div className="row">
-                        <div className="col-xs-6">
+                        <div className="col-sm-6">
                             <TextField
                                 ref={(ref) => { this.startInput = ref; }}
                                 label={startLabel}
@@ -288,10 +291,10 @@ class DateField extends Component {
                                 onChange={onStartChange}
                                 onFocus={onStartFocus}
                                 suffix={startSuffix}
-                                suffixClassName="input-group-btn"
+                                clearable
                             />
                         </div>
-                        <div className="col-xs-6">
+                        <div className="col-sm-6">
                             <TextField
                                 ref={(ref) => { this.endInput = ref; }}
                                 label={endLabel}
@@ -300,7 +303,7 @@ class DateField extends Component {
                                 onChange={onEndChange}
                                 onFocus={onEndFocus}
                                 suffix={endSuffix}
-                                suffixClassName="input-group-btn"
+                                clearable
                             />
                         </div>
                     </div>
@@ -311,40 +314,33 @@ class DateField extends Component {
         const suffix = (
             <button
                 type="button"
-                className="btn btn-default"
+                className="btn btn-outline-secondary"
                 onClick={this.onButtonClick}
             >
-                <span className="glyphicon glyphicon-calendar" />
+                <span className="fas fa-calendar" />
             </button>
         );
 
         return (
-            <TextField
-                ref={(ref) => { this.input = ref; }}
-                value={textValue}
-                placeholder={placeholder}
-                onChange={this.onInputChange}
-                onFocus={this.onInputFocus}
-                suffix={suffix}
-                suffixClassName="input-group-btn"
-            />
+            <div className={styles.input}>
+                <TextField
+                    ref={(ref) => { this.input = ref; }}
+                    value={textValue}
+                    placeholder={placeholder}
+                    onChange={this.onInputChange}
+                    onFocus={this.onInputFocus}
+                    suffix={suffix}
+                    clearable
+                    inputOnly
+                />
+            </div>
         );
     }
 
     renderPopover() {
         const {
-            name,
-            label,
-            value,
             type,
-            onChange,
-            dateFormat,
-            startLabel,
-            endLabel,
-            startPlaceholder,
-            endPlaceholder,
-            placeholder,
-            ...other
+            pickerProps: customPickerProps,
         } = this.props;
         const { momentValue, focusedInput, opened } = this.state;
 
@@ -365,7 +361,6 @@ class DateField extends Component {
             focused: true,
             isFocused: opened,
             keepOpenOnDateSelect: true,
-
         };
 
         return (
@@ -379,8 +374,8 @@ class DateField extends Component {
                 noUi
             >
                 <DateComponent
-                    {...other}
                     {...pickerProps}
+                    {...customPickerProps}
                 />
             </Popover>
         );
@@ -405,12 +400,12 @@ class DateField extends Component {
         return (
             <FormGroup
                 {...other}
-                className={`form-group-date ${styles.formGroup}`}
+                className={styles.container}
                 name={name}
                 label={label}
             >
                 <div
-                    className={styles.container}
+                    className={styles.inner}
                     ref={(ref) => { this.refContainer = ref; }}
                 >
                     { this.renderInput() }

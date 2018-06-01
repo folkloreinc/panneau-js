@@ -90,5 +90,23 @@ storiesOf('Fields/Select', module)
                     onChange={action('change')}
                 />
             </KeepValue>
+            <KeepValue>
+                <SelectField
+                    label="Async and creatable"
+                    multiple
+                    creatable
+                    async
+                    fetchOptions={() => (
+                        fetch('/api/pages')
+                            .then(response => response.json())
+                            .then(items => items.map(it => ({
+                                value: it.id,
+                                label: it.data.title.en,
+                            })))
+                    )}
+                    getValueFromOption={opt => opt}
+                    onChange={action('change')}
+                />
+            </KeepValue>
         </div>
     ));

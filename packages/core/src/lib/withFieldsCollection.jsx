@@ -1,4 +1,4 @@
-import PanneauPropTypes from './PropTypes';
+import * as PanneauPropTypes from './PropTypes';
 import withComponentsCollection from './withComponentsCollection';
 
 function getDisplayName(WrappedComponent) {

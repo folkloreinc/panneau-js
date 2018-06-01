@@ -1,5 +1,7 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
-import { action } from '@storybook/addon-actions';// eslint-disable-line import/no-extraneous-dependencies
+import { action } from '@storybook/addon-actions';
+import { IntlProvider } from 'react-intl';
 
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
@@ -24,54 +26,58 @@ const suggestions = [
 
 storiesOf('Fields/Item', module)
     .add('simple', () => (
-        <div>
-            <KeepValue>
-                <ItemField
-                    label="Label"
-                    placeholder="Search..."
-                    suggestions={suggestions}
-                    helpText="This is an help text"
-                    onChange={action('change')}
-                />
-            </KeepValue>
-            <KeepValue>
-                <ItemField
-                    label="With an item"
-                    placeholder="Search..."
-                    suggestions={suggestions}
-                    value={suggestions[0]}
-                    helpText="This is an help text"
-                    onChange={action('change')}
-                />
-            </KeepValue>
-        </div>
+        <IntlProvider locale="en">
+            <div>
+                <KeepValue>
+                    <ItemField
+                        label="Label"
+                        placeholder="Search..."
+                        suggestions={suggestions}
+                        helpText="This is an help text"
+                        onChange={action('change')}
+                    />
+                </KeepValue>
+                <KeepValue>
+                    <ItemField
+                        label="With an item"
+                        placeholder="Search..."
+                        suggestions={suggestions}
+                        value={suggestions[0]}
+                        helpText="This is an help text"
+                        onChange={action('change')}
+                    />
+                </KeepValue>
+            </div>
+        </IntlProvider>
     ))
     .add('vertical', () => (
-        <div>
-            <KeepValue>
-                <ItemField
-                    label="With an item"
-                    placeholder="Search..."
-                    suggestions={suggestions}
-                    value={suggestions[1]}
-                    cardVertical
-                    helpText="This is an help text"
-                    onChange={action('change')}
-                />
-            </KeepValue>
-            <KeepValue>
-                <ItemField
-                    label="With background cover"
-                    placeholder="Search..."
-                    suggestions={suggestions}
-                    value={suggestions[1]}
-                    cardVertical
-                    cardProps={{
-                        thumbnailSize: 'cover',
-                    }}
-                    helpText="This is an help text"
-                    onChange={action('change')}
-                />
-            </KeepValue>
-        </div>
+        <IntlProvider locale="en">
+            <div>
+                <KeepValue>
+                    <ItemField
+                        label="With an item"
+                        placeholder="Search..."
+                        suggestions={suggestions}
+                        value={suggestions[1]}
+                        cardVertical
+                        helpText="This is an help text"
+                        onChange={action('change')}
+                    />
+                </KeepValue>
+                <KeepValue>
+                    <ItemField
+                        label="With background cover"
+                        placeholder="Search..."
+                        suggestions={suggestions}
+                        value={suggestions[1]}
+                        cardVertical
+                        cardProps={{
+                            thumbnailSize: 'cover',
+                        }}
+                        helpText="This is an help text"
+                        onChange={action('change')}
+                    />
+                </KeepValue>
+            </div>
+        </IntlProvider>
     ));

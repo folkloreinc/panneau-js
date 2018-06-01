@@ -1,9 +1,17 @@
+@import '@panneau/core/src/styles/variables';
+
 .formGroup {
     :global {
         .btn {
             height: 32px;
             padding: 2px;
             vertical-align: top;
+        }
+
+        .input-group {
+            .btn {
+                height: auto;
+            }
         }
     }
 
@@ -28,7 +36,17 @@
         background-size: 10px 10px;
         -webkit-background-size: 10px 11px; /* override value for shitty webkit */
 
-        background-position:0 0, 5px 0, 5px -5px, 0px 5px;
+        background-position: 0 0, 5px 0, 5px -5px, 0 5px;
+    }
+
+    .clearBtn {
+        padding-right: .3rem;
+        padding-left: .3rem;
+        font-size: $font-size-sm;
+    }
+
+    .colorBtn {
+        border-color: $input-border-color;
     }
 
     .popover {

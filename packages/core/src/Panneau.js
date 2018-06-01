@@ -6,6 +6,7 @@ import {
 import EventEmitter from 'wolfy87-eventemitter';
 import isObject from 'lodash/isObject';
 import get from 'lodash/get';
+import moment from 'moment';
 
 import ComponentsCollection from './lib/ComponentsCollection';
 import PanneauComponent from './components/Panneau';
@@ -110,7 +111,7 @@ class Panneau extends EventEmitter {
     setOptions(options) {
         this.options = {
             ...this.options,
-            ...options
+            ...options,
         };
 
         const {
@@ -125,6 +126,8 @@ class Panneau extends EventEmitter {
             ...get(messages, this.locale, {}),
         };
         this.componentsCollection = componentsCollection;
+
+        moment.locale(locale);
 
         if (this.rendered) {
             this.render();
@@ -165,7 +168,7 @@ class Panneau extends EventEmitter {
      */
     components(key, value) {
         if (typeof value !== 'undefined') {
-            this.componentsCollection.addComponent(key, value)
+            this.componentsCollection.addComponent(key, value);
             return this;
         } else if (typeof key !== 'undefined') {
             return this.componentsCollection.getComponent(key);

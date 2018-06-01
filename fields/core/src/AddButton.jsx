@@ -50,7 +50,6 @@ const AddButton = ({
                     'btn-primary': true,
                     'dropdown-toggle': dropdown !== null && dropdown.length,
                 })}
-                data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
                 {...buttonProps}
@@ -65,16 +64,16 @@ const AddButton = ({
             {dropdown && dropdown.length ? (
                 <ul className="dropdown-menu">
                     {dropdown.map((it, index) => (
-                        <li key={`drop_${it.label}`}>
-                            <a
-                                href="#"
-                                onClick={(e) => {
-                                    onClick(e, it, index);
-                                }}
-                            >
-                                {it.label}
-                            </a>
-                        </li>
+                        <a
+                            key={`drop_${it.label}`}
+                            href="#"
+                            className="dropdown-item"
+                            onClick={(e) => {
+                                onClick(e, it, index);
+                            }}
+                        >
+                            {it.label}
+                        </a>
                     ))}
                 </ul>
             ) : null}

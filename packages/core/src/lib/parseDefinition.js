@@ -27,6 +27,16 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
             const resources = get(rootDefinition, 'resources', []);
             const resource = resources.find(it => it.id === resourceName) || null;
             if (resource) {
+                const navbarViewAll = get(
+                    resource,
+                    'messages.navbar.view_all',
+                    intlMessages.navbarViewAll,
+                );
+                const navbarAddNew = get(
+                    resource,
+                    'messages.navbar.add_new',
+                    intlMessages.navbarAddNew,
+                );
                 const routeKeyPrefix = get(resource, 'routes', null)
                     ? `resource.${resource.id}`
                     : 'resource';
@@ -53,7 +63,7 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
                     items: dropdown
                         ? [
                             {
-                                label: messageWithValues(intlMessages.navbarViewAll, {
+                                label: messageWithValues(navbarViewAll, {
                                     resource: resourceViewAllLabel,
                                 }),
                                 link: urlGenerator.route(`${routeKeyPrefix}.index`, {
@@ -62,7 +72,7 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
                             },
                             { type: 'divider' },
                             {
-                                label: messageWithValues(intlMessages.navbarAddNew, {
+                                label: messageWithValues(navbarAddNew, {
                                     resource: resourceAddNewLabel,
                                 }),
                                 link: urlGenerator.route(`${routeKeyPrefix}.create`, {

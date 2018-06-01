@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
 import SelectField from '@panneau/field-select';
 import { FormGroup } from '@panneau/field';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import './vendor.global.scss';
 
 /**
@@ -15,7 +16,7 @@ import './vendor.global.scss';
 const propTypes = {
     type: PropTypes.oneOf(['switch', 'select']),
     name: PropTypes.string,
-    label: PropTypes.string,
+    label: PanneauPropTypes.label,
     helpText: PropTypes.string,
     value: PropTypes.oneOfType([
         PropTypes.string,

@@ -5,13 +5,14 @@ import get from 'lodash/get';
 import isObject from 'lodash/isObject';
 import { FormGroup, Card } from '@panneau/field';
 import AutosuggestField from '@panneau/field-autosuggest';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import styles from './styles.scss';
 
 const propTypes = {
     name: PropTypes.string,
-    label: PropTypes.string,
-    placeholder: PropTypes.string,
+    label: PanneauPropTypes.label,
+    placeholder: PanneauPropTypes.message,
     suggestions: PropTypes.arrayOf(PropTypes.object),
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.string]),
     autosuggestProps: PropTypes.shape({
@@ -32,7 +33,7 @@ const defaultProps = {
     label: null,
     value: null,
     suggestions: null,
-    placeholder: '',
+    placeholder: null,
     autosuggestProps: null,
     cardProps: null,
     cardVertical: false,
@@ -123,7 +124,12 @@ class ItemField extends Component {
         } = this.props;
         const item = this.getCardItemFromValue(value);
         return (
-            <div className={styles.card}>
+            <div
+                className={classNames({
+                    'mb-2': true,
+                    [styles.card]: true,
+                })}
+            >
                 <Card
                     vertical={cardVertical}
                     withoutBorder={cardWithoutBorder}

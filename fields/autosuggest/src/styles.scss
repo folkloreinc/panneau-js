@@ -3,6 +3,7 @@
 .container {
     .autosuggest {
         position: relative;
+        z-index: 5;
 
         .input {
             position: relative;
@@ -16,13 +17,13 @@
             left: 0;
             min-width: 50%;
             margin-top: -1px;
-            border: solid 1px $dropdown-border;
+            border: solid 1px $dropdown-border-color;
             border-top: 0;
-            border-radius: $border-radius-base;
+            border-radius: $border-radius;
             border-top-left-radius: 0;
             border-top-right-radius: 0;
             background: $dropdown-bg;
-            box-shadow: 0 0 8px $dropdown-border;
+            box-shadow: 0 0 8px $dropdown-border-color;
             z-index: 1;
 
             &.open {
@@ -39,7 +40,7 @@
 
         .suggestion {
             padding: 5px;
-            border-bottom: solid 1px $input-border;
+            border-bottom: solid 1px $input-border-color;
             cursor: pointer;
 
             .thumbnail {
@@ -47,8 +48,8 @@
                 width: 32px;
                 height: 16px;
                 margin-right: 10px;
-                border: solid 1px $input-border;
-                background-color: $gray-lighter;
+                border: solid 1px $input-border-color;
+                background-color: $gray-300;
                 background-repeat: no-repeat;
                 background-position: center;
                 background-size: contain;

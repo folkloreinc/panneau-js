@@ -1,5 +1,10 @@
 [
   {
+    "id": "core.buttons.resources.cancel",
+    "description": "The label of the \"cancel\" button",
+    "defaultMessage": "Cancel"
+  },
+  {
     "id": "core.buttons.resources.save",
     "description": "The label of the \"save\" button",
     "defaultMessage": "Save"

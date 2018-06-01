@@ -8,5 +8,15 @@
     "id": "fields.items.buttons.add_with_type",
     "description": "The label of the \"add\" button with type in items field",
     "defaultMessage": "Add {type}"
+  },
+  {
+    "id": "fields.items.title",
+    "description": "The title of each item",
+    "defaultMessage": "Item #{index}"
+  },
+  {
+    "id": "fields.items.title_with_label",
+    "description": "The title of each item with a label",
+    "defaultMessage": "Item #{index} - {label}"
   }
 ]

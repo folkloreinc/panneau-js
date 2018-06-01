@@ -8,18 +8,18 @@ exports[`match snapshot 1`] = `
     className="undefined"
   >
     <table
-      className="table"
+      className="table table-sm table-hover"
     >
       <thead>
         <tr>
           <th
-            id="id"
+            className="align-middle"
             width={50}
           >
             ID
           </th>
           <th
-            id="actions"
+            className="align-middle text-right"
             type="actions"
           >
             Actions

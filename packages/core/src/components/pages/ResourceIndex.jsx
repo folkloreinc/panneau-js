@@ -7,11 +7,14 @@ import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
+import isObject from 'lodash/isObject';
 import classNames from 'classnames';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import queryString from 'query-string';
+import { defineMessages, FormattedMessage, injectIntl } from 'react-intl';
 import { withUrlGenerator } from '@folklore/react-app';
+import { PulseLoader } from 'react-spinners';
 
-import PanneauPropTypes from '../../lib/PropTypes';
+import * as PanneauPropTypes from '../../lib/PropTypes';
 import withListsCollection from '../../lib/withListsCollection';
 
 import styles from '../../styles/pages/resource-index.scss';
@@ -27,31 +30,30 @@ const messages = defineMessages({
         description: 'The title of the resource index page',
         defaultMessage: '{name}',
     },
+    confirmDelete: {
+        id: 'core.resources.index.confirm_delete',
+        description: 'The confirm message when deleting on the resource index page',
+        defaultMessage: 'Are you sure you want to delete this item from {name}?',
+    },
 });
 
 const propTypes = {
+    intl: PanneauPropTypes.intl.isRequired,
+    urlGenerator: PanneauPropTypes.urlGenerator.isRequired,
     listsCollection: PanneauPropTypes.componentsCollection.isRequired,
-    urlGenerator: PropTypes.shape({
-        route: PropTypes.func,
-    }).isRequired,
     resource: PanneauPropTypes.resource.isRequired,
-    location: PropTypes.shape({}).isRequired,
+    location: PropTypes.shape({
+        pathname: PropTypes.string.isRequired,
+        search: PropTypes.string.isRequired,
+    }).isRequired,
     items: PropTypes.arrayOf(PropTypes.object),
     title: PanneauPropTypes.message,
     errors: PropTypes.arrayOf(PropTypes.string),
     showAddButton: PropTypes.bool,
-    addButtonLabel: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.shape({
-            id: PropTypes.string,
-            description: PropTypes.string,
-            defaultMessage: PropTypes.string,
-        }),
-    ]),
-    gotoResourceCreate: PropTypes.func,
-    gotoResourceEdit: PropTypes.func,
-    gotoResourceShow: PropTypes.func,
-    gotoResourceDelete: PropTypes.func,
+    addButtonLabel: PanneauPropTypes.message,
+    confirmDeleteMessage: PanneauPropTypes.message,
+    getResourceActionUrl: PropTypes.func.isRequired,
+    gotoResourceAction: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -60,10 +62,7 @@ const defaultProps = {
     errors: null,
     showAddButton: true,
     addButtonLabel: messages.add,
-    gotoResourceCreate: PropTypes.func,
-    gotoResourceEdit: PropTypes.func,
-    gotoResourceShow: PropTypes.func,
-    gotoResourceDelete: PropTypes.func,
+    confirmDeleteMessage: messages.confirmDelete,
 };
 
 class ResourceIndex extends Component {
@@ -76,13 +75,18 @@ class ResourceIndex extends Component {
         this.onItemDeleted = this.onItemDeleted.bind(this);
 
         this.state = {
+            isLoading: props.items === null,
             items: props.items,
+            pagination: null,
             errors: props.errors,
         };
     }
 
     componentDidMount() {
-        this.loadItems();
+        const { items } = this.state;
+        if (items === null) {
+            this.loadItems();
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -90,13 +94,14 @@ class ResourceIndex extends Component {
         if (itemsChanged) {
             this.setState({
                 items: nextProps.items,
+                isLoading: nextProps.items === null,
             });
         }
 
         const locationChanged = nextProps.location !== this.props.location;
         if (locationChanged) {
             this.setState({
-                items: null,
+                isLoading: true,
             });
         }
 
@@ -110,43 +115,62 @@ class ResourceIndex extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         const itemsChanged = prevState.items !== this.state.items;
-        if (itemsChanged && this.state.items === null) {
+        const locationChanged = prevProps.location !== this.props.location;
+        if ((itemsChanged && this.state.items === null) || locationChanged) {
             this.loadItems();
         }
     }
 
-    onItemsLoaded(items) {
+    onItemsLoaded(data) {
+        if (this.isPaginated()) {
+            const { data: items, ...pagination } = data;
+            this.setState({
+                items,
+                pagination,
+                isLoading: false,
+            });
+            return;
+        }
         this.setState({
-            items,
+            items: data,
+            isLoading: false,
         });
     }
 
     onItemsLoadError(errors) {
         this.setState({
             errors,
+            isLoading: false,
         });
     }
 
     onItemActions(e, action, it) {
-        const {
-            gotoResourceEdit,
-            gotoResourceShow,
-            // gotoResourceDelete,
-        } = this.props;
+        const { getResourceActionUrl, gotoResourceAction } = this.props;
 
-        if (action.id === 'edit') {
-            if (gotoResourceEdit !== null) {
-                gotoResourceEdit(it.id);
+        const useRouter = get(action, 'useRouter', true);
+
+        switch (action.id) {
+        case 'edit':
+        case 'show':
+            if (useRouter) {
+                gotoResourceAction(action.id, it.id);
+            } else {
+                window.location.href = getResourceActionUrl(action.id);
             }
-        } else if (action.id === 'show') {
-            if (gotoResourceShow !== null) {
-                gotoResourceShow(it.id);
+            break;
+        case 'delete': {
+            const hasPage = get(action, 'hasPage', false);
+            if (!hasPage) {
+                this.deleteItem(it.id);
+            } else if (useRouter) {
+                gotoResourceAction(action.id, it.id);
+            } else {
+                window.location.href = getResourceActionUrl(action.id);
             }
-        } else if (action.id === 'delete') {
-            this.deleteItem(it.id);
-            // if (gotoResourceDelete !== null) {
-            //     gotoResourceDelete(it.id);
-            // }
+            break;
+        }
+        default:
+            break;
         }
     }
 
@@ -156,20 +180,40 @@ class ResourceIndex extends Component {
         });
     }
 
-    loadItems() {
+    isPaginated() {
         const { resource } = this.props;
+        return get(resource, 'lists.index.pagination', get(resource, 'lists.pagination', false));
+    }
+
+    loadItems() {
+        const { resource, location } = this.props;
+        const params = {};
+        if (this.isPaginated()) {
+            const query = queryString.parse(location.search);
+            const page = query.page || null;
+            if (page !== null) {
+                params.page = page;
+            }
+        }
         resource.api
-            .index()
+            .index(params)
             .then(this.onItemsLoaded)
             .catch(this.onItemsLoadError);
     }
 
     deleteItem(id) {
-        const { resource } = this.props;
+        const { resource, intl, confirmDeleteMessage } = this.props;
         const { name } = resource;
-        // @TODO quick implementation; instead, use a pretty modal or something
+        const confirmMessage = get(resource, 'messages.confirm_delete', confirmDeleteMessage);
+        const message =
+            isObject(confirmMessage) && typeof confirmMessage.id !== 'undefined'
+                ? intl.formatMessage(confirmMessage, {
+                    name,
+                    id,
+                })
+                : confirmMessage;
         // eslint-disable-next-line no-alert
-        if (window.confirm(`Are you sure you want to delete item ID ${id} from ${name}?`)) {
+        if (window.confirm(message)) {
             resource.api.destroy(id).then(this.onItemDeleted);
         }
     }
@@ -179,11 +223,7 @@ class ResourceIndex extends Component {
         const resourceType = get(resource, 'type', 'default');
         const isTyped = resourceType === 'typed';
         const types = isTyped ? get(resource, 'types', []) : null;
-        const buttonMessage = get(
-            resource,
-            'messages.buttons.resources.add',
-            null,
-        );
+        const buttonMessage = get(resource, 'messages.buttons.resources.add', null);
         const name = get(
             resource,
             'messages.names.a',
@@ -212,7 +252,8 @@ class ResourceIndex extends Component {
                         aria-haspopup="true"
                         aria-expanded="false"
                     >
-                        {buttonMessage !== null ? buttonMessage : buttonLabel} <span className="caret" />
+                        {buttonMessage !== null ? buttonMessage : buttonLabel}{' '}
+                        <span className="caret" />
                     </button>
                 ) : (
                     <Link
@@ -228,26 +269,25 @@ class ResourceIndex extends Component {
                     </Link>
                 )}
                 {isTyped ? (
-                    <ul className="dropdown-menu">
+                    <div className="dropdown-menu">
                         {types.map(({ id, label }) => (
-                            <li key={`add-button-${id}`}>
-                                <Link
-                                    to={{
-                                        pathname: urlGenerator.route('resource.create', {
-                                            resource: resource.id,
-                                        }),
-                                        search: `?type=${id}`,
-                                        state: {
-                                            type: id,
-                                        },
-                                    }}
-                                >
-                                    {label}
-                                </Link>
-                            </li>
+                            <Link
+                                key={`add-button-${id}`}
+                                to={{
+                                    pathname: urlGenerator.route('resource.create', {
+                                        resource: resource.id,
+                                    }),
+                                    search: `?type=${id}`,
+                                    state: {
+                                        type: id,
+                                    },
+                                }}
+                                className="dropdown-item"
+                            >
+                                {label}
+                            </Link>
                         ))}
-
-                    </ul>
+                    </div>
                 ) : null}
             </div>
         );
@@ -269,10 +309,20 @@ class ResourceIndex extends Component {
         );
 
         return (
-            <div className={styles.header}>
+            <div
+                className={classNames({
+                    'py-4': true,
+                    [styles.header]: true,
+                })}
+            >
                 <div className={styles.cols}>
                     <div className={styles.col}>
-                        <h1 className={styles.title}>
+                        <h1
+                            className={classNames({
+                                'display-4': true,
+                                [styles.title]: true,
+                            })}
+                        >
                             {message !== null ? message : defaultTitle}
                         </h1>
                     </div>
@@ -330,25 +380,59 @@ class ResourceIndex extends Component {
 
     // eslint-disable-next-line class-methods-use-this
     renderPagination() {
-        const { listsCollection } = this.props;
+        const { resource, listsCollection, urlGenerator } = this.props;
+        const { pagination } = this.state;
         const Pagination = listsCollection.getComponent('pagination');
-        return <Pagination total={20} perPage={1} currentPage={3} lastPage={10} url="/?page=1" />;
+        return (
+            <Pagination
+                total={pagination.total}
+                perPage={pagination.per_page}
+                currentPage={pagination.current_page}
+                lastPage={pagination.last_page}
+                url={urlGenerator.route('resource.index', {
+                    resource: resource.id,
+                })}
+            />
+        );
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    renderLoading() {
+        const { items } = this.state;
+        return (
+            <div
+                className={classNames({
+                    [styles.loading]: true,
+                    [styles.alone]: items === null,
+                })}
+            >
+                <div className={styles.inner}>
+                    <div className={styles.middle}>
+                        <PulseLoader loading />
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     render() {
-        const { items } = this.state;
+        const { items, pagination, isLoading } = this.state;
         const containerClassNames = classNames({
             [styles.container]: true,
         });
-
         return (
             <div className={containerClassNames}>
                 <div className="container">
-                    <div className="row">
-                        <div className="col-md-8 col-md-offset-2">
+                    <div className="row justify-content-md-center">
+                        <div className="col-lg-8">
                             {this.renderHeader()}
-                            {items !== null ? this.renderList() : null}
-                            {/* this.renderPagination() */}
+                            <div className={styles.listContainer}>
+                                <div className={styles.list}>
+                                    {items !== null ? this.renderList() : null}
+                                </div>
+                                {isLoading ? this.renderLoading() : null}
+                            </div>
+                            {pagination !== null ? this.renderPagination() : null}
                         </div>
                     </div>
                 </div>
@@ -367,54 +451,43 @@ const mapStateToProps = ({ panneau }, { match, location, urlGenerator }) => {
         resource:
             resources.find(it =>
                 (resourceId !== null && it.id === resourceId) ||
-                    (resourceId === null && urlGenerator.route(`resource.${it.id}.index`) === location.pathname)) || null,
+                    (resourceId === null &&
+                        urlGenerator.route(`resource.${it.id}.index`) === location.pathname)) || null,
     };
 };
 
-const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
-    gotoResourceCreate: resource =>
-        dispatch(push(urlGenerator.route('resource.create', {
-            resource: resource.id,
-        }))),
-    gotoResourceEdit: (resource, id) =>
-        dispatch(push(urlGenerator.route('resource.edit', {
-            resource: resource.id,
-            id,
-        }))),
-    gotoResourceShow: (resource, id) =>
-        dispatch(push(urlGenerator.route('resource.show', {
-            resource: resource.id,
-            id,
-        }))),
-    gotoResourceDelete: (resource, id) =>
-        dispatch(push(urlGenerator.route('resource.delete', {
-            resource: resource.id,
-            id,
-        }))),
-});
+const mapDispatchToProps = (dispatch, { urlGenerator }) => {
+    const getResourceActionUrl = (resource, action, id) =>
+        (typeof resource.routes !== 'undefined'
+            ? urlGenerator.route(`resource.${resource.id}.${action}`, {
+                id: id || null,
+            })
+            : urlGenerator.route(`resource.${action}`, {
+                resource: resource.id,
+                id: id || null,
+            }));
+    return {
+        getResourceActionUrl,
+        gotoResourceAction: (resource, action, id) =>
+            dispatch(push(getResourceActionUrl(resource, action, id))),
+    };
+};
 
 const mergeProps = (
     stateProps,
-    {
-        gotoResourceCreate,
-        gotoResourceEdit,
-        gotoResourceShow,
-        gotoResourceDelete,
-        ...dispatchProps
-    },
+    { getResourceActionUrl, gotoResourceAction, ...dispatchProps },
     ownProps,
 ) => ({
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
-    gotoResourceCreate: () => gotoResourceCreate(stateProps.resource),
-    gotoResourceEdit: id => gotoResourceEdit(stateProps.resource, id),
-    gotoResourceShow: id => gotoResourceShow(stateProps.resource, id),
-    gotoResourceDelete: id => gotoResourceDelete(stateProps.resource, id),
+    getResourceActionUrl: (action, id) => getResourceActionUrl(stateProps.resource, action, id),
+    gotoResourceAction: (action, id) => gotoResourceAction(stateProps.resource, action, id),
 });
 
 const WithStateComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(ResourceIndex);
 const WithRouterContainer = withRouter(WithStateComponent);
 const WithListsCollectionContainer = withListsCollection()(WithRouterContainer);
 const WithUrlGeneratorContainer = withUrlGenerator()(WithListsCollectionContainer);
-export default WithUrlGeneratorContainer;
+const WithIntlContainer = injectIntl(WithUrlGeneratorContainer);
+export default WithIntlContainer;

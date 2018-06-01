@@ -39,6 +39,7 @@ class NormalLayout extends Component {
         this.onHeaderClickMenuItem = this.onHeaderClickMenuItem.bind(this);
     }
 
+    // eslint-disable-next-line
     onHeaderClickMenuItem() {}
 
     render() {
