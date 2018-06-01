@@ -7,6 +7,7 @@
     "core.navbar.resources.index": "Voir tous {resource}",
     "core.notices.resources.error": "Problème. Le formulaire contient des erreurs.",
     "core.notices.resources.success": "Succès!",
+    "core.resources.index.confirm_delete": "Êtes-vous certain de vouloir supprimer cet item de {name}?",
     "core.titles.resources.create": "Créer {name}",
     "core.titles.resources.default": "{name}",
     "core.titles.resources.edit": "Modifier {name}",

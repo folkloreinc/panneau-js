@@ -17,11 +17,30 @@
         }
     }
 
+    .listContainer {
+        position: relative;
+        min-height: 50px;
+    }
+
     .list {
         position: relative;
+        z-index: 1;
     }
 
     .loading {
-        text-align: center;
+        display: table;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, .5);
+        z-index: 2;
+
+        .middle {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+        }
     }
 }

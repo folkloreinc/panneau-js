@@ -7,9 +7,10 @@ import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
+import isObject from 'lodash/isObject';
 import classNames from 'classnames';
 import queryString from 'query-string';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage, injectIntl } from 'react-intl';
 import { withUrlGenerator } from '@folklore/react-app';
 import { PulseLoader } from 'react-spinners';
 
@@ -29,31 +30,30 @@ const messages = defineMessages({
         description: 'The title of the resource index page',
         defaultMessage: '{name}',
     },
+    confirmDelete: {
+        id: 'core.resources.index.confirm_delete',
+        description: 'The confirm message when deleting on the resource index page',
+        defaultMessage: 'Are you sure you want to delete this item from {name}?',
+    },
 });
 
 const propTypes = {
+    intl: PanneauPropTypes.intl.isRequired,
+    urlGenerator: PanneauPropTypes.urlGenerator.isRequired,
     listsCollection: PanneauPropTypes.componentsCollection.isRequired,
-    urlGenerator: PropTypes.shape({
-        route: PropTypes.func,
-    }).isRequired,
     resource: PanneauPropTypes.resource.isRequired,
-    location: PropTypes.shape({}).isRequired,
+    location: PropTypes.shape({
+        pathname: PropTypes.string.isRequired,
+        search: PropTypes.string.isRequired,
+    }).isRequired,
     items: PropTypes.arrayOf(PropTypes.object),
     title: PanneauPropTypes.message,
     errors: PropTypes.arrayOf(PropTypes.string),
     showAddButton: PropTypes.bool,
-    addButtonLabel: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.shape({
-            id: PropTypes.string,
-            description: PropTypes.string,
-            defaultMessage: PropTypes.string,
-        }),
-    ]),
-    gotoResourceCreate: PropTypes.func,
-    gotoResourceEdit: PropTypes.func,
-    gotoResourceShow: PropTypes.func,
-    gotoResourceDelete: PropTypes.func,
+    addButtonLabel: PanneauPropTypes.message,
+    confirmDeleteMessage: PanneauPropTypes.message,
+    getResourceActionUrl: PropTypes.func.isRequired,
+    gotoResourceAction: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -62,10 +62,7 @@ const defaultProps = {
     errors: null,
     showAddButton: true,
     addButtonLabel: messages.add,
-    gotoResourceCreate: PropTypes.func,
-    gotoResourceEdit: PropTypes.func,
-    gotoResourceShow: PropTypes.func,
-    gotoResourceDelete: PropTypes.func,
+    confirmDeleteMessage: messages.confirmDelete,
 };
 
 class ResourceIndex extends Component {
@@ -78,6 +75,7 @@ class ResourceIndex extends Component {
         this.onItemDeleted = this.onItemDeleted.bind(this);
 
         this.state = {
+            isLoading: props.items === null,
             items: props.items,
             pagination: null,
             errors: props.errors,
@@ -85,7 +83,10 @@ class ResourceIndex extends Component {
     }
 
     componentDidMount() {
-        this.loadItems();
+        const { items } = this.state;
+        if (items === null) {
+            this.loadItems();
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -93,13 +94,14 @@ class ResourceIndex extends Component {
         if (itemsChanged) {
             this.setState({
                 items: nextProps.items,
+                isLoading: nextProps.items === null,
             });
         }
 
         const locationChanged = nextProps.location !== this.props.location;
         if (locationChanged) {
             this.setState({
-                items: null,
+                isLoading: true,
             });
         }
 
@@ -113,7 +115,8 @@ class ResourceIndex extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         const itemsChanged = prevState.items !== this.state.items;
-        if (itemsChanged && this.state.items === null) {
+        const locationChanged = prevProps.location !== this.props.location;
+        if ((itemsChanged && this.state.items === null) || locationChanged) {
             this.loadItems();
         }
     }
@@ -129,35 +132,44 @@ class ResourceIndex extends Component {
         }
         this.setState({
             items: data,
+            isLoading: false,
         });
     }
 
     onItemsLoadError(errors) {
         this.setState({
             errors,
+            isLoading: false,
         });
     }
 
     onItemActions(e, action, it) {
-        const {
-            gotoResourceEdit,
-            gotoResourceShow,
-            // gotoResourceDelete,
-        } = this.props;
+        const { getResourceActionUrl, gotoResourceAction } = this.props;
 
-        if (action.id === 'edit') {
-            if (gotoResourceEdit !== null) {
-                gotoResourceEdit(it.id);
+        const useRouter = get(action, 'useRouter', true);
+
+        switch (action.id) {
+        case 'edit':
+        case 'show':
+            if (useRouter) {
+                gotoResourceAction(action.id, it.id);
+            } else {
+                window.location.href = getResourceActionUrl(action.id);
             }
-        } else if (action.id === 'show') {
-            if (gotoResourceShow !== null) {
-                gotoResourceShow(it.id);
+            break;
+        case 'delete': {
+            const hasPage = get(action, 'hasPage', false);
+            if (!hasPage) {
+                this.deleteItem(it.id);
+            } else if (useRouter) {
+                gotoResourceAction(action.id, it.id);
+            } else {
+                window.location.href = getResourceActionUrl(action.id);
             }
-        } else if (action.id === 'delete') {
-            this.deleteItem(it.id);
-            // if (gotoResourceDelete !== null) {
-            //     gotoResourceDelete(it.id);
-            // }
+            break;
+        }
+        default:
+            break;
         }
     }
 
@@ -189,11 +201,17 @@ class ResourceIndex extends Component {
     }
 
     deleteItem(id) {
-        const { resource } = this.props;
+        const { resource, intl, confirmDeleteMessage } = this.props;
         const { name } = resource;
-        // @TODO quick implementation; instead, use a pretty modal or something
+        const confirmMessage = get(resource, 'messages.confirm_delete', confirmDeleteMessage);
+        const message = isObject(confirmMessage) && typeof confirmMessage.id !== 'undefined'
+            ? intl.formatMessage(confirmMessage, {
+                name,
+                id,
+            })
+            : confirmMessage;
         // eslint-disable-next-line no-alert
-        if (window.confirm(`Are you sure you want to delete item ID ${id} from ${name}?`)) {
+        if (window.confirm(message)) {
             resource.api.destroy(id).then(this.onItemDeleted);
         }
     }
@@ -379,31 +397,31 @@ class ResourceIndex extends Component {
     // eslint-disable-next-line class-methods-use-this
     renderLoading() {
         return (
-            <div
-                className={classNames({
-                    'py-4': true,
-                    [styles.loading]: true,
-                })}
-            >
-                <PulseLoader loading />
+            <div className={styles.loading}>
+                <div className={styles.middle}>
+                    <PulseLoader loading />
+                </div>
             </div>
         );
     }
 
     render() {
-        const { items, pagination } = this.state;
+        const { items, pagination, isLoading } = this.state;
         const containerClassNames = classNames({
             [styles.container]: true,
         });
-        const isLoading = items === null;
-
         return (
             <div className={containerClassNames}>
                 <div className="container">
                     <div className="row justify-content-md-center">
                         <div className="col-lg-8">
                             {this.renderHeader()}
-                            {isLoading ? this.renderLoading() : this.renderList()}
+                            <div className={styles.listContainer}>
+                                <div className={styles.list}>
+                                    {items !== null ? this.renderList() : null}
+                                </div>
+                                {isLoading ? this.renderLoading() : null}
+                            </div>
                             {pagination !== null ? this.renderPagination() : null}
                         </div>
                     </div>
@@ -428,50 +446,38 @@ const mapStateToProps = ({ panneau }, { match, location, urlGenerator }) => {
     };
 };
 
-const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
-    gotoResourceCreate: resource =>
-        dispatch(push(urlGenerator.route('resource.create', {
-            resource: resource.id,
-        }))),
-    gotoResourceEdit: (resource, id) =>
-        dispatch(push(urlGenerator.route('resource.edit', {
-            resource: resource.id,
-            id,
-        }))),
-    gotoResourceShow: (resource, id) =>
-        dispatch(push(urlGenerator.route('resource.show', {
-            resource: resource.id,
-            id,
-        }))),
-    gotoResourceDelete: (resource, id) =>
-        dispatch(push(urlGenerator.route('resource.delete', {
-            resource: resource.id,
-            id,
-        }))),
-});
+const mapDispatchToProps = (dispatch, { urlGenerator }) => {
+    const getResourceActionUrl = (resource, action, id) =>
+        (typeof resource.routes !== 'undefined'
+            ? urlGenerator.route(`resource.${resource.id}.${action}`, {
+                id: id || null,
+            })
+            : urlGenerator.route(`resource.${action}`, {
+                resource: resource.id,
+                id: id || null,
+            }));
+    return {
+        getResourceActionUrl,
+        gotoResourceAction: (resource, action, id) =>
+            dispatch(push(getResourceActionUrl(resource, action, id))),
+    };
+};
 
 const mergeProps = (
     stateProps,
-    {
-        gotoResourceCreate,
-        gotoResourceEdit,
-        gotoResourceShow,
-        gotoResourceDelete,
-        ...dispatchProps
-    },
+    { getResourceActionUrl, gotoResourceAction, ...dispatchProps },
     ownProps,
 ) => ({
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
-    gotoResourceCreate: () => gotoResourceCreate(stateProps.resource),
-    gotoResourceEdit: id => gotoResourceEdit(stateProps.resource, id),
-    gotoResourceShow: id => gotoResourceShow(stateProps.resource, id),
-    gotoResourceDelete: id => gotoResourceDelete(stateProps.resource, id),
+    getResourceActionUrl: (action, id) => getResourceActionUrl(stateProps.resource, action, id),
+    gotoResourceAction: (action, id) => gotoResourceAction(stateProps.resource, action, id),
 });
 
 const WithStateComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(ResourceIndex);
 const WithRouterContainer = withRouter(WithStateComponent);
 const WithListsCollectionContainer = withListsCollection()(WithRouterContainer);
 const WithUrlGeneratorContainer = withUrlGenerator()(WithListsCollectionContainer);
-export default WithUrlGeneratorContainer;
+const WithIntlContainer = injectIntl(WithUrlGeneratorContainer);
+export default WithIntlContainer;

@@ -43,7 +43,6 @@ const defaultProps = {
             label: 'Actions',
             type: 'actions',
             align: 'right',
-            iconsOnly: false,
         },
     ],
     emptyListText: undefined,
@@ -265,19 +264,43 @@ class TableList extends Component {
 
     renderTableBodyActionsColumn(it, column, rowIndex, colIndex) {
         const key = `row_${rowIndex}_${colIndex}_actions`;
-        const align = get(column, 'align', 'right');
+        const {
+            id,
+            label,
+            type,
+            align,
+            showAction,
+            editAction,
+            deleteAction,
+            ...props
+        } = column;
+        const columnAlign = typeof align !== 'undefined' ? align : 'right';
+        const actionsProps = {
+            show: showAction || null,
+            edit: editAction || null,
+            delete: deleteAction || null,
+        };
+        const actions = [
+            ...ListActions.getDefaultActions(),
+        ].map(action => (
+            (actionsProps[action.id] || null) !== null ? {
+                ...action,
+                ...actionsProps[action.id],
+            } : action
+        ));
         return (
             <td
                 key={key}
                 className={classNames({
                     'align-middle': true,
-                    [`text-${align}`]: align !== null,
+                    [`text-${columnAlign}`]: columnAlign !== null,
                 })}
             >
                 <ListActions
                     item={it}
                     onClick={(e, action) => this.onClickActions(e, action, it, rowIndex)}
-                    {...column}
+                    actions={actions}
+                    {...props}
                 />
             </td>
         );

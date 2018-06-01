@@ -51,6 +51,7 @@ export const urlGenerator = PropTypes.shape({
 });
 
 export const intl = PropTypes.shape({
+    locale: PropTypes.string.isRequired,
     formatMessage: PropTypes.func.isRequired,
 });
 
