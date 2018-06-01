@@ -406,8 +406,10 @@ class ResourceIndex extends Component {
                     [styles.alone]: items === null,
                 })}
             >
-                <div className={styles.middle}>
-                    <PulseLoader loading />
+                <div className={styles.inner}>
+                    <div className={styles.middle}>
+                        <PulseLoader loading />
+                    </div>
                 </div>
             </div>
         );
