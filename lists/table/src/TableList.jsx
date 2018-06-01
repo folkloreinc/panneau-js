@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { pascal as pascalCase } from 'change-case';
 import classNames from 'classnames';
 import { ListActions, ListEmpty } from '@panneau/list';
-import omit from 'lodash/omit';
+import pick from 'lodash/pick';
 import get from 'lodash/get';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
@@ -52,7 +52,7 @@ const defaultProps = {
 
 class TableList extends Component {
     static getColumnProps(column) {
-        return omit(column, ['id', 'key', 'label', 'path', 'align', 'iconsOnly', 'showIcon', 'className']);
+        return pick(column, ['width', 'colspan', 'rowspan', 'title', 'height', 'valign']);
     }
 
     constructor(props) {
