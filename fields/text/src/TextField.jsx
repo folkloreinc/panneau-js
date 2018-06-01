@@ -37,6 +37,7 @@ const propTypes = {
     ]),
     inputOnly: PropTypes.bool,
     disabled: PropTypes.bool,
+    maxLength: PropTypes.number,
     ckeditorConfig: PropTypes.object, // eslint-disable-line
     ckeditorCustomConfig: PropTypes.string,
     ckeditorBasePath: PropTypes.string,
@@ -59,6 +60,7 @@ const defaultProps = {
     align: null,
     inputOnly: false,
     disabled: false,
+    maxLength: null,
     ckeditorConfig: null,
     ckeditorCustomConfig: null,
     ckeditorBasePath: 'https://cdn.ckeditor.com/4.7.2/standard/',
@@ -151,6 +153,7 @@ class TextField extends Component {
             value,
             align,
             disabled,
+            maxLength,
             onFocus,
             onBlur,
         } = this.props;
@@ -173,6 +176,7 @@ class TextField extends Component {
             onChange: this.onChange,
             onFocus,
             onBlur,
+            maxLength,
         };
 
         let input = null;

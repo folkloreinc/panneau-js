@@ -31,6 +31,13 @@ storiesOf('Fields/Text', module)
                     onChange={action('change')}
                 />
             </KeepValue>
+            <KeepValue>
+                <TextField
+                    label="With a maxlength"
+                    maxLength={10}
+                    onChange={action('change')}
+                />
+            </KeepValue>
         </div>
     ))
     .add('with suffix and prefix', () => (
