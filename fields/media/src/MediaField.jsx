@@ -19,6 +19,7 @@ const propTypes = {
     onChange: PropTypes.func,
     uploadEndpoint: PropTypes.string,
     uploadButtonLabel: PanneauPropTypes.message,
+    uploadAccept: PropTypes.string,
 };
 
 const defaultProps = {
@@ -31,6 +32,7 @@ const defaultProps = {
     type: null,
     uploadEndpoint: null,
     uploadButtonLabel: messages.uploadMediaLabel,
+    uploadAccept: null,
 };
 
 class MediaField extends Component {
@@ -54,12 +56,15 @@ class MediaField extends Component {
     }
 
     renderUploadButton() {
-        const { uploadButtonLabel, uploadEndpoint } = this.props;
+        const {
+            type, uploadButtonLabel, uploadEndpoint, uploadAccept,
+        } = this.props;
         return (
             <div className={styles.upload}>
                 <UploadButton
                     endpoint={uploadEndpoint}
                     label={uploadButtonLabel}
+                    accept={uploadAccept || `${type || '*'}/*`}
                     onUploadComplete={this.onUploadComplete}
                 />
             </div>
