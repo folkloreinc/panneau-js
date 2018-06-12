@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-media",
-    "version": "0.4.32",
+    "version": "0.4.33",
     "description": "Media fields for Panneau",
     "keywords": [
         "react",
