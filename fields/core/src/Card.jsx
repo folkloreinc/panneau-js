@@ -28,11 +28,26 @@ const propTypes = {
     withoutBorder: PropTypes.bool,
     thumbnailSize: PropTypes.string,
     renderLabel: PropTypes.func,
-    namePath: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
-    detailsPath: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
-    datePath: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
-    thumbnailPath: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
-    iconPath: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
+    namePath: PropTypes.oneOfType([ // eslint-disable-line react/no-unused-prop-types
+        PropTypes.string,
+        PropTypes.arrayOf(PropTypes.string),
+    ]),
+    detailsPath: PropTypes.oneOfType([ // eslint-disable-line react/no-unused-prop-types
+        PropTypes.string,
+        PropTypes.arrayOf(PropTypes.string),
+    ]),
+    datePath: PropTypes.oneOfType([ // eslint-disable-line react/no-unused-prop-types
+        PropTypes.string,
+        PropTypes.arrayOf(PropTypes.string),
+    ]),
+    thumbnailPath: PropTypes.oneOfType([ // eslint-disable-line react/no-unused-prop-types
+        PropTypes.string,
+        PropTypes.arrayOf(PropTypes.string),
+    ]),
+    iconPath: PropTypes.oneOfType([ // eslint-disable-line react/no-unused-prop-types
+        PropTypes.string,
+        PropTypes.arrayOf(PropTypes.string),
+    ]),
     getName: PropTypes.func,
     getDetails: PropTypes.func,
     getThumbnail: PropTypes.func,
