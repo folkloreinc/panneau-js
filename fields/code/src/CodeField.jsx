@@ -31,6 +31,7 @@ const propTypes = {
         PropTypes.number,
         PropTypes.string,
     ]),
+    extensions: PropTypes.arrayOf(PropTypes.string),
     editorProps: PropTypes.object, // eslint-disable-line
     isJson: PropTypes.bool,
     onChange: PropTypes.func,
@@ -45,6 +46,7 @@ const defaultProps = {
     width: '100%',
     height: 300,
     isJson: true,
+    extensions: [],
     editorProps: { $blockScrolling: Infinity },
     onChange: null,
 };
@@ -73,17 +75,16 @@ class CodeField extends Component {
     }
 
     componentDidMount() {
-        const { language, theme } = this.props;
+        const { language, theme, extensions } = this.props;
         import(/* webpackChunkName: "vendor/react-ace" */'react-ace')
             .then((AceEditor) => {
                 this.AceEditor = AceEditor.default;
             })
-            .then(() => import(/* webpackChunkName: "vendor/brace" */'brace'))
-            .then((brace) => {
-                this.brace = brace;
-            })
             .then(() => import(/* webpackChunkName: "vendor/brace/mode/[request]" */`brace/mode/${language}`))
             .then(() => import(/* webpackChunkName: "vendor/brace/theme/[request]" */`brace/theme/${theme}`))
+            .then(() => Promise.all(extensions.map(ext => (
+                import(/* webpackChunkName: "vendor/brace/ext/[request]" */`brace/ext/${ext}`)
+            ))))
             .then(() => {
                 if (this.importCanceled) {
                     return;

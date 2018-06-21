@@ -47,5 +47,18 @@ storiesOf('Fields/Code', module)
                     onChange={action('change')}
                 />
             </KeepValue>
+            <KeepValue>
+                <CodeField
+                    label="With autocomplete"
+                    language="html"
+                    theme="monokai"
+                    height={100}
+                    value={valueHtml}
+                    extensions={['language_tools']}
+                    enableLiveAutocompletion
+                    enableSnippets
+                    onChange={action('change')}
+                />
+            </KeepValue>
         </div>
     ));
