@@ -10,14 +10,17 @@ const items = [
     {
         id: '1',
         name: 'Test 1',
+        image: 'http://placehold.it/300x200',
     },
     {
         id: '2',
         name: 'Test 2',
+        image: 'http://placehold.it/300x200',
     },
     {
         id: '3',
         name: 'Test 3',
+        image: 'http://placehold.it/300x200',
     },
 ];
 
@@ -29,11 +32,19 @@ const columns = [
         width: 50,
     },
     {
+        id: 'id',
+        type: 'image',
+        path: 'image',
+        label: 'Image',
+        width: 50,
+    },
+    {
         id: 'actions',
         label: 'Actions',
         type: 'actions',
         align: 'right',
-        iconsOnly: true,
+        withIcons: true,
+        withoutLabel: true,
     },
 ];
 

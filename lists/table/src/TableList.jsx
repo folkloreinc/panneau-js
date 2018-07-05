@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import isEmpty from 'lodash/isEmpty';
 import { pascal as pascalCase } from 'change-case';
 import classNames from 'classnames';
 import { ListActions, ListEmpty } from '@panneau/list';
-import pick from 'lodash/pick';
 import get from 'lodash/get';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+
+import Column from './Column';
 
 import styles from './styles.scss';
 
@@ -13,6 +15,7 @@ const propTypes = {
     items: PropTypes.arrayOf(PropTypes.object),
     striped: PropTypes.bool,
     hoverable: PropTypes.bool,
+    responsive: PropTypes.bool,
     tableClassName: PropTypes.string,
     cols: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.required,
@@ -30,6 +33,7 @@ const defaultProps = {
     items: [],
     striped: false,
     hoverable: true,
+    responsive: false,
     tableClassName: null,
     cols: [
         {
@@ -51,21 +55,18 @@ const defaultProps = {
 };
 
 class TableList extends Component {
-    static getColumnProps(column) {
-        return pick(column, ['width', 'colspan', 'rowspan', 'title', 'height', 'valign']);
-    }
-
     constructor(props) {
         super(props);
 
         this.onClickActions = this.onClickActions.bind(this);
-        this.renderTable = this.renderTable.bind(this);
         this.renderTableHeader = this.renderTableHeader.bind(this);
         this.renderTableHeaderColumn = this.renderTableHeaderColumn.bind(this);
         this.renderTableBody = this.renderTableBody.bind(this);
         this.renderTableBodyRow = this.renderTableBodyRow.bind(this);
         this.renderTableBodyColumn = this.renderTableBodyColumn.bind(this);
-        this.getTableBodyButtonsColumn = this.getTableBodyButtonsColumn.bind(this);
+        this.renderTableBodyButtonsColumn = this.renderTableBodyButtonsColumn.bind(this);
+        this.renderTableBodyImageColumn = this.renderTableBodyImageColumn.bind(this);
+        this.renderTableBodyActionsColumn = this.renderTableBodyActionsColumn.bind(this);
         this.renderTableButton = this.renderTableButton.bind(this);
         this.renderTableButtonIcon = this.renderTableButtonIcon.bind(this);
     }
@@ -94,39 +95,9 @@ class TableList extends Component {
         });
 
         return (
-            <td
-                key={key}
-                className={tdClassNames}
-                {...props}
-            >
-                <div
-                    className={divClassNames}
-                >
-                    { buttons }
-                </div>
+            <td key={key} className={tdClassNames} {...props}>
+                <div className={divClassNames}>{buttons}</div>
             </td>
-        );
-    }
-
-    renderTable(columns, items) {
-        const { striped, hoverable, tableClassName } = this.props;
-        const header = this.renderTableHeader(columns);
-        const body = this.renderTableBody(columns, items);
-        const tableClassNames = classNames({
-            table: true,
-            'table-sm': true,
-            'table-striped': striped,
-            'table-hover': hoverable,
-            [tableClassName]: tableClassName !== null,
-        });
-
-        return (
-            <table
-                className={tableClassNames}
-            >
-                { header }
-                { body }
-            </table>
         );
     }
 
@@ -135,9 +106,7 @@ class TableList extends Component {
 
         return (
             <thead>
-                <tr>
-                    { headerColumns }
-                </tr>
+                <tr>{headerColumns}</tr>
             </thead>
         );
     }
@@ -151,30 +120,17 @@ class TableList extends Component {
         }
 
         const key = `header_${column.name}_${index}`;
-        const props = TableList.getColumnProps(column);
-        const align = get(column, 'align', null);
 
         return (
-            <th
-                key={key}
-                className={classNames({
-                    'align-middle': true,
-                    [`text-${align}`]: align !== null,
-                })}
-                {...props}
-            >
+            <Column key={key} head {...column}>
                 {column.label}
-            </th>
+            </Column>
         );
     }
 
     renderTableBody(columns, items) {
         if (!items || !items.length) {
-            return (
-                <tbody>
-                    { this.renderTableBodyNoItemsRow(columns) }
-                </tbody>
-            );
+            return <tbody>{this.renderTableBodyNoItemsRow(columns)}</tbody>;
         }
 
         const bodyRows = [];
@@ -182,11 +138,7 @@ class TableList extends Component {
             bodyRows.push(this.renderTableBodyRow(columns, it, index));
         });
 
-        return (
-            <tbody>
-                { bodyRows }
-            </tbody>
-        );
+        return <tbody>{bodyRows}</tbody>;
     }
 
     renderTableBodyNoItemsRow(columns) {
@@ -200,9 +152,7 @@ class TableList extends Component {
                     })}
                     colSpan={colspan}
                 >
-                    <ListEmpty
-                        label={emptyListText}
-                    />
+                    <ListEmpty label={emptyListText} />
                 </td>
             </tr>
         );
@@ -224,13 +174,7 @@ class TableList extends Component {
         const id = get(it, 'id', rowIndex);
         const key = `row_${id}_${rowIndex}`;
 
-        return (
-            <tr
-                key={key}
-            >
-                { columnsRows }
-            </tr>
-        );
+        return <tr key={key}>{columnsRows}</tr>;
     }
 
     renderTableBodyColumn(it, column, rowIndex, colIndex) {
@@ -243,66 +187,74 @@ class TableList extends Component {
         const key = `row_${id}_${column.id}`;
         const data = get(it, column.path, null);
 
-        const props = TableList.getColumnProps(column);
-        const align = get(column, 'align', null);
-        const columnClassName = column.className || null;
+        return (
+            <Column key={key} {...column}>
+                {data}
+            </Column>
+        );
+    }
+
+    renderTableBodyButtonsColumn(it, column, rowIndex, colIndex) {
+        const id = get(it, 'id', rowIndex);
+        const key = `row_${id}_${column.name}`;
+        const buttons = [];
+        column.buttons.forEach((button, btnIndex) => {
+            buttons.push(this.renderTableButton(it, button, rowIndex, colIndex, btnIndex));
+        });
+
+        const divClassNames = classNames({
+            [get(column, 'className', 'btn-group')]: true,
+        });
 
         return (
-            <td
-                key={key}
-                className={classNames({
-                    'align-middle': true,
-                    [`text-${align}`]: align !== null,
-                    [columnClassName]: columnClassName !== null,
-                })}
-                {...props}
-            >
-                { data }
-            </td>
+            <Column key={key} align="right" {...column}>
+                <div className={divClassNames}>{buttons}</div>
+            </Column>
+        );
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    renderTableBodyImageColumn(it, column, rowIndex) {
+        const id = get(it, 'id', rowIndex);
+        const key = `row_${id}_${column.id}`;
+        const url = get(it, column.path, null);
+        const width = column.width || null;
+
+        return (
+            <Column key={key} {...column}>
+                {url !== null && !isEmpty(url) ? (
+                    <img src={url} alt="" width={width} classNames={styles.image} />
+                ) : null}
+            </Column>
         );
     }
 
     renderTableBodyActionsColumn(it, column, rowIndex, colIndex) {
         const key = `row_${rowIndex}_${colIndex}_actions`;
         const {
-            id,
-            label,
-            type,
-            align,
-            showAction,
-            editAction,
-            deleteAction,
-            ...props
+            id, label, type, align, showAction, editAction, deleteAction, ...props
         } = column;
-        const columnAlign = typeof align !== 'undefined' ? align : 'right';
         const actionsProps = {
             show: showAction || null,
             edit: editAction || null,
             delete: deleteAction || null,
         };
-        const actions = [
-            ...ListActions.getDefaultActions(),
-        ].map(action => (
-            (actionsProps[action.id] || null) !== null ? {
-                ...action,
-                ...actionsProps[action.id],
-            } : action
-        ));
+        const actions = [...ListActions.getDefaultActions()].map(action =>
+            ((actionsProps[action.id] || null) !== null
+                ? {
+                    ...action,
+                    ...actionsProps[action.id],
+                }
+                : action));
         return (
-            <td
-                key={key}
-                className={classNames({
-                    'align-middle': true,
-                    [`text-${columnAlign}`]: columnAlign !== null,
-                })}
-            >
+            <Column key={key} align="right" {...column}>
                 <ListActions
                     item={it}
                     onClick={(e, action) => this.onClickActions(e, action, it, rowIndex)}
                     actions={actions}
                     {...props}
                 />
-            </td>
+            </Column>
         );
     }
 
@@ -335,31 +287,21 @@ class TableList extends Component {
             });
 
             return (
-                <a
-                    key={key}
-                    href={href}
-                    className={className}
-                    onClick={onClick}
-                >
-                    { leftIcon }
-                    { label }
-                    { children }
-                    { rightIcon }
+                <a key={key} href={href} className={className} onClick={onClick}>
+                    {leftIcon}
+                    {label}
+                    {children}
+                    {rightIcon}
                 </a>
             );
         }
 
         return (
-            <button
-                key={key}
-                type={type}
-                className={className}
-                onClick={onClick}
-            >
-                { leftIcon }
-                { label }
-                { children }
-                { rightIcon }
+            <button key={key} type={type} className={className} onClick={onClick}>
+                {leftIcon}
+                {label}
+                {children}
+                {rightIcon}
             </button>
         );
     }
@@ -367,17 +309,12 @@ class TableList extends Component {
     // eslint-disable-next-line class-methods-use-this
     renderTableButtonIcon(icon) {
         const iconClassName = `glyphicon glyphicon-${icon}`;
-        return (
-            <span
-                className={iconClassName}
-            />
-        );
+        return <span className={iconClassName} />;
     }
 
     render() {
         const {
-            items,
-            cols,
+            items, cols, striped, hoverable, responsive, tableClassName,
         } = this.props;
 
         const containerClassNames = classNames({
@@ -388,10 +325,24 @@ class TableList extends Component {
             [styles.items]: true,
         });
 
+        const header = this.renderTableHeader(cols);
+        const body = this.renderTableBody(cols, items);
+        const tableClassNames = classNames({
+            table: true,
+            'table-sm': true,
+            'table-striped': striped,
+            'table-hover': hoverable,
+            'table-responsive': responsive,
+            [tableClassName]: tableClassName !== null,
+        });
+
         return (
             <div className={containerClassNames}>
                 <div className={itemsClassNames}>
-                    { this.renderTable(cols, items) }
+                    <table className={tableClassNames}>
+                        {header}
+                        {body}
+                    </table>
                 </div>
             </div>
         );
