@@ -5,6 +5,7 @@ import isString from 'lodash/isString';
 import isArray from 'lodash/isArray';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import { FieldsGroup } from '@panneau/field';
+import { PropTypes as FormPropTypes } from '@panneau/form';
 
 import styles from './styles.scss';
 
@@ -21,10 +22,7 @@ const propTypes = {
     method: PropTypes.string,
     fields: PropTypes.arrayOf(PropTypes.object),
     value: PropTypes.shape({}),
-    errors: PropTypes.oneOfType([
-        PropTypes.objectOf(PropTypes.string),
-        PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
-    ]),
+    errors: FormPropTypes.errors,
     generalError: PropTypes.string,
     generalErrorDefaultMessage: PropTypes.string,
     buttons: PropTypes.arrayOf(PropTypes.shape({
@@ -77,6 +75,10 @@ const defaultProps = {
     notice: null,
 };
 
+const childContextTypes = {
+    form: FormPropTypes.form,
+};
+
 class NormalForm extends Component {
     constructor(props) {
         super(props);
@@ -90,6 +92,16 @@ class NormalForm extends Component {
             value: props.value,
             errors: props.errors,
             generalError: props.generalError,
+        };
+    }
+
+    getChildContext() {
+        const { value, errors } = this.state;
+        return {
+            form: {
+                errors,
+                value,
+            },
         };
     }
 
@@ -273,5 +285,6 @@ class NormalForm extends Component {
 
 NormalForm.propTypes = propTypes;
 NormalForm.defaultProps = defaultProps;
+NormalForm.childContextTypes = childContextTypes;
 
 export default NormalForm;
