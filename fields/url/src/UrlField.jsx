@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import isEmpty from 'lodash/isEmpty';
 import { FormGroup } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import TextField from '@panneau/field-text';
@@ -50,7 +51,7 @@ class UrlField extends Component {
     onChange(value) {
         const { scheme } = this.state;
         if (this.props.onChange) {
-            this.props.onChange(this.url.withScheme(value, scheme));
+            this.props.onChange(!isEmpty(value) ? this.url.withScheme(value, scheme) : '');
         }
     }
 

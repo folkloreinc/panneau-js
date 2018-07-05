@@ -18,10 +18,7 @@ const propTypes = {
     locale: PropTypes.string,
     className: PropTypes.string,
     locales: PropTypes.arrayOf(PropTypes.string),
-    FieldComponent: PropTypes.oneOfType([
-        PropTypes.instanceOf(Component),
-        PropTypes.func,
-    ]),
+    FieldComponent: PropTypes.oneOfType([PropTypes.instanceOf(Component), PropTypes.func]),
     getFieldProps: PropTypes.func,
     renderField: PropTypes.func,
     children: PropTypes.func,
@@ -46,9 +43,7 @@ const contextTypes = {
     definition: PanneauPropTypes.definition,
 };
 
-const defaultLocales = [
-    'en',
-];
+const defaultLocales = ['en'];
 
 class LocaleField extends Component {
     constructor(props) {
@@ -81,7 +76,11 @@ class LocaleField extends Component {
         };
 
         if (this.props.onChange) {
-            this.props.onChange(newValue);
+            const allValuesNull = Object.values(newValue).reduce(
+                (allNull, val) => allNull && val === null,
+                true,
+            );
+            this.props.onChange(!allValuesNull ? newValue : null);
         }
     }
 
@@ -132,14 +131,11 @@ class LocaleField extends Component {
         const renderFieldMethod = renderField || children || null;
         return (
             <div key={key} className="form-group-locale-field" style={style}>
-                { renderFieldMethod !== null ? renderFieldMethod(
-                    locale,
-                    finalProps,
-                    FieldComponent,
-                    index,
+                {renderFieldMethod !== null ? (
+                    renderFieldMethod(locale, finalProps, FieldComponent, index)
                 ) : (
                     <FieldComponent {...finalProps} />
-                ) }
+                )}
             </div>
         );
     }
@@ -159,17 +155,13 @@ class LocaleField extends Component {
 
         return (
             <button key={key} type="button" className={className} onClick={onClick}>
-                { locale.toUpperCase() }
+                {locale.toUpperCase()}
             </button>
         );
     }
 
     render() {
-        const {
-            label,
-            className,
-            ...props
-        } = this.props;
+        const { label, className, ...props } = this.props;
 
         const locales = this.getLocales();
         const fields = locales.map(this.renderLocaleField);
@@ -178,14 +170,12 @@ class LocaleField extends Component {
             'btn-group btn-group-sm': true,
             [styles.btnGroup]: true,
         });
-        const labelSuffix = locales.length > 1 ? (
-            <span
-                className={buttonsClassName}
-                data-toggle="buttons"
-            >
-                { buttons }
-            </span>
-        ) : null;
+        const labelSuffix =
+            locales.length > 1 ? (
+                <span className={buttonsClassName} data-toggle="buttons">
+                    {buttons}
+                </span>
+            ) : null;
 
         const propsWithoutErrors = omit(props, 'errors');
 
@@ -200,7 +190,7 @@ class LocaleField extends Component {
                 className={groupClassName}
                 {...propsWithoutErrors}
             >
-                { fields }
+                {fields}
             </FormGroup>
         );
     }
