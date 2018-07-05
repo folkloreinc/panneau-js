@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-locale",
-    "version": "0.4.32",
+    "version": "0.4.37",
     "description": "Locale field for Panneau",
     "keywords": [
         "react",
