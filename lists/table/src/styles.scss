@@ -4,9 +4,13 @@
     .items {
         position: relative;
     }
-    
+
     .item {
         position: relative;
+    }
+
+    .image {
+        display: block;
     }
 
     .emptyRow {
