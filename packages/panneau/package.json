@@ -1,6 +1,6 @@
 {
     "name": "panneau",
-    "version": "0.4.34",
+    "version": "0.4.35",
     "description": "Framework to build dashboard and administration panels",
     "keywords": [
         "react",
@@ -59,7 +59,7 @@
         "@panneau/fields": "^0.4.34",
         "@panneau/forms": "^0.4.34",
         "@panneau/layouts": "^0.4.32",
-        "@panneau/lists": "^0.4.31",
+        "@panneau/lists": "^0.4.35",
         "@panneau/modals": "^0.4.31",
         "babel-runtime": "^6.26.0",
         "bootstrap": "^4.1.1",
