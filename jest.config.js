@@ -4,7 +4,7 @@ const fs = require('fs');
 const lernaJson = require('./lerna.json');
 
 const packagesIgnorePatterns = lernaJson.packages.map(packagePath => (
-    `<rootDir>/${packagePath}/(lib|es|dist)/`
+    `<rootDir>/${packagePath.replace(/\*/gi, '[^/]+')}/(lib|es|dist)/`
 ));
 
 const coveragePatterns = lernaJson.packages.reduce((items, packageGlob) => ([
@@ -42,7 +42,7 @@ module.exports = {
         ...packagesIgnorePatterns,
         '<rootDir>/packages/generator-panneau/lib/',
         '<rootDir>/packages/generator-panneau/src/templates/',
-        '<rootDir>/packages/generator-panneau/src/generators/*',
+        '<rootDir>/packages/generator-panneau/src/generators/[^/]+/templates',
         '<rootDir>/__tests__/shim.js',
         '<rootDir>/__tests__/setup.js',
         '<rootDir>/__tests__/storyshots.test.js',
@@ -56,6 +56,10 @@ module.exports = {
         'react-sortable-hoc': '<rootDir>/__mocks__/react-sortable-hoc.js',
         jquery: require.resolve('jquery-slim'),
         ...moduleNameMapper,
+    },
+    transform: {
+        '^.+\\.jsx?$': 'babel-jest',
+        '.*@folklore.*': 'babel-jest',
     },
     collectCoverage: true,
     collectCoverageFrom: [
