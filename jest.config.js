@@ -61,6 +61,9 @@ module.exports = {
         '^.+\\.jsx?$': 'babel-jest',
         '^.+\\@folklore\\/react\\-container.+': 'babel-jest',
     },
+    transformIgnorePatterns: [
+        'node_modules/(?!(@folklore)/)',
+    ],
     collectCoverage: true,
     collectCoverageFrom: [
         ...coveragePatterns,
