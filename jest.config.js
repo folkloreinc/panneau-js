@@ -59,7 +59,7 @@ module.exports = {
     },
     transform: {
         '^.+\\.jsx?$': 'babel-jest',
-        '.*@folklore.*': 'babel-jest',
+        '^.+\\@folklore\\/react\\-container.+': 'babel-jest',
     },
     collectCoverage: true,
     collectCoverageFrom: [
