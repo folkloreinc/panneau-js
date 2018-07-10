@@ -57,10 +57,6 @@ module.exports = {
         jquery: require.resolve('jquery-slim'),
         ...moduleNameMapper,
     },
-    transform: {
-        '^.+\\.jsx?$': 'babel-jest',
-        '^.+\\@folklore\\/react\\-container.+': 'babel-jest',
-    },
     transformIgnorePatterns: [
         'node_modules/(?!(@folklore|react-intl)/)',
     ],
