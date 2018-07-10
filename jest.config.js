@@ -62,7 +62,7 @@ module.exports = {
         '^.+\\@folklore\\/react\\-container.+': 'babel-jest',
     },
     transformIgnorePatterns: [
-        'node_modules/(?!(@folklore)/)',
+        'node_modules/(?!(@folklore|react-intl)/)',
     ],
     collectCoverage: true,
     collectCoverageFrom: [
