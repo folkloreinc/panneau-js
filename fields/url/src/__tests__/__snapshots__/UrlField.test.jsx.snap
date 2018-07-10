@@ -38,6 +38,7 @@ exports[`match snapshot 1`] = `
         className="form-control field-text"
         disabled={false}
         id={null}
+        maxLength={null}
         name={null}
         onBlur={null}
         onChange={[Function]}
