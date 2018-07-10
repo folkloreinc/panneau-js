@@ -20,7 +20,7 @@ exports[`match snapshot 1`] = `
           </th>
           <th
             className="align-middle text-right"
-            type="actions"
+            width={null}
           >
             Actions
           </th>
