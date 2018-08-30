@@ -432,7 +432,9 @@ class ResourceIndex extends Component {
                                 </div>
                                 {isLoading ? this.renderLoading() : null}
                             </div>
-                            {pagination !== null ? this.renderPagination() : null}
+                            {pagination !== null && pagination.last_page > 1
+                                ? this.renderPagination()
+                                : null}
                         </div>
                     </div>
                 </div>
@@ -485,7 +487,11 @@ const mergeProps = (
     gotoResourceAction: (action, id) => gotoResourceAction(stateProps.resource, action, id),
 });
 
-const WithStateComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(ResourceIndex);
+const WithStateComponent = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps,
+)(ResourceIndex);
 const WithRouterContainer = withRouter(WithStateComponent);
 const WithListsCollectionContainer = withListsCollection()(WithRouterContainer);
 const WithUrlGeneratorContainer = withUrlGenerator()(WithListsCollectionContainer);
