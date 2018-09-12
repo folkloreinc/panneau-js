@@ -1,6 +1,6 @@
 {
   "name": "@panneau/form",
-  "version": "0.4.38",
+  "version": "0.5.0",
   "description": "Core forms for Panneau",
   "keywords": [
     "react",
@@ -51,8 +51,8 @@
     "start": "npm run storybook"
   },
   "dependencies": {
-    "@panneau/core": "^0.4.38",
     "@babel/runtime": "^7.0.0",
+    "@panneau/core": "^0.5.0",
     "classnames": "^2.2.5",
     "hoist-non-react-statics": "^2.5.5",
     "invariant": "^2.2.4",

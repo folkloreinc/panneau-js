@@ -1,6 +1,6 @@
 {
   "name": "@panneau/list",
-  "version": "0.4.38",
+  "version": "0.5.0",
   "description": "Core lists for Panneau",
   "keywords": [
     "react",
@@ -53,8 +53,8 @@
     "start": "npm run storybook"
   },
   "dependencies": {
-    "@panneau/core": "^0.4.38",
     "@babel/runtime": "^7.0.0",
+    "@panneau/core": "^0.5.0",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0",
