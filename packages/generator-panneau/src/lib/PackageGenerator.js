@@ -85,42 +85,42 @@ class PackageGenerator extends Generator {
                     return null;
                 }
 
-                return this.prompt(prompts)
-                    .then((answers) => {
-                        if (this.namePrompt !== null && answers.name) {
-                            this.options.name = answers.name;
-                        }
-                    });
+                return this.prompt(prompts).then((answers) => {
+                    if (this.namePrompt !== null && answers.name) {
+                        this.options.name = answers.name;
+                    }
+                });
             },
         };
     }
 
     configuring() {
         this.options.prettyName = this.options['pretty-name'] || pascalCase(this.options.name);
-        this.options.componentName = this.options['component-name'] || pascalCase(`${this.options.name}${this.componentSuffix}`);
+        this.options.componentName = this.options['component-name']
+            || pascalCase(`${this.options.name}${this.componentSuffix}`);
     }
 
     get writing() {
         return {
             packageJSON() {
-                const {
-                    name,
-                    prettyName,
-                    version,
-                } = this.options;
+                const { name, prettyName, version } = this.options;
 
                 const rootPath = this.options.path;
                 const srcPath = this.templatePath('_package.json');
                 const destPath = this.destinationPath(`${rootPath}/${name}/package.json`);
 
                 const templatePackage = this.fs.readJSON(srcPath);
-                const currentPackage = this.fs.exists(destPath) ?
-                    this.fs.readJSON(destPath) : {};
+                const currentPackage = this.fs.exists(destPath) ? this.fs.readJSON(destPath) : {};
                 const newPackage = {};
                 newPackage.name = `@panneau/${this.packagePrefix}${name}`;
                 newPackage.version = version;
-                newPackage.description = `${prettyName}${this.packageDescription !== '' ? ` ${this.packageDescription}` : ''} for Panneau`;
-                newPackage.homepage = `https://github.com/Folkloreatelier/panneau-js/tree/master/${joinPath(rootPath, name).replace(/^\.?\//, '')}`;
+                newPackage.description = `${prettyName}${
+                    this.packageDescription !== '' ? ` ${this.packageDescription}` : ''
+                } for Panneau`;
+                newPackage.homepage = `https://github.com/Folkloreatelier/panneau-js/tree/master/${joinPath(
+                    rootPath,
+                    name,
+                ).replace(/^\.?\//, '')}`;
                 newPackage.dependencies = {
                     ...(templatePackage.dependencies || null),
                 };
@@ -154,11 +154,7 @@ class PackageGenerator extends Generator {
             },
 
             webpack() {
-                const {
-                    path,
-                    name,
-                    componentName,
-                } = this.options;
+                const { path, name, componentName } = this.options;
 
                 const srcPath = this.templatePath('webpack.js');
                 const destPath = this.destinationPath(`${path}/${name}/webpack.config.js`);
@@ -170,11 +166,7 @@ class PackageGenerator extends Generator {
             },
 
             index() {
-                const {
-                    path,
-                    name,
-                    componentName,
-                } = this.options;
+                const { path, name, componentName } = this.options;
 
                 const srcPath = this.templatePath('index.js');
                 const destPath = this.destinationPath(`${path}/${name}/src/index.js`);
@@ -185,11 +177,7 @@ class PackageGenerator extends Generator {
             },
 
             component() {
-                const {
-                    path,
-                    name,
-                    componentName,
-                } = this.options;
+                const { path, name, componentName } = this.options;
 
                 const srcPath = this.templatePath('Component.jsx');
                 const destPath = this.destinationPath(`${path}/${name}/src/${componentName}.jsx`);
@@ -202,14 +190,13 @@ class PackageGenerator extends Generator {
 
             story() {
                 const {
-                    path,
-                    name,
-                    componentName,
-                    prettyName,
+                    path, name, componentName, prettyName,
                 } = this.options;
 
                 const srcPath = this.templatePath('Story.story.jsx');
-                const destPath = this.destinationPath(`${path}/${name}/src/__stories__/${componentName}.story.jsx`);
+                const destPath = this.destinationPath(
+                    `${path}/${name}/src/__stories__/${componentName}.story.jsx`,
+                );
 
                 this.fs.copyTpl(srcPath, destPath, {
                     name,
@@ -220,14 +207,13 @@ class PackageGenerator extends Generator {
 
             test() {
                 const {
-                    path,
-                    name,
-                    componentName,
-                    prettyName,
+                    path, name, componentName, prettyName,
                 } = this.options;
 
                 const srcPath = this.templatePath('Test.test.jsx');
-                const destPath = this.destinationPath(`${path}/${name}/src/__tests__/${componentName}.test.jsx`);
+                const destPath = this.destinationPath(
+                    `${path}/${name}/src/__tests__/${componentName}.test.jsx`,
+                );
 
                 this.fs.copyTpl(srcPath, destPath, {
                     name,
@@ -237,11 +223,7 @@ class PackageGenerator extends Generator {
             },
 
             styles() {
-                const {
-                    path,
-                    name,
-                    componentName,
-                } = this.options;
+                const { path, name, componentName } = this.options;
 
                 const srcPath = this.templatePath('styles.scss');
                 const destPath = this.destinationPath(`${path}/${name}/src/styles.scss`);
@@ -264,14 +246,11 @@ class PackageGenerator extends Generator {
                 const { name } = this.options;
 
                 const done = this.async();
-                this.spawnCommand(
-                    'lerna',
-                    [
-                        'bootstrap',
-                        '--scope',
-                        `@panneau/${this.packagePrefix}${name}`,
-                    ],
-                ).on('close', done);
+                this.spawnCommand('lerna', [
+                    'bootstrap',
+                    '--scope',
+                    `@panneau/${this.packagePrefix}${name}`,
+                ]).on('close', done);
             },
         };
     }

@@ -34,10 +34,10 @@ const contextTypes = {
 class PageField extends PureComponent {
     getEndpoint() {
         const { resourceId, urlGenerator, endpoint } = this.props;
+        const { definition } = this.context;
         if (endpoint !== null) {
             return endpoint;
         }
-        const definition = this.context.definition || null;
         if (urlGenerator === null || definition === null) {
             return null;
         }
@@ -46,9 +46,14 @@ class PageField extends PureComponent {
         if (resource === null) {
             return null;
         }
-        return urlGenerator.route(typeof resource.routes !== 'undefined' ? `resources.${resources.id}.index` : 'resources.index', {
-            resource: resource.id,
-        });
+        return urlGenerator.route(
+            typeof resource.routes !== 'undefined'
+                ? `resources.${resources.id}.index`
+                : 'resources.index',
+            {
+                resource: resource.id,
+            },
+        );
     }
 
     render() {

@@ -215,7 +215,8 @@ class SelectField extends Component {
         const { loadOptions, fetchOptions } = this.props;
         if (loadOptions !== null) {
             return loadOptions(input, callback);
-        } if (fetchOptions !== null) {
+        }
+        if (fetchOptions !== null) {
             return fetchOptions(input).then(options => ({
                 options,
             }));
@@ -249,10 +250,15 @@ class SelectField extends Component {
         } = this.props;
 
         const selectOptions = this.getOptions();
-        const defaultValue = selectOptions.length > 0 ? this.getValueFromOption(selectOptions[0]) : null;
+        // prettier-ignore
+        const defaultValue = selectOptions.length > 0
+            ? this.getValueFromOption(selectOptions[0])
+            : null;
         const shouldTakeDefaultValue = cannotBeEmpty && value === null && defaultValue !== null;
         const selectValue = shouldTakeDefaultValue ? defaultValue : value;
-        const selectClearable = cannotBeEmpty && (shouldTakeDefaultValue || selectValue === defaultValue)
+        // prettier-ignore
+        const selectClearable = cannotBeEmpty
+            && (shouldTakeDefaultValue || selectValue === defaultValue)
             ? false
             : !notClearable;
         const selectSearchable = !notSearchable;

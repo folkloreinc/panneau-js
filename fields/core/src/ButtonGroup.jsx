@@ -5,13 +5,15 @@ import classNames from 'classnames';
 import styles from './styles/button-group.scss';
 
 const propTypes = {
-    buttons: PropTypes.arrayOf(PropTypes.oneOfType([
-        PropTypes.node,
-        PropTypes.shape({
-            label: PropTypes.node,
-            icon: PropTypes.string,
-        }),
-    ])),
+    buttons: PropTypes.arrayOf(
+        PropTypes.oneOfType([
+            PropTypes.node,
+            PropTypes.shape({
+                label: PropTypes.node,
+                icon: PropTypes.string,
+            }),
+        ]),
+    ),
     href: PropTypes.string,
     onClick: PropTypes.func,
     noWrap: PropTypes.bool,
@@ -68,11 +70,13 @@ const ButtonGroup = ({
             };
             return buttonProps.href !== null ? (
                 <a {...buttonProps}>
-                    {icon ? <span className={icon} /> : null} {button.label}
+                    {icon ? <span className={classNames([styles.icon, icon])} /> : null}
+                    {button.label}
                 </a>
             ) : (
                 <button type="button" {...buttonProps}>
-                    {icon ? <span className={icon} /> : null} {button.label}
+                    {icon ? <span className={classNames([styles.icon, icon])} /> : null}
+                    {button.label}
                 </button>
             );
         })}

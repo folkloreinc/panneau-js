@@ -172,12 +172,11 @@ class LocaleField extends Component {
             'btn-group btn-group-sm': true,
             [styles.btnGroup]: true,
         });
-        const labelSuffix =
-            locales.length > 1 ? (
-                <span className={buttonsClassName} data-toggle="buttons">
-                    {buttons}
-                </span>
-            ) : null;
+        const labelSuffix = locales.length > 1 ? (
+            <span className={buttonsClassName} data-toggle="buttons">
+                {buttons}
+            </span>
+        ) : null;
 
         const propsWithoutErrors = omit(props, 'errors');
 

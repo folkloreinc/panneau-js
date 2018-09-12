@@ -29,22 +29,23 @@ export default function withLayoutsCollection(opts) {
         const collection = props.componentsCollection || context.componentsCollection || null;
         return {
             layoutsCollection:
-                props.layoutsCollection ||
-                context.layoutsCollection ||
-                (collection !== null ? collection.getCollection('layouts') : null) ||
-                options.layoutsCollection,
+                props.layoutsCollection
+                || context.layoutsCollection
+                || (collection !== null ? collection.getCollection('layouts') : null)
+                || options.layoutsCollection,
         };
     };
 
     return (WrappedComponent) => {
-        const WithCollectionComponent = withComponentsCollection(
-            mapCollectionToProps,
-            options,
-        )(WrappedComponent);
+        const WithCollectionComponent = withComponentsCollection(mapCollectionToProps, options)(
+            WrappedComponent,
+        );
         WithCollectionComponent.propTypes = propTypes;
         WithCollectionComponent.defaultProps = defaultProps;
         WithCollectionComponent.contextTypes = contextTypes;
-        WithCollectionComponent.displayName = `withLayoutsCollection(${getDisplayName(WrappedComponent)})`;
+        WithCollectionComponent.displayName = `withLayoutsCollection(${getDisplayName(
+            WrappedComponent,
+        )})`;
         return WithCollectionComponent;
     };
 }

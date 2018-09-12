@@ -24,11 +24,10 @@ export class ValidationError extends ResponseError {
     }
 }
 
-export const getResponseAndDataObject = response =>
-    response.json().then(data => ({
-        data,
-        response,
-    }));
+export const getResponseAndDataObject = response => response.json().then(data => ({
+    data,
+    response,
+}));
 
 export const throwResponseError = (responseObject) => {
     const { response, data } = responseObject;
@@ -59,7 +58,6 @@ export const getJSON = (url, opts) => {
         .then(throwResponseError);
 };
 
-
 export const postJSON = (url, data, opts) => {
     const { headers, ...options } = opts || {};
     return fetch(url, {
@@ -85,9 +83,10 @@ export const getXSRFToken = () => {
 const getCsrfToken = (name) => {
     const metaName = name || 'csrf-token';
     const metas = [].slice.call(document.getElementsByTagName('meta'));
-    return metas.reduce((val, meta) => (
-        meta.getAttribute('name') === metaName ? meta.getAttribute('content') : val
-    ), null);
+    return metas.reduce(
+        (val, meta) => (meta.getAttribute('name') === metaName ? meta.getAttribute('content') : val),
+        null,
+    );
 };
 
 export const getCSRFHeaders = (name) => {

@@ -113,23 +113,21 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
         };
     };
 
-    const parseResources = resources =>
-        resources.map(({
-            type, messages, api, ...resource
-        }) => {
-            const endpointHost = get(rootDefinition, 'endpointHost', '/');
-            return {
-                ...resource,
-                type: type || 'default',
-                messages: isObject(messages || null) ? messages : null,
-                api: (
-                    api ||
-                    new ResourceApi(resource, urlGenerator, {
+    const parseResources = resources => resources.map(({
+        type, messages, api, ...resource
+    }) => {
+        const endpointHost = get(rootDefinition, 'endpointHost', '/');
+        return {
+            ...resource,
+            type: type || 'default',
+            messages: isObject(messages || null) ? messages : null,
+            api:
+                    api
+                    || new ResourceApi(resource, urlGenerator, {
                         host: endpointHost,
-                    })
-                ),
-            };
-        });
+                    }),
+        };
+    });
 
     const parseLayout = (definition) => {
         const header = get(definition, 'header', true);

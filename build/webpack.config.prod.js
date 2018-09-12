@@ -6,8 +6,11 @@ const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const nodeExternals = require('webpack-node-externals');
 const getLocalIdent = require('./utils/getLocalIdent');
 const getClientEnvironment = require('./env');
+const getPackagesPaths = require('./lib/getPackagesPaths');
 
 const srcPath = path.join(process.env.PWD, './src');
+
+console.log(getPackagesPaths().map(packagePath => path.join(packagePath, 'src')));
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -207,8 +210,7 @@ module.exports = {
                     {
                         test: /\.(js|jsx|mjs)$/,
                         include: [
-                            /\/src\//,
-                            path.join(process.env.PWD, './src'),
+                            path.resolve(process.env.PWD, './src/'),
                         ],
                         loader: require.resolve('babel-loader'),
                         options: {
@@ -218,7 +220,8 @@ module.exports = {
                     {
                         test: /\.(js|jsx|mjs)$/,
                         include: [
-                            require.resolve('react-intl/src/locale-data-registry'),
+                            ...getPackagesPaths().map(packagePath => path.join(packagePath, 'src')),
+                            /react-intl/,
                         ],
                         loader: require.resolve('babel-loader'),
                         options: {

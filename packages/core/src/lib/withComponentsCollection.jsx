@@ -60,10 +60,7 @@ export default function withComponentsCollection(mapCollectionToProps, opts) {
             render() {
                 const props = {
                     ...this.props,
-                    ...finalMapCollectionToProps(
-                        this.props,
-                        this.context,
-                    ),
+                    ...finalMapCollectionToProps(this.props, this.context),
                 };
 
                 if (withRef) {
@@ -79,10 +76,7 @@ export default function withComponentsCollection(mapCollectionToProps, opts) {
         if (childContextTypes !== null) {
             WithComponentsCollection.prototype.getChildContext = function getChildContext() {
                 return {
-                    ...finalMapCollectionToProps(
-                        this.props,
-                        this.context,
-                    ),
+                    ...finalMapCollectionToProps(this.props, this.context),
                 };
             };
         }
@@ -93,7 +87,9 @@ export default function withComponentsCollection(mapCollectionToProps, opts) {
         if (childContextTypes !== null) {
             WithComponentsCollection.childContextTypes = childContextTypes;
         }
-        WithComponentsCollection.displayName = `WithComponentsCollection(${getDisplayName(WrappedComponent)})`;
+        WithComponentsCollection.displayName = `WithComponentsCollection(${getDisplayName(
+            WrappedComponent,
+        )})`;
         WithComponentsCollection.WrappedComponent = WrappedComponent;
 
         return hoistStatics(WithComponentsCollection, WrappedComponent);

@@ -7,11 +7,9 @@ import isArray from 'lodash/isArray';
 
 import styles from './styles/card.scss';
 
-const getFromPath = (item, path) => (
-    (isArray(path)
-        ? path.map(subPath => get(item, subPath, null)).find(it => it !== null) || null
-        : get(item, path, null))
-);
+const getFromPath = (item, path) => (isArray(path)
+    ? path.map(subPath => get(item, subPath, null)).find(it => it !== null) || null
+    : get(item, path, null));
 
 const propTypes = {
     item: PropTypes.shape({
@@ -28,26 +26,16 @@ const propTypes = {
     withoutBorder: PropTypes.bool,
     thumbnailSize: PropTypes.string,
     renderLabel: PropTypes.func,
-    namePath: PropTypes.oneOfType([ // eslint-disable-line react/no-unused-prop-types
-        PropTypes.string,
-        PropTypes.arrayOf(PropTypes.string),
-    ]),
-    detailsPath: PropTypes.oneOfType([ // eslint-disable-line react/no-unused-prop-types
-        PropTypes.string,
-        PropTypes.arrayOf(PropTypes.string),
-    ]),
-    datePath: PropTypes.oneOfType([ // eslint-disable-line react/no-unused-prop-types
-        PropTypes.string,
-        PropTypes.arrayOf(PropTypes.string),
-    ]),
-    thumbnailPath: PropTypes.oneOfType([ // eslint-disable-line react/no-unused-prop-types
-        PropTypes.string,
-        PropTypes.arrayOf(PropTypes.string),
-    ]),
-    iconPath: PropTypes.oneOfType([ // eslint-disable-line react/no-unused-prop-types
-        PropTypes.string,
-        PropTypes.arrayOf(PropTypes.string),
-    ]),
+    // eslint-disable-next-line react/no-unused-prop-types
+    namePath: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    // eslint-disable-next-line react/no-unused-prop-types
+    detailsPath: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    // eslint-disable-next-line react/no-unused-prop-types
+    datePath: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    // eslint-disable-next-line react/no-unused-prop-types
+    thumbnailPath: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    // eslint-disable-next-line react/no-unused-prop-types
+    iconPath: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     getName: PropTypes.func,
     getDetails: PropTypes.func,
     getThumbnail: PropTypes.func,
@@ -190,7 +178,9 @@ class Card extends Component {
                     <div className={styles.details}>
                         {Object.keys(details).map(key => (
                             <p key={`details-${key}`} className={styles.detail}>
-                                {key}: {details[key]}
+                                {key}
+                                {': '}
+                                {details[key]}
                             </p>
                         ))}
                     </div>

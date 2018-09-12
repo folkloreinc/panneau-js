@@ -63,34 +63,37 @@ const mapStateToProps = ({ panneau }, { match, location, urlGenerator }) => {
     const resourceId = get(match, 'params.resource', null);
     return {
         resource:
-            resources.find(it =>
-                (resourceId !== null && it.id === resourceId) ||
-                    (resourceId === null && urlGenerator.route(`resource.${it.id}.create`) === location.pathname)) || null,
+            resources.find(
+                it => (resourceId !== null && it.id === resourceId)
+                    || (resourceId === null
+                        && urlGenerator.route(`resource.${it.id}.create`) === location.pathname),
+            ) || null,
     };
 };
 
 const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
-    gotoResourceEdit: (resource, id) => dispatch(push(urlGenerator.route('resource.edit', {
-        resource: resource.id,
-        id,
-    }))),
+    gotoResourceEdit: (resource, id) => dispatch(
+        push(
+            urlGenerator.route('resource.edit', {
+                resource: resource.id,
+                id,
+            }),
+        ),
+    ),
 });
 
-const mergeProps = (
-    stateProps,
-    {
-        gotoResourceEdit,
-        ...dispatchProps
-    },
-    ownProps,
-) => ({
+const mergeProps = (stateProps, { gotoResourceEdit, ...dispatchProps }, ownProps) => ({
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
     gotoResourceEdit: id => gotoResourceEdit(stateProps.resource, id),
 });
 
-const WithStateComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(ResourceCreate);
+const WithStateComponent = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps,
+)(ResourceCreate);
 const WithRouterContainer = withRouter(WithStateComponent);
 const WithUrlGeneratorContainer = withUrlGenerator()(WithRouterContainer);
 export default WithUrlGeneratorContainer;

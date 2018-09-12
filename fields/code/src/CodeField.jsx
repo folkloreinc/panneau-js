@@ -19,18 +19,9 @@ const propTypes = {
     theme: PropTypes.string,
     name: PropTypes.string,
     label: PanneauPropTypes.label,
-    value: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.object,
-    ]),
-    width: PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string,
-    ]),
-    height: PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string,
-    ]),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     extensions: PropTypes.arrayOf(PropTypes.string),
     editorProps: PropTypes.object, // eslint-disable-line
     isJson: PropTypes.bool,
@@ -70,21 +61,22 @@ class CodeField extends Component {
 
         this.state = {
             ready: false,
-            textValue: props.language === 'json' && props.isJson ? CodeField.parse(props.value) : null,
+            textValue:
+                props.language === 'json' && props.isJson ? CodeField.parse(props.value) : null,
         };
     }
 
     componentDidMount() {
         const { language, theme, extensions } = this.props;
-        import(/* webpackChunkName: "vendor/react-ace" */'react-ace')
+        import(/* webpackChunkName: "vendor/react-ace" */ 'react-ace')
             .then((AceEditor) => {
                 this.AceEditor = AceEditor.default;
             })
-            .then(() => import(/* webpackChunkName: "vendor/brace/mode/[request]" */`brace/mode/${language}`))
-            .then(() => import(/* webpackChunkName: "vendor/brace/theme/[request]" */`brace/theme/${theme}`))
-            .then(() => Promise.all(extensions.map(ext => (
-                import(/* webpackChunkName: "vendor/brace/ext/[request]" */`brace/ext/${ext}`)
-            ))))
+            .then(() => import(/* webpackChunkName: "vendor/brace/mode/[request]" */ `brace/mode/${language}`))
+            .then(() => import(/* webpackChunkName: "vendor/brace/theme/[request]" */ `brace/theme/${theme}`))
+            .then(() => Promise.all(
+                extensions.map(ext => import(/* webpackChunkName: "vendor/brace/ext/[request]" */ `brace/ext/${ext}`)),
+            ))
             .then(() => {
                 if (this.importCanceled) {
                     return;
@@ -101,26 +93,26 @@ class CodeField extends Component {
 
     onChange(newValue) {
         const {
-            language,
-            onChange,
-            isJson,
-            value,
+            language, onChange, isJson, value,
         } = this.props;
 
         if (language === 'json' && isJson) {
-            this.setState({
-                textValue: newValue,
-            }, () => {
-                let val;
-                try {
-                    val = JSON.parse(newValue);
-                } catch (e) {
-                    val = value;
-                }
-                if (onChange) {
-                    onChange(val);
-                }
-            });
+            this.setState(
+                {
+                    textValue: newValue,
+                },
+                () => {
+                    let val;
+                    try {
+                        val = JSON.parse(newValue);
+                    } catch (e) {
+                        val = value;
+                    }
+                    if (onChange) {
+                        onChange(val);
+                    }
+                },
+            );
         } else if (onChange) {
             onChange(newValue);
         }
@@ -128,14 +120,7 @@ class CodeField extends Component {
 
     renderField() {
         const {
-            language,
-            theme,
-            value,
-            isJson,
-            width,
-            height,
-            editorProps,
-            ...props
+            language, theme, value, isJson, width, height, editorProps, ...props
         } = this.props;
         const { textValue } = this.state;
         const { AceEditor } = this;
@@ -160,17 +145,18 @@ class CodeField extends Component {
     }
 
     render() {
-        const {
-            name,
-            label,
-            ...other
-        } = this.props;
+        const { name, label, ...other } = this.props;
 
         const { ready } = this.state;
 
         return (
-            <FormGroup className={`${styles.formGroup} form-group-code`} name={name} label={label} {...other} >
-                { ready ? this.renderField() : null }
+            <FormGroup
+                className={`${styles.formGroup} form-group-code`}
+                name={name}
+                label={label}
+                {...other}
+            >
+                {ready ? this.renderField() : null}
             </FormGroup>
         );
     }

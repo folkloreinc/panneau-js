@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { keyframes, css } from 'emotion';
 
 import styles from '../../styles/partials/loading.scss';
 
@@ -23,28 +22,28 @@ const defaultProps = {
 };
 
 class Loader extends PureComponent {
-    style = (i) => {
+    style(i) {
         const {
             color, size, sizeUnit, margin,
         } = this.props;
 
         return {
-            backgroundColor: ${color};
-            width: ${`${size}${sizeUnit}`};
-            height: ${`${size}${sizeUnit}`};
-            margin: ${margin};
+            backgroundColor: color,
+            width: `${size}${sizeUnit}`,
+            height: `${size}${sizeUnit}`,
+            margin,
             animationDelay: i * 0.12,
         };
-    };
+    }
 
-    wrapper = () => {
+    wrapper() {
         const { className } = this.props;
         const classNames = [styles.component];
         if (className !== null) {
             classNames.push(className);
         }
         return classNames.join(' ');
-    };
+    }
 
     render() {
         const { loading } = this.props;

@@ -44,13 +44,17 @@ const propTypes = {
     name: PropTypes.string,
     label: PanneauPropTypes.label,
     pickerType: PropTypes.oneOf([
-        'block', 'chrome', 'circle', 'compact',
-        'github', 'twitter', 'sketch', 'slider',
+        'block',
+        'chrome',
+        'circle',
+        'compact',
+        'github',
+        'twitter',
+        'sketch',
+        'slider',
         'swatches',
     ]),
-    outputFormat: PropTypes.oneOf([
-        'hex', 'rgb', 'rgba', 'auto',
-    ]),
+    outputFormat: PropTypes.oneOf(['hex', 'rgb', 'rgba', 'auto']),
     value: PropTypes.string,
 
     colors: PropTypes.arrayOf(PropTypes.string),
@@ -179,7 +183,8 @@ class ColorField extends Component {
         case 'hex':
             output = color.hex;
             break;
-        default: // Aka auto
+        default:
+            // Aka auto
             if (color.rgb.a < 1) {
                 output = `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`;
             } else {
@@ -191,12 +196,7 @@ class ColorField extends Component {
 
     renderPopover() {
         const {
-            pickerType,
-            value,
-            colors,
-            presetColors,
-            colorPosition,
-            withInput,
+            pickerType, value, colors, presetColors, colorPosition, withInput,
         } = this.props;
         const { displayColorPicker } = this.state;
         const Picker = components[pickerType];
@@ -241,7 +241,8 @@ class ColorField extends Component {
         const color = ColorField.parse(value);
 
         const colorStyle = {
-            background: value !== null ? `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})` : null,
+            background:
+                value !== null ? `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})` : null,
         };
 
         const formGroupClassName = classNames({
@@ -257,7 +258,9 @@ class ColorField extends Component {
         const buttonGroup = (
             <div
                 className={buttonGroupClassName}
-                ref={(ref) => { this.refButton = ref; }}
+                ref={(ref) => {
+                    this.refButton = ref;
+                }}
             >
                 <button
                     type="button"
@@ -289,17 +292,14 @@ class ColorField extends Component {
         );
 
         return (
-            <FormGroup
-                name={name}
-                label={label}
-                className={formGroupClassName}
-                {...other}
-            >
+            <FormGroup name={name} label={label} className={formGroupClassName} {...other}>
                 <div
                     className={styles.container}
-                    ref={(ref) => { this.refContainer = ref; }}
+                    ref={(ref) => {
+                        this.refContainer = ref;
+                    }}
                 >
-                    { withInput ? (
+                    {withInput ? (
                         <div className="input-group">
                             <Text
                                 {...other}
@@ -308,10 +308,12 @@ class ColorField extends Component {
                                 onFocus={this.onInputFocus}
                                 onChange={this.onInputChange}
                             />
-                            { buttonGroup }
+                            {buttonGroup}
                         </div>
-                    ) : buttonGroup }
-                    { this.renderPopover() }
+                    ) : (
+                        buttonGroup
+                    )}
+                    {this.renderPopover()}
                 </div>
             </FormGroup>
         );

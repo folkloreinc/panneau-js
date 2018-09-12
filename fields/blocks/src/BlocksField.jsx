@@ -37,6 +37,7 @@ class BlocksField extends Component {
         const { definition } = this.context || {};
         return get(definition || null, 'blocks', null);
     }
+
     render() {
         return <ItemsField types={this.getTypes()} {...this.props} />;
     }

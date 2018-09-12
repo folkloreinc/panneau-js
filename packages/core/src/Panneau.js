@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-    render as renderReact,
-    hydrate as hydrateReact,
-} from 'react-dom';
+import { render as renderReact, hydrate as hydrateReact } from 'react-dom';
 import EventEmitter from 'wolfy87-eventemitter';
 import isObject from 'lodash/isObject';
 import get from 'lodash/get';
@@ -114,11 +111,7 @@ class Panneau extends EventEmitter {
             ...options,
         };
 
-        const {
-            locale,
-            messages,
-            componentsCollection,
-        } = this.options;
+        const { locale, messages, componentsCollection } = this.options;
 
         this.locale = locale;
         this.messages = {
@@ -170,7 +163,7 @@ class Panneau extends EventEmitter {
         if (typeof value !== 'undefined') {
             this.componentsCollection.addComponent(key, value);
             return this;
-        } else if (typeof key !== 'undefined') {
+        } if (typeof key !== 'undefined') {
             return this.componentsCollection.getComponent(key);
         }
         return this.componentsCollection;
@@ -194,8 +187,9 @@ class Panneau extends EventEmitter {
      * @return {ComponentsCollection} The fields collection used by this instance
      */
     getComponentsCollection(namespace) {
-        return typeof namespace !== 'undefined' ?
-            this.componentsCollection.getCollection(namespace) : this.componentsCollection;
+        return typeof namespace !== 'undefined'
+            ? this.componentsCollection.getCollection(namespace)
+            : this.componentsCollection;
     }
 }
 

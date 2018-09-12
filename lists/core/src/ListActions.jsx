@@ -34,16 +34,18 @@ const propTypes = {
     className: PropTypes.string,
     withoutLabel: PropTypes.bool,
     withIcons: PropTypes.bool,
-    actions: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        label: PanneauPropTypes.label.isRequired,
-        icon: PropTypes.string.isRequired,
-        link: PropTypes.string,
-        linkItemPath: PropTypes.string,
-        target: PropTypes.string,
-        className: PropTypes.string,
-        onClick: PropTypes.func,
-    })),
+    actions: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            label: PanneauPropTypes.label.isRequired,
+            icon: PropTypes.string.isRequired,
+            link: PropTypes.string,
+            linkItemPath: PropTypes.string,
+            target: PropTypes.string,
+            className: PropTypes.string,
+            onClick: PropTypes.func,
+        }),
+    ),
 };
 
 const defaultProps = {
@@ -88,16 +90,17 @@ const ListActions = ({
             const { id } = item;
 
             const linkItemPath = action.linkItemPath || null;
-            const link =
-                action.link || (linkItemPath !== null ? get(item, linkItemPath, null) : null);
+            // prettier-ignore
+            const link = action.link || (
+                linkItemPath !== null ? get(item, linkItemPath, null) : null
+            );
             const isLink = link !== null;
             const key = `btn_action_${name}_${id}`;
-            const label =
-                isObject(buttonLabel) && typeof buttonLabel.id !== 'undefined' ? (
-                    <FormattedMessage {...buttonLabel} />
-                ) : (
-                    buttonLabel
-                );
+            const label = isObject(buttonLabel) && typeof buttonLabel.id !== 'undefined' ? (
+                <FormattedMessage {...buttonLabel} />
+            ) : (
+                buttonLabel
+            );
 
             const buttonOnClick = action.onClick || null;
             const buttonClassName = action.className || null;

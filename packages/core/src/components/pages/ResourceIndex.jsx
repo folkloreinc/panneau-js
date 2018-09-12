@@ -473,7 +473,7 @@ const mapDispatchToProps = (dispatch, { urlGenerator }) => {
         }));
     return {
         getResourceActionUrl,
-        gotoResourceAction: (resource, action, id) => dispatch(push(getResourceActionUrl(resource, action, id))),
+        gotoResourceAction: (...args) => dispatch(push(getResourceActionUrl(...args))),
     };
 };
 

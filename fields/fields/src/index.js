@@ -3,7 +3,6 @@ import fieldsCollection from './items';
 
 export {
     withFieldsCollection,
-    Text,
 };
 
 export default fieldsCollection;

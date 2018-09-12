@@ -18,17 +18,15 @@ const propTypes = {
     name: PropTypes.string,
     label: PanneauPropTypes.label,
     helpText: PropTypes.string,
-    value: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-        PropTypes.bool,
-    ]),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
     onChange: PropTypes.func,
 
-    selectOptions: PropTypes.arrayOf(PropTypes.shape({
-        value: PropTypes.any,
-        label: PropTypes.string,
-    })),
+    selectOptions: PropTypes.arrayOf(
+        PropTypes.shape({
+            value: PropTypes.any,
+            label: PropTypes.string,
+        }),
+    ),
     clearable: PropTypes.bool,
     canBeEmpty: PropTypes.bool,
     collapsed: PropTypes.bool,
@@ -42,10 +40,7 @@ const defaultProps = {
     helpText: null,
     value: null,
     onChange: null,
-    selectOptions: [
-        { value: 'true', label: 'Yes' },
-        { value: 'false', label: 'No' },
-    ],
+    selectOptions: [{ value: 'true', label: 'Yes' }, { value: 'false', label: 'No' }],
     clearable: false,
     canBeEmpty: false,
     collapsed: false,
@@ -54,12 +49,7 @@ const defaultProps = {
 
 class ToggleField extends Component {
     static parse(value) {
-        if (
-            value === true ||
-            value === 1 ||
-            value === '1' ||
-            value === 'true'
-        ) {
+        if (value === true || value === 1 || value === '1' || value === 'true') {
             return true;
         }
         return false;
@@ -78,13 +68,12 @@ class ToggleField extends Component {
     componentDidMount() {
         const { type } = this.props;
         if (type === 'switch') {
-            import(/* webpackChunkName: "vendor/rc-switch" */'rc-switch')
-                .then((ImportComponent) => {
-                    this.Component = ImportComponent.default;
-                    this.setState({
-                        switchReady: true,
-                    });
+            import(/* webpackChunkName: "vendor/rc-switch" */ 'rc-switch').then((ImportComponent) => {
+                this.Component = ImportComponent.default;
+                this.setState({
+                    switchReady: true,
                 });
+            });
         }
     }
 
@@ -139,13 +128,7 @@ class ToggleField extends Component {
         } = this.props;
         const SwitchComponent = this.Component;
         const val = value !== null ? ToggleField.parse(value) : null;
-        return (
-            <SwitchComponent
-                {...other}
-                checked={val}
-                onChange={this.onChange}
-            />
-        );
+        return <SwitchComponent {...other} checked={val} onChange={this.onChange} />;
     }
 
     render() {
@@ -181,7 +164,7 @@ class ToggleField extends Component {
                 collapsed={collapsed}
                 inline
             >
-                { input }
+                {input}
             </FormGroup>
         );
     }

@@ -29,22 +29,23 @@ export default function withListsCollection(opts) {
         const collection = props.componentsCollection || context.componentsCollection || null;
         return {
             listsCollection:
-                props.listsCollection ||
-                context.listsCollection ||
-                (collection !== null ? collection.getCollection('lists') : null) ||
-                options.listsCollection,
+                props.listsCollection
+                || context.listsCollection
+                || (collection !== null ? collection.getCollection('lists') : null)
+                || options.listsCollection,
         };
     };
 
     return (WrappedComponent) => {
-        const WithCollectionComponent = withComponentsCollection(
-            mapCollectionToProps,
-            options,
-        )(WrappedComponent);
+        const WithCollectionComponent = withComponentsCollection(mapCollectionToProps, options)(
+            WrappedComponent,
+        );
         WithCollectionComponent.propTypes = propTypes;
         WithCollectionComponent.defaultProps = defaultProps;
         WithCollectionComponent.contextTypes = contextTypes;
-        WithCollectionComponent.displayName = `withListsCollection(${getDisplayName(WrappedComponent)})`;
+        WithCollectionComponent.displayName = `withListsCollection(${getDisplayName(
+            WrappedComponent,
+        )})`;
         return WithCollectionComponent;
     };
 }

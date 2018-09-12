@@ -72,24 +72,19 @@ class ItemField extends Component {
         };
     }
 
-    componentWillReceiveProps({
-        suggestions: nextSuggestions,
-    }) {
+    componentWillReceiveProps({ suggestions: nextSuggestions }) {
         const { suggestions } = this.props;
         const suggestionsChanged = nextSuggestions !== suggestions;
         if (suggestionsChanged) {
             this.setState({
-                suggestions: nextProps.suggestions || [],
+                suggestions: nextSuggestions || [],
             });
         }
     }
 
-    componentDidUpdate({
-        suggestionsEndpoint: prevSuggestionsEndpoint
-    }) {
+    componentDidUpdate({ suggestionsEndpoint: prevSuggestionsEndpoint }) {
         const { suggestionsEndpoint } = this.props;
-        const suggestionsEndpointChanged =
-            prevSuggestionsEndpoint !== suggestionsEndpoint;
+        const suggestionsEndpointChanged = prevSuggestionsEndpoint !== suggestionsEndpoint;
         if (suggestionsEndpointChanged && suggestionsEndpoint !== null) {
             this.fetchSuggestions();
         }
@@ -170,28 +165,24 @@ class ItemField extends Component {
             suggestionDescriptionPath,
             suggestionThumbnailPath,
         } = this.props;
-        const thumbnail =
-            getSuggestionThumbnail !== null
-                ? getSuggestionThumbnail(suggestion)
-                : get(suggestion, suggestionThumbnailPath, null);
-        const title =
-            getSuggestionTitle !== null
-                ? getSuggestionTitle(suggestion)
-                : get(suggestion, suggestionTitlePath, null);
-        const description =
-            getSuggestionDescription !== null
-                ? getSuggestionDescription(suggestion)
-                : get(suggestion, suggestionDescriptionPath, null);
+        const thumbnail = getSuggestionThumbnail !== null
+            ? getSuggestionThumbnail(suggestion)
+            : get(suggestion, suggestionThumbnailPath, null);
+        const title = getSuggestionTitle !== null
+            ? getSuggestionTitle(suggestion)
+            : get(suggestion, suggestionTitlePath, null);
+        const description = getSuggestionDescription !== null
+            ? getSuggestionDescription(suggestion)
+            : get(suggestion, suggestionDescriptionPath, null);
         const labelClassNames = classNames({
             [styles.col]: true,
             [styles.expand]: true,
         });
-        const thumbnailStyle =
-            thumbnail !== null
-                ? {
-                    backgroundImage: `url(${thumbnail})`,
-                }
-                : null;
+        const thumbnailStyle = thumbnail !== null
+            ? {
+                backgroundImage: `url(${thumbnail})`,
+            }
+            : null;
         return (
             <div className={styles.inner}>
                 <div className={styles.cols}>

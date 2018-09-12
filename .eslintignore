@@ -5,3 +5,6 @@
 */*/es/
 node_modules
 packages/generator-panneau/src/generators/*/templates/**
+packages/generator-panneau/src/templates/
+*/*/src/__stories__/
+*/*/src/__tests__/

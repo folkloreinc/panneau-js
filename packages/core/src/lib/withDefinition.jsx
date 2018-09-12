@@ -36,10 +36,11 @@ export default function withComponentsCollection(mapDefinitionToProps, opts) {
             }
 
             render() {
+                const { definition } = this.context;
                 const props = {
                     ...this.props,
                     ...finalMapDefinitionToProps(
-                        this.context.definition || null,
+                        definition || null,
                         this.props,
                         this.context,
                     ),
@@ -56,7 +57,9 @@ export default function withComponentsCollection(mapDefinitionToProps, opts) {
         }
 
         WithDefinitionCollection.contextTypes = contextTypes;
-        WithDefinitionCollection.displayName = `WithDefinitionCollection(${getDisplayName(WrappedComponent)})`;
+        WithDefinitionCollection.displayName = `WithDefinitionCollection(${getDisplayName(
+            WrappedComponent,
+        )})`;
         WithDefinitionCollection.WrappedComponent = WrappedComponent;
 
         return hoistStatics(WithDefinitionCollection, WrappedComponent);

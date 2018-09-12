@@ -1,5 +1,10 @@
 .container {
-
+    .button {
+        .icon {
+            display: inline-block;
+            margin-right: 5px;
+        }
+    }
 
     &.noWrap {
         white-space: nowrap;
@@ -10,5 +15,4 @@
         }
 
     }
-
 }

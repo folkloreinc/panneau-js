@@ -4,39 +4,45 @@ import LocaleField from '@panneau/field-locale';
 
 import LinkField from './LinkField';
 
-const getValue = value => (
-    value !== null ? (
-        Object.keys(value).reduce((lastValue, key) => ({
+const getValue = value => (value !== null
+    ? Object.keys(value).reduce(
+        (lastValue, key) => ({
             ...(value[key] !== null
-                ? Object.keys(value[key]).reduce((currentValue, locale) => ({
-                    ...currentValue,
-                    [locale]: {
-                        ...(lastValue[locale] || null),
-                        [key]: value[key][locale],
-                    },
-                }), lastValue)
+                ? Object.keys(value[key]).reduce(
+                    (currentValue, locale) => ({
+                        ...currentValue,
+                        [locale]: {
+                            ...(lastValue[locale] || null),
+                            [key]: value[key][locale],
+                        },
+                    }),
+                    lastValue,
+                )
                 : null),
-        }), {})
-    ) : value
-);
+        }),
+        {},
+    )
+    : value);
 
-const setValue = value =>
-    (value !== null
-        ? Object.keys(value).reduce(
-            (lastValue, locale) => ({
-                ...(value[locale] !== null
-                    ? Object.keys(value[locale]).reduce((currentValue, key) => ({
+const setValue = value => (value !== null
+    ? Object.keys(value).reduce(
+        (lastValue, locale) => ({
+            ...(value[locale] !== null
+                ? Object.keys(value[locale]).reduce(
+                    (currentValue, key) => ({
                         ...currentValue,
                         [key]: {
                             ...(lastValue[key] || null),
                             [locale]: value[locale][key],
                         },
-                    }), lastValue)
-                    : null),
-            }),
-            {},
-        )
-        : value);
+                    }),
+                    lastValue,
+                )
+                : null),
+        }),
+        {},
+    )
+    : value);
 
 const propTypes = {
     value: PropTypes.shape({
