@@ -44,14 +44,16 @@ class MediaField extends Component {
     }
 
     onClickDelete() {
-        if (this.props.onChange) {
-            this.props.onChange(null);
+        const { onChange } = this.props;
+        if (onChange !== null) {
+            onChange(null);
         }
     }
 
     onUploadComplete(response) {
-        if (this.props.onChange) {
-            this.props.onChange(response);
+        const { onChange } = this.props;
+        if (onChange !== null) {
+            onChange(response);
         }
     }
 

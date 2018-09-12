@@ -24,10 +24,7 @@ const propTypes = {
             end: PropTypes.string,
         }),
     ]),
-    type: PropTypes.oneOf([
-        'date',
-        'daterange',
-    ]),
+    type: PropTypes.oneOf(['date', 'daterange']),
     dateFormat: PropTypes.string,
     pickerProps: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onChange: PropTypes.func,
@@ -101,76 +98,94 @@ class DateField extends Component {
         } else {
             componentName = 'DayPickerSingleDateController';
         }
-        import(/* webpackChunkName: "vendor/react-dates/[request]" */`react-dates/lib/components/${componentName}`)
+        import(/* webpackChunkName: "vendor/react-dates/[request]" */ `react-dates/lib/components/${componentName}`)
             .then((dep) => {
                 this.Component = dep.default;
-                return import(/* webpackChunkName: "vendor/moment" */'moment');
+                return import(/* webpackChunkName: "vendor/moment" */ 'moment');
             })
             .then((dep) => {
                 this.moment = dep;
                 this.setState({
                     ready: true,
-                    momentValue: type === 'daterange' ? {
-                        start: isObject(value) ?
-                            getMomentOrNull(this.moment, value.start) : this.moment(),
-                        end: isObject(value) ?
-                            getMomentOrNull(this.moment, value.end) : this.moment(),
-                    } : getMomentOrNull(this.moment, value),
+                    momentValue:
+                        type === 'daterange'
+                            ? {
+                                start: isObject(value)
+                                    ? getMomentOrNull(this.moment, value.start)
+                                    : this.moment(),
+                                end: isObject(value)
+                                    ? getMomentOrNull(this.moment, value.end)
+                                    : this.moment(),
+                            }
+                            : getMomentOrNull(this.moment, value),
                 });
             });
     }
 
     onChange(value) {
-        const { dateFormat } = this.props;
+        const { dateFormat, onChange } = this.props;
         const textValue = isObject(value) ? value.format(dateFormat) : null;
-        this.setState({
-            textValue,
-            momentValue: value,
-        }, () => {
-            if (this.props.onChange) {
-                this.props.onChange(textValue);
-            }
-        });
+        this.setState(
+            {
+                textValue,
+                momentValue: value,
+            },
+            () => {
+                if (onChange !== null) {
+                    onChange(textValue);
+                }
+            },
+        );
     }
 
     onRangeChange({ startDate, endDate }) {
-        const { dateFormat } = this.props;
+        const { dateFormat, onChange } = this.props;
         const { momentValue } = this.state;
         const newMomentValue = {
             start: typeof startDate === 'undefined' ? momentValue.start : startDate,
             end: typeof endDate === 'undefined' ? momentValue.end : endDate,
         };
         const textValue = {
-            start: isObject(newMomentValue.start) && newMomentValue.start.isValid() ?
-                newMomentValue.start.format(dateFormat) : null,
-            end: isObject(newMomentValue.end) && newMomentValue.end.isValid() ?
-                newMomentValue.end.format(dateFormat) : null,
+            start:
+                isObject(newMomentValue.start) && newMomentValue.start.isValid()
+                    ? newMomentValue.start.format(dateFormat)
+                    : null,
+            end:
+                isObject(newMomentValue.end) && newMomentValue.end.isValid()
+                    ? newMomentValue.end.format(dateFormat)
+                    : null,
         };
-        this.setState({
-            textValue,
-            momentValue: newMomentValue,
-        }, () => {
-            if (this.props.onChange) {
-                this.props.onChange(textValue);
-            }
-        });
+        this.setState(
+            {
+                textValue,
+                momentValue: newMomentValue,
+            },
+            () => {
+                if (onChange !== null) {
+                    onChange(textValue);
+                }
+            },
+        );
     }
 
     onInputChange(val) {
-        const { dateFormat } = this.props;
+        const { dateFormat, onChange } = this.props;
         const newValue = getDateFormatted(this.moment, val, dateFormat);
-        this.setState({
-            textValue: val,
-            momentValue: newValue,
-        }, () => {
-            if (this.props.onChange) {
-                this.props.onChange(newValue);
-            }
-        });
+        this.setState(
+            {
+                textValue: val,
+                momentValue: newValue,
+            },
+            () => {
+                if (onChange !== null) {
+                    onChange(newValue);
+                }
+            },
+        );
     }
 
     onInputRangeChange(key, val) {
-        const { value, dateFormat } = this.props;
+        const { value, dateFormat, onChange } = this.props;
         const { textValue, momentValue } = this.state;
         const dateValue = val !== null && val !== '' ? this.moment(val) : null;
         const newTextValue = {
@@ -181,19 +196,24 @@ class DateField extends Component {
             ...momentValue,
             [key]: dateValue !== null && dateValue.isValid() ? dateValue : null,
         };
-        this.setState({
-            textValue: newTextValue,
-            momentValue: newMomentValue,
-        }, () => {
-            const newValue = {
-                ...value,
-                [key]: isObject(newMomentValue) && newMomentValue[key] !== null ?
-                    newMomentValue[key].format(dateFormat) : null,
-            };
-            if (this.props.onChange) {
-                this.props.onChange(newValue);
-            }
-        });
+        this.setState(
+            {
+                textValue: newTextValue,
+                momentValue: newMomentValue,
+            },
+            () => {
+                const newValue = {
+                    ...value,
+                    [key]:
+                        isObject(newMomentValue) && newMomentValue[key] !== null
+                            ? newMomentValue[key].format(dateFormat)
+                            : null,
+                };
+                if (onChange !== null) {
+                    onChange(newValue);
+                }
+            },
+        );
     }
 
     onFocusChange(input) {
@@ -223,9 +243,9 @@ class DateField extends Component {
 
     onClose(e) {
         if (
-            (this.input !== null && e.target === this.input.getInputGroupRef()) ||
-            (this.startInput !== null && e.target === this.startInput.getInputGroupRef()) ||
-            (this.endInput !== null && e.target === this.endInput.getInputGroupRef())
+            (this.input !== null && e.target === this.input.getInputGroupRef())
+            || (this.startInput !== null && e.target === this.startInput.getInputGroupRef())
+            || (this.endInput !== null && e.target === this.endInput.getInputGroupRef())
         ) {
             return;
         }
@@ -245,13 +265,11 @@ class DateField extends Component {
             placeholder,
         } = this.props;
 
-        const {
-            textValue,
-        } = this.state;
+        const { textValue } = this.state;
 
         if (type === 'daterange') {
-            const startValue = isObject(textValue) ? (textValue.start || null) : null;
-            const endValue = isObject(textValue) ? (textValue.end || null) : null;
+            const startValue = isObject(textValue) ? textValue.start || null : null;
+            const endValue = isObject(textValue) ? textValue.end || null : null;
             const onStartChange = val => this.onInputRangeChange('start', val);
             const onEndChange = val => this.onInputRangeChange('end', val);
             const onStartFocus = e => this.onInputRangeFocus('start', e);
@@ -284,7 +302,9 @@ class DateField extends Component {
                     <div className="row">
                         <div className="col-sm-6">
                             <TextField
-                                ref={(ref) => { this.startInput = ref; }}
+                                ref={(ref) => {
+                                    this.startInput = ref;
+                                }}
                                 label={startLabel}
                                 placeholder={startPlaceholder}
                                 value={startValue}
@@ -296,7 +316,9 @@ class DateField extends Component {
                         </div>
                         <div className="col-sm-6">
                             <TextField
-                                ref={(ref) => { this.endInput = ref; }}
+                                ref={(ref) => {
+                                    this.endInput = ref;
+                                }}
                                 label={endLabel}
                                 placeholder={endPlaceholder}
                                 value={endValue}
@@ -324,7 +346,9 @@ class DateField extends Component {
         return (
             <div className={styles.input}>
                 <TextField
-                    ref={(ref) => { this.input = ref; }}
+                    ref={(ref) => {
+                        this.input = ref;
+                    }}
                     value={textValue}
                     placeholder={placeholder}
                     onChange={this.onInputChange}
@@ -338,30 +362,29 @@ class DateField extends Component {
     }
 
     renderPopover() {
-        const {
-            type,
-            pickerProps: customPickerProps,
-        } = this.props;
+        const { type, pickerProps: customPickerProps } = this.props;
         const { momentValue, focusedInput, opened } = this.state;
 
         const DateComponent = this.Component;
 
-        const pickerProps = type === 'daterange' ? {
-            startDate: momentValue.start || undefined,
-            endDate: momentValue.end || undefined,
-            onDatesChange: this.onRangeChange,
-            focusedInput,
-            numberOfMonths: 2,
-            onFocusChange: this.onFocusChange,
-        } : {
-            date: momentValue || undefined,
-            onDateChange: this.onChange,
-            autoFocus: false,
-            showInput: false,
-            focused: true,
-            isFocused: opened,
-            keepOpenOnDateSelect: true,
-        };
+        const pickerProps = type === 'daterange'
+            ? {
+                startDate: momentValue.start || undefined,
+                endDate: momentValue.end || undefined,
+                onDatesChange: this.onRangeChange,
+                focusedInput,
+                numberOfMonths: 2,
+                onFocusChange: this.onFocusChange,
+            }
+            : {
+                date: momentValue || undefined,
+                onDateChange: this.onChange,
+                autoFocus: false,
+                showInput: false,
+                focused: true,
+                isFocused: opened,
+                keepOpenOnDateSelect: true,
+            };
 
         return (
             <Popover
@@ -373,23 +396,14 @@ class DateField extends Component {
                 closeOnBlur
                 noUi
             >
-                <DateComponent
-                    {...pickerProps}
-                    {...customPickerProps}
-                />
+                <DateComponent {...pickerProps} {...customPickerProps} />
             </Popover>
         );
     }
 
     render() {
         const {
-            name,
-            label,
-            value,
-            type,
-            onChange,
-            dateFormat,
-            ...other
+            name, label, value, type, onChange, dateFormat, ...other
         } = this.props;
         const { ready, opened } = this.state;
 
@@ -398,18 +412,15 @@ class DateField extends Component {
         }
 
         return (
-            <FormGroup
-                {...other}
-                className={styles.container}
-                name={name}
-                label={label}
-            >
+            <FormGroup {...other} className={styles.container} name={name} label={label}>
                 <div
                     className={styles.inner}
-                    ref={(ref) => { this.refContainer = ref; }}
+                    ref={(ref) => {
+                        this.refContainer = ref;
+                    }}
                 >
-                    { this.renderInput() }
-                    { opened ? this.renderPopover() : true }
+                    {this.renderInput()}
+                    {opened ? this.renderPopover() : true}
                 </div>
             </FormGroup>
         );

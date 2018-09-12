@@ -25,20 +25,22 @@ const propTypes = {
     errors: FormPropTypes.errors,
     generalError: PropTypes.string,
     generalErrorDefaultMessage: PropTypes.string,
-    buttons: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string,
-        type: PropTypes.string,
-        label: PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.shape({
-                id: PropTypes.string,
-                description: PropTypes.string,
-                defaultMessage: PropTypes.string,
-            }),
-        ]),
-        className: PropTypes.string,
-        onClick: PropTypes.func,
-    })),
+    buttons: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string,
+            type: PropTypes.string,
+            label: PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.shape({
+                    id: PropTypes.string,
+                    description: PropTypes.string,
+                    defaultMessage: PropTypes.string,
+                }),
+            ]),
+            className: PropTypes.string,
+            onClick: PropTypes.func,
+        }),
+    ),
     submitForm: PropTypes.func,
     onValueChange: PropTypes.func,
     onSubmit: PropTypes.func,
@@ -105,18 +107,19 @@ class NormalForm extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        const valueChanged = nextProps.value !== this.props.value;
+    componentWillReceiveProps({ value: nextValue, errors: nextErrors }) {
+        const { value, errors } = this.props;
+        const valueChanged = nextValue !== value;
         if (valueChanged) {
             this.setState({
-                value: nextProps.value,
+                value: nextValue,
             });
         }
 
-        const errorsChanged = nextProps.errors !== this.props.errors;
+        const errorsChanged = nextErrors !== errors;
         if (errorsChanged) {
             this.setState({
-                errors: nextProps.errors,
+                errors: nextErrors,
             });
         }
     }

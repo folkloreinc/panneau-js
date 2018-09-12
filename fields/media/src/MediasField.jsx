@@ -23,11 +23,12 @@ class MediasField extends Component {
     }
 
     onItemChange(index, value) {
+        const { value: currentValue } = this.props;
         const newValue = {
-            ...this.props.value[index],
+            ...currentValue[index],
             ...value,
         };
-        const newItems = [].concat(this.props.value);
+        const newItems = [].concat(currentValue);
         newItems[index] = newValue;
         this.triggerChange(newItems);
     }
@@ -38,12 +39,10 @@ class MediasField extends Component {
     }
 
     triggerChange(newValue) {
-        const currentValue = this.props.value || [];
-        if (currentValue !== newValue) {
-            const value = newValue;
-            if (this.props.onChange) {
-                this.props.onChange(value);
-            }
+        const { value, onChange } = this.props;
+        const currentValue = value || [];
+        if (currentValue !== newValue && onChange !== null) {
+            onChange(newValue);
         }
     }
 

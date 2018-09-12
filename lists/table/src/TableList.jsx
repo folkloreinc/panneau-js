@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
@@ -17,13 +18,15 @@ const propTypes = {
     hoverable: PropTypes.bool,
     responsive: PropTypes.bool,
     tableClassName: PropTypes.string,
-    cols: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.required,
-        label: PropTypes.string.required,
-        path: PropTypes.string,
-        type: PropTypes.string,
-        width: PropTypes.number,
-    })),
+    cols: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.required,
+            label: PropTypes.string.required,
+            path: PropTypes.string,
+            type: PropTypes.string,
+            width: PropTypes.number,
+        }),
+    ),
     emptyListText: PanneauPropTypes.message,
     onClickActions: PropTypes.func,
     onTableButtonClick: PropTypes.func,
@@ -72,8 +75,9 @@ class TableList extends Component {
     }
 
     onClickActions(e, action, it, rowIndex) {
-        if (this.props.onClickActions) {
-            this.props.onClickActions(e, action, it, rowIndex);
+        const { onClickActions } = this.props;
+        if (onClickActions !== null) {
+            onClickActions(e, action, it, rowIndex);
         }
     }
 
@@ -115,7 +119,8 @@ class TableList extends Component {
         const columnMethodName = `getTableHeader${pascalCase(column.id)}Column`;
         if (typeof this[columnMethodName] === 'function') {
             return this[columnMethodName](column, index);
-        } else if (typeof this.getTableHeaderColumn === 'function') {
+        }
+        if (typeof this.getTableHeaderColumn === 'function') {
             return this.getTableHeaderColumn(column, index);
         }
 
@@ -239,13 +244,14 @@ class TableList extends Component {
             edit: editAction || null,
             delete: deleteAction || null,
         };
-        const actions = [...ListActions.getDefaultActions()].map(action =>
-            ((actionsProps[action.id] || null) !== null
+        const actions = [...ListActions.getDefaultActions()].map(
+            action => ((actionsProps[action.id] || null) !== null
                 ? {
                     ...action,
                     ...actionsProps[action.id],
                 }
-                : action));
+                : action),
+        );
         return (
             <Column key={key} align="right" {...column}>
                 <ListActions
@@ -259,13 +265,14 @@ class TableList extends Component {
     }
 
     renderTableButton(it, button, rowIndex, colIndex, btnIndex) {
+        const { onTableButtonClick } = this.props;
         const onClick = (e) => {
             if (this.onTableButtonClick) {
                 this.onTableButtonClick(e, button, it, btnIndex);
             }
 
-            if (this.props.onTableButtonClick) {
-                this.props.onTableButtonClick(e, button, it, btnIndex);
+            if (onTableButtonClick !== null) {
+                onTableButtonClick(e, button, it, btnIndex);
             }
         };
 

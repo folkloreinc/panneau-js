@@ -59,15 +59,15 @@ class FormGroup extends Component {
         this.renderError = this.renderError.bind(this);
 
         this.state = {
-            collapsed: this.props.collapsed,
+            collapsed: props.collapsed,
         };
     }
 
     onCollapseChange(e) {
         e.preventDefault();
-        this.setState({
-            collapsed: !this.state.collapsed,
-        });
+        this.setState(({ collapsed }) => ({
+            collapsed: !collapsed,
+        }));
     }
 
     renderErrors() {
@@ -134,16 +134,17 @@ class FormGroup extends Component {
             />
         );
 
-        const labelNode =
-            isObject(label) && typeof label.id !== 'undefined' ? (
-                <FormattedMessage {...label} />
-            ) : (
-                label
-            );
+        const labelNode = isObject(label) && typeof label.id !== 'undefined' ? (
+            <FormattedMessage {...label} />
+        ) : (
+            label
+        );
 
         const link = collapsible ? (
             <button type="button" className="btn" onClick={this.onCollapseChange}>
-                {caret} {labelNode}
+                {caret}
+                {' '}
+                {labelNode}
             </button>
         ) : (
             labelNode
@@ -196,6 +197,7 @@ class FormGroup extends Component {
             collapsible,
             withoutMargin,
         } = this.props;
+        const { collapsed } = this.state;
 
         if (inputOnly) {
             return children;
@@ -227,7 +229,7 @@ class FormGroup extends Component {
         });
 
         const innerStyle = {
-            display: this.state.collapsed ? 'none' : 'block',
+            display: collapsed ? 'none' : 'block',
         };
 
         if (inline) {
@@ -251,7 +253,7 @@ class FormGroup extends Component {
         return (
             <div className={formGroupClassNames}>
                 {this.renderLabel()}
-                {!this.state.collapsed ? (
+                {!collapsed ? (
                     <div className={formGroupInnerClassNames} style={innerStyle}>
                         {children}
                         {this.renderErrors()}

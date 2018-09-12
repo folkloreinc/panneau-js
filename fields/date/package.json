@@ -56,7 +56,7 @@
         "@panneau/field-text": "^0.4.38",
         "@panneau/modal-popover": "^0.4.22",
         "array-flatten": "^2.1.1",
-        "babel-runtime": "^6.26.0",
+        "@babel/runtime": "^7.0.0",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
         "moment": "^2.20.1",

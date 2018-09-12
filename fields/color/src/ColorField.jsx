@@ -126,15 +126,17 @@ class ColorField extends Component {
     }
 
     onChange(value) {
+        const { onChange, value: currentValue } = this.props;
         const newValue = this.formatColor(value);
-        if (this.props.onChange && isString(newValue) && newValue !== this.props.value) {
-            this.props.onChange(newValue);
+        if (onChange !== null && isString(newValue) && newValue !== currentValue) {
+            onChange(newValue);
         }
     }
 
     onInputChange(value) {
-        if (this.props.onChange) {
-            this.props.onChange(value);
+        const { onChange } = this.props;
+        if (onChange !== null) {
+            onChange(value);
         }
     }
 
@@ -145,12 +147,15 @@ class ColorField extends Component {
     }
 
     onClickClear() {
-        this.props.onChange(null);
+        const { onChange } = this.props;
+        if (onChange !== null) {
+            onChange(null);
+        }
     }
 
     onClick() {
-        this.setState(() => ({
-            displayColorPicker: !this.state.displayColorPicker,
+        this.setState(({ displayColorPicker }) => ({
+            displayColorPicker: !displayColorPicker,
         }));
     }
 

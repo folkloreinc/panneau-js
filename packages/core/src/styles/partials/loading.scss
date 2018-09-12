@@ -1,0 +1,14 @@
+.component {
+    .dot {
+        display: inline-block;
+        border-radius: 100%;
+        animation: pulse 0.75s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
+        animation-fill-mode: both;
+    }
+}
+
+@keyframes pulse {
+    0% {transform: scale(1);opacity: 1}
+    45% {transform: scale(0.1);opacity: 0.7}
+    80% {transform: scale(1);opacity: 1}
+}

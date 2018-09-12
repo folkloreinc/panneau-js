@@ -9,11 +9,13 @@ import isObject from 'lodash/isObject';
 const propTypes = {
     title: PropTypes.string,
     titleLink: PropTypes.string,
-    items: PropTypes.arrayOf(PropTypes.shape({
-        type: PropTypes.string,
-        label: PropTypes.string,
-        position: PropTypes.oneOf(['right', 'left', 'center']),
-    })),
+    items: PropTypes.arrayOf(
+        PropTypes.shape({
+            type: PropTypes.string,
+            label: PropTypes.string,
+            position: PropTypes.oneOf(['right', 'left', 'center']),
+        }),
+    ),
     opened: PropTypes.bool,
     onClickTitle: PropTypes.func,
     onClickItem: PropTypes.func,
@@ -41,11 +43,12 @@ class Navbar extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        const openedChanged = nextProps.opened !== this.props.opened;
+    componentWillReceiveProps({ opened: nextOpened }) {
+        const { opened } = this.props;
+        const openedChanged = nextOpened !== opened;
         if (openedChanged) {
             this.setState({
-                opened: nextProps.opened,
+                opened: nextOpened,
             });
         }
     }
@@ -107,14 +110,15 @@ class Navbar extends Component {
                             <FormattedMessage {...label} />
                         ) : (
                             label
-                        )}{' '}
+                        )}
+                        {' '}
                         {it.dropdown ? <span className="caret" /> : null}
                     </a>
                 ) : null}
                 {it.dropdown ? (
                     <div className="dropdown-menu">
-                        {items.map((subIt, subIndex) =>
-                            (get(subIt, 'type', 'item') === 'divider' ? (
+                        {items.map(
+                            (subIt, subIndex) => (get(subIt, 'type', 'item') === 'divider' ? (
                                 <div
                                     key={`subitem-${position}-${index}-${subIndex}`}
                                     className="dropdown-divider"
@@ -126,18 +130,20 @@ class Navbar extends Component {
                                     className={classNames({
                                         'dropdown-item': true,
                                     })}
-                                    onClick={e =>
-                                        this.onClickItem(e, subIt, subIndex, position)
+                                    onClick={e => this.onClickItem(e, subIt, subIndex, position)
                                     }
                                 >
-                                    {isObject(subIt.label) && typeof subIt.label.id !== 'undefined' ? (
-                                        <FormattedMessage {...subIt.label || null} />
-                                    ) : (
-                                        subIt.label || ''
-                                    )}{' '}
+                                    {isObject(subIt.label)
+                                        && typeof subIt.label.id !== 'undefined' ? (
+                                            <FormattedMessage {...subIt.label || null} />
+                                        ) : (
+                                            subIt.label || ''
+                                        )}
+                                    {' '}
                                     {it.dropdown ? <span className="caret" /> : null}
                                 </a>
-                            )))}
+                            )),
+                        )}
                     </div>
                 ) : null}
             </li>

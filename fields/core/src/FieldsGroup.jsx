@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import isArray from 'lodash/isArray';
-import { ComponentsCollection, withFieldsCollection, PropTypes as PanneauPropTypes } from '@panneau/core';
+import {
+    ComponentsCollection,
+    withFieldsCollection,
+    PropTypes as PanneauPropTypes,
+} from '@panneau/core';
 
 import FormGroup from './FormGroup';
 
@@ -18,10 +22,12 @@ const propTypes = {
         PropTypes.objectOf(PropTypes.string),
         PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
     ]),
-    fields: PropTypes.arrayOf(PropTypes.shape({
-        type: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-    })),
+    fields: PropTypes.arrayOf(
+        PropTypes.shape({
+            type: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
+        }),
+    ),
     getFieldComponent: PropTypes.func,
     fieldsCollection: PropTypes.shape({
         getComponent: PropTypes.func,
@@ -62,8 +68,8 @@ class FieldsGroup extends Component {
     }
 
     onChange(key, value) {
+        const { value: currentValue, onChange } = this.props;
         const hasKey = typeof key !== 'undefined' && key !== null;
-        const currentValue = this.props.value || {};
         const newValue = {
             ...currentValue,
             ...(!hasKey ? value : null),
@@ -71,8 +77,8 @@ class FieldsGroup extends Component {
         if (hasKey) {
             set(newValue, key, value);
         }
-        if (this.props.onChange) {
-            this.props.onChange(newValue);
+        if (onChange !== null) {
+            onChange(newValue);
         }
     }
 
@@ -82,39 +88,36 @@ class FieldsGroup extends Component {
 
         if (getFieldComponent !== null) {
             return getFieldComponent(key);
-        } else if (fieldsComponents !== null) {
-            const fieldKey = Object.keys(fieldsComponents).find(k => (
-                ComponentsCollection.normalizeKey(k) === normalizedKey
-            ));
+        }
+        if (fieldsComponents !== null) {
+            const fieldKey = Object.keys(fieldsComponents).find(
+                k => ComponentsCollection.normalizeKey(k) === normalizedKey,
+            );
             return typeof fieldKey !== 'undefined' && fieldKey !== null
                 ? fieldsComponents[fieldKey]
                 : null;
-        } else if (fieldsCollection !== null) {
+        }
+        if (fieldsCollection !== null) {
             return fieldsCollection.getComponent(key);
         }
-
         return normalizedKey.toLowerCase() === 'fields' ? FieldsGroup : null;
     }
 
     renderNotFound(it, index) {
-        const { renderNotFound } = this.props;
+        const { renderNotFound, name: fieldName } = this.props;
         const { type, name } = it;
 
         if (renderNotFound !== null) {
             return this.renderNotFound(it, index);
         }
 
-        const key = `notfound-${name}${type}${index}${this.props.name}`;
-        return (
-            <div key={key}>
-                NOT FOUND: Field {name} of type {type}
-            </div>
-        );
+        const key = `notfound-${name}${type}${index}${fieldName}`;
+        return <div key={key}>{`NOT FOUND: Field ${name} of type ${type}`}</div>;
     }
 
     renderField(it, index) {
         const {
-            value, errors, collapsibleTypes, readOnly,
+            value, errors, collapsibleTypes, readOnly, name: fieldName,
         } = this.props;
         const {
             type, name, hidden, defaultValue, ...props
@@ -132,24 +135,22 @@ class FieldsGroup extends Component {
 
         const fieldDefaultValue = typeof defaultValue !== 'undefined' ? defaultValue : undefined;
         const fieldValue = value && name ? get(value, name, fieldDefaultValue) : value;
-        let fieldErrors =
-            errors !== null && name !== null
-                ? Object.entries(errors).reduce((acc, [key, errs]) => {
-                    const escapedName = name.replace('.', '\\.');
-                    const regexp = new RegExp(`^${escapedName}\\.|^${escapedName}$`);
-                    if (regexp.test(key)) {
-                        return [...acc, ...(isArray(errs) ? errs : [errs])];
-                    }
-                    return acc;
-                }, [])
-                : errors;
+        let fieldErrors = errors !== null && name !== null
+            ? Object.entries(errors).reduce((acc, [key, errs]) => {
+                const escapedName = name.replace('.', '\\.');
+                const regexp = new RegExp(`^${escapedName}\\.|^${escapedName}$`);
+                if (regexp.test(key)) {
+                    return [...acc, ...(isArray(errs) ? errs : [errs])];
+                }
+                return acc;
+            }, [])
+            : errors;
         if (isArray(fieldErrors) && fieldErrors.length === 0) {
             fieldErrors = undefined;
         }
         const fieldCollapsible = collapsibleTypes.indexOf(type) !== -1 || it.collapsible;
-        const fieldCollapsed =
-            it.collapsed || (fieldCollapsible && typeof fieldValue === 'undefined');
-        const key = `${name}${type}${index}${this.props.name}`;
+        const fieldCollapsed = it.collapsed || (fieldCollapsible && typeof fieldValue === 'undefined');
+        const key = `${name}${type}${index}${fieldName}`;
 
         return (
             <FieldComponent
@@ -179,7 +180,9 @@ class FieldsGroup extends Component {
         const cols = [];
         for (let colIndex = 0; colIndex < columns; colIndex += 1) {
             const col = [];
-            const colFields = remainingFields.filter(field => typeof field.column !== 'undefined' && field.column === colIndex);
+            const colFields = remainingFields.filter(
+                field => typeof field.column !== 'undefined' && field.column === colIndex,
+            );
             if (colFields.length > 0) {
                 colFields.forEach((colField) => {
                     const index = fields.findIndex(field => field === colField);
@@ -191,7 +194,9 @@ class FieldsGroup extends Component {
                 });
             } else {
                 for (let i = 0; i < fieldsByColumn; i += 1) {
-                    const remainingIndex = remainingFields.findIndex(field => typeof field.column === 'undefined');
+                    const remainingIndex = remainingFields.findIndex(
+                        field => typeof field.column === 'undefined',
+                    );
                     if (remainingIndex !== -1) {
                         const colField = remainingFields[remainingIndex];
                         const index = fields.findIndex(field => field === colField);
@@ -200,7 +205,7 @@ class FieldsGroup extends Component {
                     }
                 }
             }
-            cols.push((
+            cols.push(
                 <div
                     className={classNames({
                         [`col-sm-${12 / columns}`]: true,
@@ -208,8 +213,8 @@ class FieldsGroup extends Component {
                     key={`col-${colIndex}`}
                 >
                     {col}
-                </div>
-            ));
+                </div>,
+            );
         }
 
         return (

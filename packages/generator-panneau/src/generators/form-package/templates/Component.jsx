@@ -63,18 +63,22 @@ class <%= componentName %> extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        const valueChanged = nextProps.value !== this.props.value;
+    componentWillReceiveProps({
+        value: nextValue,
+        errors: nextErrors,
+    }) {
+        const { value, errors } = this.props;
+        const valueChanged = nextValue !== value;
         if (valueChanged) {
             this.setState({
-                value: nextProps.value,
+                value: nextValue,
             });
         }
 
-        const errorsChanged = nextProps.errors !== this.props.errors;
+        const errorsChanged = nextErrors !== errors;
         if (errorsChanged) {
             this.setState({
-                errors: nextProps.errors,
+                errors: nextErrors,
             });
         }
     }

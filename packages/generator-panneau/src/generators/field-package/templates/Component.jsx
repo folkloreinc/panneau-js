@@ -30,9 +30,10 @@ class <%= componentName %> extends Component {
     }
 
     onChange(e) {
+        const { onChange } = this.props;
         const newValue = (e.currentTarget || this.refInput).value;
-        if (this.props.onChange) {
-            this.props.onChange(newValue);
+        if (onChange !== null) {
+            onChange(newValue);
         }
     }
 

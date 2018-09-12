@@ -89,10 +89,11 @@ class ToggleField extends Component {
     }
 
     onChange(value) {
+        const { onChange } = this.props;
         const val = isObject(value) && typeof value.value !== 'undefined' ? value.value : value;
         const newValue = val === '' || value === null ? null : ToggleField.parse(val);
-        if (this.props.onChange) {
-            this.props.onChange(newValue);
+        if (onChange !== null) {
+            onChange(newValue);
         }
     }
 

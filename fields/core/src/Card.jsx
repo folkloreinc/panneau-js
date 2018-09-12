@@ -115,13 +115,13 @@ class Card extends Component {
 
     componentDidMount() {
         const {
-            item, getThumbnail, onLoad, loadTimeout,
+            item, getThumbnail, thumbnail, onLoad, loadTimeout,
         } = this.props;
-        const thumbnail = getThumbnail ? getThumbnail(item, this.props) : this.props.thumbnail;
-        if (thumbnail !== null && !Card.isLoaded(thumbnail)) {
+        const finalThumbnail = getThumbnail ? getThumbnail(item, this.props) : thumbnail;
+        if (finalThumbnail !== null && !Card.isLoaded(finalThumbnail)) {
             this.thumbnail = document.createElement('img');
             this.thumbnail.addEventListener('load', this.onThumbnailLoad);
-            this.thumbnail.src = thumbnail;
+            this.thumbnail.src = finalThumbnail;
         } else if (onLoad !== null) {
             this.loadTimeout = setTimeout(() => {
                 onLoad();

@@ -52,9 +52,10 @@ export default class OutsideClickHandler extends React.Component {
     }
 
     render() {
+        const { children } = this.props;
         return (
             <div ref={this.setChildNodeRef}>
-                {this.props.children}
+                {children}
             </div>
         );
     }

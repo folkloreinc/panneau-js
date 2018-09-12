@@ -72,8 +72,11 @@ class ItemField extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        const suggestionsChanged = nextProps.suggestions !== this.props.suggestions;
+    componentWillReceiveProps({
+        suggestions: nextSuggestions,
+    }) {
+        const { suggestions } = this.props;
+        const suggestionsChanged = nextSuggestions !== suggestions;
         if (suggestionsChanged) {
             this.setState({
                 suggestions: nextProps.suggestions || [],
@@ -81,23 +84,28 @@ class ItemField extends Component {
         }
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate({
+        suggestionsEndpoint: prevSuggestionsEndpoint
+    }) {
+        const { suggestionsEndpoint } = this.props;
         const suggestionsEndpointChanged =
-            prevProps.suggestionsEndpoint !== this.props.suggestionsEndpoint;
-        if (suggestionsEndpointChanged && this.props.suggestionsEndpoint !== null) {
+            prevSuggestionsEndpoint !== suggestionsEndpoint;
+        if (suggestionsEndpointChanged && suggestionsEndpoint !== null) {
             this.fetchSuggestions();
         }
     }
 
     onInputChange(event, { newValue }) {
-        if (this.props.onChange) {
-            this.props.onChange(newValue);
+        const { onChange } = this.props;
+        if (onChange) {
+            onChange(newValue);
         }
     }
 
     onSuggestionSelected(event, { suggestion }) {
-        if (this.props.onSelect) {
-            this.props.onSelect(suggestion);
+        const { onSelect } = this.props;
+        if (onSelect) {
+            onSelect(suggestion);
         }
     }
 

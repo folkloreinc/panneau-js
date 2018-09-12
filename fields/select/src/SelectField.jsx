@@ -20,13 +20,15 @@ const propTypes = {
     name: PropTypes.string,
     label: PanneauPropTypes.label,
     value: valuePropTypes,
-    options: PropTypes.arrayOf(PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.shape({
-            value: PropTypes.any,
-            label: PropTypes.string,
-        }),
-    ])),
+    options: PropTypes.arrayOf(
+        PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.shape({
+                value: PropTypes.any,
+                label: PropTypes.string,
+            }),
+        ]),
+    ),
     getValueFromOption: PropTypes.func,
     onChange: PropTypes.func,
     onNewOption: PropTypes.func,
@@ -104,10 +106,7 @@ class SelectField extends Component {
     }
 
     componentDidMount() {
-        const {
-            async,
-            creatable,
-        } = this.props;
+        const { async, creatable } = this.props;
         let componentName;
         if (async && creatable) {
             componentName = 'AsyncCreatable';
@@ -118,8 +117,8 @@ class SelectField extends Component {
         } else {
             componentName = 'Select';
         }
-        import(/* webpackChunkName: "vendor/react-select/[request]" */`react-select/lib/${componentName}`)
-            .then((SliderComponent) => {
+        import(/* webpackChunkName: "vendor/react-select/[request]" */ `react-select/lib/${componentName}`).then(
+            (SliderComponent) => {
                 if (this.importCanceled) {
                     return;
                 }
@@ -127,14 +126,16 @@ class SelectField extends Component {
                 this.setState({
                     ready: true,
                 });
-            });
+            },
+        );
     }
 
-    componentWillReceiveProps(nextProps) {
-        const optionsChanged = this.props.options !== nextProps.options;
+    componentWillReceiveProps({ options: nextOptions }) {
+        const { options } = this.props;
+        const optionsChanged = options !== nextOptions;
         if (optionsChanged) {
             this.setState({
-                options: nextProps.options,
+                options: nextOptions,
             });
         }
     }
@@ -144,17 +145,16 @@ class SelectField extends Component {
     }
 
     onNewOptionClick(option) {
-        const { multiple, value, onNewOption } = this.props;
+        const {
+            multiple, value, onNewOption, onChange,
+        } = this.props;
         if (onNewOption !== null) {
             onNewOption(option);
             return;
         }
 
         this.setState(({ newOptions }) => ({
-            newOptions: [
-                ...newOptions,
-                option,
-            ],
+            newOptions: [...newOptions, option],
         }));
 
         let newValue;
@@ -163,13 +163,15 @@ class SelectField extends Component {
         } else {
             newValue = this.getValueFromOption(option);
         }
-        if (this.props.onChange) {
-            this.props.onChange(newValue);
+        if (onChange !== null) {
+            onChange(newValue);
         }
     }
 
     onChange(value) {
-        const { multiple, notClearable, cannotBeEmpty } = this.props;
+        const {
+            multiple, notClearable, cannotBeEmpty, onChange,
+        } = this.props;
         let newValue;
         if (multiple && value === null) {
             newValue = null;
@@ -186,8 +188,8 @@ class SelectField extends Component {
             newValue = selectOptions.length > 0 ? this.getValueFromOption(selectOptions[0]) : null;
         }
 
-        if (this.props.onChange) {
-            this.props.onChange(newValue);
+        if (onChange !== null) {
+            onChange(newValue);
         }
     }
 
@@ -200,15 +202,8 @@ class SelectField extends Component {
     }
 
     getOptions() {
-        const {
-            cannotBeEmpty,
-            addEmptyOption,
-            emptyOption,
-        } = this.props;
-        const {
-            options,
-            newOptions,
-        } = this.state;
+        const { cannotBeEmpty, addEmptyOption, emptyOption } = this.props;
+        const { options, newOptions } = this.state;
         const selectOptions = [].concat(options).concat(newOptions);
         if (!cannotBeEmpty && addEmptyOption) {
             selectOptions.unshift(emptyOption);
@@ -220,7 +215,7 @@ class SelectField extends Component {
         const { loadOptions, fetchOptions } = this.props;
         if (loadOptions !== null) {
             return loadOptions(input, callback);
-        } else if (fetchOptions !== null) {
+        } if (fetchOptions !== null) {
             return fetchOptions(input).then(options => ({
                 options,
             }));
@@ -254,22 +249,21 @@ class SelectField extends Component {
         } = this.props;
 
         const selectOptions = this.getOptions();
-        const defaultValue = selectOptions.length > 0 ?
-            this.getValueFromOption(selectOptions[0]) : null;
+        const defaultValue = selectOptions.length > 0 ? this.getValueFromOption(selectOptions[0]) : null;
         const shouldTakeDefaultValue = cannotBeEmpty && value === null && defaultValue !== null;
         const selectValue = shouldTakeDefaultValue ? defaultValue : value;
-        const selectClearable = cannotBeEmpty && (
-            shouldTakeDefaultValue ||
-            selectValue === defaultValue
-        ) ? false : !notClearable;
+        const selectClearable = cannotBeEmpty && (shouldTakeDefaultValue || selectValue === defaultValue)
+            ? false
+            : !notClearable;
         const selectSearchable = !notSearchable;
 
-        const asyncProps = async ? {
-            loadOptions: this.loadOptions,
-
-        } : {
-            options: selectOptions,
-        };
+        const asyncProps = async
+            ? {
+                loadOptions: this.loadOptions,
+            }
+            : {
+                options: selectOptions,
+            };
 
         const SelectComponent = this.Component;
 

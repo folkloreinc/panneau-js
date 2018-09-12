@@ -12,7 +12,7 @@ import classNames from 'classnames';
 import queryString from 'query-string';
 import { defineMessages, FormattedMessage, injectIntl } from 'react-intl';
 import { withUrlGenerator } from '@folklore/react-app';
-import { PulseLoader } from 'react-spinners';
+import Loading from '../partials/Loading';
 
 import * as PanneauPropTypes from '../../lib/PropTypes';
 import withListsCollection from '../../lib/withListsCollection';
@@ -89,34 +89,37 @@ class ResourceIndex extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        const itemsChanged = nextProps.items !== this.props.items;
+    componentWillReceiveProps({ items: nextItems, location: nextLocation, errors: nextErrors }) {
+        const { items, location, errors } = this.props;
+        const itemsChanged = nextItems !== items;
         if (itemsChanged) {
             this.setState({
-                items: nextProps.items,
-                isLoading: nextProps.items === null,
+                items: nextItems,
+                isLoading: nextItems === null,
             });
         }
 
-        const locationChanged = nextProps.location !== this.props.location;
+        const locationChanged = nextLocation !== location;
         if (locationChanged) {
             this.setState({
                 isLoading: true,
             });
         }
 
-        const errorsChanged = nextProps.errors !== this.props.errors;
+        const errorsChanged = nextErrors !== errors;
         if (errorsChanged) {
             this.setState({
-                errors: nextProps.errors,
+                errors: nextErrors,
             });
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        const itemsChanged = prevState.items !== this.state.items;
-        const locationChanged = prevProps.location !== this.props.location;
-        if ((itemsChanged && this.state.items === null) || locationChanged) {
+    componentDidUpdate({ location: prevLocation }, { items: prevItems }) {
+        const { location } = this.props;
+        const { items } = this.state;
+        const itemsChanged = prevItems !== items;
+        const locationChanged = prevLocation !== location;
+        if ((itemsChanged && items === null) || locationChanged) {
             this.loadItems();
         }
     }
@@ -175,9 +178,9 @@ class ResourceIndex extends Component {
     }
 
     onItemDeleted({ id }) {
-        this.setState({
-            items: this.state.items.filter(it => it.id !== id),
-        });
+        this.setState(({ items }) => ({
+            items: items.filter(it => it.id !== id),
+        }));
     }
 
     isPaginated() {
@@ -205,13 +208,12 @@ class ResourceIndex extends Component {
         const { resource, intl, confirmDeleteMessage } = this.props;
         const { name } = resource;
         const confirmMessage = get(resource, 'messages.confirm_delete', confirmDeleteMessage);
-        const message =
-            isObject(confirmMessage) && typeof confirmMessage.id !== 'undefined'
-                ? intl.formatMessage(confirmMessage, {
-                    name,
-                    id,
-                })
-                : confirmMessage;
+        const message = isObject(confirmMessage) && typeof confirmMessage.id !== 'undefined'
+            ? intl.formatMessage(confirmMessage, {
+                name,
+                id,
+            })
+            : confirmMessage;
         // eslint-disable-next-line no-alert
         if (window.confirm(message)) {
             resource.api.destroy(id).then(this.onItemDeleted);
@@ -252,7 +254,8 @@ class ResourceIndex extends Component {
                         aria-haspopup="true"
                         aria-expanded="false"
                     >
-                        {buttonMessage !== null ? buttonMessage : buttonLabel}{' '}
+                        {buttonMessage !== null ? buttonMessage : buttonLabel}
+                        {' '}
                         <span className="caret" />
                     </button>
                 ) : (
@@ -408,7 +411,7 @@ class ResourceIndex extends Component {
             >
                 <div className={styles.inner}>
                     <div className={styles.middle}>
-                        <PulseLoader loading />
+                        <Loading loading />
                     </div>
                 </div>
             </div>
@@ -451,27 +454,26 @@ const mapStateToProps = ({ panneau }, { match, location, urlGenerator }) => {
     const resourceId = get(match, 'params.resource', null);
     return {
         resource:
-            resources.find(it =>
-                (resourceId !== null && it.id === resourceId) ||
-                    (resourceId === null &&
-                        urlGenerator.route(`resource.${it.id}.index`) === location.pathname)) || null,
+            resources.find(
+                it => (resourceId !== null && it.id === resourceId)
+                    || (resourceId === null
+                        && urlGenerator.route(`resource.${it.id}.index`) === location.pathname),
+            ) || null,
     };
 };
 
 const mapDispatchToProps = (dispatch, { urlGenerator }) => {
-    const getResourceActionUrl = (resource, action, id) =>
-        (typeof resource.routes !== 'undefined'
-            ? urlGenerator.route(`resource.${resource.id}.${action}`, {
-                id: id || null,
-            })
-            : urlGenerator.route(`resource.${action}`, {
-                resource: resource.id,
-                id: id || null,
-            }));
+    const getResourceActionUrl = (resource, action, id) => (typeof resource.routes !== 'undefined'
+        ? urlGenerator.route(`resource.${resource.id}.${action}`, {
+            id: id || null,
+        })
+        : urlGenerator.route(`resource.${action}`, {
+            resource: resource.id,
+            id: id || null,
+        }));
     return {
         getResourceActionUrl,
-        gotoResourceAction: (resource, action, id) =>
-            dispatch(push(getResourceActionUrl(resource, action, id))),
+        gotoResourceAction: (resource, action, id) => dispatch(push(getResourceActionUrl(resource, action, id))),
     };
 };
 

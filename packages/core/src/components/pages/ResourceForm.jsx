@@ -8,10 +8,10 @@ import classNames from 'classnames';
 import { push } from 'react-router-redux';
 import { withUrlGenerator } from '@folklore/react-app';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { PulseLoader } from 'react-spinners';
 
 import * as PanneauPropTypes from '../../lib/PropTypes';
 import withFormsCollection from '../../lib/withFormsCollection';
+import Loading from '../partials/Loading';
 
 import styles from '../../styles/pages/resource-form.scss';
 
@@ -132,18 +132,19 @@ class ResourceForm extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        const itemChanged = nextProps.item !== this.props.item;
+    componentWillReceiveProps({ items: nextItems, errors: nextErrors }) {
+        const { items, errors } = this.props;
+        const itemChanged = nextItems !== items;
         if (itemChanged) {
             this.setState({
-                item: nextProps.item,
+                item: nextItems,
             });
         }
 
-        const errorsChanged = nextProps.errors !== this.props.errors;
+        const errorsChanged = nextErrors !== errors;
         if (errorsChanged) {
             this.setState({
-                errors: nextProps.errors,
+                errors: nextErrors,
             });
         }
     }
@@ -168,14 +169,15 @@ class ResourceForm extends Component {
     }
 
     onFormComplete(item) {
+        const { onFormComplete } = this.props;
         this.setState({
             item,
             formValue: null,
             formErrors: null,
             formNotice: 'success',
         });
-        if (this.props.onFormComplete) {
-            this.props.onFormComplete(item);
+        if (onFormComplete !== null) {
+            onFormComplete(item);
         }
     }
 
@@ -197,16 +199,16 @@ class ResourceForm extends Component {
     }
 
     onClickCancel(e) {
+        const { gotoIndex } = this.props;
         e.preventDefault();
-        this.props.gotoIndex();
+        gotoIndex();
     }
 
     getType() {
         const { resource } = this.props;
         const { item } = this.state;
         const types = get(resource, 'types', []);
-        const defaultType =
-            types.find(it => get(it, 'default', false) === true) || get(types, '0', null);
+        const defaultType = types.find(it => get(it, 'default', false) === true) || get(types, '0', null);
         const locationType = this.getTypeFromLocation();
         const formType = get(item, 'type', get(locationType || defaultType || null, 'id', null));
         return formType;
@@ -230,13 +232,12 @@ class ResourceForm extends Component {
         const { item, formValue } = this.state;
 
         const resourceType = get(resource, 'type', 'default');
-        const data =
-            resourceType === 'typed'
-                ? {
-                    type: this.getType(),
-                    ...(formValue || item),
-                }
-                : formValue;
+        const data = resourceType === 'typed'
+            ? {
+                type: this.getType(),
+                ...(formValue || item),
+            }
+            : formValue;
 
         return action === 'create'
             ? resource.api.store(data)
@@ -261,12 +262,11 @@ class ResourceForm extends Component {
             'messages.names.a',
             get(resource, 'messages.name', resource.name),
         );
-        const defaultTitle =
-            isObject(title) && typeof title.id !== 'undefined' ? (
-                <FormattedMessage {...title} values={{ name }} />
-            ) : (
-                title
-            );
+        const defaultTitle = isObject(title) && typeof title.id !== 'undefined' ? (
+            <FormattedMessage {...title} values={{ name }} />
+        ) : (
+            title
+        );
 
         return (
             <div className={headerClassNames}>
@@ -294,7 +294,12 @@ class ResourceForm extends Component {
         /* eslint-disable react/no-array-index-key */
         return errors !== null && errors.length > 0 ? (
             <div className={errorsClassNames}>
-                <strong>The following error{errors.length > 1 ? 's' : null} occured:</strong>
+                <strong>
+                    The following error
+                    {errors.length > 1 ? 's' : null}
+                    {' '}
+occured:
+                </strong>
                 <ul>{errors.map((error, index) => <li key={`error-${index}`}>{error}</li>)}</ul>
             </div>
         ) : null;
@@ -359,7 +364,8 @@ class ResourceForm extends Component {
                         ...button,
                         label: saveButtonLabel,
                     };
-                } else if (button.id === 'cancel' && typeof button.onClick === 'undefined') {
+                }
+                if (button.id === 'cancel' && typeof button.onClick === 'undefined') {
                     return {
                         ...button,
                         onClick: this.onClickCancel,
@@ -408,7 +414,7 @@ class ResourceForm extends Component {
                     [styles.loading]: true,
                 })}
             >
-                <PulseLoader loading />
+                <Loading loading />
             </div>
         );
     }
@@ -449,28 +455,36 @@ const mapStateToProps = ({ panneau }, {
     const itemId = get(match, 'params.id', null);
     return {
         resource:
-            resources.find(it =>
-                (resourceId !== null && it.id === resourceId) ||
-                    (resourceId === null &&
-                        urlGenerator.route(`resource.${it.id}.${action}`, {
+            resources.find(
+                it => (resourceId !== null && it.id === resourceId)
+                    || (resourceId === null
+                        && urlGenerator.route(`resource.${it.id}.${action}`, {
                             id: itemId,
-                        }) === location.pathname)) || null,
+                        }) === location.pathname),
+            ) || null,
     };
 };
 const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
-    gotoResourceIndex: resource =>
-        dispatch(push(typeof resource.routes !== 'undefined'
-            ? urlGenerator.route(`resource.${resource.id}.index`)
-            : urlGenerator.route('resource.index', {
-                resource: resource.id,
-            }))),
+    gotoResourceIndex: resource => dispatch(
+        push(
+            typeof resource.routes !== 'undefined'
+                ? urlGenerator.route(`resource.${resource.id}.index`)
+                : urlGenerator.route('resource.index', {
+                    resource: resource.id,
+                }),
+        ),
+    ),
 });
 const mergeProps = (stateProps, { gotoResourceIndex }, ownProps) => ({
     ...ownProps,
     ...stateProps,
     gotoIndex: () => gotoResourceIndex(stateProps.resource),
 });
-const WithStateComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(ResourceForm);
+const WithStateComponent = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps,
+)(ResourceForm);
 const WithRouterContainer = withRouter(WithStateComponent);
 const WithFormsCollectionContainer = withFormsCollection()(WithRouterContainer);
 const WithUrlGeneratorContainer = withUrlGenerator()(WithFormsCollectionContainer);

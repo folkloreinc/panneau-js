@@ -8,37 +8,29 @@ const isCommonJs = ENV === 'cjs';
 const isTest = ENV === 'test';
 
 const presets = [
-    ['env', isTest ? {} : {
+    [require.resolve('@babel/preset-env'), isTest ? {} : {
         modules: isCommonJs ? 'commonjs' : false,
         targets: {
             ie: 9,
         },
-        useBuiltIns: isUmd,
     }],
-    'react',
+    require.resolve('@babel/preset-react'),
 ];
 const plugins = [
-    'syntax-dynamic-import',
-    ['transform-object-rest-spread', {
-        useBuiltIns: true,
-    }],
+    require.resolve('@babel/plugin-syntax-dynamic-import'),
+    require.resolve('@babel/plugin-proposal-object-rest-spread'),
 ];
 
 if (!isUmd) {
-    plugins.push(['transform-runtime', {
-        helpers: true,
-        polyfill: false,
-        regenerator: true,
-        moduleName: 'babel-runtime',
-    }]);
+    plugins.push(require.resolve('@babel/plugin-transform-runtime'));
 }
 
 if (isTest) {
-    plugins.push('dynamic-import-node');
+    plugins.push(require.resolve('babel-plugin-dynamic-import-node'));
 }
 
 if (isCompiling) {
-    plugins.push(['css-modules-transform', {
+    plugins.push([require.resolve('babel-plugin-css-modules-transform'), {
         preprocessCss: path.join(__dirname, './process-scss.js'),
         extensions: ['.css', '.scss'],
         generateScopedName: path.join(__dirname, './generateScopedName.js'),
@@ -47,13 +39,13 @@ if (isCompiling) {
         extensions: ['.global.scss'],
     }]);
     if (isEs) {
-        plugins.push(['react-intl', {
+        plugins.push([require.resolve('babel-plugin-react-intl'), {
             messagesDir: './intl/messages/',
         }]);
     }
 }
 
-module.exports = {
+module.exports = () => ({
     presets,
     plugins,
-};
+});

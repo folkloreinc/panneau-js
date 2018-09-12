@@ -67,8 +67,9 @@ class ItemField extends Component {
     }
 
     onSuggestionSelected(suggestion) {
-        if (this.props.onChange) {
-            this.props.onChange(suggestion);
+        const { onChange } = this.props;
+        if (onChange !== null) {
+            onChange(suggestion);
         }
         this.setState({
             inputValue: '',
@@ -76,8 +77,9 @@ class ItemField extends Component {
     }
 
     onClickDelete() {
-        if (this.props.onChange) {
-            this.props.onChange(null);
+        const { onChange } = this.props;
+        if (onChange !== null) {
+            onChange(null);
         }
     }
 
@@ -88,14 +90,13 @@ class ItemField extends Component {
 
     getCardItemFromMap(value) {
         const { cardItemMap } = this.props;
-        const mapToItem = (val, map) =>
-            Object.keys(map).reduce(
-                (cardItem, key) => ({
-                    ...cardItem,
-                    [key]: isObject(map[key]) ? mapToItem(val, map[key]) : get(val, map[key], null),
-                }),
-                {},
-            );
+        const mapToItem = (val, map) => Object.keys(map).reduce(
+            (cardItem, key) => ({
+                ...cardItem,
+                [key]: isObject(map[key]) ? mapToItem(val, map[key]) : get(val, map[key], null),
+            }),
+            {},
+        );
         return cardItemMap !== null ? mapToItem(value, cardItemMap) : value;
     }
 

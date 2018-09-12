@@ -38,39 +38,32 @@ class UrlField extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        const valueChanged = nextProps.value !== this.props.value;
+    componentWillReceiveProps({ value: nextValue }) {
+        const { value } = this.props;
+        const valueChanged = nextValue !== value;
         if (valueChanged) {
-            const { value } = nextProps;
             this.setState({
-                scheme: this.url.getScheme(value),
+                scheme: this.url.getScheme(nextValue),
             });
         }
     }
 
     onChange(value) {
+        const { onChange } = this.props;
         const { scheme } = this.state;
-        if (this.props.onChange) {
-            this.props.onChange(!isEmpty(value) ? this.url.withScheme(value, scheme) : '');
+        if (onChange !== null) {
+            onChange(!isEmpty(value) ? this.url.withScheme(value, scheme) : '');
         }
     }
 
     render() {
         const {
-            label,
-            name,
-            value,
-            ...other
+            label, name, value, ...other
         } = this.props;
         const { scheme } = this.state;
 
         return (
-            <FormGroup
-                className="form-group-url"
-                name={name}
-                label={label}
-                {...other}
-            >
+            <FormGroup className="form-group-url" name={name} label={label} {...other}>
                 <TextField
                     inputOnly
                     prefix={scheme}

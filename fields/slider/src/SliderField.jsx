@@ -65,10 +65,10 @@ class SliderField extends Component {
     }
 
     onChange(value) {
-        const { range } = this.props;
+        const { range, onChange } = this.props;
         const newValue = range && isArray(value) && value.length === 0 ? null : value;
-        if (this.props.onChange) {
-            this.props.onChange(newValue);
+        if (onChange !== null) {
+            onChange(newValue);
         }
     }
 

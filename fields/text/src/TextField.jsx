@@ -66,7 +66,8 @@ class TextField extends Component {
     static parse(value) {
         if (isString(value) || isNumber(value)) {
             return value;
-        } else if (isArray(value)) {
+        }
+        if (isArray(value)) {
             return value.join(' ');
         }
         return ''; // Empty string for the input field
@@ -115,20 +116,23 @@ class TextField extends Component {
     }
 
     onEditorReady(e) {
-        e.editor.setData(this.props.value || '');
+        const { value } = this.props;
+        e.editor.setData(value || '');
     }
 
     onChange(e) {
+        const { onChange } = this.props;
         const newValue = (e.currentTarget || this.refInput).value;
-        if (this.props.onChange) {
-            this.props.onChange(newValue);
+        if (onChange !== null) {
+            onChange(newValue);
         }
     }
 
     onEditorChange(e) {
+        const { onChange } = this.props;
         const newValue = e.editor.getData();
-        if (this.props.onChange) {
-            this.props.onChange(newValue);
+        if (onChange !== null) {
+            onChange(newValue);
         }
     }
 

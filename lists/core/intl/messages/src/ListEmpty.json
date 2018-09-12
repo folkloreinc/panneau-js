@@ -1,7 +1,0 @@
-[
-  {
-    "id": "list.empty",
-    "description": "The text within the well that indicates that there are no items",
-    "defaultMessage": "No items"
-  }
-]

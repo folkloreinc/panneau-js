@@ -209,12 +209,22 @@ module.exports = {
                         include: [
                             /\/src\//,
                             path.join(process.env.PWD, './src'),
-                            require.resolve('react-intl/src/locale-data-registry'),
-                            require.resolve('babel-polyfill'),
                         ],
                         loader: require.resolve('babel-loader'),
                         options: {
                             compact: true,
+                        },
+                    },
+                    {
+                        test: /\.(js|jsx|mjs)$/,
+                        include: [
+                            require.resolve('react-intl/src/locale-data-registry'),
+                        ],
+                        loader: require.resolve('babel-loader'),
+                        options: {
+                            presets: [
+                                path.resolve(path.join(__dirname, './babel-preset')),
+                            ],
                         },
                     },
                     // The notation here is somewhat confusing.

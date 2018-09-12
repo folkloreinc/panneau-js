@@ -69,18 +69,18 @@ class LocaleField extends Component {
     }
 
     onFieldChange(locale, value) {
-        const currentValue = this.props.value || {};
+        const { value: currentValue, onChange } = this.props;
         const newValue = {
             ...currentValue,
             [locale]: value,
         };
 
-        if (this.props.onChange) {
+        if (onChange !== null) {
             const allValuesNull = Object.values(newValue).reduce(
                 (allNull, val) => allNull && val === null,
                 true,
             );
-            this.props.onChange(!allValuesNull ? newValue : null);
+            onChange(!allValuesNull ? newValue : null);
         }
     }
 
@@ -94,11 +94,6 @@ class LocaleField extends Component {
     }
 
     renderLocaleField(locale, index) {
-        const key = `input_${this.props.name.replace(/[^a-z0-9-]+/gi, '-')}_${locale}`;
-        const style = {
-            display: this.state.locale === locale ? 'block' : 'none',
-        };
-
         const {
             locales,
             value,
@@ -113,9 +108,15 @@ class LocaleField extends Component {
             ...props
         } = this.props;
 
+        const { locale: currentLocale } = this.state;
+        const key = `input_${name.replace(/[^a-z0-9-]+/gi, '-')}_${locale}`;
+        const style = {
+            display: currentLocale === locale ? 'block' : 'none',
+        };
+
         const fieldOnChange = val => this.onFieldChange(locale, val);
         const fieldValue = get(value, locale, null);
-        const fieldName = `${this.props.name}[${locale}]`;
+        const fieldName = `${name}[${locale}]`;
         const fieldProps = {
             ...props,
             onChange: fieldOnChange,
@@ -142,11 +143,12 @@ class LocaleField extends Component {
 
     renderLocaleButton(locale) {
         const { value } = this.props;
+        const { locale: currentLocale } = this.state;
         const key = `button_${locale}`;
         const hasValue = !isEmpty(get(value, locale));
         const className = classNames({
             btn: true,
-            active: this.state.locale === locale,
+            active: currentLocale === locale,
             'btn-warning': !hasValue,
             'btn-outline-secondary': hasValue,
         });

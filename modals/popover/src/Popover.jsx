@@ -64,17 +64,21 @@ class Popover extends Component {
         }
     }
 
-    componentDidUpdate(prevProps) {
-        const elementChanged = this.props.element !== prevProps.element;
+    componentDidUpdate({
+        element: prevElement,
+        visible: prevVisible,
+    }) {
+        const { element, visible } = this.props;
+        const elementChanged = element !== prevElement;
         if (elementChanged) {
             if (this.popper !== null) {
                 this.popper.destroy();
             }
-            this.popper = this.createPopper(this.props.element);
+            this.popper = this.createPopper(element);
         }
 
-        const visibleChanged = this.props.visible !== prevProps.visible;
-        if (visibleChanged && this.props.visible) {
+        const visibleChanged = visible !== prevVisible;
+        if (visibleChanged && visible) {
             this.popper.scheduleUpdate();
         }
     }

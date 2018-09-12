@@ -30,9 +30,9 @@ class Popover extends Component {
     }
 
     onClick() {
-        this.setState({
-            visible: !this.state.visible,
-        });
+        this.setState(({ visible }) => ({
+            visible: !visible,
+        }));
     }
 
     render() {
