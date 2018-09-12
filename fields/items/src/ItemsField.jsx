@@ -178,7 +178,7 @@ class ItemsField extends Component {
         const valueChanged = nextValue !== value;
         if (valueChanged) {
             const currentValue = value || [];
-            if (nextValue && nextValue.length > currentValue.length) {
+            if (nextValue !== null && nextValue.length > currentValue.length) {
                 const delta = nextValue.length - currentValue.length;
                 const newCollapsedItems = [].concat(collapsedItems);
                 for (let i = 0; i < delta; i += 1) {
@@ -655,7 +655,7 @@ class ItemsField extends Component {
         });
 
         const boxStyle = {
-            border: value.length === 0 && topElement ? 'dashed 1px #CCC' : '',
+            border: finalValue.length === 0 && topElement ? 'dashed 1px #CCC' : '',
             width: '100%',
         };
 

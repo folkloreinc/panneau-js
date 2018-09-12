@@ -37,6 +37,10 @@ module.exports = (storybookBaseConfig, configType) => {
     });
     storybookBaseConfig.resolve.alias = alias;
 
+    storybookBaseConfig.module.rules[0].use[0].options.plugins.push(
+        require.resolve('@babel/plugin-syntax-dynamic-import'),
+        require.resolve('@babel/plugin-proposal-object-rest-spread'),
+    );
     // Exclude all node_modules folders
     storybookBaseConfig.module.rules[0].exclude.push(/node_modules/);
 
@@ -121,13 +125,6 @@ module.exports = (storybookBaseConfig, configType) => {
             name: 'fonts/[name]-[hash:6].[ext]',
             publicPath: '',
         },
-    });
-
-    // For sub packages
-    storybookBaseConfig.module.rules.push({
-        test: /\.jsx?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/,
     });
 
     storybookBaseConfig.plugins.push(new webpack.DefinePlugin({

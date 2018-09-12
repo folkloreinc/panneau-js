@@ -8,4 +8,4 @@ const fieldsCollection = new ComponentsCollection({
     Items,
 });
 
-module.exports = fieldsCollection;
+export default fieldsCollection;

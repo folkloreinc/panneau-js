@@ -104,7 +104,7 @@ class DateField extends Component {
                 return import(/* webpackChunkName: "vendor/moment" */ 'moment');
             })
             .then((dep) => {
-                this.moment = dep;
+                this.moment = dep.default;
                 this.setState({
                     ready: true,
                     momentValue:

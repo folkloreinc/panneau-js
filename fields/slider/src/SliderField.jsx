@@ -57,7 +57,7 @@ class SliderField extends Component {
         const componentName = range ? 'Range' : 'Slider';
         import(/* webpackChunkName: "vendor/rc-slider/[request]" */`rc-slider/lib/${componentName}`)
             .then((SliderComponent) => {
-                this.Component = SliderComponent;
+                this.Component = SliderComponent.default;
                 this.setState({
                     ready: true,
                 });
