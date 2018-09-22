@@ -182,6 +182,7 @@ class LocaleField extends Component {
 
         const groupClassName = classNames({
             [styles.formGroup]: true,
+            [styles.withLocales]: locales.length > 1,
             [className]: className !== null,
         });
         return (

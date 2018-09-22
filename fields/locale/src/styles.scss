@@ -3,8 +3,10 @@
         vertical-align: top;
     }
 
-    :global(> .form-group-label) {
-        margin-bottom: 10px;
+    &.withLocales {
+        :global(> .form-group-label) {
+            margin-bottom: 10px;
+        }
     }
 
     .btnGroup {
