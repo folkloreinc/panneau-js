@@ -1,6 +1,6 @@
 {
   "name": "@panneau/layout",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Layout core for Panneau",
   "keywords": [
     "react",
@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@panneau/field": "^0.5.0",
+    "@panneau/field": "^0.5.1",
     "bootstrap.native": "^2.0.21",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/forms",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "description": "Lists for Panneau",
     "keywords": [
         "react",
@@ -52,8 +52,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.5.0",
-        "@panneau/form-normal": "^0.5.0",
+        "@panneau/core": "^0.5.1",
+        "@panneau/form-normal": "^0.5.1",
         "hoist-non-react-statics": "^2.3.1",
         "invariant": "^2.2.2",
         "lodash": "^4.17.4",
