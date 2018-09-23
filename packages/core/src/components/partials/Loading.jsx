@@ -1,5 +1,6 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import styles from '../../styles/partials/loading.scss';
 
@@ -21,42 +22,30 @@ const defaultProps = {
     className: null,
 };
 
-class Loader extends PureComponent {
-    style(i) {
-        const {
-            color, size, sizeUnit, margin,
-        } = this.props;
-
-        return {
-            backgroundColor: color,
-            width: `${size}${sizeUnit}`,
-            height: `${size}${sizeUnit}`,
-            margin,
-            animationDelay: i * 0.12,
-        };
-    }
-
-    wrapper() {
-        const { className } = this.props;
-        const classNames = [styles.component];
-        if (className !== null) {
-            classNames.push(className);
-        }
-        return classNames.join(' ');
-    }
-
-    render() {
-        const { loading } = this.props;
-
-        return loading ? (
-            <div className={this.wrapper()}>
-                <div className={styles.dot} style={this.style(1)} />
-                <div className={styles.dot} style={this.style(2)} />
-                <div className={styles.dot} style={this.style(3)} />
-            </div>
-        ) : null;
-    }
-}
+const Loader = ({
+    loading, color, size, sizeUnit, margin, className,
+}) => {
+    const dotStyle = {
+        backgroundColor: color,
+        width: `${size}${sizeUnit}`,
+        height: `${size}${sizeUnit}`,
+        margin,
+    };
+    return loading ? (
+        <div
+            className={classNames([
+                styles.component,
+                {
+                    [className]: className !== null,
+                },
+            ])}
+        >
+            <div className={styles.dot} style={dotStyle} />
+            <div className={styles.dot} style={dotStyle} />
+            <div className={styles.dot} style={dotStyle} />
+        </div>
+    ) : null;
+};
 
 Loader.propTypes = propTypes;
 Loader.defaultProps = defaultProps;

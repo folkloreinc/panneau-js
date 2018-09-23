@@ -1,6 +1,6 @@
 /** @module panneau/core */
 import Panneau from './Panneau';
-import { Panneau as PanneauComponent } from './components/index';
+import { Panneau as PanneauComponent, Loading as LoadingComponent } from './components/index';
 
 import PropTypes from './lib/PropTypes';
 import ComponentsCollection from './lib/ComponentsCollection';
@@ -26,6 +26,7 @@ export {
     PropTypes,
     ComponentsCollection,
     PanneauComponent,
+    LoadingComponent,
     ResponseError,
     ValidationError,
     getResponseAndDataObject,
