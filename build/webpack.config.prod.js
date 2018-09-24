@@ -190,20 +190,23 @@ module.exports = {
                     // assets smaller than specified size as data URLs to avoid requests.
                     {
                         test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/],
+                        exclude: [
+                            /fonts\//,
+                        ],
                         loader: require.resolve('url-loader'),
                         options: {
                             limit: 10000,
                             name: 'img/[name].[ext]',
-                            publicPath: '',
+                            publicPath: url => url,
                         },
                     },
                     {
-                        test: [/\.woff$/, /\.woff2$/, /\.otf$/, /\.ttf$/, /\.otf$/, /\.eot$/],
+                        test: [/\.woff$/, /\.woff2$/, /\.otf$/, /\.ttf$/, /\.eot$/, /\.svg$/],
                         loader: require.resolve('file-loader'),
                         options: {
                             limit: 10000,
                             name: 'fonts/[name].[ext]',
-                            publicPath: '',
+                            publicPath: url => url,
                         },
                     },
                     // Process JS with Babel.
@@ -262,8 +265,10 @@ module.exports = {
                             minimize: true,
                             sourceMap: shouldUseSourceMap,
                             modules: true,
-                            getLocalIdent: (context, localIdentName, localName) =>
-                                getLocalIdent(localName, context.resourcePath),
+                            // prettier-ignore
+                            getLocalIdent: (context, localIdentName, localName) => (
+                                getLocalIdent(localName, context.resourcePath)
+                            ),
                         }),
                         // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
                     },
@@ -295,8 +300,10 @@ module.exports = {
                                 minimize: true,
                                 sourceMap: shouldUseSourceMap,
                                 modules: true,
-                                getLocalIdent: (context, localIdentName, localName) =>
-                                    getLocalIdent(localName, context.resourcePath),
+                                // prettier-ignore
+                                getLocalIdent: (context, localIdentName, localName) => (
+                                    getLocalIdent(localName, context.resourcePath)
+                                ),
                             },
                             'sass-loader',
                         ),
@@ -315,7 +322,7 @@ module.exports = {
                         exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
                         options: {
                             name: 'medias/[name].[ext]',
-                            publicPath: '',
+                            publicPath: url => url,
                         },
                     },
                     // ** STOP ** Are you adding a new loader?
