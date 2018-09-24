@@ -21,7 +21,7 @@ const exactPackages = [
 getPackagesPaths().forEach((packagePath) => {
     modules.push(path.resolve(packagePath, './node_modules'));
     const packageJSON = require(path.resolve(packagePath, './package.json')); // eslint-disable-line
-    alias[packageJSON.name] = path.resolve(packagePath, './es/index');
+    alias[packageJSON.name] = path.resolve(packagePath, './src/index');
     const dependencies = []
         .concat(Object.keys(packageJSON.dependencies || {}))
         .concat(Object.keys(packageJSON.devDependencies || {}));
