@@ -16,8 +16,8 @@ const propTypes = {
     }).isRequired,
     dimensionLabel: PanneauPropTypes.message,
     sizeLabel: PanneauPropTypes.message,
-    thumbnailPath: PropTypes.string,
-    dimensionPath: PropTypes.string,
+    thumbnailPath: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    dimensionPath: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     sizePath: PropTypes.string,
 };
 

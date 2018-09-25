@@ -17,9 +17,9 @@ const propTypes = {
     dimensionLabel: PanneauPropTypes.message,
     durationLabel: PanneauPropTypes.message,
     sizeLabel: PanneauPropTypes.message,
-    dimensionPath: PropTypes.string,
-    thumbnailPath: PropTypes.string,
-    durationPath: PropTypes.string,
+    dimensionPath: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    thumbnailPath: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    durationPath: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     sizePath: PropTypes.string,
 };
 

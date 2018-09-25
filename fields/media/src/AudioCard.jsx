@@ -16,9 +16,9 @@ const propTypes = {
     }).isRequired,
     durationLabel: PanneauPropTypes.message,
     sizeLabel: PanneauPropTypes.message,
-    thumbnailPath: PropTypes.string,
-    durationPath: PropTypes.string,
-    sizePath: PropTypes.string,
+    thumbnailPath: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    durationPath: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    sizePath: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
 };
 
 const defaultProps = {
