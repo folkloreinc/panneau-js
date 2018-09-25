@@ -134,7 +134,10 @@ class FieldsGroup extends Component {
         }
 
         const fieldDefaultValue = typeof defaultValue !== 'undefined' ? defaultValue : undefined;
-        const fieldValue = value && name ? get(value, name, fieldDefaultValue) : value;
+        // prettier-ignore
+        const fieldValue = (name || null) !== null
+            ? get(value || {}, name, fieldDefaultValue)
+            : value;
         let fieldErrors = errors !== null && name !== null
             ? Object.entries(errors).reduce((acc, [key, errs]) => {
                 const escapedName = name.replace('.', '\\.');
