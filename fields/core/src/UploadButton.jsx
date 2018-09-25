@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isString from 'lodash/isString';
+import get from 'lodash/get';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
@@ -10,6 +11,11 @@ const messages = defineMessages({
         id: 'core.buttons.upload',
         description: 'The label of the "upload" button',
         defaultMessage: 'Select a file...',
+    },
+    loadingLabel: {
+        id: 'core.buttons.uploading',
+        description: 'The label of the "upload" button when loading',
+        defaultMessage: 'Uploading...',
     },
 });
 
@@ -20,7 +26,9 @@ const propTypes = {
     customHeaders: PropTypes.objectOf(PropTypes.string),
     onUploadStart: PropTypes.func,
     onUploadComplete: PropTypes.func,
+    onUploadError: PropTypes.func,
     label: PanneauPropTypes.message,
+    loadingLabel: PanneauPropTypes.message,
 };
 
 const defaultProps = {
@@ -29,7 +37,9 @@ const defaultProps = {
     customHeaders: {},
     onUploadStart: null,
     onUploadComplete: null,
+    onUploadError: null,
     label: messages.label,
+    loadingLabel: messages.loadingLabel,
 };
 
 class UploadButton extends Component {
@@ -45,6 +55,7 @@ class UploadButton extends Component {
 
         this.state = {
             ready: false,
+            loading: false,
         };
     }
 
@@ -72,15 +83,29 @@ class UploadButton extends Component {
 
     onUploadStart() {
         const { onUploadStart } = this.props;
+
+        this.setState({
+            loading: true,
+        });
+
         if (onUploadStart !== null) {
             onUploadStart();
         }
     }
 
     onUploadComplete(id, name, response) {
-        const { onUploadComplete } = this.props;
-        if (onUploadComplete !== null) {
+        const { onUploadComplete, onUploadError } = this.props;
+
+        const success = get(response, 'success', true);
+
+        this.setState({
+            loading: false,
+        });
+
+        if (success && onUploadComplete !== null) {
             onUploadComplete(response, id, name);
+        } else if (!success && onUploadError !== null) {
+            onUploadError(response, id, name);
         }
     }
 
@@ -114,7 +139,9 @@ class UploadButton extends Component {
         }
 
         const { FileInput } = this;
-        const { accept, label } = this.props;
+        const { accept, label: normalLabel, loadingLabel } = this.props;
+        const { loading } = this.state;
+        const label = loading ? loadingLabel : normalLabel;
 
         return (
             <FileInput accept={accept} uploader={this.uploader}>
@@ -125,6 +152,7 @@ class UploadButton extends Component {
                             btn: true,
                             'btn-primary': true,
                         })}
+                        disabled={loading}
                         onClick={this.onClickSelect}
                     >
                         {isString(label) ? (

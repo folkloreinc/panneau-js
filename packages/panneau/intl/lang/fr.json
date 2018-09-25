@@ -4,6 +4,7 @@
     "core.buttons.resources.create": "Créer",
     "core.buttons.resources.save": "Enregistrer",
     "core.buttons.upload": "Sélectionner un fichier",
+    "core.buttons.uploading": "Envoi...",
     "core.navbar.resources.create": "Ajouter {resource}",
     "core.navbar.resources.index": "Voir tous {resource}",
     "core.notices.resources.error": "Échec. Le formulaire contient des erreurs.",

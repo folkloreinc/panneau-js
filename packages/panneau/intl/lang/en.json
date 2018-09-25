@@ -4,6 +4,7 @@
     "core.buttons.resources.create": "Create",
     "core.buttons.resources.save": "Save",
     "core.buttons.upload": "Select a file...",
+    "core.buttons.uploading": "Uploading...",
     "core.navbar.resources.create": "Add a new {resource}",
     "core.navbar.resources.index": "View all {resource}",
     "core.notices.resources.error": "Failed. The form contains errors.",

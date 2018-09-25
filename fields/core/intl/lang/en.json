@@ -1,4 +1,5 @@
 {
     "core.buttons.upload": "Select a file...",
+    "core.buttons.uploading": "Uploading...",
     "fields.core.buttons.add": "Add"
 }

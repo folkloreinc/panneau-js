@@ -12,6 +12,7 @@ storiesOf('Fields/Core/UploadButton', module)
                 <UploadButton
                     onUploadStart={action('uploadStart')}
                     onUploadComplete={action('uploadComplete')}
+                    onUploadError={action('uploadError')}
                 />
             </IntlProvider>
         </div>

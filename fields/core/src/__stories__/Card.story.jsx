@@ -21,6 +21,16 @@ const itemWithThumbnail = {
     },
 };
 
+const itemWithReallyLongTitle = {
+    name: 'Item with a really really long title and a thumbnail',
+    thumbnail: 'https://picsum.photos/400/400',
+    created_at: '2017-11-01 13:33:45',
+    details: {
+        Dimension: '400x400',
+        Size: '100kb',
+    },
+};
+
 storiesOf('Fields/Core/Card', module)
     .add('simple', () => (
         <div>
@@ -34,7 +44,7 @@ storiesOf('Fields/Core/Card', module)
                 onLoad={action('load')}
             />
             <Card
-                item={itemWithThumbnail}
+                item={itemWithReallyLongTitle}
                 selectable
                 onLoad={action('load')}
             />

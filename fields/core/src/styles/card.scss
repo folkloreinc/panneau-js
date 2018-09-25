@@ -35,20 +35,22 @@
     }
 
     .label {
-        .name {
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-        }
 
-        .details {
-            font-size: .85em;
-        }
+    }
 
-        p {
-            &:last-child {
-                margin-bottom: 0;
-            }
+    .name {
+        text-overflow: ellipsis;
+        // white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .details {
+        font-size: .85em;
+
+        ul,
+        li {
+            padding: 0;
+            list-style: none;
         }
     }
 

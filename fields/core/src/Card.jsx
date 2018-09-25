@@ -176,13 +176,15 @@ class Card extends Component {
                 ) : null}
                 {details !== null ? (
                     <div className={styles.details}>
-                        {Object.keys(details).map(key => (
-                            <p key={`details-${key}`} className={styles.detail}>
-                                {key}
-                                {': '}
-                                {details[key]}
-                            </p>
-                        ))}
+                        <ul>
+                            {Object.keys(details).map(key => (
+                                <li key={`details-${key}`} className={styles.detail}>
+                                    {key}
+                                    {': '}
+                                    {details[key]}
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 ) : null}
             </div>

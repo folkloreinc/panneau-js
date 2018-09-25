@@ -3,5 +3,10 @@
     "id": "core.buttons.upload",
     "description": "The label of the \"upload\" button",
     "defaultMessage": "Select a file..."
+  },
+  {
+    "id": "core.buttons.uploading",
+    "description": "The label of the \"upload\" button when loading",
+    "defaultMessage": "Uploading..."
   }
 ]
