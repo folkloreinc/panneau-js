@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isString from 'lodash/isString';
-import get from 'lodash/get';
+// import get from 'lodash/get';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
@@ -94,18 +94,14 @@ class UploadButton extends Component {
     }
 
     onUploadComplete(id, name, response) {
-        const { onUploadComplete, onUploadError } = this.props;
-
-        const success = get(response, 'success', true);
+        const { onUploadComplete } = this.props;
 
         this.setState({
             loading: false,
         });
 
-        if (success && onUploadComplete !== null) {
+        if (onUploadComplete !== null) {
             onUploadComplete(response, id, name);
-        } else if (!success && onUploadError !== null) {
-            onUploadError(response, id, name);
         }
     }
 
