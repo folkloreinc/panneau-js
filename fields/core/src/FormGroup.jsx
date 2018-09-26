@@ -128,8 +128,8 @@ class FormGroup extends Component {
             <span
                 className={classNames({
                     fas: true,
-                    'fa-caret-down': collapsed,
-                    'fa-caret-right': !collapsed,
+                    'fa-caret-down': !collapsed,
+                    'fa-caret-right': collapsed,
                 })}
             />
         );
