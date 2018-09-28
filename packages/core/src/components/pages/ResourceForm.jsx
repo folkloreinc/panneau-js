@@ -455,7 +455,7 @@ ResourceForm.defaultProps = defaultProps;
 
 const WithResourceApi = withResourceApi()(ResourceForm);
 const mapStateToProps = ({ panneau }, {
-    id, resource, action, match, location, urlGenerator,
+    id = null, resource = null, action, match, location, urlGenerator,
 }) => {
     const resources = get(panneau, 'definition.resources', []);
     const resourceId = get(match, 'params.resource', resource);
@@ -492,7 +492,7 @@ const WithStateComponent = connect(
     mapDispatchToProps,
     mergeProps,
 )(WithResourceApi);
-const WithRouterContainer = withRouter(WithStateComponent);
-const WithFormsCollectionContainer = withFormsCollection()(WithRouterContainer);
+const WithFormsCollectionContainer = withFormsCollection()(WithStateComponent);
 const WithUrlGeneratorContainer = withUrlGenerator()(WithFormsCollectionContainer);
-export default WithUrlGeneratorContainer;
+const WithRouterContainer = withRouter(WithUrlGeneratorContainer);
+export default WithRouterContainer;
