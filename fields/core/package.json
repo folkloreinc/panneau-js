@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field",
-    "version": "0.6.3",
+    "version": "0.6.5",
     "description": "Field core for Panneau",
     "keywords": [
         "react",
@@ -53,7 +53,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.6.3",
+        "@panneau/core": "^0.6.5",
         "classnames": "^2.2.5",
         "fine-uploader": "^5.16.0",
         "fine-uploader-wrappers": "^1.0.1",
