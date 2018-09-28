@@ -3,8 +3,6 @@
     "core.buttons.resources.cancel": "Annuler",
     "core.buttons.resources.create": "Créer",
     "core.buttons.resources.save": "Enregistrer",
-    "core.navbar.resources.create": "Ajouter {resource}",
-    "core.navbar.resources.index": "Voir tous {resource}",
     "core.notices.resources.error": "Problème. Le formulaire contient des erreurs.",
     "core.notices.resources.success": "Succès!",
     "core.resources.index.confirm_delete": "Êtes-vous certain de vouloir supprimer cet item de {name}?",
