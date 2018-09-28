@@ -12,7 +12,7 @@ import App from './App';
 
 const propTypes = {
     locale: PropTypes.string,
-    messages: PropTypes.objectOf(PropTypes.string),
+    messages: PropTypes.objectOf(PropTypes.objectOf(PropTypes.string)),
     routes: PropTypes.objectOf(PropTypes.string),
     memoryRouter: PropTypes.bool,
     definition: PanneauPropTypes.definition.isRequired,

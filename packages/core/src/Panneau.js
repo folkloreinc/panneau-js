@@ -89,7 +89,6 @@ class Panneau extends EventEmitter {
             locale: this.locale,
             messages: {
                 ...this.messages,
-                ...(this.messages[this.locale] || null),
             },
         };
     }
