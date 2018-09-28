@@ -10,6 +10,7 @@
     "core.notices.resources.error": "Failed. The form contains errors.",
     "core.notices.resources.success": "Success!",
     "core.resources.index.confirm_delete": "Are you sure you want to delete this item from {name}?",
+    "core.titles.account": "Edit account",
     "core.titles.resources.create": "Create {name}",
     "core.titles.resources.default": "{name}",
     "core.titles.resources.edit": "Edit {name}",
