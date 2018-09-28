@@ -1,27 +1,31 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash/get';
 import isObject from 'lodash/isObject';
+import { PropTypes as PanneauPropTypes, withUrlGenerator } from '@panneau/core';
 
 import Navbar from './Navbar';
 
 import styles from './styles/header.scss';
 
 const propTypes = {
+    urlGenerator: PanneauPropTypes.urlGenerator,
     title: PropTypes.string,
+    titleLink: PropTypes.string,
     navbar: PropTypes.oneOfType([
         PropTypes.bool,
         PropTypes.object,
     ]),
-    gotoHome: PropTypes.func,
-    goto: PropTypes.func,
+    onNavbarClickTitle: PropTypes.func,
+    onNavbarClickItem: PropTypes.func,
 };
 
 const defaultProps = {
+    urlGenerator: null,
     title: 'Panneau',
+    titleLink: '/',
     navbar: true,
-    gotoHome: null,
-    goto: null,
+    onNavbarClickTitle: null,
+    onNavbarClickItem: null,
 };
 
 class Header extends Component {
@@ -32,28 +36,28 @@ class Header extends Component {
         this.onNavbarClickItem = this.onNavbarClickItem.bind(this);
     }
 
-    onNavbarClickTitle(e) {
-        const { gotoHome } = this.props;
-        if (gotoHome !== null) {
-            e.preventDefault();
-            gotoHome();
+    onNavbarClickTitle(...args) {
+        const { onNavbarClickTitle } = this.props;
+        if (onNavbarClickTitle !== null) {
+            onNavbarClickTitle(...args);
         }
     }
 
-    onNavbarClickItem(e, it) {
-        const { goto } = this.props;
-        const link = get(it, 'link', null);
-        const dropdown = get(it, 'dropdown', false);
-        if (link !== null && goto !== null && !dropdown) {
-            e.preventDefault();
-            goto(link);
+    onNavbarClickItem(...args) {
+        const { onNavbarClickItem } = this.props;
+        if (onNavbarClickItem !== null) {
+            onNavbarClickItem(...args);
         }
     }
 
     render() {
         const {
-            title,
+            urlGenerator,
+            titleLink,
             navbar,
+            onNavbarClickTitle,
+            onNavbarClickItem,
+            ...props
         } = this.props;
 
         return (
@@ -61,7 +65,8 @@ class Header extends Component {
                 { navbar !== false ? (
                     <div className={styles.navbar}>
                         <Navbar
-                            title={title}
+                            titleLink={urlGenerator !== null ? urlGenerator.route('home') : titleLink}
+                            {...props}
                             {...(isObject(navbar) ? navbar : null)}
                             onClickTitle={this.onNavbarClickTitle}
                             onClickItem={this.onNavbarClickItem}
@@ -76,4 +81,4 @@ class Header extends Component {
 Header.propTypes = propTypes;
 Header.defaultProps = defaultProps;
 
-export default Header;
+export default withUrlGenerator()(Header);

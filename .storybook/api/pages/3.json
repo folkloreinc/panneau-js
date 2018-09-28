@@ -1,6 +1,7 @@
 {
     "id": 3,
     "type": "base",
+    "title": "Page 3",
     "data": {
         "title": {
             "en": "Page 3",

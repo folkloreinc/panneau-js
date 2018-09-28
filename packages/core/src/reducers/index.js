@@ -1,9 +1,7 @@
-import { routerReducer } from 'react-router-redux';
-import layoutReducer from './LayoutReducer';
+import authReducer from './AuthReducer';
 import panneauReducer from './PanneauReducer';
 
 export default {
-    routing: routerReducer,
-    layout: layoutReducer,
     panneau: panneauReducer,
+    auth: authReducer,
 };

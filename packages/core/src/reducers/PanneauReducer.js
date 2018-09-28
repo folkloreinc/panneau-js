@@ -1,40 +1,29 @@
 import {
     SET_DEFINITION,
-    SET_FIELDS_COLLECTION,
-    SET_LAYOUTS_COLLECTION,
+    SET_COMPONENTS_COLLECTION,
 } from '../actions/PanneauActions';
+
+import parseDefinition from '../lib/parseDefinition';
 
 const initialState = {
     definition: null,
-    layoutsCollection: null,
-    fieldsCollection: null,
+    componentsCollection: null,
 };
 
-const PanneauReducer = (previousState, action) => {
-    const state = {
-        ...initialState,
-        ...(previousState || null),
-    };
+const PanneauReducer = (previousState = initialState, action) => {
+    const state = previousState;
 
     switch (action.type) {
     case SET_DEFINITION: {
         return {
             ...state,
-            definition: {
-                ...action.payload,
-            },
+            definition: parseDefinition(action.payload),
         };
     }
-    case SET_FIELDS_COLLECTION: {
+    case SET_COMPONENTS_COLLECTION: {
         return {
             ...state,
-            fieldsCollection: action.payload,
-        };
-    }
-    case SET_LAYOUTS_COLLECTION: {
-        return {
-            ...state,
-            layoutsCollection: action.payload,
+            componentsCollection: action.payload,
         };
     }
     default: {

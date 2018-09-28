@@ -2,7 +2,6 @@ import React from 'react';
 import { render as renderReact, hydrate as hydrateReact } from 'react-dom';
 import EventEmitter from 'wolfy87-eventemitter';
 import isObject from 'lodash/isObject';
-import get from 'lodash/get';
 import moment from 'moment';
 
 import ComponentsCollection from './lib/ComponentsCollection';
@@ -43,11 +42,7 @@ class Panneau extends EventEmitter {
     constructor(definition, options) {
         super();
 
-        this.options = {
-            componentsCollection: Panneau.defaultComponentsCollection,
-            locale: 'en',
-            messages: null,
-        };
+        this.options = {};
 
         this.onRendered = this.onRendered.bind(this);
         this.onHydrated = this.onHydrated.bind(this);
@@ -55,9 +50,10 @@ class Panneau extends EventEmitter {
         this.element = null;
         this.rendered = false;
         this.definition = definition;
-        this.locale = null;
+        this.user = null;
+        this.locale = 'en';
         this.messages = {};
-        this.componentsCollection = null;
+        this.componentsCollection = Panneau.defaultComponentsCollection;
         this.setOptions(options);
     }
 
@@ -89,8 +85,12 @@ class Panneau extends EventEmitter {
         return {
             componentsCollection: this.componentsCollection,
             definition: this.definition,
+            user: this.user,
             locale: this.locale,
-            messages: this.messages,
+            messages: {
+                ...this.messages,
+                ...(this.messages[this.locale] || null),
+            },
         };
     }
 
@@ -105,22 +105,31 @@ class Panneau extends EventEmitter {
      * @param {object} options The new options
      * @return {this}
      */
-    setOptions(options) {
+    setOptions(options = {}) {
+        const {
+            user, locale, messages, componentsCollection, ...otherOptions
+        } = options;
+
         this.options = {
             ...this.options,
-            ...options,
+            ...otherOptions,
         };
 
-        const { locale, messages, componentsCollection } = this.options;
+        if (typeof locale !== 'undefined') {
+            this.setLocale(locale);
+        }
 
-        this.locale = locale;
-        this.messages = {
-            ...get(Panneau.defaultLocaleMessages, this.locale, {}),
-            ...get(messages, this.locale, {}),
-        };
-        this.componentsCollection = componentsCollection;
+        if (typeof componentsCollection !== 'undefined') {
+            this.setComponentsCollection(componentsCollection);
+        }
 
-        moment.locale(locale);
+        if (typeof messages !== 'undefined') {
+            this.setMessages(messages);
+        }
+
+        if (typeof user !== 'undefined') {
+            this.setUser(user);
+        }
 
         if (this.rendered) {
             this.render();
@@ -156,6 +165,69 @@ class Panneau extends EventEmitter {
     }
 
     /**
+     * Set the user
+     * @param {object} user The new user
+     * @return {this}
+     */
+    setUser(user) {
+        this.user = user;
+        return this;
+    }
+
+    /**
+     * Get the user
+     * @return {object} The user
+     */
+    getUser() {
+        return this.user;
+    }
+
+    /**
+     * Set the locale
+     * @param {string} locale The new locale
+     * @return {this}
+     */
+    setLocale(locale) {
+        this.locale = locale;
+        moment.locale(locale);
+        return this;
+    }
+
+    /**
+     * Get the locale
+     * @return {string} The locale
+     */
+    getLocale() {
+        return this.locale;
+    }
+
+    /**
+     * Set the messages
+     * @param {object} messages The new messages
+     * @return {this}
+     */
+    setMessages(messages) {
+        this.messages = Object.keys(messages || {}).reduce((allMessages, key) => ({
+            ...allMessages,
+            [key]: isObject(messages[key]) ? {
+                ...(isObject(allMessages[key] || null) ? allMessages[key] : null),
+                ...messages[key],
+            } : messages[key],
+        }), {
+            ...Panneau.defaultLocaleMessages,
+        });
+        return this;
+    }
+
+    /**
+     * Get the messages
+     * @return {object} The messages
+     */
+    getMessages() {
+        return this.messages;
+    }
+
+    /**
      * Alias to work with components collection
      * @return {ComponentsCollection} The components collection
      */
@@ -163,7 +235,8 @@ class Panneau extends EventEmitter {
         if (typeof value !== 'undefined') {
             this.componentsCollection.addComponent(key, value);
             return this;
-        } if (typeof key !== 'undefined') {
+        }
+        if (typeof key !== 'undefined') {
             return this.componentsCollection.getComponent(key);
         }
         return this.componentsCollection;

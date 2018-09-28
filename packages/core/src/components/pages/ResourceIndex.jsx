@@ -11,10 +11,11 @@ import isObject from 'lodash/isObject';
 import classNames from 'classnames';
 import queryString from 'query-string';
 import { defineMessages, FormattedMessage, injectIntl } from 'react-intl';
-import { withUrlGenerator } from '@folklore/react-app';
 import Loading from '../partials/Loading';
 
 import * as PanneauPropTypes from '../../lib/PropTypes';
+import withUrlGenerator from '../../lib/withUrlGenerator';
+import withResourceApi from '../../lib/withResourceApi';
 import withListsCollection from '../../lib/withListsCollection';
 
 import styles from '../../styles/pages/resource-index.scss';
@@ -42,6 +43,7 @@ const propTypes = {
     urlGenerator: PanneauPropTypes.urlGenerator.isRequired,
     listsCollection: PanneauPropTypes.componentsCollection.isRequired,
     resource: PanneauPropTypes.resource.isRequired,
+    resourceApi: PanneauPropTypes.resourceApi.isRequired,
     location: PropTypes.shape({
         pathname: PropTypes.string.isRequired,
         search: PropTypes.string.isRequired,
@@ -189,7 +191,7 @@ class ResourceIndex extends Component {
     }
 
     loadItems() {
-        const { resource, location } = this.props;
+        const { resourceApi, location } = this.props;
         const params = {};
         if (this.isPaginated()) {
             const query = queryString.parse(location.search);
@@ -198,14 +200,16 @@ class ResourceIndex extends Component {
                 params.page = page;
             }
         }
-        resource.api
+        resourceApi
             .index(params)
             .then(this.onItemsLoaded)
             .catch(this.onItemsLoadError);
     }
 
     deleteItem(id) {
-        const { resource, intl, confirmDeleteMessage } = this.props;
+        const {
+            resource, resourceApi, intl, confirmDeleteMessage,
+        } = this.props;
         const { name } = resource;
         const confirmMessage = get(resource, 'messages.confirm_delete', confirmDeleteMessage);
         const message = isObject(confirmMessage) && typeof confirmMessage.id !== 'undefined'
@@ -216,7 +220,7 @@ class ResourceIndex extends Component {
             : confirmMessage;
         // eslint-disable-next-line no-alert
         if (window.confirm(message)) {
-            resource.api.destroy(id).then(this.onItemDeleted);
+            resourceApi.destroy(id).then(this.onItemDeleted);
         }
     }
 
@@ -449,6 +453,7 @@ class ResourceIndex extends Component {
 ResourceIndex.propTypes = propTypes;
 ResourceIndex.defaultProps = defaultProps;
 
+const WithResourceApi = withResourceApi()(ResourceIndex);
 const mapStateToProps = ({ panneau }, { match, location, urlGenerator }) => {
     const resources = get(panneau, 'definition.resources', []);
     const resourceId = get(match, 'params.resource', null);
@@ -493,7 +498,7 @@ const WithStateComponent = connect(
     mapStateToProps,
     mapDispatchToProps,
     mergeProps,
-)(ResourceIndex);
+)(WithResourceApi);
 const WithRouterContainer = withRouter(WithStateComponent);
 const WithListsCollectionContainer = withListsCollection()(WithRouterContainer);
 const WithUrlGeneratorContainer = withUrlGenerator()(WithListsCollectionContainer);

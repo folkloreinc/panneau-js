@@ -2,8 +2,7 @@
  * Constants
  */
 const SET_DEFINITION = 'panneau@SET_DEFINITION';
-const SET_FIELDS_COLLECTION = 'panneau@SET_FIELDS_COLLECTION';
-const SET_LAYOUTS_COLLECTION = 'panneau@SET_LAYOUTS_COLLECTION';
+const SET_COMPONENTS_COLLECTION = 'panneau@SET_COMPONENTS_COLLECTION';
 
 /**
  * Actions creator
@@ -13,21 +12,14 @@ const setDefinition = definition => ({
     payload: definition,
 });
 
-const setFieldsCollection = collection => ({
-    type: SET_FIELDS_COLLECTION,
-    payload: collection,
-});
-
-const setLayoutsCollection = collection => ({
-    type: SET_LAYOUTS_COLLECTION,
+const setComponentsCollection = collection => ({
+    type: SET_COMPONENTS_COLLECTION,
     payload: collection,
 });
 
 export {
     SET_DEFINITION,
-    SET_FIELDS_COLLECTION,
-    SET_LAYOUTS_COLLECTION,
+    SET_COMPONENTS_COLLECTION,
     setDefinition,
-    setFieldsCollection,
-    setLayoutsCollection,
+    setComponentsCollection,
 };

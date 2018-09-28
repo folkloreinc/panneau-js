@@ -1,5 +1,6 @@
 import Panneau from '@panneau/core';
 import fieldsCollection from '@panneau/fields';
+import { navbarItemsCollection } from '@panneau/layout';
 import layoutsCollection from '@panneau/layouts';
 import listsCollection from '@panneau/lists';
 import formsCollection from '@panneau/forms';
@@ -18,6 +19,7 @@ Panneau.setDefaultComponentsCollection(layoutsCollection, 'layouts');
 Panneau.setDefaultComponentsCollection(listsCollection, 'lists');
 Panneau.setDefaultComponentsCollection(formsCollection, 'forms');
 Panneau.setDefaultComponentsCollection(modalsCollection, 'modals');
+Panneau.setDefaultComponentsCollection(navbarItemsCollection, 'navbarItems');
 
 export {
     Panneau,

@@ -59,6 +59,7 @@
         "@panneau/field": "^0.5.9",
         "@panneau/fields": "^0.5.9",
         "@panneau/forms": "^0.5.9",
+        "@panneau/layout": "^0.5.9",
         "@panneau/layouts": "^0.5.9",
         "@panneau/lists": "^0.5.2",
         "@panneau/modals": "^0.5.2",

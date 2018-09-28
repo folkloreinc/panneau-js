@@ -46,19 +46,22 @@
     "babel:es": "BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es --ignore story.js,test.js",
     "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore story.js,test.js",
     "babel": "npm run babel:es && npm run babel:cjs",
-    "build": "npm run webpack && npm run babel",
+    "intl": "node ../../build/buildPackageTranslations",
+    "build": "npm run webpack && npm run babel && npm run intl",
     "prepare": "npm run clean && npm run build",
     "start": "npm run storybook"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
+    "@panneau/core": "^0.5.2",
     "@panneau/field": "^0.5.9",
     "bootstrap.native": "^2.0.21",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "pascal-case": "^2.0.1",
     "prop-types": "^15.6.0",
-    "react-intl": "^2.4.0"
+    "react-intl": "^2.4.0",
+    "react-router-dom": "^4.3.1"
   },
   "devDependencies": {
     "react": ">=15.0.0 || ^16.0.0",

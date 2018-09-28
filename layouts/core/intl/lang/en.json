@@ -1,0 +1,7 @@
+{
+    "layouts.navbar.resource.create": "Create {resource}",
+    "layouts.navbar.resource.index": "View all {resource}",
+    "layouts.navbar.user.account": "My account",
+    "layouts.navbar.user.label": "Account",
+    "layouts.navbar.user.logout": "Logout"
+}

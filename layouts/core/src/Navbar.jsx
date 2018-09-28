@@ -1,10 +1,23 @@
 /* eslint-disable react/no-array-index-key */
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import get from 'lodash/get';
-import isObject from 'lodash/isObject';
+import isArray from 'lodash/isArray';
+import { Link } from 'react-router-dom';
+import { withComponentsCollection, PropTypes as PanneauPropTypes } from '@panneau/core';
+
+import NavbarItem from './NavbarItem';
+import NavbarDivider from './NavbarDivider';
+import NavbarUser from './NavbarUser';
+import NavbarResource from './NavbarResource';
+
+const defaultItemsComponents = {
+    item: NavbarItem,
+    divider: NavbarDivider,
+    user: NavbarUser,
+    resource: NavbarResource,
+};
 
 const propTypes = {
     title: PropTypes.string,
@@ -16,7 +29,12 @@ const propTypes = {
             position: PropTypes.oneOf(['right', 'left', 'center']),
         }),
     ),
+    itemsCollection: PanneauPropTypes.componentsCollection,
+    itemsComponents: PropTypes.objectOf(PropTypes.func),
     opened: PropTypes.bool,
+    gotoHome: PropTypes.func.isRequired,
+    gotoLink: PropTypes.func.isRequired,
+    gotoRoute: PropTypes.func.isRequired,
     onClickTitle: PropTypes.func,
     onClickItem: PropTypes.func,
 };
@@ -25,6 +43,8 @@ const defaultProps = {
     title: 'Panneau',
     titleLink: '#',
     items: [],
+    itemsCollection: null,
+    itemsComponents: defaultItemsComponents,
     opened: false,
     onClickTitle: null,
     onClickItem: null,
@@ -67,87 +87,38 @@ class Navbar extends Component {
     }
 
     onClickItem(e, { index, ...it }, relIndex, position) {
-        const { onClickItem } = this.props;
+        const { onClickItem, gotoRoute } = this.props;
         if (onClickItem !== null) {
             onClickItem(e, it, index, position);
         }
+        if (typeof it.gotoRoute !== 'undefined') {
+            gotoRoute(...(isArray(it.gotoRoute) ? it.gotoRoute : [it.gotoRoute]));
+        }
+    }
+
+    getItemComponent(type = 'item') {
+        const { itemsCollection, itemsComponents } = this.props;
+        const defaultComponent = itemsComponents !== null ? itemsComponents[type] || null : null;
+        return (
+            (itemsCollection !== null ? itemsCollection.getComponent(type) : null)
+            || defaultComponent
+        );
     }
 
     renderItem(it, index, position) {
-        const link = get(it, 'link', '#');
-        const divider = get(it, 'type', 'item') === 'divider';
-        const label = get(it, 'label', '');
-        const items = get(it, 'items', null);
-        const linkProps = it.dropdown
-            ? {
-                role: 'button',
-                'data-toggle': 'dropdown',
-                'aria-haspopup': 'true',
-                'aria-expanded': 'false',
-            }
-            : {};
-
-        return (
-            <li
+        const { gotoHome, gotoLink, gotoRoute } = this.props;
+        const ItemComponent = this.getItemComponent(it.type || 'item');
+        return ItemComponent !== null ? (
+            <ItemComponent
                 key={`item-${position}-${index}`}
-                className={classNames({
-                    'nav-item': true,
-                    dropdown: it.dropdown,
-                    divider,
-                })}
-            >
-                {!divider ? (
-                    <a
-                        href={link}
-                        className={classNames({
-                            'nav-link': true,
-                            'dropdown-toggle': it.dropdown,
-                        })}
-                        {...linkProps}
-                        onClick={e => this.onClickItem(e, it, index, position)}
-                    >
-                        {isObject(label) && typeof label.id !== 'undefined' ? (
-                            <FormattedMessage {...label} />
-                        ) : (
-                            label
-                        )}
-                        {' '}
-                        {it.dropdown ? <span className="caret" /> : null}
-                    </a>
-                ) : null}
-                {it.dropdown ? (
-                    <div className="dropdown-menu">
-                        {items.map(
-                            (subIt, subIndex) => (get(subIt, 'type', 'item') === 'divider' ? (
-                                <div
-                                    key={`subitem-${position}-${index}-${subIndex}`}
-                                    className="dropdown-divider"
-                                />
-                            ) : (
-                                <a
-                                    key={`subitem-${position}-${index}-${subIndex}`}
-                                    href={subIt.link || '#'}
-                                    className={classNames({
-                                        'dropdown-item': true,
-                                    })}
-                                    onClick={e => this.onClickItem(e, subIt, subIndex, position)
-                                    }
-                                >
-                                    {isObject(subIt.label)
-                                        && typeof subIt.label.id !== 'undefined' ? (
-                                            <FormattedMessage {...subIt.label || null} />
-                                        ) : (
-                                            subIt.label || ''
-                                        )}
-                                    {' '}
-                                    {it.dropdown ? <span className="caret" /> : null}
-                                </a>
-                            )),
-                        )}
-                    </div>
-                ) : null}
-            </li>
-        );
+                {...it}
+                gotoHome={gotoHome}
+                gotoLink={gotoLink}
+                gotoRoute={gotoRoute}
+                onClick={e => this.onClickItem(e, it, index, position)}
+                onClickItem={(e, subIt, subIndex) => this.onClickItem(e, subIt, subIndex, position)}
+            />
+        ) : null;
     }
 
     renderItems(items, position) {
@@ -175,12 +146,14 @@ class Navbar extends Component {
         }));
         const leftItems = itemsWithIndex.filter(it => get(it, 'position', 'left') === 'left');
         const rightItems = itemsWithIndex.filter(it => get(it, 'position', 'left') === 'right');
+        const hasLeftItems = leftItems.length > 0;
+        const hasRightItems = rightItems.length > 0;
 
         return (
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <a href={titleLink} className="navbar-brand" onClick={this.onClickTitle}>
+                <Link to={{ pathname: titleLink }} className="navbar-brand" onClick={this.onClickTitle}>
                     {title}
-                </a>
+                </Link>
                 <button
                     type="button"
                     className="navbar-toggler"
@@ -197,8 +170,27 @@ class Navbar extends Component {
                         show: opened,
                     })}
                 >
-                    {this.renderItems(leftItems, 'left')}
-                    {this.renderItems(rightItems, 'right')}
+                    {hasLeftItems ? (
+                        <ul
+                            className={classNames({
+                                'navbar-nav': true,
+                                'mr-auto': true,
+                            })}
+                        >
+                            {leftItems.map((it, index) => this.renderItem(it, index, 'left'))}
+                        </ul>
+                    ) : null}
+
+                    {hasRightItems ? (
+                        <ul
+                            className={classNames({
+                                'navbar-nav': true,
+                                'ml-auto': !hasLeftItems,
+                            })}
+                        >
+                            {rightItems.map((it, index) => this.renderItem(it, index, 'right'))}
+                        </ul>
+                    ) : null}
                 </div>
             </nav>
         );
@@ -208,4 +200,13 @@ class Navbar extends Component {
 Navbar.propTypes = propTypes;
 Navbar.defaultProps = defaultProps;
 
-export default Navbar;
+const mapCollectionToProps = (
+    { componentsCollection: propsCollection },
+    { componentsCollection: contextCollection },
+) => {
+    const collection = propsCollection || contextCollection || null;
+    return {
+        itemsCollection: collection !== null ? collection.getCollection('navbarItems') : null,
+    };
+};
+export default withComponentsCollection(mapCollectionToProps)(Navbar);

@@ -5,9 +5,9 @@ import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
-import { withUrlGenerator } from '@folklore/react-app';
 
 import ResourceForm from './ResourceForm';
+import withUrlGenerator from '../../lib/withUrlGenerator';
 
 const messages = defineMessages({
     create: {

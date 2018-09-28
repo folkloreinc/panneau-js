@@ -1,31 +1,37 @@
 import React from 'react';
-import get from 'lodash/get';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { withUrlGenerator } from '@folklore/react-app';
 
 import * as PanneauPropTypes from '../lib/PropTypes';
+import withUrlGenerator from '../lib/withUrlGenerator';
 import withDefinition from '../lib/withDefinition';
 import withLayoutsCollection from '../lib/withLayoutsCollection';
 
 const propTypes = {
+    urlGenerator: PanneauPropTypes.urlGenerator.isRequired,
     layoutsCollection: PanneauPropTypes.componentsCollection.isRequired,
     definition: PanneauPropTypes.definition.isRequired,
+    gotoHome: PropTypes.func.isRequired,
+    gotoLink: PropTypes.func.isRequired,
+    gotoRoute: PropTypes.func.isRequired,
 };
 
-const defaultProps = {
+const defaultProps = {};
 
-};
-
-const Layout = ({ definition, layoutsCollection, ...props }) => {
-    const componentName = get(definition, 'layout.type', 'normal');
+const Layout = ({
+    urlGenerator, definition, layoutsCollection, ...props
+}) => {
+    const layoutDefinition = definition.layout || {};
+    const componentName = layoutDefinition.type || 'normal';
     const LayoutComponent = layoutsCollection.getComponent(componentName);
-    return (
+    return LayoutComponent !== null ? (
         <LayoutComponent
-            definition={definition}
+            applicationDefinition={definition}
+            definition={layoutDefinition}
             {...props}
         />
-    );
+    ) : null;
 };
 
 Layout.propTypes = propTypes;
@@ -36,13 +42,14 @@ const mapStateToProps = ({ layout }) => ({
 });
 const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
     gotoHome: () => dispatch(push(urlGenerator.route('home'))),
-    goto: path => dispatch(push(path)),
+    gotoLink: path => dispatch(push(path)),
+    gotoRoute: (...args) => dispatch(push(urlGenerator.route(...args))),
 });
-const WithStateContainer = connect(mapStateToProps, mapDispatchToProps)(Layout);
+const WithStateContainer = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(Layout);
 const WithLayoutsContainer = withLayoutsCollection()(WithStateContainer);
-const mapDefinitionToProps = definition => ({
-    definition: get(definition, 'layout', {}),
-});
-const WithDefinitionContainer = withDefinition(mapDefinitionToProps)(WithLayoutsContainer);
+const WithDefinitionContainer = withDefinition()(WithLayoutsContainer);
 const WithUrlGeneratorContainer = withUrlGenerator()(WithDefinitionContainer);
 export default WithUrlGeneratorContainer;

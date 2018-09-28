@@ -14,7 +14,7 @@ export default (name, module, opts) => {
     const colOffset = options.colOffset === null ? (12 - options.colWidth) / 2 : options.colOffset;
     return (
         storiesOf(name, module)
-            .addDecorator((story, context) => withInfo()(story)(context))
+            .addDecorator(withInfo)
             .addDecorator(story => (
                 <div className="container" style={{ marginTop: 10 }}>
                     <div className="row justify-content-md-center">

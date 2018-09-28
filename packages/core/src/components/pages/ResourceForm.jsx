@@ -6,10 +6,11 @@ import get from 'lodash/get';
 import isObject from 'lodash/isObject';
 import classNames from 'classnames';
 import { push } from 'react-router-redux';
-import { withUrlGenerator } from '@folklore/react-app';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import * as PanneauPropTypes from '../../lib/PropTypes';
+import withUrlGenerator from '../../lib/withUrlGenerator';
+import withResourceApi from '../../lib/withResourceApi';
 import withFormsCollection from '../../lib/withFormsCollection';
 import Loading from '../partials/Loading';
 
@@ -57,6 +58,8 @@ const propTypes = {
     title: PanneauPropTypes.message,
     action: PropTypes.string,
     resource: PanneauPropTypes.resource.isRequired,
+    resourceApi: PanneauPropTypes.resourceApi.isRequired,
+    id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     item: PropTypes.shape({
         id: PropTypes.number,
     }),
@@ -75,6 +78,7 @@ const propTypes = {
 const defaultProps = {
     action: 'create',
     title: messages.title,
+    id: null,
     item: null,
     errors: null,
     formValue: null,
@@ -122,11 +126,13 @@ class ResourceForm extends Component {
     }
 
     componentDidMount() {
-        const { action, resource, match } = this.props;
+        const {
+            id, action, resourceApi, match,
+        } = this.props;
         if (action === 'edit' || action === 'show') {
-            const id = get(match, 'params.id');
-            resource.api
-                .show(id)
+            const itemId = get(match, 'params.id', id);
+            resourceApi
+                .show(itemId)
                 .then(this.onItemLoaded)
                 .catch(this.onItemLoadError);
         }
@@ -228,7 +234,7 @@ class ResourceForm extends Component {
             formNotice: null,
         });
 
-        const { action, resource } = this.props;
+        const { action, resource, resourceApi } = this.props;
         const { item, formValue } = this.state;
 
         const resourceType = get(resource, 'type', 'default');
@@ -240,8 +246,8 @@ class ResourceForm extends Component {
             : formValue;
 
         return action === 'create'
-            ? resource.api.store(data)
-            : resource.api.update(item.id, data || item);
+            ? resourceApi.store(data)
+            : resourceApi.update(item.id, data || item);
     }
 
     renderHeader() {
@@ -447,12 +453,13 @@ occured:
 ResourceForm.propTypes = propTypes;
 ResourceForm.defaultProps = defaultProps;
 
+const WithResourceApi = withResourceApi()(ResourceForm);
 const mapStateToProps = ({ panneau }, {
-    action, match, location, urlGenerator,
+    id, resource, action, match, location, urlGenerator,
 }) => {
     const resources = get(panneau, 'definition.resources', []);
-    const resourceId = get(match, 'params.resource', null);
-    const itemId = get(match, 'params.id', null);
+    const resourceId = get(match, 'params.resource', resource);
+    const itemId = get(match, 'params.id', id);
     return {
         resource:
             resources.find(
@@ -484,7 +491,7 @@ const WithStateComponent = connect(
     mapStateToProps,
     mapDispatchToProps,
     mergeProps,
-)(ResourceForm);
+)(WithResourceApi);
 const WithRouterContainer = withRouter(WithStateComponent);
 const WithFormsCollectionContainer = withFormsCollection()(WithRouterContainer);
 const WithUrlGeneratorContainer = withUrlGenerator()(WithFormsCollectionContainer);

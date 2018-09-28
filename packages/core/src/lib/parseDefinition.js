@@ -1,87 +1,16 @@
 import get from 'lodash/get';
 import isObject from 'lodash/isObject';
-import { defineMessages } from 'react-intl';
 
-import ResourceApi from './ResourceApi';
-import messageWithValues from './messageWithValues';
-
-const intlMessages = defineMessages({
-    navbarViewAll: {
-        id: 'core.navbar.resources.index',
-        description: 'The label for a resource "view all" navbar menu',
-        defaultMessage: 'View all { resource }',
-    },
-    navbarAddNew: {
-        id: 'core.navbar.resources.create',
-        description: 'The label for a resource "add new" navbar menu',
-        defaultMessage: 'Add a new { resource }',
-    },
-});
-
-const parseDefinition = (rootDefinition, { urlGenerator }) => {
+const parseDefinition = (rootDefinition) => {
     const parseNavbarItem = (definition) => {
         const type = get(definition, 'type', 'item');
         if (type === 'resource') {
             const resourceName = get(definition, 'resource', null);
-            const dropdown = get(definition, 'dropdown', true);
+            // const dropdown = get(definition, 'dropdown', true);
             const resources = get(rootDefinition, 'resources', []);
             const resource = resources.find(it => it.id === resourceName) || null;
-            if (resource) {
-                const navbarViewAll = get(
-                    resource,
-                    'messages.navbar.view_all',
-                    intlMessages.navbarViewAll,
-                );
-                const navbarAddNew = get(
-                    resource,
-                    'messages.navbar.add_new',
-                    intlMessages.navbarAddNew,
-                );
-                const routeKeyPrefix = get(resource, 'routes', null)
-                    ? `resource.${resource.id}`
-                    : 'resource';
-                const resourceItemLabel = get(
-                    resource,
-                    'messages.names.plural',
-                    get(resource, 'name', resourceName),
-                );
-                const resourceViewAllLabel = get(
-                    resource,
-                    'messages.names.a_plural',
-                    get(resource, 'name', resourceName),
-                );
-                const resourceAddNewLabel = get(
-                    resource,
-                    'messages.names.a',
-                    get(resource, 'name', resourceName),
-                );
-                return {
-                    label: resourceItemLabel,
-                    link: urlGenerator.route(`${routeKeyPrefix}.index`, {
-                        resource: resource.id,
-                    }),
-                    items: dropdown
-                        ? [
-                            {
-                                label: messageWithValues(navbarViewAll, {
-                                    resource: resourceViewAllLabel,
-                                }),
-                                link: urlGenerator.route(`${routeKeyPrefix}.index`, {
-                                    resource: resource.id,
-                                }),
-                            },
-                            { type: 'divider' },
-                            {
-                                label: messageWithValues(navbarAddNew, {
-                                    resource: resourceAddNewLabel,
-                                }),
-                                link: urlGenerator.route(`${routeKeyPrefix}.create`, {
-                                    resource: resource.id,
-                                }),
-                            },
-                        ]
-                        : null,
-                };
+            if (resource === null) {
+                return null;
             }
         }
         return {
@@ -93,7 +22,7 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
         const items = get(definition, 'items', []);
         return {
             ...definition,
-            items: items.map((it, index) => parseNavbarItem(it, index)),
+            items: items.map((it, index) => parseNavbarItem(it, index)).filter(it => it !== null),
         };
     };
 
@@ -114,20 +43,12 @@ const parseDefinition = (rootDefinition, { urlGenerator }) => {
     };
 
     const parseResources = resources => resources.map(({
-        type, messages, api, ...resource
-    }) => {
-        const endpointHost = get(rootDefinition, 'endpointHost', '/');
-        return {
-            ...resource,
-            type: type || 'default',
-            messages: isObject(messages || null) ? messages : null,
-            api:
-                    api
-                    || new ResourceApi(resource, urlGenerator, {
-                        host: endpointHost,
-                    }),
-        };
-    });
+        type, messages, ...resource
+    }) => ({
+        ...resource,
+        type: type || 'default',
+        messages: isObject(messages || null) ? messages : null,
+    }));
 
     const parseLayout = (definition) => {
         const header = get(definition, 'header', true);

@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 
+import ResourceApi from './ResourceApi';
+
 export const componentsCollection = PropTypes.shape({
     getComponent: PropTypes.func,
     getCollection: PropTypes.func,
@@ -19,9 +21,21 @@ export const resourcesDefinition = PropTypes.arrayOf(resourceDefinition);
 
 export const definition = PropTypes.shape({
     layout: layoutDefinition,
-    routes: PropTypes.objectOf(PropTypes.string),
+    routes: PropTypes.shape({
+        home: PropTypes.string.isRequired,
+        account: PropTypes.string.isRequired,
+        'resource.index': PropTypes.string.isRequired,
+        'resource.create': PropTypes.string.isRequired,
+        'resource.store': PropTypes.string.isRequired,
+        'resource.show': PropTypes.string.isRequired,
+        'resource.edit': PropTypes.string.isRequired,
+        'resource.update': PropTypes.string.isRequired,
+        'resource.destroy': PropTypes.string.isRequired,
+    }),
     resources: resourcesDefinition,
 });
+
+export const resourceApi = PropTypes.instanceOf(ResourceApi);
 
 export const field = PropTypes.shape({
     type: PropTypes.string,
@@ -44,6 +58,12 @@ export const resource = PropTypes.shape({
             PropTypes.objectOf(fields),
         ]),
     }),
+});
+
+export const user = PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+    name: PropTypes.string,
+    email: PropTypes.string,
 });
 
 export const urlGenerator = PropTypes.shape({

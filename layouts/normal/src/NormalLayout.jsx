@@ -20,35 +20,30 @@ const propTypes = {
             PropTypes.object,
         ]),
     }),
-    gotoHome: PropTypes.func,
-    goto: PropTypes.func,
 };
 
 const defaultProps = {
     children: null,
     applicationDefinition: null,
     definition: null,
-    gotoHome: null,
-    goto: null,
 };
 
 class NormalLayout extends Component {
     constructor(props) {
         super(props);
 
-        this.onHeaderClickMenuItem = this.onHeaderClickMenuItem.bind(this);
+        this.onHeaderNavbarClickItem = this.onHeaderNavbarClickItem.bind(this);
     }
 
     // eslint-disable-next-line
-    onHeaderClickMenuItem() {}
+    onHeaderNavbarClickItem() {}
 
     render() {
         const {
             children,
             applicationDefinition,
             definition,
-            gotoHome,
-            goto,
+            ...props
         } = this.props;
 
         const title = get(applicationDefinition, 'name', 'Panneau');
@@ -60,11 +55,10 @@ class NormalLayout extends Component {
                 { header !== false ? (
                     <div className={styles.header}>
                         <Header
+                            {...props}
                             title={title}
                             {...header}
-                            gotoHome={gotoHome}
-                            goto={goto}
-                            onClickMenuItem={this.onHeaderClickMenuItem}
+                            onNavbarClickItem={this.onHeaderNavbarClickItem}
                         />
                     </div>
                 ) : null }
@@ -76,6 +70,7 @@ class NormalLayout extends Component {
                 { footer !== false ? (
                     <div className={styles.footer}>
                         <Footer
+                            {...props}
                             {...footer}
                         />
                     </div>

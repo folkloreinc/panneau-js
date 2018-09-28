@@ -36,6 +36,7 @@
 
     "routes": {
         "home": "/",
+        "account": "/account",
         "resource.index": "/:resource",
         "resource.create": "/:resource/create",
         "resource.store": "/:resource",
@@ -144,29 +145,29 @@
                 "fields": {
                     "home": [
                         {
-                            "name": "title",
-                            "type": "text",
+                            "name": "data.title",
+                            "type": "text_locale",
                             "label": "Title"
                         },
                         {
-                            "name": "blocks",
+                            "name": "data.blocks",
                             "type": "blocks",
                             "label": "Blocks"
                         }
                     ],
                     "base": [
                         {
-                            "name": "title",
-                            "type": "text",
+                            "name": "data.title",
+                            "type": "text_locale",
                             "label": "Title"
                         },
                         {
-                            "name": "description",
-                            "type": "text",
+                            "name": "data.description",
+                            "type": "text_locale",
                             "label": "Description"
                         },
                         {
-                            "name": "blocks",
+                            "name": "data.blocks",
                             "type": "blocks",
                             "label": "Blocks"
                         }
@@ -183,14 +184,9 @@
                         "width": 50
                     },
                     {
-                        "id": "name",
-                        "path": "name",
-                        "label": "Name"
-                    },
-                    {
-                        "id": "email",
-                        "path": "email",
-                        "label": "Email"
+                        "id": "title",
+                        "path": "title",
+                        "label": "Title"
                     },
                     {
                         "id": "actions",

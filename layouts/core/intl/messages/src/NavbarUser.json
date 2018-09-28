@@ -1,0 +1,17 @@
+[
+  {
+    "id": "layouts.navbar.user.label",
+    "description": "The label of the \"user\" navbar item",
+    "defaultMessage": "Account"
+  },
+  {
+    "id": "layouts.navbar.user.account",
+    "description": "The label of the \"My account\" navbar item",
+    "defaultMessage": "My account"
+  },
+  {
+    "id": "layouts.navbar.user.logout",
+    "description": "The label of the \"logout\" navbar item",
+    "defaultMessage": "Logout"
+  }
+]

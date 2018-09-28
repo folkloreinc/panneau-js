@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { withUrlGenerator } from '@folklore/react-app';
+import { PropTypes as PanneauPropTypes, withUrlGenerator } from '@panneau/core';
 import ItemField from '@panneau/field-item';
 
 const messages = defineMessages({

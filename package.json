@@ -48,7 +48,6 @@
         "@babel/preset-env": "^7.0.0",
         "@babel/preset-react": "^7.0.0",
         "@babel/register": "^7.0.0",
-        "@folklore/react-app": "^0.1.15",
         "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
         "@storybook/addon-actions": "^4.0.0-alpha",
         "@storybook/addon-info": "^4.0.0-alpha",
