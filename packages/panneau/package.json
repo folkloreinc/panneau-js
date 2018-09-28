@@ -1,6 +1,6 @@
 {
     "name": "panneau",
-    "version": "0.5.9",
+    "version": "0.6.1",
     "description": "Framework to build dashboard and administration panels",
     "keywords": [
         "react",
@@ -55,14 +55,14 @@
     "dependencies": {
         "@babel/runtime": "^7.0.0",
         "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
-        "@panneau/core": "^0.5.2",
-        "@panneau/field": "^0.5.9",
-        "@panneau/fields": "^0.5.9",
-        "@panneau/forms": "^0.5.9",
-        "@panneau/layout": "^0.5.9",
-        "@panneau/layouts": "^0.5.9",
-        "@panneau/lists": "^0.5.2",
-        "@panneau/modals": "^0.5.2",
+        "@panneau/core": "^0.6.1",
+        "@panneau/field": "^0.6.1",
+        "@panneau/fields": "^0.6.1",
+        "@panneau/forms": "^0.6.1",
+        "@panneau/layout": "^0.6.1",
+        "@panneau/layouts": "^0.6.1",
+        "@panneau/lists": "^0.6.1",
+        "@panneau/modals": "^0.6.1",
         "bootstrap": "^4.1.1",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
@@ -70,10 +70,10 @@
         "react-intl": "^2.4.0"
     },
     "devDependencies": {
-        "@panneau/field-locale": "^0.5.9",
-        "@panneau/form": "^0.5.2",
-        "@panneau/layout": "^0.5.9",
-        "@panneau/list": "^0.5.2",
+        "@panneau/field-locale": "^0.6.1",
+        "@panneau/form": "^0.6.1",
+        "@panneau/layout": "^0.6.1",
+        "@panneau/list": "^0.6.1",
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
     },
