@@ -4,6 +4,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import isObject from 'lodash/isObject';
+import isArray from 'lodash/isArray';
 import classNames from 'classnames';
 import { push } from 'react-router-redux';
 import { defineMessages, FormattedMessage } from 'react-intl';
@@ -119,6 +120,7 @@ class ResourceForm extends Component {
         this.state = {
             item: props.item,
             errors: props.errors,
+            formGeneralError: null,
             formValue: props.formValue || props.item,
             formErrors: props.formErrors,
             formNotice: props.formErrors !== null ? 'error' : null,
@@ -138,12 +140,12 @@ class ResourceForm extends Component {
         }
     }
 
-    componentWillReceiveProps({ items: nextItems, errors: nextErrors }) {
-        const { items, errors } = this.props;
-        const itemChanged = nextItems !== items;
+    componentWillReceiveProps({ items: nextItem, errors: nextErrors }) {
+        const { item, errors } = this.props;
+        const itemChanged = nextItem !== item;
         if (itemChanged) {
             this.setState({
-                item: nextItems,
+                item: nextItem,
             });
         }
 
@@ -180,6 +182,7 @@ class ResourceForm extends Component {
             item,
             formValue: null,
             formErrors: null,
+            formGeneralError: null,
             formNotice: 'success',
         });
         if (onFormComplete !== null) {
@@ -190,16 +193,17 @@ class ResourceForm extends Component {
     onFormErrors(errors) {
         if (errors.name === 'ValidationError') {
             this.setState({
-                formErrors: errors.responseData,
+                formErrors: get(errors.responseData || {}, 'errors', errors.responseData),
                 formNotice: 'error',
             });
         } else if (errors.name === 'ResponseError') {
             this.setState({
-                errors: [errors.responseData.error],
+                formGeneralError: get(errors.responseData || {}, 'error', null),
+                formNotice: 'error',
             });
         } else {
             this.setState({
-                errors,
+                formNotice: 'error',
             });
         }
     }
@@ -298,14 +302,8 @@ class ResourceForm extends Component {
         });
 
         /* eslint-disable react/no-array-index-key */
-        return errors !== null && errors.length > 0 ? (
+        return isArray(errors) && errors.length > 0 ? (
             <div className={errorsClassNames}>
-                <strong>
-                    The following error
-                    {errors.length > 1 ? 's' : null}
-                    {' '}
-occured:
-                </strong>
                 <ul>{errors.map((error, index) => <li key={`error-${index}`}>{error}</li>)}</ul>
             </div>
         ) : null;
@@ -356,7 +354,7 @@ occured:
             saveButtonLabel,
         } = this.props;
         const {
-            item, formValue, formErrors, formNotice,
+            item, formValue, formGeneralError, formErrors, formNotice,
         } = this.state;
         const resourceType = get(resource, 'type', 'default');
         const form = get(resource, `forms.${action}`, get(resource, 'forms', {}));
@@ -399,6 +397,7 @@ occured:
                     readOnly={readOnly}
                     buttons={formButtons}
                     value={formValue || item}
+                    generalError={formGeneralError}
                     errors={formErrors}
                     notice={formNotice !== null ? this.renderNotice() : null}
                     submitForm={this.submitForm}
