@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
 import { withRouter } from 'react-router';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import get from 'lodash/get';
 
 import ResourceForm from './ResourceForm';
@@ -84,7 +84,6 @@ const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
 
 const mergeProps = (stateProps, { gotoResourceEdit, ...dispatchProps }, ownProps) => ({
     ...ownProps,
-    ...stateProps,
     ...dispatchProps,
     gotoResourceEdit: id => gotoResourceEdit(stateProps.resource, id),
 });

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import isObject from 'lodash/isObject';
 import isArray from 'lodash/isArray';
+import isString from 'lodash/isString';
 import classNames from 'classnames';
 import { push } from 'react-router-redux';
 import { defineMessages, FormattedMessage } from 'react-intl';
@@ -453,20 +454,24 @@ ResourceForm.propTypes = propTypes;
 ResourceForm.defaultProps = defaultProps;
 
 const WithResourceApi = withResourceApi()(ResourceForm);
-const mapStateToProps = ({ panneau }, {
-    id = null, resource = null, action, match, location, urlGenerator,
-}) => {
+const mapStateToProps = (
+    { panneau },
+    {
+        id = null, resource = null, action, match, location, urlGenerator,
+    },
+) => {
     const resources = get(panneau, 'definition.resources', []);
-    const resourceId = get(match, 'params.resource', resource);
+    const resourceId = get(match, 'params.resource', isString(resource) ? resource : null);
     const itemId = get(match, 'params.id', id);
     return {
-        resource:
-            resources.find(
+        resource: isObject(resource)
+            ? resource
+            : resources.find(
                 it => (resourceId !== null && it.id === resourceId)
-                    || (resourceId === null
-                        && urlGenerator.route(`resource.${it.id}.${action}`, {
-                            id: itemId,
-                        }) === location.pathname),
+                      || (resourceId === null
+                          && urlGenerator.route(`resource.${it.id}.${action}`, {
+                              id: itemId,
+                          }) === location.pathname),
             ) || null,
     };
 };
