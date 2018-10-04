@@ -52,6 +52,8 @@ const defaultProps = {
         },
         {
             label: messages.logout,
+            linkRoute: 'auth.logout',
+            external: true,
         },
     ],
     className: null,

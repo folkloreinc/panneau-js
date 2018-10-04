@@ -37,6 +37,8 @@
     "routes": {
         "home": "/",
         "account": "/account",
+        "auth.login": "/login",
+        "auth.logout": "/logout",
         "resource.index": "/:resource",
         "resource.create": "/:resource/create",
         "resource.store": "/:resource",
