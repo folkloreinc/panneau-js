@@ -30,7 +30,7 @@ const defaultProps = {
 };
 
 const NavbarItem = ({
-    link, label, items, className, onClick, onClickItem,
+    items, className, onClickItem, ...linkProps
 }) => {
     const hasDropdown = items !== null && items.length > 0;
     return (
@@ -41,7 +41,7 @@ const NavbarItem = ({
                 [className]: className !== null,
             })}
         >
-            <NavbarLink link={link} label={label} hasDropdown={hasDropdown} onClick={onClick} />
+            <NavbarLink {...linkProps} hasDropdown={hasDropdown} />
             {hasDropdown ? (
                 <div className="dropdown-menu">
                     {items.map(
