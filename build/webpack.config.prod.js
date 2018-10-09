@@ -10,8 +10,6 @@ const getPackagesPaths = require('./lib/getPackagesPaths');
 
 const srcPath = path.join(process.env.PWD, './src');
 
-console.log(getPackagesPaths().map(packagePath => path.join(packagePath, 'src')));
-
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
 const publicPath = '/';
