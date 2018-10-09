@@ -89,6 +89,15 @@ module.exports = (storybookBaseConfig, configType) => {
     };
 
     storybookBaseConfig.module.rules.push({
+        test: /\.css$/,
+        loaders: [
+            styleLoader,
+            cssLoader,
+            postCssLoader,
+        ],
+    });
+
+    storybookBaseConfig.module.rules.push({
         test: /\.global\.scss$/,
         loaders: [
             styleLoader,
