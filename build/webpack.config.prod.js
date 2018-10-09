@@ -39,8 +39,7 @@ const cssFilename = '[name].css';
 // However, our output is structured with css, js and media folders.
 // To have this structure working with relative paths, we have to use custom options.
 const extractTextPluginOptions = shouldUseRelativeAssetPaths
-    ? // Making sure that the publicPath goes back to to build folder.
-    { publicPath: Array(cssFilename.split('/').length).join('../') }
+    ? { publicPath: Array(cssFilename.split('/').length).join('../') }
     : {};
 
 // Options for PostCSS as we reference these options twice
@@ -57,8 +56,7 @@ const postCSSLoaderOptions = {
 };
 
 // style files regexes
-const cssRegex = /\.global\.css$/;
-const cssModuleRegex = /\.css$/;
+const cssRegex = /\.css$/;
 const sassRegex = /\.global\.(scss|sass)$/;
 const sassModuleRegex = /\.(scss|sass)$/;
 
@@ -250,23 +248,6 @@ module.exports = {
                             importLoaders: 1,
                             minimize: true,
                             sourceMap: shouldUseSourceMap,
-                        }),
-                        // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
-                    },
-                    // Adds support for CSS Modules (https://github.com/css-modules/css-modules)
-                    // using the extension .module.css
-                    {
-                        test: cssModuleRegex,
-                        exclude: cssRegex,
-                        loader: getStyleLoaders({
-                            importLoaders: 1,
-                            minimize: true,
-                            sourceMap: shouldUseSourceMap,
-                            modules: true,
-                            // prettier-ignore
-                            getLocalIdent: (context, localIdentName, localName) => (
-                                getLocalIdent(localName, context.resourcePath)
-                            ),
                         }),
                         // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
                     },

@@ -6,8 +6,8 @@ import { FormGroup } from '@panneau/field';
 import TextField from '@panneau/field-text';
 import Popover from '@panneau/modal-popover';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import 'react-dates/lib/css/_datepicker.css';
 import styles from './styles.scss';
-import './vendor.global.scss';
 
 const propTypes = {
     name: PropTypes.string,

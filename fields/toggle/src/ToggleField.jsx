@@ -4,7 +4,7 @@ import isObject from 'lodash/isObject';
 import SelectField from '@panneau/field-select';
 import { FormGroup } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import './vendor.global.scss';
+import 'rc-switch/assets/index.css';
 
 /**
  *  Class: ToggleField

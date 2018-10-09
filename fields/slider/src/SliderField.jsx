@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import isArray from 'lodash/isArray';
 import { FormGroup } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import './vendor.global.scss';
+import 'rc-slider/assets/index.css';
 import styles from './styles.scss';
 
 const propTypes = {
