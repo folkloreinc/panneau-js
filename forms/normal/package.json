@@ -1,6 +1,6 @@
 {
   "name": "@panneau/form-normal",
-  "version": "0.6.6",
+  "version": "0.6.9",
   "description": "Normal forms for Panneau",
   "keywords": [
     "react",
@@ -53,16 +53,16 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@panneau/core": "^0.6.6",
-    "@panneau/field": "^0.6.6",
-    "@panneau/form": "^0.6.6",
+    "@panneau/core": "^0.6.9",
+    "@panneau/field": "^0.6.9",
+    "@panneau/form": "^0.6.9",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0",
     "react-intl": "^2.4.0"
   },
   "devDependencies": {
-    "@panneau/fields": "^0.6.6",
+    "@panneau/fields": "^0.6.9",
     "bootstrap": "^4.1.1",
     "react": ">=15.0.0 || ^16.0.0",
     "react-dom": ">=15.0.0 || ^16.0.0"
