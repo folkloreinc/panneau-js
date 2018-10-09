@@ -1,6 +1,6 @@
 {
   "name": "@panneau/form-normal",
-  "version": "0.6.9",
+  "version": "0.6.10",
   "description": "Normal forms for Panneau",
   "keywords": [
     "react",
@@ -62,7 +62,7 @@
     "react-intl": "^2.4.0"
   },
   "devDependencies": {
-    "@panneau/fields": "^0.6.9",
+    "@panneau/fields": "^0.6.10",
     "bootstrap": "^4.1.1",
     "react": ">=15.0.0 || ^16.0.0",
     "react-dom": ">=15.0.0 || ^16.0.0"
