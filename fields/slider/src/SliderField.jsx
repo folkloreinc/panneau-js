@@ -5,6 +5,7 @@ import isArray from 'lodash/isArray';
 import { FormGroup } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import 'rc-slider/assets/index.css';
+import { Slider, Range } from './vendors';
 import styles from './styles.scss';
 
 const propTypes = {
@@ -44,24 +45,6 @@ class SliderField extends Component {
         super(props);
 
         this.onChange = this.onChange.bind(this);
-        this.slider = null;
-        this.Component = null;
-
-        this.state = {
-            ready: false,
-        };
-    }
-
-    componentDidMount() {
-        const { range } = this.props;
-        const componentName = range ? 'Range' : 'Slider';
-        import(/* webpackChunkName: "vendor/rc-slider/[request]" */`rc-slider/lib/${componentName}`)
-            .then((SliderComponent) => {
-                this.Component = SliderComponent.default;
-                this.setState({
-                    ready: true,
-                });
-            });
     }
 
     onChange(value) {
@@ -80,13 +63,8 @@ class SliderField extends Component {
             range,
             ...other
         } = this.props;
-        const { ready } = this.state;
 
-        if (!ready) {
-            return null;
-        }
-
-        const SliderComponent = this.Component;
+        const SliderComponent = range ? Range : Slider;
         const sliderValue = range && value === null ? [] : value;
 
         return (

@@ -5,6 +5,7 @@ import SelectField from '@panneau/field-select';
 import { FormGroup } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import 'rc-switch/assets/index.css';
+import Switch from './vendors';
 
 /**
  *  Class: ToggleField
@@ -12,7 +13,6 @@ import 'rc-switch/assets/index.css';
  *  @param {string,number,bool} value
  *  @return {bool} val
  */
-
 const propTypes = {
     type: PropTypes.oneOf(['switch', 'select']),
     name: PropTypes.string,
@@ -57,24 +57,7 @@ class ToggleField extends Component {
 
     constructor(props) {
         super(props);
-        this.Component = null;
         this.onChange = this.onChange.bind(this);
-
-        this.state = {
-            switchReady: props.type !== 'switch',
-        };
-    }
-
-    componentDidMount() {
-        const { type } = this.props;
-        if (type === 'switch') {
-            import(/* webpackChunkName: "vendor/rc-switch" */ 'rc-switch').then((ImportComponent) => {
-                this.Component = ImportComponent.default;
-                this.setState({
-                    switchReady: true,
-                });
-            });
-        }
     }
 
     onChange(value) {
@@ -126,17 +109,11 @@ class ToggleField extends Component {
             helpText,
             ...other
         } = this.props;
-        const SwitchComponent = this.Component;
         const val = value !== null ? ToggleField.parse(value) : null;
-        return <SwitchComponent {...other} checked={val} onChange={this.onChange} />;
+        return <Switch {...other} checked={val} onChange={this.onChange} />;
     }
 
     render() {
-        const { switchReady } = this.state;
-        if (!switchReady) {
-            return null;
-        }
-
         const {
             type,
             label,
