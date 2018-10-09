@@ -4,10 +4,32 @@ import isObject from 'lodash/isObject';
 import classNames from 'classnames';
 import { FormGroup } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { defineMessages, injectIntl } from 'react-intl';
 import {
     AsyncCreatable, Async, Creatable, Select,
 } from './vendors';
 import styles from './styles.scss';
+
+const messages = defineMessages({
+    placeholder: {
+        id: 'fields.select.placeholder',
+        defaultMessage: 'Select...',
+    },
+    noOptions: {
+        id: 'fields.select.no_options',
+        defaultMessage: 'No options',
+    },
+    loading: {
+        id: 'fields.select.loading',
+        defaultMessage: 'Loading...',
+    },
+    screenReaderStatus: {
+        id: 'fields.select.screen_reader_status',
+        defaultMessage: '{count, plural, =0 {no result} one {# result} other {# results}} available',
+    },
+});
+
+const isMessage = message => isObject(message) && typeof message.id !== 'undefined';
 
 const valuePropTypes = PropTypes.oneOfType([
     PropTypes.string,
@@ -17,6 +39,7 @@ const valuePropTypes = PropTypes.oneOfType([
 ]);
 
 const propTypes = {
+    intl: PanneauPropTypes.intl.isRequired,
     name: PropTypes.string,
     label: PanneauPropTypes.label,
     value: valuePropTypes,
@@ -35,8 +58,10 @@ const propTypes = {
     onNewOption: PropTypes.func,
 
     inputOnly: PropTypes.bool,
-    placeholder: PropTypes.string,
-    noResultsText: PropTypes.string,
+    placeholder: PanneauPropTypes.message,
+    noOptionsMessage: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.intlMessage]),
+    loadingMessage: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.intlMessage]),
+    screenReaderStatus: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.intlMessage]),
     cannotBeEmpty: PropTypes.bool,
     addEmptyOption: PropTypes.bool,
     emptyOption: PropTypes.shape({
@@ -74,8 +99,10 @@ const defaultProps = {
     disabled: false,
     loadOptions: null,
     fetchOptions: null,
-    placeholder: 'Aucun',
-    noResultsText: 'Aucun résultat',
+    placeholder: messages.placeholder,
+    noOptionsMessage: messages.noOptions,
+    loadingMessage: messages.loading,
+    screenReaderStatus: messages.screenReaderStatus,
     addEmptyOption: false,
     emptyOption: { value: '', label: '--' },
     style: null,
@@ -280,6 +307,7 @@ class SelectField extends Component {
 
     render() {
         const {
+            intl,
             value,
             cannotBeEmpty,
             addEmptyOption,
@@ -295,6 +323,10 @@ class SelectField extends Component {
             loadOptions,
             options,
             getValueFromOption,
+            placeholder,
+            noOptionsMessage,
+            loadingMessage,
+            screenReaderStatus,
             onNewOption,
             onChange,
             ...other
@@ -302,34 +334,24 @@ class SelectField extends Component {
 
         const { menuIsOpen, inputValue } = this.state;
 
-        const selectOptions = this.getOptions();
         const allOptions = this.getAllOptions();
+
+        // Get value
         // prettier-ignore
-        const defaultValue = selectOptions.length > 0
-            ? this.getValueFromOption(selectOptions[0])
+        const defaultValue = allOptions.length > 0
+            ? this.getValueFromOption(allOptions[0])
             : null;
         const shouldTakeDefaultValue = cannotBeEmpty && value === null && defaultValue !== null;
-        const selectValue = shouldTakeDefaultValue ? defaultValue : value;
-        const optionValue = multiple
-            ? allOptions.filter(
-                opt => selectValue !== null
-                      && selectValue.indexOf(this.getValueFromOption(opt)) !== -1,
-            )
-            : allOptions.find(opt => selectValue === this.getValueFromOption(opt)) || null;
-        // prettier-ignore
-        const selectClearable = cannotBeEmpty
-            && (shouldTakeDefaultValue || selectValue === defaultValue)
-            ? false
-            : !notClearable;
-        const selectSearchable = !notSearchable;
+        const finalValue = shouldTakeDefaultValue ? defaultValue : value;
 
-        const asyncProps = async
-            ? {
-                loadOptions: this.loadOptions,
-            }
-            : {
-                options: selectOptions,
-            };
+        // Get options that match value
+        const selectValue = multiple
+            ? allOptions.filter(
+                opt => finalValue !== null
+                      && finalValue.indexOf(this.getValueFromOption(opt)) !== -1,
+            )
+            : allOptions.find(opt => finalValue === this.getValueFromOption(opt)) || null;
+
         const SelectComponent = this.getSelectComponent();
 
         return (
@@ -348,11 +370,39 @@ class SelectField extends Component {
                         className={styles.select}
                         classNamePrefix={styles.select}
                         {...other}
-                        {...asyncProps}
+                        {...(async
+                            ? {
+                                loadOptions: this.loadOptions,
+                            }
+                            : {
+                                options: this.getOptions(),
+                            })}
+                        placeholder={
+                            isMessage(placeholder) ? intl.formatMessage(placeholder) : placeholder
+                        }
+                        noOptionsMessage={
+                            isMessage(noOptionsMessage)
+                                ? values => intl.formatMessage(noOptionsMessage, values)
+                                : noOptionsMessage
+                        }
+                        loadingMessage={
+                            isMessage(loadingMessage)
+                                ? values => intl.formatMessage(loadingMessage, values)
+                                : loadingMessage
+                        }
+                        screenReaderStatus={
+                            isMessage(screenReaderStatus)
+                                ? values => intl.formatMessage(screenReaderStatus, values)
+                                : screenReaderStatus
+                        }
                         isDisabled={disabled}
-                        isSearchable={selectSearchable}
-                        isClearable={selectClearable}
-                        value={optionValue}
+                        isSearchable={!notSearchable}
+                        isClearable={
+                            (cannotBeEmpty
+                                && (!shouldTakeDefaultValue && finalValue !== defaultValue))
+                            || (!cannotBeEmpty && !notClearable)
+                        }
+                        value={selectValue}
                         onChange={this.onChange}
                         onCreateOption={this.onNewOptionClick}
                         inputValue={inputValue}
@@ -370,4 +420,4 @@ class SelectField extends Component {
 SelectField.propTypes = propTypes;
 SelectField.defaultProps = defaultProps;
 
-export default SelectField;
+export default injectIntl(SelectField);

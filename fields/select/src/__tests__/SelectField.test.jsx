@@ -3,8 +3,9 @@ import Loadable from 'react-loadable';
 import renderer from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
+import { IntlProvider } from 'react-intl';
 import { SelectBase, Async as AsyncBase } from 'react-select';
-import SelectField from '../SelectField';
+import BaseSelectField from '../SelectField';
 import { Select, Async, AsyncCreatable, Creatable } from '../vendors';
 
 const defaultOptions = [
@@ -17,6 +18,12 @@ const defaultOptions = [
         label: 'Option 2'
     },
 ];
+
+const SelectField = props => (
+    <IntlProvider locale="en">
+        <BaseSelectField {...props} />
+    </IntlProvider>
+);
 
 test('SelectField match snapshot', async () => {
     await Loadable.preloadAll();
