@@ -41,18 +41,14 @@ exports[`match snapshot 1`] = `
         </button>
       </div>
     </div>
-    <div
-      className={undefined}
-    >
+    <div>
       <div
         className="list"
         lockAxis="y"
         onSortEnd={[Function]}
         useDragHandle={true}
       >
-        <div
-          className={undefined}
-        />
+        <div />
       </div>
     </div>
   </div>

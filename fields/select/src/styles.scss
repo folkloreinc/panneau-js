@@ -2,8 +2,12 @@
 
 .container {
 
+    .select {
+        position: relative;
+    }
+
     &:global(.has-error) {
-        :global(.Select-control) {
+        .select__control {
             border-color: $danger;
         }
     }

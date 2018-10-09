@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
+import isEmpty from 'lodash/isEmpty';
 import ReactMarkdown from 'react-markdown';
 import { FormattedMessage } from 'react-intl';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -196,6 +197,7 @@ class FormGroup extends Component {
             asCard,
             collapsible,
             withoutMargin,
+            errors,
         } = this.props;
         const { collapsed } = this.state;
 
@@ -219,6 +221,7 @@ class FormGroup extends Component {
             card: asCard && !inline,
             'card-default': asCard && !inline,
             'mb-0': withoutMargin,
+            'has-error': errors !== null && !isEmpty(errors),
             ...customClassNames,
         });
 

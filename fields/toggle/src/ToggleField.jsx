@@ -103,8 +103,8 @@ class ToggleField extends Component {
             <SelectField
                 {...other}
                 inputOnly
-                searchable={false}
-                clearable={clearable}
+                notSearchable
+                notClearable={!clearable}
                 canBeEmpty={canBeEmpty}
                 value={val}
                 onChange={this.onChange}

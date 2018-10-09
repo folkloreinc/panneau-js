@@ -100,11 +100,10 @@ storiesOf('Fields/Select', module)
                         fetch('/api/pages')
                             .then(response => response.json())
                             .then(items => items.map(it => ({
-                                value: it.id,
+                                value: `${it.id}`,
                                 label: it.data.title.en,
                             })))
                     )}
-                    getValueFromOption={opt => opt}
                     onChange={action('change')}
                 />
             </KeepValue>

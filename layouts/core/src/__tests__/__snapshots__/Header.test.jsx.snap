@@ -1,18 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`match snapshot 1`] = `
-<div
-  className={undefined}
->
-  <div
-    className={undefined}
-  >
+<div>
+  <div>
     <nav
       className="navbar navbar-expand-lg navbar-light bg-light"
     >
       <a
         className="navbar-brand"
-        href="#"
+        href="/"
         onClick={[Function]}
       >
         Panneau
@@ -34,14 +30,7 @@ exports[`match snapshot 1`] = `
       </button>
       <div
         className="collapse navbar-collapse"
-      >
-        <ul
-          className="navbar-nav mr-auto"
-        />
-        <ul
-          className="navbar-nav mr-auto navbar-right"
-        />
-      </div>
+      />
     </nav>
   </div>
 </div>

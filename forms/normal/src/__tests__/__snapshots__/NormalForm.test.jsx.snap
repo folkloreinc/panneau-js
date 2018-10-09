@@ -1,26 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`match snapshot 1`] = `
-<div
-  className={undefined}
->
-  <div
-    className={undefined}
-  >
+<div>
+  <div>
     <form
       action=""
       method="POST"
       onSubmit={[Function]}
     >
-      <div
-        className={undefined}
-      >
-        <div
-          className={undefined}
-        >
-          <div
-            className={undefined}
-          >
+      <div>
+        <div>
+          <div>
             <div
               className="form-group form-group-text"
             >
@@ -63,18 +53,14 @@ exports[`match snapshot 1`] = `
       <div
         className="mt-4 pt-2 border-top undefined"
       >
-        <div
-          className={undefined}
-        >
+        <div>
           <div
             className="undefined"
           />
           <div
             className="text-right undefined"
           >
-            <div
-              className={undefined}
-            >
+            <div>
               <div
                 className="btn-group"
               >

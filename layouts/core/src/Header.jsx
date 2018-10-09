@@ -15,6 +15,9 @@ const propTypes = {
         PropTypes.bool,
         PropTypes.object,
     ]),
+    gotoHome: PropTypes.func.isRequired,
+    gotoLink: PropTypes.func.isRequired,
+    gotoRoute: PropTypes.func.isRequired,
     onNavbarClickTitle: PropTypes.func,
     onNavbarClickItem: PropTypes.func,
 };
@@ -57,6 +60,9 @@ class Header extends Component {
             navbar,
             onNavbarClickTitle,
             onNavbarClickItem,
+            gotoHome,
+            gotoLink,
+            gotoRoute,
             ...props
         } = this.props;
 
@@ -68,6 +74,9 @@ class Header extends Component {
                             titleLink={urlGenerator !== null ? urlGenerator.route('home') : titleLink}
                             {...props}
                             {...(isObject(navbar) ? navbar : null)}
+                            gotoHome={gotoHome}
+                            gotoLink={gotoLink}
+                            gotoRoute={gotoRoute}
                             onClickTitle={this.onNavbarClickTitle}
                             onClickItem={this.onNavbarClickItem}
                         />

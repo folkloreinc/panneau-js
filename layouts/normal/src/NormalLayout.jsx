@@ -20,6 +20,9 @@ const propTypes = {
             PropTypes.object,
         ]),
     }),
+    gotoHome: PropTypes.func.isRequired,
+    gotoLink: PropTypes.func.isRequired,
+    gotoRoute: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -43,6 +46,9 @@ class NormalLayout extends Component {
             children,
             applicationDefinition,
             definition,
+            gotoHome,
+            gotoLink,
+            gotoRoute,
             ...props
         } = this.props;
 
@@ -58,6 +64,9 @@ class NormalLayout extends Component {
                             {...props}
                             title={title}
                             {...header}
+                            gotoHome={gotoHome}
+                            gotoLink={gotoLink}
+                            gotoRoute={gotoRoute}
                             onNavbarClickItem={this.onHeaderNavbarClickItem}
                         />
                     </div>

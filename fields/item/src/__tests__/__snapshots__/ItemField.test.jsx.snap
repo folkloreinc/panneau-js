@@ -43,9 +43,7 @@ exports[`match snapshot 1`] = `
                 <div
                   className="undefined"
                 >
-                  <div
-                    className={undefined}
-                  />
+                  <div />
                 </div>
                 <div
                   className="undefined"

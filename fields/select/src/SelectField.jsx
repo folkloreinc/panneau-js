@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
-// import pick from 'lodash/pick';
-// import omit from 'lodash/omit';
 import classNames from 'classnames';
 import { FormGroup } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import './vendor.global.scss';
+import {
+    AsyncCreatable, Async, Creatable, Select,
+} from './vendors';
 import styles from './styles.scss';
 
 const valuePropTypes = PropTypes.oneOfType([
@@ -30,6 +30,7 @@ const propTypes = {
         ]),
     ),
     getValueFromOption: PropTypes.func,
+    createOption: PropTypes.func,
     onChange: PropTypes.func,
     onNewOption: PropTypes.func,
 
@@ -46,6 +47,7 @@ const propTypes = {
     fetchOptions: PropTypes.func,
     async: PropTypes.bool,
     multiple: PropTypes.bool,
+    disabled: PropTypes.bool,
     notSearchable: PropTypes.bool,
     notClearable: PropTypes.bool,
     creatable: PropTypes.bool,
@@ -62,12 +64,14 @@ const defaultProps = {
 
     inputOnly: false,
     getValueFromOption: null,
+    createOption: null,
     cannotBeEmpty: false,
     notSearchable: false,
     notClearable: false,
     creatable: false,
     async: false,
     multiple: false,
+    disabled: false,
     loadOptions: null,
     fetchOptions: null,
     placeholder: 'Aucun',
@@ -91,43 +95,24 @@ const defaultProps = {
 class SelectField extends Component {
     constructor(props) {
         super(props);
+
+        this.onInputChange = this.onInputChange.bind(this);
+        this.onMenuOpen = this.onMenuOpen.bind(this);
+        this.onMenuClose = this.onMenuClose.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onNewOptionClick = this.onNewOptionClick.bind(this);
         this.getValueFromOption = this.getValueFromOption.bind(this);
+        this.addLoadedOptions = this.addLoadedOptions.bind(this);
         this.loadOptions = this.loadOptions.bind(this);
         this.importCanceled = false;
-        this.Component = null;
 
         this.state = {
             options: props.options,
             newOptions: [],
-            ready: false,
+            loadedOptions: [],
+            inputValue: '',
+            menuIsOpen: false,
         };
-    }
-
-    componentDidMount() {
-        const { async, creatable } = this.props;
-        let componentName;
-        if (async && creatable) {
-            componentName = 'AsyncCreatable';
-        } else if (async) {
-            componentName = 'Async';
-        } else if (creatable) {
-            componentName = 'Creatable';
-        } else {
-            componentName = 'Select';
-        }
-        import(/* webpackChunkName: "vendor/react-select/[request]" */ `react-select/lib/${componentName}`).then(
-            (SliderComponent) => {
-                if (this.importCanceled) {
-                    return;
-                }
-                this.Component = SliderComponent.default;
-                this.setState({
-                    ready: true,
-                });
-            },
-        );
     }
 
     componentWillReceiveProps({ options: nextOptions }) {
@@ -144,14 +129,34 @@ class SelectField extends Component {
         this.importCanceled = true;
     }
 
-    onNewOptionClick(option) {
+    onInputChange(value) {
+        this.setState({
+            inputValue: value,
+        });
+    }
+
+    onMenuOpen() {
+        this.setState({
+            menuIsOpen: true,
+        });
+    }
+
+    onMenuClose() {
+        this.setState({
+            menuIsOpen: false,
+        });
+    }
+
+    onNewOptionClick(optionLabel) {
         const {
             multiple, value, onNewOption, onChange,
         } = this.props;
         if (onNewOption !== null) {
-            onNewOption(option);
+            onNewOption(optionLabel);
             return;
         }
+
+        const option = this.createOption(optionLabel);
 
         this.setState(({ newOptions }) => ({
             newOptions: [...newOptions, option],
@@ -193,6 +198,20 @@ class SelectField extends Component {
         }
     }
 
+    getSelectComponent() {
+        const { async, creatable } = this.props;
+        if (async && creatable) {
+            return AsyncCreatable;
+        }
+        if (async) {
+            return Async;
+        }
+        if (creatable) {
+            return Creatable;
+        }
+        return Select;
+    }
+
     getValueFromOption(opt) {
         const { getValueFromOption } = this.props;
         if (getValueFromOption !== null) {
@@ -211,24 +230,55 @@ class SelectField extends Component {
         return selectOptions;
     }
 
-    loadOptions(input, callback) {
+    getAllOptions() {
+        const { loadedOptions } = this.state;
+        return this.getOptions().concat(loadedOptions);
+    }
+
+    createOption(label) {
+        const { createOption } = this.props;
+        if (createOption !== null) {
+            return createOption(label);
+        }
+        return {
+            label,
+            value: label,
+        };
+    }
+
+    addLoadedOptions(options) {
+        return new Promise((resolve) => {
+            this.setState(
+                ({ loadedOptions }) => ({
+                    loadedOptions: [
+                        ...loadedOptions,
+                        ...options.filter((opt) => {
+                            const optValue = this.getValueFromOption(opt);
+                            return (
+                                loadedOptions.findIndex(
+                                    loadedOpt => this.getValueFromOption(loadedOpt) === optValue,
+                                ) === -1
+                            );
+                        }),
+                    ],
+                }),
+                () => resolve(options),
+            );
+        });
+    }
+
+    loadOptions(input) {
         const { loadOptions, fetchOptions } = this.props;
         if (loadOptions !== null) {
-            return loadOptions(input, callback);
+            return new Promise(resolve => loadOptions(input, resolve)).then(this.addLoadedOptions);
         }
         if (fetchOptions !== null) {
-            return fetchOptions(input).then(options => ({
-                options,
-            }));
+            return fetchOptions(input).then(this.addLoadedOptions);
         }
         return null;
     }
 
     render() {
-        const { ready } = this.state;
-        if (!ready) {
-            return null;
-        }
         const {
             value,
             cannotBeEmpty,
@@ -240,6 +290,7 @@ class SelectField extends Component {
             notSearchable,
             notClearable,
             multiple,
+            disabled,
             fetchOptions,
             loadOptions,
             options,
@@ -249,13 +300,22 @@ class SelectField extends Component {
             ...other
         } = this.props;
 
+        const { menuIsOpen, inputValue } = this.state;
+
         const selectOptions = this.getOptions();
+        const allOptions = this.getAllOptions();
         // prettier-ignore
         const defaultValue = selectOptions.length > 0
             ? this.getValueFromOption(selectOptions[0])
             : null;
         const shouldTakeDefaultValue = cannotBeEmpty && value === null && defaultValue !== null;
         const selectValue = shouldTakeDefaultValue ? defaultValue : value;
+        const optionValue = multiple
+            ? allOptions.filter(
+                opt => selectValue !== null
+                      && selectValue.indexOf(this.getValueFromOption(opt)) !== -1,
+            )
+            : allOptions.find(opt => selectValue === this.getValueFromOption(opt)) || null;
         // prettier-ignore
         const selectClearable = cannotBeEmpty
             && (shouldTakeDefaultValue || selectValue === defaultValue)
@@ -270,12 +330,12 @@ class SelectField extends Component {
             : {
                 options: selectOptions,
             };
-
-        const SelectComponent = this.Component;
+        const SelectComponent = this.getSelectComponent();
 
         return (
             <FormGroup
                 {...other}
+                disabled={disabled}
                 className={classNames({
                     'form-group-select': true,
                     [styles.container]: true,
@@ -284,14 +344,22 @@ class SelectField extends Component {
                 <div style={style}>
                     <SelectComponent
                         name="form-field-select"
-                        multi={multiple}
+                        isMulti={multiple}
+                        className={styles.select}
+                        classNamePrefix={styles.select}
                         {...other}
                         {...asyncProps}
-                        searchable={selectSearchable}
-                        clearable={selectClearable}
-                        value={selectValue}
+                        isDisabled={disabled}
+                        isSearchable={selectSearchable}
+                        isClearable={selectClearable}
+                        value={optionValue}
                         onChange={this.onChange}
-                        onNewOptionClick={this.onNewOptionClick}
+                        onCreateOption={this.onNewOptionClick}
+                        inputValue={inputValue}
+                        onInputChange={this.onInputChange}
+                        menuIsOpen={menuIsOpen}
+                        onMenuOpen={this.onMenuOpen}
+                        onMenuClose={this.onMenuClose}
                     />
                 </div>
             </FormGroup>
