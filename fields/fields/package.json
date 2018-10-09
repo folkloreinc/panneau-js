@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "0.6.11",
+    "version": "0.6.12",
     "description": "Fields group for Panneau",
     "keywords": [
         "react",
@@ -64,10 +64,10 @@
         "@panneau/field-links": "^0.6.9",
         "@panneau/field-media": "^0.6.9",
         "@panneau/field-page": "^0.6.9",
-        "@panneau/field-select": "^0.6.9",
+        "@panneau/field-select": "^0.6.12",
         "@panneau/field-slider": "^0.6.11",
         "@panneau/field-text": "^0.6.9",
-        "@panneau/field-toggle": "^0.6.11",
+        "@panneau/field-toggle": "^0.6.12",
         "@panneau/field-url": "^0.6.9",
         "hoist-non-react-statics": "^2.3.1",
         "invariant": "^2.2.2",
