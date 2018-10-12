@@ -53,6 +53,7 @@ const propTypes = {
         ]),
     ),
     getValueFromOption: PropTypes.func,
+    getSelectValue: PropTypes.func,
     createOption: PropTypes.func,
     onChange: PropTypes.func,
     onNewOption: PropTypes.func,
@@ -89,6 +90,7 @@ const defaultProps = {
 
     inputOnly: false,
     getValueFromOption: null,
+    getSelectValue: null,
     createOption: null,
     cannotBeEmpty: false,
     notSearchable: false,
@@ -247,6 +249,19 @@ class SelectField extends Component {
         return isObject(opt) && typeof opt.value !== 'undefined' ? opt.value : opt;
     }
 
+    getSelectValue(value, options) {
+        const { getSelectValue, multiple } = this.props;
+        if (getSelectValue !== null) {
+            return getSelectValue(value, options);
+        }
+        return multiple
+            ? options.filter(
+                opt => value !== null
+                      && value.indexOf(this.getValueFromOption(opt)) !== -1,
+            )
+            : options.find(opt => value === this.getValueFromOption(opt)) || null;
+    }
+
     getOptions() {
         const { cannotBeEmpty, addEmptyOption, emptyOption } = this.props;
         const { options, newOptions } = this.state;
@@ -343,14 +358,7 @@ class SelectField extends Component {
             : null;
         const shouldTakeDefaultValue = cannotBeEmpty && value === null && defaultValue !== null;
         const finalValue = shouldTakeDefaultValue ? defaultValue : value;
-
-        // Get options that match value
-        const selectValue = multiple
-            ? allOptions.filter(
-                opt => finalValue !== null
-                      && finalValue.indexOf(this.getValueFromOption(opt)) !== -1,
-            )
-            : allOptions.find(opt => finalValue === this.getValueFromOption(opt)) || null;
+        const selectValue = this.getSelectValue(finalValue, allOptions);
 
         const SelectComponent = this.getSelectComponent();
 
