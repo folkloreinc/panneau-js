@@ -275,7 +275,7 @@ class SelectField extends Component {
         if (getOptionFromValue !== null) {
             return getOptionFromValue(value, options);
         }
-        return options.find(opt => this.getValueFromOption(opt) === value);
+        return options.find(opt => this.getValueFromOption(opt) === value) || null;
     }
 
     getOptions() {
@@ -382,7 +382,9 @@ class SelectField extends Component {
         let selectValue = null;
         if (finalValue !== null) {
             selectValue = multiple
-                ? finalValue.map(val => this.getOptionFromValue(val, allOptions))
+                ? finalValue
+                    .map(val => this.getOptionFromValue(val, allOptions))
+                    .filter(it => it !== null)
                 : this.getOptionFromValue(finalValue, allOptions);
         }
 
