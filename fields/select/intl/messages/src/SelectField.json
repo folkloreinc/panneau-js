@@ -12,6 +12,10 @@
     "defaultMessage": "Loading..."
   },
   {
+    "id": "fields.select.create",
+    "defaultMessage": "Create \"{inputValue}\""
+  },
+  {
     "id": "fields.select.screen_reader_status",
     "defaultMessage": "{count, plural, =0 {no result} one {# result} other {# results}} available"
   }

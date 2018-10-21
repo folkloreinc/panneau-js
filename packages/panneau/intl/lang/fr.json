@@ -37,6 +37,7 @@
     "fields.media.upload_video_label": "Sélectionnez un fichier vidéo...",
     "fields.media.video_add_type_label": "un fichier vidéo",
     "fields.page.placeholder": "Rechercher une page...",
+    "fields.select.create": "Créer \"{inputValue}\"",
     "fields.select.loading": "Chargement...",
     "fields.select.no_options": "Aucune option",
     "fields.select.placeholder": "Sélectionnez...",

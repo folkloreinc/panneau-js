@@ -37,6 +37,7 @@
     "fields.media.upload_video_label": "Select a video file...",
     "fields.media.video_add_type_label": "a video file",
     "fields.page.placeholder": "Search for a page...",
+    "fields.select.create": "Create \"{inputValue}\"",
     "fields.select.loading": "Loading...",
     "fields.select.no_options": "No options",
     "fields.select.placeholder": "Select...",

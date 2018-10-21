@@ -1,4 +1,5 @@
 {
+    "fields.select.create": "Create \"{inputValue}\"",
     "fields.select.loading": "Loading...",
     "fields.select.no_options": "No options",
     "fields.select.placeholder": "Select...",

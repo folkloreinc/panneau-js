@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
 import classNames from 'classnames';
 import { FormGroup } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -23,6 +24,10 @@ const messages = defineMessages({
         id: 'fields.select.loading',
         defaultMessage: 'Loading...',
     },
+    create: {
+        id: 'fields.select.create',
+        defaultMessage: 'Create "{inputValue}"',
+    },
     screenReaderStatus: {
         id: 'fields.select.screen_reader_status',
         defaultMessage:
@@ -31,6 +36,16 @@ const messages = defineMessages({
 });
 
 const isMessage = message => isObject(message) && typeof message.id !== 'undefined';
+
+const compareOption = (inputValue, option) => {
+    const candidate = inputValue.toLowerCase();
+    return (
+        (isString(option.value) && option.value.toLowerCase() === candidate)
+        || option.value === candidate
+        || (isString(option.label) && option.label.toLowerCase() === candidate)
+        || option.label === candidate
+    );
+};
 
 const valuePropTypes = PropTypes.oneOfType([
     PropTypes.string,
@@ -55,6 +70,7 @@ const propTypes = {
     ),
     getValueFromOption: PropTypes.func,
     getSelectValue: PropTypes.func,
+    isValidNewOption: PropTypes.func,
     createOption: PropTypes.func,
     onChange: PropTypes.func,
     onNewOption: PropTypes.func,
@@ -64,6 +80,7 @@ const propTypes = {
     noOptionsMessage: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.intlMessage]),
     loadingMessage: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.intlMessage]),
     screenReaderStatus: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.intlMessage]),
+    formatCreateLabel: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.intlMessage]),
     cannotBeEmpty: PropTypes.bool,
     addEmptyOption: PropTypes.bool,
     emptyOption: PropTypes.shape({
@@ -92,6 +109,7 @@ const defaultProps = {
     inputOnly: false,
     getValueFromOption: null,
     getSelectValue: null,
+    isValidNewOption: null,
     createOption: null,
     cannotBeEmpty: false,
     notSearchable: false,
@@ -105,6 +123,7 @@ const defaultProps = {
     placeholder: messages.placeholder,
     noOptionsMessage: messages.noOptions,
     loadingMessage: messages.loading,
+    formatCreateLabel: messages.create,
     screenReaderStatus: messages.screenReaderStatus,
     addEmptyOption: false,
     emptyOption: { value: '', label: '--' },
@@ -132,6 +151,7 @@ class SelectField extends Component {
         this.onChange = this.onChange.bind(this);
         this.onNewOptionClick = this.onNewOptionClick.bind(this);
         this.getValueFromOption = this.getValueFromOption.bind(this);
+        this.isValidNewOption = this.isValidNewOption.bind(this);
         this.addLoadedOptions = this.addLoadedOptions.bind(this);
         this.loadOptions = this.loadOptions.bind(this);
         this.importCanceled = false;
@@ -273,8 +293,22 @@ class SelectField extends Component {
     }
 
     getAllOptions() {
+        // const { creatable, value } = this.props;
         const { loadedOptions } = this.state;
-        return this.getOptions().concat(loadedOptions);
+        const options = this.getOptions();
+        return [].concat(options).concat(loadedOptions);
+    }
+
+    isValidNewOption(inputValue, selectValue, selectOptions) {
+        const { isValidNewOption } = this.props;
+        if (isValidNewOption !== null) {
+            return isValidNewOption(inputValue, selectValue, selectOptions);
+        }
+        return !(
+            !inputValue
+            || selectValue.some(option => compareOption(inputValue, option))
+            || selectOptions.some(option => compareOption(inputValue, option))
+        );
     }
 
     createOption(label) {
@@ -292,9 +326,7 @@ class SelectField extends Component {
         return new Promise((resolve) => {
             this.setState(
                 () => ({
-                    loadedOptions: [
-                        ...options,
-                    ],
+                    loadedOptions: [...options],
                 }),
                 () => resolve(options),
             );
@@ -334,6 +366,7 @@ class SelectField extends Component {
             noOptionsMessage,
             loadingMessage,
             screenReaderStatus,
+            formatCreateLabel,
             onNewOption,
             onChange,
             ...other
@@ -395,6 +428,15 @@ class SelectField extends Component {
                                 ? values => intl.formatMessage(screenReaderStatus, values)
                                 : screenReaderStatus
                         }
+                        formatCreateLabel={
+                            // prettier-ignore
+                            isMessage(formatCreateLabel)
+                                ? val => intl.formatMessage(formatCreateLabel, {
+                                    inputValue: val,
+                                })
+                                : formatCreateLabel
+                        }
+                        isValidNewOption={this.isValidNewOption}
                         isDisabled={disabled}
                         isSearchable={!notSearchable}
                         isClearable={
