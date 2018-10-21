@@ -100,6 +100,7 @@ storiesOf('Fields/Select', module)
                         multiple
                         creatable
                         async
+                        defaultOptions
                         fetchOptions={() => (
                             fetch('/api/pages')
                                 .then(response => response.json())

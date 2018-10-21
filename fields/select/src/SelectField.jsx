@@ -25,7 +25,8 @@ const messages = defineMessages({
     },
     screenReaderStatus: {
         id: 'fields.select.screen_reader_status',
-        defaultMessage: '{count, plural, =0 {no result} one {# result} other {# results}} available',
+        defaultMessage:
+            '{count, plural, =0 {no result} one {# result} other {# results}} available',
     },
 });
 
@@ -256,8 +257,7 @@ class SelectField extends Component {
         }
         return multiple
             ? options.filter(
-                opt => value !== null
-                      && value.indexOf(this.getValueFromOption(opt)) !== -1,
+                opt => value !== null && value.indexOf(this.getValueFromOption(opt)) !== -1,
             )
             : options.find(opt => value === this.getValueFromOption(opt)) || null;
     }
@@ -289,6 +289,7 @@ class SelectField extends Component {
     }
 
     addLoadedOptions(options) {
+        const { getOptionValue = opt => opt.value } = this.props;
         return new Promise((resolve) => {
             this.setState(
                 ({ loadedOptions }) => ({
@@ -298,7 +299,8 @@ class SelectField extends Component {
                             const optValue = this.getValueFromOption(opt);
                             return (
                                 loadedOptions.findIndex(
-                                    loadedOpt => this.getValueFromOption(loadedOpt) === optValue,
+                                    loadedOpt => this.getValueFromOption(loadedOpt) === optValue
+                                        || getOptionValue(loadedOpt) === getOptionValue(optValue),
                                 ) === -1
                             );
                         }),
