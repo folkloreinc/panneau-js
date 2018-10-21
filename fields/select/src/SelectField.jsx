@@ -289,21 +289,11 @@ class SelectField extends Component {
     }
 
     addLoadedOptions(options) {
-        const { getOptionValue = opt => opt.value } = this.props;
         return new Promise((resolve) => {
             this.setState(
-                ({ loadedOptions }) => ({
+                () => ({
                     loadedOptions: [
-                        ...loadedOptions,
-                        ...options.filter((opt) => {
-                            const optValue = this.getValueFromOption(opt);
-                            return (
-                                loadedOptions.findIndex(
-                                    loadedOpt => this.getValueFromOption(loadedOpt) === optValue
-                                        || getOptionValue(loadedOpt) === getOptionValue(optValue),
-                                ) === -1
-                            );
-                        }),
+                        ...options,
                     ],
                 }),
                 () => resolve(options),
