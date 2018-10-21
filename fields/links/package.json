@@ -1,6 +1,6 @@
 {
   "name": "@panneau/field-links",
-  "version": "0.6.9",
+  "version": "0.6.15",
   "description": "Links fields for Panneau",
   "keywords": [
     "react",
@@ -55,7 +55,7 @@
     "@babel/runtime": "^7.0.0",
     "@panneau/core": "^0.6.9",
     "@panneau/field": "^0.6.9",
-    "@panneau/field-items": "^0.6.9",
+    "@panneau/field-items": "^0.6.15",
     "@panneau/field-locale": "^0.6.9",
     "@panneau/field-text": "^0.6.9",
     "@panneau/field-url": "^0.6.9",
