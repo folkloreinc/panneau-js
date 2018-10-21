@@ -69,7 +69,7 @@ const propTypes = {
         ]),
     ),
     getValueFromOption: PropTypes.func,
-    getSelectValue: PropTypes.func,
+    getOptionFromValue: PropTypes.func,
     isValidNewOption: PropTypes.func,
     createOption: PropTypes.func,
     onChange: PropTypes.func,
@@ -108,7 +108,7 @@ const defaultProps = {
 
     inputOnly: false,
     getValueFromOption: null,
-    getSelectValue: null,
+    getOptionFromValue: null,
     isValidNewOption: null,
     createOption: null,
     cannotBeEmpty: false,
@@ -270,16 +270,12 @@ class SelectField extends Component {
         return isObject(opt) && typeof opt.value !== 'undefined' ? opt.value : opt;
     }
 
-    getSelectValue(value, options) {
-        const { getSelectValue, multiple } = this.props;
-        if (getSelectValue !== null) {
-            return getSelectValue(value, options);
+    getOptionFromValue(value, options) {
+        const { getOptionFromValue } = this.props;
+        if (getOptionFromValue !== null) {
+            return getOptionFromValue(value, options);
         }
-        return multiple
-            ? options.filter(
-                opt => value !== null && value.indexOf(this.getValueFromOption(opt)) !== -1,
-            )
-            : options.find(opt => value === this.getValueFromOption(opt)) || null;
+        return options.find(opt => this.getValueFromOption(opt) === value);
     }
 
     getOptions() {
@@ -383,7 +379,12 @@ class SelectField extends Component {
             : null;
         const shouldTakeDefaultValue = cannotBeEmpty && value === null && defaultValue !== null;
         const finalValue = shouldTakeDefaultValue ? defaultValue : value;
-        const selectValue = this.getSelectValue(finalValue, allOptions);
+        let selectValue = null;
+        if (finalValue !== null) {
+            selectValue = multiple
+                ? finalValue.map(val => this.getOptionFromValue(val, allOptions))
+                : this.getOptionFromValue(finalValue, allOptions);
+        }
 
         const SelectComponent = this.getSelectComponent();
 
