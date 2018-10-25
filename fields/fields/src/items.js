@@ -1,6 +1,6 @@
 import { ComponentsCollection } from '@panneau/core';
 import Text, {
-    TextLocale, Textarea, Editor, Email, Password,
+    TextLocale, Textarea, Editor, Email, Number, Password,
 } from '@panneau/field-text';
 import Code from '@panneau/field-code';
 import Select from '@panneau/field-select';
@@ -46,6 +46,7 @@ const fieldsCollection = new ComponentsCollection({
     LinkLocale,
     LinksLocale,
     Media,
+    Number,
     Page,
     Password,
     Picture,
