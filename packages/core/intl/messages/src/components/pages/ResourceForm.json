@@ -15,6 +15,11 @@
     "defaultMessage": "{name}"
   },
   {
+    "id": "core.buttons.resources.switch_type",
+    "description": "The label of the select type button",
+    "defaultMessage": "Switch type"
+  },
+  {
     "id": "core.notices.resources.success",
     "description": "The text of the \"success\" form notice",
     "defaultMessage": "Success!"

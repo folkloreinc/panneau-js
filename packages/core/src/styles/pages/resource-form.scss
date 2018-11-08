@@ -1,6 +1,22 @@
 @import '../variables';
 
 .container {
+    .header {
+        .title {
+            margin: 0;
+        }
+
+        .cols {
+            display: table;
+            width: 100%;
+        }
+
+        .col {
+            display: table-cell;
+            vertical-align: middle;
+        }
+    }
+
     .errors {
         ul {
             padding-left: 1.2em;

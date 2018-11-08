@@ -3,6 +3,7 @@
     "core.buttons.resources.cancel": "Cancel",
     "core.buttons.resources.create": "Create",
     "core.buttons.resources.save": "Save",
+    "core.buttons.resources.switch_type": "Switch a type",
     "core.buttons.upload": "Select a file...",
     "core.buttons.uploading": "Uploading...",
     "core.notices.resources.error": "Failed. The form contains errors.",

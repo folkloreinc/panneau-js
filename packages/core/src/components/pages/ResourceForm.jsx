@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
+import { Link } from 'react-router-dom';
 import isObject from 'lodash/isObject';
 import isArray from 'lodash/isArray';
 import isString from 'lodash/isString';
@@ -33,6 +34,11 @@ const messages = defineMessages({
         id: 'core.titles.resources.default',
         description: 'The title of the resource form',
         defaultMessage: '{name}',
+    },
+    switchType: {
+        id: 'core.buttons.resources.switch_type',
+        description: 'The label of the select type button',
+        defaultMessage: 'Switch type',
     },
     successNotice: {
         id: 'core.notices.resources.success',
@@ -256,7 +262,14 @@ class ResourceForm extends Component {
     }
 
     renderHeader() {
-        const { action, resource, title } = this.props;
+        const {
+            action, resource, title, urlGenerator,
+        } = this.props;
+
+        const resourceType = get(resource, 'type', 'default');
+        const isTyped = resourceType === 'typed';
+        const types = isTyped ? get(resource, 'types', []) : null;
+        const currentType = this.getType();
 
         const headerClassNames = classNames({
             'py-4': true,
@@ -279,16 +292,72 @@ class ResourceForm extends Component {
             title
         );
 
+        const titleElement = (
+            <h1
+                className={classNames({
+                    [styles.title]: isTyped,
+                    'display-4': true,
+                    'mb-0': true,
+                })}
+            >
+                {message !== null ? message : defaultTitle}
+            </h1>
+        );
+
         return (
             <div className={headerClassNames}>
-                <h1
-                    className={classNames({
-                        'display-4': true,
-                        'mb-0': true,
-                    })}
-                >
-                    {message !== null ? message : defaultTitle}
-                </h1>
+                {isTyped && action === 'create' ? (
+                    <div className={styles.cols}>
+                        <div className={styles.col}>{titleElement}</div>
+                        <div className={classNames([styles.col, 'text-right'])}>
+                            <div
+                                className={classNames(['btn-group', 'btn-group-sm'])}
+                            >
+                                <button
+                                    type="button"
+                                    className={classNames({
+                                        btn: true,
+                                        'btn-primary': true,
+                                        'dropdown-toggle': true,
+                                    })}
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"
+                                >
+                                    <FormattedMessage {...messages.switchType} />
+                                    {' '}
+                                    <span className="caret" />
+                                </button>
+                                <div className="dropdown-menu">
+                                    {types.map(({ id, label }) => (
+                                        <Link
+                                            key={`add-button-${id}`}
+                                            to={{
+                                                pathname: urlGenerator.route('resource.create', {
+                                                    resource: resource.id,
+                                                }),
+                                                search: `?type=${id}`,
+                                                state: {
+                                                    type: id,
+                                                },
+                                            }}
+                                            className={classNames([
+                                                'dropdown-item',
+                                                {
+                                                    active: id === currentType,
+                                                },
+                                            ])}
+                                        >
+                                            {label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    titleElement
+                )}
             </div>
         );
     }

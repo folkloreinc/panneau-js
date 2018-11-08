@@ -3,6 +3,7 @@
     "core.buttons.resources.cancel": "Annuler",
     "core.buttons.resources.create": "Créer",
     "core.buttons.resources.save": "Enregistrer",
+    "core.buttons.resources.switch_type": "Changer de type",
     "core.buttons.upload": "Sélectionner un fichier",
     "core.buttons.uploading": "Envoi...",
     "core.notices.resources.error": "Échec. Le formulaire contient des erreurs.",

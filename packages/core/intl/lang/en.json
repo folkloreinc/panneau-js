@@ -3,6 +3,7 @@
     "core.buttons.resources.cancel": "Cancel",
     "core.buttons.resources.create": "Create",
     "core.buttons.resources.save": "Save",
+    "core.buttons.resources.switch_type": "Switch type",
     "core.notices.resources.error": "Failed. The form contains errors.",
     "core.notices.resources.success": "Success!",
     "core.resources.index.confirm_delete": "Are you sure you want to delete this item from {name}?",
