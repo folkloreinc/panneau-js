@@ -2,16 +2,16 @@
   "lerna": "2.4.0",
   "packages": [
     "fields/*",
-    "lists/*",
     "forms/*",
+    "layouts/*",
+    "lists/*",
     "modals/*",
-    "packages/*",
-    "layouts/*"
+    "packages/*"
   ],
-  "commands": {
+  "version": "0.6.20",
+  "command": {
     "publish": {
       "allowBranch": "master"
     }
-  },
-  "version": "0.6.19"
+  }
 }

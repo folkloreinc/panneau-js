@@ -1,6 +1,6 @@
 {
   "name": "@panneau/list-table",
-  "version": "0.6.9",
+  "version": "0.6.20",
   "description": "Table lists for Panneau",
   "keywords": [
     "react",
@@ -52,8 +52,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@panneau/core": "^0.6.9",
-    "@panneau/list": "^0.6.9",
+    "@panneau/core": "^0.6.20",
+    "@panneau/list": "^0.6.20",
     "change-case": "^3.0.1",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modals",
-    "version": "0.6.9",
+    "version": "0.6.20",
     "description": "Modals for Panneau",
     "keywords": [
         "react",
@@ -52,7 +52,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.6.9",
+        "@panneau/core": "^0.6.20",
         "@panneau/modal-popover": "^0.6.9",
         "hoist-non-react-statics": "^2.3.1",
         "invariant": "^2.2.2",
