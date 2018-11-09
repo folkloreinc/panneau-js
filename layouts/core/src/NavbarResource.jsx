@@ -1,14 +1,13 @@
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+// import classNames from 'classnames';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
 import { PropTypes as PanneauPropTypes, withDefinition, withUrlGenerator } from '@panneau/core';
 import { defineMessages } from 'react-intl';
 
-import NavbarLink from './NavbarLink';
-import NavbarDivider from './NavbarDivider';
+import NavbarItem from './NavbarItem';
 
 const messages = defineMessages({
     index: {
@@ -34,9 +33,6 @@ const propTypes = {
             label: PanneauPropTypes.label,
         }),
     ),
-    className: PropTypes.string,
-    onClick: PropTypes.func,
-    onClickItem: PropTypes.func,
 };
 
 const defaultProps = {
@@ -59,9 +55,6 @@ const defaultProps = {
             label: messages.addNew,
         },
     ],
-    className: null,
-    onClick: null,
-    onClickItem: null,
 };
 
 const NavbarResource = ({
@@ -70,9 +63,7 @@ const NavbarResource = ({
     link,
     label,
     items,
-    className,
-    onClick,
-    onClickItem,
+    ...props
 }) => {
     if (resource === null) {
         return null;
@@ -123,43 +114,13 @@ const NavbarResource = ({
             }
             : it),
     );
-
-    const hasDropdown = finalItems.length > 0;
     return (
-        <li
-            className={classNames({
-                'nav-item': true,
-                dropdown: hasDropdown,
-                [className]: className !== null,
-            })}
-        >
-            <NavbarLink
-                link={finalLink}
-                label={finalLabel}
-                hasDropdown={hasDropdown}
-                onClick={onClick}
-            />
-            {hasDropdown ? (
-                <div className="dropdown-menu">
-                    {finalItems.map(
-                        (it, index) => (get(it, 'type', 'link') === 'divider' ? (
-                            <NavbarDivider key={`item-${index}`} isDropdown />
-                        ) : (
-                            <NavbarLink
-                                key={`item-${index}`}
-                                {...it}
-                                isDropdown
-                                onClick={(e) => {
-                                    if (onClickItem !== null) {
-                                        onClickItem(e, it, index);
-                                    }
-                                }}
-                            />
-                        )),
-                    )}
-                </div>
-            ) : null}
-        </li>
+        <NavbarItem
+            {...props}
+            link={finalLink}
+            label={finalLabel}
+            items={finalItems}
+        />
     );
 };
 

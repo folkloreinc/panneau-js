@@ -324,12 +324,7 @@ class ResourceIndex extends Component {
             >
                 <div className={styles.cols}>
                     <div className={styles.col}>
-                        <h1
-                            className={classNames({
-                                'display-4': true,
-                                [styles.title]: true,
-                            })}
-                        >
+                        <h1 className={classNames([styles.title, 'mb-0', 'mt-0'])}>
                             {message !== null ? message : defaultTitle}
                         </h1>
                     </div>

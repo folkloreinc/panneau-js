@@ -20,6 +20,11 @@ const messages = defineMessages({
         description: 'The title of the resource create form',
         defaultMessage: 'Create {name}',
     },
+    titleTyped: {
+        id: 'core.titles.resources.create_typed',
+        description: 'The title of the typed resource create form',
+        defaultMessage: 'Create {name} <small class="text-muted">({type})</small>',
+    },
 });
 
 const propTypes = {
@@ -47,6 +52,7 @@ class ResourceCreate extends Component {
             <ResourceForm
                 action="create"
                 title={messages.title}
+                titleTyped={messages.titleTyped}
                 saveButtonLabel={messages.create}
                 onFormComplete={this.onFormComplete}
                 {...this.props}

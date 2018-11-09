@@ -112,6 +112,7 @@ class Navbar extends Component {
             <ItemComponent
                 key={`item-${position}-${index}`}
                 {...it}
+                position={position}
                 gotoHome={gotoHome}
                 gotoLink={gotoLink}
                 gotoRoute={gotoRoute}

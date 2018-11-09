@@ -9,9 +9,12 @@ import isArray from 'lodash/isArray';
 import isString from 'lodash/isString';
 import classNames from 'classnames';
 import { push } from 'react-router-redux';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import {
+    injectIntl, defineMessages, FormattedMessage, FormattedHTMLMessage,
+} from 'react-intl';
 
 import * as PanneauPropTypes from '../../lib/PropTypes';
+import { isMessage } from '../../utils';
 import withUrlGenerator from '../../lib/withUrlGenerator';
 import withResourceApi from '../../lib/withResourceApi';
 import withFormsCollection from '../../lib/withFormsCollection';
@@ -35,6 +38,11 @@ const messages = defineMessages({
         description: 'The title of the resource form',
         defaultMessage: '{name}',
     },
+    titleTyped: {
+        id: 'core.titles.resources.typed',
+        description: 'The title of the typed resource form',
+        defaultMessage: '{name} <small class="text-muted">({type})</small>',
+    },
     switchType: {
         id: 'core.buttons.resources.switch_type',
         description: 'The label of the select type button',
@@ -50,9 +58,15 @@ const messages = defineMessages({
         description: 'The text of the "error" form notice',
         defaultMessage: 'Failed. The form contains errors.',
     },
+    confirmSwitchType: {
+        id: 'core.resources.form.confirm_switch_type',
+        description: 'The confirm message when switching type',
+        defaultMessage: 'Are you sure you want to switch type?',
+    },
 });
 
 const propTypes = {
+    intl: PanneauPropTypes.intl.isRequired,
     formsCollection: PanneauPropTypes.componentsCollection.isRequired,
     match: PropTypes.shape({
         params: PropTypes.shape({
@@ -63,7 +77,8 @@ const propTypes = {
         search: PropTypes.string,
         state: PropTypes.object,
     }).isRequired,
-    title: PanneauPropTypes.message,
+    title: PanneauPropTypes.label,
+    titleTyped: PanneauPropTypes.label,
     action: PropTypes.string,
     resource: PanneauPropTypes.resource.isRequired,
     resourceApi: PanneauPropTypes.resourceApi.isRequired,
@@ -75,6 +90,7 @@ const propTypes = {
     errorNoticeLabel: PanneauPropTypes.label,
     buttons: PanneauPropTypes.buttons,
     saveButtonLabel: PanneauPropTypes.message,
+    confirmSwitchTypeMessage: PanneauPropTypes.message,
     errors: PropTypes.arrayOf(PropTypes.string),
     formValue: PropTypes.shape({}),
     formErrors: PropTypes.objectOf(PropTypes.array),
@@ -86,6 +102,7 @@ const propTypes = {
 const defaultProps = {
     action: 'create',
     title: messages.title,
+    titleTyped: messages.titleTyped,
     id: null,
     item: null,
     errors: null,
@@ -94,6 +111,7 @@ const defaultProps = {
     readOnly: false,
     successNoticeLabel: messages.successNotice,
     errorNoticeLabel: messages.errorNotice,
+    confirmSwitchTypeMessage: messages.confirmSwitchType,
     buttons: [
         {
             id: 'cancel',
@@ -122,6 +140,7 @@ class ResourceForm extends Component {
         this.onFormComplete = this.onFormComplete.bind(this);
         this.onFormErrors = this.onFormErrors.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
+        this.onClickSwitchType = this.onClickSwitchType.bind(this);
         this.submitForm = this.submitForm.bind(this);
 
         this.state = {
@@ -215,6 +234,25 @@ class ResourceForm extends Component {
         }
     }
 
+    onClickSwitchType(e) {
+        const {
+            intl, resource, confirmSwitchTypeMessage,
+        } = this.props;
+        const { formValue } = this.state;
+        const types = get(resource, 'types', []);
+        const currentTypeId = this.getType();
+        const currentType = types.find(({ id }) => id === currentTypeId) || null;
+        const confirmMessage = isMessage(confirmSwitchTypeMessage)
+            ? intl.formatMessage(confirmSwitchTypeMessage, {
+                type: currentType.label,
+            })
+            : confirmSwitchTypeMessage;
+        // eslint-disable-next-line no-alert
+        if (formValue !== null && !window.confirm(confirmMessage)) {
+            e.preventDefault();
+        }
+    }
+
     onClickCancel(e) {
         const { gotoIndex } = this.props;
         e.preventDefault();
@@ -263,44 +301,56 @@ class ResourceForm extends Component {
 
     renderHeader() {
         const {
-            action, resource, title, urlGenerator,
+            action, resource, title, titleTyped, urlGenerator,
         } = this.props;
 
         const resourceType = get(resource, 'type', 'default');
         const isTyped = resourceType === 'typed';
         const types = isTyped ? get(resource, 'types', []) : null;
-        const currentType = this.getType();
+        const currentTypeId = isTyped ? this.getType() : null;
+        const currentType = isTyped ? types.find(({ id }) => id === currentTypeId) || null : null;
 
         const headerClassNames = classNames({
             'py-4': true,
             [styles.header]: true,
         });
 
-        const message = get(
-            resource,
-            `messages.titles.resources.${action}`,
-            get(resource, 'messages.titles.resources.default', null),
-        );
         const name = get(
             resource,
             'messages.names.a',
             get(resource, 'messages.name', resource.name),
         );
-        const defaultTitle = isObject(title) && typeof title.id !== 'undefined' ? (
-            <FormattedMessage {...title} values={{ name }} />
-        ) : (
-            title
-        );
-
+        const customTitle = currentType !== null
+            ? get(
+                resource,
+                `messages.titles.resources.${action}_${currentType.id}`,
+                get(
+                    resource,
+                    `messages.titles.resources.${action}_typed`,
+                    get(
+                        resource,
+                        `messages.titles.resources.${action}`,
+                        get(resource, 'messages.titles.resources.default', null),
+                    ),
+                ),
+            )
+            : get(
+                resource,
+                `messages.titles.resources.${action}`,
+                get(resource, 'messages.titles.resources.default', null),
+            );
+        const defaultTitle = currentType !== null ? titleTyped : title;
+        const finalTitle = customTitle || defaultTitle;
         const titleElement = (
-            <h1
-                className={classNames({
-                    [styles.title]: isTyped,
-                    'display-4': true,
-                    'mb-0': true,
-                })}
-            >
-                {message !== null ? message : defaultTitle}
+            <h1 className={classNames([styles.title, 'mb-0', 'mt-0'])}>
+                {isMessage(finalTitle) ? (
+                    <FormattedHTMLMessage
+                        {...finalTitle}
+                        values={{ name, type: currentType !== null ? currentType.label : null }}
+                    />
+                ) : (
+                    finalTitle
+                )}
             </h1>
         );
 
@@ -310,9 +360,7 @@ class ResourceForm extends Component {
                     <div className={styles.cols}>
                         <div className={styles.col}>{titleElement}</div>
                         <div className={classNames([styles.col, 'text-right'])}>
-                            <div
-                                className={classNames(['btn-group', 'btn-group-sm'])}
-                            >
+                            <div className={classNames(['btn-group', 'btn-group-sm'])}>
                                 <button
                                     type="button"
                                     className={classNames({
@@ -344,9 +392,10 @@ class ResourceForm extends Component {
                                             className={classNames([
                                                 'dropdown-item',
                                                 {
-                                                    active: id === currentType,
+                                                    active: id === currentType.id,
                                                 },
                                             ])}
+                                            onClick={this.onClickSwitchType}
                                         >
                                             {label}
                                         </Link>
@@ -405,7 +454,7 @@ class ResourceForm extends Component {
         return (
             <span className={noticeCellTextClassNames}>
                 <span className={noticeCellIconClassNames} aria-hidden="true" />
-                {isObject(formNoticeText) && typeof formNoticeText.id !== 'undefined' ? (
+                {isMessage(formNoticeText) ? (
                     <FormattedMessage {...formNoticeText} />
                 ) : (
                     formNoticeText
@@ -507,7 +556,7 @@ class ResourceForm extends Component {
             <div className={containerClassNames}>
                 <div className="container">
                     <div className="row justify-content-md-center">
-                        <div className="col-lg-8">
+                        <div className="col-lg-9">
                             {this.renderHeader()}
                             {this.renderErrors()}
                             {isLoading ? this.renderLoading() : this.renderForm()}
@@ -568,4 +617,5 @@ const WithStateComponent = connect(
 const WithFormsCollectionContainer = withFormsCollection()(WithStateComponent);
 const WithUrlGeneratorContainer = withUrlGenerator()(WithFormsCollectionContainer);
 const WithRouterContainer = withRouter(WithUrlGeneratorContainer);
-export default WithRouterContainer;
+const WithIntlContainer = injectIntl(WithRouterContainer);
+export default WithIntlContainer;

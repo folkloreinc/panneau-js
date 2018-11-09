@@ -6,10 +6,14 @@
     "core.buttons.resources.switch_type": "Switch type",
     "core.notices.resources.error": "Failed. The form contains errors.",
     "core.notices.resources.success": "Success!",
+    "core.resources.form.confirm_switch_type": "Are you sure you want to switch type?",
     "core.resources.index.confirm_delete": "Are you sure you want to delete this item from {name}?",
     "core.titles.account": "Edit account",
     "core.titles.resources.create": "Create {name}",
+    "core.titles.resources.create_typed": "Create {name} <small class=\"text-muted\">({type})</small>",
     "core.titles.resources.default": "{name}",
     "core.titles.resources.edit": "Edit {name}",
-    "core.titles.resources.index": "{name}"
+    "core.titles.resources.edit_typed": "Edit {name} <small class=\"text-muted\">({type})</small>",
+    "core.titles.resources.index": "{name}",
+    "core.titles.resources.typed": "{name} <small class=\"text-muted\">({type})</small>"
 }

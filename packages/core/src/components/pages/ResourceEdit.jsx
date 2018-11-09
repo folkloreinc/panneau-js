@@ -9,6 +9,11 @@ const messages = defineMessages({
         description: 'The title of the resource edit form',
         defaultMessage: 'Edit {name}',
     },
+    titleTyped: {
+        id: 'core.titles.resources.edit_typed',
+        description: 'The title of the typed resource edit form',
+        defaultMessage: 'Edit {name} <small class="text-muted">({type})</small>',
+    },
 });
 
 const propTypes = {
