@@ -57,7 +57,7 @@
         "@babel/runtime": "^7.0.0",
         "@folklore/react-container": "^0.1.7",
         "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
-        "bootstrap": "^4.1.1",
+        "bootstrap": "^4.2.1",
         "classnames": "^2.2.5",
         "history": "^4.7.2",
         "hoist-non-react-statics": "^2.3.1",
