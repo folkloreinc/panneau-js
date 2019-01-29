@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 
 import * as PanneauPropTypes from '../lib/PropTypes';
 import withUrlGenerator from '../lib/withUrlGenerator';

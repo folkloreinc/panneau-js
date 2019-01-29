@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
-import { withRouter } from 'react-router';
-import { push } from 'react-router-redux';
-import { connect } from 'react-redux';
-import get from 'lodash/get';
 
 import ResourceForm from './ResourceForm';
 import withUrlGenerator from '../../lib/withUrlGenerator';
@@ -28,11 +24,11 @@ const messages = defineMessages({
 });
 
 const propTypes = {
-    gotoResourceEdit: PropTypes.func,
+    gotoResourceAction: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
-    gotoResourceEdit: PropTypes.func,
+
 };
 
 class ResourceCreate extends Component {
@@ -43,14 +39,13 @@ class ResourceCreate extends Component {
     }
 
     onFormComplete(it) {
-        const { gotoResourceEdit } = this.props;
-        gotoResourceEdit(it.id);
+        const { gotoResourceAction } = this.props;
+        gotoResourceAction('edit', it.id);
     }
 
     render() {
         return (
             <ResourceForm
-                action="create"
                 title={messages.title}
                 titleTyped={messages.titleTyped}
                 saveButtonLabel={messages.create}
@@ -64,41 +59,5 @@ class ResourceCreate extends Component {
 ResourceCreate.propTypes = propTypes;
 ResourceCreate.defaultProps = defaultProps;
 
-const mapStateToProps = ({ panneau }, { match, location, urlGenerator }) => {
-    const resources = get(panneau, 'definition.resources', []);
-    const resourceId = get(match, 'params.resource', null);
-    return {
-        resource:
-            resources.find(
-                it => (resourceId !== null && it.id === resourceId)
-                    || (resourceId === null
-                        && urlGenerator.route(`resource.${it.id}.create`) === location.pathname),
-            ) || null,
-    };
-};
-
-const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
-    gotoResourceEdit: (resource, id) => dispatch(
-        push(
-            urlGenerator.route('resource.edit', {
-                resource: resource.id,
-                id,
-            }),
-        ),
-    ),
-});
-
-const mergeProps = (stateProps, { gotoResourceEdit, ...dispatchProps }, ownProps) => ({
-    ...ownProps,
-    ...dispatchProps,
-    gotoResourceEdit: id => gotoResourceEdit(stateProps.resource, id),
-});
-
-const WithStateComponent = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
-)(ResourceCreate);
-const WithRouterContainer = withRouter(WithStateComponent);
-const WithUrlGeneratorContainer = withUrlGenerator()(WithRouterContainer);
+const WithUrlGeneratorContainer = withUrlGenerator()(ResourceCreate);
 export default WithUrlGeneratorContainer;

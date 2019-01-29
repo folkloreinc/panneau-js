@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router';
-import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { Link } from 'react-router-dom';
-import isObject from 'lodash/isObject';
 import isArray from 'lodash/isArray';
-import isString from 'lodash/isString';
 import classNames from 'classnames';
-import { push } from 'react-router-redux';
 import {
     injectIntl, defineMessages, FormattedMessage, FormattedHTMLMessage,
 } from 'react-intl';
@@ -68,21 +63,12 @@ const messages = defineMessages({
 const propTypes = {
     intl: PanneauPropTypes.intl.isRequired,
     formsCollection: PanneauPropTypes.componentsCollection.isRequired,
-    match: PropTypes.shape({
-        params: PropTypes.shape({
-            id: PropTypes.string,
-        }),
-    }).isRequired,
-    location: PropTypes.shape({
-        search: PropTypes.string,
-        state: PropTypes.object,
-    }).isRequired,
+    itemId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     title: PanneauPropTypes.label,
     titleTyped: PanneauPropTypes.label,
     action: PropTypes.string,
     resource: PanneauPropTypes.resource.isRequired,
     resourceApi: PanneauPropTypes.resourceApi.isRequired,
-    id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     item: PropTypes.shape({
         id: PropTypes.number,
     }),
@@ -95,7 +81,7 @@ const propTypes = {
     formValue: PropTypes.shape({}),
     formErrors: PropTypes.objectOf(PropTypes.array),
     readOnly: PropTypes.bool,
-    gotoIndex: PropTypes.func.isRequired,
+    gotoResourceAction: PropTypes.func.isRequired,
     onFormComplete: PropTypes.func,
 };
 
@@ -103,7 +89,7 @@ const defaultProps = {
     action: 'create',
     title: messages.title,
     titleTyped: messages.titleTyped,
-    id: null,
+    itemId: null,
     item: null,
     errors: null,
     formValue: null,
@@ -131,6 +117,17 @@ const defaultProps = {
 };
 
 class ResourceForm extends Component {
+    static getDerivedStateFromProps({ errors: nextErrors }, { errors }) {
+        const errorsChanged = nextErrors !== errors;
+        if (errorsChanged) {
+            return {
+                errors: errorsChanged ? nextErrors : errors,
+            };
+        }
+
+        return null;
+    }
+
     constructor(props) {
         super(props);
 
@@ -155,31 +152,13 @@ class ResourceForm extends Component {
 
     componentDidMount() {
         const {
-            id, action, resourceApi, match,
+            itemId, action, resourceApi,
         } = this.props;
         if (action === 'edit' || action === 'show') {
-            const itemId = get(match, 'params.id', id);
             resourceApi
                 .show(itemId)
                 .then(this.onItemLoaded)
                 .catch(this.onItemLoadError);
-        }
-    }
-
-    componentWillReceiveProps({ items: nextItem, errors: nextErrors }) {
-        const { item, errors } = this.props;
-        const itemChanged = nextItem !== item;
-        if (itemChanged) {
-            this.setState({
-                item: nextItem,
-            });
-        }
-
-        const errorsChanged = nextErrors !== errors;
-        if (errorsChanged) {
-            this.setState({
-                errors: nextErrors,
-            });
         }
     }
 
@@ -254,9 +233,9 @@ class ResourceForm extends Component {
     }
 
     onClickCancel(e) {
-        const { gotoIndex } = this.props;
+        const { gotoResourceAction } = this.props;
         e.preventDefault();
-        gotoIndex();
+        gotoResourceAction('index');
     }
 
     getType() {
@@ -270,11 +249,10 @@ class ResourceForm extends Component {
     }
 
     getTypeFromLocation() {
-        const { location, resource } = this.props;
+        const { query, resource } = this.props;
+        const { type = null } = query;
         const types = get(resource, 'types', []);
-        const searchMatches = (location.search || '').match(/type=([^&]+)/);
-        const locationTypeId = get(location, 'state.type', get(searchMatches, '1', null));
-        const locationType = types.find(it => it.id === locationTypeId) || null;
+        const locationType = types.find(it => it.id === type) || null;
         return locationType;
     }
 
@@ -572,50 +550,7 @@ ResourceForm.propTypes = propTypes;
 ResourceForm.defaultProps = defaultProps;
 
 const WithResourceApi = withResourceApi()(ResourceForm);
-const mapStateToProps = (
-    { panneau },
-    {
-        id = null, resource = null, action, match, location, urlGenerator,
-    },
-) => {
-    const resources = get(panneau, 'definition.resources', []);
-    const resourceId = get(match, 'params.resource', isString(resource) ? resource : null);
-    const itemId = get(match, 'params.id', id);
-    return {
-        resource: isObject(resource)
-            ? resource
-            : resources.find(
-                it => (resourceId !== null && it.id === resourceId)
-                      || (resourceId === null
-                          && urlGenerator.route(`resource.${it.id}.${action}`, {
-                              id: itemId,
-                          }) === location.pathname),
-            ) || null,
-    };
-};
-const mapDispatchToProps = (dispatch, { urlGenerator }) => ({
-    gotoResourceIndex: resource => dispatch(
-        push(
-            typeof resource.routes !== 'undefined'
-                ? urlGenerator.route(`resource.${resource.id}.index`)
-                : urlGenerator.route('resource.index', {
-                    resource: resource.id,
-                }),
-        ),
-    ),
-});
-const mergeProps = (stateProps, { gotoResourceIndex }, ownProps) => ({
-    ...ownProps,
-    ...stateProps,
-    gotoIndex: () => gotoResourceIndex(stateProps.resource),
-});
-const WithStateComponent = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
-)(WithResourceApi);
-const WithFormsCollectionContainer = withFormsCollection()(WithStateComponent);
+const WithFormsCollectionContainer = withFormsCollection()(WithResourceApi);
 const WithUrlGeneratorContainer = withUrlGenerator()(WithFormsCollectionContainer);
-const WithRouterContainer = withRouter(WithUrlGeneratorContainer);
-const WithIntlContainer = injectIntl(WithRouterContainer);
+const WithIntlContainer = injectIntl(WithUrlGeneratorContainer);
 export default WithIntlContainer;

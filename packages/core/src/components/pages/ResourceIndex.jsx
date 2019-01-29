@@ -1,20 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import { push } from 'react-router-redux';
-import { connect } from 'react-redux';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
 import isObject from 'lodash/isObject';
 import classNames from 'classnames';
-import queryString from 'query-string';
 import { defineMessages, FormattedMessage, injectIntl } from 'react-intl';
 import Loading from '../partials/Loading';
 
 import * as PanneauPropTypes from '../../lib/PropTypes';
-import withUrlGenerator from '../../lib/withUrlGenerator';
 import withResourceApi from '../../lib/withResourceApi';
 import withListsCollection from '../../lib/withListsCollection';
 
@@ -40,14 +35,12 @@ const messages = defineMessages({
 
 const propTypes = {
     intl: PanneauPropTypes.intl.isRequired,
-    urlGenerator: PanneauPropTypes.urlGenerator.isRequired,
     listsCollection: PanneauPropTypes.componentsCollection.isRequired,
     resource: PanneauPropTypes.resource.isRequired,
     resourceApi: PanneauPropTypes.resourceApi.isRequired,
-    location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired,
-        search: PropTypes.string.isRequired,
-    }).isRequired,
+    query: PropTypes.shape({
+        page: PropTypes.string,
+    }),
     items: PropTypes.arrayOf(PropTypes.object),
     title: PanneauPropTypes.message,
     errors: PropTypes.arrayOf(PropTypes.string),
@@ -59,6 +52,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    query: null,
     items: null,
     title: messages.title,
     errors: null,
@@ -68,6 +62,22 @@ const defaultProps = {
 };
 
 class ResourceIndex extends Component {
+    static getDerivedStateFromProps(
+        { query: nextQuery, errors: nextErrors },
+        { query, errors },
+    ) {
+        const queryChanged = nextQuery !== query;
+        const errorsChanged = nextErrors !== errors;
+        if (queryChanged || errorsChanged) {
+            return {
+                query: queryChanged ? nextQuery : query,
+                errors: errorsChanged ? nextErrors : errors,
+                isLoading: queryChanged,
+            };
+        }
+        return null;
+    }
+
     constructor(props) {
         super(props);
 
@@ -78,6 +88,7 @@ class ResourceIndex extends Component {
 
         this.state = {
             isLoading: props.items === null,
+            query: null, // eslint-disable-line react/no-unused-state
             items: props.items,
             pagination: null,
             errors: props.errors,
@@ -91,37 +102,12 @@ class ResourceIndex extends Component {
         }
     }
 
-    componentWillReceiveProps({ items: nextItems, location: nextLocation, errors: nextErrors }) {
-        const { items, location, errors } = this.props;
-        const itemsChanged = nextItems !== items;
-        if (itemsChanged) {
-            this.setState({
-                items: nextItems,
-                isLoading: nextItems === null,
-            });
-        }
-
-        const locationChanged = nextLocation !== location;
-        if (locationChanged) {
-            this.setState({
-                isLoading: true,
-            });
-        }
-
-        const errorsChanged = nextErrors !== errors;
-        if (errorsChanged) {
-            this.setState({
-                errors: nextErrors,
-            });
-        }
-    }
-
-    componentDidUpdate({ location: prevLocation }, { items: prevItems }) {
-        const { location } = this.props;
+    componentDidUpdate({ query: prevQuery }, { items: prevItems }) {
+        const { query } = this.props;
         const { items } = this.state;
         const itemsChanged = prevItems !== items;
-        const locationChanged = prevLocation !== location;
-        if ((itemsChanged && items === null) || locationChanged) {
+        const queryChanged = prevQuery !== query;
+        if ((itemsChanged && items === null) || queryChanged) {
             this.loadItems();
         }
     }
@@ -191,10 +177,9 @@ class ResourceIndex extends Component {
     }
 
     loadItems() {
-        const { resourceApi, location } = this.props;
+        const { resourceApi, query } = this.props;
         const params = {};
         if (this.isPaginated()) {
-            const query = queryString.parse(location.search);
             const page = query.page || null;
             if (page !== null) {
                 params.page = page;
@@ -225,7 +210,7 @@ class ResourceIndex extends Component {
     }
 
     renderAddButton() {
-        const { addButtonLabel, resource, urlGenerator } = this.props;
+        const { addButtonLabel, resource, getResourceActionUrl } = this.props;
         const resourceType = get(resource, 'type', 'default');
         const isTyped = resourceType === 'typed';
         const types = isTyped ? get(resource, 'types', []) : null;
@@ -264,9 +249,7 @@ class ResourceIndex extends Component {
                     </button>
                 ) : (
                     <Link
-                        to={urlGenerator.route('resource.create', {
-                            resource: resource.id,
-                        })}
+                        to={getResourceActionUrl('create')}
                         className={classNames({
                             btn: true,
                             'btn-primary': true,
@@ -280,15 +263,7 @@ class ResourceIndex extends Component {
                         {types.map(({ id, label }) => (
                             <Link
                                 key={`add-button-${id}`}
-                                to={{
-                                    pathname: urlGenerator.route('resource.create', {
-                                        resource: resource.id,
-                                    }),
-                                    search: `?type=${id}`,
-                                    state: {
-                                        type: id,
-                                    },
-                                }}
+                                to={`${getResourceActionUrl('create')}?type=${id}`}
                                 className="dropdown-item"
                             >
                                 {label}
@@ -352,7 +327,11 @@ class ResourceIndex extends Component {
         /* eslint-disable react/no-array-index-key */
         return errors !== null && errors.length > 1 ? (
             <div className={errorsClassNames}>
-                <ul>{errors.map((error, index) => <li key={`error-${index}`}>{error}</li>)}</ul>
+                <ul>
+                    {errors.map((error, index) => (
+                        <li key={`error-${index}`}>{error}</li>
+                    ))}
+                </ul>
             </div>
         ) : null;
         /* eslint-enable react/no-array-index-key */
@@ -382,7 +361,7 @@ class ResourceIndex extends Component {
 
     // eslint-disable-next-line class-methods-use-this
     renderPagination() {
-        const { resource, listsCollection, urlGenerator } = this.props;
+        const { getResourceActionUrl, listsCollection } = this.props;
         const { pagination } = this.state;
         const Pagination = listsCollection.getComponent('pagination');
         return (
@@ -391,9 +370,7 @@ class ResourceIndex extends Component {
                 perPage={pagination.per_page}
                 currentPage={pagination.current_page}
                 lastPage={pagination.last_page}
-                url={urlGenerator.route('resource.index', {
-                    resource: resource.id,
-                })}
+                url={getResourceActionUrl('index')}
             />
         );
     }
@@ -449,53 +426,6 @@ ResourceIndex.propTypes = propTypes;
 ResourceIndex.defaultProps = defaultProps;
 
 const WithResourceApi = withResourceApi()(ResourceIndex);
-const mapStateToProps = ({ panneau }, { match, location, urlGenerator }) => {
-    const resources = get(panneau, 'definition.resources', []);
-    const resourceId = get(match, 'params.resource', null);
-    return {
-        resource:
-            resources.find(
-                it => (resourceId !== null && it.id === resourceId)
-                    || (resourceId === null
-                        && urlGenerator.route(`resource.${it.id}.index`) === location.pathname),
-            ) || null,
-    };
-};
-
-const mapDispatchToProps = (dispatch, { urlGenerator }) => {
-    const getResourceActionUrl = (resource, action, id) => (typeof resource.routes !== 'undefined'
-        ? urlGenerator.route(`resource.${resource.id}.${action}`, {
-            id: id || null,
-        })
-        : urlGenerator.route(`resource.${action}`, {
-            resource: resource.id,
-            id: id || null,
-        }));
-    return {
-        getResourceActionUrl,
-        gotoResourceAction: (...args) => dispatch(push(getResourceActionUrl(...args))),
-    };
-};
-
-const mergeProps = (
-    stateProps,
-    { getResourceActionUrl, gotoResourceAction, ...dispatchProps },
-    ownProps,
-) => ({
-    ...ownProps,
-    ...stateProps,
-    ...dispatchProps,
-    getResourceActionUrl: (action, id) => getResourceActionUrl(stateProps.resource, action, id),
-    gotoResourceAction: (action, id) => gotoResourceAction(stateProps.resource, action, id),
-});
-
-const WithStateComponent = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
-)(WithResourceApi);
-const WithRouterContainer = withRouter(WithStateComponent);
-const WithListsCollectionContainer = withListsCollection()(WithRouterContainer);
-const WithUrlGeneratorContainer = withUrlGenerator()(WithListsCollectionContainer);
-const WithIntlContainer = injectIntl(WithUrlGeneratorContainer);
+const WithListsCollectionContainer = withListsCollection()(WithResourceApi);
+const WithIntlContainer = injectIntl(WithListsCollectionContainer);
 export default WithIntlContainer;

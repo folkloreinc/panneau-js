@@ -12,7 +12,6 @@ const defaultProps = {
 
 const ResourceShow = props => (
     <ResourceForm
-        action="show"
         readOnly
         {...props}
     />
