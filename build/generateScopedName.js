@@ -1,3 +1,3 @@
-const getLocalIdent = require('./utils/getLocalIdent');
+const getLocalIdent = require('./lib/getLocalIdent');
 
 module.exports = getLocalIdent;

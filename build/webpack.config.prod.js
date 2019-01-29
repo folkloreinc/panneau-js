@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const nodeExternals = require('webpack-node-externals');
-const getLocalIdent = require('./utils/getLocalIdent');
+const getLocalIdent = require('./lib/getLocalIdent');
 const getClientEnvironment = require('./env');
 const getPackagesPaths = require('./lib/getPackagesPaths');
 
