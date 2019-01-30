@@ -1,6 +1,6 @@
 {
   "name": "@panneau/form",
-  "version": "0.6.27",
+  "version": "0.6.28",
   "description": "Core forms for Panneau",
   "keywords": [
     "react",
@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@panneau/core": "^0.6.27",
+    "@panneau/core": "^0.6.28",
     "classnames": "^2.2.5",
     "hoist-non-react-statics": "^2.5.5",
     "invariant": "^2.2.4",
