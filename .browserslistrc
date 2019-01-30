@@ -1,6 +1,7 @@
 [production staging]
+last 4 versions
 > 1%
-ie 11
+ie >= 11
 
 [development]
 last 2 chrome versions
