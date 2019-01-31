@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import isString from 'lodash/isString';
+import isEmpty from 'lodash/isEmpty';
 
 import styles from './styles/button-group.scss';
 
@@ -10,7 +12,7 @@ const propTypes = {
             PropTypes.node,
             PropTypes.shape({
                 label: PropTypes.node,
-                icon: PropTypes.string,
+                icon: PropTypes.node,
             }),
         ]),
     ),
@@ -43,16 +45,22 @@ const ButtonGroup = ({
         {...props}
     >
         {buttons.map((button, index) => {
-            if (button.type && button.props && button.$$typeof) {
+            if (React.isValidElement(button)) {
                 return React.cloneElement(button, {
                     key: `button-${button.name || button.id || index}`,
                 });
             }
             const {
-                label, icon, className: customClassName, ...customProps
+                id = null,
+                key = null,
+                name = null,
+                label = null,
+                icon = null,
+                className: customClassName = null,
+                ...customProps
             } = button;
             const buttonProps = {
-                key: `button-${button.key || button.name || button.label || button.icon}`,
+                key: `button-${id || key || name || label || icon || index}`,
                 href: null,
                 className: classNames({
                     btn: true,
@@ -68,15 +76,31 @@ const ButtonGroup = ({
                 },
                 ...customProps,
             };
+            let iconElement = null;
+            if (icon !== null) {
+                iconElement = isString(icon) ? (
+                    <span
+                        className={classNames([
+                            styles.icon,
+                            icon,
+                            {
+                                [styles.withLabel]: !isEmpty(label),
+                            },
+                        ])}
+                    />
+                ) : (
+                    icon
+                );
+            }
             return buttonProps.href !== null ? (
                 <a {...buttonProps}>
-                    {icon ? <span className={classNames([styles.icon, icon])} /> : null}
-                    {button.label}
+                    {iconElement}
+                    {label}
                 </a>
             ) : (
                 <button type="button" {...buttonProps}>
-                    {icon ? <span className={classNames([styles.icon, icon])} /> : null}
-                    {button.label}
+                    {iconElement}
+                    {label}
                 </button>
             );
         })}

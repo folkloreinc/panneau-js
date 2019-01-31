@@ -1,7 +1,8 @@
 .container {
-    .button {
-        .icon {
-            display: inline-block;
+    .icon {
+        display: inline-block;
+
+        &.withLabel {
             margin-right: 5px;
         }
     }
@@ -13,6 +14,5 @@
             display: inline-block;
             float: none;
         }
-
     }
 }
