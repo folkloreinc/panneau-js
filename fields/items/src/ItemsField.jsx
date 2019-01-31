@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isObject from 'lodash/isObject';
 import isArray from 'lodash/isArray';
-import { arrayMove } from 'react-sortable-hoc';
+import arrayMove from 'array-move';
 import {
     FormGroup, FieldsGroup, AddButton, ButtonGroup,
 } from '@panneau/field';
-import { getJSON, PropTypes as PanneauPropTypes } from '@panneau/core';
+import { getJSON, isMessage, PropTypes as PanneauPropTypes } from '@panneau/core';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 
 import SortableHandle from './SortableHandle';
@@ -36,6 +36,11 @@ const messages = defineMessages({
         id: 'fields.items.title_with_label',
         description: 'The title of each item with a label',
         defaultMessage: 'Item #{index} - {label}',
+    },
+    confirmRemoveMessage: {
+        id: 'fields.items.confirm_remove_message',
+        description: 'The confirmation message when removing an element',
+        defaultMessage: 'Are you sure you want to remove this element?',
     },
 });
 
@@ -84,7 +89,7 @@ const propTypes = {
 
     headerButtons: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     confirmRemove: PropTypes.bool,
-    confirmRemoveMessage: PropTypes.string,
+    confirmRemoveMessage: PanneauPropTypes.message,
 
     renderItemField: PropTypes.func,
     getItemProps: PropTypes.func,
@@ -130,7 +135,7 @@ const defaultProps = {
     addButtonLarge: false,
     headerButtons: [],
     confirmRemove: true,
-    confirmRemoveMessage: 'Êtes-vous certain de vouloir enlever cet élément?',
+    confirmRemoveMessage: messages.confirmRemoveMessage,
 
     renderItemField: null,
     getItemProps: null,
@@ -145,6 +150,33 @@ const defaultProps = {
 };
 
 class ItemsField extends Component {
+    static getDerivedStateFromProps(
+        { value: nextValue, types: nextTypes, fields: nextFields },
+        {
+            value, types, fields, collapsedItems,
+        },
+    ) {
+        const valueChanged = nextValue !== value;
+        const typesChanged = nextTypes !== types && nextTypes !== null && types === null;
+        const fieldsChanged = nextFields !== fields && nextFields !== null && fields === null;
+        if (valueChanged || typesChanged || fieldsChanged) {
+            return {
+                types: typesChanged ? nextTypes : types,
+                fields: fieldsChanged ? nextFields : fields,
+                collapsedItems:
+                    nextValue !== null && nextValue.length > collapsedItems.length
+                        ? [
+                            ...collapsedItems,
+                            ...new Array(nextValue.length - collapsedItems.length).map(
+                                () => false,
+                            ),
+                        ]
+                        : collapsedItems,
+            };
+        }
+        return null;
+    }
+
     constructor(props) {
         super(props);
 
@@ -169,39 +201,6 @@ class ItemsField extends Component {
             this.loadTypes();
         } else if (fields === null && fieldsEndpoint !== null) {
             this.loadFields();
-        }
-    }
-
-    componentWillReceiveProps({ value: nextValue, types: nextTypes, fields: nextFields }) {
-        const { value, types, fields } = this.props;
-        const { collapsedItems } = this.state;
-        const valueChanged = nextValue !== value;
-        if (valueChanged) {
-            const currentValue = value || [];
-            if (nextValue !== null && nextValue.length > currentValue.length) {
-                const delta = nextValue.length - currentValue.length;
-                const newCollapsedItems = [].concat(collapsedItems);
-                for (let i = 0; i < delta; i += 1) {
-                    newCollapsedItems.push(false);
-                }
-                this.setState({
-                    collapsedItems: newCollapsedItems,
-                });
-            }
-        }
-
-        const typesChanged = nextTypes !== types;
-        if (typesChanged) {
-            this.setState({
-                types: nextTypes,
-            });
-        }
-
-        const fieldsChanged = nextFields !== fields;
-        if (fieldsChanged) {
-            this.setState({
-                fields: nextFields,
-            });
         }
     }
 
@@ -236,37 +235,45 @@ class ItemsField extends Component {
 
     onClickRemove(e, index) {
         e.preventDefault();
-        const { value, confirmRemove, confirmRemoveMessage } = this.props;
+        const {
+            value, intl, confirmRemove, confirmRemoveMessage,
+        } = this.props;
+        const confirmMessage = isMessage(confirmRemoveMessage)
+            ? intl.formatMessage(confirmRemoveMessage)
+            : confirmRemoveMessage;
         // eslint-disable-next-line no-alert
-        if (confirmRemove && !window.confirm(confirmRemoveMessage)) {
+        if (confirmRemove && !window.confirm(confirmMessage)) {
             return;
         }
-        const items = [].concat(value || []);
-        items.splice(index, 1);
-        this.triggerChange(items);
+        const currentValue = value || [];
+        this.triggerChange([...currentValue.slice(0, index), ...currentValue.slice(index + 1)]);
     }
 
-    onItemChange(index, value) {
-        const { value: currentValue, getItemValue } = this.props;
-        const newValue = getItemValue
-            ? getItemValue(index, value, currentValue)
+    onItemChange(index, itemValue) {
+        const { value, getItemValue } = this.props;
+        const currentValue = value || [];
+        const newItemValue = getItemValue
+            ? getItemValue(index, itemValue, currentValue)
             : {
-                ...currentValue[index],
-                ...value,
+                ...(currentValue[index] || null),
+                ...itemValue,
             };
-        const newItems = [].concat(currentValue);
-        newItems[index] = newValue;
-        this.triggerChange(newItems);
+        this.triggerChange([
+            ...currentValue.slice(0, index),
+            newItemValue,
+            ...currentValue.slice(index + 1),
+        ]);
     }
 
     onClickCollapse(e, it, index) {
         e.preventDefault();
-        const { collapsedItems } = this.state;
-        const newCollapsedItems = [].concat(collapsedItems);
-        newCollapsedItems[index] = !newCollapsedItems[index];
-        this.setState({
-            collapsedItems: newCollapsedItems,
-        });
+        this.setState(({ collapsedItems }) => ({
+            collapsedItems: [
+                ...collapsedItems.slice(0, index),
+                !collapsedItems[index],
+                ...collapsedItems.slice(index + 1),
+            ],
+        }));
     }
 
     onClickHeaderButton(e, button, buttonIndex, it, itemIndex) {
@@ -278,9 +285,12 @@ class ItemsField extends Component {
 
     onSortEnd({ oldIndex, newIndex }) {
         const { value } = this.props;
-        const items = [].concat(value || []);
-        const newItems = arrayMove(items, oldIndex, newIndex);
-        this.triggerChange(newItems);
+        const currentValue = value || [];
+        const newValue = arrayMove(currentValue, oldIndex, newIndex);
+        this.triggerChange(newValue);
+        this.setState(({ collapsedItems }) => ({
+            collapsedItems: arrayMove(collapsedItems, oldIndex, newIndex),
+        }));
     }
 
     getItemTitle(it, index) {
