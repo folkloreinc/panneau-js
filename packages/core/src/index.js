@@ -24,6 +24,8 @@ import {
     getJSON,
 } from './lib/requests';
 
+import { isMessage } from './utils';
+
 export {
     PropTypes,
     ComponentsCollection,
@@ -45,6 +47,7 @@ export {
     withListsCollection,
     withLayoutsCollection,
     withModalsCollection,
+    isMessage,
 };
 
 /** The main Panneau application class */
