@@ -1,6 +1,7 @@
 {
     "fields.items.buttons.add": "Add",
     "fields.items.buttons.add_with_type": "Add {type}",
+    "fields.items.confirm_remove_message": "Are you sure you want to remove this element?",
     "fields.items.title": "Item #{index}",
     "fields.items.title_with_label": "Item #{index} - {label}"
 }

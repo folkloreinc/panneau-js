@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import ReactContainer from '@folklore/react-container';
@@ -51,6 +51,7 @@ class Panneau extends Component {
         return {
             locale,
             messages,
+            textComponent: Fragment,
         };
     }
 

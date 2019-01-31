@@ -18,5 +18,10 @@
     "id": "fields.items.title_with_label",
     "description": "The title of each item with a label",
     "defaultMessage": "Item #{index} - {label}"
+  },
+  {
+    "id": "fields.items.confirm_remove_message",
+    "description": "The confirmation message when removing an element",
+    "defaultMessage": "Are you sure you want to remove this element?"
   }
 ]

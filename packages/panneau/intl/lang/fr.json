@@ -23,6 +23,7 @@
     "fields.core.buttons.add": "Ajouter",
     "fields.items.buttons.add": "Ajouter",
     "fields.items.buttons.add_with_type": "Ajouter {type}",
+    "fields.items.confirm_remove_message": "Êtes-vous certain de vouloir supprimer cet élément?",
     "fields.items.title": "Item #{index}",
     "fields.items.title_with_label": "Item #{index} - {label}",
     "fields.link.label_label": "Libellé",
