@@ -1,0 +1,85 @@
+@import '@panneau/core/src/styles/variables';
+
+.container {
+    /* stylelint-disable selector-class-pattern */
+    :global {
+        .Resizer {
+            position: relative;
+            z-index: 1;
+            box-sizing: border-box;
+            opacity: 0.2;
+            background: #000;
+            background-clip: padding-box;
+
+            &::after {
+                content: '';
+                display: block;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 8px;
+                height: 40px;
+                margin-top: -20px;
+                margin-left: -4px;
+                border-radius: 10px;
+                background: #000;
+            }
+
+            &:hover {
+                transition: all 2s ease;
+            }
+
+            &.horizontal {
+                width: 100%;
+                height: 11px;
+                margin: -5px 0;
+                border-top: 5px solid rgba(255, 255, 255, 0);
+                border-bottom: 5px solid rgba(255, 255, 255, 0);
+                cursor: row-resize;
+
+                &:hover {
+                    border-top: 5px solid rgba(0, 0, 0, 0.5);
+                    border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+                }
+            }
+
+            &.vertical {
+                width: 11px;
+                margin: 0 -5px;
+                border-right: 5px solid rgba(255, 255, 255, 0);
+                border-left: 5px solid rgba(255, 255, 255, 0);
+                cursor: col-resize;
+
+                &:hover {
+                    border-right: 5px solid rgba(0, 0, 0, 0.5);
+                    border-left: 5px solid rgba(0, 0, 0, 0.5);
+                }
+            }
+
+            &.disabled {
+                cursor: not-allowed;
+
+                &:hover {
+                    border-color: transparent;
+                }
+            }
+        }
+
+        .Pane2 {
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+    }
+    /* stylelint-enable selector-class-pattern */
+
+    .form {
+        padding-right: 10px;
+    }
+
+    .preview {
+        position: relative;
+        flex-grow: 1;
+        overflow: auto;
+    }
+}

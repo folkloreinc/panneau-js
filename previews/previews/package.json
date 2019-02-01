@@ -1,14 +1,14 @@
 {
-    "name": "panneau",
+    "name": "@panneau/previews",
     "version": "0.6.30",
-    "description": "Framework to build dashboard and administration panels",
+    "description": "Previews for Panneau",
     "keywords": [
         "react",
         "javascript",
         "form",
         "dashboard"
     ],
-    "homepage": "https://github.com/Folkloreatelier/panneau-js",
+    "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/forms/forms",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Folkloreatelier/panneau-js.git"
@@ -28,7 +28,7 @@
         },
         {
             "name": "Hugo St-Onge",
-            "email": "hugostonge@gmail.com"
+            "email": "hso@atelierfolklore.ca"
         }
     ],
     "main": "lib/index.js",
@@ -36,8 +36,7 @@
     "files": [
         "lib",
         "es",
-        "dist",
-        "intl"
+        "dist"
     ],
     "scripts": {
         "storybook": "../../node_modules/.bin/start-storybook -p 9008 -c ../../.storybook-package",
@@ -47,34 +46,20 @@
         "babel:es": "BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es --ignore src/**/*.story.jsx,src/**/*.test.jsx",
         "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore src/**/*.story.jsx,src/**/*.test.jsx",
         "babel": "npm run babel:es && npm run babel:cjs",
-        "intl": "node ../../build/buildAllTranslations",
-        "build": "npm run babel && npm run intl && npm run webpack",
+        "build": "npm run webpack && npm run babel",
         "prepare": "npm run clean && npm run build",
         "start": "npm run storybook"
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
         "@panneau/core": "^0.6.30",
-        "@panneau/field": "^0.6.30",
-        "@panneau/fields": "^0.6.30",
-        "@panneau/forms": "^0.6.30",
-        "@panneau/layout": "^0.6.30",
-        "@panneau/layouts": "^0.6.30",
-        "@panneau/lists": "^0.6.30",
-        "@panneau/modals": "^0.6.30",
-        "@panneau/previews": "^0.6.30",
-        "bootstrap": "~4.1.1",
-        "classnames": "^2.2.5",
+        "@panneau/preview-json": "^0.6.30",
+        "hoist-non-react-statics": "^2.3.1",
+        "invariant": "^2.2.2",
         "lodash": "^4.17.4",
-        "prop-types": "^15.6.0",
-        "react-intl": "^2.4.0"
+        "prop-types": "^15.6.0"
     },
     "devDependencies": {
-        "@panneau/field-locale": "^0.6.30",
-        "@panneau/form": "^0.6.30",
-        "@panneau/layout": "^0.6.9",
-        "@panneau/list": "^0.6.30",
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
     },

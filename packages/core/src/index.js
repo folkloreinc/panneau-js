@@ -13,6 +13,7 @@ import withFieldsCollection from './lib/withFieldsCollection';
 import withListsCollection from './lib/withListsCollection';
 import withLayoutsCollection from './lib/withLayoutsCollection';
 import withModalsCollection from './lib/withModalsCollection';
+import withPreviewsCollection from './lib/withPreviewsCollection';
 
 import {
     ResponseError,
@@ -47,6 +48,7 @@ export {
     withListsCollection,
     withLayoutsCollection,
     withModalsCollection,
+    withPreviewsCollection,
     isMessage,
 };
 

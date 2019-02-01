@@ -6,6 +6,7 @@
     "layouts/*",
     "lists/*",
     "modals/*",
+    "previews/*",
     "packages/*"
   ],
   "version": "0.6.30",

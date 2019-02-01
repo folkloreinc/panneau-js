@@ -7,6 +7,7 @@ const nodeExternals = require('webpack-node-externals');
 const getLocalIdent = require('./lib/getLocalIdent');
 const getClientEnvironment = require('./env');
 const getPackagesPaths = require('./lib/getPackagesPaths');
+const lernaJSON = require('../lerna.json');
 
 const srcPath = path.join(process.env.PWD, './src');
 
@@ -80,11 +81,10 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
                 includePaths: [
                     path.join(process.env.PWD, './node_modules'),
                     path.join(__dirname, '../node_modules'),
-                    path.join(__dirname, '../fields/select/node_modules'),
-                    path.join(__dirname, '../fields/fields/node_modules'),
-                    path.join(__dirname, '../layouts/layouts/node_modules'),
-                    path.join(__dirname, '../lists/lists/node_modules'),
-                    path.join(__dirname, '../modals/modals/node_modules'),
+                    ...(lernaJSON.packages.map(it => it.replace(/^([^/]+)\/.*$/, '$1'))
+                        .filter(it => it !== 'packages')
+                        .map(it => path.join(__dirname, `../${it}/${it}/node_modules`))
+                    ),
                 ],
             },
         });
@@ -133,11 +133,10 @@ module.exports = {
         modules: [
             path.join(process.env.PWD, './node_modules'),
             path.join(__dirname, '../node_modules'),
-            path.join(__dirname, '../fields/fields/node_modules'),
-            path.join(__dirname, '../layouts/layouts/node_modules'),
-            path.join(__dirname, '../lists/lists/node_modules'),
-            path.join(__dirname, '../forms/forms/node_modules'),
-            path.join(__dirname, '../modals/modals/node_modules'),
+            ...(lernaJSON.packages.map(it => it.replace(/^([^/]+)\/.*$/, '$1'))
+                .filter(it => it !== 'packages')
+                .map(it => path.join(__dirname, `../${it}/${it}/node_modules`))
+            ),
             'node_modules',
         ].concat(process.env.NODE_PATH.split(path.delimiter).filter(Boolean)),
         // These are the reasonable defaults supported by the Node ecosystem.

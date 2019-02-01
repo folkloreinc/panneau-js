@@ -5,6 +5,7 @@ import layoutsCollection from '@panneau/layouts';
 import listsCollection from '@panneau/lists';
 import formsCollection from '@panneau/forms';
 import modalsCollection from '@panneau/modals';
+import previewsCollection from '@panneau/previews';
 
 import enMessages from '../intl/lang/en.json';
 import frMessages from '../intl/lang/fr.json';
@@ -19,6 +20,7 @@ Panneau.setDefaultComponentsCollection(layoutsCollection, 'layouts');
 Panneau.setDefaultComponentsCollection(listsCollection, 'lists');
 Panneau.setDefaultComponentsCollection(formsCollection, 'forms');
 Panneau.setDefaultComponentsCollection(modalsCollection, 'modals');
+Panneau.setDefaultComponentsCollection(previewsCollection, 'previews');
 Panneau.setDefaultComponentsCollection(navbarItemsCollection, 'navbarItems');
 
 export {
@@ -28,6 +30,7 @@ export {
     listsCollection,
     formsCollection,
     modalsCollection,
+    previewsCollection,
 };
 
 const panneau = new Panneau();

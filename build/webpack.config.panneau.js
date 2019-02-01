@@ -3,15 +3,15 @@ const path = require('path');
 const fs = require('fs');
 const webpackConfig = require('./webpack.config.prod');
 const getPackagesPaths = require('./lib/getPackagesPaths');
+const lernaJSON = require('../lerna.json');
 
 const modules = [
     path.join(process.env.PWD, './node_modules'),
     path.join(__dirname, '../node_modules'),
-    path.join(__dirname, '../fields/fields/node_modules'),
-    path.join(__dirname, '../layouts/layouts/node_modules'),
-    path.join(__dirname, '../lists/lists/node_modules'),
-    path.join(__dirname, '../forms/forms/node_modules'),
-    path.join(__dirname, '../modals/modals/node_modules'),
+    ...(lernaJSON.packages.map(it => it.replace(/^([^/]+)\/.*$/, '$1'))
+        .filter(it => it !== 'packages')
+        .map(it => path.join(__dirname, `../${it}/${it}/node_modules`))
+    ),
 ];
 const alias = {};
 const exactPackages = [
