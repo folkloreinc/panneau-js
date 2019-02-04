@@ -15,6 +15,7 @@ storiesOf('Fields/Page', module)
                     <PageField
                         label="Label"
                         helpText="This is an help text"
+                        endpoint="/api/pages"
                         onChange={action('change')}
                     />
                 </KeepValue>

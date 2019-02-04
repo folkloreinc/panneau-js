@@ -2,41 +2,31 @@ const path = require('path');
 const glob = require('glob');
 const fs = require('fs');
 const webpack = require('webpack');
-const getLocalIdent = require('../build/getLocalIdent');
+const getLocalIdent = require('../build/lib/getLocalIdent');
+const getResolveAliases = require('../build/lib/getResolveAliases');
+const getResolveModules = require('../build/lib/getResolveModules');
 const getPackagesPaths = require('../build/lib/getPackagesPaths');
 
 const CSS_NAME = 'panneau-[name]-[local]';
 
 module.exports = (storybookBaseConfig, configType) => {
-    // Alias packages
-    const alias = {
-        jquery: require.resolve('jquery-slim'),
-    };
-    const exactPackages = [
-        'lodash',
-        'babel-runtime',
-    ];
-    getPackagesPaths().forEach((packagePath) => {
-        storybookBaseConfig.resolve.modules.push(path.resolve(packagePath, './node_modules'));
-        const packageJSON = require(path.resolve(packagePath, './package.json'));
-        alias[packageJSON.name] = path.resolve(packagePath, './src/index');
-        const dependencies = []
-            .concat(Object.keys(packageJSON.dependencies || {}))
-            .concat(Object.keys(packageJSON.devDependencies || {}));
-        dependencies.forEach((name) => {
-            const aliasPath = path.resolve(__dirname, `../node_modules/${name}`);
-            if (name.match(/^\@panneau/) || !fs.existsSync(aliasPath)) {
-                return;
-            }
-            if (exactPackages.indexOf(name) !== -1) {
-                alias[`${name}$`] = aliasPath;
-            } else {
-                alias[name] = aliasPath;
-            }
-        });
-    });
-    storybookBaseConfig.resolve.alias = alias;
 
+    storybookBaseConfig.resolve.alias = {
+        ...storybookBaseConfig.resolve.alias,
+        jquery: require.resolve('jquery-slim'),
+        ...getResolveAliases(),
+    };
+
+    storybookBaseConfig.resolve.modules = [
+        ...storybookBaseConfig.resolve.modules,
+        ...getResolveModules(),
+    ];
+
+    storybookBaseConfig.module.rules[0].include = [
+        ...getPackagesPaths().map(it => path.join(it, 'src')),
+        path.resolve(__dirname),
+        path.resolve(__dirname, '../.storybook-package')
+    ];
     storybookBaseConfig.module.rules[0].use[0].options.plugins.push(
         require.resolve('@babel/plugin-syntax-dynamic-import'),
         require.resolve('@babel/plugin-proposal-object-rest-spread'),
@@ -56,8 +46,6 @@ module.exports = (storybookBaseConfig, configType) => {
         loader: 'css-loader',
         options: {
             sourceMap: true,
-            localIdentName: CSS_NAME,
-            getLocalIdent,
         },
     };
 
@@ -79,11 +67,7 @@ module.exports = (storybookBaseConfig, configType) => {
         options: {
             sourceMap: true,
             includePaths: [
-                path.resolve(__dirname, '../node_modules'),
-                path.resolve(__dirname, '../fields/toggle/node_modules'),
-                path.resolve(__dirname, '../fields/date/node_modules'),
-                path.resolve(__dirname, '../fields/select/node_modules'),
-                path.resolve(__dirname, '../fields/slider/node_modules'),
+                ...getResolveModules(),
             ],
         },
     };
@@ -118,6 +102,11 @@ module.exports = (storybookBaseConfig, configType) => {
                     ...cssLoader.options,
                     modules: true,
                     importLoaders: 2,
+                    // prettier-ignore
+                    localIdentName: CSS_NAME,
+                    getLocalIdent: (context, localIdentName, localName) => (
+                        getLocalIdent(localIdentName, localName, context.resourcePath)
+                    ),
                 },
             },
             postCssLoader,

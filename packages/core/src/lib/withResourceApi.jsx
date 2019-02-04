@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import invariant from 'invariant';
-import get from 'lodash/get';
 import hoistStatics from 'hoist-non-react-statics';
 
 import * as PanneauPropTypes from './PropTypes';
@@ -12,8 +11,9 @@ function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
-const contextTypes = {
-    definition: PanneauPropTypes.definition,
+const propTypes = {
+    urlGenerator: PanneauPropTypes.urlGenerator.isRequired,
+    definition: PanneauPropTypes.definition.isRequired,
 };
 
 export default function withComponentsCollection(selectResourceFromProps, opts) {
@@ -41,8 +41,9 @@ export default function withComponentsCollection(selectResourceFromProps, opts) 
                 super(props);
 
                 const resource = finalSelectResourceFromProps(props);
-                const endpointHost = get(props.definition, 'endpointHost', '/');
-                this.api = new ResourceApi(resource, props.urlGenerator, {
+                const { definition, urlGenerator } = props;
+                const { endpointHost = '/' } = definition || {};
+                this.api = new ResourceApi(resource, urlGenerator, {
                     host: endpointHost,
                 });
             }
@@ -64,7 +65,7 @@ export default function withComponentsCollection(selectResourceFromProps, opts) 
             }
         }
 
-        WithResourceApi.contextTypes = contextTypes;
+        WithResourceApi.propTypes = propTypes;
         WithResourceApi.displayName = `WithResourceApi(${getDisplayName(
             WrappedComponent,
         )})`;

@@ -58,12 +58,12 @@
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
         "prop-types": "^15.6.0",
-        "react-ace": "^5.4.0"
+        "react-ace": "^5.4.0",
+        "react-loadable": "^5.5.0"
     },
     "devDependencies": {
-        "babel-preset-es2015": "^6.24.1",
-        "react": ">=15.0.0 || ^16.0.0",
-        "react-dom": ">=15.0.0 || ^16.0.0"
+        "react": "^16.7.0",
+        "react-dom": "^16.7.0"
     },
     "peerDependencies": {
         "react": ">=15.0.0 || ^16.0.0",

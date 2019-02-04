@@ -4,6 +4,7 @@ import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 import { FormGroup } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { AceEditor, loadBrace } from './vendors';
 
 import styles from './styles.scss';
 
@@ -53,7 +54,6 @@ class CodeField extends Component {
     constructor(props) {
         super(props);
 
-        this.AceEditor = null;
         this.brace = null;
         this.importCanceled = false;
 
@@ -68,23 +68,14 @@ class CodeField extends Component {
 
     componentDidMount() {
         const { language, theme, extensions } = this.props;
-        import(/* webpackChunkName: "vendor/react-ace" */ 'react-ace')
-            .then((AceEditor) => {
-                this.AceEditor = AceEditor.default;
-            })
-            .then(() => import(/* webpackChunkName: "vendor/brace/mode/[request]" */ `brace/mode/${language}`))
-            .then(() => import(/* webpackChunkName: "vendor/brace/theme/[request]" */ `brace/theme/${theme}`))
-            .then(() => Promise.all(
-                extensions.map(ext => import(/* webpackChunkName: "vendor/brace/ext/[request]" */ `brace/ext/${ext}`)),
-            ))
-            .then(() => {
-                if (this.importCanceled) {
-                    return;
-                }
-                this.setState({
-                    ready: true,
-                });
+        loadBrace(language, theme, extensions).then(() => {
+            if (this.importCanceled) {
+                return;
+            }
+            this.setState({
+                ready: true,
             });
+        });
     }
 
     componentWillUnmount() {
@@ -123,7 +114,6 @@ class CodeField extends Component {
             language, theme, value, isJson, width, height, editorProps, ...props
         } = this.props;
         const { textValue } = this.state;
-        const { AceEditor } = this;
 
         const val = language === 'json' && isJson ? textValue : CodeField.parse(value);
 

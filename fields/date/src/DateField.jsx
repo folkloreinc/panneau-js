@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
 import 'react-dates/initialize';
+import moment from 'moment';
 import { FormGroup } from '@panneau/field';
 import TextField from '@panneau/field-text';
 import Popover from '@panneau/modal-popover';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import 'react-dates/lib/css/_datepicker.css';
+
+import { DayPickerRangeController, DayPickerSingleDateController } from './vendors';
 import styles from './styles.scss';
 
 const propTypes = {
@@ -45,7 +48,7 @@ const defaultProps = {
     onChange: null,
 };
 
-const getMomentOrNull = (moment, str) => {
+const getMomentOrNull = (str) => {
     if (str !== null && str !== '') {
         return null;
     }
@@ -56,8 +59,8 @@ const getMomentOrNull = (moment, str) => {
     return date;
 };
 
-const getDateFormatted = (moment, str, format) => {
-    const date = getMomentOrNull(moment, str);
+const getDateFormatted = (str, format) => {
+    const date = getMomentOrNull(str);
     return date !== null ? date.format(format) : null;
 };
 
@@ -74,52 +77,27 @@ class DateField extends Component {
         this.onInputRangeFocus = this.onInputRangeFocus.bind(this);
         this.onButtonClick = this.onButtonClick.bind(this);
         this.onClose = this.onClose.bind(this);
-        this.Component = null;
-        this.moment = null;
         this.input = null;
         this.startInput = null;
         this.endInput = null;
         this.refContainer = null;
 
+        const { type, value } = this.props;
         this.state = {
-            ready: false,
             opened: false,
             focusedInput: 'startDate',
-            momentValue: null,
+            momentValue: type === 'daterange'
+                ? {
+                    start: isObject(value)
+                        ? getMomentOrNull(value.start)
+                        : moment(),
+                    end: isObject(value)
+                        ? getMomentOrNull(value.end)
+                        : moment(),
+                }
+                : getMomentOrNull(value),
             textValue: null,
         };
-    }
-
-    componentDidMount() {
-        const { type, value } = this.props;
-        let componentName;
-        if (type === 'daterange') {
-            componentName = 'DayPickerRangeController';
-        } else {
-            componentName = 'DayPickerSingleDateController';
-        }
-        import(/* webpackChunkName: "vendor/react-dates/[request]" */ `react-dates/lib/components/${componentName}`)
-            .then((dep) => {
-                this.Component = dep.default;
-                return import(/* webpackChunkName: "vendor/moment" */ 'moment');
-            })
-            .then((dep) => {
-                this.moment = dep.default || dep;
-                this.setState({
-                    ready: true,
-                    momentValue:
-                        type === 'daterange'
-                            ? {
-                                start: isObject(value)
-                                    ? getMomentOrNull(this.moment, value.start)
-                                    : this.moment(),
-                                end: isObject(value)
-                                    ? getMomentOrNull(this.moment, value.end)
-                                    : this.moment(),
-                            }
-                            : getMomentOrNull(this.moment, value),
-                });
-            });
     }
 
     onChange(value) {
@@ -170,7 +148,7 @@ class DateField extends Component {
 
     onInputChange(val) {
         const { dateFormat, onChange } = this.props;
-        const newValue = getDateFormatted(this.moment, val, dateFormat);
+        const newValue = getDateFormatted(val, dateFormat);
         this.setState(
             {
                 textValue: val,
@@ -187,7 +165,7 @@ class DateField extends Component {
     onInputRangeChange(key, val) {
         const { value, dateFormat, onChange } = this.props;
         const { textValue, momentValue } = this.state;
-        const dateValue = val !== null && val !== '' ? this.moment(val) : null;
+        const dateValue = val !== null && val !== '' ? moment(val) : null;
         const newTextValue = {
             ...textValue,
             [key]: val,
@@ -365,7 +343,7 @@ class DateField extends Component {
         const { type, pickerProps: customPickerProps } = this.props;
         const { momentValue, focusedInput, opened } = this.state;
 
-        const DateComponent = this.Component;
+        const DateComponent = type === 'daterange' ? DayPickerRangeController : DayPickerSingleDateController;
 
         const pickerProps = type === 'daterange'
             ? {
@@ -405,11 +383,7 @@ class DateField extends Component {
         const {
             name, label, value, type, onChange, dateFormat, ...other
         } = this.props;
-        const { ready, opened } = this.state;
-
-        if (!ready) {
-            return null;
-        }
+        const { opened } = this.state;
 
         return (
             <FormGroup {...other} className={styles.container} name={name} label={label}>

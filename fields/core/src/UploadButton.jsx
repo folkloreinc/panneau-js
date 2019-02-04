@@ -6,6 +6,8 @@ import isString from 'lodash/isString';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
+import { FileInput, loadUploader } from './UploadButton.vendors';
+
 const messages = defineMessages({
     label: {
         id: 'core.buttons.upload',
@@ -49,7 +51,6 @@ class UploadButton extends Component {
         this.onUploadStart = this.onUploadStart.bind(this);
         this.onUploadComplete = this.onUploadComplete.bind(this);
 
-        this.FileInput = null;
         this.FineUploaderTraditional = null;
         this.uploader = null;
 
@@ -60,18 +61,13 @@ class UploadButton extends Component {
     }
 
     componentDidMount() {
-        import(/* webpackChunkName: "vendor/react-fine-uploader/file-input" */ 'react-fine-uploader/file-input')
-            .then((dep) => {
-                this.FileInput = dep.default;
-                return import(/* webpackChunkName: "vendor/fine-uploader-wrappers" */ 'fine-uploader-wrappers');
-            })
-            .then((dep) => {
-                this.FineUploaderTraditional = dep.default;
-                this.uploader = this.createUploader();
-                this.setState({
-                    ready: true,
-                });
+        loadUploader().then((FineUploaderTraditional) => {
+            this.FineUploaderTraditional = FineUploaderTraditional;
+            this.uploader = this.createUploader();
+            this.setState({
+                ready: true,
             });
+        });
     }
 
     componentWillUnmount() {
@@ -134,7 +130,6 @@ class UploadButton extends Component {
             return null;
         }
 
-        const { FileInput } = this;
         const { accept, label: normalLabel, loadingLabel } = this.props;
         const { loading } = this.state;
         const label = loading ? loadingLabel : normalLabel;

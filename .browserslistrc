@@ -4,6 +4,6 @@ last 4 versions
 ie >= 11
 
 [development]
-last 2 chrome versions
-last 2 firefox versions
+last 10 chrome versions
+last 10 firefox versions
 last 2 edge versions

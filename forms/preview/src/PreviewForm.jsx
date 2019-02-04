@@ -16,6 +16,7 @@ const stylePropType = PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, 
 const propTypes = {
     formsCollection: PanneauPropTypes.componentsCollection.isRequired,
     previewsCollection: PanneauPropTypes.componentsCollection.isRequired,
+    value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     form: PropTypes.string,
     preview: PropTypes.string,
     paneStyle: stylePropType,
@@ -33,6 +34,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    value: null,
     form: 'normal',
     preview: 'json',
     paneStyle: { position: 'relative' },

@@ -91,7 +91,7 @@ class TextField extends Component {
         const { type, ckeditorBasePath } = this.props;
         if (type === 'editor') {
             window.CKEDITOR_BASEPATH = ckeditorBasePath;
-            import(/* webpackChunkName: "vendor/ckeditor" */ 'ckeditor').then(() => {
+            import('ckeditor').then(() => {
                 if (this.importCanceled) {
                     return;
                 }

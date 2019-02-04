@@ -1,5 +1,6 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';// eslint-disable-line import/no-extraneous-dependencies
+import { IntlProvider } from 'react-intl';
 
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
@@ -27,23 +28,25 @@ storiesOf('Fields/Toggle', module)
         </div>
     ))
     .add('select', () => (
-        <div>
-            <KeepValue>
-                <ToggleField
-                    label="Label"
-                    type="select"
-                    helpText="This is an help text"
-                    onChange={action('change')}
-                />
-            </KeepValue>
-            <KeepValue>
-                <ToggleField
-                    label="Disabled"
-                    disabled
-                    type="select"
-                    helpText="This is an help text"
-                    onChange={action('change')}
-                />
-            </KeepValue>
-        </div>
+        <IntlProvider locale="en">
+            <div>
+                <KeepValue>
+                    <ToggleField
+                        label="Label"
+                        type="select"
+                        helpText="This is an help text"
+                        onChange={action('change')}
+                    />
+                </KeepValue>
+                <KeepValue>
+                    <ToggleField
+                        label="Disabled"
+                        disabled
+                        type="select"
+                        helpText="This is an help text"
+                        onChange={action('change')}
+                    />
+                </KeepValue>
+            </div>
+        </IntlProvider>
     ));

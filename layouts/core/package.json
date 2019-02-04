@@ -55,7 +55,6 @@
     "@babel/runtime": "^7.0.0",
     "@panneau/core": "^0.6.30",
     "@panneau/field": "^0.6.30",
-    "bootstrap.native": "^2.0.21",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "pascal-case": "^2.0.1",
@@ -64,8 +63,9 @@
     "react-router-dom": "^4.3.1"
   },
   "devDependencies": {
-    "react": ">=15.0.0 || ^16.0.0",
-    "react-dom": ">=15.0.0 || ^16.0.0"
+      "react": "^16.7.0",
+      "react-dom": "^16.7.0",
+    "bootstrap": "~4.1.1"
   },
   "peerDependencies": {
     "react": ">=15.0.0 || ^16.0.0",

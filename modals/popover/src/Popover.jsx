@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Popper from 'popper.js';
+import ResizeObserver from 'resize-observer-polyfill';
 
 import OutsideClickHandler from './OutsideClickHandler';
 import styles from './styles.scss';
@@ -43,12 +44,14 @@ class Popover extends Component {
     constructor(props) {
         super(props);
 
+        this.onResize = this.onResize.bind(this);
         this.onOutsideClick = this.onOutsideClick.bind(this);
         this.updatePopoverStyle = this.updatePopoverStyle.bind(this);
 
         this.popper = null;
         this.refPopover = null;
         this.refArrow = null;
+        this.resizeObserver = null;
 
         this.state = {
             placement: props.elementPlacement,
@@ -62,6 +65,9 @@ class Popover extends Component {
         if (element !== null) {
             this.popper = this.createPopper(element);
         }
+
+        this.resizeObserver = new ResizeObserver(this.onResize);
+        this.resizeObserver.observe(this.refPopover);
     }
 
     componentDidUpdate({
@@ -78,15 +84,26 @@ class Popover extends Component {
         }
 
         const visibleChanged = visible !== prevVisible;
-        if (visibleChanged && visible) {
+        if (visibleChanged && visible && this.popper !== null) {
             this.popper.scheduleUpdate();
         }
     }
 
     componentWillUnmount() {
+        if (this.resizeObserver !== null) {
+            this.resizeObserver.disconnect();
+            this.resizeObserver = null;
+        }
+
         if (this.popper !== null) {
             this.popper.destroy();
             this.popper = null;
+        }
+    }
+
+    onResize() {
+        if (this.popper !== null) {
+            this.popper.scheduleUpdate();
         }
     }
 

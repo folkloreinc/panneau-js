@@ -62,15 +62,19 @@ const messages = defineMessages({
 
 const propTypes = {
     intl: PanneauPropTypes.intl.isRequired,
+    urlGenerator: PanneauPropTypes.urlGenerator.isRequired,
     formsCollection: PanneauPropTypes.componentsCollection.isRequired,
-    itemId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     title: PanneauPropTypes.label,
     titleTyped: PanneauPropTypes.label,
     action: PropTypes.string,
     resource: PanneauPropTypes.resource.isRequired,
     resourceApi: PanneauPropTypes.resourceApi.isRequired,
+    itemId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     item: PropTypes.shape({
         id: PropTypes.number,
+    }),
+    query: PropTypes.shape({
+        type: PropTypes.string,
     }),
     successNoticeLabel: PanneauPropTypes.label,
     errorNoticeLabel: PanneauPropTypes.label,
@@ -89,6 +93,7 @@ const defaultProps = {
     action: 'create',
     title: messages.title,
     titleTyped: messages.titleTyped,
+    query: null,
     itemId: null,
     item: null,
     errors: null,
@@ -117,7 +122,9 @@ const defaultProps = {
 };
 
 class ResourceForm extends Component {
-    static getDerivedStateFromProps({ errors: nextErrors }, { errors }) {
+    static getDerivedStateFromProps({ errors: nextErrors }, state) {
+        console.log(state);
+        const { errors } = state;
         const errorsChanged = nextErrors !== errors;
         if (errorsChanged) {
             return {
@@ -129,6 +136,8 @@ class ResourceForm extends Component {
     }
 
     constructor(props) {
+        console.log('AAA');
+
         super(props);
 
         this.onItemLoaded = this.onItemLoaded.bind(this);

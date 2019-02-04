@@ -22,7 +22,7 @@ const propTypes = {
     action: PropTypes.string,
     method: PropTypes.string,
     fields: PropTypes.arrayOf(PropTypes.object),
-    value: PropTypes.shape({}),
+    value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     errors: FormPropTypes.errors,
     generalError: PropTypes.string,
     generalErrorDefaultMessage: PropTypes.string,

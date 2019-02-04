@@ -1,5 +1,6 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';// eslint-disable-line import/no-extraneous-dependencies
+import { IntlProvider } from 'react-intl';
 
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
@@ -37,11 +38,13 @@ const fields = [
 
 storiesOf('Fields/Core/FieldsGroup', module)
     .add('simple', () => (
-        <KeepValue>
-            <FieldsGroup
-                fieldsCollection={fieldsCollection}
-                fields={fields}
-                onChange={action('change')}
-            />
-        </KeepValue>
+        <IntlProvider locale="en">
+            <KeepValue>
+                <FieldsGroup
+                    fieldsCollection={fieldsCollection}
+                    fields={fields}
+                    onChange={action('change')}
+                />
+            </KeepValue>
+        </IntlProvider>
     ));
