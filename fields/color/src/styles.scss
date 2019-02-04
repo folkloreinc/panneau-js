@@ -1,6 +1,7 @@
 @import '@panneau/core/src/styles/variables';
 
 .formGroup {
+    /* stylelint-disable selector-class-pattern, selector-max-compound-selectors */
     :global {
         .btn {
             height: 32px;
@@ -14,6 +15,7 @@
             }
         }
     }
+    /* stylelint-enable selector-class-pattern, selector-max-compound-selectors */
 
     .swatch {
         display: block;
@@ -22,26 +24,19 @@
         border: solid 1px #ddd;
         border-radius: 2px;
 
-        background-image:
-          -moz-linear-gradient(45deg, #ddd 25%, transparent 25%),
-          -moz-linear-gradient(-45deg, #ddd 25%, transparent 25%),
-          -moz-linear-gradient(45deg, transparent 75%, #ddd 75%),
-          -moz-linear-gradient(-45deg, transparent 75%, #ddd 75%);
-        background-image:
-          -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, #ddd), color-stop(.25, transparent)),
-          -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #ddd), color-stop(.25, transparent)),
-          -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, #ddd)),
-          -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #ddd));
-
-        background-size: 10px 10px;
-        -webkit-background-size: 10px 11px; /* override value for shitty webkit */
+        background-image: linear-gradient(45deg, #ddd 25%, transparent 25%),
+            linear-gradient(-45deg, #ddd 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, #ddd 75%),
+            linear-gradient(-45deg, transparent 75%, #ddd 75%);
 
         background-position: 0 0, 5px 0, 5px -5px, 0 5px;
+        -webkit-background-size: 10px 11px; // stylelint-disable-line property-no-vendor-prefix
+        background-size: 10px 10px; /* override value for shitty webkit */
     }
 
     .clearBtn {
-        padding-right: .3rem;
-        padding-left: .3rem;
+        padding-right: 0.3rem;
+        padding-left: 0.3rem;
         font-size: $font-size-sm;
     }
 
