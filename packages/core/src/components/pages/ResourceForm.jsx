@@ -151,14 +151,10 @@ class ResourceForm extends Component {
     }
 
     componentDidMount() {
-        const {
-            itemId, action, resourceApi,
-        } = this.props;
-        if (action === 'edit' || action === 'show') {
-            resourceApi
-                .show(itemId)
-                .then(this.onItemLoaded)
-                .catch(this.onItemLoadError);
+        const { action } = this.props;
+        const { item } = this.state;
+        if ((action === 'edit' || action === 'show') && item === null) {
+            this.loadItem();
         }
     }
 
@@ -214,9 +210,7 @@ class ResourceForm extends Component {
     }
 
     onClickSwitchType(e) {
-        const {
-            intl, resource, confirmSwitchTypeMessage,
-        } = this.props;
+        const { intl, resource, confirmSwitchTypeMessage } = this.props;
         const { formValue } = this.state;
         const types = get(resource, 'types', []);
         const currentTypeId = this.getType();
@@ -238,22 +232,46 @@ class ResourceForm extends Component {
         gotoResourceAction('index');
     }
 
-    getType() {
-        const { resource } = this.props;
-        const { item } = this.state;
-        const types = get(resource, 'types', []);
-        const defaultType = types.find(it => get(it, 'default', false) === true) || get(types, '0', null);
-        const locationType = this.getTypeFromLocation();
-        const formType = get(item, 'type', get(locationType || defaultType || null, 'id', null));
-        return formType;
-    }
-
     getTypeFromLocation() {
         const { query, resource } = this.props;
         const { type = null } = query;
         const types = get(resource, 'types', []);
-        const locationType = types.find(it => it.id === type) || null;
-        return locationType;
+        return type !== null ? types.find(it => it.id === type) || null : null;
+    }
+
+    getType() {
+        const { resource } = this.props;
+        const { item } = this.state;
+        const { types = [] } = resource;
+        // prettier-ignore
+        const defaultType = types.find(({ default: isDefault = false }) => (
+            isDefault
+        )) || types[0] || null;
+        const locationType = this.getTypeFromLocation();
+        return (item || {}).type || (locationType || defaultType || {}).id || null;
+    }
+
+    getCurrentType() {
+        if (!this.isTyped()) {
+            return null;
+        }
+        const { resource } = this.props;
+        const { types = [] } = resource;
+        const currentTypeId = this.getType();
+        return types.find(({ id }) => id === currentTypeId) || null;
+    }
+
+    isTyped() {
+        const { resource } = this.props;
+        return (resource.type || null) === 'typed';
+    }
+
+    loadItem() {
+        const { itemId, resourceApi } = this.props;
+        resourceApi
+            .show(itemId)
+            .then(this.onItemLoaded)
+            .catch(this.onItemLoadError);
     }
 
     submitForm() {
@@ -277,21 +295,12 @@ class ResourceForm extends Component {
             : resourceApi.update(item.id, data || item);
     }
 
-    renderHeader() {
+    renderTitle() {
         const {
-            action, resource, title, titleTyped, urlGenerator,
+            action, resource, title, titleTyped,
         } = this.props;
 
-        const resourceType = get(resource, 'type', 'default');
-        const isTyped = resourceType === 'typed';
-        const types = isTyped ? get(resource, 'types', []) : null;
-        const currentTypeId = isTyped ? this.getType() : null;
-        const currentType = isTyped ? types.find(({ id }) => id === currentTypeId) || null : null;
-
-        const headerClassNames = classNames({
-            'py-4': true,
-            [styles.header]: true,
-        });
+        const currentType = this.getCurrentType();
 
         const name = get(
             resource,
@@ -319,11 +328,12 @@ class ResourceForm extends Component {
             );
         const defaultTitle = currentType !== null ? titleTyped : title;
         const finalTitle = customTitle || defaultTitle;
-        const titleElement = (
-            <h1 className={classNames([styles.title, 'mb-0', 'mt-0'])}>
+        return (
+            <h1 className={classNames(['mb-0', 'mt-0', styles.title])}>
                 {isMessage(finalTitle) ? (
                     <FormattedHTMLMessage
                         {...finalTitle}
+                        tagName="span"
                         values={{ name, type: currentType !== null ? currentType.label : null }}
                     />
                 ) : (
@@ -331,21 +341,28 @@ class ResourceForm extends Component {
                 )}
             </h1>
         );
+    }
+
+    renderHeader() {
+        const { action, resource, urlGenerator } = this.props;
+
+        const { types = [] } = resource;
+        const currentType = this.getCurrentType();
 
         return (
-            <div className={headerClassNames}>
-                {isTyped && action === 'create' ? (
+            <div className={classNames(['py-4', styles.header])}>
+                {this.isTyped() && action === 'create' ? (
                     <div className={styles.cols}>
-                        <div className={styles.col}>{titleElement}</div>
+                        <div className={styles.col}>{this.renderTitle()}</div>
                         <div className={classNames([styles.col, 'text-right'])}>
                             <div className={classNames(['btn-group', 'btn-group-sm'])}>
                                 <button
                                     type="button"
-                                    className={classNames({
-                                        btn: true,
-                                        'btn-primary': true,
-                                        'dropdown-toggle': true,
-                                    })}
+                                    className={classNames([
+                                        'btn',
+                                        'btn-primary',
+                                        'dropdown-toggle',
+                                    ])}
                                     data-toggle="dropdown"
                                     aria-haspopup="true"
                                     aria-expanded="false"
@@ -358,15 +375,9 @@ class ResourceForm extends Component {
                                     {types.map(({ id, label }) => (
                                         <Link
                                             key={`add-button-${id}`}
-                                            to={{
-                                                pathname: urlGenerator.route('resource.create', {
-                                                    resource: resource.id,
-                                                }),
-                                                search: `?type=${id}`,
-                                                state: {
-                                                    type: id,
-                                                },
-                                            }}
+                                            to={`${urlGenerator.route('resource.create', {
+                                                resource: resource.id,
+                                            })}?type=${id}`}
                                             className={classNames([
                                                 'dropdown-item',
                                                 {
@@ -383,7 +394,7 @@ class ResourceForm extends Component {
                         </div>
                     </div>
                 ) : (
-                    titleElement
+                    this.renderTitle()
                 )}
             </div>
         );
@@ -391,17 +402,14 @@ class ResourceForm extends Component {
 
     renderErrors() {
         const { errors } = this.state;
-
-        const errorsClassNames = classNames({
-            [styles.errors]: true,
-            alert: true,
-            'alert-danger': true,
-        });
-
         /* eslint-disable react/no-array-index-key */
         return isArray(errors) && errors.length > 0 ? (
-            <div className={errorsClassNames}>
-                <ul>{errors.map((error, index) => <li key={`error-${index}`}>{error}</li>)}</ul>
+            <div className={classNames(['alert', 'alert-danger', styles.errors])}>
+                <ul>
+                    {errors.map((error, index) => (
+                        <li key={`error-${index}`}>{error}</li>
+                    ))}
+                </ul>
             </div>
         ) : null;
         /* eslint-enable react/no-array-index-key */
@@ -422,16 +430,22 @@ class ResourceForm extends Component {
             formNoticeIcon = 'fas fa-exclamation-circle';
             formNoticeType = 'danger';
         }
-        const noticeCellTextClassNames = classNames({
-            [`text-${formNoticeType}`]: formNoticeType,
-        });
-        const noticeCellIconClassNames = classNames({
-            [styles.noticeIcon]: true,
-            [formNoticeIcon]: formNoticeIcon !== null,
-        });
+
         return (
-            <span className={noticeCellTextClassNames}>
-                <span className={noticeCellIconClassNames} aria-hidden="true" />
+            <span
+                className={classNames({
+                    [`text-${formNoticeType}`]: formNoticeType,
+                })}
+            >
+                <span
+                    className={classNames([
+                        styles.noticeIcon,
+                        {
+                            [formNoticeIcon]: formNoticeIcon !== null,
+                        },
+                    ])}
+                    aria-hidden="true"
+                />
                 {isMessage(formNoticeText) ? (
                     <FormattedMessage {...formNoticeText} />
                 ) : (
@@ -479,17 +493,13 @@ class ResourceForm extends Component {
             const formType = this.getType();
             formProps.fields = get(
                 formProps,
-                `fields.${formType !== null ? formType : 'default'}`,
+                `fields.${formType || 'default'}`,
                 get(formProps, 'fields.default', get(formProps, 'fields', [])),
             );
         }
 
-        const formClassNames = classNames({
-            [styles.form]: true,
-        });
-
         return FormComponent !== null ? (
-            <div className={formClassNames}>
+            <div className={styles.form}>
                 <FormComponent
                     readOnly={readOnly}
                     buttons={formButtons}
@@ -510,12 +520,7 @@ class ResourceForm extends Component {
     // eslint-disable-next-line class-methods-use-this
     renderLoading() {
         return (
-            <div
-                className={classNames({
-                    'py-4': true,
-                    [styles.loading]: true,
-                })}
-            >
+            <div className={classNames(['py-4', styles.loading])}>
                 <Loading loading />
             </div>
         );
@@ -526,12 +531,8 @@ class ResourceForm extends Component {
         const { action } = this.props;
         const isLoading = action !== 'create' && item === null;
 
-        const containerClassNames = classNames({
-            [styles.container]: true,
-        });
-
         return (
-            <div className={containerClassNames}>
+            <div className={styles.container}>
                 <div className="container">
                     <div className="row justify-content-md-center">
                         <div className="col-lg-9">
