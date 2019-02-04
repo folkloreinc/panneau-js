@@ -10,6 +10,14 @@ const PreviewFormWithFields = withFieldsCollection({
     childContext: true,
 })(PreviewForm);
 
+const PreviewFormWithForms = withFormsCollection({
+    childContext: true,
+})(PreviewFormWithFields);
+
+const PreviewFormWithPreviews = withPreviewsCollection({
+    childContext: true,
+})(PreviewFormWithForms);
+
 const fields = [
     {
         type: 'text',
@@ -25,7 +33,7 @@ const value = {
 test('match snapshot', () => {
     const component = renderer.create((
         <IntlProvider locale="en">
-            <PreviewFormWithFields
+            <PreviewFormWithPreviews
                 fields={fields}
                 value={value}
             />

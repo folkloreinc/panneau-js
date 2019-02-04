@@ -3,6 +3,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { withFieldsCollection } from '@panneau/fields';
 import { withPreviewsCollection } from '@panneau/previews';
+import { withFormsCollection } from '@panneau/forms';
 /* eslint-enable import/no-extraneous-dependencies */
 import { IntlProvider } from 'react-intl';
 
@@ -14,9 +15,13 @@ const PreviewFormWithFields = withFieldsCollection({
     childContext: true,
 })(PreviewForm);
 
-const PreviewFormWithPreviews = withPreviewsCollection({
+const PreviewFormWithForms = withFormsCollection({
     childContext: true,
 })(PreviewFormWithFields);
+
+const PreviewFormWithPreviews = withPreviewsCollection({
+    childContext: true,
+})(PreviewFormWithForms);
 
 const fields = [
     {
