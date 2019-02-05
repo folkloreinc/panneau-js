@@ -54,7 +54,6 @@
         "@babel/runtime": "^7.0.0",
         "@panneau/core": "^0.6.30",
         "@panneau/form-normal": "^0.6.30",
-        "hoist-non-react-statics": "^2.3.1",
         "invariant": "^2.2.2",
         "lodash": "^4.17.4",
         "prop-types": "^15.6.0"

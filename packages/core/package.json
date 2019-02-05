@@ -60,7 +60,7 @@
         "bootstrap": "~4.1.1",
         "classnames": "^2.2.5",
         "connected-react-router": "^6.0.0",
-        "hoist-non-react-statics": "^2.3.1",
+        "hoist-non-react-statics": "^3.3.0",
         "invariant": "^2.2.2",
         "jquery": "^3.3.1",
         "js-cookie": "^2.2.0",

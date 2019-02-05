@@ -122,9 +122,7 @@ const defaultProps = {
 };
 
 class ResourceForm extends Component {
-    static getDerivedStateFromProps({ errors: nextErrors }, state) {
-        console.log(state);
-        const { errors } = state;
+    static getDerivedStateFromProps({ errors: nextErrors }, { errors }) {
         const errorsChanged = nextErrors !== errors;
         if (errorsChanged) {
             return {
@@ -136,8 +134,6 @@ class ResourceForm extends Component {
     }
 
     constructor(props) {
-        console.log('AAA');
-
         super(props);
 
         this.onItemLoaded = this.onItemLoaded.bind(this);

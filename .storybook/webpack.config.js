@@ -12,8 +12,9 @@ const CSS_NAME = 'panneau-[name]-[local]';
 module.exports = (storybookBaseConfig, configType) => {
 
     storybookBaseConfig.resolve.alias = {
-        ...storybookBaseConfig.resolve.alias,
+        // ...storybookBaseConfig.resolve.alias,
         jquery: require.resolve('jquery-slim'),
+        'hoist-non-react-statics': path.resolve(__dirname, '../node_modules/hoist-non-react-statics'),
         ...getResolveAliases(),
     };
 
@@ -31,6 +32,9 @@ module.exports = (storybookBaseConfig, configType) => {
         require.resolve('@babel/plugin-syntax-dynamic-import'),
         require.resolve('@babel/plugin-proposal-object-rest-spread'),
     );
+    storybookBaseConfig.module.rules[0].use[0].options.cacheDirectory = true;
+    storybookBaseConfig.module.rules[0].use[0].options.cacheCompression = true;
+    storybookBaseConfig.module.rules[0].use[0].options.compact = true;
     // Exclude all node_modules folders
     storybookBaseConfig.module.rules[0].exclude.push(/node_modules/);
 
