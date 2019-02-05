@@ -7,26 +7,28 @@ import { pascal as pascalCase } from 'change-case';
 const generatorPackageJSON = require('../../package.json');
 
 class PackageGenerator extends Generator {
-    constructor(options, ...args) {
+    constructor(options = {}, ...args) {
         super(...args);
 
         const {
-            namePrompt,
-            title,
-            packagePrefix,
-            componentSuffix,
-            packagesPath,
-            packageDescription,
-            packageDependencies,
-        } = options || {};
+            namePrompt = null,
+            title = '',
+            packagePrefix = '',
+            componentPrefix = '',
+            componentSuffix = '',
+            packagesPath = './',
+            packageDescription = '',
+            packageDependencies = [],
+        } = options;
 
-        this.namePrompt = namePrompt || null;
-        this.title = title || '';
-        this.packagePrefix = packagePrefix || '';
-        this.componentSuffix = componentSuffix || '';
-        this.packagesPath = packagesPath || './';
-        this.packageDescription = packageDescription || '';
-        this.packageDependencies = packageDependencies || null;
+        this.namePrompt = namePrompt;
+        this.title = title;
+        this.packagePrefix = packagePrefix;
+        this.componentPrefix = componentPrefix;
+        this.componentSuffix = componentSuffix;
+        this.packagesPath = packagesPath;
+        this.packageDescription = packageDescription;
+        this.packageDependencies = packageDependencies;
 
         this.argument('name', {
             type: String,
@@ -97,7 +99,7 @@ class PackageGenerator extends Generator {
     configuring() {
         this.options.prettyName = this.options['pretty-name'] || pascalCase(this.options.name);
         this.options.componentName = this.options['component-name']
-            || pascalCase(`${this.options.name}${this.componentSuffix}`);
+            || pascalCase(`${this.componentPrefix}${this.options.name}${this.componentSuffix}`);
     }
 
     get writing() {

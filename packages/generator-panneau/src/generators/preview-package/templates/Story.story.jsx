@@ -6,11 +6,15 @@ import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
 import <%= componentName %> from '../<%= componentName %>';
 
+const value = {
+    text: 'Text',
+};
+
 storiesOf('Previews/<%= prettyName %>', module)
     .add('simple', () => (
         <div>
             <<%= componentName %>
-
+                value={value}
             />
         </div>
     ));
