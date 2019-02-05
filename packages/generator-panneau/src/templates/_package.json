@@ -51,7 +51,7 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/core": "^0.3.7",
+        "@panneau/core": "^0.6.28",
         "@babel/runtime": "^7.0.0",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
@@ -59,8 +59,8 @@
     },
     "devDependencies": {
         "bootstrap": "^4.1.1",
-        "react": ">=15.0.0 || ^16.0.0",
-        "react-dom": ">=15.0.0 || ^16.0.0"
+        "react": "^16.7.0",
+        "react-dom": "^16.7.0"
     },
     "peerDependencies": {
         "react": ">=15.0.0 || ^16.0.0",

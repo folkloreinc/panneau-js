@@ -64,6 +64,19 @@ class PackageGenerator extends Generator {
         return this.fs.exists(specificPath) ? specificPath : generalPath;
     }
 
+    updatePanneauDependenciesVersion(dependencies) {
+        const { version } = this.options;
+        return Object.keys(dependencies).reduce(
+            (deps, packageName) => ({
+                ...deps,
+                [packageName]: packageName.match(/^@panneau\//)
+                    ? `^${version}`
+                    : dependencies[packageName],
+            }),
+            {},
+        );
+    }
+
     get prompting() {
         return {
             welcome() {
@@ -133,7 +146,14 @@ class PackageGenerator extends Generator {
                         [dependencyMatches[1]]: dependencyMatches[2],
                     };
                 });
-                this.fs.writeJSON(destPath, merge(templatePackage, currentPackage, newPackage));
+                const templateData = merge(templatePackage, currentPackage, newPackage);
+                templateData.dependencies = this.updatePanneauDependenciesVersion(
+                    templateData.dependencies,
+                );
+                templateData.devDependencies = this.updatePanneauDependenciesVersion(
+                    templateData.devDependencies,
+                );
+                this.fs.writeJSON(destPath, templateData);
             },
 
             files() {
