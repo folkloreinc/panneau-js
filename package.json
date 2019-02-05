@@ -93,7 +93,7 @@
         "jquery-slim": "^3.0.0",
         "jsdom": "^11.6.2",
         "json-loader": "^0.5.7",
-        "lerna": "^2.9.0",
+        "lerna": "^3.10.7",
         "lodash": "^4.17.11",
         "mini-css-extract-plugin": "^0.5.0",
         "mkdirp": "^0.5.1",
