@@ -118,6 +118,7 @@
         "react": "^16.7.0",
         "react-dev-utils": "^7.0.1",
         "react-dom": "^16.7.0",
+        "react-intl": "^2.8.0",
         "react-styleguidist": "^8.0.6",
         "sass-loader": "^6.0.7",
         "sinon": "^4.3.0",

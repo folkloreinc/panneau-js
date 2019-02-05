@@ -1,3 +1,4 @@
+const path = require('path');
 const {
     jsLoader,
     jsDependenciesLoader,
@@ -16,7 +17,13 @@ module.exports = {
                 oneOf: [
                     fontsLoader,
                     imagesLoader,
-                    jsLoader,
+                    {
+                        ...jsLoader,
+                        include: [
+                            ...jsLoader.include,
+                            path.join(__dirname, './styleguide'),
+                        ],
+                    },
                     jsDependenciesLoader,
                     styleCssLoader,
                     styleGlobalSassLoader,

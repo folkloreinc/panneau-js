@@ -15,7 +15,7 @@
     },
     "overrides": [
         {
-            "files": ["build/**", ".storybook/**", ".storybook-package/**"],
+            "files": ["*.config.js", "build/**", ".storybook/**", ".storybook-package/**"],
             "rules": {
                 "import/no-extraneous-dependencies": ["error", {
                     "devDependencies": true

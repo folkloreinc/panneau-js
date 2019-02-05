@@ -52,7 +52,7 @@ const defaultProps = {
 };
 
 // eslint-disable-next-line react/prefer-stateless-function
-class PreviewForm extends Component {
+export class PreviewForm extends Component {
     render() {
         const {
             formsCollection,
