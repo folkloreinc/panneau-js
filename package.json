@@ -91,6 +91,8 @@
         "invariant": "^2.2.4",
         "jest": "^24.1.0",
         "jquery-slim": "^3.0.0",
+        "jsdoc": "^3.5.5",
+        "jsdoc-babel": "^0.5.0",
         "jsdom": "^11.6.2",
         "json-loader": "^0.5.7",
         "lerna": "^3.10.7",
