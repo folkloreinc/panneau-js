@@ -1,0 +1,13 @@
+@import '@panneau/core/src/styles/variables';
+
+.container {
+    &.resetContainer {
+        all: initial;
+    }
+
+    &.resetChildren {
+        * {
+            all: initial;
+        }
+    }
+}
