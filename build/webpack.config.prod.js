@@ -84,9 +84,7 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
             loader: require.resolve(preProcessor),
             options: {
                 sourceMap: shouldUseSourceMap,
-                includePaths: [
-                    ...getResolveModules(),
-                ],
+                includePaths: [...getResolveModules()],
             },
         });
     }
@@ -265,7 +263,7 @@ module.exports = {
                             /\.eot$/,
                             /\.svg$/,
                         ],
-                        include: [/\/fonts\//],
+                        include: [/\/fonts\//, /\/webfonts\//],
                         loader: require.resolve('file-loader'),
                         options: {
                             limit: 10000,
@@ -287,9 +285,7 @@ module.exports = {
                     // Process JS with Babel.
                     {
                         test: /\.(js|jsx|mjs)$/,
-                        include: [
-                            path.resolve(process.env.PWD, './src/'),
-                        ],
+                        include: [path.resolve(process.env.PWD, './src/')],
                         loader: require.resolve('babel-loader'),
                         options: {
                             compact: true,
@@ -302,9 +298,7 @@ module.exports = {
                         ],
                         loader: require.resolve('babel-loader'),
                         options: {
-                            presets: [
-                                path.resolve(path.join(__dirname, './babel-preset')),
-                            ],
+                            presets: [path.resolve(path.join(__dirname, './babel-preset'))],
                             cacheDirectory: true,
                             // Save disk space when time isn't as important
                             cacheCompression: true,
