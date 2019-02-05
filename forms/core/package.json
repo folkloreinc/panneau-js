@@ -1,6 +1,6 @@
 {
   "name": "@panneau/form",
-  "version": "0.6.30",
+  "version": "0.6.31",
   "description": "Core forms for Panneau",
   "keywords": [
     "react",
@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@panneau/core": "^0.6.30",
+    "@panneau/core": "^0.6.31",
     "classnames": "^2.2.5",
     "hoist-non-react-statics": "^3.3.0",
     "invariant": "^2.2.4",
@@ -56,8 +56,8 @@
     "prop-types": "^15.6.0"
   },
   "devDependencies": {
-      "react": "^16.7.0",
-      "react-dom": "^16.7.0"
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
   },
   "peerDependencies": {
     "react": ">=15.0.0 || ^16.0.0",

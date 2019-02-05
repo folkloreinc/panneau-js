@@ -1,6 +1,6 @@
 {
   "name": "@panneau/preview-component",
-  "version": "0.6.28",
+  "version": "0.6.31",
   "description": "Component preview for Panneau",
   "keywords": [
     "react",
@@ -47,8 +47,8 @@
     "start": "npm run storybook"
   },
   "dependencies": {
-    "@panneau/core": "^0.6.28",
     "@babel/runtime": "^7.0.0",
+    "@panneau/core": "^0.6.31",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0"

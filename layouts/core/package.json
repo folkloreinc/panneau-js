@@ -1,6 +1,6 @@
 {
   "name": "@panneau/layout",
-  "version": "0.6.30",
+  "version": "0.6.31",
   "description": "Layout core for Panneau",
   "keywords": [
     "react",
@@ -49,8 +49,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@panneau/core": "^0.6.30",
-    "@panneau/field": "^0.6.30",
+    "@panneau/core": "^0.6.31",
+    "@panneau/field": "^0.6.31",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "pascal-case": "^2.0.1",
@@ -59,9 +59,9 @@
     "react-router-dom": "^4.3.1"
   },
   "devDependencies": {
-      "react": "^16.7.0",
-      "react-dom": "^16.7.0",
-    "bootstrap": "~4.1.1"
+    "bootstrap": "~4.1.1",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
   },
   "peerDependencies": {
     "react": ">=15.0.0 || ^16.0.0",

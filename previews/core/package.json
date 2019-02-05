@@ -1,6 +1,6 @@
 {
   "name": "@panneau/preview",
-  "version": "0.6.30",
+  "version": "0.6.31",
   "description": "Core previews for Panneau",
   "keywords": [
     "react",
@@ -48,15 +48,15 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@panneau/core": "^0.6.30",
+    "@panneau/core": "^0.6.31",
     "classnames": "^2.2.5",
     "invariant": "^2.2.4",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0"
   },
   "devDependencies": {
-      "react": "^16.7.0",
-      "react-dom": "^16.7.0"
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
   },
   "peerDependencies": {
     "react": ">=15.0.0 || ^16.0.0",
