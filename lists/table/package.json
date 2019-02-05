@@ -25,10 +25,6 @@
     {
       "name": "Nicolas Roy-Bourdages",
       "email": "nrb@atelierfolklore.ca"
-    },
-    {
-      "name": "Hugo St-Onge",
-      "email": "hso@atelierfolklore.ca"
     }
   ],
   "main": "lib/index.js",

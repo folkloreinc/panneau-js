@@ -25,10 +25,6 @@
         {
             "name": "Nicolas Roy-Bourdages",
             "email": "nrb@atelierfolklore.ca"
-        },
-        {
-            "name": "Hugo St-Onge",
-            "email": "hugostonge@gmail.com"
         }
     ],
     "main": "lib/index.js",
@@ -48,7 +44,7 @@
         "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore src/**/*.story.jsx,src/**/*.test.jsx",
         "babel": "npm run babel:es && npm run babel:cjs",
         "intl": "node ../../build/buildAllTranslations",
-        "build": "npm run babel && npm run intl",
+        "build": "npm run babel && npm run intl && npm run webpack",
         "prepare": "npm run clean && npm run build",
         "start": "npm run storybook"
     },

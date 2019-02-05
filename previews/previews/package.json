@@ -25,10 +25,6 @@
         {
             "name": "Nicolas Roy-Bourdages",
             "email": "nrb@atelierfolklore.ca"
-        },
-        {
-            "name": "Hugo St-Onge",
-            "email": "hso@atelierfolklore.ca"
         }
     ],
     "main": "lib/index.js",
@@ -53,6 +49,7 @@
     "dependencies": {
         "@babel/runtime": "^7.0.0",
         "@panneau/core": "^0.6.30",
+        "@panneau/preview-component": "^0.6.28",
         "@panneau/preview-json": "^0.6.30",
         "invariant": "^2.2.2",
         "lodash": "^4.17.4",
