@@ -1,3 +1,3 @@
-import PreviewJson from './PreviewJson';
+import JsonPreview from './JsonPreview';
 
-export default PreviewJson;
+export default JsonPreview;

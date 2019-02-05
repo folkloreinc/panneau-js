@@ -16,11 +16,11 @@ const defaultProps = {
     value: null,
 };
 
-const PreviewJson = ({ value }) => (
+const JsonPreview = ({ value }) => (
     <pre className={styles.container}>{JSON.stringify(value, null, 4)}</pre>
 );
 
-PreviewJson.propTypes = propTypes;
-PreviewJson.defaultProps = defaultProps;
+JsonPreview.propTypes = propTypes;
+JsonPreview.defaultProps = defaultProps;
 
-export default PreviewJson;
+export default JsonPreview;

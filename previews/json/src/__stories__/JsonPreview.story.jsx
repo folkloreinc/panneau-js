@@ -5,7 +5,7 @@ import { action } from '@storybook/addon-actions';
 import { IntlProvider } from 'react-intl';
 
 import storiesOf from '../../../../.storybook/storiesOf';
-import PreviewJson from '../PreviewJson';
+import JsonPreview from '../JsonPreview';
 
 const value = {
     text: 'Text',
@@ -21,9 +21,7 @@ storiesOf('Previews/Json', module, {
             <IntlProvider
                 locale="en"
             >
-                <PreviewJson
-                    value={value}
-                />
+                <JsonPreview value={value} />
             </IntlProvider>
         </div>
     ));

@@ -3,7 +3,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 /* eslint-enable import/no-extraneous-dependencies */
 import { IntlProvider } from 'react-intl';
-import PreviewJson from '../PreviewJson';
+import JsonPreview from '../JsonPreview';
 
 const value = {
     text: 'Text',
@@ -12,7 +12,7 @@ const value = {
 test('match snapshot', () => {
     const component = renderer.create((
         <IntlProvider locale="en">
-            <PreviewJson
+            <JsonPreview
                 value={value}
             />
         </IntlProvider>
