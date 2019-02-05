@@ -2,6 +2,8 @@ import React from 'react';
 /* eslint-disable import/no-extraneous-dependencies */
 import renderer from 'react-test-renderer';
 import { withFieldsCollection } from '@panneau/fields';
+import { withPreviewsCollection } from '@panneau/previews';
+import { withFormsCollection } from '@panneau/forms';
 /* eslint-enable import/no-extraneous-dependencies */
 import { IntlProvider } from 'react-intl';
 import PreviewForm from '../PreviewForm';

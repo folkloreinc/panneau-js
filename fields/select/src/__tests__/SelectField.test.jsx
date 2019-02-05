@@ -43,52 +43,52 @@ test('SelectField match snapshot', async () => {
 
 test('render Select by default', async () => {
     await Loadable.preloadAll();
-    const field = shallow(<SelectField />);
+    const field = mount(<SelectField />);
     expect(field.find(Select).length).toEqual(1);
 });
 
 test('render Async when async=true', async () => {
     await Loadable.preloadAll();
-    const field = shallow(<SelectField async />);
+    const field = mount(<SelectField async />);
     expect(field.find(Async).length).toEqual(1);
 });
 
 test('render AsyncCreatable when async=true and creatable=true', async () => {
     await Loadable.preloadAll();
-    const field = shallow(<SelectField async creatable />);
+    const field = mount(<SelectField async creatable />);
     expect(field.find(AsyncCreatable).length).toEqual(1);
 });
 
 test('render Creatable when creatable=true', async () => {
     await Loadable.preloadAll();
-    const field = shallow(<SelectField creatable />);
+    const field = mount(<SelectField creatable />);
     expect(field.find(Creatable).length).toEqual(1);
 });
 
 test('value match option', async () => {
     await Loadable.preloadAll();
-    const field = shallow(<SelectField options={defaultOptions} value={1} />);
+    const field = mount(<SelectField options={defaultOptions} value={1} />);
     expect(field.find(Select).prop('value')).toEqual(defaultOptions[0]);
 });
 
 test('value match option when multiple', async () => {
     await Loadable.preloadAll();
-    const field = shallow(<SelectField options={defaultOptions} value={[1,2]} multiple />);
+    const field = mount(<SelectField options={defaultOptions} value={[1,2]} multiple />);
     expect(field.find(Select).prop('value')).toEqual(defaultOptions);
 });
 
 test('fetch options when async', async () => {
     await Loadable.preloadAll();
     const fetchOptions = () => new Promise(resolve => resolve(defaultOptions));
-    const field = mount(<SelectField fetchOptions={fetchOptions} defaultOptions value={[1,2]} async />);
+    const field = mount(shallow(<SelectField fetchOptions={fetchOptions} defaultOptions value={[1,2]} async />).get(0));
     await new Promise(resolve => setTimeout(resolve, 200));
-    expect(field.state('loadedOptions')).toEqual(defaultOptions);
+    expect(field.find(BaseSelectField.WrappedComponent).state('loadedOptions')).toEqual(defaultOptions);
     expect(field.find(AsyncBase).state('defaultOptions')).toEqual(defaultOptions);
 });
 
 test('has value when cannotBeEmpty', async () => {
     await Loadable.preloadAll();
-    const field = shallow(<SelectField options={defaultOptions} cannotBeEmpty />);
+    const field = mount(<SelectField options={defaultOptions} cannotBeEmpty />);
     expect(field.find(Select).prop('value')).toEqual(defaultOptions[0]);
 });
 

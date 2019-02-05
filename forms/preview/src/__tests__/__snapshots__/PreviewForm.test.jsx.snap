@@ -1,0 +1,149 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`match snapshot 1`] = `
+<div>
+  <div
+    className="SplitPane  vertical "
+    style={
+      Object {
+        "MozUserSelect": "text",
+        "WebkitUserSelect": "text",
+        "display": "flex",
+        "flex": 1,
+        "flexDirection": "row",
+        "height": "100%",
+        "left": 0,
+        "msUserSelect": "text",
+        "outline": "none",
+        "overflow": "hidden",
+        "position": "relative",
+        "right": 0,
+        "userSelect": "text",
+      }
+    }
+  >
+    <div
+      className="Pane vertical Pane1  "
+      style={
+        Object {
+          "flex": "none",
+          "outline": "none",
+          "position": "relative",
+          "width": 300,
+        }
+      }
+    >
+      <div>
+        <div>
+          <div>
+            <form
+              action=""
+              method="POST"
+              onSubmit={[Function]}
+            >
+              <div>
+                <div>
+                  <div>
+                    <div
+                      className="form-group form-group-text"
+                    >
+                      <div
+                        className="form-group-label"
+                      >
+                        <label
+                          className="control-label"
+                          htmlFor="text"
+                        >
+                          Text
+                        </label>
+                      </div>
+                      <div
+                        className="form-group-inner"
+                        style={
+                          Object {
+                            "display": "block",
+                          }
+                        }
+                      >
+                        <input
+                          className="form-control field-text"
+                          disabled={false}
+                          id="text"
+                          maxLength={null}
+                          name="text"
+                          onBlur={null}
+                          onChange={[Function]}
+                          onFocus={null}
+                          placeholder={null}
+                          type="text"
+                          value="Text"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                className="mt-4 pt-2 border-top undefined"
+              >
+                <div>
+                  <div
+                    className="undefined"
+                  />
+                  <div
+                    className="text-right undefined"
+                  >
+                    <div>
+                      <div
+                        className="btn-group"
+                      >
+                        <button
+                          className="btn btn-primary undefined"
+                          onClick={null}
+                          type="submit"
+                        >
+                          <span>
+                            Save
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      className="Resizer vertical "
+      onClick={[Function]}
+      onDoubleClick={[Function]}
+      onMouseDown={[Function]}
+      onTouchEnd={[Function]}
+      onTouchStart={[Function]}
+      role="presentation"
+      style={Object {}}
+    />
+    <div
+      className="Pane vertical Pane2  "
+      style={
+        Object {
+          "flex": 1,
+          "outline": "none",
+          "position": "relative",
+        }
+      }
+    >
+      <div>
+        <pre>
+          {
+    "text": "Text"
+}
+        </pre>
+      </div>
+    </div>
+  </div>
+</div>
+`;
