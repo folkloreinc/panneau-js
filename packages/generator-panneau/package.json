@@ -43,5 +43,6 @@
         "lodash": "^4.17.4",
         "yeoman-generator": "^2.0.1",
         "yeoman-remote": "^1.0.1"
-    }
+    },
+    "gitHead": "690a244f7cc21acf8b22eadcee5b6e187e42f933"
 }
