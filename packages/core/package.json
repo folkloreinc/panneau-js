@@ -42,14 +42,14 @@
     "scripts": {
         "storybook": "../../node_modules/.bin/start-storybook -p 9008 -c ../../.storybook-package",
         "clean": "rm -rf dist && rm -rf lib && rm -rf es",
-        "webpack:dist": "BABEL_ENV=umd NODE_ENV=production node ../../node_modules/.bin/webpack --config ./webpack.config.js --progress --colors",
+        "webpack:dist": "../../node_modules/.bin/webpack --config ./webpack.config.js --progress --colors",
         "webpack": "npm run webpack:dist",
         "babel:es": "BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es --ignore src/**/*.story.jsx,src/**/*.test.jsx",
         "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore src/**/*.story.jsx,src/**/*.test.jsx",
         "babel": "npm run babel:es && npm run babel:cjs",
         "copy:json": "rsync -a --include '*/' --include '*.json' --exclude '*' src/ lib/ && rsync -a --include '*/' --include '*.json' --exclude '*' src/ es/",
         "intl": "node ../../build/buildPackageTranslations",
-        "build": "npm run webpack && npm run babel && npm run intl && npm run copy:json",
+        "build": "npm run babel && npm run intl && npm run copy:json",
         "prepare": "npm run clean && npm run build",
         "start": "npm run storybook"
     },
