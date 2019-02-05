@@ -1,8 +1,7 @@
 const path = require('path');
-/* eslint-disable import/no-extraneous-dependencies */
 const sass = require('node-sass');
 const tildeImporter = require('node-sass-tilde-importer');
-/* eslint-disable import/no-extraneous-dependencies */
+const getResolveModules = require('./lib/getResolveModules');
 
 module.exports = (data, filename) => {
     const result = sass.renderSync({
@@ -12,11 +11,7 @@ module.exports = (data, filename) => {
         includePaths: [
             path.join(process.env.PWD, './node_modules'),
             path.join(__dirname, '../node_modules'),
-            path.join(__dirname, '../fields/select/node_modules'),
-            path.join(__dirname, '../fields/fields/node_modules'),
-            path.join(__dirname, '../layouts/layouts/node_modules'),
-            path.join(__dirname, '../lists/lists/node_modules'),
-            path.join(__dirname, '../modals/modals/node_modules'),
+            ...getResolveModules(),
         ],
     }).css;
     return result.toString('utf8');

@@ -8,7 +8,9 @@ const isCommonJs = ENV === 'cjs';
 const isTest = ENV === 'test';
 
 const presets = [
-    [require.resolve('@babel/preset-env'), isTest ? {} : {
+    [require.resolve('@babel/preset-env'), isTest ? {
+        ignoreBrowserslistConfig: true,
+    } : {
         modules: isCommonJs ? 'commonjs' : false,
     }],
     require.resolve('@babel/preset-react'),
@@ -29,8 +31,8 @@ if (isTest) {
 if (isCompiling) {
     plugins.push([require.resolve('babel-plugin-css-modules-transform'), {
         preprocessCss: path.join(__dirname, './process-scss.js'),
-        extensions: ['.css', '.scss'],
-        generateScopedName: path.join(__dirname, './lib/getLocalIdent.js'),
+        extensions: ['.scss'],
+        generateScopedName: path.resolve(__dirname, './lib/getLocalIdent.js'),
     }]);
     plugins.push([path.join(__dirname, './babel-plugin-transform-require-ignore'), {
         extensions: ['.global.scss'],

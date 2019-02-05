@@ -8,6 +8,8 @@ import reducers from '../reducers/index';
 import * as PanneauPropTypes from '../lib/PropTypes';
 import parseDefinition from '../lib/parseDefinition';
 
+import '../styles/vendor.global.scss';
+
 import App from './App';
 
 const propTypes = {

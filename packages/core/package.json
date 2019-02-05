@@ -44,7 +44,7 @@
         "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore src/**/*.story.jsx,src/**/*.test.jsx",
         "babel": "npm run babel:es && npm run babel:cjs",
         "copy:json": "rsync -a --include '*/' --include '*.json' --exclude '*' src/ lib/ && rsync -a --include '*/' --include '*.json' --exclude '*' src/ es/",
-        "intl": "node ../../build/buildPackageTranslations",
+        "intl": "node ../../scripts/buildPackageTranslations",
         "build": "npm run babel && npm run intl && npm run copy:json",
         "prepare": "npm run clean && npm run build",
         "start": "npm run storybook"

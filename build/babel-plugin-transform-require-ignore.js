@@ -1,80 +1,96 @@
-/* eslint-disable */
-'use strict';
+/* eslint-disable no-underscore-dangle */
+const path = require('path');
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+Object.defineProperty(exports, '__esModule', {
+    value: true,
 });
 
-exports.default = function () {
-  function extFix(ext) {
-    return ext.charAt(0) === '.' ? ext : '.' + ext;
-  }
+function interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
 
-  return {
-    visitor: {
-      CallExpression: {
-        enter: function enter(nodePath, _ref) {
-          var opts = _ref.opts;
 
-          var extensionsInput = [].concat(opts.extensions || []);
-          if (extensionsInput.length === 0) {
-            return;
-          }
-          var extensions = extensionsInput.map(extFix);
-          var callee = nodePath.get('callee');
+const path2 = interopRequireDefault(path);
 
-          if (callee.isIdentifier() && callee.equals('name', 'require')) {
-            var arg = nodePath.get('arguments')[0];
-            if (arg && arg.isStringLiteral() && extensions.indexOf(_path2.default.extname(arg.node.value)) > -1) {
-              if (nodePath.parentPath.isVariableDeclarator()) {
-                throw new Error(arg.node.value + ' should not be assign to variable.');
-              } else {
-                nodePath.remove();
-              }
-            }
-          }
-        }
-      },
-
-      ImportDeclaration: {
-        enter: function enter(nodePath, _ref2) {
-          var opts = _ref2.opts;
-
-          var extensionsInput = [].concat(opts.extensions || []);
-
-          if (extensionsInput.length === 0) {
-            return;
-          }
-          var extensions = extensionsInput.map(extFix);
-          const regExp = new RegExp('('+extensions.join('|')+')$', 'i');
-
-          if (nodePath.node.source.value.match(regExp)) {
-            var specifiers = nodePath.get('specifiers');
-
-            if (specifiers.length) {
-              var specifier = specifiers[specifiers.length - 1];
-
-              if (specifier.isImportDefaultSpecifier()) {
-                throw new Error(nodePath.node.source.value + ' should not be imported using default imports.');
-              }
-              if (specifier.isImportSpecifier()) {
-                throw new Error(nodePath.node.source.value + ' should not be imported using named imports.');
-              }
-              if (specifier.isImportNamespaceSpecifier()) {
-                throw new Error(nodePath.node.source.value + ' should not be imported using namespace imports.');
-              }
-            }
-
-            nodePath.remove();
-          }
-        }
-      }
+exports.default = () => {
+    function extFix(ext) {
+        return ext.charAt(0) === '.' ? ext : `.${ext}`;
     }
-  };
+
+    return {
+        visitor: {
+            CallExpression: {
+                enter: function enter(nodePath, _ref) {
+                    const { opts } = _ref;
+
+                    const extensionsInput = [].concat(opts.extensions || []);
+                    if (extensionsInput.length === 0) {
+                        return;
+                    }
+                    const extensions = extensionsInput.map(extFix);
+                    const callee = nodePath.get('callee');
+
+                    if (callee.isIdentifier() && callee.equals('name', 'require')) {
+                        const arg = nodePath.get('arguments')[0];
+                        if (
+                            arg
+                            && arg.isStringLiteral()
+                            && extensions.indexOf(path2.default.extname(arg.node.value)) > -1
+                        ) {
+                            if (nodePath.parentPath.isVariableDeclarator()) {
+                                throw new Error(
+                                    `${arg.node.value} should not be assign to variable.`,
+                                );
+                            } else {
+                                nodePath.remove();
+                            }
+                        }
+                    }
+                },
+            },
+
+            ImportDeclaration: {
+                enter: function enter(nodePath, _ref2) {
+                    const { opts } = _ref2;
+
+                    const extensionsInput = [].concat(opts.extensions || []);
+
+                    if (extensionsInput.length === 0) {
+                        return;
+                    }
+                    const extensions = extensionsInput.map(extFix);
+                    const regExp = new RegExp(`(${extensions.join('|')})$`, 'i');
+
+                    if (nodePath.node.source.value.match(regExp)) {
+                        const specifiers = nodePath.get('specifiers');
+
+                        if (specifiers.length) {
+                            const specifier = specifiers[specifiers.length - 1];
+
+                            if (specifier.isImportDefaultSpecifier()) {
+                                throw new Error(
+                                    `${nodePath.node.source.value
+                                    } should not be imported using default imports.`,
+                                );
+                            }
+                            if (specifier.isImportSpecifier()) {
+                                throw new Error(
+                                    `${nodePath.node.source.value
+                                    } should not be imported using named imports.`,
+                                );
+                            }
+                            if (specifier.isImportNamespaceSpecifier()) {
+                                throw new Error(
+                                    `${nodePath.node.source.value
+                                    } should not be imported using namespace imports.`,
+                                );
+                            }
+                        }
+
+                        nodePath.remove();
+                    }
+                },
+            },
+        },
+    };
 };
-
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }

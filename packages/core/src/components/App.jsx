@@ -21,8 +21,6 @@ import ResourceShow from './pages/ResourceShow';
 import ResourceEdit from './pages/ResourceEdit';
 import ResourceDelete from './pages/ResourceDelete';
 
-import '../styles/vendor.global.scss';
-
 const ResourcePages = {
     index: ResourceIndex,
     create: ResourceCreate,

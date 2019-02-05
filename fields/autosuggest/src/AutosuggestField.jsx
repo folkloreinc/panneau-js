@@ -49,7 +49,11 @@ const defaultProps = {
     onSelect: null,
 };
 
-class ItemField extends Component {
+/**
+ * Autosuggest field
+ * @extends Component
+ */
+class AutosuggestField extends Component {
     static parse(value) {
         return value;
     }
@@ -274,7 +278,7 @@ class ItemField extends Component {
     }
 }
 
-ItemField.propTypes = propTypes;
-ItemField.defaultProps = defaultProps;
+AutosuggestField.propTypes = propTypes;
+AutosuggestField.defaultProps = defaultProps;
 
-export default injectIntl(ItemField);
+export default injectIntl(AutosuggestField);

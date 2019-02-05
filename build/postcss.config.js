@@ -1,6 +1,3 @@
-/* eslint-disable no-console, global-require */
-/* eslint-disable import/no-extraneous-dependencies, import/no-dynamic-require, import/order */
-
 module.exports = () => ({
     ident: 'postcss',
     plugins: [

@@ -50,7 +50,7 @@ npm install -g lerna
 
 2. Install all dependencies:
 ```bash
-lerna bootstrap --hoist
+lerna bootstrap
 ```
 
 #### Note

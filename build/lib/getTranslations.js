@@ -1,7 +1,5 @@
 const fs = require('fs');
-/* eslint-disable import/no-extraneous-dependencies */
 const glob = require('glob');
-/* eslint-enable import/no-extraneous-dependencies */
 const sortTranslations = require('./sortTranslations');
 
 module.exports = (messagesPattern) => {
