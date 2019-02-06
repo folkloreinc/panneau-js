@@ -209,42 +209,42 @@ class TextField extends Component {
             prefix, suffix, prefixClassName, suffixClassName,
         } = this.props;
 
-        const prefixClassNames = classNames({
-            'input-group-prepend': prefixClassName === null,
-            [prefixClassName]: prefixClassName !== null,
-        });
-
-        const suffixClassNames = classNames({
-            'input-group-append': suffixClassName === null && !isString(suffix),
-            [suffixClassName]: suffixClassName !== null,
-        });
-
-        const renderedPrefix = prefix ? (
-            <span className={prefixClassNames}>
-                {isString(prefix) ? <span className="input-group-text">{prefix}</span> : prefix}
-            </span>
-        ) : null;
-
-        const renderedSuffix = suffix ? (
-            <span className={suffixClassNames}>
-                {isString(suffix) ? <span className="input-group-text">{suffix}</span> : suffix}
-            </span>
-        ) : null;
-
-        const groupClassNames = classNames({
-            'input-group': true,
-        });
-
         return (
             <div
-                className={groupClassNames}
+                className={classNames(['input-group'])}
                 ref={(ref) => {
                     this.refInputGroup = ref;
                 }}
             >
-                {renderedPrefix}
+                {prefix ? (
+                    <span
+                        className={classNames({
+                            'input-group-prepend': prefixClassName === null,
+                            [prefixClassName]: prefixClassName !== null,
+                        })}
+                    >
+                        {isString(prefix) ? (
+                            <span className="input-group-text">{prefix}</span>
+                        ) : (
+                            prefix
+                        )}
+                    </span>
+                ) : null}
                 {input}
-                {renderedSuffix}
+                {suffix ? (
+                    <span
+                        className={classNames({
+                            'input-group-append': suffixClassName === null,
+                            [suffixClassName]: suffixClassName !== null,
+                        })}
+                    >
+                        {isString(suffix) ? (
+                            <span className="input-group-text">{suffix}</span>
+                        ) : (
+                            suffix
+                        )}
+                    </span>
+                ) : null}
             </div>
         );
     }
