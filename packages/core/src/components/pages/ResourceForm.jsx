@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import { Link } from 'react-router-dom';
-import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
 import classNames from 'classnames';
 import {
     injectIntl, defineMessages, FormattedMessage, FormattedHTMLMessage,
@@ -13,6 +13,7 @@ import { isMessage } from '../../utils';
 import withUrlGenerator from '../../lib/withUrlGenerator';
 import withResourceApi from '../../lib/withResourceApi';
 import withFormsCollection from '../../lib/withFormsCollection';
+import Errors from '../partials/Errors';
 import Loading from '../partials/Loading';
 
 import styles from '../../styles/pages/resource-form.scss';
@@ -138,7 +139,7 @@ class ResourceForm extends Component {
 
         this.onItemLoaded = this.onItemLoaded.bind(this);
         this.onItemLoadError = this.onItemLoadError.bind(this);
-        this.onFormValueChange = this.onFormValueChange.bind(this);
+        this.onFormChange = this.onFormChange.bind(this);
         this.onFormComplete = this.onFormComplete.bind(this);
         this.onFormErrors = this.onFormErrors.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
@@ -148,10 +149,9 @@ class ResourceForm extends Component {
         this.state = {
             item: props.item,
             errors: props.errors,
-            formGeneralError: null,
             formValue: props.formValue || props.item,
             formErrors: props.formErrors,
-            formNotice: props.formErrors !== null ? 'error' : null,
+            formSuccess: props.formErrors !== null ? false : null,
         };
     }
 
@@ -175,10 +175,10 @@ class ResourceForm extends Component {
         });
     }
 
-    onFormValueChange(value) {
+    onFormChange(value) {
         this.setState({
             formValue: value,
-            formNotice: null,
+            formSuccess: null,
         });
     }
 
@@ -188,8 +188,7 @@ class ResourceForm extends Component {
             item,
             formValue: null,
             formErrors: null,
-            formGeneralError: null,
-            formNotice: 'success',
+            formSuccess: true,
         });
         if (onFormComplete !== null) {
             onFormComplete(item);
@@ -200,26 +199,24 @@ class ResourceForm extends Component {
         if (errors.name === 'ValidationError') {
             this.setState({
                 formErrors: get(errors.responseData || {}, 'errors', errors.responseData),
-                formNotice: 'error',
+                formSuccess: false,
             });
         } else if (errors.name === 'ResponseError') {
             this.setState({
-                formGeneralError: get(errors.responseData || {}, 'error', null),
-                formNotice: 'error',
+                formErrors: get(errors.responseData || {}, 'error', null),
+                formSuccess: false,
             });
         } else {
             this.setState({
-                formNotice: 'error',
+                formSuccess: false,
             });
         }
     }
 
     onClickSwitchType(e) {
-        const { intl, resource, confirmSwitchTypeMessage } = this.props;
+        const { intl, confirmSwitchTypeMessage } = this.props;
         const { formValue } = this.state;
-        const types = get(resource, 'types', []);
-        const currentTypeId = this.getType();
-        const currentType = types.find(({ id }) => id === currentTypeId) || null;
+        const currentType = this.getCurrentType();
         const confirmMessage = isMessage(confirmSwitchTypeMessage)
             ? intl.formatMessage(confirmSwitchTypeMessage, {
                 type: currentType.label,
@@ -237,33 +234,89 @@ class ResourceForm extends Component {
         gotoResourceAction('index');
     }
 
-    getTypeFromLocation() {
-        const { query, resource } = this.props;
-        const { type = null } = query;
-        const types = get(resource, 'types', []);
-        return type !== null ? types.find(it => it.id === type) || null : null;
+    getTypes() {
+        const { resource } = this.props;
+        return resource.types || [];
     }
 
-    getType() {
-        const { resource } = this.props;
+    getTypeFromLocation() {
+        const { query } = this.props;
+        const { type: typeId = null } = query;
+        return typeId !== null ? this.getTypes().find(it => it.id === typeId) || null : null;
+    }
+
+    getTypeFromItem() {
         const { item } = this.state;
-        const { types = [] } = resource;
-        // prettier-ignore
-        const defaultType = types.find(({ default: isDefault = false }) => (
-            isDefault
-        )) || types[0] || null;
-        const locationType = this.getTypeFromLocation();
-        return (item || {}).type || (locationType || defaultType || {}).id || null;
+        const typeId = item !== null ? item.type || null : null;
+        return typeId !== null ? this.getTypes().find(it => it.id === typeId) || null : null;
+    }
+
+    getDefaultType() {
+        const types = this.getTypes();
+        return types.length > 0
+            ? types.find(({ default: isDefault = false }) => isDefault) || types[0] || null
+            : null;
     }
 
     getCurrentType() {
         if (!this.isTyped()) {
             return null;
         }
-        const { resource } = this.props;
-        const { types = [] } = resource;
-        const currentTypeId = this.getType();
-        return types.find(({ id }) => id === currentTypeId) || null;
+        return this.getTypeFromItem() || this.getTypeFromLocation() || this.getDefaultType();
+    }
+
+    getForm() {
+        const { resource, action } = this.props;
+        const forms = resource.forms || {};
+        const {
+            type = 'normal', fields = [], fullscreen = false, ...form
+        } = forms[action] || forms || {};
+        const currentType = this.getCurrentType();
+        return {
+            type,
+            fullscreen,
+            fields:
+                currentType !== null && isObject(fields)
+                    ? fields[currentType.id] || fields.default || fields
+                    : fields,
+            ...form,
+        };
+    }
+
+    getButtons() {
+        const { buttons, readOnly, saveButtonLabel } = this.props;
+        return readOnly
+            ? []
+            : buttons.map((button) => {
+                if (button.id === 'save' && saveButtonLabel !== null) {
+                    return {
+                        ...button,
+                        label: saveButtonLabel,
+                    };
+                }
+                if (button.id === 'cancel' && typeof button.onClick === 'undefined') {
+                    return {
+                        ...button,
+                        onClick: this.onClickCancel,
+                    };
+                }
+                return button;
+            });
+    }
+
+    getNotice() {
+        const { successNoticeLabel, errorNoticeLabel } = this.props;
+        const { formSuccess } = this.state;
+        if (formSuccess === null) {
+            return null;
+        }
+        return formSuccess ? ({
+            type: 'success',
+            label: successNoticeLabel,
+        }) : ({
+            type: 'error',
+            label: errorNoticeLabel,
+        });
     }
 
     isTyped() {
@@ -280,20 +333,20 @@ class ResourceForm extends Component {
     }
 
     submitForm() {
-        this.setState({
-            formNotice: null,
-        });
-
-        const { action, resource, resourceApi } = this.props;
+        const { action, resourceApi } = this.props;
         const { item, formValue } = this.state;
 
-        const resourceType = get(resource, 'type', 'default');
-        const data = resourceType === 'typed'
+        const currentType = this.getCurrentType();
+        const data = this.isTyped()
             ? {
-                type: this.getType(),
+                type: currentType !== null ? currentType.id : null,
                 ...(formValue || item),
             }
             : formValue;
+
+        this.setState({
+            formSuccess: null,
+        });
 
         return action === 'create'
             ? resourceApi.store(data)
@@ -353,13 +406,22 @@ class ResourceForm extends Component {
 
         const { types = [] } = resource;
         const currentType = this.getCurrentType();
+        const { fullscreen } = this.getForm();
 
         return (
-            <div className={classNames(['py-4', styles.header])}>
-                {this.isTyped() && action === 'create' ? (
-                    <div className={styles.cols}>
-                        <div className={styles.col}>{this.renderTitle()}</div>
-                        <div className={classNames([styles.col, 'text-right'])}>
+            <div
+                className={classNames([
+                    styles.header,
+                    {
+                        'py-4': !fullscreen,
+                        'py-2': fullscreen,
+                    },
+                ])}
+            >
+                {currentType !== null && action === 'create' ? (
+                    <div className={classNames(['row', 'align-items-center'])}>
+                        <div className="col">{this.renderTitle()}</div>
+                        <div className={classNames(['col', 'col-md-auto', 'text-right'])}>
                             <div className={classNames(['btn-group', 'btn-group-sm'])}>
                                 <button
                                     type="button"
@@ -407,118 +469,37 @@ class ResourceForm extends Component {
 
     renderErrors() {
         const { errors } = this.state;
-        /* eslint-disable react/no-array-index-key */
-        return isArray(errors) && errors.length > 0 ? (
-            <div className={classNames(['alert', 'alert-danger', styles.errors])}>
-                <ul>
-                    {errors.map((error, index) => (
-                        <li key={`error-${index}`}>{error}</li>
-                    ))}
-                </ul>
-            </div>
+        return errors !== null && errors.length > 0 ? (
+            <Errors errors={errors} className={styles.errors} />
         ) : null;
-        /* eslint-enable react/no-array-index-key */
-    }
-
-    renderNotice() {
-        const { successNoticeLabel, errorNoticeLabel } = this.props;
-        const { formNotice } = this.state;
-        let formNoticeText;
-        let formNoticeType;
-        let formNoticeIcon = null;
-        if (formNotice === 'success') {
-            formNoticeText = successNoticeLabel;
-            formNoticeIcon = 'fas fa-check-circle';
-            formNoticeType = 'success';
-        } else if (formNotice === 'error') {
-            formNoticeText = errorNoticeLabel;
-            formNoticeIcon = 'fas fa-exclamation-circle';
-            formNoticeType = 'danger';
-        }
-
-        return (
-            <span
-                className={classNames({
-                    [`text-${formNoticeType}`]: formNoticeType,
-                })}
-            >
-                <span
-                    className={classNames([
-                        styles.noticeIcon,
-                        {
-                            [formNoticeIcon]: formNoticeIcon !== null,
-                        },
-                    ])}
-                    aria-hidden="true"
-                />
-                {isMessage(formNoticeText) ? (
-                    <FormattedMessage {...formNoticeText} />
-                ) : (
-                    formNoticeText
-                )}
-            </span>
-        );
     }
 
     renderForm() {
+        const { formsCollection, readOnly } = this.props;
         const {
-            action,
-            resource,
-            formsCollection,
-            readOnly,
-            buttons,
-            saveButtonLabel,
-        } = this.props;
-        const {
-            item, formValue, formGeneralError, formErrors, formNotice,
+            item, formValue, formErrors,
         } = this.state;
-        const resourceType = get(resource, 'type', 'default');
-        const form = get(resource, `forms.${action}`, get(resource, 'forms', {}));
-        const { type, ...formProps } = form;
-        const FormComponent = formsCollection.getComponent(type || 'normal');
-        const formButtons = readOnly
-            ? []
-            : buttons.map((button) => {
-                if (button.id === 'save' && saveButtonLabel !== null) {
-                    return {
-                        ...button,
-                        label: saveButtonLabel,
-                    };
-                }
-                if (button.id === 'cancel' && typeof button.onClick === 'undefined') {
-                    return {
-                        ...button,
-                        onClick: this.onClickCancel,
-                    };
-                }
-                return button;
-            });
-
-        if (resourceType === 'typed') {
-            const formType = this.getType();
-            formProps.fields = get(
-                formProps,
-                `fields.${formType || 'default'}`,
-                get(formProps, 'fields.default', get(formProps, 'fields', [])),
-            );
-        }
+        const { type, className = null, ...formProps } = this.getForm();
+        const FormComponent = formsCollection.getComponent(type);
+        const buttons = this.getButtons();
+        const notice = this.getNotice();
 
         return FormComponent !== null ? (
-            <div className={styles.form}>
-                <FormComponent
-                    readOnly={readOnly}
-                    buttons={formButtons}
-                    value={formValue || item}
-                    generalError={formGeneralError}
-                    errors={formErrors}
-                    notice={formNotice !== null ? this.renderNotice() : null}
-                    submitForm={this.submitForm}
-                    onValueChange={this.onFormValueChange}
-                    onComplete={this.onFormComplete}
-                    onErrors={this.onFormErrors}
-                    {...formProps}
-                />
-            </div>
+            <FormComponent
+                {...formProps}
+                className={classNames([styles.form, {
+                    [className]: className !== null,
+                }])}
+                readOnly={readOnly}
+                buttons={buttons}
+                value={formValue || item}
+                errors={formErrors}
+                notice={notice}
+                submitForm={this.submitForm}
+                onChange={this.onFormChange}
+                onComplete={this.onFormComplete}
+                onErrors={this.onFormErrors}
+            />
         ) : null;
     }
 
@@ -535,18 +516,36 @@ class ResourceForm extends Component {
         const { item } = this.state;
         const { action } = this.props;
         const isLoading = action !== 'create' && item === null;
+        const { fullscreen } = this.getForm();
 
         return (
-            <div className={styles.container}>
-                <div className="container">
-                    <div className="row justify-content-md-center">
-                        <div className="col-lg-9">
-                            {this.renderHeader()}
+            <div
+                className={classNames([
+                    styles.container,
+                    {
+                        [styles.isFullscreen]: fullscreen,
+                    },
+                ])}
+            >
+                {fullscreen ? (
+                    <div className={classNames([styles.inner])}>
+                        {this.renderHeader()}
+                        <div className={classNames([styles.content])}>
                             {this.renderErrors()}
                             {isLoading ? this.renderLoading() : this.renderForm()}
                         </div>
                     </div>
-                </div>
+                ) : (
+                    <div className="container">
+                        <div className="row justify-content-md-center">
+                            <div className="col-lg-9">
+                                {this.renderHeader()}
+                                {this.renderErrors()}
+                                {isLoading ? this.renderLoading() : this.renderForm()}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }

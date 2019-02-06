@@ -101,6 +101,11 @@ export const button = PropTypes.shape({
 
 export const buttons = PropTypes.arrayOf(button);
 
+export const errors = PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
+]);
+
 export default {
     componentsCollection,
     definition,
@@ -114,4 +119,5 @@ export default {
     message,
     label,
     buttons,
+    errors,
 };
