@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-date",
-    "version": "0.6.34",
+    "version": "0.6.35",
     "description": "Date field for Panneau",
     "keywords": [
         "react",
@@ -48,9 +48,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.6.34",
-        "@panneau/field": "^0.6.34",
-        "@panneau/field-text": "^0.6.34",
+        "@panneau/core": "^0.6.35",
+        "@panneau/field": "^0.6.35",
+        "@panneau/field-text": "^0.6.35",
         "@panneau/modal-popover": "^0.6.34",
         "array-flatten": "^2.1.1",
         "classnames": "^2.2.5",
