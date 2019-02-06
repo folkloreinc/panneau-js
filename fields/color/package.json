@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-color",
-    "version": "0.6.35",
+    "version": "0.6.36",
     "description": "Color field for Panneau",
     "keywords": [
         "react",
@@ -48,9 +48,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.6.35",
-        "@panneau/field": "^0.6.35",
-        "@panneau/field-text": "^0.6.35",
+        "@panneau/core": "^0.6.36",
+        "@panneau/field": "^0.6.36",
+        "@panneau/field-text": "^0.6.36",
         "@panneau/modal-popover": "^0.6.34",
         "classnames": "^2.2.5",
         "color": "^2.0.0",
