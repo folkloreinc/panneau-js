@@ -48,6 +48,7 @@
     "fields.select.no_options": "No options",
     "fields.select.placeholder": "Select...",
     "fields.select.screen_reader_status": "{count, plural, =0 {no result} one {# result} other {# results}} available",
+    "forms.buttons.submit": "Save",
     "forms.normal.buttons.submit": "Save",
     "layouts.navbar.resource.create": "Create {resource}",
     "layouts.navbar.resource.index": "View all {resource}",
