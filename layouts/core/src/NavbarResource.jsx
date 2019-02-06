@@ -57,13 +57,8 @@ const defaultProps = {
     ],
 };
 
-const NavbarResource = ({
-    urlGenerator,
-    resource,
-    link,
-    label,
-    items,
-    ...props
+export const NavbarResource = ({
+    urlGenerator, resource, link, label, items, ...props
 }) => {
     if (resource === null) {
         return null;
@@ -99,29 +94,20 @@ const NavbarResource = ({
         };
     }, {});
 
-    const finalItems = (items || []).map(
-        it => (get(it, 'type', 'link') === 'action'
-            ? {
-                ...it,
-                label: it.label || get(actionsLabels, it.action, null),
-                link:
-                          it.link
-                          || (urlGenerator !== null
-                              ? urlGenerator.route(`${routeKeyPrefix}.${it.action}`, {
-                                  resource: resource.id,
-                              })
-                              : null),
-            }
-            : it),
-    );
-    return (
-        <NavbarItem
-            {...props}
-            link={finalLink}
-            label={finalLabel}
-            items={finalItems}
-        />
-    );
+    const finalItems = (items || []).map(it => (get(it, 'type', 'link') === 'action'
+        ? {
+            ...it,
+            label: it.label || get(actionsLabels, it.action, null),
+            link:
+                      it.link
+                      || (urlGenerator !== null
+                          ? urlGenerator.route(`${routeKeyPrefix}.${it.action}`, {
+                              resource: resource.id,
+                          })
+                          : null),
+        }
+        : it));
+    return <NavbarItem {...props} link={finalLink} label={finalLabel} items={finalItems} />;
 };
 
 NavbarResource.propTypes = propTypes;

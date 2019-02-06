@@ -8,3 +8,4 @@ node_modules
 /out*
 /_book
 /package-lock.json
+/styleguide
