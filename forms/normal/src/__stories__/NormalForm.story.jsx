@@ -34,13 +34,8 @@ const submitAction = action('onSubmit');
 storiesOf('Forms/Normal', module)
     .add('simple', () => (
         <div>
-            <IntlProvider
-                locale="en"
-            >
-                <KeepValue
-                    onChangeName="onValueChange"
-                    onChange={action('onValueChange')}
-                >
+            <IntlProvider locale="en">
+                <KeepValue onChangeName="onChange" onChange={action('onChange')}>
                     <NormalFormWithFields
                         fields={fields}
                         onSubmit={(e, value) => {
@@ -53,19 +48,15 @@ storiesOf('Forms/Normal', module)
         </div>
     ))
     .add('with errors', () => (
-        <div>
-            <IntlProvider
-                locale="en"
-                messages={{
-                    'forms.normal.__stories__.test1': 'Custom button 1',
-                }}
-            >
-                <KeepValue
-                    onChangeName="onValueChange"
-                    onChange={action('onValueChange')}
-                >
+        <IntlProvider
+            locale="en"
+            messages={{
+                'forms.normal.__stories__.test1': 'Custom button 1',
+            }}
+        >
+            <div>
+                <KeepValue onChangeName="onChange" onChange={action('onChange')}>
                     <NormalFormWithFields
-                        generalError="A general error"
                         fields={fields}
                         errors={{
                             title: 'A field error',
@@ -76,21 +67,29 @@ storiesOf('Forms/Normal', module)
                         }}
                     />
                 </KeepValue>
-            </IntlProvider>
-        </div>
+                <hr />
+                <KeepValue onChangeName="onChange" onChange={action('onChange')}>
+                    <NormalFormWithFields
+                        fields={fields}
+                        errors="A general error"
+                        onSubmit={(e, value) => {
+                            e.preventDefault();
+                            return submitAction(value);
+                        }}
+                    />
+                </KeepValue>
+            </div>
+        </IntlProvider>
     ))
     .add('with custom button and notice', () => (
-        <div>
-            <IntlProvider
-                locale="en"
-                messages={{
-                    'forms.normal.__stories__.test1': 'Custom button 1',
-                }}
-            >
-                <KeepValue
-                    onChangeName="onValueChange"
-                    onChange={action('onValueChange')}
-                >
+        <IntlProvider
+            locale="en"
+            messages={{
+                'forms.normal.__stories__.test1': 'Custom button 1',
+            }}
+        >
+            <div>
+                <KeepValue onChangeName="onChange" onChange={action('onChange')}>
                     <NormalFormWithFields
                         fields={fields}
                         buttons={[
@@ -99,23 +98,55 @@ storiesOf('Forms/Normal', module)
                                 className: 'btn-success',
                             },
                         ]}
-                        notice={(
-                            <span
-                                className="text-info"
-                            >
-                                <span
-                                    className="glyphicon glyphicon-info-sign"
-                                    style={{ marginRight: '4px' }}
-                                />
-                                This is a notice.
-                            </span>
-                        )}
+                        notice="This is a notice."
                         onSubmit={(e, value) => {
                             e.preventDefault();
                             return submitAction(value);
                         }}
                     />
                 </KeepValue>
-            </IntlProvider>
-        </div>
+
+                <hr />
+
+                <KeepValue onChangeName="onChange" onChange={action('onChange')}>
+                    <NormalFormWithFields
+                        fields={fields}
+                        buttons={[
+                            {
+                                label: 'Default test label 1',
+                                className: 'btn-success',
+                            },
+                        ]}
+                        notice={{
+                            type: 'error',
+                            label: 'This is an error notice.',
+                        }}
+                        onSubmit={(e, value) => {
+                            e.preventDefault();
+                            return submitAction(value);
+                        }}
+                    />
+                </KeepValue>
+
+                <KeepValue onChangeName="onChange" onChange={action('onChange')}>
+                    <NormalFormWithFields
+                        fields={fields}
+                        buttons={[
+                            {
+                                label: 'Default test label 1',
+                                className: 'btn-success',
+                            },
+                        ]}
+                        notice={{
+                            type: 'success',
+                            label: 'This is a success notice.',
+                        }}
+                        onSubmit={(e, value) => {
+                            e.preventDefault();
+                            return submitAction(value);
+                        }}
+                    />
+                </KeepValue>
+            </div>
+        </IntlProvider>
     ));

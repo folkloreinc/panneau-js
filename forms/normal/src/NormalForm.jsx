@@ -2,21 +2,12 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import isString from 'lodash/isString';
-import isArray from 'lodash/isArray';
-import { FormattedMessage, defineMessages } from 'react-intl';
+import isObject from 'lodash/isObject';
+import { PropTypes as PanneauPropTypes, ErrorsComponent as Errors } from '@panneau/core';
 import { FieldsGroup } from '@panneau/field';
-import { PropTypes as FormPropTypes } from '@panneau/form';
+import { PropTypes as FormPropTypes, FormActions, messages } from '@panneau/form';
 
 import styles from './styles.scss';
-
-const messages = defineMessages({
-    save: {
-        id: 'forms.normal.buttons.submit',
-        description: 'The label of the "save" form button',
-        defaultMessage: 'Save',
-    },
-});
 
 const propTypes = {
     action: PropTypes.string,
@@ -24,31 +15,16 @@ const propTypes = {
     fields: PropTypes.arrayOf(PropTypes.object),
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     errors: FormPropTypes.errors,
-    generalError: PropTypes.string,
-    generalErrorDefaultMessage: PropTypes.string,
-    buttons: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string,
-            type: PropTypes.string,
-            label: PropTypes.oneOfType([
-                PropTypes.string,
-                PropTypes.shape({
-                    id: PropTypes.string,
-                    description: PropTypes.string,
-                    defaultMessage: PropTypes.string,
-                }),
-            ]),
-            className: PropTypes.string,
-            onClick: PropTypes.func,
-        }),
-    ),
+    notice: FormPropTypes.notice,
+    generalErrorMessage: PropTypes.string,
+    buttons: PanneauPropTypes.buttons,
     submitForm: PropTypes.func,
-    onValueChange: PropTypes.func,
+    readOnly: PropTypes.bool,
+    withoutActions: PropTypes.bool,
+    onChange: PropTypes.func,
     onSubmit: PropTypes.func,
     onErrors: PropTypes.func,
     onComplete: PropTypes.func,
-    readOnly: PropTypes.bool,
-    notice: PropTypes.node,
 };
 
 const defaultProps = {
@@ -59,96 +35,85 @@ const defaultProps = {
             id: 'submit',
             type: 'submit',
             label: messages.save,
-            className: classNames({
-                'btn-primary': true,
-            }),
+            className: 'btn-primary',
         },
     ],
     fields: [],
     value: null,
     errors: null,
-    generalError: null,
-    generalErrorDefaultMessage: 'Sorry, an error occured.',
+    notice: null,
+    generalErrorMessage: 'Sorry, an error occured.',
     submitForm: null,
-    onValueChange: null,
+    readOnly: false,
+    withoutActions: false,
+    onChange: null,
     onSubmit: null,
     onErrors: null,
     onComplete: null,
-    readOnly: false,
-    notice: null,
 };
 
 const childContextTypes = {
     form: FormPropTypes.form,
 };
 
+const contextTypes = {
+    form: FormPropTypes.form,
+};
+
 class NormalForm extends Component {
+    static getDerivedStateFromProps(props, state) {
+        const isValueControlled = props.onChange !== null;
+        const isErrorsControlled = props.onErrors !== null;
+        const valueChanged = isValueControlled && props.value !== state.value;
+        const errorsChanged = isErrorsControlled && props.errors !== state.errors;
+        if (valueChanged || errorsChanged) {
+            return {
+                value: valueChanged ? props.value : state.value,
+                errors: errorsChanged ? props.errors : state.errors,
+            };
+        }
+        return null;
+    }
+
     constructor(props) {
         super(props);
 
-        this.onFieldsValueChange = this.onFieldsValueChange.bind(this);
+        this.onFieldsChange = this.onFieldsChange.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onFormSubmitComplete = this.onFormSubmitComplete.bind(this);
         this.onFormSubmitError = this.onFormSubmitError.bind(this);
 
+        this.refForm = React.createRef();
+
         this.state = {
             value: props.value,
             errors: props.errors,
-            generalError: props.generalError,
         };
     }
 
     getChildContext() {
         const { value, errors } = this.state;
+        const { form = null } = this.context;
         return {
-            form: {
+            form: form !== null ? form : {
                 errors,
                 value,
             },
         };
     }
 
-    componentWillReceiveProps({ value: nextValue, errors: nextErrors }) {
-        const { value, errors } = this.props;
-        const valueChanged = nextValue !== value;
-        if (valueChanged) {
-            this.setState({
-                value: nextValue,
-            });
-        }
-
-        const errorsChanged = nextErrors !== errors;
-        if (errorsChanged) {
-            this.setState({
-                errors: nextErrors,
-            });
-        }
-    }
-
-    onFieldsValueChange(value) {
-        const { onValueChange } = this.props;
-        if (onValueChange !== null) {
-            onValueChange(value);
-        } else {
-            this.setState({
-                value,
-            });
-        }
+    onFieldsChange(value) {
+        this.setValue(value);
     }
 
     onFormSubmit(e) {
-        const { onSubmit, submitForm } = this.props;
+        const { onSubmit } = this.props;
         const { value } = this.state;
-
         if (onSubmit !== null) {
             onSubmit(e, value);
-        }
-
-        if (submitForm !== null) {
+        } else {
             e.preventDefault();
-            submitForm(value)
-                .then(this.onFormSubmitComplete)
-                .catch(this.onFormSubmitError);
+            this.submit();
         }
     }
 
@@ -160,128 +125,103 @@ class NormalForm extends Component {
     }
 
     onFormSubmitError(error) {
-        const { onErrors, generalErrorDefaultMessage } = this.props;
-
-        if (onErrors !== null) {
-            onErrors(error);
-        } else if (error.name === 'ValidationError') {
-            this.setState({
-                errors: error.responseData,
-            });
+        const { generalErrorMessage } = this.props;
+        if (error.name === 'ValidationError') {
+            this.setErrors(error.responseData);
         } else {
-            // @TODO
+            this.setErrors(generalErrorMessage);
+        }
+    }
+
+    /**
+     * Set the errors
+     *
+     * @param {object} errors
+     * @public
+     */
+    setErrors(errors) {
+        const { onErrors } = this.props;
+        if (onErrors !== null) {
+            onErrors(errors);
+        } else {
             this.setState({
-                generalError: generalErrorDefaultMessage,
+                errors,
             });
         }
     }
 
-    renderErrors() {
-        const { generalError } = this.state;
-
-        const errorsClassNames = classNames({
-            alert: true,
-            'alert-danger': true,
-        });
-        return (
-            <div className={errorsClassNames}>
-                {isArray(generalError) ? (
-                    <ul>{generalError.map(error => <li key={`error-${error}`}>{error}</li>)}</ul>
-                ) : (
-                    generalError
-                )}
-            </div>
-        );
+    /**
+     * Set the value
+     *
+     * @param {object} value
+     * @public
+     */
+    setValue(value) {
+        const { onChange } = this.props;
+        if (onChange !== null) {
+            onChange(value);
+        } else {
+            this.setState({
+                value,
+            });
+        }
     }
 
-    renderFields() {
-        const { fields, readOnly } = this.props;
-        const { value, errors } = this.state;
-        return (
-            <FieldsGroup
-                readOnly={readOnly}
-                fields={fields}
-                value={value}
-                errors={errors}
-                onChange={this.onFieldsValueChange}
-            />
-        );
-    }
-
-    renderButtons() {
-        const { buttons } = this.props;
-        return (
-            <div className={styles.buttons}>
-                <div className="btn-group">
-                    {buttons.map(({
-                        id, label, type, className, onClick,
-                    }) => (
-                        <button
-                            key={`actions-button-${id}`}
-                            type={type}
-                            className={classNames({
-                                btn: true,
-                                [className]: (className || null) !== null,
-                                [styles.button]: true,
-                                [styles[type]]: true,
-                            })}
-                            onClick={onClick || null}
-                        >
-                            {isString(label) ? label : <FormattedMessage {...label} />}
-                        </button>
-                    ))}
-                </div>
-            </div>
-        );
-    }
-
-    renderNotice() {
-        const { notice } = this.props;
-        return notice;
+    /**
+     * Submit the form
+     *
+     * @public
+     */
+    submit() {
+        const { submitForm } = this.props;
+        const { value } = this.state;
+        if (submitForm !== null) {
+            submitForm(value)
+                .then(this.onFormSubmitComplete)
+                .catch(this.onFormSubmitError);
+        } else {
+            this.refForm.current.submit();
+        }
     }
 
     render() {
-        const { action, method } = this.props;
-        const { generalError } = this.state;
+        const {
+            action, method, fields, buttons, notice, readOnly, withoutActions,
+        } = this.props;
+        const { value, errors } = this.state;
+
+        const errorsIsGeneral = errors !== null && !isObject(errors);
 
         return (
             <div className={styles.container}>
-                <div className={styles.form}>
-                    <form action={action} method={method} onSubmit={this.onFormSubmit}>
-                        {generalError ? (
-                            <div className={styles.errors}>{this.renderErrors()}</div>
-                        ) : null}
-                        <div className={styles.fields}>{this.renderFields()}</div>
-                        <div
-                            className={classNames({
-                                'mt-4': true,
-                                'pt-2': true,
-                                'border-top': true,
-                                [styles.actions]: true,
-                            })}
-                        >
-                            <div className={styles.cols}>
-                                <div
-                                    className={classNames({
-                                        [styles.col]: true,
-                                        [styles.colNotice]: true,
-                                    })}
-                                >
-                                    {this.renderNotice()}
-                                </div>
-                                <div
-                                    className={classNames({
-                                        'text-right': true,
-                                        [styles.col]: true,
-                                        [styles.colActions]: true,
-                                    })}
-                                >
-                                    {this.renderButtons()}
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                <form
+                    action={action}
+                    method={method}
+                    onSubmit={this.onFormSubmit}
+                    className={styles.form}
+                    ref={this.refForm}
+                >
+                    {errorsIsGeneral ? (
+                        <Errors className={styles.errors} errors={errors} />
+                    ) : null}
+
+                    <div className={styles.fields}>
+                        <FieldsGroup
+                            readOnly={readOnly}
+                            fields={fields}
+                            value={value}
+                            errors={!errorsIsGeneral ? errors : null}
+                            onChange={this.onFieldsChange}
+                        />
+                    </div>
+                    {!withoutActions ? (
+                        <FormActions
+                            notice={notice}
+                            buttons={buttons}
+                            className={classNames(['mt-4', 'border-top', 'pt-2', styles.actions])}
+                        />
+                    ) : null}
+                </form>
             </div>
         );
     }
@@ -290,5 +230,6 @@ class NormalForm extends Component {
 NormalForm.propTypes = propTypes;
 NormalForm.defaultProps = defaultProps;
 NormalForm.childContextTypes = childContextTypes;
+NormalForm.contextTypes = contextTypes;
 
 export default NormalForm;

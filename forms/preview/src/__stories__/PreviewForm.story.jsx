@@ -9,7 +9,7 @@ import { IntlProvider } from 'react-intl';
 
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
-import PreviewForm from '../PreviewForm';
+import PreviewForm from '../PreviewForm'; // eslint-disable-line import/no-named-as-default
 
 const PreviewFormWithFields = withFieldsCollection({
     childContext: true,
@@ -50,16 +50,16 @@ const fields = [
 const submitAction = action('onSubmit');
 
 storiesOf('Forms/Preview', module, {
-        colWidth: 12,
-    })
+    colWidth: 12,
+})
     .add('simple', () => (
         <div>
             <IntlProvider
                 locale="en"
             >
                 <KeepValue
-                    onChangeName="onValueChange"
-                    onChange={action('onValueChange')}
+                    onChangeName="onChange"
+                    onChange={action('onChange')}
                 >
                     <PreviewFormWithPreviews
                         fields={fields}
@@ -73,19 +73,18 @@ storiesOf('Forms/Preview', module, {
         </div>
     ))
     .add('with errors', () => (
-        <div>
-            <IntlProvider
-                locale="en"
-                messages={{
-                    'forms.normal.__stories__.test1': 'Custom button 1',
-                }}
-            >
+        <IntlProvider
+            locale="en"
+            messages={{
+                'forms.normal.__stories__.test1': 'Custom button 1',
+            }}
+        >
+            <div>
                 <KeepValue
-                    onChangeName="onValueChange"
-                    onChange={action('onValueChange')}
+                    onChangeName="onChange"
+                    onChange={action('onChange')}
                 >
                     <PreviewFormWithPreviews
-                        generalError="A general error"
                         fields={fields}
                         errors={{
                             title: 'A field error',
@@ -96,8 +95,24 @@ storiesOf('Forms/Preview', module, {
                         }}
                     />
                 </KeepValue>
-            </IntlProvider>
-        </div>
+
+                <hr />
+
+                <KeepValue
+                    onChangeName="onChange"
+                    onChange={action('onChange')}
+                >
+                    <PreviewFormWithPreviews
+                        fields={fields}
+                        errors="A general error"
+                        onSubmit={(e, value) => {
+                            e.preventDefault();
+                            return submitAction(value);
+                        }}
+                    />
+                </KeepValue>
+            </div>
+        </IntlProvider>
     ))
     .add('with custom button and notice', () => (
         <div>
@@ -108,8 +123,8 @@ storiesOf('Forms/Preview', module, {
                 }}
             >
                 <KeepValue
-                    onChangeName="onValueChange"
-                    onChange={action('onValueChange')}
+                    onChangeName="onChange"
+                    onChange={action('onChange')}
                 >
                     <PreviewFormWithPreviews
                         fields={fields}
@@ -119,17 +134,7 @@ storiesOf('Forms/Preview', module, {
                                 className: 'btn-success',
                             },
                         ]}
-                        notice={(
-                            <span
-                                className="text-info"
-                            >
-                                <span
-                                    className="glyphicon glyphicon-info-sign"
-                                    style={{ marginRight: '4px' }}
-                                />
-                                This is a notice.
-                            </span>
-                        )}
+                        notice="This is a notice."
                         onSubmit={(e, value) => {
                             e.preventDefault();
                             return submitAction(value);

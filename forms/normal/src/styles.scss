@@ -16,29 +16,4 @@
     .actions {
         margin-top: 10px;
     }
-
-    .buttons {
-        .button {
-            margin-right: 5px;
-
-            &:last-child {
-                margin-right: 0;
-            }
-        }
-    }
-
-    .cols {
-        display: table;
-    }
-
-    .col {
-        display: table-cell;
-        vertical-align: middle;
-    }
-
-    .colNotice {
-        width: 100%;
-        padding-right: 10px;
-        text-align: right;
-    }
 }

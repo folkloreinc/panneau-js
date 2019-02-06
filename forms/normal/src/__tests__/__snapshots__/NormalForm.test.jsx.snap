@@ -2,83 +2,85 @@
 
 exports[`match snapshot 1`] = `
 <div>
-  <div>
-    <form
-      action=""
-      method="POST"
-      onSubmit={[Function]}
-    >
+  <form
+    action=""
+    method="POST"
+    onSubmit={[Function]}
+  >
+    <div>
       <div>
         <div>
-          <div>
-            <div
-              className="form-group form-group-text"
-            >
-              <div
-                className="form-group-label"
-              >
-                <label
-                  className="control-label"
-                  htmlFor="text"
-                >
-                  Text
-                </label>
-              </div>
-              <div
-                className="form-group-inner"
-                style={
-                  Object {
-                    "display": "block",
-                  }
-                }
-              >
-                <input
-                  className="form-control field-text"
-                  disabled={false}
-                  id="text"
-                  maxLength={null}
-                  name="text"
-                  onBlur={null}
-                  onChange={[Function]}
-                  onFocus={null}
-                  placeholder={null}
-                  type="text"
-                  value="Text"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        className="mt-4 pt-2 border-top undefined"
-      >
-        <div>
           <div
-            className="undefined"
-          />
-          <div
-            className="text-right undefined"
+            className="form-group form-group-text"
           >
-            <div>
-              <div
-                className="btn-group"
+            <div
+              className="form-group-label"
+            >
+              <label
+                className="control-label"
+                htmlFor="text"
               >
-                <button
-                  className="btn btn-primary undefined"
-                  onClick={null}
-                  type="submit"
-                >
-                  <span>
-                    Save
-                  </span>
-                </button>
-              </div>
+                Text
+              </label>
+            </div>
+            <div
+              className="form-group-inner"
+              style={
+                Object {
+                  "display": "block",
+                }
+              }
+            >
+              <input
+                className="form-control field-text"
+                disabled={false}
+                id="text"
+                maxLength={null}
+                name="text"
+                onBlur={null}
+                onChange={[Function]}
+                onFocus={null}
+                placeholder={null}
+                type="text"
+                value="Text"
+              />
             </div>
           </div>
         </div>
       </div>
-    </form>
-  </div>
+    </div>
+    <div
+      className="mt-4 border-top pt-2"
+    >
+      <div
+        className="row align-items-center"
+      >
+        <div
+          className="col-sm col-sm-auto text-right"
+        >
+          <div
+            className=""
+          >
+            <div
+              className="btn-group"
+            >
+              <button
+                className="btn btn-primary"
+                onClick={null}
+                type="submit"
+              >
+                <span>
+                  Save
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          className="col-sm order-sm-first text-right"
+        />
+      </div>
+    </div>
+  </form>
 </div>
 `;
