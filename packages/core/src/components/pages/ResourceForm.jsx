@@ -414,7 +414,7 @@ class ResourceForm extends Component {
                     styles.header,
                     {
                         'py-4': !fullscreen,
-                        'py-2': fullscreen,
+                        'p-2': fullscreen,
                     },
                 ])}
             >

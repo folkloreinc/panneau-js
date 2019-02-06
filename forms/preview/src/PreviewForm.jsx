@@ -263,7 +263,7 @@ export class PreviewForm extends Component {
                         type: 'button',
                         onClick: this.onClickSubmit,
                     } : button))}
-                    className={classNames(['border-top', 'pt-2', styles.actions])}
+                    className={classNames(['border-top', 'p-2', styles.actions])}
                 />
             </div>
         );
