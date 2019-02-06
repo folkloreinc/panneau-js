@@ -6,6 +6,7 @@ import layoutsCollection from '@panneau/layouts';
 import { navbarItemsCollection } from '@panneau/layout';
 import listsCollection from '@panneau/lists';
 import formsCollection from '@panneau/forms';
+import previewsCollection from '@panneau/previews';
 import modalsCollection from '@panneau/modals';
 
 import storiesOf from '../../../../.storybook/storiesOf';
@@ -18,6 +19,7 @@ componentsCollection.addComponents(layoutsCollection, 'layouts');
 componentsCollection.addComponents(listsCollection, 'lists');
 componentsCollection.addComponents(formsCollection, 'forms');
 componentsCollection.addComponents(modalsCollection, 'modals');
+componentsCollection.addComponents(previewsCollection, 'previews');
 componentsCollection.addComponents(navbarItemsCollection, 'navbarItems');
 
 storiesOf('Panneau/Simple', module, {

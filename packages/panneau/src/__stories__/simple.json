@@ -143,7 +143,9 @@
                 "destroy":"/pages/:id"
             },
             "forms": {
-                "type": "normal",
+                "type": "preview",
+                "fullscreen": true,
+                "preview": "json",
                 "fields": {
                     "home": [
                         {
