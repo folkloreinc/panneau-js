@@ -52,7 +52,7 @@
     "dependencies": {
         "@babel/runtime": "^7.0.0",
         "@folklore/react-container": "^0.1.12",
-        "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
+        "@fortawesome/fontawesome-free": "^5.7.1",
         "bootstrap": "~4.1.1",
         "classnames": "^2.2.5",
         "connected-react-router": "^6.0.0",
