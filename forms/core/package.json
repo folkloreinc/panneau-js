@@ -53,9 +53,11 @@
     "hoist-non-react-statics": "^3.3.0",
     "invariant": "^2.2.4",
     "lodash": "^4.17.4",
-    "prop-types": "^15.6.0"
+    "prop-types": "^15.6.0",
+    "react-intl": "^2.8.0"
   },
   "devDependencies": {
+    "bootstrap": "^4.2.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0"
   },
