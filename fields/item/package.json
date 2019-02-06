@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-item",
-    "version": "0.6.36",
+    "version": "0.6.38",
     "description": "Item fields for Panneau",
     "keywords": [
         "react",
@@ -48,9 +48,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.6.36",
-        "@panneau/field": "^0.6.36",
-        "@panneau/field-autosuggest": "^0.6.36",
+        "@panneau/core": "^0.6.38",
+        "@panneau/field": "^0.6.38",
+        "@panneau/field-autosuggest": "^0.6.38",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
         "prop-types": "^15.6.0"
