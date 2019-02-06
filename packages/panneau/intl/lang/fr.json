@@ -48,6 +48,7 @@
     "fields.select.no_options": "Aucune option",
     "fields.select.placeholder": "Sélectionnez...",
     "fields.select.screen_reader_status": "{count, plural, =0 {aucun résultat disponible} one {# résultat disponible} other {# résultats disponibles}}",
+    "forms.buttons.submit": "Sauvegarder",
     "forms.normal.buttons.submit": "Sauvegarder",
     "layouts.navbar.resource.create": "Ajouter {resource}",
     "layouts.navbar.resource.index": "Voir tous {resource}",
