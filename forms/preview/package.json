@@ -1,6 +1,6 @@
 {
   "name": "@panneau/form-preview",
-  "version": "0.6.40",
+  "version": "0.6.41",
   "description": "Preview forms for Panneau",
   "keywords": [
     "react",
@@ -61,8 +61,8 @@
   },
   "devDependencies": {
     "@panneau/fields": "^0.6.39",
-    "@panneau/forms": "^0.6.40",
-    "@panneau/previews": "^0.6.39",
+    "@panneau/forms": "^0.6.41",
+    "@panneau/previews": "^0.6.41",
     "bootstrap": "~4.1.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0"
