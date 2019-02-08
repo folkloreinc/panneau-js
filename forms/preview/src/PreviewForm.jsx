@@ -36,6 +36,7 @@ const propTypes = {
     formStyle: stylePropType,
     previewStyle: stylePropType,
     fullscreen: PropTypes.bool,
+    withoutPreviewFullscreen: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
     onErrors: PropTypes.func,
@@ -68,6 +69,7 @@ const defaultProps = {
     formStyle: null,
     previewStyle: null,
     fullscreen: false,
+    withoutPreviewFullscreen: false,
     className: null,
     onChange: null,
     onErrors: null,
@@ -102,12 +104,14 @@ export class PreviewForm extends Component {
         this.onFormChange = this.onFormChange.bind(this);
         this.onFormErrors = this.onFormErrors.bind(this);
         this.onClickSubmit = this.onClickSubmit.bind(this);
+        this.onClickPreviewFullscreen = this.onClickPreviewFullscreen.bind(this);
 
         this.refForm = React.createRef();
 
         this.state = {
             value: props.value,
             errors: props.errors,
+            previewFullscreen: false,
         };
     }
 
@@ -135,6 +139,12 @@ export class PreviewForm extends Component {
 
     onClickSubmit() {
         this.submit();
+    }
+
+    onClickPreviewFullscreen() {
+        this.setState(({ previewFullscreen }) => ({
+            previewFullscreen: !previewFullscreen,
+        }));
     }
 
     /**
@@ -203,12 +213,13 @@ export class PreviewForm extends Component {
             formStyle,
             previewStyle,
             fullscreen,
+            withoutPreviewFullscreen,
             className,
             onChange,
             onErrors,
             ...props
         } = this.props;
-        const { value, errors } = this.state;
+        const { value, errors, previewFullscreen } = this.state;
 
         const FormComponent = formsCollection.getComponent(form);
         const PreviewComponent = previewsCollection.getComponent(preview);
@@ -219,6 +230,7 @@ export class PreviewForm extends Component {
                     styles.container,
                     {
                         [styles.isFullscreen]: fullscreen,
+                        [styles.previewIsFullscreen]: previewFullscreen,
                         [className]: className !== null,
                     },
                 ])}
@@ -230,7 +242,9 @@ export class PreviewForm extends Component {
                         defaultSize={formWidth}
                         minSize={formMinWidth}
                         maxSize={formMaxWidth}
-                        style={paneStyle === null && !fullscreen ? { position: 'relative' } : paneStyle}
+                        style={
+                            paneStyle === null && !fullscreen ? { position: 'relative' } : paneStyle
+                        }
                         paneStyle={panesStyle}
                         pane1Style={paneFormStyle}
                         pane2Style={panePreviewStyle}
@@ -250,19 +264,39 @@ export class PreviewForm extends Component {
                             ) : null}
                         </div>
                         <div className={styles.preview}>
-                            {PreviewComponent !== null ? (
-                                <PreviewComponent value={value} {...props} />
+                            {!withoutPreviewFullscreen ? (
+                                <button
+                                    type="button"
+                                    className={classNames([
+                                        'btn',
+                                        'btn-light',
+                                        styles.fullscreenButton,
+                                        'fas',
+                                        {
+                                            'fa-expand': !previewFullscreen,
+                                            'fa-compress': previewFullscreen,
+                                        },
+                                    ])}
+                                    onClick={this.onClickPreviewFullscreen}
+                                />
                             ) : null}
+                            <div className={styles.inner}>
+                                {PreviewComponent !== null ? (
+                                    <PreviewComponent value={value} {...props} />
+                                ) : null}
+                            </div>
                         </div>
                     </SplitPane>
                 </div>
                 <FormActions
                     notice={notice}
-                    buttons={buttons.map(button => (button.id === 'submit' ? {
-                        ...button,
-                        type: 'button',
-                        onClick: this.onClickSubmit,
-                    } : button))}
+                    buttons={buttons.map(button => (button.id === 'submit'
+                        ? {
+                            ...button,
+                            type: 'button',
+                            onClick: this.onClickSubmit,
+                        }
+                        : button))}
                     className={classNames(['border-top', 'p-2', styles.actions])}
                 />
             </div>
