@@ -8,7 +8,7 @@
     "packages/*",
     "previews/*"
   ],
-  "version": "0.6.38",
+  "version": "0.6.39",
   "command": {
     "publish": {
       "allowBranch": "master"

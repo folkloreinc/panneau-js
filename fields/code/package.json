@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-code",
-    "version": "0.6.38",
+    "version": "0.6.39",
     "description": "Code field for Panneau",
     "keywords": [
         "react",
@@ -48,8 +48,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.6.38",
-        "@panneau/field": "^0.6.38",
+        "@panneau/core": "^0.6.39",
+        "@panneau/field": "^0.6.39",
         "brace": "^0.10.0",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
