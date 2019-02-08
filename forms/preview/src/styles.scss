@@ -1,5 +1,11 @@
 @import '@panneau/core/src/styles/variables';
 
+$track-size: 10px;
+$track-size-hover: 10px;
+$track-inner-color: $gray-300;
+$track-inner-hover-color: $gray-500;
+$track-side-color: $gray-200;
+
 .container {
     display: flex;
     flex-direction: column;
@@ -10,9 +16,9 @@
             position: relative;
             z-index: 1;
             box-sizing: border-box;
-            transition: all 0.2s ease-out;
+            transition: border-color 0.2s ease-out, border-width 0.2s ease-out, width 0.2s ease-out, height 0.2s ease-out;
             background-clip: padding-box;
-            background-color: $gray-300;
+            background-color: $track-inner-color;
 
             &::after {
                 content: '';
@@ -20,37 +26,39 @@
                 position: absolute;
                 top: 50%;
                 left: 50%;
-                width: 7px;
+                width: $track-size - 3px;
                 height: 40px;
                 margin-top: -20px;
-                margin-left: -4px;
+                margin-left: -(($track-size - 3px) / 2);
                 transition: all 0.2s ease-out;
                 border-radius: 10px;
-                background-color: $gray-300;
+                background-color: $track-inner-color;
             }
 
             &.horizontal {
                 width: 100%;
-                height: 11px;
-                border-top: 5px solid transparent;
-                border-bottom: 5px solid transparent;
+                height: $track-size + 1px;
+                border-top: ($track-size / 2) solid transparent;
+                border-bottom: ($track-size / 2) solid transparent;
                 cursor: row-resize;
 
                 &:hover {
-                    border-top: 5px solid $gray-100;
-                    border-bottom: 5px solid $gray-100;
+                    height: $track-size-hover + 1px;
+                    border-top: ($track-size-hover / 2) solid $track-side-color;
+                    border-bottom: ($track-size-hover / 2) solid $track-side-color;
                 }
             }
 
             &.vertical {
-                width: 11px;
-                border-right: 5px solid transparent;
-                border-left: 5px solid transparent;
+                width: $track-size + 1px;
+                border-right: ($track-size / 2) solid transparent;
+                border-left: ($track-size / 2) solid transparent;
                 cursor: col-resize;
 
                 &:hover {
-                    border-right: 5px solid $gray-100;
-                    border-left: 5px solid $gray-100;
+                    width: $track-size-hover + 1px;
+                    border-right: ($track-size-hover / 2) solid $track-side-color;
+                    border-left: ($track-size-hover / 2) solid $track-side-color;
                 }
             }
 
@@ -63,10 +71,10 @@
             }
 
             &:hover {
-                background-color: $gray-600;
+                background-color: $track-inner-hover-color;
 
                 &::after {
-                    background-color: $gray-600;
+                    background-color: $track-inner-hover-color;
                 }
             }
         }

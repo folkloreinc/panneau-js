@@ -14,7 +14,7 @@ storiesOf('Previews/Component', module)
     .add('simple', () => (
         <div>
             <ComponentPreview value={value}>
-                {({ value }) => JSON.stringify(value)}
+                {({ value: val }) => JSON.stringify(val)}
             </ComponentPreview>
         </div>
     ))

@@ -414,12 +414,13 @@ class ResourceForm extends Component {
                     styles.header,
                     {
                         'py-4': !fullscreen,
-                        'p-2': fullscreen,
+                        'px-2': fullscreen,
+                        'py-3': fullscreen,
                     },
                 ])}
             >
                 {currentType !== null && action === 'create' ? (
-                    <div className={classNames(['row', 'align-items-center'])}>
+                    <div className={classNames(['row', 'no-gutters', 'align-items-center'])}>
                         <div className="col">{this.renderTitle()}</div>
                         <div className={classNames(['col', 'col-md-auto', 'text-right'])}>
                             <div className={classNames(['btn-group', 'btn-group-sm'])}>

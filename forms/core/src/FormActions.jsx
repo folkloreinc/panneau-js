@@ -36,11 +36,11 @@ const FormActions = ({
             },
         ])}
     >
-        <div className={classNames(['row', 'align-items-center'])}>
-            <div className={classNames(['col-sm', 'col-sm-auto', 'text-right'])}>
+        <div className={classNames(['row', 'no-gutters', 'align-items-center'])}>
+            <div className={classNames(['col-sm', 'col-sm-auto', 'pb-2', 'pb-sm-0', 'text-right'])}>
                 <FormButtons buttons={buttons} className={buttonsClassName} />
             </div>
-            <div className={classNames(['col-sm', 'order-sm-first', 'text-right'])}>
+            <div className={classNames(['col-sm', 'order-sm-first', 'pr-sm-3', 'text-right'])}>
                 {notice !== null ? (
                     <FormNotice notice={notice} className={noticeClassName} />
                 ) : null}
