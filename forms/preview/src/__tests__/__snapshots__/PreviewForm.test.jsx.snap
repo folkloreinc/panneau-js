@@ -4,149 +4,151 @@ exports[`match snapshot 1`] = `
 <div
   className=""
 >
-  <div
-    className="SplitPane  vertical "
-    style={
-      Object {
-        "MozUserSelect": "text",
-        "WebkitUserSelect": "text",
-        "display": "flex",
-        "flex": 1,
-        "flexDirection": "row",
-        "height": "100%",
-        "left": 0,
-        "msUserSelect": "text",
-        "outline": "none",
-        "overflow": "hidden",
-        "position": "relative",
-        "right": 0,
-        "userSelect": "text",
-      }
-    }
-  >
+  <div>
     <div
-      className="Pane vertical Pane1  "
+      className="SplitPane  vertical "
       style={
         Object {
-          "flex": "none",
+          "MozUserSelect": "text",
+          "WebkitUserSelect": "text",
+          "display": "flex",
+          "flex": 1,
+          "flexDirection": "row",
+          "height": "100%",
+          "left": 0,
+          "msUserSelect": "text",
           "outline": "none",
+          "overflow": "hidden",
           "position": "relative",
-          "width": 300,
+          "right": 0,
+          "userSelect": "text",
         }
       }
     >
-      <div>
+      <div
+        className="Pane vertical Pane1  "
+        style={
+          Object {
+            "flex": "none",
+            "outline": "none",
+            "position": "relative",
+            "width": 300,
+          }
+        }
+      >
         <div>
-          <form
-            action=""
-            method="POST"
-            onSubmit={[Function]}
-          >
-            <div>
+          <div>
+            <form
+              action=""
+              method="POST"
+              onSubmit={[Function]}
+            >
               <div>
                 <div>
-                  <div
-                    className="form-group form-group-text"
-                  >
+                  <div>
                     <div
-                      className="form-group-label"
+                      className="form-group form-group-text"
                     >
-                      <label
-                        className="control-label"
-                        htmlFor="text"
+                      <div
+                        className="form-group-label"
                       >
-                        Text
-                      </label>
-                    </div>
-                    <div
-                      className="form-group-inner"
-                      style={
-                        Object {
-                          "display": "block",
+                        <label
+                          className="control-label"
+                          htmlFor="text"
+                        >
+                          Text
+                        </label>
+                      </div>
+                      <div
+                        className="form-group-inner"
+                        style={
+                          Object {
+                            "display": "block",
+                          }
                         }
-                      }
-                    >
-                      <input
-                        className="form-control field-text"
-                        disabled={false}
-                        id="text"
-                        maxLength={null}
-                        name="text"
-                        onBlur={null}
-                        onChange={[Function]}
-                        onFocus={null}
-                        placeholder={null}
-                        type="text"
-                        value="Text"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="mt-4 border-top pt-2"
-            >
-              <div
-                className="row align-items-center"
-              >
-                <div
-                  className="col-sm col-sm-auto text-right"
-                >
-                  <div
-                    className=""
-                  >
-                    <div
-                      className="btn-group"
-                    >
-                      <button
-                        className="btn btn-primary"
-                        onClick={null}
-                        type="submit"
                       >
-                        <span>
-                          Save
-                        </span>
-                      </button>
+                        <input
+                          className="form-control field-text"
+                          disabled={false}
+                          id="text"
+                          maxLength={null}
+                          name="text"
+                          onBlur={null}
+                          onChange={[Function]}
+                          onFocus={null}
+                          placeholder={null}
+                          type="text"
+                          value="Text"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div
-                  className="col-sm order-sm-first text-right"
-                />
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
+        </div>
+      </div>
+      <span
+        className="Resizer vertical "
+        onClick={[Function]}
+        onDoubleClick={[Function]}
+        onMouseDown={[Function]}
+        onTouchEnd={[Function]}
+        onTouchStart={[Function]}
+        role="presentation"
+        style={Object {}}
+      />
+      <div
+        className="Pane vertical Pane2  "
+        style={
+          Object {
+            "flex": 1,
+            "outline": "none",
+            "position": "relative",
+          }
+        }
+      >
+        <div>
+          <pre>
+            {
+    "text": "Text"
+}
+          </pre>
         </div>
       </div>
     </div>
-    <span
-      className="Resizer vertical "
-      onClick={[Function]}
-      onDoubleClick={[Function]}
-      onMouseDown={[Function]}
-      onTouchEnd={[Function]}
-      onTouchStart={[Function]}
-      role="presentation"
-      style={Object {}}
-    />
+  </div>
+  <div
+    className="border-top p-2"
+  >
     <div
-      className="Pane vertical Pane2  "
-      style={
-        Object {
-          "flex": 1,
-          "outline": "none",
-          "position": "relative",
-        }
-      }
+      className="row no-gutters align-items-center"
     >
-      <div>
-        <pre>
-          {
-    "text": "Text"
-}
-        </pre>
+      <div
+        className="col-sm col-sm-auto pb-2 pb-sm-0 text-right"
+      >
+        <div
+          className=""
+        >
+          <div
+            className="btn-group"
+          >
+            <button
+              className="btn btn-primary"
+              onClick={[Function]}
+              type="button"
+            >
+              <span>
+                Save
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
+      <div
+        className="col-sm order-sm-first pr-sm-3 text-right"
+      />
     </div>
   </div>
 </div>
