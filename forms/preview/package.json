@@ -1,6 +1,6 @@
 {
   "name": "@panneau/form-preview",
-  "version": "0.6.41",
+  "version": "0.6.42",
   "description": "Preview forms for Panneau",
   "keywords": [
     "react",
@@ -52,7 +52,7 @@
     "@panneau/core": "^0.6.39",
     "@panneau/field": "^0.6.39",
     "@panneau/form": "^0.6.39",
-    "@panneau/form-normal": "^0.6.40",
+    "@panneau/form-normal": "^0.6.42",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0",
