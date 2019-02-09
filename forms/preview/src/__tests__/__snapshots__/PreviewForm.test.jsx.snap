@@ -110,11 +110,18 @@ exports[`match snapshot 1`] = `
         }
       >
         <div>
-          <pre>
-            {
+          <button
+            className="btn btn-light fas fa-expand"
+            onClick={[Function]}
+            type="button"
+          />
+          <div>
+            <pre>
+              {
     "text": "Text"
 }
-          </pre>
+            </pre>
+          </div>
         </div>
       </div>
     </div>

@@ -115,7 +115,7 @@ const miniGlobalSassLoader = {
             ...cssLoader,
             options: {
                 ...cssLoader.options,
-                importLoaders: 1,
+                importLoaders: 2,
             },
         },
         postCssLoader,
@@ -170,7 +170,7 @@ const styleGlobalSassLoader = {
             ...cssLoader,
             options: {
                 ...cssLoader.options,
-                importLoaders: 1,
+                importLoaders: 2,
             },
         },
         postCssLoader,
