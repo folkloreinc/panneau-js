@@ -30,7 +30,7 @@
     ],
     "scripts": {
         "clean": "rm -rf lib",
-        "copy:templates": "find src/ -type d | grep -i templates$ | sed 's/src\\/\\///g' | xargs -I{} cp -r \"src/{}\" \"lib/{}\"",
+        "copy:templates": "rsync -av ./src/ ./lib/ --include='*/' --include='templates/**' --exclude='*'",
         "babel": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore story.js,test.js,templates,src/generators/*/templates/**,src/templates",
         "build": "npm run babel && npm run copy:templates",
         "prepare": "npm run clean && npm run build"
