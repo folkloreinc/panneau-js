@@ -1,24 +1,22 @@
 import React from 'react';
 /* eslint-disable import/no-extraneous-dependencies */
 import { action } from '@storybook/addon-actions';
-import { withFieldsCollection } from '@panneau/fields';
-import { withPreviewsCollection } from '@panneau/previews';
-import { withFormsCollection } from '@panneau/forms';
 /* eslint-enable import/no-extraneous-dependencies */
 import { IntlProvider } from 'react-intl';
 
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
+import withFieldsCollection from '../../../../fields/fields/src/withFieldsCollection';
+import withPreviewsCollection from '../../../../previews/previews/src/withPreviewsCollection';
+import withFormsCollection from '../../../forms/src/withFormsCollection';
 import PreviewForm from '../PreviewForm'; // eslint-disable-line import/no-named-as-default
 
 const PreviewFormWithFields = withFieldsCollection({
     childContext: true,
 })(PreviewForm);
-
 const PreviewFormWithForms = withFormsCollection({
     childContext: true,
 })(PreviewFormWithFields);
-
 const PreviewFormWithPreviews = withPreviewsCollection({
     childContext: true,
 })(PreviewFormWithForms);
@@ -54,13 +52,8 @@ storiesOf('Forms/Preview', module, {
 })
     .add('simple', () => (
         <div>
-            <IntlProvider
-                locale="en"
-            >
-                <KeepValue
-                    onChangeName="onChange"
-                    onChange={action('onChange')}
-                >
+            <IntlProvider locale="en">
+                <KeepValue onChangeName="onChange" onChange={action('onChange')}>
                     <PreviewFormWithPreviews
                         fields={fields}
                         onSubmit={(e, value) => {
@@ -80,10 +73,7 @@ storiesOf('Forms/Preview', module, {
             }}
         >
             <div>
-                <KeepValue
-                    onChangeName="onChange"
-                    onChange={action('onChange')}
-                >
+                <KeepValue onChangeName="onChange" onChange={action('onChange')}>
                     <PreviewFormWithPreviews
                         fields={fields}
                         errors={{
@@ -98,10 +88,7 @@ storiesOf('Forms/Preview', module, {
 
                 <hr />
 
-                <KeepValue
-                    onChangeName="onChange"
-                    onChange={action('onChange')}
-                >
+                <KeepValue onChangeName="onChange" onChange={action('onChange')}>
                     <PreviewFormWithPreviews
                         fields={fields}
                         errors="A general error"
@@ -122,10 +109,7 @@ storiesOf('Forms/Preview', module, {
                     'forms.normal.__stories__.test1': 'Custom button 1',
                 }}
             >
-                <KeepValue
-                    onChangeName="onChange"
-                    onChange={action('onChange')}
-                >
+                <KeepValue onChangeName="onChange" onChange={action('onChange')}>
                     <PreviewFormWithPreviews
                         fields={fields}
                         buttons={[

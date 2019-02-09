@@ -1,21 +1,20 @@
 import React from 'react';
 /* eslint-disable import/no-extraneous-dependencies */
 import renderer from 'react-test-renderer';
-import { withFieldsCollection } from '@panneau/fields';
-import { withPreviewsCollection } from '@panneau/previews';
-import { withFormsCollection } from '@panneau/forms';
 /* eslint-enable import/no-extraneous-dependencies */
 import { IntlProvider } from 'react-intl';
+
+import withFieldsCollection from '../../../../fields/fields/src/withFieldsCollection';
+import withPreviewsCollection from '../../../../previews/previews/src/withPreviewsCollection';
+import withFormsCollection from '../../../forms/src/withFormsCollection';
 import PreviewForm from '../PreviewForm';
 
 const PreviewFormWithFields = withFieldsCollection({
     childContext: true,
 })(PreviewForm);
-
 const PreviewFormWithForms = withFormsCollection({
     childContext: true,
 })(PreviewFormWithFields);
-
 const PreviewFormWithPreviews = withPreviewsCollection({
     childContext: true,
 })(PreviewFormWithForms);
