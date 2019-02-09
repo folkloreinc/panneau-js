@@ -8,14 +8,14 @@ cache:
 sudo: false
 
 node_js:
-    - "8"
+    - "lts/*"
 
 before_install:
     - npm install -g lerna jest
 
 install:
     - npm install
-    - lerna bootstrap --ignore-scripts
+    - lerna bootstrap
 
 script: npm test
 
