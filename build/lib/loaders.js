@@ -72,7 +72,6 @@ const sassLoader = {
 const cssLoader = {
     loader: require.resolve('css-loader'),
     options: {
-        minimize: true,
         sourceMap: shouldUseSourceMap,
     },
 };
