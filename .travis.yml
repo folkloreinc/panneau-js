@@ -20,7 +20,7 @@ before_install:
 
 install:
     - npm install
-    - lerna bootstrap
+    - lerna bootstrap --ignore-scripts
 
 script: npm test
 
