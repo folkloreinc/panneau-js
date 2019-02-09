@@ -15,12 +15,9 @@ branches:
         - master
         - develop
 
-before_install:
-    - npm install -g lerna jest
-
 install:
     - npm install
-    - lerna bootstrap --ignore-scripts
+    - npm run bootstrap:dependencies
 
 script: npm test
 

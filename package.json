@@ -25,6 +25,7 @@
         "storybook-deploy": "storybook-to-ghpages",
         "test": "NODE_ENV=test jest --config ./jest.config.js",
         "bootstrap": "lerna bootstrap",
+        "bootstrap:dependencies": "lerna bootstrap --ignore-scripts",
         "clean:package-lock": "lerna exec -- rm -f ./package-lock.json",
         "clean:packages": "lerna run clean",
         "clean": "lerna clean --yes && npm run clean:packages && npm run clean:package-lock",
