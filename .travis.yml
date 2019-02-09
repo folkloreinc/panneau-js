@@ -1,14 +1,19 @@
 language: node_js
 
+node_js:
+  - "lts/*"
+
+sudo: false
+
 cache:
     npm: true
     directories:
         - node_modules
 
-sudo: false
-
-node_js:
-    - "lts/*"
+branches:
+    only:
+        - master
+        - develop
 
 before_install:
     - npm install -g lerna jest
