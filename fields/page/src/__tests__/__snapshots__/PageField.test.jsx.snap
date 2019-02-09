@@ -35,13 +35,16 @@ exports[`match snapshot 1`] = `
           }
         >
           <div
+            aria-expanded={false}
+            aria-haspopup="listbox"
+            aria-owns="react-autowhatever-1"
             className="undefined"
+            role="combobox"
           >
             <input
               aria-activedescendant={null}
               aria-autocomplete="list"
-              aria-expanded={false}
-              aria-owns="react-autowhatever-1"
+              aria-controls="react-autowhatever-1"
               autoComplete="off"
               className="form-control undefined"
               onBlur={[Function]}
@@ -49,13 +52,13 @@ exports[`match snapshot 1`] = `
               onFocus={[Function]}
               onKeyDown={[Function]}
               placeholder="Search for a page..."
-              role="combobox"
               type="text"
               value=""
             />
             <div
               className="undefined"
               id="react-autowhatever-1"
+              role="listbox"
             />
           </div>
         </div>
