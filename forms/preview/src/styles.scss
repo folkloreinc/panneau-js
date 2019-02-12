@@ -144,6 +144,7 @@ $track-side-color: $gray-200;
     }
     /* stylelint-enable selector-class-pattern */
 
+    .form,
     .preview,
     .preview .inner {
         position: absolute;
@@ -154,11 +155,19 @@ $track-side-color: $gray-200;
         overflow: hidden;
     }
 
+    .form,
     .preview .inner {
         overflow: auto;
 
         &::-webkit-scrollbar {
-            display: none;
+            width: 6px;
+            height: 6px;
+            background: $gray-100;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border-radius: 5px;
+            background: $gray-300;
         }
     }
 
