@@ -46,8 +46,8 @@ class PageField extends PureComponent {
         }
         return urlGenerator.route(
             typeof resource.routes !== 'undefined'
-                ? `resources.${resource.id}.index`
-                : 'resources.index',
+                ? `resource.${resource.id}.index`
+                : 'resource.index',
             {
                 resource: resource.id,
             },
