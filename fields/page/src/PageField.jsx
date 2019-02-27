@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
-import { PropTypes as PanneauPropTypes, withUrlGenerator } from '@panneau/core';
+import { PropTypes as PanneauPropTypes, withUrlGenerator, withDefinition } from '@panneau/core';
 import ItemField from '@panneau/field-item';
 
 const messages = defineMessages({
@@ -14,6 +14,7 @@ const messages = defineMessages({
 
 const propTypes = {
     urlGenerator: PanneauPropTypes.urlGenerator,
+    definition: PanneauPropTypes.definition,
     placeholder: PanneauPropTypes.message,
     resourceId: PropTypes.string,
     endpoint: PropTypes.string,
@@ -21,33 +22,31 @@ const propTypes = {
 
 const defaultProps = {
     urlGenerator: null,
+    definition: null,
     placeholder: messages.placeholder,
     resourceId: 'pages',
     endpoint: null,
 };
 
-const contextTypes = {
-    definition: PanneauPropTypes.definition,
-};
-
 class PageField extends PureComponent {
     getEndpoint() {
-        const { resourceId, urlGenerator, endpoint } = this.props;
-        const { definition } = this.context;
+        const {
+            resourceId, urlGenerator, definition, endpoint,
+        } = this.props;
         if (endpoint !== null) {
             return endpoint;
         }
         if (urlGenerator === null || definition === null) {
             return null;
         }
-        const resources = definition.resources || [];
+        const { resources = [] } = definition;
         const resource = resources.find(it => it.id === resourceId) || null;
         if (resource === null) {
             return null;
         }
         return urlGenerator.route(
             typeof resource.routes !== 'undefined'
-                ? `resources.${resources.id}.index`
+                ? `resources.${resource.id}.index`
                 : 'resources.index',
             {
                 resource: resource.id,
@@ -76,6 +75,7 @@ class PageField extends PureComponent {
 
 PageField.propTypes = propTypes;
 PageField.defaultProps = defaultProps;
-PageField.contextTypes = contextTypes;
 
-export default withUrlGenerator()(PageField);
+const WithUrlGeneratorContainer = withUrlGenerator()(PageField);
+const WithDefinitionContainer = withDefinition()(WithUrlGeneratorContainer);
+export default WithDefinitionContainer;
