@@ -4,6 +4,7 @@ import renderer from 'react-test-renderer';
 import { IntlProvider } from 'react-intl';
 /* eslint-enable import/no-extraneous-dependencies */
 import TableList from '../TableList';
+import columnsCollection from '../columns';
 
 const items = [
 
@@ -14,6 +15,7 @@ test('match snapshot', () => {
         <IntlProvider locale="en">
             <TableList
                 items={items}
+                columnsCollection={columnsCollection}
             />
         </IntlProvider>
     ));
