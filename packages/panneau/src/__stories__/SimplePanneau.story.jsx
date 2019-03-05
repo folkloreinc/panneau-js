@@ -4,6 +4,7 @@ import { PanneauComponent as Panneau, ComponentsCollection } from '@panneau/core
 import fieldsCollection from '@panneau/fields';
 import layoutsCollection from '@panneau/layouts';
 import { navbarItemsCollection } from '@panneau/layout';
+import { columnsCollection as tableColumnsCollection } from '@panneau/list-table';
 import listsCollection from '@panneau/lists';
 import formsCollection from '@panneau/forms';
 import previewsCollection from '@panneau/previews';
@@ -21,6 +22,7 @@ componentsCollection.addComponents(formsCollection, 'forms');
 componentsCollection.addComponents(modalsCollection, 'modals');
 componentsCollection.addComponents(previewsCollection, 'previews');
 componentsCollection.addComponents(navbarItemsCollection, 'navbarItems');
+componentsCollection.addComponents(tableColumnsCollection, 'tableColumns');
 
 storiesOf('Panneau/Simple', module, {
     colWidth: 12,

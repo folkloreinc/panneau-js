@@ -83,7 +83,7 @@ class ResourceIndex extends Component {
 
         this.onItemsLoaded = this.onItemsLoaded.bind(this);
         this.onItemsLoadError = this.onItemsLoadError.bind(this);
-        this.onItemActions = this.onItemActions.bind(this);
+        this.onClickAction = this.onClickAction.bind(this);
         this.onItemDeleted = this.onItemDeleted.bind(this);
 
         this.state = {
@@ -135,7 +135,7 @@ class ResourceIndex extends Component {
         });
     }
 
-    onItemActions(e, action, it) {
+    onClickAction(e, action, it) {
         const { getResourceActionUrl, gotoResourceAction } = this.props;
 
         const useRouter = get(action, 'useRouter', true);
@@ -352,7 +352,7 @@ class ResourceIndex extends Component {
             <div className={listClassNames}>
                 <ListComponent
                     items={items || []}
-                    onClickActions={this.onItemActions}
+                    onClickAction={this.onClickAction}
                     {...listProps}
                 />
             </div>

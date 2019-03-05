@@ -3,6 +3,7 @@ import fieldsCollection from '@panneau/fields';
 import { navbarItemsCollection } from '@panneau/layout';
 import layoutsCollection from '@panneau/layouts';
 import listsCollection from '@panneau/lists';
+import { columnsCollection as tableColumnsCollection } from '@panneau/list-table';
 import formsCollection from '@panneau/forms';
 import modalsCollection from '@panneau/modals';
 import previewsCollection from '@panneau/previews';
@@ -22,6 +23,7 @@ Panneau.setDefaultComponentsCollection(formsCollection, 'forms');
 Panneau.setDefaultComponentsCollection(modalsCollection, 'modals');
 Panneau.setDefaultComponentsCollection(previewsCollection, 'previews');
 Panneau.setDefaultComponentsCollection(navbarItemsCollection, 'navbarItems');
+Panneau.setDefaultComponentsCollection(tableColumnsCollection, 'tableColumns');
 
 export {
     Panneau,

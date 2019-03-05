@@ -32,8 +32,9 @@ class ComponentsCollection {
     getComponents(namespace) {
         return Object.keys(this.components).reduce((components, key) => {
             if (typeof namespace !== 'undefined') {
+                const namespaceKey = ComponentsCollection.normalizeKey(namespace);
                 // eslint-disable-next-line no-useless-escape
-                const matches = key.match(new RegExp(`^${namespace}\.(.*)$`));
+                const matches = key.match(new RegExp(`^${namespaceKey}\.(.*)$`, 'i'));
                 return matches ? {
                     ...components,
                     [matches[1]]: this.components[key],

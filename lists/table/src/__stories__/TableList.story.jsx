@@ -4,6 +4,7 @@ import { IntlProvider } from 'react-intl';
 /* eslint-enable import/no-extraneous-dependencies */
 
 import storiesOf from '../../../../.storybook/storiesOf';
+import columnsCollection from '../columns';
 import TableList from '../TableList';
 
 const items = [
@@ -32,7 +33,7 @@ const columns = [
         width: 50,
     },
     {
-        id: 'id',
+        id: 'image',
         type: 'image',
         path: 'image',
         label: 'Image',
@@ -56,11 +57,13 @@ storiesOf('Lists/Table', module)
                     <h4>Normal</h4>
                     <TableList
                         items={items}
+                        columnsCollection={columnsCollection}
                     />
                     <hr />
                     <h4>Icons only</h4>
                     <TableList
                         items={items}
+                        columnsCollection={columnsCollection}
                         cols={columns}
                     />
                 </div>
@@ -71,7 +74,7 @@ storiesOf('Lists/Table', module)
     .add('empty', () => (
         <div>
             <IntlProvider locale="en">
-                <TableList />
+                <TableList columnsCollection={columnsCollection} />
             </IntlProvider>
         </div>
     ));
