@@ -8,23 +8,23 @@
         "form",
         "dashboard"
     ],
-    "homepage": "https://github.com/Folkloreatelier/panneau-js/tree/master/fields/locale",
+    "homepage": "https://github.com/folkloreinc/panneau-js/tree/master/fields/locale",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Folkloreatelier/panneau-js.git"
+        "url": "git+https://github.com/folkloreinc/panneau-js.git"
     },
     "author": {
         "name": "Folklore",
-        "email": "info@atelierfolklore.ca"
+        "email": "info@folklore.email"
     },
     "contributors": [
         {
             "name": "David Mongeau-Petitpas",
-            "email": "dmp@atelierfolklore.ca"
+            "email": "dmp@folklore.email"
         },
         {
             "name": "Nicolas Roy-Bourdages",
-            "email": "nrb@atelierfolklore.ca"
+            "email": "nrb@folklore.email"
         }
     ],
     "main": "lib/index.js",

@@ -5,23 +5,23 @@
     "keywords": [
         "yeoman-generator"
     ],
-    "homepage": "https://github.com/Folkloreatelier/panneau-js",
+    "homepage": "https://github.com/folkloreinc/panneau-js",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Folkloreatelier/panneau-js.git"
+        "url": "git+https://github.com/folkloreinc/panneau-js.git"
     },
     "author": {
         "name": "Folklore",
-        "email": "info@atelierfolklore.ca"
+        "email": "info@folklore.email"
     },
     "contributors": [
         {
             "name": "David Mongeau-Petitpas",
-            "email": "dmp@atelierfolklore.ca"
+            "email": "dmp@folklore.email"
         },
         {
             "name": "Nicolas Roy-Bourdages",
-            "email": "nrb@atelierfolklore.ca"
+            "email": "nrb@folklore.email"
         }
     ],
     "main": "lib/generators/app/index.js",

@@ -1,23 +1,23 @@
 {
     "name": "panneau-js",
     "private": true,
-    "homepage": "https://github.com/Folkloreatelier/panneau-js",
+    "homepage": "https://github.com/folkloreinc/panneau-js",
     "author": {
         "name": "Folklore",
-        "email": "info@atelierfolklore.ca"
+        "email": "info@folklore.email"
     },
     "contributors": [
         {
             "name": "David Mongeau-Petitpas",
-            "email": "dmp@atelierfolklore.ca"
+            "email": "dmp@folklore.email"
         },
         {
             "name": "Nicolas Roy-Bourdages",
-            "email": "nrb@atelierfolklore.ca"
+            "email": "nrb@folklore.email"
         },
         {
             "name": "Hugo St-Onge",
-            "email": "hso@atelierfolklore.ca"
+            "email": "hso@folklore.email"
         }
     ],
     "scripts": {
@@ -147,7 +147,7 @@
     },
     "storybook-deployer": {
         "gitUsername": "Folklore",
-        "gitEmail": "info@atelierfolklore.ca",
+        "gitEmail": "info@folklore.email",
         "commitMessage": "Deploy Storybook to GitHub Pages"
     }
 }
