@@ -1,7 +1,7 @@
 const path = require('path');
 const webpackConfig = require(path.join(__dirname, '../.storybook/webpack.config'));
-module.exports = (storybookBaseConfig, configType) => {
-    const config = webpackConfig(storybookBaseConfig, configType);
+module.exports = async (opts) => {
+    const config = webpackConfig(opts);
 
     const babelLoader = {
         loader: 'babel-loader',
