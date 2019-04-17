@@ -1,6 +1,6 @@
 {
   "name": "@panneau/preview-json",
-  "version": "0.6.48",
+  "version": "0.6.49",
   "description": "Json Preview for Panneau",
   "keywords": [
     "react",
@@ -56,7 +56,7 @@
     "react-intl": "^2.4.0"
   },
   "devDependencies": {
-    "@panneau/fields": "^0.6.48",
+    "@panneau/fields": "^0.6.49",
     "bootstrap": "~4.1.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0"
