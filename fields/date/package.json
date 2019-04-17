@@ -52,16 +52,12 @@
         "@panneau/field": "^0.6.47",
         "@panneau/field-text": "^0.6.47",
         "@panneau/modal-popover": "^0.6.47",
-        "array-flatten": "^2.1.1",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
         "moment": "^2.20.1",
         "prop-types": "^15.6.0",
-        "react-addons-shallow-compare": "^15.6.2",
         "react-dates": "^15.0.0",
-        "react-loadable": "^5.5.0",
-        "react-with-styles": "=2.2.0",
-        "react-with-styles-interface-css": "^3.0.0"
+        "react-loadable": "^5.5.0"
     },
     "devDependencies": {
         "react": "^16.7.0",
