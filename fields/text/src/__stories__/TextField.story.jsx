@@ -1,5 +1,5 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';// eslint-disable-line import/no-extraneous-dependencies
+import { action } from '@storybook/addon-actions'; // eslint-disable-line import/no-extraneous-dependencies
 
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
@@ -18,11 +18,7 @@ storiesOf('Fields/Text', module)
                 />
             </KeepValue>
             <KeepValue>
-                <TextField
-                    label="Disabled"
-                    disabled
-                    onChange={action('change')}
-                />
+                <TextField label="Disabled" disabled onChange={action('change')} />
             </KeepValue>
             <KeepValue>
                 <TextField
@@ -32,11 +28,7 @@ storiesOf('Fields/Text', module)
                 />
             </KeepValue>
             <KeepValue>
-                <TextField
-                    label="With a maxlength"
-                    maxLength={10}
-                    onChange={action('change')}
-                />
+                <TextField label="With a maxlength" maxLength={10} onChange={action('change')} />
             </KeepValue>
         </div>
     ))
@@ -65,20 +57,23 @@ storiesOf('Fields/Text', module)
                 />
             </KeepValue>
             <KeepValue>
-                <TextField
-                    label="Textarea"
-                    type="textarea"
-                    onChange={action('change')}
-                />
+                <TextField label="Textarea" type="textarea" onChange={action('change')} />
             </KeepValue>
             <form>
                 <KeepValue>
-                    <TextField
-                        label="Editor"
-                        type="editor"
-                        onChange={action('change')}
-                    />
+                    <TextField label="Editor" type="editor" onChange={action('change')} />
                 </KeepValue>
             </form>
+            <KeepValue>
+                <TextField
+                    label="Number"
+                    type="number"
+                    onChange={action('change')}
+                    step={0.01}
+                    min={1}
+                    max={10}
+                    readOnly={false}
+                />
+            </KeepValue>
         </div>
     ));

@@ -33,6 +33,12 @@ const propTypes = {
     inputOnly: PropTypes.bool,
     disabled: PropTypes.bool,
     maxLength: PropTypes.number,
+
+    step: PropTypes.number,
+    min: PropTypes.number,
+    max: PropTypes.number,
+    readOnly: PropTypes.bool,
+
     ckeditorConfig: PropTypes.object, // eslint-disable-line
     ckeditorCustomConfig: PropTypes.string,
     ckeditorBasePath: PropTypes.string,
@@ -57,6 +63,12 @@ const defaultProps = {
     inputOnly: false,
     disabled: false,
     maxLength: null,
+
+    step: null,
+    min: null,
+    max: null,
+    readOnly: null,
+
     ckeditorConfig: null,
     ckeditorCustomConfig: null,
     ckeditorBasePath: 'https://cdn.ckeditor.com/4.7.2/standard/',
@@ -156,6 +168,10 @@ class TextField extends Component {
             errors,
             onFocus,
             onBlur,
+            step,
+            min,
+            max,
+            readOnly,
         } = this.props;
         const inputValue = TextField.parse(value);
 
@@ -198,6 +214,14 @@ class TextField extends Component {
                     <input type="hidden" name={name} value={inputValue || ''} />
                 </div>
             );
+        } else if (type === 'number') {
+            const numberProps = {
+                step,
+                min,
+                max,
+                readOnly,
+            };
+            input = <input {...inputProps} {...numberProps} type={type} />;
         } else {
             input = <input {...inputProps} type={type} />;
         }
