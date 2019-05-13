@@ -68,8 +68,8 @@
         "query-string": "^6.1.0",
         "react-intl": "^2.7.2",
         "react-redux": "^6.0.0",
-        "react-router": "^4.3.1",
-        "react-router-dom": "^4.3.1",
+        "react-router": "^5.0.0",
+        "react-router-dom": "^5.0.0",
         "whatwg-fetch": "^2.0.3",
         "wolfy87-eventemitter": "^5.2.4"
     },
