@@ -1,6 +1,6 @@
 {
     "name": "@panneau/previews",
-    "version": "0.6.51",
+    "version": "0.6.52",
     "description": "Previews for Panneau",
     "keywords": [
         "react",
@@ -50,7 +50,7 @@
         "@babel/runtime": "^7.0.0",
         "@panneau/core": "^0.6.51",
         "@panneau/preview-component": "^0.6.51",
-        "@panneau/preview-json": "^0.6.51",
+        "@panneau/preview-json": "^0.6.52",
         "invariant": "^2.2.2",
         "lodash": "^4.17.4",
         "prop-types": "^15.6.0"
