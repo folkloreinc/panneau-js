@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isArray from 'lodash/isArray';
-import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
 import isEmpty from 'lodash/isEmpty';
 import ReactMarkdown from 'react-markdown';
 import { FormattedMessage } from 'react-intl';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { PropTypes as PanneauPropTypes, isMessage } from '@panneau/core';
 
 const propTypes = {
     children: PropTypes.node,
@@ -18,7 +18,7 @@ const propTypes = {
     label: PanneauPropTypes.label,
     labelSuffix: PanneauPropTypes.label,
     errors: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
-    helpText: PropTypes.string,
+    helpText: PanneauPropTypes.label,
 
     large: PropTypes.bool,
     small: PropTypes.bool,
@@ -98,8 +98,11 @@ class FormGroup extends Component {
         if (!helpText) {
             return null;
         }
-        return (
-            <small className="form-text text-muted">
+        let content = helpText;
+        if (isMessage(helpText)) {
+            content = <FormattedMessage {...helpText} />;
+        } else if (isString(helpText)) {
+            content = (
                 <ReactMarkdown
                     source={helpText}
                     linkTarget="_blank"
@@ -108,8 +111,9 @@ class FormGroup extends Component {
                         paragraph: 'span',
                     }}
                 />
-            </small>
-        );
+            );
+        }
+        return <small className="form-text text-muted">{content}</small>;
     }
 
     renderLabel() {
@@ -135,11 +139,7 @@ class FormGroup extends Component {
             />
         );
 
-        const labelNode = isObject(label) && typeof label.id !== 'undefined' ? (
-            <FormattedMessage {...label} />
-        ) : (
-            label
-        );
+        const labelNode = isMessage(label) ? <FormattedMessage {...label} /> : label;
 
         const link = collapsible ? (
             <button type="button" className="btn" onClick={this.onCollapseChange}>
@@ -167,11 +167,7 @@ class FormGroup extends Component {
 
         return (
             <div className={labelContainerClasses}>
-                {isObject(labelPrefix) && typeof labelPrefix.id !== 'undefined' ? (
-                    <FormattedMessage {...labelPrefix} />
-                ) : (
-                    labelPrefix
-                )}
+                {isMessage(labelPrefix) ? <FormattedMessage {...labelPrefix} /> : labelPrefix}
                 {large ? (
                     <h4 className="control-label">{link}</h4>
                 ) : (
@@ -179,11 +175,7 @@ class FormGroup extends Component {
                         {link}
                     </label>
                 )}
-                {isObject(labelSuffix) && typeof labelSuffix.id !== 'undefined' ? (
-                    <FormattedMessage {...labelSuffix} />
-                ) : (
-                    labelSuffix
-                )}
+                {isMessage(labelSuffix) ? <FormattedMessage {...labelSuffix} /> : labelSuffix}
             </div>
         );
     }
