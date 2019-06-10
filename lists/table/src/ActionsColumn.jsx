@@ -25,6 +25,7 @@ const ActionsColumn = ({ item, column, onClickAction }) => {
         showAction = null,
         editAction = null,
         deleteAction = null,
+        actions = null,
         ...props
     } = column;
     const actionsProps = {
@@ -33,17 +34,19 @@ const ActionsColumn = ({ item, column, onClickAction }) => {
         delete: deleteAction,
     };
     // prettier-ignore
-    const actions = [...ListActions.getDefaultActions()].map(action => (
-        (actionsProps[action.id] || null) !== null
-            ? {
-                ...action,
-                ...actionsProps[action.id],
-            }
-            : action
-    ));
+    const finalActions = [...(actions || ListActions.getDefaultActions())]
+        .filter(action => (actionsProps[action.id] || null) !== false)
+        .map(action => (
+            (actionsProps[action.id] || null) !== null
+                ? {
+                    ...action,
+                    ...actionsProps[action.id],
+                }
+                : action
+        ));
     return (
         <Column align="right" {...column}>
-            <ListActions item={item} onClick={onClickAction} actions={actions} {...props} />
+            <ListActions item={item} onClick={onClickAction} actions={finalActions} {...props} />
         </Column>
     );
 };
