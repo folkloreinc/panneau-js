@@ -1,0 +1,91 @@
+{
+    "name": "@panneau/app",
+    "version": "0.7.0",
+    "description": "The Panneau application package",
+    "keywords": [
+        "react",
+        "javascript",
+        "form",
+        "dashboard"
+    ],
+    "homepage": "https://github.com/folkloreinc/panneau-js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git"
+    },
+    "author": {
+        "name": "Folklore",
+        "email": "info@folklore.email"
+    },
+    "contributors": [
+        {
+            "name": "David Mongeau-Petitpas",
+            "email": "dmp@folklore.email"
+        },
+        {
+            "name": "Nicolas Roy-Bourdages",
+            "email": "nrb@folklore.email"
+        }
+    ],
+    "main": "lib/index.js",
+    "module": "es/index.js",
+    "files": [
+        "lib",
+        "es",
+        "dist",
+        "src"
+    ],
+    "scripts": {
+        "storybook": "../../node_modules/.bin/start-storybook -p 9008 -c ../../.storybook-package",
+        "clean": "rm -rf dist && rm -rf lib && rm -rf es",
+        "webpack:dist": "../../node_modules/.bin/webpack --config ./webpack.config.js --progress --colors",
+        "webpack": "npm run webpack:dist",
+        "babel:es": "BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es --ignore src/**/*.story.jsx,src/**/*.test.jsx",
+        "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore src/**/*.story.jsx,src/**/*.test.jsx",
+        "babel": "npm run babel:es && npm run babel:cjs",
+        "copy:json": "rsync -a --include '*/' --include '*.json' --exclude '*' src/ lib/ && rsync -a --include '*/' --include '*.json' --exclude '*' src/ es/",
+        "intl": "node ../../scripts/buildPackageTranslations",
+        "build": "npm run babel && npm run intl && npm run copy:json",
+        "prepare": "npm run clean && npm run build",
+        "start": "npm run storybook"
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.5.5",
+        "@fortawesome/fontawesome-free": "^5.7.1",
+        "@panneau/core": "^0.6.51",
+        "bootstrap": "~4.1.1",
+        "classnames": "^2.2.5",
+        "history": "^4.9.0",
+        "hoist-non-react-statics": "^3.3.0",
+        "invariant": "^2.2.2",
+        "jquery": "^3.4.1",
+        "js-cookie": "^2.2.0",
+        "lodash": "^4.17.15",
+        "moment": "^2.22.1",
+        "popper": "^1.0.1",
+        "popper.js": "^1.15.0",
+        "prop-types": "^15.6.0",
+        "query-string": "^6.8.2",
+        "react-intl": "^3.0.0",
+        "react-redux": "^7.1.0",
+        "react-router": "^5.0.1",
+        "react-router-dom": "^5.0.1",
+        "redux": "^4.0.4",
+        "redux-promise": "^0.6.0",
+        "redux-thunk": "^2.3.0",
+        "whatwg-fetch": "^3.0.0",
+        "wolfy87-eventemitter": "^5.2.4"
+    },
+    "devDependencies": {
+        "jquery-slim": "^3.0.0",
+        "react": "^16.8.6",
+        "react-dom": "^16.8.6",
+        "react-intl": "^2.4.0",
+        "redux-devtools-extension": "^2.13.8"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0",
+        "react-dom": "^16.8.0"
+    },
+    "gitHead": "8947c52802d8c1596eff0d4edd9d1447c1b2d020"
+}

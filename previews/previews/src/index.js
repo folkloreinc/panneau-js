@@ -1,6 +1,7 @@
-import withPreviewsCollection from './withPreviewsCollection';
-import itemsCollection from './items';
+import Json from '@panneau/preview-json';
+import Component from '@panneau/preview-component';
 
-export { withPreviewsCollection };
-
-export default itemsCollection;
+export {
+    Json,
+    Component,
+};

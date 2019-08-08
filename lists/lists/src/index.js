@@ -1,6 +1,11 @@
-import withListsCollection from './withListsCollection';
-import listsCollection from './items';
+import Table from '@panneau/list-table';
+import {
+    ListActions,
+    Pagination,
+} from '@panneau/list';
 
-export { withListsCollection };
-
-export default listsCollection;
+export {
+    Table,
+    ListActions,
+    Pagination,
+};

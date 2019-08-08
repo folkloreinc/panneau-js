@@ -1,6 +1,7 @@
 const path = require('path');
 const glob = require('glob');
 const fs = require('fs');
+const uniq = require('lodash/uniq');
 const webpack = require('webpack');
 const {
     jsLoader,
@@ -20,15 +21,16 @@ const getPackagesPaths = require('../build/lib/getPackagesPaths');
 module.exports = ({ config }) => {
 
     config.resolve.alias = {
+        ...config.resolve.alias,
         jquery: require.resolve('jquery-slim'),
-        'hoist-non-react-statics': path.resolve(__dirname, '../node_modules/hoist-non-react-statics'),
+        'hoist-non-react-statics': path.join(__dirname, '../node_modules/hoist-non-react-statics'),
+        'react-router$': path.join(__dirname, '../node_modules/react-router'),
+        'react-redux$': path.join(__dirname, '../node_modules/react-redux'),
+        'react-intl$': path.join(__dirname, '../node_modules/react-intl'),
+        'react$': path.join(__dirname, '../node_modules/react'),
+        'react-dom$': path.join(__dirname, '../node_modules/react-dom'),
         ...getResolveAliases(),
     };
-
-    config.resolve.modules = [
-        ...config.resolve.modules,
-        ...getResolveModules(),
-    ];
 
     config.module.rules = [
         {

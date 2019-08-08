@@ -4,6 +4,8 @@ import { storiesOf } from '@storybook/react';
 import { withInfo } from '@storybook/addon-info';
 import KeepValue from './KeepValue';
 
+window.parent.React1 = React;
+
 export default (name, module, opts) => {
     const options = {
         colWidth: 8,

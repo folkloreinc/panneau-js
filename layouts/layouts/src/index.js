@@ -1,6 +1,6 @@
-import withLayoutsCollection from './withLayoutsCollection';
-import layoutsCollection from './items';
+import Normal from '@panneau/layout-normal';
 
-export { withLayoutsCollection };
-
-export default layoutsCollection;
+export {
+    // eslint-disable-next-line import/prefer-default-export
+    Normal,
+};

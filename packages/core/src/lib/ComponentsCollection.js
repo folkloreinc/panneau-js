@@ -1,4 +1,8 @@
 class ComponentsCollection {
+    static make(components) {
+        return components instanceof ComponentsCollection ? components : new ComponentsCollection(components);
+    }
+
     static normalizeKey(key) {
         return key.replace(/[^A-Za-z0-9.]/gi, '').toLowerCase();
     }
@@ -9,16 +13,16 @@ class ComponentsCollection {
     }
 
     addComponent(key, Component, namespace) {
-        const componentKey = ComponentsCollection.normalizeKey((
-            `${typeof namespace !== 'undefined' ? `${namespace}.` : ''}${key}`
-        ));
+        const componentKey = ComponentsCollection.normalizeKey(
+            `${typeof namespace !== 'undefined' ? `${namespace}.` : ''}${key}`,
+        );
         this.components[componentKey] = Component;
     }
 
     addComponents(components, namespace) {
-        const items = components instanceof ComponentsCollection
-            ? components.getComponents() : components;
-        Object.keys(items).forEach((key) => {
+        const items =
+            components instanceof ComponentsCollection ? components.getComponents() : components;
+        Object.keys(items).forEach(key => {
             this.addComponent(key, items[key], namespace);
         });
     }
@@ -35,10 +39,12 @@ class ComponentsCollection {
                 const namespaceKey = ComponentsCollection.normalizeKey(namespace);
                 // eslint-disable-next-line no-useless-escape
                 const matches = key.match(new RegExp(`^${namespaceKey}\.(.*)$`, 'i'));
-                return matches ? {
-                    ...components,
-                    [matches[1]]: this.components[key],
-                } : components;
+                return matches
+                    ? {
+                          ...components,
+                          [matches[1]]: this.components[key],
+                      }
+                    : components;
             }
             return {
                 ...components,
@@ -48,10 +54,10 @@ class ComponentsCollection {
     }
 
     setComponents(components, namespace) {
-        const items = components instanceof ComponentsCollection
-            ? components.getComponents() : components;
+        const items =
+            components instanceof ComponentsCollection ? components.getComponents() : components;
         if (typeof namespace !== 'undefined') {
-            Object.keys(items).forEach((key) => {
+            Object.keys(items).forEach(key => {
                 this.components[`${namespace}.${key}`] = items[key];
             });
         } else {
@@ -60,12 +66,16 @@ class ComponentsCollection {
         return this;
     }
 
-    getComponent(key) {
+    getComponent(key = null) {
+        if (key === null) {
+            return null;
+        }
         const normalizedKey = ComponentsCollection.normalizeKey(key);
         const foundKey = Object.keys(this.components).find(fieldKey => fieldKey === normalizedKey);
-        return typeof foundKey !== 'undefined' && foundKey !== null ? this.components[foundKey] : null;
+        return typeof foundKey !== 'undefined' && foundKey !== null
+            ? this.components[foundKey]
+            : null;
     }
 }
-
 
 export default ComponentsCollection;

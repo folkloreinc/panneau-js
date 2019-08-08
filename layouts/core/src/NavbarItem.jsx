@@ -9,7 +9,7 @@ import NavbarLink from './NavbarLink';
 import NavbarDivider from './NavbarDivider';
 
 const propTypes = {
-    link: PropTypes.string,
+    href: PropTypes.string,
     label: PanneauPropTypes.label,
     items: PropTypes.arrayOf(
         PropTypes.shape({
@@ -24,7 +24,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-    link: null,
+    href: null,
     label: null,
     items: null,
     position: 'left',

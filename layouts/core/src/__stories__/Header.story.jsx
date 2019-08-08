@@ -1,48 +1,54 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
+import { MemoryRouter } from 'react-router';// eslint-disable-line import/no-extraneous-dependencies
 import { action } from '@storybook/addon-actions';// eslint-disable-line import/no-extraneous-dependencies
 
 import storiesOf from '../../../../.storybook/storiesOf';
-import KeepValue from '../../../../.storybook/KeepValue';
 import Header from '../Header';
 
 storiesOf('Layouts/Core', module)
     .add('Header', () => (
         <div>
+
             <IntlProvider
                 locale="en"
                 messages={{
                     'layouts.core.__stories__.test1': 'View all { resourceLabel }',
                 }}
             >
-                <Header
-                    navbar={{
-                        items: [
-                            {
-                                label: 'Items',
-                                link: '#',
-                                items: [
-                                    {
-                                        label: 'Some action',
-                                        link: '#',
-                                    },
-                                    {
-                                        type: 'divider',
-                                    },
-                                    {
-                                        label: {
-                                            id: 'layouts.core.__stories__.test1',
-                                            values: {
-                                                resourceLabel: 'items',
-                                            },
+                <MemoryRouter>
+                    <Header
+                        navbar={{
+                            items: [
+                                {
+                                    label: 'Items',
+                                    href: '#',
+                                    external: true,
+                                    items: [
+                                        {
+                                            label: 'Some action',
+                                            href: '#',
+                                            external: true,
                                         },
-                                        link: '#',
-                                    },
-                                ],
-                            },
-                        ],
-                    }}
-                />
+                                        {
+                                            type: 'divider',
+                                        },
+                                        {
+                                            label: {
+                                                id: 'layouts.core.__stories__.test1',
+                                                values: {
+                                                    resourceLabel: 'items',
+                                                },
+                                            },
+                                            href: '#',
+                                            external: true,
+                                        },
+                                    ],
+                                },
+                            ],
+                        }}
+                    />
+                </MemoryRouter>
             </IntlProvider>
         </div>
     ));

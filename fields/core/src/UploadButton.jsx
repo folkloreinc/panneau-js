@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import isString from 'lodash/isString';
 // import get from 'lodash/get';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { Button } from '@panneau/core/components';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { FileInput, loadUploader } from './UploadButton.vendors';
@@ -137,12 +137,7 @@ class UploadButton extends Component {
         return (
             <FileInput accept={accept} uploader={this.uploader}>
                 <div>
-                    <button
-                        type="button"
-                        className={classNames({
-                            btn: true,
-                            'btn-primary': true,
-                        })}
+                    <Button
                         disabled={loading}
                         onClick={this.onClickSelect}
                     >
@@ -151,7 +146,7 @@ class UploadButton extends Component {
                         ) : (
                             <FormattedMessage {...label} />
                         )}
-                    </button>
+                    </Button>
                 </div>
             </FileInput>
         );

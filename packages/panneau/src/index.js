@@ -1,12 +1,12 @@
-import Panneau from '@panneau/core';
-import fieldsCollection from '@panneau/fields';
-import { navbarItemsCollection } from '@panneau/layout';
-import layoutsCollection from '@panneau/layouts';
-import listsCollection from '@panneau/lists';
-import { columnsCollection as tableColumnsCollection } from '@panneau/list-table';
-import formsCollection from '@panneau/forms';
-import modalsCollection from '@panneau/modals';
-import previewsCollection from '@panneau/previews';
+import Panneau from '@panneau/app';
+import * as FieldsComponents from '@panneau/fields';
+import { NavbarItemsComponents } from '@panneau/layout';
+import * as LayoutsComponents from '@panneau/layouts';
+import * as ListsComponents from '@panneau/lists';
+import { ColumnsComponents } from '@panneau/list-table';
+import * as FormsComponents from '@panneau/forms';
+import * as ModalsComponents from '@panneau/modals';
+import * as PreviewsComponents from '@panneau/previews';
 
 import enMessages from '../intl/lang/en.json';
 import frMessages from '../intl/lang/fr.json';
@@ -16,23 +16,23 @@ Panneau.setDefaultLocaleMessages('en', enMessages);
 Panneau.setDefaultLocaleMessages('fr', frMessages);
 
 // Set default components
-Panneau.setDefaultComponentsCollection(fieldsCollection, 'fields');
-Panneau.setDefaultComponentsCollection(layoutsCollection, 'layouts');
-Panneau.setDefaultComponentsCollection(listsCollection, 'lists');
-Panneau.setDefaultComponentsCollection(formsCollection, 'forms');
-Panneau.setDefaultComponentsCollection(modalsCollection, 'modals');
-Panneau.setDefaultComponentsCollection(previewsCollection, 'previews');
-Panneau.setDefaultComponentsCollection(navbarItemsCollection, 'navbarItems');
-Panneau.setDefaultComponentsCollection(tableColumnsCollection, 'tableColumns');
+Panneau.setDefaultComponentsCollection(FieldsComponents, 'fields');
+Panneau.setDefaultComponentsCollection(LayoutsComponents, 'layouts');
+Panneau.setDefaultComponentsCollection(ListsComponents, 'lists');
+Panneau.setDefaultComponentsCollection(FormsComponents, 'forms');
+Panneau.setDefaultComponentsCollection(ModalsComponents, 'modals');
+Panneau.setDefaultComponentsCollection(PreviewsComponents, 'previews');
+Panneau.setDefaultComponentsCollection(NavbarItemsComponents, 'navbarItems');
+Panneau.setDefaultComponentsCollection(ColumnsComponents, 'tableColumns');
 
 export {
     Panneau,
-    fieldsCollection,
-    layoutsCollection,
-    listsCollection,
-    formsCollection,
-    modalsCollection,
-    previewsCollection,
+    FieldsComponents,
+    LayoutsComponents,
+    ListsComponents,
+    FormsComponents,
+    ModalsComponents,
+    PreviewsComponents,
 };
 
 const panneau = new Panneau();

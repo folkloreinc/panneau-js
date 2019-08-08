@@ -1,0 +1,12 @@
+[
+  {
+    "id": "app.buttons.resources.switch_type",
+    "description": "The label of the select type button",
+    "defaultMessage": "Switch type"
+  },
+  {
+    "id": "app.resources.form.confirm_switch_type",
+    "description": "The confirm message when switching type",
+    "defaultMessage": "Are you sure you want to switch type?"
+  }
+]

@@ -1,0 +1,43 @@
+@import '@panneau/core/src/styles/variables';
+
+.container {
+    .listContainer {
+        position: relative;
+    }
+
+    .list {
+        position: relative;
+        z-index: 1;
+    }
+
+    .loading {
+        display: block;
+        position: absolute;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.5);
+
+        .inner {
+            display: table;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .middle {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        &.alone {
+            position: relative;
+            height: 100px;
+        }
+    }
+}

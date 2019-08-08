@@ -24,12 +24,24 @@ export class ValidationError extends ResponseError {
     }
 }
 
-export const getResponseAndDataObject = response => response.json().then(data => ({
-    data,
-    response,
-}));
+export const getResponseAndDataObject = response =>
+    response.json().then(data => ({
+        data,
+        response,
+    }));
 
-export const throwResponseError = (responseObject) => {
+export const getErrorsFromResponseError = error => {
+    const { name, responseData = {}, message = null } = error;
+    if (name === 'ValidationError') {
+        return responseData.errors || responseData;
+    }
+    if (name === 'ResponseError') {
+        return responseData.error || responseData;
+    }
+    return message;
+};
+
+export const throwResponseError = responseObject => {
     const { response, data } = responseObject;
     if (response.status >= 200 && response.status < 300) {
         return data;
@@ -37,7 +49,7 @@ export const throwResponseError = (responseObject) => {
     throw new ResponseError(response.statusText, data, response.status);
 };
 
-export const throwValidationError = (error) => {
+export const throwValidationError = error => {
     if (error.name === 'ResponseError' && error.status === 422) {
         throw new ValidationError(error.message, error.responseData, error.status);
     }
@@ -80,16 +92,17 @@ export const getXSRFToken = () => {
     return cookies['X-XSRF-TOKEN'] || null;
 };
 
-const getCsrfToken = (name) => {
+const getCsrfToken = name => {
     const metaName = name || 'csrf-token';
     const metas = [].slice.call(document.getElementsByTagName('meta'));
     return metas.reduce(
-        (val, meta) => (meta.getAttribute('name') === metaName ? meta.getAttribute('content') : val),
+        (val, meta) =>
+            meta.getAttribute('name') === metaName ? meta.getAttribute('content') : val,
         null,
     );
 };
 
-export const getCSRFHeaders = (name) => {
+export const getCSRFHeaders = name => {
     const XSRF = getXSRFToken();
     if (XSRF !== null) {
         return {

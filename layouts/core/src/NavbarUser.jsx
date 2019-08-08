@@ -39,14 +39,14 @@ const defaultProps = {
     items: [
         {
             label: messages.myAccount,
-            linkRoute: 'account',
+            route: 'account',
         },
         {
             type: 'divider',
         },
         {
             label: messages.logout,
-            linkRoute: 'auth.logout',
+            route: 'auth.logout',
             external: true,
         },
     ],

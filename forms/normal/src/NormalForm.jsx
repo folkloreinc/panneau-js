@@ -1,11 +1,12 @@
 /* eslint-disable react/button-has-type */
-import React, { Component } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
+import isFunction from 'lodash/isFunction';
 import { PropTypes as PanneauPropTypes, ErrorsComponent as Errors } from '@panneau/core';
 import { FieldsGroup } from '@panneau/field';
-import { PropTypes as FormPropTypes, FormActions, messages } from '@panneau/form';
+import { PropTypes as FormPropTypes, FormActions, messages, withFormContainer } from '@panneau/form';
 
 import styles from './styles.scss';
 
@@ -16,11 +17,11 @@ const propTypes = {
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     errors: FormPropTypes.errors,
     notice: FormPropTypes.notice,
-    generalErrorMessage: PropTypes.string,
     buttons: PanneauPropTypes.buttons,
     submitForm: PropTypes.func,
     readOnly: PropTypes.bool,
     withoutActions: PropTypes.bool,
+    forwardRef: PanneauPropTypes.ref,
     onChange: PropTypes.func,
     onSubmit: PropTypes.func,
     onErrors: PropTypes.func,
@@ -42,194 +43,107 @@ const defaultProps = {
     value: null,
     errors: null,
     notice: null,
-    generalErrorMessage: 'Sorry, an error occured.',
     submitForm: null,
     readOnly: false,
     withoutActions: false,
+    forwardRef: null,
     onChange: null,
     onSubmit: null,
     onErrors: null,
     onComplete: null,
 };
 
-const childContextTypes = {
-    form: FormPropTypes.form,
-};
+const NormalForm = ({
+    value,
+    errors,
+    submitForm,
+    action,
+    method,
+    fields,
+    buttons,
+    notice,
+    readOnly,
+    withoutActions,
+    forwardRef,
+    onChange,
+    onErrors,
+    onSubmit,
+    onComplete,
+}) => {
+    const errorsIsGeneral = errors !== null && !isObject(errors);
+    const refForm = React.createRef();
 
-const contextTypes = {
-    form: FormPropTypes.form,
-};
-
-class NormalForm extends Component {
-    static getDerivedStateFromProps(props, state) {
-        const isValueControlled = props.onChange !== null;
-        const isErrorsControlled = props.onErrors !== null;
-        const valueChanged = isValueControlled && props.value !== state.value;
-        const errorsChanged = isErrorsControlled && props.errors !== state.errors;
-        if (valueChanged || errorsChanged) {
-            return {
-                value: valueChanged ? props.value : state.value,
-                errors: errorsChanged ? props.errors : state.errors,
-            };
-        }
-        return null;
-    }
-
-    constructor(props) {
-        super(props);
-
-        this.onFieldsChange = this.onFieldsChange.bind(this);
-        this.onFormSubmit = this.onFormSubmit.bind(this);
-        this.onFormSubmitComplete = this.onFormSubmitComplete.bind(this);
-        this.onFormSubmitError = this.onFormSubmitError.bind(this);
-
-        this.refForm = React.createRef();
-
-        this.state = {
-            value: props.value,
-            errors: props.errors,
-        };
-    }
-
-    getChildContext() {
-        const { value, errors } = this.state;
-        const { form = null } = this.context;
-        return {
-            form: form !== null ? form : {
-                errors,
-                value,
-            },
-        };
-    }
-
-    onFieldsChange(value) {
-        this.setValue(value);
-    }
-
-    onFormSubmit(e) {
-        const { onSubmit } = this.props;
-        const { value } = this.state;
-        if (onSubmit !== null) {
-            onSubmit(e, value);
-        } else {
-            e.preventDefault();
-            this.submit();
-        }
-    }
-
-    onFormSubmitComplete(data) {
-        const { onComplete } = this.props;
-        if (onComplete !== null) {
-            onComplete(data);
-        }
-    }
-
-    onFormSubmitError(error) {
-        const { generalErrorMessage } = this.props;
-        if (error.name === 'ValidationError') {
-            this.setErrors(error.responseData);
-        } else {
-            this.setErrors(generalErrorMessage);
-        }
-    }
-
-    /**
-     * Set the errors
-     *
-     * @param {object} errors
-     * @public
-     */
-    setErrors(errors) {
-        const { onErrors } = this.props;
-        if (onErrors !== null) {
-            onErrors(errors);
-        } else {
-            this.setState({
-                errors,
-            });
-        }
-    }
-
-    /**
-     * Set the value
-     *
-     * @param {object} value
-     * @public
-     */
-    setValue(value) {
-        const { onChange } = this.props;
-        if (onChange !== null) {
-            onChange(value);
-        } else {
-            this.setState({
-                value,
-            });
-        }
-    }
-
-    /**
-     * Submit the form
-     *
-     * @public
-     */
-    submit() {
-        const { submitForm } = this.props;
-        const { value } = this.state;
+    const submit = useCallback(() => {
         if (submitForm !== null) {
             submitForm(value)
-                .then(this.onFormSubmitComplete)
-                .catch(this.onFormSubmitError);
+                .then(onComplete)
+                .catch(onErrors);
         } else {
-            this.refForm.current.submit();
+            refForm.current.submit();
         }
+    }, [submitForm, value, refForm.current]);
+
+    const onFormSubmit = useCallback(
+        e => {
+            if (onSubmit !== null) {
+                onSubmit(e, value);
+            } else {
+                e.preventDefault();
+                submit();
+            }
+        },
+        [onSubmit, value],
+    );
+
+    const refApi = useMemo(
+        () => ({
+            submit,
+        }),
+        [],
+    );
+
+    if (isFunction(forwardRef)) {
+        forwardRef(refApi);
+    } else if (forwardRef !== null) {
+        // eslint-disable-next-line no-param-reassign
+        forwardRef.current = refApi;
     }
 
-    render() {
-        const {
-            action, method, fields, buttons, notice, readOnly, withoutActions,
-        } = this.props;
-        const { value, errors } = this.state;
+    return (
+        <div className={styles.container}>
+            <form
+                action={action}
+                method={method}
+                onSubmit={onFormSubmit}
+                className={styles.form}
+                ref={refForm}
+            >
+                {errorsIsGeneral ? <Errors className={styles.errors} errors={errors} /> : null}
 
-        const errorsIsGeneral = errors !== null && !isObject(errors);
-
-        return (
-            <div className={styles.container}>
-                <form
-                    action={action}
-                    method={method}
-                    onSubmit={this.onFormSubmit}
-                    className={styles.form}
-                    ref={this.refForm}
-                >
-                    {errorsIsGeneral ? (
-                        <Errors className={styles.errors} errors={errors} />
-                    ) : null}
-
-                    <div className={styles.fields}>
-                        <FieldsGroup
-                            readOnly={readOnly}
-                            fields={fields}
-                            value={value}
-                            errors={!errorsIsGeneral ? errors : null}
-                            onChange={this.onFieldsChange}
-                        />
-                    </div>
-                    {!withoutActions ? (
-                        <FormActions
-                            notice={notice}
-                            buttons={buttons}
-                            className={classNames(['mt-4', 'border-top', 'pt-2', styles.actions])}
-                        />
-                    ) : null}
-                </form>
-            </div>
-        );
-    }
-}
+                <div className={styles.fields}>
+                    <FieldsGroup
+                        readOnly={readOnly}
+                        fields={fields}
+                        value={value}
+                        errors={!errorsIsGeneral ? errors : null}
+                        onChange={onChange}
+                    />
+                </div>
+                {!withoutActions ? (
+                    <FormActions
+                        notice={notice}
+                        buttons={buttons}
+                        className={classNames(['mt-4', 'border-top', 'pt-2', styles.actions])}
+                    />
+                ) : null}
+            </form>
+        </div>
+    );
+};
 
 NormalForm.propTypes = propTypes;
 NormalForm.defaultProps = defaultProps;
-NormalForm.childContextTypes = childContextTypes;
-NormalForm.contextTypes = contextTypes;
 
-export default NormalForm;
+export default withFormContainer(
+    React.forwardRef((props, ref) => <NormalForm {...props} forwardRef={ref} />),
+);

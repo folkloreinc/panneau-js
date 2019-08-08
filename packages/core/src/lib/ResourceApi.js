@@ -28,8 +28,11 @@ class ResourceApi {
     }
 
     index(params = null) {
-        const query = params !== null && isObject(params) ? queryString.stringify(params) : (params || '');
-        const path = `${this.getActionPath('index')}${!isEmpty(query) ? `?${query.replace(/^\?/, '')}` : ''}`;
+        const query =
+            params !== null && isObject(params) ? queryString.stringify(params) : params || '';
+        const path = `${this.getActionPath('index')}${
+            !isEmpty(query) ? `?${query.replace(/^\?/, '')}` : ''
+        }`;
         return this.callApi(path, 'get');
     }
 
@@ -70,19 +73,19 @@ class ResourceApi {
         let finalMethod;
         let finalBody;
         switch (methodUpperCase) {
-        case 'PUT':
-        case 'PATCH':
-        case 'DELETE':
-            finalMethod = 'POST';
-            finalBody = {
-                ...body,
-                _method: methodUpperCase, // Laravel magic
-            };
-            break;
-        default:
-            finalMethod = methodUpperCase;
-            finalBody = body;
-            break;
+            case 'PUT':
+            case 'PATCH':
+            case 'DELETE':
+                finalMethod = 'POST';
+                finalBody = {
+                    ...body,
+                    _method: methodUpperCase, // Laravel magic
+                };
+                break;
+            default:
+                finalMethod = methodUpperCase;
+                finalBody = body;
+                break;
         }
         return fetch(path, {
             credentials: 'include',
@@ -100,10 +103,10 @@ class ResourceApi {
     }
 
     getActionPath(action, id = undefined) {
-        const { urlGenerator } = this;
-        const resource = get(this.resource, 'id');
+        const { urlGenerator, resource } = this;
+        const { id: resourceId } = resource;
         const defaultPath = urlGenerator.route(`resource.${action}`, {
-            resource,
+            resource: resourceId,
             id,
         });
         const path = get(this.resource, `routes.${action}`, defaultPath);

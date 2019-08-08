@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 // import classNames from 'classnames';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
-import { PropTypes as PanneauPropTypes, withDefinition, withUrlGenerator } from '@panneau/core';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useUrlGenerator, useDefinition } from '@panneau/core/contexts';
 import { defineMessages } from 'react-intl';
 
 import NavbarItem from './NavbarItem';
@@ -23,9 +24,8 @@ const messages = defineMessages({
 });
 
 const propTypes = {
-    urlGenerator: PanneauPropTypes.urlGenerator,
-    resource: PanneauPropTypes.resource,
-    link: PropTypes.string,
+    resource: PropTypes.string,
+    href: PropTypes.string,
     label: PanneauPropTypes.label,
     items: PropTypes.arrayOf(
         PropTypes.shape({
@@ -36,9 +36,8 @@ const propTypes = {
 };
 
 const defaultProps = {
-    urlGenerator: null,
     resource: null,
-    link: null,
+    href: null,
     label: null,
     items: [
         {
@@ -58,8 +57,11 @@ const defaultProps = {
 };
 
 export const NavbarResource = ({
-    urlGenerator, resource, link, label, items, ...props
+    resource: resourceId, href, label, items, ...props
 }) => {
+    const urlGenerator = useUrlGenerator();
+    const definition = useDefinition();
+    const resource = get(definition, 'resources', []).find(it => it.id === resourceId) || null;
     if (resource === null) {
         return null;
     }
@@ -67,7 +69,7 @@ export const NavbarResource = ({
 
     const finalLabel = label || get(resource, 'messages.names.plural', get(resource, 'name', null)) || resource.id;
 
-    const finalLink = link
+    const finalHref = href
         || (urlGenerator !== null
             ? urlGenerator.route(`${routeKeyPrefix}.index`, {
                 resource: resource.id,
@@ -98,8 +100,8 @@ export const NavbarResource = ({
         ? {
             ...it,
             label: it.label || get(actionsLabels, it.action, null),
-            link:
-                      it.link
+            href:
+                      it.href
                       || (urlGenerator !== null
                           ? urlGenerator.route(`${routeKeyPrefix}.${it.action}`, {
                               resource: resource.id,
@@ -107,15 +109,10 @@ export const NavbarResource = ({
                           : null),
         }
         : it));
-    return <NavbarItem {...props} link={finalLink} label={finalLabel} items={finalItems} />;
+    return <NavbarItem {...props} href={finalHref} label={finalLabel} items={finalItems} />;
 };
 
 NavbarResource.propTypes = propTypes;
 NavbarResource.defaultProps = defaultProps;
 
-const mapResourceFromDefinition = (definition, { resource }) => ({
-    resource: get(definition, 'resources', []).find(it => it.id === resource) || null,
-});
-const WithDefinitionContainer = withDefinition(mapResourceFromDefinition)(NavbarResource);
-const WithUrlGeneratorContainer = withUrlGenerator()(WithDefinitionContainer);
-export default WithUrlGeneratorContainer;
+export default NavbarResource;

@@ -1,15 +1,19 @@
 import * as PropTypes from './PropTypes';
 import messages from './messages';
-import withForm from './withForm';
+import withFormContainer from './withFormContainer';
 import FormButtons from './FormButtons';
 import FormNotice from './FormNotice';
 import FormActions from './FormActions';
+import { useForm, FormProvider, FormContext } from './FormContext';
 
 export {
     PropTypes,
     messages,
-    withForm,
+    withFormContainer,
     FormButtons,
     FormNotice,
     FormActions,
+    useForm,
+    FormProvider,
+    FormContext,
 };

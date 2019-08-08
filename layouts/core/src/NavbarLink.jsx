@@ -5,12 +5,12 @@ import isObject from 'lodash/isObject';
 import isArray from 'lodash/isArray';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
-import { PropTypes as PanneauPropTypes, withUrlGenerator } from '@panneau/core';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useUrlGenerator } from '@panneau/core/contexts';
 
 const propTypes = {
-    urlGenerator: PanneauPropTypes.urlGenerator,
-    link: PropTypes.string,
-    linkRoute: PropTypes.string,
+    href: PropTypes.string,
+    route: PropTypes.string,
     label: PanneauPropTypes.label,
     external: PropTypes.bool,
     isDropdown: PropTypes.bool,
@@ -20,9 +20,8 @@ const propTypes = {
 };
 
 const defaultProps = {
-    urlGenerator: null,
-    link: null,
-    linkRoute: null,
+    href: null,
+    route: null,
     label: null,
     external: false,
     isDropdown: false,
@@ -32,9 +31,8 @@ const defaultProps = {
 };
 
 const NavbarLink = ({
-    urlGenerator,
-    link,
-    linkRoute,
+    href,
+    route,
     external,
     label,
     isDropdown,
@@ -42,6 +40,7 @@ const NavbarLink = ({
     className,
     onClick,
 }) => {
+    const urlGenerator = useUrlGenerator();
     const inner = (
         <Fragment>
             {isObject(label) && typeof label.id !== 'undefined' ? (
@@ -70,20 +69,18 @@ const NavbarLink = ({
         }
         : null;
 
-    const finalLinkRoute = linkRoute !== null && urlGenerator
-        ? urlGenerator.route(...(isArray(linkRoute) ? linkRoute : [linkRoute]))
+    const finalRoute = route !== null
+        ? urlGenerator.route(...(isArray(route) ? route : [route]))
         : null;
-    const finalLink = link || finalLinkRoute || '#';
+    const finalHref = href || finalRoute || '#';
 
     return external ? (
-        <a href={finalLink} className={linkClassNames} {...dropdownProps} onClick={onClick}>
+        <a href={finalHref} className={linkClassNames} {...dropdownProps} onClick={onClick}>
             {inner}
         </a>
     ) : (
         <Link
-            to={{
-                pathname: finalLink,
-            }}
+            to={finalHref}
             className={linkClassNames}
             {...dropdownProps}
             onClick={onClick}
@@ -96,4 +93,4 @@ const NavbarLink = ({
 NavbarLink.propTypes = propTypes;
 NavbarLink.defaultProps = defaultProps;
 
-export default withUrlGenerator()(NavbarLink);
+export default NavbarLink;

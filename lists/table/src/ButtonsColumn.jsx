@@ -55,7 +55,7 @@ const ButtonsColumn = ({ column, onClickButton }) => {
                     );
 
                     if (type === 'link') {
-                        const href = get(button, 'href', '#').replace(/:[a-z][^/\s:]+/gi, (match) => {
+                        const href = get(button, 'href', '#').replace(/:[a-z][^/\s:]+/gi, match => {
                             const hrefKey = match.replace(/^:/, '');
                             const value = get(it, hrefKey, null);
                             return value !== null ? value : match;

@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
-import { withDefinition, PropTypes as PanneauPropTypes } from '@panneau/core';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useDefinition } from '@panneau/core/contexts';
 import { FormGroup, UploadButton } from '@panneau/field';
 
 import messages from './messages';
@@ -20,6 +21,8 @@ const propTypes = {
     uploadEndpoint: PropTypes.string,
     uploadButtonLabel: PanneauPropTypes.message,
     uploadAccept: PropTypes.string,
+    onClickDelete: PropTypes.func,
+    onUploadComplete: PropTypes.func,
 };
 
 const defaultProps = {
@@ -33,100 +36,56 @@ const defaultProps = {
     uploadEndpoint: null,
     uploadButtonLabel: messages.uploadMediaLabel,
     uploadAccept: null,
+    onClickDelete: null,
+    onUploadComplete: null,
 };
 
-class MediaField extends Component {
-    constructor(props) {
-        super(props);
-
-        this.onUploadComplete = this.onUploadComplete.bind(this);
-        this.onClickDelete = this.onClickDelete.bind(this);
-    }
-
-    onClickDelete() {
-        const { onChange } = this.props;
-        if (onChange !== null) {
-            onChange(null);
-        }
-    }
-
-    onUploadComplete(response) {
-        const { onChange } = this.props;
-        if (onChange !== null) {
-            onChange(response);
-        }
-    }
-
-    renderUploadButton() {
-        const {
-            type, uploadButtonLabel, uploadEndpoint, uploadAccept,
-        } = this.props;
-        return (
-            <div className={styles.upload}>
-                <UploadButton
-                    endpoint={uploadEndpoint}
-                    label={uploadButtonLabel}
-                    accept={uploadAccept || `${type || '*'}/*`}
-                    onUploadComplete={this.onUploadComplete}
-                />
-            </div>
-        );
-    }
-
-    renderCard() {
-        const {
-            name,
-            value,
-            label,
-            type,
-            cardVertical,
-            cardWithoutBorder,
-            CardComponent,
-            uploadButtonLabel,
-            uploadEndpoint,
-            ...cardProps
-        } = this.props;
-        return (
-            <div className={styles.media}>
-                {CardComponent !== null ? (
-                    <CardComponent
-                        vertical={cardVertical}
-                        withoutBorder={cardWithoutBorder}
-                        {...cardProps}
-                        item={value}
-                        onClickDelete={this.onClickDelete}
+const MediaField = ({
+    name,
+    value,
+    label,
+    type,
+    cardVertical,
+    cardWithoutBorder,
+    CardComponent,
+    uploadButtonLabel,
+    uploadEndpoint,
+    uploadAccept,
+    onClickDelete,
+    onUploadComplete,
+    ...props
+}) => {
+    const definition = useDefinition();
+    const definitionUploadEndpoint = get(definition, 'endpointUploadMedia', '/mediatheque/upload');
+    return (
+        <FormGroup className={styles.field} name={name} label={label} {...props}>
+            {value !== null ? (
+                <div className={styles.media}>
+                    {CardComponent !== null ? (
+                        <CardComponent
+                            vertical={cardVertical}
+                            withoutBorder={cardWithoutBorder}
+                            {...props}
+                            item={value}
+                            onClickDelete={onClickDelete}
+                        />
+                    ) : null}
+                </div>
+            ) : (
+                <div className={styles.upload}>
+                    <UploadButton
+                        endpoint={uploadEndpoint || definitionUploadEndpoint}
+                        label={uploadButtonLabel}
+                        accept={uploadAccept || `${type || '*'}/*`}
+                        onUploadComplete={onUploadComplete}
                     />
-                ) : null}
-            </div>
-        );
-    }
-
-    render() {
-        const {
-            name,
-            value,
-            label,
-            type,
-            cardVertical,
-            cardWithoutBorder,
-            CardComponent,
-            uploadButtonLabel,
-            uploadEndpoint,
-            ...formGroupProps
-        } = this.props;
-
-        return (
-            <FormGroup className={styles.field} name={name} label={label} {...formGroupProps}>
-                {value !== null ? this.renderCard() : this.renderUploadButton()}
-            </FormGroup>
-        );
-    }
-}
+                </div>
+            )}
+        </FormGroup>
+    );
+};
 
 MediaField.propTypes = propTypes;
 MediaField.defaultProps = defaultProps;
 
-const mapDefinitionToProps = definition => ({
-    uploadEndpoint: get(definition, 'endpointUploadMedia', '/mediatheque/upload'),
-});
-export default withDefinition(mapDefinitionToProps)(MediaField);
+export default MediaField;

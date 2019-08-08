@@ -1,14 +1,13 @@
-// eslint-disable jsx-a11y/href-no-hash react/no-array-index-key
+/* eslint-disable jsx-a11y/href-no-hash, react/no-array-index-key, react/style-prop-object */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isObject from 'lodash/isObject';
 import isArray from 'lodash/isArray';
 import arrayMove from 'array-move';
-import {
-    FormGroup, FieldsGroup, AddButton, ButtonGroup,
-} from '@panneau/field';
+import { FormGroup, FieldsGroup } from '@panneau/field';
 import { getJSON, isMessage, PropTypes as PanneauPropTypes } from '@panneau/core';
+import { Button, ButtonGroup } from '@panneau/core/components';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 
 import SortableHandle from './SortableHandle';
@@ -59,10 +58,10 @@ const propTypes = {
             type: PropTypes.string,
             name: PropTypes.string,
             id: PropTypes.string,
-            fields: PanneauPropTypes.fields.isRequired,
+            fields: PanneauPropTypes.fieldsDefinition.isRequired,
         }),
     ),
-    fields: PanneauPropTypes.fields,
+    fields: PanneauPropTypes.fieldsDefinition,
     typesEndpoint: PropTypes.string,
     fieldsEndpoint: PropTypes.string,
     FieldComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
@@ -152,9 +151,7 @@ const defaultProps = {
 class ItemsField extends Component {
     static getDerivedStateFromProps(
         { value: nextValue, types: nextTypes, fields: nextFields },
-        {
-            value, types, fields, collapsedItems,
-        },
+        { value, types, fields, collapsedItems },
     ) {
         const valueChanged = nextValue !== value;
         const typesChanged = nextTypes !== types && nextTypes !== null && types === null;
@@ -166,11 +163,11 @@ class ItemsField extends Component {
                 collapsedItems:
                     nextValue !== null && nextValue.length > collapsedItems.length
                         ? [
-                            ...collapsedItems,
-                            ...new Array(nextValue.length - collapsedItems.length).map(
-                                () => false,
-                            ),
-                        ]
+                              ...collapsedItems,
+                              ...new Array(nextValue.length - collapsedItems.length).map(
+                                  () => false,
+                              ),
+                          ]
                         : collapsedItems,
             };
         }
@@ -235,9 +232,7 @@ class ItemsField extends Component {
 
     onClickRemove(e, index) {
         e.preventDefault();
-        const {
-            value, intl, confirmRemove, confirmRemoveMessage,
-        } = this.props;
+        const { value, intl, confirmRemove, confirmRemoveMessage } = this.props;
         const confirmMessage = isMessage(confirmRemoveMessage)
             ? intl.formatMessage(confirmRemoveMessage)
             : confirmRemoveMessage;
@@ -255,9 +250,9 @@ class ItemsField extends Component {
         const newItemValue = getItemValue
             ? getItemValue(index, itemValue, currentValue)
             : {
-                ...(currentValue[index] || null),
-                ...itemValue,
-            };
+                  ...(currentValue[index] || null),
+                  ...itemValue,
+              };
         this.triggerChange([
             ...currentValue.slice(0, index),
             newItemValue,
@@ -297,9 +292,10 @@ class ItemsField extends Component {
         const { itemTitle, itemTitleWithLabel, getItemTitle } = this.props;
         const { types } = this.state;
         // @NOTE: For backward compatibility. `id` should be used in the future
-        const foundType = types !== null
-            ? types.find(item => (item.type || item.name || item.id || null) === it.type)
-            : null;
+        const foundType =
+            types !== null
+                ? types.find(item => (item.type || item.name || item.id || null) === it.type)
+                : null;
         if (getItemTitle !== null) {
             return getItemTitle(it, index, foundType);
         }
@@ -348,8 +344,8 @@ class ItemsField extends Component {
             newValue.push(
                 type !== null
                     ? {
-                        type: type.value,
-                    }
+                          type: type.value,
+                      }
                     : {},
             );
         }
@@ -371,13 +367,8 @@ class ItemsField extends Component {
         const { headerButtons, withoutRemoveButton, sortable } = this.props;
         const buttons = [].concat(headerButtons);
 
-        const buttonClassName = classNames({
-            'btn-outline-secondary': true,
-            [styles.button]: true,
-        });
-
         if (sortable) {
-            buttons.push(<SortableHandle className={buttonClassName} />);
+            buttons.push(<SortableHandle className={styles.button} />);
         }
 
         if (!withoutRemoveButton) {
@@ -390,11 +381,12 @@ class ItemsField extends Component {
         return (
             <div className={styles.actions}>
                 <ButtonGroup
+                    style="outline-secondary"
                     className={classNames({
                         'btn-group-sm': true,
                         [styles.buttonGroup]: true,
                     })}
-                    buttonClassName={buttonClassName}
+                    buttonClassName={styles.button}
                     noWrap
                     buttons={buttons}
                     onClick={(...args) => this.onClickHeaderButton(...args, it, index)}
@@ -465,9 +457,10 @@ class ItemsField extends Component {
         const { types, fields } = this.state;
 
         const itemValue = value[index] || null;
-        const type = types !== null
-            ? types.find(obj => (obj.name || obj.type || obj.id) === it.type) || null
-            : null;
+        const type =
+            types !== null
+                ? types.find(obj => (obj.name || obj.type || obj.id) === it.type) || null
+                : null;
         const typeFields = type !== null ? type.fields || fields : fields;
 
         if (renderItemField !== null) {
@@ -601,17 +594,10 @@ class ItemsField extends Component {
         const hasType = types !== null;
         const dropdownOptions = hasType
             ? types.map(obj => ({
-                label: obj.label,
-                value: obj.name || obj.id || obj.type,
-            }))
+                  label: obj.label,
+                  value: obj.name || obj.id || obj.type,
+              }))
             : null;
-
-        const buttonClassNames = classNames({
-            btn: true,
-            'btn-lg': addButtonLarge,
-            'btn-primary': true,
-            'dropdown-toggle': types !== null && types.length,
-        });
 
         const actionsClassNames = classNames({
             [styles.actions]: true,
@@ -621,27 +607,28 @@ class ItemsField extends Component {
         });
 
         const intlLabel = addButtonTypeLabel !== null ? addWithTypeButtonLabel : addButtonLabel;
-        const label = addButtonLabelPrefix !== null ? `${addButtonLabelPrefix}${addButtonLabel}` : intlLabel;
+        const label =
+            addButtonLabelPrefix !== null ? `${addButtonLabelPrefix}${addButtonLabel}` : intlLabel;
 
         return (
             <div className={actionsClassNames}>
-                <AddButton
-                    label={
-                        isObject(label)
-                            ? {
-                                values: {
-                                    type: isObject(addButtonTypeLabel)
-                                        ? intl.formatMessage(addButtonTypeLabel)
-                                        : addButtonTypeLabel,
-                                },
-                                ...label,
-                            }
-                            : label
-                    }
-                    className={buttonClassNames}
+                <Button
+                    size={addButtonLarge ? 'lg' : null}
                     dropdown={dropdownOptions}
                     onClick={this.onClickAdd}
-                />
+                    onItemClick={this.onClickAdd}
+                >
+                    {isMessage(label)
+                        ? {
+                              values: {
+                                  type: isObject(addButtonTypeLabel)
+                                      ? intl.formatMessage(addButtonTypeLabel)
+                                      : addButtonTypeLabel,
+                              },
+                              ...label,
+                          }
+                        : label}
+                </Button>
             </div>
         );
     }

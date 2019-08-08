@@ -1,6 +1,7 @@
-import withFormsCollection from './withFormsCollection';
-import itemsCollection from './items';
+import Normal from '@panneau/form-normal';
+import Preview from '@panneau/form-preview';
 
-export { withFormsCollection };
-
-export default itemsCollection;
+export {
+    Normal,
+    Preview,
+};

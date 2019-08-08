@@ -1,9 +1,9 @@
 import Header from './Header';
 import Footer from './Footer';
-import navbarItemsCollection from './navbarItems';
+import * as NavbarItemsComponents from './navbarItems';
 
 export {
     Header,
     Footer,
-    navbarItemsCollection,
+    NavbarItemsComponents,
 };

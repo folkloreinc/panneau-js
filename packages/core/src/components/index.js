@@ -1,11 +1,6 @@
-import Panneau from './Panneau';
-import Layout from './Layout';
-import Loading from './partials/Loading';
-import Errors from './partials/Errors';
+import Loading from './Loading';
+import Errors from './Errors';
+import Button from './Button';
+import ButtonGroup from './ButtonGroup';
 
-export {
-    Panneau,
-    Layout,
-    Loading,
-    Errors,
-};
+export { Loading, Errors, Button, ButtonGroup };

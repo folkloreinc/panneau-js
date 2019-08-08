@@ -1,0 +1,19 @@
+{
+    "app.buttons.resources.cancel": "Cancel",
+    "app.buttons.resources.save": "Save",
+    "app.buttons.resources.switch_type": "Switch type",
+    "app.notices.resources.error": "Failed. The form contains errors.",
+    "app.notices.resources.success": "Success!",
+    "app.resources.form.confirm_switch_type": "Are you sure you want to switch type?",
+    "app.titles.resources.default": "{name}",
+    "app.titles.resources.typed": "{name} <small class=\"text-muted\">({type})</small>",
+    "core.buttons.resources.add": "Add {name}",
+    "core.buttons.resources.create": "Create",
+    "core.resources.index.confirm_delete": "Are you sure you want to delete this item from {name}?",
+    "core.titles.account": "Edit account",
+    "core.titles.resources.create": "Create {name}",
+    "core.titles.resources.create_typed": "Create {name} <small class=\"text-muted\">({type})</small>",
+    "core.titles.resources.edit": "Edit {name}",
+    "core.titles.resources.edit_typed": "Edit {name} <small class=\"text-muted\">({type})</small>",
+    "core.titles.resources.index": "{name}"
+}

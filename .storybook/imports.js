@@ -1,1 +1,1 @@
-import '../packages/core/src/styles/vendor.global.scss';
+import '../packages/app/src/styles/vendor.global.scss';

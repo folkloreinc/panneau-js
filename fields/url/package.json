@@ -57,12 +57,12 @@
     "prop-types": "^15.6.0"
   },
   "devDependencies": {
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0"
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   },
   "peerDependencies": {
-    "react": ">=15.0.0 || ^16.0.0",
-    "react-dom": ">=15.0.0 || ^16.0.0"
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
   },
   "gitHead": "8947c52802d8c1596eff0d4edd9d1447c1b2d020"
 }

@@ -4,7 +4,7 @@ import { IntlProvider } from 'react-intl';
 
 import storiesOf from '../../../../.storybook/storiesOf';
 import KeepValue from '../../../../.storybook/KeepValue';
-import fieldsCollection from '../../../fields/src/items';
+import * as FieldsComponents from '../../../fields/src/index';
 import FieldsGroup from '../FieldsGroup';
 
 const fields = [
@@ -41,7 +41,7 @@ storiesOf('Fields/Core/FieldsGroup', module)
         <IntlProvider locale="en">
             <KeepValue>
                 <FieldsGroup
-                    fieldsCollection={fieldsCollection}
+                    fields={FieldsComponents}
                     fields={fields}
                     onChange={action('change')}
                 />

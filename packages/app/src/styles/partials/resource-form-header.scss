@@ -1,0 +1,7 @@
+@import '@panneau/core/src/styles/variables';
+
+.container {
+    &.isFullscreen {
+        border-bottom: solid 1px $hr-border-color;
+    }
+}

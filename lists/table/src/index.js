@@ -1,11 +1,11 @@
 import Table from './TableList';
 import Column from './Column';
 import * as PropTypes from './PropTypes';
-import columnsCollection from './columns';
+import * as ColumnsComponents from './columns';
 
 export {
     Table,
-    columnsCollection,
+    ColumnsComponents,
     Column,
     PropTypes,
 };

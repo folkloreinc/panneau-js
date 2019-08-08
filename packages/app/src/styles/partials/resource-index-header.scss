@@ -1,0 +1,13 @@
+@import '@panneau/core/src/styles/variables';
+
+.container {
+    .cols {
+        display: table;
+        width: 100%;
+    }
+
+    .col {
+        display: table-cell;
+        vertical-align: middle;
+    }
+}

@@ -1,8 +1,8 @@
 import get from 'lodash/get';
 import isObject from 'lodash/isObject';
 
-const parseDefinition = (rootDefinition) => {
-    const parseNavbarItem = (definition) => {
+const parseDefinition = rootDefinition => {
+    const parseNavbarItem = definition => {
         const type = get(definition, 'type', 'item');
         if (type === 'resource') {
             const resourceName = get(definition, 'resource', null);
@@ -18,7 +18,7 @@ const parseDefinition = (rootDefinition) => {
         };
     };
 
-    const parseNavbar = (definition) => {
+    const parseNavbar = definition => {
         const items = get(definition, 'items', []);
         return {
             ...definition,
@@ -26,7 +26,7 @@ const parseDefinition = (rootDefinition) => {
         };
     };
 
-    const parseHeader = (definition) => {
+    const parseHeader = definition => {
         const navbar = get(definition, 'navbar', true);
         return {
             ...definition,
@@ -34,7 +34,7 @@ const parseDefinition = (rootDefinition) => {
         };
     };
 
-    const parseFooter = (definition) => {
+    const parseFooter = definition => {
         const navbar = get(definition, 'navbar', false);
         return {
             ...definition,
@@ -42,15 +42,14 @@ const parseDefinition = (rootDefinition) => {
         };
     };
 
-    const parseResources = resources => resources.map(({
-        type, messages, ...resource
-    }) => ({
-        ...resource,
-        type: type || 'default',
-        messages: isObject(messages || null) ? messages : null,
-    }));
+    const parseResources = resources =>
+        resources.map(({ type, messages, ...resource }) => ({
+            ...resource,
+            type: type || 'default',
+            messages: isObject(messages || null) ? messages : null,
+        }));
 
-    const parseLayout = (definition) => {
+    const parseLayout = definition => {
         const header = get(definition, 'header', true);
         const footer = get(definition, 'footer', false);
         return {

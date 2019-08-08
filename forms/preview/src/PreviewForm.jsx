@@ -1,22 +1,23 @@
 /* eslint-disable react/button-has-type */
-import React, { Component } from 'react';
+import React, { useMemo, useCallback, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import SplitPane from 'react-split-pane';
+import isFunction from 'lodash/isFunction';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useComponent } from '@panneau/core/contexts';
 import {
-    PropTypes as PanneauPropTypes,
-    withPreviewsCollection,
-    withFormsCollection,
-} from '@panneau/core';
-import { PropTypes as FormPropTypes, FormActions, messages } from '@panneau/form';
+    PropTypes as FormPropTypes,
+    FormActions,
+    messages,
+    withFormContainer,
+} from '@panneau/form';
 
 import styles from './styles.scss';
 
 const stylePropType = PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number]));
 
 const propTypes = {
-    formsCollection: PanneauPropTypes.componentsCollection.isRequired,
-    previewsCollection: PanneauPropTypes.componentsCollection.isRequired,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     errors: FormPropTypes.errors,
     notice: FormPropTypes.notice,
@@ -38,6 +39,7 @@ const propTypes = {
     fullscreen: PropTypes.bool,
     withoutPreviewFullscreen: PropTypes.bool,
     className: PropTypes.string,
+    forwardRef: PanneauPropTypes.ref,
     onChange: PropTypes.func,
     onErrors: PropTypes.func,
 };
@@ -71,244 +73,153 @@ const defaultProps = {
     fullscreen: false,
     withoutPreviewFullscreen: false,
     className: null,
+    forwardRef: null,
     onChange: null,
     onErrors: null,
 };
 
-const childContextTypes = {
-    form: FormPropTypes.form,
-};
+const PreviewForm = ({
+    value,
+    errors,
+    notice,
+    buttons,
+    form,
+    preview,
+    paneStyle,
+    paneSplit,
+    paneStep,
+    panesStyle,
+    paneFormStyle,
+    panePreviewStyle,
+    paneResizerStyle,
+    formWidth,
+    formMinWidth,
+    formMaxWidth,
+    formStyle,
+    previewStyle,
+    fullscreen,
+    withoutPreviewFullscreen,
+    className,
+    forwardRef,
+    onChange,
+    onErrors,
+    ...props
+}) => {
+    const [previewFullscreen, setPreviewFullscreen] = useState(false);
+    const FormComponent = useComponent(form, 'forms');
+    const PreviewComponent = useComponent(preview, 'previews');
+    const refForm = useRef(null);
 
-const contextTypes = {
-    form: FormPropTypes.form,
-};
-
-export class PreviewForm extends Component {
-    static getDerivedStateFromProps(props, state) {
-        const isValueControlled = props.onChange !== null;
-        const isErrorsControlled = props.onErrors !== null;
-        const valueChanged = isValueControlled && props.value !== state.value;
-        const errorsChanged = isErrorsControlled && props.errors !== state.errors;
-        if (valueChanged || errorsChanged) {
-            return {
-                value: valueChanged ? props.value : state.value,
-                errors: errorsChanged ? props.errors : state.errors,
-            };
+    const submit = useCallback(() => {
+        if (refForm !== null) {
+            refForm.current.submit();
         }
-        return null;
+    }, [refForm]);
+
+    const onClickSubmit = useCallback(() => {
+        submit();
+    }, []);
+
+    const onClickPreviewFullscreen = useCallback(() => {
+        setPreviewFullscreen(!previewFullscreen);
+    }, [previewFullscreen]);
+
+    const refApi = useMemo(
+        () => ({
+            submit,
+        }),
+        [],
+    );
+
+    if (isFunction(forwardRef)) {
+        forwardRef(refApi);
+    } else if (forwardRef !== null) {
+        // eslint-disable-next-line no-param-reassign
+        forwardRef.current = refApi;
     }
 
-    constructor(props) {
-        super(props);
-
-        this.onFormChange = this.onFormChange.bind(this);
-        this.onFormErrors = this.onFormErrors.bind(this);
-        this.onClickSubmit = this.onClickSubmit.bind(this);
-        this.onClickPreviewFullscreen = this.onClickPreviewFullscreen.bind(this);
-
-        this.refForm = React.createRef();
-
-        this.state = {
-            value: props.value,
-            errors: props.errors,
-            previewFullscreen: false,
-        };
-    }
-
-    getChildContext() {
-        const { value, errors } = this.state;
-        const { form = null } = this.context;
-        return {
-            form:
-                form !== null
-                    ? form
-                    : {
-                        errors,
-                        value,
-                    },
-        };
-    }
-
-    onFormChange(value) {
-        this.setValue(value);
-    }
-
-    onFormErrors(errors) {
-        this.setErrors(errors);
-    }
-
-    onClickSubmit() {
-        this.submit();
-    }
-
-    onClickPreviewFullscreen() {
-        this.setState(({ previewFullscreen }) => ({
-            previewFullscreen: !previewFullscreen,
-        }));
-    }
-
-    /**
-     * Set the errors
-     *
-     * @param {object} errors
-     * @public
-     */
-    setErrors(errors) {
-        const { onErrors } = this.props;
-        if (onErrors !== null) {
-            onErrors(errors);
-        } else {
-            this.setState({
-                errors,
-            });
-        }
-    }
-
-    /**
-     * Set the value
-     *
-     * @param {object} value
-     * @public
-     */
-    setValue(value) {
-        const { onChange } = this.props;
-        if (onChange !== null) {
-            onChange(value);
-        } else {
-            this.setState({
-                value,
-            });
-        }
-    }
-
-    /**
-     * Submit the form
-     *
-     * @public
-     */
-    submit() {
-        this.refForm.current.submit();
-    }
-
-    render() {
-        const {
-            formsCollection,
-            previewsCollection,
-            value: propsValue,
-            errors: propsErrors,
-            notice,
-            buttons,
-            form,
-            preview,
-            paneStyle,
-            paneSplit,
-            paneStep,
-            panesStyle,
-            paneFormStyle,
-            panePreviewStyle,
-            paneResizerStyle,
-            formWidth,
-            formMinWidth,
-            formMaxWidth,
-            formStyle,
-            previewStyle,
-            fullscreen,
-            withoutPreviewFullscreen,
-            className,
-            onChange,
-            onErrors,
-            ...props
-        } = this.props;
-        const { value, errors, previewFullscreen } = this.state;
-
-        const FormComponent = formsCollection.getComponent(form);
-        const PreviewComponent = previewsCollection.getComponent(preview);
-
-        return (
-            <div
-                className={classNames([
-                    styles.container,
-                    {
-                        [styles.isFullscreen]: fullscreen,
-                        [styles.previewIsFullscreen]: previewFullscreen,
-                        [className]: className !== null,
-                    },
-                ])}
-            >
-                <div className={styles.pane}>
-                    <SplitPane
-                        split={paneSplit}
-                        step={paneStep}
-                        defaultSize={formWidth}
-                        minSize={formMinWidth}
-                        maxSize={formMaxWidth}
-                        style={
-                            paneStyle === null && !fullscreen ? { position: 'relative' } : paneStyle
-                        }
-                        paneStyle={panesStyle}
-                        pane1Style={paneFormStyle}
-                        pane2Style={panePreviewStyle}
-                        resizerStyle={paneResizerStyle}
-                    >
-                        <div className={styles.form}>
-                            {FormComponent !== null ? (
-                                <FormComponent
-                                    {...props}
-                                    value={value}
-                                    errors={errors}
-                                    withoutActions
-                                    onChange={this.onFormChange}
-                                    onErrors={this.onFormErrors}
-                                    ref={this.refForm}
-                                />
+    return (
+        <div
+            className={classNames([
+                styles.container,
+                {
+                    [styles.isFullscreen]: fullscreen,
+                    [styles.previewIsFullscreen]: previewFullscreen,
+                    [className]: className !== null,
+                },
+            ])}
+        >
+            <div className={styles.pane}>
+                <SplitPane
+                    split={paneSplit}
+                    step={paneStep}
+                    defaultSize={formWidth}
+                    minSize={formMinWidth}
+                    maxSize={formMaxWidth}
+                    style={paneStyle === null && !fullscreen ? { position: 'relative' } : paneStyle}
+                    paneStyle={panesStyle}
+                    pane1Style={paneFormStyle}
+                    pane2Style={panePreviewStyle}
+                    resizerStyle={paneResizerStyle}
+                >
+                    <div className={styles.form}>
+                        {FormComponent !== null ? (
+                            <FormComponent
+                                {...props}
+                                value={value}
+                                errors={errors}
+                                withoutActions
+                                onChange={onChange}
+                                onErrors={onErrors}
+                                ref={refForm}
+                            />
+                        ) : null}
+                    </div>
+                    <div className={styles.preview}>
+                        {!withoutPreviewFullscreen ? (
+                            <button
+                                type="button"
+                                className={classNames([
+                                    'btn',
+                                    'btn-light',
+                                    styles.fullscreenButton,
+                                    'fas',
+                                    {
+                                        'fa-expand': !previewFullscreen,
+                                        'fa-compress': previewFullscreen,
+                                    },
+                                ])}
+                                onClick={onClickPreviewFullscreen}
+                            />
+                        ) : null}
+                        <div className={styles.inner}>
+                            {PreviewComponent !== null ? (
+                                <PreviewComponent value={value} {...props} />
                             ) : null}
                         </div>
-                        <div className={styles.preview}>
-                            {!withoutPreviewFullscreen ? (
-                                <button
-                                    type="button"
-                                    className={classNames([
-                                        'btn',
-                                        'btn-light',
-                                        styles.fullscreenButton,
-                                        'fas',
-                                        {
-                                            'fa-expand': !previewFullscreen,
-                                            'fa-compress': previewFullscreen,
-                                        },
-                                    ])}
-                                    onClick={this.onClickPreviewFullscreen}
-                                />
-                            ) : null}
-                            <div className={styles.inner}>
-                                {PreviewComponent !== null ? (
-                                    <PreviewComponent value={value} {...props} />
-                                ) : null}
-                            </div>
-                        </div>
-                    </SplitPane>
-                </div>
-                <FormActions
-                    notice={notice}
-                    buttons={buttons.map(button => (button.id === 'submit'
-                        ? {
-                            ...button,
-                            type: 'button',
-                            onClick: this.onClickSubmit,
-                        }
-                        : button))}
-                    className={classNames(['border-top', 'p-2', styles.actions])}
-                />
+                    </div>
+                </SplitPane>
             </div>
-        );
-    }
-}
+            <FormActions
+                notice={notice}
+                buttons={buttons.map(button =>
+                    button.id === 'submit'
+                        ? {
+                              ...button,
+                              type: 'button',
+                              onClick: onClickSubmit,
+                          }
+                        : button,
+                )}
+                className={classNames(['border-top', 'p-2', styles.actions])}
+            />
+        </div>
+    );
+};
 
 PreviewForm.propTypes = propTypes;
 PreviewForm.defaultProps = defaultProps;
-PreviewForm.childContextTypes = childContextTypes;
-PreviewForm.contextTypes = contextTypes;
 
-const WithPreviewCollectionContainer = withPreviewsCollection()(PreviewForm);
-const WithFormsCollectionContainer = withFormsCollection()(WithPreviewCollectionContainer);
-export default WithFormsCollectionContainer;
+export default withFormContainer(
+    React.forwardRef((props, ref) => <PreviewForm {...props} forwardRef={ref} />),
+);

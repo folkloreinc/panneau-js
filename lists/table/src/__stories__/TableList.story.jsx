@@ -2,10 +2,13 @@ import React from 'react';
 /* eslint-disable import/no-extraneous-dependencies */
 import { IntlProvider } from 'react-intl';
 /* eslint-enable import/no-extraneous-dependencies */
+import { ComponentsCollection } from '@panneau/core';
 
 import storiesOf from '../../../../.storybook/storiesOf';
-import columnsCollection from '../columns';
+import * as ColumnsComponents from '../columns';
 import TableList from '../TableList';
+
+const columnsCollection = new ComponentsCollection(ColumnsComponents);
 
 const items = [
     {
@@ -57,14 +60,14 @@ storiesOf('Lists/Table', module)
                     <h4>Normal</h4>
                     <TableList
                         items={items}
-                        columnsCollection={columnsCollection}
+                        columnsComponents={columnsCollection}
                     />
                     <hr />
                     <h4>Icons only</h4>
                     <TableList
                         items={items}
-                        columnsCollection={columnsCollection}
-                        cols={columns}
+                        columnsComponents={columnsCollection}
+                        columns={columns}
                     />
                 </div>
 
@@ -74,7 +77,7 @@ storiesOf('Lists/Table', module)
     .add('empty', () => (
         <div>
             <IntlProvider locale="en">
-                <TableList columnsCollection={columnsCollection} />
+                <TableList columnsComponents={columnsCollection} />
             </IntlProvider>
         </div>
     ));

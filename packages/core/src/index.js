@@ -1,57 +1,13 @@
 /** @module panneau/core */
-import Panneau from './Panneau';
-import { Panneau as PanneauComponent, Loading as LoadingComponent, Errors as ErrorsComponent } from './components/index';
+import * as PropTypes from './lib/PropTypes';
 
-import PropTypes from './lib/PropTypes';
-import ComponentsCollection from './lib/ComponentsCollection';
-import withUrlGenerator from './lib/withUrlGenerator';
-import withDefinition from './lib/withDefinition';
-import withResourceApi from './lib/withResourceApi';
-import withComponentsCollection from './lib/withComponentsCollection';
-import withFormsCollection from './lib/withFormsCollection';
-import withFieldsCollection from './lib/withFieldsCollection';
-import withListsCollection from './lib/withListsCollection';
-import withLayoutsCollection from './lib/withLayoutsCollection';
-import withModalsCollection from './lib/withModalsCollection';
-import withPreviewsCollection from './lib/withPreviewsCollection';
+export { Loading as LoadingComponent, Errors as ErrorsComponent } from './components/index';
 
-import {
-    ResponseError,
-    ValidationError,
-    getResponseAndDataObject,
-    throwResponseError,
-    throwValidationError,
-    postJSON,
-    getJSON,
-} from './lib/requests';
+export { PropTypes };
+export { default as ComponentsCollection } from './lib/ComponentsCollection';
+export { default as parseDefinition } from './lib/parseDefinition';
+export { default as useResourceApi } from './lib/useResourceApi';
 
-import { isMessage } from './utils';
+export * from './lib/requests';
 
-export {
-    PropTypes,
-    ComponentsCollection,
-    PanneauComponent,
-    LoadingComponent,
-    ErrorsComponent,
-    ResponseError,
-    ValidationError,
-    getResponseAndDataObject,
-    throwResponseError,
-    throwValidationError,
-    postJSON,
-    getJSON,
-    withUrlGenerator,
-    withDefinition,
-    withResourceApi,
-    withComponentsCollection,
-    withFormsCollection,
-    withFieldsCollection,
-    withListsCollection,
-    withLayoutsCollection,
-    withModalsCollection,
-    withPreviewsCollection,
-    isMessage,
-};
-
-/** The main Panneau application class */
-export default Panneau;
+export { isMessage } from './utils';

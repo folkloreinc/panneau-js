@@ -80,11 +80,12 @@ const cssModulesLoader = {
     loader: require.resolve('css-loader'),
     options: {
         sourceMap: shouldUseSourceMap,
-        modules: true,
-        // prettier-ignore
-        getLocalIdent: (context, localIdentName, localName) => (
-            getLocalIdent(localName, context.resourcePath)
-        ),
+        modules: {
+            // prettier-ignore
+            getLocalIdent: (context, localIdentName, localName) => (
+                getLocalIdent(localName, context.resourcePath)
+            ),
+        },
     },
 };
 

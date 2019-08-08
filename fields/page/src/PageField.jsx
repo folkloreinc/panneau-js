@@ -1,7 +1,8 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
-import { PropTypes as PanneauPropTypes, withUrlGenerator, withDefinition } from '@panneau/core';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useDefinition, useUrlGenerator } from '@panneau/core/contexts';
 import ItemField from '@panneau/field-item';
 
 const messages = defineMessages({
@@ -13,69 +14,53 @@ const messages = defineMessages({
 });
 
 const propTypes = {
-    urlGenerator: PanneauPropTypes.urlGenerator,
-    definition: PanneauPropTypes.definition,
     placeholder: PanneauPropTypes.message,
     resourceId: PropTypes.string,
     endpoint: PropTypes.string,
 };
 
 const defaultProps = {
-    urlGenerator: null,
-    definition: null,
     placeholder: messages.placeholder,
     resourceId: 'pages',
     endpoint: null,
 };
 
-class PageField extends PureComponent {
-    getEndpoint() {
-        const {
-            resourceId, urlGenerator, definition, endpoint,
-        } = this.props;
-        if (endpoint !== null) {
-            return endpoint;
-        }
-        if (urlGenerator === null || definition === null) {
-            return null;
-        }
-        const { resources = [] } = definition;
+const PageField = ({
+    resourceId, endpoint, ...props,
+}) => {
+    const urlGenerator = useUrlGenerator();
+    const { resources = [] } = useDefinition();
+    let suggestionsEndpoint = endpoint;
+    if (suggestionsEndpoint === null) {
         const resource = resources.find(it => it.id === resourceId) || null;
-        if (resource === null) {
-            return null;
-        }
-        return urlGenerator.route(
+        suggestionsEndpoint = resource !== null ? urlGenerator.route(
             typeof resource.routes !== 'undefined'
                 ? `resource.${resource.id}.index`
                 : 'resource.index',
             {
                 resource: resource.id,
             },
-        );
+        ) : null;
     }
 
-    render() {
-        return (
-            <ItemField
-                cardItemMap={{
-                    name: 'title',
-                    created_at: 'created_at',
-                    thumbnail: 'image',
-                }}
-                autosuggestProps={{
-                    suggestionsEndpoint: this.getEndpoint(),
-                    suggestionValuePath: 'title',
-                    suggestionTitlePath: 'title',
-                }}
-                {...this.props}
-            />
-        );
-    }
-}
+    return (
+        <ItemField
+            cardItemMap={{
+                name: 'title',
+                created_at: 'created_at',
+                thumbnail: 'image',
+            }}
+            autosuggestProps={{
+                suggestionsEndpoint,
+                suggestionValuePath: 'title',
+                suggestionTitlePath: 'title',
+            }}
+            {...props}
+        />
+    );
+};
 
 PageField.propTypes = propTypes;
 PageField.defaultProps = defaultProps;
 
-const WithUrlGeneratorContainer = withUrlGenerator()(PageField);
-const WithDefinitionContainer = withDefinition()(WithUrlGeneratorContainer);
-export default WithDefinitionContainer;
+export default PageField;

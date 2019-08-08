@@ -1,0 +1,32 @@
+[
+  {
+    "id": "app.buttons.resources.cancel",
+    "description": "The label of the \"cancel\" button",
+    "defaultMessage": "Cancel"
+  },
+  {
+    "id": "app.buttons.resources.save",
+    "description": "The label of the \"save\" button",
+    "defaultMessage": "Save"
+  },
+  {
+    "id": "app.titles.resources.default",
+    "description": "The title of the resource form",
+    "defaultMessage": "{name}"
+  },
+  {
+    "id": "app.titles.resources.typed",
+    "description": "The title of the typed resource form",
+    "defaultMessage": "{name} <small class=\"text-muted\">({type})</small>"
+  },
+  {
+    "id": "app.notices.resources.success",
+    "description": "The text of the \"success\" form notice",
+    "defaultMessage": "Success!"
+  },
+  {
+    "id": "app.notices.resources.error",
+    "description": "The text of the \"error\" form notice",
+    "defaultMessage": "Failed. The form contains errors."
+  }
+]

@@ -1,11 +1,2 @@
-import { ComponentsCollection } from '@panneau/core';
-
-import Text from '../../../text/src/index';
-import Items from '../ItemsField';
-
-const fieldsCollection = new ComponentsCollection({
-    Text,
-    Items,
-});
-
-export default fieldsCollection;
+export { default as Text } from '../../../text/src/index';
+export { default as Items } from '../ItemsField';

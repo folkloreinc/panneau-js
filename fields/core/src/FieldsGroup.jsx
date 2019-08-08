@@ -6,9 +6,9 @@ import set from 'lodash/set';
 import isArray from 'lodash/isArray';
 import {
     ComponentsCollection,
-    withFieldsCollection,
     PropTypes as PanneauPropTypes,
 } from '@panneau/core';
+import { ComponentsContext } from '@panneau/core/contexts';
 
 import FormGroup from './FormGroup';
 
@@ -84,6 +84,8 @@ class FieldsGroup extends Component {
 
     getFieldComponent(key) {
         const { fieldsComponents, getFieldComponent, fieldsCollection } = this.props;
+        // eslint-disable-next-line react/destructuring-assignment
+        const contextFieldsCollection = this.context.getCollection('fields');
         const normalizedKey = ComponentsCollection.normalizeKey(key);
 
         if (getFieldComponent !== null) {
@@ -99,6 +101,9 @@ class FieldsGroup extends Component {
         }
         if (fieldsCollection !== null) {
             return fieldsCollection.getComponent(key);
+        }
+        if (contextFieldsCollection !== null) {
+            return contextFieldsCollection.getComponent(key);
         }
         return normalizedKey.toLowerCase() === 'fields' ? FieldsGroup : null;
     }
@@ -259,5 +264,6 @@ class FieldsGroup extends Component {
 
 FieldsGroup.propTypes = propTypes;
 FieldsGroup.defaultProps = defaultProps;
+FieldsGroup.contextType = ComponentsContext;
 
-export default withFieldsCollection()(FieldsGroup);
+export default FieldsGroup;
