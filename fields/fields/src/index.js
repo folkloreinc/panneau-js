@@ -1,6 +1,7 @@
 import Text, {
-    TextLocale, Textarea, Editor, Email, Number, Password,
+    TextLocale, Textarea, Email, Number, Password,
 } from '@panneau/field-text';
+import Editor, { EditorLocale } from '@panneau/field-editor';
 import Code from '@panneau/field-code';
 import Select from '@panneau/field-select';
 import Color from '@panneau/field-color';
@@ -37,6 +38,7 @@ export {
     Document,
     Documents,
     Editor,
+    EditorLocale,
     Email,
     Item,
     Items,

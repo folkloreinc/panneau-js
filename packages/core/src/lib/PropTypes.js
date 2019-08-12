@@ -129,11 +129,19 @@ export const formsDefinition = PropTypes.oneOfType([
     PropTypes.objectOf(formDefinition),
 ]);
 
+export const typeDefinition = PropTypes.shape({
+    id: PropTypes.string.isRequired,
+});
+
+export const typesDefinition = PropTypes.arrayOf(typeDefinition);
+
 export const resourceDefinition = PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
+    type: PropTypes.string,
     messages: PropTypes.objectOf(PropTypes.objectOf(PropTypes.string)),
     forms: formsDefinition,
+    types: typesDefinition,
 });
 
 export const resourcesDefinition = PropTypes.arrayOf(resourceDefinition);

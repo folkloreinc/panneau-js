@@ -64,7 +64,7 @@
         "popper.js": "^1.14.3",
         "prop-types": "^15.6.0",
         "query-string": "^6.1.0",
-        "react-intl": "^2.7.2",
+        "react-intl": "^3.1.6",
         "react-router-dom": "^5.0.1",
         "url-pattern": "^1.0.3",
         "whatwg-fetch": "^2.0.3",
@@ -73,8 +73,7 @@
     "devDependencies": {
         "jquery-slim": "^3.0.0",
         "react": "^16.8.6",
-        "react-dom": "^16.8.6",
-        "react-intl": "^2.4.0"
+        "react-dom": "^16.8.6"
     },
     "peerDependencies": {
         "react": "^16.8.0",

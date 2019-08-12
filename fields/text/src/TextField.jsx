@@ -15,7 +15,7 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
  *  @return {string} newValue
  */
 const propTypes = {
-    type: PropTypes.oneOf(['text', 'email', 'password', 'url', 'number', 'textarea', 'editor']),
+    type: PropTypes.oneOf(['text', 'email', 'password', 'url', 'number', 'textarea']),
     name: PropTypes.string,
     label: PropTypes.oneOfType([PropTypes.node, PanneauPropTypes.message]),
     placeholder: PropTypes.string,
@@ -38,10 +38,6 @@ const propTypes = {
     min: PropTypes.number,
     max: PropTypes.number,
     readOnly: PropTypes.bool,
-
-    ckeditorConfig: PropTypes.object, // eslint-disable-line
-    ckeditorCustomConfig: PropTypes.string,
-    ckeditorBasePath: PropTypes.string,
 };
 
 const defaultProps = {
@@ -68,10 +64,6 @@ const defaultProps = {
     min: null,
     max: null,
     readOnly: null,
-
-    ckeditorConfig: null,
-    ckeditorCustomConfig: null,
-    ckeditorBasePath: 'https://cdn.ckeditor.com/4.7.2/standard/',
 };
 
 class TextField extends Component {
@@ -89,60 +81,15 @@ class TextField extends Component {
         super(props);
 
         this.onChange = this.onChange.bind(this);
-        this.onEditorReady = this.onEditorReady.bind(this);
-        this.onEditorChange = this.onEditorChange.bind(this);
 
         this.importCanceled = false;
-        this.ckeditor = null;
-        this.editor = null;
         this.refInput = null;
         this.refInputGroup = null;
-    }
-
-    componentDidMount() {
-        const { type, ckeditorBasePath } = this.props;
-        if (type === 'editor') {
-            window.CKEDITOR_BASEPATH = ckeditorBasePath;
-            import('ckeditor').then(() => {
-                if (this.importCanceled) {
-                    return;
-                }
-                const { ckeditorConfig, ckeditorCustomConfig } = this.props;
-                this.ckeditor = CKEDITOR; // eslint-disable-line no-undef
-                const editor = this.ckeditor.replace(this.editor, {
-                    customConfig: ckeditorCustomConfig,
-                    ...(ckeditorConfig || {}),
-                });
-                editor.on('instanceReady', this.onEditorReady);
-                editor.on('change', this.onEditorChange);
-            });
-        }
-    }
-
-    componentWillUnmount() {
-        const { type } = this.props;
-        this.importCanceled = true;
-        if (type === 'editor') {
-            this.ckeditor.remove(this.editor);
-        }
-    }
-
-    onEditorReady(e) {
-        const { value } = this.props;
-        e.editor.setData(value || '');
     }
 
     onChange(e) {
         const { onChange } = this.props;
         const newValue = (e.currentTarget || this.refInput).value;
-        if (onChange !== null) {
-            onChange(newValue);
-        }
-    }
-
-    onEditorChange(e) {
-        const { onChange } = this.props;
-        const newValue = e.editor.getData();
         if (onChange !== null) {
             onChange(newValue);
         }
@@ -201,19 +148,6 @@ class TextField extends Component {
         let input = null;
         if (type === 'textarea') {
             input = <textarea {...inputProps} />;
-        } else if (type === 'editor') {
-            input = (
-                <div className="editor">
-                    <textarea
-                        className="field-editor"
-                        name="editor"
-                        ref={(el) => {
-                            this.editor = el;
-                        }}
-                    />
-                    <input type="hidden" name={name} value={inputValue || ''} />
-                </div>
-            );
         } else if (type === 'number') {
             const numberProps = {
                 step,

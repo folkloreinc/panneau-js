@@ -130,9 +130,10 @@ const ResourceForm = ({
     const [formValue, setFormValue] = useState(initialFormValue || item);
     const [formErrors, setFormErrors] = useState(initialFormErrors || item);
     const [formSuccess, setFormSuccess] = useState(initialFormErrors !== null ? false : null);
+    const resourceApi = useResourceApi(resource);
     const { type = null, types = [] } = resource;
     const isTyped = type === 'typed';
-    const resourceApi = useResourceApi(resource);
+    const waitingItem = action === 'edit' && item === null;
 
     // Load item if needed
     useEffect(() => {
@@ -157,11 +158,11 @@ const ResourceForm = ({
                     setIsLoading(false);
                 });
         }
-    }, [action, item, itemId]);
+    }, [action, item, itemId, isLoading]);
 
     // Get current type
     const currentType = useMemo(() => {
-        if (isTyped) {
+        if (!isTyped || waitingItem) {
             return null;
         }
 
@@ -177,21 +178,6 @@ const ResourceForm = ({
             ? types.find(({ default: isDefault = false }) => isDefault) || types[0] || null
             : null;
     }, [item, query, types]);
-
-    // Get form definition
-    const { type: formType, fullscreen, className = null, ...formProps } = useMemo(() => {
-        const { forms = {} } = resource;
-        const { fields = [], ...form } = forms[action] || forms;
-        return {
-            type: 'normal',
-            fullscreen: false,
-            fields:
-                currentType !== null && isObject(fields)
-                    ? fields[currentType.id] || fields.default || fields
-                    : fields,
-            ...form,
-        };
-    }, [resource]);
 
     const onClickCancel = useCallback(
         e => {
@@ -262,9 +248,30 @@ const ResourceForm = ({
         setFormSuccess(false);
     }, []);
 
+
+    // Get form definition
+    const { type: formType = null, fullscreen, className = null, ...formProps } = useMemo(() => {
+        const { forms = {} } = resource;
+        const { fields = [], ...form } = forms[action] || forms;
+        let finalFields;
+        if (waitingItem) {
+            finalFields = null;
+        } else if (currentType !== null && isObject(fields)) {
+            finalFields = fields[currentType.id] || fields.default || fields;
+        } else {
+            finalFields = fields;
+        }
+        return {
+            type: 'normal',
+            fullscreen: false,
+            fields: finalFields,
+            ...form,
+        };
+    }, [waitingItem, resource, currentType]);
+
     const FormComponent = useComponent(formType, 'forms');
     const form =
-        FormComponent !== null ? (
+        !waitingItem && FormComponent !== null ? (
             <FormComponent
                 {...formProps}
                 className={classNames([

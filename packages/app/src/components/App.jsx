@@ -29,9 +29,7 @@ const propTypes = {
     user: PanneauPropTypes.user,
 };
 
-const defaultProps = {
-    user: null,
-};
+const defaultProps = { user: null };
 
 const App = ({ history, user }) => {
     const urlGenerator = useUrlGenerator();
@@ -69,14 +67,12 @@ const App = ({ history, user }) => {
                 key={`route-resource-${id}-${action}`}
                 exact
                 path={routes[action]}
-                render={(
-                    {
-                        match: {
-                            params: { resource: resourceId = null, id: itemId = null },
-                        },
-                        location: { pathname, search },
+                render={({
+                    match: {
+                        params: { resource: resourceId = null, id: itemId = null },
                     },
-                ) => {
+                    location: { pathname, search },
+                }) => {
                     const resource =
                         resources.find(
                             it =>

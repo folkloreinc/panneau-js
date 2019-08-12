@@ -105,9 +105,7 @@ class Panneau extends EventEmitter {
      * @return {this}
      */
     setOptions(options = {}) {
-        const {
-            user, locale, messages, componentsCollection, ...otherOptions
-        } = options;
+        const { user, locale, messages, componentsCollection, ...otherOptions } = options;
 
         this.options = {
             ...this.options,
@@ -206,15 +204,20 @@ class Panneau extends EventEmitter {
      * @return {this}
      */
     setMessages(messages) {
-        this.messages = Object.keys(messages || {}).reduce((allMessages, key) => ({
-            ...allMessages,
-            [key]: isObject(messages[key]) ? {
-                ...(isObject(allMessages[key] || null) ? allMessages[key] : null),
-                ...messages[key],
-            } : messages[key],
-        }), {
-            ...Panneau.defaultLocaleMessages,
-        });
+        this.messages = Object.keys(messages || {}).reduce(
+            (allMessages, key) => ({
+                ...allMessages,
+                [key]: isObject(messages[key])
+                    ? {
+                          ...(isObject(allMessages[key] || null) ? allMessages[key] : null),
+                          ...messages[key],
+                      }
+                    : messages[key],
+            }),
+            {
+                ...Panneau.defaultLocaleMessages,
+            },
+        );
         return this;
     }
 

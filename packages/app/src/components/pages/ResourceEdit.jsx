@@ -28,6 +28,7 @@ const ResourceEdit = props => (
     <ResourceForm
         title={messages.title}
         titleTyped={messages.titleTyped}
+        action="edit"
         {...props}
     />
 );

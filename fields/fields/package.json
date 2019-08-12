@@ -55,6 +55,7 @@
         "@panneau/field-code": "^0.6.52",
         "@panneau/field-color": "^0.6.52",
         "@panneau/field-date": "^0.6.52",
+        "@panneau/field-editor": "^0.6.52",
         "@panneau/field-item": "^0.6.52",
         "@panneau/field-items": "^0.6.52",
         "@panneau/field-links": "^0.6.52",

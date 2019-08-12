@@ -59,11 +59,6 @@ storiesOf('Fields/Text', module)
             <KeepValue>
                 <TextField label="Textarea" type="textarea" onChange={action('change')} />
             </KeepValue>
-            <form>
-                <KeepValue>
-                    <TextField label="Editor" type="editor" onChange={action('change')} />
-                </KeepValue>
-            </form>
             <KeepValue>
                 <TextField
                     label="Number"

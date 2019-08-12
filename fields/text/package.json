@@ -51,7 +51,6 @@
         "@panneau/core": "^0.6.51",
         "@panneau/field": "^0.6.52",
         "@panneau/field-locale": "^0.6.52",
-        "ckeditor": "^4.7.3",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
         "prop-types": "^15.6.0"
