@@ -53,15 +53,8 @@ const propTypes = {
     label: PanneauPropTypes.label,
     helpText: PropTypes.string,
 
-    types: PropTypes.arrayOf(
-        PropTypes.shape({
-            type: PropTypes.string,
-            name: PropTypes.string,
-            id: PropTypes.string,
-            fields: PanneauPropTypes.fieldsDefinition.isRequired,
-        }),
-    ),
-    fields: PanneauPropTypes.fieldsDefinition,
+    types: PropTypes.arrayOf(PanneauPropTypes.definitions.type),
+    fields: PropTypes.arrayOf(PanneauPropTypes.definitions.field),
     typesEndpoint: PropTypes.string,
     fieldsEndpoint: PropTypes.string,
     FieldComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),

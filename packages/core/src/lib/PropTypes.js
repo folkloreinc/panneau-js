@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import * as definitions from '@panneau/schemas/prop-types';
 
 import UrlGenerator from './UrlGenerator';
 import ResourceApi from './ResourceApi';
@@ -105,63 +106,10 @@ export const user = PropTypes.shape({
 });
 
 /**
- * Definition
+ * Definitions
  */
-export const fieldDefinition = PropTypes.shape({
-    type: PropTypes.string,
-    name: PropTypes.string,
-    label: PropTypes.string,
-});
-
-export const fieldsDefinition = PropTypes.arrayOf(fieldDefinition)
-
-export const formDefinition = PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    type: PropTypes.string,
-    fields: PropTypes.oneOfType([
-        PropTypes.objectOf(fieldsDefinition),
-        fieldsDefinition
-    ]),
-});
-
-export const formsDefinition = PropTypes.oneOfType([
-    formDefinition,
-    PropTypes.objectOf(formDefinition),
-]);
-
-export const typeDefinition = PropTypes.shape({
-    id: PropTypes.string.isRequired,
-});
-
-export const typesDefinition = PropTypes.arrayOf(typeDefinition);
-
-export const resourceDefinition = PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    type: PropTypes.string,
-    messages: PropTypes.objectOf(PropTypes.objectOf(PropTypes.string)),
-    forms: formsDefinition,
-    types: typesDefinition,
-});
-
-export const resourcesDefinition = PropTypes.arrayOf(resourceDefinition);
-
-export const layoutDefinition = PropTypes.shape({
-   type: PropTypes.string,
-});
-
-export const definition = PropTypes.shape({
-    layout: layoutDefinition,
-    routes: PropTypes.shape({
-        home: PropTypes.string.isRequired,
-        account: PropTypes.string.isRequired,
-        'resource.index': PropTypes.string.isRequired,
-        'resource.create': PropTypes.string.isRequired,
-        'resource.store': PropTypes.string.isRequired,
-        'resource.show': PropTypes.string.isRequired,
-        'resource.edit': PropTypes.string.isRequired,
-        'resource.update': PropTypes.string.isRequired,
-        'resource.destroy': PropTypes.string.isRequired,
-    }),
-    resources: resourcesDefinition,
-});
+const { definition } = definitions;
+export {
+    definition,
+    definitions
+};

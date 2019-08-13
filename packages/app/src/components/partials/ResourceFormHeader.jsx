@@ -27,7 +27,7 @@ const propTypes = {
     action: PropTypes.string,
     type: PropTypes.definitionFormType,
     fullscreen: PanneauPropTypes.bool,
-    resource: PanneauPropTypes.resourceDefinition.isRequired,
+    resource: PanneauPropTypes.definitions.resource.isRequired,
     title: PanneauPropTypes.label.isRequired,
     titleTyped: PanneauPropTypes.label.isRequired,
     valueHasChanged: PropTypes.bool,

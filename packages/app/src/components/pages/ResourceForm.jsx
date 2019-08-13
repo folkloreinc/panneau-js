@@ -48,7 +48,7 @@ const propTypes = {
     intl: PanneauPropTypes.intl.isRequired,
     urlGenerator: PanneauPropTypes.urlGenerator.isRequired,
     action: PropTypes.string,
-    resource: PanneauPropTypes.resourceDefinition.isRequired,
+    resource: PanneauPropTypes.definitions.resource.isRequired,
     resourceApi: PanneauPropTypes.resourceApi.isRequired,
     itemId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     item: PropTypes.shape({

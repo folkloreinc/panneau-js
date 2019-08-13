@@ -33,7 +33,7 @@ const messages = defineMessages({
 
 const propTypes = {
     intl: PanneauPropTypes.intl.isRequired,
-    resource: PanneauPropTypes.resourceDefinition.isRequired,
+    resource: PanneauPropTypes.definitions.resource.isRequired,
     query: PropTypes.shape({
         page: PropTypes.string,
     }),

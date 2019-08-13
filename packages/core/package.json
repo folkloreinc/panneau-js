@@ -33,7 +33,9 @@
         "lib",
         "es",
         "dist",
-        "src"
+        "src",
+        "components.js",
+        "contexts.js"
     ],
     "scripts": {
         "storybook": "../../node_modules/.bin/start-storybook -p 9008 -c ../../.storybook-package",
@@ -52,6 +54,7 @@
     "dependencies": {
         "@babel/runtime": "^7.0.0",
         "@fortawesome/fontawesome-free": "^5.7.1",
+        "@panneau/schemas": "^0.7.0",
         "bootstrap": "~4.1.1",
         "classnames": "^2.2.5",
         "hoist-non-react-statics": "^3.3.0",

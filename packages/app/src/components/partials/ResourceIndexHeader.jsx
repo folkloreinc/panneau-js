@@ -10,7 +10,7 @@ import { Button } from '@panneau/core/components';
 import styles from '../../styles/partials/resource-index-header.scss';
 
 const propTypes = {
-    resource: PanneauPropTypes.resourceDefinition.isRequired,
+    resource: PanneauPropTypes.definitions.resource.isRequired,
     title: PanneauPropTypes.label,
     showAddButton: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.label,

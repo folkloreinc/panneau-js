@@ -13,7 +13,7 @@ import styles from './styles.scss';
 const propTypes = {
     action: PropTypes.string,
     method: PropTypes.string,
-    fields: PropTypes.arrayOf(PropTypes.object),
+    fields: PropTypes.arrayOf(PanneauPropTypes.definitions.field),
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     errors: FormPropTypes.errors,
     notice: FormPropTypes.notice,

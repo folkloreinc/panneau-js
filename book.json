@@ -1,4 +1,4 @@
 {
     "title": "Panneau JS Documentation",
-    "root": "./docs"
+    "root": "./__docs__"
 }
