@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://panneau.dev/schemas/list.json",
+    "title": "List definition",
+    "description": "Definition for a list",
+    "type": "object",
+    "properties": {
+        "type": {
+            "description": "The type of the list",
+            "type": "string",
+            "required": true
+        }
+    },
+
+    "allOf": [
+        {
+            "if": {
+                "properties": { "type": { "const": "table" } }
+            },
+            "then": {
+                "properties": {
+                    "cols": {
+                        "description": "The list columns",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/tableCol"
+                        }
+                    }
+                }
+            }
+        }
+    ],
+
+    "definitions": {
+        "tableCol": {
+            "description": "A table column",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "required": true
+                },
+                "type": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

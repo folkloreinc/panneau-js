@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://panneau.dev/schemas/messages.json",
+    "title": "Messages definition",
+    "description": "The messages used for translation",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "object",
+            "properties": {
+                "a": {
+                    "$ref": "#/definitions/message"
+                },
+                "a_plural": {
+                    "$ref": "#/definitions/message"
+                },
+                "plural": {
+                    "$ref": "#/definitions/message"
+                }
+            }
+        }
+    },
+
+    "additionalProperties": {
+        "type": ["string", "object"],
+        "additionalProperties": {
+            "$ref": "#/definitions/message"
+        }
+    },
+
+    "definitions": {
+        "message": {
+            "type": "string"
+        }
+    }
+}

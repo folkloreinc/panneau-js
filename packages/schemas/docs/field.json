@@ -1,0 +1,30 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://panneau.dev/schemas/field.json",
+    "title": "Field definition",
+    "description": "Definition for a field",
+    "type": "object",
+    "properties": {
+        "name": {
+            "description": "The name of the field",
+            "type": "string",
+            "required": true
+        },
+        "type": {
+            "description": "The type of the field",
+            "type": "string",
+            "required": true
+        },
+        "label": {
+            "description": "The label of the field",
+            "type": "string"
+        },
+        "fields": {
+            "description": "Sub fields",
+            "type": "array",
+            "items": {
+                "$ref": "field.json"
+            }
+        }
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://panneau.dev/schemas/form.json",
+    "title": "Form definition",
+    "description": "Definition for a form",
+    "type": "object",
+    "properties": {
+        "type": {
+            "description": "The type of the form",
+            "type": "string",
+            "required": true
+        },
+        "fields": {
+            "description": "The fields of the form",
+            "type": ["array", "object"],
+            "items": {
+                "$ref": "field.json"
+            },
+            "additionalProperties": {
+                "type": "array",
+                "items": {
+                    "$ref": "field.json"
+                }
+            }
+        }
+    }
+}

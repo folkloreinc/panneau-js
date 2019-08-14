@@ -1,0 +1,63 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://panneau.dev/schemas/routes.json",
+    "title": "Routes definition",
+    "description": "The routes of the administration panel",
+    "type": "object",
+
+    "patternProperties": {
+        "^resource\\.(index|create|store)$": {
+            "$ref": "#/definitions/routeWithResource"
+        },
+        "^resource\\.(show|edit|update|delete|destroy)$": {
+            "$ref": "#/definitions/routeWithResourceAndId"
+        },
+        "^(index|create|store)$": {
+            "$ref": "#/definitions/route"
+        },
+        "^(show|edit|update|delete|destroy)$": {
+            "$ref": "#/definitions/routeWithId"
+        }
+    },
+
+    "additionalProperties": {
+        "$ref": "#/definitions/route"
+    },
+
+    "definitions": {
+        "route": {
+            "type": "string",
+            "pattern": "^\/[/.:a-zA-Z0-9-_]*$"
+        },
+        "routeWithResource": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/route"
+                },
+                {
+                    "pattern": ":resource"
+                }
+            ]
+        },
+        "routeWithResourceAndId": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/route"
+                },
+                {
+                    "pattern": ":resource/[/.:a-zA-Z0-9-_]*:id"
+                }
+            ]
+        },
+        "routeWithId": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/route"
+                },
+                {
+                    "pattern": "/:id"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,223 @@
+{
+    "name": "Simple Panneau",
+
+    "localization": {
+        "locales": [
+            "fr",
+            "en"
+        ]
+    },
+
+    "api": {
+        "endpoint": "/api/"
+    },
+
+    "layout": {
+        "type": "normal",
+        "header": {
+            "navbar": {
+                "items": [
+                    {
+                        "id": "pages",
+                        "type": "resource",
+                        "resource": "pages"
+                    },
+                    {
+                        "id": "users",
+                        "type": "resource",
+                        "resource": "users"
+                    },
+                    {
+                        "id": "user",
+                        "type": "user",
+                        "position": "right"
+                    }
+                ]
+            }
+        },
+        "footer": true
+    },
+
+    "routes": {
+        "home": "/",
+        "account": "/account",
+        "auth.login": "/login",
+        "auth.logout": "/logout",
+        "resource.index": "/:resource",
+        "resource.create": "/:resource/create",
+        "resource.store": "/:resource",
+        "resource.show": "/:resource/:id",
+        "resource.edit": "/:resource/:id/edit",
+        "resource.update": "/:resource/:id",
+        "resource.delete": "/:resource/:id/delete",
+        "resource.destroy": "/:resource/:id"
+    },
+
+    "resources": [
+        {
+            "id": "users",
+            "name": "Users",
+            "methods": {
+                "edit": true
+            },
+            "messages": {
+                "names": {
+                    "a": "a user",
+                    "a_plural": "users",
+                    "plural": "Users"
+                }
+            },
+            "forms": {
+                "type": "normal",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Name"
+                    },
+                    {
+                        "name": "email",
+                        "type": "email",
+                        "label": "Email"
+                    },
+                    {
+                        "name": "password",
+                        "type": "password",
+                        "label": "Password"
+                    }
+                ]
+            },
+            "lists": {
+                "type": "table",
+                "cols": [
+                    {
+                        "id": "id",
+                        "path": "id",
+                        "label": "ID",
+                        "width": 50
+                    },
+                    {
+                        "id": "name",
+                        "path": "name",
+                        "label": "Name"
+                    },
+                    {
+                        "id": "email",
+                        "path": "email",
+                        "label": "Email"
+                    },
+                    {
+                        "id": "actions",
+                        "type": "actions"
+                    }
+                ]
+            }
+        },
+
+        {
+            "id": "pages",
+            "name": "Pages",
+            "type": "typed",
+            "methods": {
+                "edit": true
+            },
+            "messages": {
+                "names": {
+                    "a": "a page",
+                    "a_plural": "pages",
+                    "plural": "Pages"
+                }
+            },
+            "types": [
+                {
+                    "id": "home",
+                    "label": "Home"
+                },
+                {
+                    "id": "base",
+                    "label": "Base"
+                }
+            ],
+            "routes":{
+                "index":"/pages",
+                "create":"/pages/create",
+                "store":"/pages",
+                "show":"/pages/:id",
+                "edit":"/pages/:id/edit",
+                "update":"/pages/:id",
+                "delete":"/pages/:id/delete",
+                "destroy":"/pages/:id"
+            },
+            "forms": {
+                "type": "preview",
+                "fullscreen": true,
+                "preview": "json",
+                "fields": {
+                    "home": [
+                        {
+                            "name": "data.title",
+                            "type": "text_locale",
+                            "label": "Title"
+                        },
+                        {
+                            "name": "data.blocks",
+                            "type": "blocks",
+                            "label": "Blocks"
+                        }
+                    ],
+                    "base": [
+                        {
+                            "name": "data.title",
+                            "type": "text_locale",
+                            "label": "Title"
+                        },
+                        {
+                            "name": "data.description",
+                            "type": "text_locale",
+                            "label": "Description"
+                        },
+                        {
+                            "name": "data.blocks",
+                            "type": "blocks",
+                            "label": "Blocks"
+                        }
+                    ]
+                }
+            },
+            "lists": {
+                "type": "table",
+                "cols": [
+                    {
+                        "id": "id",
+                        "path": "id",
+                        "label": "ID",
+                        "width": 50
+                    },
+                    {
+                        "id": "title",
+                        "path": "title",
+                        "label": "Title"
+                    },
+                    {
+                        "id": "actions",
+                        "type": "actions"
+                    }
+                ]
+            }
+        }
+    ],
+
+    "blocks": [
+        {
+            "id": "block",
+            "name": "Block",
+            "fields": [
+                {
+                    "name": "text",
+                    "type": "text",
+                    "label": "Text"
+                }
+            ]
+        }
+    ]
+}

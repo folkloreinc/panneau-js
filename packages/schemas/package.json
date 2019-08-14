@@ -1,0 +1,45 @@
+{
+    "name": "@panneau/schemas",
+    "version": "1.0.0-alpha.0",
+    "description": "JSON Schemas for Panneau",
+    "main": "lib/index.js",
+    "module": "es/index.js",
+    "author": "",
+    "license": "ISC",
+    "homepage": "https://github.com/folkloreinc/panneau-js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git"
+    },
+    "files": [
+        "lib",
+        "es",
+        "src",
+        "schemas.js",
+        "prop-types.js"
+    ],
+    "scripts": {
+        "storybook": "../../node_modules/.bin/start-storybook -p 9008 -c ../../.storybook-package",
+        "clean": "rm -rf dist && rm -rf lib && rm -rf es",
+        "babel:es": "BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es --copy-files --ignore src/**/*.story.jsx,src/**/*.test.jsx",
+        "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --copy-files --ignore src/**/*.story.jsx,src/**/*.test.jsx",
+        "babel": "npm run babel:es && npm run babel:cjs",
+        "docs": "node ./scripts/build-docs.js",
+        "proptypes": "node ./scripts/generate-prop-types.js",
+        "build": "npm run docs && npm run proptypes && npm run babel",
+        "prepare": "npm run clean && npm run build",
+        "start": "npm run storybook"
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.5.5",
+        "jsonschema": "^1.2.4",
+        "prop-types": "^15.7.2"
+    },
+    "devDependencies": {
+        "colors": "^1.3.3",
+        "fs-extra": "^8.1.0",
+        "glob": "^7.1.4",
+        "lodash": "^4.17.15",
+        "prettier": "^1.18.2"
+    }
+}

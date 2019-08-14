@@ -1,0 +1,105 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://panneau.dev/schemas/definition.json",
+    "title": "Panneau definition",
+    "description": "The schema for the panneau definition",
+    "type": "object",
+    "properties": {
+        "name": {
+            "description": "The name of the administration panel",
+            "type": "string",
+            "required": true
+        },
+        "localization": {
+            "description": "The localization settings",
+            "$ref": "localization.json"
+        },
+        "api": {
+            "description": "The api settings",
+            "$ref": "api.json"
+        },
+        "routes": {
+            "description": "The routes of the administration panel",
+            "allOf": [
+                {
+                    "$ref": "routes.json"
+                },
+                {
+                    "properties": {
+                        "home": {
+                            "description": "Home route",
+                            "type": "string"
+                        },
+                        "account": {
+                            "description": "Account route",
+                            "type": "string"
+                        },
+                        "auth.login": {
+                            "description": "Login route",
+                            "type": "string"
+                        },
+                        "auth.logout": {
+                            "description": "Logout route",
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "required": [
+                        "home",
+                        "account",
+                        "auth.login",
+                        "auth.logout",
+                        "resource.index",
+                        "resource.create",
+                        "resource.show",
+                        "resource.edit",
+                        "resource.store",
+                        "resource.update",
+                        "resource.delete",
+                        "resource.destroy"
+                    ]
+                }
+            ]
+        },
+        "layout": {
+            "description": "The layout of the administration panel",
+            "$ref": "layout.json"
+        },
+        "resources": {
+            "description": "The resources of the administration panel",
+            "type": "array",
+            "items": {
+                "$ref": "resource.json"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "fields": {
+            "description": "The fields of the administration panel",
+            "type": "array",
+            "items": {
+                "$ref": "field.json"
+            },
+            "uniqueItems": true
+        },
+        "blocks": {
+            "description": "The blocks definition",
+            "type": "array",
+            "items": {
+                "$ref": "type.json"
+            },
+            "uniqueItems": true
+        },
+        "documents": {
+            "description": "The documents definition",
+            "type": "array",
+            "items": {
+                "$ref": "type.json"
+            },
+            "uniqueItems": true
+        }
+    },
+    "additionalProperties": false,
+    "required": ["name", "layout", "routes", "resources"]
+}

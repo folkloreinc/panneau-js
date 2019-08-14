@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://panneau.dev/schemas/localization.json",
+    "title": "Localization definition",
+    "description": "The localization settings of the administration panel",
+    "type": "object",
+    "properties": {
+        "locales": {
+            "description": "The available locales",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "messages": {
+            "description": "The translations messages",
+            "$ref": "messages.json"
+        }
+    },
+    "additionalProperties": false
+}

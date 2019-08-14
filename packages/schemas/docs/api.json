@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://panneau.dev/schemas/api.json",
+    "title": "API definition",
+    "description": "The api settings of the administration panel",
+    "type": "object",
+    "properties": {
+        "endpoint": {
+            "description": "The api endpoint",
+            "type": "string"
+        },
+        "uploadEndpoint": {
+            "description": "The upload endpoint",
+            "type": "string"
+        }
+    }
+}
