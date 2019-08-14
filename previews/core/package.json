@@ -1,6 +1,6 @@
 {
   "name": "@panneau/preview",
-  "version": "0.6.51",
+  "version": "1.0.0-alpha.0",
   "description": "Core previews for Panneau",
   "keywords": [
     "react",
@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
-    "@panneau/core": "^0.6.51",
+    "@panneau/core": "^1.0.0-alpha.0",
     "classnames": "^2.2.5",
     "invariant": "^2.2.4",
     "lodash": "^4.17.4",

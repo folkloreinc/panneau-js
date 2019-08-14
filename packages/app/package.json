@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "0.7.0",
+    "version": "1.0.0-alpha.0",
     "description": "The Panneau application package",
     "keywords": [
         "react",
@@ -52,7 +52,7 @@
     "dependencies": {
         "@babel/runtime": "^7.5.5",
         "@fortawesome/fontawesome-free": "^5.7.1",
-        "@panneau/core": "^0.6.51",
+        "@panneau/core": "^1.0.0-alpha.0",
         "bootstrap": "^4.3.1",
         "classnames": "^2.2.5",
         "history": "^4.9.0",

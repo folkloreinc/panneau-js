@@ -1,6 +1,6 @@
 {
   "name": "@panneau/preview-json",
-  "version": "0.6.52",
+  "version": "1.0.0-alpha.0",
   "description": "Json Preview for Panneau",
   "keywords": [
     "react",
@@ -49,14 +49,14 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
-    "@panneau/core": "^0.6.51",
+    "@panneau/core": "^1.0.0-alpha.0",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "prop-types": "^15.7.0",
     "react-intl": "^3.1.6"
   },
   "devDependencies": {
-    "@panneau/fields": "^0.6.52",
+    "@panneau/fields": "^1.0.0-alpha.0",
     "bootstrap": "^4.3.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
