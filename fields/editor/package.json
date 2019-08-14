@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-editor",
-    "version": "1.0.0-alpha.0",
+    "version": "1.0.1-alpha.0",
     "description": "Editor field for Panneau",
     "keywords": [
         "react",
@@ -50,9 +50,9 @@
         "@babel/runtime": "^7.5.5",
         "@ckeditor/ckeditor5-build-classic": "^12.3.1",
         "@ckeditor/ckeditor5-react": "^1.1.3",
-        "@panneau/core": "^1.0.0-alpha.0",
-        "@panneau/field": "^1.0.0-alpha.0",
-        "@panneau/field-locale": "^1.0.0-alpha.0",
+        "@panneau/core": "^1.0.1-alpha.0",
+        "@panneau/field": "^1.0.1-alpha.0",
+        "@panneau/field-locale": "^1.0.1-alpha.0",
         "ckeditor": "^4.7.3",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",

@@ -1,6 +1,6 @@
 {
   "name": "@panneau/field-page",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.1-alpha.0",
   "description": "Page fields for Panneau",
   "keywords": [
     "react",
@@ -49,9 +49,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
-    "@panneau/core": "^1.0.0-alpha.0",
-    "@panneau/field": "^1.0.0-alpha.0",
-    "@panneau/field-item": "^1.0.0-alpha.0",
+    "@panneau/core": "^1.0.1-alpha.0",
+    "@panneau/field": "^1.0.1-alpha.0",
+    "@panneau/field-item": "^1.0.1-alpha.0",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "prop-types": "^15.7.0",

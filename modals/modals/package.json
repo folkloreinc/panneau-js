@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modals",
-    "version": "1.0.0-alpha.0",
+    "version": "1.0.1-alpha.0",
     "description": "Modals for Panneau",
     "keywords": [
         "react",
@@ -48,8 +48,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.5.5",
-        "@panneau/core": "^1.0.0-alpha.0",
-        "@panneau/modal-popover": "^1.0.0-alpha.0",
+        "@panneau/core": "^1.0.1-alpha.0",
+        "@panneau/modal-popover": "^1.0.1-alpha.0",
         "invariant": "^2.2.2",
         "lodash": "^4.17.4",
         "prop-types": "^15.7.0"
