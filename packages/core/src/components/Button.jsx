@@ -4,11 +4,14 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isString from 'lodash/isString';
 import { Link } from 'react-router-dom';
+import { injectIntl } from 'react-intl';
 
 import Label from './Label';
 import * as PanneauPropTypes from '../lib/PropTypes';
+import { isMessage } from '../lib/utils';
 
 const propTypes = {
+    intl: PanneauPropTypes.intl.isRequired,
     type: PropTypes.string,
     size: PanneauPropTypes.buttonSize,
     style: PanneauPropTypes.buttonStyle,
@@ -17,7 +20,9 @@ const propTypes = {
     external: PropTypes.bool,
     dropdown: PanneauPropTypes.dropdownItems,
     icon: PropTypes.string,
+    disabled: PropTypes.bool,
     className: PropTypes.string,
+    title: PanneauPropTypes.message,
     label: PanneauPropTypes.label,
     children: PanneauPropTypes.label,
     onClick: PropTypes.func,
@@ -33,7 +38,9 @@ const defaultProps = {
     external: false,
     dropdown: null,
     icon: null,
+    disabled: false,
     className: null,
+    title: null,
     label: null,
     children: null,
     onClick: null,
@@ -41,6 +48,7 @@ const defaultProps = {
 };
 
 const Button = ({
+    intl,
     type,
     size,
     style,
@@ -50,6 +58,8 @@ const Button = ({
     icon,
     dropdown,
     label,
+    title,
+    disabled,
     children,
     className,
     onClick,
@@ -62,8 +72,10 @@ const Button = ({
             [`btn-${style}`]: style !== null,
             [`btn-${size}`]: !hasDropdown && size !== null,
             'dropdown-toggle': hasDropdown,
+            disabled,
             [className]: className !== null,
         }),
+        title: isMessage(title) ? intl.formatMessage(title) : title,
         ...props,
     };
     if (hasDropdown) {
@@ -78,7 +90,18 @@ const Button = ({
 
     const inner = (
         <>
-            {isString(icon) ? <span className={icon} /> : icon}
+            {isString(icon) ? (
+                <span
+                    className={classNames([
+                        icon,
+                        {
+                            'mr-2': finalLabel !== null,
+                        },
+                    ])}
+                />
+            ) : (
+                icon
+            )}
             {<Label>{finalLabel}</Label>}
             {hasDropdown ? <span className="caret" /> : null}
         </>
@@ -87,17 +110,22 @@ const Button = ({
     let button;
     if (!hasDropdown && href !== null) {
         button = external ? (
-            <a href={href} {...buttonProps} target={target}>
+            <a
+                href={href}
+                {...buttonProps}
+                target={target}
+                aria-disabled={disabled ? 'true' : 'false'}
+            >
                 {inner}
             </a>
         ) : (
-            <Link to={href} {...buttonProps}>
+            <Link to={href} {...buttonProps} aria-disabled={disabled ? 'true' : 'false'}>
                 {inner}
             </Link>
         );
     } else {
         button = (
-            <button type={type} {...buttonProps}>
+            <button type={type} {...buttonProps} disabled={disabled}>
                 {inner}
             </button>
         );
@@ -155,4 +183,4 @@ const Button = ({
 Button.propTypes = propTypes;
 Button.defaultProps = defaultProps;
 
-export default Button;
+export default injectIntl(Button);

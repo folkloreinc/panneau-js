@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -9,6 +10,7 @@ import styles from '../styles/components/button-group.scss';
 
 const propTypes = {
     buttons: PanneauPropTypes.buttons,
+    size: PanneauPropTypes.buttonSize,
     style: PanneauPropTypes.buttonStyle,
     href: PropTypes.string,
     onClick: PropTypes.func,
@@ -20,7 +22,8 @@ const propTypes = {
 
 const defaultProps = {
     buttons: [],
-    style: null,
+    size: null,
+    style: 'outline-secondary',
     href: null,
     noWrap: false,
     toggle: false,
@@ -31,21 +34,25 @@ const defaultProps = {
 
 const ButtonGroup = ({
     buttons,
-    onClick,
-    className,
     style,
-    buttonClassName,
+    size,
     noWrap,
     toggle,
+    className,
+    buttonClassName,
+    onClick,
     ...props
 }) => (
     <div
-        className={classNames({
-            'btn-group': true,
-            [styles.container]: true,
-            [styles.noWrap]: noWrap,
-            [className]: className !== null,
-        })}
+        className={classNames([
+            'btn-group',
+            styles.container,
+            {
+                [`btn-group-${size}`] : size !== null,
+                [styles.noWrap]: noWrap,
+                [className]: className !== null,
+            },
+        ])}
         {...(toggle
             ? {
                   'data-toggle': 'buttons',
@@ -63,6 +70,7 @@ const ButtonGroup = ({
             const {
                 className: customClassName = null,
                 style: buttonStyle = style,
+                active = false,
                 ...buttonProps
             } = button;
             return (
@@ -73,8 +81,9 @@ const ButtonGroup = ({
                     className={classNames([
                         styles.button,
                         {
-                            [customClassName]: customClassName !== null,
+                            'active': active,
                             [buttonClassName]: buttonClassName !== null,
+                            [customClassName]: customClassName !== null,
                         },
                     ])}
                 />

@@ -70,7 +70,7 @@ const LocaleField = ({
             <ButtonGroup
                 size="sm"
                 toggle
-                className={styles.btnGroup}
+                className="ml-2"
                 buttons={locales.map(locale => ({
                     label: locale.toUpperCase(),
                     active: currentLocale === locale,

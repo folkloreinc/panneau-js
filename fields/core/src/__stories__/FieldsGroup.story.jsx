@@ -41,7 +41,7 @@ storiesOf('Fields/Core/FieldsGroup', module)
         <IntlProvider locale="en">
             <KeepValue>
                 <FieldsGroup
-                    fields={FieldsComponents}
+                    fieldsComponents={FieldsComponents}
                     fields={fields}
                     onChange={action('change')}
                 />

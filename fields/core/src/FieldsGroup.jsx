@@ -1,14 +1,11 @@
-import React, { Component } from 'react';
-import classNames from 'classnames';
+/* eslint-disable react/jsx-props-no-spreading */
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import isArray from 'lodash/isArray';
-import {
-    ComponentsCollection,
-    PropTypes as PanneauPropTypes,
-} from '@panneau/core';
-import { ComponentsContext } from '@panneau/core/contexts';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useComponents } from '@panneau/core/contexts';
 
 import FormGroup from './FormGroup';
 
@@ -17,22 +14,11 @@ import styles from './styles/fields-group.scss';
 const propTypes = {
     name: PropTypes.string,
     label: PanneauPropTypes.label,
-    value: PropTypes.oneOfType([PropTypes.object]),
-    errors: PropTypes.oneOfType([
-        PropTypes.objectOf(PropTypes.string),
-        PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
-    ]),
-    fields: PropTypes.arrayOf(
-        PropTypes.shape({
-            type: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired,
-        }),
-    ),
+    value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    errors: PropTypes.objectOf(PanneauPropTypes.errors),
+    fields: PropTypes.arrayOf(PanneauPropTypes.definitions.field),
     getFieldComponent: PropTypes.func,
-    fieldsCollection: PropTypes.shape({
-        getComponent: PropTypes.func,
-    }),
-    fieldsComponents: PropTypes.object, // eslint-disable-line
+    fieldsComponents: PanneauPropTypes.components, // eslint-disable-line react/forbid-prop-types
     renderNotFound: PropTypes.func,
     columns: PropTypes.number,
     collapsible: PropTypes.bool,
@@ -49,7 +35,6 @@ const defaultProps = {
     errors: null,
     fields: [],
     getFieldComponent: null,
-    fieldsCollection: null,
     fieldsComponents: null,
     renderNotFound: null,
     columns: null,
@@ -60,125 +45,112 @@ const defaultProps = {
     readOnly: false,
 };
 
-class FieldsGroup extends Component {
-    constructor(props) {
-        super(props);
+const FieldsGroup = ({
+    label,
+    fields,
+    collapsible,
+    collapsed,
+    columns,
+    value,
+    errors,
+    collapsibleTypes,
+    readOnly,
+    name,
+    fieldsComponents,
+    getFieldComponent,
+    renderNotFound,
+    onChange,
+}) => {
+    const fieldsCollection = useComponents('fields', fieldsComponents);
+    const renderField = useCallback(
+        (it, index) => {
+            const {
+                type,
+                name: fieldName = null,
+                hidden,
+                defaultValue,
+                props: extraProps = {},
+                ...props
+            } = it;
+            if (hidden === true) {
+                return null;
+            }
 
-        this.renderField = this.renderField.bind(this);
-    }
-
-    onChange(key, value) {
-        const { value: currentValue, onChange } = this.props;
-        const hasKey = typeof key !== 'undefined' && key !== null;
-        const newValue = {
-            ...currentValue,
-            ...(!hasKey ? value : null),
-        };
-        if (hasKey) {
-            set(newValue, key, value);
-        }
-        if (onChange !== null) {
-            onChange(newValue);
-        }
-    }
-
-    getFieldComponent(key) {
-        const { fieldsComponents, getFieldComponent, fieldsCollection } = this.props;
-        // eslint-disable-next-line react/destructuring-assignment
-        const contextFieldsCollection = this.context.getCollection('fields');
-        const normalizedKey = ComponentsCollection.normalizeKey(key);
-
-        if (getFieldComponent !== null) {
-            return getFieldComponent(key);
-        }
-        if (fieldsComponents !== null) {
-            const fieldKey = Object.keys(fieldsComponents).find(
-                k => ComponentsCollection.normalizeKey(k) === normalizedKey,
-            );
-            return typeof fieldKey !== 'undefined' && fieldKey !== null
-                ? fieldsComponents[fieldKey]
-                : null;
-        }
-        if (fieldsCollection !== null) {
-            return fieldsCollection.getComponent(key);
-        }
-        if (contextFieldsCollection !== null) {
-            return contextFieldsCollection.getComponent(key);
-        }
-        return normalizedKey.toLowerCase() === 'fields' ? FieldsGroup : null;
-    }
-
-    renderNotFound(it, index) {
-        const { renderNotFound, name: fieldName } = this.props;
-        const { type, name } = it;
-
-        if (renderNotFound !== null) {
-            return this.renderNotFound(it, index);
-        }
-
-        const key = `notfound-${name}${type}${index}${fieldName}`;
-        return <div key={key}>{`NOT FOUND: Field ${name} of type ${type}`}</div>;
-    }
-
-    renderField(it, index) {
-        const {
-            value, errors, collapsibleTypes, readOnly, name: fieldName,
-        } = this.props;
-        const {
-            type, name, hidden, defaultValue, ...props
-        } = it;
-        const extraProps = it.props || {};
-
-        if (hidden === true) {
-            return null;
-        }
-
-        const FieldComponent = this.getFieldComponent(type);
-        if (FieldComponent === null) {
-            return this.renderNotFound(it, index);
-        }
-
-        const fieldDefaultValue = typeof defaultValue !== 'undefined' ? defaultValue : undefined;
-        // prettier-ignore
-        const fieldValue = (name || null) !== null
-            ? get(value || {}, name, fieldDefaultValue)
-            : value;
-        let fieldErrors = errors !== null && name !== null
-            ? Object.entries(errors).reduce((acc, [key, errs]) => {
-                const escapedName = name.replace('.', '\\.');
-                const regexp = new RegExp(`^${escapedName}\\.|^${escapedName}$`);
-                if (regexp.test(key)) {
-                    return [...acc, ...(isArray(errs) ? errs : [errs])];
+            const FieldComponent =
+                getFieldComponent !== null
+                    ? getFieldComponent(type)
+                    : fieldsCollection.getComponent(type);
+            if (FieldComponent === null) {
+                if (renderNotFound !== null) {
+                    return renderNotFound(it, index);
                 }
-                return acc;
-            }, [])
-            : errors;
-        if (isArray(fieldErrors) && fieldErrors.length === 0) {
-            fieldErrors = undefined;
-        }
-        const fieldCollapsible = collapsibleTypes.indexOf(type) !== -1 || it.collapsible;
-        const fieldCollapsed = it.collapsed || (fieldCollapsible && typeof fieldValue === 'undefined');
-        const key = `${name}${type}${index}${fieldName}`;
+                return (
+                    <div
+                        key={`notfound-${fieldName}${type}${index}`}
+                    >{`NOT FOUND: Field ${fieldName} of type ${type}`}</div>
+                );
+            }
 
-        return (
-            <FieldComponent
-                {...props}
-                collapsible={fieldCollapsible}
-                collapsed={fieldCollapsed}
-                {...extraProps}
-                key={key}
-                name={name}
-                value={fieldValue}
-                disabled={readOnly}
-                errors={fieldErrors}
-                onChange={(val) => {
-                    this.onChange(name, val);
-                }}
-            />
-        );
-    }
+            const fieldDefaultValue =
+                typeof defaultValue !== 'undefined' ? defaultValue : undefined;
+            const fieldValue =
+                fieldName !== null ? get(value || {}, fieldName, fieldDefaultValue) : value;
+            let fieldErrors =
+                errors !== null && fieldName !== null
+                    ? Object.entries(errors).reduce((acc, [key, errs]) => {
+                          const escapedName = fieldName.replace('.', '\\.');
+                          const regexp = new RegExp(`^${escapedName}\\.|^${escapedName}$`);
+                          if (regexp.test(key)) {
+                              return [...acc, ...(isArray(errs) ? errs : [errs])];
+                          }
+                          return acc;
+                      }, [])
+                    : errors;
+            if (isArray(fieldErrors) && fieldErrors.length === 0) {
+                fieldErrors = undefined;
+            }
+            const fieldCollapsible = collapsibleTypes.indexOf(type) !== -1 || it.collapsible;
+            const fieldCollapsed =
+                it.collapsed || (fieldCollapsible && typeof fieldValue === 'undefined');
 
-    renderColumns(fields, columns) {
+            return (
+                <FieldComponent
+                    {...props}
+                    key={`${fieldName}${type}${index}`}
+                    collapsible={fieldCollapsible}
+                    collapsed={fieldCollapsed}
+                    {...extraProps}
+                    name={
+                        name !== null
+                            ? `${name}${
+                                  fieldName !== null ? `[${fieldName.replace(/\./, '][')}]` : ''
+                              }`
+                            : fieldName
+                    }
+                    value={fieldValue}
+                    disabled={readOnly}
+                    errors={fieldErrors}
+                    onChange={newFieldValue => {
+                        const hasName = fieldName !== null;
+                        const newValue = {
+                            ...value,
+                            ...(!hasName ? newFieldValue : null),
+                        };
+                        if (hasName) {
+                            set(newValue, fieldName, newFieldValue);
+                        }
+                        if (onChange !== null) {
+                            onChange(newValue);
+                        }
+                    }}
+                />
+            );
+        },
+        [value, errors, collapsibleTypes, readOnly, name, onChange],
+    );
+
+    let fieldsGroup;
+    if (columns !== null) {
         const remainingFields = [].concat(fields);
         const fieldsWithoutColumns = fields.reduce(
             (total, field) => (typeof field.column === 'undefined' ? total + 1 : total),
@@ -192,9 +164,9 @@ class FieldsGroup extends Component {
                 field => typeof field.column !== 'undefined' && field.column === colIndex,
             );
             if (colFields.length > 0) {
-                colFields.forEach((colField) => {
+                colFields.forEach(colField => {
                     const index = fields.findIndex(field => field === colField);
-                    col.push(this.renderField(colField, index));
+                    col.push(renderField(colField, index));
                     const remainingIndex = remainingFields.findIndex(field => field === colField);
                     if (remainingIndex !== -1) {
                         remainingFields.splice(1, remainingIndex);
@@ -208,62 +180,42 @@ class FieldsGroup extends Component {
                     if (remainingIndex !== -1) {
                         const colField = remainingFields[remainingIndex];
                         const index = fields.findIndex(field => field === colField);
-                        col.push(this.renderField(colField, index));
+                        col.push(renderField(colField, index));
                         remainingFields.splice(1, remainingIndex);
                     }
                 }
             }
             cols.push(
-                <div
-                    className={classNames({
-                        [`col-sm-${12 / columns}`]: true,
-                    })}
-                    key={`col-${colIndex}`}
-                >
+                <div className={`col-sm-${12 / columns}`} key={`col-${colIndex}`}>
                     {col}
                 </div>,
             );
         }
 
-        return (
+        fieldsGroup = (
             <div className={styles.group}>
                 <div className="row">{cols}</div>
             </div>
         );
+    } else {
+        fieldsGroup = <div className={styles.group}>{fields.map(renderField)}</div>;
     }
 
-    renderFields(fields) {
-        const { columns } = this.props;
-        if (columns !== null) {
-            return this.renderColumns(fields, columns);
-        }
-        return <div className={styles.group}>{fields.map(this.renderField)}</div>;
-    }
-
-    render() {
-        const {
-            label, fields, collapsible, collapsed,
-        } = this.props;
-
-        const fieldsGroup = this.renderFields(fields);
-
-        return label !== null ? (
-            <FormGroup
-                label={label}
-                className={styles.container}
-                collapsible={collapsible}
-                collapsed={collapsed}
-            >
-                {fieldsGroup}
-            </FormGroup>
-        ) : (
-            <div className={styles.container}>{fieldsGroup}</div>
-        );
-    }
-}
+    return label !== null ? (
+        <FormGroup
+            label={label}
+            className={styles.container}
+            collapsible={collapsible}
+            collapsed={collapsed}
+        >
+            {fieldsGroup}
+        </FormGroup>
+    ) : (
+        <div className={styles.container}>{fieldsGroup}</div>
+    );
+};
 
 FieldsGroup.propTypes = propTypes;
 FieldsGroup.defaultProps = defaultProps;
-FieldsGroup.contextType = ComponentsContext;
 
 export default FieldsGroup;
