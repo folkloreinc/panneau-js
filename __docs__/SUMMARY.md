@@ -1,4 +1,4 @@
 # Summary
 
 * [Getting Started](getting-started.md)
-* [Storybook](storybook/index.html)
+* [Storybook](https://folkloreinc.github.io/panneau-js/storybook/index.html)
