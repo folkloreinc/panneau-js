@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://panneau.dev/schemas/layout.json",
+    "title": "Layout definition",
+    "description": "Definition for a layout",
+    "type": "object",
+    "properties": {
+        "type": {
+            "description": "The type of the layout",
+            "type": "string",
+            "required": true
+        },
+        "header": {
+            "description": "The header definition",
+            "type": ["boolean", "object"],
+            "properties": {
+                "navbar": {
+                    "description": "The navbar settings",
+                    "type": "object",
+                    "properties": {
+                        "items": {
+                            "description": "Navbar items",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/navbarItem"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "footer": {
+            "description": "The footer definition",
+            "type": ["boolean", "object"]
+        }
+    },
+    "definitions": {
+        "navbarItem": {
+            "description": "Navbar item",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "required": true
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -13,6 +13,7 @@ const propTypes = {
     href: PropTypes.string,
     onClick: PropTypes.func,
     noWrap: PropTypes.bool,
+    toggle: PropTypes.bool,
     className: PropTypes.string,
     buttonClassName: PropTypes.string,
 };
@@ -22,12 +23,22 @@ const defaultProps = {
     style: null,
     href: null,
     noWrap: false,
+    toggle: false,
     onClick: null,
     className: null,
     buttonClassName: null,
 };
 
-const ButtonGroup = ({ buttons, onClick, className, style, buttonClassName, noWrap, ...props }) => (
+const ButtonGroup = ({
+    buttons,
+    onClick,
+    className,
+    style,
+    buttonClassName,
+    noWrap,
+    toggle,
+    ...props
+}) => (
     <div
         className={classNames({
             'btn-group': true,
@@ -35,6 +46,11 @@ const ButtonGroup = ({ buttons, onClick, className, style, buttonClassName, noWr
             [styles.noWrap]: noWrap,
             [className]: className !== null,
         })}
+        {...(toggle
+            ? {
+                  'data-toggle': 'buttons',
+              }
+            : null)}
         {...props}
     >
         {buttons.map((button, index) => {

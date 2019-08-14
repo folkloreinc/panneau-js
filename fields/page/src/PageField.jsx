@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
@@ -25,22 +26,13 @@ const defaultProps = {
     endpoint: null,
 };
 
-const PageField = ({
-    resourceId, endpoint, ...props,
-}) => {
+const PageField = ({ resourceId, endpoint, ...props }) => {
     const urlGenerator = useUrlGenerator();
-    const { resources = [] } = useDefinition();
+    const definition = useDefinition();
     let suggestionsEndpoint = endpoint;
     if (suggestionsEndpoint === null) {
-        const resource = resources.find(it => it.id === resourceId) || null;
-        suggestionsEndpoint = resource !== null ? urlGenerator.route(
-            typeof resource.routes !== 'undefined'
-                ? `resource.${resource.id}.index`
-                : 'resource.index',
-            {
-                resource: resource.id,
-            },
-        ) : null;
+        const resource = definition.resource(resourceId);
+        suggestionsEndpoint = resource !== null ? urlGenerator.resource(resource, 'index') : null;
     }
 
     return (

@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import Cookies from 'js-cookie';
 
 export class ResponseError extends Error {

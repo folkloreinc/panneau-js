@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { IntlProvider } from 'react-intl';
 import { Router } from 'react-router';
 import { createBrowserHistory, createMemoryHistory } from 'history';
-import { PropTypes as PanneauPropTypes, parseDefinition } from '@panneau/core';
+import { PropTypes as PanneauPropTypes, Definition } from '@panneau/core';
 import {
     DefinitionProvider,
     UrlGeneratorProvider,
@@ -26,7 +26,7 @@ const propTypes = {
     messages: PropTypes.objectOf(PropTypes.objectOf(PropTypes.string)),
     routes: PropTypes.objectOf(PropTypes.string),
     memoryRouter: PropTypes.bool,
-    definition: PanneauPropTypes.definition.isRequired,
+    definition: PanneauPropTypes.definitions.definition.isRequired,
     componentsCollection: PanneauPropTypes.componentsCollection.isRequired,
     user: PanneauPropTypes.user,
 };
@@ -44,7 +44,7 @@ const Panneau = ({
     messages,
     memoryRouter,
     routes,
-    definition,
+    definition: definitionData,
     componentsCollection,
     user,
 }) => {
@@ -58,38 +58,18 @@ const Panneau = ({
         [],
     );
 
-    const parsedDefinition = useMemo(() => parseDefinition(definition), [definition]);
+    const history = useMemo(() => (memoryRouter ? createMemoryHistory() : createBrowserHistory()), [
+        memoryRouter,
+    ]);
 
-    const allRoutes = useMemo(() => {
-        const { routes: definitionRoutes = {}, resources = [] } = parsedDefinition;
-        const resourcesRoutes = resources
-            .filter(it => typeof it.routes !== 'undefined')
-            .reduce(
-                (totalRoutes, resource) => ({
-                    ...totalRoutes,
-                    ...Object.keys(resource.routes).reduce(
-                        (mapRoutes, name) => ({
-                            ...mapRoutes,
-                            [`resource.${resource.id}.${name}`]: resource.routes[name],
-                        }),
-                        {},
-                    ),
-                }),
-                {},
-            );
-        return {
+    const definition = useMemo(() => new Definition(definitionData), [definitionData]);
+
+    const allRoutes = useMemo(
+        () => ({
             ...routes,
-            ...definitionRoutes,
-            ...resourcesRoutes,
-        };
-    }, [routes, parsedDefinition]);
-
-    const history = useMemo(
-        () =>
-            memoryRouter
-                ? createMemoryHistory()
-                : createBrowserHistory(),
-        [memoryRouter],
+            ...definition.allRoutes(),
+        }),
+        [routes, definition],
     );
 
     return (

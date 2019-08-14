@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -21,16 +22,15 @@ const Layout = ({ updateLayout, history, ...props }) => {
     const gotoHome = useCallback(() => history(urlGenerator.route('home')), [urlGenerator]);
     const gotoLink = useCallback(path => history(path), []);
     const gotoRoute = useCallback(name => history(urlGenerator.route(name)), [urlGenerator]);
-    const { type: componentName = 'normal', layout: layoutDefinition = {} } = definition;
+    const { type: componentName = 'normal', ...layoutProps } = definition.layout();
     const LayoutComponent = layoutsCollection.getComponent(componentName);
     return LayoutComponent !== null ? (
         <LayoutComponent
-            applicationDefinition={definition}
-            definition={layoutDefinition}
             gotoHome={gotoHome}
             gotoLink={gotoLink}
             gotoRoute={gotoRoute}
             updateLayout={updateLayout}
+            {...layoutProps}
             {...props}
         />
     ) : null;
@@ -39,15 +39,13 @@ const Layout = ({ updateLayout, history, ...props }) => {
 Layout.propTypes = propTypes;
 Layout.defaultProps = defaultProps;
 
-const mapStateToProps = ({ layout }) => ({
-    ...layout,
-});
-const mapDispatchToProps = dispatch => ({
-    updateLayout: layout => dispatch(updateLayoutAction(layout)),
-});
 const WithStateContainer = connect(
-    mapStateToProps,
-    mapDispatchToProps,
+    ({ layout }) => ({
+        ...layout,
+    }),
+    dispatch => ({
+        updateLayout: layout => dispatch(updateLayoutAction(layout)),
+    }),
 )(Layout);
 const WithRouterContainer = withRouter(WithStateContainer);
 export default WithRouterContainer;

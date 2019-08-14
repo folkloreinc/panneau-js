@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isString from 'lodash/isString';
-import { isMessage } from '@panneau/core';
+import { isMessage } from '@panneau/core/utils';
 import { FormattedMessage } from 'react-intl';
 
 import { notice as noticePropTypes } from './PropTypes';

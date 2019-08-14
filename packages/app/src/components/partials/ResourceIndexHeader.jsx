@@ -1,16 +1,15 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Fragment } from 'react';
+/* eslint-disable jsx-a11y/anchor-is-valid, react/jsx-props-no-spreading */
+import React from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash/get';
 import classNames from 'classnames';
-import { FormattedMessage } from 'react-intl';
-import { PropTypes as PanneauPropTypes, isMessage } from '@panneau/core';
-import { Button } from '@panneau/core/components';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { getLocalizedName } from '@panneau/core/utils';
+import { Button, Label } from '@panneau/core/components';
 
 import styles from '../../styles/partials/resource-index-header.scss';
 
 const propTypes = {
-    resource: PanneauPropTypes.definitions.resource.isRequired,
+    resource: PanneauPropTypes.resource.isRequired,
     title: PanneauPropTypes.label,
     showAddButton: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.label,
@@ -30,65 +29,50 @@ const ResourceIndexHeader = ({
     addButtonLabel,
     getResourceActionUrl,
 }) => {
-    const {
-        type: resourceType = 'default',
-        messages: resourceMessages = {},
-        types = [],
-    } = resource;
-    const isTyped = resourceType === 'typed';
-    const resourceName = get(
-        resourceMessages,
-        'names.plural',
-        get(resourceMessages, 'name', resource.name),
-    );
+    const isTyped = resource.type() === 'typed';
+    const resourceName = resource.localizedName('plural');
 
     // Title
-    const resourceTitle = get(resourceMessages, 'titles.resources.index', null);
-    const defaultTitle = isMessage(title) ? (
-        <FormattedMessage {...title} values={{ name: resourceName }} />
-    ) : (
-        title
+    const resourceTitle = resource.message(
+        'titles.resources.index',
+        <Label values={{ name: resourceName }}>{title}</Label>,
     );
 
     // Add button
-    const resourceAddButtonLabel = get(resourceMessages, 'buttons.resources.add', null);
-    const defaultAddButtonLabel = isMessage(addButtonLabel) ? (
-        <FormattedMessage {...addButtonLabel} values={{ name: resourceName }} />
-    ) : (
-        addButtonLabel
+    const resourceAddButtonLabel = resource.message(
+        'buttons.resources.add',
+        <Label values={{ name: resourceName }}>{addButtonLabel}</Label>,
     );
-    const finalAddButtonLabel = resourceAddButtonLabel || defaultAddButtonLabel;
-    const addButton = showAddButton ? (
-        <Button
-            href={isTyped ? getResourceActionUrl('create') : null}
-            dropdown={
-                isTyped
-                    ? types.map(({ id, label }) => ({
-                          href: `${getResourceActionUrl('create')}?type=${id}`,
-                          label,
-                      }))
-                    : null
-            }
-        >
-            {isTyped ? (
-                <Fragment>
-                    {finalAddButtonLabel} <span className="caret" />
-                </Fragment>
-            ) : (
-                finalAddButtonLabel
-            )}
-        </Button>
-    ) : null;
 
     return (
         <div className={classNames(['py-4', styles.header])}>
             <div className={styles.cols}>
                 <div className={styles.col}>
-                    <h1 className={classNames([styles.title, 'mb-0', 'mt-0'])}>
-                        {resourceTitle !== null ? resourceTitle : defaultTitle}
-                    </h1>
+                    <h1 className={classNames([styles.title, 'mb-0', 'mt-0'])}>{resourceTitle}</h1>
                 </div>
-                <div className={classNames([styles.col, 'text-right'])}>{addButton}</div>
+                <div className={classNames([styles.col, 'text-right'])}>
+                    {showAddButton ? (
+                        <Button
+                            href={isTyped ? getResourceActionUrl('create') : null}
+                            dropdown={
+                                isTyped
+                                    ? resource.types().map((type) => ({
+                                          href: `${getResourceActionUrl('create')}?type=${type.id}`,
+                                          label: getLocalizedName(type),
+                                      }))
+                                    : null
+                            }
+                        >
+                            {isTyped ? (
+                                <>
+                                    {resourceAddButtonLabel} <span className="caret" />
+                                </>
+                            ) : (
+                                resourceAddButtonLabel
+                            )}
+                        </Button>
+                    ) : null}
+                </div>
             </div>
         </div>
     );

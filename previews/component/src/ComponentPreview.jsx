@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -15,7 +16,7 @@ const propTypes = {
     ]),
     valueToProps: PropTypes.oneOfType([PropTypes.func, PropTypes.objectOf(PropTypes.string)]),
     children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
-    Component: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+    Component: PropTypes.elementType,
     withoutReset: PropTypes.bool,
     withoutContainerReset: PropTypes.bool,
     withoutChildrenReset: PropTypes.bool,

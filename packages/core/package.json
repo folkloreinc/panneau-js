@@ -35,7 +35,9 @@
         "dist",
         "src",
         "components.js",
-        "contexts.js"
+        "contexts.js",
+        "requests.js",
+        "utils.js"
     ],
     "scripts": {
         "storybook": "../../node_modules/.bin/start-storybook -p 9008 -c ../../.storybook-package",
@@ -52,10 +54,10 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@babel/runtime": "^7.0.0",
-        "@fortawesome/fontawesome-free": "^5.7.1",
+        "@babel/runtime": "^7.5.5",
+        "@fortawesome/fontawesome-free": "^5.10.1",
         "@panneau/schemas": "^0.7.0",
-        "bootstrap": "~4.1.1",
+        "bootstrap": "^4.3.1",
         "classnames": "^2.2.5",
         "hoist-non-react-statics": "^3.3.0",
         "invariant": "^2.2.2",
@@ -65,7 +67,7 @@
         "moment": "^2.22.1",
         "popper": "^1.0.1",
         "popper.js": "^1.14.3",
-        "prop-types": "^15.6.0",
+        "prop-types": "^15.7.0",
         "query-string": "^6.1.0",
         "react-intl": "^3.1.6",
         "react-router-dom": "^5.0.1",
@@ -75,8 +77,8 @@
     },
     "devDependencies": {
         "jquery-slim": "^3.0.0",
-        "react": "^16.8.6",
-        "react-dom": "^16.8.6"
+        "react": "^16.9.0",
+        "react-dom": "^16.9.0"
     },
     "peerDependencies": {
         "react": "^16.8.0",

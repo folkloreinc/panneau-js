@@ -1,9 +1,11 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
 import classNames from 'classnames';
 import { defineMessages } from 'react-intl';
-import { PropTypes as PanneauPropTypes, useResourceApi, getErrorsFromResponseError } from '@panneau/core';
+import { PropTypes as PanneauPropTypes, useResourceApi } from '@panneau/core';
+import { getErrorsFromResponseError } from '@panneau/core/requests';
 import { Loading, Errors } from '@panneau/core/components';
 import { useComponent } from '@panneau/core/contexts';
 
@@ -45,10 +47,8 @@ export const messages = defineMessages({
 });
 
 const propTypes = {
-    intl: PanneauPropTypes.intl.isRequired,
-    urlGenerator: PanneauPropTypes.urlGenerator.isRequired,
     action: PropTypes.string,
-    resource: PanneauPropTypes.definitions.resource.isRequired,
+    resource: PanneauPropTypes.resource.isRequired,
     resourceApi: PanneauPropTypes.resourceApi.isRequired,
     itemId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     item: PropTypes.shape({
@@ -131,8 +131,7 @@ const ResourceForm = ({
     const [formErrors, setFormErrors] = useState(initialFormErrors || item);
     const [formSuccess, setFormSuccess] = useState(initialFormErrors !== null ? false : null);
     const resourceApi = useResourceApi(resource);
-    const { type = null, types = [] } = resource;
-    const isTyped = type === 'typed';
+    const isTyped = resource.type() === 'typed';
     const waitingItem = action === 'edit' && item === null;
 
     // Load item if needed
@@ -140,10 +139,10 @@ const ResourceForm = ({
         if (isLoading) {
             return;
         }
-        const onItemLoaded = (newItem) => {
+        const onItemLoaded = newItem => {
             setItem(newItem);
         };
-        const onItemLoadError = (newErrors) => {
+        const onItemLoadError = newErrors => {
             setErrors(newErrors);
         };
         const itemChanged = item !== null && `${item.id}` !== `${itemId}`;
@@ -166,6 +165,7 @@ const ResourceForm = ({
             return null;
         }
 
+        const types = resource.types();
         const itemTypeId = item !== null ? item.type || null : null;
         const { type: queryTypeId = null } = query || {};
         const typeId = itemTypeId || queryTypeId;
@@ -177,7 +177,7 @@ const ResourceForm = ({
         return types.length > 0
             ? types.find(({ default: isDefault = false }) => isDefault) || types[0] || null
             : null;
-    }, [item, query, types]);
+    }, [item, query, resource]);
 
     const onClickCancel = useCallback(
         e => {
@@ -212,7 +212,7 @@ const ResourceForm = ({
     const submitForm = useCallback(() => {
         const data = isTyped
             ? {
-                  type: type !== null ? type.id : null,
+                  type: currentType !== null ? currentType.id : null,
                   ...(formValue || item),
               }
             : formValue;
@@ -222,7 +222,7 @@ const ResourceForm = ({
         return action === 'create'
             ? resourceApi.store(data)
             : resourceApi.update(item.id, data || item);
-    }, [resourceApi, action, isTyped, type]);
+    }, [resourceApi, action, isTyped, currentType]);
 
     const onFormChange = useCallback(value => {
         setFormValue(value);
@@ -248,11 +248,9 @@ const ResourceForm = ({
         setFormSuccess(false);
     }, []);
 
-
     // Get form definition
     const { type: formType = null, fullscreen, className = null, ...formProps } = useMemo(() => {
-        const { forms = {} } = resource;
-        const { fields = [], ...form } = forms[action] || forms;
+        const { fields = [], ...form } = resource.form(action);
         let finalFields;
         if (waitingItem) {
             finalFields = null;
@@ -284,12 +282,14 @@ const ResourceForm = ({
                 buttons={formButtons}
                 value={formValue || item}
                 errors={formErrors}
-                notice={formSuccess !== null
-                    ? {
-                          type: formSuccess ? 'success' : 'error',
-                          label: formSuccess ? successNoticeLabel : errorNoticeLabel,
-                      }
-                    : null}
+                notice={
+                    formSuccess !== null
+                        ? {
+                              type: formSuccess ? 'success' : 'error',
+                              label: formSuccess ? successNoticeLabel : errorNoticeLabel,
+                          }
+                        : null
+                }
                 submitForm={submitForm}
                 onChange={onFormChange}
                 onComplete={onFormComplete}

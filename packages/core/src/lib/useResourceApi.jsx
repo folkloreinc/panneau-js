@@ -9,12 +9,9 @@ const useResourceApi = resourceId => {
     const definition = useDefinition();
     const urlGenerator = useUrlGenerator();
     const api = useMemo(() => {
-        const { endpointHost = '/', resources = [] } = definition || {};
-        const resource = isObject(resourceId)
-            ? resourceId
-            : resources.find(it => it.id === resourceId);
+        const resource = isObject(resourceId) ? resourceId : definition.resource(resourceId);
         return new ResourceApi(resource, urlGenerator, {
-            host: endpointHost,
+            host: definition.apiEndpoint(),
         });
     }, [resourceId, definition, urlGenerator]);
     return api;

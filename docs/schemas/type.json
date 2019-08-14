@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://panneau.dev/schemas/type.json",
+    "title": "Type definition",
+    "description": "A type",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "required": true
+        },
+
+        "name": {
+            "type": "string",
+            "required": true
+        },
+
+        "messages": {
+            "description": "The type translations messages",
+            "$ref": "messages.json"
+        },
+
+        "fields": {
+            "description": "The fields of a type",
+            "type": "array",
+            "items": {
+                "$ref": "field.json"
+            }
+        }
+    },
+    "required": ["id", "name"],
+    "additionalProperties": false
+}

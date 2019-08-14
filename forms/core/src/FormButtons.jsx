@@ -3,7 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
-import { PropTypes as PanneauPropTypes, isMessage } from '@panneau/core';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { isMessage } from '@panneau/core/utils';
 
 import styles from './styles/form-buttons.scss';
 

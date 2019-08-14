@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 // import PropTypes from 'prop-types';
 import { Route, Switch, Redirect, withRouter } from 'react-router';
 import { connect } from 'react-redux';
@@ -33,101 +33,78 @@ const defaultProps = { user: null };
 
 const App = ({ history, user }) => {
     const urlGenerator = useUrlGenerator();
-    const { resources = [] } = useDefinition();
-    const resourcesWithRoutes = resources.filter(
-        resource => typeof resource.routes !== 'undefined',
+    const definition = useDefinition();
+    const resources = definition.resources();
+
+    const getResourceActionUrl = useCallback(
+        (resource, action, id) => urlGenerator.resource(resource, action, id),
+        [urlGenerator],
     );
-
-    const getResourceActionUrl = ({ id: resourceId, routes = null }, action, id) =>
-        routes !== null
-            ? urlGenerator.route(`resource.${resourceId}.${action}`, {
-                  id: id || null,
-              })
-            : urlGenerator.route(`resource.${action}`, {
-                  resource: resourceId,
-                  id: id || null,
-              });
-
-    const getResourceRoutes = (id = null) => {
-        const prefix = id !== null ? `resource.${id}` : 'resource';
-        return {
-            index: urlGenerator.route(`${prefix}.index`),
-            create: urlGenerator.route(`${prefix}.create`),
-            show: urlGenerator.route(`${prefix}.show`),
-            edit: urlGenerator.route(`${prefix}.edit`),
-            delete: urlGenerator.route(`${prefix}.delete`),
-        };
-    };
 
     const gotoResourceAction = (...args) => history.push(getResourceActionUrl(...args));
 
-    const renderResourceRoutes = (routes, id) =>
-        Object.keys(routes).map(action => (
+    const renderResourceRoutes = (resource = null) => {
+        const id = resource !== null ? resource.id() : 'default';
+        return Object.keys(ResourcePages).map(action => (
             <Route
-                key={`route-resource-${id}-${action}`}
+                key={`resource-${id}-${action}`}
                 exact
-                path={routes[action]}
+                path={urlGenerator.resource(resource, action)}
                 render={({
                     match: {
                         params: { resource: resourceId = null, id: itemId = null },
                     },
-                    location: { pathname, search },
+                    location: { search },
                 }) => {
-                    const resource =
-                        resources.find(
-                            it =>
-                                (resourceId !== null && it.id === resourceId) ||
-                                (resourceId === null &&
-                                    urlGenerator.route(`resource.${it.id}.${action}`, {
-                                        id: itemId,
-                                    }) === pathname),
-                        ) || null;
-                    const PageComponent = ResourcePages[action];
                     const query = queryString.parse(search);
+                    const matchedResource =
+                        resource ||
+                        resources.find(it => resourceId !== null && it.id() === resourceId) ||
+                        null;
+
+                    const PageComponent = ResourcePages[action];
                     return (
                         <PageComponent
                             action={action}
                             query={query}
                             itemId={itemId}
-                            resource={resource}
+                            resource={matchedResource}
                             getResourceActionUrl={(...args) =>
-                                getResourceActionUrl(resource, ...args)
+                                getResourceActionUrl(matchedResource, ...args)
                             }
-                            gotoResourceAction={(...args) => gotoResourceAction(resource, ...args)}
+                            gotoResourceAction={(...args) =>
+                                gotoResourceAction(matchedResource, ...args)
+                            }
                         />
                     );
                 }}
             />
         ));
-
-    const defaultResourceRoutes = getResourceRoutes();
+    };
 
     return (
         <Layout>
             <Switch>
                 {user !== null ? (
-                    <Route exact path={urlGenerator.route('account')} component={Account} />
+                    <Route
+                        exact
+                        path={urlGenerator.route('account')}
+                        render={() => <Account resource={definition.resource('users')} />}
+                    />
                 ) : (
                     <Route
                         exact
                         path={urlGenerator.route('account')}
-                        render={() => (
-                            <Redirect
-                                to={{
-                                    pathname: urlGenerator.route('home'),
-                                }}
-                            />
-                        )}
+                        render={() => <Redirect to={urlGenerator.route('home')} />}
                     />
                 )}
-                {resourcesWithRoutes.reduce(
-                    (routes, resource) => [
-                        ...routes,
-                        ...renderResourceRoutes(getResourceRoutes(resource.id), resource.id),
-                    ],
-                    [],
-                )}
-                {renderResourceRoutes(defaultResourceRoutes, 'default')}
+                {resources
+                    .filter(resource => resource.hasRoutes())
+                    .reduce(
+                        (routes, resource) => [...routes, ...renderResourceRoutes(resource)],
+                        [],
+                    )}
+                {renderResourceRoutes()}
                 <Route exact path={urlGenerator.route('home')} component={Home} />
             </Switch>
         </Layout>

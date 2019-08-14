@@ -1,4 +1,4 @@
-/* eslint-disable jsx-a11y/href-no-hash, react/no-array-index-key, react/style-prop-object */
+/* eslint-disable react/no-array-index-key, react/style-prop-object, react/state-in-constructor */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -6,9 +6,11 @@ import isObject from 'lodash/isObject';
 import isArray from 'lodash/isArray';
 import arrayMove from 'array-move';
 import { FormGroup, FieldsGroup } from '@panneau/field';
-import { getJSON, isMessage, PropTypes as PanneauPropTypes } from '@panneau/core';
-import { Button, ButtonGroup } from '@panneau/core/components';
-import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { getJSON } from '@panneau/core/requests';
+import { isMessage, getLocalizedName } from '@panneau/core/utils';
+import { Button, ButtonGroup, Label } from '@panneau/core/components';
+import { defineMessages, injectIntl } from 'react-intl';
 
 import SortableHandle from './SortableHandle';
 import SortableList from './SortableList';
@@ -57,7 +59,7 @@ const propTypes = {
     fields: PropTypes.arrayOf(PanneauPropTypes.definitions.field),
     typesEndpoint: PropTypes.string,
     fieldsEndpoint: PropTypes.string,
-    FieldComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+    FieldComponent: PropTypes.elementType,
 
     collapsible: PropTypes.bool,
     collapsed: PropTypes.bool,
@@ -178,9 +180,10 @@ class ItemsField extends Component {
         this.onSortEnd = this.onSortEnd.bind(this);
 
         this.state = {
-            types: props.types,
-            fields: props.fields,
-            collapsedItems: (props.value || []).map(() => true),
+            value: null,
+            types: [],
+            fields: [],
+            collapsedItems: [],
         };
     }
 
@@ -285,22 +288,20 @@ class ItemsField extends Component {
         const { itemTitle, itemTitleWithLabel, getItemTitle } = this.props;
         const { types } = this.state;
         // @NOTE: For backward compatibility. `id` should be used in the future
-        const foundType =
-            types !== null
-                ? types.find(item => (item.type || item.name || item.id || null) === it.type)
-                : null;
+        const foundType = types !== null ? types.find(({ id }) => id === it.id) || null : null;
         if (getItemTitle !== null) {
             return getItemTitle(it, index, foundType);
         }
         const label = foundType !== null ? foundType.label : null;
         return (
-            <FormattedMessage
-                {...(label !== null ? itemTitleWithLabel : itemTitle)}
+            <Label
                 values={{
                     index: index + 1,
                     label,
                 }}
-            />
+            >
+                {label !== null ? itemTitleWithLabel : itemTitle}
+            </Label>
         );
     }
 
@@ -450,10 +451,7 @@ class ItemsField extends Component {
         const { types, fields } = this.state;
 
         const itemValue = value[index] || null;
-        const type =
-            types !== null
-                ? types.find(obj => (obj.name || obj.type || obj.id) === it.type) || null
-                : null;
+        const type = types !== null ? types.find(({ id }) => id === it.id) || null : null;
         const typeFields = type !== null ? type.fields || fields : fields;
 
         if (renderItemField !== null) {
@@ -587,8 +585,8 @@ class ItemsField extends Component {
         const hasType = types !== null;
         const dropdownOptions = hasType
             ? types.map(obj => ({
-                  label: obj.label,
-                  value: obj.name || obj.id || obj.type,
+                  label: getLocalizedName(obj),
+                  value: obj.id,
               }))
             : null;
 

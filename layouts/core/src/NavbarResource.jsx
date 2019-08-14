@@ -56,59 +56,45 @@ const defaultProps = {
     ],
 };
 
-export const NavbarResource = ({
-    resource: resourceId, href, label, items, ...props
-}) => {
+export const NavbarResource = ({ resource: resourceId, href, label, items, ...props }) => {
     const urlGenerator = useUrlGenerator();
     const definition = useDefinition();
-    const resource = get(definition, 'resources', []).find(it => it.id === resourceId) || null;
+    const resource = definition.resource(resourceId);
     if (resource === null) {
         return null;
     }
-    const routeKeyPrefix = get(resource, 'routes', null) ? `resource.${resource.id}` : 'resource';
 
-    const finalLabel = label || get(resource, 'messages.names.plural', get(resource, 'name', null)) || resource.id;
-
-    const finalHref = href
-        || (urlGenerator !== null
-            ? urlGenerator.route(`${routeKeyPrefix}.index`, {
-                resource: resource.id,
-            })
-            : null);
+    const finalLabel = resource.localizedName('plural');
+    const finalHref =
+        href || (urlGenerator !== null ? urlGenerator.resource(resource, 'index') : null);
 
     const actions = ['index', 'create'];
     const actionsLabels = actions.reduce((labels, action) => {
-        const message = get(resource, `messages.navbar.${action}`, messages[action]);
+        const message = resource.message(`navbar.${action}`, messages[action]);
         return {
             ...labels,
             [action]: isString(message)
                 ? message
                 : {
-                    ...message,
-                    values: {
-                        resource: get(
-                            resource,
-                            action === 'index' ? 'messages.names.a_plural' : 'messages.names.a',
-                            get(resource, 'name', resource.id),
-                        ),
-                    },
-                },
+                      ...message,
+                      values: {
+                          resource: resource.localizedName(action === 'index' ? 'a_plural' : 'a'),
+                      },
+                  },
         };
     }, {});
 
-    const finalItems = (items || []).map(it => (get(it, 'type', 'link') === 'action'
-        ? {
-            ...it,
-            label: it.label || get(actionsLabels, it.action, null),
-            href:
-                      it.href
-                      || (urlGenerator !== null
-                          ? urlGenerator.route(`${routeKeyPrefix}.${it.action}`, {
-                              resource: resource.id,
-                          })
-                          : null),
-        }
-        : it));
+    const finalItems = (items || []).map(it =>
+        get(it, 'type', 'link') === 'action'
+            ? {
+                  ...it,
+                  label: it.label || get(actionsLabels, it.action, null),
+                  href:
+                      it.href ||
+                      (urlGenerator !== null ? urlGenerator.resource(resource, it.action) : null),
+              }
+            : it,
+    );
     return <NavbarItem {...props} href={finalHref} label={finalLabel} items={finalItems} />;
 };
 

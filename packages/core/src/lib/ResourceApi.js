@@ -1,4 +1,3 @@
-import get from 'lodash/get';
 import trimEnd from 'lodash/trimEnd';
 import isEmpty from 'lodash/isEmpty';
 import isObject from 'lodash/isObject';
@@ -104,13 +103,8 @@ class ResourceApi {
 
     getActionPath(action, id = undefined) {
         const { urlGenerator, resource } = this;
-        const { id: resourceId } = resource;
-        const defaultPath = urlGenerator.route(`resource.${action}`, {
-            resource: resourceId,
-            id,
-        });
-        const path = get(this.resource, `routes.${action}`, defaultPath);
         const { idParamName, host } = this.options;
+        const path = urlGenerator.resource(resource, action, id);
         const idPattern = new RegExp(`:${idParamName}([/](.*)?)?$`, 'i');
         const fullPath = trimEnd(host, '/') + path;
         return fullPath.replace(idPattern, id);

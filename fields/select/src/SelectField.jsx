@@ -5,6 +5,7 @@ import isString from 'lodash/isString';
 import classNames from 'classnames';
 import { FormGroup } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { isMessage } from '@panneau/core/utils';
 import { defineMessages, injectIntl } from 'react-intl';
 import {
     AsyncCreatable, Async, Creatable, Select,
@@ -34,8 +35,6 @@ const messages = defineMessages({
             '{count, plural, =0 {no result} one {# result} other {# results}} available',
     },
 });
-
-const isMessage = message => isObject(message) && typeof message.id !== 'undefined';
 
 const compareOption = (inputValue, option) => {
     const candidate = inputValue.toLowerCase();

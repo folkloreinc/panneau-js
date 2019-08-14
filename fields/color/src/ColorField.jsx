@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+/* eslint-disable react/jsx-props-no-spreading */
+import React, { useRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
     BlockPicker,
@@ -18,6 +19,7 @@ import { FormGroup } from '@panneau/field';
 import Text from '@panneau/field-text';
 import Popover from '@panneau/modal-popover';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { Button } from '@panneau/core/components';
 
 import styles from './styles.scss';
 
@@ -40,20 +42,56 @@ const components = {
     swatches: SwatchesPicker,
 };
 
+const parseColor = value => {
+    const color = {
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 1,
+    };
+    if (isString(value)) {
+        try {
+            const colorParsed = Color(value);
+            color.r = colorParsed.red();
+            color.g = colorParsed.green();
+            color.b = colorParsed.blue();
+            color.a = colorParsed.alpha();
+        } catch (e) {
+            // console.log(`Unparseable color format: ${value}`);
+            return color;
+        }
+    }
+
+    return color;
+};
+
+const formatColor = (color, format) => {
+    let output = '';
+    switch (format) {
+        case 'rgb':
+            output = `rgb(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})`;
+            break;
+        case 'rgba':
+            output = `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`;
+            break;
+        case 'hex':
+            output = color.hex;
+            break;
+        default:
+            // Aka auto
+            if (color.rgb.a < 1) {
+                output = `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`;
+            } else {
+                output = color.hex;
+            }
+    }
+    return output;
+};
+
 const propTypes = {
     name: PropTypes.string,
     label: PanneauPropTypes.label,
-    pickerType: PropTypes.oneOf([
-        'block',
-        'chrome',
-        'circle',
-        'compact',
-        'github',
-        'twitter',
-        'sketch',
-        'slider',
-        'swatches',
-    ]),
+    pickerType: PropTypes.oneOf(Object.keys(components)),
     outputFormat: PropTypes.oneOf(['hex', 'rgb', 'rgba', 'auto']),
     value: PropTypes.string,
 
@@ -86,239 +124,134 @@ const defaultProps = {
     withInput: false,
 };
 
-class ColorField extends Component {
-    static parse(value) {
-        const color = {
-            r: 0,
-            g: 0,
-            b: 0,
-            a: 1,
-        };
-        if (isString(value)) {
-            try {
-                const colorParsed = Color(value);
-                color.r = colorParsed.red();
-                color.g = colorParsed.green();
-                color.b = colorParsed.blue();
-                color.a = colorParsed.alpha();
-            } catch (e) {
-                // console.log(`Unparseable color format: ${value}`);
-                return color;
-            }
-        }
-
-        return color;
-    }
-
-    constructor(props) {
-        super(props);
-
-        this.onChange = this.onChange.bind(this);
-        this.onInputFocus = this.onInputFocus.bind(this);
-        this.onInputChange = this.onInputChange.bind(this);
-        this.onClick = this.onClick.bind(this);
-        this.onClickClear = this.onClickClear.bind(this);
-        this.onClose = this.onClose.bind(this);
-        this.formatColor = this.formatColor.bind(this);
-
-        this.refContainer = null;
-        this.refButton = null;
-
-        this.state = {
-            displayColorPicker: props.displayColorPicker,
-        };
-    }
-
-    onChange(value) {
-        const { onChange, value: currentValue } = this.props;
-        const newValue = this.formatColor(value);
-        if (onChange !== null && isString(newValue) && newValue !== currentValue) {
-            onChange(newValue);
-        }
-    }
-
-    onInputChange(value) {
-        const { onChange } = this.props;
-        if (onChange !== null) {
-            onChange(value);
-        }
-    }
-
-    onInputFocus() {
-        this.setState(() => ({
-            displayColorPicker: true,
-        }));
-    }
-
-    onClickClear() {
-        const { onChange } = this.props;
+const ColorField = ({
+    name,
+    label,
+    pickerType,
+    value,
+    colors,
+    presetColors,
+    colorPosition,
+    withInput,
+    disabled,
+    onChange,
+    displayColorPicker: initialDisplayColorPicker,
+    ...other
+}) => {
+    const [displayColorPicker, setDisplayColorPicker] = useState(initialDisplayColorPicker);
+    const refButton = useRef(null);
+    const refContainer = useRef(null);
+    const onClose = useCallback(() => setDisplayColorPicker(false), []);
+    const onInputFocus = useCallback(() => setDisplayColorPicker(true), []);
+    const onClick = useCallback(() => setDisplayColorPicker(!displayColorPicker), [
+        displayColorPicker,
+    ]);
+    const onClickClear = useCallback(() => {
         if (onChange !== null) {
             onChange(null);
         }
-    }
-
-    onClick() {
-        this.setState(({ displayColorPicker }) => ({
-            displayColorPicker: !displayColorPicker,
-        }));
-    }
-
-    onClose() {
-        this.setState(() => ({
-            displayColorPicker: false,
-        }));
-    }
-
-    formatColor(color) {
-        const { outputFormat } = this.props;
-
-        let output = '';
-        switch (outputFormat) {
-        case 'rgb':
-            output = `rgb(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})`;
-            break;
-        case 'rgba':
-            output = `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`;
-            break;
-        case 'hex':
-            output = color.hex;
-            break;
-        default:
-            // Aka auto
-            if (color.rgb.a < 1) {
-                output = `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`;
-            } else {
-                output = color.hex;
+    }, [onChange]);
+    const onInputChange = useCallback(
+        newValue => {
+            if (onChange !== null) {
+                onChange(newValue);
             }
-        }
-        return output;
-    }
+        },
+        [onChange],
+    );
+    const onPickerChange = useCallback(
+        newValue => {
+            const newFormattedValue = formatColor(newValue);
+            if (onChange !== null && isString(newFormattedValue) && newFormattedValue !== value) {
+                onChange(newFormattedValue);
+            }
+        },
+        [value, onChange],
+    );
 
-    renderPopover() {
-        const {
-            pickerType, value, colors, presetColors, colorPosition, withInput,
-        } = this.props;
-        const { displayColorPicker } = this.state;
-        const Picker = components[pickerType];
-        const color = ColorField.parse(value);
+    const color = parseColor(value);
 
-        return (
-            <Popover
-                className={styles.popover}
-                onClose={this.onClose}
-                visible={displayColorPicker}
-                element={withInput ? this.refContainer : this.refButton}
-                elementPlacement={colorPosition}
-                offsetX="2px"
-                blurElement={withInput ? this.refContainer : null}
-                closeOnBlur
-                noUi
+    const buttonGroup = (
+        <div
+            className={classNames({
+                'btn-group': !withInput,
+                'input-group-append': withInput,
+            })}
+            ref={refButton}
+        >
+            <Button
+                style="outline-light"
+                disabled={disabled}
+                className={styles.colorBtn}
+                onClick={onClick}
             >
-                <Picker
-                    onChangeComplete={this.onChange}
-                    color={color}
-                    colors={colors}
-                    presetColors={presetColors}
-                />
-            </Popover>
-        );
-    }
-
-    render() {
-        const {
-            pickerType,
-            name,
-            value,
-            label,
-            colors,
-            disabled,
-            presetColors,
-            colorPosition,
-            withInput,
-            ...other
-        } = this.props;
-
-        const color = ColorField.parse(value);
-
-        const colorStyle = {
-            background:
-                value !== null ? `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})` : null,
-        };
-
-        const formGroupClassName = classNames({
-            [styles.formGroup]: true,
-            'form-group-color': true,
-        });
-
-        const buttonGroupClassName = classNames({
-            'btn-group': !withInput,
-            'input-group-append': withInput,
-        });
-
-        const buttonGroup = (
-            <div
-                className={buttonGroupClassName}
-                ref={(ref) => {
-                    this.refButton = ref;
-                }}
-            >
-                <button
-                    type="button"
-                    className={classNames({
-                        btn: true,
-                        'btn-outline-light': true,
-                        disabled,
-                        [styles.colorBtn]: true,
-                    })}
-                    disabled={disabled}
-                    onClick={this.onClick}
-                >
-                    <span className={styles.swatch} style={colorStyle} />
-                </button>
-                <button
-                    type="button"
-                    className={classNames({
-                        btn: true,
-                        'btn-outline-secondary': true,
-                        disabled,
-                        [styles.clearBtn]: true,
-                    })}
-                    disabled={value === null || disabled}
-                    onClick={this.onClickClear}
-                >
-                    <span className="fas fa-times" />
-                </button>
-            </div>
-        );
-
-        return (
-            <FormGroup name={name} label={label} className={formGroupClassName} {...other}>
-                <div
-                    className={styles.container}
-                    ref={(ref) => {
-                        this.refContainer = ref;
+                <span
+                    className={styles.swatch}
+                    style={{
+                        background:
+                            value !== null
+                                ? `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
+                                : null,
                     }}
+                />
+            </Button>
+            <Button
+                style="outline-secondary"
+                disabled={value === null || disabled}
+                className={styles.clearBtn}
+                onClick={onClickClear}
+            >
+                <span className="fas fa-times" />
+            </Button>
+        </div>
+    );
+
+    const Picker = components[pickerType];
+
+    return (
+        <FormGroup
+            name={name}
+            label={label}
+            className={classNames([styles.formGroup, 'form-group-color'])}
+            {...other}
+        >
+            <div className={styles.container} ref={refContainer}>
+                {withInput ? (
+                    <div className="input-group">
+                        <Text
+                            {...other}
+                            inputOnly
+                            value={value}
+                            onFocus={onInputFocus}
+                            onChange={onInputChange}
+                        />
+                        {buttonGroup}
+                    </div>
+                ) : (
+                    buttonGroup
+                )}
+                <Popover
+                    className={styles.popover}
+                    onClose={onClose}
+                    visible={displayColorPicker}
+                    element={withInput ? refContainer.current : refButton.current}
+                    elementPlacement={colorPosition}
+                    offsetX="2px"
+                    blurElement={withInput ? refContainer.current : null}
+                    closeOnBlur
+                    noUi
                 >
-                    {withInput ? (
-                        <div className="input-group">
-                            <Text
-                                {...other}
-                                inputOnly
-                                value={value}
-                                onFocus={this.onInputFocus}
-                                onChange={this.onInputChange}
-                            />
-                            {buttonGroup}
-                        </div>
-                    ) : (
-                        buttonGroup
-                    )}
-                    {this.renderPopover()}
-                </div>
-            </FormGroup>
-        );
-    }
-}
+                    <Picker
+                        onChangeComplete={onPickerChange}
+                        color={color}
+                        colors={colors}
+                        presetColors={presetColors}
+                    />
+                </Popover>
+            </div>
+        </FormGroup>
+    );
+};
 
 ColorField.propTypes = propTypes;
 ColorField.defaultProps = defaultProps;

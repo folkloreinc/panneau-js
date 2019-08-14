@@ -3,7 +3,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { defineMessages } from 'react-intl';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useDefinition } from '@panneau/core/contexts';
 
 import ResourceForm from './ResourceForm';
 
@@ -16,27 +15,15 @@ const messages = defineMessages({
 });
 
 const propTypes = {
-    user: PanneauPropTypes.user,
+    user: PanneauPropTypes.user.isRequired,
+    resource: PanneauPropTypes.resource.isRequired,
 };
 
-const defaultProps = {
-    user: null,
-};
+const defaultProps = {};
 
-const AccountPage = ({ user, ...props }) => {
-    const definition = useDefinition();
-    const { resources = [] } = definition;
-    const resource = resources.find(it => it.id === 'users') || null;
-    return (
-        <ResourceForm
-            {...props}
-            itemId={user.id}
-            action="edit"
-            title={messages.title}
-            resource={resource}
-        />
-    );
-};
+const AccountPage = ({ user, resource }) => (
+    <ResourceForm itemId={user.id} action="edit" title={messages.title} resource={resource} />
+);
 
 AccountPage.propTypes = propTypes;
 AccountPage.defaultProps = defaultProps;

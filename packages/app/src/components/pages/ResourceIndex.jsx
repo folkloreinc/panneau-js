@@ -1,11 +1,11 @@
-/* eslint-disable jsx-a11y/anchor-is-valid, react/no-array-index-key */
+/* eslint-disable jsx-a11y/anchor-is-valid, react/no-array-index-key, react/jsx-props-no-spreading */
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
-import isObject from 'lodash/isObject';
 import classNames from 'classnames';
 import { defineMessages, injectIntl } from 'react-intl';
 import { PropTypes as PanneauPropTypes, useResourceApi } from '@panneau/core';
+import { isMessage } from '@panneau/core/utils';
 import { useComponent } from '@panneau/core/contexts';
 import { Loading, Errors } from '@panneau/core/components';
 
@@ -33,7 +33,7 @@ const messages = defineMessages({
 
 const propTypes = {
     intl: PanneauPropTypes.intl.isRequired,
-    resource: PanneauPropTypes.definitions.resource.isRequired,
+    resource: PanneauPropTypes.resource.isRequired,
     query: PropTypes.shape({
         page: PropTypes.string,
     }),
@@ -73,11 +73,9 @@ const ResourceIndex = ({
     });
     const resourceApi = useResourceApi(resource);
     const { isLoading, items, pagination, errors } = request;
-    const {
-        lists = {},
-        messages: resourceMessages = {},
-    } = resource;
-    const { type: listType, pagination: hasPagination = false, ...listProps } = lists.index || lists;
+    const { type: listType, pagination: hasPagination = false, ...listProps } = resource.list(
+        'index',
+    );
 
     useEffect(() => {
         if (isLoading) {
@@ -146,14 +144,13 @@ const ResourceIndex = ({
             };
 
             const { name } = resource;
-            const confirmMessage = get(resourceMessages, 'confirm_delete', confirmDeleteMessage);
-            const message =
-                isObject(confirmMessage) && typeof confirmMessage.id !== 'undefined'
-                    ? intl.formatMessage(confirmMessage, {
-                          name,
-                          id,
-                      })
-                    : confirmMessage;
+            const confirmMessage = resource.message('confirm_delete', confirmDeleteMessage);
+            const message = isMessage(confirmMessage)
+                ? intl.formatMessage(confirmMessage, {
+                      name,
+                      id,
+                  })
+                : confirmMessage;
             // eslint-disable-next-line no-alert
             if (window.confirm(message)) {
                 resourceApi.destroy(id).then(onItemDeleted);
@@ -215,9 +212,9 @@ const ResourceIndex = ({
                                 {items !== null && ListComponent !== null ? (
                                     <div className={styles.list}>
                                         <ListComponent
+                                            {...listProps}
                                             items={items || []}
                                             onClickAction={onClickAction}
-                                            {...listProps}
                                         />
                                     </div>
                                 ) : null}

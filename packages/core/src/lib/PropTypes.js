@@ -3,6 +3,8 @@ import * as definitions from '@panneau/schemas/prop-types';
 
 import UrlGenerator from './UrlGenerator';
 import ResourceApi from './ResourceApi';
+import Definition from './Definition';
+import Resource from './Resource';
 import ComponentsCollection from './ComponentsCollection';
 
 /**
@@ -108,8 +110,8 @@ export const user = PropTypes.shape({
 /**
  * Definitions
  */
-const { definition } = definitions;
+export const definition = PropTypes.instanceOf(Definition);
+export const resource = PropTypes.instanceOf(Resource);
 export {
-    definition,
     definitions
 };

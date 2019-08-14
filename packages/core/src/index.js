@@ -1,13 +1,8 @@
 /** @module panneau/core */
-import * as PropTypes from './lib/PropTypes';
-
-export { Loading as LoadingComponent, Errors as ErrorsComponent } from './components/index';
-
-export { PropTypes };
+export * as PropTypes from './lib/PropTypes';
 export { default as ComponentsCollection } from './lib/ComponentsCollection';
-export { default as parseDefinition } from './lib/parseDefinition';
+export { default as UrlGenerator } from './lib/UrlGenerator';
+export { default as Definition } from './lib/Definition';
+export { default as Resource } from './lib/Resource';
+export { default as ResourceApi } from './lib/ResourceApi';
 export { default as useResourceApi } from './lib/useResourceApi';
-
-export * from './lib/requests';
-
-export { isMessage } from './utils';

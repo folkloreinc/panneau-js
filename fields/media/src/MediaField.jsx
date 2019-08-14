@@ -1,6 +1,6 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash/get';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDefinition } from '@panneau/core/contexts';
 import { FormGroup, UploadButton } from '@panneau/field';
@@ -10,7 +10,7 @@ import messages from './messages';
 import styles from './styles.scss';
 
 const propTypes = {
-    CardComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
+    CardComponent: PropTypes.elementType.isRequired,
     name: PropTypes.string,
     label: PanneauPropTypes.label,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -56,7 +56,7 @@ const MediaField = ({
     ...props
 }) => {
     const definition = useDefinition();
-    const definitionUploadEndpoint = get(definition, 'endpointUploadMedia', '/mediatheque/upload');
+    const definitionUploadEndpoint = definition.apiUploadEndpoint();
     return (
         <FormGroup className={styles.field} name={name} label={label} {...props}>
             {value !== null ? (

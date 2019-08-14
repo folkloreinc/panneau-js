@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
+/* eslint-disable react/jsx-props-no-spreading */
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import get from 'lodash/get';
-import isObject from 'lodash/isObject';
 import Autosuggest from 'react-autosuggest';
 import { injectIntl } from 'react-intl';
 import { FormGroup } from '@panneau/field';
-import { getJSON, PropTypes as PanneauPropTypes } from '@panneau/core';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { isMessage } from '@panneau/core/utils';
+import { getJSON } from '@panneau/core/requests';
 
 import styles from './styles.scss';
 
@@ -35,7 +37,7 @@ const defaultProps = {
     label: null,
     value: null,
     placeholder: null,
-    suggestions: [],
+    suggestions: null,
     suggestionsEndpoint: null,
     suggestionValuePath: 'name',
     suggestionTitlePath: 'name',
@@ -49,234 +51,165 @@ const defaultProps = {
     onSelect: null,
 };
 
-/**
- * Autosuggest field
- * @extends Component
- */
-class AutosuggestField extends Component {
-    static parse(value) {
-        return value;
-    }
+const AutosuggestField = props => {
+    const {
+        intl,
+        label,
+        name,
+        value,
+        placeholder,
+        suggestions: propsSuggestions,
+        suggestionsEndpoint,
+        getSuggestionTitle,
+        getSuggestionDescription,
+        getSuggestionThumbnail,
+        getSuggestionValue,
+        suggestionTitlePath,
+        suggestionDescriptionPath,
+        suggestionThumbnailPath,
+        suggestionValuePath,
+        onChange,
+        onSelect,
+        ...other
+    } = props;
+    const [stateSuggestions, setStateSuggestions] = useState(propsSuggestions || []);
+    const suggestions = propsSuggestions || stateSuggestions;
 
-    constructor(props) {
-        super(props);
+    const fetchSuggestions = useCallback(
+        () =>
+            getJSON(suggestionsEndpoint, {
+                credentials: 'include',
+            })
+                .then(data => setStateSuggestions(data))
+                .catch(() => setStateSuggestions([])),
+        [suggestionsEndpoint],
+    );
 
-        this.onInputChange = this.onInputChange.bind(this);
-        this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
-        this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
-        this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
-        this.onSuggestionsFetched = this.onSuggestionsFetched.bind(this);
-        this.onSuggestionsFetchError = this.onSuggestionsFetchError.bind(this);
-        this.getSuggestionValue = this.getSuggestionValue.bind(this);
-        this.renderSuggestion = this.renderSuggestion.bind(this);
-        this.renderSuggestions = this.renderSuggestions.bind(this);
-
-        this.state = {
-            suggestions: props.suggestions || [],
-        };
-    }
-
-    componentWillReceiveProps({ suggestions: nextSuggestions }) {
-        const { suggestions } = this.props;
-        const suggestionsChanged = nextSuggestions !== suggestions;
-        if (suggestionsChanged) {
-            this.setState({
-                suggestions: nextSuggestions || [],
-            });
-        }
-    }
-
-    componentDidUpdate({ suggestionsEndpoint: prevSuggestionsEndpoint }) {
-        const { suggestionsEndpoint } = this.props;
-        const suggestionsEndpointChanged = prevSuggestionsEndpoint !== suggestionsEndpoint;
-        if (suggestionsEndpointChanged && suggestionsEndpoint !== null) {
-            this.fetchSuggestions();
-        }
-    }
-
-    onInputChange(event, { newValue }) {
-        const { onChange } = this.props;
-        if (onChange) {
-            onChange(newValue);
-        }
-    }
-
-    onSuggestionSelected(event, { suggestion }) {
-        const { onSelect } = this.props;
-        if (onSelect) {
-            onSelect(suggestion);
-        }
-    }
-
-    onSuggestionsFetchRequested() {
-        const { suggestionsEndpoint, suggestions } = this.props;
+    useEffect(() => {
         if (suggestionsEndpoint !== null) {
-            this.fetchSuggestions();
-        } else {
-            this.setState({
-                suggestions,
-            });
+            fetchSuggestions();
         }
-    }
+    }, [suggestionsEndpoint, fetchSuggestions]);
 
-    onSuggestionsClearRequested() {
-        this.setState({
-            suggestions: [],
-        });
-    }
+    const onInputChange = useCallback(
+        (e, { newValue }) => {
+            if (onChange !== null) {
+                onChange(newValue);
+            }
+        },
+        [onChange],
+    );
 
-    onSuggestionsFetched(data) {
-        this.setState({
-            suggestions: data,
-        });
-    }
+    const onSuggestionSelected = useCallback(
+        (event, { suggestion }) => {
+            if (onSelect !== null) {
+                onSelect(suggestion);
+            }
+        },
+        [onSelect],
+    );
 
-    onSuggestionsFetchError() {
-        this.setState({
-            suggestions: [],
-        });
-    }
+    const onSuggestionsFetchRequested = useCallback(() => {
+        if (suggestionsEndpoint !== null) {
+            fetchSuggestions();
+        }
+    }, [suggestionsEndpoint]);
 
-    // eslint-disable-next-line class-methods-use-this
-    getSuggestionValue(suggestion) {
-        const { getSuggestionValue, suggestionValuePath } = this.props;
-        return getSuggestionValue !== null
-            ? getSuggestionValue(suggestion, this.props)
-            : get(suggestion, suggestionValuePath, '');
-    }
+    const onSuggestionsClearRequested = useCallback(() => {
+        setStateSuggestions([]);
+    }, []);
 
-    fetchSuggestions() {
-        const { suggestionsEndpoint } = this.props;
-        getJSON(suggestionsEndpoint, {
-            credentials: 'include',
-        })
-            .then(this.onSuggestionsFetched)
-            .catch(this.onSuggestionsFetchError);
-    }
+    const theme = useMemo(
+        () => ({
+            container: styles.autosuggest,
+            containerOpen: styles.open,
+            input: classNames(['form-control', styles.input]),
+            suggestionsContainer: styles.suggestionsContainer,
+            suggestionsContainerOpen: styles.open,
+            suggestionsList: styles.suggestions,
+            suggestion: styles.suggestion,
+            suggestionHighlighted: styles.highlighted,
+        }),
+        [styles],
+    );
 
-    // eslint-disable-next-line class-methods-use-this
-    renderSuggestions({ containerProps, children }) {
-        return <div {...containerProps}>{children}</div>;
-    }
+    const finalGetSuggestionValue = useCallback(
+        suggestion => {
+            return getSuggestionValue !== null
+                ? getSuggestionValue(suggestion, props)
+                : get(suggestion, suggestionValuePath, '');
+        },
+        [getSuggestionValue, suggestionValuePath],
+    );
 
-    // eslint-disable-next-line class-methods-use-this
-    renderSuggestion(suggestion) {
-        const {
+    const renderSuggestion = useCallback(
+        suggestion => {
+            const thumbnail =
+                getSuggestionThumbnail !== null
+                    ? getSuggestionThumbnail(suggestion, props)
+                    : get(suggestion, suggestionThumbnailPath, null);
+            const title =
+                getSuggestionTitle !== null
+                    ? getSuggestionTitle(suggestion, props)
+                    : get(suggestion, suggestionTitlePath, null);
+            const description =
+                getSuggestionDescription !== null
+                    ? getSuggestionDescription(suggestion, props)
+                    : get(suggestion, suggestionDescriptionPath, null);
+            return (
+                <div className={styles.inner}>
+                    <div className={styles.cols}>
+                        {thumbnail !== null ? (
+                            <div className={styles.col}>
+                                <div
+                                    className={styles.thumbnail}
+                                    style={{
+                                        backgroundImage: `url("${thumbnail}")`,
+                                    }}
+                                />
+                            </div>
+                        ) : null}
+                        <div className={classNames([styles.col, styles.expand])}>
+                            {title !== null ? <div className={styles.title}>{title}</div> : null}
+                            {description !== null ? (
+                                <div className={styles.description}>{description}</div>
+                            ) : null}
+                        </div>
+                    </div>
+                </div>
+            );
+        },
+        [
             getSuggestionTitle,
             getSuggestionDescription,
             getSuggestionThumbnail,
             suggestionTitlePath,
             suggestionDescriptionPath,
             suggestionThumbnailPath,
-        } = this.props;
-        const thumbnail = getSuggestionThumbnail !== null
-            ? getSuggestionThumbnail(suggestion)
-            : get(suggestion, suggestionThumbnailPath, null);
-        const title = getSuggestionTitle !== null
-            ? getSuggestionTitle(suggestion)
-            : get(suggestion, suggestionTitlePath, null);
-        const description = getSuggestionDescription !== null
-            ? getSuggestionDescription(suggestion)
-            : get(suggestion, suggestionDescriptionPath, null);
-        const labelClassNames = classNames({
-            [styles.col]: true,
-            [styles.expand]: true,
-        });
-        const thumbnailStyle = thumbnail !== null
-            ? {
-                backgroundImage: `url(${thumbnail})`,
-            }
-            : null;
-        return (
-            <div className={styles.inner}>
-                <div className={styles.cols}>
-                    {thumbnail ? (
-                        <div className={styles.col}>
-                            <div className={styles.thumbnail} style={thumbnailStyle} />
-                        </div>
-                    ) : null}
-                    <div className={labelClassNames}>
-                        {title !== null ? <div className={styles.title}>{title}</div> : null}
-                        {description !== null ? (
-                            <div className={styles.description}>{description}</div>
-                        ) : null}
-                    </div>
-                </div>
-            </div>
-        );
-    }
+        ],
+    );
 
-    renderInput() {
-        const { value, placeholder, intl } = this.props;
-        const { suggestions } = this.state;
-        const inputPlaceholder = placeholder || '';
-        const inputProps = {
-            value: value || '',
-            onChange: this.onInputChange,
-            placeholder: isObject(inputPlaceholder)
-                ? intl.formatMessage(inputPlaceholder)
-                : inputPlaceholder,
-        };
-        const theme = {
-            container: classNames({
-                [styles.autosuggest]: true,
-            }),
-            containerOpen: classNames({
-                [styles.open]: true,
-            }),
-            input: classNames({
-                'form-control': true,
-                [styles.input]: true,
-            }),
-            suggestionsContainer: classNames({
-                [styles.suggestionsContainer]: true,
-            }),
-            suggestionsContainerOpen: classNames({
-                [styles.open]: true,
-            }),
-            suggestionsList: classNames({
-                [styles.suggestions]: true,
-            }),
-            suggestion: classNames({
-                [styles.suggestion]: true,
-            }),
-            suggestionHighlighted: classNames({
-                [styles.highlighted]: true,
-            }),
-        };
-        return (
+    return (
+        <FormGroup className={styles.container} name={name} label={label} {...other}>
             <Autosuggest
                 suggestions={suggestions}
-                inputProps={inputProps}
+                inputProps={{
+                    value: value || '',
+                    onChange: onInputChange,
+                    placeholder: isMessage(placeholder)
+                        ? intl.formatMessage(placeholder)
+                        : placeholder || '',
+                }}
                 theme={theme}
-                getSuggestionValue={this.getSuggestionValue}
-                renderSuggestion={this.renderSuggestion}
-                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                onSuggestionSelected={this.onSuggestionSelected}
+                getSuggestionValue={finalGetSuggestionValue}
+                renderSuggestion={renderSuggestion}
+                onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                onSuggestionsClearRequested={onSuggestionsClearRequested}
+                onSuggestionSelected={onSuggestionSelected}
             />
-        );
-    }
-
-    render() {
-        const {
-            label, name, value, ...other
-        } = this.props;
-
-        return (
-            <FormGroup
-                className={classNames({
-                    [styles.container]: true,
-                })}
-                name={name}
-                label={label}
-                {...other}
-            >
-                {this.renderInput()}
-            </FormGroup>
-        );
-    }
-}
+        </FormGroup>
+    );
+};
 
 AutosuggestField.propTypes = propTypes;
 AutosuggestField.defaultProps = defaultProps;

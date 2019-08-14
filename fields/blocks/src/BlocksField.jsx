@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+/* eslint-disable react/jsx-props-no-spreading */
+import React from 'react';
 // import PropTypes from 'prop-types';
-import get from 'lodash/get';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import ItemsField from '@panneau/field-items';
 import { defineMessages } from 'react-intl';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useDefinition } from '@panneau/core/contexts';
+import ItemsField from '@panneau/field-items';
 
 const messages = defineMessages({
     typeLabel: {
@@ -28,23 +29,12 @@ const defaultProps = {
     itemTitle: messages.title,
 };
 
-const contextTypes = {
-    definition: PanneauPropTypes.definition,
+const BlocksField = props => {
+    const definition = useDefinition();
+    return <ItemsField types={definition.blocks()} {...props} />;
 };
-
-class BlocksField extends Component {
-    getTypes() {
-        const { definition } = this.context || {};
-        return get(definition || null, 'blocks', null);
-    }
-
-    render() {
-        return <ItemsField types={this.getTypes()} {...this.props} />;
-    }
-}
 
 BlocksField.propTypes = propTypes;
 BlocksField.defaultProps = defaultProps;
-BlocksField.contextTypes = contextTypes;
 
 export default BlocksField;

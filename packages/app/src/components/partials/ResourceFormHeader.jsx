@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { FormattedHTMLMessage, defineMessages, injectIntl } from 'react-intl';
-import get from 'lodash/get';
-import { PropTypes as PanneauPropTypes, isMessage } from '@panneau/core';
-import { Button } from '@panneau/core/components'
+import { defineMessages, injectIntl } from 'react-intl';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { isMessage, getLocalizedName } from '@panneau/core/utils';
+import { Button, Label } from '@panneau/core/components';
 import { useUrlGenerator } from '@panneau/core/contexts';
 
 import styles from '../../styles/partials/resource-form-header.scss';
@@ -27,7 +27,7 @@ const propTypes = {
     action: PropTypes.string,
     type: PropTypes.definitionFormType,
     fullscreen: PanneauPropTypes.bool,
-    resource: PanneauPropTypes.definitions.resource.isRequired,
+    resource: PanneauPropTypes.resource.isRequired,
     title: PanneauPropTypes.label.isRequired,
     titleTyped: PanneauPropTypes.label.isRequired,
     valueHasChanged: PropTypes.bool,
@@ -54,54 +54,39 @@ const ResourceFormHeader = ({
     confirmSwitchTypeMessage,
 }) => {
     const urlGenerator = useUrlGenerator();
-    const { types = [] } = resource;
+    const localizedName = resource.localizedName('a');
 
-    const name = useMemo(
-        () => get(resource, 'messages.names.a', get(resource, 'messages.name', resource.name)),
-        [resource],
-    );
     const resourceTitle = useMemo(() => {
         const customTitle =
             type !== null
-                ? get(
-                      resource,
-                      `messages.titles.resources.${action}_${type.id}`,
-                      get(
-                          resource,
-                          `messages.titles.resources.${action}_typed`,
-                          get(
-                              resource,
-                              `messages.titles.resources.${action}`,
-                              get(resource, 'messages.titles.resources.default', null),
-                          ),
-                      ),
-                  )
-                : get(
-                      resource,
-                      `messages.titles.resources.${action}`,
-                      get(resource, 'messages.titles.resources.default', null),
-                  );
+                ? resource.message(`titles.resources.${action}_${type.id}`) ||
+                  resource.message(`titles.resources.${action}_typed`) ||
+                  resource.message(`titles.resources.${action}`) ||
+                  resource.message('titles.resources.default', null)
+                : resource.message(`titles.resources.${action}`) ||
+                  resource.message('titles.resources.default', null);
         const defaultTitle = type !== null ? titleTyped : title;
         return customTitle || defaultTitle;
     }, [resource, action, type]);
+
     const titleElement = (
         <h1 className={classNames(['mb-0', 'mt-0', styles.title])}>
-            {isMessage(resourceTitle) ? (
-                <FormattedHTMLMessage
-                    {...resourceTitle}
-                    tagName="span"
-                    values={{ name, type: type !== null ? type.label : null }}
-                />
-            ) : (
-                resourceTitle
-            )}
+            <Label
+                isHtml
+                values={{
+                    name: localizedName,
+                    type: type !== null ? getLocalizedName(type) : null,
+                }}
+            >
+                {resourceTitle}
+            </Label>
         </h1>
     );
 
     const onClickSwitchType = e => {
         const confirmMessage = isMessage(confirmSwitchTypeMessage)
             ? intl.formatMessage(confirmSwitchTypeMessage, {
-                  type: type.label,
+                  type: getLocalizedName(type),
               })
             : confirmSwitchTypeMessage;
         // eslint-disable-next-line no-alert
@@ -128,11 +113,9 @@ const ResourceFormHeader = ({
                     <div className={classNames(['col', 'col-md-auto', 'text-right'])}>
                         <Button
                             size="sm"
-                            dropdown={types.map(({ id, label }) => ({
-                                label,
-                                href: `${urlGenerator.route('resource.create', {
-                                    resource: resource.id,
-                                })}?type=${id}`,
+                            dropdown={resource.types().map(({ id, ...typeProps }) => ({
+                                label: getLocalizedName(typeProps),
+                                href: `${urlGenerator.resource(resource, 'create')}?type=${id}`,
                                 active: id === type.id,
                                 onClick: onClickSwitchType,
                             }))}

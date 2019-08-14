@@ -1,13 +1,12 @@
-/* eslint-disable jsx-a11y/anchor-is-valid, react/button-has-type */
-import React, { Fragment } from 'react';
+/* eslint-disable jsx-a11y/anchor-is-valid, react/button-has-type, react/jsx-props-no-spreading */
+import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isString from 'lodash/isString';
 import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
 
+import Label from './Label';
 import * as PanneauPropTypes from '../lib/PropTypes';
-import isMessage from '../utils/isMessage';
 
 const propTypes = {
     type: PropTypes.string,
@@ -78,11 +77,11 @@ const Button = ({
     const finalLabel = children || label;
 
     const inner = (
-        <Fragment>
+        <>
             {isString(icon) ? <span className={icon} /> : icon}
-            {isMessage(finalLabel) ? <FormattedMessage {...finalLabel} /> : finalLabel}
+            {<Label>{finalLabel}</Label>}
             {hasDropdown ? <span className="caret" /> : null}
-        </Fragment>
+        </>
     );
 
     let button;
@@ -119,7 +118,7 @@ const Button = ({
                     const {
                         href: itemHref,
                         label: itemLabel,
-                        external: itemExternal = true,
+                        external: itemExternal = false,
                         target: itemTarget = null,
                         onClick: itemOnClick = null,
                     } = it;
@@ -138,11 +137,11 @@ const Button = ({
 
                     return itemExternal ? (
                         <a {...itemProps} href={itemHref} target={itemTarget}>
-                            {isMessage(itemLabel) ? <FormattedMessage {...itemLabel} /> : itemLabel}
+                            <Label>{itemLabel}</Label>
                         </a>
                     ) : (
                         <Link {...itemProps} to={itemHref}>
-                            {isMessage(itemLabel) ? <FormattedMessage {...itemLabel} /> : itemLabel}
+                            <Label>{itemLabel}</Label>
                         </Link>
                     );
                 })}

@@ -49,7 +49,7 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@babel/runtime": "^7.0.0",
+        "@babel/runtime": "^7.5.5",
         "@fortawesome/fontawesome-free": "^5.7.1",
         "@panneau/app": "^0.7.0",
         "@panneau/core": "^0.6.51",
@@ -62,10 +62,10 @@
         "@panneau/lists": "^0.6.53",
         "@panneau/modals": "^0.6.51",
         "@panneau/previews": "^0.6.52",
-        "bootstrap": "~4.1.1",
+        "bootstrap": "^4.3.1",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
-        "prop-types": "^15.6.0",
+        "prop-types": "^15.7.0",
         "react-intl": "^3.1.6"
     },
     "devDependencies": {
@@ -73,8 +73,8 @@
         "@panneau/form": "^0.6.51",
         "@panneau/layout": "^0.6.9",
         "@panneau/list": "^0.6.51",
-        "react": "^16.8.6",
-        "react-dom": "^16.8.6"
+        "react": "^16.9.0",
+        "react-dom": "^16.9.0"
     },
     "peerDependencies": {
         "react": "^16.8.0",

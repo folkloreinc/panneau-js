@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isArray from 'lodash/isArray';
-import isString from 'lodash/isString';
 import isEmpty from 'lodash/isEmpty';
-import ReactMarkdown from 'react-markdown';
 import { FormattedMessage } from 'react-intl';
-import { PropTypes as PanneauPropTypes, isMessage } from '@panneau/core';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { Label } from '@panneau/core/components';
+import { isMessage } from '@panneau/core/utils';
 
 const propTypes = {
     children: PropTypes.node,
@@ -98,22 +98,11 @@ class FormGroup extends Component {
         if (!helpText) {
             return null;
         }
-        let content = helpText;
-        if (isMessage(helpText)) {
-            content = <FormattedMessage {...helpText} />;
-        } else if (isString(helpText)) {
-            content = (
-                <ReactMarkdown
-                    source={helpText}
-                    linkTarget="_blank"
-                    containerTagName="span"
-                    renderers={{
-                        paragraph: 'span',
-                    }}
-                />
-            );
-        }
-        return <small className="form-text text-muted">{content}</small>;
+        return (
+            <small className="form-text text-muted">
+                <Label>{helpText}</Label>
+            </small>
+        );
     }
 
     renderLabel() {
@@ -143,9 +132,7 @@ class FormGroup extends Component {
 
         const link = collapsible ? (
             <button type="button" className="btn" onClick={this.onCollapseChange}>
-                {caret}
-                {' '}
-                {labelNode}
+                {caret} {labelNode}
             </button>
         ) : (
             labelNode
@@ -199,12 +186,12 @@ class FormGroup extends Component {
 
         const customClassNames = className
             ? className.split(' ').reduce(
-                (obj, key) => ({
-                    ...obj,
-                    [key]: true,
-                }),
-                {},
-            )
+                  (obj, key) => ({
+                      ...obj,
+                      [key]: true,
+                  }),
+                  {},
+              )
             : null;
         const formGroupClassNames = classNames({
             'form-group': true,

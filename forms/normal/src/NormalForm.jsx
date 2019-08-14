@@ -1,12 +1,18 @@
-/* eslint-disable react/button-has-type */
+/* eslint-disable react/button-has-type, react/jsx-props-no-spreading */
 import React, { useCallback, useMemo } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
 import isFunction from 'lodash/isFunction';
-import { PropTypes as PanneauPropTypes, ErrorsComponent as Errors } from '@panneau/core';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { Errors } from '@panneau/core/components';
 import { FieldsGroup } from '@panneau/field';
-import { PropTypes as FormPropTypes, FormActions, messages, withFormContainer } from '@panneau/form';
+import {
+    PropTypes as FormPropTypes,
+    FormActions,
+    messages,
+    withFormContainer,
+} from '@panneau/form';
 
 import styles from './styles.scss';
 

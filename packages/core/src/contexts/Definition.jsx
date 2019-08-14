@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import * as PanneauPropTypes from '../lib/PropTypes';
+import Definition from '../lib/Definition';
 
-export const DefinitionContext = React.createContext(null);
+export const DefinitionContext = React.createContext(new Definition());
 
 export const useDefinition = () => useContext(DefinitionContext);
 

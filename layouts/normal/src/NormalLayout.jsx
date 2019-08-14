@@ -1,25 +1,15 @@
-import React, { Component } from 'react';
+/* eslint-disable react/jsx-props-no-spreading */
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Header, Footer } from '@panneau/layout';
-import get from 'lodash/get';
+import { useDefinition } from '@panneau/core/contexts';
 
 import styles from './styles.scss';
 
 const propTypes = {
     children: PropTypes.node,
-    applicationDefinition: PropTypes.shape({
-        name: PropTypes.string,
-    }),
-    definition: PropTypes.shape({
-        header: PropTypes.oneOfType([
-            PropTypes.bool,
-            PropTypes.object,
-        ]),
-        footer: PropTypes.oneOfType([
-            PropTypes.bool,
-            PropTypes.object,
-        ]),
-    }),
+    header: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+    footer: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
     gotoHome: PropTypes.func.isRequired,
     gotoLink: PropTypes.func.isRequired,
     gotoRoute: PropTypes.func.isRequired,
@@ -27,67 +17,41 @@ const propTypes = {
 
 const defaultProps = {
     children: null,
-    applicationDefinition: null,
-    definition: null,
+    header: true,
+    footer: true,
 };
 
-class NormalLayout extends Component {
-    constructor(props) {
-        super(props);
-
-        this.onHeaderNavbarClickItem = this.onHeaderNavbarClickItem.bind(this);
-    }
-
-    // eslint-disable-next-line
-    onHeaderNavbarClickItem() {}
-
-    render() {
-        const {
-            children,
-            applicationDefinition,
-            definition,
-            gotoHome,
-            gotoLink,
-            gotoRoute,
-            ...props
-        } = this.props;
-
-        const title = get(applicationDefinition, 'name', 'Panneau');
-        const header = get(definition, 'header', true);
-        const footer = get(definition, 'footer', true);
-
-        return (
-            <div className={styles.container}>
-                { header !== false ? (
-                    <div className={styles.header}>
-                        <Header
-                            {...props}
-                            title={title}
-                            {...header}
-                            gotoHome={gotoHome}
-                            gotoLink={gotoLink}
-                            gotoRoute={gotoRoute}
-                            onNavbarClickItem={this.onHeaderNavbarClickItem}
-                        />
-                    </div>
-                ) : null }
-
-                <div className={styles.content}>
-                    { children }
+const NormalLayout = ({ header, footer, children, gotoHome, gotoLink, gotoRoute }) => {
+    const definition = useDefinition();
+    return (
+        <div className={styles.container}>
+            {header !== false ? (
+                <div className={styles.header}>
+                    <Header
+                        title={definition.localizedName()}
+                        {...header}
+                        gotoHome={gotoHome}
+                        gotoLink={gotoLink}
+                        gotoRoute={gotoRoute}
+                    />
                 </div>
+            ) : null}
 
-                { footer !== false ? (
-                    <div className={styles.footer}>
-                        <Footer
-                            {...props}
-                            {...footer}
-                        />
-                    </div>
-                ) : null }
-            </div>
-        );
-    }
-}
+            <div className={styles.content}>{children}</div>
+
+            {footer !== false ? (
+                <div className={styles.footer}>
+                    <Footer
+                        {...footer}
+                        gotoHome={gotoHome}
+                        gotoLink={gotoLink}
+                        gotoRoute={gotoRoute}
+                    />
+                </div>
+            ) : null}
+        </div>
+    );
+};
 
 NormalLayout.propTypes = propTypes;
 NormalLayout.defaultProps = defaultProps;

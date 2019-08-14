@@ -47,18 +47,18 @@
     "start": "npm run storybook"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
+    "@babel/runtime": "^7.5.5",
     "@panneau/core": "^0.6.51",
     "@panneau/field": "^0.6.52",
     "@panneau/field-locale": "^0.6.52",
     "@panneau/field-text": "^0.6.52",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
-    "prop-types": "^15.6.0"
+    "prop-types": "^15.7.0"
   },
   "devDependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
   },
   "peerDependencies": {
     "react": "^16.8.0",

@@ -6,7 +6,7 @@ import ItemsField from '@panneau/field-items';
 const propTypes = {
     value: PropTypes.arrayOf(PropTypes.shape({})),
     onChange: PropTypes.func,
-    FieldComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
+    FieldComponent: PropTypes.elementType.isRequired,
 };
 
 const defaultProps = {

@@ -1,0 +1,89 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://panneau.dev/schemas/resource.json",
+    "title": "Resource definition",
+    "description": "Definition for a resource",
+    "type": "object",
+    "properties": {
+        "id": {
+            "description": "The id of the resource",
+            "type": "string",
+            "required": true
+        },
+
+        "name": {
+            "description": "The name of the resource",
+            "type": "string",
+            "required": true
+        },
+
+        "type": {
+            "description": "The type of the resource",
+            "type": "string"
+        },
+
+        "lists": {
+            "description": "The resource lists definition",
+            "$ref": "list.json",
+            "patternProperties": {
+                "^(index)$": {
+                    "$ref": "list.json"
+                }
+            }
+        },
+
+        "forms": {
+            "description": "The resource forms definition",
+            "$ref": "form.json",
+            "patternProperties": {
+                "^(create|edit)$": {
+                    "$ref": "form.json"
+                }
+            }
+        },
+
+        "messages": {
+            "description": "The resource translations messages",
+            "$ref": "messages.json"
+        },
+
+        "routes": {
+            "allOf": [
+                {
+                    "$ref": "routes.json"
+                },
+                {
+                    "required": [
+                        "index",
+                        "create",
+                        "show",
+                        "edit",
+                        "store",
+                        "update",
+                        "delete",
+                        "destroy"
+                    ]
+                }
+            ]
+        }
+    },
+
+    "allOf": [
+        {
+            "if": {
+                "properties": { "type": { "const": "typed" } }
+            },
+            "then": {
+                "properties": {
+                    "types": {
+                        "description": "The resource types",
+                        "type": "array",
+                        "items": {
+                            "$ref": "type.json"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
