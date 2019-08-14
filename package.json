@@ -30,7 +30,8 @@
         "build:storybook": "build-storybook -o docs/storybook",
         "build:schemas": "rsync -avh ./packages/schemas/docs/ ./docs/schemas/",
         "build:gitbook": "gitbook install && gitbook build __docs__ docs/",
-        "build": "lerna run build && npm run build:gitbook && npm run build:storybook && npm run build:schemas",
+        "build:docs": "npm run build:gitbook && npm run build:storybook && npm run build:schemas",
+        "build": "lerna run build && npm run build:docs",
         "start": "npm run storybook"
     },
     "devDependencies": {
