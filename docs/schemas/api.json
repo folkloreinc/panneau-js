@@ -8,6 +8,10 @@
         "endpoint": {
             "description": "The api endpoint",
             "type": "string"
+        },
+        "uploadEndpoint": {
+            "description": "The upload endpoint",
+            "type": "string"
         }
     }
 }
