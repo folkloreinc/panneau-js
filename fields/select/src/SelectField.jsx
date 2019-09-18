@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isObject from 'lodash/isObject';
@@ -7,9 +8,7 @@ import { FormGroup } from '@panneau/field';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { isMessage } from '@panneau/core/utils';
 import { defineMessages, injectIntl } from 'react-intl';
-import {
-    AsyncCreatable, Async, Creatable, Select,
-} from './vendors';
+import { AsyncCreatable, Async, Creatable, Select } from './vendors';
 import styles from './styles.scss';
 
 const messages = defineMessages({
@@ -39,10 +38,10 @@ const messages = defineMessages({
 const compareOption = (inputValue, option) => {
     const candidate = inputValue.toLowerCase();
     return (
-        (isString(option.value) && option.value.toLowerCase() === candidate)
-        || option.value === candidate
-        || (isString(option.label) && option.label.toLowerCase() === candidate)
-        || option.label === candidate
+        (isString(option.value) && option.value.toLowerCase() === candidate) ||
+        option.value === candidate ||
+        (isString(option.label) && option.label.toLowerCase() === candidate) ||
+        option.label === candidate
     );
 };
 
@@ -197,9 +196,7 @@ class SelectField extends Component {
     }
 
     onNewOptionClick(optionLabel) {
-        const {
-            multiple, value, onNewOption, onChange,
-        } = this.props;
+        const { multiple, value, onNewOption, onChange } = this.props;
         if (onNewOption !== null) {
             onNewOption(optionLabel);
             return;
@@ -223,9 +220,7 @@ class SelectField extends Component {
     }
 
     onChange(value) {
-        const {
-            multiple, notClearable, cannotBeEmpty, onChange,
-        } = this.props;
+        const { multiple, notClearable, cannotBeEmpty, onChange } = this.props;
         let newValue;
         if (multiple && value === null) {
             newValue = null;
@@ -300,9 +295,9 @@ class SelectField extends Component {
             return isValidNewOption(inputValue, selectValue, selectOptions);
         }
         return !(
-            !inputValue
-            || selectValue.some(option => compareOption(inputValue, option))
-            || selectOptions.some(option => compareOption(inputValue, option))
+            !inputValue ||
+            selectValue.some(option => compareOption(inputValue, option)) ||
+            selectOptions.some(option => compareOption(inputValue, option))
         );
     }
 
@@ -318,7 +313,7 @@ class SelectField extends Component {
     }
 
     addLoadedOptions(options) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             this.setState(
                 () => ({
                     loadedOptions: [...options],
@@ -382,8 +377,8 @@ class SelectField extends Component {
         if (finalValue !== null) {
             selectValue = multiple
                 ? finalValue
-                    .map(val => this.getOptionFromValue(val, allOptions))
-                    .filter(it => it !== null)
+                      .map(val => this.getOptionFromValue(val, allOptions))
+                      .filter(it => it !== null)
                 : this.getOptionFromValue(finalValue, allOptions);
         }
 
@@ -407,11 +402,11 @@ class SelectField extends Component {
                         {...other}
                         {...(async
                             ? {
-                                loadOptions: this.loadOptions,
-                            }
+                                  loadOptions: this.loadOptions,
+                              }
                             : {
-                                options: this.getOptions(),
-                            })}
+                                  options: this.getOptions(),
+                              })}
                         placeholder={
                             isMessage(placeholder) ? intl.formatMessage(placeholder) : placeholder
                         }
@@ -442,9 +437,9 @@ class SelectField extends Component {
                         isDisabled={disabled}
                         isSearchable={!notSearchable}
                         isClearable={
-                            (cannotBeEmpty
-                                && (!shouldTakeDefaultValue && finalValue !== defaultValue))
-                            || (!cannotBeEmpty && !notClearable)
+                            (cannotBeEmpty &&
+                                (!shouldTakeDefaultValue && finalValue !== defaultValue)) ||
+                            (!cannotBeEmpty && !notClearable)
                         }
                         value={selectValue}
                         onChange={this.onChange}
