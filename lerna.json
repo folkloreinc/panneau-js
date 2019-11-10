@@ -1,17 +1,17 @@
 {
-  "packages": [
-    "fields/*",
-    "forms/*",
-    "layouts/*",
-    "lists/*",
-    "modals/*",
-    "packages/*",
-    "previews/*"
-  ],
-  "version": "0.6.53",
-  "command": {
-    "publish": {
-      "allowBranch": "master"
+    "packages": [
+        "fields/*",
+        "forms/*",
+        "layouts/*",
+        "lists/*",
+        "modals/*",
+        "packages/*",
+        "previews/*"
+    ],
+    "version": "0.6.53",
+    "command": {
+        "publish": {
+            "allowBranch": ["master", "v0.6.x"]
+        }
     }
-  }
 }
