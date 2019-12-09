@@ -96,7 +96,7 @@ class DateField extends Component {
                         : moment(),
                 }
                 : getMomentOrNull(value),
-            textValue: null,
+            textValue: value,
         };
     }
 

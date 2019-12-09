@@ -15,6 +15,7 @@ storiesOf('Fields/Date', module)
             <KeepValue>
                 <DateField
                     label="Label"
+                    value="2019-01-01"
                     onChange={action('change')}
                 />
             </KeepValue>

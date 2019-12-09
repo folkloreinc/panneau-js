@@ -62,9 +62,11 @@ const postCssLoader = {
 const sassLoader = {
     loader: require.resolve('sass-loader'),
     options: {
-        includePaths: [
-            ...getResolveModules(),
-        ],
+        sassOptions: {
+            includePaths: [
+                ...getResolveModules(),
+            ],
+        },
         sourceMap: shouldUseSourceMap,
     },
 };
@@ -80,11 +82,12 @@ const cssModulesLoader = {
     loader: require.resolve('css-loader'),
     options: {
         sourceMap: shouldUseSourceMap,
-        modules: true,
-        // prettier-ignore
-        getLocalIdent: (context, localIdentName, localName) => (
-            getLocalIdent(localName, context.resourcePath)
-        ),
+        modules: {
+            // prettier-ignore
+            getLocalIdent: (context, localIdentName, localName) => (
+                getLocalIdent(localName, context.resourcePath)
+            ),
+        },
     },
 };
 

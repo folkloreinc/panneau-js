@@ -2,11 +2,11 @@
   {
     "id": "layouts.navbar.resource.index",
     "description": "The label for a resource \"index\" navbar menu",
-    "defaultMessage": "View all {resource}"
+    "defaultMessage": "View all { resource }"
   },
   {
     "id": "layouts.navbar.resource.create",
     "description": "The label for a resource \"create\" navbar menu",
-    "defaultMessage": "Create {resource}"
+    "defaultMessage": "Create { resource }"
   }
 ]
