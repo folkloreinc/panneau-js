@@ -1,6 +1,6 @@
 {
     "name": "@panneau/lists",
-    "version": "0.6.56",
+    "version": "0.6.57",
     "description": "Lists for Panneau",
     "keywords": [
         "react",
@@ -48,9 +48,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.6.56",
-        "@panneau/list": "^0.6.56",
-        "@panneau/list-table": "^0.6.56",
+        "@panneau/core": "^0.6.57",
+        "@panneau/list": "^0.6.57",
+        "@panneau/list-table": "^0.6.57",
         "invariant": "^2.2.2",
         "lodash": "^4.17.4",
         "prop-types": "^15.6.0"
