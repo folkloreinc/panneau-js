@@ -1,6 +1,6 @@
 {
     "name": "@panneau/previews",
-    "version": "0.6.57",
+    "version": "0.6.58",
     "description": "Previews for Panneau",
     "keywords": [
         "react",
@@ -48,9 +48,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.6.57",
-        "@panneau/preview-component": "^0.6.57",
-        "@panneau/preview-json": "^0.6.57",
+        "@panneau/core": "^0.6.58",
+        "@panneau/preview-component": "^0.6.58",
+        "@panneau/preview-json": "^0.6.58",
         "invariant": "^2.2.2",
         "lodash": "^4.17.4",
         "prop-types": "^15.6.0"
@@ -63,5 +63,5 @@
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
     },
-    "gitHead": "d00578635711fd6511f2ec6091754d04dcf67009"
+    "gitHead": "fa58eeb732547c7ac63ee1390cc1715985a75158"
 }

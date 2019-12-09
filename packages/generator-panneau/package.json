@@ -1,6 +1,6 @@
 {
     "name": "generator-panneau",
-    "version": "0.6.57",
+    "version": "0.6.58",
     "description": "Yeoman generator for Panneau",
     "keywords": [
         "yeoman-generator"
@@ -44,5 +44,5 @@
         "yeoman-generator": "^2.0.1",
         "yeoman-remote": "^1.0.1"
     },
-    "gitHead": "8947c52802d8c1596eff0d4edd9d1447c1b2d020"
+    "gitHead": "fa58eeb732547c7ac63ee1390cc1715985a75158"
 }

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "0.6.57",
+    "version": "0.6.58",
     "description": "Fields group for Panneau",
     "keywords": [
         "react",
@@ -48,23 +48,23 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.6.57",
-        "@panneau/field": "^0.6.57",
-        "@panneau/field-autosuggest": "^0.6.57",
-        "@panneau/field-blocks": "^0.6.57",
-        "@panneau/field-code": "^0.6.57",
-        "@panneau/field-color": "^0.6.57",
-        "@panneau/field-date": "^0.6.57",
-        "@panneau/field-item": "^0.6.57",
-        "@panneau/field-items": "^0.6.57",
-        "@panneau/field-links": "^0.6.57",
-        "@panneau/field-media": "^0.6.57",
-        "@panneau/field-page": "^0.6.57",
-        "@panneau/field-select": "^0.6.57",
-        "@panneau/field-slider": "^0.6.57",
-        "@panneau/field-text": "^0.6.57",
-        "@panneau/field-toggle": "^0.6.57",
-        "@panneau/field-url": "^0.6.57",
+        "@panneau/core": "^0.6.58",
+        "@panneau/field": "^0.6.58",
+        "@panneau/field-autosuggest": "^0.6.58",
+        "@panneau/field-blocks": "^0.6.58",
+        "@panneau/field-code": "^0.6.58",
+        "@panneau/field-color": "^0.6.58",
+        "@panneau/field-date": "^0.6.58",
+        "@panneau/field-item": "^0.6.58",
+        "@panneau/field-items": "^0.6.58",
+        "@panneau/field-links": "^0.6.58",
+        "@panneau/field-media": "^0.6.58",
+        "@panneau/field-page": "^0.6.58",
+        "@panneau/field-select": "^0.6.58",
+        "@panneau/field-slider": "^0.6.58",
+        "@panneau/field-text": "^0.6.58",
+        "@panneau/field-toggle": "^0.6.58",
+        "@panneau/field-url": "^0.6.58",
         "invariant": "^2.2.2",
         "lodash": "^4.17.4",
         "prop-types": "^15.6.0"
@@ -77,5 +77,5 @@
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
     },
-    "gitHead": "d00578635711fd6511f2ec6091754d04dcf67009"
+    "gitHead": "fa58eeb732547c7ac63ee1390cc1715985a75158"
 }
