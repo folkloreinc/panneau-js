@@ -118,4 +118,5 @@ const mapResourceFromDefinition = (definition, { resource }) => ({
 });
 const WithDefinitionContainer = withDefinition(mapResourceFromDefinition)(NavbarResource);
 const WithUrlGeneratorContainer = withUrlGenerator()(WithDefinitionContainer);
+
 export default WithUrlGeneratorContainer;

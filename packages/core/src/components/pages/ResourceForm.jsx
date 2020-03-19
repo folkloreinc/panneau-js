@@ -10,7 +10,7 @@ import {
 
 import * as PanneauPropTypes from '../../lib/PropTypes';
 import { isMessage } from '../../utils';
-import withUrlGenerator from '../../lib/withUrlGenerator';
+import { withUrlGenerator } from '../../lib/withUrlGenerator';
 import withResourceApi from '../../lib/withResourceApi';
 import withFormsCollection from '../../lib/withFormsCollection';
 import Errors from '../partials/Errors';
@@ -310,13 +310,15 @@ class ResourceForm extends Component {
         if (formSuccess === null) {
             return null;
         }
-        return formSuccess ? ({
-            type: 'success',
-            label: successNoticeLabel,
-        }) : ({
-            type: 'error',
-            label: errorNoticeLabel,
-        });
+        return formSuccess
+            ? {
+                type: 'success',
+                label: successNoticeLabel,
+            }
+            : {
+                type: 'error',
+                label: errorNoticeLabel,
+            };
     }
 
     isTyped() {
@@ -477,9 +479,7 @@ class ResourceForm extends Component {
 
     renderForm() {
         const { formsCollection, readOnly } = this.props;
-        const {
-            item, formValue, formErrors,
-        } = this.state;
+        const { item, formValue, formErrors } = this.state;
         const { type, className = null, ...formProps } = this.getForm();
         const FormComponent = formsCollection.getComponent(type);
         const buttons = this.getButtons();
@@ -488,9 +488,12 @@ class ResourceForm extends Component {
         return FormComponent !== null ? (
             <FormComponent
                 {...formProps}
-                className={classNames([styles.form, {
-                    [className]: className !== null,
-                }])}
+                className={classNames([
+                    styles.form,
+                    {
+                        [className]: className !== null,
+                    },
+                ])}
                 readOnly={readOnly}
                 buttons={buttons}
                 value={formValue || item}

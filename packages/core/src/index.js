@@ -1,10 +1,14 @@
 /** @module panneau/core */
 import Panneau from './Panneau';
-import { Panneau as PanneauComponent, Loading as LoadingComponent, Errors as ErrorsComponent } from './components/index';
+import {
+    Panneau as PanneauComponent,
+    Loading as LoadingComponent,
+    Errors as ErrorsComponent,
+} from './components/index';
 
 import PropTypes from './lib/PropTypes';
 import ComponentsCollection from './lib/ComponentsCollection';
-import withUrlGenerator from './lib/withUrlGenerator';
+import { withUrlGenerator } from './lib/withUrlGenerator';
 import withDefinition from './lib/withDefinition';
 import withResourceApi from './lib/withResourceApi';
 import withComponentsCollection from './lib/withComponentsCollection';

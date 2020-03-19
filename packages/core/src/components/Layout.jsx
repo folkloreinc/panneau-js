@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 
 import * as PanneauPropTypes from '../lib/PropTypes';
-import withUrlGenerator from '../lib/withUrlGenerator';
+import { withUrlGenerator } from '../lib/withUrlGenerator';
 import withDefinition from '../lib/withDefinition';
 import withLayoutsCollection from '../lib/withLayoutsCollection';
 

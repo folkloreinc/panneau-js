@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
 
 import ResourceForm from './ResourceForm';
-import withUrlGenerator from '../../lib/withUrlGenerator';
+import { withUrlGenerator } from '../../lib/withUrlGenerator';
 
 const messages = defineMessages({
     create: {
@@ -27,9 +27,7 @@ const propTypes = {
     gotoResourceAction: PropTypes.func.isRequired,
 };
 
-const defaultProps = {
-
-};
+const defaultProps = {};
 
 class ResourceCreate extends Component {
     constructor(props) {

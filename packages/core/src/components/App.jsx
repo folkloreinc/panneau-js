@@ -10,7 +10,7 @@ import queryString from 'query-string';
 import 'bootstrap';
 
 import * as PanneauPropTypes from '../lib/PropTypes';
-import withUrlGenerator from '../lib/withUrlGenerator';
+import { withUrlGenerator } from '../lib/withUrlGenerator';
 
 import Layout from './Layout';
 import Home from './pages/Home';
@@ -59,7 +59,6 @@ const childContextTypes = {
 class App extends Component {
     constructor(props) {
         super(props);
-
         this.renderResourceRoutes = this.renderResourceRoutes.bind(this);
     }
 

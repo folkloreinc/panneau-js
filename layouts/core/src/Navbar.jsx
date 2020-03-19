@@ -152,7 +152,11 @@ class Navbar extends Component {
 
         return (
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <Link to={{ pathname: titleLink }} className="navbar-brand" onClick={this.onClickTitle}>
+                <Link
+                    to={{ pathname: titleLink }}
+                    className="navbar-brand"
+                    onClick={this.onClickTitle}
+                >
                     {title}
                 </Link>
                 <button

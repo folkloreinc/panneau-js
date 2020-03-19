@@ -51,7 +51,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@folklore/react-container": "^0.1.12",
+        "@folklore/react-container": "^0.2.2",
         "@fortawesome/fontawesome-free": "^5.7.1",
         "bootstrap": "~4.1.1",
         "classnames": "^2.2.5",
@@ -67,7 +67,7 @@
         "prop-types": "^15.6.0",
         "query-string": "^6.1.0",
         "react-intl": "^2.7.2",
-        "react-redux": "^6.0.0",
+        "react-redux": "^7.0.0",
         "react-router": "^5.0.0",
         "react-router-dom": "^5.0.0",
         "whatwg-fetch": "^2.0.3",
@@ -75,8 +75,8 @@
     },
     "devDependencies": {
         "jquery-slim": "^3.0.0",
-        "react": "^16.7.0",
-        "react-dom": "^16.7.0",
+        "react": "^16.9.0",
+        "react-dom": "^16.9.0",
         "react-intl": "^2.4.0"
     },
     "peerDependencies": {
