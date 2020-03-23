@@ -10,9 +10,14 @@
     "defaultMessage": "{name}"
   },
   {
-    "id": "core.titles.resources.typeFilters",
+    "id": "core.buttons.resources.type_filters",
     "description": "The filters of the resource index page",
     "defaultMessage": "Filters"
+  },
+  {
+    "id": "core.buttons.resources.search",
+    "description": "The search placeholder",
+    "defaultMessage": "Search"
   },
   {
     "id": "core.resources.index.confirm_delete",

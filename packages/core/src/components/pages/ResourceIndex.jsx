@@ -28,9 +28,14 @@ const messages = defineMessages({
         defaultMessage: '{name}',
     },
     typeFilters: {
-        id: 'core.titles.resources.typeFilters',
+        id: 'core.buttons.resources.type_filters',
         description: 'The filters of the resource index page',
         defaultMessage: 'Filters',
+    },
+    search: {
+        id: 'core.buttons.resources.search',
+        description: 'The search placeholder',
+        defaultMessage: 'Search',
     },
     confirmDelete: {
         id: 'core.resources.index.confirm_delete',
@@ -55,6 +60,7 @@ const propTypes = {
     showTypeFilters: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.message,
     typeFiltersLabel: PanneauPropTypes.message,
+    searchLabel: PanneauPropTypes.message,
     confirmDeleteMessage: PanneauPropTypes.message,
     getResourceActionUrl: PropTypes.func.isRequired,
     gotoResourceAction: PropTypes.func.isRequired,
@@ -69,6 +75,7 @@ const defaultProps = {
     showSearch: true,
     showTypeFilters: true,
     addButtonLabel: messages.add,
+    searchLabel: messages.search,
     typeFiltersLabel: messages.typeFilters,
     confirmDeleteMessage: messages.confirmDelete,
 };
@@ -88,7 +95,7 @@ class ResourceIndex extends Component {
     }
 
     static getQueryFromLocation(location = null) {
-        return queryString.parse(location ? location.search : window.location.search);
+        return queryString.parse(location ? location.search : window.location.search) || {};
     }
 
     constructor(props) {
@@ -213,7 +220,14 @@ class ResourceIndex extends Component {
 
     loadItems() {
         const { resourceApi, query } = this.props;
+        const { q, type } = ResourceIndex.getQueryFromLocation() || {};
         const params = {};
+        if (q) {
+            params.q = q;
+        }
+        if (type) {
+            params.type = type;
+        }
         if (this.isPaginated()) {
             const page = query.page || null;
             if (page !== null) {
@@ -354,9 +368,11 @@ class ResourceIndex extends Component {
 
     renderFilters() {
         const {
+            intl,
             resource,
             getResourceActionUrl,
             typeFiltersLabel,
+            searchLabel,
             showTypeFilters,
             showSearch,
         } = this.props;
@@ -365,6 +381,10 @@ class ResourceIndex extends Component {
         if (!showTypeFilters && !showSearch) return null;
 
         const types = get(resource, 'types', []);
+        const lists = get(resource, 'lists', {});
+
+        const withTypeFilters = lists.withTypeFilters || showTypeFilters;
+        const withSearch = lists.withSearch || showSearch;
 
         const buttonLabel = isString(typeFiltersLabel) ? (
             typeFiltersLabel
@@ -375,10 +395,13 @@ class ResourceIndex extends Component {
         return (
             <div
                 className={classNames({
-                    filters: true,
+                    [styles.filters]: true,
+                    'd-flex': true,
+                    'flex-row ': true,
+                    'justify-content-between': true,
                 })}
             >
-                {showTypeFilters ? (
+                {withTypeFilters && types.length > 0 ? (
                     <div
                         className={classNames({
                             'btn-group': true,
@@ -412,7 +435,7 @@ class ResourceIndex extends Component {
                         </div>
                     </div>
                 ) : null}
-                {showSearch ? (
+                {withSearch ? (
                     <div
                         className={classNames({
                             'btn-group': true,
@@ -425,6 +448,7 @@ class ResourceIndex extends Component {
                             })}
                             type="text"
                             value={search || ''}
+                            placeholder={intl.formatMessage(searchLabel)}
                             onChange={this.onSearchChange}
                             onKeyPress={this.onSearch}
                         />
