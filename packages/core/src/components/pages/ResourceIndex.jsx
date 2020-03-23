@@ -72,8 +72,8 @@ const defaultProps = {
     title: messages.title,
     errors: null,
     showAddButton: true,
-    showSearch: true,
-    showTypeFilters: true,
+    showSearch: false,
+    showTypeFilters: false,
     addButtonLabel: messages.add,
     searchLabel: messages.search,
     typeFiltersLabel: messages.typeFilters,
@@ -162,7 +162,6 @@ class ResourceIndex extends Component {
 
     onClickAction(e, action, it) {
         const { getResourceActionUrl, gotoResourceAction } = this.props;
-
         const useRouter = get(action, 'useRouter', true);
 
         switch (action.id) {
@@ -540,7 +539,7 @@ class ResourceIndex extends Component {
         const containerClassNames = classNames({
             [styles.container]: true,
         });
-        console.log(this.props, this.state); // eslint-disable-line
+        // console.log(this.props, this.state); // eslint-disable-line
         return (
             <div className={containerClassNames}>
                 <div className="container">
