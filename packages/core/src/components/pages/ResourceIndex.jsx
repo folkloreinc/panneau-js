@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
 import isObject from 'lodash/isObject';
+import queryString from 'query-string';
 import classNames from 'classnames';
 import { defineMessages, FormattedMessage, injectIntl } from 'react-intl';
 import Loading from '../partials/Loading';
@@ -26,6 +27,11 @@ const messages = defineMessages({
         description: 'The title of the resource index page',
         defaultMessage: '{name}',
     },
+    typeFilters: {
+        id: 'core.titles.resources.typeFilters',
+        description: 'The filters of the resource index page',
+        defaultMessage: 'Filters',
+    },
     confirmDelete: {
         id: 'core.resources.index.confirm_delete',
         description: 'The confirm message when deleting on the resource index page',
@@ -45,7 +51,10 @@ const propTypes = {
     title: PanneauPropTypes.message,
     errors: PropTypes.arrayOf(PropTypes.string),
     showAddButton: PropTypes.bool,
+    showSearch: PropTypes.bool,
+    showTypeFilters: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.message,
+    typeFiltersLabel: PanneauPropTypes.message,
     confirmDeleteMessage: PanneauPropTypes.message,
     getResourceActionUrl: PropTypes.func.isRequired,
     gotoResourceAction: PropTypes.func.isRequired,
@@ -57,15 +66,15 @@ const defaultProps = {
     title: messages.title,
     errors: null,
     showAddButton: true,
+    showSearch: true,
+    showTypeFilters: true,
     addButtonLabel: messages.add,
+    typeFiltersLabel: messages.typeFilters,
     confirmDeleteMessage: messages.confirmDelete,
 };
 
 class ResourceIndex extends Component {
-    static getDerivedStateFromProps(
-        { query: nextQuery, errors: nextErrors },
-        { query, errors },
-    ) {
+    static getDerivedStateFromProps({ query: nextQuery, errors: nextErrors }, { query, errors }) {
         const queryChanged = nextQuery !== query;
         const errorsChanged = nextErrors !== errors;
         if (queryChanged || errorsChanged) {
@@ -78,6 +87,10 @@ class ResourceIndex extends Component {
         return null;
     }
 
+    static getQueryFromLocation(location = null) {
+        return queryString.parse(location ? location.search : window.location.search);
+    }
+
     constructor(props) {
         super(props);
 
@@ -85,12 +98,17 @@ class ResourceIndex extends Component {
         this.onItemsLoadError = this.onItemsLoadError.bind(this);
         this.onClickAction = this.onClickAction.bind(this);
         this.onItemDeleted = this.onItemDeleted.bind(this);
+        this.onSearchChange = this.onSearchChange.bind(this);
+        this.onSearch = this.onSearch.bind(this);
+
+        const query = ResourceIndex.getQueryFromLocation();
 
         this.state = {
             isLoading: props.items === null,
             query: null, // eslint-disable-line react/no-unused-state
             items: props.items,
             pagination: null,
+            search: query.q || null,
             errors: props.errors,
         };
     }
@@ -169,6 +187,23 @@ class ResourceIndex extends Component {
         this.setState(({ items }) => ({
             items: items.filter(it => it.id !== id),
         }));
+    }
+
+    onSearchChange(e) {
+        const value = e.target.value ? e.target.value : null;
+        this.setState({
+            search: value,
+        });
+    }
+
+    onSearch(e) {
+        if (e.key === 'Enter') {
+            const { getResourceActionUrl } = this.props;
+            const { search } = this.state;
+            const searchString = queryString.stringify({ q: search });
+            const location = `${getResourceActionUrl('index')}?${searchString}`;
+            window.location.href = location;
+        }
     }
 
     isPaginated() {
@@ -317,6 +352,88 @@ class ResourceIndex extends Component {
         );
     }
 
+    renderFilters() {
+        const {
+            resource,
+            getResourceActionUrl,
+            typeFiltersLabel,
+            showTypeFilters,
+            showSearch,
+        } = this.props;
+        const { search } = this.state;
+
+        if (!showTypeFilters && !showSearch) return null;
+
+        const types = get(resource, 'types', []);
+
+        const buttonLabel = isString(typeFiltersLabel) ? (
+            typeFiltersLabel
+        ) : (
+            <FormattedMessage {...typeFiltersLabel} />
+        );
+
+        return (
+            <div
+                className={classNames({
+                    filters: true,
+                })}
+            >
+                {showTypeFilters ? (
+                    <div
+                        className={classNames({
+                            'btn-group': true,
+                        })}
+                    >
+                        <button
+                            type="button"
+                            className={classNames({
+                                btn: true,
+                                'btn-primary': true,
+                                'dropdown-toggle': true,
+                            })}
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                        >
+                            {buttonLabel}
+                            {' '}
+                            <span className="caret" />
+                        </button>
+                        <div className="dropdown-menu">
+                            {types.map(({ id, label }) => (
+                                <Link
+                                    key={`add-button-${id}`}
+                                    to={`${getResourceActionUrl('index')}?type=${id}`}
+                                    className="dropdown-item"
+                                >
+                                    {label}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                ) : null}
+                {showSearch ? (
+                    <div
+                        className={classNames({
+                            'btn-group': true,
+                        })}
+                    >
+                        <input
+                            className={classNames({
+                                input: true,
+                                'form-control': true,
+                            })}
+                            type="text"
+                            value={search || ''}
+                            onChange={this.onSearchChange}
+                            onKeyPress={this.onSearch}
+                        />
+                    </div>
+                ) : null}
+            </div>
+        );
+    }
+
     renderErrors() {
         const { errors } = this.state;
 
@@ -399,12 +516,14 @@ class ResourceIndex extends Component {
         const containerClassNames = classNames({
             [styles.container]: true,
         });
+        console.log(this.props, this.state); // eslint-disable-line
         return (
             <div className={containerClassNames}>
                 <div className="container">
                     <div className="row justify-content-md-center">
                         <div className="col-lg-8">
                             {this.renderHeader()}
+                            {this.renderFilters()}
                             <div className={styles.listContainer}>
                                 <div className={styles.list}>
                                     {items !== null ? this.renderList() : null}

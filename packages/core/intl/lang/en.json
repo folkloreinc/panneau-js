@@ -15,5 +15,6 @@
     "core.titles.resources.edit": "Edit {name}",
     "core.titles.resources.edit_typed": "Edit {name} <small class=\"text-muted\">({type})</small>",
     "core.titles.resources.index": "{name}",
+    "core.titles.resources.typeFilters": "Filters",
     "core.titles.resources.typed": "{name} <small class=\"text-muted\">({type})</small>"
 }
