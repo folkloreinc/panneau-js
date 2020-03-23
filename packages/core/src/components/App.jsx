@@ -9,8 +9,8 @@ import { push } from 'connected-react-router';
 import queryString from 'query-string';
 import 'bootstrap';
 
+import { withUrlGenerator } from '@folklore/react-container';
 import * as PanneauPropTypes from '../lib/PropTypes';
-import { withUrlGenerator } from '../lib/withUrlGenerator';
 
 import Layout from './Layout';
 import Home from './pages/Home';
@@ -197,6 +197,6 @@ const WithStateContainer = connect(
         };
     },
 )(App);
-const WithUrlGenerator = withUrlGenerator()(WithStateContainer);
+const WithUrlGenerator = withUrlGenerator(WithStateContainer);
 const WithRouter = withRouter(WithUrlGenerator);
 export default WithRouter;

@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import get from 'lodash/get';
 // import ReactContainer from '@folklore/react-container';
 
-import { createStore } from '@folklore/react-container';
+import { createStore, UrlGeneratorProvider } from '@folklore/react-container';
 import { IntlProvider } from 'react-intl';
 import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import { Provider as ReduxProvider } from 'react-redux';
-import { UrlGeneratorProvider } from '../lib/withUrlGenerator';
 
 import defaultRoutes from '../defaults/routes.json';
 import reducers from '../reducers/index';

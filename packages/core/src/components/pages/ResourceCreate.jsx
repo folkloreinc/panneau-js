@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
 
+import { withUrlGenerator } from '@folklore/react-container';
 import ResourceForm from './ResourceForm';
-import { withUrlGenerator } from '../../lib/withUrlGenerator';
 
 const messages = defineMessages({
     create: {
@@ -57,5 +57,5 @@ class ResourceCreate extends Component {
 ResourceCreate.propTypes = propTypes;
 ResourceCreate.defaultProps = defaultProps;
 
-const WithUrlGeneratorContainer = withUrlGenerator()(ResourceCreate);
+const WithUrlGeneratorContainer = withUrlGenerator(ResourceCreate);
 export default WithUrlGeneratorContainer;

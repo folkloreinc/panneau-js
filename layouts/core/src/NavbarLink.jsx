@@ -96,4 +96,4 @@ const NavbarLink = ({
 NavbarLink.propTypes = propTypes;
 NavbarLink.defaultProps = defaultProps;
 
-export default withUrlGenerator()(NavbarLink);
+export default withUrlGenerator(NavbarLink);

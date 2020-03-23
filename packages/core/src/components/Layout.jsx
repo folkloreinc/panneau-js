@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 
+import { withUrlGenerator } from '@folklore/react-container';
 import * as PanneauPropTypes from '../lib/PropTypes';
-import { withUrlGenerator } from '../lib/withUrlGenerator';
 import withDefinition from '../lib/withDefinition';
 import withLayoutsCollection from '../lib/withLayoutsCollection';
 
@@ -51,5 +51,5 @@ const WithStateContainer = connect(
 )(Layout);
 const WithLayoutsContainer = withLayoutsCollection()(WithStateContainer);
 const WithDefinitionContainer = withDefinition()(WithLayoutsContainer);
-const WithUrlGeneratorContainer = withUrlGenerator()(WithDefinitionContainer);
+const WithUrlGeneratorContainer = withUrlGenerator(WithDefinitionContainer);
 export default WithUrlGeneratorContainer;

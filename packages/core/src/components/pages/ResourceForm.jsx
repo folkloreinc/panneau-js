@@ -8,9 +8,9 @@ import {
     injectIntl, defineMessages, FormattedMessage, FormattedHTMLMessage,
 } from 'react-intl';
 
+import { withUrlGenerator } from '@folklore/react-container';
 import * as PanneauPropTypes from '../../lib/PropTypes';
 import { isMessage } from '../../utils';
-import { withUrlGenerator } from '../../lib/withUrlGenerator';
 import withResourceApi from '../../lib/withResourceApi';
 import withFormsCollection from '../../lib/withFormsCollection';
 import Errors from '../partials/Errors';
@@ -560,6 +560,6 @@ ResourceForm.defaultProps = defaultProps;
 
 const WithResourceApi = withResourceApi()(ResourceForm);
 const WithFormsCollectionContainer = withFormsCollection()(WithResourceApi);
-const WithUrlGeneratorContainer = withUrlGenerator()(WithFormsCollectionContainer);
+const WithUrlGeneratorContainer = withUrlGenerator(WithFormsCollectionContainer);
 const WithIntlContainer = injectIntl(WithUrlGeneratorContainer);
 export default WithIntlContainer;

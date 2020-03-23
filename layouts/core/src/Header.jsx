@@ -11,10 +11,7 @@ const propTypes = {
     urlGenerator: PanneauPropTypes.urlGenerator,
     title: PropTypes.string,
     titleLink: PropTypes.string,
-    navbar: PropTypes.oneOfType([
-        PropTypes.bool,
-        PropTypes.object,
-    ]),
+    navbar: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
     gotoHome: PropTypes.func.isRequired,
     gotoLink: PropTypes.func.isRequired,
     gotoRoute: PropTypes.func.isRequired,
@@ -68,10 +65,12 @@ class Header extends Component {
 
         return (
             <div className={styles.container}>
-                { navbar !== false ? (
+                {navbar !== false ? (
                     <div className={styles.navbar}>
                         <Navbar
-                            titleLink={urlGenerator !== null ? urlGenerator.route('home') : titleLink}
+                            titleLink={
+                                urlGenerator !== null ? urlGenerator.route('home') : titleLink
+                            }
                             {...props}
                             {...(isObject(navbar) ? navbar : null)}
                             gotoHome={gotoHome}
@@ -81,7 +80,7 @@ class Header extends Component {
                             onClickItem={this.onNavbarClickItem}
                         />
                     </div>
-                ) : null }
+                ) : null}
             </div>
         );
     }
@@ -90,4 +89,4 @@ class Header extends Component {
 Header.propTypes = propTypes;
 Header.defaultProps = defaultProps;
 
-export default withUrlGenerator()(Header);
+export default withUrlGenerator(Header);

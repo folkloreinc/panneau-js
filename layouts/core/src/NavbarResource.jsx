@@ -117,6 +117,6 @@ const mapResourceFromDefinition = (definition, { resource }) => ({
     resource: get(definition, 'resources', []).find(it => it.id === resource) || null,
 });
 const WithDefinitionContainer = withDefinition(mapResourceFromDefinition)(NavbarResource);
-const WithUrlGeneratorContainer = withUrlGenerator()(WithDefinitionContainer);
+const WithUrlGeneratorContainer = withUrlGenerator(WithDefinitionContainer);
 
 export default WithUrlGeneratorContainer;
