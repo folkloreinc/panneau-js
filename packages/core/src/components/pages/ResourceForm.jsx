@@ -35,7 +35,7 @@ const messages = defineMessages({
     titleTyped: {
         id: 'core.titles.resources.typed',
         description: 'The title of the typed resource form',
-        defaultMessage: '{name} <small class="text-muted">({type})</small>',
+        defaultMessage: '{name}',
     },
     switchType: {
         id: 'core.buttons.resources.switch_type',
@@ -392,8 +392,17 @@ class ResourceForm extends Component {
                     <span>
                         <FormattedMessage
                             {...finalTitle}
-                            values={{ name, type: currentType !== null ? currentType.label : null }}
+                            values={{
+                                name,
+                            }}
                         />
+                        {currentType !== null ? (
+                            <small className="text-muted">
+                                {' ('}
+                                {currentType ? currentType.label : null}
+                                {')'}
+                            </small>
+                        ) : null}
                     </span>
                 ) : (
                     finalTitle

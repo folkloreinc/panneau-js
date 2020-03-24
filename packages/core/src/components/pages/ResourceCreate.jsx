@@ -19,7 +19,7 @@ const messages = defineMessages({
     titleTyped: {
         id: 'core.titles.resources.create_typed',
         description: 'The title of the typed resource create form',
-        defaultMessage: 'Create {name} <small class="text-muted">({type})</small>',
+        defaultMessage: 'Create {name}',
     },
 });
 

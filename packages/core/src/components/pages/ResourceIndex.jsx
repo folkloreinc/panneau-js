@@ -385,8 +385,11 @@ class ResourceIndex extends Component {
 
         if (!withTypeFilters && !withSearch) return null;
 
-        const buttonLabel = isString(typeFiltersLabel) ? (
-            typeFiltersLabel
+        const { type } = ResourceIndex.getQueryFromLocation() || {};
+        const currentType = types.find(t => t.id === type);
+        const typeLabel = currentType ? currentType.label || '' : typeFiltersLabel;
+        const buttonLabel = isString(typeLabel) ? (
+            typeLabel
         ) : (
             <FormattedMessage {...typeFiltersLabel} />
         );

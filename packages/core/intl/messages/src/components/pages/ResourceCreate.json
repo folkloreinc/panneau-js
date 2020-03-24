@@ -1,17 +1,17 @@
 [
-  {
-    "id": "core.buttons.resources.create",
-    "description": "The label of the \"create\" form button",
-    "defaultMessage": "Create"
-  },
-  {
-    "id": "core.titles.resources.create",
-    "description": "The title of the resource create form",
-    "defaultMessage": "Create {name}"
-  },
-  {
-    "id": "core.titles.resources.create_typed",
-    "description": "The title of the typed resource create form",
-    "defaultMessage": "Create {name} <small class=\"text-muted\">({type})</small>"
-  }
+    {
+        "id": "core.buttons.resources.create",
+        "description": "The label of the \"create\" form button",
+        "defaultMessage": "Create"
+    },
+    {
+        "id": "core.titles.resources.create",
+        "description": "The title of the resource create form",
+        "defaultMessage": "Create {name}"
+    },
+    {
+        "id": "core.titles.resources.create_typed",
+        "description": "The title of the typed resource create form",
+        "defaultMessage": "Create {name}"
+    }
 ]
