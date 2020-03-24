@@ -57,7 +57,7 @@
         "lodash": "^4.17.4",
         "moment": "^2.20.1",
         "prop-types": "^15.6.0",
-        "react-intl": "^2.4.0"
+        "react-intl": "^4.2.2"
     },
     "devDependencies": {
         "react": "^16.7.0",

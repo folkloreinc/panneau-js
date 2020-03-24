@@ -4,9 +4,7 @@ import get from 'lodash/get';
 import { Link } from 'react-router-dom';
 import isObject from 'lodash/isObject';
 import classNames from 'classnames';
-import {
-    injectIntl, defineMessages, FormattedMessage, FormattedHTMLMessage,
-} from 'react-intl';
+import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
 
 import { withUrlGenerator } from '@folklore/react-container';
 import * as PanneauPropTypes from '../../lib/PropTypes';
@@ -391,11 +389,12 @@ class ResourceForm extends Component {
         return (
             <h1 className={classNames(['mb-0', 'mt-0', styles.title])}>
                 {isMessage(finalTitle) ? (
-                    <FormattedHTMLMessage
-                        {...finalTitle}
-                        tagName="span"
-                        values={{ name, type: currentType !== null ? currentType.label : null }}
-                    />
+                    <span>
+                        <FormattedMessage
+                            {...finalTitle}
+                            values={{ name, type: currentType !== null ? currentType.label : null }}
+                        />
+                    </span>
                 ) : (
                     finalTitle
                 )}

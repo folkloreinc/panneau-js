@@ -377,13 +377,13 @@ class ResourceIndex extends Component {
         } = this.props;
         const { search } = this.state;
 
-        if (!showTypeFilters && !showSearch) return null;
-
         const types = get(resource, 'types', []);
         const lists = get(resource, 'lists', {});
 
         const withTypeFilters = lists.withTypeFilters || showTypeFilters;
         const withSearch = lists.withSearch || showSearch;
+
+        if (!withTypeFilters && !withSearch) return null;
 
         const buttonLabel = isString(typeFiltersLabel) ? (
             typeFiltersLabel
@@ -539,7 +539,7 @@ class ResourceIndex extends Component {
         const containerClassNames = classNames({
             [styles.container]: true,
         });
-        // console.log(this.props, this.state); // eslint-disable-line
+        console.log(this.props, this.state); // eslint-disable-line
         return (
             <div className={containerClassNames}>
                 <div className="container">
