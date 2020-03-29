@@ -71,6 +71,7 @@ export default function withComponentsCollection(selectResourceFromProps, opts) 
 
         const WithDefinition = withDefinition()(hoistStatics(WithResourceApi, WrappedComponent));
         const WithUrlGenerator = withUrlGenerator(WithDefinition);
+
         return WithUrlGenerator;
     };
 }

@@ -4,10 +4,11 @@ import get from 'lodash/get';
 // import ReactContainer from '@folklore/react-container';
 
 import { createStore, UrlGeneratorProvider } from '@folklore/react-container';
-import { IntlProvider } from 'react-intl';
+// import { IntlProvider } from 'react-intl';
 import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 
+import IntlProvider from '../utils/IntlContainer';
 import defaultRoutes from '../defaults/routes.json';
 import reducers from '../reducers/index';
 import * as PanneauPropTypes from '../lib/PropTypes';
@@ -107,13 +108,13 @@ class Panneau extends Component {
 
         return (
             <ReduxProvider store={createStore(store.reducers, store.initialState)}>
-                <IntlProvider {...intl}>
-                    <Router {...routerProps}>
+                <Router {...routerProps}>
+                    <IntlProvider {...intl}>
                         <UrlGeneratorProvider {...urlGeneratorProps}>
                             <App />
                         </UrlGeneratorProvider>
-                    </Router>
-                </IntlProvider>
+                    </IntlProvider>
+                </Router>
             </ReduxProvider>
         );
     }

@@ -143,6 +143,11 @@ class App extends Component {
         ));
     }
 
+    // eslint-disable-next-line class-methods-use-this
+    renderAccountPage() {
+        return <Account getResourceActionUrl={() => {}} gotoResourceAction={() => {}} />;
+    }
+
     render() {
         const { urlGenerator, definition, user } = this.props;
 
@@ -156,7 +161,11 @@ class App extends Component {
             <Layout>
                 <Switch>
                     {user !== null ? (
-                        <Route exact path={urlGenerator.route('account')} component={Account} />
+                        <Route
+                            exact
+                            path={urlGenerator.route('account')}
+                            component={this.renderAccountPage}
+                        />
                     ) : (
                         <Route
                             exact
@@ -192,7 +201,6 @@ App.propTypes = propTypes;
 App.defaultProps = defaultProps;
 App.childContextTypes = childContextTypes;
 
-// export default createContainer(App);
 const WithStateContainer = connect(({ panneau, auth }) => ({
     ...panneau,
     user: auth.user || null,

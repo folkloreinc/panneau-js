@@ -243,6 +243,7 @@ class ResourceIndex extends Component {
         const {
             resource, resourceApi, intl, confirmDeleteMessage,
         } = this.props;
+
         const { name } = resource;
         const confirmMessage = get(resource, 'messages.confirm_delete', confirmDeleteMessage);
         const message = isObject(confirmMessage) && typeof confirmMessage.id !== 'undefined'
@@ -251,6 +252,7 @@ class ResourceIndex extends Component {
                 id,
             })
             : confirmMessage;
+
         // eslint-disable-next-line no-alert
         if (window.confirm(message)) {
             resourceApi.destroy(id).then(this.onItemDeleted);
@@ -542,7 +544,7 @@ class ResourceIndex extends Component {
         const containerClassNames = classNames({
             [styles.container]: true,
         });
-        console.log(this.props, this.state); // eslint-disable-line
+
         return (
             <div className={containerClassNames}>
                 <div className="container">
@@ -573,4 +575,5 @@ ResourceIndex.defaultProps = defaultProps;
 const WithResourceApi = withResourceApi()(ResourceIndex);
 const WithListsCollectionContainer = withListsCollection()(WithResourceApi);
 const WithIntlContainer = injectIntl(WithListsCollectionContainer);
+
 export default WithIntlContainer;

@@ -55,7 +55,7 @@
         "lodash": "^4.17.4",
         "pascal-case": "^2.0.1",
         "prop-types": "^15.6.0",
-        "react-intl": "^4.2.2",
+        "react-intl": "^2.8.0",
         "react-router-dom": "^5.0.0"
     },
     "devDependencies": {
