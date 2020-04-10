@@ -1,6 +1,6 @@
 {
   "name": "@panneau/layout-normal",
-  "version": "0.6.71-alpha.0",
+  "version": "0.6.72-alpha.0",
   "description": "Normal layouts for Panneau",
   "keywords": [
     "react",
@@ -48,8 +48,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@panneau/core": "^0.6.71-alpha.0",
-    "@panneau/layout": "^0.6.71-alpha.0",
+    "@panneau/core": "^0.6.72-alpha.0",
+    "@panneau/layout": "^0.6.72-alpha.0",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0"

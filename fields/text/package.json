@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-text",
-    "version": "0.6.71-alpha.0",
+    "version": "0.6.72-alpha.0",
     "description": "Text field for Panneau",
     "keywords": [
         "react",
@@ -48,9 +48,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.6.71-alpha.0",
-        "@panneau/field": "^0.6.71-alpha.0",
-        "@panneau/field-locale": "^0.6.71-alpha.0",
+        "@panneau/core": "^0.6.72-alpha.0",
+        "@panneau/field": "^0.6.72-alpha.0",
+        "@panneau/field-locale": "^0.6.72-alpha.0",
         "ckeditor": "^4.7.3",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
