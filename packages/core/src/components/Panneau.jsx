@@ -50,7 +50,6 @@ class Panneau extends Component {
 
     getIntlProps() {
         const { locale, messages } = this.props;
-        console.log('Panneau props', locale, messages); // eslint-disable-line
         return {
             locale,
             messages,

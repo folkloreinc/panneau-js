@@ -179,6 +179,8 @@
             },
             "lists": {
                 "type": "table",
+                "withSearch": true,
+                "withTypeFilters": true,
                 "cols": [
                     {
                         "id": "id",

@@ -106,6 +106,7 @@ class ResourceIndex extends Component {
         this.onClickAction = this.onClickAction.bind(this);
         this.onItemDeleted = this.onItemDeleted.bind(this);
         this.onSearchChange = this.onSearchChange.bind(this);
+        this.onSearchClear = this.onSearchClear.bind(this);
         this.onSearch = this.onSearch.bind(this);
 
         const query = ResourceIndex.getQueryFromLocation();
@@ -115,7 +116,7 @@ class ResourceIndex extends Component {
             query: null, // eslint-disable-line react/no-unused-state
             items: props.items,
             pagination: null,
-            search: query.q || null,
+            search: query.q || '',
             errors: props.errors,
         };
     }
@@ -124,6 +125,17 @@ class ResourceIndex extends Component {
         const { items } = this.state;
         if (items === null) {
             this.loadItems();
+        }
+    }
+
+    componentWillReceiveProps({ resource: nextResource }) {
+        const { resource: prevResource } = this.props;
+        const currentId = prevResource ? prevResource.id : null;
+        const nextId = nextResource ? nextResource.id : null;
+        if (currentId && nextId && currentId !== nextId) {
+            this.setState({
+                search: '',
+            });
         }
     }
 
@@ -200,6 +212,13 @@ class ResourceIndex extends Component {
         this.setState({
             search: value,
         });
+    }
+
+    onSearchClear() {
+        this.setState({
+            search: '',
+        });
+        window.location.reload();
     }
 
     onSearch(e) {
@@ -446,17 +465,28 @@ class ResourceIndex extends Component {
                             'btn-group': true,
                         })}
                     >
-                        <input
-                            className={classNames({
-                                input: true,
-                                'form-control': true,
-                            })}
-                            type="text"
-                            value={search || ''}
-                            placeholder={intl.formatMessage(searchLabel)}
-                            onChange={this.onSearchChange}
-                            onKeyPress={this.onSearch}
-                        />
+                        <div className="input-group">
+                            <input
+                                className={classNames({
+                                    input: true,
+                                    'form-control': true,
+                                })}
+                                type="text"
+                                value={search || ''}
+                                placeholder={intl.formatMessage(searchLabel)}
+                                onChange={this.onSearchChange}
+                                onKeyPress={this.onSearch}
+                                style={{ borderRadius: '0.25rem' }}
+                            />
+                            <button
+                                type="button"
+                                className="btn bg-transparent"
+                                onClick={this.onSearchClear}
+                                style={{ marginLeft: -40, zIndex: 10 }}
+                            >
+                                <i className="fa fa-times" />
+                            </button>
+                        </div>
                     </div>
                 ) : null}
             </div>
