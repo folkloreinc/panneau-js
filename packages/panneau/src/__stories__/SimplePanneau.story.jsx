@@ -14,6 +14,8 @@ import storiesOf from '../../../../.storybook/storiesOf';
 
 import simpleDefinition from './simple.json';
 
+import frMessages from '../../intl/lang/fr.json';
+
 const componentsCollection = new ComponentsCollection();
 componentsCollection.addComponents(fieldsCollection, 'fields');
 componentsCollection.addComponents(layoutsCollection, 'layouts');
@@ -35,6 +37,7 @@ storiesOf('Panneau/Simple', module, {
             definition={simpleDefinition}
             onNavigate={action('navigate')}
             locale="fr"
+            messages={frMessages}
         />
     </div>
 ));
