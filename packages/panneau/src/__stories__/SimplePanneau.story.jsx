@@ -38,7 +38,7 @@ storiesOf('Panneau/Simple', module, {
             definition={simpleDefinition}
             onNavigate={action('navigate')}
             messages={{ en: enMessages, fr: frMessages }}
-            locale="en"
+            locale="fr"
         />
     </div>
 ));

@@ -106,15 +106,17 @@ class Panneau extends Component {
         const routerProps = this.getRouterProps();
         const urlGeneratorProps = this.getUrlGenerator();
 
+        console.log(Router, routerProps);
+
         return (
             <ReduxProvider store={createStore(store.reducers, store.initialState)}>
-                <Router {...routerProps}>
-                    <IntlProvider {...intl}>
+                <IntlProvider {...intl}>
+                    <Router {...routerProps}>
                         <UrlGeneratorProvider {...urlGeneratorProps}>
                             <App />
                         </UrlGeneratorProvider>
-                    </IntlProvider>
-                </Router>
+                    </Router>
+                </IntlProvider>
             </ReduxProvider>
         );
     }

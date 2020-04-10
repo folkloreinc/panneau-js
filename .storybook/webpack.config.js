@@ -29,7 +29,7 @@ module.exports = ({ config }) => {
         'react-dom': require.resolve('react-dom'),
         'react-router': require.resolve('react-router'),
         'react-router-dom': require.resolve('react-router-dom'),
-        // 'react-intl': require.resolve('react-intl'),
+        'react-intl': require.resolve('react-intl'),
     };
 
     config.resolve.modules = [...config.resolve.modules, ...getResolveModules()];
