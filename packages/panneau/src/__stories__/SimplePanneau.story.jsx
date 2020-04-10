@@ -34,6 +34,7 @@ storiesOf('Panneau/Simple', module, {
             componentsCollection={componentsCollection}
             definition={simpleDefinition}
             onNavigate={action('navigate')}
+            locale="fr"
         />
     </div>
 ));
