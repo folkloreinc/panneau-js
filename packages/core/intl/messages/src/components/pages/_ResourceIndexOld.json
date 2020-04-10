@@ -10,16 +10,6 @@
     "defaultMessage": "{name}"
   },
   {
-    "id": "core.buttons.resources.type_filters",
-    "description": "The filters of the resource index page",
-    "defaultMessage": "Filters"
-  },
-  {
-    "id": "core.buttons.resources.search",
-    "description": "The search placeholder",
-    "defaultMessage": "Search"
-  },
-  {
     "id": "core.resources.index.confirm_delete",
     "description": "The confirm message when deleting on the resource index page",
     "defaultMessage": "Are you sure you want to delete this item from {name}?"
