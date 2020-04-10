@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-date",
-    "version": "0.6.67-alpha.0",
+    "version": "0.6.68-alpha.0",
     "description": "Date field for Panneau",
     "keywords": [
         "react",
@@ -48,10 +48,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.6.67-alpha.0",
-        "@panneau/field": "^0.6.67-alpha.0",
-        "@panneau/field-text": "^0.6.67-alpha.0",
-        "@panneau/modal-popover": "^0.6.67-alpha.0",
+        "@panneau/core": "^0.6.68-alpha.0",
+        "@panneau/field": "^0.6.68-alpha.0",
+        "@panneau/field-text": "^0.6.68-alpha.0",
+        "@panneau/modal-popover": "^0.6.68-alpha.0",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
         "moment": "^2.20.1",
