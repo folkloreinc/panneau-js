@@ -51,11 +51,12 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@folklore/react-container": "^0.1.12",
+        "@formatjs/intl-relativetimeformat": "^4.5.11",
         "@fortawesome/fontawesome-free": "^5.7.1",
         "bootstrap": "~4.4.1",
         "classnames": "^2.2.5",
         "connected-react-router": "^6.0.0",
+        "history": "^4.9.0",
         "hoist-non-react-statics": "^3.3.0",
         "invariant": "^2.2.2",
         "jquery": "^3.3.1",
@@ -66,10 +67,14 @@
         "popper.js": "^1.14.3",
         "prop-types": "^15.6.0",
         "query-string": "^6.1.0",
-        "react-intl": "^2.7.2",
+        "react-intl": "2.8.0",
         "react-redux": "^6.0.0",
         "react-router": "^5.0.0",
         "react-router-dom": "^5.0.0",
+        "redux": "^4.0.0",
+        "redux-devtools-extension": "^2.13.2",
+        "redux-promise": "^0.6.0",
+        "redux-thunk": "^2.2.0",
         "whatwg-fetch": "^2.0.3",
         "wolfy87-eventemitter": "^5.2.4"
     },
@@ -77,7 +82,7 @@
         "jquery-slim": "^3.0.0",
         "react": "^16.7.0",
         "react-dom": "^16.7.0",
-        "react-intl": "^2.4.0"
+        "react-intl": "2.8.0"
     },
     "peerDependencies": {
         "react": ">=15.0.0 || ^16.0.0",

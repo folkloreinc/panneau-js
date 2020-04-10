@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
-import ReactContainer from '@folklore/react-container';
+import ReactContainer from '../lib/react-container';
 
 import defaultRoutes from '../defaults/routes.json';
 import reducers from '../reducers/index';
@@ -60,9 +60,9 @@ class Panneau extends Component {
     getUrlGenerator() {
         const { routes, definition } = this.props;
         const definitionRoutes = get(definition, 'routes', {});
-        const resources = get(definition, 'resources', []).filter((
-            it => typeof it.routes !== 'undefined'
-        ));
+        const resources = get(definition, 'resources', []).filter(
+            it => typeof it.routes !== 'undefined',
+        );
         const resourcesRoutes = resources.reduce(
             (totalRoutes, resource) => ({
                 ...totalRoutes,

@@ -1,1 +1,1 @@
-export { withUrlGenerator as default } from '@folklore/react-container';
+export { withUrlGenerator as default } from './react-container';

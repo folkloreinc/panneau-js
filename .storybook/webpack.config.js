@@ -18,17 +18,21 @@ const getResolveModules = require('../build/lib/getResolveModules');
 const getPackagesPaths = require('../build/lib/getPackagesPaths');
 
 module.exports = ({ config }) => {
-
     config.resolve.alias = {
         jquery: require.resolve('jquery-slim'),
-        'hoist-non-react-statics': path.resolve(__dirname, '../node_modules/hoist-non-react-statics'),
+        'hoist-non-react-statics': path.resolve(
+            __dirname,
+            '../node_modules/hoist-non-react-statics',
+        ),
         ...getResolveAliases(),
+        react: require.resolve('react'),
+        'react-dom': require.resolve('react-dom'),
+        'react-router': require.resolve('react-router'),
+        'react-router-dom': require.resolve('react-router-dom'),
+        'react-intl': require.resolve('react-intl'),
     };
 
-    config.resolve.modules = [
-        ...config.resolve.modules,
-        ...getResolveModules(),
-    ];
+    config.resolve.modules = [...config.resolve.modules, ...getResolveModules()];
 
     config.module.rules = [
         {
@@ -49,10 +53,12 @@ module.exports = ({ config }) => {
         ...config.module.rules.slice(1),
     ];
 
-    config.plugins.push(new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify('development'),
-        __DEV__: JSON.stringify(true),
-    }));
+    config.plugins.push(
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('development'),
+            __DEV__: JSON.stringify(true),
+        }),
+    );
     config.plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/));
     config.plugins.push(new webpack.IgnorePlugin(/(?!fr|en)([a-z]{2,3})/, /locale-data/));
 
