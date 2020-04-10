@@ -30,6 +30,22 @@
         margin-bottom: 10px;
     }
 
+    .search {
+        position: relative;
+    }
+
+    .searchInput {
+        padding-right: 35px;
+        border-radius: 0.25rem !important;
+    }
+
+    .searchClose {
+        position: absolute;
+        z-index: 10;
+        right: 0;
+        margin-left: -40px;
+    }
+
     .loading {
         display: block;
         position: absolute;

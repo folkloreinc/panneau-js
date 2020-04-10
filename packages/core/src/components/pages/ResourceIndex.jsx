@@ -81,16 +81,40 @@ const defaultProps = {
 };
 
 class ResourceIndex extends Component {
-    static getDerivedStateFromProps({ query: nextQuery, errors: nextErrors }, { query, errors }) {
+    static getDerivedStateFromProps(
+        { query: nextQuery, errors: nextErrors, resource: nextResource },
+        { query, errors, resource },
+    ) {
         const queryChanged = nextQuery !== query;
         const errorsChanged = nextErrors !== errors;
+
+        const currentId = resource ? resource.id : null;
+        const nextId = nextResource ? nextResource.id : null;
+        const resourceChanged = currentId && nextId && currentId !== nextId;
+
         if (queryChanged || errorsChanged) {
+            if (resourceChanged) {
+                return {
+                    search: '',
+                    query: queryChanged ? nextQuery : query,
+                    errors: errorsChanged ? nextErrors : errors,
+                    isLoading: queryChanged,
+                };
+            }
+
             return {
                 query: queryChanged ? nextQuery : query,
                 errors: errorsChanged ? nextErrors : errors,
                 isLoading: queryChanged,
             };
         }
+
+        if (resourceChanged) {
+            return {
+                search: '',
+            };
+        }
+
         return null;
     }
 
@@ -125,17 +149,6 @@ class ResourceIndex extends Component {
         const { items } = this.state;
         if (items === null) {
             this.loadItems();
-        }
-    }
-
-    componentWillReceiveProps({ resource: nextResource }) {
-        const { resource: prevResource } = this.props;
-        const currentId = prevResource ? prevResource.id : null;
-        const nextId = nextResource ? nextResource.id : null;
-        if (currentId && nextId && currentId !== nextId) {
-            this.setState({
-                search: '',
-            });
         }
     }
 
@@ -215,10 +228,9 @@ class ResourceIndex extends Component {
     }
 
     onSearchClear() {
-        this.setState({
-            search: '',
-        });
-        window.location.reload();
+        const { getResourceActionUrl } = this.props;
+        const location = getResourceActionUrl('index');
+        window.location.href = location;
     }
 
     onSearch(e) {
@@ -462,6 +474,7 @@ class ResourceIndex extends Component {
                 {withSearch ? (
                     <div
                         className={classNames({
+                            [styles.search]: true,
                             'btn-group': true,
                         })}
                     >
@@ -469,6 +482,7 @@ class ResourceIndex extends Component {
                             <input
                                 className={classNames({
                                     input: true,
+                                    [styles.searchInput]: true,
                                     'form-control': true,
                                 })}
                                 type="text"
@@ -476,16 +490,20 @@ class ResourceIndex extends Component {
                                 placeholder={intl.formatMessage(searchLabel)}
                                 onChange={this.onSearchChange}
                                 onKeyPress={this.onSearch}
-                                style={{ borderRadius: '0.25rem' }}
                             />
-                            <button
-                                type="button"
-                                className="btn bg-transparent"
-                                onClick={this.onSearchClear}
-                                style={{ marginLeft: -40, zIndex: 10 }}
-                            >
-                                <i className="fa fa-times" />
-                            </button>
+                            {search ? (
+                                <button
+                                    type="button"
+                                    className={classNames({
+                                        btn: true,
+                                        [styles.searchClose]: true,
+                                        'bg-transparent': true,
+                                    })}
+                                    onClick={this.onSearchClear}
+                                >
+                                    <i className="fa fa-times" />
+                                </button>
+                            ) : null}
                         </div>
                     </div>
                 ) : null}

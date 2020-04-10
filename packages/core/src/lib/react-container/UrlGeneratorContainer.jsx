@@ -22,6 +22,23 @@ const childContextTypes = {
 };
 
 class UrlGeneratorContainer extends Component {
+    static getDerivedStateFromProps(nextProps, props) {
+        const nextRoutes = UrlGeneratorContainer.getRoutesFromProps(nextProps);
+        const routes = UrlGeneratorContainer.getRoutesFromProps(props);
+        if (!isEqual(nextRoutes, routes)) {
+            return {
+                urlGenerator: new UrlGenerator(nextRoutes),
+            };
+        }
+
+        return null;
+    }
+
+    static getRoutesFromProps(props) {
+        const { getRoutes, routes } = props || {};
+        return getRoutes ? getRoutes() : routes;
+    }
+
     constructor(props) {
         super(props);
 
@@ -35,16 +52,6 @@ class UrlGeneratorContainer extends Component {
         return {
             urlGenerator,
         };
-    }
-
-    componentWillReceiveProps(nextProps) {
-        const nextRoutes = this.getRoutes(nextProps);
-        const routes = this.getRoutes();
-        if (!isEqual(nextRoutes, routes)) {
-            this.setState({
-                urlGenerator: new UrlGenerator(nextRoutes),
-            });
-        }
     }
 
     getRoutes(props) {
