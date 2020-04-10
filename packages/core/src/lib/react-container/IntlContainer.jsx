@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { IntlProvider } from 'react-intl';
 
-import '@formatjs/intl-relativetimeformat/polyfill';
-import '@formatjs/intl-relativetimeformat/dist/locale-data/en';
-import '@formatjs/intl-relativetimeformat/dist/locale-data/fr';
+// import '@formatjs/intl-relativetimeformat/polyfill';
+// import '@formatjs/intl-relativetimeformat/dist/locale-data/en';
+// import '@formatjs/intl-relativetimeformat/dist/locale-data/fr';
 
 const propTypes = {
     /* eslint-disable react/no-unused-prop-types */

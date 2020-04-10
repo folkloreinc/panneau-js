@@ -69,5 +69,5 @@
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
     },
-    "gitHead": "dc147bc4987250b3205e12e2261adc9ce6cbd601"
+    "gitHead": "6b7a04b2593ae59756272db5c911b5b16126db2d"
 }
