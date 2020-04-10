@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import invariant from 'invariant';
 import hoistStatics from 'hoist-non-react-statics';
 
-import { withUrlGenerator } from '@folklore/react-container';
 import * as PanneauPropTypes from './PropTypes';
+import withUrlGenerator from './withUrlGenerator';
 import withDefinition from './withDefinition';
 import ResourceApi from './ResourceApi';
 
@@ -66,12 +66,13 @@ export default function withComponentsCollection(selectResourceFromProps, opts) 
         }
 
         WithResourceApi.propTypes = propTypes;
-        WithResourceApi.displayName = `WithResourceApi(${getDisplayName(WrappedComponent)})`;
+        WithResourceApi.displayName = `WithResourceApi(${getDisplayName(
+            WrappedComponent,
+        )})`;
         WithResourceApi.WrappedComponent = WrappedComponent;
 
         const WithDefinition = withDefinition()(hoistStatics(WithResourceApi, WrappedComponent));
-        const WithUrlGenerator = withUrlGenerator(WithDefinition);
-
+        const WithUrlGenerator = withUrlGenerator()(WithDefinition);
         return WithUrlGenerator;
     };
 }

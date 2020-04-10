@@ -4,11 +4,13 @@ import get from 'lodash/get';
 import { Link } from 'react-router-dom';
 import isObject from 'lodash/isObject';
 import classNames from 'classnames';
-import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
+import {
+    injectIntl, defineMessages, FormattedMessage, FormattedHTMLMessage,
+} from 'react-intl';
 
-import { withUrlGenerator } from '@folklore/react-container';
 import * as PanneauPropTypes from '../../lib/PropTypes';
 import { isMessage } from '../../utils';
+import withUrlGenerator from '../../lib/withUrlGenerator';
 import withResourceApi from '../../lib/withResourceApi';
 import withFormsCollection from '../../lib/withFormsCollection';
 import Errors from '../partials/Errors';
@@ -35,7 +37,7 @@ const messages = defineMessages({
     titleTyped: {
         id: 'core.titles.resources.typed',
         description: 'The title of the typed resource form',
-        defaultMessage: '{name}',
+        defaultMessage: '{name} <small class="text-muted">({type})</small>',
     },
     switchType: {
         id: 'core.buttons.resources.switch_type',
@@ -308,15 +310,13 @@ class ResourceForm extends Component {
         if (formSuccess === null) {
             return null;
         }
-        return formSuccess
-            ? {
-                type: 'success',
-                label: successNoticeLabel,
-            }
-            : {
-                type: 'error',
-                label: errorNoticeLabel,
-            };
+        return formSuccess ? ({
+            type: 'success',
+            label: successNoticeLabel,
+        }) : ({
+            type: 'error',
+            label: errorNoticeLabel,
+        });
     }
 
     isTyped() {
@@ -389,21 +389,11 @@ class ResourceForm extends Component {
         return (
             <h1 className={classNames(['mb-0', 'mt-0', styles.title])}>
                 {isMessage(finalTitle) ? (
-                    <span>
-                        <FormattedMessage
-                            {...finalTitle}
-                            values={{
-                                name,
-                            }}
-                        />
-                        {currentType !== null ? (
-                            <small className="text-muted">
-                                {' ('}
-                                {currentType ? currentType.label : null}
-                                {')'}
-                            </small>
-                        ) : null}
-                    </span>
+                    <FormattedHTMLMessage
+                        {...finalTitle}
+                        tagName="span"
+                        values={{ name, type: currentType !== null ? currentType.label : null }}
+                    />
                 ) : (
                     finalTitle
                 )}
@@ -487,7 +477,9 @@ class ResourceForm extends Component {
 
     renderForm() {
         const { formsCollection, readOnly } = this.props;
-        const { item, formValue, formErrors } = this.state;
+        const {
+            item, formValue, formErrors,
+        } = this.state;
         const { type, className = null, ...formProps } = this.getForm();
         const FormComponent = formsCollection.getComponent(type);
         const buttons = this.getButtons();
@@ -496,12 +488,9 @@ class ResourceForm extends Component {
         return FormComponent !== null ? (
             <FormComponent
                 {...formProps}
-                className={classNames([
-                    styles.form,
-                    {
-                        [className]: className !== null,
-                    },
-                ])}
+                className={classNames([styles.form, {
+                    [className]: className !== null,
+                }])}
                 readOnly={readOnly}
                 buttons={buttons}
                 value={formValue || item}
@@ -568,6 +557,6 @@ ResourceForm.defaultProps = defaultProps;
 
 const WithResourceApi = withResourceApi()(ResourceForm);
 const WithFormsCollectionContainer = withFormsCollection()(WithResourceApi);
-const WithUrlGeneratorContainer = withUrlGenerator(WithFormsCollectionContainer);
+const WithUrlGeneratorContainer = withUrlGenerator()(WithFormsCollectionContainer);
 const WithIntlContainer = injectIntl(WithUrlGeneratorContainer);
 export default WithIntlContainer;

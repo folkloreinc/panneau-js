@@ -76,6 +76,6 @@ class PageField extends PureComponent {
 PageField.propTypes = propTypes;
 PageField.defaultProps = defaultProps;
 
-const WithUrlGeneratorContainer = withUrlGenerator(PageField);
+const WithUrlGeneratorContainer = withUrlGenerator()(PageField);
 const WithDefinitionContainer = withDefinition()(WithUrlGeneratorContainer);
 export default WithDefinitionContainer;

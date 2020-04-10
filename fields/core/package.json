@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field",
-    "version": "0.6.66-alpha.0",
+    "version": "0.6.59",
     "description": "Field core for Panneau",
     "keywords": [
         "react",
@@ -49,7 +49,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.6.66-alpha.0",
+        "@panneau/core": "^0.6.59",
         "classnames": "^2.2.5",
         "fine-uploader": "^5.16.0",
         "fine-uploader-wrappers": "^1.0.1",
@@ -57,12 +57,12 @@
         "moment": "^2.21.0",
         "prop-types": "^15.6.0",
         "react-fine-uploader": "^1.0.9",
-        "react-intl": "^2.8.0",
+        "react-intl": "^2.4.0",
         "react-loadable": "^5.5.0",
         "react-markdown": "^3.1.4"
     },
     "devDependencies": {
-        "bootstrap": "~4.4.1",
+        "bootstrap": "~4.1.1",
         "react": "^16.7.0",
         "react-dom": "^16.7.0"
     },

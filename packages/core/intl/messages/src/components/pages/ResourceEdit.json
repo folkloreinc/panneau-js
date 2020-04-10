@@ -7,6 +7,6 @@
   {
     "id": "core.titles.resources.edit_typed",
     "description": "The title of the typed resource edit form",
-    "defaultMessage": "Edit {name}"
+    "defaultMessage": "Edit {name} <small class=\"text-muted\">({type})</small>"
   }
 ]

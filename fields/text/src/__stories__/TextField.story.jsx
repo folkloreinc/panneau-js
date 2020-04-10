@@ -33,17 +33,15 @@ storiesOf('Fields/Text', module)
         </div>
     ))
     .add('with suffix and prefix', () => (
-        <KeepValue>
-            <TextField
-                label="Label"
-                helpText="This is an help text"
-                placeholder="0.00"
-                prefix="Total"
-                suffix="$"
-                align="right"
-                onChange={action('change')}
-            />
-        </KeepValue>
+        <TextField
+            label="Label"
+            helpText="This is an help text"
+            placeholder="0.00"
+            prefix="Total"
+            suffix="$"
+            align="right"
+            onChange={action('change')}
+        />
     ))
     .add('other field types', () => (
         <div>

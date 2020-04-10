@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
 import isObject from 'lodash/isObject';
-import queryString from 'query-string';
 import classNames from 'classnames';
 import { defineMessages, FormattedMessage, injectIntl } from 'react-intl';
 import Loading from '../partials/Loading';
@@ -27,16 +26,6 @@ const messages = defineMessages({
         description: 'The title of the resource index page',
         defaultMessage: '{name}',
     },
-    typeFilters: {
-        id: 'core.buttons.resources.type_filters',
-        description: 'The filters of the resource index page',
-        defaultMessage: 'Filters',
-    },
-    search: {
-        id: 'core.buttons.resources.search',
-        description: 'The search placeholder',
-        defaultMessage: 'Search',
-    },
     confirmDelete: {
         id: 'core.resources.index.confirm_delete',
         description: 'The confirm message when deleting on the resource index page',
@@ -56,11 +45,7 @@ const propTypes = {
     title: PanneauPropTypes.message,
     errors: PropTypes.arrayOf(PropTypes.string),
     showAddButton: PropTypes.bool,
-    showSearch: PropTypes.bool,
-    showTypeFilters: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.message,
-    typeFiltersLabel: PanneauPropTypes.message,
-    searchLabel: PanneauPropTypes.message,
     confirmDeleteMessage: PanneauPropTypes.message,
     getResourceActionUrl: PropTypes.func.isRequired,
     gotoResourceAction: PropTypes.func.isRequired,
@@ -72,16 +57,15 @@ const defaultProps = {
     title: messages.title,
     errors: null,
     showAddButton: true,
-    showSearch: false,
-    showTypeFilters: false,
     addButtonLabel: messages.add,
-    searchLabel: messages.search,
-    typeFiltersLabel: messages.typeFilters,
     confirmDeleteMessage: messages.confirmDelete,
 };
 
 class ResourceIndex extends Component {
-    static getDerivedStateFromProps({ query: nextQuery, errors: nextErrors }, { query, errors }) {
+    static getDerivedStateFromProps(
+        { query: nextQuery, errors: nextErrors },
+        { query, errors },
+    ) {
         const queryChanged = nextQuery !== query;
         const errorsChanged = nextErrors !== errors;
         if (queryChanged || errorsChanged) {
@@ -94,10 +78,6 @@ class ResourceIndex extends Component {
         return null;
     }
 
-    static getQueryFromLocation(location = null) {
-        return queryString.parse(location ? location.search : window.location.search) || {};
-    }
-
     constructor(props) {
         super(props);
 
@@ -105,17 +85,12 @@ class ResourceIndex extends Component {
         this.onItemsLoadError = this.onItemsLoadError.bind(this);
         this.onClickAction = this.onClickAction.bind(this);
         this.onItemDeleted = this.onItemDeleted.bind(this);
-        this.onSearchChange = this.onSearchChange.bind(this);
-        this.onSearch = this.onSearch.bind(this);
-
-        const query = ResourceIndex.getQueryFromLocation();
 
         this.state = {
             isLoading: props.items === null,
             query: null, // eslint-disable-line react/no-unused-state
             items: props.items,
             pagination: null,
-            search: query.q || null,
             errors: props.errors,
         };
     }
@@ -162,6 +137,7 @@ class ResourceIndex extends Component {
 
     onClickAction(e, action, it) {
         const { getResourceActionUrl, gotoResourceAction } = this.props;
+
         const useRouter = get(action, 'useRouter', true);
 
         switch (action.id) {
@@ -195,23 +171,6 @@ class ResourceIndex extends Component {
         }));
     }
 
-    onSearchChange(e) {
-        const value = e.target.value ? e.target.value : null;
-        this.setState({
-            search: value,
-        });
-    }
-
-    onSearch(e) {
-        if (e.key === 'Enter') {
-            const { getResourceActionUrl } = this.props;
-            const { search } = this.state;
-            const searchString = queryString.stringify({ q: search });
-            const location = `${getResourceActionUrl('index')}?${searchString}`;
-            window.location.href = location;
-        }
-    }
-
     isPaginated() {
         const { resource } = this.props;
         return get(resource, 'lists.index.pagination', get(resource, 'lists.pagination', false));
@@ -219,14 +178,7 @@ class ResourceIndex extends Component {
 
     loadItems() {
         const { resourceApi, query } = this.props;
-        const { q, type } = ResourceIndex.getQueryFromLocation() || {};
         const params = {};
-        if (q) {
-            params.q = q;
-        }
-        if (type) {
-            params.type = type;
-        }
         if (this.isPaginated()) {
             const page = query.page || null;
             if (page !== null) {
@@ -243,7 +195,6 @@ class ResourceIndex extends Component {
         const {
             resource, resourceApi, intl, confirmDeleteMessage,
         } = this.props;
-
         const { name } = resource;
         const confirmMessage = get(resource, 'messages.confirm_delete', confirmDeleteMessage);
         const message = isObject(confirmMessage) && typeof confirmMessage.id !== 'undefined'
@@ -252,7 +203,6 @@ class ResourceIndex extends Component {
                 id,
             })
             : confirmMessage;
-
         // eslint-disable-next-line no-alert
         if (window.confirm(message)) {
             resourceApi.destroy(id).then(this.onItemDeleted);
@@ -367,101 +317,6 @@ class ResourceIndex extends Component {
         );
     }
 
-    renderFilters() {
-        const {
-            intl,
-            resource,
-            getResourceActionUrl,
-            typeFiltersLabel,
-            searchLabel,
-            showTypeFilters,
-            showSearch,
-        } = this.props;
-        const { search } = this.state;
-
-        const types = get(resource, 'types', []);
-        const lists = get(resource, 'lists', {});
-
-        const withTypeFilters = lists.withTypeFilters || showTypeFilters;
-        const withSearch = lists.withSearch || showSearch;
-
-        if (!withTypeFilters && !withSearch) return null;
-
-        const { type } = ResourceIndex.getQueryFromLocation() || {};
-        const currentType = types.find(t => t.id === type);
-        const typeLabel = currentType ? currentType.label || '' : typeFiltersLabel;
-        const buttonLabel = isString(typeLabel) ? (
-            typeLabel
-        ) : (
-            <FormattedMessage {...typeFiltersLabel} />
-        );
-
-        return (
-            <div
-                className={classNames({
-                    [styles.filters]: true,
-                    'd-flex': true,
-                    'flex-row ': true,
-                    'justify-content-between': true,
-                })}
-            >
-                {withTypeFilters && types.length > 0 ? (
-                    <div
-                        className={classNames({
-                            'btn-group': true,
-                        })}
-                    >
-                        <button
-                            type="button"
-                            className={classNames({
-                                btn: true,
-                                'btn-primary': true,
-                                'dropdown-toggle': true,
-                            })}
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                        >
-                            {buttonLabel}
-                            {' '}
-                            <span className="caret" />
-                        </button>
-                        <div className="dropdown-menu">
-                            {types.map(({ id, label }) => (
-                                <Link
-                                    key={`add-button-${id}`}
-                                    to={`${getResourceActionUrl('index')}?type=${id}`}
-                                    className="dropdown-item"
-                                >
-                                    {label}
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                ) : null}
-                {withSearch ? (
-                    <div
-                        className={classNames({
-                            'btn-group': true,
-                        })}
-                    >
-                        <input
-                            className={classNames({
-                                input: true,
-                                'form-control': true,
-                            })}
-                            type="text"
-                            value={search || ''}
-                            placeholder={intl.formatMessage(searchLabel)}
-                            onChange={this.onSearchChange}
-                            onKeyPress={this.onSearch}
-                        />
-                    </div>
-                ) : null}
-            </div>
-        );
-    }
-
     renderErrors() {
         const { errors } = this.state;
 
@@ -544,14 +399,12 @@ class ResourceIndex extends Component {
         const containerClassNames = classNames({
             [styles.container]: true,
         });
-
         return (
             <div className={containerClassNames}>
                 <div className="container">
                     <div className="row justify-content-md-center">
                         <div className="col-lg-8">
                             {this.renderHeader()}
-                            {this.renderFilters()}
                             <div className={styles.listContainer}>
                                 <div className={styles.list}>
                                     {items !== null ? this.renderList() : null}
@@ -575,5 +428,4 @@ ResourceIndex.defaultProps = defaultProps;
 const WithResourceApi = withResourceApi()(ResourceIndex);
 const WithListsCollectionContainer = withListsCollection()(WithResourceApi);
 const WithIntlContainer = injectIntl(WithListsCollectionContainer);
-
 export default WithIntlContainer;

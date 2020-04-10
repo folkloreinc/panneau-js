@@ -12,9 +12,6 @@ import modalsCollection from '@panneau/modals';
 
 import storiesOf from '../../../../.storybook/storiesOf';
 
-import enMessages from '../../intl/lang/en.json';
-import frMessages from '../../intl/lang/fr.json';
-
 import simpleDefinition from './simple.json';
 
 const componentsCollection = new ComponentsCollection();
@@ -37,8 +34,6 @@ storiesOf('Panneau/Simple', module, {
             componentsCollection={componentsCollection}
             definition={simpleDefinition}
             onNavigate={action('navigate')}
-            messages={{ en: enMessages, fr: frMessages }}
-            locale="fr"
         />
     </div>
 ));

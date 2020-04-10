@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
 
-import { withUrlGenerator } from '@folklore/react-container';
 import ResourceForm from './ResourceForm';
+import withUrlGenerator from '../../lib/withUrlGenerator';
 
 const messages = defineMessages({
     create: {
@@ -19,7 +19,7 @@ const messages = defineMessages({
     titleTyped: {
         id: 'core.titles.resources.create_typed',
         description: 'The title of the typed resource create form',
-        defaultMessage: 'Create {name}',
+        defaultMessage: 'Create {name} <small class="text-muted">({type})</small>',
     },
 });
 
@@ -27,7 +27,9 @@ const propTypes = {
     gotoResourceAction: PropTypes.func.isRequired,
 };
 
-const defaultProps = {};
+const defaultProps = {
+
+};
 
 class ResourceCreate extends Component {
     constructor(props) {
@@ -57,5 +59,5 @@ class ResourceCreate extends Component {
 ResourceCreate.propTypes = propTypes;
 ResourceCreate.defaultProps = defaultProps;
 
-const WithUrlGeneratorContainer = withUrlGenerator(ResourceCreate);
+const WithUrlGeneratorContainer = withUrlGenerator()(ResourceCreate);
 export default WithUrlGeneratorContainer;

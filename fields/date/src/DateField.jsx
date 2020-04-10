@@ -86,13 +86,16 @@ class DateField extends Component {
         this.state = {
             opened: false,
             focusedInput: 'startDate',
-            momentValue:
-                type === 'daterange'
-                    ? {
-                        start: isObject(value) ? getMomentOrNull(value.start) : moment(),
-                        end: isObject(value) ? getMomentOrNull(value.end) : moment(),
-                    }
-                    : getMomentOrNull(value),
+            momentValue: type === 'daterange'
+                ? {
+                    start: isObject(value)
+                        ? getMomentOrNull(value.start)
+                        : moment(),
+                    end: isObject(value)
+                        ? getMomentOrNull(value.end)
+                        : moment(),
+                }
+                : getMomentOrNull(value),
             textValue: value,
         };
     }
@@ -354,8 +357,8 @@ class DateField extends Component {
             : {
                 date: momentValue || undefined,
                 onDateChange: this.onChange,
-                // autoFocus: false,
-                // showInput: false,
+                autoFocus: false,
+                showInput: false,
                 focused: true,
                 isFocused: opened,
                 keepOpenOnDateSelect: true,

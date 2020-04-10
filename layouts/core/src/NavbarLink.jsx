@@ -45,7 +45,7 @@ const NavbarLink = ({
     const inner = (
         <Fragment>
             {isObject(label) && typeof label.id !== 'undefined' ? (
-                <FormattedMessage {...(label || null)} />
+                <FormattedMessage {...label || null} />
             ) : (
                 label || ''
             )}
@@ -96,4 +96,4 @@ const NavbarLink = ({
 NavbarLink.propTypes = propTypes;
 NavbarLink.defaultProps = defaultProps;
 
-export default withUrlGenerator(NavbarLink);
+export default withUrlGenerator()(NavbarLink);

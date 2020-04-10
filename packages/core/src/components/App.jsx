@@ -5,12 +5,12 @@ import {
     Route, Switch, Redirect, withRouter,
 } from 'react-router';
 import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
 import queryString from 'query-string';
 import 'bootstrap';
 
-import { withUrlGenerator } from '@folklore/react-container';
-
 import * as PanneauPropTypes from '../lib/PropTypes';
+import withUrlGenerator from '../lib/withUrlGenerator';
 
 import Layout from './Layout';
 import Home from './pages/Home';
@@ -30,12 +30,11 @@ const ResourcePages = {
 };
 
 const propTypes = {
-    history: PropTypes.shape({
-        push: PropTypes.func,
-    }).isRequired,
     urlGenerator: PropTypes.shape({
         route: PropTypes.func,
     }).isRequired,
+    getResourceActionUrl: PropTypes.func.isRequired,
+    gotoResourceAction: PropTypes.func.isRequired,
     componentsCollection: PanneauPropTypes.componentsCollection,
     definition: PanneauPropTypes.definition,
     user: PanneauPropTypes.user,
@@ -60,6 +59,7 @@ const childContextTypes = {
 class App extends Component {
     constructor(props) {
         super(props);
+
         this.renderResourceRoutes = this.renderResourceRoutes.bind(this);
     }
 
@@ -88,25 +88,10 @@ class App extends Component {
         };
     }
 
-    getResourcesActions() {
-        const { urlGenerator, history } = this.props;
-        const getResourceActionUrl = (resource, action, id) => (typeof resource.routes !== 'undefined'
-            ? urlGenerator.route(`resource.${resource.id}.${action}`, {
-                id: id || null,
-            })
-            : urlGenerator.route(`resource.${action}`, {
-                resource: resource.id,
-                id: id || null,
-            }));
-        return {
-            getResourceActionUrl,
-            gotoResourceAction: (...args) => history.push(getResourceActionUrl(...args)),
-        };
-    }
-
     createResourcePageRender(action) {
-        const { definition, urlGenerator } = this.props;
-        const { getResourceActionUrl, gotoResourceAction } = this.getResourcesActions();
+        const {
+            definition, urlGenerator, getResourceActionUrl, gotoResourceAction,
+        } = this.props;
         const { resources = [] } = definition;
         return ({ match, location }) => {
             const { resource: resourceId = null, id: itemId = null } = match.params;
@@ -143,11 +128,6 @@ class App extends Component {
         ));
     }
 
-    // eslint-disable-next-line class-methods-use-this
-    renderAccountPage() {
-        return <Account getResourceActionUrl={() => {}} gotoResourceAction={() => {}} />;
-    }
-
     render() {
         const { urlGenerator, definition, user } = this.props;
 
@@ -161,11 +141,7 @@ class App extends Component {
             <Layout>
                 <Switch>
                     {user !== null ? (
-                        <Route
-                            exact
-                            path={urlGenerator.route('account')}
-                            component={this.renderAccountPage}
-                        />
+                        <Route exact path={urlGenerator.route('account')} component={Account} />
                     ) : (
                         <Route
                             exact
@@ -201,10 +177,27 @@ App.propTypes = propTypes;
 App.defaultProps = defaultProps;
 App.childContextTypes = childContextTypes;
 
-const WithStateContainer = connect(({ panneau, auth }) => ({
-    ...panneau,
-    user: auth.user || null,
-}))(App);
-const WithUrlGenerator = withUrlGenerator(WithStateContainer);
+// export default createContainer(App);
+const WithStateContainer = connect(
+    ({ panneau, auth }) => ({
+        ...panneau,
+        user: auth.user || null,
+    }),
+    (dispatch, { urlGenerator }) => {
+        const getResourceActionUrl = (resource, action, id) => (typeof resource.routes !== 'undefined'
+            ? urlGenerator.route(`resource.${resource.id}.${action}`, {
+                id: id || null,
+            })
+            : urlGenerator.route(`resource.${action}`, {
+                resource: resource.id,
+                id: id || null,
+            }));
+        return {
+            getResourceActionUrl,
+            gotoResourceAction: (...args) => dispatch(push(getResourceActionUrl(...args))),
+        };
+    },
+)(App);
+const WithUrlGenerator = withUrlGenerator()(WithStateContainer);
 const WithRouter = withRouter(WithUrlGenerator);
 export default WithRouter;

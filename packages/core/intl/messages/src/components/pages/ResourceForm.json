@@ -17,7 +17,7 @@
   {
     "id": "core.titles.resources.typed",
     "description": "The title of the typed resource form",
-    "defaultMessage": "{name}"
+    "defaultMessage": "{name} <small class=\"text-muted\">({type})</small>"
   },
   {
     "id": "core.buttons.resources.switch_type",

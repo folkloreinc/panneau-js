@@ -11,8 +11,14 @@ const propTypes = {
         name: PropTypes.string,
     }),
     definition: PropTypes.shape({
-        header: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
-        footer: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+        header: PropTypes.oneOfType([
+            PropTypes.bool,
+            PropTypes.object,
+        ]),
+        footer: PropTypes.oneOfType([
+            PropTypes.bool,
+            PropTypes.object,
+        ]),
     }),
     gotoHome: PropTypes.func.isRequired,
     gotoLink: PropTypes.func.isRequired,
@@ -28,6 +34,7 @@ const defaultProps = {
 class NormalLayout extends Component {
     constructor(props) {
         super(props);
+
         this.onHeaderNavbarClickItem = this.onHeaderNavbarClickItem.bind(this);
     }
 
@@ -51,7 +58,7 @@ class NormalLayout extends Component {
 
         return (
             <div className={styles.container}>
-                {header !== false ? (
+                { header !== false ? (
                     <div className={styles.header}>
                         <Header
                             {...props}
@@ -63,15 +70,20 @@ class NormalLayout extends Component {
                             onNavbarClickItem={this.onHeaderNavbarClickItem}
                         />
                     </div>
-                ) : null}
+                ) : null }
 
-                <div className={styles.content}>{children}</div>
+                <div className={styles.content}>
+                    { children }
+                </div>
 
-                {footer !== false ? (
+                { footer !== false ? (
                     <div className={styles.footer}>
-                        <Footer {...props} {...footer} />
+                        <Footer
+                            {...props}
+                            {...footer}
+                        />
                     </div>
-                ) : null}
+                ) : null }
             </div>
         );
     }

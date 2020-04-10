@@ -1,14 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
-// import ReactContainer from '@folklore/react-container';
+import ReactContainer from '@folklore/react-container';
 
-import { createStore, UrlGeneratorProvider } from '@folklore/react-container';
-// import { IntlProvider } from 'react-intl';
-import { BrowserRouter, MemoryRouter } from 'react-router-dom';
-import { Provider as ReduxProvider } from 'react-redux';
-
-import IntlProvider from '../utils/IntlContainer';
 import defaultRoutes from '../defaults/routes.json';
 import reducers from '../reducers/index';
 import * as PanneauPropTypes from '../lib/PropTypes';
@@ -66,9 +60,9 @@ class Panneau extends Component {
     getUrlGenerator() {
         const { routes, definition } = this.props;
         const definitionRoutes = get(definition, 'routes', {});
-        const resources = get(definition, 'resources', []).filter(
-            it => typeof it.routes !== 'undefined',
-        );
+        const resources = get(definition, 'resources', []).filter((
+            it => typeof it.routes !== 'undefined'
+        ));
         const resourcesRoutes = resources.reduce(
             (totalRoutes, resource) => ({
                 ...totalRoutes,
@@ -99,25 +93,15 @@ class Panneau extends Component {
     }
 
     render() {
-        const { memoryRouter } = this.props;
-        const Router = memoryRouter ? MemoryRouter : BrowserRouter;
-        const store = this.getStoreProps();
-        const intl = this.getIntlProps();
-        const routerProps = this.getRouterProps();
-        const urlGeneratorProps = this.getUrlGenerator();
-
-        console.log(Router, routerProps);
-
         return (
-            <ReduxProvider store={createStore(store.reducers, store.initialState)}>
-                <IntlProvider {...intl}>
-                    <Router {...routerProps}>
-                        <UrlGeneratorProvider {...urlGeneratorProps}>
-                            <App />
-                        </UrlGeneratorProvider>
-                    </Router>
-                </IntlProvider>
-            </ReduxProvider>
+            <ReactContainer
+                store={this.getStoreProps()}
+                intl={this.getIntlProps()}
+                router={this.getRouterProps()}
+                urlGenerator={this.getUrlGenerator()}
+            >
+                <App />
+            </ReactContainer>
         );
     }
 }

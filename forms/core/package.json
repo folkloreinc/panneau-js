@@ -1,69 +1,69 @@
 {
-    "name": "@panneau/form",
-    "version": "0.6.66-alpha.0",
-    "description": "Core forms for Panneau",
-    "keywords": [
-        "react",
-        "javascript",
-        "form",
-        "dashboard"
-    ],
-    "homepage": "https://github.com/folkloreinc/panneau-js/tree/master/forms/core",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/folkloreinc/panneau-js.git"
+  "name": "@panneau/form",
+  "version": "0.6.59",
+  "description": "Core forms for Panneau",
+  "keywords": [
+    "react",
+    "javascript",
+    "form",
+    "dashboard"
+  ],
+  "homepage": "https://github.com/folkloreinc/panneau-js/tree/master/forms/core",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/folkloreinc/panneau-js.git"
+  },
+  "author": {
+    "name": "Folklore",
+    "email": "info@folklore.email"
+  },
+  "contributors": [
+    {
+      "name": "David Mongeau-Petitpas",
+      "email": "dmp@folklore.email"
     },
-    "author": {
-        "name": "Folklore",
-        "email": "info@folklore.email"
-    },
-    "contributors": [
-        {
-            "name": "David Mongeau-Petitpas",
-            "email": "dmp@folklore.email"
-        },
-        {
-            "name": "Nicolas Roy-Bourdages",
-            "email": "nrb@folklore.email"
-        }
-    ],
-    "main": "lib/index.js",
-    "module": "es/index.js",
-    "files": [
-        "lib",
-        "es",
-        "dist"
-    ],
-    "scripts": {
-        "storybook": "../../node_modules/.bin/start-storybook -p 9008 -c ../../.storybook-package",
-        "clean": "rm -rf dist && rm -rf lib && rm -rf es",
-        "webpack:dist": "../../node_modules/.bin/webpack --config ./webpack.config.js --progress --colors",
-        "webpack": "npm run webpack:dist",
-        "babel:es": "BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es --ignore src/**/*.story.jsx,src/**/*.test.jsx",
-        "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore src/**/*.story.jsx,src/**/*.test.jsx",
-        "babel": "npm run babel:es && npm run babel:cjs",
-        "build": "npm run babel",
-        "prepare": "npm run clean && npm run build",
-        "start": "npm run storybook"
-    },
-    "dependencies": {
-        "@babel/runtime": "^7.0.0",
-        "@panneau/core": "^0.6.66-alpha.0",
-        "classnames": "^2.2.5",
-        "hoist-non-react-statics": "^3.3.0",
-        "invariant": "^2.2.4",
-        "lodash": "^4.17.4",
-        "prop-types": "^15.6.0",
-        "react-intl": "^2.8.0"
-    },
-    "devDependencies": {
-        "bootstrap": "^4.4.1",
-        "react": "^16.7.0",
-        "react-dom": "^16.7.0"
-    },
-    "peerDependencies": {
-        "react": ">=15.0.0 || ^16.0.0",
-        "react-dom": ">=15.0.0 || ^16.0.0"
-    },
-    "gitHead": "d3597b147ddf6d71fc9555d23f5e03fe8559e18e"
+    {
+      "name": "Nicolas Roy-Bourdages",
+      "email": "nrb@folklore.email"
+    }
+  ],
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "files": [
+    "lib",
+    "es",
+    "dist"
+  ],
+  "scripts": {
+    "storybook": "../../node_modules/.bin/start-storybook -p 9008 -c ../../.storybook-package",
+    "clean": "rm -rf dist && rm -rf lib && rm -rf es",
+    "webpack:dist": "../../node_modules/.bin/webpack --config ./webpack.config.js --progress --colors",
+    "webpack": "npm run webpack:dist",
+    "babel:es": "BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es --ignore src/**/*.story.jsx,src/**/*.test.jsx",
+    "babel:cjs": "BABEL_ENV=cjs ../../node_modules/.bin/babel src --out-dir lib --ignore src/**/*.story.jsx,src/**/*.test.jsx",
+    "babel": "npm run babel:es && npm run babel:cjs",
+    "build": "npm run babel",
+    "prepare": "npm run clean && npm run build",
+    "start": "npm run storybook"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "@panneau/core": "^0.6.59",
+    "classnames": "^2.2.5",
+    "hoist-non-react-statics": "^3.3.0",
+    "invariant": "^2.2.4",
+    "lodash": "^4.17.4",
+    "prop-types": "^15.6.0",
+    "react-intl": "^2.8.0"
+  },
+  "devDependencies": {
+    "bootstrap": "^4.2.1",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
+  },
+  "peerDependencies": {
+    "react": ">=15.0.0 || ^16.0.0",
+    "react-dom": ">=15.0.0 || ^16.0.0"
+  },
+  "gitHead": "d3597b147ddf6d71fc9555d23f5e03fe8559e18e"
 }

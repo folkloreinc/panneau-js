@@ -1,7 +1,10 @@
 {
     "name": "Simple Panneau",
 
-    "locales": ["fr", "en"],
+    "locales": [
+        "fr",
+        "en"
+    ],
 
     "endpointHost": "/api/",
 
@@ -81,7 +84,6 @@
             },
             "lists": {
                 "type": "table",
-                "filters": "basic",
                 "cols": [
                     {
                         "id": "id",
@@ -131,14 +133,14 @@
                     "label": "Base"
                 }
             ],
-            "routes": {
-                "index": "/pages",
-                "create": "/pages/create",
-                "store": "/pages",
-                "show": "/pages/:id",
-                "edit": "/pages/:id/edit",
-                "update": "/pages/:id",
-                "destroy": "/pages/:id"
+            "routes":{
+                "index":"/pages",
+                "create":"/pages/create",
+                "store":"/pages",
+                "show":"/pages/:id",
+                "edit":"/pages/:id/edit",
+                "update":"/pages/:id",
+                "destroy":"/pages/:id"
             },
             "forms": {
                 "type": "preview",
@@ -178,8 +180,6 @@
             },
             "lists": {
                 "type": "table",
-                "withSearch": true,
-                "withFilters": true,
                 "cols": [
                     {
                         "id": "id",
