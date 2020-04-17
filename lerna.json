@@ -8,7 +8,7 @@
         "packages/*",
         "previews/*"
     ],
-    "version": "0.6.72-alpha.0",
+    "version": "0.6.72",
     "command": {
         "publish": {
             "allowBranch": [
