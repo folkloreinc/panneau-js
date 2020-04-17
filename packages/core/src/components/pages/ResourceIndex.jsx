@@ -432,6 +432,7 @@ class ResourceIndex extends Component {
             <div
                 className={classNames({
                     [styles.filters]: true,
+                    'mb-3': true,
                     'd-flex': true,
                     'flex-row ': true,
                     'justify-content-between': true,

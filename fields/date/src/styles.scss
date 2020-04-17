@@ -17,4 +17,17 @@
             margin-bottom: 0;
         }
     }
+
+    :global(.DayPickerNavigation_button) {
+        position: absolute;
+        z-index: 1;
+
+        &:first-child {
+            left: 0;
+        }
+
+        &:last-child {
+            right: 0;
+        }
+    }
 }
