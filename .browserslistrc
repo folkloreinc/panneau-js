@@ -1,9 +1,9 @@
 [production staging]
-last 4 versions
+last 20 versions
 > 1%
-ie >= 11
+ie >= 10
 
 [development]
-last 10 chrome versions
-last 10 firefox versions
-last 2 edge versions
+last 10 versions
+> 1%
+ie >= 10

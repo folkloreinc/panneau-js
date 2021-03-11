@@ -1,20 +1,15 @@
 {
-    "packages": [
-        "fields/*",
-        "forms/*",
-        "layouts/*",
-        "lists/*",
-        "modals/*",
-        "packages/*",
-        "previews/*"
-    ],
-    "version": "0.6.72",
+    "version": "0.8.0",
+    "packages": ["fields/*", "forms/*", "packages/*"],
     "command": {
         "publish": {
-            "allowBranch": [
-                "master",
-                "v0.6.x"
-            ]
+            "allowBranch": ["master", "0.8"]
+        },
+        "bootstrap": {
+            "hoist": true
         }
+    },
+    "bootstrap": {
+        "npmClientArgs": ["--no-package-lock"]
     }
 }

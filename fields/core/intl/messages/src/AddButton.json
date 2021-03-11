@@ -1,7 +1,0 @@
-[
-  {
-    "id": "fields.core.buttons.add",
-    "description": "The label of the \"add\" button in items field",
-    "defaultMessage": "Add"
-  }
-]

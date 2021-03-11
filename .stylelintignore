@@ -1,8 +1,3 @@
-/lib
-/dist
-*/*/lib/
-*/*/dist/
-*/*/es/
-node_modules
-packages/generator-panneau/src/generators/*/templates/**
-packages/generator-panneau/src/templates/
+*/*/assets/**
+node_modules/**
+bootstrap/scss/**

@@ -1,1 +1,0 @@
-# Panneau JS Documentation

@@ -1,8 +1,7 @@
-/lib
-/dist
-*/*/lib/
-*/*/dist/
-*/*/es/
 node_modules
-packages/generator-panneau/src/generators/*/templates/**
-packages/generator-panneau/src/templates/
+*/*/lib/**
+*/*/es/**
+packages/*/*.js
+screens/*/*.js
+elements/*/*.js
+!.storybook
