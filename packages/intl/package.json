@@ -51,9 +51,6 @@
         "prepare": "npm run intl && ../../scripts/prepare-package.sh"
     },
     "devDependencies": {
-        "@micromag/editor": "^0.2.164",
-        "@micromag/elements": "^0.2.164",
-        "@micromag/screens": "^0.2.164",
         "react": "^16.8.0",
         "react-dom": "^16.8.0"
     },

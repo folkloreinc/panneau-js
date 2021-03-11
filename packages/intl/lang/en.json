@@ -1,1 +1,17 @@
-{}
+{
+    "BpZoQZ": {
+        "defaultMessage": "Success"
+    },
+    "PyxZY2": {
+        "defaultMessage": "Cancel"
+    },
+    "ZLDmja": {
+        "defaultMessage": "Submit"
+    },
+    "menus.pagination.next": {
+        "defaultMessage": "next"
+    },
+    "menus.pagination.previous": {
+        "defaultMessage": "Previous"
+    }
+}

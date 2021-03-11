@@ -10,3 +10,31 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 3.2.0\n"
+
+# Success form message
+#: BpZoQZ
+msgctxt "BpZoQZ"
+msgid "Success"
+msgstr ""
+
+# Button label
+#: PyxZY2
+msgctxt "PyxZY2"
+msgid "Cancel"
+msgstr ""
+
+# Submit form button
+#: ZLDmja
+msgctxt "ZLDmja"
+msgid "Submit"
+msgstr ""
+
+#: menus.pagination.next
+msgctxt "menus.pagination.next"
+msgid "next"
+msgstr ""
+
+#: menus.pagination.previous
+msgctxt "menus.pagination.previous"
+msgid "Previous"
+msgstr ""

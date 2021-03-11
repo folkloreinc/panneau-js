@@ -1,0 +1,11 @@
+@import '../variables';
+
+.container {
+    width: 100%;
+    padding: 2px;
+
+    .line {
+        height: 16px;
+        background-color: rgba($black, 0.5);
+    }
+}

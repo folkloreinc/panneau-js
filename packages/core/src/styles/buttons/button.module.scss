@@ -1,0 +1,39 @@
+@import '../variables';
+@import '../placeholders';
+@import '../mixins';
+
+.container {
+    .icon {
+        display: block;
+    }
+
+    &.withoutStyle {
+        @extend %reset-button;
+    }
+
+    &.asLink {
+        @extend %reset-button;
+        color: $primary;
+        font-weight: bold;
+    }
+
+    &.withIcon {
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+
+        .label {
+            margin-left: 0.5em;
+        }
+
+        .right {
+            margin-left: 0.5em;
+        }
+    }
+
+    &.withIconColumns {
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+    }
+}

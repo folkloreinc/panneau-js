@@ -1,0 +1,25 @@
+@import '../variables';
+@import '../placeholders';
+
+.container {
+    // overflow: hidden;
+
+    .panel {
+        // @extend %form-transitions;
+    }
+}
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: $spacer * 2;
+
+    &.left {
+        justify-content: flex-start;
+    }
+
+    &.right {
+        justify-content: flex-end;
+    }
+}

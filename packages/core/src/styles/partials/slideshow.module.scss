@@ -1,0 +1,30 @@
+@import '../variables';
+
+.container {
+    position: relative;
+    overflow: hidden;
+
+    .items {
+        width: 100%;
+        height: 100%;
+    }
+
+    .item {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.3s ease-out;
+
+        &.prev {
+            transform: translateX(-100%);
+        }
+
+        &.current {
+            transform: translateX(0);
+        }
+
+        &.next {
+            transform: translateX(100%);
+        }
+    }
+}

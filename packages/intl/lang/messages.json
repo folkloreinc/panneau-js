@@ -1,2 +1,20 @@
 {
+  "BpZoQZ": {
+    "defaultMessage": "Success",
+    "description": "Success form message"
+  },
+  "PyxZY2": {
+    "defaultMessage": "Cancel",
+    "description": "Button label"
+  },
+  "ZLDmja": {
+    "defaultMessage": "Submit",
+    "description": "Submit form button"
+  },
+  "menus.pagination.next": {
+    "defaultMessage": "next"
+  },
+  "menus.pagination.previous": {
+    "defaultMessage": "Previous"
+  }
 }

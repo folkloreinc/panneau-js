@@ -1,0 +1,16 @@
+/* stylelint-disable selector-class-pattern */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+@import './variables';
+@import './placeholders';
+@import './mixins';
+@import '~bootstrap/scss/bootstrap';
+
+.container-small {
+    @include make-container();
+
+    @each $breakpoint, $container-small-max-width in $container-small-max-widths {
+        @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
+            max-width: $container-small-max-width;
+        }
+    }
+}
