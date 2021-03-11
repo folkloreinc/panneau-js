@@ -7,9 +7,9 @@ const { idInterpolationPattern } = require('../packages/intl/scripts/config');
 require('dotenv').config();
 
 module.exports = {
-    stories: getPackagesPaths().filter(it => it.match(/\/cli$/) === null).map((packagePath) =>
-        path.join(packagePath, './src/**/*.stories.@(jsx|mdx)'),
-    ),
+    stories: getPackagesPaths()
+        .filter((it) => it.match(/\/cli$/) === null)
+        .map((packagePath) => path.join(packagePath, './src/**/*.stories.@(jsx|mdx)')),
     addons: [
         {
             name: '@storybook/preset-scss',

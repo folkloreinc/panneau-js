@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/template",
+    "name": "@panneau/field-text",
     "version": "0.8.0",
-    "description": "",
+    "description": "A text field",
     "keywords": [
         "javascript"
     ],
@@ -53,7 +53,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "prop-types": "^15.7.2"
+        "classnames": "^2.2.6",
+        "lodash": "^4.17.20",
+        "prop-types": "^15.7.2",
+        "react-intl": "^5.12.1"
     },
     "publishConfig": {
         "access": "public"
