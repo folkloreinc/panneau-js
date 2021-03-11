@@ -1,0 +1,17 @@
+{
+    "extends": [
+        "stylelint-config-recommended-scss",
+        "stylelint-config-sass-guidelines",
+        "stylelint-config-property-sort-order-smacss",
+        "stylelint-config-prettier"
+    ],
+    "rules": {
+        "order/properties-alphabetical-order": null,
+        "selector-class-pattern": [
+            "^[a-z][a-z0-9A-Z]+$",
+            {
+                "message": "Selector should be written in camel-case (selector-class-pattern)"
+            }
+        ]
+    }
+}

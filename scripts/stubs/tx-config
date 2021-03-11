@@ -1,0 +1,7 @@
+[main]
+host = https://www.transifex.com
+
+[%project.%resource]
+file_filter = lang/extract/<lang>.json
+source_lang = en
+type = STRUCTURED_JSON

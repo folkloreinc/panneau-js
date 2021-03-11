@@ -1,0 +1,44 @@
+{
+    "title": "All screens",
+    "theme": {
+        "type": "theme",
+        "title": "Default Theme",
+        "colors": { "primary": "#0F0", "secondary": "#00C" },
+        "background": {
+            "color": { "alpha": 1, "color": "#fc0" }
+        },
+        "textStyle": {
+            "heading1": { "fontSize": 36, "fontFamily": "Courier" },
+            "heading2": { "fontSize": 24, "fontFamily": "Courier" },
+            "heading3": { "fontSize": 18, "fontFamily": "Courier" },
+            "text": { "fontSize": 16, "fontFamily": "Arial", "color": "#F0F" }
+        },
+        "components": [
+            {
+                "id": "65140683-5b4e-11eb-916e-e320b8bc4adc",
+                "type": "text",
+                "text": { "body": "Test body" }
+            }
+        ]
+    },
+    "components": [
+        {
+            "id": "9d85d185-5b56-11eb-916e-e320b8bc4adc",
+            "type": "video",
+            "layout": "normal",
+            "video": {
+                "media": {
+                    "type": "video",
+                    "url": "http://podcasts.apple.com/resources/462787156.mp4",
+                    "thumbnail_url": "https://picsum.photos/1920/1080?random=1",
+                    "metadata": { "width": 1920, "height": 1080 }
+                },
+                "autoPlay": false,
+                "loop": true,
+                "withSeekBar": true
+            },
+            "background": { "color": "#FF00FF" },
+            "transitions": { "in": "fade", "out": "fade" }
+        }
+    ]
+}

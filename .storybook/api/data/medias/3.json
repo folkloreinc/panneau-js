@@ -1,0 +1,14 @@
+{
+    "id": "18",
+    "type": "video",
+    "name": "OldFlimGrain.mp4",
+    "url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/OldFlimGrain.mp4",
+    "thumbnail_url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/OldFilmGrain.png",
+    "metadata": {
+        "filename": "OldFlimGrain.mp4",
+        "size": 100000,
+        "mime": "video/mp4",
+        "width": 1920,
+        "height": 1080
+    }
+}

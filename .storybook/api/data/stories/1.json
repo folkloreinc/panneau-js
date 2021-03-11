@@ -1,0 +1,18 @@
+{
+    "id": "1",
+    "title": "Story 1",
+    "components": [
+        {
+            "id": "1",
+            "type": "text",
+            "text": {
+                "body": "bonjour",
+                "textStyle": {
+                    "fontSize": 40
+                }
+            }
+        }
+    ],
+    "created_at": "2020-02-01 00:00:00",
+    "updated_at": "2020-02-01 00:00:00"
+}

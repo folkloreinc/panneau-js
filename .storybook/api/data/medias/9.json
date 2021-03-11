@@ -1,0 +1,14 @@
+{
+    "id": "34",
+    "type": "image",
+    "name": "1200x630.png",
+    "url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/1200x630.png",
+    "thumbnail_url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/1200x630.png",
+    "metadata": {
+        "filename": "1200x630.png",
+        "size": 158897,
+        "mime": "image/png",
+        "width": 1200,
+        "height": 630
+    }
+}

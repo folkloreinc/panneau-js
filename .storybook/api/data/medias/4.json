@@ -1,0 +1,14 @@
+{
+    "id": "19",
+    "type": "video",
+    "name": "01-Ouverture2.mp4",
+    "url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/01-Ouverture2.mp4",
+    "thumbnail_url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/01-Ouverture2.png",
+    "metadata": {
+        "filename": "01-Ouverture2.mp4",
+        "size": 100000,
+        "mime": "video/mp4",
+        "width": 1080,
+        "height": 1920
+    }
+}
