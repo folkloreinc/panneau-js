@@ -9,7 +9,7 @@ const sortIntlMessages = require('./lib/sortIntlMessages');
 const globalPath = path.join(__dirname, '../packages/intl');
 
 const langFiles = getPackagesPaths()
-    .filter(packagePath => packagePath !== globalPath)
+    .filter((packagePath) => packagePath !== globalPath)
     .reduce(
         (allFiles, packagePath) => [
             ...allFiles,
@@ -30,7 +30,7 @@ const messagesByLocale = langFiles.reduce((map, langFile) => {
     };
 }, {});
 
-Object.keys(messagesByLocale).forEach(locale => {
+Object.keys(messagesByLocale).forEach((locale) => {
     const langFile = path.join(globalPath, `./lang/${locale}.json`);
     const sortedMessages = sortIntlMessages(messagesByLocale[locale]);
     mkdirp.sync(path.dirname(langFile));

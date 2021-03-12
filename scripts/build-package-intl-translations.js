@@ -8,8 +8,8 @@ const LANG_FILE = path.join(process.env.PWD, './intl/locale/en.json');
 
 buildIntlTranslations(MESSAGES_PATTERN, LANG_FILE);
 
-const otherLangFiles = globSync(
-    path.join(process.env.PWD, './intl/locale/*.json'),
-).filter(langPath => path.basename(langPath, '.json') !== 'en');
+const otherLangFiles = globSync(path.join(process.env.PWD, './intl/locale/*.json')).filter(
+    (langPath) => path.basename(langPath, '.json') !== 'en',
+);
 
 addMissingTranslations(LANG_FILE, otherLangFiles);

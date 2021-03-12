@@ -8,13 +8,16 @@ const addMissingTranslations = (baseLangFile, otherLangFiles) => {
     const baseTranslations = require(baseLangFile);
     otherLangFiles.forEach((langPath) => {
         const translations = require(langPath);
-        const newTranslations = Object.keys(baseTranslations).reduce((map, key) => ({
-            ...map,
-            [key]: translations[key] || `TRANSLATE: ${baseTranslations[key]}`,
-        }), {});
+        const newTranslations = Object.keys(baseTranslations).reduce(
+            (map, key) => ({
+                ...map,
+                [key]: translations[key] || `TRANSLATE: ${baseTranslations[key]}`,
+            }),
+            {},
+        );
         const sortedTranslations = sortIntlMessages(newTranslations);
         fs.writeFileSync(langPath, JSON.stringify(sortedTranslations, null, 4));
-    })
+    });
 };
 
 module.exports = addMissingTranslations;

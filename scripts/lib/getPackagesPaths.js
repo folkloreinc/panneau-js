@@ -6,7 +6,7 @@ const rootDir = path.join(__dirname, '../../');
 
 const getPackagesPaths = () =>
     lerna.packages
-        .map(it => it.replace(/\/\*/, '/'))
+        .map((it) => it.replace(/\/\*/, '/'))
         .reduce(
             (paths, packagesPath) => [
                 ...paths,

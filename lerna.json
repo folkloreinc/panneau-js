@@ -1,6 +1,6 @@
 {
     "version": "0.8.0",
-    "packages": ["fields/*", "forms/*", "packages/*"],
+    "packages": ["fields/*", "forms/*", "elements/*", "packages/*"],
     "command": {
         "publish": {
             "allowBranch": ["master", "0.8"]

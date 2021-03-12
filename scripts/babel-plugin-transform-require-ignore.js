@@ -9,7 +9,6 @@ function interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : { default: obj };
 }
 
-
 const path2 = interopRequireDefault(path);
 
 exports.default = () => {
@@ -33,9 +32,9 @@ exports.default = () => {
                     if (callee.isIdentifier() && callee.equals('name', 'require')) {
                         const arg = nodePath.get('arguments')[0];
                         if (
-                            arg
-                            && arg.isStringLiteral()
-                            && extensions.indexOf(path2.default.extname(arg.node.value)) > -1
+                            arg &&
+                            arg.isStringLiteral() &&
+                            extensions.indexOf(path2.default.extname(arg.node.value)) > -1
                         ) {
                             if (nodePath.parentPath.isVariableDeclarator()) {
                                 throw new Error(
@@ -69,20 +68,17 @@ exports.default = () => {
 
                             if (specifier.isImportDefaultSpecifier()) {
                                 throw new Error(
-                                    `${nodePath.node.source.value
-                                    } should not be imported using default imports.`,
+                                    `${nodePath.node.source.value} should not be imported using default imports.`,
                                 );
                             }
                             if (specifier.isImportSpecifier()) {
                                 throw new Error(
-                                    `${nodePath.node.source.value
-                                    } should not be imported using named imports.`,
+                                    `${nodePath.node.source.value} should not be imported using named imports.`,
                                 );
                             }
                             if (specifier.isImportNamespaceSpecifier()) {
                                 throw new Error(
-                                    `${nodePath.node.source.value
-                                    } should not be imported using namespace imports.`,
+                                    `${nodePath.node.source.value} should not be imported using namespace imports.`,
                                 );
                             }
                         }

@@ -32,7 +32,7 @@ postcss(postcssConfig.plugins)
         from: srcFile,
         to: outFile,
     })
-    .then(postCssResult => {
+    .then((postCssResult) => {
         mkdirp.sync(path.dirname(outFile));
         fs.writeFileSync(outFile, postCssResult.css);
 
