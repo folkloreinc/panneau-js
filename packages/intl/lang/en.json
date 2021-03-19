@@ -8,10 +8,55 @@
     "ZLDmja": {
         "defaultMessage": "Submit"
     },
+    "account": {
+        "defaultMessage": "Account"
+    },
+    "form.email": {
+        "defaultMessage": "Email"
+    },
+    "form.password": {
+        "defaultMessage": "Password"
+    },
+    "forms.delete_button": {
+        "defaultMessage": "Delete"
+    },
+    "forms.edit_button": {
+        "defaultMessage": "Edit"
+    },
+    "login": {
+        "defaultMessage": "Login"
+    },
+    "logout": {
+        "defaultMessage": "Logout"
+    },
     "menus.pagination.next": {
         "defaultMessage": "next"
     },
     "menus.pagination.previous": {
         "defaultMessage": "Previous"
+    },
+    "pages.login.title": {
+        "defaultMessage": "Login"
+    },
+    "resources.create": {
+        "defaultMessage": "Create {a_singular}"
+    },
+    "resources.created": {
+        "defaultMessage": "{The_singular} has been created."
+    },
+    "resources.delete": {
+        "defaultMessage": "Delete {a_singular}"
+    },
+    "resources.deleted": {
+        "defaultMessage": "{The_singular} has been deleted."
+    },
+    "resources.edit": {
+        "defaultMessage": "Edit {a_singular}"
+    },
+    "resources.loading": {
+        "defaultMessage": "Loading {plural}..."
+    },
+    "update_account": {
+        "defaultMessage": "Update account"
     }
 }

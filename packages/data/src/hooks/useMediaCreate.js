@@ -6,9 +6,9 @@ const useMediaCreate = () => {
     const [creating, setCreating] = useState(false);
     const api = useApi();
     const create = useCallback(
-        data => {
+        (data) => {
             setCreating(true);
-            return api.medias.create(data).then(response => {
+            return api.medias.create(data).then((response) => {
                 setCreating(false);
                 return response;
             });
@@ -16,6 +16,6 @@ const useMediaCreate = () => {
         [api, setCreating],
     );
     return { create, creating };
-}
+};
 
 export default useMediaCreate;

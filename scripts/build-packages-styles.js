@@ -11,7 +11,7 @@ let outFile = null;
 
 program
     .arguments('<template> <out>')
-    .option('-p, --pattern <pattern>', 'The packages pattern', '@micromag/*')
+    .option('-p, --pattern <pattern>', 'The packages pattern', '@panneau/*')
     .action((template, out) => {
         templateFile = path.join(process.cwd(), template);
         outFile = path.join(process.cwd(), out);

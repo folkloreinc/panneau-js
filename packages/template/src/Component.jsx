@@ -10,7 +10,7 @@ const defaultProps = {
     children: null,
 };
 
-const Component = () => <p>Hello wrld</p>;
+const Component = ({ children }) => <p>Hello wrld {children}</p>;
 
 Component.propTypes = propTypes;
 Component.defaultProps = defaultProps;

@@ -1,4 +1,5 @@
 export * from './ComponentsContext';
+export * from './DefinitionContext';
 export * from './FieldsContext';
 export * from './FontsContext';
 export * from './GoogleApiClientContext';
@@ -7,6 +8,5 @@ export * from './GoogleMapsClientContext';
 export * from './ModalsContext';
 export * from './PanelsContext';
 export * from './RoutesContext';
-export * from './ScreenSizeContext';
 export * from './TrackingContext';
 export * from './UppyContext';

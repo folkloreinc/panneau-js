@@ -1,4 +1,4 @@
-import { FieldsManager } from '@micromag/core';
+import { FieldsManager } from '@panneau/core';
 
 import allManager from './all';
 

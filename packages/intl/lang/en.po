@@ -29,6 +29,41 @@ msgctxt "ZLDmja"
 msgid "Submit"
 msgstr "Submit"
 
+#: account
+msgctxt "account"
+msgid "Account"
+msgstr "Account"
+
+#: form.email
+msgctxt "form.email"
+msgid "Email"
+msgstr "Email"
+
+#: form.password
+msgctxt "form.password"
+msgid "Password"
+msgstr "Password"
+
+#: forms.delete_button
+msgctxt "forms.delete_button"
+msgid "Delete"
+msgstr "Delete"
+
+#: forms.edit_button
+msgctxt "forms.edit_button"
+msgid "Edit"
+msgstr "Edit"
+
+#: login
+msgctxt "login"
+msgid "Login"
+msgstr "Login"
+
+#: logout
+msgctxt "logout"
+msgid "Logout"
+msgstr "Logout"
+
 #: menus.pagination.next
 msgctxt "menus.pagination.next"
 msgid "next"
@@ -38,3 +73,43 @@ msgstr "next"
 msgctxt "menus.pagination.previous"
 msgid "Previous"
 msgstr "Previous"
+
+#: pages.login.title
+msgctxt "pages.login.title"
+msgid "Login"
+msgstr "Login"
+
+#: resources.create
+msgctxt "resources.create"
+msgid "Create {a_singular}"
+msgstr "Create {a_singular}"
+
+#: resources.created
+msgctxt "resources.created"
+msgid "{The_singular} has been created."
+msgstr "{The_singular} has been created."
+
+#: resources.delete
+msgctxt "resources.delete"
+msgid "Delete {a_singular}"
+msgstr "Delete {a_singular}"
+
+#: resources.deleted
+msgctxt "resources.deleted"
+msgid "{The_singular} has been deleted."
+msgstr "{The_singular} has been deleted."
+
+#: resources.edit
+msgctxt "resources.edit"
+msgid "Edit {a_singular}"
+msgstr "Edit {a_singular}"
+
+#: resources.loading
+msgctxt "resources.loading"
+msgid "Loading {plural}..."
+msgstr "Loading {plural}..."
+
+#: update_account
+msgctxt "update_account"
+msgid "Update account"
+msgstr "Update account"

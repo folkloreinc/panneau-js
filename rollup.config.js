@@ -24,6 +24,7 @@ export const createConfig = ({
 } = {}) => {
     const isNode = format === 'node';
     const isCjs = format === 'cjs' || format === 'node';
+    // const isAbsolute = false;
     return {
         input: input || `src/${file}`,
         output: isCjs
@@ -79,7 +80,7 @@ export const createConfig = ({
                         {
                             version: require('@babel/helpers/package.json').version,
                             helpers: true,
-                            useESModules: !isCjs,
+                            // useESModules: !isAbsolute,
                         },
                     ],
                     require.resolve('@babel/plugin-proposal-export-namespace-from'),
@@ -115,6 +116,7 @@ export const createConfig = ({
             url({ include: ['**/*.mp4'] }),
             replace({
                 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+                preventAssignment: true,
             }),
             ...appendPlugins,
         ].filter(Boolean),
