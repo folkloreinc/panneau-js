@@ -6,8 +6,8 @@ const getIntlMessagesNamespace = (id) => {
     const namespace =
         name !== null
             ? name
-                  .replace(/^@micromag\/(forms|element|field)-(.*)$/, '$1s.$2')
-                  .replace(/^@micromag\/(.*)$/, '$1')
+                  .replace(/^@panneau\/(form|element|field|filter|list|modal)-(.*)$/, '$1s.$2')
+                  .replace(/^@panneau\/(.*)$/, '$1')
             : null;
     return name !== null ? `${namespace}.${id}` : id;
 };

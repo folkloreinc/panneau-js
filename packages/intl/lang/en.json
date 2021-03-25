@@ -8,10 +8,124 @@
     "ZLDmja": {
         "defaultMessage": "Submit"
     },
+    "account": {
+        "defaultMessage": "Account"
+    },
+    "errors.description_401": {
+        "defaultMessage": "You are not authorized to access this page."
+    },
+    "errors.description_403": {
+        "defaultMessage": "Access to this page is forbidden"
+    },
+    "errors.description_404": {
+        "defaultMessage": "This page doesn’t exist"
+    },
+    "errors.description_500": {
+        "defaultMessage": "There was an error"
+    },
+    "errors.goto_home": {
+        "defaultMessage": "Go to home page"
+    },
+    "errors.title_401": {
+        "defaultMessage": "Error 401"
+    },
+    "errors.title_403": {
+        "defaultMessage": "Error 403"
+    },
+    "errors.title_404": {
+        "defaultMessage": "Error 404"
+    },
+    "errors.title_500": {
+        "defaultMessage": "Error 500"
+    },
+    "form.cancel_button": {
+        "defaultMessage": "Cancel"
+    },
+    "form.confirm_delete": {
+        "defaultMessage": "Are you sure you want to delete the item #{id}?"
+    },
+    "form.delete_button": {
+        "defaultMessage": "Delete"
+    },
+    "form.email": {
+        "defaultMessage": "Email"
+    },
+    "form.password": {
+        "defaultMessage": "Password"
+    },
+    "form.save": {
+        "defaultMessage": "Save"
+    },
+    "forms.delete_button": {
+        "defaultMessage": "Delete"
+    },
+    "forms.edit_button": {
+        "defaultMessage": "Edit"
+    },
+    "forms.error_status": {
+        "defaultMessage": "Error"
+    },
+    "forms.loading_status": {
+        "defaultMessage": "Loading..."
+    },
+    "forms.success_status": {
+        "defaultMessage": "Success!"
+    },
+    "login": {
+        "defaultMessage": "Login"
+    },
+    "logout": {
+        "defaultMessage": "Logout"
+    },
     "menus.pagination.next": {
         "defaultMessage": "next"
     },
     "menus.pagination.previous": {
         "defaultMessage": "Previous"
+    },
+    "meta.title_401": {
+        "defaultMessage": "Error 401"
+    },
+    "meta.title_403": {
+        "defaultMessage": "Error 403"
+    },
+    "meta.title_404": {
+        "defaultMessage": "Error 404"
+    },
+    "meta.title_500": {
+        "defaultMessage": "Error 500"
+    },
+    "pages.login.title": {
+        "defaultMessage": "Login"
+    },
+    "pagination.items_count": {
+        "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
+    },
+    "pagination.next": {
+        "defaultMessage": "next"
+    },
+    "pagination.previous": {
+        "defaultMessage": "Previous"
+    },
+    "resources.create": {
+        "defaultMessage": "Create {a_singular}"
+    },
+    "resources.created": {
+        "defaultMessage": "{The_singular} has been created."
+    },
+    "resources.delete": {
+        "defaultMessage": "Delete {a_singular}"
+    },
+    "resources.deleted": {
+        "defaultMessage": "{The_singular} has been deleted."
+    },
+    "resources.edit": {
+        "defaultMessage": "Edit {a_singular}"
+    },
+    "resources.loading": {
+        "defaultMessage": "Loading {plural}..."
+    },
+    "update_account": {
+        "defaultMessage": "Update account"
     }
 }

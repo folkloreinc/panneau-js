@@ -11,40 +11,14 @@ const files = {
         //         entries: [
         //             {
         //                 find: /(\.|\.\.)\/(contexts|utils|hooks|components)\/?$/,
-        //                 replacement: '@micromag/core/$2',
+        //                 replacement: '@panneau/core/$2',
         //             },
         //         ],
         //     }),
         // ],
         resolveOptions: {
             extensions: ['.mjs', '.js', '.jsx', '.json', '.node'],
-            resolveOnly: [
-                new RegExp(path.join(__dirname, './src/lib')),
-            ],
-        },
-    },
-
-    'components.js': {
-        prependPlugins: [
-            alias({
-                entries: [
-                    {
-                        find: /^(\.\.\/)*\.\.\/\.\.\/(contexts|utils|hooks)\/?$/,
-                        replacement: '@micromag/core/$2',
-                    },
-                    {
-                        find: /(\.\.\/)*\.\.\/\.\.\/lib\/?$/,
-                        replacement: '@micromag/core',
-                    },
-                ],
-            }),
-        ],
-        resolveOptions: {
-            extensions: ['.mjs', '.js', '.jsx', '.json', '.node'],
-            resolveOnly: [
-                new RegExp(path.join(__dirname, './src/components')),
-                new RegExp(path.join(__dirname, './src/styles')),
-            ],
+            resolveOnly: [new RegExp(path.join(__dirname, './src/lib'))],
         },
     },
 
@@ -54,11 +28,11 @@ const files = {
                 entries: [
                     {
                         find: /\.\.\/(hooks|utils|contexts)\/?$/,
-                        replacement: '@micromag/core/$1',
+                        replacement: '@panneau/core/$1',
                     },
                     {
                         find: /\.\.\/lib\/?$/,
-                        replacement: '@micromag/core',
+                        replacement: '@panneau/core',
                     },
                 ],
             }),
@@ -80,11 +54,11 @@ const files = {
                 entries: [
                     {
                         find: /\.\.\/(contexts|utils)\/?$/,
-                        replacement: '@micromag/core/$1',
+                        replacement: '@panneau/core/$1',
                     },
                     {
                         find: /\.\.\/lib\/?$/,
-                        replacement: '@micromag/core',
+                        replacement: '@panneau/core',
                     },
                 ],
             }),
@@ -101,9 +75,7 @@ const files = {
     'utils.js': {
         resolveOptions: {
             extensions: ['.mjs', '.js', '.jsx', '.json', '.node'],
-            resolveOnly: [
-                new RegExp(path.join(__dirname, './src/utils')),
-            ],
+            resolveOnly: [new RegExp(path.join(__dirname, './src/utils'))],
         },
     },
 };

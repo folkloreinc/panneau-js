@@ -7,12 +7,13 @@ class Base {
         this.options = {
             routes: {},
             ...opts,
-            baseUrl: opts.baseUrl || 'https://micromag.ca/api',
+            baseUrl: opts.baseUrl || 'https://panneau.ca/api',
         };
     }
 
     requestGet(path, query = null) {
-        const queryString = query !== null ? stringifyQuery(query, { arrayFormat: 'bracket' }) : null;
+        const queryString =
+            query !== null ? stringifyQuery(query, { arrayFormat: 'bracket' }) : null;
         return getJSON(
             `${this.getFullUrl(path)}${
                 queryString !== null && queryString.length > 0 ? `?${queryString}` : ''

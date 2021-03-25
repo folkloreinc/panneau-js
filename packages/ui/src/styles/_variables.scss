@@ -1,0 +1,11 @@
+@import 'theme';
+
+$container-small-max-widths: (
+    sm: 540px,
+    md: 540px,
+    lg: 540px,
+    xl: 540px,
+) !default;
+
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';

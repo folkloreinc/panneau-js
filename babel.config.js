@@ -4,7 +4,7 @@ const getPackagesAliases = require('./scripts/lib/getPackagesAliases');
 module.exports = (api) => {
     if (api.env('node')) {
         return {
-            ignore: [/node_modules\/(?!@micromag)/],
+            ignore: [/node_modules\/(?!@panneau)/],
             presets: [
                 [
                     require('@babel/preset-env'),

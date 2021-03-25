@@ -5,7 +5,7 @@ import uniqBy from 'lodash/uniqBy';
 import isString from 'lodash/isString';
 
 import { ComponentsProvider, FIELDS_NAMESPACE } from './ComponentsContext';
-import { FieldsManager, PropTypes as MicromagPropTypes } from '../lib';
+import { FieldsManager, PropTypes as PanneauPropTypes } from '../lib';
 
 export const FieldsContext = React.createContext(null);
 
@@ -17,7 +17,7 @@ export const useFieldDefinition = (id) => {
 };
 
 const propTypes = {
-    fields: MicromagPropTypes.fieldDefinitions,
+    fields: PanneauPropTypes.fieldDefinitions,
     manager: PropTypes.instanceOf(FieldsManager),
     children: PropTypes.node.isRequired,
 };

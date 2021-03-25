@@ -5,7 +5,7 @@ import uniqBy from 'lodash/uniqBy';
 import isObject from 'lodash/isObject';
 import { getJSON } from '@folklore/fetch';
 
-import { PropTypes as MicromagPropTypes } from '../lib';
+import { PropTypes as PanneauPropTypes } from '../lib';
 
 import { useGoogleKeys } from './GoogleKeysContext';
 
@@ -21,22 +21,22 @@ export const useGoogleFonts = ({ disabled = false, setFonts = null } = {}) => {
     useEffect(() => {
         let canceled = false;
         if (apiKey !== null && !disabled) {
-            getJSON(`https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}&sort=popularity`).then(
-                ({ items = [] }) => {
-                    if (!canceled) {
-                        const newFonts = items.map((it) => ({
-                            type: 'google',
-                            name: it.family,
-                            variants: it.variants,
-                        }));
-                        if (setFonts !== null) {
-                            setFonts(newFonts);
-                        } else {
-                            setGoogleFonts(newFonts);
-                        }
+            getJSON(
+                `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}&sort=popularity`,
+            ).then(({ items = [] }) => {
+                if (!canceled) {
+                    const newFonts = items.map((it) => ({
+                        type: 'google',
+                        name: it.family,
+                        variants: it.variants,
+                    }));
+                    if (setFonts !== null) {
+                        setFonts(newFonts);
+                    } else {
+                        setGoogleFonts(newFonts);
                     }
-                },
-            );
+                }
+            });
         }
         return () => {
             canceled = true;
@@ -72,8 +72,8 @@ export const useFonts = ({ withoutGoogleFonts = false } = {}) => {
 
 const propTypes = {
     children: PropTypes.node.isRequired,
-    systemFonts: MicromagPropTypes.fonts,
-    customFonts: MicromagPropTypes.fonts,
+    systemFonts: PanneauPropTypes.fonts,
+    customFonts: PanneauPropTypes.fonts,
 };
 
 const defaultProps = {

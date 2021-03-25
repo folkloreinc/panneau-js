@@ -53,7 +53,32 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "prop-types": "^15.7.2"
+        "@fortawesome/fontawesome-svg-core": "^1.2.35",
+        "@fortawesome/free-solid-svg-icons": "^5.15.3",
+        "@fortawesome/react-fontawesome": "^0.1.14",
+        "@panneau/core": "^0.8.0",
+        "@panneau/data": "^0.8.0",
+        "@panneau/fields": "^0.8.0",
+        "@panneau/forms": "^0.8.0",
+        "@panneau/lists": "^0.8.0",
+        "@panneau/modals": "^0.8.0",
+        "@panneau/filters": "^0.8.0",
+        "@panneau/ui": "^0.8.0",
+        "@panneau/element-button": "^0.8.0",
+        "@panneau/element-link": "^0.8.0",
+        "@panneau/element-label": "^0.8.0",
+        "@panneau/element-loading": "^0.8.0",
+        "@panneau/element-alert": "^0.8.0",
+        "@panneau/element-pagination": "^0.8.0",
+        "@panneau/element-form": "^0.8.0",
+        "@panneau/element-form-group": "^0.8.0",
+        "classnames": "^2.2.6",
+        "lodash": "^4.17.21",
+        "prop-types": "^15.7.2",
+        "query-string": "^7.0.0",
+        "react-intl": "^5.13.4",
+        "react-router": "^5.2.0",
+        "react-router-dom": "^5.2.0"
     },
     "publishConfig": {
         "access": "public"

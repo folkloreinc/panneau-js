@@ -4,28 +4,26 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
-import { PropTypes as MicromagPropTypes } from '@panneau/core';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
-import styles from './button.module.scss';
+import styles from './styles.module.scss';
 
 const propTypes = {
     type: PropTypes.string,
-    theme: MicromagPropTypes.buttonTheme,
-    size: MicromagPropTypes.buttonSize,
+    theme: PanneauPropTypes.buttonTheme,
+    size: PanneauPropTypes.buttonSize,
     href: PropTypes.string,
     external: PropTypes.bool,
     direct: PropTypes.bool,
     target: PropTypes.string,
-    label: MicromagPropTypes.label,
-    children: MicromagPropTypes.label,
+    label: PanneauPropTypes.label,
+    children: PanneauPropTypes.label,
     active: PropTypes.bool,
     icon: PropTypes.node,
     iconPosition: PropTypes.oneOf(['left', 'right', 'inline']),
     disabled: PropTypes.bool,
     loading: PropTypes.bool,
     disableOnLoading: PropTypes.bool,
-    small: PropTypes.bool,
-    big: PropTypes.bool,
     withShadow: PropTypes.bool,
     withoutStyle: PropTypes.bool,
     withoutTheme: PropTypes.bool,
@@ -59,8 +57,6 @@ const defaultProps = {
     disabled: false,
     loading: false,
     disableOnLoading: true,
-    small: false,
-    big: false,
     withShadow: false,
     withoutStyle: false,
     withoutTheme: false,
@@ -89,8 +85,6 @@ const Button = ({
     disabled,
     loading,
     disableOnLoading,
-    small,
-    big,
     withShadow,
     withoutStyle,
     withoutTheme,
@@ -193,8 +187,6 @@ const Button = ({
             [styles.withIconColumns]: hasIconColumns,
             [styles.withText]: text !== null,
             [styles.withShadow]: withShadow,
-            [styles.isSmall]: small,
-            [styles.isBig]: big,
             [styles.isLink]: href !== null,
             [styles.asLink]: asLink,
             [styles.isDisabled]: disabled,

@@ -29,6 +29,121 @@ msgctxt "ZLDmja"
 msgid "Submit"
 msgstr ""
 
+#: account
+msgctxt "account"
+msgid "Account"
+msgstr ""
+
+#: errors.description_401
+msgctxt "errors.description_401"
+msgid "You are not authorized to access this page."
+msgstr ""
+
+#: errors.description_403
+msgctxt "errors.description_403"
+msgid "Access to this page is forbidden"
+msgstr ""
+
+#: errors.description_404
+msgctxt "errors.description_404"
+msgid "This page doesn’t exist"
+msgstr ""
+
+#: errors.description_500
+msgctxt "errors.description_500"
+msgid "There was an error"
+msgstr ""
+
+#: errors.goto_home
+msgctxt "errors.goto_home"
+msgid "Go to home page"
+msgstr ""
+
+#: errors.title_401
+msgctxt "errors.title_401"
+msgid "Error 401"
+msgstr ""
+
+#: errors.title_403
+msgctxt "errors.title_403"
+msgid "Error 403"
+msgstr ""
+
+#: errors.title_404
+msgctxt "errors.title_404"
+msgid "Error 404"
+msgstr ""
+
+#: errors.title_500
+msgctxt "errors.title_500"
+msgid "Error 500"
+msgstr ""
+
+#: form.cancel_button
+msgctxt "form.cancel_button"
+msgid "Cancel"
+msgstr ""
+
+#: form.confirm_delete
+msgctxt "form.confirm_delete"
+msgid "Are you sure you want to delete the item #{id}?"
+msgstr ""
+
+#: form.delete_button
+msgctxt "form.delete_button"
+msgid "Delete"
+msgstr ""
+
+#: form.email
+msgctxt "form.email"
+msgid "Email"
+msgstr ""
+
+#: form.password
+msgctxt "form.password"
+msgid "Password"
+msgstr ""
+
+#: form.save
+msgctxt "form.save"
+msgid "Save"
+msgstr ""
+
+#: forms.delete_button
+msgctxt "forms.delete_button"
+msgid "Delete"
+msgstr ""
+
+#: forms.edit_button
+msgctxt "forms.edit_button"
+msgid "Edit"
+msgstr ""
+
+#: forms.error_status
+msgctxt "forms.error_status"
+msgid "Error"
+msgstr ""
+
+#: forms.loading_status
+msgctxt "forms.loading_status"
+msgid "Loading..."
+msgstr ""
+
+#: forms.success_status
+msgctxt "forms.success_status"
+msgid "Success!"
+msgstr ""
+
+#: login
+msgctxt "login"
+msgid "Login"
+msgstr ""
+
+#: logout
+msgctxt "logout"
+msgid "Logout"
+msgstr ""
+
 #: menus.pagination.next
 msgctxt "menus.pagination.next"
 msgid "next"
@@ -37,4 +152,79 @@ msgstr ""
 #: menus.pagination.previous
 msgctxt "menus.pagination.previous"
 msgid "Previous"
+msgstr ""
+
+#: meta.title_401
+msgctxt "meta.title_401"
+msgid "Error 401"
+msgstr ""
+
+#: meta.title_403
+msgctxt "meta.title_403"
+msgid "Error 403"
+msgstr ""
+
+#: meta.title_404
+msgctxt "meta.title_404"
+msgid "Error 404"
+msgstr ""
+
+#: meta.title_500
+msgctxt "meta.title_500"
+msgid "Error 500"
+msgstr ""
+
+#: pages.login.title
+msgctxt "pages.login.title"
+msgid "Login"
+msgstr ""
+
+#: pagination.items_count
+msgctxt "pagination.items_count"
+msgid "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
+msgstr ""
+
+#: pagination.next
+msgctxt "pagination.next"
+msgid "Next"
+msgstr ""
+
+#: pagination.previous
+msgctxt "pagination.previous"
+msgid "Previous"
+msgstr ""
+
+#: resources.create
+msgctxt "resources.create"
+msgid "Create {a_singular}"
+msgstr ""
+
+#: resources.created
+msgctxt "resources.created"
+msgid "{The_singular} has been created."
+msgstr ""
+
+#: resources.delete
+msgctxt "resources.delete"
+msgid "Delete {a_singular}"
+msgstr ""
+
+#: resources.deleted
+msgctxt "resources.deleted"
+msgid "{The_singular} has been deleted."
+msgstr ""
+
+#: resources.edit
+msgctxt "resources.edit"
+msgid "Edit {a_singular}"
+msgstr ""
+
+#: resources.loading
+msgctxt "resources.loading"
+msgid "Loading {plural}..."
+msgstr ""
+
+#: update_account
+msgctxt "update_account"
+msgid "Update account"
 msgstr ""

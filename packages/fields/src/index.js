@@ -1,2 +1,3 @@
-export { default } from './manager';
-export { default as FieldsProvider } from './FieldsProvider';
+import FieldsProvider from './FieldsProvider';
+
+export default FieldsProvider;

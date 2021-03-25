@@ -7,9 +7,8 @@ import {
     FieldsProvider as BaseFieldsProvider,
 } from '@panneau/core/contexts';
 
-import manager from './manager';
-
-const components = {};
+import definitions from './definitions';
+import * as components from './components';
 
 const propTypes = {
     children: PropTypes.node.isRequired,
@@ -19,7 +18,7 @@ const defaultProps = {};
 
 const FieldsProvider = ({ children }) => (
     <ComponentsProvider namespace={FIELDS_NAMESPACE} components={components}>
-        <BaseFieldsProvider manager={manager}>{children}</BaseFieldsProvider>
+        <BaseFieldsProvider fields={definitions}>{children}</BaseFieldsProvider>
     </ComponentsProvider>
 );
 
