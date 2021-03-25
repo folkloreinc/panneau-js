@@ -31,8 +31,6 @@ module.exports = (api) => {
                             'react-dom': require.resolve('react-dom'),
                             'react-intl': require.resolve('react-intl'),
                             'react-router': require.resolve('react-router'),
-                            'react-spring': require.resolve('react-spring'),
-                            'react-use-gesture': require.resolve('react-use-gesture'),
                             ...getPackagesAliases({ withoutEndSign: true }),
                         },
                     },
