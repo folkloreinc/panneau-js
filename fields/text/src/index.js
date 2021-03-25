@@ -1,3 +1,4 @@
-import { default as TextField } from './Text';
+import TextField from './TextField';
 
+export { definition } from './definition';
 export default TextField;
