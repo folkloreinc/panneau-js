@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import classNames from 'classnames';
 import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 import InputGroup from './InputGroup';
 
@@ -78,7 +79,7 @@ const TextField = ({
 
         onFocus,
         onBlur,
-        value: value !== null ? value : null,
+        value: value !== null ? value : '',
         style: { textAlign: align },
         onChange: ({ target: { value: newValue = '' } }) =>
             onChange !== null ? onChange(!isEmpty(newValue) ? newValue : null) : null,
@@ -92,7 +93,7 @@ const TextField = ({
                 <ReactQuill {...elProps} />
             ) : (
                 <>
-                    {type === 'textarea' ? <input {...inputProps} /> : <textarea {...inputProps} />}
+                    {type !== 'textarea' ? <input {...inputProps} /> : <textarea {...inputProps} />}
                 </>
             )}
         </InputGroup>
