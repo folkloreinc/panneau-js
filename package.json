@@ -92,8 +92,6 @@
         "react-intl": "^5.13.4",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
-        "react-spring": "^9.0.0-canary.808.17.55c5691",
-        "react-use-gesture": "^9.0.0",
         "rollup": "^2.38.5",
         "rollup-plugin-copy": "^3.3.0",
         "rollup-plugin-postcss": "^4.0.0",
