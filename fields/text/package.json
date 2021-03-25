@@ -56,7 +56,8 @@
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
-        "react-intl": "^5.13.4"
+        "react-intl": "^5.12.1",
+        "react-quill": "^2.0.0-beta.2"
     },
     "publishConfig": {
         "access": "public"

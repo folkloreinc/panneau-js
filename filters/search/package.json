@@ -59,7 +59,7 @@
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
-        "react-intl": "^5.13.4"
+        "react-intl": "^5.13.5"
     },
     "publishConfig": {
         "access": "public"

@@ -54,7 +54,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^0.8.0",
-        "@uppy/react": "^1.11.2",
+        "@uppy/react": "^1.11.5",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2"
     },

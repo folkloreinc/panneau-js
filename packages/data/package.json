@@ -56,7 +56,7 @@
         "@folklore/fetch": "^0.1.10",
         "@panneau/core": "^0.8.0",
         "prop-types": "^15.7.2",
-        "query-string": "^6.13.7",
+        "query-string": "^7.0.0",
         "react-router": "^5.2.0"
     },
     "publishConfig": {
