@@ -4,7 +4,7 @@ import withGoogleKeys from './decorators/withGoogleKeys';
 import withAuthProvider from './decorators/withAuthProvider';
 import withRoutesProvider from './decorators/withRoutesProvider';
 
-import '../packages/core/src/styles/vendor.scss';
+import '../packages/themes/src/styles/vendor.scss';
 
 // import './fonts/fonts.scss';
 

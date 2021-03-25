@@ -1,6 +1,29 @@
-@import '~@panneau/core/scss/variables';
-@import '~@panneau/core/scss/placeholders';
+@import '~@panneau/themes/scss/variables';
+@import '~@panneau/themes/scss/placeholders';
 
 .container {
-    //
+    .label {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 0.9rem;
+    }
+
+    .help {
+        margin: 2px 0;
+        color: $gray-900;
+        font-size: 0.9rem;
+    }
+
+    .errors {
+        margin: 2px 0;
+        color: $red;
+        font-size: 0.9rem;
+    }
+
+    &.hasErrors {
+        .label,
+        .help {
+            color: $red;
+        }
+    }
 }

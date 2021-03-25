@@ -1,0 +1,105 @@
+{
+    "name": "@panneau/themes",
+    "version": "0.8.0",
+    "description": "",
+    "keywords": [
+        "javascript"
+    ],
+    "homepage": "https://github.com/folkloreinc/panneau-js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git"
+    },
+    "author": {
+        "name": "Folklore",
+        "email": "info@folklore.email"
+    },
+    "contributors": [
+        {
+            "name": "David Mongeau-Petitpas",
+            "email": "dmp@folklore.email"
+        },
+        {
+            "name": "Nicolas Roy-Bourdages",
+            "email": "nrb@folklore.email"
+        },
+        {
+            "name": "Julien Carignan",
+            "email": "jc@folklore.email"
+        },
+        {
+            "name": "Théo Gjini",
+            "email": "tg@folklore.email"
+        }
+    ],
+    "license": "ISC",
+    "main": "lib/index.js",
+    "module": "es/index.js",
+    "files": [
+        "lib",
+        "es",
+        "assets",
+        "scss"
+    ],
+    "scripts": {
+        "vendor": "../../scripts/build-sass.js ./src/styles/vendor.scss ./assets/css/vendor.css",
+        "prepare": "../../scripts/prepare-package.sh --scss && npm run vendor"
+    },
+    "devDependencies": {
+        "react": "^16.8.0",
+        "react-dom": "^16.8.0"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0",
+        "react-dom": "^16.8.0"
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.12.5",
+        "@folklore/fetch": "^0.1.10",
+        "@folklore/forms": "^0.0.10",
+        "@folklore/services": "^0.1.24",
+        "@folklore/tracking": "^0.0.9",
+        "@fortawesome/fontawesome-svg-core": "^1.2.35",
+        "@fortawesome/free-solid-svg-icons": "^5.15.3",
+        "@fortawesome/react-fontawesome": "^0.1.14",
+        "@uppy/core": "^1.16.2",
+        "@uppy/dashboard": "^1.13.0",
+        "@uppy/dropbox": "^1.4.18",
+        "@uppy/facebook": "^1.1.18",
+        "@uppy/google-drive": "^1.5.18",
+        "@uppy/instagram": "^1.4.18",
+        "@uppy/locales": "^1.16.10",
+        "@uppy/react": "^1.11.2",
+        "@uppy/transloadit": "^1.6.14",
+        "@uppy/tus": "^1.8.2",
+        "@uppy/webcam": "^1.8.1",
+        "@uppy/xhr-upload": "^1.6.8",
+        "bootstrap": "next",
+        "change-case": "^4.1.2",
+        "classnames": "^2.2.6",
+        "css-mediaquery": "^0.1.2",
+        "dayjs": "^1.10.4",
+        "debug": "^4.3.1",
+        "flat": "^5.0.2",
+        "hoist-non-react-statics": "^3.3.2",
+        "lodash": "^4.17.21",
+        "prop-types": "^15.7.2",
+        "react-addons-css-transition-group": "^15.6.2",
+        "react-helmet": "^6.1.0",
+        "react-intl": "^5.13.4",
+        "react-router": "^5.2.0",
+        "react-router-dom": "^5.2.0",
+        "react-spring": "^9.0.0-canary.808.17.55c5691",
+        "react-use-gesture": "^9.0.0",
+        "slugify": "^1.4.6",
+        "snake-case": "^3.0.4",
+        "tinycolor2": "^1.4.2",
+        "uuid": "^8.3.2",
+        "webfontloader": "^1.6.28",
+        "wolfy87-eventemitter": "^5.2.9"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "gitHead": "e9c4b49e77ddefc4bb0c823eb025f68d885b1aa1"
+}

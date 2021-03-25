@@ -60,6 +60,7 @@ const FormGroup = ({
             <label
                 htmlFor={name}
                 className={classNames([
+                    styles.label,
                     {
                         'col-sm-2': horizontal,
                         'px-2': horizontal,
@@ -79,9 +80,13 @@ const FormGroup = ({
             ])}
         >
             {children}
-            {helpText !== null ? <small className="form-text text-muted">{helpText}</small> : null}
+            {helpText !== null ? (
+                <small className={classNames([styles.label, 'form-text', 'text-muted'])}>
+                    {helpText}
+                </small>
+            ) : null}
             {!withoutErrors && errors !== null ? (
-                <div className={classNames(['invalid-feedback', 'd-block'])}>
+                <div className={classNames([styles.errors, 'invalid-feedback', 'd-block'])}>
                     <ul className="list-unstyled">
                         {errors.map((error) => (
                             <li key={`error-${error}`}>{error}</li>

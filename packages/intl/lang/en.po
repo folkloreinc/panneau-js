@@ -34,6 +34,66 @@ msgctxt "account"
 msgid "Account"
 msgstr "Account"
 
+#: errors.description_401
+msgctxt "errors.description_401"
+msgid "You are not authorized to access this page."
+msgstr "You are not authorized to access this page."
+
+#: errors.description_403
+msgctxt "errors.description_403"
+msgid "Access to this page is forbidden"
+msgstr "Access to this page is forbidden"
+
+#: errors.description_404
+msgctxt "errors.description_404"
+msgid "This page doesn’t exist"
+msgstr "This page doesn’t exist"
+
+#: errors.description_500
+msgctxt "errors.description_500"
+msgid "There was an error"
+msgstr "There was an error"
+
+#: errors.goto_home
+msgctxt "errors.goto_home"
+msgid "Go to home page"
+msgstr "Go to home page"
+
+#: errors.title_401
+msgctxt "errors.title_401"
+msgid "Error 401"
+msgstr "Error 401"
+
+#: errors.title_403
+msgctxt "errors.title_403"
+msgid "Error 403"
+msgstr "Error 403"
+
+#: errors.title_404
+msgctxt "errors.title_404"
+msgid "Error 404"
+msgstr "Error 404"
+
+#: errors.title_500
+msgctxt "errors.title_500"
+msgid "Error 500"
+msgstr "Error 500"
+
+#: form.cancel_button
+msgctxt "form.cancel_button"
+msgid "Cancel"
+msgstr "Cancel"
+
+#: form.confirm_delete
+msgctxt "form.confirm_delete"
+msgid "Are you sure you want to delete the item #{id}?"
+msgstr "Are you sure you want to delete the item #{id}?"
+
+#: form.delete_button
+msgctxt "form.delete_button"
+msgid "Delete"
+msgstr "Delete"
+
 #: form.email
 msgctxt "form.email"
 msgid "Email"
@@ -44,6 +104,11 @@ msgctxt "form.password"
 msgid "Password"
 msgstr "Password"
 
+#: form.save
+msgctxt "form.save"
+msgid "Save"
+msgstr "Save"
+
 #: forms.delete_button
 msgctxt "forms.delete_button"
 msgid "Delete"
@@ -53,6 +118,21 @@ msgstr "Delete"
 msgctxt "forms.edit_button"
 msgid "Edit"
 msgstr "Edit"
+
+#: forms.error_status
+msgctxt "forms.error_status"
+msgid "Error"
+msgstr "Error"
+
+#: forms.loading_status
+msgctxt "forms.loading_status"
+msgid "Loading..."
+msgstr "Loading..."
+
+#: forms.success_status
+msgctxt "forms.success_status"
+msgid "Success!"
+msgstr "Success!"
 
 #: login
 msgctxt "login"
@@ -74,10 +154,45 @@ msgctxt "menus.pagination.previous"
 msgid "Previous"
 msgstr "Previous"
 
+#: meta.title_401
+msgctxt "meta.title_401"
+msgid "Error 401"
+msgstr "Error 401"
+
+#: meta.title_403
+msgctxt "meta.title_403"
+msgid "Error 403"
+msgstr "Error 403"
+
+#: meta.title_404
+msgctxt "meta.title_404"
+msgid "Error 404"
+msgstr "Error 404"
+
+#: meta.title_500
+msgctxt "meta.title_500"
+msgid "Error 500"
+msgstr "Error 500"
+
 #: pages.login.title
 msgctxt "pages.login.title"
 msgid "Login"
 msgstr "Login"
+
+#: pagination.items_count
+msgctxt "pagination.items_count"
+msgid "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
+msgstr "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
+
+#: pagination.next
+msgctxt "pagination.next"
+msgid "Next"
+msgstr "next"
+
+#: pagination.previous
+msgctxt "pagination.previous"
+msgid "Previous"
+msgstr "Previous"
 
 #: resources.create
 msgctxt "resources.create"

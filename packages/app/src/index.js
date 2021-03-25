@@ -1,5 +1,5 @@
-import PanneauContainer from './Container';
+import PanneauContainer from './components/Container';
 
-export { default as Panneau } from './Panneau';
+export { default as Panneau } from './components/Panneau';
 
 export default PanneauContainer;

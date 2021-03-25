@@ -8,6 +8,8 @@ import { ComponentsManager } from '../lib';
 export const MODALS_NAMESPACE = 'modals';
 export const FIELDS_NAMESPACE = 'fields';
 export const FORMS_NAMESPACE = 'forms';
+export const FILTERS_NAMESPACE = 'filters';
+export const LISTS_NAMESPACE = 'lists';
 
 export const ComponentsContext = React.createContext(null);
 
@@ -73,6 +75,28 @@ export const useModalsComponents = (defaultComponents = {}) =>
 
 export const useModalComponent = (name, defaultComponent = null) =>
     useComponent(name, defaultComponent, MODALS_NAMESPACE);
+
+/**
+ * Filters hooks
+ */
+export const useFiltersComponentsManager = () => useComponentsManager(FILTERS_NAMESPACE);
+
+export const useFiltersComponents = (defaultComponents = {}) =>
+    useComponents(FILTERS_NAMESPACE, defaultComponents);
+
+export const useFilterComponent = (name, defaultComponent = null) =>
+    useComponent(name, defaultComponent, FILTERS_NAMESPACE);
+
+/**
+ * Lists hooks
+ */
+export const useListsComponentsManager = () => useComponentsManager(LISTS_NAMESPACE);
+
+export const useListsComponents = (defaultComponents = {}) =>
+    useComponents(LISTS_NAMESPACE, defaultComponents);
+
+export const useListComponent = (name, defaultComponent = null) =>
+    useComponent(name, defaultComponent, LISTS_NAMESPACE);
 
 /**
  * Provider

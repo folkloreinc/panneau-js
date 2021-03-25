@@ -93,11 +93,18 @@ export const resource = PropTypes.shape({
 });
 export const resources = PropTypes.arrayOf(resource);
 
-export const definition = PropTypes.shape({
+export const panneauDefinition = PropTypes.shape({
     name: PropTypes.string,
     resources,
     routes,
-    localization,
+    // localization,
+});
+
+export const definition = PropTypes.shape({
+    name: PropTypes.string,
+    // resources,
+    // routes,
+    // localization,
 });
 
 export const item = PropTypes.shape({

@@ -10,4 +10,11 @@ export default {
     },
 };
 
-export const Normal = () => <ButtonsElement label="Hello" />;
+export const Normal = () => (
+    <ButtonsElement
+        buttons={[
+            { label: 'hello', theme: 'primary' },
+            { label: 'goodbye', theme: 'success' },
+        ]}
+    />
+);
