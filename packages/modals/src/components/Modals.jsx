@@ -3,10 +3,10 @@ import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { PropTypes as PanneauPropTypes } from '../../lib';
-import { withModals } from '../../contexts';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { withModals } from '@panneau/core/contexts';
 
-import styles from '../../styles/modals/modals.module.scss';
+import styles from '../styles/modals.module.scss';
 
 const propTypes = {
     modals: PanneauPropTypes.modals.isRequired,

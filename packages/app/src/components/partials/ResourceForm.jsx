@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getComponentFromName } from '@panneau/core/utils';
 
-import { FormProvider, useForms } from '@panneau/forms';
+import { FormProvider } from '@panneau/core/contexts';
 import { useResourceUpdate, useResourceStore } from '@panneau/data';
-import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
+import { useForm, useResourceUrlGenerator, useForms } from '@panneau/core/hooks';
 
 // import * as FormComponents from './resources';
 

@@ -3,12 +3,14 @@ import React, { useContext, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
-import useAuthCheck from '../hooks/useAuthCheck';
-import useAuthLogin from '../hooks/useAuthLogin';
-import useAuthLogout from '../hooks/useAuthLogout';
-import useAuthRegister from '../hooks/useAuthRegister';
-import useAuthRequestPassword from '../hooks/useAuthRequestPassword';
-import useAuthResetPassword from '../hooks/useAuthResetPassword';
+import {
+    useAuthCheck,
+    useAuthLogin,
+    useAuthLogout,
+    useAuthRegister,
+    useAuthRequestPassword,
+    useAuthResetPassword,
+} from '@panneau/data';
 
 const AuthContext = React.createContext(null);
 

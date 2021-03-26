@@ -1,0 +1,21 @@
+@import '~@panneau/themes/scss/variables';
+@import '~@panneau/themes/scss/placeholders';
+
+.container {
+    @extend %fullscreen;
+    display: flex;
+    overflow-y: auto;
+
+    &.center {
+        > .inner {
+            margin: auto;
+        }
+    }
+
+    &.top {
+        > .inner {
+            margin: 0 auto;
+            padding: 1.75rem 0;
+        }
+    }
+}

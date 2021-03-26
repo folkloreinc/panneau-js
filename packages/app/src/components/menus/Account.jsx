@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
 
 import { useUrlGenerator } from '@panneau/core/contexts';
-import { useUser, useLogout } from '@panneau/data';
+import { useUser, useLogout } from '../../contexts/AuthContext';
 
 import Menu from './Menu';
 

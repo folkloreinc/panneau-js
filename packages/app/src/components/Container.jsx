@@ -4,11 +4,11 @@ import { BrowserRouter } from 'react-router-dom';
 // import PropTypes from 'prop-types';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-
 import { PanneauProvider, RoutesProvider } from '@panneau/core/contexts';
-import { ApiProvider, AuthProvider } from '@panneau/data';
+import { ApiProvider } from '@panneau/data';
 import { FieldsProvider } from '@panneau/fields';
 import { FormsProvider } from '@panneau/forms';
+import { AuthProvider } from '../contexts/AuthContext';
 
 import Routes from './Routes';
 

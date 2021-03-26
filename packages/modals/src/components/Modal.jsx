@@ -3,10 +3,10 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { getDisplayName } from '../../utils';
-import Portal from './Portal';
+import { getDisplayName } from '@panneau/core/utils';
+import ModalPortal from './ModalPortal';
 
-import styles from '../../styles/modals/modal.module.scss';
+import styles from '../styles/modal.module.scss';
 
 const propTypes = {
     id: PropTypes.string,
@@ -31,7 +31,7 @@ const Modal = ({ id, children, position, title }) => {
         [title],
     );
     return (
-        <Portal id={finalId} data={data}>
+        <ModalPortal id={finalId} data={data}>
             <div
                 className={classNames([
                     styles.container,
@@ -42,7 +42,7 @@ const Modal = ({ id, children, position, title }) => {
             >
                 <div className={styles.inner}>{children}</div>
             </div>
-        </Portal>
+        </ModalPortal>
     );
 };
 

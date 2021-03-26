@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/modals",
+    "name": "@panneau/element-progress",
     "version": "0.8.0",
-    "description": "",
+    "description": "Progress bar element",
     "keywords": [
         "javascript"
     ],
@@ -41,8 +41,7 @@
         "assets"
     ],
     "scripts": {
-        "prepare": "../../scripts/prepare-package.sh --scss",
-        "start": "PUBLIC_URL=http://localhost/ react-scripts start"
+        "prepare": "../../scripts/prepare-package.sh"
     },
     "devDependencies": {
         "react": "^16.8.0",
@@ -55,12 +54,9 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^0.8.0",
-        "@panneau/themes": "^0.8.0",
-        "@panneau/element-portal": "^0.8.0",
-        "@panneau/modal-dialog": "^0.8.0",
-        "@panneau/modal-upload": "^0.8.0",
         "classnames": "^2.2.6",
-        "prop-types": "^15.7.2"
+        "prop-types": "^15.7.2",
+        "react-intl": "^5.13.5"
     },
     "publishConfig": {
         "access": "public"

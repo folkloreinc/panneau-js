@@ -2,8 +2,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ElementPortal from '../utils/ElementPortal';
-import { useModals } from '../../contexts';
+import { useModals } from '@panneau/core/contexts';
+import ElementPortal from '@panneau/element-portal';
 
 const propTypes = {
     id: PropTypes.string,

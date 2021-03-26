@@ -5,8 +5,9 @@ import { useRoutes, useUrlGenerator, useResources } from '@panneau/core/contexts
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
-import { useUser } from '@panneau/data';
 import useResourceUrlGenerator from '@panneau/core/hooks';
+import { useUser } from '../contexts/AuthContext';
+
 import AuthLogin from './pages/AuthLogin';
 import Home from './pages/Home';
 import Error from './pages/Error';
