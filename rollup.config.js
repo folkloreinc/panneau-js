@@ -24,19 +24,24 @@ export const createConfig = ({
 } = {}) => {
     const isNode = format === 'node';
     const isCjs = format === 'cjs' || format === 'node';
-    // const isAbsolute = false;
+    const outputCjs = {
+        file: output || `lib/${file}`,
+        format: 'cjs',
+        banner,
+    };
+    const outputEs = {
+        file: output || `es/${file}`,
+        banner,
+    };
+    let outputConfig;
+    if (format === 'both') {
+        outputConfig = [outputCjs, outputEs];
+    } else {
+        outputConfig = isCjs ? outputCjs : outputEs;
+    }
     return {
         input: input || `src/${file}`,
-        output: isCjs
-            ? {
-                  file: output || `lib/${file}`,
-                  format: 'cjs',
-                  banner,
-              }
-            : {
-                  file: output || `es/${file}`,
-                  banner,
-              },
+        output: outputConfig,
         plugins: [
             ...prependPlugins,
             json(),
@@ -123,4 +128,4 @@ export const createConfig = ({
     };
 };
 
-export default [createConfig(), createConfig({ format: 'cjs' })];
+export default [createConfig({ format: 'both' }) /* , createConfig({ format: 'cjs' }) */];
