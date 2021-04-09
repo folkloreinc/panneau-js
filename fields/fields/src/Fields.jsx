@@ -4,26 +4,51 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { getComponentFromName } from '@panneau/core/utils';
+import { getComponentFromName, getDefinitionFromId } from '@panneau/core/utils';
+import { useFieldsComponents, useFieldDefinitions } from '@panneau/core/contexts';
 import FormGroup from '@panneau/element-form-group';
+import FormRow from '@panneau/element-form-row';
 
 const propTypes = {
-    FieldComponents: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    components: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    definitions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     fields: PanneauPropTypes.fields,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    row: PropTypes.bool,
+    columns: PropTypes.arrayOf(PropTypes.string),
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
 
 const defaultProps = {
-    FieldComponents: {},
+    components: null,
+    definitions: null,
     fields: [],
     value: null,
+    row: false,
+    columns: false,
     className: null,
     onChange: null,
 };
 
-const Fields = ({ FieldComponents, fields, value, onChange, className }) => {
+const Fields = ({
+    components: parentComponents,
+    definitions: parentDefinitions,
+    fields,
+    value,
+    row,
+    columns,
+    onChange,
+    className,
+    ...props
+}) => {
+    const contextComponents = useFieldsComponents();
+    const contextDefinitions = useFieldDefinitions();
+    const components = parentComponents || contextComponents;
+    const definitions = parentDefinitions || contextDefinitions;
+
+    console.log('otherprops', props);
+
     const onFieldChange = useCallback(
         ({ name = null }, newFieldValue) => {
             const newValue =
@@ -42,6 +67,67 @@ const Fields = ({ FieldComponents, fields, value, onChange, className }) => {
         },
         [onChange, value],
     );
+
+    const content = fields.map((field, index) => {
+        const {
+            type = null,
+            component = null,
+            name = null,
+            horizontal = false,
+            without_form_group: withoutFormGroup = false,
+            sibling_fields: siblingFields = [],
+            classname = null,
+            group_classname: groupClassName = null,
+            label_classname: labelClassName = null,
+            check: fieldCheck = false,
+        } = field;
+
+        const FieldComponent = getComponentFromName(type, components, component);
+        const definition = getDefinitionFromId(type, definitions, null);
+        const { check: definitionCheck = false } = definition || {};
+
+        let fieldValue = null;
+        if (value !== null && name !== null) {
+            fieldValue = value[name];
+        } else if (name === null) {
+            fieldValue = value;
+        }
+        const fieldElement =
+            FieldComponent !== null ? (
+                <FieldComponent
+                    {...field}
+                    value={fieldValue}
+                    onChange={(newValue) => onFieldChange(field, newValue)}
+                    className={classNames([classname])}
+                />
+            ) : null;
+        const column = row === true;
+        const check = fieldCheck || definitionCheck;
+
+        return (
+            <Fragment key={`field-${name || index}-${index + 1}`}>
+                {!withoutFormGroup && fieldElement !== null ? (
+                    <FormGroup
+                        key={`field-${name || index}`}
+                        {...field}
+                        horizontal={horizontal}
+                        column={column}
+                        check={check}
+                        className={classNames([groupClassName])}
+                        labelClassName={classNames([labelClassName])}
+                    >
+                        {fieldElement}
+                    </FormGroup>
+                ) : (
+                    fieldElement
+                )}
+                {siblingFields !== null && siblingFields.length > 0 ? (
+                    <Fields fields={siblingFields} value={value} onChange={onChange} />
+                ) : null}
+            </Fragment>
+        );
+    });
+
     return (
         <div
             className={classNames([
@@ -50,43 +136,7 @@ const Fields = ({ FieldComponents, fields, value, onChange, className }) => {
                 },
             ])}
         >
-            {fields.map((field, index) => {
-                const {
-                    component,
-                    name = null,
-                    without_form_group: withoutFormGroup = false,
-                    sibbling_fields: sibblingFields = [],
-                } = field;
-                const FieldComponent = getComponentFromName(FieldComponents, component);
-                let fieldValue = null;
-                if (value !== null && name !== null) {
-                    fieldValue = value[name];
-                } else if (name === null) {
-                    fieldValue = value;
-                }
-                const fieldElement =
-                    FieldComponent !== null ? (
-                        <FieldComponent
-                            {...field}
-                            value={fieldValue}
-                            onChange={(newValue) => onFieldChange(field, newValue)}
-                        />
-                    ) : null;
-                return (
-                    <Fragment key={`field-${name || index}`}>
-                        {!withoutFormGroup && fieldElement !== null ? (
-                            <FormGroup key={`field-${name || index}`} {...field}>
-                                {fieldElement}
-                            </FormGroup>
-                        ) : (
-                            fieldElement
-                        )}
-                        {sibblingFields !== null && sibblingFields.length > 0 ? (
-                            <Fields fields={sibblingFields} value={value} onChange={onChange} />
-                        ) : null}
-                    </Fragment>
-                );
-            })}
+            {row ? <FormRow>{content}</FormRow> : content}
         </div>
     );
 };

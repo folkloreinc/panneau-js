@@ -117,3 +117,5 @@ export const user = PropTypes.shape({
 });
 
 export const users = PropTypes.arrayOf(user);
+
+export const feedback = PropTypes.oneOf(['valid', 'invalid', 'loading', null]);

@@ -12,9 +12,11 @@ const propTypes = {
     type: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     errors: PanneauPropTypes.formErrors,
+    feedback: PanneauPropTypes.feedback,
     placeholder: PanneauPropTypes.text,
     required: PropTypes.bool,
     disabled: PropTypes.bool,
+    readonly: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
@@ -27,6 +29,8 @@ const defaultProps = {
     placeholder: null,
     required: false,
     disabled: false,
+    readonly: false,
+    feedback: null,
     className: null,
     onChange: null,
 };
@@ -39,6 +43,8 @@ const TestField = ({
     placeholder,
     required,
     disabled,
+    readonly,
+    feedback,
     onChange,
     className,
 }) => {
@@ -61,10 +67,13 @@ const TestField = ({
             onChange={onInputChange}
             required={required}
             disabled={disabled}
+            readOnly={readonly}
             className={classNames([
                 styles.container,
+                'form-control',
                 {
                     [styles.hasErrors]: errors !== null && errors.length > 0,
+                    [styles[feedback]]: feedback !== null,
                     [className]: className !== null,
                 },
             ])}

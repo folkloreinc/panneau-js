@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/element-form",
+    "name": "@panneau/element-form-row",
     "version": "0.8.0",
-    "description": "Form element",
+    "description": "Form row element",
     "keywords": [
         "javascript"
     ],
@@ -55,9 +55,6 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^0.8.0",
         "@panneau/themes": "^0.8.0",
-        "@panneau/element-button": "^0.8.0",
-        "@panneau/element-buttons": "^0.8.0",
-        "@panneau/element-form-status": "^0.8.0",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.13.5"

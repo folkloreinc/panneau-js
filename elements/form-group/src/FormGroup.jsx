@@ -14,8 +14,10 @@ const propTypes = {
     helpText: PropTypes.node,
     children: PropTypes.node,
     horizontal: PropTypes.bool,
+    column: PropTypes.bool,
     withoutLabel: PropTypes.bool,
     withoutErrors: PropTypes.bool,
+    labelAfter: PropTypes.bool,
     className: PropTypes.string,
     labelClassName: PropTypes.string,
 };
@@ -27,8 +29,10 @@ const defaultProps = {
     helpText: null,
     children: null,
     horizontal: false,
+    column: false,
     withoutLabel: false,
     withoutErrors: false,
+    labelAfter: true,
     className: null,
     labelClassName: null,
 };
@@ -40,63 +44,75 @@ const FormGroup = ({
     children,
     errors,
     horizontal,
+    column,
     withoutLabel,
     withoutErrors,
+    labelAfter,
     className,
     labelClassName,
-}) => (
-    <div
-        className={classNames([
-            styles.container,
-            'form-group',
-            {
-                row: horizontal,
-                'mx-n2': horizontal,
-                [className]: className !== null,
-            },
-        ])}
-    >
-        {!withoutLabel && label !== null ? (
-            <label
-                htmlFor={name}
-                className={classNames([
-                    styles.label,
-                    {
-                        'col-sm-2': horizontal,
-                        'px-2': horizontal,
-                        [labelClassName]: labelClassName !== null,
-                    },
-                ])}
-            >
-                {label}
-            </label>
-        ) : null}
-        <div
+}) => {
+    const labelElement = (
+        <label
+            htmlFor={name}
             className={classNames([
+                styles.label,
                 {
-                    'col-sm-10': horizontal,
+                    'form-label': !column,
+                    'col-form-label': column,
+                    'col-sm-2': horizontal,
                     'px-2': horizontal,
+                    [labelClassName]: labelClassName !== null,
                 },
             ])}
         >
-            {children}
-            {helpText !== null ? (
-                <small className={classNames([styles.label, 'form-text', 'text-muted'])}>
-                    {helpText}
-                </small>
-            ) : null}
-            {!withoutErrors && errors !== null ? (
-                <div className={classNames([styles.errors, 'invalid-feedback', 'd-block'])}>
-                    <ul className="list-unstyled">
-                        {errors.map((error) => (
-                            <li key={`error-${error}`}>{error}</li>
-                        ))}
-                    </ul>
-                </div>
-            ) : null}
+            {label}
+        </label>
+    );
+
+    return (
+        <div
+            className={classNames([
+                styles.container,
+                'form-group',
+                'mb-2',
+
+                {
+                    row: horizontal,
+
+                    [className]: className !== null,
+                },
+            ])}
+        >
+            <div
+                className={classNames([
+                    {
+                        'col-sm-10': horizontal,
+                        'px-2': horizontal,
+                        'form-floating': true,
+                    },
+                ])}
+            >
+                {!withoutLabel && !labelAfter && label !== null ? labelElement : null}
+                {children}
+                {!withoutLabel && labelAfter && label !== null ? labelElement : null}
+                {helpText !== null ? (
+                    <small className={classNames([styles.help, 'form-text', 'text-muted'])}>
+                        {helpText}
+                    </small>
+                ) : null}
+                {!withoutErrors && errors !== null ? (
+                    <div className={classNames([styles.errors, 'invalid-feedback', 'd-block'])}>
+                        <ul className="list-unstyled">
+                            {errors.map((error) => (
+                                <li key={`error-${error}`}>{error}</li>
+                            ))}
+                        </ul>
+                    </div>
+                ) : null}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 FormGroup.propTypes = propTypes;
 FormGroup.defaultProps = defaultProps;

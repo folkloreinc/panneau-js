@@ -16,6 +16,11 @@ export const useFieldDefinition = (id) => {
     return manager.getDefinition(id);
 };
 
+export const useFieldDefinitions = () => {
+    const manager = useFieldsManager();
+    return manager.getDefinitions();
+};
+
 const propTypes = {
     fields: PanneauPropTypes.fieldDefinitions,
     manager: PropTypes.instanceOf(FieldsManager),

@@ -3,12 +3,13 @@
 
 .container {
     .label {
-        display: block;
-        margin-bottom: 2px;
-        font-size: 0.9rem;
+        // display: block;
+        // margin-bottom: 2px;
+        // font-size: 0.9rem;
     }
 
     .help {
+        display: block;
         margin: 2px 0;
         color: $gray-900;
         font-size: 0.9rem;
