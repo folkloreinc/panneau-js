@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Horizontal from '../Horizontal';
+
+import FieldsProvider from '../../../../packages/fields';
 
 import fields from '../../../../.storybook/data/fields';
 
@@ -12,4 +14,13 @@ export default {
     },
 };
 
-export const Normal = () => <Horizontal fields={fields} />;
+const Container = () => {
+    const [value, setValue] = useState({});
+    return (
+        <FieldsProvider>
+            <Horizontal fields={fields} value={value} onChange={setValue} />
+        </FieldsProvider>
+    );
+};
+
+export const Normal = () => <Container fields={fields} />;
