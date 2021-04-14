@@ -1,11 +1,11 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Switch, Route, Redirect, useLocation } from 'react-router';
 import { parse as parseQuery } from 'query-string';
-import { useRoutes, useUrlGenerator, useResources } from '@panneau/core/contexts';
+import { useRoutes, useUrlGenerator, usePanneauResources } from '@panneau/core/contexts';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
-import useResourceUrlGenerator from '@panneau/core/hooks';
+// import useResourceUrlGenerator from '@panneau/core/hooks';
 import { useUser } from '../contexts/AuthContext';
 
 import AuthLogin from './pages/AuthLogin';
@@ -30,13 +30,15 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     });
     const user = useUser();
     const route = useUrlGenerator();
-    const resources = useResources();
+    const resources = usePanneauResources();
     const nextUrl = useMemo(() => {
         const query = parseQuery(search);
         return query !== null ? query.next || null : null;
     }, [search]);
-    const eventsRoute = useResourceUrlGenerator(resources.find((it) => it.id === 'events') || null);
-    const homeUrl = eventsRoute('index');
+
+    // const eventsRoute = useResourceUrlGenerator(resources.find((it) => it.id === 'events') || null);
+    const homeUrl = '/pages';
+
     useEffect(() => {
         if (pathname !== initialPathname) {
             setInitialRequest({
@@ -45,6 +47,7 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
             });
         }
     }, [pathname, initialPathname]);
+
     return (
         <Switch>
             {statusCode !== null ? (

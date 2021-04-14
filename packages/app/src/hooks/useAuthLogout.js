@@ -1,14 +1,14 @@
 import { useCallback, useState } from 'react';
 
-import { useApi } from '../contexts/ApiContext';
+import { useApi } from '@panneau/data';
 
-const useAuthCheck = () => {
+const useAuthLogout = () => {
     const [loading, setLoading] = useState(false);
     const api = useApi();
-    const check = useCallback(() => {
+    const logout = useCallback(() => {
         setLoading(true);
         return api.auth
-            .check()
+            .logout()
             .then((response) => {
                 setLoading(false);
                 return response;
@@ -18,7 +18,7 @@ const useAuthCheck = () => {
                 throw e;
             });
     }, [api, setLoading]);
-    return { check, loading };
+    return { logout, loading };
 };
 
-export default useAuthCheck;
+export default useAuthLogout;

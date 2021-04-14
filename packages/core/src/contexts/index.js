@@ -9,6 +9,7 @@ export * from './GoogleMapsClientContext';
 export * from './ModalsContext';
 export * from './PanelsContext';
 export * from './PanneauContext';
+export * from './ResourceContext';
 export * from './RoutesContext';
 export * from './TrackingContext';
 export * from './UppyContext';

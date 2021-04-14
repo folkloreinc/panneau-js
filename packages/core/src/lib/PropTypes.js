@@ -7,6 +7,8 @@ export const message = PropTypes.shape({
 
 export const label = PropTypes.oneOfType([message, PropTypes.node]);
 
+export const statusCode = PropTypes.oneOfType([PropTypes.number, PropTypes.string]);
+
 /**
  * Core
  */
@@ -118,7 +120,7 @@ export const user = PropTypes.shape({
 
 export const users = PropTypes.arrayOf(user);
 
- export const selectOption = PropTypes.oneOfType([
+export const selectOption = PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.shape({
         value: PropTypes.any, // eslint-disable-line
@@ -128,3 +130,7 @@ export const users = PropTypes.arrayOf(user);
 export const selectOptions = PropTypes.arrayOf(selectOption);
 
 export const feedback = PropTypes.oneOf(['valid', 'invalid', 'loading', null]);
+
+export const formError = PropTypes.shape({ message: PropTypes.string });
+
+export const formErrors = PropTypes.arrayOf(formError);

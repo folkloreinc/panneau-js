@@ -14,6 +14,7 @@ const propTypes = {
     helpText: PropTypes.node,
     children: PropTypes.node,
     horizontal: PropTypes.bool,
+    floating: PropTypes.bool,
     column: PropTypes.bool,
     withoutLabel: PropTypes.bool,
     withoutErrors: PropTypes.bool,
@@ -29,10 +30,11 @@ const defaultProps = {
     helpText: null,
     children: null,
     horizontal: false,
+    floating: false,
     column: false,
     withoutLabel: false,
     withoutErrors: false,
-    labelAfter: true,
+    labelAfter: false,
     className: null,
     labelClassName: null,
 };
@@ -44,6 +46,7 @@ const FormGroup = ({
     children,
     errors,
     horizontal,
+    floating,
     column,
     withoutLabel,
     withoutErrors,
@@ -88,7 +91,7 @@ const FormGroup = ({
                     {
                         'col-sm-10': horizontal,
                         'px-2': horizontal,
-                        'form-floating': true,
+                        'form-floating': floating,
                     },
                 ])}
             >

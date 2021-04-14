@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 // import * as AppPropTypes from '../../../lib/PropTypes';
-import { PanneauPropTypes } from '@panneau/core';
-import { Buttons } from '@panneau/element-button';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Buttons from '@panneau/element-buttons';
 
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 

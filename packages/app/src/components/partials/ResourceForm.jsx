@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getComponentFromName } from '@panneau/core/utils';
 
-import { FormProvider } from '@panneau/core/contexts';
+import { FormProvider, useFormsComponents } from '@panneau/core/contexts';
 import { useResourceUpdate, useResourceStore } from '@panneau/data';
-import { useForm, useResourceUrlGenerator, useForms } from '@panneau/core/hooks';
+import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
 
 // import * as FormComponents from './resources';
 
@@ -23,7 +23,7 @@ const defaultProps = {
 };
 
 const ResourceForm = ({ resource, onSuccess, item, ...props }) => {
-    const FormComponents = useForms();
+    const FormComponents = useFormsComponents();
     const { id: resourceId, fields: resourceFields = [] } = resource;
     const isCreate = item === null;
     const resourceRoute = useResourceUrlGenerator(resource);

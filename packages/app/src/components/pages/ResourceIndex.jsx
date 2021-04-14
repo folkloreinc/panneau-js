@@ -34,6 +34,7 @@ const ResourceIndexPage = ({ resource }) => {
         index_is_paginated: paginated = false,
         components: { index: indexComponent = null } = {},
     } = resource;
+
     const { search } = useLocation();
     const history = useHistory();
     const query = useMemo(() => parseQuery(search), [search]);

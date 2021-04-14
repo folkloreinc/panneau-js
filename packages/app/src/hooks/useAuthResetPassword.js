@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { useApi } from '../contexts/ApiContext';
+import { useApi } from '@panneau/data';
 
 const useAuthResetPassword = () => {
     const [loading, setLoading] = useState(false);

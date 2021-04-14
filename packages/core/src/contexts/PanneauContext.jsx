@@ -8,13 +8,13 @@ const PanneauContext = React.createContext(null);
 
 export const usePanneau = () => useContext(PanneauContext);
 
-export const useResources = () => {
+export const usePanneauResources = () => {
     const { resources = [] } = usePanneau();
     return resources;
 };
 
-export const useResource = (id) => {
-    const resources = useResources();
+export const usePanneauResource = (id) => {
+    const resources = usePanneauResources();
     return resources.find((it) => it.id === id) || null;
 };
 

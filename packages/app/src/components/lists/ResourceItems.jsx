@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getComponentFromName } from '@panneau/core/utils';
 
-import useResourceItems from '@panneau/data';
+import { useResourceItems } from '@panneau/data';
 import * as ListComponents from './resources';
 
 const propTypes = {

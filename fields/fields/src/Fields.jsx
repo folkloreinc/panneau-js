@@ -15,7 +15,7 @@ const propTypes = {
     fields: PanneauPropTypes.fields,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     row: PropTypes.bool,
-    columns: PropTypes.arrayOf(PropTypes.string),
+    // columns: PropTypes.arrayOf(PropTypes.string),
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
@@ -26,7 +26,7 @@ const defaultProps = {
     fields: [],
     value: null,
     row: false,
-    columns: false,
+    // columns: false,
     className: null,
     onChange: null,
 };
@@ -37,17 +37,14 @@ const Fields = ({
     fields,
     value,
     row,
-    columns,
+    // columns,
     onChange,
     className,
-    ...props
 }) => {
     const contextComponents = useFieldsComponents();
     const contextDefinitions = useFieldDefinitions();
     const components = parentComponents || contextComponents;
     const definitions = parentDefinitions || contextDefinitions;
-
-    console.log('otherprops', props);
 
     const onFieldChange = useCallback(
         ({ name = null }, newFieldValue) => {

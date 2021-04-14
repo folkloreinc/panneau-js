@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { useUrlGenerator } from '@panneau/core/contexts';
 import GuestLayout from '../layouts/Guest';
+import LoginForm from '../forms/Login';
 
 const propTypes = {};
 
@@ -21,7 +22,7 @@ const AuthLoginPage = () => {
                         <h1 className="mb-4">
                             <FormattedMessage id="pages.login.title" defaultMessage="Login" />
                         </h1>
-                        Login Form
+                        <LoginForm onSuccess={onSuccess} />
                     </div>
                 </div>
             </div>

@@ -23,11 +23,13 @@ const MainNavbar = (props) => {
                 {name}
             </Link>
             {user !== null ? (
-                <ResourcesMenu
-                    className="navbar-nav ml-4"
-                    itemClassName="nav-item"
-                    linkClassName="nav-link"
-                />
+                <>
+                    <ResourcesMenu
+                        className="navbar-nav ml-4"
+                        itemClassName="nav-item"
+                        linkClassName="nav-link"
+                    />
+                </>
             ) : null}
             <AccountMenu
                 className="navbar-nav ml-auto"

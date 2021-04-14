@@ -10,7 +10,7 @@ import {
     useAuthRegister,
     useAuthRequestPassword,
     useAuthResetPassword,
-} from '@panneau/data';
+} from '../hooks';
 
 const AuthContext = React.createContext(null);
 

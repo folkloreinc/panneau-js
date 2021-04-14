@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useLocation } from 'react-router';
 
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
-import { useResources } from '@panneau/core/contexts';
+import { usePanneauResources } from '@panneau/core/contexts';
 import Menu from './Menu';
 
 const propTypes = {
@@ -20,7 +20,7 @@ const defaultProps = {
 
 const ResourcesMenu = ({ className, itemClassName, linkClassName }) => {
     const { pathname } = useLocation();
-    const resources = useResources();
+    const resources = usePanneauResources();
     const resourceRoute = useResourceUrlGenerator();
     const items = useMemo(
         () =>

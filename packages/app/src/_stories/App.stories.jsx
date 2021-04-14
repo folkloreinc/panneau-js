@@ -4,7 +4,7 @@ import PanneauContainer from '../components/Container';
 
 export default {
     component: PanneauContainer,
-    title: 'Packages/App',
+    title: 'App',
     parameters: {
         intl: true,
     },
@@ -22,14 +22,19 @@ const definition = {
         'resource.edit': '/:resource/:id/edit',
         'resource.show': '/:resource/:id',
         'resource.delete': '/:resource/:id/delete',
-        custom: {
-            path: '/custom',
-            component: 'custom-page',
-        },
+        // custom: {
+        //     path: '/custom',
+        //     component: 'custom-page',
+        // },
     },
 
     resources: [
         // resource defs
+        {
+            id: 'pages',
+            type: 'pages',
+            label: 'Pages',
+        },
     ],
 
     auth: {
@@ -46,4 +51,12 @@ const definition = {
     },
 };
 
-export const Normal = () => <PanneauContainer definition={definition} />;
+export const Normal = () => <PanneauContainer definition={definition} memoryRouter />;
+
+export const WithUser = () => (
+    <PanneauContainer
+        definition={definition}
+        memoryRouter
+        user={{ id: 1, name: 'Folklore', email: 'info@atelierfolklore.ca' }}
+    />
+);

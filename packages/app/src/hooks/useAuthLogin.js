@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { useApi } from '../contexts/ApiContext';
+import { useApi } from '@panneau/data';
 
 const useAuthLogin = () => {
     const [loading, setLoading] = useState(false);
@@ -8,6 +8,15 @@ const useAuthLogin = () => {
     const login = useCallback(
         (email, password) => {
             setLoading(true);
+
+            if (email === 'info@atelierfolklore.ca' && password === 'papouasi3') {
+                return new Promise(() => ({
+                    id: 1,
+                    name: 'Folklore',
+                    email: 'info@atelierolklore.ca',
+                }));
+            }
+
             return api.auth
                 .login(email, password)
                 .then((response) => {

@@ -56,6 +56,7 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^0.8.0",
         "@panneau/field-test": "^0.8.0",
+        "@panneau/field-text": "^0.8.0",
         "@panneau/field-fields": "^0.8.0",
         "prop-types": "^15.7.2"
     },
