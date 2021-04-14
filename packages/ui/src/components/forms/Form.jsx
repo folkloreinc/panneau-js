@@ -249,7 +249,7 @@ const Form = ({
                             outline
                             disabled={status === 'loading'}
                             className={classNames([
-                                'mr-2',
+                                'me-2',
                                 {
                                     [cancelClassName]: cancelClassName !== null,
                                 },

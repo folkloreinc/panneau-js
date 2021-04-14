@@ -11,10 +11,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 3.2.0\n"
 
+# Item label in items field
+#: 2/F1Q7
+msgctxt "2/F1Q7"
+msgid "#{index}"
+msgstr ""
+
 # Success form message
 #: BpZoQZ
 msgctxt "BpZoQZ"
 msgid "Success"
+msgstr ""
+
+# Label when there is no item in items field
+#: PKCv5M
+msgctxt "PKCv5M"
+msgid "No item..."
 msgstr ""
 
 # Button label
@@ -27,6 +39,12 @@ msgstr ""
 #: ZLDmja
 msgctxt "ZLDmja"
 msgid "Submit"
+msgstr ""
+
+# Button label in items field
+#: ZxgNge
+msgctxt "ZxgNge"
+msgid "Add an item"
 msgstr ""
 
 #: account
@@ -222,6 +240,12 @@ msgstr ""
 #: resources.loading
 msgctxt "resources.loading"
 msgid "Loading {plural}..."
+msgstr ""
+
+# DateTimeField time caption
+#: s4Xrs9
+msgctxt "s4Xrs9"
+msgid "Time"
 msgstr ""
 
 #: update_account

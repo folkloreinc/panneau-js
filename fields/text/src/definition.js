@@ -19,11 +19,6 @@ export default [
         type: 'tel',
     },
     {
-        id: 'url',
-        component: 'Url',
-        type: 'url',
-    },
-    {
         id: 'textarea',
         component: 'TextArea',
         type: 'textarea',

@@ -1,12 +1,10 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+/* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import classNames from 'classnames';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-
-import InputGroup from './InputGroup';
+import InputGroup from '@panneau/field-input-group';
+import { v1 as uuid } from 'uuid';
 
 import styles from './styles.module.scss';
 
@@ -15,17 +13,16 @@ const propTypes = {
     value: PropTypes.string,
     errors: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     required: PropTypes.bool,
-
-    type: PropTypes.oneOf(['text', 'email', 'tel', 'password', 'url', 'textarea', 'rtf']),
+    nativeOnChange: PropTypes.bool,
+    type: PropTypes.oneOf(['text', 'email', 'tel', 'password', 'textarea']),
     placeholder: PropTypes.string,
     onChange: PropTypes.func,
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
-
     align: PropTypes.oneOf(['left', 'center', 'right']),
-    prefix: PropTypes.node,
-    suffix: PropTypes.node,
-
+    prepend: PropTypes.node,
+    append: PropTypes.node,
+    dataList: PropTypes.arrayOf(PropTypes.string),
     className: PropTypes.string,
 };
 
@@ -34,17 +31,16 @@ const defaultProps = {
     value: null,
     errors: null,
     required: false,
-
+    nativeOnChange: false,
     type: null,
     placeholder: null,
     onChange: null,
     onFocus: null,
     onBlur: null,
-
     align: null,
-    prefix: null,
-    suffix: null,
-
+    prepend: null,
+    append: null,
+    dataList: null,
     className: null,
 };
 
@@ -53,50 +49,65 @@ const TextField = ({
     value,
     errors,
     required,
-
+    nativeOnChange,
     type,
     placeholder,
     onChange,
     onFocus,
     onBlur,
-
     align,
-    prefix,
-    suffix,
-
+    prepend,
+    append,
+    dataList,
     className,
+    ...props
 }) => {
+    const dataListId = useMemo(() => (dataList !== null ? uuid() : null), [dataList]);
+
     const elProps = {
+        ...props,
         className: classNames([
-            styles.container,
+            styles.inputElement,
             'form-control',
             {
-                [className]: className !== null,
                 'is-valid': feedback === 'valid',
                 'is-invalid': feedback === 'invalid' && errors !== null && errors.length > 0,
             },
         ]),
-
         onFocus,
         onBlur,
         value: value !== null ? value : '',
         style: { textAlign: align },
-        onChange: ({ target: { value: newValue = '' } }) =>
-            onChange !== null ? onChange(!isEmpty(newValue) ? newValue : null) : null,
+        placeholder,
+        type,
+        required,
+        list: dataListId,
+        onChange: nativeOnChange
+            ? onChange
+            : ({ target: { value: newValue = '' } }) =>
+                  onChange !== null ? onChange(!isEmpty(newValue) ? newValue : null) : null,
     };
 
-    const inputProps = { ...elProps, type, required, placeholder };
+    const inputElement = type !== 'textarea' ? <input {...elProps} /> : <textarea {...elProps} />;
+    const withInputGroup = prepend !== null || append !== null;
 
     return (
-        <InputGroup prefix={prefix} suffix={suffix}>
-            {type === 'rtf' ? (
-                <ReactQuill {...elProps} />
+        <div className={classNames([styles.container, { [className]: className !== null }])}>
+            {withInputGroup ? (
+                <InputGroup prepend={prepend} append={append}>
+                    {inputElement}
+                </InputGroup>
             ) : (
-                <>
-                    {type !== 'textarea' ? <input {...inputProps} /> : <textarea {...inputProps} />}
-                </>
+                inputElement
             )}
-        </InputGroup>
+            {dataListId !== null ? (
+                <datalist id={dataListId}>
+                    {dataList.map((data, dataIndex) => (
+                        <option key={`option-${dataIndex}`}>{data}</option>
+                    ))}
+                </datalist>
+            ) : null}
+        </div>
     );
 };
 

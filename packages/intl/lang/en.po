@@ -11,11 +11,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 3.2.0\n"
 
+# Item label in items field
+#: 2/F1Q7
+msgctxt "2/F1Q7"
+msgid "#{index}"
+msgstr "#{index}"
+
 # Success form message
 #: BpZoQZ
 msgctxt "BpZoQZ"
 msgid "Success"
 msgstr "Success"
+
+# Label when there is no item in items field
+#: PKCv5M
+msgctxt "PKCv5M"
+msgid "No item..."
+msgstr "No item..."
 
 # Button label
 #: PyxZY2
@@ -28,6 +40,12 @@ msgstr "Cancel"
 msgctxt "ZLDmja"
 msgid "Submit"
 msgstr "Submit"
+
+# Button label in items field
+#: ZxgNge
+msgctxt "ZxgNge"
+msgid "Add an item"
+msgstr "Add an item"
 
 #: account
 msgctxt "account"
@@ -223,6 +241,12 @@ msgstr "Edit {a_singular}"
 msgctxt "resources.loading"
 msgid "Loading {plural}..."
 msgstr "Loading {plural}..."
+
+# DateTimeField time caption
+#: s4Xrs9
+msgctxt "s4Xrs9"
+msgid "Time"
+msgstr "Time"
 
 #: update_account
 msgctxt "update_account"

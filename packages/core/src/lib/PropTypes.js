@@ -117,3 +117,16 @@ export const user = PropTypes.shape({
 });
 
 export const users = PropTypes.arrayOf(user);
+
+/**
+ * Fields
+ */
+
+ export const selectOption = PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({
+        value: PropTypes.any, // eslint-disable-line
+        label,
+    }),
+]);
+export const selectOptions = PropTypes.arrayOf(selectOption);

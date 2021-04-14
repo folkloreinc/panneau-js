@@ -1,18 +1,25 @@
-import React from 'react';
+/* eslint-disable react/jsx-props-no-spreading */
+import React, { useState } from 'react';
 import TextField from '../TextField';
 
 export default {
     title: 'Fields/Text',
     component: TextField,
     parameters: {
-        intl: true
-    }
+        intl: true,
+    },
 };
 
-export const Normal = () => <TextField />;
-export const Email = () => <TextField type="email" />;
-export const Password = () => <TextField type="password" />;
-export const Telephone = () => <TextField type="tel" />;
-export const Url = () => <TextField type="url" />;
-export const TextArea = () => <TextField type="textarea" />;
-export const RichTextFormat = () => <TextField type="rtf" />;
+const Container = (props) => {
+    const [value, setValue] = useState(null);
+    return <TextField {...props} value={value} onChange={setValue} />;
+};
+
+export const Normal = () => <Container placeholder="Text" />;
+export const WithDataList = () => (
+    <Container placeholder="With data list" dataList={['Bird', 'Cat', 'Dog', 'Fish', 'Snail']} />
+);
+export const Email = () => <Container type="email" placeholder="Email" />;
+export const Password = () => <Container type="password" placeholder="Password" />;
+export const Telephone = () => <Container type="tel" placeholder="Telephone" />;
+export const TextArea = () => <Container type="textarea" placeholder="Textarea" />;

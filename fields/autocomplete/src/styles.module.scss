@@ -1,0 +1,28 @@
+@import '~@panneau/themes/scss/variables';
+@import '~@panneau/themes/scss/placeholders';
+
+.container {
+
+    // .input {
+        
+    // }
+
+    .list {
+        position: absolute;
+        z-index: 1;
+        width: 300px;
+        max-height: 150px;
+        margin-top: 5px;
+        overflow-y: auto;
+        border: 1px solid rgba(#000, 0.25);
+    }
+
+    .item {
+        padding: 5px 10px;
+
+        button {
+            width: 100%;
+            text-align: left;
+        }
+    }
+}

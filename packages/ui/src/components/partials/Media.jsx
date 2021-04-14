@@ -54,7 +54,7 @@ const Media = ({
                 src={thumbnail}
                 alt={title}
                 className={classNames([
-                    'mr-3',
+                    'me-3',
                     styles.thumbnail,
                     {
                         'align-self-start': thumbnailAlign === 'top',

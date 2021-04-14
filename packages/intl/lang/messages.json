@@ -1,7 +1,15 @@
 {
+  "2/F1Q7": {
+    "defaultMessage": "#{index}",
+    "description": "Item label in items field"
+  },
   "BpZoQZ": {
     "defaultMessage": "Success",
     "description": "Success form message"
+  },
+  "PKCv5M": {
+    "defaultMessage": "No item...",
+    "description": "Label when there is no item in items field"
   },
   "PyxZY2": {
     "defaultMessage": "Cancel",
@@ -10,6 +18,10 @@
   "ZLDmja": {
     "defaultMessage": "Submit",
     "description": "Submit form button"
+  },
+  "ZxgNge": {
+    "defaultMessage": "Add an item",
+    "description": "Button label in items field"
   },
   "account": {
     "defaultMessage": "Account"
@@ -127,6 +139,10 @@
   },
   "resources.loading": {
     "defaultMessage": "Loading {plural}..."
+  },
+  "s4Xrs9": {
+    "defaultMessage": "Time",
+    "description": "DateTimeField time caption"
   },
   "update_account": {
     "defaultMessage": "Update account"
