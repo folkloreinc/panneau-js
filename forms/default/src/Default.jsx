@@ -1,11 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
-
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Form from '@panneau/element-form';
-import Fields from '@panneau/field-fields';
+import { useFieldComponent } from '@panneau/core/contexts';
 // import Button from '@panneau/element-button';
+
+import styles from './styles.module.scss';
 
 const propTypes = {
     fields: PropTypes.objectOf(PropTypes.shape({})).isRequired,
@@ -38,28 +40,43 @@ const defaultProps = {
     className: null,
 };
 
-const ResourceFormDefault = ({
+const DefaultForm = ({
     fields,
     status,
-    children,
     value,
     onChange,
-    className,
     onSubmit,
+    buttons,
+    children,
+    className,
     ...props
 }) => {
+    const FieldsComponent = useFieldComponent('fields');
+    console.log('yeah', FieldsComponent);
     return (
-        <Form onSubmit={onSubmit} className={className} status={status} {...props}>
+        <Form
+            onSubmit={onSubmit}
+            className={classNames([
+                styles.container,
+                'form',
+                {
+                    [className]: className !== null,
+                },
+            ])}
+            status={status}
+            buttons={buttons}
+            {...props}
+        >
             {children !== null ? (
                 children
             ) : (
-                <Fields fields={fields} value={value} onChange={onChange} />
+                <FieldsComponent fields={fields} value={value} onChange={onChange} />
             )}
         </Form>
     );
 };
 
-ResourceFormDefault.propTypes = propTypes;
-ResourceFormDefault.defaultProps = defaultProps;
+DefaultForm.propTypes = propTypes;
+DefaultForm.defaultProps = defaultProps;
 
-export default ResourceFormDefault;
+export default DefaultForm;

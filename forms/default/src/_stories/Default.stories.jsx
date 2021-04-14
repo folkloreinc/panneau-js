@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Default from '../Default';
+
+import FieldsProvider from '../../../../packages/fields';
 
 import fields from '../../../../.storybook/data/fields';
 
@@ -12,4 +14,16 @@ export default {
     },
 };
 
-export const Normal = () => <Default fields={fields} />;
+const Container = () => {
+    const [value, setValue] = useState({});
+
+    console.log('value update', value);
+
+    return (
+        <FieldsProvider>
+            <Default fields={fields} value={value} onChange={setValue} />
+        </FieldsProvider>
+    );
+};
+
+export const Normal = () => <Container />;

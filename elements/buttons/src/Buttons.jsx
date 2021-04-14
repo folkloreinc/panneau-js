@@ -2,6 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import isArray from 'lodash/isArray';
 
 import Button from '@panneau/element-button';
 
@@ -41,37 +42,39 @@ const Buttons = ({ buttons, size, renderButton, onClickButton, buttonClassName, 
         ])}
         role="group"
     >
-        {buttons.map((button, index) => {
-            const {
-                className: customClassName = null,
-                onClick = null,
+        {isArray(buttons)
+            ? buttons.map((button, index) => {
+                  const {
+                      className: customClassName = null,
+                      onClick = null,
 
-                ...buttonProps
-            } = button;
-            const fixedProps = {
-                key: `button-${index}`,
-                className: classNames([
-                    styles.button,
-                    {
-                        [buttonClassName]: buttonClassName !== null,
-                        [customClassName]: customClassName !== null,
-                    },
-                ]),
-                onClick: (e) => {
-                    if (onClick !== null) {
-                        onClick(e, button, index);
-                    }
-                    if (onClickButton !== null) {
-                        onClickButton(e, button, index);
-                    }
-                },
-            };
-            return renderButton !== null ? (
-                renderButton(button, index, fixedProps)
-            ) : (
-                <Button {...fixedProps} {...buttonProps} />
-            );
-        })}
+                      ...buttonProps
+                  } = button;
+                  const fixedProps = {
+                      key: `button-${index}`,
+                      className: classNames([
+                          styles.button,
+                          {
+                              [buttonClassName]: buttonClassName !== null,
+                              [customClassName]: customClassName !== null,
+                          },
+                      ]),
+                      onClick: (e) => {
+                          if (onClick !== null) {
+                              onClick(e, button, index);
+                          }
+                          if (onClickButton !== null) {
+                              onClickButton(e, button, index);
+                          }
+                      },
+                  };
+                  return renderButton !== null ? (
+                      renderButton(button, index, fixedProps)
+                  ) : (
+                      <Button {...fixedProps} {...buttonProps} />
+                  );
+              })
+            : null}
     </div>
 );
 

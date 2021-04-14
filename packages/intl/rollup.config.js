@@ -29,9 +29,11 @@ const localesFiles = locales.reduce(
 );
 
 export default [
-    createConfig(),
     createConfig({
-        format: 'cjs',
+        format: 'both',
     }),
+    // createConfig({
+    //     format: 'cjs',
+    // }),
     ...localesFiles,
 ];

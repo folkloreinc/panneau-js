@@ -118,10 +118,6 @@ export const user = PropTypes.shape({
 
 export const users = PropTypes.arrayOf(user);
 
-/**
- * Fields
- */
-
  export const selectOption = PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.shape({
@@ -130,3 +126,5 @@ export const users = PropTypes.arrayOf(user);
     }),
 ]);
 export const selectOptions = PropTypes.arrayOf(selectOption);
+
+export const feedback = PropTypes.oneOf(['valid', 'invalid', 'loading', null]);

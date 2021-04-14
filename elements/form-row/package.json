@@ -1,0 +1,65 @@
+{
+    "name": "@panneau/element-form-row",
+    "version": "0.8.0",
+    "description": "Form row element",
+    "keywords": [
+        "javascript"
+    ],
+    "homepage": "https://github.com/folkloreinc/panneau-js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git"
+    },
+    "author": {
+        "name": "Folklore",
+        "email": "info@folklore.email"
+    },
+    "contributors": [
+        {
+            "name": "David Mongeau-Petitpas",
+            "email": "dmp@folklore.email"
+        },
+        {
+            "name": "Nicolas Roy-Bourdages",
+            "email": "nrb@folklore.email"
+        },
+        {
+            "name": "Julien Carignan",
+            "email": "jc@folklore.email"
+        },
+        {
+            "name": "Théo Gjini",
+            "email": "tg@folklore.email"
+        }
+    ],
+    "license": "ISC",
+    "main": "lib/index.js",
+    "module": "es/index.js",
+    "files": [
+        "lib",
+        "es",
+        "assets"
+    ],
+    "scripts": {
+        "prepare": "../../scripts/prepare-package.sh"
+    },
+    "devDependencies": {
+        "react": "^16.8.0",
+        "react-dom": "^16.8.0"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0",
+        "react-dom": "^16.8.0"
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.12.5",
+        "@panneau/core": "^0.8.0",
+        "@panneau/themes": "^0.8.0",
+        "classnames": "^2.2.6",
+        "prop-types": "^15.7.2",
+        "react-intl": "^5.13.5"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

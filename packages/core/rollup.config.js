@@ -1,5 +1,4 @@
 import path from 'path';
-import resolve from '@rollup/plugin-node-resolve';
 import alias from '@rollup/plugin-alias';
 
 import { createConfig } from '../../rollup.config';
@@ -85,13 +84,14 @@ export default Object.keys(files).reduce(
         ...configs,
         createConfig({
             file,
+            format: 'both',
             ...files[file],
         }),
-        createConfig({
-            file,
-            format: 'cjs',
-            ...files[file],
-        }),
+        // createConfig({
+        //     file,
+        //     format: 'cjs',
+        //     ...files[file],
+        // }),
     ],
     [],
 );
