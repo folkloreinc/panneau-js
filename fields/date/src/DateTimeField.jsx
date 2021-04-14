@@ -6,26 +6,25 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import { defineMessage, useIntl } from 'react-intl';
 import formatDate from 'date-fns/format';
 import parse from 'date-fns/parseISO';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
+// import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { isMessage } from '@panneau/core/utils';
 import TextField from '@panneau/field-text';
 
-import 'react-datepicker/src/stylesheets/datepicker.scss';
 import styles from './styles.module.scss';
 
 const propTypes = {
     name: PropTypes.string,
     value: PropTypes.string,
-    errors: PanneauPropTypes.formErrors,
+    errors: PropTypes.any,// eslint-disable-line
     size: PropTypes.oneOf(['sm', 'lg']),
     required: PropTypes.bool,
     disabled: PropTypes.bool,
-    placeholder: PanneauPropTypes.label,
+    placeholder: PropTypes.string,
     dateFormat: PropTypes.string,
     withoutDate: PropTypes.bool,
     withoutTime: PropTypes.bool,
     timeFormat: PropTypes.string,
-    timeCaption: PanneauPropTypes.label,
+    timeCaption: PropTypes.any,// eslint-disable-line
     timeIntervals: PropTypes.number,
     className: PropTypes.string,
     onChange: PropTypes.func,

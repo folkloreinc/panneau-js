@@ -23,6 +23,12 @@ const propTypes = {
     prepend: PropTypes.node,
     append: PropTypes.node,
     dataList: PropTypes.arrayOf(PropTypes.string),
+    inputRef: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.shape({
+            current: PropTypes.any, // eslint-disable-line
+        }),
+    ]),
     className: PropTypes.string,
 };
 
@@ -41,6 +47,7 @@ const defaultProps = {
     prepend: null,
     append: null,
     dataList: null,
+    inputRef: null,
     className: null,
 };
 
@@ -59,11 +66,15 @@ const TextField = ({
     prepend,
     append,
     dataList,
+    inputRef,
     className,
+    ...props
 }) => {
     const dataListId = useMemo(() => (dataList !== null ? uuid() : null), [dataList]);
 
     const elProps = {
+        ...props,
+        ref: inputRef,
         className: classNames([
             styles.inputElement,
             'form-control',
@@ -112,4 +123,4 @@ const TextField = ({
 TextField.propTypes = propTypes;
 TextField.defaultProps = defaultProps;
 
-export default TextField;
+export default React.forwardRef((props, ref) => <TextField inputRef={ref} {...props} />);
