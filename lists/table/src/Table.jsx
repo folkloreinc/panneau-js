@@ -20,13 +20,12 @@ const defaultProps = {
 const TableList = ({ className }) => (
     <div
         className={classNames([
-            'modal-dialog',
+            'something',
             styles.container,
             {
                 [className]: className,
             },
         ])}
-        role="dialog"
     >
         Table
     </div>

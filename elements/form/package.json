@@ -60,7 +60,7 @@
         "@panneau/element-form-status": "^0.8.0",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
-        "react-intl": "^5.13.5"
+        "react-intl": "^5.15.8"
     },
     "publishConfig": {
         "access": "public"
