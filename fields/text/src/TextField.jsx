@@ -60,12 +60,10 @@ const TextField = ({
     append,
     dataList,
     className,
-    ...props
 }) => {
     const dataListId = useMemo(() => (dataList !== null ? uuid() : null), [dataList]);
 
     const elProps = {
-        ...props,
         className: classNames([
             styles.inputElement,
             'form-control',
