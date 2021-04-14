@@ -140,7 +140,6 @@ const AutocompleteField = ({
         >
             <TextField
                 value={value}
-                buttonClassName={styles.button}
                 placeholder={placeholder}
                 onChange={onInputChange}
             />
