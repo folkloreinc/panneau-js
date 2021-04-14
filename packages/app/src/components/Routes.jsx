@@ -5,13 +5,14 @@ import { useRoutes, useUrlGenerator, usePanneauResources } from '@panneau/core/c
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
-// import useResourceUrlGenerator from '@panneau/core/hooks';
 import { useUser } from '../contexts/AuthContext';
 
 import AuthLogin from './pages/AuthLogin';
 import Home from './pages/Home';
 import Error from './pages/Error';
 import ResourceRoutes from './ResourceRoutes';
+
+import ResourceIndex from './pages/ResourceIndex';
 
 const propTypes = {
     statusCode: PanneauPropTypes.statusCode,
@@ -24,6 +25,8 @@ const defaultProps = {
 const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     const routes = useRoutes();
     const { pathname, search } = useLocation();
+    console.log('PATHNAME / SEARCH', pathname, search); // eslint-disable-line
+
     const [{ statusCode, pathname: initialPathname }, setInitialRequest] = useState({
         statusCode: initialStatusCode,
         pathname,
@@ -31,13 +34,16 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     const user = useUser();
     const route = useUrlGenerator();
     const resources = usePanneauResources();
-    const nextUrl = useMemo(() => {
-        const query = parseQuery(search);
-        return query !== null ? query.next || null : null;
-    }, [search]);
 
-    // const eventsRoute = useResourceUrlGenerator(resources.find((it) => it.id === 'events') || null);
-    const homeUrl = '/pages';
+    // const nextUrl = useMemo(() => {
+    //     const query = parseQuery(search);
+    //     return query !== null ? query.next || null : null;
+    // }, [search]);
+
+    // TODO: set home page from a prop
+    const pageResource = resources.find((it) => it.id === 'pages') || null;
+    const pagesRoute = pageResource ? route('resources.index', { resource: 'pages' }) : '/';
+    const homeUrl = pagesRoute;
 
     useEffect(() => {
         if (pathname !== initialPathname) {
@@ -54,33 +60,32 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
                 <Route path="*" render={() => <Error statusCode={statusCode} />} />
             ) : null}
 
-            {user !== null ? (
+            {user === null ? <Route path="*" exact component={AuthLogin} /> : null}
+
+            {/* TODO fix this shit it doesnt work */}
+            {/* {user !== null ? (
                 <Redirect from={routes.login} to={nextUrl !== null ? nextUrl : homeUrl} exact />
             ) : (
                 <Route path={routes.login} exact component={AuthLogin} />
-            )}
+            )} */}
 
             {user !== null ? (
-                /* <Route path={routes.home} exact component={Home} /> */ <Redirect
-                    from={routes.home}
-                    exact
-                    to={homeUrl}
-                    component={Home}
-                />
+                <Redirect from={routes.home} exact to={homeUrl} component={Home} />
             ) : (
                 <Redirect from={routes.home} exact to={route('login')} />
             )}
 
             {resources.map((resource) => {
-                const { id: resourceId, has_routes: hasRoutes } = resource;
-                const routeName = hasRoutes ? `resources.${resourceId}` : 'resources';
+                const { id: resourceId, has_routes: hasRoutes } = resource || {};
+                const routeName = hasRoutes ? `resources.${resourceId}` : 'resources.index';
+
                 return user !== null ? (
                     <Route
                         key={`resource-${resourceId}`}
-                        path={route(`${routeName}.index`, {
+                        path={route(`${routeName}`, {
                             resource: resourceId,
                         })}
-                        render={() => <ResourceRoutes resource={resource} />}
+                        render={() => <ResourceIndex resource={resource} />}
                     />
                 ) : (
                     <Redirect

@@ -6,8 +6,9 @@ class Base {
     constructor(opts = {}) {
         this.options = {
             routes: {},
+            generateUrl: null,
             ...opts,
-            baseUrl: opts.baseUrl || 'https://panneau.ca/api',
+            baseUrl: opts.baseUrl || 'http://localhost:58800/api',
         };
     }
 
@@ -53,7 +54,10 @@ class Base {
     }
 
     route(route, params) {
-        const { routes } = this.options;
+        const { routes, generateUrl = null } = this.options;
+        if (generateUrl !== null) {
+            return generateUrl(route, params);
+        }
         return generatePath(routes[route] || route, params);
     }
 

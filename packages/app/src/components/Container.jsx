@@ -37,7 +37,7 @@ const Container = ({ definition, user, memoryRouter, statusCode }) => {
     const Router = memoryRouter ? MemoryRouter : BrowserRouter;
 
     return (
-        <Router>
+        <Router initialEntries={['/pages']} initialIndex={0}>
             <PanneauProvider definition={definition}>
                 <IntlProvider locale={locale} messages={translations[locale] || translations}>
                     <RoutesProvider routes={routes}>

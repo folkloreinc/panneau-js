@@ -30,7 +30,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-    filters: ['search'],
+    filters: [],
     value: null,
     onChange: null,
     // onSubmit: null,
@@ -66,7 +66,11 @@ const ResourceListFilters = ({
         [value, setValue, onChange],
     );
 
-    const filterElements = filters.map((filter) => <p>{filter}</p>);
+    // const filterElements = filters
+    //     .map((filter) => (filter ? <p>{filter}</p> : null))
+    //     .filter((f) => f !== null);
+
+    const filterElements = null;
 
     return (
         <Navbar
@@ -78,7 +82,7 @@ const ResourceListFilters = ({
             ])}
             withoutCollapse
         >
-            {withContainer ? <div className="container">{filterElements}</div> : { filterElements }}
+            {withContainer ? <div className="container">{filterElements}</div> : filterElements}
         </Navbar>
     );
 };

@@ -2,6 +2,8 @@ import React from 'react';
 
 import PanneauContainer from '../components/Container';
 
+import pageResource from '../../../../.storybook/data/page-resource';
+
 export default {
     component: PanneauContainer,
     title: 'App',
@@ -17,25 +19,18 @@ const definition = {
         home: '/',
         'auth.login': '/login',
         'auth.logout': '/logout',
-        'resource.index': '/:resource',
-        'resource.create': '/:resource/created',
-        'resource.edit': '/:resource/:id/edit',
-        'resource.show': '/:resource/:id',
-        'resource.delete': '/:resource/:id/delete',
+        'resources.index': '/:resource',
+        'resources.create': '/:resource/created',
+        'resources.edit': '/:resource/:id/edit',
+        'resources.show': '/:resource/:id',
+        'resources.delete': '/:resource/:id/delete',
         // custom: {
         //     path: '/custom',
         //     component: 'custom-page',
         // },
     },
 
-    resources: [
-        // resource defs
-        {
-            id: 'pages',
-            type: 'pages',
-            label: 'Pages',
-        },
-    ],
+    resources: [pageResource],
 
     auth: {
         forgot_password: false,

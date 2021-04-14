@@ -10,7 +10,7 @@ const defaultProps = {};
 
 const HomePage = () => (
     <MainLayout>
-        <div className="container-sm">Panneau</div>
+        <div className="container-sm">Panneau home</div>
     </MainLayout>
 );
 HomePage.propTypes = propTypes;

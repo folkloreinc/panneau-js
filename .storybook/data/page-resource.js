@@ -1,18 +1,17 @@
 export default {
     id: 'pages',
 
-    name: 'Page',
+    label: 'Page',
 
     messages: {
         'name.a': 'a page',
-        'name.a_plural': 'a pages',
+        'name.a_plural': 'pages',
     },
 
-    fields: [
-        {
-            type: 'test',
-        },
-    ],
+    fields: [{ name: 'un-texte-texte', type: 'text', component: 'text' }],
+
+    has_routes: false,
+    shows_in_navbar: true,
 
     pages: {
         index: {

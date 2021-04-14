@@ -39,7 +39,8 @@ const ResourceIndexPage = ({ resource }) => {
     const history = useHistory();
     const query = useMemo(() => parseQuery(search), [search]);
     const listQuery = useMemo(() => query, [query]); // TODO: omit routes
-    const { created = false, deleted = false } = query;
+    const { created = false, deleted = false } = query || {};
+
     const resourceRoute = useResourceUrlGenerator(resource);
     const url = resourceRoute('index');
     const onQueryChange = useCallback(
@@ -55,6 +56,7 @@ const ResourceIndexPage = ({ resource }) => {
     const onClickCloseAlert = useCallback(() => {
         history.replace(url);
     }, [history, url]);
+
     return (
         <ResourceProvider resource={resource}>
             <MainLayout>

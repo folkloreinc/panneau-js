@@ -11,14 +11,28 @@ import definitions from './definitions';
 import * as components from './components';
 
 const propTypes = {
+    definitions: PropTypes.array, // eslint-disable-line
+    components: PropTypes.object, // eslint-disable-line
     children: PropTypes.node.isRequired,
 };
 
-const defaultProps = {};
+const defaultProps = {
+    definitions: [],
+    components: {},
+};
 
-const FieldsProvider = ({ children }) => (
-    <ComponentsProvider namespace={FIELDS_NAMESPACE} components={components}>
-        <BaseFieldsProvider fields={definitions}>{children}</BaseFieldsProvider>
+const FieldsProvider = ({
+    definitions: injectedDefinitions,
+    components: injectedComponents,
+    children,
+}) => (
+    <ComponentsProvider
+        namespace={FIELDS_NAMESPACE}
+        components={{ ...components, ...injectedComponents }}
+    >
+        <BaseFieldsProvider fields={[definitions, ...injectedDefinitions]}>
+            {children}
+        </BaseFieldsProvider>
     </ComponentsProvider>
 );
 

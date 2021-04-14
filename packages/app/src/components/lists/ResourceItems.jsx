@@ -44,7 +44,8 @@ const ResourceItemsList = ({
         },
         [onQueryChange],
     );
-    const ListComponent = getComponentFromName(ListComponents, type || component, 'table');
+    const ListComponent = getComponentFromName(type || component || 'table', ListComponents, null);
+    // console.log('items', props, items, ListComponent);
     return (
         <ListComponent
             {...props}

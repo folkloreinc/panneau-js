@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import Search from '../Search';
 
-import resource from '../../../../.storybook/data/resource';
+import resource from '../../../../.storybook/data/page-resource';
 import fields from '../../../../.storybook/data/fields';
 
 export default {

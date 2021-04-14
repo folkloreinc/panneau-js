@@ -38,7 +38,7 @@ const defaultProps = {
 };
 
 const ResourceItemActions = ({ size, item, className, iconsOnly, onClickDelete }) => {
-    const resourceRoute = useResourceUrlGenerator();
+    const resourceRoute = useResourceUrlGenerator(item);
     const { id } = item;
     return (
         <Buttons

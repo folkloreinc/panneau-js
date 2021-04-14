@@ -2,6 +2,8 @@
 import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
+import { useUrlGenerator } from '@panneau/core/contexts';
+
 import Api from '../lib/Api';
 
 const ApiContext = React.createContext(null);
@@ -20,6 +22,7 @@ const defaultProps = {
 };
 
 export const ApiProvider = ({ api: initialApi, baseUrl, children }) => {
+    const generateUrl = useUrlGenerator();
     const previousApi = useApi();
     const api = useMemo(
         () =>
@@ -27,6 +30,7 @@ export const ApiProvider = ({ api: initialApi, baseUrl, children }) => {
             previousApi ||
             new Api({
                 baseUrl,
+                generateUrl,
             }),
         [previousApi, initialApi, baseUrl],
     );

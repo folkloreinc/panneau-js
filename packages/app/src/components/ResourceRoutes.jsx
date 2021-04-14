@@ -20,6 +20,7 @@ const ResourceRoutes = ({ resource }) => {
     const { id: resourceId, has_routes: hasRoutes } = resource;
     const route = useUrlGenerator();
     const routeName = hasRoutes ? `resources.${resourceId}` : 'resources';
+
     return (
         <Switch>
             <Route

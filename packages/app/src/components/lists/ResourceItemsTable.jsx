@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { stringify as stringifyQuery } from 'query-string';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { getComponentFromName } from '@panneau/core/utils';
+// import { getComponentFromName } from '@panneau/core/utils';
 
 import Pagination from '@panneau/element-pagination';
 import Loading from '@panneau/element-loading';
@@ -48,7 +48,7 @@ const ResourceItemsTableList = ({
 }) => {
     const { page: queryPage, ...queryWithoutPage } = query || {};
     const hasQuery = Object.keys(queryWithoutPage).length > 0;
-    const { id, index_is_paginated: paginated = false, fields } = resource;
+    const { index_is_paginated: paginated = false, fields } = resource;
     const columns = fields
         .filter(({ hidden_in_index: hiddenInIndex = false }) => !hiddenInIndex)
         .sort(({ order_in_index: aOrder = null }, { order_in_index: bOrder = null }) => {
@@ -70,12 +70,9 @@ const ResourceItemsTableList = ({
               })}`
             : ''
     }`;
-    let filters;
-    if (id === 'performances') {
-        filters = ['edition', 'room_performances'];
-    } else if (id === 'rooms') {
-        filters = ['edition'];
-    }
+    const filters = [];
+
+    // console.log(items);
     return (
         <div>
             <ResourceListFilters
@@ -102,22 +99,25 @@ const ResourceItemsTableList = ({
                             <tr key={`row-${it.id}`}>
                                 <td>{it.id}</td>
                                 {columns.map((field) => {
-                                    const { name, components } = field;
-                                    const {
-                                        index: indexComponent = 'text',
-                                        index_column: indexColumnComponent = null,
-                                    } = components || {};
-                                    const FieldIndexComponent = getComponentFromName(
-                                        {}, // FieldIndexComponents,
-                                        indexColumnComponent || indexComponent,
-                                        'text',
-                                    );
+                                    const { name } = field;
+                                    // console.log('it', it);
+                                    // const {
+                                    //     index: indexComponent = 'text',
+                                    //     index_column: indexColumnComponent = null,
+                                    // } = components || {};
+                                    // const FieldIndexComponent = getComponentFromName(
+                                    //     {}, // FieldIndexComponents,
+                                    //     indexColumnComponent || indexComponent,
+                                    //     'text',
+                                    // );
+
                                     return (
                                         <td key={`row-${it.id}-${name}`}>
-                                            <FieldIndexComponent
+                                            {/* <FieldIndexComponent
                                                 field={field}
                                                 value={it[name] || null}
-                                            />
+                                            /> */}
+                                            {name}
                                         </td>
                                     );
                                 })}
