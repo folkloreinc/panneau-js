@@ -79,6 +79,7 @@ const TextField = ({
             styles.inputElement,
             'form-control',
             {
+                [className]: className !== null,
                 'is-valid': feedback === 'valid',
                 'is-invalid': feedback === 'invalid' && errors !== null && errors.length > 0,
             },
@@ -101,7 +102,7 @@ const TextField = ({
     const withInputGroup = prepend !== null || append !== null;
 
     return (
-        <div className={classNames([styles.container, { [className]: className !== null }])}>
+        <>
             {withInputGroup ? (
                 <InputGroup prepend={prepend} append={append}>
                     {inputElement}
@@ -116,7 +117,7 @@ const TextField = ({
                     ))}
                 </datalist>
             ) : null}
-        </div>
+        </>
     );
 };
 
