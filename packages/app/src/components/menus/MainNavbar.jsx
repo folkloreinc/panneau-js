@@ -32,7 +32,7 @@ const MainNavbar = (props) => {
                 </>
             ) : null}
             <AccountMenu
-                className="navbar-nav ml-auto"
+                className="navbar-nav ms-auto"
                 itemClassName="nav-item"
                 linkClassName="nav-link"
             />

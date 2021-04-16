@@ -44,7 +44,7 @@ const LoginForm = ({ className, onSuccess }) => {
                 <TextField type="password" size="lg" {...password} />
             </FormGroup>
             <div className="mt4 d-flex">
-                <Button type="submit" theme="primary" size="lg" className="ml-auto">
+                <Button type="submit" theme="primary" size="lg" className="ms-auto">
                     <FormattedMessage id="login" defaultMessage="Log in" />
                 </Button>
             </div>

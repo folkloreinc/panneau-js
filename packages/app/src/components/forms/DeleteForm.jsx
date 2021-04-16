@@ -46,7 +46,7 @@ const DeleteForm = ({ resource, actionRoute, cancelRoute, onSuccess, item, ...pr
                     <Button href={cancelRoute} className="me-2" theme="secondary" outline>
                         <FormattedMessage id="form.cancel_button" defaultMessage="Cancel" />
                     </Button>
-                    <Button type="submit" className="ml-auto" theme="danger">
+                    <Button type="submit" className="ms-auto" theme="danger">
                         <FormattedMessage id="form.delete_button" defaultMessage="Delete" />
                     </Button>
                 </div>

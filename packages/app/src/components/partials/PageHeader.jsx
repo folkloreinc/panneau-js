@@ -28,7 +28,7 @@ const PageHeader = ({ title, actions, small, className }) => {
                     <Label>{title}</Label>
                 </h1>
             ) : null}
-            {actions !== null ? <div className="ml-auto">{actions}</div> : null}
+            {actions !== null ? <div className="ms-auto">{actions}</div> : null}
         </div>
     );
     return (
