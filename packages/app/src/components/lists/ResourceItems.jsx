@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getComponentFromName } from '@panneau/core/utils';
-
 import { useResourceItems } from '@panneau/data';
-import * as ListComponents from './resources';
+import { useListsComponents } from '@panneau/core/contexts';
+import { useResourceUrlGenerator } from '@panneau/core/contexts';
+
+import ResourceFilters from './ResourceFilters';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -14,6 +16,7 @@ const propTypes = {
     type: PropTypes.string,
     paginated: PropTypes.bool,
     component: PropTypes.oneOfType([PropTypes.elementType, PropTypes.string]),
+    withoutFilters: PropTypes.bool,
     onQueryChange: PropTypes.func,
 };
 
@@ -22,6 +25,7 @@ const defaultProps = {
     type: null,
     paginated: true,
     component: null,
+    withoutFilters: true,
     onQueryChange: null,
 };
 
@@ -31,9 +35,12 @@ const ResourceItemsList = ({
     query,
     onQueryChange,
     paginated,
+    withoutFilters,
     component,
     ...props
 }) => {
+    const ListComponents = useListsComponents();
+    const urlGenerator = useResourceUrlGenerator(resource);
     const { page = 1 } = query || {};
     const items = useResourceItems(resource, query, paginated ? parseInt(page, 10) : null);
     const onListQueryChange = useCallback(
@@ -45,15 +52,28 @@ const ResourceItemsList = ({
         [onQueryChange],
     );
     const ListComponent = getComponentFromName(type || component || 'table', ListComponents, null);
-    // console.log('items', props, items, ListComponent);
+
     return (
-        <ListComponent
-            {...props}
-            {...items}
-            resource={resource}
-            query={query}
-            onQueryChange={onListQueryChange}
-        />
+        <>
+            {!withoutFilters ? (
+                <ResourceFilters
+                    filters={[]}
+                    value={query}
+                    onSubmit={onQueryChange}
+                    className="mb-4"
+                />
+            ) : null}
+            {ListComponent !== null ? (
+                <ListComponent
+                    {...props}
+                    {...items}
+                    resource={resource}
+                    query={query}
+                    onQueryChange={onListQueryChange}
+                    urlGenerator={urlGenerator}
+                />
+            ) : null}
+        </>
     );
 };
 

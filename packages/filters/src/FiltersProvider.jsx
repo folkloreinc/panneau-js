@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ComponentsProvider, FILTERS_NAMESPACE } from '@panneau/core/contexts';
 
-import FilterComponents from './filters';
+import * as components from './components';
 
 const propTypes = {
     children: PropTypes.node,
@@ -14,7 +14,7 @@ const defaultProps = {
 };
 
 const FiltersProvider = (props) => (
-    <ComponentsProvider namespace={FILTERS_NAMESPACE} components={FilterComponents} {...props} />
+    <ComponentsProvider namespace={FILTERS_NAMESPACE} components={components} {...props} />
 );
 
 FiltersProvider.propTypes = propTypes;

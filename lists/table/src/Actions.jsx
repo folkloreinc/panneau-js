@@ -1,13 +1,16 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
 // import classNames from 'classnames';
 import { defineMessages } from 'react-intl';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 // import * as AppPropTypes from '../../../lib/PropTypes';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Buttons from '@panneau/element-buttons';
+import Label from '@panneau/element-label';
 
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 
@@ -24,40 +27,57 @@ const messages = defineMessages({
 
 const propTypes = {
     size: PanneauPropTypes.buttonSize,
+    resource: PanneauPropTypes.item.isRequired,
     item: PanneauPropTypes.item.isRequired,
     className: PropTypes.string,
     iconsOnly: PropTypes.bool,
     onClickDelete: PropTypes.func,
+    urlGenerator: PropTypes.func,
 };
 
 const defaultProps = {
-    size: 'xs',
+    size: 'sm',
     className: null,
-    iconsOnly: false,
+    iconsOnly: true,
     onClickDelete: null,
+    urlGenerator: null,
 };
 
-const ResourceItemActions = ({ size, item, className, iconsOnly, onClickDelete }) => {
-    const resourceRoute = useResourceUrlGenerator(item);
-    const { id } = item;
+const Actions = ({ size, item, className, iconsOnly, onClickDelete, urlGenerator }) => {
+    const { id } = item || {};
+
     return (
         <Buttons
             size={size}
             items={[
                 {
                     id: 'edit',
-                    label: iconsOnly ? <FontAwesomeIcon icon={faEdit} /> : messages.edit,
-                    href: resourceRoute('edit', {
-                        id,
-                    }),
+                    label: iconsOnly ? (
+                        <FontAwesomeIcon icon={faEdit} />
+                    ) : (
+                        <Label {...messages.edit} />
+                    ),
+                    href:
+                        urlGenerator !== null
+                            ? urlGenerator('edit', {
+                                  id,
+                              })
+                            : null,
                     theme: 'primary',
                 },
                 {
                     id: 'delete',
-                    label: iconsOnly ? <FontAwesomeIcon icon={faTrash} /> : messages.delete,
-                    href: resourceRoute('delete', {
-                        id,
-                    }),
+                    label: iconsOnly ? (
+                        <FontAwesomeIcon icon={faTrash} />
+                    ) : (
+                        <Label {...messages.delete} />
+                    ),
+                    href:
+                        urlGenerator !== null
+                            ? urlGenerator('delete', {
+                                  id,
+                              })
+                            : null,
                     theme: 'danger',
                     onClick: onClickDelete,
                 },
@@ -68,7 +88,7 @@ const ResourceItemActions = ({ size, item, className, iconsOnly, onClickDelete }
     );
 };
 
-ResourceItemActions.propTypes = propTypes;
-ResourceItemActions.defaultProps = defaultProps;
+Actions.propTypes = propTypes;
+Actions.defaultProps = defaultProps;
 
-export default ResourceItemActions;
+export default Actions;

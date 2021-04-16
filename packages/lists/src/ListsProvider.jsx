@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ComponentsProvider, LISTS_NAMESPACE } from '@panneau/core/contexts';
 
-import ListsComponents from './lists';
+import * as components from './components';
 
 const propTypes = {
     children: PropTypes.node,
@@ -14,7 +14,7 @@ const defaultProps = {
 };
 
 const ListsProvider = (props) => (
-    <ComponentsProvider namespace={LISTS_NAMESPACE} components={ListsComponents} {...props} />
+    <ComponentsProvider namespace={LISTS_NAMESPACE} components={components} {...props} />
 );
 
 ListsProvider.propTypes = propTypes;

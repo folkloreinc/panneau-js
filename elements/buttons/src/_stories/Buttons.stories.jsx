@@ -12,7 +12,7 @@ export default {
 
 export const Normal = () => (
     <ButtonsElement
-        buttons={[
+        items={[
             { label: 'hello', theme: 'primary' },
             { label: 'goodbye', theme: 'success' },
         ]}

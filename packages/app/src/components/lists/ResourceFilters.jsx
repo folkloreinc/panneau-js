@@ -1,8 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { FormattedMessage } from 'react-intl';
 
-import Navbar from '../menus/Navbar';
+import { useFiltersComponents } from '@panneau/core/contexts';
+import { getComponentFromName } from '@panneau/core/utils';
+
+import Button from '@panneau/element-button';
+import Navbar from '@panneau/element-navbar';
 
 const getValueWithout = (value, withoutKey) =>
     value !== null
@@ -24,8 +29,9 @@ const propTypes = {
     filters: PropTypes.arrayOf(PropTypes.oneOf([''])),
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onChange: PropTypes.func,
-    // onSubmit: PropTypes.func,
+    onSubmit: PropTypes.func,
     withContainer: PropTypes.bool,
+    withReset: PropTypes.bool,
     className: PropTypes.string,
 };
 
@@ -33,22 +39,24 @@ const defaultProps = {
     filters: [],
     value: null,
     onChange: null,
-    // onSubmit: null,
+    onSubmit: null,
     withContainer: false,
+    withReset: false,
     className: null,
 };
 
-const ResourceListFilters = ({
+const ResourceFilters = ({
     filters,
     value: initialValue,
     onChange,
-    // onSubmit,
+    onSubmit,
     withContainer,
+    withReset,
     className,
 }) => {
+    const FilterComponents = useFiltersComponents();
     const [value, setValue] = useState(initialValue);
 
-    // eslint-disable-next-line
     const onFormChange = useCallback(
         (newFieldValue, key) => {
             const newValue =
@@ -66,11 +74,12 @@ const ResourceListFilters = ({
         [value, setValue, onChange],
     );
 
-    // const filterElements = filters
-    //     .map((filter) => (filter ? <p>{filter}</p> : null))
-    //     .filter((f) => f !== null);
+    const onReset = useCallback(() => {
+        setValue(initialValue);
+        onChange(initialValue);
+    }, [onChange, setValue, initialValue]);
 
-    const filterElements = null;
+    const filterItems = (filters || []).filter((f) => f !== null);
 
     return (
         <Navbar
@@ -82,11 +91,27 @@ const ResourceListFilters = ({
             ])}
             withoutCollapse
         >
-            {withContainer ? <div className="container">{filterElements}</div> : filterElements}
+            {filterItems.map(({ id, component }, index) => {
+                const FilterComponent = getComponentFromName(component, FilterComponents, null);
+                return FilterComponent !== null ? (
+                    <FilterComponent key={`filter-${id}-${index + 1}`} onChange={onFormChange} />
+                ) : null;
+            })}
+            {filterItems.length > 0 && onSubmit !== null ? (
+                <Button theme="primary" onClick={onSubmit}>
+                    <FormattedMessage id="lists.filters.submit" defaultMessage="Submit" />
+                </Button>
+            ) : null}
+            {filterItems.length > 0 && withReset ? (
+                <Button theme="primary" onClick={onReset}>
+                    <FormattedMessage id="lists.filters.reset" defaultMessage="Reset" />
+                </Button>
+            ) : null}
         </Navbar>
     );
 };
-ResourceListFilters.propTypes = propTypes;
-ResourceListFilters.defaultProps = defaultProps;
 
-export default ResourceListFilters;
+ResourceFilters.propTypes = propTypes;
+ResourceFilters.defaultProps = defaultProps;
+
+export default ResourceFilters;

@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ComponentsProvider, FORMS_NAMESPACE } from '@panneau/core/contexts';
 
-import FormsComponents from './forms';
+import * as components from './components';
 
 const propTypes = {
     children: PropTypes.node,
@@ -14,7 +14,7 @@ const defaultProps = {
 };
 
 const FormsProvider = (props) => (
-    <ComponentsProvider namespace={FORMS_NAMESPACE} components={FormsComponents} {...props} />
+    <ComponentsProvider namespace={FORMS_NAMESPACE} components={components} {...props} />
 );
 
 FormsProvider.propTypes = propTypes;

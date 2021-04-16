@@ -16,6 +16,7 @@ export const useUrlGenerator = () => {
     const urlGenerator = useCallback(
         (key, data) => {
             const url = generatePath(routes[key], data);
+            // console.log('ug', basePath, routes[key], url, data);
             return basePath !== null
                 ? `${basePath.replace(/\/$/, '')}/${url.replace(/^\//, '')}`
                 : url;

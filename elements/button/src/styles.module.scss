@@ -2,6 +2,8 @@
 @import '~@panneau/themes/scss/placeholders';
 
 .container {
+    display: inline-block;
+
     .icon {
         display: block;
     }

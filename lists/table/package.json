@@ -56,11 +56,18 @@
         "@panneau/core": "^0.8.0",
         "@panneau/themes": "^0.8.0",
         "@panneau/element-button": "^0.8.0",
+        "@panneau/element-buttons": "^0.8.0",
         "@panneau/element-label": "^0.8.0",
+        "@panneau/element-pagination": "^0.8.0",
+        "@panneau/element-loading": "^0.8.0",
+        "@fortawesome/fontawesome-svg-core": "^1.2.35",
+        "@fortawesome/free-solid-svg-icons": "^5.15.3",
+        "@fortawesome/react-fontawesome": "^0.1.14",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
-        "react-intl": "^5.15.8"
+        "react-intl": "^5.15.8",
+        "query-string": "^7.0.0"
     },
     "publishConfig": {
         "access": "public"

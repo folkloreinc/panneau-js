@@ -4,14 +4,13 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { getComponentFromName, getDefinitionFromId } from '@panneau/core/utils';
-import { useFieldsComponents, useFieldDefinitions } from '@panneau/core/contexts';
+import { getComponentFromName } from '@panneau/core/utils';
+import { useFieldsComponents } from '@panneau/core/contexts';
 import FormGroup from '@panneau/element-form-group';
 import FormRow from '@panneau/element-form-row';
 
 const propTypes = {
     components: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    definitions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     fields: PanneauPropTypes.fields,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     row: PropTypes.bool,
@@ -22,7 +21,6 @@ const propTypes = {
 
 const defaultProps = {
     components: null,
-    definitions: null,
     fields: [],
     value: null,
     row: false,
@@ -33,7 +31,6 @@ const defaultProps = {
 
 const Fields = ({
     components: parentComponents,
-    definitions: parentDefinitions,
     fields,
     value,
     row,
@@ -42,9 +39,7 @@ const Fields = ({
     className,
 }) => {
     const contextComponents = useFieldsComponents();
-    const contextDefinitions = useFieldDefinitions();
     const components = parentComponents || contextComponents;
-    const definitions = parentDefinitions || contextDefinitions;
 
     const onFieldChange = useCallback(
         ({ name = null }, newFieldValue) => {
@@ -67,7 +62,6 @@ const Fields = ({
 
     const content = fields.map((field, index) => {
         const {
-            type = null,
             component = null,
             name = null,
             horizontal = false,
@@ -77,11 +71,11 @@ const Fields = ({
             group_classname: groupClassName = null,
             label_classname: labelClassName = null,
             check: fieldCheck = false,
-        } = field;
-
-        const FieldComponent = getComponentFromName(type, components, component);
-        const definition = getDefinitionFromId(type, definitions, null);
-        const { check: definitionCheck = false } = definition || {};
+        } = field || {};
+        console.log(field);
+        const FieldComponent = getComponentFromName(component, components, component);
+        // const definition = getDefinitionFromId(type, definitions, null);
+        // const { check: definitionCheck = false } = definition || {};
 
         let fieldValue = null;
         if (value !== null && name !== null) {
@@ -99,7 +93,7 @@ const Fields = ({
                 />
             ) : null;
         const column = row === true;
-        const check = fieldCheck || definitionCheck;
+        const check = fieldCheck;
 
         return (
             <Fragment key={`field-${name || index}-${index + 1}`}>

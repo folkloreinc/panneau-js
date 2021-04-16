@@ -152,6 +152,16 @@ msgctxt "forms.success_status"
 msgid "Success!"
 msgstr "Success!"
 
+#: lists.filters.reset
+msgctxt "lists.filters.reset"
+msgid "Reset"
+msgstr "Reset"
+
+#: lists.filters.submit
+msgctxt "lists.filters.submit"
+msgid "Submit"
+msgstr "Submit"
+
 #: login
 msgctxt "login"
 msgid "Login"

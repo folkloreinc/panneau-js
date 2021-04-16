@@ -4,8 +4,8 @@ export default {
     label: 'Page',
 
     messages: {
-        'name.a': 'a page',
-        'name.a_plural': 'pages',
+        a_singular: 'page',
+        a_plural: 'pages',
     },
 
     fields: [{ name: 'un-texte-texte', type: 'text', component: 'text' }],
@@ -27,6 +27,7 @@ export default {
 
     forms: {
         default: {
+            title: 'Default form',
             fields: [
                 {
                     name: 'title',
@@ -34,11 +35,11 @@ export default {
                 },
                 {
                     name: 'body',
-                    component: 'rich_text',
+                    component: 'text',
                 },
             ],
         },
-        create: {},
+        create: null,
         edit: {
             title: 'Edit',
             fields: [
@@ -48,7 +49,7 @@ export default {
                 },
                 {
                     name: 'body',
-                    component: 'rich_text',
+                    component: 'text',
                 },
                 {
                     name: 'slug',

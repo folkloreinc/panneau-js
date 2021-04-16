@@ -11,6 +11,11 @@ export const useFormValue = () => {
     return value;
 };
 
+export const useFormSetValue = () => {
+    const { setValue } = useForm();
+    return setValue;
+};
+
 const propTypes = {
     value: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     setValue: PropTypes.func.isRequired,

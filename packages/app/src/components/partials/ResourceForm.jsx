@@ -12,20 +12,28 @@ import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
 // import * as FormComponents from './resources';
 
 const propTypes = {
+    component: PropTypes.string,
     resource: PanneauPropTypes.resource.isRequired,
     item: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onSuccess: PropTypes.func,
 };
 
 const defaultProps = {
+    component: null,
     item: null,
     onSuccess: null,
 };
 
-const ResourceForm = ({ resource, onSuccess, item, ...props }) => {
+const ResourceForm = ({ component, resource, onSuccess, item, ...props }) => {
     const FormComponents = useFormsComponents();
-    const { id: resourceId, fields: resourceFields = [] } = resource;
-    const isCreate = item === null;
+    const { forms = {} } = resource || {};
+    const isCreate = item !== null;
+
+    const { default: defaultForm = null, create = null, edit = null } = forms || {};
+    const { fields: resourceFields = [] } = isCreate ? create || defaultForm : edit || defaultForm;
+
+    console.log(defaultForm, resourceFields);
+
     const resourceRoute = useResourceUrlGenerator(resource);
     const { store } = useResourceStore(resource);
     const { update } = useResourceUpdate(resource, item != null ? item.id : null);
@@ -49,12 +57,13 @@ const ResourceForm = ({ resource, onSuccess, item, ...props }) => {
               );
     const [value, setValue] = useState(initialValue);
     const { fields, onSubmit, status, generalError, errors } = useForm({
-        fields: resourceFields.map(({ name }) => name),
+        fields: resourceFields,
         value,
         postForm,
         setValue,
         onComplete: onSuccess,
     });
+
     const action = isCreate
         ? resourceRoute('store')
         : resourceRoute('update', {
@@ -67,7 +76,10 @@ const ResourceForm = ({ resource, onSuccess, item, ...props }) => {
         }
     }, [item, setValue]);
 
-    const FormComponent = getComponentFromName(FormComponents, resourceId, 'default');
+    const FormComponent = getComponentFromName(component || 'normal', FormComponents, null);
+
+    console.log('normie', fields);
+
     return (
         <FormProvider value={value} setValue={setValue}>
             <FormComponent

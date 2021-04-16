@@ -5,13 +5,14 @@ import classNames from 'classnames';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Form from '@panneau/element-form';
 import { useFieldComponent } from '@panneau/core/contexts';
-// import Button from '@panneau/element-button';
+import { useFormSetValue } from '@panneau/core/src/contexts/FormContext';
 
 import styles from './styles.module.scss';
 
 const propTypes = {
     fields: PropTypes.objectOf(PropTypes.shape({})).isRequired,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    setValue: PropTypes.func,
     onChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     status: PanneauPropTypes.formStatus,
@@ -33,18 +34,19 @@ const propTypes = {
 const defaultProps = {
     status: null,
     value: null,
+    setValue: null,
     generalError: null,
     errors: null,
-    buttons: [{ type: 'submit' }],
+    buttons: null,
     children: null,
     className: null,
 };
 
-const DefaultForm = ({
+const NormalForm = ({
     fields,
     status,
     value,
-    onChange,
+    setValue,
     onSubmit,
     buttons,
     children,
@@ -52,10 +54,10 @@ const DefaultForm = ({
     ...props
 }) => {
     const FieldsComponent = useFieldComponent('fields');
-    console.log('yeah', FieldsComponent);
+    const onChange = setValue || useFormSetValue();
+
     return (
         <Form
-            onSubmit={onSubmit}
             className={classNames([
                 styles.container,
                 'form',
@@ -65,6 +67,7 @@ const DefaultForm = ({
             ])}
             status={status}
             buttons={buttons}
+            onSubmit={onSubmit}
             {...props}
         >
             {children !== null ? (
@@ -76,7 +79,7 @@ const DefaultForm = ({
     );
 };
 
-DefaultForm.propTypes = propTypes;
-DefaultForm.defaultProps = defaultProps;
+NormalForm.propTypes = propTypes;
+NormalForm.defaultProps = defaultProps;
 
-export default DefaultForm;
+export default NormalForm;

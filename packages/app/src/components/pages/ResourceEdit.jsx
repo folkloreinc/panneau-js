@@ -21,6 +21,7 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceEditPage = ({ resource, itemId }) => {
+    // console.log(itemId);
     // const { id } = resource;
     // const resourceRoute = useResourceUrlGenerator(resource);
     const { item } = useResourceItem(resource, itemId);
@@ -29,6 +30,7 @@ const ResourceEditPage = ({ resource, itemId }) => {
     useEffect(() => {
         setEditItem(item);
     }, [item, setEditItem]);
+
     return (
         <ResourceProvider resource={resource}>
             <MainLayout>

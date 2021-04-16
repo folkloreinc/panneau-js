@@ -10,20 +10,23 @@ const getFieldsPropsFromFields = (fields, {
     (allFields, field) => {
         const {
             name = isString(field) ? field : null,
+            component = null,
         } = isObject(field) ? field : {};
-        return {
+        console.log('f', field);
+        return [
             ...allFields,
-            [name]: {
+            {
                 ...(isObject(field) ? field : null),
                 name,
+                component,
                 value: value !== null ? value[name] || null : null,
                 errors: errors !== null ? errors[name] || null : null,
                 onChange: fieldValue => onChange(name, fieldValue),
                 ...props,
             },
-        };
+        ];
     },
-    {},
+    [],
 );
 
 const useForm = (opts = {}) => {

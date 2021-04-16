@@ -30,7 +30,7 @@ const defaultProps = {};
 const ResourceIndexPage = ({ resource }) => {
     const {
         label,
-        can_create: canCreate = false,
+        can_create: canCreate = true,
         index_is_paginated: paginated = false,
         components: { index: indexComponent = null } = {},
     } = resource;

@@ -11,7 +11,7 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import styles from './styles.module.scss';
 
 const propTypes = {
-    buttons: PanneauPropTypes.buttons,
+    items: PanneauPropTypes.buttons,
     size: PanneauPropTypes.buttonSize,
     renderButton: PropTypes.func,
     onClickButton: PropTypes.func,
@@ -20,7 +20,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-    buttons: [],
+    items: [],
     size: null,
     renderButton: null,
     onClickButton: null,
@@ -28,7 +28,7 @@ const defaultProps = {
     buttonClassName: null,
 };
 
-const Buttons = ({ buttons, size, renderButton, onClickButton, buttonClassName, className }) => (
+const Buttons = ({ items, size, renderButton, onClickButton, buttonClassName, className }) => (
     <div
         className={classNames([
             'btn-group',
@@ -42,14 +42,14 @@ const Buttons = ({ buttons, size, renderButton, onClickButton, buttonClassName, 
         ])}
         role="group"
     >
-        {isArray(buttons)
-            ? buttons.map((button, index) => {
+        {isArray(items)
+            ? items.map((button, index) => {
                   const {
                       className: customClassName = null,
                       onClick = null,
 
                       ...buttonProps
-                  } = button;
+                  } = button || {};
                   const fixedProps = {
                       key: `button-${index}`,
                       className: classNames([

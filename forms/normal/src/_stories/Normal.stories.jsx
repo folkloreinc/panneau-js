@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 
-import Default from '../Default';
+import Normal from '../Normal';
 
 import FieldsProvider from '../../../../packages/fields';
 
 import fields from '../../../../.storybook/data/fields';
 
 export default {
-    component: Default,
-    title: 'Forms/Default',
+    component: Normal,
+    title: 'Forms/Normal',
     parameters: {
         intl: true,
     },
@@ -16,14 +16,11 @@ export default {
 
 const Container = () => {
     const [value, setValue] = useState({});
-
-    console.log('value update', value);
-
     return (
         <FieldsProvider>
-            <Default fields={fields} value={value} onChange={setValue} />
+            <Normal fields={fields} value={value} onChange={setValue} />
         </FieldsProvider>
     );
 };
 
-export const Normal = () => <Container />;
+export const NormalForm = () => <Container />;

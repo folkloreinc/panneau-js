@@ -80,6 +80,12 @@
     "forms.success_status": {
         "defaultMessage": "Success!"
     },
+    "lists.filters.reset": {
+        "defaultMessage": "Reset"
+    },
+    "lists.filters.submit": {
+        "defaultMessage": "Submit"
+    },
     "login": {
         "defaultMessage": "Login"
     },

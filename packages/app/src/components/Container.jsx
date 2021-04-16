@@ -2,13 +2,15 @@ import React from 'react';
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
-import { PropTypes as PanneauPropTypes, PropTypes } from '@panneau/core';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { PanneauProvider, RoutesProvider } from '@panneau/core/contexts';
 import { ApiProvider } from '@panneau/data';
 import FieldsProvider from '@panneau/fields';
 import FormsProvider from '@panneau/forms';
+import ListsProvider from '@panneau/lists';
+import FiltersProvider from '@panneau/filters';
 import { AuthProvider } from '../contexts/AuthContext';
 
 import Routes from './Routes';
@@ -36,18 +38,24 @@ const Container = ({ definition, user, memoryRouter, statusCode }) => {
 
     const Router = memoryRouter ? MemoryRouter : BrowserRouter;
 
+    // Auto load page: initialEntries={['/pages']} initialIndex={0}
+
     return (
-        <Router initialEntries={['/pages']} initialIndex={0}>
+        <Router initialEntries={['/pages/1/edit']} initialIndex={0}>
             <PanneauProvider definition={definition}>
                 <IntlProvider locale={locale} messages={translations[locale] || translations}>
                     <RoutesProvider routes={routes}>
                         <FieldsProvider>
                             <FormsProvider>
-                                <ApiProvider>
-                                    <AuthProvider user={user}>
-                                        <Routes statusCode={statusCode} />
-                                    </AuthProvider>
-                                </ApiProvider>
+                                <ListsProvider>
+                                    <FiltersProvider>
+                                        <ApiProvider>
+                                            <AuthProvider user={user}>
+                                                <Routes statusCode={statusCode} />
+                                            </AuthProvider>
+                                        </ApiProvider>
+                                    </FiltersProvider>
+                                </ListsProvider>
                             </FormsProvider>
                         </FieldsProvider>
                     </RoutesProvider>

@@ -1,6 +1,6 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch, Route, Redirect, useLocation } from 'react-router';
-import { parse as parseQuery } from 'query-string';
+// import { parse as parseQuery } from 'query-string';
 import { useRoutes, useUrlGenerator, usePanneauResources } from '@panneau/core/contexts';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -10,9 +10,8 @@ import { useUser } from '../contexts/AuthContext';
 import AuthLogin from './pages/AuthLogin';
 import Home from './pages/Home';
 import Error from './pages/Error';
-import ResourceRoutes from './ResourceRoutes';
 
-import ResourceIndex from './pages/ResourceIndex';
+import ResourceRoutes from './ResourceRoutes';
 
 const propTypes = {
     statusCode: PanneauPropTypes.statusCode,
@@ -24,8 +23,8 @@ const defaultProps = {
 
 const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     const routes = useRoutes();
-    const { pathname, search } = useLocation();
-    console.log('PATHNAME / SEARCH', pathname, search); // eslint-disable-line
+    const { pathname } = useLocation(); // search
+    console.log('PATHNAME', pathname); // eslint-disable-line
 
     const [{ statusCode, pathname: initialPathname }, setInitialRequest] = useState({
         statusCode: initialStatusCode,
@@ -85,7 +84,7 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
                         path={route(`${routeName}`, {
                             resource: resourceId,
                         })}
-                        render={() => <ResourceIndex resource={resource} />}
+                        render={() => <ResourceRoutes resource={resource} />}
                     />
                 ) : (
                     <Redirect
