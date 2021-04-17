@@ -5,7 +5,11 @@ const getComponentFromName = (name = null, components, defaultComponent = null) 
         return defaultComponent;
     }
     const pascalName = pascalCase(name);
-    return components[pascalName] || components[name] || defaultComponent;
+    const component = components[pascalName] || components[name] || defaultComponent;
+    if (!component) {
+        console.warn('Could not find component from name', name, pascalName, components);
+    }
+    return component;
 };
 
 export default getComponentFromName;

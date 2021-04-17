@@ -32,8 +32,10 @@ const ResourceIndexPage = ({ resource }) => {
         label,
         can_create: canCreate = true,
         index_is_paginated: paginated = false,
-        components: { index: indexComponent = null } = {},
+        components: { index = {} } = {},
     } = resource;
+    console.log('index', index);
+    const { component: indexComponent = null, props: indexProps = null } = index || {};
 
     const { search } = useLocation();
     const history = useHistory();
@@ -93,6 +95,7 @@ const ResourceIndexPage = ({ resource }) => {
                         query={listQuery}
                         paginated={paginated}
                         component={indexComponent}
+                        componentProps={indexProps}
                         onQueryChange={onQueryChange}
                     />
                 </div>

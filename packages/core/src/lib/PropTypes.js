@@ -81,7 +81,7 @@ export const localization = PropTypes.shape({
 });
 
 export const field = PropTypes.shape({
-    type: PropTypes.string.isRequired,
+    // type: PropTypes.string.isRequired,
     name: PropTypes.isRequired,
     component: PropTypes.string.isRequired,
     label: PropTypes.isRequired,

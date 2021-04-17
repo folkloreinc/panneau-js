@@ -8,7 +8,7 @@ export default {
         a_plural: 'pages',
     },
 
-    fields: [{ name: 'un-texte-texte', type: 'text', component: 'text' }],
+    fields: [{ name: 'title', label: 'Titre', component: 'text' }],
 
     has_routes: false,
     shows_in_navbar: true,
@@ -31,11 +31,13 @@ export default {
             fields: [
                 {
                     name: 'title',
+                    label: 'Titre',
                     component: 'text',
                 },
                 {
-                    name: 'body',
-                    component: 'text',
+                    name: 'description',
+                    label: 'Description',
+                    component: 'html',
                 },
             ],
         },
@@ -45,21 +47,26 @@ export default {
             fields: [
                 {
                     name: 'title',
+                    label: 'Titre',
                     component: 'text',
                 },
                 {
-                    name: 'body',
-                    component: 'text',
+                    name: 'description',
+                    label: 'Description',
+                    component: 'html',
                 },
                 {
                     name: 'slug',
+                    label: 'Slug',
                     component: 'url',
                 },
             ],
         },
     },
 
-    index: {
-        component: 'table',
+    components: {
+        index: {
+            component: 'table',
+        },
     },
 };

@@ -57,6 +57,7 @@
         "@panneau/field-text": "^0.8.0",
         "@panneau/themes": "^0.8.0",
         "classnames": "^2.2.6",
+        "lodash": "^4.17.21",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {

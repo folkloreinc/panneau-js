@@ -5,14 +5,12 @@ import classNames from 'classnames';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Form from '@panneau/element-form';
 import { useFieldComponent } from '@panneau/core/contexts';
-import { useFormSetValue } from '@panneau/core/src/contexts/FormContext';
 
 import styles from './styles.module.scss';
 
 const propTypes = {
-    fields: PropTypes.objectOf(PropTypes.shape({})).isRequired,
+    fields: PanneauPropTypes.fields.isRequired,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    setValue: PropTypes.func,
     onChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     status: PanneauPropTypes.formStatus,
@@ -34,7 +32,6 @@ const propTypes = {
 const defaultProps = {
     status: null,
     value: null,
-    setValue: null,
     generalError: null,
     errors: null,
     buttons: null,
@@ -46,7 +43,7 @@ const NormalForm = ({
     fields,
     status,
     value,
-    setValue,
+    onChange,
     onSubmit,
     buttons,
     children,
@@ -54,8 +51,6 @@ const NormalForm = ({
     ...props
 }) => {
     const FieldsComponent = useFieldComponent('fields');
-    const onChange = setValue || useFormSetValue();
-
     return (
         <Form
             className={classNames([

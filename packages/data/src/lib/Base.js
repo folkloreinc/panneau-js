@@ -47,6 +47,20 @@ class Base {
         );
     }
 
+    requestPatch(path, data) {
+        return postJSON(
+            this.getFullUrl(path),
+            {
+                _method: 'PATCH',
+                ...data,
+            },
+            {
+                credentials: 'include',
+                headers: getCSRFHeaders(),
+            },
+        );
+    }
+
     requestDelete(path) {
         return this.requestPost(path, {
             _method: 'DELETE',

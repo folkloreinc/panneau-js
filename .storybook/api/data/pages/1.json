@@ -1,6 +1,7 @@
 {
     "id": "1",
-    "name": "page",
     "type": "page",
-    "title": "Une page"
+    "title": "Une page",
+    "description": "Une description",
+    "slug": null
 }

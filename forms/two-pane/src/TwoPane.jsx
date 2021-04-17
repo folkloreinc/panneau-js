@@ -1,13 +1,17 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Form from '@panneau/element-form';
 import { useFieldComponent } from '@panneau/core/contexts';
 
+import styles from './styles.module.scss';
+
 const propTypes = {
     fields: PropTypes.objectOf(PropTypes.shape({})).isRequired,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    setValue: PropTypes.func,
     onChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     status: PanneauPropTypes.formStatus,
@@ -29,36 +33,51 @@ const propTypes = {
 const defaultProps = {
     status: null,
     value: null,
+    setValue: null,
     generalError: null,
     errors: null,
-    buttons: [{ type: 'submit' }],
+    buttons: null,
     children: null,
     className: null,
 };
 
-const InlineForm = ({
+const TwoPaneForm = ({
     fields,
     status,
-    children,
     value,
-    onChange,
-    className,
+    setValue,
     onSubmit,
+    buttons,
+    children,
+    className,
     ...props
 }) => {
     const FieldsComponent = useFieldComponent('fields');
+    const onChange = setValue || null;
     return (
-        <Form onSubmit={onSubmit} className={className} status={status} {...props}>
-            {children !== null ? (
-                children
-            ) : (
+        <div className="d-flex">
+            <Form
+                className={classNames([
+                    styles.container,
+                    'form',
+                    'w-50',
+                    {
+                        [className]: className !== null,
+                    },
+                ])}
+                status={status}
+                buttons={buttons}
+                onSubmit={onSubmit}
+                {...props}
+            >
                 <FieldsComponent fields={fields} value={value} onChange={onChange} />
-            )}
-        </Form>
+            </Form>
+            <div className="w-50">{children}</div>
+        </div>
     );
 };
 
-InlineForm.propTypes = propTypes;
-InlineForm.defaultProps = defaultProps;
+TwoPaneForm.propTypes = propTypes;
+TwoPaneForm.defaultProps = defaultProps;
 
-export default InlineForm;
+export default TwoPaneForm;

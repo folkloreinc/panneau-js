@@ -26,14 +26,15 @@ const defaultProps = {
 
 const ResourceForm = ({ component, resource, onSuccess, item, ...props }) => {
     const FormComponents = useFormsComponents();
-    const { forms = {} } = resource || {};
-    const isCreate = item !== null;
+    const { fields: defaultFields, forms = {} } = resource || {};
+    const isCreate = item === null || !item.id;
 
+    // Pick fields from resource root or form
     const { default: defaultForm = null, create = null, edit = null } = forms || {};
-    const { fields: resourceFields = [] } = isCreate ? create || defaultForm : edit || defaultForm;
+    const { fields: formFields = null } = isCreate ? create || defaultForm : edit || defaultForm;
+    const resourceFields = formFields || defaultFields;
 
-    console.log(defaultForm, resourceFields);
-
+    // Form routes
     const resourceRoute = useResourceUrlGenerator(resource);
     const { store } = useResourceStore(resource);
     const { update } = useResourceUpdate(resource, item != null ? item.id : null);
@@ -42,6 +43,8 @@ const ResourceForm = ({ component, resource, onSuccess, item, ...props }) => {
         store,
         update,
     ]);
+
+    // Form state
     const initialValue =
         item !== null
             ? item
@@ -76,9 +79,8 @@ const ResourceForm = ({ component, resource, onSuccess, item, ...props }) => {
         }
     }, [item, setValue]);
 
+    // Form component
     const FormComponent = getComponentFromName(component || 'normal', FormComponents, null);
-
-    console.log('normie', fields);
 
     return (
         <FormProvider value={value} setValue={setValue}>
@@ -94,7 +96,7 @@ const ResourceForm = ({ component, resource, onSuccess, item, ...props }) => {
                 onSubmit={onSubmit}
                 isCreate={isCreate}
                 value={value}
-                setValue={setValue}
+                onChange={setValue}
             />
         </FormProvider>
     );

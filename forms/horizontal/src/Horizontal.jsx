@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Form from '@panneau/element-form';
-import Fields from '@panneau/field-fields';
+import { useFieldComponent } from '@panneau/core/contexts';
 // import Button from '@panneau/element-button';
 
 const propTypes = {
@@ -47,12 +47,13 @@ const HorizontalForm = ({
     onSubmit,
     ...props
 }) => {
+    const FieldsComponent = useFieldComponent('fields');
     return (
         <Form onSubmit={onSubmit} className={className} status={status} {...props}>
             {children !== null ? (
                 children
             ) : (
-                <Fields fields={fields} value={value} onChange={onChange} />
+                <FieldsComponent fields={fields} value={value} onChange={onChange} />
             )}
         </Form>
     );

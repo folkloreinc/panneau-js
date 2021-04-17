@@ -17,16 +17,16 @@ const useResourceUrlGenerator = (resourceId = null) => {
         const finalResource = resource || getResource(resources, routeResourceId);
         const { id, has_routes: hasRoutes = false } = finalResource;
         const routePrefix = hasRoutes ? `resources.${id}` : 'resources';
-        console.log(
-            'routePrefix',
-            routePrefix,
-            finalRouteName,
-            finalParams,
-            route(`${routePrefix}.${finalRouteName}`, {
-                ...finalParams,
-                resource: id,
-            }),
-        );
+        // console.log(
+        //     'routePrefix',
+        //     routePrefix,
+        //     finalRouteName,
+        //     finalParams,
+        //     route(`${routePrefix}.${finalRouteName}`, {
+        //         ...finalParams,
+        //         resource: id,
+        //     }),
+        // );
         return route(`${routePrefix}.${finalRouteName}`, {
             ...finalParams,
             resource: id,

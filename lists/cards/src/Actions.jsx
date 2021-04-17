@@ -12,6 +12,8 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Buttons from '@panneau/element-buttons';
 import Label from '@panneau/element-label';
 
+// import { useResourceUrlGenerator } from '@panneau/core/hooks';
+
 const messages = defineMessages({
     edit: {
         id: 'forms.edit_button',

@@ -13,30 +13,30 @@ import ResourceFilters from './ResourceFilters';
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
     query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    type: PropTypes.string,
     paginated: PropTypes.bool,
     component: PropTypes.oneOfType([PropTypes.elementType, PropTypes.string]),
+    componentProps: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     withoutFilters: PropTypes.bool,
     onQueryChange: PropTypes.func,
 };
 
 const defaultProps = {
     query: null,
-    type: null,
     paginated: true,
     component: null,
+    componentProps: null,
     withoutFilters: true,
     onQueryChange: null,
 };
 
 const ResourceItemsList = ({
     resource,
-    type,
+    component,
+    componentProps,
     query,
     onQueryChange,
     paginated,
     withoutFilters,
-    component,
     ...props
 }) => {
     const ListComponents = useListsComponents();
@@ -51,7 +51,11 @@ const ResourceItemsList = ({
         },
         [onQueryChange],
     );
-    const ListComponent = getComponentFromName(type || component || 'table', ListComponents, null);
+    const ListComponent = getComponentFromName(
+        component || 'table',
+        ListComponents,
+        component || null,
+    );
 
     return (
         <>
@@ -67,6 +71,7 @@ const ResourceItemsList = ({
                 <ListComponent
                     {...props}
                     {...items}
+                    {...componentProps}
                     resource={resource}
                     query={query}
                     onQueryChange={onListQueryChange}

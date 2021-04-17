@@ -102,6 +102,8 @@ const TableList = ({
             : ''
     }`;
 
+    console.log(fields);
+
     return (
         <div>
             {items !== null ? (
@@ -125,7 +127,8 @@ const TableList = ({
                                     <td className="col-auto">{id}</td>
                                     {columns.map((field) => {
                                         const { name } = field || {};
-
+                                        const value = it[name] ? it[name] : null;
+                                        console.log(it, field);
                                         // console.log('it', it);
                                         // const {
                                         //     index: indexComponent = 'text',
@@ -143,7 +146,7 @@ const TableList = ({
                                                 field={field}
                                                 value={it[name] || null}
                                             /> */}
-                                                {name || 'what'}
+                                                {value || 'No value'}
                                             </td>
                                         );
                                     })}

@@ -11,6 +11,7 @@ const propTypes = {
     actions: PropTypes.node,
     small: PropTypes.bool,
     className: PropTypes.string,
+    children: PropTypes.node,
 };
 
 const defaultProps = {
@@ -18,9 +19,10 @@ const defaultProps = {
     actions: null,
     small: false,
     className: null,
+    children: null,
 };
 
-const PageHeader = ({ title, actions, small, className }) => {
+const PageHeader = ({ title, actions, small, className, children }) => {
     const inner = (
         <div className="d-flex align-items-center flex-wrap">
             {title !== null ? (
@@ -50,6 +52,7 @@ const PageHeader = ({ title, actions, small, className }) => {
                     inner
                 )}
             </div>
+            {children}
         </div>
     );
 };
