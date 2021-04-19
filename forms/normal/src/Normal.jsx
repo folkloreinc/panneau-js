@@ -12,7 +12,7 @@ const propTypes = {
     fields: PanneauPropTypes.fields.isRequired,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onChange: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func,
     status: PanneauPropTypes.formStatus,
     generalError: PropTypes.string,
     errors: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
@@ -32,6 +32,7 @@ const propTypes = {
 const defaultProps = {
     status: null,
     value: null,
+    onSubmit: null,
     generalError: null,
     errors: null,
     buttons: null,

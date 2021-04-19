@@ -72,10 +72,10 @@ const Fields = ({
             label_classname: labelClassName = null,
             check: fieldCheck = false,
         } = field || {};
-        console.log(field);
+
+        // console.log(field);
+
         const FieldComponent = getComponentFromName(component, components, component);
-        // const definition = getDefinitionFromId(type, definitions, null);
-        // const { check: definitionCheck = false } = definition || {};
 
         let fieldValue = null;
         if (value !== null && name !== null) {

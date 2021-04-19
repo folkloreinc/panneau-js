@@ -5,6 +5,8 @@ import classNames from 'classnames';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
+import Column from './Column';
+
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -64,6 +66,7 @@ const FormGroup = ({
                     'col-form-label': column,
                     'col-sm-2': horizontal,
                     'px-2': horizontal,
+                    'text-nowrap': horizontal,
                     [labelClassName]: labelClassName !== null,
                 },
             ])}
@@ -72,16 +75,31 @@ const FormGroup = ({
         </label>
     );
 
+    const helpElement =
+        helpText !== null ? (
+            <small className={classNames([styles.help, 'form-text', 'text-muted'])}>
+                {helpText}
+            </small>
+        ) : null;
+
+    const errorsElement =
+        !withoutErrors && errors !== null ? (
+            <div className={classNames([styles.errors, 'invalid-feedback', 'd-block'])}>
+                <ul className="list-unstyled">
+                    {errors.map((error) => (
+                        <li key={`error-${error}`}>{error}</li>
+                    ))}
+                </ul>
+            </div>
+        ) : null;
+
     return (
         <div
             className={classNames([
                 styles.container,
                 'form-group',
                 'mb-2',
-
                 {
-                    row: horizontal,
-
                     [className]: className !== null,
                 },
             ])}
@@ -89,29 +107,22 @@ const FormGroup = ({
             <div
                 className={classNames([
                     {
-                        'col-sm-10': horizontal,
-                        'px-2': horizontal,
+                        row: horizontal,
+                        'g-3': horizontal,
+                        'align-items-center': horizontal,
                         'form-floating': floating,
                     },
                 ])}
             >
-                {!withoutLabel && !labelAfter && label !== null ? labelElement : null}
-                {children}
-                {!withoutLabel && labelAfter && label !== null ? labelElement : null}
-                {helpText !== null ? (
-                    <small className={classNames([styles.help, 'form-text', 'text-muted'])}>
-                        {helpText}
-                    </small>
-                ) : null}
-                {!withoutErrors && errors !== null ? (
-                    <div className={classNames([styles.errors, 'invalid-feedback', 'd-block'])}>
-                        <ul className="list-unstyled">
-                            {errors.map((error) => (
-                                <li key={`error-${error}`}>{error}</li>
-                            ))}
-                        </ul>
-                    </div>
-                ) : null}
+                <Column horizontal={horizontal}>
+                    {!withoutLabel && !labelAfter && label !== null ? labelElement : null}
+                </Column>
+                <Column horizontal={horizontal}>{children}</Column>
+                <Column horizontal={horizontal}>
+                    {!withoutLabel && labelAfter && label !== null ? labelElement : null}
+                </Column>
+                <Column horizontal={horizontal}>{helpElement}</Column>
+                <Column horizontal={horizontal}>{errorsElement}</Column>
             </div>
         </div>
     );

@@ -1,55 +1,41 @@
 export default [
     {
-        type: 'test',
+        component: 'test',
         name: 'a-test',
         label: 'A Test',
         placeholder: 'cool',
     },
     {
-        type: 'test',
+        component: 'test',
         name: 'a-test-h',
         label: 'A test H',
         horizontal: true,
     },
     {
-        type: 'fields',
+        component: 'fields',
         name: 'cool-row',
-        row: true,
-        label: 'Cool row',
+        label: '<Fields> of fields',
         fields: [
             {
+                component: 'test',
                 name: 'b-test',
-                type: 'test',
                 placeholder: 'b-test',
             },
             {
+                component: 'test',
                 name: 'c-test',
-                type: 'test',
                 placeholder: 'c-test',
             },
             {
+                component: 'test',
                 name: 'd-test',
-                type: 'test',
                 placeholder: 'd-test',
             },
         ],
     },
     {
-        type: 'fields',
-        name: 'Cooool hhh',
-        label: 'Cool H',
-        row: true,
-        fields: [
-            {
-                type: 'test',
-                name: 'e-test',
-                label: 'e-test',
-            },
-            {
-                type: 'test',
-                name: 'f-test',
-                label: 'f-test',
-            },
-        ],
+        component: 'fields',
+        name: 'Cooool',
+        label: 'Empty fields',
     },
 ];
