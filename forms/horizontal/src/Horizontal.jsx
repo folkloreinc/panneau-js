@@ -23,7 +23,6 @@ const propTypes = {
             onClick: PropTypes.func,
         }),
     ),
-    children: PropTypes.node,
     className: PropTypes.string,
 };
 
@@ -33,29 +32,19 @@ const defaultProps = {
     onSubmit: null,
     generalError: null,
     errors: null,
-    buttons: [{ type: 'submit' }],
-    children: null,
+    buttons: null,
     className: null,
 };
 
-const HorizontalForm = ({
-    fields,
-    status,
-    children,
-    value,
-    onChange,
-    className,
-    onSubmit,
-    ...props
-}) => {
+const HorizontalForm = ({ fields, status, value, onChange, className, onSubmit, ...props }) => {
     const FieldsComponent = useFieldComponent('fields');
     return (
         <Form onSubmit={onSubmit} className={className} status={status} {...props}>
-            {children !== null ? (
-                children
-            ) : (
-                <FieldsComponent fields={fields} value={value} onChange={onChange} />
-            )}
+            <FieldsComponent
+                fields={fields.map((f) => ({ ...f, horizontal: true }))}
+                value={value}
+                onChange={onChange}
+            />
         </Form>
     );
 };

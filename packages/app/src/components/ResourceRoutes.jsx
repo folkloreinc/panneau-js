@@ -29,31 +29,31 @@ const ResourceRoutes = ({ resource }) => {
     } = pages || {};
 
     const ResourceIndexComponent = getComponentFromName(
-        indexPage?.component || 'index',
+        indexPage?.component || 'resource-index',
         basePages,
         indexPage?.component,
     );
 
     const ResourceShowComponent = getComponentFromName(
-        showPage?.component || 'show',
+        showPage?.component || 'resource-show',
         basePages,
         showPage?.component,
     );
 
     const ResourceCreateComponent = getComponentFromName(
-        createPage?.component || 'create',
+        createPage?.component || 'resource-create',
         basePages,
         createPage?.component,
     );
 
     const ResourceEditComponent = getComponentFromName(
-        editPage?.component || 'edit',
+        editPage?.component || 'resource-edit',
         basePages,
         editPage?.component,
     );
 
     const ResourceDeleteComponent = getComponentFromName(
-        deletePage?.component || 'delete',
+        deletePage?.component || 'resource-delete',
         basePages,
         deletePage?.component,
     );

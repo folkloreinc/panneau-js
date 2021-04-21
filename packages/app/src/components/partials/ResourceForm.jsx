@@ -30,13 +30,17 @@ const defaultProps = {
 
 const ResourceForm = ({ component, resource, messages, onSuccess, item, isDelete, ...props }) => {
     const FormComponents = useFormsComponents();
-    const { fields: defaultFields, forms = {} } = resource || {};
+    const { fields: baseFields, forms = {} } = resource || {};
     const isCreate = item === null || !item.id;
 
     // Pick fields from resource root or form
-    const { default: defaultForm = null, create = null, edit = null } = forms || {};
-    const { fields: formFields = null } = isCreate ? create || defaultForm : edit || defaultForm;
-    const resourceFields = formFields || defaultFields;
+    const { default: defaultForm = null, create: createForm = null, edit: editForm = null } =
+        forms || {};
+    const { fields: defaultFields, component: defaultComponent } = defaultForm || {};
+    const { fields: formFields = null, component: formComponent = null } = isCreate
+        ? createForm || {}
+        : editForm || {};
+    const resourceFields = formFields || defaultFields || baseFields;
 
     // Form routes
     const resourceRoute = useResourceUrlGenerator(resource);
@@ -74,19 +78,23 @@ const ResourceForm = ({ component, resource, messages, onSuccess, item, isDelete
 
     // Form action
     const modifyAction = isCreate
-        ? resourceRoute('store')
-        : resourceRoute('update', {
+        ? resourceRoute('api.store')
+        : resourceRoute('api.update', {
               id: item.id,
           });
 
     const action = isDelete
-        ? resourceRoute('delete', {
+        ? resourceRoute('api.destroy', {
               id: item.id,
           })
         : modifyAction;
 
     // Form component
-    const FormComponent = getComponentFromName(component || 'normal', FormComponents, component);
+    const FormComponent = getComponentFromName(
+        component || formComponent || defaultComponent || 'normal',
+        FormComponents,
+        component,
+    );
 
     // Lisen to item value change
     useEffect(() => {

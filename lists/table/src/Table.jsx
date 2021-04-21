@@ -8,38 +8,7 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import Pagination from '@panneau/element-pagination';
 import Loading from '@panneau/element-loading';
-
-import Actions from './Actions';
-
-// import ResourceItemActions from '../buttons/ResourceItemActions';
-// import * as FieldIndexComponents from '../index/index';
-
-// const resourcesMessages = defineMessages({
-//     create: {
-//         id: 'resources.create',
-//         defaultMessage: 'Create {a_singular}',
-//     },
-//     edit: {
-//         id: 'resources.edit',
-//         defaultMessage: 'Edit {a_singular}',
-//     },
-//     delete: {
-//         id: 'resources.delete',
-//         defaultMessage: 'Delete {a_singular}',
-//     },
-//     created: {
-//         id: 'resources.created',
-//         defaultMessage: '{The_singular} has been created.',
-//     },
-//     deleted: {
-//         id: 'resources.deleted',
-//         defaultMessage: '{The_singular} has been deleted.',
-//     },
-//     loading: {
-//         id: 'resources.loading',
-//         defaultMessage: 'Loading {plural}...',
-//     },
-// });
+import FormActions from '@panneau/element-form-actions';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -102,12 +71,10 @@ const TableList = ({
             : ''
     }`;
 
-    console.log(fields);
-
     return (
         <div>
             {items !== null ? (
-                <table className="table table-sm table-hover mb-0">
+                <table className="table table-sm table-hover align-middle mb-0">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -128,7 +95,7 @@ const TableList = ({
                                     {columns.map((field) => {
                                         const { name } = field || {};
                                         const value = it[name] ? it[name] : null;
-                                        console.log(it, field);
+                                        // console.log(it, field);
                                         // console.log('it', it);
                                         // const {
                                         //     index: indexComponent = 'text',
@@ -151,7 +118,7 @@ const TableList = ({
                                         );
                                     })}
                                     <td className="text-end col-auto">
-                                        <Actions
+                                        <FormActions
                                             resource={resource}
                                             item={it}
                                             urlGenerator={urlGenerator}

@@ -47,11 +47,6 @@ msgctxt "ZxgNge"
 msgid "Add an item"
 msgstr "Add an item"
 
-#: account
-msgctxt "account"
-msgid "Account"
-msgstr "Account"
-
 #: errors.description_401
 msgctxt "errors.description_401"
 msgid "You are not authorized to access this page."
@@ -96,21 +91,6 @@ msgstr "Error 404"
 msgctxt "errors.title_500"
 msgid "Error 500"
 msgstr "Error 500"
-
-#: form.cancel_button
-msgctxt "form.cancel_button"
-msgid "Cancel"
-msgstr "Cancel"
-
-#: form.confirm_delete
-msgctxt "form.confirm_delete"
-msgid "Are you sure you want to delete the item #{id}?"
-msgstr "Are you sure you want to delete the item #{id}?"
-
-#: form.delete_button
-msgctxt "form.delete_button"
-msgid "Delete"
-msgstr "Delete"
 
 #: form.email
 msgctxt "form.email"
@@ -164,13 +144,8 @@ msgstr "Submit"
 
 #: login
 msgctxt "login"
-msgid "Login"
+msgid "Log in"
 msgstr "Login"
-
-#: logout
-msgctxt "logout"
-msgid "Logout"
-msgstr "Logout"
 
 #: menus.pagination.next
 msgctxt "menus.pagination.next"
@@ -222,8 +197,3 @@ msgstr "Previous"
 msgctxt "s4Xrs9"
 msgid "Time"
 msgstr "Time"
-
-#: update_account
-msgctxt "update_account"
-msgid "Update account"
-msgstr "Update account"

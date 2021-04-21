@@ -4,23 +4,23 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 const propTypes = {
-    horizontal: PropTypes.bool,
+    wrap: PropTypes.bool,
     className: PropTypes.string,
-    children: PropTypes.string,
+    children: PropTypes.node,
 };
 
 const defaultProps = {
-    horizontal: false,
+    wrap: false,
     className: null,
     children: null,
 };
 
-const Column = ({ horizontal, className, children }) => {
-    return horizontal ? (
+const Column = ({ wrap, className, children }) => {
+    return wrap ? (
         <div
             className={classNames([
                 {
-                    'col-auto': horizontal,
+                    'col-auto': wrap,
                     [className]: className !== null,
                 },
             ])}

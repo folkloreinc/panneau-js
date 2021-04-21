@@ -18,24 +18,9 @@ export default {
 
     shows_in_navbar: true,
 
-    pages: {
-        index: {
-            component: 'resource-index',
-        },
-        create: {
-            component: 'resource-create',
-        },
-        edit: {
-            component: 'resource-edit',
-        },
-    },
+    pages: {},
 
-    forms: {
-        default: {
-            title: 'An event formulaire',
-            fields: null,
-        },
-    },
+    forms: {},
 
     components: {
         index: {

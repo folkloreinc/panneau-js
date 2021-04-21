@@ -50,28 +50,50 @@ export default {
                     label: 'Description',
                     component: 'html',
                 },
-            ],
-        },
-        create: null,
-        edit: {
-            title: 'Edit',
-            fields: [
-                {
-                    name: 'title',
-                    label: 'Titre',
-                    component: 'text',
-                },
-                {
-                    name: 'description',
-                    label: 'Description',
-                    component: 'html',
-                },
                 {
                     name: 'slug',
                     label: 'Slug',
                     component: 'url',
                 },
+                { name: 'blocks', label: 'Blocks', component: 'items' },
+                {
+                    name: 'color',
+                    label: 'Color',
+                    component: 'color',
+                },
+                {
+                    name: 'published',
+                    label: 'Published',
+                    component: 'toggle',
+                },
+                {
+                    name: 'publish_at',
+                    label: 'Publish at',
+                    component: 'date',
+                },
             ],
+        },
+        create: null,
+        edit: {
+            title: 'Edit',
+            component: 'normal',
+            // fields: [
+            //     {
+            //         name: 'title',
+            //         label: 'Titre',
+            //         component: 'text',
+            //     },
+            //     {
+            //         name: 'description',
+            //         label: 'Description',
+            //         component: 'html',
+            //     },
+            //     {
+            //         name: 'slug',
+            //         label: 'Slug',
+            //         component: 'url',
+            //     },
+            // ],
         },
     },
 

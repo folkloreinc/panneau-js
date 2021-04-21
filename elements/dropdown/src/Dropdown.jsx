@@ -50,10 +50,12 @@ const Dropdown = ({
         [onClickOutside],
     );
     useDocumentEvent('click', onDocumentClick, visible);
+
     return (
         <div
             className={classNames([
                 'dropdown-menu',
+                'relative',
                 {
                     [`dropdown-menu-${align}`]: align !== null,
                     show: visible,

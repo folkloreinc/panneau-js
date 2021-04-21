@@ -16,7 +16,13 @@ export default {
 
 const Container = () => (
     <ResourceProvider resource={pageResource}>
-        <Cards resource={pageResource} items={[{ id: '1', label: 'Paul', name: 'Paul' }]} />
+        <Cards
+            resource={pageResource}
+            items={[
+                { id: '1', label: 'Paul', name: 'Paul' },
+                { id: '2', label: 'John', name: 'John' },
+            ]}
+        />
     </ResourceProvider>
 );
 

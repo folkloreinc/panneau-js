@@ -11,18 +11,19 @@ export default {
         'auth.login': '/login',
         'auth.logout': '/logout',
 
-        //
+        // Base routes
         'resources.index': '/:resource',
-        'resources.create': '/:resource/created',
-        'resources.edit': '/:resource/:id/edit',
         'resources.show': '/:resource/:id',
+        'resources.create': '/:resource/create',
+        'resources.edit': '/:resource/:id/edit',
         'resources.delete': '/:resource/:id/delete',
 
-        // Api routes fix this
-        'resources.list': '/:resource',
-        'resources.store': '/:resource',
-        'resources.get': '/:resource/:id',
-        'resources.update': '/:resource/:id',
+        // Api routes to avoid confusion
+        'resources.api.list': '/:resource',
+        'resources.api.get': '/:resource/:id',
+        'resources.api.store': '/:resource',
+        'resources.api.update': '/:resource/:id',
+        'resources.api.destroy': '/:resource/:id',
 
         // custom: {
         //     path: '/custom',
@@ -70,6 +71,14 @@ export default {
                 id: 'form.confirm_delete',
                 defaultMessage: 'Are you sure you want to delete item #{id}?',
             },
+            show_button: {
+                id: 'form.show_button',
+                defaultMessage: 'Cancel',
+            },
+            edit_button: {
+                id: 'form.edit_button',
+                defaultMessage: 'Edit',
+            },
             cancel_button: {
                 id: 'form.cancel_button',
                 defaultMessage: 'Cancel',
@@ -77,6 +86,22 @@ export default {
             delete_button: {
                 id: 'form.delete_button',
                 defaultMessage: 'Delete',
+            },
+            login: {
+                id: 'auth.login',
+                defaultMessage: 'Login',
+            },
+            logout: {
+                id: 'auth.logout',
+                defaultMessage: 'Logout',
+            },
+            account: {
+                id: 'auth.account',
+                defaultMessage: 'Account',
+            },
+            updateAccount: {
+                id: 'auth.update_account',
+                defaultMessage: 'Update account',
             },
         },
     },

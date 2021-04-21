@@ -1,30 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { defineMessages } from 'react-intl';
 
-import { useUrlGenerator } from '@panneau/core/contexts';
+import { useUrlGenerator, usePanneauMessages } from '@panneau/core/contexts';
 import Menu from '@panneau/element-menu';
 
 import { useUser, useLogout } from '../../contexts/AuthContext';
-
-const messages = defineMessages({
-    login: {
-        id: 'login',
-        defaultMessage: 'Login',
-    },
-    logout: {
-        id: 'logout',
-        defaultMessage: 'Logout',
-    },
-    account: {
-        id: 'account',
-        defaultMessage: 'Account',
-    },
-    updateAccount: {
-        id: 'update_account',
-        defaultMessage: 'Update account',
-    },
-});
 
 const propTypes = {
     className: PropTypes.string,
@@ -39,6 +19,7 @@ const defaultProps = {
 };
 
 const AccountMenu = ({ className, itemClassName, linkClassName }) => {
+    const messages = usePanneauMessages();
     const route = useUrlGenerator();
     const user = useUser();
     const logout = useLogout();
@@ -78,15 +59,15 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                   ],
         [user, route, onClickLogout],
     );
-    return (
+    return items !== null ? (
         <Menu
             className={className}
             itemClassName={itemClassName}
             linkClassName={linkClassName}
             items={items}
-            dropdownAlign="right"
+            dropdownAlign="end"
         />
-    );
+    ) : null;
 };
 AccountMenu.propTypes = propTypes;
 AccountMenu.defaultProps = defaultProps;

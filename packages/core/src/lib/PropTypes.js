@@ -44,7 +44,7 @@ export const buttonSize = PropTypes.oneOf(['lg', 'sm', null]);
 
 export const buttonType = PropTypes.oneOf(['button', 'submit']);
 
-export const dropdownAlign = PropTypes.oneOf(['left', 'right']);
+export const dropdownAlign = PropTypes.oneOf(['start', 'end']);
 
 export const controlSize = PropTypes.oneOf(['lg', 'sm', null]);
 

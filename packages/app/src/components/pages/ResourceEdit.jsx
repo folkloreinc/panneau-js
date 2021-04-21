@@ -20,7 +20,6 @@ const defaultProps = {};
 
 const ResourceEditPage = ({ resource, itemId }) => {
     // console.log(itemId);
-    // const { id } = resource;
     // const resourceRoute = useResourceUrlGenerator(resource);
     const messages = usePanneauMessages();
     const { item } = useResourceItem(resource, itemId);

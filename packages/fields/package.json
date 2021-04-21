@@ -55,9 +55,22 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^0.8.0",
+        "@panneau/field-autocomplete": "^0.8.0",
+        "@panneau/field-checkboxes": "^0.8.0",
+        "@panneau/field-color": "^0.8.0",
+        "@panneau/field-date": "^0.8.0",
+        "@panneau/field-fields": "^0.8.0",
+        "@panneau/field-html": "^0.8.0",
+        "@panneau/field-input-group": "^0.8.0",
+        "@panneau/field-items": "^0.8.0",
+        "@panneau/field-number": "^0.8.0",
+        "@panneau/field-radios": "^0.8.0",
+        "@panneau/field-select": "^0.8.0",
         "@panneau/field-test": "^0.8.0",
         "@panneau/field-text": "^0.8.0",
-        "@panneau/field-fields": "^0.8.0",
+        "@panneau/field-toggle": "^0.8.0",
+        "@panneau/field-toggles": "^0.8.0",
+        "@panneau/field-url": "^0.8.0",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {

@@ -13,8 +13,7 @@ const propTypes = {
     components: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     fields: PanneauPropTypes.fields,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    row: PropTypes.bool,
-    // columns: PropTypes.arrayOf(PropTypes.string),
+    horizontal: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
@@ -23,8 +22,7 @@ const defaultProps = {
     components: null,
     fields: [],
     value: null,
-    row: false,
-    // columns: false,
+    horizontal: false,
     className: null,
     onChange: null,
 };
@@ -33,8 +31,7 @@ const Fields = ({
     components: parentComponents,
     fields,
     value,
-    row,
-    // columns,
+    horizontal: fieldsHorizontal,
     onChange,
     className,
 }) => {
@@ -65,6 +62,7 @@ const Fields = ({
             component = null,
             name = null,
             horizontal = false,
+            inline = false,
             without_form_group: withoutFormGroup = false,
             sibling_fields: siblingFields = [],
             classname = null,
@@ -72,8 +70,6 @@ const Fields = ({
             label_classname: labelClassName = null,
             check: fieldCheck = false,
         } = field || {};
-
-        // console.log(field);
 
         const FieldComponent = getComponentFromName(component, components, component);
 
@@ -92,7 +88,6 @@ const Fields = ({
                     className={classNames([classname])}
                 />
             ) : null;
-        const column = row === true;
         const check = fieldCheck;
 
         return (
@@ -102,7 +97,7 @@ const Fields = ({
                         key={`field-${name || index}`}
                         {...field}
                         horizontal={horizontal}
-                        column={column}
+                        inline={inline}
                         check={check}
                         className={classNames([groupClassName])}
                         labelClassName={classNames([labelClassName])}
@@ -127,7 +122,7 @@ const Fields = ({
                 },
             ])}
         >
-            {row ? <FormRow>{content}</FormRow> : content}
+            {fieldsHorizontal ? <FormRow>{content}</FormRow> : content}
         </div>
     );
 };

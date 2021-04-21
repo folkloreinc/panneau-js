@@ -12,7 +12,7 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Buttons from '@panneau/element-buttons';
 import Label from '@panneau/element-label';
 
-const messages = defineMessages({
+const defaultMessages = defineMessages({
     edit: {
         id: 'forms.edit_button',
         defaultMessage: 'Edit',
@@ -25,23 +25,35 @@ const messages = defineMessages({
 
 const propTypes = {
     size: PanneauPropTypes.buttonSize,
-    resource: PanneauPropTypes.item.isRequired,
     item: PanneauPropTypes.item.isRequired,
-    className: PropTypes.string,
     iconsOnly: PropTypes.bool,
+    onClickEdit: PropTypes.func,
     onClickDelete: PropTypes.func,
     urlGenerator: PropTypes.func,
+    messages: PanneauPropTypes.messages,
+    className: PropTypes.string,
 };
 
 const defaultProps = {
     size: 'sm',
-    className: null,
     iconsOnly: true,
+    onClickEdit: null,
     onClickDelete: null,
     urlGenerator: null,
+    messages: defaultMessages,
+    className: null,
 };
 
-const Actions = ({ size, item, className, iconsOnly, onClickDelete, urlGenerator }) => {
+const FormActions = ({
+    size,
+    item,
+    iconsOnly,
+    onClickEdit,
+    onClickDelete,
+    urlGenerator,
+    messages,
+    className,
+}) => {
     const { id } = item || {};
 
     return (
@@ -77,6 +89,7 @@ const Actions = ({ size, item, className, iconsOnly, onClickDelete, urlGenerator
                               })
                             : null,
                     theme: 'primary',
+                    onClick: onClickEdit,
                 },
                 {
                     id: 'delete',
@@ -101,7 +114,7 @@ const Actions = ({ size, item, className, iconsOnly, onClickDelete, urlGenerator
     );
 };
 
-Actions.propTypes = propTypes;
-Actions.defaultProps = defaultProps;
+FormActions.propTypes = propTypes;
+FormActions.defaultProps = defaultProps;
 
-export default Actions;
+export default FormActions;

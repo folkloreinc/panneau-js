@@ -98,7 +98,9 @@ const TextField = ({
                   onChange !== null ? onChange(!isEmpty(newValue) ? newValue : null) : null,
     };
 
-    const inputElement = type !== 'textarea' ? <input {...elProps} /> : <textarea {...elProps} />;
+    const { horizontal, ...cleanProps } = elProps;
+    const inputElement =
+        type !== 'textarea' ? <input {...cleanProps} /> : <textarea {...cleanProps} />;
     const withInputGroup = prepend !== null || append !== null;
 
     return (

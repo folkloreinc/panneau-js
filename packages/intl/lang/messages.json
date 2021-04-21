@@ -23,9 +23,6 @@
     "defaultMessage": "Add an item",
     "description": "Button label in items field"
   },
-  "account": {
-    "defaultMessage": "Account"
-  },
   "errors.description_401": {
     "defaultMessage": "You are not authorized to access this page."
   },
@@ -52,15 +49,6 @@
   },
   "errors.title_500": {
     "defaultMessage": "Error 500"
-  },
-  "form.cancel_button": {
-    "defaultMessage": "Cancel"
-  },
-  "form.confirm_delete": {
-    "defaultMessage": "Are you sure you want to delete the item #{id}?"
-  },
-  "form.delete_button": {
-    "defaultMessage": "Delete"
   },
   "form.email": {
     "defaultMessage": "Email"
@@ -93,10 +81,7 @@
     "defaultMessage": "Submit"
   },
   "login": {
-    "defaultMessage": "Login"
-  },
-  "logout": {
-    "defaultMessage": "Logout"
+    "defaultMessage": "Log in"
   },
   "menus.pagination.next": {
     "defaultMessage": "next"
@@ -128,8 +113,5 @@
   "s4Xrs9": {
     "defaultMessage": "Time",
     "description": "DateTimeField time caption"
-  },
-  "update_account": {
-    "defaultMessage": "Update account"
   }
 }

@@ -22,7 +22,7 @@ export const useFieldDefinitions = () => {
 };
 
 const propTypes = {
-    fields: PanneauPropTypes.fieldDefinitions,
+    fields: PanneauPropTypes.fields,
     manager: PropTypes.instanceOf(FieldsManager),
     children: PropTypes.node.isRequired,
 };

@@ -127,7 +127,7 @@ const Menu = ({
                                   [customLinkClassName]: customLinkClassName !== null,
                               })}
                           >
-                              {label}
+                              <Label {...itemProps}>{label}</Label>
                           </Link>
                       ) : (
                           <ItemComponent

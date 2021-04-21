@@ -9,38 +9,7 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Pagination from '@panneau/element-pagination';
 import Card from '@panneau/element-card';
 import Loading from '@panneau/element-loading';
-
-// import Actions from './Actions';
-
-// import ResourceItemActions from '../buttons/ResourceItemActions';
-// import * as FieldIndexComponents from '../index/index';
-
-// const resourcesMessages = defineMessages({
-//     create: {
-//         id: 'resources.create',
-//         defaultMessage: 'Create {a_singular}',
-//     },
-//     edit: {
-//         id: 'resources.edit',
-//         defaultMessage: 'Edit {a_singular}',
-//     },
-//     delete: {
-//         id: 'resources.delete',
-//         defaultMessage: 'Delete {a_singular}',
-//     },
-//     created: {
-//         id: 'resources.created',
-//         defaultMessage: '{The_singular} has been created.',
-//     },
-//     deleted: {
-//         id: 'resources.deleted',
-//         defaultMessage: '{The_singular} has been deleted.',
-//     },
-//     loading: {
-//         id: 'resources.loading',
-//         defaultMessage: 'Loading {plural}...',
-//     },
-// });
+import FormActions from '@panneau/element-form-actions';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -81,9 +50,9 @@ const TableList = ({
 }) => {
     const { page: queryPage, ...queryWithoutPage } = query || {};
     const hasQuery = Object.keys(queryWithoutPage).length > 0;
-    const { index_is_paginated: paginated = false, fields } = resource;
+    const { index_is_paginated: paginated = false } = resource;
 
-    const columns = fields.filter(({ hidden_in_index: hiddenInIndex = false }) => !hiddenInIndex);
+    // const columns = fields.filter(({ hidden_in_index: hiddenInIndex = false }) => !hiddenInIndex);
 
     const currentUrl = `${baseUrl}${
         hasQuery
@@ -94,19 +63,23 @@ const TableList = ({
     }`;
 
     return (
-        <div className="">
-            {items !== null ? (
-                <div className="p-2">
-                    {items.map((it) => {
-                        const { id = null } = it || {};
-                        return (
-                            <div key={`card-${id}`}>
-                                <Card title={id} />
-                            </div>
-                        );
-                    })}
-                </div>
-            ) : null}
+        <div className="d-flex flex-wrap">
+            {items !== null
+                ? items.map((it) => {
+                      const { id = null } = it || {};
+                      return (
+                          <div className="w-50 p-2" key={`card-${id}`}>
+                              <Card header={id}>
+                                  <FormActions
+                                      resource={resource}
+                                      item={it}
+                                      urlGenerator={urlGenerator}
+                                  />
+                              </Card>
+                          </div>
+                      );
+                  })
+                : null}
             {loading ? <Loading /> : null}
             {paginated && lastPage > 1 ? (
                 <Pagination

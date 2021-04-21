@@ -104,7 +104,7 @@ const Form = ({
                                 )
                             }
                             className={classNames({
-                                'ml-auto': actions === null,
+                                'ms-auto': actions === null,
                             })}
                         />
                     )}

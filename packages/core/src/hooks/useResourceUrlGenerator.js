@@ -19,6 +19,7 @@ const useResourceUrlGenerator = (resourceId = null) => {
         const routePrefix = hasRoutes ? `resources.${id}` : 'resources';
         // console.log(
         //     'routePrefix',
+        //     id,
         //     routePrefix,
         //     finalRouteName,
         //     finalParams,

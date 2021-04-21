@@ -17,7 +17,7 @@ const propTypes = {
     children: PropTypes.node,
     horizontal: PropTypes.bool,
     floating: PropTypes.bool,
-    column: PropTypes.bool,
+    inline: PropTypes.bool,
     withoutLabel: PropTypes.bool,
     withoutErrors: PropTypes.bool,
     labelAfter: PropTypes.bool,
@@ -33,7 +33,7 @@ const defaultProps = {
     children: null,
     horizontal: false,
     floating: false,
-    column: false,
+    inline: false,
     withoutLabel: false,
     withoutErrors: false,
     labelAfter: false,
@@ -49,22 +49,24 @@ const FormGroup = ({
     errors,
     horizontal,
     floating,
-    column,
+    inline,
     withoutLabel,
     withoutErrors,
     labelAfter,
     className,
     labelClassName,
 }) => {
+    const vertical = horizontal || inline;
+
     const labelElement = (
         <label
             htmlFor={name}
             className={classNames([
                 styles.label,
                 {
-                    'form-label': !column,
-                    'col-form-label': column,
-                    'col-sm-2': horizontal,
+                    'form-label': !inline,
+                    'col-form-label': inline || horizontal,
+                    'col-sm-4': horizontal,
                     'px-2': horizontal,
                     'text-nowrap': horizontal,
                     [labelClassName]: labelClassName !== null,
@@ -93,6 +95,18 @@ const FormGroup = ({
             </div>
         ) : null;
 
+    const finalElements = horizontal ? (
+        <div>
+            <Column wrap={horizontal}>{helpElement}</Column>
+            <Column wrap={horizontal}>{errorsElement}</Column>
+        </div>
+    ) : (
+        <>
+            <Column wrap={horizontal}>{helpElement}</Column>
+            <Column wrap={horizontal}>{errorsElement}</Column>
+        </>
+    );
+
     return (
         <div
             className={classNames([
@@ -107,22 +121,23 @@ const FormGroup = ({
             <div
                 className={classNames([
                     {
-                        row: horizontal,
-                        'g-3': horizontal,
-                        'align-items-center': horizontal,
+                        row: vertical,
+                        'g-3': vertical,
+                        'align-items-center': vertical,
                         'form-floating': floating,
                     },
                 ])}
             >
-                <Column horizontal={horizontal}>
+                <Column wrap={vertical} className={classNames({ 'col-sm-3': horizontal })}>
                     {!withoutLabel && !labelAfter && label !== null ? labelElement : null}
                 </Column>
-                <Column horizontal={horizontal}>{children}</Column>
-                <Column horizontal={horizontal}>
+                <Column wrap={vertical} className={classNames({ 'col-sm-9': horizontal })}>
+                    {children}
+                </Column>
+                <Column wrap={vertical} className={classNames({ 'col-sm-3': horizontal })}>
                     {!withoutLabel && labelAfter && label !== null ? labelElement : null}
                 </Column>
-                <Column horizontal={horizontal}>{helpElement}</Column>
-                <Column horizontal={horizontal}>{errorsElement}</Column>
+                {finalElements}
             </div>
         </div>
     );
