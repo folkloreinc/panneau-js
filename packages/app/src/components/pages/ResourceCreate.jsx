@@ -3,15 +3,13 @@ import { useHistory } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
-import { ResourceProvider } from '@panneau/core/contexts';
+import { ResourceProvider, usePanneauMessages } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
 // import Button from '../buttons/Button';
 import ResourceLabel from '../partials/ResourceLabel';
 import ResourceForm from '../partials/ResourceForm';
-
-import resourcesMessages from '../resourcesMessages';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -20,6 +18,7 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceCreatePage = ({ resource }) => {
+    const messages = usePanneauMessages();
     const history = useHistory();
     const resourceRoute = useResourceUrlGenerator(resource);
     const onSuccess = useCallback(() => {
@@ -29,17 +28,17 @@ const ResourceCreatePage = ({ resource }) => {
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
-                    title={
-                        <ResourceLabel resource={resource}>
-                            {resourcesMessages.create}
-                        </ResourceLabel>
-                    }
+                    title={<ResourceLabel resource={resource}>{messages?.create}</ResourceLabel>}
                     small
                 />
                 <div className="container-sm py-4">
                     <div className="row justify-content-center">
                         <div className="col-12 col-md-8 col-lg-7">
-                            <ResourceForm resource={resource} onSuccess={onSuccess} />
+                            <ResourceForm
+                                resource={resource}
+                                messages={messages}
+                                onSuccess={onSuccess}
+                            />
                         </div>
                     </div>
                 </div>

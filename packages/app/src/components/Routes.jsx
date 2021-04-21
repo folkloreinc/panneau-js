@@ -44,11 +44,6 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     //     return query !== null ? query.next || null : null;
     // }, [search]);
 
-    // TODO: set home page from a prop
-    // const pageResource = resources.find((it) => it.id === 'pages') || null;
-    // const pagesRoute = pageResource ? route('resources.index', { resource: 'pages' }) : '/';
-    const homeUrl = route('home');
-
     useEffect(() => {
         if (pathname !== initialPathname) {
             setInitialRequest({

@@ -5,9 +5,14 @@ export default {
     has_routes: false,
     shows_in_navbar: true,
 
-    messages: {
-        a_singular: 'page',
-        a_plural: 'pages',
+    localization: {
+        messages: {},
+        values: {
+            a_singular: 'page',
+            a_plural: 'pages',
+            the_singular: 'The page',
+            the_plural: 'The pages',
+        },
     },
 
     fields: [{ name: 'title', label: 'Titre', component: 'text' }],

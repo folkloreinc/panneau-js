@@ -110,9 +110,6 @@
     "meta.title_500": {
         "defaultMessage": "Error 500"
     },
-    "pages.login.title": {
-        "defaultMessage": "Login"
-    },
     "pagination.items_count": {
         "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
     },
@@ -121,24 +118,6 @@
     },
     "pagination.previous": {
         "defaultMessage": "Previous"
-    },
-    "resources.create": {
-        "defaultMessage": "Create {a_singular}"
-    },
-    "resources.created": {
-        "defaultMessage": "{The_singular} has been created."
-    },
-    "resources.delete": {
-        "defaultMessage": "Delete {a_singular}"
-    },
-    "resources.deleted": {
-        "defaultMessage": "{The_singular} has been deleted."
-    },
-    "resources.edit": {
-        "defaultMessage": "Edit {a_singular}"
-    },
-    "resources.loading": {
-        "defaultMessage": "Loading {plural}..."
     },
     "s4Xrs9": {
         "defaultMessage": "Time"

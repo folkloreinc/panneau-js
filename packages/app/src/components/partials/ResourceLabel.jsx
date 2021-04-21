@@ -16,12 +16,14 @@ const defaultProps = {
 };
 
 const ResourceLabel = ({ resource, values, children }) => {
-    const { label, messages = {} } = resource;
+    const { label = null, localization = null } = resource;
+    const { values: resourceValues } = localization || {};
+
     return (
         <Label
             values={{
                 label,
-                ...messages,
+                ...resourceValues,
                 ...values,
             }}
         >

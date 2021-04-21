@@ -2,10 +2,11 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import Navbar from '@panneau/element-navbar';
-import { usePanneau, useUrlGenerator } from '@panneau/core/contexts';
-import { useUser } from '../../contexts/AuthContext';
 
+import { usePanneau, useUrlGenerator } from '@panneau/core/contexts';
+import Navbar from '@panneau/element-navbar';
+
+import { useUser } from '../../contexts/AuthContext';
 import ResourcesMenu from './Resources';
 import AccountMenu from './Account';
 
@@ -14,14 +15,14 @@ const propTypes = {};
 const defaultProps = {};
 
 const MainNavbar = (props) => {
-    const { name } = usePanneau();
+    const { label } = usePanneau();
     const route = useUrlGenerator();
     const user = useUser();
     return (
         <Navbar {...props}>
-            {name !== null ? (
+            {label !== null ? (
                 <Link to={route('home')} className="navbar-brand">
-                    {name}
+                    {label}
                 </Link>
             ) : null}
             {user !== null ? (

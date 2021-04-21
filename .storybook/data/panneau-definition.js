@@ -2,8 +2,8 @@ import pageResource from './page-resource';
 import eventResource from './event-resource';
 
 export default {
-    name: 'Panneau',
     type: 'panneau',
+    label: 'Panneau',
 
     routes: {
         home: '/',
@@ -31,6 +31,55 @@ export default {
     },
 
     resources: [pageResource, eventResource],
+
+    localization: {
+        messages: {
+            index: {
+                id: 'resources.index',
+                defaultMessage: 'View {a_plural}',
+            },
+            create: {
+                id: 'resources.create',
+                defaultMessage: 'Create {a_singular}',
+            },
+            edit: {
+                id: 'resources.edit',
+                defaultMessage: 'Edit {a_singular}',
+            },
+            delete: {
+                id: 'resources.delete',
+                defaultMessage: 'Delete {a_singular}',
+            },
+            created: {
+                id: 'resources.created',
+                defaultMessage: '{the_singular} has been created.',
+            },
+            deleted: {
+                id: 'resources.deleted',
+                defaultMessage: '{the_singular} has been deleted.',
+            },
+            loading: {
+                id: 'resources.loading',
+                defaultMessage: 'Loading {plural}...',
+            },
+            login_title: {
+                id: 'auth.login.title',
+                defaultMessage: 'Login',
+            },
+            confirm_delete: {
+                id: 'form.confirm_delete',
+                defaultMessage: 'Are you sure you want to delete item #{id}?',
+            },
+            cancel_button: {
+                id: 'form.cancel_button',
+                defaultMessage: 'Cancel',
+            },
+            delete_button: {
+                id: 'form.delete_button',
+                defaultMessage: 'Delete',
+            },
+        },
+    },
 
     pages: {
         home: {

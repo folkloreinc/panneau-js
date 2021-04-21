@@ -1,11 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { usePanneau, useUrlGenerator } from '@panneau/core/contexts';
+import { usePanneauResources, usePanneauMessages, useUrlGenerator } from '@panneau/core/contexts';
 
 import ResourceLabel from '../partials/ResourceLabel';
 import MainLayout from '../layouts/Main';
-
-import messages from '../resourcesMessages';
 
 const propTypes = {};
 
@@ -13,7 +11,8 @@ const defaultProps = {};
 
 const HomePage = () => {
     const route = useUrlGenerator();
-    const { resources = [] } = usePanneau();
+    const resources = usePanneauResources();
+    const messages = usePanneauMessages();
 
     return (
         <MainLayout>
@@ -32,7 +31,7 @@ const HomePage = () => {
                                 resource: resourceId,
                             })}
                         >
-                            <ResourceLabel resource={resource}>{messages.index}</ResourceLabel>
+                            <ResourceLabel resource={resource}>{messages?.index}</ResourceLabel>
                         </Link>
                     );
                 })}

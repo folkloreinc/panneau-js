@@ -7,7 +7,7 @@ import classNames from 'classnames';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
-import { ResourceProvider } from '@panneau/core/contexts';
+import { ResourceProvider, usePanneauMessages } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 
 import Button from '@panneau/element-button';
@@ -18,8 +18,6 @@ import PageHeader from '../partials/PageHeader';
 import ResourceLabel from '../partials/ResourceLabel';
 
 import ResourceItemsList from '../lists/ResourceItems';
-
-import resourcesMessages from '../resourcesMessages';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -42,6 +40,7 @@ const ResourceIndexPage = ({ resource }) => {
     const listQuery = useMemo(() => query, [query]); // TODO: omit routes
     const { created = false, deleted = false } = query || {};
 
+    const messages = usePanneauMessages();
     const resourceRoute = useResourceUrlGenerator(resource);
     const url = resourceRoute('index');
     const onQueryChange = useCallback(
@@ -67,7 +66,7 @@ const ResourceIndexPage = ({ resource }) => {
                         canCreate ? (
                             <Button href={resourceRoute('create')} size="lg" theme="primary">
                                 <ResourceLabel resource={resource}>
-                                    {resourcesMessages.create}
+                                    {messages?.create}
                                 </ResourceLabel>
                             </Button>
                         ) : null
@@ -76,20 +75,17 @@ const ResourceIndexPage = ({ resource }) => {
                 <div className={classNames(['container-sm py-4'])}>
                     {created ? (
                         <Alert className="mb-4" onClose={onClickCloseAlert}>
-                            <ResourceLabel resource={resource}>
-                                {resourcesMessages.created}
-                            </ResourceLabel>
+                            <ResourceLabel resource={resource}>{messages?.created}</ResourceLabel>
                         </Alert>
                     ) : null}
                     {deleted ? (
                         <Alert className="mb-4" onClose={onClickCloseAlert}>
-                            <ResourceLabel resource={resource}>
-                                {resourcesMessages.deleted}
-                            </ResourceLabel>
+                            <ResourceLabel resource={resource}>{messages?.deleted}</ResourceLabel>
                         </Alert>
                     ) : null}
                     <ResourceItemsList
                         resource={resource}
+                        messages={messages}
                         baseUrl={url}
                         query={listQuery}
                         paginated={paginated}

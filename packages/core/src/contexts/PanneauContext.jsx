@@ -18,6 +18,12 @@ export const usePanneauResource = (id) => {
     return resources.find((it) => it.id === id) || null;
 };
 
+export const usePanneauMessages = () => {
+    const { localization = {} } = usePanneau();
+    const { messages = {} } = localization || {};
+    return messages || {};
+};
+
 const propTypes = {
     definition: PanneauPropTypes.panneauDefinition.isRequired,
     children: PropTypes.node.isRequired,

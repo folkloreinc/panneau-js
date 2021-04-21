@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 // import * as AppPropTypes from '../../../lib/PropTypes';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -48,6 +48,21 @@ const Actions = ({ size, item, className, iconsOnly, onClickDelete, urlGenerator
         <Buttons
             size={size}
             items={[
+                {
+                    id: 'edit',
+                    label: iconsOnly ? (
+                        <FontAwesomeIcon icon={faEye} />
+                    ) : (
+                        <Label {...messages.show} />
+                    ),
+                    href:
+                        urlGenerator !== null
+                            ? urlGenerator('show', {
+                                  id,
+                              })
+                            : null,
+                    theme: 'info',
+                },
                 {
                     id: 'edit',
                     label: iconsOnly ? (

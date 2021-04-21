@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
-import { ResourceProvider } from '@panneau/core/contexts';
+import { ResourceProvider, usePanneauMessages } from '@panneau/core/contexts';
 import { useResourceItem } from '@panneau/data';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 
@@ -12,9 +12,7 @@ import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
 // import Button from '../buttons/Button';
 import ResourceLabel from '../partials/ResourceLabel';
-// import ResourceDeleteForm from '../forms/ResourceDelete';
-
-import resourcesMessages from '../resourcesMessages';
+import ResourceForm from '../partials/ResourceForm';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -24,41 +22,42 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceDeletePage = ({ resource, itemId }) => {
-    // const { id } = resource;
     const history = useHistory();
+    const messages = usePanneauMessages();
     const resourceRoute = useResourceUrlGenerator(resource);
     const { item } = useResourceItem(resource, itemId);
-    const [editItem, setEditItem] = useState(item);
-    // eslint-disable-next-line no-unused-vars
+
     const onSuccess = useCallback(() => history.push(`${resourceRoute('index')}?deleted=true`), [
         history,
         resourceRoute,
     ]);
-    useEffect(() => {
-        setEditItem(item);
-    }, [item, setEditItem]);
+
+    // Navigate back
+    const { entries, length } = history || [];
+    const previousEntry = length > 1 ? entries[length - 2] : null;
+    const previous = previousEntry?.pathname || null;
+
     return (
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
-                    title={
-                        <ResourceLabel resource={resource}>
-                            {resourcesMessages.delete}
-                        </ResourceLabel>
-                    }
+                    title={<ResourceLabel resource={resource}>{messages?.delete}</ResourceLabel>}
                     small
                 />
                 <div className="container-sm py-4">
                     <div className="row justify-content-center">
                         <div className="col-12 col-md-8 col-lg-7">
-                            {editItem !== null
-                                ? // <ResourceDeleteForm
-                                  //     resource={resource}
-                                  //     item={editItem}
-                                  //     onSuccess={onSuccess}
-                                  // />
-                                  'Delete form'
-                                : null}
+                            {item !== null ? (
+                                <ResourceForm
+                                    component="delete"
+                                    resource={resource}
+                                    messages={messages}
+                                    item={item}
+                                    onSuccess={onSuccess}
+                                    previous={previous}
+                                    isDelete
+                                />
+                            ) : null}
                         </div>
                     </div>
                 </div>

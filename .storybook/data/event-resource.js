@@ -1,11 +1,12 @@
 export default {
     id: 'events',
-
     label: 'Event',
 
-    messages: {
-        a_singular: 'event',
-        a_plural: 'events',
+    localization: {
+        values: {
+            a_singular: 'event',
+            a_plural: 'events',
+        },
     },
 
     fields: [

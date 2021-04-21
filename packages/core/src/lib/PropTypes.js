@@ -78,6 +78,7 @@ export const routes = PropTypes.shape({
 export const localization = PropTypes.shape({
     locale: PropTypes.string,
     messages: PropTypes.objectOf(PropTypes.string),
+    values: PropTypes.objectOf(PropTypes.string),
 });
 
 export const page = PropTypes.shape({
@@ -103,6 +104,7 @@ export const forms = PropTypes.arrayOf(form);
 export const resource = PropTypes.shape({
     id: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
+    localization,
     fields,
     forms: PropTypes.shape({}),
     has_routes: PropTypes.bool,
@@ -115,6 +117,7 @@ export const panneauDefinition = PropTypes.shape({
     resources,
     routes,
     pages,
+    localization,
     // localization,
 });
 

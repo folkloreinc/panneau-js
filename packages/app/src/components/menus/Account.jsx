@@ -2,9 +2,9 @@ import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
 
+import { useUrlGenerator } from '@panneau/core/contexts';
 import Menu from '@panneau/element-menu';
 
-import { useUrlGenerator } from '@panneau/core/contexts';
 import { useUser, useLogout } from '../../contexts/AuthContext';
 
 const messages = defineMessages({

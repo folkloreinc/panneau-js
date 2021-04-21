@@ -202,11 +202,6 @@ msgctxt "meta.title_500"
 msgid "Error 500"
 msgstr ""
 
-#: pages.login.title
-msgctxt "pages.login.title"
-msgid "Login"
-msgstr ""
-
 #: pagination.items_count
 msgctxt "pagination.items_count"
 msgid "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
@@ -220,36 +215,6 @@ msgstr ""
 #: pagination.previous
 msgctxt "pagination.previous"
 msgid "Previous"
-msgstr ""
-
-#: resources.create
-msgctxt "resources.create"
-msgid "Create {a_singular}"
-msgstr ""
-
-#: resources.created
-msgctxt "resources.created"
-msgid "{The_singular} has been created."
-msgstr ""
-
-#: resources.delete
-msgctxt "resources.delete"
-msgid "Delete {a_singular}"
-msgstr ""
-
-#: resources.deleted
-msgctxt "resources.deleted"
-msgid "{The_singular} has been deleted."
-msgstr ""
-
-#: resources.edit
-msgctxt "resources.edit"
-msgid "Edit {a_singular}"
-msgstr ""
-
-#: resources.loading
-msgctxt "resources.loading"
-msgid "Loading {plural}..."
 msgstr ""
 
 # DateTimeField time caption

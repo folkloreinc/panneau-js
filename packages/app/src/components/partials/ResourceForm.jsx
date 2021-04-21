@@ -14,17 +14,21 @@ import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
 const propTypes = {
     component: PropTypes.string,
     resource: PanneauPropTypes.resource.isRequired,
+    messages: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     item: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onSuccess: PropTypes.func,
+    isDelete: PropTypes.bool,
 };
 
 const defaultProps = {
     component: null,
     item: null,
+    messages: null,
     onSuccess: null,
+    isDelete: false,
 };
 
-const ResourceForm = ({ component, resource, onSuccess, item, ...props }) => {
+const ResourceForm = ({ component, resource, messages, onSuccess, item, isDelete, ...props }) => {
     const FormComponents = useFormsComponents();
     const { fields: defaultFields, forms = {} } = resource || {};
     const isCreate = item === null || !item.id;
@@ -45,8 +49,8 @@ const ResourceForm = ({ component, resource, onSuccess, item, ...props }) => {
     ]);
 
     // Form state
-    const initialValue =
-        item !== null
+    const getInitialValue = useCallback(() => {
+        return item !== null
             ? item
             : resourceFields.reduce(
                   (defaultValues, { name, default_value: defaultValue = null }) =>
@@ -58,7 +62,8 @@ const ResourceForm = ({ component, resource, onSuccess, item, ...props }) => {
                           : defaultValues,
                   null,
               );
-    const [value, setValue] = useState(initialValue);
+    }, [item, resourceFields]);
+    const [value, setValue] = useState(getInitialValue());
     const { fields, onSubmit, status, generalError, errors } = useForm({
         fields: resourceFields,
         value,
@@ -67,20 +72,26 @@ const ResourceForm = ({ component, resource, onSuccess, item, ...props }) => {
         onComplete: onSuccess,
     });
 
-    const action = isCreate
+    // Form action
+    const modifyAction = isCreate
         ? resourceRoute('store')
         : resourceRoute('update', {
               id: item.id,
           });
 
-    useEffect(() => {
-        if (item !== null) {
-            setValue(item);
-        }
-    }, [item, setValue]);
+    const action = isDelete
+        ? resourceRoute('delete', {
+              id: item.id,
+          })
+        : modifyAction;
 
     // Form component
-    const FormComponent = getComponentFromName(component || 'normal', FormComponents, null);
+    const FormComponent = getComponentFromName(component || 'normal', FormComponents, component);
+
+    // Lisen to item value change
+    useEffect(() => {
+        setValue(getInitialValue());
+    }, [getInitialValue, setValue]);
 
     return (
         <FormProvider value={value} setValue={setValue}>
@@ -96,6 +107,7 @@ const ResourceForm = ({ component, resource, onSuccess, item, ...props }) => {
                 onSubmit={onSubmit}
                 isCreate={isCreate}
                 value={value}
+                messages={messages}
                 onChange={setValue}
             />
         </FormProvider>
