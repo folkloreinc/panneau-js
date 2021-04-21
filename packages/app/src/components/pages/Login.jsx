@@ -9,14 +9,14 @@ const propTypes = {};
 
 const defaultProps = {};
 
-const AuthLoginPage = () => {
+const LoginPage = () => {
     const route = useUrlGenerator();
     const onSuccess = useCallback(() => {
         window.location.href = route('home');
     }, [route]);
     return (
         <GuestLayout fullscreen>
-            <div className="container-sm">
+            <div className="container-sm py-4">
                 <div className="row justify-content-center">
                     <div className="col-12 col-sm-8 col-md-6">
                         <h1 className="mb-4">
@@ -29,7 +29,7 @@ const AuthLoginPage = () => {
         </GuestLayout>
     );
 };
-AuthLoginPage.propTypes = propTypes;
-AuthLoginPage.defaultProps = defaultProps;
+LoginPage.propTypes = propTypes;
+LoginPage.defaultProps = defaultProps;
 
-export default AuthLoginPage;
+export default LoginPage;

@@ -4,7 +4,8 @@ import { useLocation } from 'react-router';
 
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { usePanneauResources } from '@panneau/core/contexts';
-import Menu from './Menu';
+
+import Menu from '@panneau/element-menu';
 
 const propTypes = {
     className: PropTypes.string,

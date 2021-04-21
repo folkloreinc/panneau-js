@@ -11,7 +11,7 @@ const defaultProps = {};
 const AccountPage = () => {
     return (
         <MainLayout>
-            <div className="container-sm">Account</div>
+            <div className="container-sm py-4">Account page</div>
         </MainLayout>
     );
 };

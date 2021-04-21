@@ -2,10 +2,10 @@ import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { defineMessages } from 'react-intl';
 
+import Menu from '@panneau/element-menu';
+
 import { useUrlGenerator } from '@panneau/core/contexts';
 import { useUser, useLogout } from '../../contexts/AuthContext';
-
-import Menu from './Menu';
 
 const messages = defineMessages({
     login: {
@@ -56,15 +56,15 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                       {
                           id: 'account',
                           label: messages.account,
-                          href: route('account'),
+                          href: route('auth.account'),
                           dropdown: [
                               {
                                   label: messages.updateAccount,
-                                  href: route('account'),
+                                  href: route('auth.account'),
                               },
                               {
                                   label: messages.logout,
-                                  href: route('logout'),
+                                  href: route('auth.logout'),
                                   onClick: onClickLogout,
                               },
                           ],
@@ -73,7 +73,7 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                 : [
                       {
                           label: messages.login,
-                          href: route('login'),
+                          href: route('auth.login'),
                       },
                   ],
         [user, route, onClickLogout],

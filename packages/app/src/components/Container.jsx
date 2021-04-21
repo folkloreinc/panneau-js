@@ -38,10 +38,10 @@ const Container = ({ definition, user, memoryRouter, statusCode }) => {
 
     const Router = memoryRouter ? MemoryRouter : BrowserRouter;
 
-    // Auto load page: initialEntries={['/pages']} initialIndex={0}
+    // For storybook: auto load page with: initialEntries={['/pages']} initialIndex={0}
 
     return (
-        <Router initialEntries={['/pages/1/edit']} initialIndex={0}>
+        <Router>
             <PanneauProvider definition={definition}>
                 <IntlProvider locale={locale} messages={translations[locale] || translations}>
                     <RoutesProvider routes={routes}>

@@ -1,6 +1,10 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
+    index: {
+        id: 'resources.index',
+        defaultMessage: 'View {a_plural}',
+    },
     create: {
         id: 'resources.create',
         defaultMessage: 'Create {a_singular}',

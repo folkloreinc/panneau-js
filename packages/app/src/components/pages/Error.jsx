@@ -31,6 +31,7 @@ export const messages = defineMessages({
         id: 'errors.description_403',
         defaultMessage: 'Access to this page is forbidden',
     },
+
     metaTitle404: {
         id: 'meta.title_404',
         defaultMessage: 'Error 404',
@@ -73,7 +74,7 @@ const defaultProps = {
 
 const ErrorPage = ({ statusCode }) => (
     <GuestLayout fullscreen>
-        <div className="container-sm">
+        <div className="container-sm py-4">
             <div className="row justify-content-center">
                 <div className="col-12 col-sm-8 col-md-6">
                     <h1>

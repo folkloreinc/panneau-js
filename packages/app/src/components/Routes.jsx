@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Switch, Route, Redirect, useLocation } from 'react-router';
 // import { parse as parseQuery } from 'query-string';
-import { useRoutes, useUrlGenerator, usePanneauResources } from '@panneau/core/contexts';
+import {
+    useRoutes,
+    useUrlGenerator,
+    usePanneau,
+    usePanneauResources,
+} from '@panneau/core/contexts';
+import { getComponentFromName } from '@panneau/core/utils';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import { useUser } from '../contexts/AuthContext';
 
-import AuthLogin from './pages/AuthLogin';
-import Home from './pages/Home';
-import Error from './pages/Error';
+import * as basePages from './pages';
 
 import ResourceRoutes from './ResourceRoutes';
 
@@ -22,6 +26,7 @@ const defaultProps = {
 };
 
 const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
+    const { pages = {} } = usePanneau();
     const routes = useRoutes();
     const { pathname } = useLocation(); // search
     console.log('PATHNAME', pathname); // eslint-disable-line
@@ -40,9 +45,9 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     // }, [search]);
 
     // TODO: set home page from a prop
-    const pageResource = resources.find((it) => it.id === 'pages') || null;
-    const pagesRoute = pageResource ? route('resources.index', { resource: 'pages' }) : '/';
-    const homeUrl = pagesRoute;
+    // const pageResource = resources.find((it) => it.id === 'pages') || null;
+    // const pagesRoute = pageResource ? route('resources.index', { resource: 'pages' }) : '/';
+    const homeUrl = route('home');
 
     useEffect(() => {
         if (pathname !== initialPathname) {
@@ -53,13 +58,45 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
         }
     }, [pathname, initialPathname]);
 
+    // Custom Pages
+    const {
+        home: homePage = null,
+        login: loginPage = null,
+        account: accountPage = null,
+        error: errorPage = null,
+    } = pages || {};
+
+    const HomeComponent = getComponentFromName(
+        homePage?.component || 'home',
+        basePages,
+        homePage?.component,
+    );
+
+    const LoginComponent = getComponentFromName(
+        loginPage?.component || 'login',
+        basePages,
+        loginPage?.component,
+    );
+
+    const AccountComponent = getComponentFromName(
+        accountPage?.component || 'account',
+        basePages,
+        accountPage?.component,
+    );
+
+    const ErrorComponent = getComponentFromName(
+        errorPage?.component || 'error',
+        basePages,
+        errorPage?.component,
+    );
+
     return (
         <Switch>
             {statusCode !== null ? (
-                <Route path="*" render={() => <Error statusCode={statusCode} />} />
+                <Route path="*" render={() => <ErrorComponent statusCode={statusCode} />} />
             ) : null}
 
-            {user === null ? <Route path="*" exact component={AuthLogin} /> : null}
+            {user === null ? <Route path="*" exact component={LoginComponent} /> : null}
 
             {/* TODO fix this shit it doesnt work */}
             {/* {user !== null ? (
@@ -69,7 +106,7 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
             )} */}
 
             {user !== null ? (
-                <Redirect from={routes.home} exact to={homeUrl} component={Home} />
+                <Route path={routes.home} exact component={HomeComponent} />
             ) : (
                 <Redirect from={routes.home} exact to={route('login')} />
             )}
@@ -96,8 +133,8 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
                     />
                 );
             })}
-
-            <Route path="*" component={Home} />
+            <Route path={route('auth.account')} component={AccountComponent} />
+            <Route path="*" component={ErrorComponent} />
         </Switch>
     );
 };

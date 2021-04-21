@@ -3,12 +3,9 @@ import { Switch, Route } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useUrlGenerator } from '@panneau/core/contexts';
+import { getComponentFromName } from '@panneau/core/utils';
 
-import ResourceIndex from './pages/ResourceIndex';
-import ResourceCreate from './pages/ResourceCreate';
-import ResourceShow from './pages/ResourceShow';
-import ResourceEdit from './pages/ResourceEdit';
-import ResourceDelete from './pages/ResourceDelete';
+import * as basePages from './pages';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -17,9 +14,49 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceRoutes = ({ resource }) => {
-    const { id: resourceId, has_routes: hasRoutes } = resource;
+    const { id: resourceId, has_routes: hasRoutes, pages = {} } = resource;
+
     const route = useUrlGenerator();
     const routeName = hasRoutes ? `resources.${resourceId}` : 'resources';
+
+    // Load custom pages from resource
+    const {
+        index: indexPage = null,
+        show: showPage = null,
+        create: createPage = null,
+        edit: editPage = null,
+        delete: deletePage = null,
+    } = pages || {};
+
+    const ResourceIndexComponent = getComponentFromName(
+        indexPage?.component || 'index',
+        basePages,
+        indexPage?.component,
+    );
+
+    const ResourceShowComponent = getComponentFromName(
+        showPage?.component || 'show',
+        basePages,
+        showPage?.component,
+    );
+
+    const ResourceCreateComponent = getComponentFromName(
+        createPage?.component || 'create',
+        basePages,
+        createPage?.component,
+    );
+
+    const ResourceEditComponent = getComponentFromName(
+        editPage?.component || 'edit',
+        basePages,
+        editPage?.component,
+    );
+
+    const ResourceDeleteComponent = getComponentFromName(
+        deletePage?.component || 'delete',
+        basePages,
+        deletePage?.component,
+    );
 
     return (
         <Switch>
@@ -28,14 +65,14 @@ const ResourceRoutes = ({ resource }) => {
                     resource: resourceId,
                 })}
                 exact
-                render={() => <ResourceIndex resource={resource} />}
+                render={() => <ResourceIndexComponent resource={resource} />}
             />
             <Route
                 path={route(`${routeName}.create`, {
                     resource: resourceId,
                 })}
                 exact
-                render={() => <ResourceCreate resource={resource} />}
+                render={() => <ResourceCreateComponent resource={resource} />}
             />
             <Route
                 path={route(`${routeName}.show`, {
@@ -47,7 +84,7 @@ const ResourceRoutes = ({ resource }) => {
                     match: {
                         params: { id },
                     },
-                }) => <ResourceShow resource={resource} itemId={id} />}
+                }) => <ResourceShowComponent resource={resource} itemId={id} />}
             />
             <Route
                 path={route(`${routeName}.edit`, {
@@ -59,7 +96,7 @@ const ResourceRoutes = ({ resource }) => {
                     match: {
                         params: { id },
                     },
-                }) => <ResourceEdit resource={resource} itemId={id} />}
+                }) => <ResourceEditComponent resource={resource} itemId={id} />}
             />
             <Route
                 path={route(`${routeName}.delete`, {
@@ -71,7 +108,7 @@ const ResourceRoutes = ({ resource }) => {
                     match: {
                         params: { id },
                     },
-                }) => <ResourceDelete resource={resource} itemId={id} />}
+                }) => <ResourceDeleteComponent resource={resource} itemId={id} />}
             />
         </Switch>
     );

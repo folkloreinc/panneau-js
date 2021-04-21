@@ -63,7 +63,7 @@ export const toggle = PropTypes.shape({
 export const toggles = PropTypes.arrayOf(toggle);
 
 /**
- * Definition
+ * Panneau Definitions
  */
 export const routes = PropTypes.shape({
     'resources.index': PropTypes.string.isRequired,
@@ -80,6 +80,11 @@ export const localization = PropTypes.shape({
     messages: PropTypes.objectOf(PropTypes.string),
 });
 
+export const page = PropTypes.shape({
+    component: PropTypes.string.isRequired,
+});
+export const pages = PropTypes.objectOf(page);
+
 export const field = PropTypes.shape({
     // type: PropTypes.string.isRequired,
     name: PropTypes.isRequired,
@@ -88,10 +93,20 @@ export const field = PropTypes.shape({
 });
 export const fields = PropTypes.arrayOf(field);
 
+export const form = PropTypes.shape({
+    // type: PropTypes.string.isRequired,
+    title: PropTypes.isRequired,
+    fields,
+});
+export const forms = PropTypes.arrayOf(form);
+
 export const resource = PropTypes.shape({
     id: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     fields,
+    forms: PropTypes.shape({}),
+    has_routes: PropTypes.bool,
+    shows_in_navbar: PropTypes.bool,
 });
 export const resources = PropTypes.arrayOf(resource);
 
@@ -99,6 +114,7 @@ export const panneauDefinition = PropTypes.shape({
     name: PropTypes.string,
     resources,
     routes,
+    pages,
     // localization,
 });
 

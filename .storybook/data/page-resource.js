@@ -1,7 +1,9 @@
 export default {
     id: 'pages',
-
     label: 'Page',
+
+    has_routes: false,
+    shows_in_navbar: true,
 
     messages: {
         a_singular: 'page',
@@ -10,18 +12,22 @@ export default {
 
     fields: [{ name: 'title', label: 'Titre', component: 'text' }],
 
-    has_routes: false,
-    shows_in_navbar: true,
-
+    // Can be switched
     pages: {
         index: {
             component: 'resource-index',
+        },
+        show: {
+            component: 'resource-show',
         },
         create: {
             component: 'resource-create',
         },
         edit: {
             component: 'resource-edit',
+        },
+        delete: {
+            component: 'resource-delete',
         },
     },
 

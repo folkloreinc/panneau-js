@@ -34,7 +34,6 @@ const ResourceIndexPage = ({ resource }) => {
         index_is_paginated: paginated = false,
         components: { index = {} } = {},
     } = resource;
-    console.log('index', index);
     const { component: indexComponent = null, props: indexProps = null } = index || {};
 
     const { search } = useLocation();
