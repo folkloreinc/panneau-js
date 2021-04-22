@@ -26,12 +26,10 @@ export const usePanneauColorScheme = () => {
         ? {
               background: 'dark',
               text: 'light',
-              border: 'light',
           }
         : {
               background: 'light',
               text: 'dark',
-              border: 'dark',
           };
 };
 

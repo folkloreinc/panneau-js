@@ -12,12 +12,26 @@ export default {
     },
 };
 
+const user = { id: 1, name: 'Folklore', email: 'info@atelierfolklore.ca' };
+
 export const Normal = () => <PanneauContainer definition={panneauDefinition} memoryRouter />;
 
 export const WithUser = () => (
+    <PanneauContainer definition={panneauDefinition} memoryRouter user={user} />
+);
+
+export const LightMode = () => (
     <PanneauContainer
-        definition={panneauDefinition}
+        definition={{ ...panneauDefinition, theme: { colorScheme: 'light' } }}
         memoryRouter
-        user={{ id: 1, name: 'Folklore', email: 'info@atelierfolklore.ca' }}
+        user={user}
+    />
+);
+
+export const DarkMode = () => (
+    <PanneauContainer
+        definition={{ ...panneauDefinition, theme: { colorScheme: 'dark' } }}
+        memoryRouter
+        user={user}
     />
 );

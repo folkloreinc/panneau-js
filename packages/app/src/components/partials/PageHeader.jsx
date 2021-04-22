@@ -24,7 +24,7 @@ const defaultProps = {
 };
 
 const PageHeader = ({ title, actions, small, className, children }) => {
-    const { text, background, border } = usePanneauColorScheme();
+    const { text, background } = usePanneauColorScheme();
 
     const inner = (
         <div className="d-flex align-items-center flex-wrap">
@@ -43,8 +43,7 @@ const PageHeader = ({ title, actions, small, className, children }) => {
                 {
                     [`bg-${background}`]: background !== null,
                     [`text-${text}`]: text !== null,
-                    [`border-bottom`]: border !== null,
-                    [`border-${border}`]: border !== null,
+                    [`border-bottom`]: background || text !== null,
                     [className]: className !== null,
                 },
             ])}
