@@ -4,7 +4,7 @@ import { useHistory } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
-import { ResourceProvider, usePanneauMessages } from '@panneau/core/contexts';
+import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceItem } from '@panneau/data';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 
@@ -13,6 +13,8 @@ import PageHeader from '../partials/PageHeader';
 // import Button from '../buttons/Button';
 import ResourceLabel from '../partials/ResourceLabel';
 import ResourceForm from '../partials/ResourceForm';
+
+import messages from '../messages';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -23,7 +25,6 @@ const defaultProps = {};
 
 const ResourceDeletePage = ({ resource, itemId }) => {
     const history = useHistory();
-    const messages = usePanneauMessages();
     const resourceRoute = useResourceUrlGenerator(resource);
     const { item } = useResourceItem(resource, itemId);
 
@@ -41,7 +42,7 @@ const ResourceDeletePage = ({ resource, itemId }) => {
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
-                    title={<ResourceLabel resource={resource}>{messages?.delete}</ResourceLabel>}
+                    title={<ResourceLabel resource={resource}>{messages.delete}</ResourceLabel>}
                     small
                 />
                 <div className="container-sm py-4">

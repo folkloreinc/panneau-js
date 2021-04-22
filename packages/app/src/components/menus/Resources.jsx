@@ -23,15 +23,16 @@ const ResourcesMenu = ({ className, itemClassName, linkClassName }) => {
     const { pathname } = useLocation();
     const resources = usePanneauResources();
     const resourceRoute = useResourceUrlGenerator();
+
     const items = useMemo(
         () =>
             resources
-                .filter(({ shows_in_navbar: showsInNavbar = false }) => showsInNavbar)
+                .filter(({ settings: { hideInNavbar = false } = {} }) => !hideInNavbar)
                 .map((it) => {
                     const url = resourceRoute(it, 'index');
                     return {
                         id: it.id,
-                        label: it.label,
+                        label: it.name,
                         href: url,
                         active: pathname.substr(0, url.length) === url,
                     };

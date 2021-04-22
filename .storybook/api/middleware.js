@@ -11,25 +11,25 @@ module.exports = () => {
     router.use(express.json());
     router.use(express.urlencoded());
 
-    const dataPath = path.join(__dirname, '/data');
+    const dataPath = path.join(__dirname, '/items');
 
-    const resourceExists = resource => fs.existsSync(path.join(dataPath, resource));
+    const resourceExists = (resource) => fs.existsSync(path.join(dataPath, resource));
 
     const updatedResources = {};
     const deletedResources = {};
 
-    const getResourceItems = resource => {
+    const getResourceItems = (resource) => {
         const updatedItems = updatedResources[resource] || [];
         const deletedItems = deletedResources[resource] || [];
-        const updatedResourcesIds = updatedItems.map(it => it.id);
+        const updatedResourcesIds = updatedItems.map((it) => it.id);
         const items = globSync(path.join(dataPath, `${resource}/*.{js,json}`))
-            .map(filePath =>
+            .map((filePath) =>
                 filePath.match(/\.json$/)
                     ? JSON.parse(fs.readFileSync(filePath))
                     : require(filePath),
             )
             .filter(
-                it =>
+                (it) =>
                     updatedResourcesIds.indexOf(it.id) === -1 && deletedItems.indexOf(it.id) === -1,
             );
         return [...items, ...updatedItems];
@@ -62,7 +62,7 @@ module.exports = () => {
         return _.values(_.filter(items, _.matches(queryWithoutSource)));
     };
 
-    const getNextId = items =>
+    const getNextId = (items) =>
         items.reduce((nextId, { id }) => (parseInt(id, 10) >= nextId ? nextId + 1 : nextId), 1);
 
     const addResourceItem = (resource, item) => {
@@ -76,12 +76,13 @@ module.exports = () => {
         if (typeof updatedResources[resource] === 'undefined') {
             updatedResources[resource] = [];
         }
-        const foundResource = updatedResources[resource].find(it => it.id === newItem.id) === null;
+        const foundResource =
+            updatedResources[resource].find((it) => it.id === newItem.id) === null;
         if (foundResource === null) {
             addResourceItem(resource, newItem);
             return;
         }
-        updatedResources[resource] = updatedResources[resource].map(it =>
+        updatedResources[resource] = updatedResources[resource].map((it) =>
             it.id === newItem.id
                 ? {
                       ...it,
@@ -203,7 +204,7 @@ module.exports = () => {
     const updateResource = (req, res) => {
         const { resource, id } = req.params;
         const currentItems = getResourceItems(resource);
-        const currentItem = currentItems.find(it => it.id === id) || null;
+        const currentItem = currentItems.find((it) => it.id === id) || null;
         if (currentItem === null) {
             res.sendStatus(404);
             return;
@@ -222,7 +223,7 @@ module.exports = () => {
     const deleteResource = (req, res) => {
         const { resource, id } = req.params;
         const currentItems = getResourceItems(resource);
-        const currentItem = currentItems.find(it => it.id === id) || null;
+        const currentItem = currentItems.find((it) => it.id === id) || null;
         if (currentItem === null) {
             res.sendStatus(404);
             return;

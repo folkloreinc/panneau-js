@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import { usePanneauColorScheme } from '@panneau/core/contexts';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import Label from '@panneau/element-label';
@@ -23,6 +24,8 @@ const defaultProps = {
 };
 
 const PageHeader = ({ title, actions, small, className, children }) => {
+    const { text, background, border } = usePanneauColorScheme();
+
     const inner = (
         <div className="d-flex align-items-center flex-wrap">
             {title !== null ? (
@@ -36,9 +39,12 @@ const PageHeader = ({ title, actions, small, className, children }) => {
     return (
         <div
             className={classNames([
-                'bg-light',
                 'py-4',
                 {
+                    [`bg-${background}`]: background !== null,
+                    [`text-${text}`]: text !== null,
+                    [`border-bottom`]: border !== null,
+                    [`border-${border}`]: border !== null,
                     [className]: className !== null,
                 },
             ])}

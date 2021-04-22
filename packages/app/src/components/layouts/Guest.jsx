@@ -19,7 +19,7 @@ const GuestLayout = ({ fullscreen, children }) => (
             'd-flex flex-column min-vh-100': fullscreen,
         })}
     >
-        <MainNavbar className="sticky-top bg-light px-3" />
+        <MainNavbar className={classNames(['sticky-top', 'px-3'])} />
         <div
             className={classNames({
                 'd-flex flex-column flex-grow-1': fullscreen,

@@ -4,7 +4,7 @@ class ResourcesApi {
     }
 
     resourceRoute({ id, has_routes: hasRoutes = false }, route, params) {
-        const routePrefix = hasRoutes ? `resources.api.${id}` : 'resources.api';
+        const routePrefix = hasRoutes ? `resources.${id}` : 'resources';
         return this.api.route(
             `${routePrefix}.${route}`,
             hasRoutes
@@ -18,7 +18,7 @@ class ResourcesApi {
 
     find(resource, id) {
         return this.api.requestGet(
-            this.resourceRoute(resource, 'get', {
+            this.resourceRoute(resource, 'show', {
                 id,
             }),
             null,
@@ -38,7 +38,7 @@ class ResourcesApi {
         if (count !== null) {
             finalQuery.count = count;
         }
-        return this.api.requestGet(this.resourceRoute(resource, 'list'), finalQuery, {
+        return this.api.requestGet(this.resourceRoute(resource, 'index'), finalQuery, {
             withCredentials: true,
         });
     }
@@ -64,30 +64,6 @@ class ResourcesApi {
     destroy(resource, id) {
         return this.api.requestDelete(
             this.resourceRoute(resource, 'destroy', {
-                id,
-            }),
-            null,
-            {
-                withCredentials: true,
-            },
-        );
-    }
-
-    block(resource, id) {
-        return this.api.requestPost(
-            this.resourceRoute(resource, 'block', {
-                id,
-            }),
-            null,
-            {
-                withCredentials: true,
-            },
-        );
-    }
-
-    unblock(resource, id) {
-        return this.api.requestPost(
-            this.resourceRoute(resource, 'unblock', {
                 id,
             }),
             null,

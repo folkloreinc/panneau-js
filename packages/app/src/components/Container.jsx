@@ -32,11 +32,13 @@ const defaultProps = {
 
 const Container = ({ definition, user, memoryRouter, statusCode }) => {
     const {
-        localization: { locale = 'en', messages: translations = {} } = {},
+        intl: { locale = 'en', messages: translations = {} } = {},
         routes = {},
+        settings = {},
     } = definition;
+    const { memoryRouter: usesMemoryRouter = false } = settings || {};
 
-    const Router = memoryRouter ? MemoryRouter : BrowserRouter;
+    const Router = memoryRouter || usesMemoryRouter ? MemoryRouter : BrowserRouter;
 
     // For storybook: auto load page with: initialEntries={['/pages/1/edit']} initialIndex={0}
 

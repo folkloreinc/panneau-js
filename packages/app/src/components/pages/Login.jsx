@@ -2,16 +2,17 @@
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { usePanneauMessages, useUrlGenerator } from '@panneau/core/contexts';
+import { useUrlGenerator } from '@panneau/core/contexts';
 import GuestLayout from '../layouts/Guest';
 import LoginForm from '../forms/Login';
+
+import messages from '../messages';
 
 const propTypes = {};
 
 const defaultProps = {};
 
 const LoginPage = () => {
-    const messages = usePanneauMessages();
     const { login_title: loginMessage = null } = messages || {};
 
     const route = useUrlGenerator();

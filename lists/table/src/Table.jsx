@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { stringify as stringifyQuery } from 'query-string';
 // import { defineMessages } from 'react-intl';
 
@@ -19,6 +20,7 @@ const propTypes = {
     total: PropTypes.number,
     baseUrl: PropTypes.string,
     urlGenerator: PropTypes.func,
+    theme: PropTypes.string,
     // onQueryChange: PropTypes.func,
 };
 
@@ -30,6 +32,7 @@ const defaultProps = {
     total: null,
     baseUrl: null,
     urlGenerator: null,
+    theme: null,
     // onQueryChange: null,
 };
 
@@ -42,6 +45,7 @@ const TableList = ({
     total,
     baseUrl,
     urlGenerator,
+    theme,
     // onQueryChange,
 }) => {
     const { page: queryPage, ...queryWithoutPage } = query || {};
@@ -74,7 +78,16 @@ const TableList = ({
     return (
         <div>
             {items !== null ? (
-                <table className="table table-sm table-hover align-middle mb-0">
+                <table
+                    className={classNames([
+                        'table',
+                        'table-sm',
+                        'table-hover',
+                        'align-middle',
+                        'mb-0',
+                        { [`table-${theme}`]: theme !== null },
+                    ])}
+                >
                     <thead>
                         <tr>
                             <th scope="col">#</th>

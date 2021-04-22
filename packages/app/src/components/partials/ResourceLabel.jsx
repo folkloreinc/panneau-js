@@ -16,8 +16,8 @@ const defaultProps = {
 };
 
 const ResourceLabel = ({ resource, values, children }) => {
-    const { label = null, localization = null } = resource;
-    const { values: resourceValues } = localization || {};
+    const { label = null, intl = null } = resource;
+    const { values: resourceValues } = intl || {};
 
     return (
         <Label

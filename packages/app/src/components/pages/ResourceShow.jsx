@@ -15,7 +15,7 @@ const defaultProps = {};
 const ResourceShowPage = ({ resource }) => (
     <ResourceProvider resource={resource}>
         <MainLayout>
-            <PageHeader title={resource?.label} />
+            <PageHeader title={resource?.name} />
             <div className="container-sm">Show page</div>
         </MainLayout>
     </ResourceProvider>

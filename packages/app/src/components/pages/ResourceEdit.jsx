@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
-import { ResourceProvider, usePanneauMessages } from '@panneau/core/contexts';
+import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceItem } from '@panneau/data';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
 // import Button from '../buttons/Button';
 import ResourceLabel from '../partials/ResourceLabel';
 import ResourceForm from '../partials/ResourceForm';
+
+import messages from '../messages';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -21,7 +23,6 @@ const defaultProps = {};
 const ResourceEditPage = ({ resource, itemId }) => {
     // console.log(itemId);
     // const resourceRoute = useResourceUrlGenerator(resource);
-    const messages = usePanneauMessages();
     const { item } = useResourceItem(resource, itemId);
     const [editItem, setEditItem] = useState(item);
     const onSuccess = useCallback((newItem) => setEditItem(newItem), []);
@@ -33,7 +34,7 @@ const ResourceEditPage = ({ resource, itemId }) => {
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
-                    title={<ResourceLabel resource={resource}>{messages?.edit}</ResourceLabel>}
+                    title={<ResourceLabel resource={resource}>{messages.edit}</ResourceLabel>}
                     small
                 />
                 <div className="container-sm py-4">

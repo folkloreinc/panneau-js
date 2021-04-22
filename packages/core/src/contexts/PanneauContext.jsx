@@ -18,10 +18,21 @@ export const usePanneauResource = (id) => {
     return resources.find((it) => it.id === id) || null;
 };
 
-export const usePanneauMessages = () => {
-    const { localization = {} } = usePanneau();
-    const { messages = {} } = localization || {};
-    return messages || {};
+export const usePanneauColorScheme = () => {
+    const { theme = {} } = usePanneau();
+    const { colorScheme = 'dark' } = theme || {};
+
+    return colorScheme === 'dark'
+        ? {
+              background: 'dark',
+              text: 'light',
+              border: 'light',
+          }
+        : {
+              background: 'light',
+              text: 'dark',
+              border: 'dark',
+          };
 };
 
 const propTypes = {

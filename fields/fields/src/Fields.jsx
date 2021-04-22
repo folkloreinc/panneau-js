@@ -63,11 +63,11 @@ const Fields = ({
             name = null,
             horizontal = false,
             inline = false,
-            without_form_group: withoutFormGroup = false,
-            sibling_fields: siblingFields = [],
+            withoutFormGroup = false,
+            siblingFields = [],
             classname = null,
-            group_classname: groupClassName = null,
-            label_classname: labelClassName = null,
+            groupClassName = null,
+            labelClassName = null,
             check: fieldCheck = false,
         } = field || {};
 

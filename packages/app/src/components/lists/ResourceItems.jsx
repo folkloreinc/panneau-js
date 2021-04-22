@@ -5,7 +5,11 @@ import PropTypes from 'prop-types';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
-import { useListsComponents, useResourceUrlGenerator } from '@panneau/core/contexts';
+import {
+    useListsComponents,
+    useResourceUrlGenerator,
+    usePanneauColorScheme,
+} from '@panneau/core/contexts';
 
 import ResourceFilters from './ResourceFilters';
 
@@ -38,6 +42,7 @@ const ResourceItemsList = ({
     withoutFilters,
     ...props
 }) => {
+    const { background: theme = null } = usePanneauColorScheme();
     const ListComponents = useListsComponents();
     const urlGenerator = useResourceUrlGenerator(resource);
     const { page = 1 } = query || {};
@@ -75,6 +80,7 @@ const ResourceItemsList = ({
                     query={query}
                     onQueryChange={onListQueryChange}
                     urlGenerator={urlGenerator}
+                    theme={theme}
                 />
             ) : null}
         </>

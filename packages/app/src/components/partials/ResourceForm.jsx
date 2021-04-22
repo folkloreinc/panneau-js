@@ -78,13 +78,13 @@ const ResourceForm = ({ component, resource, messages, onSuccess, item, isDelete
 
     // Form action
     const modifyAction = isCreate
-        ? resourceRoute('api.store')
-        : resourceRoute('api.update', {
+        ? resourceRoute('store')
+        : resourceRoute('update', {
               id: item.id,
           });
 
     const action = isDelete
-        ? resourceRoute('api.destroy', {
+        ? resourceRoute('destroy', {
               id: item.id,
           })
         : modifyAction;

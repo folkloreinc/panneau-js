@@ -1,105 +1,90 @@
 export default {
     id: 'pages',
-    label: 'Page',
+    name: 'Page',
 
-    has_routes: false,
-    shows_in_navbar: true,
+    types: [{ id: 'contact', name: 'Contact', fields: [] }],
 
-    localization: {
-        messages: {},
+    intl: {
+        messages: {
+            'resource.create_button': 'Yo le jeune',
+        },
         values: {
-            a_singular: 'page',
-            a_plural: 'pages',
-            the_singular: 'The page',
-            the_plural: 'The pages',
+            name: 'page',
+            a_singular: 'une page',
+            a_plural: 'des pages',
+            A_singular: 'Une page',
+            A_plural: 'pages',
+            the_singular: 'la page',
+            the_plural: 'les pages',
+            The_singular: 'The page',
+            The_plural: 'The pages',
         },
     },
 
-    fields: [{ name: 'title', label: 'Titre', component: 'text' }],
-
-    // Can be switched
-    pages: {
-        index: {
-            component: 'resource-index',
+    fields: [
+        {
+            name: 'title',
+            label: 'Titre',
+            component: 'text',
         },
-        show: {
-            component: 'resource-show',
+        {
+            name: 'description',
+            label: 'Description',
+            component: 'html',
         },
-        create: {
-            component: 'resource-create',
+        {
+            name: 'slug',
+            label: 'Slug',
+            component: 'url',
+            settings: {
+                showInIndex: true,
+                createOnly: true,
+            },
         },
-        edit: {
-            component: 'resource-edit',
+        { name: 'blocks', label: 'Blocks', component: 'items' },
+        {
+            name: 'color',
+            label: 'Color',
+            component: 'color',
         },
-        delete: {
-            component: 'resource-delete',
+        {
+            name: 'published',
+            label: 'Published',
+            component: 'toggle',
         },
-    },
-
-    forms: {
-        default: {
-            title: 'Default form',
-            fields: [
-                {
-                    name: 'title',
-                    label: 'Titre',
-                    component: 'text',
-                },
-                {
-                    name: 'description',
-                    label: 'Description',
-                    component: 'html',
-                },
-                {
-                    name: 'slug',
-                    label: 'Slug',
-                    component: 'url',
-                },
-                { name: 'blocks', label: 'Blocks', component: 'items' },
-                {
-                    name: 'color',
-                    label: 'Color',
-                    component: 'color',
-                },
-                {
-                    name: 'published',
-                    label: 'Published',
-                    component: 'toggle',
-                },
-                {
-                    name: 'publish_at',
-                    label: 'Publish at',
-                    component: 'date',
-                },
-            ],
+        {
+            name: 'publish_at',
+            label: 'Publish at',
+            component: 'date',
         },
-        create: null,
-        edit: {
-            title: 'Edit',
-            component: 'normal',
-            // fields: [
-            //     {
-            //         name: 'title',
-            //         label: 'Titre',
-            //         component: 'text',
-            //     },
-            //     {
-            //         name: 'description',
-            //         label: 'Description',
-            //         component: 'html',
-            //     },
-            //     {
-            //         name: 'slug',
-            //         label: 'Slug',
-            //         component: 'url',
-            //     },
-            // ],
-        },
-    },
+    ],
 
     components: {
-        index: {
-            component: 'table',
+        'pages.index': 'resource-index',
+        'pages.show': {
+            component: 'resource-show',
         },
+        'pages.create': {
+            component: 'resource-create',
+        },
+        'pages.edit': {
+            component: 'resource-edit',
+        },
+        'pages.delete': {
+            component: 'resource-delete',
+        },
+        'forms.default': 'custom-form',
+        'forms.edit': {
+            title: 'Edit',
+            component: 'normal',
+        },
+    },
+
+    settings: {
+        hideInNavbar: false,
+    },
+
+    routes: {
+        'resource.create': '/kfgsakhfg',
     },
 };

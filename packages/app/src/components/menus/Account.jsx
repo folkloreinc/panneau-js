@@ -1,10 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import { useUrlGenerator, usePanneauMessages } from '@panneau/core/contexts';
+import { useUrlGenerator } from '@panneau/core/contexts';
 import Menu from '@panneau/element-menu';
 
 import { useUser, useLogout } from '../../contexts/AuthContext';
+
+import messages from '../messages';
 
 const propTypes = {
     className: PropTypes.string,
@@ -19,7 +21,6 @@ const defaultProps = {
 };
 
 const AccountMenu = ({ className, itemClassName, linkClassName }) => {
-    const messages = usePanneauMessages();
     const route = useUrlGenerator();
     const user = useUser();
     const logout = useLogout();

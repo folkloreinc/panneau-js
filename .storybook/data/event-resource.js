@@ -1,8 +1,8 @@
 export default {
     id: 'events',
-    label: 'Event',
+    name: 'Event',
 
-    localization: {
+    intl: {
         values: {
             a_singular: 'event',
             a_plural: 'events',
@@ -14,16 +14,8 @@ export default {
         { name: 'email', label: 'Email', type: 'email', component: 'text' },
     ],
 
-    has_routes: false,
-
-    shows_in_navbar: true,
-
-    pages: {},
-
-    forms: {},
-
     components: {
-        index: {
+        'pages.index': {
             component: 'cards',
         },
     },
