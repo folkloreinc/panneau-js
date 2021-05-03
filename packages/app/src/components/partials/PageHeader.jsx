@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { usePanneauColorScheme } from '@panneau/core/contexts';
+import { usePanneau, usePanneauColorScheme } from '@panneau/core/contexts';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import Label from '@panneau/element-label';
@@ -24,7 +24,9 @@ const defaultProps = {
 };
 
 const PageHeader = ({ title, actions, small, className, children }) => {
+    const { components } = usePanneau();
     const { text, background } = usePanneauColorScheme();
+    console.log(components);
 
     const inner = (
         <div className="d-flex align-items-center flex-wrap">

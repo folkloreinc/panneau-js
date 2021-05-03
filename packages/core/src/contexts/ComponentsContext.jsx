@@ -10,6 +10,7 @@ export const FIELDS_NAMESPACE = 'fields';
 export const FORMS_NAMESPACE = 'forms';
 export const FILTERS_NAMESPACE = 'filters';
 export const LISTS_NAMESPACE = 'lists';
+export const APP_NAMESPACE = 'app';
 
 export const ComponentsContext = React.createContext(null);
 
@@ -97,6 +98,17 @@ export const useListsComponents = (defaultComponents = {}) =>
 
 export const useListComponent = (name, defaultComponent = null) =>
     useComponent(name, defaultComponent, LISTS_NAMESPACE);
+
+/**
+ * App hooks
+ */
+export const useAppComponentsManager = () => useComponentsManager(APP_NAMESPACE);
+
+export const useAppComponents = (defaultComponents = {}) =>
+    useComponents(APP_NAMESPACE, defaultComponents);
+
+export const useAppComponent = (name, defaultComponent = null) =>
+    useComponent(name, defaultComponent, APP_NAMESPACE);
 
 /**
  * Provider

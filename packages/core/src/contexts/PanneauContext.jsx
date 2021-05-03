@@ -1,8 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import isString from 'lodash/isString';
+import isObject from 'lodash/isObject';
 
 import * as PanneauPropTypes from '../lib/PropTypes';
+import { isSet } from 'lodash-es';
 
 const PanneauContext = React.createContext(null);
 
@@ -31,6 +34,38 @@ export const usePanneauColorScheme = () => {
               background: 'light',
               text: 'dark',
           };
+};
+
+export const usePanneauComponents = () => {
+    const { components = {} } = usePanneau();
+    return components;
+};
+
+export const usePanneauComponent = (namespace, name) => {
+    const { components = {} } = usePanneau();
+    const path = namespace !== null ? `${namespace}.${name}` : name || null;
+    const component = components[path] || null;
+
+    if (isString(component)) {
+        return component;
+    }
+
+    if (isObject(component) && isString(component?.componnent)) {
+        const { component: innderComponent, ...props } = component;
+        return component.component;
+    }
+
+    return null;
+};
+
+export const usePanneauAuth = () => {
+    const { auth = {} } = usePanneau();
+    return auth;
+};
+
+export const usePanneauSettings = () => {
+    const { settings = {} } = usePanneau();
+    return settings;
 };
 
 const propTypes = {
