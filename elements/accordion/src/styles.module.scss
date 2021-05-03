@@ -1,3 +1,7 @@
 .container {
-    //
+    .accordeonItem {
+        margin-top: -2px;
+        overflow: hidden;
+        transition: height 0.3s ease;
+    }
 }

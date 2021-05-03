@@ -6,6 +6,8 @@ import { v4 as uuid } from 'uuid';
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 // import Label from '@panneau/element-label';
 
+import styles from './styles.module.scss';
+
 const propTypes = {
     items: PropTypes.arrayOf(
         PropTypes.shape({
@@ -28,6 +30,13 @@ const defaultProps = {
 const Accordion = ({ oneAtATime, title, items, className }) => {
     const accordionRefs = useRef([]);
     const accordionId = useMemo(() => uuid(), []);
+
+    const accordionItemsHeights = items.map((it, idx) =>
+        accordionRefs.current[idx]
+            ? `${accordionRefs.current[idx].getBoundingClientRect().height}px`
+            : null,
+    );
+
     const [openedItem, setOpenedItem] = useState(null);
     const [openedItems, setOpenedItems] = useState(items.map(() => false));
 
@@ -55,6 +64,7 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
     return (
         <div
             className={classNames([
+                styles.container,
                 'accordion',
                 {
                     [className]: className !== null,
@@ -67,12 +77,7 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
                 ? items.map((it, idx) => {
                       const itemOpened = isItemOpened(idx);
                       return (
-                          <div
-                              className="accordion-item"
-                              ref={(ref) => {
-                                  accordionRefs.current[idx] = ref;
-                              }}
-                          >
+                          <div className="accordion-item">
                               <h2
                                   className="accordion-header"
                                   id={`${accordionId}-${it.label}-${idx + 1}`}
@@ -83,8 +88,6 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
                                       }`}
                                       type="button"
                                       onClick={() => openItem(idx)}
-                                      data-bs-toggle="collapse"
-                                      data-bs-target={`#${accordionId}-collapse${idx}`}
                                       aria-expanded="true"
                                       aria-controls={`${accordionId}-collapse${idx}`}
                                   >
@@ -93,13 +96,24 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
                               </h2>
                               <div
                                   id={`${accordionId}-collapse${idx}`}
-                                  className={`accordion-collapse collapse ${
-                                      itemOpened ? 'show' : ''
-                                  }`}
+                                  className={classNames([
+                                      'accordion-item collapse show',
+                                      styles.accordeonItem,
+                                  ])}
                                   aria-labelledby={`${accordionId}-${it.label}-${idx + 1}`}
                                   data-bs-parent={`#${accordionId}`}
+                                  style={{
+                                      height: `${itemOpened ? accordionItemsHeights[idx] : '0'}`,
+                                  }}
                               >
-                                  <div className="accordion-body">{it.content}</div>
+                                  <div
+                                      className="accordion-body"
+                                      ref={(ref) => {
+                                          accordionRefs.current[idx] = ref;
+                                      }}
+                                  >
+                                      {it.content}
+                                  </div>
                               </div>
                           </div>
                       );
@@ -108,6 +122,7 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
         </div>
     );
 };
+
 Accordion.propTypes = propTypes;
 Accordion.defaultProps = defaultProps;
 
