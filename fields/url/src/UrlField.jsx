@@ -37,6 +37,7 @@ const UrlField = ({ schemes, value, className, onChange, ...props }) => {
         schemes,
         schemesPattern,
     ]);
+
     const valueWithoutScheme = useMemo(() => removeScheme(value, schemesPattern), [
         value,
         schemesPattern,

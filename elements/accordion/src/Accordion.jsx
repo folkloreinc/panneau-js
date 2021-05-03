@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { v4 as uuid } from 'uuid';
@@ -26,6 +26,7 @@ const defaultProps = {
 };
 
 const Accordion = ({ oneAtATime, title, items, className }) => {
+    const accordionRefs = useRef([]);
     const accordionId = useMemo(() => uuid(), []);
     const [openedItem, setOpenedItem] = useState(null);
     const [openedItems, setOpenedItems] = useState(items.map(() => false));
@@ -66,7 +67,12 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
                 ? items.map((it, idx) => {
                       const itemOpened = isItemOpened(idx);
                       return (
-                          <div className="accordion-item">
+                          <div
+                              className="accordion-item"
+                              ref={(ref) => {
+                                  accordionRefs.current[idx] = ref;
+                              }}
+                          >
                               <h2
                                   className="accordion-header"
                                   id={`${accordionId}-${it.label}-${idx + 1}`}
