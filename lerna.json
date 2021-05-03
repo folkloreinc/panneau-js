@@ -1,5 +1,5 @@
 {
-    "version": "0.8.0",
+    "version": "1.0.0-alpha.0",
     "packages": [
         "fields/*",
         "forms/*",
@@ -11,13 +11,18 @@
     ],
     "command": {
         "publish": {
-            "allowBranch": ["master", "v0.8"]
+            "allowBranch": [
+                "master",
+                "v0.8"
+            ]
         },
         "bootstrap": {
             "hoist": true
         }
     },
     "bootstrap": {
-        "npmClientArgs": ["--no-package-lock"]
+        "npmClientArgs": [
+            "--no-package-lock"
+        ]
     }
 }

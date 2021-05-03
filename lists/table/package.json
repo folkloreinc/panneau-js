@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-table",
-    "version": "0.8.0",
+    "version": "1.0.0-alpha.0",
     "description": "Table list",
     "keywords": [
         "javascript"
@@ -53,19 +53,19 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^0.8.0",
-        "@panneau/themes": "^0.8.0",
-        "@panneau/element-button": "^0.8.0",
-        "@panneau/element-buttons": "^0.8.0",
-        "@panneau/element-label": "^0.8.0",
-        "@panneau/element-pagination": "^0.8.0",
-        "@panneau/element-loading": "^0.8.0",
-        "@panneau/element-form-actions": "^0.8.0",
+        "@panneau/core": "^1.0.0-alpha.0",
+        "@panneau/element-button": "^1.0.0-alpha.0",
+        "@panneau/element-buttons": "^1.0.0-alpha.0",
+        "@panneau/element-form-actions": "^1.0.0-alpha.0",
+        "@panneau/element-label": "^1.0.0-alpha.0",
+        "@panneau/element-loading": "^1.0.0-alpha.0",
+        "@panneau/element-pagination": "^1.0.0-alpha.0",
+        "@panneau/themes": "^1.0.0-alpha.0",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
-        "react-intl": "^5.15.8",
-        "query-string": "^7.0.0"
+        "query-string": "^7.0.0",
+        "react-intl": "^5.15.8"
     },
     "publishConfig": {
         "access": "public"
