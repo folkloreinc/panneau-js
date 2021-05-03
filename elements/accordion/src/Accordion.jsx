@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -6,87 +6,97 @@ import classNames from 'classnames';
 // import Label from '@panneau/element-label';
 
 const propTypes = {
-    // items: PropTypes.arrayOf(PropTypes.shape({})),
-    // children: PanneauPropTypes.label.isRequired,
+    items: PropTypes.arrayOf(
+        PropTypes.shape({
+            label: PropTypes.string,
+            content: PropTypes.oneOf([PropTypes.string, PropTypes.node]),
+        }),
+    ),
+    oneAtATime: PropTypes.bool,
+    title: PropTypes.string,
     className: PropTypes.string,
 };
 
 const defaultProps = {
-    // items: [],
+    items: [],
+    oneAtATime: false,
+    title: null,
     className: null,
 };
 
-const Accordion = ({ className }) => (
-    <div
-        className={classNames([
-            'accordion',
-            {
-                [className]: className !== null,
-            },
-        ])}
-    >
-        <div className="accordion-item">
-            <h2 className="accordion-header" id="headingOne">
-                <button
-                    className="accordion-button"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#collapseOne"
-                    aria-expanded="true"
-                    aria-controls="collapseOne"
-                >
-                    Accordion Item #1
-                </button>
-            </h2>
-            <div
-                id="collapseOne"
-                className="accordion-collapse collapse show"
-                aria-labelledby="headingOne"
-                data-bs-parent="#accordionExample"
-            >
-                <div className="accordion-body">
-                    <strong>This is the first items accordion body.</strong> It is hidden by
-                    default, until the collapse plugin adds the appropriate classes that we use to
-                    style each element. These classes control the overall appearance, as well as the
-                    showing and hiding via CSS transitions. You can modify any of this with custom
-                    CSS or overriding our default variables. Its also worth noting that just about
-                    any HTML can go within the <code>.accordion-body</code>, though the transition
-                    does limit overflow.
-                </div>
-            </div>
+const Accordion = ({ oneAtATime, title, items, className }) => {
+    const [openedItem, setOpenedItem] = useState(null);
+    const [openedItems, setOpenedItems] = useState(items.map(() => false));
+
+    const isItemOpened = useCallback(
+        (idx) => {
+            return openedItem === idx || openedItems[idx] === true;
+        },
+        [items, oneAtATime, openedItem, openedItems],
+    );
+
+    const openItem = useCallback(
+        (idx) => {
+            if (oneAtATime) {
+                const valueToUpdate = idx !== openedItem ? idx : null;
+                setOpenedItem(valueToUpdate);
+            } else {
+                const openItempsUpdated = openedItems.slice();
+                openItempsUpdated[idx] = !openItempsUpdated[idx];
+                setOpenedItems(openItempsUpdated);
+            }
+        },
+        [openedItem, openedItems, setOpenedItem, setOpenedItems],
+    );
+
+    return (
+        <div
+            className={classNames([
+                'accordion',
+                {
+                    [className]: className !== null,
+                },
+            ])}
+            id="accordionParent"
+        >
+            {title !== null ? <h3>{title}</h3> : null}
+            {items.length > 0
+                ? items.map((it, idx) => {
+                      const itemOpened = isItemOpened(idx);
+                      return (
+                          <div className="accordion-item">
+                              <h2 className="accordion-header" id={it.label}>
+                                  <button
+                                      className={`accordion-button ${
+                                          itemOpened ? '' : 'collapsed'
+                                      }`}
+                                      type="button"
+                                      onClick={() => openItem(idx)}
+                                      data-bs-toggle="collapse"
+                                      data-bs-target={`#collapse${idx}`}
+                                      aria-expanded="true"
+                                      aria-controls={`collapse${idx}`}
+                                  >
+                                      {it.label}
+                                  </button>
+                              </h2>
+                              <div
+                                  id={`collapse${idx}`}
+                                  className={`accordion-collapse collapse ${
+                                      itemOpened ? 'show' : ''
+                                  }`}
+                                  aria-labelledby={it.label}
+                                  data-bs-parent="#accordionParent"
+                              >
+                                  <div className="accordion-body">{it.content}</div>
+                              </div>
+                          </div>
+                      );
+                  })
+                : null}
         </div>
-        <div className="accordion-item">
-            <h2 className="accordion-header" id="headingTwo">
-                <button
-                    className="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#collapseTwo"
-                    aria-expanded="false"
-                    aria-controls="collapseTwo"
-                >
-                    Accordion Item #2
-                </button>
-            </h2>
-            <div
-                id="collapseTwo"
-                className="accordion-collapse collapse"
-                aria-labelledby="headingTwo"
-                data-bs-parent="#accordionExample"
-            >
-                <div className="accordion-body">
-                    <strong>This is the second items accordion body.</strong> It is hidden by
-                    default, until the collapse plugin adds the appropriate classes that we use to
-                    style each element. These classes control the overall appearance, as well as the
-                    showing and hiding via CSS transitions. You can modify any of this with custom
-                    CSS or overriding our default variables. Its also worth noting that just about
-                    any HTML can go within the <code>.accordion-body</code>, though the transition
-                    does limit overflow.
-                </div>
-            </div>
-        </div>
-    </div>
-);
+    );
+};
 Accordion.propTypes = propTypes;
 Accordion.defaultProps = defaultProps;
 
