@@ -1,6 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { v4 as uuid } from 'uuid';
 
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 // import Label from '@panneau/element-label';
@@ -25,6 +26,7 @@ const defaultProps = {
 };
 
 const Accordion = ({ oneAtATime, title, items, className }) => {
+    const accordionId = useMemo(() => uuid(), []);
     const [openedItem, setOpenedItem] = useState(null);
     const [openedItems, setOpenedItems] = useState(items.map(() => false));
 
@@ -57,7 +59,7 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
                     [className]: className !== null,
                 },
             ])}
-            id="accordionParent"
+            id={accordionId}
         >
             {title !== null ? <h3>{title}</h3> : null}
             {items.length > 0
@@ -65,7 +67,10 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
                       const itemOpened = isItemOpened(idx);
                       return (
                           <div className="accordion-item">
-                              <h2 className="accordion-header" id={it.label}>
+                              <h2
+                                  className="accordion-header"
+                                  id={`${accordionId}-${it.label}-${idx + 1}`}
+                              >
                                   <button
                                       className={`accordion-button ${
                                           itemOpened ? '' : 'collapsed'
@@ -73,20 +78,20 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
                                       type="button"
                                       onClick={() => openItem(idx)}
                                       data-bs-toggle="collapse"
-                                      data-bs-target={`#collapse${idx}`}
+                                      data-bs-target={`#${accordionId}-collapse${idx}`}
                                       aria-expanded="true"
-                                      aria-controls={`collapse${idx}`}
+                                      aria-controls={`${accordionId}-collapse${idx}`}
                                   >
                                       {it.label}
                                   </button>
                               </h2>
                               <div
-                                  id={`collapse${idx}`}
+                                  id={`${accordionId}-collapse${idx}`}
                                   className={`accordion-collapse collapse ${
                                       itemOpened ? 'show' : ''
                                   }`}
-                                  aria-labelledby={it.label}
-                                  data-bs-parent="#accordionParent"
+                                  aria-labelledby={`${accordionId}-${it.label}-${idx + 1}`}
+                                  data-bs-parent={`#${accordionId}`}
                               >
                                   <div className="accordion-body">{it.content}</div>
                               </div>

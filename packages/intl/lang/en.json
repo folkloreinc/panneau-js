@@ -17,6 +17,21 @@
     "ZxgNge": {
         "defaultMessage": "Add an item"
     },
+    "auth.account": {
+        "defaultMessage": "Account"
+    },
+    "auth.login": {
+        "defaultMessage": "Login"
+    },
+    "auth.login.title": {
+        "defaultMessage": "Login"
+    },
+    "auth.logout": {
+        "defaultMessage": "Logout"
+    },
+    "auth.update_account": {
+        "defaultMessage": "Update account"
+    },
     "errors.description_401": {
         "defaultMessage": "You are not authorized to access this page."
     },
@@ -44,6 +59,18 @@
     "errors.title_500": {
         "defaultMessage": "Error 500"
     },
+    "form.cancel_button": {
+        "defaultMessage": "Cancel"
+    },
+    "form.confirm_delete": {
+        "defaultMessage": "Are you sure you want to delete item #{id}?"
+    },
+    "form.delete_button": {
+        "defaultMessage": "Delete"
+    },
+    "form.edit_button": {
+        "defaultMessage": "Edit"
+    },
     "form.email": {
         "defaultMessage": "Email"
     },
@@ -52,6 +79,9 @@
     },
     "form.save": {
         "defaultMessage": "Save"
+    },
+    "form.show_button": {
+        "defaultMessage": "Cancel"
     },
     "forms.delete_button": {
         "defaultMessage": "Delete"
@@ -103,6 +133,27 @@
     },
     "pagination.previous": {
         "defaultMessage": "Previous"
+    },
+    "resources.create": {
+        "defaultMessage": "Create {a_singular}"
+    },
+    "resources.created": {
+        "defaultMessage": "{the_singular} has been created."
+    },
+    "resources.delete": {
+        "defaultMessage": "Delete {a_singular}"
+    },
+    "resources.deleted": {
+        "defaultMessage": "{the_singular} has been deleted."
+    },
+    "resources.edit": {
+        "defaultMessage": "Edit {a_singular}"
+    },
+    "resources.index": {
+        "defaultMessage": "View {a_plural}"
+    },
+    "resources.loading": {
+        "defaultMessage": "Loading {plural}..."
     },
     "s4Xrs9": {
         "defaultMessage": "Time"

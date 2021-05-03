@@ -47,6 +47,31 @@ msgctxt "ZxgNge"
 msgid "Add an item"
 msgstr "Add an item"
 
+#: auth.account
+msgctxt "auth.account"
+msgid "Account"
+msgstr "Account"
+
+#: auth.login
+msgctxt "auth.login"
+msgid "Login"
+msgstr "Login"
+
+#: auth.login.title
+msgctxt "auth.login.title"
+msgid "Login"
+msgstr "Login"
+
+#: auth.logout
+msgctxt "auth.logout"
+msgid "Logout"
+msgstr "Logout"
+
+#: auth.update_account
+msgctxt "auth.update_account"
+msgid "Update account"
+msgstr "Update account"
+
 #: errors.description_401
 msgctxt "errors.description_401"
 msgid "You are not authorized to access this page."
@@ -92,6 +117,26 @@ msgctxt "errors.title_500"
 msgid "Error 500"
 msgstr "Error 500"
 
+#: form.cancel_button
+msgctxt "form.cancel_button"
+msgid "Cancel"
+msgstr "Cancel"
+
+#: form.confirm_delete
+msgctxt "form.confirm_delete"
+msgid "Are you sure you want to delete item #{id}?"
+msgstr "Are you sure you want to delete item #{id}?"
+
+#: form.delete_button
+msgctxt "form.delete_button"
+msgid "Delete"
+msgstr "Delete"
+
+#: form.edit_button
+msgctxt "form.edit_button"
+msgid "Edit"
+msgstr "Edit"
+
 #: form.email
 msgctxt "form.email"
 msgid "Email"
@@ -106,6 +151,11 @@ msgstr "Password"
 msgctxt "form.save"
 msgid "Save"
 msgstr "Save"
+
+#: form.show_button
+msgctxt "form.show_button"
+msgid "Cancel"
+msgstr "Cancel"
 
 #: forms.delete_button
 msgctxt "forms.delete_button"
@@ -191,6 +241,41 @@ msgstr "next"
 msgctxt "pagination.previous"
 msgid "Previous"
 msgstr "Previous"
+
+#: resources.create
+msgctxt "resources.create"
+msgid "Create {a_singular}"
+msgstr "Create {a_singular}"
+
+#: resources.created
+msgctxt "resources.created"
+msgid "{the_singular} has been created."
+msgstr "{the_singular} has been created."
+
+#: resources.delete
+msgctxt "resources.delete"
+msgid "Delete {a_singular}"
+msgstr "Delete {a_singular}"
+
+#: resources.deleted
+msgctxt "resources.deleted"
+msgid "{the_singular} has been deleted."
+msgstr "{the_singular} has been deleted."
+
+#: resources.edit
+msgctxt "resources.edit"
+msgid "Edit {a_singular}"
+msgstr "Edit {a_singular}"
+
+#: resources.index
+msgctxt "resources.index"
+msgid "View {a_plural}"
+msgstr "View {a_plural}"
+
+#: resources.loading
+msgctxt "resources.loading"
+msgid "Loading {plural}..."
+msgstr "Loading {plural}..."
 
 # DateTimeField time caption
 #: s4Xrs9

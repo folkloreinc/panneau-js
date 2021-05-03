@@ -47,6 +47,31 @@ msgctxt "ZxgNge"
 msgid "Add an item"
 msgstr ""
 
+#: auth.account
+msgctxt "auth.account"
+msgid "Account"
+msgstr ""
+
+#: auth.login
+msgctxt "auth.login"
+msgid "Login"
+msgstr ""
+
+#: auth.login.title
+msgctxt "auth.login.title"
+msgid "Login"
+msgstr ""
+
+#: auth.logout
+msgctxt "auth.logout"
+msgid "Logout"
+msgstr ""
+
+#: auth.update_account
+msgctxt "auth.update_account"
+msgid "Update account"
+msgstr ""
+
 #: errors.description_401
 msgctxt "errors.description_401"
 msgid "You are not authorized to access this page."
@@ -92,6 +117,26 @@ msgctxt "errors.title_500"
 msgid "Error 500"
 msgstr ""
 
+#: form.cancel_button
+msgctxt "form.cancel_button"
+msgid "Cancel"
+msgstr ""
+
+#: form.confirm_delete
+msgctxt "form.confirm_delete"
+msgid "Are you sure you want to delete item #{id}?"
+msgstr ""
+
+#: form.delete_button
+msgctxt "form.delete_button"
+msgid "Delete"
+msgstr ""
+
+#: form.edit_button
+msgctxt "form.edit_button"
+msgid "Edit"
+msgstr ""
+
 #: form.email
 msgctxt "form.email"
 msgid "Email"
@@ -105,6 +150,11 @@ msgstr ""
 #: form.save
 msgctxt "form.save"
 msgid "Save"
+msgstr ""
+
+#: form.show_button
+msgctxt "form.show_button"
+msgid "Cancel"
 msgstr ""
 
 #: forms.delete_button
@@ -190,6 +240,41 @@ msgstr ""
 #: pagination.previous
 msgctxt "pagination.previous"
 msgid "Previous"
+msgstr ""
+
+#: resources.create
+msgctxt "resources.create"
+msgid "Create {a_singular}"
+msgstr ""
+
+#: resources.created
+msgctxt "resources.created"
+msgid "{the_singular} has been created."
+msgstr ""
+
+#: resources.delete
+msgctxt "resources.delete"
+msgid "Delete {a_singular}"
+msgstr ""
+
+#: resources.deleted
+msgctxt "resources.deleted"
+msgid "{the_singular} has been deleted."
+msgstr ""
+
+#: resources.edit
+msgctxt "resources.edit"
+msgid "Edit {a_singular}"
+msgstr ""
+
+#: resources.index
+msgctxt "resources.index"
+msgid "View {a_plural}"
+msgstr ""
+
+#: resources.loading
+msgctxt "resources.loading"
+msgid "Loading {plural}..."
 msgstr ""
 
 # DateTimeField time caption
