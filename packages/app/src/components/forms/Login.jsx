@@ -1,9 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-// import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
-import { useForm } from '@panneau/core/hooks';
 
 import { useFieldComponent, useUrlGenerator } from '@panneau/core/contexts';
 
@@ -24,24 +22,34 @@ const defaultProps = {
 
 const LoginForm = ({ className, onSuccess }) => {
     const url = useUrlGenerator();
-    const { login = () => {} } = useAuth();
+    const { login } = useAuth();
     const TextField = useFieldComponent('text');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    const postForm = useCallback((action, { email, password }) => login(email, password), [login]);
-    const { fields, onSubmit } = useForm({
-        fields: ['email', 'password'],
-        postForm,
-        onSuccess,
-    });
-    const { email = null, password = null } = fields || {};
+    const postForm = useCallback(() => login(email, password).then(() => onSuccess()), [login]);
+
+    const onChangeEmail = useCallback(
+        (value) => {
+            setEmail(value);
+        },
+        [setEmail],
+    );
+
+    const onChangePassword = useCallback(
+        (value) => {
+            setPassword(value);
+        },
+        [setPassword],
+    );
 
     return (
-        <form action={url('auth.login')} method="post" onSubmit={onSubmit} className={className}>
+        <form action={url('auth.login')} method="post" onSubmit={postForm} className={className}>
             <FormGroup label={<FormattedMessage id="form.email" defaultMessage="Email" />}>
-                <TextField type="email" size="lg" {...email} />
+                <TextField type="email" size="lg" value={email} onChange={onChangeEmail} />
             </FormGroup>
             <FormGroup label={<FormattedMessage id="form.password" defaultMessage="Password" />}>
-                <TextField type="password" size="lg" {...password} />
+                <TextField type="password" size="lg" value={password} onChange={onChangePassword} />
             </FormGroup>
             <div className="mt4 d-flex">
                 <Button type="submit" theme="primary" size="lg" className="ms-auto">

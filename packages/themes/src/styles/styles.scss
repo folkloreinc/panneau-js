@@ -1,2 +1,10 @@
-/* stylelint-disable selector-class-pattern */
-@import '~@panneau/themes/assets/css/styles.css';
+// @import '~@panneau/themes/assets/css/styles.css';
+
+html,
+body {
+    margin: 0;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+}

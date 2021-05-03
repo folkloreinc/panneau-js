@@ -1,6 +1,6 @@
 {
     "name": "@panneau/themes",
-    "version": "1.0.0-alpha.0",
+    "version": "1.0.0-alpha.1",
     "description": "",
     "keywords": [
         "javascript"
@@ -42,8 +42,10 @@
         "scss"
     ],
     "scripts": {
-        "vendor": "../../scripts/build-sass.js ./src/styles/vendor.scss ./assets/css/vendor.css",
-        "prepare": "../../scripts/prepare-package.sh --scss && npm run vendor"
+        "css:styles": "../../scripts/build-sass.js ./src/styles/styles.scss ./assets/css/styles.css",
+        "css:vendor": "../../scripts/build-sass.js ./src/styles/vendor.scss ./assets/css/vendor.css",
+        "css": "npm run css:vendor && npm run css:styles",
+        "prepare": "../../scripts/prepare-package.sh --scss && npm run css"
     },
     "devDependencies": {
         "react": "^16.8.0",
