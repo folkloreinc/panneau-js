@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-alert",
-    "version": "1.0.0-alpha.0",
+    "version": "1.0.0-alpha.1",
     "description": "Alert element",
     "keywords": [
         "javascript"
@@ -57,7 +57,7 @@
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^1.0.0-alpha.0",
-        "@panneau/element-button": "^1.0.0-alpha.0",
+        "@panneau/element-button": "^1.0.0-alpha.1",
         "@panneau/element-label": "^1.0.0-alpha.0",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
