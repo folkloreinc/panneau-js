@@ -99,7 +99,6 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
                                   className={classNames([
                                       'accordion-item collapse show',
                                       styles.accordeonItem,
-                                      { [styles.opened]: itemOpened === true },
                                   ])}
                                   aria-labelledby={`${accordionId}-${it.label}-${idx + 1}`}
                                   data-bs-parent={`#${accordionId}`}
