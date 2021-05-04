@@ -4,10 +4,10 @@ import { useHistory } from 'react-router';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import { ResourceProvider } from '@panneau/core/contexts';
-import { useResourceUrlGenerator } from '@panneau/core/hooks';
+
+import useResourceUrlGenerator from '../../hooks/useResourceUrlGenerator';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
-// import Button from '../buttons/Button';
 import ResourceLabel from '../partials/ResourceLabel';
 import ResourceForm from '../partials/ResourceForm';
 

@@ -23,10 +23,6 @@ export const Normal = () => (
     <PanneauContainer definition={panneauDefinition} memoryRouter {...props} />
 );
 
-export const WithUser = () => (
-    <PanneauContainer definition={panneauDefinition} memoryRouter user={user} />
-);
-
 export const LightMode = () => (
     <PanneauContainer
         definition={{ ...panneauDefinition, theme: { colorScheme: 'light' } }}

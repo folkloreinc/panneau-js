@@ -42,6 +42,8 @@ const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
 
     const Router = memoryRouter || usesMemoryRouter ? MemoryRouter : BrowserRouter;
 
+    console.log('my def', definition);
+
     // For storybook: auto load page with: initialEntries={['/pages/1/edit']} initialIndex={0}
 
     return (

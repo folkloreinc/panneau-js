@@ -7,7 +7,9 @@ import { getComponentFromName } from '@panneau/core/utils';
 
 import { FormProvider, useFormsComponents } from '@panneau/core/contexts';
 import { useResourceUpdate, useResourceStore } from '@panneau/data';
-import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
+import { useForm } from '@panneau/core/hooks';
+
+import useResourceUrlGenerator from '../../hooks/useResourceUrlGenerator';
 
 // import * as FormComponents from './resources';
 

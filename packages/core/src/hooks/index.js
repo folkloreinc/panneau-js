@@ -7,6 +7,5 @@ export { default as useLoadedFonts } from './useLoadedFonts';
 export { default as useMediaApi } from './useMediaApi';
 export { default as useMediasParser } from './useMediasParser';
 export * from './useObserver';
-export { default as useResourceUrlGenerator } from './useResourceUrlGenerator';
 export * from './useScreenSize';
 export { default as useWindowEvent } from './useWindowEvent';

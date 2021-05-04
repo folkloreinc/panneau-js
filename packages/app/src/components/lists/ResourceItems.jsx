@@ -5,11 +5,9 @@ import PropTypes from 'prop-types';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
-import {
-    useListsComponents,
-    useResourceUrlGenerator,
-    usePanneauColorScheme,
-} from '@panneau/core/contexts';
+import { useListsComponents, usePanneauColorScheme } from '@panneau/core/contexts';
+
+import useResourceUrlGenerator from '../../hooks/useResourceUrlGenerator';
 
 import ResourceFilters from './ResourceFilters';
 
