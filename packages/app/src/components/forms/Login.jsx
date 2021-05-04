@@ -26,13 +26,19 @@ const LoginForm = ({ className, onSuccess }) => {
     const TextField = useFieldComponent('text');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState(null);
 
     const postForm = useCallback(
-        (e) => {
-            e.preventDefault();
-            login(email, password).then(() => onSuccess());
-        },
-        [login, email, password],
+        () =>
+            login(email, password)
+                .then(() => onSuccess())
+                .catch((e) => {
+                    console.error(e);
+                    if (e.message) {
+                        setError(e.message);
+                    }
+                }),
+        [login, email, password, setError],
     );
 
     const onChangeEmail = useCallback(
@@ -50,7 +56,8 @@ const LoginForm = ({ className, onSuccess }) => {
     );
 
     return (
-        <form method="post" onSubmit={postForm} className={className}>
+        <form method="post" className={className}>
+            {error !== null ? <div className="alert alert-danger mt-2">{error}</div> : null}
             <FormGroup label={<FormattedMessage id="form.email" defaultMessage="Email" />}>
                 <TextField type="email" size="lg" value={email} onChange={onChangeEmail} />
             </FormGroup>
@@ -58,7 +65,14 @@ const LoginForm = ({ className, onSuccess }) => {
                 <TextField type="password" size="lg" value={password} onChange={onChangePassword} />
             </FormGroup>
             <div className="mt4 d-flex">
-                <Button type="submit" theme="primary" size="lg" className="ms-auto">
+                <Button
+                    onClick={postForm}
+                    type="button"
+                    theme="primary"
+                    size="lg"
+                    className="ms-auto"
+                    disabled={email === '' || password === ''}
+                >
                     <FormattedMessage id="login" defaultMessage="Log in" />
                 </Button>
             </div>
