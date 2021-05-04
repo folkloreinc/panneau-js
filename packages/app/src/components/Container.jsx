@@ -21,16 +21,18 @@ const propTypes = {
     definition: PanneauPropTypes.panneauDefinition.isRequired,
     user: PanneauPropTypes.user,
     memoryRouter: PropTypes.bool,
+    baseUrl: PropTypes.string,
     statusCode: PanneauPropTypes.statusCode,
 };
 
 const defaultProps = {
     user: null,
     memoryRouter: false,
+    baseUrl: null,
     statusCode: null,
 };
 
-const Container = ({ definition, user, memoryRouter, statusCode }) => {
+const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
     const {
         intl: { locale = 'en', messages: translations = {} } = {},
         routes = {},
@@ -43,7 +45,7 @@ const Container = ({ definition, user, memoryRouter, statusCode }) => {
     // For storybook: auto load page with: initialEntries={['/pages/1/edit']} initialIndex={0}
 
     return (
-        <Router initialEntries={['/pages/1/edit']} initialIndex={0}>
+        <Router>
             <PanneauProvider definition={definition}>
                 <IntlProvider locale={locale} messages={translations[locale] || translations}>
                     <RoutesProvider routes={routes}>
@@ -51,7 +53,7 @@ const Container = ({ definition, user, memoryRouter, statusCode }) => {
                             <FormsProvider>
                                 <ListsProvider>
                                     <FiltersProvider>
-                                        <ApiProvider>
+                                        <ApiProvider baseUrl={baseUrl}>
                                             <AuthProvider user={user}>
                                                 <Routes statusCode={statusCode} />
                                             </AuthProvider>
