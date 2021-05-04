@@ -8,7 +8,7 @@ class Base {
             routes: {},
             generateUrl: null,
             ...opts,
-            baseUrl: opts.baseUrl || 'http://localhost:58800/api',
+            baseUrl: opts.baseUrl,
         };
     }
 
