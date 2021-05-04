@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
-import { useFieldComponent, useUrlGenerator } from '@panneau/core/contexts';
+import { useFieldComponent } from '@panneau/core/contexts';
 
 import FormGroup from '@panneau/element-form-group';
 import Button from '@panneau/element-button';
@@ -21,13 +21,19 @@ const defaultProps = {
 };
 
 const LoginForm = ({ className, onSuccess }) => {
-    const url = useUrlGenerator();
+    // const url = useUrlGenerator();
     const { login } = useAuth();
     const TextField = useFieldComponent('text');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const postForm = useCallback(() => login(email, password).then(() => onSuccess()), [login]);
+    const postForm = useCallback(
+        (e) => {
+            e.preventDefault();
+            login(email, password).then(() => onSuccess());
+        },
+        [login, email, password],
+    );
 
     const onChangeEmail = useCallback(
         (value) => {
@@ -44,7 +50,7 @@ const LoginForm = ({ className, onSuccess }) => {
     );
 
     return (
-        <form action={url('login')} method="post" onSubmit={postForm} className={className}>
+        <form method="post" onSubmit={postForm} className={className}>
             <FormGroup label={<FormattedMessage id="form.email" defaultMessage="Email" />}>
                 <TextField type="email" size="lg" value={email} onChange={onChangeEmail} />
             </FormGroup>
