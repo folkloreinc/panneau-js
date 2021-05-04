@@ -17,6 +17,7 @@ class AuthApi {
 
     login(email, password) {
         const { withCredentials } = this.options;
+        console.log('test', this.api.route('login'));
         return this.api.requestPost(
             this.api.route('login'),
             {
@@ -48,10 +49,14 @@ class AuthApi {
 
     requestPassword(email) {
         const { withCredentials } = this.options;
-        return this.api.requestPost(this.api.route('password.email'), { email }, {
-            withSession: !withCredentials,
-            withCredentials,
-        });
+        return this.api.requestPost(
+            this.api.route('password.email'),
+            { email },
+            {
+                withSession: !withCredentials,
+                withCredentials,
+            },
+        );
     }
 
     resetPassword(data) {
