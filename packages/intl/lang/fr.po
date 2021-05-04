@@ -15,270 +15,270 @@ msgstr ""
 #: 2/F1Q7
 msgctxt "2/F1Q7"
 msgid "#{index}"
-msgstr ""
+msgstr "#{index}"
 
 # Success form message
 #: BpZoQZ
 msgctxt "BpZoQZ"
 msgid "Success"
-msgstr ""
+msgstr "Succès"
 
 # Label when there is no item in items field
 #: PKCv5M
 msgctxt "PKCv5M"
 msgid "No item..."
-msgstr ""
+msgstr "Aucun item..."
 
 # Button label
 #: PyxZY2
 msgctxt "PyxZY2"
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 # Submit form button
 #: ZLDmja
 msgctxt "ZLDmja"
 msgid "Submit"
-msgstr ""
+msgstr "Envoyer"
 
 # Button label in items field
 #: ZxgNge
 msgctxt "ZxgNge"
 msgid "Add an item"
-msgstr ""
+msgstr "Ajouter un élement"
 
 #: auth.account
 msgctxt "auth.account"
 msgid "Account"
-msgstr ""
+msgstr "Compte"
 
 #: auth.login
 msgctxt "auth.login"
 msgid "Login"
-msgstr ""
+msgstr "Connexion"
 
 #: auth.login.title
 msgctxt "auth.login.title"
 msgid "Login"
-msgstr ""
+msgstr "Connexion"
 
 #: auth.logout
 msgctxt "auth.logout"
 msgid "Logout"
-msgstr ""
+msgstr "Déconnexion"
 
 #: auth.update_account
 msgctxt "auth.update_account"
 msgid "Update account"
-msgstr ""
+msgstr "Mettre à jour le profil"
 
 #: errors.description_401
 msgctxt "errors.description_401"
 msgid "You are not authorized to access this page."
-msgstr ""
+msgstr "Vous n’êtes pas autorisé à accéder à cette page."
 
 #: errors.description_403
 msgctxt "errors.description_403"
 msgid "Access to this page is forbidden"
-msgstr ""
+msgstr "Vues"
 
 #: errors.description_404
 msgctxt "errors.description_404"
 msgid "This page doesn’t exist"
-msgstr ""
+msgstr "Cette page n'existe pas"
 
 #: errors.description_500
 msgctxt "errors.description_500"
 msgid "There was an error"
-msgstr ""
+msgstr "Une erreur s'est produite lors de la publication"
 
 #: errors.goto_home
 msgctxt "errors.goto_home"
 msgid "Go to home page"
-msgstr ""
+msgstr "Revenir à la connexion"
 
 #: errors.title_401
 msgctxt "errors.title_401"
 msgid "Error 401"
-msgstr ""
+msgstr "Erreur 401"
 
 #: errors.title_403
 msgctxt "errors.title_403"
 msgid "Error 403"
-msgstr ""
+msgstr "Erreur 403"
 
 #: errors.title_404
 msgctxt "errors.title_404"
 msgid "Error 404"
-msgstr ""
+msgstr "Erreur 404"
 
 #: errors.title_500
 msgctxt "errors.title_500"
 msgid "Error 500"
-msgstr ""
+msgstr "Erreur 500"
 
 #: form.cancel_button
 msgctxt "form.cancel_button"
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 #: form.confirm_delete
 msgctxt "form.confirm_delete"
 msgid "Are you sure you want to delete item #{id}?"
-msgstr ""
+msgstr "Etes-vous sûr que vous voulez supprimer cette histoire?"
 
 #: form.delete_button
 msgctxt "form.delete_button"
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 #: form.edit_button
 msgctxt "form.edit_button"
 msgid "Edit"
-msgstr ""
+msgstr "Modifier"
 
 #: form.email
 msgctxt "form.email"
 msgid "Email"
-msgstr ""
+msgstr "Courriel"
 
 #: form.password
 msgctxt "form.password"
 msgid "Password"
-msgstr ""
+msgstr "Mot de passe"
 
 #: form.save
 msgctxt "form.save"
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 #: form.show_button
 msgctxt "form.show_button"
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 #: forms.delete_button
 msgctxt "forms.delete_button"
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 #: forms.edit_button
 msgctxt "forms.edit_button"
 msgid "Edit"
-msgstr ""
+msgstr "Modifier"
 
 #: forms.error_status
 msgctxt "forms.error_status"
 msgid "Error"
-msgstr ""
+msgstr "Une erreur s'est produite lors de la publication"
 
 #: forms.loading_status
 msgctxt "forms.loading_status"
 msgid "Loading..."
-msgstr ""
+msgstr "Chargement..."
 
 #: forms.success_status
 msgctxt "forms.success_status"
 msgid "Success!"
-msgstr ""
+msgstr "Succès!"
 
 #: lists.filters.reset
 msgctxt "lists.filters.reset"
 msgid "Reset"
-msgstr ""
+msgstr "Réinitialiser le mot de passe"
 
 #: lists.filters.submit
 msgctxt "lists.filters.submit"
 msgid "Submit"
-msgstr ""
+msgstr "Envoyer"
 
 #: login
 msgctxt "login"
 msgid "Log in"
-msgstr ""
+msgstr "Connexion"
 
 #: menus.pagination.next
 msgctxt "menus.pagination.next"
 msgid "next"
-msgstr ""
+msgstr "suivant"
 
 #: menus.pagination.previous
 msgctxt "menus.pagination.previous"
 msgid "Previous"
-msgstr ""
+msgstr "Précédent"
 
 #: meta.title_401
 msgctxt "meta.title_401"
 msgid "Error 401"
-msgstr ""
+msgstr "Erreur 401"
 
 #: meta.title_403
 msgctxt "meta.title_403"
 msgid "Error 403"
-msgstr ""
+msgstr "Erreur 403"
 
 #: meta.title_404
 msgctxt "meta.title_404"
 msgid "Error 404"
-msgstr ""
+msgstr "Erreur 404"
 
 #: meta.title_500
 msgctxt "meta.title_500"
 msgid "Error 500"
-msgstr ""
+msgstr "Erreur 500"
 
 #: pagination.items_count
 msgctxt "pagination.items_count"
 msgid "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
-msgstr ""
+msgstr "{count, plural, =0 {No item.} =1 {# item} autres {# items}}"
 
 #: pagination.next
 msgctxt "pagination.next"
 msgid "Next"
-msgstr ""
+msgstr "Suivant"
 
 #: pagination.previous
 msgctxt "pagination.previous"
 msgid "Previous"
-msgstr ""
+msgstr "Précédent"
 
 #: resources.create
 msgctxt "resources.create"
 msgid "Create {a_singular}"
-msgstr ""
+msgstr "Créer"
 
 #: resources.created
 msgctxt "resources.created"
 msgid "{the_singular} has been created."
-msgstr ""
+msgstr "{the_singular} a été créé."
 
 #: resources.delete
 msgctxt "resources.delete"
 msgid "Delete {a_singular}"
-msgstr ""
+msgstr "Supprimer"
 
 #: resources.deleted
 msgctxt "resources.deleted"
 msgid "{the_singular} has been deleted."
-msgstr ""
+msgstr "{the_singular} a été supprimé."
 
 #: resources.edit
 msgctxt "resources.edit"
 msgid "Edit {a_singular}"
-msgstr ""
+msgstr "Modifier"
 
 #: resources.index
 msgctxt "resources.index"
 msgid "View {a_plural}"
-msgstr ""
+msgstr "Afficher l’écran"
 
 #: resources.loading
 msgctxt "resources.loading"
 msgid "Loading {plural}..."
-msgstr ""
+msgstr "Chargement {plural}..."
 
 # DateTimeField time caption
 #: s4Xrs9
 msgctxt "s4Xrs9"
 msgid "Time"
-msgstr ""
+msgstr "C'est le moment de créer un thème"

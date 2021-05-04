@@ -44,7 +44,7 @@ const LoginForm = ({ className, onSuccess }) => {
     );
 
     return (
-        <form action={url('auth.login')} method="post" onSubmit={postForm} className={className}>
+        <form action={url('login')} method="post" onSubmit={postForm} className={className}>
             <FormGroup label={<FormattedMessage id="form.email" defaultMessage="Email" />}>
                 <TextField type="email" size="lg" value={email} onChange={onChangeEmail} />
             </FormGroup>

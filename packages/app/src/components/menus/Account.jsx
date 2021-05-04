@@ -55,7 +55,7 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                 : [
                       {
                           label: messages.login,
-                          href: route('auth.login'),
+                          href: route('login'),
                       },
                   ],
         [user, route, onClickLogout],
