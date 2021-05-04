@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-delete",
-    "version": "1.0.0-alpha.4",
+    "version": "1.0.0-alpha.5",
     "description": "Delete resource form",
     "keywords": [
         "javascript"
@@ -54,7 +54,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^1.0.0-alpha.4",
-        "@panneau/data": "^1.0.0-alpha.4",
+        "@panneau/data": "^1.0.0-alpha.5",
         "@panneau/element-button": "^1.0.0-alpha.4",
         "@panneau/element-form": "^1.0.0-alpha.4",
         "@panneau/field-fields": "^1.0.0-alpha.4",
