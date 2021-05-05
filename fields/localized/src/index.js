@@ -1,3 +1,3 @@
-import LocalizedField from './LocalizedField';
+import LocalizedField from './Localized';
 
 export default LocalizedField;

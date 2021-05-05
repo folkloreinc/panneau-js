@@ -11,6 +11,7 @@ export { default as Radios } from '@panneau/field-radios';
 export { default as Select } from '@panneau/field-select';
 export { default as Test } from '@panneau/field-test';
 export { default as Text } from '@panneau/field-text';
+export { default as Localized } from '@panneau/field-localized';
 export { default as Toggle } from '@panneau/field-toggle';
 export { default as Toggles } from '@panneau/field-toggles';
 export { default as Url } from '@panneau/field-url';
