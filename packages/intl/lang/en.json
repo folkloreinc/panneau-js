@@ -113,6 +113,9 @@
     "meta.title_500": {
         "defaultMessage": "Error 500"
     },
+    "no": {
+        "defaultMessage": "Non"
+    },
     "pagination.items_count": {
         "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
     },
@@ -145,5 +148,8 @@
     },
     "s4Xrs9": {
         "defaultMessage": "Time"
+    },
+    "yes": {
+        "defaultMessage": "Oui"
     }
 }

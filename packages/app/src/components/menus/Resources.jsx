@@ -2,10 +2,11 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useLocation } from 'react-router';
 
-import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { usePanneauResources } from '@panneau/core/contexts';
 
 import Menu from '@panneau/element-menu';
+
+import useResourceUrlGenerator from '../../hooks/useResourceUrlGenerator';
 
 const propTypes = {
     className: PropTypes.string,

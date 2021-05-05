@@ -1,5 +1,5 @@
 {
-    "version": "1.0.0-alpha.2",
+    "version": "1.0.0-alpha.9",
     "packages": [
         "fields/*",
         "forms/*",
@@ -7,6 +7,7 @@
         "elements/*",
         "filters/*",
         "lists/*",
+        "indexes/*",
         "packages/*"
     ],
     "command": {

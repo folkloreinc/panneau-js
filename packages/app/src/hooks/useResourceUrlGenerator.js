@@ -1,6 +1,5 @@
 import isObject from 'lodash/isObject';
-import { useUrlGenerator } from '../contexts/RoutesContext';
-import { usePanneauResources } from '../contexts/PanneauContext';
+import { useUrlGenerator, usePanneauResources } from '@panneau/core/contexts';
 
 const getResource = (resources, resourceId) =>
     resourceId !== null && !isObject(resourceId)

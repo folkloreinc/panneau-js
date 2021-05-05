@@ -205,6 +205,11 @@ msgctxt "meta.title_500"
 msgid "Error 500"
 msgstr "Error 500"
 
+#: no
+msgctxt "no"
+msgid "Non"
+msgstr "Non"
+
 #: pagination.items_count
 msgctxt "pagination.items_count"
 msgid "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
@@ -260,3 +265,8 @@ msgstr "Loading {plural}..."
 msgctxt "s4Xrs9"
 msgid "Time"
 msgstr "Time"
+
+#: yes
+msgctxt "yes"
+msgid "Oui"
+msgstr "Oui"

@@ -8,6 +8,8 @@ import { useDocumentEvent } from '@panneau/core/hooks';
 import Link from '@panneau/element-link';
 import Label from '@panneau/element-label';
 
+import styles from './styles.module.scss';
+
 const propTypes = {
     items: PanneauPropTypes.menuItems,
     children: PropTypes.node,
@@ -58,6 +60,7 @@ const Dropdown = ({
                 'relative',
                 {
                     [`dropdown-menu-${align}`]: align !== null,
+                    [styles[`dropdown-menu-${align}`]]: align !== null,
                     show: visible,
                     [className]: className !== null,
                 },

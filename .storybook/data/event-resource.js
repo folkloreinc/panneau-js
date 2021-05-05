@@ -2,7 +2,7 @@ export default {
     id: 'events',
     name: 'Event',
 
-    intl: {
+    localization: {
         values: {
             a_singular: 'event',
             a_plural: 'events',

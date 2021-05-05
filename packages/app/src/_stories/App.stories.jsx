@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 
 import PanneauContainer from '../components/Container';
@@ -12,12 +13,14 @@ export default {
     },
 };
 
+const props = {
+    baseUrl: 'http://localhost:58800/api', // Should be whatever, /api is for storybook
+};
+
 const user = { id: 1, name: 'Folklore', email: 'info@atelierfolklore.ca' };
 
-export const Normal = () => <PanneauContainer definition={panneauDefinition} memoryRouter />;
-
-export const WithUser = () => (
-    <PanneauContainer definition={panneauDefinition} memoryRouter user={user} />
+export const Normal = () => (
+    <PanneauContainer definition={panneauDefinition} memoryRouter {...props} />
 );
 
 export const LightMode = () => (
@@ -25,6 +28,7 @@ export const LightMode = () => (
         definition={{ ...panneauDefinition, theme: { colorScheme: 'light' } }}
         memoryRouter
         user={user}
+        {...props}
     />
 );
 
@@ -33,5 +37,6 @@ export const DarkMode = () => (
         definition={{ ...panneauDefinition, theme: { colorScheme: 'dark' } }}
         memoryRouter
         user={user}
+        {...props}
     />
 );

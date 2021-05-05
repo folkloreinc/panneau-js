@@ -1,7 +1,7 @@
 {
     "id": "1",
     "type": "page",
-    "title": "Une page",
+    "title": { "fr": "Une page", "en": "A page" },
     "description": "Une description",
     "slug": null
 }

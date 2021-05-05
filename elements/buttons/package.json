@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-buttons",
-    "version": "1.0.0-alpha.1",
+    "version": "1.0.0-alpha.9",
     "description": "Buttons element",
     "keywords": [
         "javascript"
@@ -53,9 +53,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.0.0-alpha.0",
-        "@panneau/element-button": "^1.0.0-alpha.1",
-        "@panneau/themes": "^1.0.0-alpha.1",
+        "@panneau/core": "^1.0.0-alpha.9",
+        "@panneau/element-button": "^1.0.0-alpha.9",
+        "@panneau/themes": "^1.0.0-alpha.9",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

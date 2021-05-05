@@ -5,7 +5,6 @@ import isString from 'lodash/isString';
 import isObject from 'lodash/isObject';
 
 import * as PanneauPropTypes from '../lib/PropTypes';
-import { isSet } from 'lodash-es';
 
 const PanneauContext = React.createContext(null);
 
@@ -23,7 +22,7 @@ export const usePanneauResource = (id) => {
 
 export const usePanneauColorScheme = () => {
     const { theme = {} } = usePanneau();
-    const { colorScheme = 'dark' } = theme || {};
+    const { colorScheme = 'light' } = theme || {};
 
     return colorScheme === 'dark'
         ? {
@@ -51,7 +50,8 @@ export const usePanneauComponent = (namespace, name) => {
     }
 
     if (isObject(component) && isString(component?.componnent)) {
-        const { component: innderComponent, ...props } = component;
+        // eslint-disable-next-line no-unused-vars
+        const { component: innerComponent, ...props } = component;
         return component.component;
     }
 

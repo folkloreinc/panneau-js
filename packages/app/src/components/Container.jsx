@@ -3,13 +3,15 @@ import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
+// import '@popperjs/core';
+// import '@panneau/themes';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { PanneauProvider, RoutesProvider } from '@panneau/core/contexts';
 import { ApiProvider } from '@panneau/data';
 import FieldsProvider from '@panneau/fields';
 import FormsProvider from '@panneau/forms';
 import ListsProvider from '@panneau/lists';
+import IndexesProvider from '@panneau/indexes';
 import FiltersProvider from '@panneau/filters';
 import { AuthProvider } from '../contexts/AuthContext';
 
@@ -42,6 +44,8 @@ const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
 
     const Router = memoryRouter || usesMemoryRouter ? MemoryRouter : BrowserRouter;
 
+    console.log('my def', definition);
+
     // For storybook: auto load page with: initialEntries={['/pages/1/edit']} initialIndex={0}
 
     return (
@@ -52,13 +56,15 @@ const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
                         <FieldsProvider>
                             <FormsProvider>
                                 <ListsProvider>
-                                    <FiltersProvider>
-                                        <ApiProvider baseUrl={baseUrl}>
-                                            <AuthProvider user={user}>
-                                                <Routes statusCode={statusCode} />
-                                            </AuthProvider>
-                                        </ApiProvider>
-                                    </FiltersProvider>
+                                    <IndexesProvider>
+                                        <FiltersProvider>
+                                            <ApiProvider baseUrl={baseUrl}>
+                                                <AuthProvider user={user}>
+                                                    <Routes statusCode={statusCode} />
+                                                </AuthProvider>
+                                            </ApiProvider>
+                                        </FiltersProvider>
+                                    </IndexesProvider>
                                 </ListsProvider>
                             </FormsProvider>
                         </FieldsProvider>
