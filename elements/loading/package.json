@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-loading",
-    "version": "1.0.0-alpha.8",
+    "version": "1.0.0-alpha.9",
     "description": "Loading element",
     "keywords": [
         "javascript"
@@ -56,8 +56,8 @@
         "@fortawesome/fontawesome-svg-core": "^1.2.35",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
-        "@panneau/core": "^1.0.0-alpha.8",
-        "@panneau/element-label": "^1.0.0-alpha.8",
+        "@panneau/core": "^1.0.0-alpha.9",
+        "@panneau/element-label": "^1.0.0-alpha.9",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8"
