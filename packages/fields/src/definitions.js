@@ -9,6 +9,7 @@ import { definition as Radios } from '@panneau/field-radios';
 import { definition as Select } from '@panneau/field-select';
 import { definition as Test } from '@panneau/field-test';
 import { definition as Text } from '@panneau/field-text';
+import { definition as Localized } from '@panneau/field-localized';
 import { definition as Toggle } from '@panneau/field-toggle';
 import { definition as Toggles } from '@panneau/field-toggles';
 import { definition as Url } from '@panneau/field-url';
@@ -25,6 +26,7 @@ export default [
     Select,
     Test,
     Text,
+    Localized,
     Toggle,
     Toggles,
     Url,
