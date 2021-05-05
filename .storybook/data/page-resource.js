@@ -27,7 +27,9 @@ export default {
             name: 'title',
             label: 'Titre',
             component: 'text-localized',
-            index: 'text-localized',
+            components: {
+                index: 'text-localized',
+            },
         },
         {
             name: 'description',
@@ -85,6 +87,8 @@ export default {
     meta: {
         hideInNavbar: false,
     },
+
+    columns: ['title', 'description'],
 
     routes: {
         'resource.create': '/kfgsakhfg',

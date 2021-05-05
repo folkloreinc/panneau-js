@@ -17,6 +17,12 @@ msgctxt "2/F1Q7"
 msgid "#{index}"
 msgstr "#{index}"
 
+# Success form message
+#: BpZoQZ
+msgctxt "BpZoQZ"
+msgid "Success"
+msgstr "Success"
+
 # Label when there is no item in items field
 #: PKCv5M
 msgctxt "PKCv5M"
@@ -28,6 +34,12 @@ msgstr "No item..."
 msgctxt "PyxZY2"
 msgid "Cancel"
 msgstr "Cancel"
+
+# Submit form button
+#: ZLDmja
+msgctxt "ZLDmja"
+msgid "Submit"
+msgstr "Submit"
 
 # Button label in items field
 #: ZxgNge
@@ -184,6 +196,16 @@ msgstr "Submit"
 msgctxt "login"
 msgid "Log in"
 msgstr "Login"
+
+#: menus.pagination.next
+msgctxt "menus.pagination.next"
+msgid "next"
+msgstr "next"
+
+#: menus.pagination.previous
+msgctxt "menus.pagination.previous"
+msgid "Previous"
+msgstr "Previous"
 
 #: meta.title_401
 msgctxt "meta.title_401"

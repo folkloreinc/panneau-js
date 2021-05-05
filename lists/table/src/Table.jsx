@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { stringify as stringifyQuery } from 'query-string';
@@ -9,7 +9,7 @@ import isObject from 'lodash/isObject';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useIndexesComponents } from '@panneau/core/contexts';
-import { getComponentFromName } from '@panneau/core/utils';
+import { getComponentFromName, getColumnsFromResource } from '@panneau/core/utils';
 
 import Pagination from '@panneau/element-pagination';
 import Loading from '@panneau/element-loading';
@@ -55,22 +55,9 @@ const TableList = ({
     const indexComponents = useIndexesComponents();
     const { page: queryPage, ...queryWithoutPage } = query || {};
     const hasQuery = Object.keys(queryWithoutPage).length > 0;
-    const { index_is_paginated: paginated = false, fields } = resource;
+    const { meta: { index_is_paginated: paginated = false } = {} } = resource;
 
-    const columns = fields
-        .filter(({ hidden_in_index: hiddenInIndex = false }) => !hiddenInIndex)
-        .sort(({ order_in_index: aOrder = null }, { order_in_index: bOrder = null }) => {
-            if (aOrder === bOrder) {
-                return 0;
-            }
-            if (aOrder === null) {
-                return 1;
-            }
-            if (bOrder === null) {
-                return -1;
-            }
-            return aOrder > bOrder ? 1 : -1;
-        });
+    const columns = useMemo(() => getColumnsFromResource(resource), [resource]);
 
     const currentUrl = `${baseUrl}${
         hasQuery
@@ -110,30 +97,36 @@ const TableList = ({
                             return (
                                 <tr key={`row-${id}`}>
                                     <td className="col-auto">{id}</td>
-                                    {columns.map((field) => {
-                                        const { name, components, index } = field || {};
-                                        const value = it[name] ? it[name] : null;
+                                    {columns.map((column) => {
                                         const {
-                                            index: indexComponent = 'text',
-                                            index_column: indexColumnComponent = null,
-                                        } = components || {};
+                                            id: colId,
+                                            component = 'text',
+                                            valueKey = null,
+                                            field = null,
+                                            ...fieldProps
+                                        } = column;
+
+                                        console.log(component);
+
                                         const FieldIndexComponent = getComponentFromName(
-                                            index || indexColumnComponent || indexComponent,
+                                            component,
                                             indexComponents,
                                             'text',
                                         );
-                                        const defaultValue = !isObject(value) ? value : null;
 
                                         return (
-                                            <td className="col-auto" key={`row-${id}-${name}`}>
+                                            <td className="col-auto" key={`row-${id}-${colId}`}>
                                                 {FieldIndexComponent !== null ? (
                                                     <FieldIndexComponent
+                                                        {...fieldProps}
                                                         field={field}
-                                                        value={it[name] || null}
+                                                        value={
+                                                            valueKey !== null
+                                                                ? it[valueKey] || null
+                                                                : it[id] || null
+                                                        }
                                                     />
-                                                ) : (
-                                                    defaultValue
-                                                )}
+                                                ) : null}
                                             </td>
                                         );
                                     })}
