@@ -76,7 +76,6 @@
         "@panneau/lists": "^1.0.0-alpha.9",
         "@panneau/modals": "^1.0.0-alpha.9",
         "@panneau/themes": "^1.0.0-alpha.9",
-        "@popperjs/core": "^2.9.2",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

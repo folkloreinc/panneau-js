@@ -3,8 +3,7 @@ import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-// import '@popperjs/core';
-// import '@panneau/themes';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { PanneauProvider, RoutesProvider } from '@panneau/core/contexts';
 import { ApiProvider } from '@panneau/data';
@@ -43,8 +42,6 @@ const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
     const { memoryRouter: usesMemoryRouter = false } = settings || {};
 
     const Router = memoryRouter || usesMemoryRouter ? MemoryRouter : BrowserRouter;
-
-    console.log('my def', definition);
 
     // For storybook: auto load page with: initialEntries={['/pages/1/edit']} initialIndex={0}
 

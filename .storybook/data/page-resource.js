@@ -82,7 +82,7 @@ export default {
         },
     },
 
-    settings: {
+    meta: {
         hideInNavbar: false,
     },
 

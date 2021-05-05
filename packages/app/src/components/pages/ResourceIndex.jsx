@@ -29,12 +29,8 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceIndexPage = ({ resource }) => {
-    const {
-        name,
-        can_create: canCreate = true,
-        index_is_paginated: paginated = false,
-        components: { index = {} } = {},
-    } = resource;
+    const { name, meta = {}, components: { index = {} } = {} } = resource;
+    const { can_create: canCreate = true, index_is_paginated: paginated = false } = meta || {};
     const { component: indexComponent = null, props: indexProps = null } = index || {};
 
     const { search } = useLocation();

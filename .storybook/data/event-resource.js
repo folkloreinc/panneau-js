@@ -19,4 +19,6 @@ export default {
             component: 'cards',
         },
     },
+
+    meta: {},
 };
