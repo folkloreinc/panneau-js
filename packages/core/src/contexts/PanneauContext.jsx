@@ -22,7 +22,7 @@ export const usePanneauResource = (id) => {
 
 export const usePanneauColorScheme = () => {
     const { theme = {} } = usePanneau();
-    const { colorScheme = 'dark' } = theme || {};
+    const { colorScheme = 'light' } = theme || {};
 
     return colorScheme === 'dark'
         ? {

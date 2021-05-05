@@ -4,8 +4,9 @@ export default {
 
     types: [{ id: 'contact', name: 'Contact', fields: [] }],
 
-    intl: {
+    localization: {
         messages: {
+            'resource.index': 'Voir {the_plural}',
             'resource.create_button': 'Yo le jeune',
         },
         values: {
@@ -25,7 +26,8 @@ export default {
         {
             name: 'title',
             label: 'Titre',
-            component: 'text',
+            component: 'text-localized',
+            index: 'text-localized',
         },
         {
             name: 'description',

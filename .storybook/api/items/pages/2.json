@@ -1,6 +1,6 @@
 {
     "id": "2",
     "type": "page",
-    "title": "Une page autre",
+    "title": { "fr": "Une page autre", "en": "Another page" },
     "slug": "mon-slug"
 }

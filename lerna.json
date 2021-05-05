@@ -7,22 +7,18 @@
         "elements/*",
         "filters/*",
         "lists/*",
+        "indexes/*",
         "packages/*"
     ],
     "command": {
         "publish": {
-            "allowBranch": [
-                "master",
-                "v0.8"
-            ]
+            "allowBranch": ["master", "v0.8"]
         },
         "bootstrap": {
             "hoist": true
         }
     },
     "bootstrap": {
-        "npmClientArgs": [
-            "--no-package-lock"
-        ]
+        "npmClientArgs": ["--no-package-lock"]
     }
 }

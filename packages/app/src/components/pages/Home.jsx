@@ -23,7 +23,7 @@ const HomePage = () => {
                     const routeName = hasRoutes
                         ? `resources.${resourceId}.index`
                         : 'resources.index';
-
+                    console.log(resource);
                     return (
                         <Link
                             className="d-block my-2"

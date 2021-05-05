@@ -10,6 +10,7 @@ export const FIELDS_NAMESPACE = 'fields';
 export const FORMS_NAMESPACE = 'forms';
 export const FILTERS_NAMESPACE = 'filters';
 export const LISTS_NAMESPACE = 'lists';
+export const INDEXES_NAMESPACE = 'indexes';
 export const APP_NAMESPACE = 'app';
 
 export const ComponentsContext = React.createContext(null);
@@ -98,6 +99,17 @@ export const useListsComponents = (defaultComponents = {}) =>
 
 export const useListComponent = (name, defaultComponent = null) =>
     useComponent(name, defaultComponent, LISTS_NAMESPACE);
+
+/**
+ * Indexes hooks
+ */
+export const useIndexesComponentsManager = () => useComponentsManager(INDEXES_NAMESPACE);
+
+export const useIndexesComponents = (defaultComponents = {}) =>
+    useComponents(INDEXES_NAMESPACE, defaultComponents);
+
+export const useIndexComponent = (name, defaultComponent = null) =>
+    useComponent(name, defaultComponent, INDEXES_NAMESPACE);
 
 /**
  * App hooks

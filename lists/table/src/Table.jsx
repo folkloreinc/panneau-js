@@ -3,9 +3,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { stringify as stringifyQuery } from 'query-string';
+import isObject from 'lodash/isObject';
+
 // import { defineMessages } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useIndexesComponents } from '@panneau/core/contexts';
+import { getComponentFromName } from '@panneau/core/utils';
 
 import Pagination from '@panneau/element-pagination';
 import Loading from '@panneau/element-loading';
@@ -48,6 +52,7 @@ const TableList = ({
     theme,
     // onQueryChange,
 }) => {
+    const indexComponents = useIndexesComponents();
     const { page: queryPage, ...queryWithoutPage } = query || {};
     const hasQuery = Object.keys(queryWithoutPage).length > 0;
     const { index_is_paginated: paginated = false, fields } = resource;
@@ -106,27 +111,29 @@ const TableList = ({
                                 <tr key={`row-${id}`}>
                                     <td className="col-auto">{id}</td>
                                     {columns.map((field) => {
-                                        const { name } = field || {};
+                                        const { name, components, index } = field || {};
                                         const value = it[name] ? it[name] : null;
-                                        // console.log(it, field);
-                                        // console.log('it', it);
-                                        // const {
-                                        //     index: indexComponent = 'text',
-                                        //     index_column: indexColumnComponent = null,
-                                        // } = components || {};
-                                        // const FieldIndexComponent = getComponentFromName(
-                                        //     {}, // FieldIndexComponents,
-                                        //     indexColumnComponent || indexComponent,
-                                        //     'text',
-                                        // );
+                                        const {
+                                            index: indexComponent = 'text',
+                                            index_column: indexColumnComponent = null,
+                                        } = components || {};
+                                        const FieldIndexComponent = getComponentFromName(
+                                            index || indexColumnComponent || indexComponent,
+                                            indexComponents,
+                                            'text',
+                                        );
+                                        const defaultValue = !isObject(value) ? value : null;
 
                                         return (
                                             <td className="col-auto" key={`row-${id}-${name}`}>
-                                                {/* <FieldIndexComponent
-                                                field={field}
-                                                value={it[name] || null}
-                                            /> */}
-                                                {value || 'No value'}
+                                                {FieldIndexComponent !== null ? (
+                                                    <FieldIndexComponent
+                                                        field={field}
+                                                        value={it[name] || null}
+                                                    />
+                                                ) : (
+                                                    defaultValue
+                                                )}
                                             </td>
                                         );
                                     })}
