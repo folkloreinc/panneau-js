@@ -2,8 +2,6 @@ import React, { useCallback, useMemo } from 'react';
 import { parse as parseQuery, stringify as stringifyQuery } from 'query-string';
 import { useLocation, useHistory } from 'react-router';
 import classNames from 'classnames';
-// import omit from 'lodash/omit';
-// import { defineMessages } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 

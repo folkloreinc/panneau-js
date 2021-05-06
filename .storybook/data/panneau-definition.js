@@ -37,6 +37,7 @@ export default {
         },
         messages: {
             'resources.index': 'Lire {a_plural}',
+            'resources.create': 'Blabla',
         },
     },
 

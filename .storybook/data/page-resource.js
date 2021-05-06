@@ -7,6 +7,7 @@ export default {
     localization: {
         messages: {
             'resource.index': 'Voir {the_plural}',
+            'resources.create': 'Ajouter une page',
             'resource.create_button': 'Yo le jeune',
         },
         values: {

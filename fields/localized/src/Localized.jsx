@@ -8,7 +8,7 @@ import isEmpty from 'lodash/isEmpty';
 import Buttons from '@panneau/element-buttons';
 import Label from '@panneau/element-label';
 import FormGroup from '@panneau/element-form-group';
-import { useFieldsComponents } from '@panneau/core/contexts';
+import { useFieldsComponents, useLocales } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -41,13 +41,14 @@ const LocalizedField = ({
     name,
     value,
     label,
-    locales,
+    locales: parentLocales,
     fieldComponent: providedFieldComponent,
     component: componentName,
     fieldProps,
     onChange,
     className,
 }) => {
+    const locales = parentLocales || useLocales();
     const Components = useFieldsComponents();
 
     const onFieldChange = useCallback(
