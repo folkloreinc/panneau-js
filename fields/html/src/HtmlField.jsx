@@ -8,7 +8,7 @@ import useCKEditor from './hooks/useCKEditor';
 import useCKEditorBuild from './hooks/useCKEditorBuild';
 import useQuill from './hooks/useQuill';
 
-import styles from './styles.module.scss';
+import './styles.global.scss';
 
 const propTypes = {
     feedback: PropTypes.oneOf(['valid', 'invalid', 'loading']),
@@ -65,7 +65,6 @@ const HtmlField = ({
 
     const finalClassName = inline
         ? classNames([
-              styles.container,
               'form-control',
               {
                   [className]: className !== null,

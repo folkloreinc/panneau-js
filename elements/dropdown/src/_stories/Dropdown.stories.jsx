@@ -24,3 +24,18 @@ export const Normal = () => (
         </div>
     </MemoryRouter>
 );
+
+export const End = () => (
+    <MemoryRouter>
+        <div style={{ position: 'relative' }}>
+            <Dropdown
+                visible
+                align="end"
+                items={[
+                    { value: 'value', label: 'Label 1' },
+                    { value: 'value', label: 'Label 2' },
+                ]}
+            />
+        </div>
+    </MemoryRouter>
+);
