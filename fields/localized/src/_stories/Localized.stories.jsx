@@ -13,7 +13,7 @@ export default {
     },
 };
 
-const locales = ['fr', 'en'];
+const locales = ['fr', 'en', 'jp'];
 
 const Container = () => {
     const [value, setValue] = useState(Object.assign(locales));

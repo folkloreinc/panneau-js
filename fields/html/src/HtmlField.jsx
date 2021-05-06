@@ -34,7 +34,7 @@ const defaultProps = {
     placeholder: null,
     type: null,
     inline: false,
-    
+
     onChange: null,
     onFocus: null,
     onBlur: null,
@@ -50,7 +50,7 @@ const HtmlField = ({
     placeholder,
     type,
     inline,
-    
+
     onChange,
     onFocus,
     onBlur,
@@ -88,7 +88,7 @@ const HtmlField = ({
     const commonProps = {
         onFocus,
         onBlur,
-    }
+    };
 
     const ckElement =
         CKEditor !== null && CKEditorBuild !== null ? (

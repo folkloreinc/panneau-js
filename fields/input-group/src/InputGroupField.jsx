@@ -36,13 +36,21 @@ const InputGroupField = ({ prepend, children, append, size, className }) => (
     >
         {prepend !== null ? (
             <div className="input-group-prepend">
-                {isString(prepend) ? <div className="input-group-text">{prepend}</div> : prepend}
+                {isString(prepend) ? (
+                    <div className={classNames(['input-group-text', styles.left])}>{prepend}</div>
+                ) : (
+                    prepend
+                )}
             </div>
         ) : null}
         {children}
         {append !== null ? (
             <div className="input-group-append">
-                {isString(append) ? <div className="input-group-text">{append}</div> : append}
+                {isString(append) ? (
+                    <div className={classNames(['input-group-text', styles.right])}>{append}</div>
+                ) : (
+                    append
+                )}
             </div>
         ) : null}
     </div>

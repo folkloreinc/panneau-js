@@ -27,9 +27,22 @@ export default {
         {
             name: 'title',
             label: 'Titre',
-            component: 'text-localized',
+            component: 'localized',
             components: {
                 index: 'text-localized',
+            },
+            without_form_group: true,
+            properties: {
+                fr: {
+                    name: 'fr',
+                    label: 'Fr',
+                    component: 'text',
+                },
+                en: {
+                    name: 'en',
+                    label: 'En',
+                    component: 'text',
+                },
             },
         },
         {

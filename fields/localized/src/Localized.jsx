@@ -11,7 +11,7 @@ import FormGroup from '@panneau/element-form-group';
 import { useFieldsComponents, useLocales } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 
-// import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 const propTypes = {
     name: PropTypes.string,
@@ -19,6 +19,7 @@ const propTypes = {
     label: PropTypes.string,
     component: PropTypes.string,
     locales: PropTypes.arrayOf(PropTypes.string),
+    properties: PropTypes.objectOf(PanneauPropTypes.field),
     fieldComponent: PropTypes.elementType,
     fieldProps: PropTypes.object, // eslint-disable-line
     className: PropTypes.string,
@@ -31,6 +32,7 @@ const defaultProps = {
     label: null,
     component: null,
     locales: null,
+    properties: {},
     fieldComponent: null,
     fieldProps: null,
     className: null,
@@ -41,6 +43,7 @@ const LocalizedField = ({
     name,
     value,
     label,
+    properties,
     locales: parentLocales,
     fieldComponent: providedFieldComponent,
     component: componentName,
@@ -48,7 +51,8 @@ const LocalizedField = ({
     onChange,
     className,
 }) => {
-    const locales = parentLocales || useLocales();
+    const contextLocales = useLocales();
+    const locales = parentLocales || contextLocales;
     const Components = useFieldsComponents();
 
     const onFieldChange = useCallback(
@@ -68,7 +72,11 @@ const LocalizedField = ({
         <FormGroup
             label={
                 <>
-                    <Label>{label}</Label>
+                    {label !== null ? (
+                        <span className="me-2">
+                            <Label>{label}</Label>
+                        </span>
+                    ) : null}
                     {locales.length > 1 ? (
                         <div className="ml-auto">
                             <Buttons
@@ -96,15 +104,19 @@ const LocalizedField = ({
             {locales
                 .filter((locale) => locale === currentLocale)
                 .map((locale) => {
+                    const { name: propertyName = locale, component, ...property } =
+                        properties[locale] || {};
                     const FieldComponent =
-                        providedFieldComponent || getComponentFromName(componentName, Components);
+                        providedFieldComponent ||
+                        getComponentFromName(component || componentName, Components);
                     const fieldName = `${name}[${componentName}]`;
-                    const fieldValue = value !== null ? value[locale] : null;
+                    const fieldValue = value !== null ? value[locale] || null : null;
                     return (
                         <div key={`field-${locale}`}>
                             <FieldComponent
+                                {...property}
                                 {...fieldProps}
-                                name={fieldName}
+                                name={propertyName || fieldName}
                                 value={fieldValue}
                                 onChange={(newValue) => onFieldChange(locale, newValue)}
                             />
