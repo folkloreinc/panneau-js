@@ -29,7 +29,7 @@ export default {
 
     resources: [pageResource, eventResource],
 
-    localization: {
+    intl: {
         locale: 'fr',
         locales: ['fr', 'en'],
         values: {
@@ -67,7 +67,7 @@ export default {
         },
     },
 
-    meta: {
+    settings: {
         memoryRouter: false,
     },
 };

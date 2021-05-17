@@ -75,7 +75,7 @@ export const routes = PropTypes.shape({
     'resources.destroy': PropTypes.string.isRequired,
 });
 
-export const localization = PropTypes.shape({
+export const intl = PropTypes.shape({
     locale: PropTypes.string,
     messages: PropTypes.objectOf(PropTypes.string),
     values: PropTypes.objectOf(PropTypes.string),
@@ -104,7 +104,7 @@ export const forms = PropTypes.arrayOf(form);
 export const resource = PropTypes.shape({
     id: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    localization,
+    intl,
     fields,
     forms: PropTypes.shape({}),
     has_routes: PropTypes.bool,
@@ -117,15 +117,15 @@ export const panneauDefinition = PropTypes.shape({
     resources,
     routes,
     pages,
-    localization,
-    // localization,
+    intl,
+    // intl,
 });
 
 export const definition = PropTypes.shape({
     name: PropTypes.string,
     // resources,
     // routes,
-    // localization,
+    // intl,
 });
 
 export const item = PropTypes.shape({

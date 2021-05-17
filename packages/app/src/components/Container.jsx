@@ -35,7 +35,7 @@ const defaultProps = {
 
 const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
     const {
-        localization: { locale = 'en', locales, messages: translations = {} } = {},
+        intl: { locale = 'en', locales, messages: translations = {} } = {},
         routes = {},
         settings = {},
     } = definition;

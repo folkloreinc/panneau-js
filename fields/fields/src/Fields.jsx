@@ -63,11 +63,9 @@ const Fields = ({
             name = null,
             horizontal = false,
             inline = false,
-
-            // TODO: fix this
-            without_form_group: withoutFormGroup = false,
-            sibling_fields: siblingFields = [],
-
+            // TODO: test this
+            withoutFormGroup = false,
+            siblingFields = [],
             classname = null,
             groupClassName = null,
             labelClassName = null,

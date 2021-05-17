@@ -31,7 +31,7 @@ export default {
             components: {
                 index: 'text-localized',
             },
-            without_form_group: true,
+            withoutFormGroup: true,
             properties: {
                 fr: {
                     name: 'fr',
@@ -98,13 +98,13 @@ export default {
         },
     },
 
-    meta: {
+    settings: {
         hideInNavbar: false,
     },
 
     columns: ['title', 'description'],
 
     routes: {
-        'resource.create': '/kfgsakhfg',
+        'resource.whatever': '/whatever-something-something',
     },
 };

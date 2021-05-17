@@ -20,5 +20,5 @@ export default {
         },
     },
 
-    meta: {},
+    settings: {},
 };

@@ -50,7 +50,7 @@ const TableList = ({
 }) => {
     const { page: queryPage, ...queryWithoutPage } = query || {};
     const hasQuery = Object.keys(queryWithoutPage).length > 0;
-    const { index_is_paginated: paginated = false } = resource;
+    const { indexIsPaginated: paginated = false } = resource;
 
     // const columns = fields.filter(({ hidden_in_index: hiddenInIndex = false }) => !hiddenInIndex);
 

@@ -55,7 +55,7 @@ const TableList = ({
     const indexComponents = useIndexesComponents();
     const { page: queryPage, ...queryWithoutPage } = query || {};
     const hasQuery = Object.keys(queryWithoutPage).length > 0;
-    const { meta: { index_is_paginated: paginated = false } = {} } = resource;
+    const { settings: { indexIsPaginated: paginated = false } = {} } = resource;
 
     const columns = useMemo(() => getColumnsFromResource(resource), [resource]);
 
@@ -105,8 +105,6 @@ const TableList = ({
                                             field = null,
                                             ...fieldProps
                                         } = column;
-
-                                        console.log(component);
 
                                         const FieldIndexComponent = getComponentFromName(
                                             component,
