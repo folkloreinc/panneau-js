@@ -76,8 +76,8 @@ class Base {
     }
 
     getFullUrl(path) {
-        const { baseUrl } = this.options;
-        return `${baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+        const { baseUrl = null } = this.options;
+        return baseUrl !== null ? `${baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}` : path;
     }
 }
 
