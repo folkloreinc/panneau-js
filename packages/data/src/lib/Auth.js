@@ -9,7 +9,7 @@ class AuthApi {
 
     check() {
         const { withCredentials } = this.options;
-        return this.api.requestGet(this.api.route('login.check'), null, {
+        return this.api.requestGet(this.api.route('auth.check'), null, {
             withSession: !withCredentials,
             withCredentials,
         });
@@ -17,9 +17,8 @@ class AuthApi {
 
     login(email, password) {
         const { withCredentials } = this.options;
-        console.log('test', this.api.route('login'));
         return this.api.requestPost(
-            this.api.route('login'),
+            this.api.route('auth.login'),
             {
                 email,
                 password,
@@ -33,7 +32,7 @@ class AuthApi {
 
     register(data) {
         const { withCredentials } = this.options;
-        return this.api.requestPost(this.api.route('register'), data, {
+        return this.api.requestPost(this.api.route('auth.register'), data, {
             withSession: !withCredentials,
             withCredentials,
         });
@@ -41,7 +40,7 @@ class AuthApi {
 
     logout() {
         const { withCredentials } = this.options;
-        return this.api.fetchPost(this.api.route('logout'), null, {
+        return this.api.fetchPost(this.api.route('auth.logout'), null, {
             withSession: !withCredentials,
             withCredentials,
         });
@@ -50,7 +49,7 @@ class AuthApi {
     requestPassword(email) {
         const { withCredentials } = this.options;
         return this.api.requestPost(
-            this.api.route('password.email'),
+            this.api.route('auth.password.email'),
             { email },
             {
                 withSession: !withCredentials,
@@ -61,7 +60,7 @@ class AuthApi {
 
     resetPassword(data) {
         const { withCredentials } = this.options;
-        return this.api.requestPost(this.api.route('password.update'), data, {
+        return this.api.requestPost(this.api.route('auth.password.update'), data, {
             withSession: !withCredentials,
             withCredentials,
         });
