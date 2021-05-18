@@ -5,7 +5,7 @@ export const getColumnFromField = (field) => {
         return null;
     }
     // eslint-disable-next-line camelcase
-    const { name, components = null, meta: { order_in_index: order } = {}, label } = field;
+    const { name, components = null, settings: { orderInIndex: order } = {}, label } = field;
     return {
         id: name,
         label,
@@ -46,7 +46,7 @@ export const getColumnsFromResource = (resource) => {
                   .filter((it) => it !== null)
             : fields
                   .filter(
-                      ({ meta: { hidden_in_index: hiddenInIndex = false } = {} }) => !hiddenInIndex,
+                      ({ settings: { hiddenInIndex = false } = {} }) => !hiddenInIndex,
                   )
                   .map((field) => getColumnFromField(field));
     return sortColumns(newColumns);
