@@ -6,8 +6,8 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceItem } from '@panneau/data';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
 
-import useResourceUrlGenerator from '../../hooks/useResourceUrlGenerator';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
 // import Button from '../buttons/Button';

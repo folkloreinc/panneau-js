@@ -17,6 +17,30 @@ msgctxt "2/F1Q7"
 msgid "#{index}"
 msgstr "#{index}"
 
+# Boolean value
+#: 6oV4/s
+msgctxt "6oV4/s"
+msgid "no"
+msgstr ""
+
+# Button label
+#: Bhu3B2
+msgctxt "Bhu3B2"
+msgid "Delete"
+msgstr ""
+
+# Boolean value
+#: IuCFWt
+msgctxt "IuCFWt"
+msgid "yes"
+msgstr ""
+
+# Button label
+#: Ke35Pv
+msgctxt "Ke35Pv"
+msgid "Edit"
+msgstr ""
+
 # Label when there is no item in items field
 #: PKCv5M
 msgctxt "PKCv5M"
@@ -59,6 +83,12 @@ msgstr "Déconnexion"
 msgctxt "auth.update_account"
 msgid "Update account"
 msgstr "Mettre à jour le profil"
+
+# Button label
+#: bPk79b
+msgctxt "bPk79b"
+msgid "Show"
+msgstr ""
 
 #: errors.description_401
 msgctxt "errors.description_401"
@@ -145,16 +175,6 @@ msgctxt "form.show_button"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: forms.delete_button
-msgctxt "forms.delete_button"
-msgid "Delete"
-msgstr "Supprimer"
-
-#: forms.edit_button
-msgctxt "forms.edit_button"
-msgid "Edit"
-msgstr "Modifier"
-
 #: forms.error_status
 msgctxt "forms.error_status"
 msgid "Error"
@@ -204,11 +224,6 @@ msgstr "Erreur 404"
 msgctxt "meta.title_500"
 msgid "Error 500"
 msgstr "Erreur 500"
-
-#: no
-msgctxt "no"
-msgid "Non"
-msgstr ""
 
 #: pagination.items_count
 msgctxt "pagination.items_count"
@@ -265,8 +280,3 @@ msgstr "Chargement {plural}..."
 msgctxt "s4Xrs9"
 msgid "Time"
 msgstr "C'est le moment de créer un thème"
-
-#: yes
-msgctxt "yes"
-msgid "Oui"
-msgstr ""

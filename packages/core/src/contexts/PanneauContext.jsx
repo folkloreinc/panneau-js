@@ -11,7 +11,7 @@ const PanneauContext = React.createContext(null);
 export const usePanneau = () => useContext(PanneauContext);
 
 export const usePanneauResources = () => {
-    const { resources = [] } = usePanneau();
+    const { resources = [] } = usePanneau() || {};
     return resources;
 };
 
@@ -21,7 +21,7 @@ export const usePanneauResource = (id) => {
 };
 
 export const usePanneauColorScheme = () => {
-    const { theme = {} } = usePanneau();
+    const { theme = {} } = usePanneau() || {};
     const { colorScheme = 'light' } = theme || {};
 
     return colorScheme === 'dark'
@@ -36,12 +36,12 @@ export const usePanneauColorScheme = () => {
 };
 
 export const usePanneauComponents = () => {
-    const { components = {} } = usePanneau();
+    const { components = {} } = usePanneau() || {};
     return components;
 };
 
 export const usePanneauComponent = (namespace, name) => {
-    const { components = {} } = usePanneau();
+    const { components = {} } = usePanneau() || {};
     const path = namespace !== null ? `${namespace}.${name}` : name || null;
     const component = components[path] || null;
 
@@ -59,12 +59,12 @@ export const usePanneauComponent = (namespace, name) => {
 };
 
 export const usePanneauAuth = () => {
-    const { auth = {} } = usePanneau();
+    const { auth = {} } = usePanneau() || {};
     return auth;
 };
 
 export const usePanneauSettings = () => {
-    const { settings = {} } = usePanneau();
+    const { settings = {} } = usePanneau() || {};
     return settings;
 };
 

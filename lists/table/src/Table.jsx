@@ -3,17 +3,17 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { stringify as stringifyQuery } from 'query-string';
-import isObject from 'lodash/isObject';
 
 // import { defineMessages } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useIndexesComponents } from '@panneau/core/contexts';
-import { getComponentFromName, getColumnsFromResource } from '@panneau/core/utils';
+import { useDisplaysComponents } from '@panneau/core/contexts';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import { getComponent, getComponentFromName, getColumnsFromResource } from '@panneau/core/utils';
 
 import Pagination from '@panneau/element-pagination';
 import Loading from '@panneau/element-loading';
-import FormActions from '@panneau/element-form-actions';
+import FormActions from '@panneau/element-item-actions';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -23,7 +23,6 @@ const propTypes = {
     lastPage: PropTypes.number,
     total: PropTypes.number,
     baseUrl: PropTypes.string,
-    urlGenerator: PropTypes.func,
     theme: PropTypes.string,
     // onQueryChange: PropTypes.func,
 };
@@ -35,7 +34,6 @@ const defaultProps = {
     lastPage: null,
     total: null,
     baseUrl: null,
-    urlGenerator: null,
     theme: null,
     // onQueryChange: null,
 };
@@ -48,11 +46,10 @@ const TableList = ({
     lastPage,
     total,
     baseUrl,
-    urlGenerator,
     theme,
     // onQueryChange,
 }) => {
-    const indexComponents = useIndexesComponents();
+    const displayComponents = useDisplaysComponents();
     const { page: queryPage, ...queryWithoutPage } = query || {};
     const hasQuery = Object.keys(queryWithoutPage).length > 0;
     const { settings: { indexIsPaginated: paginated = false } = {} } = resource;
@@ -106,9 +103,10 @@ const TableList = ({
                                             ...fieldProps
                                         } = column;
 
+                                        const { name: componentName, props: componentProps } = getComponent(component);
                                         const FieldIndexComponent = getComponentFromName(
-                                            component,
-                                            indexComponents,
+                                            componentName,
+                                            displayComponents,
                                             'text',
                                         );
 
@@ -116,6 +114,7 @@ const TableList = ({
                                             <td className="col-auto" key={`row-${id}-${colId}`}>
                                                 {FieldIndexComponent !== null ? (
                                                     <FieldIndexComponent
+                                                        {...componentProps}
                                                         {...fieldProps}
                                                         field={field}
                                                         value={
@@ -132,7 +131,6 @@ const TableList = ({
                                         <FormActions
                                             resource={resource}
                                             item={it}
-                                            urlGenerator={urlGenerator}
                                         />
                                     </td>
                                 </tr>

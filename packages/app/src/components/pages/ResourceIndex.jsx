@@ -6,11 +6,10 @@ import classNames from 'classnames';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import { ResourceProvider } from '@panneau/core/contexts';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
 
 import Button from '@panneau/element-button';
 import Alert from '@panneau/element-alert';
-
-import useResourceUrlGenerator from '../../hooks/useResourceUrlGenerator';
 
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
