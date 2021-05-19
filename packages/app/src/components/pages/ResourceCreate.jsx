@@ -29,7 +29,7 @@ const ResourceCreatePage = ({ resource }) => {
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
-                    title={<ResourceLabel resource={resource}>{messages.create}</ResourceLabel>}
+                    title={<ResourceLabel resource={resource} message={messages.create} />}
                     small
                 />
                 <div className="container-sm py-4">

@@ -60,7 +60,7 @@ const ResourceIndexPage = ({ resource }) => {
                     actions={
                         canCreate ? (
                             <Button href={resourceRoute('create')} size="lg" theme="primary">
-                                <ResourceLabel resource={resource}>{messages.create}</ResourceLabel>
+                                <ResourceLabel resource={resource} message={messages.create} />
                             </Button>
                         ) : null
                     }
@@ -68,12 +68,12 @@ const ResourceIndexPage = ({ resource }) => {
                 <div className={classNames(['container-sm py-4'])}>
                     {created ? (
                         <Alert className="mb-4" onClose={onClickCloseAlert}>
-                            <ResourceLabel resource={resource}>{messages.created}</ResourceLabel>
+                            <ResourceLabel resource={resource} message={messages.created} />
                         </Alert>
                     ) : null}
                     {deleted ? (
                         <Alert className="mb-4" onClose={onClickCloseAlert}>
-                            <ResourceLabel resource={resource}>{messages.deleted}</ResourceLabel>
+                            <ResourceLabel resource={resource} message={messages.deleted} />
                         </Alert>
                     ) : null}
                     <ResourceItemsList

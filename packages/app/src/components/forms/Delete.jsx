@@ -7,8 +7,6 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Form from '@panneau/element-form';
 import Button from '@panneau/element-button';
 
-import styles from './styles.module.scss';
-
 const propTypes = {
     action: PropTypes.string,
     previous: PropTypes.string,
@@ -48,7 +46,6 @@ const DeleteForm = ({
     return (
         <Form
             className={classNames([
-                styles.container,
                 'form',
                 {
                     [className]: className !== null,

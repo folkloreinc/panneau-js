@@ -42,7 +42,7 @@ const ResourceDeletePage = ({ resource, itemId }) => {
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
-                    title={<ResourceLabel resource={resource}>{messages.delete}</ResourceLabel>}
+                    title={<ResourceLabel resource={resource} message={messages.delete} />}
                     small
                 />
                 <div className="container-sm py-4">

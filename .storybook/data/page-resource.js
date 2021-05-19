@@ -52,7 +52,7 @@ export default {
         },
         {
             name: 'slug',
-            label: 'Slug',
+            label: 'URL',
             component: 'url',
             settings: {
                 showInIndex: true,

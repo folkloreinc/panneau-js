@@ -35,7 +35,7 @@ const ResourceEditPage = ({ resource, itemId }) => {
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
-                    title={<ResourceLabel resource={resource}>{messages.edit}</ResourceLabel>}
+                    title={<ResourceLabel resource={resource} message={messages.edit} />}
                     small
                 />
                 <div className="container-sm py-4">
