@@ -3,6 +3,10 @@
     "defaultMessage": "#{index}",
     "description": "Item label in items field"
   },
+  "BpZoQZ": {
+    "defaultMessage": "Success",
+    "description": "Success form message"
+  },
   "PKCv5M": {
     "defaultMessage": "No item...",
     "description": "Label when there is no item in items field"
@@ -10,6 +14,10 @@
   "PyxZY2": {
     "defaultMessage": "Cancel",
     "description": "Button label"
+  },
+  "ZLDmja": {
+    "defaultMessage": "Submit",
+    "description": "Submit form button"
   },
   "ZxgNge": {
     "defaultMessage": "Add an item",
@@ -104,6 +112,12 @@
   },
   "login": {
     "defaultMessage": "Log in"
+  },
+  "menus.pagination.next": {
+    "defaultMessage": "next"
+  },
+  "menus.pagination.previous": {
+    "defaultMessage": "Previous"
   },
   "meta.title_401": {
     "defaultMessage": "Error 401"
