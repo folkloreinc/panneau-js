@@ -1,23 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Label from '@panneau/element-label';
 
 const propTypes = {
+    theme: PropTypes.string,
     children: PanneauPropTypes.label,
     className: PropTypes.string,
 };
 
 const defaultProps = {
+    theme: null,
     children: null,
     className: null,
 };
 
-const Loading = ({ children, className }) => (
+const Loading = ({ theme, children, className }) => (
     <div
         className={classNames([
             'card',
@@ -27,10 +26,14 @@ const Loading = ({ children, className }) => (
         ])}
     >
         <div className="card-body d-flex align-items-center justify-content-center text-muted">
-            <FontAwesomeIcon icon={faSpinner} className="d-block fa-spin me-2" />
-            <div>
-                <Label>{children}</Label>
+            <div className={classNames(['spinner-border', { [`text-${theme}`]: theme !== null }])}>
+                <span className="visually-hidden">Loading...</span>
             </div>
+            {children !== null ? (
+                <div className={classNames(['mx-2', { [`text-${theme}`]: theme !== null }])}>
+                    {children}
+                </div>
+            ) : null}
         </div>
     </div>
 );

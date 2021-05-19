@@ -2,71 +2,61 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // import classNames from 'classnames';
-import { defineMessages } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 // import * as AppPropTypes from '../../../lib/PropTypes';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Buttons from '@panneau/element-buttons';
-import Label from '@panneau/element-label';
-
-const defaultMessages = defineMessages({
-    edit: {
-        id: 'forms.edit_button',
-        defaultMessage: 'Edit',
-    },
-    delete: {
-        id: 'forms.delete_button',
-        defaultMessage: 'Delete',
-    },
-});
 
 const propTypes = {
+    resource: PanneauPropTypes.resource.isRequired,
     size: PanneauPropTypes.buttonSize,
     item: PanneauPropTypes.item.isRequired,
     iconsOnly: PropTypes.bool,
+    showLabel: PropTypes.node,
+    editLabel: PropTypes.node,
+    deleteLabel: PropTypes.node,
     onClickEdit: PropTypes.func,
     onClickDelete: PropTypes.func,
-    urlGenerator: PropTypes.func,
-    messages: PanneauPropTypes.messages,
     className: PropTypes.string,
 };
 
 const defaultProps = {
     size: 'sm',
     iconsOnly: true,
+    showLabel: <FormattedMessage defaultMessage="Show" description="Button label" />,
+    editLabel: <FormattedMessage defaultMessage="Edit" description="Button label" />,
+    deleteLabel: <FormattedMessage defaultMessage="Delete" description="Button label" />,
     onClickEdit: null,
     onClickDelete: null,
-    urlGenerator: null,
-    messages: defaultMessages,
     className: null,
 };
 
 const FormActions = ({
+    resource,
     size,
     item,
     iconsOnly,
+    showLabel,
+    editLabel,
+    deleteLabel,
     onClickEdit,
     onClickDelete,
-    urlGenerator,
-    messages,
     className,
 }) => {
+    const urlGenerator = useResourceUrlGenerator(resource);
     const { id } = item || {};
-
     return (
         <Buttons
             size={size}
             items={[
                 {
-                    id: 'edit',
-                    label: iconsOnly ? (
-                        <FontAwesomeIcon icon={faEye} />
-                    ) : (
-                        <Label {...messages.show} />
-                    ),
+                    id: 'show',
+                    label: iconsOnly ? <FontAwesomeIcon icon={faEye} /> : showLabel,
                     href:
                         urlGenerator !== null
                             ? urlGenerator('show', {
@@ -77,11 +67,7 @@ const FormActions = ({
                 },
                 {
                     id: 'edit',
-                    label: iconsOnly ? (
-                        <FontAwesomeIcon icon={faEdit} />
-                    ) : (
-                        <Label {...messages.edit} />
-                    ),
+                    label: iconsOnly ? <FontAwesomeIcon icon={faEdit} /> : editLabel,
                     href:
                         urlGenerator !== null
                             ? urlGenerator('edit', {
@@ -93,11 +79,7 @@ const FormActions = ({
                 },
                 {
                     id: 'delete',
-                    label: iconsOnly ? (
-                        <FontAwesomeIcon icon={faTrash} />
-                    ) : (
-                        <Label {...messages.delete} />
-                    ),
+                    label: iconsOnly ? <FontAwesomeIcon icon={faTrash} /> : deleteLabel,
                     href:
                         urlGenerator !== null
                             ? urlGenerator('delete', {

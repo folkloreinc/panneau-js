@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ComponentsProvider, INDEXES_NAMESPACE } from '@panneau/core/contexts';
+import { ComponentsProvider, DISPLAYS_NAMESPACE } from '@panneau/core/contexts';
 
 import * as components from './components';
 
@@ -14,7 +14,7 @@ const defaultProps = {
 };
 
 const IndexesProvider = (props) => (
-    <ComponentsProvider namespace={INDEXES_NAMESPACE} components={components} {...props} />
+    <ComponentsProvider namespace={DISPLAYS_NAMESPACE} components={components} {...props} />
 );
 
 IndexesProvider.propTypes = propTypes;

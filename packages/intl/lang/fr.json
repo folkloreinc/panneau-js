@@ -77,12 +77,6 @@
     "form.show_button": {
         "defaultMessage": "Annuler"
     },
-    "forms.delete_button": {
-        "defaultMessage": "Supprimer"
-    },
-    "forms.edit_button": {
-        "defaultMessage": "Modifier"
-    },
     "forms.error_status": {
         "defaultMessage": "Une erreur s'est produite lors de la publication"
     },

@@ -6,8 +6,7 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import { useListsComponents, usePanneauColorScheme } from '@panneau/core/contexts';
-
-import useResourceUrlGenerator from '../../hooks/useResourceUrlGenerator';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
 
 import ResourceFilters from './ResourceFilters';
 
@@ -77,7 +76,6 @@ const ResourceItemsList = ({
                     resource={resource}
                     query={query}
                     onQueryChange={onListQueryChange}
-                    urlGenerator={urlGenerator}
                     theme={theme}
                 />
             ) : null}

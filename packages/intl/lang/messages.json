@@ -3,9 +3,25 @@
     "defaultMessage": "#{index}",
     "description": "Item label in items field"
   },
+  "6oV4/s": {
+    "defaultMessage": "no",
+    "description": "Boolean value"
+  },
+  "Bhu3B2": {
+    "defaultMessage": "Delete",
+    "description": "Button label"
+  },
   "BpZoQZ": {
     "defaultMessage": "Success",
     "description": "Success form message"
+  },
+  "IuCFWt": {
+    "defaultMessage": "yes",
+    "description": "Boolean value"
+  },
+  "Ke35Pv": {
+    "defaultMessage": "Edit",
+    "description": "Button label"
   },
   "PKCv5M": {
     "defaultMessage": "No item...",
@@ -37,6 +53,10 @@
   },
   "auth.update_account": {
     "defaultMessage": "Update account"
+  },
+  "bPk79b": {
+    "defaultMessage": "Show",
+    "description": "Button label"
   },
   "errors.description_401": {
     "defaultMessage": "You are not authorized to access this page."
@@ -89,12 +109,6 @@
   "form.show_button": {
     "defaultMessage": "Cancel"
   },
-  "forms.delete_button": {
-    "defaultMessage": "Delete"
-  },
-  "forms.edit_button": {
-    "defaultMessage": "Edit"
-  },
   "forms.error_status": {
     "defaultMessage": "Error"
   },
@@ -131,9 +145,6 @@
   "meta.title_500": {
     "defaultMessage": "Error 500"
   },
-  "no": {
-    "defaultMessage": "Non"
-  },
   "pagination.items_count": {
     "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
   },
@@ -167,8 +178,5 @@
   "s4Xrs9": {
     "defaultMessage": "Time",
     "description": "DateTimeField time caption"
-  },
-  "yes": {
-    "defaultMessage": "Oui"
   }
 }

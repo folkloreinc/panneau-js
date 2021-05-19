@@ -10,7 +10,7 @@ export const FIELDS_NAMESPACE = 'fields';
 export const FORMS_NAMESPACE = 'forms';
 export const FILTERS_NAMESPACE = 'filters';
 export const LISTS_NAMESPACE = 'lists';
-export const INDEXES_NAMESPACE = 'indexes';
+export const DISPLAYS_NAMESPACE = 'displays';
 export const APP_NAMESPACE = 'app';
 
 export const ComponentsContext = React.createContext(null);
@@ -101,15 +101,15 @@ export const useListComponent = (name, defaultComponent = null) =>
     useComponent(name, defaultComponent, LISTS_NAMESPACE);
 
 /**
- * Indexes hooks
+ * Displays hooks
  */
-export const useIndexesComponentsManager = () => useComponentsManager(INDEXES_NAMESPACE);
+export const useDisplaysComponentsManager = () => useComponentsManager(DISPLAYS_NAMESPACE);
 
-export const useIndexesComponents = (defaultComponents = {}) =>
-    useComponents(INDEXES_NAMESPACE, defaultComponents);
+export const useDisplaysComponents = (defaultComponents = {}) =>
+    useComponents(DISPLAYS_NAMESPACE, defaultComponents);
 
-export const useIndexComponent = (name, defaultComponent = null) =>
-    useComponent(name, defaultComponent, INDEXES_NAMESPACE);
+export const useDisplayComponent = (name, defaultComponent = null) =>
+    useComponent(name, defaultComponent, DISPLAYS_NAMESPACE);
 
 /**
  * App hooks

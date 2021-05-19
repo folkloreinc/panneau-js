@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/index-text",
+    "name": "@panneau/display-text-localized",
     "version": "1.0.0-alpha.16",
-    "description": "Text item value in list",
+    "description": "Localized text value",
     "keywords": [
         "javascript"
     ],

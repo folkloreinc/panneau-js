@@ -1,6 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 
+import pageResource from '../../../../.storybook/data/page-resource';
+import { ResourceProvider } from '../../../../packages/core/contexts';
+
 import FormActions from '../FormActions';
 
 export default {
@@ -12,10 +15,11 @@ export default {
 };
 
 const props = {
+    resource: pageResource,
     item: {
         id: 1,
     },
     size: 'sm',
 };
 
-export const Normal = () => <FormActions {...props} />;
+export const Normal = () => <ResourceProvider resource={pageResource}><FormActions {...props} /></ResourceProvider>;

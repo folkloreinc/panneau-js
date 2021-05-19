@@ -60,7 +60,7 @@
         "@panneau/element-button": "^1.0.0-alpha.16",
         "@panneau/element-buttons": "^1.0.0-alpha.16",
         "@panneau/element-card": "^1.0.0-alpha.16",
-        "@panneau/element-form-actions": "^1.0.0-alpha.16",
+        "@panneau/element-item-actions": "^1.0.0-alpha.16",
         "@panneau/element-label": "^1.0.0-alpha.16",
         "@panneau/element-loading": "^1.0.0-alpha.16",
         "@panneau/element-pagination": "^1.0.0-alpha.16",
