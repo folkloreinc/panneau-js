@@ -18,8 +18,8 @@ import styles from './styles.module.scss';
 
 const propTypes = {
     name: PropTypes.string,
-    value: PropTypes.arrayOf(PropTypes.object), // eslint-disable-line
-    newItemDefaultValue: PropTypes.object, // eslint-disable-line
+    value: PropTypes.arrayOf(PropTypes.any), // eslint-disable-line
+    newItemDefaultValue: PropTypes.func, // eslint-disable-line
     noItemLabel: PanneauPropTypes.label,
     addItemLabel: PanneauPropTypes.label,
     itemFieldLabel: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.label]),
@@ -28,8 +28,6 @@ const propTypes = {
     className: PropTypes.string,
     onChange: PropTypes.func,
     
-    itemFieldLabel: PanneauPropTypes.label,
-
     renderBefore: PropTypes.func,
     renderItem: PropTypes.func,
     renderItemLabel: PropTypes.func,
@@ -40,7 +38,7 @@ const propTypes = {
 const defaultProps = {
     name: null,
     value: null,
-    newItemDefaultValue: {},
+    newItemDefaultValue: () => ({}),
     noItemLabel: (
         <FormattedMessage
             defaultMessage="No item..."
@@ -101,18 +99,20 @@ const ItemsField = ({
     const [collapsed, setCollapsed] = useState((value || []).map(() => true));
 
     const onClickAdd = useCallback(() => {
-        const newValue = [...(value || []), newItemDefaultValue];
+        const newValue = [...(value || []), newItemDefaultValue()];
+        idMap.current = [...idMap.current, uuid()];
+        setCollapsed((previousCollapsed) => [...previousCollapsed, false]);
+
         if (onChange !== null) {
             onChange(newValue);
         }
-    }, [value, onChange, newItemDefaultValue, name]);
+    }, [value, onChange, setCollapsed, newItemDefaultValue]);
 
     const onItemChange = useCallback(
-        (index, newValue) => {
+        (it, index, newItemValue) => {
+            const newValue = value.map((prevItem, prevIndex) => prevIndex !== index ? prevItem : newItemValue);
             if (onChange !== null) {
-                const newValues = [...value];
-                newValues[index] = newValue;
-                onChange(newValues);
+                onChange(newValue);
             }
         },
         [value, onChange],
@@ -168,8 +168,7 @@ const ItemsField = ({
         const renderedItemLabel = renderItemLabel !== null ? renderItemLabel(index) : null;
         const defaultItemLabel = (
             <span>
-                <Label>{itemFieldLabel}</Label>
-                {` #${index + 1}`}
+                <Label>{ itemFieldLabel({ index }) }</Label>
             </span>
         );
         return (
