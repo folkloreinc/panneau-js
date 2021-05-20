@@ -69,6 +69,7 @@
         "@panneau/element-menu": "^1.0.0-alpha.17",
         "@panneau/element-navbar": "^1.0.0-alpha.17",
         "@panneau/element-pagination": "^1.0.0-alpha.17",
+        "@panneau/element-dropdown": "^1.0.0-alpha.17",
         "@panneau/fields": "^1.0.0-alpha.17",
         "@panneau/filters": "^1.0.0-alpha.17",
         "@panneau/forms": "^1.0.0-alpha.17",

@@ -4,17 +4,15 @@ import { useLocation, useHistory } from 'react-router';
 import classNames from 'classnames';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 
-import Button from '@panneau/element-button';
 import Alert from '@panneau/element-alert';
 
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
 import ResourceLabel from '../partials/ResourceLabel';
-
+import ResourceCreateButton from '../buttons/ResourceCreate';
 import ResourceItemsList from '../lists/ResourceItems';
 
 import messages from '../messages';
@@ -59,9 +57,7 @@ const ResourceIndexPage = ({ resource }) => {
                     title={name}
                     actions={
                         canCreate ? (
-                            <Button href={resourceRoute('create')} size="lg" theme="primary">
-                                <ResourceLabel resource={resource} message={messages.create} />
-                            </Button>
+                            <ResourceCreateButton resource={resource} size="lg" theme="primary" />
                         ) : null
                     }
                 />
