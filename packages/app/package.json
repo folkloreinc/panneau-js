@@ -72,7 +72,7 @@
         "@panneau/fields": "^1.0.0-alpha.16",
         "@panneau/filters": "^1.0.0-alpha.16",
         "@panneau/forms": "^1.0.0-alpha.16",
-        "@panneau/indexes": "^1.0.0-alpha.16",
+        "@panneau/displays": "^1.0.0-alpha.16",
         "@panneau/lists": "^1.0.0-alpha.16",
         "@panneau/modals": "^1.0.0-alpha.16",
         "@panneau/themes": "^1.0.0-alpha.11",
