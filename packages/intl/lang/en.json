@@ -8,6 +8,9 @@
     "Bhu3B2": {
         "defaultMessage": "Delete"
     },
+    "BpZoQZ": {
+        "defaultMessage": "Success"
+    },
     "IuCFWt": {
         "defaultMessage": "yes"
     },
@@ -19,6 +22,9 @@
     },
     "PyxZY2": {
         "defaultMessage": "Cancel"
+    },
+    "ZLDmja": {
+        "defaultMessage": "Submit"
     },
     "ZxgNge": {
         "defaultMessage": "Add an item"
@@ -109,6 +115,12 @@
     },
     "login": {
         "defaultMessage": "Login"
+    },
+    "menus.pagination.next": {
+        "defaultMessage": "next"
+    },
+    "menus.pagination.previous": {
+        "defaultMessage": "Previous"
     },
     "meta.title_401": {
         "defaultMessage": "Error 401"

@@ -11,6 +11,10 @@
     "defaultMessage": "Delete",
     "description": "Button label"
   },
+  "BpZoQZ": {
+    "defaultMessage": "Success",
+    "description": "Success form message"
+  },
   "IuCFWt": {
     "defaultMessage": "yes",
     "description": "Boolean value"
@@ -26,6 +30,10 @@
   "PyxZY2": {
     "defaultMessage": "Cancel",
     "description": "Button label"
+  },
+  "ZLDmja": {
+    "defaultMessage": "Submit",
+    "description": "Submit form button"
   },
   "ZxgNge": {
     "defaultMessage": "Add an item",
@@ -118,6 +126,12 @@
   },
   "login": {
     "defaultMessage": "Log in"
+  },
+  "menus.pagination.next": {
+    "defaultMessage": "next"
+  },
+  "menus.pagination.previous": {
+    "defaultMessage": "Previous"
   },
   "meta.title_401": {
     "defaultMessage": "Error 401"
