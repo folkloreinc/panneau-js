@@ -10,7 +10,7 @@ import { ApiProvider } from '@panneau/data';
 import FieldsProvider from '@panneau/fields';
 import FormsProvider from '@panneau/forms';
 import ListsProvider from '@panneau/lists';
-import IndexesProvider from '@panneau/indexes';
+import DisplaysProvider from '@panneau/displays';
 import FiltersProvider from '@panneau/filters';
 import { AuthProvider } from '../contexts/AuthContext';
 
@@ -52,7 +52,7 @@ const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
                             <FieldsProvider>
                                 <FormsProvider>
                                     <ListsProvider>
-                                        <IndexesProvider>
+                                        <DisplaysProvider>
                                             <FiltersProvider>
                                                 <ApiProvider baseUrl={baseUrl}>
                                                     <AuthProvider user={user}>
@@ -60,7 +60,7 @@ const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
                                                     </AuthProvider>
                                                 </ApiProvider>
                                             </FiltersProvider>
-                                        </IndexesProvider>
+                                        </DisplaysProvider>
                                     </ListsProvider>
                                 </FormsProvider>
                             </FieldsProvider>
