@@ -6,8 +6,8 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceItem } from '@panneau/data';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
 
-import useResourceUrlGenerator from '../../hooks/useResourceUrlGenerator';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
 // import Button from '../buttons/Button';
@@ -42,7 +42,7 @@ const ResourceDeletePage = ({ resource, itemId }) => {
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
-                    title={<ResourceLabel resource={resource}>{messages.delete}</ResourceLabel>}
+                    title={<ResourceLabel resource={resource} message={messages.delete} />}
                     small
                 />
                 <div className="container-sm py-4">

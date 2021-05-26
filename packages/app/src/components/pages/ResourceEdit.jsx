@@ -5,7 +5,6 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceItem } from '@panneau/data';
-// import useResourceUrlGenerator from '../../hooks/useResourceUrlGenerator';
 
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
@@ -36,7 +35,7 @@ const ResourceEditPage = ({ resource, itemId }) => {
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
-                    title={<ResourceLabel resource={resource}>{messages.edit}</ResourceLabel>}
+                    title={<ResourceLabel resource={resource} message={messages.edit} />}
                     small
                 />
                 <div className="container-sm py-4">

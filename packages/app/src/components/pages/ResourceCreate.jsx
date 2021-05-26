@@ -4,8 +4,8 @@ import { useHistory } from 'react-router';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import { ResourceProvider } from '@panneau/core/contexts';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
 
-import useResourceUrlGenerator from '../../hooks/useResourceUrlGenerator';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
 import ResourceLabel from '../partials/ResourceLabel';
@@ -29,7 +29,7 @@ const ResourceCreatePage = ({ resource }) => {
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
-                    title={<ResourceLabel resource={resource}>{messages.create}</ResourceLabel>}
+                    title={<ResourceLabel resource={resource} message={messages.create} />}
                     small
                 />
                 <div className="container-sm py-4">

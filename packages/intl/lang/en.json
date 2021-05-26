@@ -2,11 +2,29 @@
     "2/F1Q7": {
         "defaultMessage": "#{index}"
     },
+    "6oV4/s": {
+        "defaultMessage": "no"
+    },
+    "Bhu3B2": {
+        "defaultMessage": "Delete"
+    },
+    "BpZoQZ": {
+        "defaultMessage": "Success"
+    },
+    "IuCFWt": {
+        "defaultMessage": "yes"
+    },
+    "Ke35Pv": {
+        "defaultMessage": "Edit"
+    },
     "PKCv5M": {
         "defaultMessage": "No item..."
     },
     "PyxZY2": {
         "defaultMessage": "Cancel"
+    },
+    "ZLDmja": {
+        "defaultMessage": "Submit"
     },
     "ZxgNge": {
         "defaultMessage": "Add an item"
@@ -25,6 +43,9 @@
     },
     "auth.update_account": {
         "defaultMessage": "Update account"
+    },
+    "bPk79b": {
+        "defaultMessage": "Show"
     },
     "errors.description_401": {
         "defaultMessage": "You are not authorized to access this page."
@@ -77,12 +98,6 @@
     "form.show_button": {
         "defaultMessage": "Cancel"
     },
-    "forms.delete_button": {
-        "defaultMessage": "Delete"
-    },
-    "forms.edit_button": {
-        "defaultMessage": "Edit"
-    },
     "forms.error_status": {
         "defaultMessage": "Error"
     },
@@ -101,6 +116,12 @@
     "login": {
         "defaultMessage": "Login"
     },
+    "menus.pagination.next": {
+        "defaultMessage": "next"
+    },
+    "menus.pagination.previous": {
+        "defaultMessage": "Previous"
+    },
     "meta.title_401": {
         "defaultMessage": "Error 401"
     },
@@ -112,9 +133,6 @@
     },
     "meta.title_500": {
         "defaultMessage": "Error 500"
-    },
-    "no": {
-        "defaultMessage": "Non"
     },
     "pagination.items_count": {
         "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
@@ -148,8 +166,5 @@
     },
     "s4Xrs9": {
         "defaultMessage": "Time"
-    },
-    "yes": {
-        "defaultMessage": "Oui"
     }
 }

@@ -4,18 +4,15 @@ import { useLocation, useHistory } from 'react-router';
 import classNames from 'classnames';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-
 import { ResourceProvider } from '@panneau/core/contexts';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
 
-import Button from '@panneau/element-button';
 import Alert from '@panneau/element-alert';
-
-import useResourceUrlGenerator from '../../hooks/useResourceUrlGenerator';
 
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
 import ResourceLabel from '../partials/ResourceLabel';
-
+import ResourceCreateButton from '../buttons/ResourceCreate';
 import ResourceItemsList from '../lists/ResourceItems';
 
 import messages from '../messages';
@@ -60,21 +57,19 @@ const ResourceIndexPage = ({ resource }) => {
                     title={name}
                     actions={
                         canCreate ? (
-                            <Button href={resourceRoute('create')} size="lg" theme="primary">
-                                <ResourceLabel resource={resource}>{messages.create}</ResourceLabel>
-                            </Button>
+                            <ResourceCreateButton resource={resource} size="lg" theme="primary" />
                         ) : null
                     }
                 />
                 <div className={classNames(['container-sm py-4'])}>
                     {created ? (
                         <Alert className="mb-4" onClose={onClickCloseAlert}>
-                            <ResourceLabel resource={resource}>{messages.created}</ResourceLabel>
+                            <ResourceLabel resource={resource} message={messages.created} />
                         </Alert>
                     ) : null}
                     {deleted ? (
                         <Alert className="mb-4" onClose={onClickCloseAlert}>
-                            <ResourceLabel resource={resource}>{messages.deleted}</ResourceLabel>
+                            <ResourceLabel resource={resource} message={messages.deleted} />
                         </Alert>
                     ) : null}
                     <ResourceItemsList

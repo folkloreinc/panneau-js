@@ -17,6 +17,36 @@ msgctxt "2/F1Q7"
 msgid "#{index}"
 msgstr "#{index}"
 
+# Boolean value
+#: 6oV4/s
+msgctxt "6oV4/s"
+msgid "no"
+msgstr "no"
+
+# Button label
+#: Bhu3B2
+msgctxt "Bhu3B2"
+msgid "Delete"
+msgstr "Delete"
+
+# Success form message
+#: BpZoQZ
+msgctxt "BpZoQZ"
+msgid "Success"
+msgstr "Success"
+
+# Boolean value
+#: IuCFWt
+msgctxt "IuCFWt"
+msgid "yes"
+msgstr "yes"
+
+# Button label
+#: Ke35Pv
+msgctxt "Ke35Pv"
+msgid "Edit"
+msgstr "Edit"
+
 # Label when there is no item in items field
 #: PKCv5M
 msgctxt "PKCv5M"
@@ -28,6 +58,12 @@ msgstr "No item..."
 msgctxt "PyxZY2"
 msgid "Cancel"
 msgstr "Cancel"
+
+# Submit form button
+#: ZLDmja
+msgctxt "ZLDmja"
+msgid "Submit"
+msgstr "Submit"
 
 # Button label in items field
 #: ZxgNge
@@ -59,6 +95,12 @@ msgstr "Logout"
 msgctxt "auth.update_account"
 msgid "Update account"
 msgstr "Update account"
+
+# Button label
+#: bPk79b
+msgctxt "bPk79b"
+msgid "Show"
+msgstr "Show"
 
 #: errors.description_401
 msgctxt "errors.description_401"
@@ -145,16 +187,6 @@ msgctxt "form.show_button"
 msgid "Cancel"
 msgstr "Cancel"
 
-#: forms.delete_button
-msgctxt "forms.delete_button"
-msgid "Delete"
-msgstr "Delete"
-
-#: forms.edit_button
-msgctxt "forms.edit_button"
-msgid "Edit"
-msgstr "Edit"
-
 #: forms.error_status
 msgctxt "forms.error_status"
 msgid "Error"
@@ -185,6 +217,16 @@ msgctxt "login"
 msgid "Log in"
 msgstr "Login"
 
+#: menus.pagination.next
+msgctxt "menus.pagination.next"
+msgid "next"
+msgstr "next"
+
+#: menus.pagination.previous
+msgctxt "menus.pagination.previous"
+msgid "Previous"
+msgstr "Previous"
+
 #: meta.title_401
 msgctxt "meta.title_401"
 msgid "Error 401"
@@ -204,11 +246,6 @@ msgstr "Error 404"
 msgctxt "meta.title_500"
 msgid "Error 500"
 msgstr "Error 500"
-
-#: no
-msgctxt "no"
-msgid "Non"
-msgstr "Non"
 
 #: pagination.items_count
 msgctxt "pagination.items_count"
@@ -265,8 +302,3 @@ msgstr "Loading {plural}..."
 msgctxt "s4Xrs9"
 msgid "Time"
 msgstr "Time"
-
-#: yes
-msgctxt "yes"
-msgid "Oui"
-msgstr "Oui"

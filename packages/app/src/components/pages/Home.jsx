@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { usePanneauResources, useUrlGenerator } from '@panneau/core/contexts';
@@ -31,7 +32,7 @@ const HomePage = () => {
                                 resource: resourceId,
                             })}
                         >
-                            <ResourceLabel resource={resource}>{messages?.index}</ResourceLabel>
+                            <ResourceLabel resource={resource} message={messages.index} />
                         </Link>
                     );
                 })}

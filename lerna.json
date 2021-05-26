@@ -1,13 +1,13 @@
 {
-    "version": "1.0.0-alpha.16",
+    "version": "1.0.0-alpha.20",
     "packages": [
+        "displays/*",
         "fields/*",
         "forms/*",
         "modals/*",
         "elements/*",
         "filters/*",
         "lists/*",
-        "indexes/*",
         "packages/*"
     ],
     "command": {

@@ -9,7 +9,7 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Pagination from '@panneau/element-pagination';
 import Card from '@panneau/element-card';
 import Loading from '@panneau/element-loading';
-import FormActions from '@panneau/element-form-actions';
+import FormActions from '@panneau/element-item-actions';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -20,7 +20,6 @@ const propTypes = {
     total: PropTypes.number,
     loading: PropTypes.bool,
     baseUrl: PropTypes.string,
-    urlGenerator: PropTypes.func,
     // onQueryChange: PropTypes.func,
 };
 
@@ -32,7 +31,6 @@ const defaultProps = {
     total: null,
     loading: false,
     baseUrl: null,
-    urlGenerator: null,
     // onQueryChange: null,
 };
 
@@ -45,7 +43,6 @@ const TableList = ({
     total,
     baseUrl,
     loading,
-    urlGenerator,
     // onQueryChange,
 }) => {
     const { page: queryPage, ...queryWithoutPage } = query || {};
@@ -73,7 +70,6 @@ const TableList = ({
                                   <FormActions
                                       resource={resource}
                                       item={it}
-                                      urlGenerator={urlGenerator}
                                   />
                               </Card>
                           </div>

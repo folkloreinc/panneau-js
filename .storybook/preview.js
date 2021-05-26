@@ -3,6 +3,7 @@ import withIntlProvider from './decorators/withIntlProvider';
 import withGoogleKeys from './decorators/withGoogleKeys';
 import withAuthProvider from './decorators/withAuthProvider';
 import withRoutesProvider from './decorators/withRoutesProvider';
+import withRouter from './decorators/withRouter';
 
 import '../packages/themes/src/styles/vendor.scss';
 
@@ -77,4 +78,5 @@ export const decorators = [
     withGoogleKeys,
     withRoutesProvider,
     withAuthProvider,
+    withRouter,
 ];
