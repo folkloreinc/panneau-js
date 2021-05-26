@@ -7,24 +7,29 @@ import { v4 as uuid } from 'uuid';
 import { ReactSortable } from 'react-sortablejs';
 // import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
-// import isFunction from 'lodash/isFunction';
+import isFunction from 'lodash/isFunction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useFieldComponent } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
-
-import styles from './styles.module.scss';
 
 const propTypes = {
     name: PropTypes.string,
     value: PropTypes.arrayOf(PropTypes.any), // eslint-disable-line
+    types: PropTypes.arrayOf( PropTypes.shape({
+        id: PropTypes.string,
+        name: PropTypes.string,
+        fields: PanneauPropTypes.fields
+    }) ),
     newItemDefaultValue: PropTypes.func, // eslint-disable-line
     noItemLabel: PanneauPropTypes.label,
     addItemLabel: PanneauPropTypes.label,
     itemFieldLabel: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.label]),
     itemComponent: PropTypes.elementType,
-    itemsField: PanneauPropTypes.field,
+    itemProps: PropTypes.oneOfType([ PropTypes.object, PropTypes.func ]),
+    itemFields: PanneauPropTypes.fields,
     className: PropTypes.string,
     onChange: PropTypes.func,
     
@@ -57,7 +62,8 @@ const defaultProps = {
         />
     ),
     itemComponent: null,
-    itemsField: null,
+    itemProps: null,
+    itemFields: null,
     className: null,
     onChange: null,
 
@@ -80,8 +86,9 @@ const ItemsField = ({
     addItemLabel,
     // eslint-disable-next-line no-unused-vars
     itemFieldLabel,
-    // itemComponent,
-    // itemsField,
+    itemComponent: ItemComponent,
+    itemProps,
+    itemFields,
     className,
     onChange,
 
@@ -97,6 +104,7 @@ const ItemsField = ({
 }) => {
     const idMap = useRef((value || []).map(() => uuid()));
     const [collapsed, setCollapsed] = useState((value || []).map(() => true));
+    const FieldsComponent = useFieldComponent('fields');
 
     const onClickAdd = useCallback(() => {
         const newValue = [...(value || []), newItemDefaultValue()];
@@ -171,31 +179,37 @@ const ItemsField = ({
                 <Label>{ itemFieldLabel({ index }) }</Label>
             </span>
         );
+        let itemChildren; 
+        if ( itemFields !== null ) {
+            itemChildren = <FieldsComponent value={ it } onChange={ (newValue) => onItemChange(it, index, newValue) } fields={ itemFields } />;
+        } else if ( ItemComponent !== null ) {
+            itemChildren = <ItemComponent value={ it } onChange={ (newValue) => onItemChange(it, index, newValue) } { ...(isFunction(itemProps) ? itemProps(it, index) : itemProps) } />;
+        }
+
         return (
             <div
                 className={classNames([
-                    styles.item,
                     'mb-3',
                     'card',
                     {
-                        [styles.inline]: inline,
-                        [styles.opened]: !inline && !collapsed[index],
+                        ['inline']: inline, // FIXME
+                        ['show']: !inline && !collapsed[index],
                     },
                 ])}
                 key={`item-${id}`}
             >
                 {!inline ? (
-                    <div className={classNames([styles.cardHeader, 'card-header'])}>
+                    <div className={classNames(['card-header'])}>
                         {!withoutCollapse ? (
                             <Button
-                                className={styles.collapseToggle}
+                                className={`collapseToggle`}
                                 onClick={() => toggleCollapse(index)}
                             />
                         ) : null}
-                        <div className={styles.cardHeaderContent}>
+                        <div className={`cardHeaderContent`}>
                             {!withoutCollapse ? (
                                 <FontAwesomeIcon
-                                    className={styles.arrowIcon}
+                                    className={'arrowIcon'}
                                     icon={collapsed[index] ? faCaretRight : faCaretDown}
                                 />
                             ) : null}
@@ -204,7 +218,7 @@ const ItemsField = ({
                                     ? renderedItemLabel
                                     : defaultItemLabel}
                             </span>
-                            <div className={styles.cardHeaderButtons}>
+                            <div className={'cardHeaderButtons'}>
                                 <Button
                                     theme="secondary"
                                     size="sm"
@@ -227,17 +241,19 @@ const ItemsField = ({
                 >
                     <div className="row mx-n1">
                         <div className="col px-1">
-                            {renderItem !== null
+                            { renderItem !== null
                                 ? renderItem(it, index, {
-                                      onChange: (newValue) => onItemChange(it, index, newValue),
+                                    ...(isFunction(itemProps) ? itemProps(it, index) : itemProps),
+                                    children: itemChildren,
+                                    onChange: (newValue) => onItemChange(it, index, newValue),
                                   })
-                                : null}
+                                : itemChildren }
                         </div>
                     </div>
                 </div>
                 {inline ? (
-                    <div className={classNames([styles.cardHeader, 'card-header', 'd-flex'])}>
-                        <div className={classNames([styles.cardHeaderButtons, 'm-auto'])}>
+                    <div className={classNames(['card-header', 'd-flex'])}>
+                        <div className={classNames(['cardHeaderButtons', 'm-auto'])}>
                             <Button
                                 theme="secondary"
                                 size="sm"
@@ -255,7 +271,7 @@ const ItemsField = ({
 
     return (
         <div className={className}>
-            <div className={classNames(['d-flex', 'align-items-center', 'pb-3', styles.header])}>
+            <div className={classNames(['d-flex', 'align-items-center', 'pb-3', 'header'])}>
                 {!withFloatingAddButton ? <Label>{name}</Label> : null }
                 <Button
                     type="button"
