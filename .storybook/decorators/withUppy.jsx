@@ -10,7 +10,7 @@ const props = {
     // },
     transport: 'tus',
     tus: {
-        endpoint: 'https://micromag.ca.local.flklr.ca:3000/tus',
+        endpoint: 'http://localhost:58800/tus',
     },
 };
 

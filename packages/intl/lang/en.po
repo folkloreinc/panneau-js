@@ -175,6 +175,11 @@ msgctxt "form.show_button"
 msgid "Cancel"
 msgstr "Cancel"
 
+#: forms.add_file_button
+msgctxt "forms.add_file_button"
+msgid "Add file"
+msgstr "Add file"
+
 #: forms.error_status
 msgctxt "forms.error_status"
 msgid "Error"

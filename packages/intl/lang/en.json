@@ -92,6 +92,9 @@
     "form.show_button": {
         "defaultMessage": "Cancel"
     },
+    "forms.add_file_button": {
+        "defaultMessage": "Add file"
+    },
     "forms.error_status": {
         "defaultMessage": "Error"
     },
