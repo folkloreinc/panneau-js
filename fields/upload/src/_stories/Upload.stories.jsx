@@ -21,3 +21,6 @@ const Container = (props) => {
 
 export const Normal = () => <Container />;
 export const WithButton = () => <Container withButton />;
+export const Audio = () => <Container types={['audio']} />;
+export const Image = () => <Container types={['image']} />;
+export const Video = () => <Container types={['video']} />;
