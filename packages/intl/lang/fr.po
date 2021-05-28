@@ -41,6 +41,12 @@ msgctxt "Ke35Pv"
 msgid "Edit"
 msgstr ""
 
+# Default upload add button label
+#: NI9440
+msgctxt "NI9440"
+msgid "Add file"
+msgstr ""
+
 # Label when there is no item in items field
 #: PKCv5M
 msgctxt "PKCv5M"
@@ -174,11 +180,6 @@ msgstr "Enregistrer"
 msgctxt "form.show_button"
 msgid "Cancel"
 msgstr "Annuler"
-
-#: forms.add_file_button
-msgctxt "forms.add_file_button"
-msgid "Add file"
-msgstr ""
 
 #: forms.error_status
 msgctxt "forms.error_status"

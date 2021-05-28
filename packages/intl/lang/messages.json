@@ -19,6 +19,10 @@
     "defaultMessage": "Edit",
     "description": "Button label"
   },
+  "NI9440": {
+    "defaultMessage": "Add file",
+    "description": "Default upload add button label"
+  },
   "PKCv5M": {
     "defaultMessage": "No item...",
     "description": "Label when there is no item in items field"
@@ -100,9 +104,6 @@
   },
   "form.show_button": {
     "defaultMessage": "Cancel"
-  },
-  "forms.add_file_button": {
-    "defaultMessage": "Add file"
   },
   "forms.error_status": {
     "defaultMessage": "Error"

@@ -14,6 +14,9 @@
     "Ke35Pv": {
         "defaultMessage": "Edit"
     },
+    "NI9440": {
+        "defaultMessage": "Add file"
+    },
     "PKCv5M": {
         "defaultMessage": "No item..."
     },
@@ -91,9 +94,6 @@
     },
     "form.show_button": {
         "defaultMessage": "Cancel"
-    },
-    "forms.add_file_button": {
-        "defaultMessage": "Add file"
     },
     "forms.error_status": {
         "defaultMessage": "Error"

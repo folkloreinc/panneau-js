@@ -70,6 +70,7 @@
         "@panneau/field-text": "^1.0.0-alpha.20",
         "@panneau/field-toggle": "^1.0.0-alpha.20",
         "@panneau/field-toggles": "^1.0.0-alpha.20",
+        "@panneau/field-upload": "^1.0.0-alpha.20",
         "@panneau/field-url": "^1.0.0-alpha.20",
         "prop-types": "^15.7.2"
     },
