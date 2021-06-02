@@ -71,9 +71,6 @@
     "form.password": {
         "defaultMessage": "Mot de passe"
     },
-    "form.save": {
-        "defaultMessage": "Enregistrer"
-    },
     "form.show_button": {
         "defaultMessage": "Annuler"
     },

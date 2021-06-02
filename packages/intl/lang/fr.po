@@ -59,6 +59,12 @@ msgctxt "PyxZY2"
 msgid "Cancel"
 msgstr "Annuler"
 
+# Button label
+#: R1HYj0
+msgctxt "R1HYj0"
+msgid "Save"
+msgstr ""
+
 # Button label in items field
 #: ZxgNge
 msgctxt "ZxgNge"
@@ -171,25 +177,35 @@ msgctxt "form.password"
 msgid "Password"
 msgstr "Mot de passe"
 
-#: form.save
-msgctxt "form.save"
-msgid "Save"
-msgstr "Enregistrer"
-
 #: form.show_button
 msgctxt "form.show_button"
 msgid "Cancel"
 msgstr "Annuler"
+
+#: forms.add_item_button
+msgctxt "forms.add_item_button"
+msgid "Add item"
+msgstr ""
 
 #: forms.error_status
 msgctxt "forms.error_status"
 msgid "Error"
 msgstr "Une erreur s'est produite lors de la publication"
 
+#: forms.item
+msgctxt "forms.item"
+msgid "Item"
+msgstr ""
+
 #: forms.loading_status
 msgctxt "forms.loading_status"
 msgid "Loading..."
 msgstr "Chargement..."
+
+#: forms.no_item
+msgctxt "forms.no_item"
+msgid "No item."
+msgstr ""
 
 #: forms.success_status
 msgctxt "forms.success_status"
@@ -205,6 +221,11 @@ msgstr "Réinitialiser le mot de passe"
 msgctxt "lists.filters.submit"
 msgid "Submit"
 msgstr "Envoyer"
+
+#: loading
+msgctxt "loading"
+msgid "Loading..."
+msgstr ""
 
 #: login
 msgctxt "login"

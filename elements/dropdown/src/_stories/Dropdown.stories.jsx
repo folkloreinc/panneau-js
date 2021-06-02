@@ -17,8 +17,8 @@ export const Normal = () => (
             <Dropdown
                 visible
                 items={[
-                    { value: 'value', label: 'Label 1' },
-                    { value: 'value', label: 'Label 2' },
+                    { id: 'value1', label: 'Label 1' },
+                    { id: 'value2', label: 'Label 2' },
                 ]}
             />
         </div>
@@ -32,8 +32,8 @@ export const End = () => (
                 visible
                 align="end"
                 items={[
-                    { value: 'value', label: 'Label 1' },
-                    { value: 'value', label: 'Label 2' },
+                    { id: 'value1', label: 'Label 1' },
+                    { id: 'value', label: 'Label 2' },
                 ]}
             />
         </div>

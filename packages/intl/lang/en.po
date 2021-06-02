@@ -59,6 +59,12 @@ msgctxt "PyxZY2"
 msgid "Cancel"
 msgstr "Cancel"
 
+# Button label
+#: R1HYj0
+msgctxt "R1HYj0"
+msgid "Save"
+msgstr "Save"
+
 # Button label in items field
 #: ZxgNge
 msgctxt "ZxgNge"
@@ -171,25 +177,35 @@ msgctxt "form.password"
 msgid "Password"
 msgstr "Password"
 
-#: form.save
-msgctxt "form.save"
-msgid "Save"
-msgstr "Save"
-
 #: form.show_button
 msgctxt "form.show_button"
 msgid "Cancel"
 msgstr "Cancel"
+
+#: forms.add_item_button
+msgctxt "forms.add_item_button"
+msgid "Add item"
+msgstr "Add item"
 
 #: forms.error_status
 msgctxt "forms.error_status"
 msgid "Error"
 msgstr "Error"
 
+#: forms.item
+msgctxt "forms.item"
+msgid "Item"
+msgstr "Item"
+
 #: forms.loading_status
 msgctxt "forms.loading_status"
 msgid "Loading..."
 msgstr "Loading..."
+
+#: forms.no_item
+msgctxt "forms.no_item"
+msgid "No item."
+msgstr "No item."
 
 #: forms.success_status
 msgctxt "forms.success_status"
@@ -205,6 +221,11 @@ msgstr "Reset"
 msgctxt "lists.filters.submit"
 msgid "Submit"
 msgstr "Submit"
+
+#: loading
+msgctxt "loading"
+msgid "Loading..."
+msgstr "Loading..."
 
 #: login
 msgctxt "login"

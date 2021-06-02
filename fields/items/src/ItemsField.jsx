@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
 
-import React, { useCallback, useRef, useState} from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { v4 as uuid } from 'uuid';
@@ -14,35 +14,43 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFieldComponent } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
+import Dropdown from '@panneau/element-dropdown';
 
 const propTypes = {
     name: PropTypes.string,
     value: PropTypes.arrayOf(PropTypes.any), // eslint-disable-line
-    types: PropTypes.arrayOf( PropTypes.shape({
-        id: PropTypes.string,
-        name: PropTypes.string,
-        fields: PanneauPropTypes.fields
-    }) ),
+    types: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string,
+            name: PropTypes.string,
+            fields: PanneauPropTypes.fields,
+        }),
+    ),
     newItemDefaultValue: PropTypes.func, // eslint-disable-line
     noItemLabel: PanneauPropTypes.label,
     addItemLabel: PanneauPropTypes.label,
     itemFieldLabel: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.label]),
     itemComponent: PropTypes.elementType,
-    itemProps: PropTypes.oneOfType([ PropTypes.object, PropTypes.func ]),
+    itemProps: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
     itemFields: PanneauPropTypes.fields,
     className: PropTypes.string,
     onChange: PropTypes.func,
-    
+
     renderBefore: PropTypes.func,
     renderItem: PropTypes.func,
     renderItemLabel: PropTypes.func,
-    
-    inline: PropTypes.bool
+
+    withoutCollapse: PropTypes.bool,
+    withoutSort: PropTypes.bool,
+    withFloatingAddButton: PropTypes.bool,
+
+    inline: PropTypes.bool,
 };
 
 const defaultProps = {
     name: null,
     value: null,
+    types: null,
     newItemDefaultValue: () => ({}),
     noItemLabel: (
         <FormattedMessage
@@ -75,12 +83,13 @@ const defaultProps = {
     withoutSort: false,
     withFloatingAddButton: false,
 
-    inline: false
+    inline: false,
 };
 
 const ItemsField = ({
     name,
     value,
+    types,
     newItemDefaultValue,
     noItemLabel,
     addItemLabel,
@@ -106,19 +115,28 @@ const ItemsField = ({
     const [collapsed, setCollapsed] = useState((value || []).map(() => true));
     const FieldsComponent = useFieldComponent('fields');
 
-    const onClickAdd = useCallback(() => {
-        const newValue = [...(value || []), newItemDefaultValue()];
-        idMap.current = [...idMap.current, uuid()];
-        setCollapsed((previousCollapsed) => [...previousCollapsed, false]);
+    const onClickAdd = useCallback(
+        (newItemContent = null) => {
+            const newValue =
+                newItemContent !== null
+                    ? { ...newItemDefaultValue(), ...newItemContent }
+                    : newItemDefaultValue();
+            const finalValue = [...(value || []), newValue];
+            idMap.current = [...idMap.current, uuid()];
+            setCollapsed((previousCollapsed) => [...previousCollapsed, false]);
 
-        if (onChange !== null) {
-            onChange(newValue);
-        }
-    }, [value, onChange, setCollapsed, newItemDefaultValue]);
+            if (onChange !== null) {
+                onChange(finalValue);
+            }
+        },
+        [value, onChange, setCollapsed, newItemDefaultValue],
+    );
 
     const onItemChange = useCallback(
         (it, index, newItemValue) => {
-            const newValue = value.map((prevItem, prevIndex) => prevIndex !== index ? prevItem : newItemValue);
+            const newValue = value.map((prevItem, prevIndex) =>
+                prevIndex !== index ? prevItem : newItemValue,
+            );
             if (onChange !== null) {
                 onChange(newValue);
             }
@@ -172,18 +190,68 @@ const ItemsField = ({
         [setCollapsed, onChange],
     );
 
+    // Dropdown
+    const [dropdownOpened, setDropdownOpened] = useState(false);
+    const onClickDropdown = useCallback(
+        (e) => {
+            e.preventDefault();
+            setDropdownOpened(!dropdownOpened);
+        },
+        [dropdownOpened, setDropdownOpened],
+    );
+
     const itemElements = items.map(({ id, it }, index) => {
+        const { type: itemType = null } = it || {};
+
+        let itemChildren;
+        const currentType = (types || []).find(({ id: typeId }) => itemType === typeId) || null;
+
         const renderedItemLabel = renderItemLabel !== null ? renderItemLabel(index) : null;
-        const defaultItemLabel = (
-            <span>
-                <Label>{ itemFieldLabel({ index }) }</Label>
-            </span>
-        );
-        let itemChildren; 
-        if ( itemFields !== null ) {
-            itemChildren = <FieldsComponent value={ it } onChange={ (newValue) => onItemChange(it, index, newValue) } fields={ itemFields } />;
-        } else if ( ItemComponent !== null ) {
-            itemChildren = <ItemComponent value={ it } onChange={ (newValue) => onItemChange(it, index, newValue) } { ...(isFunction(itemProps) ? itemProps(it, index) : itemProps) } />;
+
+        const defaultItemLabel =
+            currentType !== null ? (
+                <span>
+                    <Label>
+                        {itemFieldLabel({ index: index + 1 })} - {currentType.name}
+                    </Label>
+                </span>
+            ) : (
+                <span>
+                    <Label>{itemFieldLabel({ index: index + 1 })}</Label>
+                </span>
+            );
+
+        if (itemType !== null && currentType === null) {
+            itemChildren = (
+                <FormattedMessage
+                    defaultMessage="Could not find type for this item"
+                    description="Error message"
+                />
+            );
+        } else if (currentType !== null) {
+            itemChildren = (
+                <FieldsComponent
+                    value={it}
+                    onChange={(newValue) => onItemChange(it, index, newValue)}
+                    fields={currentType.fields || itemFields}
+                />
+            );
+        } else if (itemFields !== null) {
+            itemChildren = (
+                <FieldsComponent
+                    value={it}
+                    onChange={(newValue) => onItemChange(it, index, newValue)}
+                    fields={itemFields}
+                />
+            );
+        } else if (ItemComponent !== null) {
+            itemChildren = (
+                <ItemComponent
+                    value={it}
+                    onChange={(newValue) => onItemChange(it, index, newValue)}
+                    {...(isFunction(itemProps) ? itemProps(it, index) : itemProps)}
+                />
+            );
         }
 
         return (
@@ -192,42 +260,42 @@ const ItemsField = ({
                     'mb-3',
                     'card',
                     {
-                        ['inline']: inline, // FIXME
-                        ['show']: !inline && !collapsed[index],
+                        inline,
+                        show: !inline && !collapsed[index],
                     },
                 ])}
                 key={`item-${id}`}
             >
                 {!inline ? (
-                    <div className={classNames(['card-header'])}>
-                        {!withoutCollapse ? (
-                            <Button
-                                className={`collapseToggle`}
-                                onClick={() => toggleCollapse(index)}
-                            />
-                        ) : null}
-                        <div className={`cardHeaderContent`}>
+                    <div className="card-header d-flex align-items-center justify-content-between">
+                        <div className="card-content">
                             {!withoutCollapse ? (
-                                <FontAwesomeIcon
-                                    className={'arrowIcon'}
-                                    icon={collapsed[index] ? faCaretRight : faCaretDown}
-                                />
-                            ) : null}
-                            <span className="text-truncate">
-                                {renderedItemLabel !== null
-                                    ? renderedItemLabel
-                                    : defaultItemLabel}
-                            </span>
-                            <div className={'cardHeaderButtons'}>
                                 <Button
                                     theme="secondary"
                                     size="sm"
-                                    onClick={(e) => onClickRemove(e, it, index)}
+                                    className="collapseToggle me-2"
+                                    onClick={() => toggleCollapse(index)}
                                     outline
                                 >
-                                    <FontAwesomeIcon icon={faTimes} />
+                                    <FontAwesomeIcon
+                                        className="arrowIcon"
+                                        icon={collapsed[index] ? faCaretRight : faCaretDown}
+                                    />
                                 </Button>
-                            </div>
+                            ) : null}
+                            <span className="text-truncate">
+                                {renderedItemLabel !== null ? renderedItemLabel : defaultItemLabel}
+                            </span>
+                        </div>
+                        <div className="d-flex card-buttons">
+                            <Button
+                                theme="secondary"
+                                size="sm"
+                                onClick={(e) => onClickRemove(e, it, index)}
+                                outline
+                            >
+                                <FontAwesomeIcon icon={faTimes} />
+                            </Button>
                         </div>
                     </div>
                 ) : null}
@@ -241,13 +309,13 @@ const ItemsField = ({
                 >
                     <div className="row mx-n1">
                         <div className="col px-1">
-                            { renderItem !== null
+                            {renderItem !== null
                                 ? renderItem(it, index, {
-                                    ...(isFunction(itemProps) ? itemProps(it, index) : itemProps),
-                                    children: itemChildren,
-                                    onChange: (newValue) => onItemChange(it, index, newValue),
+                                      ...(isFunction(itemProps) ? itemProps(it, index) : itemProps),
+                                      children: itemChildren,
+                                      onChange: (newValue) => onItemChange(it, index, newValue),
                                   })
-                                : itemChildren }
+                                : itemChildren}
                         </div>
                     </div>
                 </div>
@@ -271,17 +339,70 @@ const ItemsField = ({
 
     return (
         <div className={className}>
-            <div className={classNames(['d-flex', 'align-items-center', 'pb-3', 'header'])}>
-                {!withFloatingAddButton ? <Label>{name}</Label> : null }
-                <Button
-                    type="button"
-                    theme="primary"
-                    outline
-                    onClick={onClickAdd}
-                    className="ml-auto"
-                >
-                    {addItemLabel}
-                </Button>
+            <div
+                className={classNames([
+                    'd-flex',
+                    'align-items-center',
+                    'justify-content-between',
+                    'pb-3',
+                    'header',
+                ])}
+            >
+                {!withFloatingAddButton ? <Label>{name}</Label> : null}
+                {types !== null && types.length > 1 ? (
+                    <div className="position-relative">
+                        <Button
+                            theme="primary"
+                            outline
+                            className={classNames([
+                                {
+                                    'dropdown-toggle': types !== null,
+                                    [className]: className !== null,
+                                },
+                            ])}
+                            onClick={types !== null ? onClickDropdown : null}
+                        >
+                            {addItemLabel}
+                        </Button>
+                        <Dropdown
+                            items={types.map(({ id = null, name: typeName = null }) => ({
+                                id,
+                                label: typeName || 'label',
+                                type: 'button',
+                                onClick: () => {
+                                    onClickAdd({ type: id });
+                                    setDropdownOpened(false);
+                                },
+                            }))}
+                            visible={dropdownOpened}
+                            align="end"
+                        />
+                    </div>
+                ) : null}
+                {types !== null && types.length === 1 ? (
+                    <Button
+                        theme="primary"
+                        outline
+                        onClick={() => {
+                            onClickAdd({
+                                type: types[0].id || null,
+                            });
+                        }}
+                        className="ml-auto"
+                    >
+                        {addItemLabel}
+                    </Button>
+                ) : null}
+                {types === null || types.length === 0 ? (
+                    <Button
+                        theme="primary"
+                        outline
+                        onClick={() => onClickAdd()}
+                        className="ml-auto"
+                    >
+                        {addItemLabel}
+                    </Button>
+                ) : null}
             </div>
             {renderBefore !== null ? renderBefore() : null}
             <div className="d-flex flex-column">
@@ -315,9 +436,8 @@ const ItemsField = ({
                     </div>
                 )}
             </div>
-        
         </div>
-    )
+    );
 };
 
 ItemsField.propTypes = propTypes;

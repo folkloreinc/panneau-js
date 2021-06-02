@@ -23,6 +23,9 @@
     "PyxZY2": {
         "defaultMessage": "Cancel"
     },
+    "R1HYj0": {
+        "defaultMessage": "Save"
+    },
     "ZxgNge": {
         "defaultMessage": "Add an item"
     },
@@ -89,17 +92,23 @@
     "form.password": {
         "defaultMessage": "Password"
     },
-    "form.save": {
-        "defaultMessage": "Save"
-    },
     "form.show_button": {
         "defaultMessage": "Cancel"
+    },
+    "forms.add_item_button": {
+        "defaultMessage": "Add item"
     },
     "forms.error_status": {
         "defaultMessage": "Error"
     },
+    "forms.item": {
+        "defaultMessage": "Item"
+    },
     "forms.loading_status": {
         "defaultMessage": "Loading..."
+    },
+    "forms.no_item": {
+        "defaultMessage": "No item."
     },
     "forms.success_status": {
         "defaultMessage": "Success!"
@@ -109,6 +118,9 @@
     },
     "lists.filters.submit": {
         "defaultMessage": "Submit"
+    },
+    "loading": {
+        "defaultMessage": "Loading..."
     },
     "login": {
         "defaultMessage": "Login"

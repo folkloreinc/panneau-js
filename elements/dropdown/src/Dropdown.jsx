@@ -7,8 +7,7 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDocumentEvent } from '@panneau/core/hooks';
 import Link from '@panneau/element-link';
 import Label from '@panneau/element-label';
-
-import styles from './styles.module.scss';
+import Button from '@panneau/element-button';
 
 const propTypes = {
     items: PanneauPropTypes.menuItems,
@@ -60,12 +59,12 @@ const Dropdown = ({
                 'relative',
                 {
                     [`dropdown-menu-${align}`]: align !== null,
-                    [styles[`dropdown-menu-${align}`]]: align !== null,
                     show: visible,
                     [className]: className !== null,
                 },
             ])}
             ref={refContainer}
+            style={{ right: align === 'end' ? 0 : 'auto', left: align === 'start' ? 0 : 'auto' }}
         >
             {children !== null
                 ? children
@@ -85,7 +84,10 @@ const Dropdown = ({
                           ItemComponent = Link;
                       } else if (type === 'header') {
                           ItemComponent = 'h6';
+                      } else if (type === 'button') {
+                          ItemComponent = Button;
                       }
+                      // console.log(id, label);
                       const finalOnClickItem =
                           customOnClick !== null || (type === 'link' && onClickItem !== null)
                               ? (e) => {
