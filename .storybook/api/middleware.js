@@ -41,7 +41,7 @@ module.exports = () => {
         const total = items.length;
         const lastPage = Math.ceil(total / count);
         return {
-            pagination: { current_page: page, last_page: lastPage, total },
+            pagination: { page, last_page: lastPage, total, per_page: count },
             data: items.slice(startIndex, endIndex),
         };
     };

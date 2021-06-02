@@ -100,7 +100,10 @@ const Form = ({
                             size="lg"
                             label={
                                 saveButtonLabel || (
-                                    <FormattedMessage id="form.save" defaultMessage="Save" />
+                                    <FormattedMessage
+                                        defaultMessage="Save"
+                                        description="Button label"
+                                    />
                                 )
                             }
                             className={classNames({

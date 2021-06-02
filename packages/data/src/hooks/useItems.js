@@ -8,12 +8,13 @@ const useItems = ({
     items: providedItems = null,
     pages: initialPages = null,
     getPageFromResponse = ({
-        pagination: { current_page: currentPage, last_page: lastPage, total },
+        pagination: { page: currentPage, last_page: lastPage, total, per_page: perPage },
         data: items,
     }) => ({
         page: parseInt(currentPage, 10),
         lastPage: parseInt(lastPage, 10),
         total: parseInt(total, 10),
+        count: parseInt(perPage, 10),
         items,
     }),
     getItemsFromResponse = (data) => data,
