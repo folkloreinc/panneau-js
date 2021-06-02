@@ -1,113 +1,94 @@
-/* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
-
-import React, { useCallback, useRef, useState} from 'react';
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable react/jsx-props-no-spreading */
+import { v1 as uuid } from 'uuid';
+import React, { useCallback, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { v4 as uuid } from 'uuid';
-import { ReactSortable } from 'react-sortablejs';
-// import classNames from 'classnames';
-import { FormattedMessage } from 'react-intl';
-import isFunction from 'lodash/isFunction';
+import { defineMessages } from 'react-intl';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useFieldComponent } from '@panneau/core/contexts';
-import Button from '@panneau/element-button';
-import Label from '@panneau/element-label';
+import { ReactSortable } from 'react-sortablejs';
+
+import * as AppPropTypes from '../../../lib/PropTypes';
+import Label from '../../partials/Label';
+import Button from '../buttons/Button';
+import FormGroup from './FormGroup';
+
+import styles from '../../../../styles/panneau/fields/items.module.scss';
+
+const messages = defineMessages({
+    item: {
+        id: 'forms.item',
+        defaultMessage: 'Item',
+    },
+    noItem: {
+        id: 'forms.no_item',
+        defaultMessage: 'No item.',
+    },
+    addItem: {
+        id: 'forms.add_item_button',
+        defaultMessage: 'Add item',
+    },
+});
 
 const propTypes = {
-    name: PropTypes.string,
-    value: PropTypes.arrayOf(PropTypes.any), // eslint-disable-line
-    types: PropTypes.arrayOf( PropTypes.shape({
-        id: PropTypes.string,
-        name: PropTypes.string,
-        fields: PanneauPropTypes.fields
-    }) ),
-    newItemDefaultValue: PropTypes.func, // eslint-disable-line
-    noItemLabel: PanneauPropTypes.label,
-    addItemLabel: PanneauPropTypes.label,
-    itemFieldLabel: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.label]),
-    itemComponent: PropTypes.elementType,
-    itemProps: PropTypes.oneOfType([ PropTypes.object, PropTypes.func ]),
-    itemFields: PanneauPropTypes.fields,
-    className: PropTypes.string,
-    onChange: PropTypes.func,
-    
+    label: AppPropTypes.text,
+    value: PropTypes.arrayOf(PropTypes.any),
     renderBefore: PropTypes.func,
     renderItem: PropTypes.func,
     renderItemLabel: PropTypes.func,
-    
-    inline: PropTypes.bool
+    itemLabel: AppPropTypes.label,
+    addItemLabel: AppPropTypes.label,
+    noItemLabel: AppPropTypes.label,
+    withoutCollapse: PropTypes.bool,
+    withoutSort: PropTypes.bool,
+    withFloatingAddButton: PropTypes.bool,
+    newItemDefaultValue: PropTypes.func,
+    className: PropTypes.string,
+    onChange: PropTypes.func,
+    inline: PropTypes.bool,
 };
 
 const defaultProps = {
-    name: null,
+    label: null,
     value: null,
-    newItemDefaultValue: () => ({}),
-    noItemLabel: (
-        <FormattedMessage
-            defaultMessage="No item..."
-            description="Label when there is no item in items field"
-        />
-    ),
-    addItemLabel: (
-        <FormattedMessage defaultMessage="Add an item" description="Button label in items field" />
-    ),
-    // eslint-disable-next-line react/prop-types
-    itemFieldLabel: ({ index }) => (
-        <FormattedMessage
-            defaultMessage="#{index}"
-            description="Item label in items field"
-            values={{ index }}
-        />
-    ),
-    itemComponent: null,
-    itemProps: null,
-    itemFields: null,
-    className: null,
-    onChange: null,
-
     renderBefore: null,
     renderItem: null,
     renderItemLabel: null,
-
+    itemLabel: messages.item,
+    addItemLabel: messages.addItem,
+    noItemLabel: messages.noItem,
     withoutCollapse: false,
     withoutSort: false,
     withFloatingAddButton: false,
-
-    inline: false
+    newItemDefaultValue: () => ({}),
+    className: null,
+    onChange: null,
+    inline: false,
 };
 
 const ItemsField = ({
-    name,
+    label,
     value,
-    newItemDefaultValue,
-    noItemLabel,
-    addItemLabel,
-    // eslint-disable-next-line no-unused-vars
-    itemFieldLabel,
-    itemComponent: ItemComponent,
-    itemProps,
-    itemFields,
-    className,
-    onChange,
-
     renderBefore,
     renderItem,
     renderItemLabel,
-
+    itemLabel,
+    addItemLabel,
+    noItemLabel,
     withoutCollapse,
     withoutSort,
     withFloatingAddButton,
-
+    newItemDefaultValue,
+    className,
+    onChange,
     inline,
 }) => {
     const idMap = useRef((value || []).map(() => uuid()));
     const [collapsed, setCollapsed] = useState((value || []).map(() => true));
-    const FieldsComponent = useFieldComponent('fields');
 
     const onClickAdd = useCallback(() => {
-        const newValue = [...(value || []), newItemDefaultValue()];
+        const newValue = [...(value || []), newItemDefaultValue(value)];
         idMap.current = [...idMap.current, uuid()];
         setCollapsed((previousCollapsed) => [...previousCollapsed, false]);
 
@@ -125,7 +106,6 @@ const ItemsField = ({
         },
         [value, onChange],
     );
-
     const onClickRemove = useCallback(
         (e, it, index) => {
             e.preventDefault();
@@ -176,40 +156,35 @@ const ItemsField = ({
         const renderedItemLabel = renderItemLabel !== null ? renderItemLabel(index) : null;
         const defaultItemLabel = (
             <span>
-                <Label>{ itemFieldLabel({ index }) }</Label>
+                <Label>{itemLabel}</Label>
+                {` #${index + 1}`}
             </span>
         );
-        let itemChildren; 
-        if ( itemFields !== null ) {
-            itemChildren = <FieldsComponent value={ it } onChange={ (newValue) => onItemChange(it, index, newValue) } fields={ itemFields } />;
-        } else if ( ItemComponent !== null ) {
-            itemChildren = <ItemComponent value={ it } onChange={ (newValue) => onItemChange(it, index, newValue) } { ...(isFunction(itemProps) ? itemProps(it, index) : itemProps) } />;
-        }
-
         return (
             <div
                 className={classNames([
+                    styles.item,
                     'mb-3',
                     'card',
                     {
-                        ['inline']: inline, // FIXME
-                        ['show']: !inline && !collapsed[index],
+                        [styles.inline]: inline,
+                        [styles.opened]: !inline && !collapsed[index],
                     },
                 ])}
                 key={`item-${id}`}
             >
                 {!inline ? (
-                    <div className={classNames(['card-header'])}>
+                    <div className={classNames([styles.cardHeader, 'card-header'])}>
                         {!withoutCollapse ? (
                             <Button
-                                className={`collapseToggle`}
+                                className={styles.collapseToggle}
                                 onClick={() => toggleCollapse(index)}
                             />
                         ) : null}
-                        <div className={`cardHeaderContent`}>
+                        <div className={styles.cardHeaderContent}>
                             {!withoutCollapse ? (
                                 <FontAwesomeIcon
-                                    className={'arrowIcon'}
+                                    className={styles.arrowIcon}
                                     icon={collapsed[index] ? faCaretRight : faCaretDown}
                                 />
                             ) : null}
@@ -218,7 +193,7 @@ const ItemsField = ({
                                     ? renderedItemLabel
                                     : defaultItemLabel}
                             </span>
-                            <div className={'cardHeaderButtons'}>
+                            <div className={styles.cardHeaderButtons}>
                                 <Button
                                     theme="secondary"
                                     size="sm"
@@ -241,19 +216,17 @@ const ItemsField = ({
                 >
                     <div className="row mx-n1">
                         <div className="col px-1">
-                            { renderItem !== null
+                            {renderItem !== null
                                 ? renderItem(it, index, {
-                                    ...(isFunction(itemProps) ? itemProps(it, index) : itemProps),
-                                    children: itemChildren,
-                                    onChange: (newValue) => onItemChange(it, index, newValue),
+                                      onChange: (newValue) => onItemChange(it, index, newValue),
                                   })
-                                : itemChildren }
+                                : null}
                         </div>
                     </div>
                 </div>
                 {inline ? (
-                    <div className={classNames(['card-header', 'd-flex'])}>
-                        <div className={classNames(['cardHeaderButtons', 'm-auto'])}>
+                    <div className={classNames([styles.cardHeader, 'card-header', 'd-flex'])}>
+                        <div className={classNames([styles.cardHeaderButtons, 'm-auto'])}>
                             <Button
                                 theme="secondary"
                                 size="sm"
@@ -270,9 +243,17 @@ const ItemsField = ({
     });
 
     return (
-        <div className={className}>
-            <div className={classNames(['d-flex', 'align-items-center', 'pb-3', 'header'])}>
-                {!withFloatingAddButton ? <Label>{name}</Label> : null }
+        <FormGroup
+            className={classNames([
+                styles.container,
+                {
+                    [className]: className !== null,
+                    [styles.withFloatingAddButton]: withFloatingAddButton,
+                },
+            ])}
+        >
+            <div className={classNames(['d-flex', 'align-items-center', 'pb-3', styles.header])}>
+                {!withFloatingAddButton ? <Label>{label}</Label> : null }
                 <Button
                     type="button"
                     theme="primary"
@@ -315,9 +296,8 @@ const ItemsField = ({
                     </div>
                 )}
             </div>
-        
-        </div>
-    )
+        </FormGroup>
+    );
 };
 
 ItemsField.propTypes = propTypes;
