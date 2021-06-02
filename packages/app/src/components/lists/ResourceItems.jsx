@@ -71,6 +71,7 @@ const ResourceItemsList = ({
                     {...props}
                     {...items}
                     {...componentProps}
+                    page={paginated ? parseInt(page, 10) : null}
                     resource={resource}
                     query={query}
                     onQueryChange={onListQueryChange}

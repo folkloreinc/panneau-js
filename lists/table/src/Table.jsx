@@ -8,7 +8,7 @@ import { stringify as stringifyQuery } from 'query-string';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
-import { useResourceUrlGenerator } from '@panneau/core/hooks';
+// import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getComponent, getComponentFromName, getColumnsFromResource } from '@panneau/core/utils';
 
 import Pagination from '@panneau/element-pagination';
@@ -50,6 +50,7 @@ const TableList = ({
     // onQueryChange,
 }) => {
     const displayComponents = useDisplaysComponents();
+
     const { page: queryPage, ...queryWithoutPage } = query || {};
     const hasQuery = Object.keys(queryWithoutPage).length > 0;
     const { settings: { indexIsPaginated: paginated = false } = {} } = resource;
@@ -66,6 +67,15 @@ const TableList = ({
 
     return (
         <div>
+            {paginated && lastPage > 1 && items !== null ? (
+                <Pagination
+                    page={page}
+                    lastPage={lastPage}
+                    total={total}
+                    url={currentUrl}
+                    className="mt-1 mb-3"
+                />
+            ) : null}
             {items !== null ? (
                 <table
                     className={classNames([
@@ -103,7 +113,8 @@ const TableList = ({
                                             ...fieldProps
                                         } = column;
 
-                                        const { name: componentName, props: componentProps } = getComponent(component);
+                                        const { name: componentName, props: componentProps } =
+                                            getComponent(component);
                                         const FieldIndexComponent = getComponentFromName(
                                             componentName,
                                             displayComponents,
@@ -128,10 +139,7 @@ const TableList = ({
                                         );
                                     })}
                                     <td className="text-end col-auto">
-                                        <FormActions
-                                            resource={resource}
-                                            item={it}
-                                        />
+                                        <FormActions resource={resource} item={it} />
                                     </td>
                                 </tr>
                             );
@@ -141,13 +149,14 @@ const TableList = ({
             ) : (
                 <Loading>Loading</Loading>
             )}
-            {paginated && lastPage > 1 ? (
+            {paginated && lastPage > 1 && items !== null ? (
                 <Pagination
                     page={page}
                     lastPage={lastPage}
                     total={total}
                     url={currentUrl}
                     className="mt-4"
+                    withCount
                 />
             ) : null}
         </div>

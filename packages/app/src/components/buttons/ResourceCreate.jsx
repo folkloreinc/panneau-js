@@ -58,7 +58,7 @@ const ResourceCreateButtom = ({ resource, className }) => {
             {button}
             <Dropdown
                 items={types
-                    .filter(({ meta: { can_create: canCreate = true } = {} }) => canCreate)
+                    .filter(({ settings: { can_create: canCreate = true } = {} }) => canCreate)
                     .map((it) => ({
                         id: it.id,
                         label: it.name,

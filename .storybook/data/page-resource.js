@@ -49,10 +49,13 @@ export default {
             name: 'description',
             label: 'Description',
             component: 'html',
+            components: {
+                index: 'text',
+            },
         },
         {
             name: 'slug',
-            label: 'URL',
+            label: 'Slug',
             component: 'url',
             settings: {
                 showInIndex: true,
@@ -100,9 +103,10 @@ export default {
 
     settings: {
         hideInNavbar: false,
+        indexIsPaginated: true,
     },
 
-    columns: ['title', 'description'],
+    columns: ['title', 'description', 'slug'],
 
     routes: {
         'resource.whatever': '/whatever-something-something',

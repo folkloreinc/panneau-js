@@ -11,7 +11,15 @@ export default {
 
     fields: [
         { name: 'organizer', label: 'Organisateur', type: 'text', component: 'text' },
-        { name: 'email', label: 'Email', type: 'email', component: 'text' },
+        {
+            name: 'email',
+            label: 'Email',
+            type: 'email',
+            component: 'text',
+            components: {
+                index: 'text',
+            },
+        },
     ],
 
     components: {
@@ -19,6 +27,8 @@ export default {
             component: 'cards',
         },
     },
+
+    columns: ['organizer', 'email'],
 
     settings: {},
 };

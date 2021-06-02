@@ -28,6 +28,8 @@ const propTypes = {
     total: PropTypes.number,
     url: PropTypes.string,
     withPreviousNext: PropTypes.bool,
+    withCount: PropTypes.bool,
+    align: PropTypes.oneOf(['left', 'right']),
     className: PropTypes.string,
     paginationClassName: PropTypes.string,
     itemClassName: PropTypes.string,
@@ -41,6 +43,8 @@ const defaultProps = {
     total: null,
     url: null,
     withPreviousNext: false,
+    withCount: false,
+    align: 'right',
     className: null,
     paginationClassName: null,
     itemClassName: null,
@@ -54,6 +58,8 @@ const PaginationMenu = ({
     total,
     url,
     withPreviousNext,
+    withCount,
+    align,
     className,
     paginationClassName,
     itemClassName,
@@ -77,10 +83,16 @@ const PaginationMenu = ({
                 'align-items-center',
                 'm-0',
                 {
+                    'justify-content-end': align === 'right',
                     [className]: className !== null,
                 },
             ])}
         >
+            {total !== null && withCount && align === 'right' ? (
+                <div className="mx-3 text-muted">
+                    <Label values={{ count: total }}>{messages.itemsCount}</Label>
+                </div>
+            ) : null}
             <ul
                 className={classNames([
                     'pagination',
@@ -192,8 +204,8 @@ const PaginationMenu = ({
                     </li>
                 ) : null}
             </ul>
-            {total !== null ? (
-                <div className="ml-4 text-muted">
+            {total !== null && withCount && align === 'left' ? (
+                <div className="mx-3 text-muted">
                     <Label values={{ count: total }}>{messages.itemsCount}</Label>
                 </div>
             ) : null}

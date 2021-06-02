@@ -8,7 +8,7 @@ const useItems = ({
     items: providedItems = null,
     pages: initialPages = null,
     getPageFromResponse = ({
-        meta: { current_page: currentPage, last_page: lastPage, total },
+        pagination: { current_page: currentPage, last_page: lastPage, total },
         data: items,
     }) => ({
         page: parseInt(currentPage, 10),
@@ -65,9 +65,10 @@ const useItems = ({
         }
         if (isPaginated) {
             const newPage = getPageFromResponse(response);
-            const newPages = (reset
-                ? [newPage]
-                : [...(pages || []).filter((it) => it.page !== newPage.page), newPage]
+            const newPages = (
+                reset
+                    ? [newPage]
+                    : [...(pages || []).filter((it) => it.page !== newPage.page), newPage]
             ).sort((a, b) => {
                 if (a === b) {
                     return 0;
