@@ -1,6 +1,6 @@
 {
     "name": "@panneau/forms",
-    "version": "1.0.0-alpha.21",
+    "version": "1.0.0-alpha.22",
     "description": "",
     "keywords": [
         "javascript"
@@ -56,8 +56,8 @@
         "@panneau/core": "^1.0.0-alpha.21",
         "@panneau/form-horizontal": "^1.0.0-alpha.21",
         "@panneau/form-inline": "^1.0.0-alpha.21",
-        "@panneau/form-normal": "^1.0.0-alpha.21",
-        "@panneau/form-two-pane": "^1.0.0-alpha.21",
+        "@panneau/form-normal": "^1.0.0-alpha.22",
+        "@panneau/form-two-pane": "^1.0.0-alpha.22",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
