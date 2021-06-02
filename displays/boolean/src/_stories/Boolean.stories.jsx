@@ -4,7 +4,7 @@ import Boolean from '../Boolean';
 
 export default {
     component: Boolean,
-    title: 'Index/Boolean',
+    title: 'Displays/Boolean',
     parameters: {
         intl: true,
     },

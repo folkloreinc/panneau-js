@@ -4,7 +4,7 @@ import Text from '../Text';
 
 export default {
     component: Text,
-    title: 'Index/Text',
+    title: 'Displays/Text',
     parameters: {
         intl: true,
     },

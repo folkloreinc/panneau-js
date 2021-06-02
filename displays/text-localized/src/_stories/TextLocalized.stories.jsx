@@ -4,7 +4,7 @@ import TextLocalized from '../TextLocalized';
 
 export default {
     component: TextLocalized,
-    title: 'Index/TextLocalized',
+    title: 'Displays/TextLocalized',
     parameters: {
         intl: true,
     },
