@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-upload",
-    "version": "1.0.0-alpha.21",
+    "version": "1.0.0-alpha.25",
     "description": "An Upload field",
     "keywords": [
         "javascript"
