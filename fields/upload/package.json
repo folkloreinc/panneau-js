@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/fields",
+    "name": "@panneau/field-upload",
     "version": "1.0.0-alpha.20",
-    "description": "",
+    "description": "An Upload field",
     "keywords": [
         "javascript"
     ],
@@ -41,7 +41,7 @@
         "assets"
     ],
     "scripts": {
-        "prepare": "../../scripts/prepare-package.sh --scss"
+        "prepare": "../../scripts/prepare-package.sh"
     },
     "devDependencies": {
         "react": "^16.8.0",
@@ -53,26 +53,20 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
+        "@fortawesome/fontawesome-svg-core": "^1.2.35",
+        "@fortawesome/free-solid-svg-icons": "^5.15.3",
+        "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^1.0.0-alpha.20",
-        "@panneau/field-autocomplete": "^1.0.0-alpha.20",
-        "@panneau/field-checkboxes": "^1.0.0-alpha.20",
-        "@panneau/field-color": "^1.0.0-alpha.20",
-        "@panneau/field-date": "^1.0.0-alpha.20",
-        "@panneau/field-fields": "^1.0.0-alpha.20",
-        "@panneau/field-html": "^1.0.0-alpha.20",
-        "@panneau/field-input-group": "^1.0.0-alpha.20",
-        "@panneau/field-items": "^1.0.0-alpha.20",
-        "@panneau/field-localized": "^1.0.0-alpha.20",
-        "@panneau/field-number": "^1.0.0-alpha.20",
-        "@panneau/field-radios": "^1.0.0-alpha.20",
-        "@panneau/field-select": "^1.0.0-alpha.20",
-        "@panneau/field-test": "^1.0.0-alpha.20",
-        "@panneau/field-text": "^1.0.0-alpha.20",
-        "@panneau/field-toggle": "^1.0.0-alpha.20",
-        "@panneau/field-toggles": "^1.0.0-alpha.20",
-        "@panneau/field-upload": "^1.0.0-alpha.20",
-        "@panneau/field-url": "^1.0.0-alpha.20",
-        "prop-types": "^15.7.2"
+        "@panneau/element-button": "^1.0.0-alpha.20",
+        "@panneau/element-label": "^1.0.0-alpha.20",
+        "@panneau/themes": "^1.0.0-alpha.11",
+        "@uppy/core": "^1.14.1",
+        "@uppy/dashboard": "^1.13.0",
+        "@uppy/react": "^1.10.11",
+        "classnames": "^2.2.6",
+        "pretty-bytes": "^5.4.1",
+        "prop-types": "^15.7.2",
+        "react-intl": "^5.15.8"
     },
     "publishConfig": {
         "access": "public"

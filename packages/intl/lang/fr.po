@@ -41,6 +41,12 @@ msgctxt "Ke35Pv"
 msgid "Edit"
 msgstr ""
 
+# Default upload add button label
+#: NI9440
+msgctxt "NI9440"
+msgid "Add file"
+msgstr ""
+
 # Label when there is no item in items field
 #: PKCv5M
 msgctxt "PKCv5M"
