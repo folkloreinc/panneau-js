@@ -188,30 +188,15 @@ msgctxt "form.show_button"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: forms.add_item_button
-msgctxt "forms.add_item_button"
-msgid "Add item"
-msgstr "Ajouter un item"
-
 #: forms.error_status
 msgctxt "forms.error_status"
 msgid "Error"
 msgstr "Une erreur s'est produite lors de la publication"
 
-#: forms.item
-msgctxt "forms.item"
-msgid "Item"
-msgstr "Item"
-
 #: forms.loading_status
 msgctxt "forms.loading_status"
 msgid "Loading..."
 msgstr "Chargement..."
-
-#: forms.no_item
-msgctxt "forms.no_item"
-msgid "No item."
-msgstr "Pas d'item."
 
 #: forms.success_status
 msgctxt "forms.success_status"

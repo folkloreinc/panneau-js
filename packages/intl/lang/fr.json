@@ -98,20 +98,11 @@
     "form.show_button": {
         "defaultMessage": "Annuler"
     },
-    "forms.add_item_button": {
-        "defaultMessage": "Ajouter un item"
-    },
     "forms.error_status": {
         "defaultMessage": "Une erreur s'est produite lors de la publication"
     },
-    "forms.item": {
-        "defaultMessage": "Item"
-    },
     "forms.loading_status": {
         "defaultMessage": "Chargement..."
-    },
-    "forms.no_item": {
-        "defaultMessage": "Pas d'item."
     },
     "forms.success_status": {
         "defaultMessage": "Succès!"

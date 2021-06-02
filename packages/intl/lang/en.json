@@ -98,20 +98,11 @@
     "form.show_button": {
         "defaultMessage": "Cancel"
     },
-    "forms.add_item_button": {
-        "defaultMessage": "Add item"
-    },
     "forms.error_status": {
         "defaultMessage": "Error"
     },
-    "forms.item": {
-        "defaultMessage": "Item"
-    },
     "forms.loading_status": {
         "defaultMessage": "Loading..."
-    },
-    "forms.no_item": {
-        "defaultMessage": "No item."
     },
     "forms.success_status": {
         "defaultMessage": "Success!"
