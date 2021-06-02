@@ -42,6 +42,7 @@ const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
     const { memoryRouter: usesMemoryRouter = false } = settings || {};
     const Router = memoryRouter || usesMemoryRouter ? MemoryRouter : BrowserRouter;
     // For storybook: auto load page with: initialEntries={['/pages/1/edit']} initialIndex={0}
+    console.log('definition', definition); // eslint-disable-line
 
     return (
         <Router>
