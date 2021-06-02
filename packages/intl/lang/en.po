@@ -65,6 +65,12 @@ msgctxt "R1HYj0"
 msgid "Save"
 msgstr "Save"
 
+# Error message
+#: UpStcP
+msgctxt "UpStcP"
+msgid "Could not find type for this item"
+msgstr "Could not find type for this item"
+
 # Button label in items field
 #: ZxgNge
 msgctxt "ZxgNge"

@@ -21,31 +21,31 @@ msgstr "#{index}"
 #: 6oV4/s
 msgctxt "6oV4/s"
 msgid "no"
-msgstr ""
+msgstr "non"
 
 # Button label
 #: Bhu3B2
 msgctxt "Bhu3B2"
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 # Boolean value
 #: IuCFWt
 msgctxt "IuCFWt"
 msgid "yes"
-msgstr ""
+msgstr "oui"
 
 # Button label
 #: Ke35Pv
 msgctxt "Ke35Pv"
 msgid "Edit"
-msgstr ""
+msgstr "Modifier"
 
 # Default upload add button label
 #: NI9440
 msgctxt "NI9440"
 msgid "Add file"
-msgstr ""
+msgstr "Ajouter un fichier"
 
 # Label when there is no item in items field
 #: PKCv5M
@@ -63,7 +63,13 @@ msgstr "Annuler"
 #: R1HYj0
 msgctxt "R1HYj0"
 msgid "Save"
-msgstr ""
+msgstr "Sauvegarder"
+
+# Error message
+#: UpStcP
+msgctxt "UpStcP"
+msgid "Could not find type for this item"
+msgstr "Nous n'avons pas pu trouver ce type"
 
 # Button label in items field
 #: ZxgNge
@@ -100,7 +106,7 @@ msgstr "Mettre à jour le profil"
 #: bPk79b
 msgctxt "bPk79b"
 msgid "Show"
-msgstr ""
+msgstr "Voir"
 
 #: errors.description_401
 msgctxt "errors.description_401"
@@ -185,7 +191,7 @@ msgstr "Annuler"
 #: forms.add_item_button
 msgctxt "forms.add_item_button"
 msgid "Add item"
-msgstr ""
+msgstr "Ajouter un item"
 
 #: forms.error_status
 msgctxt "forms.error_status"
@@ -195,7 +201,7 @@ msgstr "Une erreur s'est produite lors de la publication"
 #: forms.item
 msgctxt "forms.item"
 msgid "Item"
-msgstr ""
+msgstr "Item"
 
 #: forms.loading_status
 msgctxt "forms.loading_status"
@@ -205,7 +211,7 @@ msgstr "Chargement..."
 #: forms.no_item
 msgctxt "forms.no_item"
 msgid "No item."
-msgstr ""
+msgstr "Pas d'item."
 
 #: forms.success_status
 msgctxt "forms.success_status"
@@ -225,7 +231,7 @@ msgstr "Envoyer"
 #: loading
 msgctxt "loading"
 msgid "Loading..."
-msgstr ""
+msgstr "Chargement..."
 
 #: login
 msgctxt "login"

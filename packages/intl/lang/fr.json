@@ -2,11 +2,32 @@
     "2/F1Q7": {
         "defaultMessage": "#{index}"
     },
+    "6oV4/s": {
+        "defaultMessage": "non"
+    },
+    "Bhu3B2": {
+        "defaultMessage": "Supprimer"
+    },
+    "IuCFWt": {
+        "defaultMessage": "oui"
+    },
+    "Ke35Pv": {
+        "defaultMessage": "Modifier"
+    },
+    "NI9440": {
+        "defaultMessage": "Ajouter un fichier"
+    },
     "PKCv5M": {
         "defaultMessage": "Aucun item..."
     },
     "PyxZY2": {
         "defaultMessage": "Annuler"
+    },
+    "R1HYj0": {
+        "defaultMessage": "Sauvegarder"
+    },
+    "UpStcP": {
+        "defaultMessage": "Nous n'avons pas pu trouver ce type"
     },
     "ZxgNge": {
         "defaultMessage": "Ajouter un élement"
@@ -25,6 +46,9 @@
     },
     "auth.update_account": {
         "defaultMessage": "Mettre à jour le profil"
+    },
+    "bPk79b": {
+        "defaultMessage": "Voir"
     },
     "errors.description_401": {
         "defaultMessage": "Vous n’êtes pas autorisé à accéder à cette page."
@@ -74,11 +98,20 @@
     "form.show_button": {
         "defaultMessage": "Annuler"
     },
+    "forms.add_item_button": {
+        "defaultMessage": "Ajouter un item"
+    },
     "forms.error_status": {
         "defaultMessage": "Une erreur s'est produite lors de la publication"
     },
+    "forms.item": {
+        "defaultMessage": "Item"
+    },
     "forms.loading_status": {
         "defaultMessage": "Chargement..."
+    },
+    "forms.no_item": {
+        "defaultMessage": "Pas d'item."
     },
     "forms.success_status": {
         "defaultMessage": "Succès!"
@@ -88,6 +121,9 @@
     },
     "lists.filters.submit": {
         "defaultMessage": "Envoyer"
+    },
+    "loading": {
+        "defaultMessage": "Chargement..."
     },
     "login": {
         "defaultMessage": "Connexion"

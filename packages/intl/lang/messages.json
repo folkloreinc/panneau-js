@@ -35,6 +35,10 @@
     "defaultMessage": "Save",
     "description": "Button label"
   },
+  "UpStcP": {
+    "defaultMessage": "Could not find type for this item",
+    "description": "Error message"
+  },
   "ZxgNge": {
     "defaultMessage": "Add an item",
     "description": "Button label in items field"
