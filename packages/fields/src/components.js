@@ -1,8 +1,8 @@
 export { default as Autocomplete } from '@panneau/field-autocomplete';
 export { default as Checkboxes } from '@panneau/field-checkboxes';
 export { default as Color } from '@panneau/field-color';
-export { DateTime, default as Date, Time as Time } from '@panneau/field-date';
-export { default as s } from '@panneau/field-fields';
+export { DateTime, default as Date, Time } from '@panneau/field-date';
+export { default as Fields } from '@panneau/field-fields';
 export { default as Html } from '@panneau/field-html';
 export { default as InputGroup } from '@panneau/field-input-group';
 export { default as Items } from '@panneau/field-items';
