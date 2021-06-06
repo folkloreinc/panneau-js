@@ -1,82 +1,72 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback, useState } from 'react';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useFormComponent, useUrlGenerator } from '@panneau/core/contexts';
+import { useForm } from '@panneau/core/hooks';
 import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
-
-import { useFieldComponent } from '@panneau/core/contexts';
-
-import FormGroup from '@panneau/element-form-group';
-import Button from '@panneau/element-button';
-
 import { useAuth } from '../../contexts/AuthContext';
 
 const propTypes = {
+    fields: PanneauPropTypes.fields,
     className: PropTypes.string,
     onSuccess: PropTypes.func,
 };
 
 const defaultProps = {
+    fields: [
+        {
+            name: 'email',
+            type: 'email',
+            size: 'lg',
+            label: <FormattedMessage defaultMessage="Email" description="Field label" />,
+        },
+        {
+            name: 'password',
+            type: 'password',
+            size: 'lg',
+            label: <FormattedMessage defaultMessage="Password" description="Field label" />,
+        },
+    ],
     className: null,
     onSuccess: null,
 };
 
-const LoginForm = ({ className, onSuccess }) => {
-    // const url = useUrlGenerator();
+const LoginForm = ({ fields: formFields, className, onSuccess }) => {
+    const url = useUrlGenerator();
     const { login } = useAuth();
-    const TextField = useFieldComponent('text');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState(null);
-
     const postForm = useCallback(
-        () =>
-            login(email, password)
-                .then(() => onSuccess())
-                .catch((e) => {
-                    console.error(e);
-                    if (e.message) {
-                        setError(e.message);
-                    }
-                }),
-        [login, email, password, setError],
+        (action, { email, password }) => {
+            console.log(email, password);
+            return login(email, password);
+        },
+        [login],
     );
 
-    const onChangeEmail = useCallback(
-        (value) => {
-            setEmail(value);
-        },
-        [setEmail],
-    );
+    const { value, setValue, fields, onSubmit, status, generalError, errors } = useForm({
+        fields: formFields,
+        postForm,
+        onComplete: onSuccess,
+    });
 
-    const onChangePassword = useCallback(
-        (value) => {
-            setPassword(value);
-        },
-        [setPassword],
-    );
+    const NormalForm = useFormComponent('normal');
 
     return (
-        <form method="post" className={className}>
-            {error !== null ? <div className="alert alert-danger mt-2">{error}</div> : null}
-            <FormGroup label={<FormattedMessage id="form.email" defaultMessage="Email" />}>
-                <TextField type="email" size="lg" value={email} onChange={onChangeEmail} />
-            </FormGroup>
-            <FormGroup label={<FormattedMessage id="form.password" defaultMessage="Password" />}>
-                <TextField type="password" size="lg" value={password} onChange={onChangePassword} />
-            </FormGroup>
-            <div className="mt4 d-flex">
-                <Button
-                    onClick={postForm}
-                    type="button"
-                    theme="primary"
-                    size="lg"
-                    className="ms-auto"
-                    disabled={email === '' || password === ''}
-                >
-                    <FormattedMessage id="login" defaultMessage="Log in" />
-                </Button>
-            </div>
-        </form>
+        <NormalForm
+            action={url('auth.login')}
+            method="post"
+            fields={fields}
+            onSubmit={onSubmit}
+            className={className}
+            status={status}
+            generalError={generalError}
+            errors={errors}
+            value={value}
+            onChange={setValue}
+            submitButtonLabel={
+                <FormattedMessage defaultMessage="Log in" description="Button label" />
+            }
+        />
     );
 };
 

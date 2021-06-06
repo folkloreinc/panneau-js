@@ -11,12 +11,12 @@ export const FieldsContext = React.createContext(null);
 
 export const useFieldsManager = () => useContext(FieldsContext);
 
-export const useFieldDefinition = (id) => {
+export const useField = (id) => {
     const manager = useFieldsManager();
     return manager.getDefinition(id);
 };
 
-export const useFieldDefinitions = () => {
+export const useFields = () => {
     const manager = useFieldsManager();
     return manager.getDefinitions();
 };

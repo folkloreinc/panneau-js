@@ -12,11 +12,12 @@ import Button from '@panneau/element-button';
 
 const propTypes = {
     action: PropTypes.string,
+    method: PropTypes.string,
     status: PanneauPropTypes.formStatus,
     children: PropTypes.node,
     actions: PropTypes.node,
     buttons: PanneauPropTypes.buttons,
-    saveButtonLabel: PanneauPropTypes.label,
+    submitButtonLabel: PanneauPropTypes.label,
     onSubmit: PropTypes.func,
     onCancel: PropTypes.func,
     onCancelHref: PropTypes.string,
@@ -29,11 +30,12 @@ const propTypes = {
 
 const defaultProps = {
     action: null,
+    method: 'POST',
     status: null,
     children: null,
     actions: null,
     buttons: null,
-    saveButtonLabel: null,
+    submitButtonLabel: null,
     onSubmit: null,
     onCancel: null,
     onCancelHref: null,
@@ -46,11 +48,12 @@ const defaultProps = {
 
 const Form = ({
     action,
+    method,
     status,
     children,
     actions,
     buttons,
-    saveButtonLabel,
+    submitButtonLabel,
     onSubmit,
     onCancel,
     onCancelHref,
@@ -60,12 +63,12 @@ const Form = ({
     buttonsClassName,
     cancelClassName,
 }) => (
-    <form action={action} method="post" onSubmit={onSubmit} className={className}>
+    <form action={action} method={method} onSubmit={onSubmit} className={className}>
         {children}
-        <div className="mt-4">
+        <div className="mt-4 d-flex align-items-center">
             {!withoutStatus && status !== null ? <FormStatus status={status} /> : null}
             {!withoutActions ? (
-                <div className="mt-4 d-flex align-items-center">
+                <div className="ms-auto d-flex align-items-center">
                     {actions}
                     {onCancel !== null || onCancelHref !== null ? (
                         <Button
@@ -99,9 +102,9 @@ const Form = ({
                             theme="primary"
                             size="lg"
                             label={
-                                saveButtonLabel || (
+                                submitButtonLabel || (
                                     <FormattedMessage
-                                        defaultMessage="Save"
+                                        defaultMessage="Submit"
                                         description="Button label"
                                     />
                                 )
