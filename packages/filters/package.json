@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filters",
-    "version": "1.0.0-alpha.37",
+    "version": "1.0.0-alpha.38",
     "description": "",
     "keywords": [
         "javascript"
@@ -54,7 +54,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^1.0.0-alpha.37",
-        "@panneau/filter-search": "^1.0.0-alpha.37",
+        "@panneau/filter-search": "^1.0.0-alpha.38",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
