@@ -1,21 +1,21 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect, useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
-// import classNames from 'classnames';
-import DatePicker, { registerLocale } from 'react-datepicker';
-import { defineMessage, useIntl } from 'react-intl';
-import formatDate from 'date-fns/format';
-import parse from 'date-fns/parseISO';
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { isMessage } from '@panneau/core/utils';
 import TextField from '@panneau/field-text';
+import formatDate from 'date-fns/format';
+import parse from 'date-fns/parseISO';
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useState } from 'react';
+// import classNames from 'classnames';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import { defineMessage, useIntl } from 'react-intl';
 
 import styles from './styles.module.scss';
 
 const propTypes = {
     name: PropTypes.string,
     value: PropTypes.string,
-    errors: PropTypes.any,// eslint-disable-line
+    errors: PropTypes.any, // eslint-disable-line
     size: PropTypes.oneOf(['sm', 'lg']),
     required: PropTypes.bool,
     disabled: PropTypes.bool,
@@ -24,7 +24,7 @@ const propTypes = {
     withoutDate: PropTypes.bool,
     withoutTime: PropTypes.bool,
     timeFormat: PropTypes.string,
-    timeCaption: PropTypes.any,// eslint-disable-line
+    timeCaption: PropTypes.any, // eslint-disable-line
     timeIntervals: PropTypes.number,
     className: PropTypes.string,
     onChange: PropTypes.func,
@@ -42,7 +42,10 @@ const defaultProps = {
     withoutDate: false,
     withoutTime: false,
     timeFormat: 'HH:mm',
-    timeCaption: defineMessage({ defaultMessage: 'Time', description: 'DateTimeField time caption' }),
+    timeCaption: defineMessage({
+        defaultMessage: 'Time',
+        description: 'DateTimeField time caption',
+    }),
     timeIntervals: 15,
     className: null,
     onChange: null,
@@ -88,31 +91,32 @@ const DateTimeField = ({
         });
     }, [locale, setLoadedLocale]);
     return (
-        <DatePicker
-            wrapperClassName={styles.container}
-            selected={dateValue}
-            onChange={onDateChange}
-            showTimeSelect={!withoutTime}
-            showTimeSelectOnly={withoutDate}
-            disabled={disabled}
-            customInput={
-                <TextField
-                    name={name}
-                    size={size}
-                    errors={errors}
-                    required={required}
-                    className={className}
-                    disabled={disabled}
-                    nativeOnChange
-                />
-            }
-            placeholderText={isMessage(placeholder) ? formatMessage(placeholder) : placeholder}
-            dateFormat={dateFormat}
-            locale={loadedLocale}
-            timeFormat={timeFormat}
-            timeCaption={isMessage(timeCaption) ? formatMessage(timeCaption) : timeCaption}
-            timeIntervals={timeIntervals}
-        />
+        <div className={styles.container}>
+            <DatePicker
+                selected={dateValue}
+                onChange={onDateChange}
+                showTimeSelect={!withoutTime}
+                showTimeSelectOnly={withoutDate}
+                disabled={disabled}
+                customInput={
+                    <TextField
+                        name={name}
+                        size={size}
+                        errors={errors}
+                        required={required}
+                        className={className}
+                        disabled={disabled}
+                        nativeOnChange
+                    />
+                }
+                placeholderText={isMessage(placeholder) ? formatMessage(placeholder) : placeholder}
+                dateFormat={dateFormat}
+                locale={loadedLocale}
+                timeFormat={timeFormat}
+                timeCaption={isMessage(timeCaption) ? formatMessage(timeCaption) : timeCaption}
+                timeIntervals={timeIntervals}
+            />
+        </div>
     );
 };
 
