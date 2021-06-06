@@ -12,7 +12,7 @@ import React from 'react';
 import { MemoryRouter } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from '../contexts/AuthContext';
-import '../styles/main.global.scss';
+import '../styles/styles.scss';
 import Routes from './Routes';
 
 const propTypes = {
