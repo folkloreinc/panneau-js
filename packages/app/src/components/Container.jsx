@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { MemoryRouter } from 'react-router';
-import { BrowserRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
-
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { PanneauProvider, RoutesProvider } from '@panneau/core/contexts';
-import { IntlProvider } from '@panneau/intl';
 import { ApiProvider } from '@panneau/data';
-import FieldsProvider from '@panneau/fields';
-import FormsProvider from '@panneau/forms';
-import ListsProvider from '@panneau/lists';
 import DisplaysProvider from '@panneau/displays';
+import FieldsProvider from '@panneau/fields';
 import FiltersProvider from '@panneau/filters';
+import FormsProvider from '@panneau/forms';
+import { IntlProvider } from '@panneau/intl';
+import ListsProvider from '@panneau/lists';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { MemoryRouter } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from '../contexts/AuthContext';
-
-import Routes from './Routes';
-
 import '../styles/main.global.scss';
+import Routes from './Routes';
 
 const propTypes = {
     definition: PanneauPropTypes.panneauDefinition.isRequired,
@@ -44,8 +41,8 @@ const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
 
     return (
         <Router>
-            <PanneauProvider definition={definition}>
-                <IntlProvider locale={locale} locales={locales} extraMessages={translations}>
+            <IntlProvider locale={locale} locales={locales} extraMessages={translations}>
+                <PanneauProvider definition={definition}>
                     <RoutesProvider routes={routes}>
                         <FieldsProvider>
                             <FormsProvider>
@@ -63,8 +60,8 @@ const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
                             </FormsProvider>
                         </FieldsProvider>
                     </RoutesProvider>
-                </IntlProvider>
-            </PanneauProvider>
+                </PanneauProvider>
+            </IntlProvider>
         </Router>
     );
 };
