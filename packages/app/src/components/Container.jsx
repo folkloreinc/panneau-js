@@ -1,11 +1,11 @@
-import React from 'react';
-import { IntlProvider } from 'react-intl';
+import React, { useState, useEffect } from 'react';
 import { MemoryRouter } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { PanneauProvider, RoutesProvider, LocalesProvider } from '@panneau/core/contexts';
+import { PanneauProvider, RoutesProvider } from '@panneau/core/contexts';
+import { IntlProvider } from '@panneau/intl';
 import { ApiProvider } from '@panneau/data';
 import FieldsProvider from '@panneau/fields';
 import FormsProvider from '@panneau/forms';
@@ -41,32 +41,28 @@ const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
     } = definition;
     const { memoryRouter: usesMemoryRouter = false } = settings || {};
     const Router = memoryRouter || usesMemoryRouter ? MemoryRouter : BrowserRouter;
-    // For storybook: auto load page with: initialEntries={['/pages/1/edit']} initialIndex={0}
-    console.log('definition', definition); // eslint-disable-line
 
     return (
         <Router>
             <PanneauProvider definition={definition}>
-                <IntlProvider locale={locale} messages={translations[locale] || translations}>
-                    <LocalesProvider locale={locale} locales={locales}>
-                        <RoutesProvider routes={routes}>
-                            <FieldsProvider>
-                                <FormsProvider>
-                                    <ListsProvider>
-                                        <DisplaysProvider>
-                                            <FiltersProvider>
-                                                <ApiProvider baseUrl={baseUrl}>
-                                                    <AuthProvider user={user}>
-                                                        <Routes statusCode={statusCode} />
-                                                    </AuthProvider>
-                                                </ApiProvider>
-                                            </FiltersProvider>
-                                        </DisplaysProvider>
-                                    </ListsProvider>
-                                </FormsProvider>
-                            </FieldsProvider>
-                        </RoutesProvider>
-                    </LocalesProvider>
+                <IntlProvider locale={locale} locales={locales} extraMessages={translations}>
+                    <RoutesProvider routes={routes}>
+                        <FieldsProvider>
+                            <FormsProvider>
+                                <ListsProvider>
+                                    <DisplaysProvider>
+                                        <FiltersProvider>
+                                            <ApiProvider baseUrl={baseUrl}>
+                                                <AuthProvider user={user}>
+                                                    <Routes statusCode={statusCode} />
+                                                </AuthProvider>
+                                            </ApiProvider>
+                                        </FiltersProvider>
+                                    </DisplaysProvider>
+                                </ListsProvider>
+                            </FormsProvider>
+                        </FieldsProvider>
+                    </RoutesProvider>
                 </IntlProvider>
             </PanneauProvider>
         </Router>

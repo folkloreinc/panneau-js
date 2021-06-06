@@ -1,34 +1,35 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
 
-const LocalesContext = React.createContext(null);
+const defaultLocales = ['en', 'fr'];
 
-export const useLocalesContext = () => useContext(LocalesContext);
-
-export const useLocale = () => {
-    const { locale = null } = useLocalesContext();
-    return locale;
-};
+export const LocalesContext = React.createContext({ locales: defaultLocales });
 
 export const useLocales = () => {
-    const { locales = [] } = useLocalesContext();
+    const { locales } = useContext(LocalesContext);
     return locales;
+};
+
+export const useOtherLocales = () => {
+    const { locales } = useLocales();
+    const { locale } = useIntl();
+    const otherLocales = useMemo(() => locales.filter((it) => it !== locale), [locales, locale]);
+    return otherLocales;
 };
 
 const propTypes = {
     locales: PropTypes.arrayOf(PropTypes.string),
-    locale: PropTypes.string,
     children: PropTypes.node.isRequired,
 };
 
 const defaultProps = {
     locales: [],
-    locale: 'fr',
 };
 
-export const LocalesProvider = ({ locales, locale, children }) => (
-    <LocalesContext.Provider value={{ locales, locale }}>{children}</LocalesContext.Provider>
+export const LocalesProvider = ({ locales, children }) => (
+    <LocalesContext.Provider value={{ locales }}>{children}</LocalesContext.Provider>
 );
 
 LocalesProvider.propTypes = propTypes;

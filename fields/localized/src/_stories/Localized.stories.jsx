@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import LocalizedField from '../Localized';
 import FieldsProvider from '../../../../packages/fields';
-import { LocalesProvider } from '../../../../packages/core/src/contexts';
+import IntlProvider from '../../../../packages/intl/src/IntlProvider';
 import TextField from '../../../text/src';
 
 export default {
@@ -23,14 +23,14 @@ const Container = () => {
 
     return (
         <FieldsProvider>
-            <LocalesProvider locale="fr" locales={locales}>
+            <IntlProvider locale="fr" locales={locales}>
                 <LocalizedField fieldComponent={TextField} value={value} onChange={onChange} />
                 {locales.map((locale) => (
                     <div>
                         Version&nbsp;{locale}&nbsp;:&nbsp;{value[locale]}
                     </div>
                 ))}
-            </LocalesProvider>
+            </IntlProvider>
         </FieldsProvider>
     );
 };
@@ -43,7 +43,7 @@ const ContainerTwo = () => {
 
     return (
         <FieldsProvider>
-            <LocalesProvider locale="en" locales={locales}>
+            <IntlProvider locale="en" locales={locales}>
                 <LocalizedField
                     component="text"
                     fieldProps={{ type: 'textarea' }}
@@ -55,7 +55,7 @@ const ContainerTwo = () => {
                         Version&nbsp;{locale}&nbsp;:&nbsp;{value[locale]}
                     </div>
                 ))}
-            </LocalesProvider>
+            </IntlProvider>
         </FieldsProvider>
     );
 };
