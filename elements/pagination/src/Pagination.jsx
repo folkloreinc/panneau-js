@@ -75,7 +75,8 @@ const PaginationMenu = ({
                 : null,
         [url],
     );
-    const pages = [...Array(lastPage).keys()].map((it) => it + 1);
+    const pages = [...Array(lastPage).keys()].map((it, idx) => idx + 1);
+
     return (
         <nav
             className={classNames([
@@ -123,7 +124,7 @@ const PaginationMenu = ({
                                 href={getUrl(page - 1)}
                                 onClick={onClickPage !== null ? () => onClickPage(page - 1) : null}
                             >
-                                {messages.previous}
+                                <Label>{messages.previous}</Label>
                             </Link>
                         ) : (
                             <span
@@ -187,7 +188,7 @@ const PaginationMenu = ({
                                 href={getUrl(page + 1)}
                                 onClick={onClickPage !== null ? () => onClickPage(page + 1) : null}
                             >
-                                {messages.next}
+                                <Label>{messages.next}</Label>
                             </Link>
                         ) : (
                             <span
@@ -198,7 +199,7 @@ const PaginationMenu = ({
                                     },
                                 ])}
                             >
-                                {messages.next}
+                                <Label>{messages.next}</Label>
                             </span>
                         )}
                     </li>

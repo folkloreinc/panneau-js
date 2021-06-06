@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Form from '@panneau/element-form';
 
@@ -16,9 +16,15 @@ const defaultProps = {
 };
 
 const SearchFilter = ({ value, onChange, className }) => {
+    const onValueChange = useCallback(
+        (e) => {
+            onChange(e ? e.target.value : null);
+        },
+        [onChange],
+    );
     return (
         <Form className={className}>
-            <input type="text" value={value} onChange={onChange} />
+            <input type="text" value={value} onChange={onValueChange} />
         </Form>
     );
 };

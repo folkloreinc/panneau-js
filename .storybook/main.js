@@ -73,6 +73,14 @@ module.exports = {
                     exclude: /\/node_modules\//,
                     options: {
                         babelrc: false,
+                        presets: [
+                            [
+                                require.resolve('@babel/preset-env'),
+                                {
+                                    loose: true,
+                                },
+                            ]
+                        ],
                         plugins: [
                             [
                                 require.resolve('babel-plugin-react-intl'),

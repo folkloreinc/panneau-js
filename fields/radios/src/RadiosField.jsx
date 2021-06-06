@@ -68,6 +68,7 @@ const RadiosField = ({
                     <input
                         type="radio"
                         name={name}
+                        className="btn-check"
                         autoComplete="off"
                         value={optionValue || ''}
                         onClick={(e) => {

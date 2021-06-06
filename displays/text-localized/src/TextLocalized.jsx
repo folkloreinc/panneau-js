@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
 const propTypes = {
-    value: PropTypes.string,
+    value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 };
 
 const defaultProps = {

@@ -11,11 +11,12 @@ import { isMessage } from '@panneau/core/utils';
 import TextField from '@panneau/field-text';
 
 import styles from './styles.module.scss';
+import './styles/datepicker.global.scss';
 
 const propTypes = {
     name: PropTypes.string,
     value: PropTypes.string,
-    errors: PropTypes.any,// eslint-disable-line
+    errors: PropTypes.any, // eslint-disable-line
     size: PropTypes.oneOf(['sm', 'lg']),
     required: PropTypes.bool,
     disabled: PropTypes.bool,
@@ -24,7 +25,7 @@ const propTypes = {
     withoutDate: PropTypes.bool,
     withoutTime: PropTypes.bool,
     timeFormat: PropTypes.string,
-    timeCaption: PropTypes.any,// eslint-disable-line
+    timeCaption: PropTypes.any, // eslint-disable-line
     timeIntervals: PropTypes.number,
     className: PropTypes.string,
     onChange: PropTypes.func,
@@ -42,7 +43,10 @@ const defaultProps = {
     withoutDate: false,
     withoutTime: false,
     timeFormat: 'HH:mm',
-    timeCaption: defineMessage({ defaultMessage: 'Time', description: 'DateTimeField time caption' }),
+    timeCaption: defineMessage({
+        defaultMessage: 'Time',
+        description: 'DateTimeField time caption',
+    }),
     timeIntervals: 15,
     className: null,
     onChange: null,

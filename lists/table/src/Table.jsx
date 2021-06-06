@@ -104,7 +104,7 @@ const TableList = ({
                             return (
                                 <tr key={`row-${id}`}>
                                     <td className="col-auto">{id}</td>
-                                    {columns.map((column) => {
+                                    {columns.map((column, idx) => {
                                         const {
                                             id: colId,
                                             component = 'text',
@@ -118,11 +118,14 @@ const TableList = ({
                                         const FieldIndexComponent = getComponentFromName(
                                             componentName,
                                             displayComponents,
-                                            'text',
+                                            'p',
                                         );
 
                                         return (
-                                            <td className="col-auto" key={`row-${id}-${colId}`}>
+                                            <td
+                                                className="col-auto"
+                                                key={`row-${id}-${colId}-${idx + 1}`}
+                                            >
                                                 {FieldIndexComponent !== null ? (
                                                     <FieldIndexComponent
                                                         {...componentProps}

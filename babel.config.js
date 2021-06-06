@@ -12,6 +12,7 @@ module.exports = (api) => {
                         targets: {
                             node: 'current',
                         },
+                        loose: true,
                     },
                 ],
                 [
@@ -60,7 +61,7 @@ module.exports = (api) => {
                     {
                         extensions: ['.png'],
                     },
-                ],
+                ]
             ],
         };
     }

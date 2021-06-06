@@ -16,10 +16,17 @@ export default {
     },
 };
 
-const Container = ({ items, paginated = false }) => (
+const Container = ({ items, paginated = false, page = null, total = null, lastPage = null }) => (
     <ResourceProvider resource={pageResource}>
         <DisplayProvider>
-            <Table resource={pageResource} items={items} paginated={paginated} />
+            <Table
+                resource={pageResource}
+                items={items}
+                paginated={paginated}
+                page={page}
+                total={total}
+                lastPage={lastPage}
+            />
         </DisplayProvider>
     </ResourceProvider>
 );
@@ -38,29 +45,38 @@ Container.propTypes = {
         }),
     ]),
     paginated: PropTypes.bool,
+    page: PropTypes.number,
+    total: PropTypes.number,
+    lastPage: PropTypes.number,
 };
 Container.defaultProps = {
     items: [],
     paginated: false,
+    page: null,
+    total: null,
+    lastPage: null,
 };
 
-export const Normal = () => <Container data={[{ id: '1', label: 'Paul', name: 'Paul' }]} />;
+export const Normal = () => (
+    <Container
+        items={[
+            { id: '1', title: { fr: 'Paul', en: 'Paul' }, description: 'Paul' },
+            { id: '2', title: { fr: 'Paul', en: 'Paul' }, description: 'Paul' },
+        ]}
+    />
+);
 
 export const Paginated = () => (
     <Container
-        items={{
-            data: [
-                { id: '1', label: 'Paul1', name: 'Paul1' },
-                { id: '2', label: 'Paul2', name: 'Paul2' },
-                { id: '3', label: 'Paul3', name: 'Paul3' },
-                { id: '4', label: 'Paul4', name: 'Paul4' },
-                { id: '5', label: 'Paul5', name: 'Paul5' },
-                { id: '6', label: 'Paul6', name: 'Paul6' },
-                { id: '7', label: 'Paul7', name: 'Paul7' },
-                { id: '8', label: 'Paul8', name: 'Paul8' },
-            ],
-            pagination: { page: 1, last_page: 3, total: 2, per_page: 3 },
-        }}
-        paginated
+        items={[
+            { id: '1', title: { fr: 'Paul', en: 'Paul' }, description: 'Paul' },
+            { id: '2', title: { fr: 'Paul', en: 'Paul' }, description: 'Paul' },
+            { id: '3', title: { fr: 'Paul', en: 'Paul' }, description: 'Paul' },
+            { id: '4', title: { fr: 'Paul', en: 'Paul' }, description: 'Paul' },
+            { id: '5', title: { fr: 'Paul', en: 'Paul' }, description: 'Paul' },
+        ]}
+        page={1}
+        lastPage={2}
+        total={5}
     />
 );

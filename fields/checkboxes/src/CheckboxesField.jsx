@@ -25,6 +25,7 @@ const defaultProps = {
 
 const Checkboxes = ({ name, value, options, className, onChange }) => {
     const finalOptions = useMemo(() => getSelectOptions(options), [options]);
+
     return (
         <div
             className={classNames([
@@ -50,22 +51,15 @@ const Checkboxes = ({ name, value, options, className, onChange }) => {
                 >
                     <input
                         type="checkbox"
+                        className="btn-check"
                         name={`${name}[]`}
                         autoComplete="off"
                         value={optionValue}
                         onChange={(e) => {
-                            let newValue = value || [];
-                            if (e.currentTarget.checked) {
-                                newValue.push(optionValue);
-                            } else {
-                                newValue =
-                                    value !== null
-                                        ? value.filter((it) => it !== optionValue)
-                                        : null;
-                            }
-                            if (newValue.length === 0) {
-                                newValue = null;
-                            }
+                            const newValue = e.currentTarget.checked
+                                ? [...value, optionValue].filter((v) => v !== null)
+                                : (value || []).filter((it) => it !== optionValue) || null;
+
                             if (onChange !== null) {
                                 onChange(newValue);
                             }

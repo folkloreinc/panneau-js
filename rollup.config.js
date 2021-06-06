@@ -28,10 +28,12 @@ export const createConfig = ({
         file: output || `lib/${file}`,
         format: 'cjs',
         banner,
+        exports: 'named'
     };
     const outputEs = {
         file: output || `es/${file}`,
         banner,
+        exports: 'named'
     };
     let outputConfig;
     if (format === 'both') {
