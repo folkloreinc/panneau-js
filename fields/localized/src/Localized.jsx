@@ -78,7 +78,7 @@ const LocalizedField = ({
                         </span>
                     ) : null}
                     {locales.length > 1 ? (
-                        <div className="ml-auto">
+                        <div className="ms-auto">
                             <Buttons
                                 items={locales.map((locale) => ({
                                     id: locale,

@@ -1,9 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-
 import { usePanneauColorScheme } from '@panneau/core/contexts';
-
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 import MainNavbar from '../menus/MainNavbar';
 
 const propTypes = {
@@ -18,18 +16,17 @@ const defaultProps = {
 const MainLayout = ({ children, fullscreen }) => {
     const { background, text } = usePanneauColorScheme();
     return (
-        <div
-            className={classNames({
-                'd-flex flex-column min-vh-100': fullscreen,
-            })}
-        >
+        <div className={classNames(['d-flex', 'flex-column', 'min-vh-100'])}>
             <MainNavbar className={classNames(['border-bottom', 'sticky-top', 'px-3'])} />
             <div
-                className={classNames({
-                    'd-flex flex-column flex-grow-1': fullscreen,
-                    [`bg-${background}`]: background !== null,
-                    [`text-${text}`]: text !== null,
-                })}
+                className={classNames([
+                    'flex-grow-1',
+                    {
+                        'd-flex flex-column': fullscreen,
+                        [`bg-${background}`]: background !== null,
+                        [`text-${text}`]: text !== null,
+                    },
+                ])}
             >
                 {children}
             </div>
