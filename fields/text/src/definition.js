@@ -1,26 +1,22 @@
 export default [
     {
         id: 'text',
-        component: 'Text',
+        component: 'text',
     },
     {
         id: 'email',
-        component: 'Email',
-        type: 'email',
+        component: 'email',
     },
     {
         id: 'password',
-        component: 'Password',
-        type: 'password',
+        component: 'password',
     },
     {
         id: 'telephone',
-        component: 'Telephone',
-        type: 'tel',
+        component: 'telephone',
     },
     {
         id: 'textarea',
-        component: 'TextArea',
-        type: 'textarea',
+        component: 'textarea',
     },
 ];
