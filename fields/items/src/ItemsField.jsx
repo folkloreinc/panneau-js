@@ -388,7 +388,7 @@ const ItemsField = ({
                                 type: types[0].id || null,
                             });
                         }}
-                        className="ml-auto"
+                        className="ms-auto"
                     >
                         {addItemLabel}
                     </Button>
@@ -398,7 +398,7 @@ const ItemsField = ({
                         theme="primary"
                         outline
                         onClick={() => onClickAdd()}
-                        className="ml-auto"
+                        className="ms-auto"
                     >
                         {addItemLabel}
                     </Button>

@@ -1,14 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-import PropTypes from 'prop-types';
 import {
-    FIELDS_NAMESPACE,
     ComponentsProvider,
     FieldsProvider as BaseFieldsProvider,
+    FIELDS_NAMESPACE,
 } from '@panneau/core/contexts';
-
-import definitions from './definitions';
+import PropTypes from 'prop-types';
+import React from 'react';
 import * as components from './components';
+import definitions from './definitions';
 
 const propTypes = {
     definitions: PropTypes.array, // eslint-disable-line
@@ -26,14 +25,14 @@ const FieldsProvider = ({
     components: injectedComponents,
     children,
 }) => (
-    <ComponentsProvider
-        namespace={FIELDS_NAMESPACE}
-        components={{ ...components, ...injectedComponents }}
-    >
-        <BaseFieldsProvider fields={[definitions, ...injectedDefinitions]}>
+    <BaseFieldsProvider fields={[...definitions, ...injectedDefinitions]}>
+        <ComponentsProvider
+            namespace={FIELDS_NAMESPACE}
+            components={{ ...components, ...injectedComponents }}
+        >
             {children}
-        </BaseFieldsProvider>
-    </ComponentsProvider>
+        </ComponentsProvider>
+    </BaseFieldsProvider>
 );
 
 FieldsProvider.propTypes = propTypes;

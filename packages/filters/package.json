@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filters",
-    "version": "1.0.0-alpha.23",
+    "version": "1.0.0-alpha.40",
     "description": "",
     "keywords": [
         "javascript"
@@ -53,11 +53,12 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.0.0-alpha.21",
-        "@panneau/filter-search": "^1.0.0-alpha.23",
+        "@panneau/core": "^1.0.0-alpha.40",
+        "@panneau/filter-search": "^1.0.0-alpha.40",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
         "access": "public"
-    }
+    },
+    "gitHead": "e63c11e6fa563927f5504eb230b08bb4725d48fb"
 }

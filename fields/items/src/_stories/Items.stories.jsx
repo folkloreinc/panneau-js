@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import ItemsField from '../ItemsField';
 
 import FieldsProvider from '../../../../packages/fields';
-import { LocalesProvider } from '../../../../packages/core/src/contexts';
+import IntlProvider from '../../../../packages/intl/src/IntlProvider';
 
 export default {
     title: 'Fields/Items',
@@ -24,9 +24,9 @@ const Container = (props) => {
     const [value, setValue] = useState(null);
     return (
         <FieldsProvider>
-            <LocalesProvider locales={['fr', 'en']}>
+            <IntlProvider>
                 <ItemsField {...props} name="Items field" value={value} onChange={setValue} />
-            </LocalesProvider>
+            </IntlProvider>
         </FieldsProvider>
     );
 };

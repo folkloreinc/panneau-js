@@ -1,27 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { defineMessages } from 'react-intl';
+import { faCheckCircle, faSpinner, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faTimesCircle, faSpinner } from '@fortawesome/free-solid-svg-icons';
-
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Label from '@panneau/element-label';
-
-const messages = defineMessages({
-    success: {
-        id: 'forms.success_status',
-        defaultMessage: 'Success!',
-    },
-    error: {
-        id: 'forms.error_status',
-        defaultMessage: 'Error',
-    },
-    loading: {
-        id: 'forms.loading_status',
-        defaultMessage: 'Loading...',
-    },
-});
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
     status: PanneauPropTypes.formStatus,
@@ -33,9 +17,9 @@ const propTypes = {
 
 const defaultProps = {
     status: null,
-    successLabel: messages.success,
-    errorLabel: messages.error,
-    loadingLabel: messages.loading,
+    successLabel: <FormattedMessage defaultMessage="Success!" description="Form status" />,
+    errorLabel: <FormattedMessage defaultMessage="Error" description="Form status" />,
+    loadingLabel: <FormattedMessage defaultMessage="Loading..." description="Form status" />,
     className: null,
 };
 

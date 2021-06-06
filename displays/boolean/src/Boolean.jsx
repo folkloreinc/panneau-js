@@ -12,11 +12,11 @@ const defaultProps = {
 
 const Boolean = ({ value }) =>
     value !== null && value === true ? (
-        <span className="badge badge-success">
+        <span className="badge bg-success">
             <FormattedMessage defaultMessage="yes" description="Boolean value" />
         </span>
     ) : (
-        <span className="badge badge-warning">
+        <span className="badge bg-warning">
             <FormattedMessage defaultMessage="no" description="Boolean value" />
         </span>
     );

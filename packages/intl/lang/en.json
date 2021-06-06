@@ -1,18 +1,66 @@
 {
+    "+6cCPF": {
+        "defaultMessage": "Error 403"
+    },
     "2/F1Q7": {
         "defaultMessage": "#{index}"
+    },
+    "4sViWl": {
+        "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
+    },
+    "4yfet+": {
+        "defaultMessage": "Password"
+    },
+    "5rMPIj": {
+        "defaultMessage": "Loading..."
+    },
+    "6Ie+vL": {
+        "defaultMessage": "Error 404"
+    },
+    "6nwWPR": {
+        "defaultMessage": "Error 401"
     },
     "6oV4/s": {
         "defaultMessage": "no"
     },
+    "82P2dS": {
+        "defaultMessage": "You are not authorized to access this page."
+    },
+    "8HFiMs": {
+        "defaultMessage": "Access to this page is forbidden"
+    },
+    "AeOZq+": {
+        "defaultMessage": "Login"
+    },
     "Bhu3B2": {
         "defaultMessage": "Delete"
+    },
+    "ESkxLX": {
+        "defaultMessage": "Success!"
+    },
+    "EsoYzX": {
+        "defaultMessage": "Previous"
+    },
+    "HOobY2": {
+        "defaultMessage": "Error 401"
+    },
+    "IbZVf0": {
+        "defaultMessage": "Submit"
     },
     "IuCFWt": {
         "defaultMessage": "yes"
     },
+    "IuqEHB": {
+        "defaultMessage": "Account"
+    },
     "Ke35Pv": {
         "defaultMessage": "Edit"
+    },
+    "LI0Gz4": {
+        "defaultMessage": "Email"
+    },
+    "Mo0yQb": {
+        "defaultMessage": "Error"
     },
     "NI9440": {
         "defaultMessage": "Add file"
@@ -20,125 +68,56 @@
     "PKCv5M": {
         "defaultMessage": "No item..."
     },
+    "Pih2UO": {
+        "defaultMessage": "Error 403"
+    },
     "PyxZY2": {
         "defaultMessage": "Cancel"
     },
-    "R1HYj0": {
-        "defaultMessage": "Save"
+    "REIcPg": {
+        "defaultMessage": "Logout"
+    },
+    "US/AMe": {
+        "defaultMessage": "Error 404"
     },
     "UpStcP": {
         "defaultMessage": "Could not find type for this item"
     },
+    "V7Us0a": {
+        "defaultMessage": "Update account"
+    },
+    "X5RJlB": {
+        "defaultMessage": "Next"
+    },
     "ZxgNge": {
         "defaultMessage": "Add an item"
-    },
-    "auth.account": {
-        "defaultMessage": "Account"
-    },
-    "auth.login": {
-        "defaultMessage": "Login"
-    },
-    "auth.login.title": {
-        "defaultMessage": "Login"
-    },
-    "auth.logout": {
-        "defaultMessage": "Logout"
-    },
-    "auth.update_account": {
-        "defaultMessage": "Update account"
     },
     "bPk79b": {
         "defaultMessage": "Show"
     },
-    "errors.description_401": {
-        "defaultMessage": "You are not authorized to access this page."
-    },
-    "errors.description_403": {
-        "defaultMessage": "Access to this page is forbidden"
-    },
-    "errors.description_404": {
-        "defaultMessage": "This page doesn’t exist"
-    },
-    "errors.description_500": {
-        "defaultMessage": "There was an error"
-    },
-    "errors.goto_home": {
-        "defaultMessage": "Go to home page"
-    },
-    "errors.title_401": {
-        "defaultMessage": "Error 401"
-    },
-    "errors.title_403": {
-        "defaultMessage": "Error 403"
-    },
-    "errors.title_404": {
-        "defaultMessage": "Error 404"
-    },
-    "errors.title_500": {
-        "defaultMessage": "Error 500"
-    },
-    "form.cancel_button": {
-        "defaultMessage": "Cancel"
-    },
-    "form.confirm_delete": {
-        "defaultMessage": "Are you sure you want to delete item #{id}?"
-    },
-    "form.delete_button": {
-        "defaultMessage": "Delete"
-    },
-    "form.edit_button": {
-        "defaultMessage": "Edit"
-    },
-    "form.email": {
-        "defaultMessage": "Email"
-    },
-    "form.password": {
-        "defaultMessage": "Password"
-    },
-    "form.show_button": {
-        "defaultMessage": "Cancel"
-    },
-    "forms.error_status": {
-        "defaultMessage": "Error"
-    },
-    "forms.loading_status": {
-        "defaultMessage": "Loading..."
-    },
-    "forms.success_status": {
-        "defaultMessage": "Success!"
-    },
-    "lists.filters.reset": {
-        "defaultMessage": "Reset"
-    },
-    "lists.filters.submit": {
-        "defaultMessage": "Submit"
-    },
-    "loading": {
-        "defaultMessage": "Loading..."
-    },
-    "login": {
+    "d0g58T": {
         "defaultMessage": "Login"
     },
-    "meta.title_401": {
-        "defaultMessage": "Error 401"
-    },
-    "meta.title_403": {
-        "defaultMessage": "Error 403"
-    },
-    "meta.title_404": {
-        "defaultMessage": "Error 404"
-    },
-    "meta.title_500": {
+    "ejwBSw": {
         "defaultMessage": "Error 500"
     },
-    "pagination.items_count": {
-        "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
+    "g6qbbX": {
+        "defaultMessage": "Log in"
     },
-    "pagination.next": {
-        "defaultMessage": "next"
+    "gjBiyj": {
+        "defaultMessage": "Loading..."
     },
-    "pagination.previous": {
-        "defaultMessage": "Previous"
+    "hezcGl": {
+        "defaultMessage": "Go to home page"
+    },
+    "owrRHV": {
+        "defaultMessage": "Error 500"
+    },
+    "q6bmY1": {
+        "defaultMessage": "Reset"
+    },
+    "resources.confirm_delete": {
+        "defaultMessage": "Are you sure you want to delete item #{id}?"
     },
     "resources.create": {
         "defaultMessage": "Create {a_singular}"
@@ -163,5 +142,11 @@
     },
     "s4Xrs9": {
         "defaultMessage": "Time"
+    },
+    "wKPI1y": {
+        "defaultMessage": "This page doesn’t exist"
+    },
+    "yALN2p": {
+        "defaultMessage": "There was an error"
     }
 }

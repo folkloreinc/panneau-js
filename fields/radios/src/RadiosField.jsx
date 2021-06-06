@@ -82,7 +82,7 @@ const RadiosField = ({
                         }}
                         onChange={() => {}}
                         checked={optionValue === value}
-                    />{' '}
+                    />
                     {label}
                 </label>
             ))}

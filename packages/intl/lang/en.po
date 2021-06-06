@@ -11,11 +11,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 3.2.0\n"
 
+# Error page meta title
+#: +6cCPF
+msgctxt "+6cCPF"
+msgid "Error 403"
+msgstr "Error 403"
+
 # Item label in items field
 #: 2/F1Q7
 msgctxt "2/F1Q7"
 msgid "#{index}"
 msgstr "#{index}"
+
+# Pagination count label
+#: 4sViWl
+msgctxt "4sViWl"
+msgid "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
+msgstr "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
+
+# Field label
+#: 4yfet+
+msgctxt "4yfet+"
+msgid "Password"
+msgstr "Password"
+
+# Form status
+#: 5rMPIj
+msgctxt "5rMPIj"
+msgid "Loading..."
+msgstr "Loading..."
+
+# Error page title
+#: 6Ie+vL
+msgctxt "6Ie+vL"
+msgid "Error 404"
+msgstr "Error 404"
+
+# Error page title
+#: 6nwWPR
+msgctxt "6nwWPR"
+msgid "Error 401"
+msgstr "Error 401"
 
 # Boolean value
 #: 6oV4/s
@@ -23,11 +59,53 @@ msgctxt "6oV4/s"
 msgid "no"
 msgstr "no"
 
+# Error page description
+#: 82P2dS
+msgctxt "82P2dS"
+msgid "You are not authorized to access this page."
+msgstr "You are not authorized to access this page."
+
+# Error page description
+#: 8HFiMs
+msgctxt "8HFiMs"
+msgid "Access to this page is forbidden"
+msgstr "Access to this page is forbidden"
+
+# Page title
+#: AeOZq+
+msgctxt "AeOZq+"
+msgid "Login"
+msgstr "Login"
+
 # Button label
 #: Bhu3B2
 msgctxt "Bhu3B2"
 msgid "Delete"
 msgstr "Delete"
+
+# Form status
+#: ESkxLX
+msgctxt "ESkxLX"
+msgid "Success!"
+msgstr "Success!"
+
+# Pagination button label
+#: EsoYzX
+msgctxt "EsoYzX"
+msgid "Previous"
+msgstr "Previous"
+
+# Error page meta title
+#: HOobY2
+msgctxt "HOobY2"
+msgid "Error 401"
+msgstr "Error 401"
+
+# Button label
+#: IbZVf0
+msgctxt "IbZVf0"
+msgid "Submit"
+msgstr "Submit"
 
 # Boolean value
 #: IuCFWt
@@ -35,11 +113,29 @@ msgctxt "IuCFWt"
 msgid "yes"
 msgstr "yes"
 
+# Menu label
+#: IuqEHB
+msgctxt "IuqEHB"
+msgid "Account"
+msgstr "Account"
+
 # Button label
 #: Ke35Pv
 msgctxt "Ke35Pv"
 msgid "Edit"
 msgstr "Edit"
+
+# Field label
+#: LI0Gz4
+msgctxt "LI0Gz4"
+msgid "Email"
+msgstr "Email"
+
+# Form status
+#: Mo0yQb
+msgctxt "Mo0yQb"
+msgid "Error"
+msgstr "Error"
 
 # Default upload add button label
 #: NI9440
@@ -53,17 +149,29 @@ msgctxt "PKCv5M"
 msgid "No item..."
 msgstr "No item..."
 
+# Error page title
+#: Pih2UO
+msgctxt "Pih2UO"
+msgid "Error 403"
+msgstr "Error 403"
+
 # Button label
 #: PyxZY2
 msgctxt "PyxZY2"
 msgid "Cancel"
 msgstr "Cancel"
 
-# Button label
-#: R1HYj0
-msgctxt "R1HYj0"
-msgid "Save"
-msgstr "Save"
+# Menu label
+#: REIcPg
+msgctxt "REIcPg"
+msgid "Logout"
+msgstr "Logout"
+
+# Error page meta title
+#: US/AMe
+msgctxt "US/AMe"
+msgid "Error 404"
+msgstr "Error 404"
 
 # Error message
 #: UpStcP
@@ -71,36 +179,23 @@ msgctxt "UpStcP"
 msgid "Could not find type for this item"
 msgstr "Could not find type for this item"
 
+# Menu label
+#: V7Us0a
+msgctxt "V7Us0a"
+msgid "Update account"
+msgstr "Update account"
+
+# Pagination button label
+#: X5RJlB
+msgctxt "X5RJlB"
+msgid "Next"
+msgstr "Next"
+
 # Button label in items field
 #: ZxgNge
 msgctxt "ZxgNge"
 msgid "Add an item"
 msgstr "Add an item"
-
-#: auth.account
-msgctxt "auth.account"
-msgid "Account"
-msgstr "Account"
-
-#: auth.login
-msgctxt "auth.login"
-msgid "Login"
-msgstr "Login"
-
-#: auth.login.title
-msgctxt "auth.login.title"
-msgid "Login"
-msgstr "Login"
-
-#: auth.logout
-msgctxt "auth.logout"
-msgid "Logout"
-msgstr "Logout"
-
-#: auth.update_account
-msgctxt "auth.update_account"
-msgid "Update account"
-msgstr "Update account"
 
 # Button label
 #: bPk79b
@@ -108,155 +203,51 @@ msgctxt "bPk79b"
 msgid "Show"
 msgstr "Show"
 
-#: errors.description_401
-msgctxt "errors.description_401"
-msgid "You are not authorized to access this page."
-msgstr "You are not authorized to access this page."
+# Menu label
+#: d0g58T
+msgctxt "d0g58T"
+msgid "Login"
+msgstr "Login"
 
-#: errors.description_403
-msgctxt "errors.description_403"
-msgid "Access to this page is forbidden"
-msgstr "Access to this page is forbidden"
+# Error page meta title
+#: ejwBSw
+msgctxt "ejwBSw"
+msgid "Error 500"
+msgstr "Error 500"
 
-#: errors.description_404
-msgctxt "errors.description_404"
-msgid "This page doesn’t exist"
-msgstr "This page doesn’t exist"
+# Button label
+#: g6qbbX
+msgctxt "g6qbbX"
+msgid "Log in"
+msgstr "Log in"
 
-#: errors.description_500
-msgctxt "errors.description_500"
-msgid "There was an error"
-msgstr "There was an error"
+#: gjBiyj
+msgctxt "gjBiyj"
+msgid "Loading..."
+msgstr "Loading..."
 
-#: errors.goto_home
-msgctxt "errors.goto_home"
+# Button label
+#: hezcGl
+msgctxt "hezcGl"
 msgid "Go to home page"
 msgstr "Go to home page"
 
-#: errors.title_401
-msgctxt "errors.title_401"
-msgid "Error 401"
-msgstr "Error 401"
-
-#: errors.title_403
-msgctxt "errors.title_403"
-msgid "Error 403"
-msgstr "Error 403"
-
-#: errors.title_404
-msgctxt "errors.title_404"
-msgid "Error 404"
-msgstr "Error 404"
-
-#: errors.title_500
-msgctxt "errors.title_500"
+# Error page title
+#: owrRHV
+msgctxt "owrRHV"
 msgid "Error 500"
 msgstr "Error 500"
 
-#: form.cancel_button
-msgctxt "form.cancel_button"
-msgid "Cancel"
-msgstr "Cancel"
-
-#: form.confirm_delete
-msgctxt "form.confirm_delete"
-msgid "Are you sure you want to delete item #{id}?"
-msgstr "Are you sure you want to delete item #{id}?"
-
-#: form.delete_button
-msgctxt "form.delete_button"
-msgid "Delete"
-msgstr "Delete"
-
-#: form.edit_button
-msgctxt "form.edit_button"
-msgid "Edit"
-msgstr "Edit"
-
-#: form.email
-msgctxt "form.email"
-msgid "Email"
-msgstr "Email"
-
-#: form.password
-msgctxt "form.password"
-msgid "Password"
-msgstr "Password"
-
-#: form.show_button
-msgctxt "form.show_button"
-msgid "Cancel"
-msgstr "Cancel"
-
-#: forms.error_status
-msgctxt "forms.error_status"
-msgid "Error"
-msgstr "Error"
-
-#: forms.loading_status
-msgctxt "forms.loading_status"
-msgid "Loading..."
-msgstr "Loading..."
-
-#: forms.success_status
-msgctxt "forms.success_status"
-msgid "Success!"
-msgstr "Success!"
-
-#: lists.filters.reset
-msgctxt "lists.filters.reset"
+# Button label
+#: q6bmY1
+msgctxt "q6bmY1"
 msgid "Reset"
 msgstr "Reset"
 
-#: lists.filters.submit
-msgctxt "lists.filters.submit"
-msgid "Submit"
-msgstr "Submit"
-
-#: loading
-msgctxt "loading"
-msgid "Loading..."
-msgstr "Loading..."
-
-#: login
-msgctxt "login"
-msgid "Log in"
-msgstr "Login"
-
-#: meta.title_401
-msgctxt "meta.title_401"
-msgid "Error 401"
-msgstr "Error 401"
-
-#: meta.title_403
-msgctxt "meta.title_403"
-msgid "Error 403"
-msgstr "Error 403"
-
-#: meta.title_404
-msgctxt "meta.title_404"
-msgid "Error 404"
-msgstr "Error 404"
-
-#: meta.title_500
-msgctxt "meta.title_500"
-msgid "Error 500"
-msgstr "Error 500"
-
-#: pagination.items_count
-msgctxt "pagination.items_count"
-msgid "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
-msgstr "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
-
-#: pagination.next
-msgctxt "pagination.next"
-msgid "Next"
-msgstr "next"
-
-#: pagination.previous
-msgctxt "pagination.previous"
-msgid "Previous"
-msgstr "Previous"
+#: resources.confirm_delete
+msgctxt "resources.confirm_delete"
+msgid "Are you sure you want to delete item #{id}?"
+msgstr "Are you sure you want to delete item #{id}?"
 
 #: resources.create
 msgctxt "resources.create"
@@ -298,3 +289,15 @@ msgstr "Loading {plural}..."
 msgctxt "s4Xrs9"
 msgid "Time"
 msgstr "Time"
+
+# Error page description
+#: wKPI1y
+msgctxt "wKPI1y"
+msgid "This page doesn’t exist"
+msgstr "This page doesn’t exist"
+
+# Error page description
+#: yALN2p
+msgctxt "yALN2p"
+msgid "There was an error"
+msgstr "There was an error"

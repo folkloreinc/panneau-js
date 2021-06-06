@@ -1,13 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { Fragment, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useFieldsComponents, useFieldsManager } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
-import { useFieldsComponents } from '@panneau/core/contexts';
 import FormGroup from '@panneau/element-form-group';
 import FormRow from '@panneau/element-form-row';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { Fragment, useCallback } from 'react';
 
 const propTypes = {
     components: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -28,15 +27,16 @@ const defaultProps = {
 };
 
 const Fields = ({
-    components: parentComponents,
+    components: providedComponents,
     fields,
     value,
     horizontal: fieldsHorizontal,
     onChange,
     className,
 }) => {
+    const fieldsManager = useFieldsManager();
     const contextComponents = useFieldsComponents();
-    const components = parentComponents || contextComponents;
+    const components = providedComponents || contextComponents;
 
     const onFieldChange = useCallback(
         ({ name = null }, newFieldValue) => {
@@ -59,6 +59,7 @@ const Fields = ({
 
     const content = fields.map((field, index) => {
         const {
+            type = null,
             component = null,
             name = null,
             horizontal = false,
@@ -66,13 +67,20 @@ const Fields = ({
             // TODO: test this
             withoutFormGroup = false,
             siblingFields = [],
-            classname = null,
+            className: fieldClassName = null,
             groupClassName = null,
             labelClassName = null,
-            check: fieldCheck = false,
+            ...fieldProps
         } = field || {};
 
-        const FieldComponent = getComponentFromName(component, components, component);
+        const fieldDefinition = type !== null ? fieldsManager.getDefinition(type) : null;
+        const {
+            id,
+            component: definitionComponent = null,
+            ...definitionProps
+        } = fieldDefinition || {};
+
+        const FieldComponent = getComponentFromName(component || definitionComponent, components);
 
         let fieldValue = null;
         if (value !== null && name !== null) {
@@ -83,23 +91,24 @@ const Fields = ({
         const fieldElement =
             FieldComponent !== null ? (
                 <FieldComponent
-                    {...field}
+                    {...definitionProps}
+                    {...fieldProps}
+                    name={name}
                     value={fieldValue}
                     onChange={(newValue) => onFieldChange(field, newValue)}
-                    className={classNames([classname])}
+                    className={fieldClassName}
                 />
             ) : null;
-        const check = fieldCheck;
 
         return (
             <Fragment key={`field-${name || index}-${index + 1}`}>
                 {!withoutFormGroup && fieldElement !== null ? (
                     <FormGroup
                         key={`field-${name || index}`}
-                        {...field}
+                        {...definitionProps}
+                        {...fieldProps}
                         horizontal={horizontal}
                         inline={inline}
-                        check={check}
                         className={classNames([groupClassName])}
                         labelClassName={classNames([labelClassName])}
                     >

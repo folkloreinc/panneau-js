@@ -1,26 +1,9 @@
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
-import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { defineMessages } from 'react-intl';
-
 import Link from '@panneau/element-link';
-import Label from '@panneau/element-label';
-
-const messages = defineMessages({
-    previous: {
-        id: 'pagination.previous',
-        defaultMessage: 'Previous',
-    },
-    next: {
-        id: 'pagination.next',
-        defaultMessage: 'Next',
-    },
-    itemsCount: {
-        id: 'pagination.items_count',
-        defaultMessage: '{count, plural, =0 {No item.} =1 {# item} other {# items}}',
-    },
-});
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
     page: PropTypes.number,
@@ -30,6 +13,9 @@ const propTypes = {
     withPreviousNext: PropTypes.bool,
     withCount: PropTypes.bool,
     align: PropTypes.oneOf(['left', 'right']),
+    previousLabel: PropTypes.node,
+    nextLabel: PropTypes.node,
+    countLabel: PropTypes.node,
     className: PropTypes.string,
     paginationClassName: PropTypes.string,
     itemClassName: PropTypes.string,
@@ -45,6 +31,16 @@ const defaultProps = {
     withPreviousNext: false,
     withCount: false,
     align: 'right',
+    previousLabel: (
+        <FormattedMessage defaultMessage="Previous" description="Pagination button label" />
+    ),
+    nextLabel: <FormattedMessage defaultMessage="Next" description="Pagination button label" />,
+    countLabel: (
+        <FormattedMessage
+            defaultMessage="{count, plural, =0 {No item.} =1 {# item} other {# items}}"
+            description="Pagination count label"
+        />
+    ),
     className: null,
     paginationClassName: null,
     itemClassName: null,
@@ -60,6 +56,9 @@ const PaginationMenu = ({
     withPreviousNext,
     withCount,
     align,
+    previousLabel,
+    nextLabel,
+    countLabel,
     className,
     paginationClassName,
     itemClassName,
@@ -91,7 +90,9 @@ const PaginationMenu = ({
         >
             {total !== null && withCount && align === 'right' ? (
                 <div className="mx-3 text-muted">
-                    <Label values={{ count: total }}>{messages.itemsCount}</Label>
+                    {React.cloneElement(countLabel, {
+                        values: { count: total },
+                    })}
                 </div>
             ) : null}
             <ul
@@ -124,7 +125,7 @@ const PaginationMenu = ({
                                 href={getUrl(page - 1)}
                                 onClick={onClickPage !== null ? () => onClickPage(page - 1) : null}
                             >
-                                <Label>{messages.previous}</Label>
+                                {previousLabel}
                             </Link>
                         ) : (
                             <span
@@ -135,7 +136,7 @@ const PaginationMenu = ({
                                     },
                                 ])}
                             >
-                                <Label>{messages.previous}</Label>
+                                {previousLabel}
                             </span>
                         )}
                     </li>
@@ -188,7 +189,7 @@ const PaginationMenu = ({
                                 href={getUrl(page + 1)}
                                 onClick={onClickPage !== null ? () => onClickPage(page + 1) : null}
                             >
-                                <Label>{messages.next}</Label>
+                                {nextLabel}
                             </Link>
                         ) : (
                             <span
@@ -199,7 +200,7 @@ const PaginationMenu = ({
                                     },
                                 ])}
                             >
-                                <Label>{messages.next}</Label>
+                                {nextLabel}
                             </span>
                         )}
                     </li>
@@ -207,7 +208,9 @@ const PaginationMenu = ({
             </ul>
             {total !== null && withCount && align === 'left' ? (
                 <div className="mx-3 text-muted">
-                    <Label values={{ count: total }}>{messages.itemsCount}</Label>
+                    {React.cloneElement(countLabel, {
+                        values: { count: total },
+                    })}
                 </div>
             ) : null}
         </nav>

@@ -1,18 +1,66 @@
 {
+    "+6cCPF": {
+        "defaultMessage": "Erreur 403"
+    },
     "2/F1Q7": {
         "defaultMessage": "#{index}"
+    },
+    "4sViWl": {
+        "defaultMessage": "{count, plural, =0 {Aucun item.} =1 {# item} other {# items}}"
+    },
+    "4yfet+": {
+        "defaultMessage": "Mot de passe"
+    },
+    "5rMPIj": {
+        "defaultMessage": "Chargement..."
+    },
+    "6Ie+vL": {
+        "defaultMessage": "Erreur 404"
+    },
+    "6nwWPR": {
+        "defaultMessage": "Erreur 401"
     },
     "6oV4/s": {
         "defaultMessage": "non"
     },
+    "82P2dS": {
+        "defaultMessage": "Vous n’êtes pas autorisé à accéder à cette page."
+    },
+    "8HFiMs": {
+        "defaultMessage": "L’accès à cette page est interdit"
+    },
+    "AeOZq+": {
+        "defaultMessage": "Connexion"
+    },
     "Bhu3B2": {
         "defaultMessage": "Supprimer"
+    },
+    "ESkxLX": {
+        "defaultMessage": "Réussi!"
+    },
+    "EsoYzX": {
+        "defaultMessage": "Précédent"
+    },
+    "HOobY2": {
+        "defaultMessage": "Erreur 401"
+    },
+    "IbZVf0": {
+        "defaultMessage": "Envoyer"
     },
     "IuCFWt": {
         "defaultMessage": "oui"
     },
+    "IuqEHB": {
+        "defaultMessage": "Compte"
+    },
     "Ke35Pv": {
         "defaultMessage": "Modifier"
+    },
+    "LI0Gz4": {
+        "defaultMessage": "Courriel"
+    },
+    "Mo0yQb": {
+        "defaultMessage": "Erreur"
     },
     "NI9440": {
         "defaultMessage": "Ajouter un fichier"
@@ -20,148 +68,85 @@
     "PKCv5M": {
         "defaultMessage": "Aucun item..."
     },
+    "Pih2UO": {
+        "defaultMessage": "Erreur 403"
+    },
     "PyxZY2": {
         "defaultMessage": "Annuler"
     },
-    "R1HYj0": {
-        "defaultMessage": "Sauvegarder"
+    "REIcPg": {
+        "defaultMessage": "Déconnexion"
+    },
+    "US/AMe": {
+        "defaultMessage": "Erreur 404"
     },
     "UpStcP": {
         "defaultMessage": "Nous n'avons pas pu trouver ce type"
     },
+    "V7Us0a": {
+        "defaultMessage": "Mettre à jour le profil"
+    },
+    "X5RJlB": {
+        "defaultMessage": "Suivant"
+    },
     "ZxgNge": {
         "defaultMessage": "Ajouter un élement"
-    },
-    "auth.account": {
-        "defaultMessage": "Compte"
-    },
-    "auth.login": {
-        "defaultMessage": "Connexion"
-    },
-    "auth.login.title": {
-        "defaultMessage": "Connexion"
-    },
-    "auth.logout": {
-        "defaultMessage": "Déconnexion"
-    },
-    "auth.update_account": {
-        "defaultMessage": "Mettre à jour le profil"
     },
     "bPk79b": {
         "defaultMessage": "Voir"
     },
-    "errors.description_401": {
-        "defaultMessage": "Vous n’êtes pas autorisé à accéder à cette page."
-    },
-    "errors.description_403": {
-        "defaultMessage": "Vues"
-    },
-    "errors.description_404": {
-        "defaultMessage": "Cette page n'existe pas"
-    },
-    "errors.description_500": {
-        "defaultMessage": "Une erreur s'est produite lors de la publication"
-    },
-    "errors.goto_home": {
-        "defaultMessage": "Revenir à la connexion"
-    },
-    "errors.title_401": {
-        "defaultMessage": "Erreur 401"
-    },
-    "errors.title_403": {
-        "defaultMessage": "Erreur 403"
-    },
-    "errors.title_404": {
-        "defaultMessage": "Erreur 404"
-    },
-    "errors.title_500": {
-        "defaultMessage": "Erreur 500"
-    },
-    "form.cancel_button": {
-        "defaultMessage": "Annuler"
-    },
-    "form.confirm_delete": {
-        "defaultMessage": "Etes-vous sûr que vous voulez supprimer cette histoire?"
-    },
-    "form.delete_button": {
-        "defaultMessage": "Supprimer"
-    },
-    "form.edit_button": {
-        "defaultMessage": "Modifier"
-    },
-    "form.email": {
-        "defaultMessage": "Courriel"
-    },
-    "form.password": {
-        "defaultMessage": "Mot de passe"
-    },
-    "form.show_button": {
-        "defaultMessage": "Annuler"
-    },
-    "forms.error_status": {
-        "defaultMessage": "Une erreur s'est produite lors de la publication"
-    },
-    "forms.loading_status": {
-        "defaultMessage": "Chargement..."
-    },
-    "forms.success_status": {
-        "defaultMessage": "Succès!"
-    },
-    "lists.filters.reset": {
-        "defaultMessage": "Réinitialiser le mot de passe"
-    },
-    "lists.filters.submit": {
-        "defaultMessage": "Envoyer"
-    },
-    "loading": {
-        "defaultMessage": "Chargement..."
-    },
-    "login": {
+    "d0g58T": {
         "defaultMessage": "Connexion"
     },
-    "meta.title_401": {
-        "defaultMessage": "Erreur 401"
-    },
-    "meta.title_403": {
-        "defaultMessage": "Erreur 403"
-    },
-    "meta.title_404": {
-        "defaultMessage": "Erreur 404"
-    },
-    "meta.title_500": {
+    "ejwBSw": {
         "defaultMessage": "Erreur 500"
     },
-    "pagination.items_count": {
-        "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} autres {# items}}"
+    "g6qbbX": {
+        "defaultMessage": "Connexion"
     },
-    "pagination.next": {
-        "defaultMessage": "Suivant"
+    "gjBiyj": {
+        "defaultMessage": "Chargement..."
     },
-    "pagination.previous": {
-        "defaultMessage": "Précédent"
+    "hezcGl": {
+        "defaultMessage": "Aller à la page d’accueil"
+    },
+    "owrRHV": {
+        "defaultMessage": "Erreur 500"
+    },
+    "q6bmY1": {
+        "defaultMessage": "Réinitialiser"
+    },
+    "resources.confirm_delete": {
+        "defaultMessage": "Êtes-vous certain de vouloir supprimer l'item #{id}?"
     },
     "resources.create": {
-        "defaultMessage": "Créer"
+        "defaultMessage": "Créer {a_singular}"
     },
     "resources.created": {
         "defaultMessage": "{the_singular} a été créé."
     },
     "resources.delete": {
-        "defaultMessage": "Supprimer"
+        "defaultMessage": "Supprimer {a_singular}"
     },
     "resources.deleted": {
         "defaultMessage": "{the_singular} a été supprimé."
     },
     "resources.edit": {
-        "defaultMessage": "Modifier"
+        "defaultMessage": "Modifier {a_singular}"
     },
     "resources.index": {
-        "defaultMessage": "Afficher l’écran"
+        "defaultMessage": "Voir {a_singular}"
     },
     "resources.loading": {
         "defaultMessage": "Chargement {plural}..."
     },
     "s4Xrs9": {
-        "defaultMessage": "C'est le moment de créer un thème"
+        "defaultMessage": "Heure"
+    },
+    "wKPI1y": {
+        "defaultMessage": "Cette page n’existe pas"
+    },
+    "yALN2p": {
+        "defaultMessage": "Il y a eu une erreur"
     }
 }

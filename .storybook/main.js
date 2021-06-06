@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 const path = require('path');
-const webpack = require('webpack');
+const webpack = require('webpack'); // eslint-disable-line no-unused-vars
 const getPackagesPaths = require('../scripts/lib/getPackagesPaths');
 const getPackagesAliases = require('../scripts/lib/getPackagesAliases');
 const { idInterpolationPattern } = require('../packages/intl/scripts/config');

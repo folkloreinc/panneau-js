@@ -1,22 +1,19 @@
-import React from 'react';
-import { IntlProvider } from 'react-intl';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { PanneauProvider, RoutesProvider } from '@panneau/core/contexts';
+import { ApiProvider } from '@panneau/data';
+import DisplaysProvider from '@panneau/displays';
+import FieldsProvider from '@panneau/fields';
+import FiltersProvider from '@panneau/filters';
+import FormsProvider from '@panneau/forms';
+import { IntlProvider } from '@panneau/intl';
+import ListsProvider from '@panneau/lists';
+import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
 import { MemoryRouter } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
-
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { PanneauProvider, RoutesProvider, LocalesProvider } from '@panneau/core/contexts';
-import { ApiProvider } from '@panneau/data';
-import FieldsProvider from '@panneau/fields';
-import FormsProvider from '@panneau/forms';
-import ListsProvider from '@panneau/lists';
-import DisplaysProvider from '@panneau/displays';
-import FiltersProvider from '@panneau/filters';
 import { AuthProvider } from '../contexts/AuthContext';
-
+import '../styles/styles.scss';
 import Routes from './Routes';
-
-import '../styles/main.global.scss';
 
 const propTypes = {
     definition: PanneauPropTypes.panneauDefinition.isRequired,
@@ -35,40 +32,54 @@ const defaultProps = {
 
 const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
     const {
-        intl: { locale = 'en', locales, messages: translations = {} } = {},
+        intl: { locale = 'en', locales } = {},
         routes = {},
-        settings = {},
+        settings: { memoryRouter: usesMemoryRouter = false } = {},
     } = definition;
-    const { memoryRouter: usesMemoryRouter = false } = settings || {};
     const Router = memoryRouter || usesMemoryRouter ? MemoryRouter : BrowserRouter;
-    // For storybook: auto load page with: initialEntries={['/pages/1/edit']} initialIndex={0}
-    console.log('definition', definition); // eslint-disable-line
+    const extraMessages = useMemo(() => {
+        const { intl: { messages = null } = {}, resources = [] } = definition;
+        return {
+            ...messages,
+            ...resources.reduce(
+                (allMessages, { id, intl: { messages: resourceMessages = {} } = {} }) => ({
+                    ...allMessages,
+                    ...Object.keys(resourceMessages).reduce(
+                        (allResourceMessages, key) => ({
+                            ...allResourceMessages,
+                            [`resources.${id}.${key}`]: resourceMessages[key],
+                        }),
+                        {},
+                    ),
+                }),
+                {},
+            ),
+        };
+    }, [definition]);
 
     return (
         <Router>
-            <PanneauProvider definition={definition}>
-                <IntlProvider locale={locale} messages={translations[locale] || translations}>
-                    <LocalesProvider locale={locale} locales={locales}>
-                        <RoutesProvider routes={routes}>
-                            <FieldsProvider>
-                                <FormsProvider>
-                                    <ListsProvider>
-                                        <DisplaysProvider>
-                                            <FiltersProvider>
-                                                <ApiProvider baseUrl={baseUrl}>
-                                                    <AuthProvider user={user}>
-                                                        <Routes statusCode={statusCode} />
-                                                    </AuthProvider>
-                                                </ApiProvider>
-                                            </FiltersProvider>
-                                        </DisplaysProvider>
-                                    </ListsProvider>
-                                </FormsProvider>
-                            </FieldsProvider>
-                        </RoutesProvider>
-                    </LocalesProvider>
-                </IntlProvider>
-            </PanneauProvider>
+            <IntlProvider locale={locale} locales={locales} extraMessages={extraMessages}>
+                <PanneauProvider definition={definition}>
+                    <RoutesProvider routes={routes}>
+                        <FieldsProvider>
+                            <FormsProvider>
+                                <ListsProvider>
+                                    <DisplaysProvider>
+                                        <FiltersProvider>
+                                            <ApiProvider baseUrl={baseUrl}>
+                                                <AuthProvider user={user}>
+                                                    <Routes statusCode={statusCode} />
+                                                </AuthProvider>
+                                            </ApiProvider>
+                                        </FiltersProvider>
+                                    </DisplaysProvider>
+                                </ListsProvider>
+                            </FormsProvider>
+                        </FieldsProvider>
+                    </RoutesProvider>
+                </PanneauProvider>
+            </IntlProvider>
         </Router>
     );
 };

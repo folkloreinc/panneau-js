@@ -4,11 +4,11 @@ export default {
 
     types: [{ id: 'contact', name: 'Contact', fields: [] }],
 
-    localization: {
+    intl: {
         messages: {
-            'resource.index': 'Voir {the_plural}',
-            'resources.create': 'Ajouter une page',
-            'resource.create_button': 'Yo le jeune',
+            'index': 'Voir {the_plural}',
+            'create': 'Ajouter une page',
+            'create_button': 'Yo le jeune',
         },
         values: {
             name: 'page',

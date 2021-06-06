@@ -1,66 +1,65 @@
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Label from '@panneau/element-label';
 import React from 'react';
 import { defineMessages } from 'react-intl';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-
-import Label from '@panneau/element-label';
 import GuestLayout from '../layouts/Guest';
 
 export const messages = defineMessages({
     metaTitle401: {
-        id: 'meta.title_401',
         defaultMessage: 'Error 401',
+        description: 'Error page meta title',
     },
     title401: {
-        id: 'errors.title_401',
         defaultMessage: 'Error 401',
+        description: 'Error page title',
     },
     description401: {
-        id: 'errors.description_401',
         defaultMessage: 'You are not authorized to access this page.',
+        description: 'Error page description',
     },
 
     metaTitle403: {
-        id: 'meta.title_403',
         defaultMessage: 'Error 403',
+        description: 'Error page meta title',
     },
     title403: {
-        id: 'errors.title_403',
         defaultMessage: 'Error 403',
+        description: 'Error page title',
     },
     description403: {
-        id: 'errors.description_403',
         defaultMessage: 'Access to this page is forbidden',
+        description: 'Error page description',
     },
 
     metaTitle404: {
-        id: 'meta.title_404',
         defaultMessage: 'Error 404',
+        description: 'Error page meta title',
     },
     title404: {
-        id: 'errors.title_404',
         defaultMessage: 'Error 404',
+        description: 'Error page title',
     },
     description404: {
-        id: 'errors.description_404',
         defaultMessage: 'This page doesn’t exist',
+        description: 'Error page description',
     },
 
     metaTitle500: {
-        id: 'meta.title_500',
         defaultMessage: 'Error 500',
+        description: 'Error page meta title',
     },
     title500: {
-        id: 'errors.title_500',
         defaultMessage: 'Error 500',
+        description: 'Error page title',
     },
     description500: {
-        id: 'errors.description_500',
         defaultMessage: 'There was an error',
+        description: 'Error page description',
     },
 
     gotoHome: {
-        id: 'errors.goto_home',
         defaultMessage: 'Go to home page',
+        description: 'Button label',
     },
 });
 

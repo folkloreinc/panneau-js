@@ -1,12 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Form from '@panneau/element-form';
 import { useFieldComponent } from '@panneau/core/contexts';
-
-import styles from './styles.module.scss';
+import Form from '@panneau/element-form';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const propTypes = {
     fields: PanneauPropTypes.fields.isRequired,
@@ -55,7 +53,6 @@ const NormalForm = ({
     return (
         <Form
             className={classNames([
-                styles.container,
                 'form',
                 {
                     [className]: className !== null,

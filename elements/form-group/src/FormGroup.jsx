@@ -111,8 +111,7 @@ const FormGroup = ({
         <div
             className={classNames([
                 styles.container,
-                'form-group',
-                'mb-2',
+                'mb-3',
                 {
                     [className]: className !== null,
                 },

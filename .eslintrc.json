@@ -1,5 +1,5 @@
 {
-    "extends": ["airbnb", "prettier", "prettier/react"],
+    "extends": ["airbnb", "prettier"],
     "plugins": ["formatjs"],
     "parser": "babel-eslint",
     "env": {
@@ -41,9 +41,7 @@
             }
         },
         {
-            "files": [
-                "packages/cli/src/**/*.js"
-            ],
+            "files": ["packages/cli/src/**/*.js"],
             "rules": {
                 "global-require": 0,
                 "import/no-dynamic-require": 0,

@@ -1,14 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect, useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
-// import classNames from 'classnames';
-import DatePicker, { registerLocale } from 'react-datepicker';
-import { defineMessage, useIntl } from 'react-intl';
-import formatDate from 'date-fns/format';
-import parse from 'date-fns/parseISO';
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { isMessage } from '@panneau/core/utils';
 import TextField from '@panneau/field-text';
+import formatDate from 'date-fns/format';
+import parse from 'date-fns/parseISO';
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useState } from 'react';
+// import classNames from 'classnames';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import { defineMessage, useIntl } from 'react-intl';
 
 import styles from './styles.module.scss';
 import './styles/datepicker.global.scss';
@@ -91,32 +91,35 @@ const DateTimeField = ({
             setLoadedLocale(localeName);
         });
     }, [locale, setLoadedLocale]);
-    return (
-        <DatePicker
-            wrapperClassName={styles.container}
-            selected={dateValue}
-            onChange={onDateChange}
-            showTimeSelect={!withoutTime}
-            showTimeSelectOnly={withoutDate}
+
+    const TextFieldComponent = (
+        <TextField
+            name={name}
+            size={size}
+            errors={errors}
+            required={required}
+            className={className}
             disabled={disabled}
-            customInput={
-                <TextField
-                    name={name}
-                    size={size}
-                    errors={errors}
-                    required={required}
-                    className={className}
-                    disabled={disabled}
-                    nativeOnChange
-                />
-            }
-            placeholderText={isMessage(placeholder) ? formatMessage(placeholder) : placeholder}
-            dateFormat={dateFormat}
-            locale={loadedLocale}
-            timeFormat={timeFormat}
-            timeCaption={isMessage(timeCaption) ? formatMessage(timeCaption) : timeCaption}
-            timeIntervals={timeIntervals}
+            nativeOnChange
         />
+    );
+    return (
+        <div className={styles.container}>
+            <DatePicker
+                selected={dateValue}
+                onChange={onDateChange}
+                showTimeSelect={!withoutTime}
+                showTimeSelectOnly={withoutDate}
+                disabled={disabled}
+                customInput={TextFieldComponent}
+                placeholderText={isMessage(placeholder) ? formatMessage(placeholder) : placeholder}
+                dateFormat={dateFormat}
+                locale={loadedLocale}
+                timeFormat={timeFormat}
+                timeCaption={isMessage(timeCaption) ? formatMessage(timeCaption) : timeCaption}
+                timeIntervals={timeIntervals}
+            />
+        </div>
     );
 };
 

@@ -12,7 +12,6 @@ const getFieldsPropsFromFields = (fields, {
             name = isString(field) ? field : null,
             component = null,
         } = isObject(field) ? field : {};
-        console.log('f', field);
         return [
             ...allFields,
             {

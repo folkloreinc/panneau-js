@@ -1,3 +1,4 @@
+import isArray from 'lodash/isArray';
 import { definition as Autocomplete } from '@panneau/field-autocomplete';
 import { definition as Checkboxes } from '@panneau/field-checkboxes';
 import { definition as Color } from '@panneau/field-color';
@@ -31,9 +32,12 @@ export default [
     Radios,
     Select,
     Test,
-    Text,    
+    Text,
     Toggle,
     Toggles,
     Upload,
     Url,
-];
+].reduce(
+    (allFields, definition) => [...allFields, ...(isArray(definition) ? definition : [definition])],
+    [],
+);

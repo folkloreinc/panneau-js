@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "1.0.0-alpha.26",
+    "version": "1.0.0-alpha.40",
     "description": "",
     "keywords": [
         "javascript"
@@ -38,10 +38,11 @@
     "files": [
         "lib",
         "es",
-        "assets"
+        "assets",
+        "scss"
     ],
     "scripts": {
-        "prepare": "../../scripts/prepare-package.sh"
+        "prepare": "../../scripts/prepare-package.sh --scss"
     },
     "devDependencies": {
         "react": "^16.8.0",
@@ -56,28 +57,29 @@
         "@fortawesome/fontawesome-svg-core": "^1.2.35",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
-        "@panneau/core": "^1.0.0-alpha.21",
-        "@panneau/data": "^1.0.0-alpha.23",
-        "@panneau/displays": "^1.0.0-alpha.21",
-        "@panneau/element-alert": "^1.0.0-alpha.21",
-        "@panneau/element-button": "^1.0.0-alpha.21",
-        "@panneau/element-buttons": "^1.0.0-alpha.21",
-        "@panneau/element-dropdown": "^1.0.0-alpha.23",
-        "@panneau/element-form": "^1.0.0-alpha.23",
-        "@panneau/element-form-group": "^1.0.0-alpha.21",
-        "@panneau/element-label": "^1.0.0-alpha.21",
-        "@panneau/element-link": "^1.0.0-alpha.21",
-        "@panneau/element-loading": "^1.0.0-alpha.23",
-        "@panneau/element-menu": "^1.0.0-alpha.23",
-        "@panneau/element-navbar": "^1.0.0-alpha.21",
-        "@panneau/element-pagination": "^1.0.0-alpha.22",
-        "@panneau/fields": "^1.0.0-alpha.26",
-        "@panneau/filters": "^1.0.0-alpha.23",
-        "@panneau/forms": "^1.0.0-alpha.23",
+        "@panneau/core": "^1.0.0-alpha.40",
+        "@panneau/data": "^1.0.0-alpha.40",
+        "@panneau/displays": "^1.0.0-alpha.40",
+        "@panneau/element-alert": "^1.0.0-alpha.40",
+        "@panneau/element-button": "^1.0.0-alpha.40",
+        "@panneau/element-buttons": "^1.0.0-alpha.40",
+        "@panneau/element-dropdown": "^1.0.0-alpha.40",
+        "@panneau/element-form": "^1.0.0-alpha.40",
+        "@panneau/element-form-group": "^1.0.0-alpha.40",
+        "@panneau/element-label": "^1.0.0-alpha.40",
+        "@panneau/element-link": "^1.0.0-alpha.40",
+        "@panneau/element-loading": "^1.0.0-alpha.40",
+        "@panneau/element-menu": "^1.0.0-alpha.40",
+        "@panneau/element-navbar": "^1.0.0-alpha.40",
+        "@panneau/element-pagination": "^1.0.0-alpha.40",
+        "@panneau/fields": "^1.0.0-alpha.40",
+        "@panneau/filters": "^1.0.0-alpha.40",
+        "@panneau/forms": "^1.0.0-alpha.40",
         "@panneau/indexes": "^1.0.0-alpha.17",
-        "@panneau/lists": "^1.0.0-alpha.23",
-        "@panneau/modals": "^1.0.0-alpha.21",
-        "@panneau/themes": "^1.0.0-alpha.21",
+        "@panneau/intl": "^1.0.0-alpha.40",
+        "@panneau/lists": "^1.0.0-alpha.40",
+        "@panneau/modals": "^1.0.0-alpha.40",
+        "@panneau/themes": "^1.0.0-y.0",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
@@ -88,5 +90,6 @@
     },
     "publishConfig": {
         "access": "public"
-    }
+    },
+    "gitHead": "e63c11e6fa563927f5504eb230b08bb4725d48fb"
 }

@@ -1,8 +1,8 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+/* eslint-disable react/jsx-props-no-spreading, formatjs/enforce-default-message */
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -15,17 +15,23 @@ const defaultProps = {
 };
 
 const ResourceLabel = ({ resource, values, message }) => {
-    const { label = null, intl = null, localization = null } = resource;
-    const { values: resourceValues } = intl || localization || {};
+    const { messages } = useIntl();
+    const { id: resourceId, name = null, intl: { values: resourceValues } = {} } = resource;
+    const { id: messageId } = message;
+    const resourceMessageId = messageId.replace(/^resources\./, `resources.${resourceId}.`);
+    const messageProps = {
+        ...message,
+        id: typeof messages[resourceMessageId] !== 'undefined' ? resourceMessageId : messageId,
+    };
 
     return (
         <FormattedMessage
             values={{
-                label,
+                name,
                 ...resourceValues,
                 ...values,
             }}
-            {...message}
+            {...messageProps}
         />
     );
 };

@@ -1,11 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
-import classNames from 'classnames';
 import InputGroup from '@panneau/field-input-group';
+import classNames from 'classnames';
+import isEmpty from 'lodash/isEmpty';
+import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
 import { v1 as uuid } from 'uuid';
-
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -20,6 +19,7 @@ const propTypes = {
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
     align: PropTypes.oneOf(['left', 'center', 'right']),
+    size: PropTypes.oneOf([null, 'lg', 'sm']),
     prepend: PropTypes.node,
     append: PropTypes.node,
     dataList: PropTypes.arrayOf(PropTypes.string),
@@ -44,6 +44,7 @@ const defaultProps = {
     onFocus: null,
     onBlur: null,
     align: null,
+    size: null,
     prepend: null,
     append: null,
     dataList: null,
@@ -63,25 +64,25 @@ const TextField = ({
     onFocus,
     onBlur,
     align,
+    size,
     prepend,
     append,
     dataList,
     inputRef,
     className,
-    ...props
 }) => {
     const dataListId = useMemo(() => (dataList !== null ? uuid() : null), [dataList]);
 
     const elProps = {
-        ...props,
         ref: inputRef,
         className: classNames([
             styles.inputElement,
             'form-control',
             {
-                [className]: className !== null,
+                [`form-control-${size}`]: size !== null,
                 'is-valid': feedback === 'valid',
                 'is-invalid': feedback === 'invalid' && errors !== null && errors.length > 0,
+                [className]: className !== null,
             },
         ]),
         onFocus,

@@ -65,7 +65,7 @@ const Checkboxes = ({ name, value, options, className, onChange }) => {
                             }
                         }}
                         checked={value !== null && value.indexOf(optionValue) !== -1}
-                    />{' '}
+                    />
                     {label}
                 </label>
             ))}
