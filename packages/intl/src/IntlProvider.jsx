@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { IntlProvider as BaseIntlProvider, useIntl } from 'react-intl';
+import { IntlProvider as BaseIntlProvider, IntlContext } from 'react-intl';
 import { useLocales, LocalesProvider } from '@panneau/core/contexts';
 
 import IntlManager from './IntlManager';
@@ -25,7 +25,7 @@ const defaultProps = {
 const IntlProvider = ({ intlManager, locale, locales, children, extraMessages }) => {
     const previousLocales = useLocales();
     const { locale: previousLocale = null, messages: previousMessages = null } =
-        useIntl() || {};
+        useContext(IntlContext) || {};
     const messages = useMemo(() => {
         const currentMessages = intlManager.getMessages(locale);
         if (process.env.NODE_ENV === 'development') {
