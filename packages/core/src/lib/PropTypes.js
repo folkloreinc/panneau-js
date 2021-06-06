@@ -89,8 +89,9 @@ export const pages = PropTypes.objectOf(page);
 export const field = PropTypes.shape({
     // type: PropTypes.string.isRequired,
     name: PropTypes.isRequired,
-    component: PropTypes.string.isRequired,
-    label: PropTypes.isRequired,
+    type: PropTypes.string,
+    component: PropTypes.string,
+    label: PropTypes.node,
 });
 export const fields = PropTypes.arrayOf(field);
 
@@ -103,11 +104,10 @@ export const forms = PropTypes.arrayOf(form);
 
 export const resource = PropTypes.shape({
     id: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     intl,
     fields,
     forms: PropTypes.shape({}),
-    has_routes: PropTypes.bool,
     shows_in_navbar: PropTypes.bool,
 });
 export const resources = PropTypes.arrayOf(resource);

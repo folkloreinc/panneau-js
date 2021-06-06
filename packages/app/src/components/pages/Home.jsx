@@ -20,15 +20,12 @@ const HomePage = () => {
         <MainLayout>
             <div className="container-sm py-4">
                 {resources.map((resource) => {
-                    const { id: resourceId, has_routes: hasRoutes } = resource || {};
-                    const routeName = hasRoutes
-                        ? `resources.${resourceId}.index`
-                        : 'resources.index';
+                    const { id: resourceId } = resource || {};
                     return (
                         <Link
                             className="d-block my-2"
                             key={`resource-link-${resourceId}`}
-                            to={route(`${routeName}`, {
+                            to={route('resources.index', {
                                 resource: resourceId,
                             })}
                         >

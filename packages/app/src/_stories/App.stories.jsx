@@ -9,7 +9,9 @@ export default {
     component: PanneauContainer,
     title: 'App',
     parameters: {
-        intl: true,
+        intl: {
+            locale: panneauDefinition.intl.locale
+        },
     },
 };
 

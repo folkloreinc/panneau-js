@@ -1,10 +1,8 @@
-import React from 'react';
-import { Switch, Route } from 'react-router';
-
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useUrlGenerator } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
-
+import React from 'react';
+import { Route, Switch } from 'react-router';
 import * as basePages from './pages';
 
 const propTypes = {
@@ -14,10 +12,9 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceRoutes = ({ resource }) => {
-    const { id: resourceId, has_routes: hasRoutes, pages = {} } = resource;
+    const { id: resourceId, pages = {} } = resource;
 
     const route = useUrlGenerator();
-    const routeName = hasRoutes ? `resources.${resourceId}` : 'resources';
 
     // Load custom pages from resource
     const {
@@ -61,21 +58,21 @@ const ResourceRoutes = ({ resource }) => {
     return (
         <Switch>
             <Route
-                path={route(`${routeName}.index`, {
+                path={route('resources.index', {
                     resource: resourceId,
                 })}
                 exact
                 render={() => <ResourceIndexComponent resource={resource} />}
             />
             <Route
-                path={route(`${routeName}.create`, {
+                path={route('resources.create', {
                     resource: resourceId,
                 })}
                 exact
                 render={() => <ResourceCreateComponent resource={resource} />}
             />
             <Route
-                path={route(`${routeName}.show`, {
+                path={route('resources.show', {
                     resource: resourceId,
                     id: ':id',
                 })}
@@ -87,7 +84,7 @@ const ResourceRoutes = ({ resource }) => {
                 }) => <ResourceShowComponent resource={resource} itemId={id} />}
             />
             <Route
-                path={route(`${routeName}.edit`, {
+                path={route('resources.edit', {
                     resource: resourceId,
                     id: ':id',
                 })}
@@ -99,7 +96,7 @@ const ResourceRoutes = ({ resource }) => {
                 }) => <ResourceEditComponent resource={resource} itemId={id} />}
             />
             <Route
-                path={route(`${routeName}.delete`, {
+                path={route('resources.delete', {
                     resource: resourceId,
                     id: ':id',
                 })}

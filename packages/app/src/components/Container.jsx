@@ -55,7 +55,7 @@ const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
                 {},
             ),
         };
-    }, definition);
+    }, [definition]);
 
     return (
         <Router>

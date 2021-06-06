@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Switch, Route, Redirect, useLocation } from 'react-router';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 // import { parse as parseQuery } from 'query-string';
 import {
-    useRoutes,
-    useUrlGenerator,
     usePanneau,
     usePanneauResources,
+    useRoutes,
+    useUrlGenerator,
 } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
-
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-
+import React, { useEffect, useState } from 'react';
+import { Redirect, Route, Switch, useLocation } from 'react-router';
 import { useUser } from '../contexts/AuthContext';
-
 import * as basePages from './pages';
-
 import ResourceRoutes from './ResourceRoutes';
 
 const propTypes = {
@@ -107,13 +103,11 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
             )}
 
             {resources.map((resource) => {
-                const { id: resourceId, has_routes: hasRoutes } = resource || {};
-                const routeName = hasRoutes ? `resources.${resourceId}` : 'resources.index';
-
+                const { id: resourceId } = resource || {};
                 return user !== null ? (
                     <Route
                         key={`resource-${resourceId}`}
-                        path={route(`${routeName}`, {
+                        path={route('resources.index', {
                             resource: resourceId,
                         })}
                         render={() => <ResourceRoutes resource={resource} />}
@@ -121,7 +115,7 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
                 ) : (
                     <Redirect
                         key={`resource-${resourceId}`}
-                        from={route(`${routeName}.index`, {
+                        from={route('resources.index', {
                             resource: resourceId,
                         })}
                         to={`${route('login')}?next=${encodeURIComponent(pathname)}`}

@@ -16,7 +16,7 @@ const defaultProps = {
 
 const ResourceLabel = ({ resource, values, message }) => {
     const { messages } = useIntl();
-    const { id: resourceId, label = null, intl: { values: resourceValues } = {} } = resource;
+    const { id: resourceId, name = null, intl: { values: resourceValues } = {} } = resource;
     const { id: messageId } = message;
     const resourceMessageId = messageId.replace(/^resources\./, `resources.${resourceId}.`);
     const messageProps = {
@@ -27,7 +27,7 @@ const ResourceLabel = ({ resource, values, message }) => {
     return (
         <FormattedMessage
             values={{
-                label,
+                name,
                 ...resourceValues,
                 ...values,
             }}
