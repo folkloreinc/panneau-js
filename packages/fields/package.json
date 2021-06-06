@@ -72,6 +72,7 @@
         "@panneau/field-toggles": "^1.0.0-alpha.27",
         "@panneau/field-upload": "^1.0.0-alpha.27",
         "@panneau/field-url": "^1.0.0-alpha.27",
+        "lodash": "^4.17.21",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
