@@ -8,7 +8,7 @@ import FormsProvider from '@panneau/forms';
 import { IntlProvider } from '@panneau/intl';
 import ListsProvider from '@panneau/lists';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { MemoryRouter } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from '../contexts/AuthContext';
@@ -32,16 +32,34 @@ const defaultProps = {
 
 const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
     const {
-        intl: { locale = 'en', locales, messages: translations = {} } = {},
+        intl: { locale = 'en', locales } = {},
         routes = {},
-        settings = {},
+        settings: { memoryRouter: usesMemoryRouter = false } = {},
     } = definition;
-    const { memoryRouter: usesMemoryRouter = false } = settings || {};
     const Router = memoryRouter || usesMemoryRouter ? MemoryRouter : BrowserRouter;
+    const extraMessages = useMemo(() => {
+        const { intl: { messages = null } = {}, resources = [] } = definition;
+        return {
+            ...messages,
+            ...resources.reduce(
+                (allMessages, { id, intl: { messages: resourceMessages = {} } = {} }) => ({
+                    ...allMessages,
+                    ...Object.keys(resourceMessages).reduce(
+                        (allResourceMessages, key) => ({
+                            ...allResourceMessages,
+                            [`resources.${id}.${key}`]: resourceMessages[key],
+                        }),
+                        {},
+                    ),
+                }),
+                {},
+            ),
+        };
+    }, definition);
 
     return (
         <Router>
-            <IntlProvider locale={locale} locales={locales} extraMessages={translations}>
+            <IntlProvider locale={locale} locales={locales} extraMessages={extraMessages}>
                 <PanneauProvider definition={definition}>
                     <RoutesProvider routes={routes}>
                         <FieldsProvider>
