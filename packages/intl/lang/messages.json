@@ -1,23 +1,87 @@
 {
+  "+6cCPF": {
+    "defaultMessage": "Error 403",
+    "description": "Error page meta title"
+  },
   "2/F1Q7": {
     "defaultMessage": "#{index}",
     "description": "Item label in items field"
+  },
+  "4sViWl": {
+    "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} other {# items}}",
+    "description": "Pagination count label"
+  },
+  "4yfet+": {
+    "defaultMessage": "Password",
+    "description": "Field label"
+  },
+  "5rMPIj": {
+    "defaultMessage": "Loading...",
+    "description": "Form status"
+  },
+  "6Ie+vL": {
+    "defaultMessage": "Error 404",
+    "description": "Error page title"
+  },
+  "6nwWPR": {
+    "defaultMessage": "Error 401",
+    "description": "Error page title"
   },
   "6oV4/s": {
     "defaultMessage": "no",
     "description": "Boolean value"
   },
+  "82P2dS": {
+    "defaultMessage": "You are not authorized to access this page.",
+    "description": "Error page description"
+  },
+  "8HFiMs": {
+    "defaultMessage": "Access to this page is forbidden",
+    "description": "Error page description"
+  },
+  "AeOZq+": {
+    "defaultMessage": "Login",
+    "description": "Page title"
+  },
   "Bhu3B2": {
     "defaultMessage": "Delete",
+    "description": "Button label"
+  },
+  "ESkxLX": {
+    "defaultMessage": "Success!",
+    "description": "Form status"
+  },
+  "EsoYzX": {
+    "defaultMessage": "Previous",
+    "description": "Pagination button label"
+  },
+  "HOobY2": {
+    "defaultMessage": "Error 401",
+    "description": "Error page meta title"
+  },
+  "IbZVf0": {
+    "defaultMessage": "Submit",
     "description": "Button label"
   },
   "IuCFWt": {
     "defaultMessage": "yes",
     "description": "Boolean value"
   },
+  "IuqEHB": {
+    "defaultMessage": "Account",
+    "description": "Menu label"
+  },
   "Ke35Pv": {
     "defaultMessage": "Edit",
     "description": "Button label"
+  },
+  "LI0Gz4": {
+    "defaultMessage": "Email",
+    "description": "Field label"
+  },
+  "Mo0yQb": {
+    "defaultMessage": "Error",
+    "description": "Form status"
   },
   "NI9440": {
     "defaultMessage": "Add file",
@@ -27,130 +91,71 @@
     "defaultMessage": "No item...",
     "description": "Label when there is no item in items field"
   },
+  "Pih2UO": {
+    "defaultMessage": "Error 403",
+    "description": "Error page title"
+  },
   "PyxZY2": {
     "defaultMessage": "Cancel",
     "description": "Button label"
   },
-  "R1HYj0": {
-    "defaultMessage": "Save",
-    "description": "Button label"
+  "REIcPg": {
+    "defaultMessage": "Logout",
+    "description": "Menu label"
+  },
+  "US/AMe": {
+    "defaultMessage": "Error 404",
+    "description": "Error page meta title"
   },
   "UpStcP": {
     "defaultMessage": "Could not find type for this item",
     "description": "Error message"
   },
+  "V7Us0a": {
+    "defaultMessage": "Update account",
+    "description": "Menu label"
+  },
+  "X5RJlB": {
+    "defaultMessage": "Next",
+    "description": "Pagination button label"
+  },
   "ZxgNge": {
     "defaultMessage": "Add an item",
     "description": "Button label in items field"
-  },
-  "auth.account": {
-    "defaultMessage": "Account"
-  },
-  "auth.login": {
-    "defaultMessage": "Login"
-  },
-  "auth.login.title": {
-    "defaultMessage": "Login"
-  },
-  "auth.logout": {
-    "defaultMessage": "Logout"
-  },
-  "auth.update_account": {
-    "defaultMessage": "Update account"
   },
   "bPk79b": {
     "defaultMessage": "Show",
     "description": "Button label"
   },
-  "errors.description_401": {
-    "defaultMessage": "You are not authorized to access this page."
+  "d0g58T": {
+    "defaultMessage": "Login",
+    "description": "Menu label"
   },
-  "errors.description_403": {
-    "defaultMessage": "Access to this page is forbidden"
+  "ejwBSw": {
+    "defaultMessage": "Error 500",
+    "description": "Error page meta title"
   },
-  "errors.description_404": {
-    "defaultMessage": "This page doesn’t exist"
+  "g6qbbX": {
+    "defaultMessage": "Log in",
+    "description": "Button label"
   },
-  "errors.description_500": {
-    "defaultMessage": "There was an error"
+  "gjBiyj": {
+    "defaultMessage": "Loading..."
   },
-  "errors.goto_home": {
-    "defaultMessage": "Go to home page"
+  "hezcGl": {
+    "defaultMessage": "Go to home page",
+    "description": "Button label"
   },
-  "errors.title_401": {
-    "defaultMessage": "Error 401"
+  "owrRHV": {
+    "defaultMessage": "Error 500",
+    "description": "Error page title"
   },
-  "errors.title_403": {
-    "defaultMessage": "Error 403"
+  "q6bmY1": {
+    "defaultMessage": "Reset",
+    "description": "Button label"
   },
-  "errors.title_404": {
-    "defaultMessage": "Error 404"
-  },
-  "errors.title_500": {
-    "defaultMessage": "Error 500"
-  },
-  "form.cancel_button": {
-    "defaultMessage": "Cancel"
-  },
-  "form.confirm_delete": {
+  "resources.confirm_delete": {
     "defaultMessage": "Are you sure you want to delete item #{id}?"
-  },
-  "form.delete_button": {
-    "defaultMessage": "Delete"
-  },
-  "form.edit_button": {
-    "defaultMessage": "Edit"
-  },
-  "form.email": {
-    "defaultMessage": "Email"
-  },
-  "form.password": {
-    "defaultMessage": "Password"
-  },
-  "form.show_button": {
-    "defaultMessage": "Cancel"
-  },
-  "forms.error_status": {
-    "defaultMessage": "Error"
-  },
-  "forms.loading_status": {
-    "defaultMessage": "Loading..."
-  },
-  "forms.success_status": {
-    "defaultMessage": "Success!"
-  },
-  "lists.filters.reset": {
-    "defaultMessage": "Reset"
-  },
-  "lists.filters.submit": {
-    "defaultMessage": "Submit"
-  },
-  "loading": {
-    "defaultMessage": "Loading..."
-  },
-  "login": {
-    "defaultMessage": "Log in"
-  },
-  "meta.title_401": {
-    "defaultMessage": "Error 401"
-  },
-  "meta.title_403": {
-    "defaultMessage": "Error 403"
-  },
-  "meta.title_404": {
-    "defaultMessage": "Error 404"
-  },
-  "meta.title_500": {
-    "defaultMessage": "Error 500"
-  },
-  "pagination.items_count": {
-    "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
-  },
-  "pagination.next": {
-    "defaultMessage": "Next"
-  },
-  "pagination.previous": {
-    "defaultMessage": "Previous"
   },
   "resources.create": {
     "defaultMessage": "Create {a_singular}"
@@ -176,5 +181,13 @@
   "s4Xrs9": {
     "defaultMessage": "Time",
     "description": "DateTimeField time caption"
+  },
+  "wKPI1y": {
+    "defaultMessage": "This page doesn’t exist",
+    "description": "Error page description"
+  },
+  "yALN2p": {
+    "defaultMessage": "There was an error",
+    "description": "Error page description"
   }
 }

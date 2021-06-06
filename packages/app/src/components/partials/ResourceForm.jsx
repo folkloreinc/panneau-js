@@ -12,7 +12,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 const propTypes = {
     component: PropTypes.string,
     resource: PanneauPropTypes.resource.isRequired,
-    messages: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     item: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onSuccess: PropTypes.func,
     isDelete: PropTypes.bool,
@@ -21,12 +20,11 @@ const propTypes = {
 const defaultProps = {
     component: null,
     item: null,
-    messages: null,
     onSuccess: null,
     isDelete: false,
 };
 
-const ResourceForm = ({ component, resource, messages, onSuccess, item, isDelete, ...props }) => {
+const ResourceForm = ({ component, resource, onSuccess, item, isDelete, ...props }) => {
     const FormComponents = useFormsComponents();
     const { fields: baseFields, forms = {} } = resource || {};
     const isCreate = item === null || !item.id;
@@ -115,7 +113,6 @@ const ResourceForm = ({ component, resource, messages, onSuccess, item, isDelete
                 onSubmit={onSubmit}
                 isCreate={isCreate}
                 value={value}
-                messages={messages}
                 onChange={setValue}
             />
         </FormProvider>

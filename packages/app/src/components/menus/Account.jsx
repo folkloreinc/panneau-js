@@ -1,12 +1,9 @@
-import React, { useCallback, useMemo } from 'react';
-import PropTypes from 'prop-types';
-
 import { useUrlGenerator } from '@panneau/core/contexts';
 import Menu from '@panneau/element-menu';
-
-import { useUser, useLogout } from '../../contexts/AuthContext';
-
-import messages from '../messages';
+import PropTypes from 'prop-types';
+import React, { useCallback, useMemo } from 'react';
+import { FormattedMessage } from 'react-intl';
+import { useLogout, useUser } from '../../contexts/AuthContext';
 
 const propTypes = {
     className: PropTypes.string,
@@ -37,15 +34,27 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                 ? [
                       {
                           id: 'account',
-                          label: messages.account,
+                          label: (
+                              <FormattedMessage defaultMessage="Account" description="Menu label" />
+                          ),
                           href: route('auth.account'),
                           dropdown: [
                               {
-                                  label: messages.updateAccount,
+                                  label: (
+                                      <FormattedMessage
+                                          defaultMessage="Update account"
+                                          description="Menu label"
+                                      />
+                                  ),
                                   href: route('auth.account'),
                               },
                               {
-                                  label: messages.logout,
+                                  label: (
+                                      <FormattedMessage
+                                          defaultMessage="Logout"
+                                          description="Menu label"
+                                      />
+                                  ),
                                   href: route('auth.logout'),
                                   onClick: onClickLogout,
                               },
@@ -54,7 +63,9 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                   ]
                 : [
                       {
-                          label: messages.login,
+                          label: (
+                              <FormattedMessage defaultMessage="Login" description="Menu label" />
+                          ),
                           href: route('login'),
                       },
                   ],

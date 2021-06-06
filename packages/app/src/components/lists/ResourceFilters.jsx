@@ -99,12 +99,12 @@ const ResourceFilters = ({
             })}
             {filterItems.length > 0 && onSubmit !== null ? (
                 <Button theme="primary" onClick={onSubmit}>
-                    <FormattedMessage id="lists.filters.submit" defaultMessage="Submit" />
+                    <FormattedMessage defaultMessage="Submit" description="Button label" />
                 </Button>
             ) : null}
             {filterItems.length > 0 && withReset ? (
                 <Button theme="primary" onClick={onReset}>
-                    <FormattedMessage id="lists.filters.reset" defaultMessage="Reset" />
+                    <FormattedMessage defaultMessage="Reset" description="Button label" />
                 </Button>
             ) : null}
         </Navbar>

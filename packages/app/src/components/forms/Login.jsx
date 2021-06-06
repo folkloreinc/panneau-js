@@ -36,10 +36,7 @@ const LoginForm = ({ fields: formFields, className, onSuccess }) => {
     const url = useUrlGenerator();
     const { login } = useAuth();
     const postForm = useCallback(
-        (action, { email, password }) => {
-            console.log(email, password);
-            return login(email, password);
-        },
+        (action, { email, password }) => login(email, password),
         [login],
     );
 
