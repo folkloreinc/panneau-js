@@ -38,7 +38,8 @@
     "files": [
         "lib",
         "es",
-        "assets"
+        "assets",
+        "scss"
     ],
     "scripts": {
         "scss": "../../scripts/build-packages-styles.js --pattern='@panneau/field-*' ./src/styles.scss.ejs ./scss/styles.scss",
