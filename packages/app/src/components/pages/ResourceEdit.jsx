@@ -18,10 +18,8 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceEditPage = ({ resource, itemId }) => {
-    // console.log(itemId);
-    // const resourceRoute = useResourceUrlGenerator(resource);
     const { item } = useResourceItem(resource, itemId);
-    const { type: resourceType = null } = item || {};
+    const { type = null } = item || {};
     const [editItem, setEditItem] = useState(item);
     const onSuccess = useCallback((newItem) => setEditItem(newItem), []);
     useEffect(() => {
@@ -43,7 +41,7 @@ const ResourceEditPage = ({ resource, itemId }) => {
                                     resource={resource}
                                     messages={messages}
                                     item={editItem}
-                                    type={resourceType}
+                                    type={type}
                                     onSuccess={onSuccess}
                                 />
                             ) : null}
