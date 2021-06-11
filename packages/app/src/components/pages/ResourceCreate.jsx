@@ -1,17 +1,14 @@
-import React, { useCallback } from 'react';
-import { useHistory } from 'react-router';
-
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
-
+import { parse as parseQuery } from 'query-string';
+import React, { useCallback, useMemo } from 'react';
+import { useHistory, useLocation } from 'react-router';
 import MainLayout from '../layouts/Main';
-import PageHeader from '../partials/PageHeader';
-import ResourceLabel from '../partials/ResourceLabel';
-import ResourceForm from '../partials/ResourceForm';
-
 import messages from '../messages';
+import PageHeader from '../partials/PageHeader';
+import ResourceForm from '../partials/ResourceForm';
+import ResourceLabel from '../partials/ResourceLabel';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -21,10 +18,14 @@ const defaultProps = {};
 
 const ResourceCreatePage = ({ resource }) => {
     const history = useHistory();
+    const { search } = useLocation();
     const resourceRoute = useResourceUrlGenerator(resource);
     const onSuccess = useCallback(() => {
         history.push(`${resourceRoute('index')}?created=true`);
     }, [history, resourceRoute]);
+
+    const { type = null } = useMemo(() => parseQuery(search), [search]);
+
     return (
         <ResourceProvider resource={resource}>
             <MainLayout>
@@ -38,6 +39,7 @@ const ResourceCreatePage = ({ resource }) => {
                             <ResourceForm
                                 resource={resource}
                                 messages={messages}
+                                type={type}
                                 onSuccess={onSuccess}
                             />
                         </div>

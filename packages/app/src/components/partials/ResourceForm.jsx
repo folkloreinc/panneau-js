@@ -13,6 +13,7 @@ const propTypes = {
     component: PropTypes.string,
     resource: PanneauPropTypes.resource.isRequired,
     item: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    type: PropTypes.string,
     onSuccess: PropTypes.func,
     isDelete: PropTypes.bool,
 };
@@ -20,13 +21,16 @@ const propTypes = {
 const defaultProps = {
     component: null,
     item: null,
+    type: null,
     onSuccess: null,
     isDelete: false,
 };
 
-const ResourceForm = ({ component, resource, onSuccess, item, isDelete, ...props }) => {
+const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ...props }) => {
     const FormComponents = useFormsComponents();
-    const { fields: baseFields, forms = {} } = resource || {};
+    const { fields: resourceFields = [], types: resourceTypes = [], forms } = resource;
+    const resourceType = type !== null ? resourceTypes.find((it) => it.id === type) || null : null;
+    const { fields: resourceTypeFields = null } = resourceType || {};
     const isCreate = item === null || !item.id;
 
     // Pick fields from resource root or form
@@ -35,11 +39,11 @@ const ResourceForm = ({ component, resource, onSuccess, item, isDelete, ...props
         create: createForm = null,
         edit: editForm = null,
     } = forms || {};
-    const { fields: defaultFields, component: defaultComponent } = defaultForm || {};
+    const { fields: defaultFields = null, component: defaultComponent } = defaultForm || {};
     const { fields: formFields = null, component: formComponent = null } = isCreate
         ? createForm || {}
         : editForm || {};
-    const resourceFields = formFields || defaultFields || baseFields;
+    const finalFields = formFields || defaultFields || resourceTypeFields || resourceFields;
 
     // Form routes
     const resourceRoute = useResourceUrlGenerator(resource);
@@ -54,7 +58,7 @@ const ResourceForm = ({ component, resource, onSuccess, item, isDelete, ...props
     const getInitialValue = useCallback(() => {
         return item !== null
             ? item
-            : resourceFields.reduce(
+            : finalFields.reduce(
                   (defaultValues, { name, default_value: defaultValue = null }) =>
                       defaultValue !== null
                           ? {
@@ -64,10 +68,10 @@ const ResourceForm = ({ component, resource, onSuccess, item, isDelete, ...props
                           : defaultValues,
                   null,
               );
-    }, [item, resourceFields]);
+    }, [item, finalFields]);
     const [value, setValue] = useState(getInitialValue());
     const { fields, onSubmit, status, generalError, errors } = useForm({
-        fields: resourceFields,
+        fields: finalFields,
         value,
         postForm,
         setValue,
