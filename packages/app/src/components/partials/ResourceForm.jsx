@@ -44,7 +44,7 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
         ? createForm || {}
         : editForm || {};
 
-    console.log(type, resourceTypes, formFields, defaultFields, resourceTypeFields, resourceFields); //eslint-disable-line
+    // console.log(type, resourceTypes, formFields, defaultFields, resourceTypeFields, resourceFields); //eslint-disable-line
     const finalFields = formFields || defaultFields || resourceTypeFields || resourceFields;
 
     // Form routes

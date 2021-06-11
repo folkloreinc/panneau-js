@@ -25,7 +25,6 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     const { pages = {} } = usePanneau();
     const routes = useRoutes();
     const { pathname } = useLocation(); // search
-    // console.log('PATHNAME', pathname); // eslint-disable-line
 
     const [{ statusCode, pathname: initialPathname }, setInitialRequest] = useState({
         statusCode: initialStatusCode,
