@@ -19,7 +19,7 @@ export const useUppy = ({
     getFileName = ({ extension = null }) => `${uuid()}${extension !== null ? `.${extension}` : ''}`,
     meta = null,
     allowMultipleUploads = true,
-    maxNumberOfFiles = 30,
+    maxNumberOfFiles = 1,
     allowedFileTypes = null,
     autoProceed = false,
     debug = false,
