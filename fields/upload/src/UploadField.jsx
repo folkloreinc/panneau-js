@@ -147,13 +147,19 @@ const UploadField = ({
                                     default:
                                         break;
                                 }
+
+                                const hasPreview = preview !== null || url !== null;
+
                                 return (
                                     <div
-                                        className="d-flex align-items-center justify-content-between mb-1"
+                                        className="d-flex align-items-center justify-content-between my-1"
                                         key={`file-${id}-${filename}-${idx + 1}`}
                                     >
                                         <div className="d-flex align-items-center mx-2">
-                                            {preview !== null || url !== null ? (
+                                            {!hasPreview && faIcon !== null ? (
+                                                <FontAwesomeIcon icon={faIcon} className="me-2" />
+                                            ) : null}
+                                            {hasPreview ? (
                                                 <img
                                                     className="img-thumbnail me-2"
                                                     src={preview || url}
@@ -164,9 +170,7 @@ const UploadField = ({
                                             <div className="media-body text-truncate small me-2">
                                                 <strong>{file || filename}</strong>
                                             </div>
-                                            {faIcon !== null ? (
-                                                <FontAwesomeIcon icon={faIcon} className="me-2" />
-                                            ) : null}
+
                                             <small className="text-muted me-2">
                                                 {size > 0 ? prettyBytes(size) : size}
                                             </small>

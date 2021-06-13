@@ -153,3 +153,5 @@ export const feedback = PropTypes.oneOf(['valid', 'invalid', 'loading', null]);
 export const formError = PropTypes.shape({ message: PropTypes.string });
 
 export const formErrors = PropTypes.arrayOf(formError);
+
+export const uppy = PropTypes.shape({ tus: PropTypes.object }); // eslint-disable-line

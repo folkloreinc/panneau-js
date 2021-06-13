@@ -1,6 +1,6 @@
-import { defineMessages } from 'react-intl';
+// import { defineMessages } from 'react-intl';
 
-export default defineMessages({
+export default {
     // Resources
     index: {
         id: 'resources.index',
@@ -34,4 +34,4 @@ export default defineMessages({
         id: 'resources.loading',
         defaultMessage: 'Loading {plural}...',
     },
-});
+};
