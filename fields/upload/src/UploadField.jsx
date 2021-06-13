@@ -1,19 +1,17 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-// import classNames from 'classnames';
-import { Dashboard, DashboardModal } from '@uppy/react';
+import { faFileAudio, faFileImage, faFileVideo, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faFileAudio, faFileImage, faFileVideo } from '@fortawesome/free-solid-svg-icons';
-import prettyBytes from 'pretty-bytes';
-
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useUppy } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
-
 import '@uppy/core/dist/style.css';
 import '@uppy/dashboard/dist/style.css';
+// import classNames from 'classnames';
+import { Dashboard, DashboardModal } from '@uppy/react';
+import prettyBytes from 'pretty-bytes';
+import PropTypes from 'prop-types';
+import React, { useCallback, useMemo, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
     className: PropTypes.string,
@@ -37,15 +35,26 @@ const defaultProps = {
     types: ['audio', 'image', 'video'],
     sources: ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'],
     withButton: false,
-    addButtonLabel: <FormattedMessage defaultMessage="Add file" description="Default upload add button label" />,
+    addButtonLabel: (
+        <FormattedMessage defaultMessage="Add file" description="Default upload add button label" />
+    ),
     onChange: null,
 };
 
-const UploadField = ({ className, value, types, sources, withButton, addButtonLabel, onChange }) => {
-    const onUpppyComplete = useCallback(
+const UploadField = ({
+    className,
+    value,
+    types,
+    sources,
+    withButton,
+    addButtonLabel,
+    onChange,
+}) => {
+    const onComplete = useCallback(
         (response) => {
             const newValue =
                 response.successful.length > 0 ? response.successful[0].response.body : null;
+            console.log('complete', newValue, response); // eslint-disable-line
             if (onChange !== null) {
                 onChange(newValue);
             }
@@ -62,7 +71,7 @@ const UploadField = ({ className, value, types, sources, withButton, addButtonLa
     const uppy = useUppy({
         allowedFileTypes,
         sources,
-        onComplete: onUpppyComplete,
+        onComplete,
     });
 
     const onClickRemove = useCallback(() => {
@@ -137,7 +146,9 @@ const UploadField = ({ className, value, types, sources, withButton, addButtonLa
                         </>
                     ) : (
                         <>
-                            { uppy !== null ? <Dashboard uppy={uppy} height={300} plugins={sources} /> : null }
+                            {uppy !== null ? (
+                                <Dashboard uppy={uppy} height={300} plugins={sources} />
+                            ) : null}
                         </>
                     )}
                 </>
