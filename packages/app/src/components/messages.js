@@ -4,7 +4,7 @@ export default {
     // Resources
     index: {
         id: 'resources.index',
-        defaultMessage: 'View {a_plural}',
+        defaultMessage: 'View {plural}',
     },
     create: {
         id: 'resources.create',

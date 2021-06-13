@@ -244,46 +244,6 @@ msgctxt "q6bmY1"
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: resources.confirm_delete
-msgctxt "resources.confirm_delete"
-msgid "Are you sure you want to delete item #{id}?"
-msgstr "Êtes-vous certain de vouloir supprimer l'item #{id}?"
-
-#: resources.create
-msgctxt "resources.create"
-msgid "Create {a_singular}"
-msgstr "Créer {a_singular}"
-
-#: resources.created
-msgctxt "resources.created"
-msgid "{the_singular} has been created."
-msgstr "{the_singular} a été créé."
-
-#: resources.delete
-msgctxt "resources.delete"
-msgid "Delete {a_singular}"
-msgstr "Supprimer {a_singular}"
-
-#: resources.deleted
-msgctxt "resources.deleted"
-msgid "{the_singular} has been deleted."
-msgstr "{the_singular} a été supprimé."
-
-#: resources.edit
-msgctxt "resources.edit"
-msgid "Edit {a_singular}"
-msgstr "Modifier {a_singular}"
-
-#: resources.index
-msgctxt "resources.index"
-msgid "View {a_plural}"
-msgstr "Voir {a_singular}"
-
-#: resources.loading
-msgctxt "resources.loading"
-msgid "Loading {plural}..."
-msgstr "Chargement {plural}..."
-
 # DateTimeField time caption
 #: s4Xrs9
 msgctxt "s4Xrs9"

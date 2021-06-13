@@ -116,30 +116,6 @@
     "q6bmY1": {
         "defaultMessage": "Reset"
     },
-    "resources.confirm_delete": {
-        "defaultMessage": "Are you sure you want to delete item #{id}?"
-    },
-    "resources.create": {
-        "defaultMessage": "Create {a_singular}"
-    },
-    "resources.created": {
-        "defaultMessage": "{the_singular} has been created."
-    },
-    "resources.delete": {
-        "defaultMessage": "Delete {a_singular}"
-    },
-    "resources.deleted": {
-        "defaultMessage": "{the_singular} has been deleted."
-    },
-    "resources.edit": {
-        "defaultMessage": "Edit {a_singular}"
-    },
-    "resources.index": {
-        "defaultMessage": "View {a_plural}"
-    },
-    "resources.loading": {
-        "defaultMessage": "Loading {plural}..."
-    },
     "s4Xrs9": {
         "defaultMessage": "Time"
     },

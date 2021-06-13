@@ -116,30 +116,6 @@
     "q6bmY1": {
         "defaultMessage": "Réinitialiser"
     },
-    "resources.confirm_delete": {
-        "defaultMessage": "Êtes-vous certain de vouloir supprimer l'item #{id}?"
-    },
-    "resources.create": {
-        "defaultMessage": "Créer {a_singular}"
-    },
-    "resources.created": {
-        "defaultMessage": "{the_singular} a été créé."
-    },
-    "resources.delete": {
-        "defaultMessage": "Supprimer {a_singular}"
-    },
-    "resources.deleted": {
-        "defaultMessage": "{the_singular} a été supprimé."
-    },
-    "resources.edit": {
-        "defaultMessage": "Modifier {a_singular}"
-    },
-    "resources.index": {
-        "defaultMessage": "Voir {a_singular}"
-    },
-    "resources.loading": {
-        "defaultMessage": "Chargement {plural}..."
-    },
     "s4Xrs9": {
         "defaultMessage": "Heure"
     },

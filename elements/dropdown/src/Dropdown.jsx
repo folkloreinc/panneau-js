@@ -1,13 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useRef, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDocumentEvent } from '@panneau/core/hooks';
-import Link from '@panneau/element-link';
-import Label from '@panneau/element-label';
 import Button from '@panneau/element-button';
+import Label from '@panneau/element-label';
+import Link from '@panneau/element-link';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useCallback, useRef } from 'react';
 
 const propTypes = {
     items: PanneauPropTypes.menuItems,
@@ -106,6 +105,8 @@ const Dropdown = ({
                                   'dropdown-item': type === 'link',
                                   'dropdown-divider': type === 'divider',
                                   'dropdown-header': type === 'header',
+                                  'text-left': true,
+                                  'd-block': true,
                                   active,
                                   [itemClassName]: itemClassName !== null,
                                   [customClassName]: customClassName !== null,
