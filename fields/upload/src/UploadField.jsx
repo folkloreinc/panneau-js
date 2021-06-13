@@ -52,9 +52,9 @@ const UploadField = ({
 }) => {
     const onComplete = useCallback(
         (response) => {
+            console.log('complete', response); // eslint-disable-line
             const newValue =
                 response.successful.length > 0 ? response.successful[0].response.body : null;
-            console.log('complete', newValue, response); // eslint-disable-line
             if (onChange !== null) {
                 onChange(newValue);
             }
