@@ -1,15 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext, useEffect, useMemo } from 'react';
-import PropTypes from 'prop-types';
-import isString from 'lodash/isString';
 import isObject from 'lodash/isObject';
-import { v1 as uuid } from 'uuid';
+import isString from 'lodash/isString';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
-
+import { v1 as uuid } from 'uuid';
 import useUppyCore from '../hooks/useUppyCore';
 import useUppyLocale from '../hooks/useUppyLocale';
-import useUppyTransport from '../hooks/useUppyTransport';
 import useUppySources from '../hooks/useUppySources';
+import useUppyTransport from '../hooks/useUppyTransport';
 import getTransloaditMediasFromResponse from '../utils/getTransloaditMediasFromResponse';
 
 export const UppyContext = React.createContext(null);
@@ -19,9 +18,11 @@ export const useUppy = ({
     onFail = null,
     getFileName = ({ extension = null }) => `${uuid()}${extension !== null ? `.${extension}` : ''}`,
     meta = null,
+    allowMultipleUploads = true,
     maxNumberOfFiles = 30,
     allowedFileTypes = null,
     autoProceed = false,
+    debug = false,
 } = {}) => {
     const { buildUppy, transport } = useContext(UppyContext) || null;
 
@@ -30,11 +31,21 @@ export const useUppy = ({
             buildUppy !== null
                 ? buildUppy({
                       meta,
+                      allowMultipleUploads,
                       restrictions: { maxNumberOfFiles, allowedFileTypes },
                       autoProceed,
+                      debug,
                   })
                 : null,
-        [buildUppy, meta, maxNumberOfFiles, allowedFileTypes, autoProceed],
+        [
+            buildUppy,
+            meta,
+            allowMultipleUploads,
+            debug,
+            maxNumberOfFiles,
+            allowedFileTypes,
+            autoProceed,
+        ],
     );
 
     useEffect(() => {
@@ -214,13 +225,11 @@ export const UppyProvider = ({
                     if (source === null) {
                         return currentUppy;
                     }
-                    const {
-                        url: companionUrl,
-                        allowedHosts: companionAllowedHosts,
-                    } = companion || {
-                        url: uppyTransport.COMPANION || null,
-                        allowedHosts: uppyTransport.COMPANION_PATTERN || null,
-                    };
+                    const { url: companionUrl, allowedHosts: companionAllowedHosts } =
+                        companion || {
+                            url: uppyTransport.COMPANION || null,
+                            allowedHosts: uppyTransport.COMPANION_PATTERN || null,
+                        };
                     return newUppy.use(source, {
                         id: sourceId,
                         companionUrl,

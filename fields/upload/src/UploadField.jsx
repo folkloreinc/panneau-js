@@ -26,6 +26,7 @@ const propTypes = {
     ),
     withButton: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.label,
+    allowMultipleUploads: PropTypes.bool,
     onChange: PropTypes.func,
 };
 
@@ -38,6 +39,7 @@ const defaultProps = {
     addButtonLabel: (
         <FormattedMessage defaultMessage="Add file" description="Default upload add button label" />
     ),
+    allowMultipleUploads: false,
     onChange: null,
 };
 
@@ -48,6 +50,7 @@ const UploadField = ({
     sources,
     withButton,
     addButtonLabel,
+    allowMultipleUploads,
     onChange,
 }) => {
     const onComplete = useCallback(
@@ -70,6 +73,7 @@ const UploadField = ({
 
     const uppy = useUppy({
         allowedFileTypes,
+        allowMultipleUploads,
         sources,
         onComplete,
     });
