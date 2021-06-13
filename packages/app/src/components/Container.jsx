@@ -1,5 +1,6 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { PanneauProvider, RoutesProvider } from '@panneau/core/contexts';
+import { PanneauProvider, RoutesProvider, UppyProvider } from '@panneau/core/contexts';
 import { ApiProvider } from '@panneau/data';
 import DisplaysProvider from '@panneau/displays';
 import FieldsProvider from '@panneau/fields';
@@ -20,6 +21,7 @@ const propTypes = {
     user: PanneauPropTypes.user,
     memoryRouter: PropTypes.bool,
     baseUrl: PropTypes.string,
+    uppy: PanneauPropTypes.uppy,
     statusCode: PanneauPropTypes.statusCode,
 };
 
@@ -27,10 +29,11 @@ const defaultProps = {
     user: null,
     memoryRouter: false,
     baseUrl: null,
+    uppy: null,
     statusCode: null,
 };
 
-const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
+const Container = ({ definition, user, memoryRouter, baseUrl, uppy, statusCode }) => {
     const {
         intl: { locale = 'en', locales } = {},
         routes = {},
@@ -61,23 +64,25 @@ const Container = ({ definition, user, memoryRouter, baseUrl, statusCode }) => {
         <Router>
             <IntlProvider locale={locale} locales={locales} extraMessages={extraMessages}>
                 <PanneauProvider definition={definition}>
-                    <RoutesProvider routes={routes}>
-                        <FieldsProvider>
-                            <FormsProvider>
-                                <ListsProvider>
-                                    <DisplaysProvider>
-                                        <FiltersProvider>
-                                            <ApiProvider baseUrl={baseUrl}>
-                                                <AuthProvider user={user}>
-                                                    <Routes statusCode={statusCode} />
-                                                </AuthProvider>
-                                            </ApiProvider>
-                                        </FiltersProvider>
-                                    </DisplaysProvider>
-                                </ListsProvider>
-                            </FormsProvider>
-                        </FieldsProvider>
-                    </RoutesProvider>
+                    <UppyProvider {...uppy}>
+                        <RoutesProvider routes={routes}>
+                            <FieldsProvider>
+                                <FormsProvider>
+                                    <ListsProvider>
+                                        <DisplaysProvider>
+                                            <FiltersProvider>
+                                                <ApiProvider baseUrl={baseUrl}>
+                                                    <AuthProvider user={user}>
+                                                        <Routes statusCode={statusCode} />
+                                                    </AuthProvider>
+                                                </ApiProvider>
+                                            </FiltersProvider>
+                                        </DisplaysProvider>
+                                    </ListsProvider>
+                                </FormsProvider>
+                            </FieldsProvider>
+                        </RoutesProvider>
+                    </UppyProvider>
                 </PanneauProvider>
             </IntlProvider>
         </Router>

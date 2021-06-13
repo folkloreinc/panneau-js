@@ -1,12 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { usePanneauResources, useUrlGenerator } from '@panneau/core/contexts';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { usePanneauResources, useUrlGenerator } from '@panneau/core/contexts';
-
-import ResourceLabel from '../partials/ResourceLabel';
 import MainLayout from '../layouts/Main';
-
 import messages from '../messages';
+import ResourceLabel from '../partials/ResourceLabel';
 
 const propTypes = {};
 
