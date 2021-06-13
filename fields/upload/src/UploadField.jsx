@@ -8,6 +8,7 @@ import '@uppy/core/dist/style.css';
 import '@uppy/dashboard/dist/style.css';
 // import classNames from 'classnames';
 import { Dashboard, DashboardModal } from '@uppy/react';
+import isArray from 'lodash/isArray';
 import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -15,11 +16,14 @@ import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
     className: PropTypes.string,
-    value: PropTypes.shape({
-        filename: PropTypes.string,
-        size: PropTypes.number,
-        url: PropTypes.string,
-    }),
+    value: PropTypes.oneOf(
+        PropTypes.array,
+        PropTypes.shape({
+            filename: PropTypes.string,
+            size: PropTypes.number,
+            url: PropTypes.string,
+        }),
+    ),
     types: PropTypes.arrayOf(PropTypes.oneOf(['audio', 'image', 'video'])),
     sources: PropTypes.arrayOf(
         PropTypes.oneOf(['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive']),
@@ -56,13 +60,23 @@ const UploadField = ({
     const onComplete = useCallback(
         (response) => {
             console.log('complete', response); // eslint-disable-line
-            const newValue =
-                response.successful.length > 0 ? response.successful[0].response.body : null;
+            let newValue = null;
+            if (isArray(response)) {
+                if (allowMultipleUploads) {
+                    newValue = response;
+                } else {
+                    const [first] = response;
+                    newValue = first;
+                }
+            } else if (response && response.successful) {
+                newValue =
+                    response.successful.length > 0 ? response.successful[0].response.body : null;
+            }
             if (onChange !== null) {
                 onChange(newValue);
             }
         },
-        [onChange],
+        [onChange, allowMultipleUploads],
     );
 
     const typesString = types.join('.');
@@ -78,11 +92,16 @@ const UploadField = ({
         onComplete,
     });
 
-    const onClickRemove = useCallback(() => {
-        if (onChange !== null) {
-            onChange(null);
-        }
-    }, [onChange]);
+    const onClickRemove = useCallback(
+        (idx) => {
+            if (onChange !== null && isArray(value) && value.length > 1) {
+                onChange(value.filter((v, i) => i !== idx));
+            } else if (onChange !== null) {
+                onChange(null);
+            }
+        },
+        [value, onChange],
+    );
 
     const [modalOpened, setModalOpened] = useState(false);
 
@@ -94,7 +113,7 @@ const UploadField = ({
         setModalOpened(false);
     }, [setModalOpened]);
 
-    const { filename = null, size = null } = value || {};
+    const values = isArray(value) ? value : [value];
 
     return (
         <div className={className}>
@@ -102,10 +121,20 @@ const UploadField = ({
                 <div className="card">
                     <div className="card-body p-1 pl-2">
                         <div className="media align-items-center">
-                            {types.map((type) => {
-                                let faIcon;
+                            {values.map((val, idx) => {
+                                const {
+                                    id = null,
+                                    filename = null,
+                                    size = 0,
+                                    url = null,
+                                    preview = null,
+                                    data = {},
+                                    type,
+                                } = val || {};
+                                const { file = null } = data || {};
+
+                                let faIcon = null;
                                 switch (type) {
-                                    default:
                                     case 'audio':
                                         faIcon = faFileAudio;
                                         break;
@@ -115,28 +144,47 @@ const UploadField = ({
                                     case 'video':
                                         faIcon = faFileVideo;
                                         break;
+                                    default:
+                                        break;
                                 }
                                 return (
-                                    <FontAwesomeIcon key={type} icon={faIcon} className="mr-2" />
+                                    <div
+                                        className="d-flex align-items-center justify-content-between mb-1"
+                                        key={`file-${id}-${filename}-${idx + 1}`}
+                                    >
+                                        <div className="d-flex align-items-center mx-2">
+                                            {preview !== null || url !== null ? (
+                                                <img
+                                                    className="img-thumbnail me-2"
+                                                    src={preview || url}
+                                                    alt="preview"
+                                                    style={{ height: 100 }}
+                                                />
+                                            ) : null}
+                                            <div className="media-body text-truncate small me-2">
+                                                <strong>{file || filename}</strong>
+                                            </div>
+                                            {faIcon !== null ? (
+                                                <FontAwesomeIcon icon={faIcon} className="me-2" />
+                                            ) : null}
+                                            <small className="text-muted me-2">
+                                                {size > 0 ? prettyBytes(size) : size}
+                                            </small>
+                                        </div>
+                                        <div className="mx-2">
+                                            <Button
+                                                type="button"
+                                                size="sm"
+                                                theme="secondary"
+                                                outline
+                                                onClick={() => onClickRemove(idx)}
+                                            >
+                                                <FontAwesomeIcon icon={faTimes} />
+                                            </Button>
+                                        </div>
+                                    </div>
                                 );
                             })}
-                            <div className="media-body text-truncate small mr-2">
-                                <strong>{filename}</strong>
-                            </div>
-                            <small className="text-muted">
-                                {size > 0 ? prettyBytes(size) : size}
-                            </small>
-                            <div className="ml-1">
-                                <Button
-                                    type="button"
-                                    size="sm"
-                                    theme="secondary"
-                                    outline
-                                    onClick={onClickRemove}
-                                >
-                                    <FontAwesomeIcon icon={faTimes} />
-                                </Button>
-                            </div>
                         </div>
                     </div>
                 </div>
