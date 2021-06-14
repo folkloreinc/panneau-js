@@ -1,11 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PropTypes as MicromagPropTypes } from '@panneau/core';
+import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import Link from '@panneau/element-link';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const propTypes = {
     href: PropTypes.string,
@@ -37,6 +39,8 @@ const propTypes = {
     onClick: PropTypes.func,
     onClickBody: PropTypes.func,
     onClickFooter: PropTypes.func,
+    onClose: PropTypes.func,
+    onCloseIcon: PropTypes.node,
 };
 
 const defaultProps = {
@@ -64,6 +68,8 @@ const defaultProps = {
     onClick: null,
     onClickBody: null,
     onClickFooter: null,
+    onClose: null,
+    onCloseIcon: null,
 };
 
 const Card = ({
@@ -91,6 +97,8 @@ const Card = ({
     onClick,
     onClickBody,
     onClickFooter,
+    onClose,
+    onCloseIcon,
 }) => {
     const linksElements = (links || []).map(
         ({ label, className: linkClassName = null, ...linkProps }, index) => (
@@ -146,8 +154,17 @@ const Card = ({
             </>
         ) : null;
 
+    const closeButton = (
+        <Button type="button" size="sm" theme="secondary" onClick={onClose}>
+            <FontAwesomeIcon icon={onCloseIcon || faTimes} />
+        </Button>
+    );
+
     const cardInner = (
         <>
+            {header === null && onClose !== null ? (
+                <div className="position-absolute top-0 end-0 p-2">{closeButton}</div>
+            ) : null}
             {header !== null ? (
                 <div
                     className={classNames([
@@ -158,6 +175,11 @@ const Card = ({
                     ])}
                 >
                     <Label>{header}</Label>
+                    {onClose !== null ? (
+                        <div className="d-inline-block position-relative end-0 p-2">
+                            {closeButton}
+                        </div>
+                    ) : null}
                 </div>
             ) : null}
             {typeof image === 'string' ? (

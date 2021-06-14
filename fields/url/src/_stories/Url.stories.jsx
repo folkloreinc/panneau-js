@@ -10,11 +10,14 @@ export default {
     },
 };
 
-const Container = (props) => {
-    const [value, setValue] = useState(null);
-    return (
-        <UrlField {...props} value={value} onChange={setValue} />
-    );
+// eslint-disable-next-line react/prop-types
+const Container = ({ value: initialValue, ...props }) => {
+    const [value, setValue] = useState(initialValue);
+    return <UrlField {...props} value={value} onChange={setValue} />;
 };
 
 export const Normal = () => <Container />;
+
+export const Disabled = () => <Container disabled value="hello" />;
+
+export const WithUrl = () => <Container url="https://test.com/chose/" />;

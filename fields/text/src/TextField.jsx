@@ -12,6 +12,7 @@ const propTypes = {
     value: PropTypes.string,
     errors: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     required: PropTypes.bool,
+    disabled: PropTypes.bool,
     nativeOnChange: PropTypes.bool,
     type: PropTypes.oneOf(['text', 'email', 'tel', 'password', 'textarea']),
     placeholder: PropTypes.string,
@@ -37,6 +38,7 @@ const defaultProps = {
     value: null,
     errors: null,
     required: false,
+    disabled: false,
     nativeOnChange: false,
     type: null,
     placeholder: null,
@@ -57,6 +59,7 @@ const TextField = ({
     value,
     errors,
     required,
+    disabled,
     nativeOnChange,
     type,
     placeholder,
@@ -92,6 +95,7 @@ const TextField = ({
         placeholder,
         type,
         required,
+        disabled,
         list: dataListId,
         onChange: nativeOnChange
             ? onChange

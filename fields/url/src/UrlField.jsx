@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useMemo, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
 import TextField from '@panneau/field-text';
+import isEmpty from 'lodash/isEmpty';
+import PropTypes from 'prop-types';
+import React, { useCallback, useMemo } from 'react';
 
 const getScheme = (url, schemesPattern) => {
     const match = url !== null ? url.match(schemesPattern) : null;
@@ -18,6 +18,8 @@ const withScheme = (url, prefix, schemesPattern) =>
 const propTypes = {
     value: PropTypes.string,
     schemes: PropTypes.arrayOf(PropTypes.string),
+    url: PropTypes.string,
+    disabled: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
@@ -25,23 +27,24 @@ const propTypes = {
 const defaultProps = {
     value: null,
     schemes: ['http://', 'https://', 'ftp://'],
+    url: null,
+    disabled: null,
     className: null,
     onChange: null,
 };
 
-const UrlField = ({ schemes, value, className, onChange, ...props }) => {
+const UrlField = ({ value, schemes, url, disabled, className, onChange, ...props }) => {
     const schemesPattern = useMemo(() => new RegExp(`^(${schemes.join('|')})`, 'i'), [schemes]);
 
-    const scheme = useMemo(() => getScheme(value, schemesPattern) || schemes[0], [
-        value,
-        schemes,
-        schemesPattern,
-    ]);
+    const scheme = useMemo(
+        () => getScheme(value, schemesPattern) || schemes[0],
+        [value, schemes, schemesPattern],
+    );
 
-    const valueWithoutScheme = useMemo(() => removeScheme(value, schemesPattern), [
-        value,
-        schemesPattern,
-    ]);
+    const valueWithoutScheme = useMemo(
+        () => removeScheme(value, schemesPattern),
+        [value, schemesPattern],
+    );
 
     const onFieldChange = useCallback(
         (newValue) => {
@@ -61,7 +64,8 @@ const UrlField = ({ schemes, value, className, onChange, ...props }) => {
             className={className}
             value={valueWithoutScheme}
             onChange={onFieldChange}
-            prepend={scheme}
+            prepend={url || scheme}
+            disabled={disabled}
         />
     );
 };
