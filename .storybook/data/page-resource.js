@@ -62,6 +62,16 @@ export default {
                 createOnly: true,
             },
         },
+        {
+            name: 'upload',
+            label: 'Media',
+            component: 'upload',
+        },
+        {
+            name: 'image',
+            label: 'Image',
+            component: 'image',
+        },
         { name: 'blocks', label: 'Blocks', component: 'items' },
         {
             name: 'color',

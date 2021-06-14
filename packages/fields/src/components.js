@@ -14,5 +14,5 @@ export { default as Test } from '@panneau/field-test';
 export { default as Text, Email, Password, Telephone, Textarea } from '@panneau/field-text';
 export { default as Toggle } from '@panneau/field-toggle';
 export { default as Toggles } from '@panneau/field-toggles';
-export { default as Upload } from '@panneau/field-upload';
+export { default as Upload, AudioField as Audio, VideoField as Video, ImageField as Image } from '@panneau/field-upload';
 export { default as Url } from '@panneau/field-url';

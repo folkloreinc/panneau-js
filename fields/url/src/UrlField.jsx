@@ -66,6 +66,7 @@ const UrlField = ({ value, schemes, url, disabled, className, onChange, ...props
             onChange={onFieldChange}
             prepend={url || scheme}
             disabled={disabled}
+            type="text"
         />
     );
 };
