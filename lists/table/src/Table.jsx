@@ -3,7 +3,7 @@
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
 // import { useResourceUrlGenerator } from '@panneau/core/hooks';
-import { getColumnsFromResource, getComponent, getComponentFromName } from '@panneau/core/utils';
+import { getColumnsWithFields, getComponent, getComponentFromName } from '@panneau/core/utils';
 import FormActions from '@panneau/element-item-actions';
 import Loading from '@panneau/element-loading';
 import Pagination from '@panneau/element-pagination';
@@ -15,6 +15,7 @@ import React, { useMemo } from 'react';
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
     items: PanneauPropTypes.items,
+    columns: PropTypes.arrayOf(PropTypes.shape({})),
     query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     page: PropTypes.number,
     lastPage: PropTypes.number,
@@ -26,6 +27,7 @@ const propTypes = {
 
 const defaultProps = {
     items: [],
+    columns: [],
     query: null,
     page: null,
     lastPage: null,
@@ -37,6 +39,7 @@ const defaultProps = {
 
 const TableList = ({
     query,
+    columns,
     resource,
     items,
     page,
@@ -52,7 +55,10 @@ const TableList = ({
     const hasQuery = Object.keys(queryWithoutPage).length > 0;
     const { settings: { indexIsPaginated: paginated = false } = {} } = resource;
 
-    const columns = useMemo(() => getColumnsFromResource(resource), [resource]);
+    const columnsWithFields = useMemo(
+        () => getColumnsWithFields(resource, columns),
+        [resource, columns],
+    );
 
     const currentUrl = `${baseUrl}${
         hasQuery
@@ -89,7 +95,7 @@ const TableList = ({
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            {columns.map(({ name, label }) => (
+                            {columnsWithFields.map(({ name, label }) => (
                                 <th scope="col" key={`col-${name}`}>
                                     {label}
                                 </th>
@@ -103,7 +109,7 @@ const TableList = ({
                             return (
                                 <tr key={`row-${id}`}>
                                     <td className="col-auto">{id}</td>
-                                    {columns.map((column, idx) => {
+                                    {columnsWithFields.map((column, idx) => {
                                         const {
                                             id: colId,
                                             component = 'text',
@@ -111,12 +117,10 @@ const TableList = ({
                                             valueKey = null,
                                             field = null,
                                             ...fieldProps
-                                        } = column;
+                                        } = column || {};
 
                                         const { index = null } = components || {};
-
                                         const indexComponent = index !== null ? index : component;
-
                                         const { name: componentName, props: componentProps } =
                                             getComponent(indexComponent);
 

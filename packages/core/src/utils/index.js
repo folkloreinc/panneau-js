@@ -2,7 +2,7 @@ export { default as convertStyleToString } from './convertStyleToString';
 export { default as createNullableOnChange } from './createNullableOnChange';
 export { default as createUseEvent } from './createUseEvent';
 export { default as dashCase } from './dashCase';
-export { default as getColumnsFromResource } from './getColumnsFromResource';
+export { default as getColumnsWithFields } from './getColumnsWithFields';
 export { default as getComponent } from './getComponent';
 export { default as getComponentFromName } from './getComponentFromName';
 export { default as getDefinitionFromId } from './getDefinitionFromId';

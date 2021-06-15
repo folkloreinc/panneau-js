@@ -1,15 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+// import { defineMessages } from 'react-intl';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Card from '@panneau/element-card';
+import FormActions from '@panneau/element-item-actions';
+import Loading from '@panneau/element-loading';
+import Pagination from '@panneau/element-pagination';
 import PropTypes from 'prop-types';
 import { stringify as stringifyQuery } from 'query-string';
-// import { defineMessages } from 'react-intl';
-
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-
-import Pagination from '@panneau/element-pagination';
-import Card from '@panneau/element-card';
-import Loading from '@panneau/element-loading';
-import FormActions from '@panneau/element-item-actions';
+import React from 'react';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -67,10 +65,7 @@ const TableList = ({
                       return (
                           <div className="w-50 p-2" key={`card-${id}`}>
                               <Card header={id}>
-                                  <FormActions
-                                      resource={resource}
-                                      item={it}
-                                  />
+                                  <FormActions resource={resource} item={it} />
                               </Card>
                           </div>
                       );

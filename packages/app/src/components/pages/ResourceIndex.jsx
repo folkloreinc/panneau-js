@@ -1,21 +1,17 @@
-import React, { useCallback, useMemo } from 'react';
-import { parse as parseQuery, stringify as stringifyQuery } from 'query-string';
-import { useLocation, useHistory } from 'react-router';
-import classNames from 'classnames';
-
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
-
 import Alert from '@panneau/element-alert';
-
+import classNames from 'classnames';
+import { parse as parseQuery, stringify as stringifyQuery } from 'query-string';
+import React, { useCallback, useMemo } from 'react';
+import { useHistory, useLocation } from 'react-router';
+import ResourceCreateButton from '../buttons/ResourceCreate';
 import MainLayout from '../layouts/Main';
+import ResourceItemsList from '../lists/ResourceItems';
+import messages from '../messages';
 import PageHeader from '../partials/PageHeader';
 import ResourceLabel from '../partials/ResourceLabel';
-import ResourceCreateButton from '../buttons/ResourceCreate';
-import ResourceItemsList from '../lists/ResourceItems';
-
-import messages from '../messages';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -24,9 +20,9 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceIndexPage = ({ resource }) => {
-    const { name, settings = {}, components: { index = {} } = {} } = resource;
+    const { name, settings = {}, index = {} } = resource;
     const { canCreate = true, indexIsPaginated: paginated = false } = settings || {};
-    const { component: indexComponent = null, props: indexProps = null } = index || {};
+    const { component: indexComponent = null, ...indexProps } = index || {};
 
     const { search } = useLocation();
     const history = useHistory();
