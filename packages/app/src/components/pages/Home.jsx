@@ -13,11 +13,14 @@ const defaultProps = {};
 const HomePage = () => {
     const route = useUrlGenerator();
     const resources = usePanneauResources();
+    const visibleResources = resources.filter(
+        ({ settings: { hideInNavbar = false } = {} }) => !hideInNavbar,
+    );
 
     return (
         <MainLayout>
             <div className="container-sm py-4">
-                {resources.map((resource) => {
+                {visibleResources.map((resource) => {
                     const { id: resourceId } = resource || {};
                     return (
                         <Link
