@@ -197,12 +197,6 @@ msgctxt "ZxgNge"
 msgid "Add an item"
 msgstr "Add an item"
 
-# Button label
-#: bPk79b
-msgctxt "bPk79b"
-msgid "Show"
-msgstr "Show"
-
 # Menu label
 #: d0g58T
 msgctxt "d0g58T"
