@@ -1,5 +1,4 @@
 import React from 'react';
-
 import TextLocalized from '../TextLocalized';
 
 export default {
@@ -10,4 +9,4 @@ export default {
     },
 };
 
-export const Normal = () => <TextLocalized value={{ fr: 'Allo', en: 'Hello' }} />;
+export const Normal = () => <TextLocalized value={{ fr: 'Allo!', en: 'Hello!' }} />;

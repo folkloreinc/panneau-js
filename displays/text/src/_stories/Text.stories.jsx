@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Text from '../Text';
 
 export default {
@@ -10,4 +9,4 @@ export default {
     },
 };
 
-export const Normal = () => <Text value="hello" />;
+export const Normal = () => <Text value="Hello!" />;
