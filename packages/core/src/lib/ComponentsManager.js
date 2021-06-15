@@ -1,12 +1,11 @@
 import EventEmitter from 'wolfy87-eventemitter';
-
-import { getComponentFromName } from '../utils';
+import { flattenComponents, getComponentFromName } from '../utils';
 
 class ComponentsManager extends EventEmitter {
     constructor(components = {}) {
         super();
 
-        this.components = components;
+        this.components = flattenComponents(components);
     }
 
     addComponent(name, component, namespace = null) {
