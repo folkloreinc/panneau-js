@@ -1,3 +1,3 @@
-import FormActions from './FormActions';
+import ItemActions from './ItemActions';
 
-export default FormActions;
+export default ItemActions;

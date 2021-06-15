@@ -1,23 +1,21 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-import PropTypes from 'prop-types';
-// import classNames from 'classnames';
-import { FormattedMessage } from 'react-intl';
-
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-
 // import * as AppPropTypes from '../../../lib/PropTypes';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Buttons from '@panneau/element-buttons';
+import PropTypes from 'prop-types';
+import React from 'react';
+// import classNames from 'classnames';
+import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
     size: PanneauPropTypes.buttonSize,
     item: PanneauPropTypes.item.isRequired,
     iconsOnly: PropTypes.bool,
-    showLabel: PropTypes.node,
+    // showLabel: PropTypes.node,
     editLabel: PropTypes.node,
     deleteLabel: PropTypes.node,
     onClickEdit: PropTypes.func,
@@ -28,7 +26,7 @@ const propTypes = {
 const defaultProps = {
     size: 'sm',
     iconsOnly: true,
-    showLabel: <FormattedMessage defaultMessage="Show" description="Button label" />,
+    // showLabel: <FormattedMessage defaultMessage="Show" description="Button label" />,
     editLabel: <FormattedMessage defaultMessage="Edit" description="Button label" />,
     deleteLabel: <FormattedMessage defaultMessage="Delete" description="Button label" />,
     onClickEdit: null,
@@ -41,7 +39,7 @@ const FormActions = ({
     size,
     item,
     iconsOnly,
-    showLabel,
+    // showLabel,
     editLabel,
     deleteLabel,
     onClickEdit,
@@ -54,17 +52,17 @@ const FormActions = ({
         <Buttons
             size={size}
             items={[
-                {
-                    id: 'show',
-                    label: iconsOnly ? <FontAwesomeIcon icon={faEye} /> : showLabel,
-                    href:
-                        urlGenerator !== null
-                            ? urlGenerator('show', {
-                                  id,
-                              })
-                            : null,
-                    theme: 'info',
-                },
+                // {
+                //     id: 'show',
+                //     label: iconsOnly ? <FontAwesomeIcon icon={faEye} /> : showLabel,
+                //     href:
+                //         urlGenerator !== null
+                //             ? urlGenerator('show', {
+                //                   id,
+                //               })
+                //             : null,
+                //     theme: 'info',
+                // },
                 {
                     id: 'edit',
                     label: iconsOnly ? <FontAwesomeIcon icon={faEdit} /> : editLabel,
