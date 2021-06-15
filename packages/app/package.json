@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "1.0.0-alpha.58",
+    "version": "1.0.0-alpha.59",
     "description": "",
     "keywords": [
         "javascript"
@@ -59,7 +59,7 @@
         "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^1.0.0-alpha.53",
         "@panneau/data": "^1.0.0-alpha.53",
-        "@panneau/displays": "^1.0.0-alpha.53",
+        "@panneau/displays": "^1.0.0-alpha.59",
         "@panneau/element-alert": "^1.0.0-alpha.53",
         "@panneau/element-button": "^1.0.0-alpha.53",
         "@panneau/element-buttons": "^1.0.0-alpha.53",
