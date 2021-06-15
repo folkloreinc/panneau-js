@@ -1,20 +1,16 @@
-import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { useHistory } from 'react-router';
-
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-
 import { ResourceProvider } from '@panneau/core/contexts';
-import { useResourceItem } from '@panneau/data';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
-
+import { useResourceItem } from '@panneau/data';
+import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
+import { useHistory } from 'react-router';
 import MainLayout from '../layouts/Main';
+import messages from '../messages';
 import PageHeader from '../partials/PageHeader';
+import ResourceForm from '../partials/ResourceForm';
 // import Button from '../buttons/Button';
 import ResourceLabel from '../partials/ResourceLabel';
-import ResourceForm from '../partials/ResourceForm';
-
-import messages from '../messages';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -28,13 +24,13 @@ const ResourceDeletePage = ({ resource, itemId }) => {
     const resourceRoute = useResourceUrlGenerator(resource);
     const { item } = useResourceItem(resource, itemId);
 
-    const onSuccess = useCallback(() => history.push(`${resourceRoute('index')}?deleted=true`), [
-        history,
-        resourceRoute,
-    ]);
+    const onSuccess = useCallback(
+        () => history.push(`${resourceRoute('index')}?deleted=true`),
+        [history, resourceRoute],
+    );
 
     // Navigate back
-    const { entries, length } = history || [];
+    const { entries, length } = history || {};
     const previousEntry = length > 1 ? entries[length - 2] : null;
     const previous = previousEntry?.pathname || null;
 
