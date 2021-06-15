@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { PanneauProvider, RoutesProvider, UppyProvider } from '@panneau/core/contexts';
+import { PanneauProvider, RoutesProvider, UppyProvider, ComponentsProvider } from '@panneau/core/contexts';
 import { ApiProvider } from '@panneau/data';
 import DisplaysProvider from '@panneau/displays';
 import FieldsProvider from '@panneau/fields';
@@ -18,6 +18,10 @@ import Routes from './Routes';
 
 const propTypes = {
     definition: PanneauPropTypes.panneauDefinition.isRequired,
+    components: PropTypes.oneOfType([
+        PropTypes.objectOf(PropTypes.elementType),
+        PropTypes.objectOf(PropTypes.objectOf(PropTypes.elementType)),
+    ]),
     user: PanneauPropTypes.user,
     memoryRouter: PropTypes.bool,
     baseUrl: PropTypes.string,
@@ -26,6 +30,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    components: null,
     user: null,
     memoryRouter: false,
     baseUrl: null,
@@ -33,7 +38,7 @@ const defaultProps = {
     statusCode: null,
 };
 
-const Container = ({ definition, user, memoryRouter, baseUrl, uppy, statusCode }) => {
+const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, statusCode }) => {
     const {
         intl: { locale = 'en', locales } = {},
         routes = {},
@@ -73,7 +78,9 @@ const Container = ({ definition, user, memoryRouter, baseUrl, uppy, statusCode }
                                             <FiltersProvider>
                                                 <ApiProvider baseUrl={baseUrl}>
                                                     <AuthProvider user={user}>
-                                                        <Routes statusCode={statusCode} />
+                                                        <ComponentsProvider components={components}>
+                                                            <Routes statusCode={statusCode} />
+                                                        </ComponentsProvider>
                                                     </AuthProvider>
                                                 </ApiProvider>
                                             </FiltersProvider>
