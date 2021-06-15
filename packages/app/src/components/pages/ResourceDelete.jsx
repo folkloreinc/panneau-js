@@ -30,8 +30,9 @@ const ResourceDeletePage = ({ resource, itemId }) => {
     );
 
     // Navigate back
-    const { entries, length } = history || {};
-    const previousEntry = length > 1 ? entries[length - 2] : null;
+    const { entries = [] } = history || {};
+    const previousEntry =
+        entries !== null && entries.length > 1 ? entries[entries.length - 2] : null;
     const previous = previousEntry?.pathname || null;
 
     return (
