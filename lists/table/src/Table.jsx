@@ -1,19 +1,16 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { stringify as stringifyQuery } from 'query-string';
-
 // import { defineMessages } from 'react-intl';
-
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
 // import { useResourceUrlGenerator } from '@panneau/core/hooks';
-import { getComponent, getComponentFromName, getColumnsFromResource } from '@panneau/core/utils';
-
-import Pagination from '@panneau/element-pagination';
-import Loading from '@panneau/element-loading';
+import { getColumnsFromResource, getComponent, getComponentFromName } from '@panneau/core/utils';
 import FormActions from '@panneau/element-item-actions';
+import Loading from '@panneau/element-loading';
+import Pagination from '@panneau/element-pagination';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import { stringify as stringifyQuery } from 'query-string';
+import React, { useMemo } from 'react';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -65,6 +62,8 @@ const TableList = ({
             : ''
     }`;
 
+    console.log(displayComponents, columns); // eslint-disable-line
+
     return (
         <div>
             {paginated && lastPage > 1 && items !== null ? (
@@ -108,13 +107,19 @@ const TableList = ({
                                         const {
                                             id: colId,
                                             component = 'text',
+                                            components = {},
                                             valueKey = null,
                                             field = null,
                                             ...fieldProps
                                         } = column;
 
+                                        const { index = null } = components || {};
+
+                                        const indexComponent = index !== null ? index : component;
+
                                         const { name: componentName, props: componentProps } =
-                                            getComponent(component);
+                                            getComponent(indexComponent);
+
                                         const FieldIndexComponent = getComponentFromName(
                                             componentName,
                                             displayComponents,
