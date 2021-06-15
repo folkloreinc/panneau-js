@@ -75,7 +75,6 @@
         "@panneau/fields": "^1.0.0-alpha.66",
         "@panneau/filters": "^1.0.0-alpha.66",
         "@panneau/forms": "^1.0.0-alpha.66",
-        "@panneau/indexes": "^1.0.0-alpha.17",
         "@panneau/intl": "^1.0.0-alpha.66",
         "@panneau/lists": "^1.0.0-alpha.66",
         "@panneau/modals": "^1.0.0-alpha.66",
