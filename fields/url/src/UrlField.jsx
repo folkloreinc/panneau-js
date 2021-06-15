@@ -1,19 +1,20 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import TextField from '@panneau/field-text';
 import isEmpty from 'lodash/isEmpty';
+import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 
 const getScheme = (url, schemesPattern) => {
-    const match = url !== null ? url.match(schemesPattern) : null;
+    const match = url !== null && isString(url) ? url.match(schemesPattern) : null;
     return match !== null && match[1].length !== url.length ? match[1].toLowerCase() : null;
 };
 
 const removeScheme = (url, schemesPattern) =>
-    url !== null ? url.replace(schemesPattern, '') : null;
+    url !== null && isString(url) ? url.replace(schemesPattern, '') : null;
 
 const withScheme = (url, prefix, schemesPattern) =>
-    url !== null && !url.match(schemesPattern) ? `${prefix}${url}` : url;
+    url !== null && isString(url) && !url.match(schemesPattern) ? `${prefix}${url}` : url;
 
 const propTypes = {
     value: PropTypes.string,

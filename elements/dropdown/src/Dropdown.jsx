@@ -105,7 +105,7 @@ const Dropdown = ({
                                   'dropdown-item': type === 'link',
                                   'dropdown-divider': type === 'divider',
                                   'dropdown-header': type === 'header',
-                                  'text-left': true,
+                                  'text-start': true,
                                   'd-block': true,
                                   active,
                                   [itemClassName]: itemClassName !== null,

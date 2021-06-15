@@ -89,6 +89,7 @@ const UploadField = ({
         allowedFileTypes,
         allowMultipleUploads,
         sources,
+        autoProceed: true,
         onComplete,
     });
 
