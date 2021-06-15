@@ -57,6 +57,9 @@
         "@panneau/display-boolean": "^1.0.0-alpha.53",
         "@panneau/display-text": "^1.0.0-alpha.59",
         "@panneau/display-text-localized": "^1.0.0-alpha.59",
+        "@panneau/display-image": "^1.0.0-alpha.59",
+        "@panneau/display-label": "^1.0.0-alpha.59",
+        "@panneau/display-select": "^1.0.0-alpha.59",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
