@@ -1,12 +1,9 @@
-import React from 'react';
 import { PropTypes } from 'prop-types';
-
+import React from 'react';
 import pageResource from '../../../../.storybook/data/page-resource';
-
-import Table from '../Table';
-
 import { ResourceProvider } from '../../../../packages/core/contexts';
 import DisplayProvider from '../../../../packages/displays';
+import Table from '../Table';
 
 export default {
     component: Table,
@@ -22,6 +19,7 @@ const Container = ({ items, paginated = false, page = null, total = null, lastPa
             <Table
                 resource={pageResource}
                 items={items}
+                columns={['title', 'description']}
                 paginated={paginated}
                 page={page}
                 total={total}
@@ -61,7 +59,7 @@ export const Normal = () => (
     <Container
         items={[
             { id: '1', title: { fr: 'Paul', en: 'Paul' }, description: 'Paul' },
-            { id: '2', title: { fr: 'Paul', en: 'Paul' }, description: 'Paul' },
+            { id: '2', title: { fr: 'Paul2', en: 'Paul2' }, description: 'Paul2' },
         ]}
     />
 );

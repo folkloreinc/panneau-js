@@ -29,7 +29,7 @@ export default {
             label: 'Titre',
             component: 'localized',
             components: {
-                index: 'text-localized',
+                display: 'text-localized',
             },
             withoutFormGroup: true,
             properties: {
@@ -50,7 +50,7 @@ export default {
             label: 'Description',
             component: 'html',
             components: {
-                index: 'text',
+                display: 'text',
             },
         },
         {
