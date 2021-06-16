@@ -150,6 +150,38 @@
     "defaultMessage": "No",
     "description": "Boolean value"
   },
+  "resources.confirm_delete": {
+    "defaultMessage": "Are you sure you want to delete {the_singular} #{id}?",
+    "description": "Confirmation message"
+  },
+  "resources.create": {
+    "defaultMessage": "Create {a_singular}",
+    "description": "Page title"
+  },
+  "resources.create_btn": {
+    "defaultMessage": "Create {a_singular}",
+    "description": "Button label"
+  },
+  "resources.created": {
+    "defaultMessage": "{the_singular} has been created.",
+    "description": "Alert message"
+  },
+  "resources.delete": {
+    "defaultMessage": "Delete {a_singular}",
+    "description": "Page title"
+  },
+  "resources.deleted": {
+    "defaultMessage": "{the_singular} has been deleted.",
+    "description": "Alert message"
+  },
+  "resources.edit": {
+    "defaultMessage": "Edit {a_singular}",
+    "description": "Page title"
+  },
+  "resources.view": {
+    "defaultMessage": "View {plural}",
+    "description": "Button label"
+  },
   "s4Xrs9": {
     "defaultMessage": "Time",
     "description": "DateTimeField time caption"

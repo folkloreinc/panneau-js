@@ -2,6 +2,7 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Alert from '@panneau/element-alert';
+import { ResourceMessage } from '@panneau/intl';
 import classNames from 'classnames';
 import { parse as parseQuery, stringify as stringifyQuery } from 'query-string';
 import React, { useCallback, useMemo } from 'react';
@@ -9,9 +10,7 @@ import { useHistory, useLocation } from 'react-router';
 import ResourceCreateButton from '../buttons/ResourceCreate';
 import MainLayout from '../layouts/Main';
 import ResourceItemsList from '../lists/ResourceItems';
-import messages from '../messages';
 import PageHeader from '../partials/PageHeader';
-import ResourceLabel from '../partials/ResourceLabel';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -60,17 +59,26 @@ const ResourceIndexPage = ({ resource }) => {
                 <div className={classNames(['container-sm py-4'])}>
                     {created ? (
                         <Alert className="mb-4" onClose={onClickCloseAlert}>
-                            <ResourceLabel resource={resource} message={messages.created} />
+                            <ResourceMessage
+                                resource={resource}
+                                id="resources.created"
+                                defaultMessage="{the_singular} has been created."
+                                description="Alert message"
+                            />
                         </Alert>
                     ) : null}
                     {deleted ? (
                         <Alert className="mb-4" onClose={onClickCloseAlert}>
-                            <ResourceLabel resource={resource} message={messages.deleted} />
+                            <ResourceMessage
+                                resource={resource}
+                                id="resources.deleted"
+                                defaultMessage="{the_singular} has been deleted."
+                                description="Alert message"
+                            />
                         </Alert>
                     ) : null}
                     <ResourceItemsList
                         resource={resource}
-                        messages={messages}
                         baseUrl={url}
                         query={listQuery}
                         paginated={paginated}

@@ -1,14 +1,13 @@
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceItem } from '@panneau/data';
+import { ResourceMessage } from '@panneau/intl';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
+import ResourceForm from '../forms/ResourceForm';
 import MainLayout from '../layouts/Main';
-import messages from '../messages';
 import PageHeader from '../partials/PageHeader';
-import ResourceForm from '../partials/ResourceForm';
 // import Button from '../buttons/Button';
-import ResourceLabel from '../partials/ResourceLabel';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -30,7 +29,14 @@ const ResourceEditPage = ({ resource, itemId }) => {
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
-                    title={<ResourceLabel resource={resource} message={messages.edit} />}
+                    title={
+                        <ResourceMessage
+                            resource={resource}
+                            id="resources.edit"
+                            defaultMessage="Edit {a_singular}"
+                            description="Page title"
+                        />
+                    }
                     small
                 />
                 <div className="container-sm py-4">
@@ -39,7 +45,6 @@ const ResourceEditPage = ({ resource, itemId }) => {
                             {editItem !== null ? (
                                 <ResourceForm
                                     resource={resource}
-                                    messages={messages}
                                     item={editItem}
                                     type={type}
                                     onSuccess={onSuccess}

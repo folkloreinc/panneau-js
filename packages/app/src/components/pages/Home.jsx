@@ -1,10 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { usePanneauResources, useUrlGenerator } from '@panneau/core/contexts';
+import { ResourceMessage } from '@panneau/intl';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import MainLayout from '../layouts/Main';
-import messages from '../messages';
-import ResourceLabel from '../partials/ResourceLabel';
 
 const propTypes = {};
 
@@ -30,7 +29,12 @@ const HomePage = () => {
                                 resource: resourceId,
                             })}
                         >
-                            <ResourceLabel resource={resource} message={messages.index} />
+                            <ResourceMessage
+                                resource={resource}
+                                id="resources.view"
+                                defaultMessage="View {plural}"
+                                description="Button label"
+                            />
                         </Link>
                     );
                 })}

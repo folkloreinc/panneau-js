@@ -113,6 +113,30 @@
     "rSt+KL": {
         "defaultMessage": "Non"
     },
+    "resources.confirm_delete": {
+        "defaultMessage": "Êtes-vous certain de vouloir supprimer {the_singular} #{id}?"
+    },
+    "resources.create": {
+        "defaultMessage": "Créer {a_singular}"
+    },
+    "resources.create_btn": {
+        "defaultMessage": "Créer {a_singular}"
+    },
+    "resources.created": {
+        "defaultMessage": "{the_singular} a été créé."
+    },
+    "resources.delete": {
+        "defaultMessage": "Supprimer {a_singular}"
+    },
+    "resources.deleted": {
+        "defaultMessage": "{the_singular} a été supprimé."
+    },
+    "resources.edit": {
+        "defaultMessage": "Modifier {a_singular}"
+    },
+    "resources.view": {
+        "defaultMessage": "Afficher {pluriel}"
+    },
     "s4Xrs9": {
         "defaultMessage": "Heure"
     },

@@ -238,6 +238,54 @@ msgctxt "rSt+KL"
 msgid "No"
 msgstr "No"
 
+# Confirmation message
+#: resources.confirm_delete
+msgctxt "resources.confirm_delete"
+msgid "Are you sure you want to delete {the_singular} #{id}?"
+msgstr "Are you sure you want to delete {the_singular} #{id}?"
+
+# Page title
+#: resources.create
+msgctxt "resources.create"
+msgid "Create {a_singular}"
+msgstr "Create {a_singular}"
+
+# Button label
+#: resources.create_btn
+msgctxt "resources.create_btn"
+msgid "Create {a_singular}"
+msgstr "Create {a_singular}"
+
+# Alert message
+#: resources.created
+msgctxt "resources.created"
+msgid "{the_singular} has been created."
+msgstr "{the_singular} has been created."
+
+# Page title
+#: resources.delete
+msgctxt "resources.delete"
+msgid "Delete {a_singular}"
+msgstr "Delete {a_singular}"
+
+# Alert message
+#: resources.deleted
+msgctxt "resources.deleted"
+msgid "{the_singular} has been deleted."
+msgstr "{the_singular} has been deleted."
+
+# Page title
+#: resources.edit
+msgctxt "resources.edit"
+msgid "Edit {a_singular}"
+msgstr "Edit {a_singular}"
+
+# Button label
+#: resources.view
+msgctxt "resources.view"
+msgid "View {plural}"
+msgstr "View {plural}"
+
 # DateTimeField time caption
 #: s4Xrs9
 msgctxt "s4Xrs9"
