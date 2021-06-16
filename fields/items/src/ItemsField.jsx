@@ -17,7 +17,8 @@ import { ReactSortable } from 'react-sortablejs';
 import { v4 as uuid } from 'uuid';
 
 const propTypes = {
-    // name: PropTypes.string,
+    name: PropTypes.string,
+    label: PropTypes.string,
     value: PropTypes.arrayOf(PropTypes.any), // eslint-disable-line
     types: PropTypes.arrayOf(
         PropTypes.shape({
@@ -42,13 +43,14 @@ const propTypes = {
 
     withoutCollapse: PropTypes.bool,
     withoutSort: PropTypes.bool,
-    // withFloatingAddButton: PropTypes.bool,
+    withFloatingAddButton: PropTypes.bool,
 
     inline: PropTypes.bool,
 };
 
 const defaultProps = {
-    // name: null,
+    name: null,
+    label: null,
     value: null,
     types: null,
     newItemDefaultValue: () => ({}),
@@ -81,13 +83,14 @@ const defaultProps = {
 
     withoutCollapse: false,
     withoutSort: false,
-    // withFloatingAddButton: false,
+    withFloatingAddButton: false,
 
     inline: false,
 };
 
 const ItemsField = ({
-    // name,
+    name,
+    label,
     value,
     types,
     newItemDefaultValue,
@@ -107,7 +110,7 @@ const ItemsField = ({
 
     withoutCollapse,
     withoutSort,
-    // withFloatingAddButton,
+    withFloatingAddButton,
 
     inline,
 }) => {
@@ -348,6 +351,7 @@ const ItemsField = ({
                     'header',
                 ])}
             >
+                {!withFloatingAddButton ? <Label>{label || name}</Label> : null}
                 {types !== null && types.length > 1 ? (
                     <div className="position-relative">
                         <Button
