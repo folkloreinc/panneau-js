@@ -125,6 +125,12 @@ msgctxt "LI0Gz4"
 msgid "Email"
 msgstr "Email"
 
+# Field description
+#: MHldGi
+msgctxt "MHldGi"
+msgid "Duration:"
+msgstr "Duration:"
+
 # Form status
 #: Mo0yQb
 msgctxt "Mo0yQb"

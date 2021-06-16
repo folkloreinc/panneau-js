@@ -75,6 +75,10 @@
     "defaultMessage": "Email",
     "description": "Field label"
   },
+  "MHldGi": {
+    "defaultMessage": "Duration:",
+    "description": "Field description"
+  },
   "Mo0yQb": {
     "defaultMessage": "Error",
     "description": "Form status"

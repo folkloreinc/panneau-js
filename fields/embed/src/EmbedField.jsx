@@ -59,7 +59,7 @@ const EmbedField = ({
     onChange,
     ...props
 }) => {
-    const { url = null, metadata = null } = isObject(value) ? value : { url: value };
+    const { url = null, metadata = null } = isObject(value) ? value : {};
     const {
         title = null,
         providerName = null,
@@ -89,7 +89,7 @@ const EmbedField = ({
                 ? withScheme(newValue, scheme, schemesPattern)
                 : null;
             if (onChange !== null) {
-                onChange(valueWithScheme);
+                onChange({ url: valueWithScheme, metadata: null });
             }
         },
         [onChange, scheme, schemesPattern],
@@ -104,7 +104,7 @@ const EmbedField = ({
         : null;
 
     return metadata !== null ? (
-        <Card title={`${providerName} - ${title}`} image={thumbnailUrl} onClose={onClose}>
+        <Card title={title} subtitle={providerName} image={thumbnailUrl} onClose={onClose}>
             <div className="my-3">
                 {!isEmpty(authorName) ? <p className="fw-bold lh-1 mb-1">{authorName}</p> : null}
                 {!isEmpty(description) ? <p className="lh-1 mb-1">{description}</p> : null}

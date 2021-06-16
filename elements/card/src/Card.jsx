@@ -155,16 +155,13 @@ const Card = ({
         ) : null;
 
     const closeButton = (
-        <Button type="button" size="sm" theme="secondary" onClick={onClose}>
+        <Button type="button" size="sm" theme="warning" onClick={onClose}>
             <FontAwesomeIcon icon={onCloseIcon || faTimes} />
         </Button>
     );
 
     const cardInner = (
         <>
-            {header === null && onClose !== null ? (
-                <div className="position-absolute top-0 end-0 p-2">{closeButton}</div>
-            ) : null}
             {header !== null ? (
                 <div
                     className={classNames([
@@ -175,11 +172,6 @@ const Card = ({
                     ])}
                 >
                     <Label>{header}</Label>
-                    {onClose !== null ? (
-                        <div className="d-inline-block position-relative end-0 p-2">
-                            {closeButton}
-                        </div>
-                    ) : null}
                 </div>
             ) : null}
             {typeof image === 'string' ? (
@@ -198,7 +190,12 @@ const Card = ({
             )}
             {beforeBody}
             {bodyInner !== null ? (
-                <>
+                <div className="position-relative">
+                    {onClose !== null ? (
+                        <div className="d-inline-block position-absolute end-0 p-2">
+                            {closeButton}
+                        </div>
+                    ) : null}
                     {onClickBody !== null ? (
                         <button
                             type="button"
@@ -222,7 +219,7 @@ const Card = ({
                             {bodyInner}
                         </div>
                     )}
-                </>
+                </div>
             ) : null}
             {afterBody}
             {links !== null && !linksInSameBody ? (
