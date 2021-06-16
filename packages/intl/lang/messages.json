@@ -27,10 +27,6 @@
     "defaultMessage": "Error 401",
     "description": "Error page title"
   },
-  "6oV4/s": {
-    "defaultMessage": "no",
-    "description": "Boolean value"
-  },
   "82P2dS": {
     "defaultMessage": "You are not authorized to access this page.",
     "description": "Error page description"
@@ -38,6 +34,10 @@
   "8HFiMs": {
     "defaultMessage": "Access to this page is forbidden",
     "description": "Error page description"
+  },
+  "9XBwF1": {
+    "defaultMessage": "Yes",
+    "description": "Boolean value"
   },
   "AeOZq+": {
     "defaultMessage": "Login",
@@ -62,10 +62,6 @@
   "IbZVf0": {
     "defaultMessage": "Submit",
     "description": "Button label"
-  },
-  "IuCFWt": {
-    "defaultMessage": "yes",
-    "description": "Boolean value"
   },
   "IuqEHB": {
     "defaultMessage": "Account",
@@ -149,6 +145,10 @@
   "q6bmY1": {
     "defaultMessage": "Reset",
     "description": "Button label"
+  },
+  "rSt+KL": {
+    "defaultMessage": "No",
+    "description": "Boolean value"
   },
   "s4Xrs9": {
     "defaultMessage": "Time",

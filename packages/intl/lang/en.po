@@ -53,12 +53,6 @@ msgctxt "6nwWPR"
 msgid "Error 401"
 msgstr "Error 401"
 
-# Boolean value
-#: 6oV4/s
-msgctxt "6oV4/s"
-msgid "no"
-msgstr "no"
-
 # Error page description
 #: 82P2dS
 msgctxt "82P2dS"
@@ -70,6 +64,12 @@ msgstr "You are not authorized to access this page."
 msgctxt "8HFiMs"
 msgid "Access to this page is forbidden"
 msgstr "Access to this page is forbidden"
+
+# Boolean value
+#: 9XBwF1
+msgctxt "9XBwF1"
+msgid "Yes"
+msgstr "Yes"
 
 # Page title
 #: AeOZq+
@@ -106,12 +106,6 @@ msgstr "Error 401"
 msgctxt "IbZVf0"
 msgid "Submit"
 msgstr "Submit"
-
-# Boolean value
-#: IuCFWt
-msgctxt "IuCFWt"
-msgid "yes"
-msgstr "yes"
 
 # Menu label
 #: IuqEHB
@@ -237,6 +231,12 @@ msgstr "Error 500"
 msgctxt "q6bmY1"
 msgid "Reset"
 msgstr "Reset"
+
+# Boolean value
+#: rSt+KL
+msgctxt "rSt+KL"
+msgid "No"
+msgstr "No"
 
 # DateTimeField time caption
 #: s4Xrs9

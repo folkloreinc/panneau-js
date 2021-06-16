@@ -1,5 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
@@ -13,11 +13,11 @@ const defaultProps = {
 const Boolean = ({ value }) =>
     value !== null && value === true ? (
         <span className="badge bg-success">
-            <FormattedMessage defaultMessage="yes" description="Boolean value" />
+            <FormattedMessage defaultMessage="Yes" description="Boolean value" />
         </span>
     ) : (
         <span className="badge bg-warning">
-            <FormattedMessage defaultMessage="no" description="Boolean value" />
+            <FormattedMessage defaultMessage="No" description="Boolean value" />
         </span>
     );
 Boolean.propTypes = propTypes;

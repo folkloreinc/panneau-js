@@ -20,14 +20,14 @@
     "6nwWPR": {
         "defaultMessage": "Erreur 401"
     },
-    "6oV4/s": {
-        "defaultMessage": "non"
-    },
     "82P2dS": {
         "defaultMessage": "Vous n’êtes pas autorisé à accéder à cette page."
     },
     "8HFiMs": {
         "defaultMessage": "L’accès à cette page est interdit"
+    },
+    "9XBwF1": {
+        "defaultMessage": "Oui"
     },
     "AeOZq+": {
         "defaultMessage": "Connexion"
@@ -46,9 +46,6 @@
     },
     "IbZVf0": {
         "defaultMessage": "Envoyer"
-    },
-    "IuCFWt": {
-        "defaultMessage": "oui"
     },
     "IuqEHB": {
         "defaultMessage": "Compte"
@@ -112,6 +109,9 @@
     },
     "q6bmY1": {
         "defaultMessage": "Réinitialiser"
+    },
+    "rSt+KL": {
+        "defaultMessage": "Non"
     },
     "s4Xrs9": {
         "defaultMessage": "Heure"

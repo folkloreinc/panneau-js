@@ -20,14 +20,14 @@
     "6nwWPR": {
         "defaultMessage": "Error 401"
     },
-    "6oV4/s": {
-        "defaultMessage": "no"
-    },
     "82P2dS": {
         "defaultMessage": "You are not authorized to access this page."
     },
     "8HFiMs": {
         "defaultMessage": "Access to this page is forbidden"
+    },
+    "9XBwF1": {
+        "defaultMessage": "Yes"
     },
     "AeOZq+": {
         "defaultMessage": "Login"
@@ -46,9 +46,6 @@
     },
     "IbZVf0": {
         "defaultMessage": "Submit"
-    },
-    "IuCFWt": {
-        "defaultMessage": "yes"
     },
     "IuqEHB": {
         "defaultMessage": "Account"
@@ -112,6 +109,9 @@
     },
     "q6bmY1": {
         "defaultMessage": "Reset"
+    },
+    "rSt+KL": {
+        "defaultMessage": "No"
     },
     "s4Xrs9": {
         "defaultMessage": "Time"

@@ -40,7 +40,7 @@ class AuthApi {
 
     logout() {
         const { withCredentials } = this.options;
-        return this.api.fetchPost(this.api.route('auth.logout'), null, {
+        return this.api.requestPost(this.api.route('auth.logout'), null, {
             withSession: !withCredentials,
             withCredentials,
         });

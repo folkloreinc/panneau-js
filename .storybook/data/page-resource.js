@@ -111,6 +111,10 @@ export default {
         },
     },
 
+    index: {
+        columns: ['title', 'slug']
+    },
+
     settings: {
         hideInNavbar: false,
         indexIsPaginated: true,

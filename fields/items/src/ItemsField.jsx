@@ -1,23 +1,23 @@
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
 
-import React, { useCallback, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { v4 as uuid } from 'uuid';
-import { ReactSortable } from 'react-sortablejs';
-// import classNames from 'classnames';
-import { FormattedMessage } from 'react-intl';
-import isFunction from 'lodash/isFunction';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretRight, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFieldComponent } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
-import Label from '@panneau/element-label';
 import Dropdown from '@panneau/element-dropdown';
+import Label from '@panneau/element-label';
+import classNames from 'classnames';
+import isFunction from 'lodash/isFunction';
+import PropTypes from 'prop-types';
+import React, { useCallback, useRef, useState } from 'react';
+// import classNames from 'classnames';
+import { FormattedMessage } from 'react-intl';
+import { ReactSortable } from 'react-sortablejs';
+import { v4 as uuid } from 'uuid';
 
 const propTypes = {
-    name: PropTypes.string,
+    // name: PropTypes.string,
     value: PropTypes.arrayOf(PropTypes.any), // eslint-disable-line
     types: PropTypes.arrayOf(
         PropTypes.shape({
@@ -42,13 +42,13 @@ const propTypes = {
 
     withoutCollapse: PropTypes.bool,
     withoutSort: PropTypes.bool,
-    withFloatingAddButton: PropTypes.bool,
+    // withFloatingAddButton: PropTypes.bool,
 
     inline: PropTypes.bool,
 };
 
 const defaultProps = {
-    name: null,
+    // name: null,
     value: null,
     types: null,
     newItemDefaultValue: () => ({}),
@@ -81,13 +81,13 @@ const defaultProps = {
 
     withoutCollapse: false,
     withoutSort: false,
-    withFloatingAddButton: false,
+    // withFloatingAddButton: false,
 
     inline: false,
 };
 
 const ItemsField = ({
-    name,
+    // name,
     value,
     types,
     newItemDefaultValue,
@@ -107,7 +107,7 @@ const ItemsField = ({
 
     withoutCollapse,
     withoutSort,
-    withFloatingAddButton,
+    // withFloatingAddButton,
 
     inline,
 }) => {
@@ -348,7 +348,6 @@ const ItemsField = ({
                     'header',
                 ])}
             >
-                {!withFloatingAddButton ? <Label>{name}</Label> : null}
                 {types !== null && types.length > 1 ? (
                     <div className="position-relative">
                         <Button
