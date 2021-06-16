@@ -135,7 +135,7 @@
         "defaultMessage": "Modifier {a_singular}"
     },
     "resources.view": {
-        "defaultMessage": "Afficher {pluriel}"
+        "defaultMessage": "Afficher {the_plural}"
     },
     "s4Xrs9": {
         "defaultMessage": "Heure"

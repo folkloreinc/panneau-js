@@ -179,7 +179,7 @@
     "description": "Page title"
   },
   "resources.view": {
-    "defaultMessage": "View {plural}",
+    "defaultMessage": "View {the_plural}",
     "description": "Button label"
   },
   "s4Xrs9": {

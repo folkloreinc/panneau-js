@@ -283,7 +283,7 @@ msgstr "Edit {a_singular}"
 # Button label
 #: resources.view
 msgctxt "resources.view"
-msgid "View {plural}"
+msgid "View {the_plural}"
 msgstr "View {plural}"
 
 # DateTimeField time caption
