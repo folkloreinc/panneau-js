@@ -14,7 +14,7 @@ const useResourceUrlGenerator = (resourceId = null) => {
     return (routeResourceId, routeName = null, params = null) => {
         const finalRouteName = resourceId !== null ? routeResourceId : routeName;
         const finalParams = resourceId !== null ? routeName : params;
-        const finalResource = resource || getResource(resources, routeResourceId);
+        const finalResource = getResource(resources, routeResourceId) || resource;
         const { id = null } = finalResource || {};
         return id !== null
             ? route(`resources.${finalRouteName}`, {
