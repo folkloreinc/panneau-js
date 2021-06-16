@@ -119,6 +119,10 @@
     "defaultMessage": "Add an item",
     "description": "Button label in items field"
   },
+  "bPk79b": {
+    "defaultMessage": "Show",
+    "description": "Button label"
+  },
   "d0g58T": {
     "defaultMessage": "Login",
     "description": "Menu label"
@@ -179,7 +183,7 @@
     "description": "Page title"
   },
   "resources.view": {
-    "defaultMessage": "View {plural}",
+    "defaultMessage": "View {the_plural}",
     "description": "Button label"
   },
   "s4Xrs9": {

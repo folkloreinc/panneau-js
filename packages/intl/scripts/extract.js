@@ -19,8 +19,6 @@ const files = globSync(srcPath, {
     cwd: process.cwd(),
 });
 
-console.log(srcPath, files);
-
 extractAndWrite(files, {
     throws: false,
     // format: 'crowdin',

@@ -3,8 +3,8 @@
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
 // import { useResourceUrlGenerator } from '@panneau/core/hooks';
-import { getColumnsWithFields, getComponent, getComponentFromName } from '@panneau/core/utils';
-import FormActions from '@panneau/element-item-actions';
+import { getColumnsWithFields, getComponentFromName } from '@panneau/core/utils';
+import ItemActions from '@panneau/element-item-actions';
 import Loading from '@panneau/element-loading';
 import Pagination from '@panneau/element-pagination';
 import classNames from 'classnames';
@@ -68,7 +68,8 @@ const TableList = ({
             : ''
     }`;
 
-    console.log(displayComponents, columns); // eslint-disable-line
+    const hasActionsColumns =
+        (columnsWithFields.find((it) => it.id === 'actions') || null) !== null;
 
     return (
         <div>
@@ -95,12 +96,12 @@ const TableList = ({
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            {columnsWithFields.map(({ name, label }) => (
+                            {columnsWithFields.map(({ name, label = null }) => (
                                 <th scope="col" key={`col-${name}`}>
                                     {label}
                                 </th>
                             ))}
-                            <th scope="col">&nbsp;</th>
+                            {!hasActionsColumns ? <th scope="col">&nbsp;</th> : null}
                         </tr>
                     </thead>
                     <tbody>
@@ -112,33 +113,60 @@ const TableList = ({
                                     {columnsWithFields.map((column, idx) => {
                                         const {
                                             id: colId,
-                                            component = 'text',
-                                            components = {},
+                                            component,
                                             valueKey = null,
                                             field = null,
-                                            ...fieldProps
+                                            columnClassName = null,
+                                            ...displayProps
                                         } = column || {};
 
-                                        const { index = null } = components || {};
-                                        const indexComponent = index !== null ? index : component;
-                                        const { name: componentName, props: componentProps } =
-                                            getComponent(indexComponent);
+                                        if (colId === 'actions') {
+                                            const FieldDisplayComponent = getComponentFromName(
+                                                component,
+                                                displayComponents,
+                                                ItemActions,
+                                            );
+                                            return (
+                                                <td
+                                                    className={classNames([
+                                                        'col-auto',
+                                                        {
+                                                            'text-end':
+                                                                idx ===
+                                                                columnsWithFields.length - 1,
+                                                            [columnClassName]:
+                                                                columnClassName !== null,
+                                                        },
+                                                    ])}
+                                                >
+                                                    <FieldDisplayComponent
+                                                        {...displayProps}
+                                                        resource={resource}
+                                                        item={it}
+                                                    />
+                                                </td>
+                                            );
+                                        }
 
-                                        const FieldIndexComponent = getComponentFromName(
-                                            componentName,
+                                        const FieldDisplayComponent = getComponentFromName(
+                                            component || 'text',
                                             displayComponents,
-                                            'p',
+                                            'span',
                                         );
 
                                         return (
                                             <td
-                                                className="col-auto"
+                                                className={classNames([
+                                                    'col-auto',
+                                                    {
+                                                        [columnClassName]: columnClassName !== null,
+                                                    },
+                                                ])}
                                                 key={`row-${id}-${colId}-${idx + 1}`}
                                             >
-                                                {FieldIndexComponent !== null ? (
-                                                    <FieldIndexComponent
-                                                        {...componentProps}
-                                                        {...fieldProps}
+                                                {FieldDisplayComponent !== null ? (
+                                                    <FieldDisplayComponent
+                                                        {...displayProps}
                                                         field={field}
                                                         value={
                                                             valueKey !== null
@@ -150,9 +178,11 @@ const TableList = ({
                                             </td>
                                         );
                                     })}
-                                    <td className="text-end col-auto">
-                                        <FormActions resource={resource} item={it} />
-                                    </td>
+                                    {!hasActionsColumns ? (
+                                        <td className="text-end col-auto">
+                                            <ItemActions resource={resource} item={it} />
+                                        </td>
+                                    ) : null}
                                 </tr>
                             );
                         })}

@@ -191,6 +191,12 @@ msgctxt "ZxgNge"
 msgid "Add an item"
 msgstr "Ajouter un élement"
 
+# Button label
+#: bPk79b
+msgctxt "bPk79b"
+msgid "Show"
+msgstr "Afficher"
+
 # Menu label
 #: d0g58T
 msgctxt "d0g58T"
@@ -283,8 +289,8 @@ msgstr "Modifier {a_singular}"
 # Button label
 #: resources.view
 msgctxt "resources.view"
-msgid "View {plural}"
-msgstr "Afficher {pluriel}"
+msgid "View {the_plural}"
+msgstr "Afficher {the_plural}"
 
 # DateTimeField time caption
 #: s4Xrs9

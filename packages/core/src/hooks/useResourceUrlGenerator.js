@@ -1,5 +1,5 @@
 import isObject from 'lodash/isObject';
-import { useUrlGenerator, usePanneauResources } from '../contexts';
+import { usePanneauResources, useResource, useUrlGenerator } from '../contexts';
 
 const getResource = (resources, resourceId) =>
     resourceId !== null && !isObject(resourceId)
@@ -8,18 +8,20 @@ const getResource = (resources, resourceId) =>
 
 const useResourceUrlGenerator = (resourceId = null) => {
     const resources = usePanneauResources();
-    const resource = getResource(resources, resourceId);
+    const contextResource = useResource();
+    const resource = getResource(resources, resourceId) || contextResource;
     const route = useUrlGenerator();
     return (routeResourceId, routeName = null, params = null) => {
         const finalRouteName = resourceId !== null ? routeResourceId : routeName;
         const finalParams = resourceId !== null ? routeName : params;
-        const finalResource = resource || getResource(resources, routeResourceId);
-        const { id, has_routes: hasRoutes = false } = finalResource;
-        const routePrefix = hasRoutes ? `resources.${id}` : 'resources';
-        return route(`${routePrefix}.${finalRouteName}`, {
-            ...finalParams,
-            resource: id,
-        });
+        const finalResource = getResource(resources, routeResourceId) || resource;
+        const { id = null } = finalResource || {};
+        return id !== null
+            ? route(`resources.${finalRouteName}`, {
+                  ...finalParams,
+                  resource: id,
+              })
+            : null;
     };
 };
 

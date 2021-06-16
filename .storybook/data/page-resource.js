@@ -6,9 +6,9 @@ export default {
 
     intl: {
         messages: {
-            'index': 'Voir {the_plural}',
-            'create': 'Ajouter une page',
-            'create_button': 'Yo le jeune',
+            index: 'Voir {the_plural}',
+            create: 'Ajouter une page',
+            create_button: 'Yo le jeune',
         },
         values: {
             name: 'page',
@@ -112,7 +112,14 @@ export default {
     },
 
     index: {
-        columns: ['title', 'slug']
+        columns: [
+            'title',
+            'slug',
+            {
+                id: 'actions',
+                actions: ['show', 'edit'],
+            },
+        ],
     },
 
     settings: {
