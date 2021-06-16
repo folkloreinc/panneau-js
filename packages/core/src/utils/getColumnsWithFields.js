@@ -1,16 +1,19 @@
 import isString from 'lodash/isString';
+import getComponent from './getComponent'
 
 export const getColumnFromField = (field) => {
     if (field === null) {
         return null;
     }
     // eslint-disable-next-line camelcase
-    const { name, components = null, label } = field;
+    const { name, components: { display = null } = {}, label } = field;
+    const { name: componentName = null, props: componentProps = null } = getComponent(display);
     return {
+        ...componentProps,
         id: name,
         label,
         valueKey: name,
-        component: components !== null ? components.display || null : null,
+        component: componentName,
         field,
     };
 };
@@ -24,7 +27,7 @@ export const getColumnsWithFields = (resource, columns) => {
                       const { field: fieldName = null, ...otherProps } = isString(column)
                           ? { field: column }
                           : column;
-                      return { 
+                      return {
                         ...(fieldName !== null
                           ? getColumnFromField(fields.find((it) => it.name === fieldName) || null)
                           : null),
@@ -32,7 +35,7 @@ export const getColumnsWithFields = (resource, columns) => {
                     };
                   })
                   .filter((it) => it !== null) : [];
-            
+
     return newColumns;
 };
 
