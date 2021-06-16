@@ -1,14 +1,11 @@
-import React, { useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
-import ResourceLabel from '../partials/ResourceLabel';
-
-import messages from '../messages';
+import { ResourceMessage } from '@panneau/intl';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -43,7 +40,12 @@ const ResourceCreateButtom = ({ resource, className }) => {
             ])}
             onClick={types !== null ? onClickDropdown : null}
         >
-            <ResourceLabel resource={resource} message={messages.create} />
+            <ResourceMessage
+                resource={resource}
+                id="resources.create_btn"
+                defaultMessage="Create {a_singular}"
+                description="Button label"
+            />
         </Button>
     );
     return types !== null ? (

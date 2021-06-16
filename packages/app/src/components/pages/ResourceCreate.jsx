@@ -1,14 +1,13 @@
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import { ResourceMessage } from '@panneau/intl';
 import { parse as parseQuery } from 'query-string';
 import React, { useCallback, useMemo } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import MainLayout from '../layouts/Main';
-import messages from '../messages';
 import PageHeader from '../partials/PageHeader';
-import ResourceForm from '../partials/ResourceForm';
-import ResourceLabel from '../partials/ResourceLabel';
+import ResourceForm from '../forms/ResourceForm';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -30,7 +29,14 @@ const ResourceCreatePage = ({ resource }) => {
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
-                    title={<ResourceLabel resource={resource} message={messages.create} />}
+                    title={
+                        <ResourceMessage
+                            resource={resource}
+                            id="resources.create"
+                            defaultMessage="Create {a_singular}"
+                            description="Page title"
+                        />
+                    }
                     small
                 />
                 <div className="container-sm py-4">
@@ -38,7 +44,6 @@ const ResourceCreatePage = ({ resource }) => {
                         <div className="col-12 col-md-8 col-lg-7">
                             <ResourceForm
                                 resource={resource}
-                                messages={messages}
                                 type={type}
                                 onSuccess={onSuccess}
                             />

@@ -2,15 +2,14 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { useResourceItem } from '@panneau/data';
+import { ResourceMessage } from '@panneau/intl';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { useHistory } from 'react-router';
 import MainLayout from '../layouts/Main';
-import messages from '../messages';
 import PageHeader from '../partials/PageHeader';
-import ResourceForm from '../partials/ResourceForm';
+import ResourceForm from '../forms/ResourceForm';
 // import Button from '../buttons/Button';
-import ResourceLabel from '../partials/ResourceLabel';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -39,7 +38,14 @@ const ResourceDeletePage = ({ resource, itemId }) => {
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
-                    title={<ResourceLabel resource={resource} message={messages.delete} />}
+                    title={
+                        <ResourceMessage
+                            resource={resource}
+                            id="resources.delete"
+                            defaultMessage="Delete {a_singular}"
+                            description="Page title"
+                        />
+                    }
                     small
                 />
                 <div className="container-sm py-4">
@@ -49,7 +55,6 @@ const ResourceDeletePage = ({ resource, itemId }) => {
                                 <ResourceForm
                                     component="delete"
                                     resource={resource}
-                                    messages={messages}
                                     item={item}
                                     onSuccess={onSuccess}
                                     previous={previous}

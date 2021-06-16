@@ -19,10 +19,13 @@ const files = globSync(srcPath, {
     cwd: process.cwd(),
 });
 
+console.log(srcPath, files);
+
 extractAndWrite(files, {
     throws: false,
     // format: 'crowdin',
     idInterpolationPattern,
     // extractSourceLocation: true,
     outFile: path.join(process.cwd(), destPath),
+    additionalComponentNames: ['ResourceMessage'],
 });
