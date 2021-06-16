@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-table",
-    "version": "1.0.0-alpha.73",
+    "version": "1.0.0-alpha.74",
     "description": "Table list",
     "keywords": [
         "javascript"
@@ -53,13 +53,13 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.0.0-alpha.73",
-        "@panneau/element-button": "^1.0.0-alpha.73",
-        "@panneau/element-buttons": "^1.0.0-alpha.73",
-        "@panneau/element-item-actions": "^1.0.0-alpha.73",
-        "@panneau/element-label": "^1.0.0-alpha.73",
-        "@panneau/element-loading": "^1.0.0-alpha.73",
-        "@panneau/element-pagination": "^1.0.0-alpha.73",
+        "@panneau/core": "^1.0.0-alpha.74",
+        "@panneau/element-button": "^1.0.0-alpha.74",
+        "@panneau/element-buttons": "^1.0.0-alpha.74",
+        "@panneau/element-item-actions": "^1.0.0-alpha.74",
+        "@panneau/element-label": "^1.0.0-alpha.74",
+        "@panneau/element-loading": "^1.0.0-alpha.74",
+        "@panneau/element-pagination": "^1.0.0-alpha.74",
         "@panneau/themes": "^1.0.0-alpha.66",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
