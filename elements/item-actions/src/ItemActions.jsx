@@ -11,7 +11,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
-    resource: PanneauPropTypes.resource.isRequired,
+    resource: PanneauPropTypes.resource,
     size: PanneauPropTypes.buttonSize,
     item: PanneauPropTypes.item.isRequired,
     iconsOnly: PropTypes.bool,
@@ -24,6 +24,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    resource: null,
     size: 'sm',
     iconsOnly: true,
     // showLabel: <FormattedMessage defaultMessage="Show" description="Button label" />,
