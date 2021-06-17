@@ -15,7 +15,6 @@ const propTypes = {
     paginated: PropTypes.bool,
     component: PropTypes.oneOfType([PropTypes.elementType, PropTypes.string]),
     componentProps: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    withoutFilters: PropTypes.bool,
     onQueryChange: PropTypes.func,
 };
 
@@ -24,24 +23,20 @@ const defaultProps = {
     paginated: true,
     component: null,
     componentProps: null,
-    withoutFilters: true,
     onQueryChange: null,
 };
 
 const ResourceItemsList = ({
     resource,
-    component,
-    componentProps,
     query,
     onQueryChange,
-    paginated,
-    withoutFilters,
-    ...props
+    paginated
 }) => {
+    const { index: { component: listComponent = null, filters = null, ...listProps } = {} } = resource;
     const { background: theme = null } = usePanneauColorScheme();
     const ListComponents = useListsComponents();
     const { page = 1 } = query || {};
-    const items = useResourceItems(resource, query, paginated ? parseInt(page, 10) : null);
+    const itemsProps = useResourceItems(resource, query, paginated ? parseInt(page, 10) : null);
     const onListQueryChange = useCallback(
         (newQuery) => {
             if (onQueryChange !== null) {
@@ -51,26 +46,24 @@ const ResourceItemsList = ({
         [onQueryChange],
     );
     const ListComponent = getComponentFromName(
-        component || 'table',
-        ListComponents,
-        component || null,
+        listComponent || 'table',
+        ListComponents
     );
 
     return (
         <>
-            {!withoutFilters ? (
+            {filters !== null ? (
                 <ResourceFilters
-                    filters={[]}
+                    filters={filters}
                     value={query}
-                    onSubmit={onQueryChange}
+                    onChange={onQueryChange}
                     className="mb-4"
                 />
             ) : null}
             {ListComponent !== null ? (
                 <ListComponent
-                    {...props}
-                    {...items}
-                    {...componentProps}
+                    {...itemsProps}
+                    {...listProps}
                     page={paginated ? parseInt(page, 10) : null}
                     resource={resource}
                     query={query}

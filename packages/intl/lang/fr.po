@@ -23,6 +23,12 @@ msgctxt "2/F1Q7"
 msgid "#{index}"
 msgstr "#{index}"
 
+# Now date time message
+#: 3na7F8
+msgctxt "3na7F8"
+msgid "Now"
+msgstr ""
+
 # Pagination count label
 #: 4sViWl
 msgctxt "4sViWl"
@@ -297,6 +303,12 @@ msgstr "Afficher {the_plural}"
 msgctxt "s4Xrs9"
 msgid "Time"
 msgstr "Heure"
+
+# Today date message
+#: v4Qtl9
+msgctxt "v4Qtl9"
+msgid "Today"
+msgstr ""
 
 # Error page description
 #: wKPI1y
