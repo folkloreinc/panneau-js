@@ -7,6 +7,10 @@
     "defaultMessage": "#{index}",
     "description": "Item label in items field"
   },
+  "3na7F8": {
+    "defaultMessage": "Now",
+    "description": "Now date time message"
+  },
   "4sViWl": {
     "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} other {# items}}",
     "description": "Pagination count label"
@@ -189,6 +193,10 @@
   "s4Xrs9": {
     "defaultMessage": "Time",
     "description": "DateTimeField time caption"
+  },
+  "v4Qtl9": {
+    "defaultMessage": "Today",
+    "description": "Today date message"
   },
   "wKPI1y": {
     "defaultMessage": "This page doesn’t exist",

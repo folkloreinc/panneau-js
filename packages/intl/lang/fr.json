@@ -5,6 +5,9 @@
     "2/F1Q7": {
         "defaultMessage": "#{index}"
     },
+    "3na7F8": {
+        "defaultMessage": "Maintenant"
+    },
     "4sViWl": {
         "defaultMessage": "{count, plural, =0 {Aucun item.} =1 {# item} other {# items}}"
     },
@@ -142,6 +145,9 @@
     },
     "s4Xrs9": {
         "defaultMessage": "Heure"
+    },
+    "v4Qtl9": {
+        "defaultMessage": "Autjourd'hui"
     },
     "wKPI1y": {
         "defaultMessage": "Cette page n’existe pas"
