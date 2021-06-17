@@ -1,12 +1,11 @@
 /* eslint-disable react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
-import React, { useMemo, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import Select from 'react-select';
-import isEqual from 'lodash/isEqual';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getSelectOptions } from '@panneau/core/utils';
-
+import classNames from 'classnames';
+import isEqual from 'lodash/isEqual';
+import PropTypes from 'prop-types';
+import React, { useCallback, useMemo } from 'react';
+import Select from 'react-select';
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -26,7 +25,7 @@ const defaultProps = {
     value: null,
     options: [],
     disabled: false,
-    isMulti: false,    
+    isMulti: false,
     isSearchable: false,
     withoutReset: false,
     noOptionsMessage: 'No results.',

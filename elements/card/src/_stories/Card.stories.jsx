@@ -24,9 +24,25 @@ export const LikeMedia = () => (
         <CardElement
             title="CardTitle"
             image="http://www.fillmurray.com/200/300"
-            imageClassName="img-thumbnail"
+            // imageClassName="img-thumbnail"
             footer="Size: 1200x630"
             onClose={() => {}}
         />
     </div>
 );
+
+// export const ImageLeft = () => (
+//     <div style={{ width: 320 }}>
+//         <CardElement
+//             title="CardTitleisvery longandcomplicatedandstuff"
+//             subtitle="Cool guy"
+//             image="http://www.fillmurray.com/500/300"
+//             footer="Size: 1200x630"
+//             onClose={() => {}}
+//             imageLeft
+//         >
+//             <p>This is very cool</p>
+//             <p>I like this</p>
+//         </CardElement>
+//     </div>
+// );

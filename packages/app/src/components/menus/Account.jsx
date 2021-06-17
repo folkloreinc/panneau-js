@@ -25,8 +25,9 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
         (e) => {
             e.preventDefault();
             logout();
+            window.location.href = route('home') || '/';
         },
-        [logout],
+        [logout, route],
     );
     const items = useMemo(
         () =>
@@ -39,15 +40,15 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                           ),
                           href: route('auth.account'),
                           dropdown: [
-                              {
-                                  label: (
-                                      <FormattedMessage
-                                          defaultMessage="Update account"
-                                          description="Menu label"
-                                      />
-                                  ),
-                                  href: route('auth.account'),
-                              },
+                              //   {
+                              //       label: (
+                              //           <FormattedMessage
+                              //               defaultMessage="Update account"
+                              //               description="Menu label"
+                              //           />
+                              //       ),
+                              //       href: route('auth.account'),
+                              //   },
                               {
                                   label: (
                                       <FormattedMessage

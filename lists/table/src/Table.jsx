@@ -96,8 +96,8 @@ const TableList = ({
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            {columnsWithFields.map(({ name, label = null }) => (
-                                <th scope="col" key={`col-${name}`}>
+                            {columnsWithFields.map(({ name, label = null }, idx) => (
+                                <th scope="col" key={`col-${name}-${label}-${idx + 1}`}>
                                     {label}
                                 </th>
                             ))}
@@ -105,10 +105,10 @@ const TableList = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {items.map((it) => {
+                        {items.map((it, rowIdx) => {
                             const { id = null } = it || {};
                             return (
-                                <tr key={`row-${id}`}>
+                                <tr key={`row-${id}-${rowIdx + 1}`}>
                                     <td className="col-auto">{id}</td>
                                     {columnsWithFields.map((column, idx) => {
                                         const {

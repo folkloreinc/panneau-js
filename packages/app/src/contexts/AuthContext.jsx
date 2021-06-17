@@ -1,8 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext, useState, useCallback, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-
+import PropTypes from 'prop-types';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
     useAuthCheck,
     useAuthLogin,
@@ -48,6 +47,7 @@ const defaultProps = {
 };
 
 export const AuthProvider = ({ user: initialUser, checkOnMount, children }) => {
+    // const route = useUrlGenerator();
     const [user, setUser] = useState(initialUser);
     const { login: authLogin } = useAuthLogin();
     const { logout: authLogout } = useAuthLogout();
@@ -82,9 +82,10 @@ export const AuthProvider = ({ user: initialUser, checkOnMount, children }) => {
         [authRegister, setUser],
     );
 
-    const requestPassword = useCallback((email) => authRequestPassword(email), [
-        authRequestPassword,
-    ]);
+    const requestPassword = useCallback(
+        (email) => authRequestPassword(email),
+        [authRequestPassword],
+    );
 
     const resetPassword = useCallback((data) => authResetPassword(data), [authResetPassword]);
 

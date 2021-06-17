@@ -1,28 +1,30 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import InputGroup from '@panneau/field-input-group';
-
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
 import useCKEditor from './hooks/useCKEditor';
 import useCKEditorBuild from './hooks/useCKEditorBuild';
 import useQuill from './hooks/useQuill';
-
 import './styles.global.scss';
 
 const propTypes = {
     feedback: PropTypes.oneOf(['valid', 'invalid', 'loading']),
     errors: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
-
     value: PropTypes.string,
     placeholder: PropTypes.string,
     type: PropTypes.oneOf([null, 'quill', 'ck-editor']),
     inline: PropTypes.bool,
-
     onChange: PropTypes.func,
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
-
+    ckOptions: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    quillOptions: PropTypes.shape({
+        modules: PropTypes.shape({
+            toolbar: PropTypes.arrayOf([PropTypes.array, PropTypes.string]),
+        }),
+        formats: PropTypes.arrayOf(PropTypes.string),
+    }),
     className: PropTypes.string,
 };
 
@@ -39,6 +41,10 @@ const defaultProps = {
     onFocus: null,
     onBlur: null,
 
+    ckOptions: null,
+
+    quillOptions: null,
+
     className: null,
 };
 
@@ -54,6 +60,9 @@ const HtmlField = ({
     onChange,
     onFocus,
     onBlur,
+
+    quillOptions,
+    ckOptions,
 
     className,
 }) => {
@@ -98,6 +107,7 @@ const HtmlField = ({
                     config={{ placeholder }}
                     onChange={onCkEditorChange}
                     {...commonProps}
+                    {...ckOptions}
                 />
             </div>
         ) : null;
@@ -111,6 +121,7 @@ const HtmlField = ({
                 onChange={onChange}
                 placeholder={placeholder}
                 {...commonProps}
+                {...quillOptions}
             />
         ) : null;
 

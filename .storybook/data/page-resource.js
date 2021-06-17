@@ -25,6 +25,12 @@ export default {
 
     fields: [
         {
+            name: 'upload',
+            label: 'Things',
+            component: 'select',
+            options: [{ label: 'Cool label 1', value: 1}, { label: 'Cool label 2', value: 2}, { label: 'Cool label 3', value: 3}]
+        },
+        {
             name: 'title',
             label: 'Titre',
             component: 'localized',
@@ -88,6 +94,7 @@ export default {
             label: 'Publish at',
             component: 'date',
         },
+        
     ],
 
     components: {

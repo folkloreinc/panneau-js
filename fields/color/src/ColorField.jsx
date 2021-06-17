@@ -1,10 +1,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SketchPicker } from 'react-color';
 import tinycolor from 'tinycolor2';
-
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -41,6 +40,8 @@ const ColorPickerField = ({ className, value, native, onChange }) => {
         () => ({
             picker: {
                 boxShadow: 'none',
+                backgroundColor: '#FFF',
+                borderRadius: '4px',
             },
             label: {
                 color: '#FFF',
@@ -61,12 +62,15 @@ const ColorPickerField = ({ className, value, native, onChange }) => {
         [onChange],
     );
 
-    const onInputClick = useCallback((e) => {
-        if (!native) {
-            e.preventDefault();
-            setPickerOpened(prevPickerOpened => !prevPickerOpened);
-        }        
-    }, [native, setPickerOpened]);
+    const onInputClick = useCallback(
+        (e) => {
+            if (!native) {
+                e.preventDefault();
+                setPickerOpened((prevPickerOpened) => !prevPickerOpened);
+            }
+        },
+        [native, setPickerOpened],
+    );
 
     const onPickerChange = useCallback(
         (newValue) => {
@@ -80,7 +84,7 @@ const ColorPickerField = ({ className, value, native, onChange }) => {
         [onChange],
     );
 
-    useEffect( () => {
+    useEffect(() => {
         const onWindowClick = () => {
             if (!native && pickerOpened) {
                 setPickerOpened(false);
@@ -89,7 +93,7 @@ const ColorPickerField = ({ className, value, native, onChange }) => {
         window.addEventListener('click', onWindowClick);
         return () => {
             window.removeEventListener('click', onWindowClick);
-        }
+        };
     }, [native, pickerOpened, setPickerOpened]);
 
     return (
@@ -105,12 +109,18 @@ const ColorPickerField = ({ className, value, native, onChange }) => {
             <label className="input-group">
                 <input
                     type="color"
-                    className={classNames([styles.colorInput, 'form-control', 'form-control-color'])}
+                    className={classNames([
+                        styles.colorInput,
+                        'form-control',
+                        'form-control-color',
+                    ])}
                     value={hexColor}
                     onChange={onInputChange}
                     onClick={onInputClick}
                 />
-                <span className={classNames([styles.hexLabel, 'input-group-text'])}>{hexColor}</span>
+                <span className={classNames([styles.hexLabel, 'input-group-text'])}>
+                    {hexColor}
+                </span>
             </label>
             {!native ? (
                 <SketchPicker
