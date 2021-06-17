@@ -9,8 +9,8 @@ import React, { useCallback, useMemo } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import ResourceCreateButton from '../buttons/ResourceCreate';
 import MainLayout from '../layouts/Main';
-import ResourceItemsList from '../partials/ResourceItemsList';
 import PageHeader from '../partials/PageHeader';
+import ResourceItemsList from '../partials/ResourceItemsList';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
