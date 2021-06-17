@@ -1,8 +1,7 @@
-import React, { useMemo, useContext } from 'react';
+import { LocalesProvider, useLocales } from '@panneau/core/contexts';
 import PropTypes from 'prop-types';
-import { IntlProvider as BaseIntlProvider, IntlContext } from 'react-intl';
-import { useLocales, LocalesProvider } from '@panneau/core/contexts';
-
+import React, { useContext, useMemo } from 'react';
+import { IntlContext, IntlProvider as BaseIntlProvider } from 'react-intl';
 import IntlManager from './IntlManager';
 import defaultManager from './manager';
 
@@ -26,19 +25,19 @@ const IntlProvider = ({ intlManager, locale, locales, children, extraMessages })
     const previousLocales = useLocales();
     const { locale: previousLocale = null, messages: previousMessages = null } =
         useContext(IntlContext) || {};
+    const managerMessages = intlManager !== null ? intlManager.getMessages(locale) : null;
     const messages = useMemo(() => {
-        const currentMessages = intlManager.getMessages(locale);
         if (process.env.NODE_ENV === 'development') {
-            if (currentMessages === null) {
+            if (managerMessages === null) {
                 console.warn(`IntlProvider: ${locale} is not added.`);
             }
         }
         return {
-            ...currentMessages,
-            ...extraMessages,
             ...(previousLocale === locale ? previousMessages : null),
+            ...managerMessages,
+            ...extraMessages,
         };
-    }, [locale, previousLocale, previousMessages, extraMessages]);
+    }, [managerMessages, locale, previousLocale, previousMessages, extraMessages]);
     return (
         <BaseIntlProvider locale={locale} messages={messages}>
             <LocalesProvider locales={locales || previousLocales}>{children}</LocalesProvider>

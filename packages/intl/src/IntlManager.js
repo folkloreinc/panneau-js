@@ -6,7 +6,9 @@ class IntlManager {
     addLocale(locale, messages, replace = false) {
         const currentLocale = this.getLocale(locale);
         this.locales = [
-            ...(currentLocale !== null ? this.locales.filter(it => it.locale !== locale) : this.locales),
+            ...(currentLocale !== null
+                ? this.locales.filter((it) => it.locale !== locale)
+                : this.locales),
             {
                 locale,
                 messages:
@@ -21,7 +23,7 @@ class IntlManager {
     }
 
     getLocale(locale) {
-        return this.locales.find(it => it.locale === locale) || null;
+        return this.locales.find((it) => it.locale === locale) || null;
     }
 
     hasLocale(locale) {
@@ -29,11 +31,8 @@ class IntlManager {
     }
 
     getMessages(locale) {
-        const localeObj = this.locales.find(it => it.locale === locale) || null;
-        if (localeObj === null) {
-            return null;
-        }
-        return localeObj.messages;
+        const { messages = null } = this.locales.find((it) => it.locale === locale) || {};
+        return messages;
     }
 }
 
