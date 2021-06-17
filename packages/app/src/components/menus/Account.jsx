@@ -25,7 +25,6 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
         (e) => {
             e.preventDefault();
             logout();
-            window.location.href = route('home') || '/';
         },
         [logout, route],
     );

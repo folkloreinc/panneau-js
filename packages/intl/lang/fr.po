@@ -179,12 +179,6 @@ msgctxt "UpStcP"
 msgid "Could not find type for this item"
 msgstr "Nous n'avons pas pu trouver ce type"
 
-# Menu label
-#: V7Us0a
-msgctxt "V7Us0a"
-msgid "Update account"
-msgstr "Mettre à jour le profil"
-
 # Pagination button label
 #: X5RJlB
 msgctxt "X5RJlB"

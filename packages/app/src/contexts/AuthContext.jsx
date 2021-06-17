@@ -67,9 +67,13 @@ export const AuthProvider = ({ user: initialUser, checkOnMount, children }) => {
 
     const logout = useCallback(
         () =>
-            authLogout().then(() => {
-                setUser(null);
-            }),
+            authLogout()
+                .then(() => {
+                    setUser(null);
+                })
+                .then(() => {
+                    window.location.href = '/';
+                }),
         [authLogout, setUser],
     );
 

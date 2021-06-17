@@ -82,6 +82,8 @@ const SelectField = ({
                 },
             ])}
             {...props}
+            menuPortalTarget={document.body}
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
             value={optionValue || null}
             options={finalOptions}
             disabled={disabled}

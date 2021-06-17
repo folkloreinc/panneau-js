@@ -128,6 +128,7 @@ const TableList = ({
                                             );
                                             return (
                                                 <td
+                                                    key={`row-${id}-${colId}-${idx + 1}`}
                                                     className={classNames([
                                                         'col-auto',
                                                         {
