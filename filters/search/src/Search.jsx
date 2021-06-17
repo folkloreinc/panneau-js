@@ -10,18 +10,21 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
 const propTypes = {
-    name: PropTypes.string.isRequired,
+    parameterName: PropTypes.string,
     value: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     onChange: PropTypes.func.isRequired,
     className: PropTypes.string,
 };
 
 const defaultProps = {
+    parameterName: 'q',
     className: null,
 };
 
-const SearchFilter = ({ name, value, onChange, className }) => {
-    const [searchValue, setSearchValue] = useState(value !== null ? value[name] || null : null);
+const SearchFilter = ({ parameterName, value, onChange, className }) => {
+    const [searchValue, setSearchValue] = useState(
+        value !== null ? value[parameterName] || null : null,
+    );
     const TextField = useFieldComponent('text');
     const onSubmit = useCallback(
         (e) => {
@@ -30,28 +33,33 @@ const SearchFilter = ({ name, value, onChange, className }) => {
             if (!isEmpty(searchValue)) {
                 newValue = {
                     ...value,
-                    [name]: searchValue,
+                    [parameterName]: searchValue,
                 };
             } else if (value !== null) {
-                newValue = omit(value, [name]);
+                newValue = omit(value, [parameterName]);
             }
             if (onChange !== null) {
                 onChange(newValue);
             }
         },
-        [name, value, searchValue],
+        [parameterName, value, searchValue],
     );
     const onReset = useCallback(() => {
-        const newValue = value !== null ? omit(value, [name]) : null;
+        const newValue = value !== null ? omit(value, [parameterName]) : null;
         setSearchValue(null);
         if (onChange !== null) {
             onChange(newValue);
         }
-    }, [name, value, setSearchValue]);
+    }, [parameterName, value, setSearchValue]);
     return (
-        <Form className={className} onSubmit={onSubmit} withoutActions>
+        <Form method="GET" className={className} onSubmit={onSubmit} withoutActions>
             <div className="input-group">
-                <TextField type="search" value={searchValue} onChange={setSearchValue} />
+                <TextField
+                    type="search"
+                    name={parameterName}
+                    value={searchValue}
+                    onChange={setSearchValue}
+                />
                 {!isEmpty(searchValue) ? (
                     <Button
                         type="button"

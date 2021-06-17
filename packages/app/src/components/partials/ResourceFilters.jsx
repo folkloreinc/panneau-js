@@ -11,7 +11,7 @@ import { FormattedMessage } from 'react-intl';
 const propTypes = {
     filters: PropTypes.arrayOf(
         PropTypes.shape({
-            name: PropTypes.string.isRequired,
+            id: PropTypes.string.isRequired,
             component: PropTypes.string.isRequired,
         }),
     ),
@@ -50,13 +50,13 @@ const ResourceFilters = ({ filters, value, onChange, withContainer, withReset, c
             ])}
             withoutCollapse
         >
-            {filters.map(({ name, component, ...filterProps }, index) => {
+            {filters.map(({ id, component, ...filterProps }, index) => {
                 const FilterComponent = getComponentFromName(component, FilterComponents, null);
                 return FilterComponent !== null ? (
                     <FilterComponent
                         {...filterProps}
-                        key={`filter-${name}-${index + 1}`}
-                        name={name}
+                        key={`filter-${id}-${index + 1}`}
+                        id={id}
                         value={value}
                         onChange={onChange}
                     />
