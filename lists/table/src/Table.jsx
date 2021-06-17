@@ -173,6 +173,7 @@ const TableList = ({
                                                                 ? it[valueKey] || null
                                                                 : it[id] || null
                                                         }
+                                                        item={it}
                                                     />
                                                 ) : null}
                                             </td>
