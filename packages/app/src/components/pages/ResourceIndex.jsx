@@ -9,7 +9,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import ResourceCreateButton from '../buttons/ResourceCreate';
 import MainLayout from '../layouts/Main';
-import ResourceItemsList from '../lists/ResourceItems';
+import ResourceItemsList from '../partials/ResourceItemsList';
 import PageHeader from '../partials/PageHeader';
 
 const propTypes = {
@@ -19,9 +19,8 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceIndexPage = ({ resource }) => {
-    const { name, settings = {}, index = {} } = resource;
+    const { name, settings = {} } = resource;
     const { canCreate = true, indexIsPaginated: paginated = false } = settings || {};
-    const { component: indexComponent = null, ...indexProps } = index || {};
 
     const { search } = useLocation();
     const history = useHistory();
@@ -82,8 +81,6 @@ const ResourceIndexPage = ({ resource }) => {
                         baseUrl={url}
                         query={listQuery}
                         paginated={paginated}
-                        component={indexComponent}
-                        componentProps={indexProps}
                         onQueryChange={onQueryChange}
                     />
                 </div>

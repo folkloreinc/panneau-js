@@ -53,6 +53,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
+        "@fortawesome/free-solid-svg-icons": "^5.15.3",
+        "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^1.0.0-alpha.77",
         "@panneau/element-button": "^1.0.0-alpha.77",
         "@panneau/element-form": "^1.0.0-alpha.77",

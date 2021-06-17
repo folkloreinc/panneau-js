@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-
+import FieldsProvider from '../../../../packages/fields';
 import Search from '../Search';
-
-import resource from '../../../../.storybook/data/page-resource';
-import fields from '../../../../.storybook/data/fields';
 
 export default {
     component: Search,
@@ -15,7 +12,11 @@ export default {
 
 const FieldContainer = () => {
     const [value, setValue] = useState(null);
-    return <Search value={value} onChange={setValue} />;
+    return (
+        <FieldsProvider>
+            <Search name="search" value={value} onChange={setValue} />
+        </FieldsProvider>
+    );
 };
 
-export const Normal = () => <FieldContainer resource={resource} fields={fields} />;
+export const Normal = () => <FieldContainer />;

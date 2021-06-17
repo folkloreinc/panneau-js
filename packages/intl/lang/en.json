@@ -5,6 +5,9 @@
     "2/F1Q7": {
         "defaultMessage": "#{index}"
     },
+    "3na7F8": {
+        "defaultMessage": "Now"
+    },
     "4sViWl": {
         "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
     },
@@ -83,9 +86,6 @@
     "UpStcP": {
         "defaultMessage": "Could not find type for this item"
     },
-    "V7Us0a": {
-        "defaultMessage": "Update account"
-    },
     "X5RJlB": {
         "defaultMessage": "Next"
     },
@@ -145,6 +145,9 @@
     },
     "s4Xrs9": {
         "defaultMessage": "Time"
+    },
+    "v4Qtl9": {
+        "defaultMessage": "Today"
     },
     "wKPI1y": {
         "defaultMessage": "This page doesn’t exist"

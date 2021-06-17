@@ -23,6 +23,12 @@ msgctxt "2/F1Q7"
 msgid "#{index}"
 msgstr "#{index}"
 
+# Now date time message
+#: 3na7F8
+msgctxt "3na7F8"
+msgid "Now"
+msgstr ""
+
 # Pagination count label
 #: 4sViWl
 msgctxt "4sViWl"
@@ -179,12 +185,6 @@ msgctxt "UpStcP"
 msgid "Could not find type for this item"
 msgstr "Nous n'avons pas pu trouver ce type"
 
-# Menu label
-#: V7Us0a
-msgctxt "V7Us0a"
-msgid "Update account"
-msgstr "Mettre à jour le profil"
-
 # Pagination button label
 #: X5RJlB
 msgctxt "X5RJlB"
@@ -303,6 +303,12 @@ msgstr "Afficher {the_plural}"
 msgctxt "s4Xrs9"
 msgid "Time"
 msgstr "Heure"
+
+# Today date message
+#: v4Qtl9
+msgctxt "v4Qtl9"
+msgid "Today"
+msgstr ""
 
 # Error page description
 #: wKPI1y
