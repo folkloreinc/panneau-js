@@ -31,7 +31,7 @@ export default {
 
     intl: {
         locale: 'fr',
-        locales: ['fr', 'en'],
+        locales: ['fr', 'en', 'es'],
         values: {
             name: 'Panneau',
         },
