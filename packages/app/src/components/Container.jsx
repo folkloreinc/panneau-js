@@ -1,6 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { PanneauProvider, RoutesProvider, UppyProvider, ComponentsProvider } from '@panneau/core/contexts';
+import {
+    ComponentsProvider,
+    PanneauProvider,
+    RoutesProvider,
+    UppyProvider,
+} from '@panneau/core/contexts';
 import { ApiProvider } from '@panneau/data';
 import DisplaysProvider from '@panneau/displays';
 import FieldsProvider from '@panneau/fields';
@@ -40,7 +45,7 @@ const defaultProps = {
 
 const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, statusCode }) => {
     const {
-        intl: { locale = 'en', locales } = {},
+        intl: { locale = 'en', locales = [] } = {},
         routes = {},
         settings: { memoryRouter: usesMemoryRouter = false } = {},
     } = definition;
