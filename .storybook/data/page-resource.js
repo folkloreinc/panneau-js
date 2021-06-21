@@ -28,6 +28,9 @@ export default {
             name: 'upload',
             label: 'Things',
             component: 'select',
+            settings: {
+                hiddenInForm: true,
+            },
             options: [{ label: 'Cool label 1', value: 1}, { label: 'Cool label 2', value: 2}, { label: 'Cool label 3', value: 3}]
         },
         {
@@ -94,7 +97,7 @@ export default {
             label: 'Publish at',
             component: 'date',
         },
-        
+
     ],
 
     components: {

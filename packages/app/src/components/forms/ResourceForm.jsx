@@ -5,7 +5,7 @@ import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceStore, useResourceUpdate } from '@panneau/data';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 // import * as FormComponents from './resources';
 
@@ -45,7 +45,13 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
         : editForm || {};
 
     // console.log(type, resourceTypes, formFields, defaultFields, resourceTypeFields, resourceFields); //eslint-disable-line
-    const finalFields = formFields || defaultFields || resourceTypeFields || resourceFields;
+    const finalFields = useMemo(
+        () =>
+            (formFields || defaultFields || resourceTypeFields || resourceFields).filter(
+                ({ settings: { hiddenInForm = false } = {} }) => !hiddenInForm,
+            ),
+        [formFields, defaultFields, resourceTypeFields, resourceFields],
+    );
 
     // Form routes
     const resourceRoute = useResourceUrlGenerator(resource);
