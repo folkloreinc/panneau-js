@@ -67,6 +67,7 @@ const Fields = ({
             // TODO: test this
             withoutFormGroup = false,
             siblingFields = [],
+            defaultValue = null,
             className: fieldClassName = null,
             groupClassName = null,
             labelClassName = null,
@@ -88,6 +89,11 @@ const Fields = ({
         } else if (name === null) {
             fieldValue = value;
         }
+
+        if (defaultValue !== null && (typeof fieldValue === 'undefined' || fieldValue === null)) {
+            fieldValue = defaultValue;
+        }
+
         const fieldElement =
             FieldComponent !== null ? (
                 <FieldComponent

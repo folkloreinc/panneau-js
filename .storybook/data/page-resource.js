@@ -25,7 +25,7 @@ export default {
 
     fields: [
         {
-            name: 'upload',
+            name: 'test-select',
             label: 'Things',
             component: 'select',
             settings: {
@@ -86,6 +86,7 @@ export default {
             name: 'color',
             label: 'Color',
             component: 'color',
+            defaultValue: { color: '#cc00cc', alpha: 1 }
         },
         {
             name: 'published',
