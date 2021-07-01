@@ -1,11 +1,4 @@
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading, react/prop-types */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-import { ReactSortable } from 'react-sortablejs';
-import { v4 as uuid } from 'uuid';
-import classNames from 'classnames';
-import isFunction from 'lodash/isFunction';
 import { faCaretDown, faCaretRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -13,6 +6,13 @@ import { useFieldComponent } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
 import Label from '@panneau/element-label';
+import classNames from 'classnames';
+import isFunction from 'lodash/isFunction';
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
+import { ReactSortable } from 'react-sortablejs';
+import { v4 as uuid } from 'uuid';
 
 const propTypes = {
     value: PropTypes.arrayOf(PropTypes.any),
@@ -188,16 +188,16 @@ const ItemsField = ({
         },
         [dropdownOpened, setDropdownOpened],
     );
-    useEffect( () => {
+    useEffect(() => {
         const onWindowClick = () => {
             setDropdownOpened(false);
-        }
+        };
         if (dropdownOpened) {
             window.addEventListener('click', onWindowClick);
         }
         return () => {
             window.removeEventListener('click', onWindowClick);
-        }
+        };
     }, [dropdownOpened]);
 
     const itemElements = items.map(({ id, it }, index) => {
@@ -267,29 +267,36 @@ const ItemsField = ({
                 key={`item-${id}`}
             >
                 {!inline ? (
-                    <div className={classNames(['card-header', 'd-flex', 'align-items-center', 'justify-content-between', {
-                        'border-bottom-0': collapsed[index],
-                    }])}>
-                        <div className="card-content">
+                    <div
+                        className={classNames([
+                            'card-header',
+                            'd-flex',
+                            'align-items-center',
+                            'justify-content-between',
+                            {
+                                'border-bottom-0': collapsed[index],
+                            },
+                        ])}
+                    >
+                        { !withoutCollapse ?
+                            <Button
+                                className="position-absolute top-0 start-0 w-100 h-100"
+                                onClick={() => toggleCollapse(index)}
+                            />
+                        : null }                        
+                        <div className="card-content position-relative pe-none">
                             {!withoutCollapse ? (
-                                <Button
-                                    theme="secondary"
-                                    size="sm"
-                                    className="collapseToggle me-2"
-                                    onClick={() => toggleCollapse(index)}
-                                    outline
-                                >
-                                    <FontAwesomeIcon
-                                        className="arrowIcon"
-                                        icon={collapsed[index] ? faCaretRight : faCaretDown}
-                                    />
-                                </Button>
+                                <FontAwesomeIcon
+                                    style={{ width: 20 }}
+                                    className="me-1"
+                                    icon={collapsed[index] ? faCaretRight : faCaretDown}
+                                />
                             ) : null}
                             <span className="text-truncate">
                                 {renderedItemLabel !== null ? renderedItemLabel : defaultItemLabel}
                             </span>
                         </div>
-                        <div className="d-flex card-buttons">
+                        <div className="d-flex card-buttons position-relative">
                             <Button
                                 theme="secondary"
                                 size="sm"
@@ -303,6 +310,7 @@ const ItemsField = ({
                 ) : null}
                 <div
                     className={classNames([
+                        'position-relative',
                         'p-3',
                         {
                             collapse: !inline && !withoutCollapse && collapsed[index],
@@ -310,12 +318,12 @@ const ItemsField = ({
                     ])}
                 >
                     {renderItem !== null
-                                ? renderItem(it, index, {
-                                      ...(isFunction(itemProps) ? itemProps(it, index) : itemProps),
-                                      children: itemChildren,
-                                      onChange: (newValue) => onItemChange(it, index, newValue),
-                                  })
-                                : itemChildren}
+                        ? renderItem(it, index, {
+                              ...(isFunction(itemProps) ? itemProps(it, index) : itemProps),
+                              children: itemChildren,
+                              onChange: (newValue) => onItemChange(it, index, newValue),
+                          })
+                        : itemChildren}
                 </div>
                 {inline ? (
                     <div className={classNames(['card-header', 'd-flex', 'border-bottom-0'])}>
@@ -341,7 +349,7 @@ const ItemsField = ({
                 className={classNames([
                     'd-flex',
                     'align-items-center',
-                    'justify-content-between',
+                    'justify-content-end',
                     'pb-3',
                     'header',
                 ])}
