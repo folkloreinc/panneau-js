@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useApi } from '../contexts/ApiContext';
 
-const useResourceUpdate = (resource, id = null) => {
+const useResourceDestroy = (resource, id = null) => {
     const [loading, setLoading] = useState(false);
     const api = useApi();
     const destroy = useCallback(
@@ -24,4 +24,4 @@ const useResourceUpdate = (resource, id = null) => {
     return { destroy, loading };
 };
 
-export default useResourceUpdate;
+export default useResourceDestroy;

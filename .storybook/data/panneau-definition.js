@@ -12,14 +12,14 @@ export default {
         'auth.logout': '/logout',
 
         // Base routes
-        'resources.index': '/:resource',
-        'resources.show': '/:resource/:id',
-        'resources.create': '/:resource/create',
-        'resources.store': '/:resource',
-        'resources.edit': '/:resource/:id/edit',
-        'resources.update': '/:resource/:id',
-        'resources.delete': '/:resource/:id/delete',
-        'resources.destroy': '/:resource/:id',
+        'resources.index': '/:resource', // the page
+        'resources.show': '/:resource/:id', // the page
+        'resources.create': '/:resource/create', // the page
+        'resources.store': '/:resource', // the json call
+        'resources.edit': '/:resource/:id/edit', // the page
+        'resources.update': '/:resource/:id', // the json call
+        'resources.delete': '/:resource/:id/delete', // the page
+        'resources.destroy': '/:resource/:id', // the json call
 
         custom: {
             path: '/custom',

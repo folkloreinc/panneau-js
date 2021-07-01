@@ -3,11 +3,10 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { FormProvider, useFormsComponents } from '@panneau/core/contexts';
 import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
-import { useResourceStore, useResourceUpdate } from '@panneau/data';
+import { useResourceDestroy, useResourceStore, useResourceUpdate } from '@panneau/data';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-
-// import * as FormComponents from './resources';
+import DeleteForm from './Delete';
 
 const propTypes = {
     component: PropTypes.string,
@@ -38,13 +37,14 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
         default: defaultForm = null,
         create: createForm = null,
         edit: editForm = null,
+        delete: deleteForm = null,
     } = forms || {};
     const { fields: defaultFields = null, component: defaultComponent } = defaultForm || {};
-    const { fields: formFields = null, component: formComponent = null } = isCreate
-        ? createForm || {}
-        : editForm || {};
+    const createOrEditSource = isCreate ? createForm || {} : editForm || {};
+    const { fields: formFields = null, component: formComponent = null } = isDelete
+        ? deleteForm || {}
+        : createOrEditSource || {};
 
-    // console.log(type, resourceTypes, formFields, defaultFields, resourceTypeFields, resourceFields); //eslint-disable-line
     const finalFields = useMemo(
         () =>
             (formFields || defaultFields || resourceTypeFields || resourceFields).filter(
@@ -57,9 +57,13 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
     const resourceRoute = useResourceUrlGenerator(resource);
     const { store } = useResourceStore(resource);
     const { update } = useResourceUpdate(resource, item != null ? item.id : null);
+    const { destroy } = useResourceDestroy(resource, item != null ? item.id : null);
+
+    // Post actions
+    const postAction = isCreate ? store : update;
     const postForm = useCallback(
-        (action, data) => (isCreate ? store(data) : update(data)),
-        [isCreate, store, update],
+        (action, data) => (isDelete ? destroy() : postAction(data)),
+        [postAction, isDelete, destroy, store, update],
     );
 
     // Form state
@@ -99,11 +103,15 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
           })
         : modifyAction;
 
+    const defaultFormName = isDelete
+        ? component || formComponent || null
+        : component || formComponent || defaultComponent || 'normal';
+
     // Form component
     const FormComponent = getComponentFromName(
-        component || formComponent || defaultComponent || 'normal',
+        defaultFormName,
         FormComponents,
-        component,
+        isDelete ? DeleteForm : component,
     );
 
     // Lisen to item value change
