@@ -107,6 +107,7 @@ const Dropdown = ({
                                   'dropdown-header': type === 'header',
                                   'text-start': true,
                                   'd-block': true,
+                                  'w-100': true,
                                   active,
                                   [itemClassName]: itemClassName !== null,
                                   [customClassName]: customClassName !== null,

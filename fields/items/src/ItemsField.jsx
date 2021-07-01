@@ -1,5 +1,11 @@
-/* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
-
+/* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading, react/prop-types */
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import { ReactSortable } from 'react-sortablejs';
+import { v4 as uuid } from 'uuid';
+import classNames from 'classnames';
+import isFunction from 'lodash/isFunction';
 import { faCaretDown, faCaretRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -7,19 +13,9 @@ import { useFieldComponent } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
 import Label from '@panneau/element-label';
-import classNames from 'classnames';
-import isFunction from 'lodash/isFunction';
-import PropTypes from 'prop-types';
-import React, { useCallback, useRef, useState } from 'react';
-// import classNames from 'classnames';
-import { FormattedMessage } from 'react-intl';
-import { ReactSortable } from 'react-sortablejs';
-import { v4 as uuid } from 'uuid';
 
 const propTypes = {
-    name: PropTypes.string,
-    label: PropTypes.string,
-    value: PropTypes.arrayOf(PropTypes.any), // eslint-disable-line
+    value: PropTypes.arrayOf(PropTypes.any),
     types: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string,
@@ -27,7 +23,7 @@ const propTypes = {
             fields: PanneauPropTypes.fields,
         }),
     ),
-    newItemDefaultValue: PropTypes.func, // eslint-disable-line
+    newItemDefaultValue: PropTypes.func,
     noItemLabel: PanneauPropTypes.label,
     addItemLabel: PanneauPropTypes.label,
     itemFieldLabel: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.label]),
@@ -43,14 +39,11 @@ const propTypes = {
 
     withoutCollapse: PropTypes.bool,
     withoutSort: PropTypes.bool,
-    withFloatingAddButton: PropTypes.bool,
 
     inline: PropTypes.bool,
 };
 
 const defaultProps = {
-    name: null,
-    label: null,
     value: null,
     types: null,
     newItemDefaultValue: () => ({}),
@@ -63,7 +56,6 @@ const defaultProps = {
     addItemLabel: (
         <FormattedMessage defaultMessage="Add an item" description="Button label in items field" />
     ),
-    // eslint-disable-next-line react/prop-types
     itemFieldLabel: ({ index }) => (
         <FormattedMessage
             defaultMessage="#{index}"
@@ -83,20 +75,16 @@ const defaultProps = {
 
     withoutCollapse: false,
     withoutSort: false,
-    withFloatingAddButton: false,
 
     inline: false,
 };
 
 const ItemsField = ({
-    name,
-    label,
     value,
     types,
     newItemDefaultValue,
     noItemLabel,
     addItemLabel,
-    // eslint-disable-next-line no-unused-vars
     itemFieldLabel,
     itemComponent: ItemComponent,
     itemProps,
@@ -110,7 +98,6 @@ const ItemsField = ({
 
     withoutCollapse,
     withoutSort,
-    withFloatingAddButton,
 
     inline,
 }) => {
@@ -163,7 +150,6 @@ const ItemsField = ({
         [value, onChange, setCollapsed],
     );
 
-    // eslint-disable-next-line no-unused-vars
     const toggleCollapse = useCallback(
         (index) => {
             setCollapsed((previousCollapsed) => {
@@ -202,6 +188,17 @@ const ItemsField = ({
         },
         [dropdownOpened, setDropdownOpened],
     );
+    useEffect( () => {
+        const onWindowClick = () => {
+            setDropdownOpened(false);
+        }
+        if (dropdownOpened) {
+            window.addEventListener('click', onWindowClick);
+        }
+        return () => {
+            window.removeEventListener('click', onWindowClick);
+        }
+    }, [dropdownOpened]);
 
     const itemElements = items.map(({ id, it }, index) => {
         const { type: itemType = null } = it || {};
@@ -263,14 +260,16 @@ const ItemsField = ({
                     'mb-3',
                     'card',
                     {
-                        inline,
+                        'd-inline-flex flex-row me-3': inline,
                         show: !inline && !collapsed[index],
                     },
                 ])}
                 key={`item-${id}`}
             >
                 {!inline ? (
-                    <div className="card-header d-flex align-items-center justify-content-between">
+                    <div className={classNames(['card-header', 'd-flex', 'align-items-center', 'justify-content-between', {
+                        'border-bottom-0': collapsed[index],
+                    }])}>
                         <div className="card-content">
                             {!withoutCollapse ? (
                                 <Button
@@ -310,20 +309,16 @@ const ItemsField = ({
                         },
                     ])}
                 >
-                    <div className="row mx-n1">
-                        <div className="col px-1">
-                            {renderItem !== null
+                    {renderItem !== null
                                 ? renderItem(it, index, {
                                       ...(isFunction(itemProps) ? itemProps(it, index) : itemProps),
                                       children: itemChildren,
                                       onChange: (newValue) => onItemChange(it, index, newValue),
                                   })
                                 : itemChildren}
-                        </div>
-                    </div>
                 </div>
                 {inline ? (
-                    <div className={classNames(['card-header', 'd-flex'])}>
+                    <div className={classNames(['card-header', 'd-flex', 'border-bottom-0'])}>
                         <div className={classNames(['cardHeaderButtons', 'm-auto'])}>
                             <Button
                                 theme="secondary"
@@ -351,7 +346,6 @@ const ItemsField = ({
                     'header',
                 ])}
             >
-                {!withFloatingAddButton ? <Label>{label || name}</Label> : null}
                 {types !== null && types.length > 1 ? (
                     <div className="position-relative">
                         <Button
