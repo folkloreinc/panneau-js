@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-inline",
-    "version": "1.0.0-alpha.89",
+    "version": "1.0.0-alpha.90",
     "description": "Inline form",
     "keywords": [
         "javascript"
@@ -53,10 +53,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.0.0-alpha.89",
-        "@panneau/element-button": "^1.0.0-alpha.89",
-        "@panneau/element-form": "^1.0.0-alpha.89",
-        "@panneau/field-fields": "^1.0.0-alpha.89",
+        "@panneau/core": "^1.0.0-alpha.90",
+        "@panneau/element-button": "^1.0.0-alpha.90",
+        "@panneau/element-form": "^1.0.0-alpha.90",
+        "@panneau/field-fields": "^1.0.0-alpha.90",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
