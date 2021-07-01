@@ -72,6 +72,7 @@ export const routes = PropTypes.shape({
     'resources.show': PropTypes.string.isRequired,
     'resources.edit': PropTypes.string.isRequired,
     'resources.update': PropTypes.string.isRequired,
+    'resources.delete': PropTypes.string.isRequired,
     'resources.destroy': PropTypes.string.isRequired,
 });
 

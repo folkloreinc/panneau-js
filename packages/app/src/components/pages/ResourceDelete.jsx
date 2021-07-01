@@ -6,9 +6,9 @@ import { ResourceMessage } from '@panneau/intl';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { useHistory } from 'react-router';
+import ResourceForm from '../forms/ResourceForm';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
-import ResourceForm from '../forms/ResourceForm';
 // import Button from '../buttons/Button';
 
 const propTypes = {
@@ -53,7 +53,7 @@ const ResourceDeletePage = ({ resource, itemId }) => {
                         <div className="col-12 col-md-8 col-lg-7">
                             {item !== null ? (
                                 <ResourceForm
-                                    component="delete"
+                                    component=""
                                     resource={resource}
                                     item={item}
                                     onSuccess={onSuccess}

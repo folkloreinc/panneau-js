@@ -72,6 +72,7 @@ export const AuthProvider = ({ user: initialUser, checkOnMount, children }) => {
                     setUser(null);
                 })
                 .then(() => {
+                    console.log('logout redirect'); // eslint-disable-line
                     window.location.href = '/';
                 }),
         [authLogout, setUser],
