@@ -24,7 +24,7 @@ const Container = (props) => {
     return (
         <FieldsProvider>
             <IntlProvider>
-                <ItemsField {...props} name="Items field" value={value} onChange={setValue} />
+                <ItemsField {...props} label="Items" value={value} onChange={setValue} />
             </IntlProvider>
         </FieldsProvider>
     );
