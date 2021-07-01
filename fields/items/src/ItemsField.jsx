@@ -1,4 +1,11 @@
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading, react/prop-types */
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import { ReactSortable } from 'react-sortablejs';
+import { v4 as uuid } from 'uuid';
+import classNames from 'classnames';
+import isFunction from 'lodash/isFunction';
 import { faCaretDown, faCaretRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -6,15 +13,9 @@ import { useFieldComponent } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
 import Label from '@panneau/element-label';
-import classNames from 'classnames';
-import isFunction from 'lodash/isFunction';
-import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
-import { ReactSortable } from 'react-sortablejs';
-import { v4 as uuid } from 'uuid';
 
 const propTypes = {
+    label: PropTypes.string,
     value: PropTypes.arrayOf(PropTypes.any),
     types: PropTypes.arrayOf(
         PropTypes.shape({
@@ -44,6 +45,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    label: null,
     value: null,
     types: null,
     newItemDefaultValue: () => ({}),
@@ -80,6 +82,7 @@ const defaultProps = {
 };
 
 const ItemsField = ({
+    label,
     value,
     types,
     newItemDefaultValue,
@@ -272,7 +275,6 @@ const ItemsField = ({
                             'card-header',
                             'd-flex',
                             'align-items-center',
-                            'justify-content-between',
                             {
                                 'border-bottom-0': collapsed[index],
                             },
@@ -296,7 +298,7 @@ const ItemsField = ({
                                 {renderedItemLabel !== null ? renderedItemLabel : defaultItemLabel}
                             </span>
                         </div>
-                        <div className="d-flex card-buttons position-relative">
+                        <div className="d-flex card-buttons position-relative ms-auto">
                             <Button
                                 theme="secondary"
                                 size="sm"
@@ -349,13 +351,13 @@ const ItemsField = ({
                 className={classNames([
                     'd-flex',
                     'align-items-center',
-                    'justify-content-end',
                     'pb-3',
                     'header',
                 ])}
             >
+                { label !== null ? <Label>{label}</Label> : null }
                 {types !== null && types.length > 1 ? (
-                    <div className="position-relative">
+                    <div className="position-relative ms-auto">
                         <Button
                             theme="primary"
                             outline
