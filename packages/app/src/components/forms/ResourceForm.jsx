@@ -78,9 +78,9 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
                                 [name]: defaultValue,
                             }
                           : defaultValues,
-                  null,
+                  type !== null ? { type } : null,
               );
-    }, [item, finalFields]);
+    }, [item, type, finalFields]);
     const [value, setValue] = useState(getInitialValue());
     const { fields, onSubmit, status, generalError, errors } = useForm({
         fields: finalFields,

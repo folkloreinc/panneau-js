@@ -5,9 +5,9 @@ import { ResourceMessage } from '@panneau/intl';
 import { parse as parseQuery } from 'query-string';
 import React, { useCallback, useMemo } from 'react';
 import { useHistory, useLocation } from 'react-router';
+import ResourceForm from '../forms/ResourceForm';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
-import ResourceForm from '../forms/ResourceForm';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -22,7 +22,6 @@ const ResourceCreatePage = ({ resource }) => {
     const onSuccess = useCallback(() => {
         history.push(`${resourceRoute('index')}?created=true`);
     }, [history, resourceRoute]);
-
     const { type = null } = useMemo(() => parseQuery(search), [search]);
 
     return (
@@ -42,11 +41,7 @@ const ResourceCreatePage = ({ resource }) => {
                 <div className="container-sm py-4">
                     <div className="row justify-content-center">
                         <div className="col-12 col-md-8 col-lg-7">
-                            <ResourceForm
-                                resource={resource}
-                                type={type}
-                                onSuccess={onSuccess}
-                            />
+                            <ResourceForm resource={resource} type={type} onSuccess={onSuccess} />
                         </div>
                     </div>
                 </div>
