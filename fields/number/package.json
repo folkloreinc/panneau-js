@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-number",
-    "version": "1.0.0-alpha.90",
+    "version": "1.0.0-alpha.91",
     "description": "A number field",
     "keywords": [
         "javascript"
@@ -56,8 +56,8 @@
         "@fortawesome/fontawesome-svg-core": "^1.2.35",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
-        "@panneau/core": "^1.0.0-alpha.90",
-        "@panneau/field-text": "^1.0.0-alpha.90",
+        "@panneau/core": "^1.0.0-alpha.91",
+        "@panneau/field-text": "^1.0.0-alpha.91",
         "@panneau/themes": "^1.0.0-alpha.66",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2"
