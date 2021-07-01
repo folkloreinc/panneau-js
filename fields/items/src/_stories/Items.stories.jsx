@@ -1,9 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
-import ItemsField from '../ItemsField';
-
 import FieldsProvider from '../../../../packages/fields';
 import IntlProvider from '../../../../packages/intl/src/IntlProvider';
+import ItemsField from '../ItemsField';
 
 export default {
     title: 'Fields/Items',
@@ -32,22 +31,14 @@ const Container = (props) => {
 };
 
 export const Normal = () => <Container itemFields={itemFields} />;
-
+export const Inline = () => <Container itemFields={itemFields} inline />;
 export const WithoutSort = () => <Container itemFields={itemFields} withoutSort />;
-
 export const WithoutCollapse = () => <Container itemFields={itemFields} withoutCollapse />;
-
 export const WithItemRender = () => (
-    <Container
-        itemFields={itemFields}
-        renderItem={(it, index, { children }) => {
-            return <div style={{ transform: 'rotate(3deg)' }}>{children}</div>;
-        }}
-    />
+    <Container renderItem={(it, index) => <div>Item #{index+1}</div>} />
 );
 
 export const WithItemComponent = () => <Container itemComponent={Dummy} />;
-
 export const WithTypes = () => (
     <Container
         types={[
