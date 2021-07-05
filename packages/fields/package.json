@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "1.0.0-alpha.91",
+    "version": "1.0.0-alpha.92",
     "description": "",
     "keywords": [
         "javascript"
@@ -69,7 +69,7 @@
         "@panneau/field-localized": "^1.0.0-alpha.91",
         "@panneau/field-number": "^1.0.0-alpha.91",
         "@panneau/field-radios": "^1.0.0-alpha.91",
-        "@panneau/field-select": "^1.0.0-alpha.91",
+        "@panneau/field-select": "^1.0.0-alpha.92",
         "@panneau/field-test": "^1.0.0-alpha.91",
         "@panneau/field-text": "^1.0.0-alpha.91",
         "@panneau/field-toggle": "^1.0.0-alpha.91",
