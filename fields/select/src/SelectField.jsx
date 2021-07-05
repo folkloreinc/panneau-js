@@ -1,12 +1,10 @@
 /* eslint-disable react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getSelectOptions } from '@panneau/core/utils';
-import classNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import Select from 'react-select';
-import styles from './styles.module.scss';
 
 const propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
@@ -73,17 +71,21 @@ const SelectField = ({
         return finalOptions.find((opt) => (opt.value !== null ? isEqual(value, opt.value) : false));
     }, [value, options, isMulti]);
 
+    const minWidth = useMemo(
+        () =>
+            finalOptions.reduce((width, { label }) => Math.max(width, label.length * 8 + 100), 100),
+        [finalOptions],
+    );
+
     return (
         <Select
-            className={classNames([
-                styles.container,
-                {
-                    [className]: className !== null,
-                },
-            ])}
+            className={className}
             {...props}
             menuPortalTarget={document.body}
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+            styles={{
+                container: () => ({ zIndex: 2, minWidth }),
+                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+            }}
             value={optionValue || null}
             options={finalOptions}
             disabled={disabled}
