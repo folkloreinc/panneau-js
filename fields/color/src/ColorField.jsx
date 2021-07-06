@@ -8,11 +8,12 @@ import tinycolor from 'tinycolor2';
 import styles from './styles.module.scss';
 
 const propTypes = {
-    value: PropTypes.shape({
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.shape({
         color: PropTypes.string,
         alpha: PropTypes.number,
-    }),
+    })]),
     native: PropTypes.bool,
+    withAlpha: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
@@ -20,22 +21,23 @@ const propTypes = {
 const defaultProps = {
     value: null,
     native: false,
+    withAlpha: false,
     className: null,
     onChange: null,
 };
 
-const ColorPickerField = ({ className, value, native, onChange }) => {
+const ColorPickerField = ({ className, value, native, withAlpha, onChange }) => {
     const [pickerOpened, setPickerOpened] = useState(false);
     const rgbaColor = useMemo(() => {
         if (value !== null) {
-            const newColor = tinycolor(value.color);
-            newColor.setAlpha(value.alpha);
+            const newColor = tinycolor(typeof value === 'object' ? value.color : value);
+            newColor.setAlpha(typeof value === 'object' ? value.alpha : 1);
             return newColor;
         }
-        return '';
+        return null;
     }, [value]);
 
-    const { color: hexColor = '#000000' } = value || {};
+    const hexColor = useMemo( () => rgbaColor !== null ? rgbaColor.toHexString() : '#000000', [rgbaColor]);
 
     const pickerStyle = useMemo(
         () => ({
@@ -76,13 +78,15 @@ const ColorPickerField = ({ className, value, native, onChange }) => {
     const onPickerChange = useCallback(
         (newValue) => {
             if (onChange !== null) {
-                onChange({
-                    color: newValue.hex,
-                    alpha: newValue.rgb.a,
-                });
+                const { hex, rgb: { a: alpha = 1 }} = newValue;
+
+                onChange(withAlpha ? {
+                    color: hex,
+                    alpha,
+                } : hex );
             }
         },
-        [onChange],
+        [onChange, withAlpha],
     );
 
     useEffect(() => {
@@ -125,6 +129,7 @@ const ColorPickerField = ({ className, value, native, onChange }) => {
             </label>
             {!native ? (
                 <SketchPicker
+                    disableAlpha={!withAlpha}
                     className={styles.picker}
                     color={rgbaColor}
                     styles={pickerStyle}

@@ -8,7 +8,7 @@ export default {
 };
 
 const Container = (props) => {
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState('#FF0000');
     return (
         <ColorField {...props} value={value} onChange={setValue} />
     );
