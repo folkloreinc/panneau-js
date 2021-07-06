@@ -1,5 +1,5 @@
 import isString from 'lodash/isString';
-import getComponent from './getComponent'
+import getComponent from './getComponent';
 
 export const getColumnFromField = (field) => {
     if (field === null) {
