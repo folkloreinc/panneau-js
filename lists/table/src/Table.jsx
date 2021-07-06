@@ -172,7 +172,7 @@ const TableList = ({
                                                         value={
                                                             valueKey !== null
                                                                 ? it[valueKey] || null
-                                                                : it[id] || null
+                                                                : it[colId] || null
                                                         }
                                                         item={it}
                                                     />
