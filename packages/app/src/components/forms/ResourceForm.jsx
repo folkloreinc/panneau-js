@@ -116,8 +116,12 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
 
     // Lisen to item value change
     useEffect(() => {
-        setValue(getInitialValue());
+        // setValue(getInitialValue());
     }, [getInitialValue, setValue]);
+
+    useEffect( () => {
+        console.log('item', item);
+    }, [item])
 
     return (
         <FormProvider value={value} setValue={setValue}>
