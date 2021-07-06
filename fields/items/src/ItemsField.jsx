@@ -27,7 +27,7 @@ const propTypes = {
     newItemDefaultValue: PropTypes.func,
     noItemLabel: PanneauPropTypes.label,
     addItemLabel: PanneauPropTypes.label,
-    itemFieldLabel: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.label]),
+    itemLabel: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.label]),
     itemComponent: PropTypes.elementType,
     itemProps: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
     itemFields: PanneauPropTypes.fields,
@@ -58,13 +58,7 @@ const defaultProps = {
     addItemLabel: (
         <FormattedMessage defaultMessage="Add an item" description="Button label in items field" />
     ),
-    itemFieldLabel: ({ index }) => (
-        <FormattedMessage
-            defaultMessage="#{index}"
-            description="Item label in items field"
-            values={{ index }}
-        />
-    ),
+    itemLabel: null,
     itemComponent: null,
     itemProps: null,
     itemFields: null,
@@ -88,7 +82,7 @@ const ItemsField = ({
     newItemDefaultValue,
     noItemLabel,
     addItemLabel,
-    itemFieldLabel,
+    itemLabel,
     itemComponent: ItemComponent,
     itemProps,
     itemFields,
@@ -210,17 +204,19 @@ const ItemsField = ({
         const currentType = (types || []).find(({ id: typeId }) => itemType === typeId) || null;
 
         const renderedItemLabel = renderItemLabel !== null ? renderItemLabel(index) : null;
+        const itemLabelWithCount = typeof itemLabel === 'function' ? itemLabel({ index: index + 1 }) : itemLabel;
+        const finalItemLabel = itemLabelWithCount !== null ? `${itemLabelWithCount} ` : '';
 
         const defaultItemLabel =
             currentType !== null ? (
                 <span>
                     <Label>
-                        {itemFieldLabel({ index: index + 1 })} - {currentType.name}
+                        {`${finalItemLabel}#${index + 1}`} - {currentType.name}
                     </Label>
                 </span>
             ) : (
                 <span>
-                    <Label>{itemFieldLabel({ index: index + 1 })}</Label>
+                    <Label>{`${finalItemLabel}#${index + 1}`}</Label>
                 </span>
             );
 
