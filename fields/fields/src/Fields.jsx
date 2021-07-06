@@ -90,7 +90,7 @@ const Fields = ({
             fieldValue = value;
         }
 
-        if (defaultValue !== null && (typeof fieldValue === 'undefined' || fieldValue === null)) {
+        if (defaultValue !== null && typeof fieldValue === 'undefined') {
             fieldValue = defaultValue;
         }
 
