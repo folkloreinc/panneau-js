@@ -71,7 +71,7 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
         return item !== null
             ? item
             : finalFields.reduce(
-                  (defaultValues, { name, default_value: defaultValue = null }) =>
+                  (defaultValues, { name, defaultValue = null }) =>
                       defaultValue !== null
                           ? {
                                 ...defaultValues,

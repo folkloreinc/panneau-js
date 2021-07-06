@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SketchPicker } from 'react-color';
 import tinycolor from 'tinycolor2';
+
 import styles from './styles.module.scss';
 
 const propTypes = {

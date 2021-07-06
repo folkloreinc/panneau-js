@@ -83,7 +83,7 @@ const SelectField = ({
             {...props}
             menuPortalTarget={document.body}
             styles={{
-                container: () => ({ zIndex: 2, minWidth }),
+                container: () => ({ minWidth }),
                 menuPortal: (base) => ({ ...base, zIndex: 9999 }),
             }}
             value={optionValue || null}
