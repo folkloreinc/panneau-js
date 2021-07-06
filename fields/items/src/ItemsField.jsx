@@ -27,7 +27,7 @@ const propTypes = {
     newItemDefaultValue: PropTypes.func,
     noItemLabel: PanneauPropTypes.label,
     addItemLabel: PanneauPropTypes.label,
-    itemLabel: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.label]),
+    itemLabel: PanneauPropTypes.label,
     itemComponent: PropTypes.elementType,
     itemProps: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
     itemFields: PanneauPropTypes.fields,
@@ -204,19 +204,20 @@ const ItemsField = ({
         const currentType = (types || []).find(({ id: typeId }) => itemType === typeId) || null;
 
         const renderedItemLabel = renderItemLabel !== null ? renderItemLabel(index) : null;
-        const itemLabelWithCount = typeof itemLabel === 'function' ? itemLabel({ index: index + 1 }) : itemLabel;
-        const finalItemLabel = itemLabelWithCount !== null ? `${itemLabelWithCount} ` : '';
+        const finalItemLabel = <Label>{itemLabel}</Label>;
 
         const defaultItemLabel =
             currentType !== null ? (
                 <span>
-                    <Label>
-                        {`${finalItemLabel}#${index + 1}`} - {currentType.name}
-                    </Label>
+                    {finalItemLabel}
+                    { itemLabel !== null ? ' ' : null}
+                    {`#${index + 1}`} - {currentType.name}
                 </span>
             ) : (
                 <span>
-                    <Label>{`${finalItemLabel}#${index + 1}`}</Label>
+                    {finalItemLabel}
+                    { itemLabel !== null ? ' ' : null}
+                    {`#${index + 1}`}
                 </span>
             );
 
