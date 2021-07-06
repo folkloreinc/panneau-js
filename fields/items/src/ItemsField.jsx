@@ -369,7 +369,7 @@ const ItemsField = ({
                             ])}
                             onClick={types !== null ? onClickDropdown : null}
                         >
-                            {addItemLabel}
+                            <Label>{addItemLabel}</Label>
                         </Button>
                         <Dropdown
                             items={types.map(({ id = null, name: typeName = null }) => ({
@@ -397,7 +397,7 @@ const ItemsField = ({
                         }}
                         className="ms-auto"
                     >
-                        {addItemLabel}
+                        <Label>{addItemLabel}</Label>
                     </Button>
                 ) : null}
                 {types === null || types.length === 0 ? (
@@ -407,7 +407,7 @@ const ItemsField = ({
                         onClick={() => onClickAdd()}
                         className="ms-auto"
                     >
-                        {addItemLabel}
+                        <Label>{addItemLabel}</Label>
                     </Button>
                 ) : null}
             </div>

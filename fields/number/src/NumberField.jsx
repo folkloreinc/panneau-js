@@ -101,7 +101,7 @@ const NumberField = ({
                 type="number"
                 className={styles.input}
                 name={name}
-                value={value !== null ? value : ''}
+                value={value !== null ? `${value}` : ''}
                 min={min}
                 max={max}
                 step={float ? floatStep : step}
