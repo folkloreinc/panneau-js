@@ -56,7 +56,7 @@ const FormGroup = ({
     const vertical = horizontal || inline;
 
     const labelElement =
-        !withoutLabel && label !== null && label.length > 0 ? (
+        !withoutLabel && label !== null ? (
             <label
                 htmlFor={name}
                 className={classNames([
