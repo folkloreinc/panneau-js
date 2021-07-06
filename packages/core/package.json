@@ -88,7 +88,7 @@
         "@uppy/tus": "^1.8.2",
         "@uppy/webcam": "^1.8.1",
         "@uppy/xhr-upload": "^1.6.8",
-        "bootstrap": "next",
+        "bootstrap": "^5.0.2",
         "change-case": "^4.1.2",
         "classnames": "^2.2.6",
         "css-mediaquery": "^0.1.2",
