@@ -1,6 +1,6 @@
 {
     "name": "@panneau/displays",
-    "version": "1.0.0-alpha.94",
+    "version": "1.0.0-alpha.97",
     "description": "",
     "keywords": [
         "javascript"
@@ -55,13 +55,13 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.0.0-alpha.94",
-        "@panneau/display-boolean": "^1.0.0-alpha.94",
-        "@panneau/display-image": "^1.0.0-alpha.94",
-        "@panneau/display-label": "^1.0.0-alpha.94",
-        "@panneau/display-select": "^1.0.0-alpha.94",
-        "@panneau/display-text": "^1.0.0-alpha.94",
-        "@panneau/display-text-localized": "^1.0.0-alpha.94",
+        "@panneau/core": "^1.0.0-alpha.97",
+        "@panneau/display-boolean": "^1.0.0-alpha.97",
+        "@panneau/display-image": "^1.0.0-alpha.97",
+        "@panneau/display-label": "^1.0.0-alpha.97",
+        "@panneau/display-select": "^1.0.0-alpha.97",
+        "@panneau/display-text": "^1.0.0-alpha.97",
+        "@panneau/display-text-localized": "^1.0.0-alpha.97",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
