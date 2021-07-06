@@ -27,7 +27,7 @@ const propTypes = {
     newItemDefaultValue: PropTypes.func,
     noItemLabel: PanneauPropTypes.label,
     addItemLabel: PanneauPropTypes.label,
-    itemFieldLabel: PropTypes.oneOfType([PropTypes.func, PanneauPropTypes.label]),
+    itemLabel: PanneauPropTypes.label,
     itemComponent: PropTypes.elementType,
     itemProps: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
     itemFields: PanneauPropTypes.fields,
@@ -58,13 +58,7 @@ const defaultProps = {
     addItemLabel: (
         <FormattedMessage defaultMessage="Add an item" description="Button label in items field" />
     ),
-    itemFieldLabel: ({ index }) => (
-        <FormattedMessage
-            defaultMessage="#{index}"
-            description="Item label in items field"
-            values={{ index }}
-        />
-    ),
+    itemLabel: null,
     itemComponent: null,
     itemProps: null,
     itemFields: null,
@@ -88,7 +82,7 @@ const ItemsField = ({
     newItemDefaultValue,
     noItemLabel,
     addItemLabel,
-    itemFieldLabel,
+    itemLabel,
     itemComponent: ItemComponent,
     itemProps,
     itemFields,
@@ -210,17 +204,20 @@ const ItemsField = ({
         const currentType = (types || []).find(({ id: typeId }) => itemType === typeId) || null;
 
         const renderedItemLabel = renderItemLabel !== null ? renderItemLabel(index) : null;
+        const finalItemLabel = <Label>{itemLabel}</Label>;
 
         const defaultItemLabel =
             currentType !== null ? (
                 <span>
-                    <Label>
-                        {itemFieldLabel({ index: index + 1 })} - {currentType.name}
-                    </Label>
+                    {finalItemLabel}
+                    { itemLabel !== null ? ' ' : null}
+                    {`#${index + 1}`} - {currentType.name}
                 </span>
             ) : (
                 <span>
-                    <Label>{itemFieldLabel({ index: index + 1 })}</Label>
+                    {finalItemLabel}
+                    { itemLabel !== null ? ' ' : null}
+                    {`#${index + 1}`}
                 </span>
             );
 
@@ -369,7 +366,7 @@ const ItemsField = ({
                             ])}
                             onClick={types !== null ? onClickDropdown : null}
                         >
-                            {addItemLabel}
+                            <Label>{addItemLabel}</Label>
                         </Button>
                         <Dropdown
                             items={types.map(({ id = null, name: typeName = null }) => ({
@@ -397,7 +394,7 @@ const ItemsField = ({
                         }}
                         className="ms-auto"
                     >
-                        {addItemLabel}
+                        <Label>{addItemLabel}</Label>
                     </Button>
                 ) : null}
                 {types === null || types.length === 0 ? (
@@ -407,7 +404,7 @@ const ItemsField = ({
                         onClick={() => onClickAdd()}
                         className="ms-auto"
                     >
-                        {addItemLabel}
+                        <Label>{addItemLabel}</Label>
                     </Button>
                 ) : null}
             </div>
