@@ -1,12 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Column from './Column';
-
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -58,24 +55,25 @@ const FormGroup = ({
 }) => {
     const vertical = horizontal || inline;
 
-    const labelElement = (
-        <label
-            htmlFor={name}
-            className={classNames([
-                styles.label,
-                {
-                    'form-label': !inline,
-                    'col-form-label': inline || horizontal,
-                    'col-sm-4': horizontal,
-                    'px-2': horizontal,
-                    'text-nowrap': horizontal,
-                    [labelClassName]: labelClassName !== null,
-                },
-            ])}
-        >
-            {label}
-        </label>
-    );
+    const labelElement =
+        !withoutLabel && label !== null && label.length > 0 ? (
+            <label
+                htmlFor={name}
+                className={classNames([
+                    styles.label,
+                    {
+                        'form-label': !inline,
+                        'col-form-label': inline || horizontal,
+                        'col-sm-4': horizontal,
+                        'px-2': horizontal,
+                        'text-nowrap': horizontal,
+                        [labelClassName]: labelClassName !== null,
+                    },
+                ])}
+            >
+                {label}
+            </label>
+        ) : null;
 
     const helpElement =
         helpText !== null ? (
@@ -128,13 +126,13 @@ const FormGroup = ({
                 ])}
             >
                 <Column wrap={vertical} className={classNames({ 'col-sm-3': horizontal })}>
-                    {!withoutLabel && !labelAfter && label !== null ? labelElement : null}
+                    { !labelAfter ? labelElement : null}
                 </Column>
                 <Column wrap={vertical} className={classNames({ 'col-sm-9': horizontal })}>
                     {children}
                 </Column>
                 <Column wrap={vertical} className={classNames({ 'col-sm-3': horizontal })}>
-                    {!withoutLabel && labelAfter && label !== null ? labelElement : null}
+                    { labelAfter ? labelElement : null}
                 </Column>
                 {finalElements}
             </div>
