@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "1.0.0-alpha.94",
+    "version": "1.0.0-alpha.95",
     "description": "",
     "keywords": [
         "javascript"
@@ -62,11 +62,11 @@
         "@panneau/field-color": "^1.0.0-alpha.94",
         "@panneau/field-date": "^1.0.0-alpha.94",
         "@panneau/field-embed": "^1.0.0-alpha.94",
-        "@panneau/field-fields": "^1.0.0-alpha.94",
+        "@panneau/field-fields": "^1.0.0-alpha.95",
         "@panneau/field-html": "^1.0.0-alpha.94",
         "@panneau/field-input-group": "^1.0.0-alpha.94",
         "@panneau/field-items": "^1.0.0-alpha.94",
-        "@panneau/field-localized": "^1.0.0-alpha.94",
+        "@panneau/field-localized": "^1.0.0-alpha.95",
         "@panneau/field-number": "^1.0.0-alpha.94",
         "@panneau/field-radios": "^1.0.0-alpha.94",
         "@panneau/field-select": "^1.0.0-alpha.94",
