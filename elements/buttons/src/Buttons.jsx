@@ -41,6 +41,7 @@ const Buttons = ({ items, size, renderButton, onClickButton, buttonClassName, cl
             },
         ])}
         role="group"
+        style={{ zIndex: 0 }}
     >
         {isArray(items)
             ? items.map((button, index) => {
