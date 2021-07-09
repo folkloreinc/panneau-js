@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-cards",
-    "version": "1.0.0-alpha.97",
+    "version": "1.0.0-alpha.106",
     "description": "Cards list",
     "keywords": [
         "javascript"
@@ -58,9 +58,9 @@
         "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^1.0.0-alpha.97",
         "@panneau/element-button": "^1.0.0-alpha.97",
-        "@panneau/element-buttons": "^1.0.0-alpha.97",
+        "@panneau/element-buttons": "^1.0.0-alpha.106",
         "@panneau/element-card": "^1.0.0-alpha.97",
-        "@panneau/element-item-actions": "^1.0.0-alpha.97",
+        "@panneau/element-item-actions": "^1.0.0-alpha.106",
         "@panneau/element-label": "^1.0.0-alpha.97",
         "@panneau/element-loading": "^1.0.0-alpha.97",
         "@panneau/element-pagination": "^1.0.0-alpha.97",
