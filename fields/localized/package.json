@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-localized",
-    "version": "1.0.0-alpha.97",
+    "version": "1.0.0-alpha.106",
     "description": "A localized field",
     "keywords": [
         "javascript"
@@ -54,7 +54,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^1.0.0-alpha.97",
-        "@panneau/element-buttons": "^1.0.0-alpha.97",
+        "@panneau/element-buttons": "^1.0.0-alpha.106",
         "@panneau/element-form-group": "^1.0.0-alpha.97",
         "@panneau/element-label": "^1.0.0-alpha.97",
         "@panneau/field-input-group": "^1.0.0-alpha.97",
