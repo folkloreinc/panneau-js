@@ -17,12 +17,6 @@ msgctxt "+6cCPF"
 msgid "Error 403"
 msgstr "Erreur 403"
 
-# Item label in items field
-#: 2/F1Q7
-msgctxt "2/F1Q7"
-msgid "#{index}"
-msgstr "#{index}"
-
 # Now date time message
 #: 3na7F8
 msgctxt "3na7F8"

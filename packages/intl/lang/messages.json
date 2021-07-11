@@ -3,10 +3,6 @@
     "defaultMessage": "Error 403",
     "description": "Error page meta title"
   },
-  "2/F1Q7": {
-    "defaultMessage": "#{index}",
-    "description": "Item label in items field"
-  },
   "3na7F8": {
     "defaultMessage": "Now",
     "description": "Now date time message"
