@@ -41,6 +41,8 @@ const propTypes = {
     withoutCollapse: PropTypes.bool,
     withoutSort: PropTypes.bool,
 
+    addItemDisabled: PropTypes.bool,
+
     inline: PropTypes.bool,
 };
 
@@ -71,6 +73,8 @@ const defaultProps = {
 
     withoutCollapse: false,
     withoutSort: false,
+    
+    addItemDisabled: false,
 
     inline: false,
 };
@@ -95,6 +99,8 @@ const ItemsField = ({
 
     withoutCollapse,
     withoutSort,
+
+    addItemDisabled,
 
     inline,
 }) => {
@@ -373,6 +379,7 @@ const ItemsField = ({
                                 id,
                                 label: typeName || 'label',
                                 type: 'button',
+                                disabled: addItemDisabled,
                                 onClick: () => {
                                     onClickAdd({ type: id });
                                     setDropdownOpened(false);
@@ -387,6 +394,7 @@ const ItemsField = ({
                     <Button
                         theme="primary"
                         outline
+                        disabled={addItemDisabled}
                         onClick={() => {
                             onClickAdd({
                                 type: types[0].id || null,
@@ -401,6 +409,7 @@ const ItemsField = ({
                     <Button
                         theme="primary"
                         outline
+                        disabled={addItemDisabled}
                         onClick={() => onClickAdd()}
                         className="ms-auto"
                     >
