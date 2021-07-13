@@ -16,14 +16,14 @@ import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
     className: PropTypes.string,
-    value: PropTypes.oneOf(
+    value: PropTypes.oneOf([
         PropTypes.array,
         PropTypes.shape({
             filename: PropTypes.string,
             size: PropTypes.number,
             url: PropTypes.string,
         }),
-    ),
+    ]),
     types: PropTypes.arrayOf(PropTypes.oneOf(['audio', 'image', 'video'])),
     sources: PropTypes.arrayOf(
         PropTypes.oneOf(['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive']),

@@ -6,6 +6,7 @@ export { default as Embed } from '@panneau/field-embed';
 export { default as Fields } from '@panneau/field-fields';
 export { default as Html } from '@panneau/field-html';
 export { default as InputGroup } from '@panneau/field-input-group';
+export { default as Item } from '@panneau/field-item';
 export { default as Items } from '@panneau/field-items';
 export { default as Localized } from '@panneau/field-localized';
 export { default as Number } from '@panneau/field-number';

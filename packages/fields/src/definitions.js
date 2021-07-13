@@ -7,6 +7,7 @@ import { definition as Embed } from '@panneau/field-embed';
 import { definition as Fields } from '@panneau/field-fields';
 import { definition as Html } from '@panneau/field-html';
 import { definition as InputGroup } from '@panneau/field-input-group';
+import { definition as Item } from '@panneau/field-item';
 import { definition as Items } from '@panneau/field-items';
 import { definition as Localized } from '@panneau/field-localized';
 import { definition as Number } from '@panneau/field-number';
@@ -29,6 +30,7 @@ export default [
     Fields,
     Html,
     InputGroup,
+    Item,
     Items,
     Localized,
     Number,
