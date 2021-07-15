@@ -211,8 +211,6 @@ const ItemField = ({
     const itemDescription = value !== null ? getItemDescription(value, itemDescriptionPath) : null;
     const itemImage = value !== null ? getItemImage(value, itemImagePath) : null;
 
-    console.log('item', name);
-
     return (
         <div className={className}>
             {value !== null ? (

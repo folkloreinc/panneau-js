@@ -9,7 +9,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 // import classNames from 'classnames';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { defineMessage, useIntl } from 'react-intl';
-
 import styles from './styles.module.scss';
 import './styles/datepicker.global.scss';
 
@@ -91,6 +90,10 @@ const DateTimeField = ({
             setLoadedLocale(localeName);
         });
     }, [locale, setLoadedLocale]);
+
+    useEffect(() => {
+        setDateValue(value !== null ? parse(value) : null);
+    }, [value, setDateValue]);
 
     const TextFieldComponent = (
         <TextField
