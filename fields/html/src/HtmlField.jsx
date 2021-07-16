@@ -95,8 +95,8 @@ const HtmlField = ({
 
     const onQuillChange = useCallback(
         (newValue, delta, source) => {
-            if (onChange !== null) {
-                console.log('quill value', newValue, delta, source);
+            if (onChange !== null && source === 'user') {
+                // console.log('quill value', newValue, delta, source);
                 onChange(newValue);
             }
         },
