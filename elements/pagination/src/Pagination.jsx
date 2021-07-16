@@ -10,6 +10,7 @@ const propTypes = {
     lastPage: PropTypes.number,
     total: PropTypes.number,
     url: PropTypes.string,
+    maxPages: PropTypes.number,
     withPreviousNext: PropTypes.bool,
     withCount: PropTypes.bool,
     align: PropTypes.oneOf(['left', 'right']),
@@ -28,6 +29,7 @@ const defaultProps = {
     lastPage: 1,
     total: null,
     url: null,
+    maxPages: 8,
     withPreviousNext: false,
     withCount: false,
     align: 'right',
@@ -53,6 +55,7 @@ const PaginationMenu = ({
     lastPage,
     total,
     url,
+    maxPages,
     withPreviousNext,
     withCount,
     align,
@@ -74,7 +77,26 @@ const PaginationMenu = ({
                 : null,
         [url],
     );
-    const pages = [...Array(lastPage).keys()].map((it, idx) => idx + 1);
+
+    const pageNumbers = Array.from({ length: parseInt(lastPage, 10) }, (_, i) => i + 1);
+    const stripPages = maxPages !== null && lastPage > maxPages;
+    const startPage = stripPages
+        ? Math.min(Math.max(page - maxPages / 2, 1), lastPage - maxPages)
+        : null;
+    const endPage = stripPages ? startPage + maxPages : null;
+    const pages = stripPages
+        ? pageNumbers.reduce((selectedPages, pageNumber) => {
+              if (pageNumber === 1 && startPage - 1 > 1) {
+                  return [pageNumber, '...'];
+              }
+              if (pageNumber === lastPage && endPage + 1 < lastPage) {
+                  return [...selectedPages, '...', pageNumber];
+              }
+              return pageNumber >= startPage && pageNumber <= endPage
+                  ? [...selectedPages, pageNumber]
+                  : selectedPages;
+          }, [])
+        : pageNumbers;
 
     return (
         <nav
@@ -142,12 +164,13 @@ const PaginationMenu = ({
                     </li>
                 ) : null}
 
-                {pages.map((pageNumber) => (
+                {pages.map((pageNumber, index) => (
                     <li
-                        key={`page-${pageNumber}`}
+                        key={`page-${pageNumber}-${index}`}
                         className={classNames([
                             'page-item',
                             {
+                                disabled: pageNumber === '...',
                                 active: pageNumber === page,
                                 [itemClassName]: itemClassName !== null,
                             },
@@ -160,8 +183,12 @@ const PaginationMenu = ({
                                     [linkClassName]: linkClassName !== null,
                                 },
                             ])}
-                            href={getUrl(pageNumber)}
-                            onClick={onClickPage !== null ? () => onClickPage(pageNumber) : null}
+                            href={pageNumber !== '...' ? getUrl(pageNumber) : '#'}
+                            onClick={
+                                pageNumber !== '...' && onClickPage !== null
+                                    ? () => onClickPage(pageNumber)
+                                    : null
+                            }
                         >
                             {pageNumber}
                         </Link>
