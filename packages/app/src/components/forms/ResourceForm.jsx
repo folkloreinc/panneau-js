@@ -82,7 +82,15 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
               );
     }, [item, type, finalFields]);
 
-    const [value, setValue] = useState(getInitialValue());
+    const [value, setValueState] = useState(getInitialValue());
+
+    const setValue = useCallback(
+        (newValue) => {
+            console.log(newValue); // eslint-disable-line
+            setValueState(newValue);
+        },
+        [setValueState],
+    );
 
     const { fields, onSubmit, status, generalError, errors } = useForm({
         fields: finalFields,
