@@ -81,7 +81,9 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
                   type !== null ? { type } : null,
               );
     }, [item, type, finalFields]);
+
     const [value, setValue] = useState(getInitialValue());
+
     const { fields, onSubmit, status, generalError, errors } = useForm({
         fields: finalFields,
         value,
@@ -116,7 +118,8 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
 
     // Lisen to item value change
     useEffect(() => {
-        setValue(getInitialValue());
+        // console.log('get initial value ffs'); // eslint-disable-line
+        // setValue(getInitialValue());
     }, [getInitialValue, setValue]);
 
     return (
