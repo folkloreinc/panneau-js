@@ -31,39 +31,30 @@ const propTypes = {
 const defaultProps = {
     feedback: null,
     errors: null,
-
     value: null,
     placeholder: null,
     type: null,
     inline: false,
-
     onChange: null,
     onFocus: null,
     onBlur: null,
-
     ckOptions: null,
-
     quillOptions: null,
-
     className: null,
 };
 
 const HtmlField = ({
     feedback,
     errors,
-
     value,
     placeholder,
     type,
     inline,
-
     onChange,
     onFocus,
     onBlur,
-
     quillOptions,
     ckOptions,
-
     className,
 }) => {
     const usingCKeditor = type === 'ck-editor';
@@ -87,7 +78,7 @@ const HtmlField = ({
         (event, editor) => {
             const data = editor.getData();
             if (onChange !== null) {
-                onChange(data);
+                onChange(data === '' ? null : data);
             }
         },
         [onChange],
@@ -96,8 +87,7 @@ const HtmlField = ({
     const onQuillChange = useCallback(
         (newValue, delta, source) => {
             if (onChange !== null && source === 'user') {
-                // console.log('quill value', newValue, delta, source);
-                onChange(newValue);
+                onChange(newValue === '<p><br></p>' ? null : newValue);
             }
         },
         [onChange],
@@ -130,6 +120,7 @@ const HtmlField = ({
                 theme={inline ? 'bubble' : 'snow'}
                 onChange={onQuillChange}
                 placeholder={placeholder}
+                defaultValue={null}
                 {...commonProps}
                 {...quillOptions}
             />
