@@ -64,58 +64,60 @@ const Form = ({
 }) => (
     <form action={action} method={method} onSubmit={onSubmit} className={className}>
         {children}
-        <div className="mt-4 d-flex align-items-center">
-            {!withoutStatus && status !== null ? <FormStatus status={status} /> : null}
-            {!withoutActions ? (
-                <div className="ms-auto d-flex align-items-center">
-                    {actions}
-                    {onCancel !== null || onCancelHref !== null ? (
-                        <Button
-                            type="button"
-                            onClick={onCancel}
-                            href={onCancelHref}
-                            theme="secondary"
-                            outline
-                            disabled={status === 'loading'}
-                            className={classNames([
-                                'mr-2',
-                                {
-                                    [cancelClassName]: cancelClassName !== null,
-                                },
-                            ])}
-                        >
-                            <FormattedMessage defaultMessage="Cancel" description="Button label" />
-                        </Button>
-                    ) : null}
-                    {buttons !== null ? (
-                        <Buttons
-                            buttons={buttons}
-                            className={classNames({
-                                // 'ml-auto': actions === null,
-                                [buttonsClassName]: buttonsClassName !== null,
-                            })}
-                        />
-                    ) : (
-                        <Button
-                            type="submit"
-                            theme="primary"
-                            size="lg"
-                            label={
-                                submitButtonLabel || (
-                                    <FormattedMessage
-                                        defaultMessage="Submit"
-                                        description="Button label"
-                                    />
-                                )
-                            }
-                            className={classNames({
-                                'ms-auto': actions === null,
-                            })}
-                        />
-                    )}
-                </div>
-            ) : null}
-        </div>
+        {(!withoutStatus && status !== null) || (!withoutActions) ? (
+            <div className="mt-4 d-flex align-items-center">
+                {!withoutStatus && status !== null ? <FormStatus status={status} /> : null}
+                {!withoutActions ? (
+                    <div className="ms-auto d-flex align-items-center">
+                        {actions}
+                        {onCancel !== null || onCancelHref !== null ? (
+                            <Button
+                                type="button"
+                                onClick={onCancel}
+                                href={onCancelHref}
+                                theme="secondary"
+                                outline
+                                disabled={status === 'loading'}
+                                className={classNames([
+                                    'mr-2',
+                                    {
+                                        [cancelClassName]: cancelClassName !== null,
+                                    },
+                                ])}
+                            >
+                                <FormattedMessage defaultMessage="Cancel" description="Button label" />
+                            </Button>
+                        ) : null}
+                        {buttons !== null ? (
+                            <Buttons
+                                buttons={buttons}
+                                className={classNames({
+                                    // 'ml-auto': actions === null,
+                                    [buttonsClassName]: buttonsClassName !== null,
+                                })}
+                            />
+                        ) : (
+                            <Button
+                                type="submit"
+                                theme="primary"
+                                size="lg"
+                                label={
+                                    submitButtonLabel || (
+                                        <FormattedMessage
+                                            defaultMessage="Submit"
+                                            description="Button label"
+                                        />
+                                    )
+                                }
+                                className={classNames({
+                                    'ms-auto': actions === null,
+                                })}
+                            />
+                        )}
+                    </div>
+                ) : null}
+            </div>
+        ) : null }
     </form>
 );
 

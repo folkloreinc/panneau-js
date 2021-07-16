@@ -51,6 +51,8 @@ const ResourceFilters = ({ filters, value, onChange, withContainer, withReset, c
                 },
                 'justify-content-start',
                 'align-items-start',
+                'flex-column',
+                'flex-md-row',
             ])}
             theme={background}
             withoutCollapse
@@ -58,7 +60,7 @@ const ResourceFilters = ({ filters, value, onChange, withContainer, withReset, c
             {filters.map(({ id, component, ...filterProps }, index) => {
                 const FilterComponent = getComponentFromName(component, FilterComponents, null);
                 return FilterComponent !== null ? (
-                    <FormGroup label={filterProps.label}>
+                    <FormGroup label={filterProps.label} className="me-4">
                         <FilterComponent
                             {...filterProps}
                             key={`filter-${id}-${index + 1}`}

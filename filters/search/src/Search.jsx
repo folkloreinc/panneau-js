@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useFieldComponent } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
@@ -44,13 +44,13 @@ const SearchFilter = ({ parameterName, value, onChange, className }) => {
         },
         [parameterName, value, searchValue],
     );
-    const onReset = useCallback(() => {
-        const newValue = value !== null ? omit(value, [parameterName]) : null;
-        setSearchValue(null);
-        if (onChange !== null) {
-            onChange(newValue);
-        }
-    }, [parameterName, value, setSearchValue]);
+    // const onReset = useCallback(() => {
+    //     const newValue = value !== null ? omit(value, [parameterName]) : null;
+    //     setSearchValue(null);
+    //     if (onChange !== null) {
+    //         onChange(newValue);
+    //     }
+    // }, [parameterName, value, setSearchValue]);
     return (
         <Form method="GET" className={className} onSubmit={onSubmit} withoutActions>
             <div className="input-group">
@@ -60,7 +60,7 @@ const SearchFilter = ({ parameterName, value, onChange, className }) => {
                     value={searchValue}
                     onChange={setSearchValue}
                 />
-                {!isEmpty(searchValue) ? (
+                {/* {!isEmpty(searchValue) ? (
                     <Button
                         type="button"
                         onClick={onReset}
@@ -72,7 +72,7 @@ const SearchFilter = ({ parameterName, value, onChange, className }) => {
                     >
                         <FontAwesomeIcon icon={faTimes} />
                     </Button>
-                ) : null}
+                ) : null} */}
 
                 <Button theme="secondary" type="submit">
                     <FontAwesomeIcon icon={faSearch} />
