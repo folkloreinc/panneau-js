@@ -72,6 +72,7 @@
         "@panneau/element-menu": "^1.0.0-alpha.108",
         "@panneau/element-navbar": "^1.0.0-alpha.108",
         "@panneau/element-pagination": "^1.0.0-alpha.116",
+        "@panneau/element-radios": "^1.0.0-alpha.108",
         "@panneau/fields": "^1.0.0-alpha.115",
         "@panneau/filters": "^1.0.0-alpha.108",
         "@panneau/forms": "^1.0.0-alpha.108",

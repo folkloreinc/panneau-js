@@ -27,7 +27,7 @@ const defaultProps = {
 };
 
 const ResourceItemsList = ({ resource, query, baseUrl, onQueryChange, paginated }) => {
-    const { index: { component: listComponent = null, filters = null, ...listProps } = {} } =
+    const { index: { component: listComponent = null, ...listProps } = {}, filters = null } =
         resource;
     const { background: theme = null } = usePanneauColorScheme();
     const ListComponents = useListsComponents();
@@ -50,7 +50,6 @@ const ResourceItemsList = ({ resource, query, baseUrl, onQueryChange, paginated 
                     filters={filters}
                     value={query}
                     onChange={onQueryChange}
-                    className="mb-4"
                 />
             ) : null}
             {ListComponent !== null ? (

@@ -1,11 +1,8 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { getSelectOptions } from '@panneau/core/utils';
-
-import styles from './styles.module.scss';
+import Radios from '@panneau/element-radios';
 
 const propTypes = {
     name: PropTypes.string,
@@ -38,57 +35,18 @@ const RadiosField = ({
     buttonClassName,
     onChange,
     uncheckable,
-}) => {
-    const finalOptions = useMemo(() => getSelectOptions(options), [options]);
-
-    return (
-        <div
-            className={classNames([
-                'btn-group',
-                'btn-group-toggle',
-                styles.container,
-                {
-                    [className]: className !== null,
-                },
-            ])}
-            data-toggle="buttons"
-        >
-            {finalOptions.map(({ value: optionValue, label }, index) => (
-                <label
-                    key={`radio-${optionValue}-${index + 1}`}
-                    className={classNames([
-                        'btn',
-                        withBackground ? 'btn-secondary' : 'btn-outline-secondary',
-                        {
-                            active: optionValue === value,
-                            [buttonClassName]: buttonClassName !== null,
-                        },
-                    ])}
-                >
-                    <input
-                        type="radio"
-                        name={name}
-                        className="btn-check"
-                        autoComplete="off"
-                        value={optionValue || ''}
-                        onClick={(e) => {
-                            if (onChange !== null) {
-                                if (uncheckable && optionValue === value) {
-                                    onChange(null);
-                                } else {
-                                    onChange(e.currentTarget.checked ? optionValue : null);
-                                }
-                            }
-                        }}
-                        onChange={() => {}}
-                        checked={optionValue === value}
-                    />
-                    {label}
-                </label>
-            ))}
-        </div>
-    );
-};
+}) => (
+    <Radios
+        name={name}
+        value={value}
+        options={options}
+        withBackground={withBackground}
+        className={className}
+        buttonClassName={buttonClassName}
+        onChange={onChange}
+        uncheckable={uncheckable}
+    />
+);
 
 RadiosField.propTypes = propTypes;
 RadiosField.defaultProps = defaultProps;

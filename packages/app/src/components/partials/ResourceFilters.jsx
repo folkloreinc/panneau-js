@@ -1,8 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { useFiltersComponents } from '@panneau/core/contexts';
+import { useFiltersComponents, usePanneauColorScheme } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import Navbar from '@panneau/element-navbar';
+import FormGroup from '@panneau/element-form-group';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
@@ -33,6 +34,7 @@ const defaultProps = {
 
 const ResourceFilters = ({ filters, value, onChange, withContainer, withReset, className }) => {
     const FilterComponents = useFiltersComponents();
+    const { background } = usePanneauColorScheme();
 
     const onReset = useCallback(() => {
         if (onChange !== null) {
@@ -47,19 +49,24 @@ const ResourceFilters = ({ filters, value, onChange, withContainer, withReset, c
                     'navbar-expand-md': withContainer,
                     [className]: className !== null,
                 },
+                'justify-content-start',
+                'align-items-start',
             ])}
+            theme={background}
             withoutCollapse
         >
             {filters.map(({ id, component, ...filterProps }, index) => {
                 const FilterComponent = getComponentFromName(component, FilterComponents, null);
                 return FilterComponent !== null ? (
-                    <FilterComponent
-                        {...filterProps}
-                        key={`filter-${id}-${index + 1}`}
-                        id={id}
-                        value={value}
-                        onChange={onChange}
-                    />
+                    <FormGroup label={filterProps.label}>
+                        <FilterComponent
+                            {...filterProps}
+                            key={`filter-${id}-${index + 1}`}
+                            id={id}
+                            value={value}
+                            onChange={onChange}
+                        />
+                    </FormGroup>
                 ) : null;
             })}
             {withReset ? (

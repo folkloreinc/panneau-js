@@ -31,7 +31,11 @@ export default {
             settings: {
                 hiddenInForm: true,
             },
-            options: [{ label: 'Cool label 1', value: 1}, { label: 'Cool label 2', value: 2}, { label: 'Cool label 3', value: 3}]
+            options: [
+                { label: 'Cool label 1', value: 1 },
+                { label: 'Cool label 2', value: 2 },
+                { label: 'Cool label 3', value: 3 },
+            ],
         },
         {
             name: 'title',
@@ -86,7 +90,7 @@ export default {
             name: 'color',
             label: 'Color',
             component: 'color',
-            defaultValue: { color: '#cc00cc', alpha: 1 }
+            defaultValue: { color: '#cc00cc', alpha: 1 },
         },
         {
             name: 'published',
@@ -98,7 +102,6 @@ export default {
             label: 'Publish at',
             component: 'date',
         },
-
     ],
 
     components: {
@@ -121,6 +124,68 @@ export default {
             component: 'normal',
         },
     },
+
+    filters: [
+        {
+            param: 'choses',
+            name: 'select-filter-chose',
+            label: 'Choses',
+            placeholder: 'Sélectionner une chose',
+            component: 'select',
+            // settings: {
+            //     hiddenInForm: true,
+            // },
+            options: [
+                { label: 'Cool label 1', value: 1 },
+                { label: 'Cool label 2', value: 2 },
+                { label: 'Cool label 3', value: 3 },
+            ],
+        },
+
+        {
+            param: 'choix',
+            name: 'radios-filter',
+            label: 'Choisir',
+            component: 'radios',
+            // settings: {
+            //     hiddenInForm: true,
+            // },
+            options: [
+                { label: 'Choix 1', value: 1 },
+                { label: 'Choix Deux', value: 2 },
+                { label: 'Chrois', value: 3 },
+            ],
+        },
+
+        {
+            param: 'q',
+            name: 'search-filter',
+            label: 'Recherche',
+            placeholder: 'Rechercher',
+            component: 'search',
+            // settings: {
+            //     hiddenInForm: true,
+            // },
+        },
+
+        {
+            param: 'trucs',
+            name: 'select-filter-truc',
+            label: 'Trucs',
+            placeholder: 'Sélectionner un truc',
+            component: 'select',
+            // settings: {
+            //     hiddenInForm: true,
+            // },
+
+            options: [
+                { label: 'Truc 1', value: 1 },
+                { label: 'Truc 2', value: 2 },
+                { label: 'Truc 3', value: 3 },
+                { label: 'Truc 4!', value: 4 },
+            ],
+        },
+    ],
 
     index: {
         columns: [
