@@ -70,7 +70,7 @@ const HtmlField = ({
     const CKEditor = useCKEditor({ disabled: !usingCKeditor });
     const CKEditorBuild = useCKEditorBuild({ disabled: !usingCKeditor, inline });
     const Quill = useQuill({ disabled: usingCKeditor, inline });
-    const finalValue = value !== null ? value : '';
+    const CKValue = value !== null ? value : '';
 
     const finalClassName = inline
         ? classNames([
@@ -93,6 +93,13 @@ const HtmlField = ({
         [onChange],
     );
 
+    const onQuillChange = useCallback((newValue) => {
+        if (onChange !== null) {
+            console.log('quill value', newValue);
+            onChange(newValue);
+        }
+    });
+
     const commonProps = {
         onFocus,
         onBlur,
@@ -103,7 +110,7 @@ const HtmlField = ({
             <div className={finalClassName}>
                 <CKEditor
                     editor={CKEditorBuild}
-                    data={finalValue}
+                    data={CKValue}
                     config={{ placeholder }}
                     onChange={onCkEditorChange}
                     {...commonProps}
@@ -116,9 +123,9 @@ const HtmlField = ({
         Quill !== null ? (
             <Quill
                 className={finalClassName}
-                value={finalValue}
+                value={value}
                 theme={inline ? 'bubble' : 'snow'}
-                onChange={onChange}
+                onChange={onQuillChange}
                 placeholder={placeholder}
                 {...commonProps}
                 {...quillOptions}

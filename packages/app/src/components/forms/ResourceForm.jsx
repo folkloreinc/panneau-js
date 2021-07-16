@@ -86,7 +86,7 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
 
     const setValue = useCallback(
         (newValue) => {
-            console.log(newValue); // eslint-disable-line
+            console.log('new value in resource form', newValue); // eslint-disable-line
             setValueState(newValue);
         },
         [setValueState],

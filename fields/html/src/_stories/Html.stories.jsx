@@ -10,7 +10,12 @@ export default {
 const Container = (props) => {
     const [value, setValue] = useState(null);
     return (
-        <HtmlField {...props} value={value} onChange={setValue} />
+        <>
+            <button type="button" onClick={() => setValue(null)}>
+                Reset
+            </button>
+            <HtmlField {...props} value={value} onChange={setValue} />
+        </>
     );
 };
 
