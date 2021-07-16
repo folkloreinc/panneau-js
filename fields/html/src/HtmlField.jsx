@@ -93,12 +93,15 @@ const HtmlField = ({
         [onChange],
     );
 
-    const onQuillChange = useCallback((newValue) => {
-        if (onChange !== null) {
-            console.log('quill value', newValue);
-            onChange(newValue);
-        }
-    });
+    const onQuillChange = useCallback(
+        (newValue, delta, source) => {
+            if (onChange !== null) {
+                console.log('quill value', newValue, delta, source);
+                onChange(newValue);
+            }
+        },
+        [onChange],
+    );
 
     const commonProps = {
         onFocus,
