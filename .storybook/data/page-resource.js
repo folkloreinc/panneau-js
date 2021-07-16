@@ -127,10 +127,10 @@ export default {
 
     filters: [
         {
-            param: 'choses',
+            param: 'category',
             name: 'select-filter-chose',
-            label: 'Choses',
-            placeholder: 'Sélectionner une chose',
+            label: 'Catégorie',
+            // placeholder: 'Sélectionner une catégorie', // optional
             component: 'select',
             // settings: {
             //     hiddenInForm: true,
@@ -143,17 +143,24 @@ export default {
         },
 
         {
-            param: 'choix',
+            param: 'featured',
+            name: 'toggle-filter-test',
+            label: 'En vedette',
+            component: 'toggle',
+        },
+
+        {
+            param: 'status',
             name: 'radios-filter',
-            label: 'Choisir',
+            label: 'Statut',
             component: 'radios',
             // settings: {
             //     hiddenInForm: true,
             // },
             options: [
-                { label: 'Choix 1', value: 1 },
-                { label: 'Choix Deux', value: 2 },
-                { label: 'Chrois', value: 3 },
+                { label: 'Publié', value: 1 },
+                { label: 'Brouillon', value: 2 },
+                { label: 'Archivé', value: 3 },
             ],
         },
 
