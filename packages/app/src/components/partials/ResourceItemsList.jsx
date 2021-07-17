@@ -38,8 +38,12 @@ const ResourceItemsList = ({
     paginated,
 }) => {
     const {
-        index: { component: listComponent = null, showPagination = true, ...listProps } = {},
-        filters = null,
+        index: {
+            component: listComponent = null,
+            showPagination = true,
+            filters = [],
+            ...listProps
+        } = {},
     } = resource;
     const { background: theme = null } = usePanneauColorScheme();
     const ListComponents = useListsComponents();
