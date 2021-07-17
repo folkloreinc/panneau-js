@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-pagination",
-    "version": "1.0.0-alpha.116",
+    "version": "1.0.0-alpha.117",
     "description": "Pagination element",
     "keywords": [
         "javascript"
@@ -57,9 +57,9 @@
         "@panneau/core": "^1.0.0-alpha.108",
         "@panneau/element-label": "^1.0.0-alpha.108",
         "@panneau/element-link": "^1.0.0-alpha.108",
-        "query-string": "^7.0.0",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
+        "query-string": "^7.0.0",
         "react-intl": "^5.15.8"
     },
     "publishConfig": {

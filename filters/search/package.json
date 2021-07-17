@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-search",
-    "version": "1.0.0-alpha.108",
+    "version": "1.0.0-alpha.117",
     "description": "Search filter",
     "keywords": [
         "javascript"
@@ -57,7 +57,7 @@
         "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^1.0.0-alpha.108",
         "@panneau/element-button": "^1.0.0-alpha.108",
-        "@panneau/element-form": "^1.0.0-alpha.108",
+        "@panneau/element-form": "^1.0.0-alpha.117",
         "@panneau/field-text": "^1.0.0-alpha.108",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",

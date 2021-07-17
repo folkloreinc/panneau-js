@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-item",
-    "version": "1.0.0-alpha.109",
+    "version": "1.0.0-alpha.117",
     "description": "A repeatable abstract field",
     "keywords": [
         "javascript"
