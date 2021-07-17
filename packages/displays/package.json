@@ -1,6 +1,6 @@
 {
     "name": "@panneau/displays",
-    "version": "1.0.0-alpha.119",
+    "version": "1.0.0-alpha.122",
     "description": "",
     "keywords": [
         "javascript"
@@ -61,7 +61,7 @@
         "@panneau/display-label": "^1.0.0-alpha.119",
         "@panneau/display-select": "^1.0.0-alpha.119",
         "@panneau/display-text": "^1.0.0-alpha.119",
-        "@panneau/display-text-localized": "^1.0.0-alpha.119",
+        "@panneau/display-text-localized": "^1.0.0-alpha.122",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
