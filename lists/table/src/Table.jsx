@@ -7,6 +7,7 @@ import { getColumnsWithFields, getComponentFromName } from '@panneau/core/utils'
 import ItemActions from '@panneau/element-item-actions';
 import Loading from '@panneau/element-loading';
 import classNames from 'classnames';
+import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
@@ -89,7 +90,7 @@ const TableList = ({
                                         const {
                                             id: colId,
                                             component,
-                                            valueKey = null,
+                                            path = null,
                                             field = null,
                                             columnClassName = null,
                                             ...displayProps
@@ -130,6 +131,9 @@ const TableList = ({
                                             'span',
                                         );
 
+                                        const fieldValue =
+                                            path !== null ? get(it, path, null) : null;
+
                                         return (
                                             <td
                                                 className={classNames([
@@ -145,8 +149,8 @@ const TableList = ({
                                                         {...displayProps}
                                                         field={field}
                                                         value={
-                                                            valueKey !== null
-                                                                ? it[valueKey] || null
+                                                            fieldValue !== null
+                                                                ? fieldValue
                                                                 : it[colId] || null
                                                         }
                                                         item={it}
