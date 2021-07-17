@@ -1,3 +1,3 @@
-import Toggle from './Toggle';
+import ToggleFilter from './ToggleFilter';
 
-export default Toggle;
+export default ToggleFilter;

@@ -1,34 +1,39 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Radios from '@panneau/element-radios';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
-import Radios from '@panneau/element-radios';
 
 const propTypes = {
-    param: PropTypes.string,
+    name: PropTypes.string,
     options: PanneauPropTypes.selectOptions,
-    value: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+    value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     className: PropTypes.string,
 };
 
 const defaultProps = {
-    param: 'q',
+    name: 'radios',
+    value: null,
     options: [],
     className: null,
 };
 
-const RadiosFilter = ({ param, value, options, onChange, className }) => {
-    // console.log('hello', param, value, options); /* eslint-disable-line */
-
+const RadiosFilter = ({ name, value, options, onChange, className }) => {
     const onChangeOption = useCallback((option) => {
-        console.log({ param, option }); /* eslint-disable-line */
+        console.log({ name, option }); /* eslint-disable-line */
         onChange(option);
     });
 
     return (
         <div className={className}>
-            <Radios name={param} value={value} options={options} onChange={onChangeOption} />
+            <Radios
+                name={name}
+                value={value}
+                options={options}
+                onChange={onChangeOption}
+                uncheckable
+            />
         </div>
     );
 };

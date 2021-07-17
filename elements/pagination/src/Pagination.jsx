@@ -2,6 +2,7 @@
 import Link from '@panneau/element-link';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { stringify as stringifyQuery } from 'query-string';
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
@@ -10,6 +11,7 @@ const propTypes = {
     lastPage: PropTypes.number,
     total: PropTypes.number,
     url: PropTypes.string,
+    query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     maxPages: PropTypes.number,
     withPreviousNext: PropTypes.bool,
     withCount: PropTypes.bool,
@@ -29,9 +31,10 @@ const defaultProps = {
     lastPage: 1,
     total: null,
     url: null,
+    query: null,
     maxPages: 8,
     withPreviousNext: false,
-    withCount: false,
+    withCount: true,
     align: 'right',
     previousLabel: (
         <FormattedMessage defaultMessage="Previous" description="Pagination button label" />
@@ -50,12 +53,13 @@ const defaultProps = {
     onClickPage: null,
 };
 
-const PaginationMenu = ({
-    page,
-    lastPage,
-    total,
+const Pagination = ({
+    page: parentPage,
+    lastPage: parentLastPage,
+    total: parentTotal,
     url,
-    maxPages,
+    query,
+    maxPages: parentMaxPages,
     withPreviousNext,
     withCount,
     align,
@@ -68,14 +72,22 @@ const PaginationMenu = ({
     linkClassName,
     onClickPage,
 }) => {
+    const page = parseInt(parentPage, 10);
+    const lastPage = parseInt(parentLastPage, 10);
+    const total = parseInt(parentTotal, 10);
+    const maxPages = parseInt(parentMaxPages, 10);
+
     const getUrl = useCallback(
         (currentPage) =>
             url !== null
-                ? `${url}${
-                      url.indexOf('?') !== -1 ? `&page=${currentPage}` : `?page=${currentPage}`
-                  }`
+                ? `${url}?${stringifyQuery(
+                      { ...query, page: currentPage },
+                      {
+                          arrayFormat: 'bracket',
+                      },
+                  )}`
                 : null,
-        [url],
+        [url, query],
     );
 
     const pageNumbers = Array.from({ length: parseInt(lastPage, 10) }, (_, i) => i + 1);
@@ -244,7 +256,7 @@ const PaginationMenu = ({
     );
 };
 
-PaginationMenu.propTypes = propTypes;
-PaginationMenu.defaultProps = defaultProps;
+Pagination.propTypes = propTypes;
+Pagination.defaultProps = defaultProps;
 
-export default PaginationMenu;
+export default Pagination;

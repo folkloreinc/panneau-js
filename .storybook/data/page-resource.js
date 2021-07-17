@@ -126,70 +126,62 @@ export default {
     },
 
     filters: [
-        {
-            param: 'category',
-            name: 'select-filter-chose',
-            label: 'Catégorie',
-            // placeholder: 'Sélectionner une catégorie', // optional
-            component: 'select',
-            // settings: {
-            //     hiddenInForm: true,
-            // },
-            options: [
-                { label: 'Cool label 1', value: 1 },
-                { label: 'Cool label 2', value: 2 },
-                { label: 'Cool label 3', value: 3 },
-            ],
-        },
+        // {
+        //     param: 'category',
+        //     name: 'select-filter-chose',
+        //     label: 'Catégorie',
+        //     // placeholder: 'Sélectionner une catégorie', // optional
+        //     component: 'select',
+        //     // settings: {
+        //     //     hiddenInForm: true,
+        //     // },
+        //     options: [
+        //         { label: 'Cool label 1', value: 1 },
+        //         { label: 'Cool label 2', value: 2 },
+        //         { label: 'Cool label 3', value: 3 },
+        //     ],
+        // },
 
         {
-            param: 'featured',
-            name: 'toggle-filter-test',
-            label: 'En vedette',
+            name: 'featured',
+            // name: 'toggle-filter-test',
+            // label: 'En vedette',
             component: 'toggle',
         },
 
         {
-            param: 'status',
-            name: 'radios-filter',
-            label: 'Statut',
+            name: 'status',
+            // name: 'radios-filter',
+            // label: 'Statut',
             component: 'radios',
-            // settings: {
-            //     hiddenInForm: true,
-            // },
+            
             options: [
-                { label: 'Publié', value: 1 },
+                { label: 'Publié', value: 'published' },
                 { label: 'Brouillon', value: 2 },
                 { label: 'Archivé', value: 3 },
             ],
         },
 
         {
-            param: 'q',
-            name: 'search-filter',
-            label: 'Recherche',
+            name: 'q',
+            // name: 'search-filter',
+            // label: 'Recherche',
             placeholder: 'Rechercher',
             component: 'search',
-            // settings: {
-            //     hiddenInForm: true,
-            // },
+            
         },
 
         {
-            param: 'trucs',
-            name: 'select-filter-truc',
-            label: 'Trucs',
+            name: 'trucs',
+            // name: 'select-filter-truc',
+            // label: 'Trucs',
             placeholder: 'Sélectionner un truc',
             component: 'select',
-            // settings: {
-            //     hiddenInForm: true,
-            // },
-
             options: [
-                { label: 'Truc 1', value: 1 },
-                { label: 'Truc 2', value: 2 },
-                { label: 'Truc 3', value: 3 },
-                { label: 'Truc 4!', value: 4 },
+                { label: 'Truc 1', value: 'truc' },
+                { label: 'Truc 2', value: 'machin' },
+                { label: 'Truc 3', value: 'paul' },
+                { label: 'Truc 4!', value: 'john' },
             ],
         },
     ],

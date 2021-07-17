@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getSelectOptions } from '@panneau/core/utils';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
 
 const propTypes = {
     name: PropTypes.string,
@@ -50,39 +50,44 @@ const Radios = ({
             ])}
             data-toggle="buttons"
         >
-            {finalOptions.map(({ value: optionValue, label }, index) => (
-                <label
-                    key={`radio-${optionValue}-${index + 1}`}
-                    className={classNames([
-                        'btn',
-                        withBackground ? 'btn-secondary' : 'btn-outline-secondary',
-                        {
-                            active: optionValue === value,
-                            [buttonClassName]: buttonClassName !== null,
-                        },
-                    ])}
-                >
-                    <input
-                        type="radio"
-                        name={name}
-                        className="btn-check"
-                        autoComplete="off"
-                        value={optionValue || ''}
-                        onClick={(e) => {
-                            if (onChange !== null) {
-                                if (uncheckable && optionValue === value) {
-                                    onChange(null);
-                                } else {
-                                    onChange(e.currentTarget.checked ? optionValue : null);
+            {finalOptions.map(({ value: optionValue, label }, index) => {
+                // eslint-disable-next-line eqeqeq
+                const isCurrent = optionValue == value; // Loose to handle numeric values from parseQuery
+
+                return (
+                    <label
+                        key={`radio-${optionValue}-${index + 1}`}
+                        className={classNames([
+                            'btn',
+                            withBackground ? 'btn-secondary' : 'btn-outline-secondary',
+                            {
+                                active: isCurrent,
+                                [buttonClassName]: buttonClassName !== null,
+                            },
+                        ])}
+                    >
+                        <input
+                            type="radio"
+                            name={name}
+                            className="btn-check"
+                            autoComplete="off"
+                            value={optionValue || ''}
+                            onClick={(e) => {
+                                if (onChange !== null) {
+                                    if (uncheckable && isCurrent) {
+                                        onChange(null);
+                                    } else {
+                                        onChange(e.currentTarget.checked ? optionValue : null);
+                                    }
                                 }
-                            }
-                        }}
-                        onChange={() => {}}
-                        checked={optionValue === value}
-                    />
-                    {label}
-                </label>
-            ))}
+                            }}
+                            onChange={() => {}}
+                            checked={isCurrent}
+                        />
+                        {label}
+                    </label>
+                );
+            })}
         </div>
     );
 };

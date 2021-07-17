@@ -1,21 +1,21 @@
 /* eslint-disable */
 import React, { useState } from 'react';
 import FieldsProvider from '../../../../packages/fields';
-import Select from '../Select';
+import SelectFilter from '../SelectFilter';
 
 export default {
-    component: Select,
+    component: SelectFilter,
     title: 'Filters/Select',
     parameters: {
         intl: true,
     },
 };
 
-const FieldContainer = ({options}) => {
+const FieldContainer = ({ options }) => {
     const [value, setValue] = useState(null);
     return (
         <FieldsProvider>
-            <Select name="Select" value={value} options={options} onChange={setValue} />
+            <SelectFilter name="Select" value={value} options={options} onChange={setValue} />
         </FieldsProvider>
     );
 };

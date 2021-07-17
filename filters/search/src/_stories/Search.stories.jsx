@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import FieldsProvider from '../../../../packages/fields';
-import Search from '../Search';
+import SearchFilter from '../SearchFilter';
 
 export default {
-    component: Search,
+    component: SearchFilter,
     title: 'Filters/Search',
     parameters: {
         intl: true,
@@ -14,7 +14,7 @@ const FieldContainer = () => {
     const [value, setValue] = useState(null);
     return (
         <FieldsProvider>
-            <Search name="search" value={value} onChange={setValue} />
+            <SearchFilter name="search" value={value} onChange={setValue} />
         </FieldsProvider>
     );
 };

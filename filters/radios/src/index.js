@@ -1,3 +1,3 @@
-import Radios from './Radios';
+import RadiosFilter from './RadiosFilter';
 
-export default Radios;
+export default RadiosFilter;

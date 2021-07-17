@@ -1,13 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { faUndo } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useFiltersComponents, usePanneauColorScheme } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
-import Navbar from '@panneau/element-navbar';
 import FormGroup from '@panneau/element-form-group';
+import Navbar from '@panneau/element-navbar';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
-import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
     filters: PropTypes.arrayOf(
@@ -18,6 +19,7 @@ const propTypes = {
     ),
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onChange: PropTypes.func,
+    onReset: PropTypes.func,
     withContainer: PropTypes.bool,
     withReset: PropTypes.bool,
     className: PropTypes.string,
@@ -27,20 +29,36 @@ const defaultProps = {
     filters: [],
     value: null,
     onChange: null,
+    onReset: null,
     withContainer: false,
-    withReset: false,
+    withReset: true,
     className: null,
 };
 
-const ResourceFilters = ({ filters, value, onChange, withContainer, withReset, className }) => {
+const ResourceFilters = ({
+    filters,
+    value,
+    onChange,
+    onReset,
+    withContainer,
+    withReset,
+    className,
+}) => {
     const FilterComponents = useFiltersComponents();
     const { background } = usePanneauColorScheme();
 
-    const onReset = useCallback(() => {
-        if (onChange !== null) {
-            onChange(null);
+    const onFiltersReset = useCallback(() => {
+        if (onReset !== null) {
+            onReset(null);
         }
-    }, [onChange]);
+    }, [onReset]);
+
+    const hasActiveFilter = filters.reduce((isActive, item) => {
+        if (value !== null && value[item.name]) {
+            return true;
+        }
+        return isActive;
+    }, false);
 
     return (
         <Navbar
@@ -57,23 +75,36 @@ const ResourceFilters = ({ filters, value, onChange, withContainer, withReset, c
             theme={background}
             withoutCollapse
         >
-            {filters.map(({ id, component, ...filterProps }, index) => {
+            {filters.map(({ id, component, name, ...filterProps }, index) => {
                 const FilterComponent = getComponentFromName(component, FilterComponents, null);
+                const filterValue = value !== null && value[name] ? value[name] : null;
+                const onFilterChange = useCallback(
+                    (newFilterValue) => {
+                        if (name !== null && onChange !== null) {
+                            onChange({ ...value, [name]: newFilterValue });
+                        }
+                    },
+                    [onChange, name],
+                );
+
                 return FilterComponent !== null ? (
-                    <FormGroup label={filterProps.label} className="me-4">
+                    <FormGroup
+                        key={`filter-${id}-${index + 1}`}
+                        label={filterProps.label}
+                        className="me-4"
+                    >
                         <FilterComponent
                             {...filterProps}
-                            key={`filter-${id}-${index + 1}`}
                             id={id}
-                            value={value}
-                            onChange={onChange}
+                            value={filterValue}
+                            onChange={onFilterChange}
                         />
                     </FormGroup>
                 ) : null;
             })}
-            {withReset ? (
-                <Button theme="primary" onClick={onReset}>
-                    <FormattedMessage defaultMessage="Reset" description="Button label" />
+            {withReset && hasActiveFilter ? (
+                <Button theme="primary" onClick={onFiltersReset}>
+                    <FontAwesomeIcon icon={faUndo} />
                 </Button>
             ) : null}
         </Navbar>

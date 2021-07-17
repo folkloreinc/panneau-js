@@ -56,7 +56,7 @@ const defaultProps = {
     getItemDescription: (it, path) => get(it, path, null),
     getItemImage: (it, path) => get(it, path, null),
     itemLabelPath: 'label',
-    itemDescriptionPath: 'description',
+    itemDescriptionPath: null,
     itemImagePath: 'image',
     size: null,
     placeholder: null,

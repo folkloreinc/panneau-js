@@ -30,16 +30,31 @@ const ResourceIndexPage = ({ resource }) => {
 
     const resourceRoute = useResourceUrlGenerator(resource);
     const url = resourceRoute('index');
+
     const onQueryChange = useCallback(
         (submitQuery) => {
-            history.push(
-                `${url}?${stringifyQuery(submitQuery, {
-                    arrayFormat: 'bracket',
-                })}`,
+            const newQuery = Object.fromEntries(
+                Object.entries({ ...query, ...submitQuery }).filter(([_, v]) => v != null),
             );
+            const queryString = stringifyQuery(newQuery, {
+                arrayFormat: 'bracket',
+            });
+
+            history.push(`${url}?${queryString}`);
         },
-        [history, url],
+        [history, url, query],
     );
+
+    const onQueryReset = useCallback(() => {
+        const { page = null } = query || {};
+        const newQuery = paginated && page !== null ? { page } : null;
+        const queryString = stringifyQuery(newQuery, {
+            arrayFormat: 'bracket',
+        });
+
+        history.push(`${url}?${queryString}`);
+    }, [history, url, query, paginated]);
+
     const onClickCloseAlert = useCallback(() => {
         history.replace(url);
     }, [history, url]);
@@ -82,6 +97,7 @@ const ResourceIndexPage = ({ resource }) => {
                         query={listQuery}
                         paginated={paginated}
                         onQueryChange={onQueryChange}
+                        onQueryReset={onQueryReset}
                     />
                 </div>
             </MainLayout>

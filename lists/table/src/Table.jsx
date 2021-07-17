@@ -6,21 +6,19 @@ import { useDisplaysComponents } from '@panneau/core/contexts';
 import { getColumnsWithFields, getComponentFromName } from '@panneau/core/utils';
 import ItemActions from '@panneau/element-item-actions';
 import Loading from '@panneau/element-loading';
-import Pagination from '@panneau/element-pagination';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { stringify as stringifyQuery } from 'query-string';
 import React, { useMemo } from 'react';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
     items: PanneauPropTypes.items,
     columns: PropTypes.arrayOf(PropTypes.shape({})),
-    query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    page: PropTypes.number,
-    lastPage: PropTypes.number,
-    total: PropTypes.number,
-    baseUrl: PropTypes.string,
+    // query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    // page: PropTypes.number,
+    // lastPage: PropTypes.number,
+    // total: PropTypes.number,
+    // baseUrl: PropTypes.string,
     theme: PropTypes.string,
     // onQueryChange: PropTypes.func,
 };
@@ -28,60 +26,37 @@ const propTypes = {
 const defaultProps = {
     items: [],
     columns: [],
-    query: null,
-    page: null,
-    lastPage: null,
-    total: null,
-    baseUrl: null,
+    // query: null,
+    // page: null,
+    // lastPage: null,
+    // total: null,
+    // baseUrl: null,
     theme: null,
     // onQueryChange: null,
 };
 
 const TableList = ({
-    query,
     columns,
     resource,
     items,
-    page,
-    lastPage,
-    total,
-    baseUrl,
     theme,
     // onQueryChange,
 }) => {
     const displayComponents = useDisplaysComponents();
 
-    const { page: queryPage, ...queryWithoutPage } = query || {};
-    const hasQuery = Object.keys(queryWithoutPage).length > 0;
-    const { settings: { indexIsPaginated: paginated = false } = {} } = resource;
+    // const { page: queryPage } = query || {};
+    // const hasQuery = Object.keys(queryWithoutPage).length > 0;
 
     const columnsWithFields = useMemo(
         () => getColumnsWithFields(resource, columns),
         [resource, columns],
     );
 
-    const currentUrl = `${baseUrl}${
-        hasQuery
-            ? `?${stringifyQuery(queryWithoutPage, {
-                  arrayFormat: 'bracket',
-              })}`
-            : ''
-    }`;
-
     const hasActionsColumns =
         (columnsWithFields.find((it) => it.id === 'actions') || null) !== null;
 
     return (
         <div>
-            {paginated && lastPage > 1 && items !== null ? (
-                <Pagination
-                    page={page}
-                    lastPage={lastPage}
-                    total={total}
-                    url={currentUrl}
-                    className="mt-1 mb-3"
-                />
-            ) : null}
             {items !== null ? (
                 <table
                     className={classNames([
@@ -193,7 +168,7 @@ const TableList = ({
             ) : (
                 <Loading>Loading</Loading>
             )}
-            {paginated && lastPage > 1 && items !== null ? (
+            {/* {paginated && lastPage > 1 && items !== null ? (
                 <Pagination
                     page={page}
                     lastPage={lastPage}
@@ -202,7 +177,7 @@ const TableList = ({
                     className="mt-4"
                     withCount
                 />
-            ) : null}
+            ) : null} */}
         </div>
     );
 };

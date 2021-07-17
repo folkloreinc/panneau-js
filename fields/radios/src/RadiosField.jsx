@@ -1,8 +1,7 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Radios from '@panneau/element-radios';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const propTypes = {
     name: PropTypes.string,

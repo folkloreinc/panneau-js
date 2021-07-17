@@ -1,21 +1,21 @@
 /* eslint-disable */
 import React, { useState } from 'react';
 import FieldsProvider from '../../../../packages/fields';
-import Radios from '../Radios';
+import RadiosFilter from '../RadiosFilter';
 
 export default {
-    component: Radios,
+    component: RadiosFilter,
     title: 'Filters/Radios',
     parameters: {
         intl: true,
     },
 };
 
-const FieldContainer = ({options}) => {
+const FieldContainer = ({ options }) => {
     const [value, setValue] = useState(null);
     return (
         <FieldsProvider>
-            <Radios name="Radios" value={value} options={options} onChange={setValue} />
+            <RadiosFilter name="Radios" value={value} options={options} onChange={setValue} />
         </FieldsProvider>
     );
 };

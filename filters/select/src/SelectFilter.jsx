@@ -12,11 +12,11 @@ const defaultProps = {
     className: null,
 };
 
-const SelectField = ({ className, ...props }) => {
+const SelectFilter = ({ className, ...props }) => {
     return <Select className={className} {...props} />;
 };
 
-SelectField.propTypes = propTypes;
-SelectField.defaultProps = defaultProps;
+SelectFilter.propTypes = propTypes;
+SelectFilter.defaultProps = defaultProps;
 
-export default SelectField;
+export default SelectFilter;

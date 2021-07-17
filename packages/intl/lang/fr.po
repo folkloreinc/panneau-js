@@ -232,12 +232,6 @@ msgctxt "owrRHV"
 msgid "Error 500"
 msgstr "Erreur 500"
 
-# Button label
-#: q6bmY1
-msgctxt "q6bmY1"
-msgid "Reset"
-msgstr "Réinitialiser"
-
 # Boolean value
 #: rSt+KL
 msgctxt "rSt+KL"

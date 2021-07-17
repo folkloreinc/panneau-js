@@ -15,21 +15,11 @@ const Container = (props) => {
 };
 
 export const Normal = () => <Container options={options} />;
+
 export const WithoutReset = () => (
     <Container options={options} withoutReset placeholder="Without reset..." />
 );
+
 export const MultiSelect = () => (
-    <Container options={options} isMulti placeholder="Multi select..." />
+    <Container options={options} multiple placeholder="Multi select..." />
 );
-export const Searchable = () => (
-    <Container options={options} isMulti isSearchable placeholder="Multi select searchable..." />
-);
-export const Stacked = () => {
-    const [value, setValue] = useState(null);
-    return (
-        <>
-            <SelectField options={options} value={value} onChange={setValue} />
-            <SelectField options={options} value={value} onChange={setValue} />
-        </>
-    );
-};
