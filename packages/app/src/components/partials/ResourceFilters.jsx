@@ -46,6 +46,7 @@ const ResourceFilters = ({
 }) => {
     const FilterComponents = useFiltersComponents();
     const { background } = usePanneauColorScheme();
+    const currentFilters = filters || [];
 
     const onFiltersReset = useCallback(() => {
         if (onReset !== null) {
@@ -53,7 +54,7 @@ const ResourceFilters = ({
         }
     }, [onReset]);
 
-    const hasActiveFilter = filters.reduce((isActive, item) => {
+    const hasActiveFilter = (currentFilters || []).reduce((isActive, item) => {
         if (value !== null && value[item.name]) {
             return true;
         }
@@ -75,7 +76,7 @@ const ResourceFilters = ({
             theme={background}
             withoutCollapse
         >
-            {filters.map(({ component, name, ...filterProps }, index) => {
+            {currentFilters.map(({ component, name, ...filterProps }, index) => {
                 const FilterComponent = getComponentFromName(component, FilterComponents, null);
                 const filterValue = value !== null && value[name] ? value[name] : null;
                 const onFilterChange = useCallback(
@@ -101,7 +102,7 @@ const ResourceFilters = ({
                     </FormGroup>
                 ) : null;
             })}
-            {withReset && hasActiveFilter ? (
+            {withReset && hasActiveFilter && currentFilters.length > 1 ? (
                 <Button theme="primary" onClick={onFiltersReset}>
                     <FontAwesomeIcon icon={faUndo} />
                 </Button>

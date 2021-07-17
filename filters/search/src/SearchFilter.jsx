@@ -47,7 +47,7 @@ const SearchFilter = ({ name, value, onChange, placeholder, className }) => {
     }, [value, setSearchValue]);
 
     return (
-        <div className={className}>
+        <form className={className} onSubmit={onSubmit}>
             <div className="input-group">
                 <TextField
                     type="search"
@@ -69,11 +69,11 @@ const SearchFilter = ({ name, value, onChange, placeholder, className }) => {
                         <FontAwesomeIcon icon={faTimes} />
                     </Button>
                 ) : null}
-                <Button theme="secondary" type="button" onClick={onSubmit}>
+                <Button theme="secondary" type="submit" onClick={onSubmit}>
                     <FontAwesomeIcon icon={faSearch} />
                 </Button>
             </div>
-        </div>
+        </form>
     );
 };
 

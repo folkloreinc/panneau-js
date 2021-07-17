@@ -41,7 +41,7 @@ const ResourceItemsList = ({
         index: {
             component: listComponent = null,
             showPagination = true,
-            filters = [],
+            filters = null,
             ...listProps
         } = {},
     } = resource;
