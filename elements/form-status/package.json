@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-form-status",
-    "version": "1.0.0-alpha.108",
+    "version": "1.0.0-y.0",
     "description": "Form status element",
     "keywords": [
         "javascript"
@@ -56,8 +56,8 @@
         "@fortawesome/fontawesome-svg-core": "^1.2.35",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
-        "@panneau/core": "^1.0.0-alpha.108",
-        "@panneau/element-label": "^1.0.0-alpha.108",
+        "@panneau/core": "^1.0.0-y.0",
+        "@panneau/element-label": "^1.0.0-y.0",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8"
