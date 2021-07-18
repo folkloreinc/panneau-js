@@ -12,7 +12,7 @@ const defaultProps = {
 };
 
 const TimeField = ({ dateFormat, ...props }) => (
-    <DateTimeField {...props} withoutDate format="H:m" dateFormat={dateFormat} />
+    <DateTimeField {...props} withoutDate dateFormat={dateFormat} />
 );
 
 TimeField.propTypes = propTypes;
