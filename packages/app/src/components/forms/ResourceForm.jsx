@@ -124,10 +124,10 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
         isDelete ? DeleteForm : component,
     );
 
-    // Lisen to item value change
+    // Lisen to item value change - this is important
     useEffect(() => {
-        // console.log('get initial value ffs'); // eslint-disable-line
-        // setValue(getInitialValue());
+        console.log('get initial value from the top'); // eslint-disable-line
+        setValue(getInitialValue());
     }, [getInitialValue, setValue]);
 
     return (

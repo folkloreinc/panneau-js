@@ -127,7 +127,7 @@ const UploadField = ({
                                     id = null,
                                     filename = null,
                                     size = 0,
-                                    url = null,
+                                    thumbnail_url: thumbnailUrl = null,
                                     preview = null,
                                     data = {},
                                     type,
@@ -149,7 +149,7 @@ const UploadField = ({
                                         break;
                                 }
 
-                                const hasPreview = preview !== null || url !== null;
+                                const hasPreview = preview !== null || thumbnailUrl !== null;
 
                                 return (
                                     <div
@@ -163,7 +163,7 @@ const UploadField = ({
                                             {hasPreview ? (
                                                 <img
                                                     className="img-thumbnail me-2"
-                                                    src={preview || url}
+                                                    src={preview || thumbnailUrl}
                                                     alt="preview"
                                                     style={{ height: 100 }}
                                                 />

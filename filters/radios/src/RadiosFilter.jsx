@@ -21,7 +21,7 @@ const defaultProps = {
 
 const RadiosFilter = ({ name, value, options, onChange, className }) => {
     const onChangeOption = useCallback((option) => {
-        console.log({ name, option }); /* eslint-disable-line */
+        // console.log({ name, option }); /* eslint-disable-line */
         onChange(option);
     });
 
