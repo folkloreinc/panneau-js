@@ -1,8 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
-
-import DateTimeField from '../DateTimeField';
 import DateField from '../DateField';
+import DateTimeField from '../DateTimeField';
 import TimeField from '../TimeField';
 
 export default {
@@ -15,7 +14,9 @@ export default {
 
 export const Normal = () => {
     const [value, setValue] = useState(null);
-    return <DateTimeField value={value} onChange={setValue} placeholder="Select date and time..." />;
+    return (
+        <DateTimeField value={value} onChange={setValue} placeholder="Select date and time..." />
+    );
 };
 
 export const DateOnly = () => {
@@ -24,6 +25,6 @@ export const DateOnly = () => {
 };
 
 export const TimeOnly = () => {
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState('12:30');
     return <TimeField value={value} onChange={setValue} placeholder="Select time..." />;
 };

@@ -3,7 +3,8 @@
 import { isMessage } from '@panneau/core/utils';
 import TextField from '@panneau/field-text';
 import formatDate from 'date-fns/format';
-import parse from 'date-fns/parseISO';
+import parse from 'date-fns/parse';
+import parseISO from 'date-fns/parseISO';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 // import classNames from 'classnames';
@@ -69,7 +70,22 @@ const DateTimeField = ({
     className,
 }) => {
     const { locale, formatMessage } = useIntl();
-    const [dateValue, setDateValue] = useState(value !== null ? parse(value) : null);
+
+    // The internal value of this field must be a Date object
+    const parseDate = useCallback(
+        (date) => {
+            if (date instanceof Date) {
+                return date;
+            }
+            if (dateFormat) {
+                return parse(date, dateFormat, new Date());
+            }
+            return parseISO(date);
+        },
+        [dateFormat],
+    );
+
+    const [dateValue, setDateValue] = useState(value !== null ? parseDate(value) : null);
     const [loadedLocale, setLoadedLocale] = useState(null);
     const onDateChange = useCallback(
         (newDate) => {
@@ -81,6 +97,7 @@ const DateTimeField = ({
         },
         [setDateValue, dateFormat, onChange],
     );
+
     useEffect(() => {
         const localeName = `${locale}-CA`;
         const loader =
@@ -92,8 +109,8 @@ const DateTimeField = ({
     }, [locale, setLoadedLocale]);
 
     useEffect(() => {
-        setDateValue(value !== null ? parse(value) : null);
-    }, [value, setDateValue]);
+        setDateValue(value !== null ? parseDate(value) : null);
+    }, [value, setDateValue, parseDate]);
 
     const TextFieldComponent = (
         <TextField
