@@ -37,7 +37,7 @@ const ResourceIndexPage = ({ resource }) => {
                 // eslint-disable-next-line no-unused-vars
                 Object.entries({ ...query, ...submitQuery }).filter(([_, v]) => v != null),
             );
-            const finalQuery = paginated ? { ...newQuery, page: 1 } : newQuery;
+            const finalQuery = paginated ? { ...newQuery, page: null } : newQuery;
             const queryString = stringifyQuery(finalQuery, {
                 arrayFormat: 'bracket',
             });
@@ -47,7 +47,7 @@ const ResourceIndexPage = ({ resource }) => {
     );
 
     const onQueryReset = useCallback(() => {
-        const newQuery = paginated ? { page: 1 } : null;
+        const newQuery = paginated ? { page: null } : null;
         const queryString = stringifyQuery(newQuery, {
             arrayFormat: 'bracket',
         });
