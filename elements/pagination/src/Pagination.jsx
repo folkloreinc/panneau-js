@@ -15,6 +15,7 @@ const propTypes = {
     maxPages: PropTypes.number,
     withPreviousNext: PropTypes.bool,
     withCount: PropTypes.bool,
+    autohide: PropTypes.bool,
     align: PropTypes.oneOf(['left', 'right']),
     previousLabel: PropTypes.node,
     nextLabel: PropTypes.node,
@@ -35,6 +36,7 @@ const defaultProps = {
     maxPages: 8,
     withPreviousNext: false,
     withCount: true,
+    autohide: false,
     align: 'right',
     previousLabel: (
         <FormattedMessage defaultMessage="Previous" description="Pagination button label" />
@@ -62,6 +64,7 @@ const Pagination = ({
     maxPages: parentMaxPages,
     withPreviousNext,
     withCount,
+    autohide,
     align,
     previousLabel,
     nextLabel,
@@ -76,6 +79,10 @@ const Pagination = ({
     const lastPage = parseInt(parentLastPage, 10);
     const total = parseInt(parentTotal, 10);
     const maxPages = parseInt(parentMaxPages, 10);
+
+    if (autohide && lastPage < 2) {
+        return null;
+    }
 
     const getUrl = useCallback(
         (currentPage) =>
@@ -96,7 +103,7 @@ const Pagination = ({
         ? Math.min(Math.max(page - maxPages / 2, 1), lastPage - maxPages)
         : null;
     const endPage = stripPages ? startPage + maxPages : null;
-    const pages = stripPages
+    const strippedPages = stripPages
         ? pageNumbers.reduce((selectedPages, pageNumber) => {
               if (pageNumber === 1 && startPage - 1 > 1) {
                   return [pageNumber, '...'];
@@ -109,6 +116,8 @@ const Pagination = ({
                   : selectedPages;
           }, [])
         : pageNumbers;
+
+    const pages = strippedPages.length > 0 ? strippedPages : [1];
 
     return (
         <nav
@@ -182,8 +191,8 @@ const Pagination = ({
                         className={classNames([
                             'page-item',
                             {
-                                disabled: pageNumber === '...',
-                                active: pageNumber === page,
+                                disabled: pageNumber === '...' || pages.length < 2,
+                                active: pageNumber === page && pages.length > 1,
                                 [itemClassName]: itemClassName !== null,
                             },
                         ])}

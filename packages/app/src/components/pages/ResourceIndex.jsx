@@ -34,26 +34,25 @@ const ResourceIndexPage = ({ resource }) => {
     const onQueryChange = useCallback(
         (submitQuery) => {
             const newQuery = Object.fromEntries(
+                // eslint-disable-next-line no-unused-vars
                 Object.entries({ ...query, ...submitQuery }).filter(([_, v]) => v != null),
             );
-            const queryString = stringifyQuery(newQuery, {
+            const finalQuery = paginated ? { ...newQuery, page: 1 } : newQuery;
+            const queryString = stringifyQuery(finalQuery, {
                 arrayFormat: 'bracket',
             });
-
             history.push(`${url}?${queryString}`);
         },
-        [history, url, query],
+        [history, url, query, paginated],
     );
 
     const onQueryReset = useCallback(() => {
-        const { page = null } = query || {};
-        const newQuery = paginated && page !== null ? { page } : null;
+        const newQuery = paginated ? { page: 1 } : null;
         const queryString = stringifyQuery(newQuery, {
             arrayFormat: 'bracket',
         });
-
         history.push(`${url}?${queryString}`);
-    }, [history, url, query, paginated]);
+    }, [history, url, paginated]);
 
     const onClickCloseAlert = useCallback(() => {
         history.replace(url);

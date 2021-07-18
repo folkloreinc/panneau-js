@@ -52,5 +52,8 @@ export default {
         ],
     },
 
-    settings: {},
+    settings: {
+        hideInNavbar: false,
+        indexIsPaginated: true,
+    },
 };

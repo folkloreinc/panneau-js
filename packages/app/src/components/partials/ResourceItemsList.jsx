@@ -51,16 +51,7 @@ const ResourceItemsList = ({
     const itemsProps = useResourceItems(resource, query, paginated ? parseInt(page, 10) : null);
     const { lastPage = 0, total = 0 } = itemsProps || {};
     const ListComponent = getComponentFromName(listComponent || 'table', ListComponents);
-    const Paginator = (
-        <Pagination
-            page={page}
-            lastPage={lastPage}
-            total={total}
-            url={baseUrl}
-            query={query}
-            className="mt-1 mb-1"
-        />
-    );
+
     return (
         <>
             {filters !== null ? (
@@ -71,7 +62,16 @@ const ResourceItemsList = ({
                     onReset={onQueryReset}
                 />
             ) : null}
-            {paginated && showPagination && lastPage > 1 ? Paginator : null}
+            {paginated && showPagination ? (
+                <Pagination
+                    page={page}
+                    lastPage={lastPage}
+                    total={total}
+                    url={baseUrl}
+                    query={query}
+                    className="mt-1 mb-1"
+                />
+            ) : null}
             {ListComponent !== null ? (
                 <ListComponent
                     {...itemsProps}
@@ -83,10 +83,18 @@ const ResourceItemsList = ({
                     onQueryChange={onQueryChange}
                     onQueryReset={onQueryReset}
                     theme={theme}
-                    Paginator={Paginator}
                 />
             ) : null}
-            {paginated && showPagination && lastPage > 1 ? Paginator : null}
+            {paginated && showPagination ? (
+                <Pagination
+                    page={page}
+                    lastPage={lastPage}
+                    total={total}
+                    url={baseUrl}
+                    query={query}
+                    className="mt-4 mb-1"
+                />
+            ) : null}
         </>
     );
 };
