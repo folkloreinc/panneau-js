@@ -2,7 +2,8 @@
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { isMessage } from '@panneau/core/utils';
 import TextField from '@panneau/field-text';
-import formatDate from 'date-fns/format';
+import format from 'date-fns/format';
+import formatISO from 'date-fns/formatISO';
 import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
 import PropTypes from 'prop-types';
@@ -16,16 +17,17 @@ import './styles/datepicker.global.scss';
 const propTypes = {
     name: PropTypes.string,
     value: PropTypes.string,
-    errors: PropTypes.any, // eslint-disable-line
+    errors: PropTypes.any, // eslint-disable-line react/forbid-prop-types
     size: PropTypes.oneOf(['sm', 'lg']),
     required: PropTypes.bool,
     disabled: PropTypes.bool,
     placeholder: PropTypes.string,
-    dateFormat: PropTypes.string,
-    withoutDate: PropTypes.bool,
+    format: PropTypes.string, // The actual date format, see https://date-fns.org/v2.22.1/docs/format
+    dateFormat: PropTypes.string, // Format for react-datepicker
+    withoutDate: PropTypes.bool, // Format for react-datepicker
     withoutTime: PropTypes.bool,
     timeFormat: PropTypes.string,
-    timeCaption: PropTypes.any, // eslint-disable-line
+    timeCaption: PropTypes.any, // eslint-disable-line react/forbid-prop-types
     timeIntervals: PropTypes.number,
     className: PropTypes.string,
     onChange: PropTypes.func,
@@ -39,9 +41,10 @@ const defaultProps = {
     required: false,
     disabled: false,
     placeholder: null,
-    dateFormat: 'yyyy-MM-dd HH:mm:ss',
+    format: null,
     withoutDate: false,
     withoutTime: false,
+    dateFormat: 'yyyy-MM-dd HH:mm:ss',
     timeFormat: 'HH:mm',
     timeCaption: defineMessage({
         defaultMessage: 'Time',
@@ -60,9 +63,10 @@ const DateTimeField = ({
     required,
     disabled,
     placeholder,
-    dateFormat,
+    format: fnsFormat,
     withoutDate,
     withoutTime,
+    dateFormat,
     timeFormat,
     timeCaption,
     timeIntervals,
@@ -77,12 +81,21 @@ const DateTimeField = ({
             if (date instanceof Date) {
                 return date;
             }
-            if (dateFormat) {
-                return parse(date, dateFormat, new Date());
+            if (fnsFormat) {
+                return parse(date, fnsFormat, new Date());
             }
             return parseISO(date);
         },
-        [dateFormat],
+        [fnsFormat],
+    );
+    const formatDate = useCallback(
+        (date) => {
+            if (fnsFormat !== null) {
+                return format(date, fnsFormat);
+            }
+            return formatISO(date);
+        },
+        [fnsFormat],
     );
 
     const [dateValue, setDateValue] = useState(value !== null ? parseDate(value) : null);

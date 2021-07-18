@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
 import PropTypes from 'prop-types';
-
+import React from 'react';
 import DateTimeField from './DateTimeField';
 
 const propTypes = {
@@ -13,7 +12,7 @@ const defaultProps = {
 };
 
 const TimeField = ({ dateFormat, ...props }) => (
-    <DateTimeField {...props} withoutDate dateFormat={dateFormat} />
+    <DateTimeField {...props} withoutDate format="H:m" dateFormat={dateFormat} />
 );
 
 TimeField.propTypes = propTypes;
