@@ -96,8 +96,9 @@ class Base {
     onError(err) {
         const { onUnauthorized } = this.options;
         const { status = null } = err || {};
+        const statusCode = parseInt(status, 10);
         // If status is refused and callback exists
-        if (parseInt(status, 10) === 401 && onUnauthorized !== null){
+        if ((statusCode === 401 || statusCode === 419) && onUnauthorized !== null){
             return onUnauthorized();
         }
         throw err;
