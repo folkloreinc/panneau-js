@@ -157,4 +157,4 @@ export const formErrors = PropTypes.arrayOf(formError);
 
 export const uppy = PropTypes.shape({ tus: PropTypes.object }); // eslint-disable-line
 
-export const triggerUpdate = PropTypes.bool;
+export const triggerUpdate = PropTypes.string;
