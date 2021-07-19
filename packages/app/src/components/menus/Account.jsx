@@ -21,6 +21,7 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
     const route = useUrlGenerator();
     const user = useUser();
     const logout = useLogout();
+
     const onClickLogout = useCallback(
         (e) => {
             e.preventDefault();
@@ -28,6 +29,7 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
         },
         [logout, route],
     );
+
     const items = useMemo(
         () =>
             user !== null
@@ -37,17 +39,17 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                           label: (
                               <FormattedMessage defaultMessage="Account" description="Menu label" />
                           ),
-                          href: route('auth.account'),
+                          href: route('panneau.account'),
                           dropdown: [
-                              //   {
-                              //       label: (
-                              //           <FormattedMessage
-                              //               defaultMessage="Update account"
-                              //               description="Menu label"
-                              //           />
-                              //       ),
-                              //       href: route('auth.account'),
-                              //   },
+                              {
+                                  label: (
+                                      <FormattedMessage
+                                          defaultMessage="Update account"
+                                          description="Menu label"
+                                      />
+                                  ),
+                                  href: route('panneau.account'),
+                              },
                               {
                                   label: (
                                       <FormattedMessage

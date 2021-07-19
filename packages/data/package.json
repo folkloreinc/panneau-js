@@ -54,7 +54,6 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.10",
-        "@panneau/auth": "^1.0.0-alpha.133",
         "@panneau/core": "^1.0.0-alpha.119",
         "prop-types": "^15.7.2",
         "query-string": "^7.0.0",
@@ -62,5 +61,6 @@
     },
     "publishConfig": {
         "access": "public"
-    }
+    },
+    "gitHead": "17e31a9950eb75785c6dd5714beb5b57bf1bc85f"
 }
