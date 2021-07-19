@@ -88,7 +88,7 @@ const SelectFilter = ({
         fetchOptions(requestUrl);
     }, [requestUrl]);
 
-    return <Select className={className} options={options} {...props} />;
+    return <Select {...props} className={className} options={options} />;
 };
 
 SelectFilter.propTypes = propTypes;

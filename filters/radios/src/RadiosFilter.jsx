@@ -19,10 +19,17 @@ const defaultProps = {
     className: null,
 };
 
-const RadiosFilter = ({ name, value, options, onChange, className }) => {
+const RadiosFilter = ({ name, value, options, onChange, className, ...props }) => {
     return (
         <div className={className}>
-            <Radios name={name} value={value} options={options} onChange={onChange} uncheckable />
+            <Radios
+                {...props}
+                name={name}
+                value={value}
+                options={options}
+                onChange={onChange}
+                uncheckable
+            />
         </div>
     );
 };

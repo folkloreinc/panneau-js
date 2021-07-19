@@ -9,6 +9,7 @@ const propTypes = {
     options: PanneauPropTypes.selectOptions,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
+    placeholder: PropTypes.string,
     className: PropTypes.string,
 };
 
@@ -16,13 +17,21 @@ const defaultProps = {
     name: 'radios',
     value: null,
     options: [],
+    placeholder: null,
     className: null,
 };
 
-const DateFilter = ({ name, value, options, onChange, className }) => {
+const DateFilter = ({ name, value, options, placeholder, onChange, className, ...props }) => {
     return (
         <div className={className}>
-            <Date name={name} value={value} options={options} onChange={onChange} uncheckable />
+            <Date
+                {...props}
+                name={name}
+                value={value}
+                options={options}
+                placeholder={placeholder}
+                onChange={onChange}
+            />
         </div>
     );
 };

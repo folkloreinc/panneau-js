@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Switch from 'rc-switch';
@@ -17,7 +18,7 @@ const defaultProps = {
     className: null,
 };
 
-const ToggleFilter = ({ name, value, onChange, className }) => {
+const ToggleFilter = ({ name, value, onChange, className, ...props }) => {
     const isTrue = value === true || value === 'true' || value === 1 || value === '1';
     return (
         <div
@@ -28,7 +29,7 @@ const ToggleFilter = ({ name, value, onChange, className }) => {
                 },
             ])}
         >
-            <Switch name={name} checked={isTrue} onChange={onChange} />
+            <Switch {...props} name={name} checked={isTrue} onChange={onChange} />
         </div>
     );
 };
