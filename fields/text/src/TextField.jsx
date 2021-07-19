@@ -84,7 +84,7 @@ const TextField = ({
             {
                 [`form-control-${size}`]: size !== null,
                 'is-valid': feedback === 'valid',
-                'is-invalid': feedback === 'invalid' || (errors !== null && errors.length > 0),
+                'is-invalid': feedback === 'invalid' || errors !== null,
                 [className]: className !== null,
             },
         ]),

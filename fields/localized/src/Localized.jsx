@@ -1,21 +1,20 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
-// import classNames from 'classnames';
-import isEmpty from 'lodash/isEmpty';
-
-import Buttons from '@panneau/element-buttons';
-import Label from '@panneau/element-label';
-import FormGroup from '@panneau/element-form-group';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFieldsComponents, useLocales } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
-
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Buttons from '@panneau/element-buttons';
+import FormGroup from '@panneau/element-form-group';
+import Label from '@panneau/element-label';
+// import classNames from 'classnames';
+import isEmpty from 'lodash/isEmpty';
+import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
 
 const propTypes = {
     name: PropTypes.string,
     value: PropTypes.object, // eslint-disable-line
+    errors: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     label: PropTypes.string,
     component: PropTypes.string,
     locales: PropTypes.arrayOf(PropTypes.string),
@@ -29,6 +28,7 @@ const propTypes = {
 const defaultProps = {
     name: null,
     value: null,
+    errors: null,
     label: null,
     component: null,
     locales: null,
@@ -42,6 +42,7 @@ const defaultProps = {
 const LocalizedField = ({
     name,
     value,
+    errors,
     label,
     properties,
     locales: parentLocales,
@@ -99,13 +100,17 @@ const LocalizedField = ({
                 </>
             }
             className={className}
+            errors={errors}
             labelClassName="d-flex align-items-center"
         >
             {locales
                 .filter((locale) => locale === currentLocale)
                 .map((locale) => {
-                    const { name: propertyName = locale, component, ...property } =
-                        properties[locale] || {};
+                    const {
+                        name: propertyName = locale,
+                        component,
+                        ...property
+                    } = properties[locale] || {};
                     const FieldComponent =
                         providedFieldComponent ||
                         getComponentFromName(component || componentName, Components);
@@ -118,6 +123,7 @@ const LocalizedField = ({
                                 {...fieldProps}
                                 name={propertyName || fieldName}
                                 value={fieldValue}
+                                errors={errors}
                                 onChange={(newValue) => onFieldChange(locale, newValue)}
                             />
                         </div>
