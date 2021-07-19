@@ -7,17 +7,26 @@ const useAuthLogout = () => {
     const api = useApi();
     const logout = useCallback(() => {
         setLoading(true);
+        console.log('yeaah', api);
         return api.auth
             .logout()
             .then((response) => {
+                console.log('logout success');
                 setLoading(false);
                 return response;
             })
-            .catch((e) => {
+            .catch((err) => {
+                const { status } = err || {};
+                // 204 is logout success from laravel - no content
+                if (parseInt(status, 10) === 204) {
+                    setLoading(false);
+                    return null;
+                } 
                 setLoading(false);
-                throw e;
+                throw err;
             });
     }, [api, setLoading]);
+
     return { logout, loading };
 };
 

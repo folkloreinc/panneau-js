@@ -1,9 +1,9 @@
+import { useLogout, useUser } from '@panneau/auth';
 import { useUrlGenerator } from '@panneau/core/contexts';
 import Menu from '@panneau/element-menu';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useLogout, useUser } from '../../contexts/AuthContext';
 
 const propTypes = {
     className: PropTypes.string,

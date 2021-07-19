@@ -140,6 +140,8 @@ module.exports = () => {
             res.sendStatus(404);
             return;
         }
+        // Test unauthorized request here
+        // res.status(401);
         const {
             page = null,
             count = 10,

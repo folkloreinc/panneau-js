@@ -1,11 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { useAuth } from '@panneau/auth';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFormComponent, useUrlGenerator } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useAuth } from '../../contexts/AuthContext';
 
 const propTypes = {
     fields: PanneauPropTypes.fields,
@@ -35,10 +35,7 @@ const defaultProps = {
 const LoginForm = ({ fields: formFields, className, onSuccess }) => {
     const url = useUrlGenerator();
     const { login } = useAuth();
-    const postForm = useCallback(
-        (action, { email, password }) => login(email, password),
-        [login],
-    );
+    const postForm = useCallback((action, { email, password }) => login(email, password), [login]);
 
     const { value, setValue, fields, onSubmit, status, generalError, errors } = useForm({
         fields: formFields,

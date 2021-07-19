@@ -1,9 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext, useMemo } from 'react';
-import PropTypes from 'prop-types';
-
 import { useUrlGenerator } from '@panneau/core/contexts';
-
+import PropTypes from 'prop-types';
+import React, { useContext, useMemo } from 'react';
 import Api from '../lib/Api';
 
 const ApiContext = React.createContext(null);
@@ -13,15 +11,17 @@ export const useApi = () => useContext(ApiContext);
 const propTypes = {
     api: PropTypes.instanceOf(Api),
     baseUrl: PropTypes.string,
+    onUnauthorized: PropTypes.func,
     children: PropTypes.node.isRequired,
 };
 
 const defaultProps = {
     api: null,
+    onUnauthorized: null,
     baseUrl: undefined,
 };
 
-export const ApiProvider = ({ api: initialApi, baseUrl, children }) => {
+export const ApiProvider = ({ api: initialApi, baseUrl, onUnauthorized, children }) => {
     const generateUrl = useUrlGenerator();
     const previousApi = useApi();
     const api = useMemo(
@@ -31,6 +31,7 @@ export const ApiProvider = ({ api: initialApi, baseUrl, children }) => {
             new Api({
                 baseUrl,
                 generateUrl,
+                onUnauthorized,
             }),
         [previousApi, initialApi, baseUrl],
     );

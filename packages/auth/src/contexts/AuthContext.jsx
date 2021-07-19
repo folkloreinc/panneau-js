@@ -38,15 +38,17 @@ export const useLoggedIn = () => {
 const propTypes = {
     children: PropTypes.node.isRequired,
     user: PanneauPropTypes.user,
+    onLogout: PropTypes.func,
     checkOnMount: PropTypes.bool,
 };
 
 const defaultProps = {
     user: null,
+    onLogout: null,
     checkOnMount: false,
 };
 
-export const AuthProvider = ({ user: initialUser, checkOnMount, children }) => {
+export const AuthProvider = ({ user: initialUser, checkOnMount, onLogout, children }) => {
     // const route = useUrlGenerator();
     const [user, setUser] = useState(initialUser);
     const { login: authLogin } = useAuthLogin();
@@ -73,9 +75,11 @@ export const AuthProvider = ({ user: initialUser, checkOnMount, children }) => {
                 })
                 .then(() => {
                     console.log('logout redirect'); // eslint-disable-line
-                    window.location.href = '/';
+                    if (onLogout !== null) {
+                        onLogout();
+                    }
                 }),
-        [authLogout, setUser],
+        [authLogout, setUser, onLogout],
     );
 
     const register = useCallback(

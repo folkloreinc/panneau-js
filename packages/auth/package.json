@@ -1,5 +1,5 @@
 {
-    "name": "@panneau/data",
+    "name": "@panneau/auth",
     "version": "1.0.0-alpha.119",
     "description": "",
     "keywords": [
@@ -53,12 +53,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@folklore/fetch": "^0.1.10",
         "@panneau/core": "^1.0.0-alpha.119",
-        "@panneau/auth": "^1.0.0-alpha.119",
-        "prop-types": "^15.7.2",
-        "query-string": "^7.0.0",
-        "react-router": "^5.2.0"
+        "@panneau/data": "^1.0.0-alpha.119",
+        "prop-types": "^15.7.2"
     },
     "publishConfig": {
         "access": "public"

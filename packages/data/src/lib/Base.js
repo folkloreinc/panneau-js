@@ -2,6 +2,7 @@ import { postJSON, getJSON, getCSRFHeaders } from '@folklore/fetch';
 import { generatePath } from 'react-router';
 import { stringify as stringifyQuery } from 'query-string';
 
+
 class Base {
     constructor(opts = {}) {
         this.options = {
@@ -9,7 +10,9 @@ class Base {
             generateUrl: null,
             ...opts,
             baseUrl: opts.baseUrl,
+            onUnauthorized: opts.onUnauthorized || null,
         };
+        
     }
 
     requestGet(path, query = null) {
@@ -23,13 +26,17 @@ class Base {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
             },
-        );
+        ).catch((error) => {
+            return this.onError(error);
+        });
     }
 
     requestPost(path, data) {
         return postJSON(this.getFullUrl(path), data, {
             credentials: 'include',
             headers: getCSRFHeaders(),
+        }).catch((error) => {
+            return this.onError(error);
         });
     }
 
@@ -44,7 +51,9 @@ class Base {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
             },
-        );
+        ).catch((error) => {
+            return this.onError(error);
+        });
     }
 
     requestPatch(path, data) {
@@ -58,12 +67,16 @@ class Base {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
             },
-        );
+        ).catch((error) => {
+            return this.onError(error);
+        });
     }
 
     requestDelete(path) {
         return this.requestPost(path, {
             _method: 'DELETE',
+        }).catch((error) => {
+            return this.onError(error);
         });
     }
 
@@ -78,6 +91,16 @@ class Base {
     getFullUrl(path) {
         const { baseUrl = null } = this.options;
         return baseUrl !== null ? `${baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}` : path;
+    }
+
+    onError(err) {
+        const { onUnauthorized } = this.options;
+        const { status = null } = err || {};
+        // If status is refused and callback exists
+        if (parseInt(status, 10) === 401 && onUnauthorized !== null){
+            return onUnauthorized();
+        }
+        throw err;
     }
 }
 

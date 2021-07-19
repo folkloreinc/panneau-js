@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { AuthProvider } from '@panneau/auth';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import {
     ComponentsProvider,
@@ -14,10 +15,9 @@ import FormsProvider from '@panneau/forms';
 import { IntlProvider } from '@panneau/intl';
 import ListsProvider from '@panneau/lists';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { MemoryRouter } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from '../contexts/AuthContext';
 import '../styles/styles.scss';
 import Routes from './Routes';
 
@@ -70,6 +70,10 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
         };
     }, [definition]);
 
+    const onUnauthorized = useCallback(() => {
+        window.location.href = baseUrl;
+    }, [baseUrl]);
+
     return (
         <Router>
             <IntlProvider locale={locale} locales={locales} extraMessages={extraMessages}>
@@ -81,8 +85,14 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
                                     <ListsProvider>
                                         <DisplaysProvider>
                                             <FiltersProvider>
-                                                <ApiProvider baseUrl={baseUrl}>
-                                                    <AuthProvider user={user}>
+                                                <ApiProvider
+                                                    baseUrl={baseUrl}
+                                                    onUnauthorized={onUnauthorized}
+                                                >
+                                                    <AuthProvider
+                                                        user={user}
+                                                        onLogout={onUnauthorized}
+                                                    >
                                                         <ComponentsProvider components={components}>
                                                             <Routes statusCode={statusCode} />
                                                         </ComponentsProvider>

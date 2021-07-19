@@ -1,14 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { useUser } from '@panneau/auth';
+import { usePanneau, usePanneauColorScheme, useUrlGenerator } from '@panneau/core/contexts';
+import Navbar from '@panneau/element-navbar';
 import React from 'react';
 // import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-
-import { usePanneau, useUrlGenerator, usePanneauColorScheme } from '@panneau/core/contexts';
-import Navbar from '@panneau/element-navbar';
-
-import { useUser } from '../../contexts/AuthContext';
-import ResourcesMenu from './Resources';
 import AccountMenu from './Account';
+import ResourcesMenu from './Resources';
 
 const propTypes = {};
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AuthProvider } from '../../packages/app/src/contexts/AuthContext';
+import { AuthProvider } from '../../packages/auth/src/contexts/AuthContext';
 
 const withAuthProvider = (Story) => {
     return (

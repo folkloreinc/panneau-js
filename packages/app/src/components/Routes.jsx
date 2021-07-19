@@ -1,3 +1,4 @@
+import { useUser } from '@panneau/auth';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 // import { parse as parseQuery } from 'query-string';
 import {
@@ -9,7 +10,6 @@ import {
 import { getComponentFromName } from '@panneau/core/utils';
 import React, { useEffect, useState } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router';
-import { useUser } from '../contexts/AuthContext';
 import * as basePages from './pages';
 import ResourceRoutes from './ResourceRoutes';
 
