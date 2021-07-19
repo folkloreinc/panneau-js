@@ -53,7 +53,6 @@ const Radios = ({
             {finalOptions.map(({ value: optionValue, label }, index) => {
                 // eslint-disable-next-line eqeqeq
                 const isCurrent = optionValue == value; // Loose to handle numeric values from parseQuery
-
                 return (
                     <label
                         key={`radio-${optionValue}-${index + 1}`}

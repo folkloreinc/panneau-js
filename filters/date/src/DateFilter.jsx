@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Radios from '@panneau/element-radios';
+import { Date } from '@panneau/field-date';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -19,15 +19,15 @@ const defaultProps = {
     className: null,
 };
 
-const RadiosFilter = ({ name, value, options, onChange, className }) => {
+const DateFilter = ({ name, value, options, onChange, className }) => {
     return (
         <div className={className}>
-            <Radios name={name} value={value} options={options} onChange={onChange} uncheckable />
+            <Date name={name} value={value} options={options} onChange={onChange} uncheckable />
         </div>
     );
 };
 
-RadiosFilter.propTypes = propTypes;
-RadiosFilter.defaultProps = defaultProps;
+DateFilter.propTypes = propTypes;
+DateFilter.defaultProps = defaultProps;
 
-export default RadiosFilter;
+export default DateFilter;

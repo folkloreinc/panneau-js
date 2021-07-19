@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/filters",
-    "version": "1.0.0-alpha.136",
-    "description": "",
+    "name": "@panneau/filter-date",
+    "version": "1.0.0-alpha.134",
+    "description": "Date filter",
     "keywords": [
         "javascript"
     ],
@@ -41,7 +41,7 @@
         "assets"
     ],
     "scripts": {
-        "prepare": "../../scripts/prepare-package.sh --scss"
+        "prepare": "../../scripts/prepare-package.sh"
     },
     "devDependencies": {
         "react": "^16.8.0",
@@ -53,16 +53,17 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
+        "@fortawesome/free-solid-svg-icons": "^5.15.3",
+        "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^1.0.0-alpha.134",
-        "@panneau/filter-radios": "^1.0.0-alpha.134",
-        "@panneau/filter-search": "^1.0.0-alpha.134",
-        "@panneau/filter-select": "^1.0.0-alpha.136",
-        "@panneau/filter-toggle": "^1.0.0-alpha.134",
-        "@panneau/filter-date": "^1.0.0-alpha.134",
-        "prop-types": "^15.7.2"
+        "@panneau/field-date": "^1.0.0-alpha.134",
+        "classnames": "^2.2.6",
+        "lodash": "^4.17.21",
+        "prop-types": "^15.7.2",
+        "react-intl": "^5.15.8"
     },
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "17e31a9950eb75785c6dd5714beb5b57bf1bc85f"
+    "gitHead": "e63c11e6fa563927f5504eb230b08bb4725d48fb"
 }
