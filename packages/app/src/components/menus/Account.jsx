@@ -41,15 +41,15 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                           ),
                           href: route('panneau.account'),
                           dropdown: [
-                              {
-                                  label: (
-                                      <FormattedMessage
-                                          defaultMessage="Update account"
-                                          description="Menu label"
-                                      />
-                                  ),
-                                  href: route('panneau.account'),
-                              },
+                              //   {
+                              //       label: (
+                              //           <FormattedMessage
+                              //               defaultMessage="Update account"
+                              //               description="Menu label"
+                              //           />
+                              //       ),
+                              //       href: route('panneau.account'),
+                              //   },
                               {
                                   label: (
                                       <FormattedMessage

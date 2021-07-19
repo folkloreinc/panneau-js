@@ -1,3 +1,5 @@
+import { getCSRFHeaders } from '@folklore/fetch';
+
 class AuthApi {
     constructor(api, opts) {
         this.api = api;
@@ -39,10 +41,15 @@ class AuthApi {
     }
 
     logout() {
-        const { withCredentials } = this.options;
-        return this.api.requestPost(this.api.route('auth.logout'), null, {
-            withSession: !withCredentials,
-            withCredentials,
+        const url = this.api.getFullUrl(this.api.route('auth.logout'));
+        return fetch(url, {
+            method: 'POST',
+            headers: {
+                ...getCSRFHeaders()
+            },
+            credentials: 'include',
+        }).catch(err => {
+            console.log('logout err', err); // eslint-disable-line
         });
     }
 
