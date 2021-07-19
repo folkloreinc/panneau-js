@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filters",
-    "version": "1.0.0-alpha.130",
+    "version": "1.0.0-alpha.131",
     "description": "",
     "keywords": [
         "javascript"
@@ -55,8 +55,8 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^1.0.0-alpha.119",
         "@panneau/filter-radios": "^1.0.0-alpha.124",
-        "@panneau/filter-search": "^1.0.0-alpha.130",
-        "@panneau/filter-select": "^1.0.0-alpha.119",
+        "@panneau/filter-search": "^1.0.0-alpha.131",
+        "@panneau/filter-select": "^1.0.0-alpha.131",
         "@panneau/filter-toggle": "^1.0.0-alpha.119",
         "prop-types": "^15.7.2"
     },
