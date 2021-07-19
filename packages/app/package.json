@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "1.0.0-alpha.132",
+    "version": "1.0.0-alpha.133",
     "description": "",
     "keywords": [
         "javascript"
@@ -57,9 +57,9 @@
         "@fortawesome/fontawesome-svg-core": "^1.2.35",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
+        "@panneau/auth": "^1.0.0-alpha.133",
         "@panneau/core": "^1.0.0-alpha.119",
-        "@panneau/data": "^1.0.0-alpha.119",
-        "@panneau/auth": "^1.0.0-alpha.119",
+        "@panneau/data": "^1.0.0-alpha.133",
         "@panneau/displays": "^1.0.0-alpha.122",
         "@panneau/element-alert": "^1.0.0-alpha.119",
         "@panneau/element-button": "^1.0.0-alpha.119",
@@ -74,9 +74,9 @@
         "@panneau/element-navbar": "^1.0.0-alpha.119",
         "@panneau/element-pagination": "^1.0.0-alpha.123",
         "@panneau/element-radios": "^1.0.0-alpha.119",
-        "@panneau/fields": "^1.0.0-alpha.132",
-        "@panneau/filters": "^1.0.0-alpha.132",
-        "@panneau/forms": "^1.0.0-alpha.119",
+        "@panneau/fields": "^1.0.0-alpha.133",
+        "@panneau/filters": "^1.0.0-alpha.133",
+        "@panneau/forms": "^1.0.0-alpha.133",
         "@panneau/intl": "^1.0.0-alpha.119",
         "@panneau/lists": "^1.0.0-alpha.123",
         "@panneau/modals": "^1.0.0-alpha.119",
