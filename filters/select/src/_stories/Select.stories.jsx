@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React, { useState } from 'react';
+import { ApiProvider } from '../../../../packages/data';
 import FieldsProvider from '../../../../packages/fields';
 import SelectFilter from '../SelectFilter';
 
@@ -11,12 +12,14 @@ export default {
     },
 };
 
-const FieldContainer = ({ options }) => {
+const FieldContainer = (props) => {
     const [value, setValue] = useState(null);
     return (
-        <FieldsProvider>
-            <SelectFilter name="Select" value={value} options={options} onChange={setValue} />
-        </FieldsProvider>
+        <ApiProvider baseUrl="/api">
+            <FieldsProvider>
+                <SelectFilter {...props} name="Select" value={value} onChange={setValue} />
+            </FieldsProvider>
+        </ApiProvider>
     );
 };
 
@@ -36,5 +39,26 @@ export const Normal = () => (
                 label: 'Chose 3',
             },
         ]}
+    />
+);
+
+// TODO: figure out how to mock this
+export const Fetching = () => (
+    <FieldContainer
+        options={[
+            {
+                value: 'chose1',
+                label: 'Chose 1',
+            },
+            {
+                value: 'chose2',
+                label: 'Chose 2',
+            },
+            {
+                value: 'chose3',
+                label: 'Chose 3',
+            },
+        ]}
+        // requestUrl="/api/pages"
     />
 );
