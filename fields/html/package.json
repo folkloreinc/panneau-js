@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-html",
-    "version": "1.0.0-alpha.119",
+    "version": "1.0.0-alpha.130",
     "description": "A HTML field, using either Quill or CK Editor",
     "keywords": [
         "javascript"
