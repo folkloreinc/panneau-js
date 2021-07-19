@@ -69,7 +69,7 @@ const HtmlField = ({
               {
                   [className]: className !== null,
                   'is-valid': feedback === 'valid',
-                  'is-invalid': feedback === 'invalid' && errors !== null && errors.length > 0,
+                  'is-invalid': feedback === 'invalid' || (errors !== null && errors.length > 0),
               },
           ])
         : className;

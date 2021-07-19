@@ -16,10 +16,17 @@ const Container = (props) => {
 };
 
 export const Normal = () => <Container placeholder="Text" />;
+
 export const WithDataList = () => (
     <Container placeholder="With data list" dataList={['Bird', 'Cat', 'Dog', 'Fish', 'Snail']} />
 );
+
 export const Email = () => <Container type="email" placeholder="Email" />;
+
 export const Password = () => <Container type="password" placeholder="Password" />;
+
 export const Telephone = () => <Container type="tel" placeholder="Telephone" />;
+
 export const TextArea = () => <Container type="textarea" placeholder="Textarea" />;
+
+export const WithErrors = () => <Container placeholder="Text" errors={['Invalid field']} />;
