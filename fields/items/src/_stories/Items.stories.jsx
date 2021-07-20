@@ -17,6 +17,28 @@ const itemFields = [
     { name: 'description', component: 'text', label: 'Description' },
 ];
 
+const itemField = {
+    name: 'artwork',
+    label: '',
+    type: 'object',
+    component: 'item',
+    required: false,
+    defaultValue: null,
+    settings: {
+        hiddenInForm: false,
+        createOnly: false,
+        updateOnly: false,
+    },
+    properties: [],
+    requestUrl: '/api/pages',
+    placeholder: 'panneau.forms.pages_placeholder',
+    itemLabelPath: 'title.en',
+    itemImagePath: null,
+    requestQuery: {
+        paginated: false,
+    },
+};
+
 const Dummy = () => <div>Hello World!</div>;
 
 const Container = (props) => {
@@ -39,9 +61,7 @@ export const WithItemRender = () => (
 );
 
 export const WithItemComponent = () => <Container itemComponent={Dummy} />;
-export const WithFieldComponent = () => (
-    <Container itemField={{ component: 'date' }} newItemValue={null} />
-);
+export const WithFieldComponent = () => <Container itemField={itemField} newItemValue={null} />;
 
 export const WithTypes = () => (
     <Container

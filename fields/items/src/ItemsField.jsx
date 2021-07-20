@@ -112,6 +112,7 @@ const ItemsField = ({
     const { component = null, ...fieldProps } = itemField || {};
     const FieldsComponent = useFieldComponent('fields');
     const FieldComponent = useFieldComponent(component);
+    console.log(FieldComponent); // eslint-disable-line
 
     const onClickAdd = useCallback(
         (newItemContent = null) => {
