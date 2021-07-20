@@ -1,11 +1,4 @@
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading, react/prop-types */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-import { ReactSortable } from 'react-sortablejs';
-import { v4 as uuid } from 'uuid';
-import classNames from 'classnames';
-import isFunction from 'lodash/isFunction';
 import { faCaretDown, faCaretRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -13,6 +6,13 @@ import { useFieldComponent } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
 import Label from '@panneau/element-label';
+import classNames from 'classnames';
+import isFunction from 'lodash/isFunction';
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
+import { ReactSortable } from 'react-sortablejs';
+import { v4 as uuid } from 'uuid';
 
 const propTypes = {
     label: PropTypes.string,
@@ -24,13 +24,14 @@ const propTypes = {
             fields: PanneauPropTypes.fields,
         }),
     ),
-    newItemDefaultValue: PropTypes.func,
+    newItemValue: PropTypes.oneOfType([PropTypes.func, PropTypes.any]),
     noItemLabel: PanneauPropTypes.label,
     addItemLabel: PanneauPropTypes.label,
     itemLabel: PanneauPropTypes.label,
     itemComponent: PropTypes.elementType,
     itemProps: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
     itemFields: PanneauPropTypes.fields,
+    itemField: PanneauPropTypes.field,
     className: PropTypes.string,
     onChange: PropTypes.func,
 
@@ -50,7 +51,7 @@ const defaultProps = {
     label: null,
     value: null,
     types: null,
-    newItemDefaultValue: () => ({}),
+    newItemValue: () => ({}),
     noItemLabel: (
         <FormattedMessage
             defaultMessage="No item..."
@@ -64,6 +65,7 @@ const defaultProps = {
     itemComponent: null,
     itemProps: null,
     itemFields: null,
+    itemField: null,
     className: null,
     onChange: null,
 
@@ -73,7 +75,7 @@ const defaultProps = {
 
     withoutCollapse: false,
     withoutSort: false,
-    
+
     addItemDisabled: false,
 
     inline: false,
@@ -83,13 +85,14 @@ const ItemsField = ({
     label,
     value,
     types,
-    newItemDefaultValue,
+    newItemValue,
     noItemLabel,
     addItemLabel,
     itemLabel,
     itemComponent: ItemComponent,
     itemProps,
     itemFields,
+    itemField,
     className,
     onChange,
 
@@ -106,14 +109,16 @@ const ItemsField = ({
 }) => {
     const idMap = useRef((value || []).map(() => uuid()));
     const [collapsed, setCollapsed] = useState((value || []).map(() => true));
+    const { component = null, ...fieldProps } = itemField || {};
     const FieldsComponent = useFieldComponent('fields');
+    const FieldComponent = useFieldComponent(component);
 
     const onClickAdd = useCallback(
         (newItemContent = null) => {
+            const defaultValue = isFunction(newItemValue) ? newItemValue() : newItemValue;
             const newValue =
-                newItemContent !== null
-                    ? { ...newItemDefaultValue(), ...newItemContent }
-                    : newItemDefaultValue();
+                newItemContent !== null ? { ...defaultValue, ...newItemContent } : defaultValue;
+
             const finalValue = [...(value || []), newValue];
             idMap.current = [...idMap.current, uuid()];
             setCollapsed((previousCollapsed) => [...previousCollapsed, false]);
@@ -122,16 +127,16 @@ const ItemsField = ({
                 onChange(finalValue);
             }
         },
-        [value, onChange, setCollapsed, newItemDefaultValue],
+        [value, onChange, setCollapsed, newItemValue],
     );
 
     const onItemChange = useCallback(
-        (it, index, newItemValue) => {
-            const newValue = value.map((prevItem, prevIndex) =>
-                prevIndex !== index ? prevItem : newItemValue,
+        (it, index, newValue) => {
+            const finalValue = value.map((prevItem, prevIndex) =>
+                prevIndex !== index ? prevItem : newValue,
             );
             if (onChange !== null) {
-                onChange(newValue);
+                onChange(finalValue);
             }
         },
         [value, onChange],
@@ -205,6 +210,7 @@ const ItemsField = ({
 
     const itemElements = items.map(({ id, it }, index) => {
         const { type: itemType = null } = it || {};
+        // console.log(it);
 
         let itemChildren;
         const currentType = (types || []).find(({ id: typeId }) => itemType === typeId) || null;
@@ -216,13 +222,13 @@ const ItemsField = ({
             currentType !== null ? (
                 <span>
                     {finalItemLabel}
-                    { itemLabel !== null ? ' ' : null}
+                    {itemLabel !== null ? ' ' : null}
                     {`#${index + 1}`} - {currentType.name}
                 </span>
             ) : (
                 <span>
                     {finalItemLabel}
-                    { itemLabel !== null ? ' ' : null}
+                    {itemLabel !== null ? ' ' : null}
                     {`#${index + 1}`}
                 </span>
             );
@@ -258,6 +264,15 @@ const ItemsField = ({
                     {...(isFunction(itemProps) ? itemProps(it, index) : itemProps)}
                 />
             );
+        } else if (FieldComponent !== null) {
+            itemChildren = (
+                <FieldComponent
+                    value={it}
+                    onChange={(newValue) => onItemChange(it, index, newValue)}
+                    {...fieldProps}
+                    {...(isFunction(itemProps) ? itemProps(it, index) : itemProps)}
+                />
+            );
         }
 
         return (
@@ -283,12 +298,12 @@ const ItemsField = ({
                             },
                         ])}
                     >
-                        { !withoutCollapse ?
+                        {!withoutCollapse ? (
                             <Button
                                 className="position-absolute top-0 start-0 w-100 h-100"
                                 onClick={() => toggleCollapse(index)}
                             />
-                        : null }                        
+                        ) : null}
                         <div className="card-content position-relative pe-none">
                             {!withoutCollapse ? (
                                 <FontAwesomeIcon
@@ -350,15 +365,8 @@ const ItemsField = ({
 
     return (
         <div className={className}>
-            <div
-                className={classNames([
-                    'd-flex',
-                    'align-items-center',
-                    'pb-3',
-                    'header',
-                ])}
-            >
-                { label !== null ? <Label>{label}</Label> : null }
+            <div className={classNames(['d-flex', 'align-items-center', 'pb-3', 'header'])}>
+                {label !== null ? <Label>{label}</Label> : null}
                 {types !== null && types.length > 1 ? (
                     <div className="position-relative ms-auto">
                         <Button

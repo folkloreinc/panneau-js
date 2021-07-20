@@ -35,10 +35,14 @@ export const Inline = () => <Container itemFields={itemFields} inline />;
 export const WithoutSort = () => <Container itemFields={itemFields} withoutSort />;
 export const WithoutCollapse = () => <Container itemFields={itemFields} withoutCollapse />;
 export const WithItemRender = () => (
-    <Container renderItem={(it, index) => <div>Item #{index+1}</div>} />
+    <Container renderItem={(it, index) => <div>Item #{index + 1}</div>} />
 );
 
 export const WithItemComponent = () => <Container itemComponent={Dummy} />;
+export const WithFieldComponent = () => (
+    <Container itemField={{ component: 'date' }} newItemValue={null} />
+);
+
 export const WithTypes = () => (
     <Container
         types={[

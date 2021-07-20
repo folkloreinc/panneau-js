@@ -34,6 +34,7 @@ const propTypes = {
     itemLabelPath: PropTypes.string,
     itemDescriptionPath: PropTypes.string,
     itemImagePath: PropTypes.string,
+    itemLabelWithId: PropTypes.bool,
     size: PropTypes.oneOf(['sm', 'lg']),
     placeholder: PanneauPropTypes.text,
     className: PropTypes.string,
@@ -58,6 +59,7 @@ const defaultProps = {
     itemLabelPath: 'label',
     itemDescriptionPath: null,
     itemImagePath: 'image',
+    itemLabelWithId: false,
     size: null,
     placeholder: null,
     className: null,
@@ -78,12 +80,13 @@ const ItemField = ({
     requestQuery,
     requestOptions,
     requestSearchParamName,
-    getItemLabel,
+    getItemLabel: initialGetItemLabel,
     getItemDescription,
     getItemImage,
     itemLabelPath,
     itemDescriptionPath,
     itemImagePath,
+    itemLabelWithId,
     onChange,
     className,
     inputClassName,
@@ -93,6 +96,18 @@ const ItemField = ({
     const [inputValue, setInputValue] = useState('');
     const [items, setItems] = useState(initialItems || []);
     const lastRequest = useRef(null);
+
+    const getItemLabel = useCallback(
+        (it, path) => {
+            if (itemLabelWithId) {
+                const label = initialGetItemLabel(it, path);
+                const id = get(it, 'id', null);
+                return label ? `${label} (#${id})` : `#${id}`;
+            }
+            return initialGetItemLabel(it, path);
+        },
+        [initialGetItemLabel, itemLabelWithId],
+    );
 
     const onSuggestionsFetchRequested = useCallback(
         (request) => {
