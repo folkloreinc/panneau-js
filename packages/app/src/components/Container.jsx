@@ -74,6 +74,8 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
         window.location.href = baseUrl;
     }, [baseUrl]);
 
+    console.log('definition', definition); // eslint-disable-line
+
     return (
         <Router>
             <IntlProvider locale={locale} locales={locales} extraMessages={extraMessages}>
