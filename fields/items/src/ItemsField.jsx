@@ -34,16 +34,12 @@ const propTypes = {
     itemField: PanneauPropTypes.field,
     className: PropTypes.string,
     onChange: PropTypes.func,
-
     renderBefore: PropTypes.func,
     renderItem: PropTypes.func,
     renderItemLabel: PropTypes.func,
-
     withoutCollapse: PropTypes.bool,
     withoutSort: PropTypes.bool,
-
     addItemDisabled: PropTypes.bool,
-
     inline: PropTypes.bool,
 };
 
@@ -68,16 +64,12 @@ const defaultProps = {
     itemField: null,
     className: null,
     onChange: null,
-
     renderBefore: null,
     renderItem: null,
     renderItemLabel: null,
-
     withoutCollapse: false,
     withoutSort: false,
-
     addItemDisabled: false,
-
     inline: false,
 };
 
@@ -95,16 +87,12 @@ const ItemsField = ({
     itemField,
     className,
     onChange,
-
     renderBefore,
     renderItem,
     renderItemLabel,
-
     withoutCollapse,
     withoutSort,
-
     addItemDisabled,
-
     inline,
 }) => {
     const idMap = useRef((value || []).map(() => uuid()));
@@ -112,7 +100,6 @@ const ItemsField = ({
     const { component = null, ...fieldProps } = itemField || {};
     const FieldsComponent = useFieldComponent('fields');
     const FieldComponent = useFieldComponent(component);
-    console.log(FieldComponent); // eslint-disable-line
 
     const onClickAdd = useCallback(
         (newItemContent = null) => {
@@ -211,7 +198,7 @@ const ItemsField = ({
 
     const itemElements = items.map(({ id, it }, index) => {
         const { type: itemType = null } = it || {};
-        // console.log(it);
+        // console.log(id, it); // eslint-disable-line
 
         let itemChildren;
         const currentType = (types || []).find(({ id: typeId }) => itemType === typeId) || null;

@@ -4,7 +4,9 @@ import { useApi } from '@panneau/data';
 import Select from '@panneau/element-select';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import { parse as parseQuery } from 'query-string';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router';
 
 const propTypes = {
     options: PropTypes.arrayOf(
@@ -16,6 +18,7 @@ const propTypes = {
     requestUrl: PropTypes.string,
     requestOptions: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     requestQuery: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    requestParams: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     itemValuePath: PropTypes.string,
     itemLabelPath: PropTypes.string,
     maxItemsCount: PropTypes.number,
@@ -27,6 +30,7 @@ const defaultProps = {
     requestUrl: null,
     requestOptions: null,
     requestQuery: null,
+    requestParams: null,
     itemValuePath: null,
     itemLabelPath: null,
     maxItemsCount: null,
@@ -38,6 +42,7 @@ const SelectFilter = ({
     requestUrl,
     requestOptions,
     requestQuery,
+    requestParams,
     itemValuePath,
     itemLabelPath,
     maxItemsCount,
@@ -47,6 +52,23 @@ const SelectFilter = ({
     const api = useApi();
     const [options, setOptions] = useState(initialOptions || []);
 
+    const { search } = useLocation();
+    const query = useMemo(() => parseQuery(search), [search]);
+    const finalParams = useMemo(() => {
+        const currentQuery = query || {};
+        const currentParams = requestParams || [];
+        return Object.keys(currentQuery).reduce((obj, name) => {
+            const inParams = currentParams.find((p) => p === name);
+            if (inParams && currentQuery[name]) {
+                return {
+                    ...obj,
+                    [name]: currentQuery[name],
+                };
+            }
+            return obj;
+        }, {});
+    }, [query, requestParams]);
+
     const fetchOptions = useCallback(
         (url) => {
             if (url !== null && api !== null) {
@@ -55,6 +77,7 @@ const SelectFilter = ({
                     {
                         paginate: false,
                         ...requestQuery,
+                        ...finalParams,
                     },
                     requestOptions,
                 )
@@ -79,6 +102,7 @@ const SelectFilter = ({
             maxItemsCount,
             requestQuery,
             requestOptions,
+            finalParams,
             itemLabelPath,
             itemValuePath,
         ],

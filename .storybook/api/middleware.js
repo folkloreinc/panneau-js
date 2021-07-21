@@ -142,19 +142,21 @@ module.exports = () => {
         }
         // Test unauthorized request here
         // res.status(401);
+        const defaultCount = 10;
         const {
             page = null,
-            count = 10,
+            count = null,
             sort = 'id',
             sort_direction: sortDirection = 'asc',
+            paginate = true,
             ...query
         } = req.query;
         const items = getResourceItems(resource);
         const filteredItems = sortItems(filterItems(items, query), sort, sortDirection);
         if (page !== null) {
-            res.json(getItemsPage(filteredItems, parseInt(page, 10), parseInt(count, 10)));
+            res.json(getItemsPage(filteredItems, parseInt(page, 10), parseInt(count || defaultCount, 10)));
         } else {
-            res.json(count !== null ? filteredItems.slice(0, count - 1) : filteredItems);
+            res.json(count !== null && paginate === false ? filteredItems.slice(0, count - 1) : filteredItems);
         }
         res.end();
     });
