@@ -58,8 +58,8 @@ const SelectFilter = ({
         const currentQuery = query || {};
         const currentParams = requestParams || [];
         return Object.keys(currentQuery).reduce((obj, name) => {
-            const inParams = currentParams.find((p) => p === name);
-            if (inParams && currentQuery[name]) {
+            const inParams = currentParams.find((p) => p === name) || null;
+            if (inParams !== null && currentQuery[name]) {
                 return {
                     ...obj,
                     [name]: currentQuery[name],
@@ -110,7 +110,7 @@ const SelectFilter = ({
 
     useEffect(() => {
         fetchOptions(requestUrl);
-    }, [requestUrl]);
+    }, [requestUrl, finalParams]);
 
     return <Select {...props} className={className} options={options} />;
 };

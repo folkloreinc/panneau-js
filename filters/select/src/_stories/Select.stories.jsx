@@ -61,6 +61,6 @@ export const WithParams = () => (
         requestUrl="/pages"
         itemLabelPath="title.en"
         itemValuePath="id"
-        requestParams={['peter']}
+        requestParams={['edition_id']}
     />
 );
