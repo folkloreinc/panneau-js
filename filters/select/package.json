@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-select",
-    "version": "1.0.0-alpha.139",
+    "version": "1.0.0-alpha.143",
     "description": "Select filter",
     "keywords": [
         "javascript"
@@ -59,9 +59,9 @@
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
+        "query-string": "^7.0.0",
         "react-intl": "^5.15.8",
-        "react-router": "^5.2.0",
-        "query-string": "^7.0.0"
+        "react-router": "^5.2.0"
     },
     "publishConfig": {
         "access": "public"
