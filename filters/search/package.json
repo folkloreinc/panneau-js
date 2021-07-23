@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-search",
-    "version": "1.0.0-alpha.145",
+    "version": "1.0.0-alpha.148",
     "description": "Search filter",
     "keywords": [
         "javascript"
@@ -55,10 +55,10 @@
         "@babel/runtime": "^7.12.5",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
-        "@panneau/core": "^1.0.0-alpha.145",
-        "@panneau/element-button": "^1.0.0-alpha.145",
-        "@panneau/element-form": "^1.0.0-alpha.145",
-        "@panneau/field-text": "^1.0.0-alpha.145",
+        "@panneau/core": "^1.0.0-alpha.148",
+        "@panneau/element-button": "^1.0.0-alpha.148",
+        "@panneau/element-form": "^1.0.0-alpha.148",
+        "@panneau/field-text": "^1.0.0-alpha.148",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
