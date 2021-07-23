@@ -201,6 +201,7 @@ const ItemsField = ({
         // console.log(id, it); // eslint-disable-line
 
         let itemChildren;
+        // Assumes the type on an item is the type you want for the dropdown
         const currentType = (types || []).find(({ id: typeId }) => itemType === typeId) || null;
 
         const renderedItemLabel = renderItemLabel !== null ? renderItemLabel(index) : null;
@@ -221,7 +222,24 @@ const ItemsField = ({
                 </span>
             );
 
-        if (itemType !== null && currentType === null) {
+        if (ItemComponent !== null) {
+            itemChildren = (
+                <ItemComponent
+                    value={it}
+                    onChange={(newValue) => onItemChange(it, index, newValue)}
+                    {...(isFunction(itemProps) ? itemProps(it, index) : itemProps)}
+                />
+            );
+        } else if (FieldComponent !== null) {
+            itemChildren = (
+                <FieldComponent
+                    value={it}
+                    onChange={(newValue) => onItemChange(it, index, newValue)}
+                    {...fieldProps}
+                    {...(isFunction(itemProps) ? itemProps(it, index) : itemProps)}
+                />
+            );
+        } else if (itemType !== null && currentType === null) {
             itemChildren = (
                 <FormattedMessage
                     defaultMessage="Could not find type for this item"
@@ -242,23 +260,6 @@ const ItemsField = ({
                     value={it}
                     onChange={(newValue) => onItemChange(it, index, newValue)}
                     fields={itemFields}
-                />
-            );
-        } else if (ItemComponent !== null) {
-            itemChildren = (
-                <ItemComponent
-                    value={it}
-                    onChange={(newValue) => onItemChange(it, index, newValue)}
-                    {...(isFunction(itemProps) ? itemProps(it, index) : itemProps)}
-                />
-            );
-        } else if (FieldComponent !== null) {
-            itemChildren = (
-                <FieldComponent
-                    value={it}
-                    onChange={(newValue) => onItemChange(it, index, newValue)}
-                    {...fieldProps}
-                    {...(isFunction(itemProps) ? itemProps(it, index) : itemProps)}
                 />
             );
         }

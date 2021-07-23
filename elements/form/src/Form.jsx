@@ -71,7 +71,7 @@ const Form = ({
     <form action={action} method={method} onSubmit={onSubmit} className={className}>
         {children}
         {!withoutErrors && generalError !== null ? (
-            <p className="text-danger">
+            <p className="text-danger mt-4">
                 <FormattedMessage
                     defaultMessage="An error occured and we could not save this item successfully."
                     description="Error message"
