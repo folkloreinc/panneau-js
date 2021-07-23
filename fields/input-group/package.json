@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-input-group",
-    "version": "1.0.0-alpha.134",
+    "version": "1.0.0-alpha.145",
     "description": "An input-group field",
     "keywords": [
         "javascript"
@@ -53,7 +53,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.0.0-alpha.134",
+        "@panneau/core": "^1.0.0-alpha.145",
         "@panneau/themes": "^1.0.0-alpha.108",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
