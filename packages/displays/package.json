@@ -1,6 +1,6 @@
 {
     "name": "@panneau/displays",
-    "version": "1.0.0-alpha.146",
+    "version": "1.0.0-alpha.147",
     "description": "",
     "keywords": [
         "javascript"
@@ -57,7 +57,7 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^1.0.0-alpha.145",
         "@panneau/display-boolean": "^1.0.0-alpha.145",
-        "@panneau/display-date": "^1.0.0-alpha.145",
+        "@panneau/display-date": "^1.0.0-alpha.147",
         "@panneau/display-image": "^1.0.0-alpha.145",
         "@panneau/display-label": "^1.0.0-alpha.145",
         "@panneau/display-select": "^1.0.0-alpha.145",
