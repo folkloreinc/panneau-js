@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-text-localized",
-    "version": "1.0.0-alpha.148",
+    "version": "1.0.0-alpha.149",
     "description": "Localized text value",
     "keywords": [
         "javascript"
@@ -53,7 +53,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.0.0-alpha.148",
+        "@panneau/core": "^1.0.0-alpha.149",
         "@panneau/themes": "^1.0.0-alpha.108",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
