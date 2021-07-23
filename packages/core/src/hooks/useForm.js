@@ -2,6 +2,8 @@ import { useState, useMemo, useCallback } from 'react';
 import { getCsrfToken, postJSON, getCSRFHeaders } from '@folklore/fetch';
 import isString from 'lodash/isString';
 import isObject from 'lodash/isObject';
+import isArray from 'lodash/isArray';
+import get from 'lodash/get';
 
 // prettier-ignore
 const getFieldsPropsFromFields = (fields, {
@@ -14,10 +16,14 @@ const getFieldsPropsFromFields = (fields, {
         } = isObject(field) ? field : {};
         
         const fieldErrors = errors !== null ? errors[name] || [] : [];
-        const localizedErrors = component === 'localized' ? locales.reduce((previousErrors, locale) => {
+        const localizedErrors = component === 'localized' ? (locales || []).reduce((previousErrors, locale) => {
+            const items = errors !== null ? get(errors, `${name}.${locale}`, []) || [] : [];
+            const finalItems = isArray(items) ? items : [items];
+            const finalPrevious = isArray(previousErrors) ? previousErrors : [];
+
             return [
-                ...previousErrors,
-                ...( errors !== null && typeof errors[`${name}.${locale}`] !== 'undefined' ? errors[`${name}.${locale}`] : null )
+                ...finalPrevious,
+                ...finalItems,
             ];
         }, fieldErrors) : fieldErrors;
 
