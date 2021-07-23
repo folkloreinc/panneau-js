@@ -74,6 +74,10 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
         window.location.href = baseUrl;
     }, [baseUrl]);
 
+    const onLogout = useCallback(() => {
+        console.log('logout'); // eslint-disable-line
+    }, [baseUrl]);
+
     console.log('definition', definition); // eslint-disable-line
 
     return (
@@ -91,10 +95,7 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
                                                     baseUrl={baseUrl}
                                                     onUnauthorized={onUnauthorized}
                                                 >
-                                                    <AuthProvider
-                                                        user={user}
-                                                        onLogout={onUnauthorized}
-                                                    >
+                                                    <AuthProvider user={user} onLogout={onLogout}>
                                                         <ComponentsProvider components={components}>
                                                             <Routes statusCode={statusCode} />
                                                         </ComponentsProvider>

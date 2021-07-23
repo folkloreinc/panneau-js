@@ -25,7 +25,7 @@ export default {
 
     fields: [
         {
-            name: 'test-select',
+            name: 'test-select-x',
             label: 'Things',
             component: 'select',
             settings: {
@@ -54,6 +54,11 @@ export default {
                 en: {
                     name: 'en',
                     label: 'En',
+                    component: 'text',
+                },
+                es: {
+                    name: 'es',
+                    label: 'Spanish',
                     component: 'text',
                 },
             },

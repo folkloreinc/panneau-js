@@ -6,12 +6,21 @@ import isObject from 'lodash/isObject';
 // prettier-ignore
 const getFieldsPropsFromFields = (fields, {
     value, errors, onChange, ...props
-}) => fields.reduce(
+}, locales = []) => fields.reduce(
     (allFields, field) => {
         const {
             name = isString(field) ? field : null,
             component = null,
         } = isObject(field) ? field : {};
+        
+        const fieldErrors = errors !== null ? errors[name] || [] : [];
+        const localizedErrors = component === 'localized' ? locales.reduce((previousErrors, locale) => {
+            return [
+                ...previousErrors,
+                ...( typeof errors[`${name}.${locale}`] !== 'undefined' ? errors[`${name}.${locale}`] : null )
+            ];
+        }, fieldErrors) : fieldErrors;
+
         return [
             ...allFields,
             {
@@ -19,7 +28,7 @@ const getFieldsPropsFromFields = (fields, {
                 name,
                 component,
                 value: value !== null ? value[name] || null : null,
-                errors: errors !== null ? errors[name] || null : null,
+                errors: localizedErrors.length > 0 ? localizedErrors : null,
                 onChange: fieldValue => onChange(name, fieldValue),
                 ...props,
             },
@@ -43,6 +52,7 @@ const useForm = (opts = {}) => {
         value: providedValue = null,
         setValue: setProvidedValue = null,
         onComplete = null,
+        locales = [],
     } = opts;
 
     const [stateValue, setStateValue] = useState(initialValue || providedValue);
@@ -71,7 +81,7 @@ const useForm = (opts = {}) => {
         ? setProvidedGeneralError
         : setStateGeneralError;
 
-    const fieldsKey = [value, errors].concat(fields);
+    const fieldsKey = [value, errors, locales].concat(fields);
     const onFieldChange = useCallback((fieldName, fieldValue) => {
         const fieldErrors = errors !== null ? errors[fieldName] || null : null;
         if (fieldErrors !== null) {
@@ -85,8 +95,9 @@ const useForm = (opts = {}) => {
             [fieldName]: fieldValue,
         });
     }, fieldsKey);
+    
     const fieldsProps = useMemo(
-        () => getFieldsPropsFromFields(fields, { value, errors, onChange: onFieldChange }),
+        () => getFieldsPropsFromFields(fields, { value, errors, onChange: onFieldChange }, locales),
         fieldsKey,
     );
 

@@ -3,6 +3,10 @@
     "defaultMessage": "Error 403",
     "description": "Error page meta title"
   },
+  "2vB7U4": {
+    "defaultMessage": "An error occured and we could not save this item successfully.",
+    "description": "Error message"
+  },
   "3na7F8": {
     "defaultMessage": "Now",
     "description": "Now date time message"
@@ -193,6 +197,10 @@
   "wKPI1y": {
     "defaultMessage": "This page doesn’t exist",
     "description": "Error page description"
+  },
+  "y9zauY": {
+    "defaultMessage": "An error occured and we could not delete this item successfully.",
+    "description": "Error message"
   },
   "yALN2p": {
     "defaultMessage": "There was an error",

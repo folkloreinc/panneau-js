@@ -59,7 +59,7 @@ const UploadField = ({
 }) => {
     const onComplete = useCallback(
         (response) => {
-            console.log('complete', response); // eslint-disable-line
+            // console.log('upload complete', response); // eslint-disable-line
             let newValue = null;
             if (isArray(response)) {
                 if (allowMultipleUploads) {

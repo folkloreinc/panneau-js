@@ -17,6 +17,12 @@ msgctxt "+6cCPF"
 msgid "Error 403"
 msgstr "Erreur 403"
 
+# Error message
+#: 2vB7U4
+msgctxt "2vB7U4"
+msgid "An error occured and we could not save this item successfully."
+msgstr ""
+
 # Now date time message
 #: 3na7F8
 msgctxt "3na7F8"
@@ -303,6 +309,12 @@ msgstr "Autjourd'hui"
 msgctxt "wKPI1y"
 msgid "This page doesn’t exist"
 msgstr "Cette page n’existe pas"
+
+# Error message
+#: y9zauY
+msgctxt "y9zauY"
+msgid "An error occured and we could not delete this item successfully."
+msgstr ""
 
 # Error page description
 #: yALN2p

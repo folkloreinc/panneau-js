@@ -2,6 +2,9 @@
     "+6cCPF": {
         "defaultMessage": "Error 403"
     },
+    "2vB7U4": {
+        "defaultMessage": "An error occured and we could not save this item successfully."
+    },
     "3na7F8": {
         "defaultMessage": "Now"
     },
@@ -145,6 +148,9 @@
     },
     "wKPI1y": {
         "defaultMessage": "This page doesn’t exist"
+    },
+    "y9zauY": {
+        "defaultMessage": "An error occured and we could not delete this item successfully."
     },
     "yALN2p": {
         "defaultMessage": "There was an error"

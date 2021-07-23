@@ -81,16 +81,19 @@ const LocalizedField = ({
                     {locales.length > 1 ? (
                         <div className="ms-auto">
                             <Buttons
-                                items={locales.map((locale) => ({
-                                    id: locale,
-                                    label: locale.toUpperCase(),
-                                    active: locale === currentLocale,
-                                    theme:
-                                        value !== null && !isEmpty(value[locale] || null)
-                                            ? 'success'
-                                            : 'warning',
-                                    onClick: () => setCurrentLocale(locale),
-                                }))}
+                                items={locales.map((locale) => {
+                                    const { label: localeLabel = null } = properties[locale] || {};
+                                    return {
+                                        id: locale,
+                                        label: localeLabel || locale.toUpperCase(),
+                                        active: locale === currentLocale,
+                                        theme:
+                                            value !== null && !isEmpty(value[locale] || null)
+                                                ? 'success'
+                                                : 'warning',
+                                        onClick: () => setCurrentLocale(locale),
+                                    };
+                                })}
                                 theme="secondary"
                                 size="sm"
                                 outline

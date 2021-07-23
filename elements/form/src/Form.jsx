@@ -16,12 +16,14 @@ const propTypes = {
     children: PropTypes.node,
     actions: PropTypes.node,
     buttons: PanneauPropTypes.buttons,
+    generalError: PropTypes.string,
     submitButtonLabel: PanneauPropTypes.label,
     onSubmit: PropTypes.func,
     onCancel: PropTypes.func,
     onCancelHref: PropTypes.string,
     withoutActions: PropTypes.bool,
     withoutStatus: PropTypes.bool,
+    withoutErrors: PropTypes.bool,
     className: PropTypes.string,
     buttonsClassName: PropTypes.string,
     cancelClassName: PropTypes.string,
@@ -34,12 +36,14 @@ const defaultProps = {
     children: null,
     actions: null,
     buttons: null,
+    generalError: null,
     submitButtonLabel: null,
     onSubmit: null,
     onCancel: null,
     onCancelHref: null,
     withoutActions: false,
     withoutStatus: false,
+    withoutErrors: false,
     className: null,
     buttonsClassName: null,
     cancelClassName: null,
@@ -52,19 +56,29 @@ const Form = ({
     children,
     actions,
     buttons,
+    generalError,
     submitButtonLabel,
     onSubmit,
     onCancel,
     onCancelHref,
     withoutActions,
     withoutStatus,
+    withoutErrors,
     className,
     buttonsClassName,
     cancelClassName,
 }) => (
     <form action={action} method={method} onSubmit={onSubmit} className={className}>
         {children}
-        {(!withoutStatus && status !== null) || (!withoutActions) ? (
+        {!withoutErrors && generalError !== null ? (
+            <p className="text-danger">
+                <FormattedMessage
+                    defaultMessage="An error occured and we could not save this item successfully."
+                    description="Error message"
+                />
+            </p>
+        ) : null}
+        {(!withoutStatus && status !== null) || !withoutActions ? (
             <div className="mt-4 d-flex align-items-center">
                 {!withoutStatus && status !== null ? <FormStatus status={status} /> : null}
                 {!withoutActions ? (
@@ -85,7 +99,10 @@ const Form = ({
                                     },
                                 ])}
                             >
-                                <FormattedMessage defaultMessage="Cancel" description="Button label" />
+                                <FormattedMessage
+                                    defaultMessage="Cancel"
+                                    description="Button label"
+                                />
                             </Button>
                         ) : null}
                         {buttons !== null ? (
@@ -117,7 +134,7 @@ const Form = ({
                     </div>
                 ) : null}
             </div>
-        ) : null }
+        ) : null}
     </form>
 );
 

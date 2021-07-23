@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { FormProvider, useFormsComponents } from '@panneau/core/contexts';
+import { FormProvider, useFormsComponents, useLocales } from '@panneau/core/contexts';
 import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceDestroy, useResourceStore, useResourceUpdate } from '@panneau/data';
@@ -26,6 +26,8 @@ const defaultProps = {
 };
 
 const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ...props }) => {
+    const locales = useLocales();
+
     const FormComponents = useFormsComponents();
     const { fields: resourceFields = [], types: resourceTypes = [], forms } = resource;
     const resourceType = type !== null ? resourceTypes.find((it) => it.id === type) || null : null;
@@ -86,7 +88,7 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
 
     const setValue = useCallback(
         (newValue) => {
-            console.log('new value in resource form', newValue); // eslint-disable-line
+            // console.log('new value in resource form', newValue); // eslint-disable-line
             setValueState(newValue);
         },
         [setValueState],
@@ -98,6 +100,7 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
         postForm,
         setValue,
         onComplete: onSuccess,
+        locales,
     });
 
     // Form action
@@ -126,7 +129,7 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
 
     // Lisen to item value change - this is important
     useEffect(() => {
-        console.log('get initial value from the top'); // eslint-disable-line
+        // console.log('get initial value from the top'); // eslint-disable-line
         setValue(getInitialValue());
     }, [getInitialValue, setValue]);
 
