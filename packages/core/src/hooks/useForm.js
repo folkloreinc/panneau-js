@@ -17,7 +17,7 @@ const getFieldsPropsFromFields = (fields, {
         const localizedErrors = component === 'localized' ? locales.reduce((previousErrors, locale) => {
             return [
                 ...previousErrors,
-                ...( typeof errors[`${name}.${locale}`] !== 'undefined' ? errors[`${name}.${locale}`] : null )
+                ...( errors !== null && typeof errors[`${name}.${locale}`] !== 'undefined' ? errors[`${name}.${locale}`] : null )
             ];
         }, fieldErrors) : fieldErrors;
 
