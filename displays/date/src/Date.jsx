@@ -1,14 +1,15 @@
 import formatDate from 'date-fns/format';
-import { de, enUS, es, fr, jp } from 'date-fns/locale';
+import { de, enUS, es, frCA, ja } from 'date-fns/locale';
 import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useIntl } from 'react-intl';
 
 const formats = {
-    fr,
+    fr: frCA,
     de,
-    jp,
+    ja,
     es,
     en: enUS,
 };
@@ -28,9 +29,11 @@ const defaultProps = {
 };
 
 const DateDisplay = ({ value, format, parseFormat, locale }) => {
+    const { locale: defaultLocale } = useIntl();
+    const finalLocale = locale || defaultLocale;
     const options =
-        locale !== null && typeof formats[locale] !== 'undefined'
-            ? { locale: formats[locale] }
+        finalLocale !== null && typeof formats[finalLocale] !== 'undefined'
+            ? { locale: formats[finalLocale] }
             : {};
     let date = null;
 
