@@ -62,6 +62,7 @@
         "@panneau/display-select": "^1.0.0-alpha.145",
         "@panneau/display-text": "^1.0.0-alpha.145",
         "@panneau/display-text-localized": "^1.0.0-alpha.145",
+        "@panneau/display-date": "^1.0.0-alpha.145",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
