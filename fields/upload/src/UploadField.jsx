@@ -15,7 +15,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
-    className: PropTypes.string,
+    endpoint: PropTypes.string,
     value: PropTypes.oneOf([
         PropTypes.array,
         PropTypes.shape({
@@ -32,10 +32,11 @@ const propTypes = {
     addButtonLabel: PanneauPropTypes.label,
     allowMultipleUploads: PropTypes.bool,
     onChange: PropTypes.func,
+    className: PropTypes.string,
 };
 
 const defaultProps = {
-    className: null,
+    endpoint: null,
     value: null,
     types: ['audio', 'image', 'video'],
     sources: ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'],
@@ -45,10 +46,11 @@ const defaultProps = {
     ),
     allowMultipleUploads: false,
     onChange: null,
+    className: null,
 };
 
 const UploadField = ({
-    className,
+    endpoint,
     value,
     types,
     sources,
@@ -56,6 +58,7 @@ const UploadField = ({
     addButtonLabel,
     allowMultipleUploads,
     onChange,
+    className,
 }) => {
     const onComplete = useCallback(
         (response) => {
@@ -91,6 +94,7 @@ const UploadField = ({
         sources,
         autoProceed: true,
         onComplete,
+        ...(endpoint !== null ? { endpoint } : null),
     });
 
     const onClickRemove = useCallback(

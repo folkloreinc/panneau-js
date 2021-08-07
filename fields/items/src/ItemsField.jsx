@@ -415,7 +415,7 @@ const ItemsField = ({
                 ) : null}
             </div>
             {renderBefore !== null ? renderBefore() : null}
-            <div className="d-flex flex-column">
+            <div className="d-flex flex-column mb-3">
                 {value !== null && value.length > 0 ? (
                     <div
                         className={classNames([
