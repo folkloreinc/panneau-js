@@ -15,7 +15,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
-    endpoint: PropTypes.string,
     value: PropTypes.oneOf([
         PropTypes.array,
         PropTypes.shape({
@@ -36,7 +35,6 @@ const propTypes = {
 };
 
 const defaultProps = {
-    endpoint: null,
     value: null,
     types: ['audio', 'image', 'video'],
     sources: ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'],
@@ -50,7 +48,6 @@ const defaultProps = {
 };
 
 const UploadField = ({
-    endpoint,
     value,
     types,
     sources,
@@ -62,7 +59,7 @@ const UploadField = ({
 }) => {
     const onComplete = useCallback(
         (response) => {
-            // console.log('upload complete', response); // eslint-disable-line
+            console.log('upload complete', response); // eslint-disable-line
             let newValue = null;
             if (isArray(response)) {
                 if (allowMultipleUploads) {
@@ -94,7 +91,6 @@ const UploadField = ({
         sources,
         autoProceed: true,
         onComplete,
-        ...(endpoint !== null ? { endpoint } : null),
     });
 
     const onClickRemove = useCallback(

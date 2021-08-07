@@ -12,6 +12,10 @@ const props = {
     tus: {
         endpoint: 'http://localhost:58800/tus',
     },
+    // transport: 'xhr',
+    // xhr: {
+    //     endpoint: 'http://localhost:58800/xhr',
+    // },
 };
 
 const withUppy = (Story) => (
