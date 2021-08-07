@@ -9,6 +9,7 @@ import '@uppy/dashboard/dist/style.css';
 // import classNames from 'classnames';
 import { Dashboard, DashboardModal } from '@uppy/react';
 import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
 import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -72,6 +73,17 @@ const UploadField = ({
                 newValue =
                     response.successful.length > 0 ? response.successful[0].response.body : null;
             }
+
+            // Merge the response from our back-end
+            if (
+                isObject(newValue) &&
+                isObject(newValue.response) &&
+                newValue.response.status === 200 &&
+                newValue.response.body !== null
+            ) {
+                newValue = { ...response, ...(response.response.body || null) };
+            }
+
             if (onChange !== null) {
                 onChange(newValue);
             }
