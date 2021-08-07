@@ -81,8 +81,10 @@ const UploadField = ({
                 newValue.response.status === 200 &&
                 newValue.response.body !== null
             ) {
-                newValue = { ...response, ...(response.response.body || null) };
+                newValue = { ...newValue, ...(newValue.response.body || null) };
             }
+
+            console.log('new upload value', newValue); // eslint-disable-line
 
             if (onChange !== null) {
                 onChange(newValue);
