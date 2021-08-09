@@ -39,7 +39,9 @@ const defaultProps = {
     onFocus: null,
     onBlur: null,
     ckOptions: null,
-    quillOptions: null,
+    quillOptions: {
+        formats: ['bold', 'italic', 'link', 'underline', 'header', 'indent', 'list']
+    },
     className: null,
 };
 
