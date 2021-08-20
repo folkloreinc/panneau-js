@@ -18,6 +18,7 @@ const propTypes = {
     onChange: PropTypes.func,
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
+    ckConfig: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     ckOptions: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     quillOptions: PropTypes.shape({
         modules: PropTypes.shape({
@@ -38,9 +39,29 @@ const defaultProps = {
     onChange: null,
     onFocus: null,
     onBlur: null,
+    ckConfig: {
+        toolbar: [
+            'heading',
+            '|',
+            'bold',
+            'italic',
+            'link',
+            'bulletedList',
+            'numberedList',
+            'blockQuote',
+            // 'mediaEmbed',
+        ],
+        heading: {
+            options: [
+                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+            ],
+        },
+    },
     ckOptions: null,
     quillOptions: {
-        formats: ['bold', 'italic', 'link', 'underline', 'header', 'indent', 'list']
+        formats: ['bold', 'italic', 'link', 'underline', 'header', 'indent', 'list'],
     },
     className: null,
 };
@@ -56,6 +77,7 @@ const HtmlField = ({
     onFocus,
     onBlur,
     quillOptions,
+    ckConfig,
     ckOptions,
     className,
 }) => {
@@ -106,7 +128,7 @@ const HtmlField = ({
                 <CKEditor
                     editor={CKEditorBuild}
                     data={CKValue}
-                    config={{ placeholder }}
+                    config={ckConfig}
                     onChange={onCkEditorChange}
                     {...commonProps}
                     {...ckOptions}

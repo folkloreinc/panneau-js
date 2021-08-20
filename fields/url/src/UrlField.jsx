@@ -21,6 +21,7 @@ const propTypes = {
     schemes: PropTypes.arrayOf(PropTypes.string),
     url: PropTypes.string,
     disabled: PropTypes.bool,
+    prepend: PropTypes.string,
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
@@ -30,11 +31,12 @@ const defaultProps = {
     schemes: ['http://', 'https://', 'ftp://'],
     url: null,
     disabled: null,
+    prepend: null,
     className: null,
     onChange: null,
 };
 
-const UrlField = ({ value, schemes, url, disabled, className, onChange, ...props }) => {
+const UrlField = ({ value, schemes, url, disabled, prepend, className, onChange, ...props }) => {
     const schemesPattern = useMemo(() => new RegExp(`^(${schemes.join('|')})`, 'i'), [schemes]);
 
     const scheme = useMemo(
@@ -65,7 +67,7 @@ const UrlField = ({ value, schemes, url, disabled, className, onChange, ...props
             className={className}
             value={valueWithoutScheme}
             onChange={onFieldChange}
-            prepend={url || scheme}
+            prepend={prepend || url || scheme}
             disabled={disabled}
             type="text"
         />
