@@ -20,4 +20,13 @@ const Container = (props) => {
 };
 
 export const Normal = () => <Container type="ck-editor" placeholder="Using CK Editor" />;
+
 export const Quill = () => <Container type="quill" placeholder="Using Quill" />;
+
+export const CustomCK = () => (
+    <Container
+        type="ck-editor"
+        placeholder="Using CK Editor"
+        ckConfig={{ toolbar: ['mediaEmbed'] }}
+    />
+);
