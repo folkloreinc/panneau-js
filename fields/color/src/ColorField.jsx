@@ -12,6 +12,7 @@ const propTypes = {
         color: PropTypes.string,
         alpha: PropTypes.number,
     })]),
+    defaultValue: PropTypes.string,
     native: PropTypes.bool,
     withAlpha: PropTypes.bool,
     className: PropTypes.string,
@@ -20,13 +21,14 @@ const propTypes = {
 
 const defaultProps = {
     value: null,
+    defaultValue: '#000000',
     native: false,
     withAlpha: false,
     className: null,
     onChange: null,
 };
 
-const ColorPickerField = ({ className, value, native, withAlpha, onChange }) => {
+const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, onChange }) => {
     const [pickerOpened, setPickerOpened] = useState(false);
     const rgbaColor = useMemo(() => {
         if (value !== null) {
@@ -36,8 +38,9 @@ const ColorPickerField = ({ className, value, native, withAlpha, onChange }) => 
         }
         return null;
     }, [value]);
+    
 
-    const hexColor = useMemo( () => rgbaColor !== null ? rgbaColor.toHexString() : '#000000', [rgbaColor]);
+    const hexColor = useMemo( () => rgbaColor !== null ? rgbaColor.toHexString() : defaultValue, [rgbaColor, defaultValue]);
 
     const pickerStyle = useMemo(
         () => ({
@@ -78,7 +81,7 @@ const ColorPickerField = ({ className, value, native, withAlpha, onChange }) => 
     const onPickerChange = useCallback(
         (newValue) => {
             if (onChange !== null) {
-                const { hex, rgb: { a: alpha = 1 }} = newValue;
+                const { hex, rgb: { a: alpha = 1 }} = newValue || {};
 
                 onChange(withAlpha ? {
                     color: hex,
@@ -131,7 +134,7 @@ const ColorPickerField = ({ className, value, native, withAlpha, onChange }) => 
                 <SketchPicker
                     disableAlpha={!withAlpha}
                     className={styles.picker}
-                    color={rgbaColor}
+                    color={rgbaColor || defaultValue}
                     styles={pickerStyle}
                     onChange={onPickerChange}
                 />
