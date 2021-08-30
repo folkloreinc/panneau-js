@@ -43,7 +43,11 @@ const Dropdown = ({
     const refContainer = useRef(null);
     const onDocumentClick = useCallback(
         (e) => {
-            if (!refContainer.current.contains(e.currentTarget) && onClickOutside !== null) {
+            if (
+                refContainer.current !== null &&
+                !refContainer.current.contains(e.currentTarget) &&
+                onClickOutside !== null
+            ) {
                 onClickOutside(e);
             }
         },
