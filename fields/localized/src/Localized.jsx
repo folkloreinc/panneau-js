@@ -122,6 +122,7 @@ const LocalizedField = ({
                     return (
                         <div key={`field-${locale}`}>
                             <FieldComponent
+                                fieldLocale={locale}
                                 {...property}
                                 {...fieldProps}
                                 name={propertyName || fieldName}
