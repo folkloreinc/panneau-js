@@ -42,6 +42,7 @@ const Radios = ({
     return (
         <div
             className={classNames([
+                'd-block',
                 'btn-group',
                 'btn-group-toggle',
                 {

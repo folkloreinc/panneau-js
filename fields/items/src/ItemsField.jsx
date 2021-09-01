@@ -239,11 +239,12 @@ const ItemsField = ({
                     {...(isFunction(itemProps) ? itemProps(it, index) : itemProps)}
                 />
             );
-        } else if (itemType !== null && currentType === null) {
+        } else if (itemFields !== null) {
             itemChildren = (
-                <FormattedMessage
-                    defaultMessage="Could not find type for this item"
-                    description="Error message"
+                <FieldsComponent
+                    value={it}
+                    onChange={(newValue) => onItemChange(it, index, newValue)}
+                    fields={itemFields}
                 />
             );
         } else if (currentType !== null) {
@@ -254,12 +255,11 @@ const ItemsField = ({
                     fields={currentType.fields || itemFields}
                 />
             );
-        } else if (itemFields !== null) {
+        } else if (types !== null && itemType !== null && currentType === null) {
             itemChildren = (
-                <FieldsComponent
-                    value={it}
-                    onChange={(newValue) => onItemChange(it, index, newValue)}
-                    fields={itemFields}
+                <FormattedMessage
+                    defaultMessage="Could not find type for this item"
+                    description="Error message"
                 />
             );
         }

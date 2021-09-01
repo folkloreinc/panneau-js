@@ -1,8 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isString from 'lodash/isString';
-
+import PropTypes from 'prop-types';
+import React from 'react';
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -34,25 +33,9 @@ const InputGroupField = ({ prepend, children, append, size, className }) => (
             },
         ])}
     >
-        {prepend !== null ? (
-            <div className="input-group-prepend">
-                {isString(prepend) ? (
-                    <div className={classNames(['input-group-text', styles.left])}>{prepend}</div>
-                ) : (
-                    prepend
-                )}
-            </div>
-        ) : null}
+        {isString(prepend) ? <div className="input-group-text">{prepend}</div> : prepend}
         {children}
-        {append !== null ? (
-            <div className="input-group-append">
-                {isString(append) ? (
-                    <div className={classNames(['input-group-text', styles.right])}>{append}</div>
-                ) : (
-                    append
-                )}
-            </div>
-        ) : null}
+        {isString(append) ? <div className="input-group-text">{append}</div> : append}
     </div>
 );
 
