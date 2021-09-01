@@ -1,15 +1,15 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/jsx-props-no-spreading */
+import React, { useCallback, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+// import classNames from 'classnames';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFieldsComponents, useLocales } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import Buttons from '@panneau/element-buttons';
 import FormGroup from '@panneau/element-form-group';
 import Label from '@panneau/element-label';
-// import classNames from 'classnames';
 import isEmpty from 'lodash/isEmpty';
-import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
 
 const propTypes = {
     name: PropTypes.string,
@@ -23,6 +23,7 @@ const propTypes = {
     fieldProps: PropTypes.object, // eslint-disable-line
     className: PropTypes.string,
     onChange: PropTypes.func,
+    onCurrentLocaleChange: PropTypes.func,
 };
 
 const defaultProps = {
@@ -37,6 +38,7 @@ const defaultProps = {
     fieldProps: null,
     className: null,
     onChange: null,
+    onCurrentLocaleChange: null,
 };
 
 const LocalizedField = ({
@@ -50,6 +52,7 @@ const LocalizedField = ({
     component: componentName,
     fieldProps,
     onChange,
+    onCurrentLocaleChange,
     className,
 }) => {
     const contextLocales = useLocales();
@@ -69,6 +72,13 @@ const LocalizedField = ({
         [onChange, value],
     );
     const [currentLocale, setCurrentLocale] = useState(locales.length > 0 ? locales[0] : null);
+
+    useEffect(() => {
+        if (onCurrentLocaleChange !== null) {
+            onCurrentLocaleChange(currentLocale);
+        }
+    }, [currentLocale, onCurrentLocaleChange]);
+
     return (
         <FormGroup
             label={
