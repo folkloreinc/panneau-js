@@ -27,18 +27,33 @@ const ResourceCreateButtom = ({ resource, className }) => {
         },
         [dropdownOpened, setDropdownOpened],
     );
+
+    const finalTypes =
+        types !== null
+            ? types.filter(({ settings: { canCreate = true } = {} }) => canCreate)
+            : null;
+    const hasMultipleTypes = finalTypes !== null && finalTypes.length > 1;
+
     const button = (
         <Button
-            href={types === null ? resourceRoute('create') : '#'}
+            href={
+                !hasMultipleTypes
+                    ? `${resourceRoute('create')}${
+                          finalTypes !== null && finalTypes.length === 1
+                              ? `?type=${finalTypes[0].id}`
+                              : ''
+                      }`
+                    : '#'
+            }
             size="lg"
             theme="primary"
             className={classNames([
                 {
-                    'dropdown-toggle': types !== null,
+                    'dropdown-toggle': hasMultipleTypes,
                     [className]: className !== null,
                 },
             ])}
-            onClick={types !== null ? onClickDropdown : null}
+            onClick={hasMultipleTypes ? onClickDropdown : null}
         >
             <ResourceMessage
                 resource={resource}
@@ -48,7 +63,8 @@ const ResourceCreateButtom = ({ resource, className }) => {
             />
         </Button>
     );
-    return types !== null ? (
+
+    return hasMultipleTypes ? (
         <div
             className={classNames([
                 'dropdown',
@@ -59,13 +75,11 @@ const ResourceCreateButtom = ({ resource, className }) => {
         >
             {button}
             <Dropdown
-                items={types
-                    .filter(({ settings: { can_create: canCreate = true } = {} }) => canCreate)
-                    .map((it) => ({
-                        id: it.id,
-                        label: it.name,
-                        href: `${resourceRoute('create')}?type=${it.id}`,
-                    }))}
+                items={finalTypes.map((it) => ({
+                    id: it.id,
+                    label: it.name,
+                    href: `${resourceRoute('create')}?type=${it.id}`,
+                }))}
                 visible={dropdownOpened}
                 align="right"
             />
