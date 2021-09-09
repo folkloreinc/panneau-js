@@ -62,6 +62,9 @@ const defaultProps = {
         link: {
             addTargetToExternalLinks: true,
         },
+        mediaEmbed: {
+            previewsInData: true,
+        },
     },
     ckOptions: null,
     quillOptions: {
