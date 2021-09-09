@@ -48,20 +48,24 @@ const defaultProps = {
             'link',
             'bulletedList',
             'numberedList',
-            'blockQuote',
+            // 'blockQuote',
             // 'mediaEmbed',
         ],
         heading: {
             options: [
-                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                { model: 'paragraph', title: 'Paragraph' },
+                { model: 'heading1', view: 'h1', title: 'Heading 1' },
+                { model: 'heading2', view: 'h2', title: 'Heading 2' },
+                { model: 'heading3', view: 'h3', title: 'Heading 3' },
             ],
+        },
+        link: {
+            addTargetToExternalLinks: true,
         },
     },
     ckOptions: null,
     quillOptions: {
-        formats: ['bold', 'italic', 'link', 'underline', 'header', 'indent', 'list'],
+        formats: ['bold', 'italic', 'link', 'header', 'indent', 'list'],
     },
     className: null,
 };
@@ -81,10 +85,10 @@ const HtmlField = ({
     ckOptions,
     className,
 }) => {
-    const usingCKeditor = type === 'ck-editor';
-    const CKEditor = useCKEditor({ disabled: !usingCKeditor });
-    const CKEditorBuild = useCKEditorBuild({ disabled: !usingCKeditor, inline });
-    const Quill = useQuill({ disabled: usingCKeditor, inline });
+    const usingQuill = type === 'quill';
+    const CKEditor = useCKEditor({ disabled: usingQuill });
+    const CKEditorBuild = useCKEditorBuild({ disabled: usingQuill, inline });
+    const Quill = useQuill({ disabled: !usingQuill, inline });
     const CKValue = value !== null ? value : '';
 
     const finalClassName = inline
@@ -150,7 +154,7 @@ const HtmlField = ({
             />
         ) : null;
 
-    const element = usingCKeditor ? ckElement : quillElement;
+    const element = usingQuill ? quillElement : ckElement;
 
     return inline ? <InputGroup>{element}</InputGroup> : element;
 };
