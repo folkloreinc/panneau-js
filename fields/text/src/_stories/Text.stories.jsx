@@ -30,3 +30,5 @@ export const Telephone = () => <Container type="tel" placeholder="Telephone" />;
 export const TextArea = () => <Container type="textarea" placeholder="Textarea" />;
 
 export const WithErrors = () => <Container placeholder="Text" errors={['Invalid field']} />;
+
+export const MaxLength = () => <Container placeholder="Max 3 characters" maxLength={3} />;
