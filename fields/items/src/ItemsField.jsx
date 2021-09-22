@@ -46,7 +46,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-    label: <FormattedMessage defaultMessage="Item" description="Items field's item label" />,
+    label: null,
     value: null,
     types: null,
     newItemValue: () => ({}),
@@ -60,7 +60,7 @@ const defaultProps = {
     addItemLabel: (
         <FormattedMessage defaultMessage="Add an item" description="Button label in items field" />
     ),
-    itemLabel: null,
+    itemLabel: <FormattedMessage defaultMessage="Item" description="Items field's item label" />,
     itemComponent: null,
     itemProps: null,
     itemFields: null,
