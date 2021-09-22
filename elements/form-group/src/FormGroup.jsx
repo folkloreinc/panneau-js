@@ -15,6 +15,7 @@ const propTypes = {
     horizontal: PropTypes.bool,
     floating: PropTypes.bool,
     inline: PropTypes.bool,
+    withCard: PropTypes.bool,
     withoutLabel: PropTypes.bool,
     withoutErrors: PropTypes.bool,
     labelAfter: PropTypes.bool,
@@ -31,6 +32,7 @@ const defaultProps = {
     horizontal: false,
     floating: false,
     inline: false,
+    withCard: false,
     withoutLabel: false,
     withoutErrors: false,
     labelAfter: false,
@@ -47,6 +49,7 @@ const FormGroup = ({
     horizontal,
     floating,
     inline,
+    withCard,
     withoutLabel,
     withoutErrors,
     labelAfter,
@@ -67,6 +70,7 @@ const FormGroup = ({
                         'col-sm-4': horizontal,
                         'px-2': horizontal,
                         'text-nowrap': horizontal,
+                        'card-header': withCard,
                         [labelClassName]: labelClassName !== null,
                     },
                 ])}
@@ -77,14 +81,14 @@ const FormGroup = ({
 
     const helpElement =
         helpText !== null ? (
-            <small className={classNames([styles.help, 'form-text', 'text-muted'])}>
+            <small className={classNames([styles.help, 'form-text', 'text-muted', { 'card-body' : withCard}])}>
                 {helpText}
             </small>
         ) : null;
 
     const errorsElement =
         !withoutErrors && errors !== null ? (
-            <div className={classNames([styles.errors, 'invalid-feedback', 'd-block'])}>
+            <div className={classNames([styles.errors, 'invalid-feedback', 'd-block', { 'card-body' : withCard}])}>
                 <ul className="list-unstyled">
                     {errors.map((error) => (
                         <li key={`error-${error}`}>{error}</li>
@@ -100,8 +104,12 @@ const FormGroup = ({
         </div>
     ) : (
         <>
-            <Column wrap={horizontal}>{helpElement}</Column>
-            <Column wrap={horizontal}>{errorsElement}</Column>
+            <Column wrap={horizontal}>
+                {helpElement}
+            </Column>
+            <Column wrap={horizontal}>
+                {errorsElement}
+            </Column>
         </>
     );
 
@@ -122,17 +130,19 @@ const FormGroup = ({
                         'g-3': vertical,
                         'align-items-center': vertical,
                         'form-floating': floating,
+                        'form-floating': floating,
+                        card: withCard,
                     },
                 ])}
             >
                 <Column wrap={vertical} className={classNames({ 'col-sm-3': horizontal })}>
-                    { !labelAfter ? labelElement : null}
+                    {!labelAfter ? labelElement : null}
                 </Column>
                 <Column wrap={vertical} className={classNames({ 'col-sm-9': horizontal })}>
-                    {children}
+                    {withCard ? <div className="card-body">{children}</div> : children}
                 </Column>
                 <Column wrap={vertical} className={classNames({ 'col-sm-3': horizontal })}>
-                    { labelAfter ? labelElement : null}
+                    {labelAfter ? labelElement : null}
                 </Column>
                 {finalElements}
             </div>

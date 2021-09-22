@@ -10,11 +10,15 @@ export default {
     },
 };
 
-export const Normal = () => <FormGroup label="Form group label">A field is here</FormGroup>;
+const Field = () => <div>A field is here</div>;
+
+export const Normal = () => <FormGroup label="Form group label"><Field /></FormGroup>;
+
+export const WithCard = () => <FormGroup label="Form group label" withCard><Field /></FormGroup>;
 
 export const WithHelpText = () => (
     <FormGroup label="Form group label" helpText="Help me!">
-        A field is here
+        <Field />
     </FormGroup>
 );
 
@@ -24,6 +28,6 @@ export const WithErrors = () => (
         helpText="Help me!"
         errors={['This is bad', "Don't do this"]}
     >
-        A field is here
+        <Field />
     </FormGroup>
 );
