@@ -22,6 +22,8 @@ msgstr "Erreur 403"
 msgctxt "2vB7U4"
 msgid "An error occured and we could not save this item successfully."
 msgstr ""
+"Une erreur s’est produite et nous n’avons pas pu enregistrer cet élément "
+"avec succès."
 
 # Now date time message
 #: 3na7F8
@@ -58,6 +60,12 @@ msgstr "Erreur 404"
 msgctxt "6nwWPR"
 msgid "Error 401"
 msgstr "Erreur 401"
+
+# Items field's item label
+#: 7M0o0q
+msgctxt "7M0o0q"
+msgid "Item"
+msgstr "Élément"
 
 # Error page description
 #: 82P2dS
@@ -153,7 +161,7 @@ msgstr "Ajouter un fichier"
 #: PKCv5M
 msgctxt "PKCv5M"
 msgid "No item..."
-msgstr "Aucun item..."
+msgstr "Aucun élément..."
 
 # Error page title
 #: Pih2UO
@@ -315,6 +323,8 @@ msgstr "Cette page n’existe pas"
 msgctxt "y9zauY"
 msgid "An error occured and we could not delete this item successfully."
 msgstr ""
+"Une erreur s’est produite et nous n’avons pas pu supprimer cet élément avec "
+"succès."
 
 # Error page description
 #: yALN2p

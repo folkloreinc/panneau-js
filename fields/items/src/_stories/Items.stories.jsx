@@ -52,7 +52,15 @@ const Container = (props) => {
     );
 };
 
-export const Normal = () => <Container itemFields={itemFields} />;
+export const Normal = () => (
+    <Container
+        itemFields={itemFields}
+        addItemLabel="Add something"
+        noItemLabel="Nothing in here"
+        itemLabel="Thing"
+        itemLabelPath="title"
+    />
+);
 export const Inline = () => <Container itemFields={itemFields} inline />;
 export const WithoutSort = () => <Container itemFields={itemFields} withoutSort />;
 export const WithoutCollapse = () => <Container itemFields={itemFields} withoutCollapse />;

@@ -31,6 +31,10 @@
     "defaultMessage": "Error 401",
     "description": "Error page title"
   },
+  "7M0o0q": {
+    "defaultMessage": "Item",
+    "description": "Items field's item label"
+  },
   "82P2dS": {
     "defaultMessage": "You are not authorized to access this page.",
     "description": "Error page description"

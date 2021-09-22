@@ -8,6 +8,7 @@ import Dropdown from '@panneau/element-dropdown';
 import Label from '@panneau/element-label';
 import classNames from 'classnames';
 import isFunction from 'lodash/isFunction';
+import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -28,6 +29,7 @@ const propTypes = {
     noItemLabel: PanneauPropTypes.label,
     addItemLabel: PanneauPropTypes.label,
     itemLabel: PanneauPropTypes.label,
+    itemLabelPath: PropTypes.string,
     itemComponent: PropTypes.elementType,
     itemProps: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
     itemFields: PanneauPropTypes.fields,
@@ -44,7 +46,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-    label: null,
+    label: <FormattedMessage defaultMessage="Item" description="Items field's item label" />,
     value: null,
     types: null,
     newItemValue: () => ({}),
@@ -54,6 +56,7 @@ const defaultProps = {
             description="Label when there is no item in items field"
         />
     ),
+    itemLabelPath: null,
     addItemLabel: (
         <FormattedMessage defaultMessage="Add an item" description="Button label in items field" />
     ),
@@ -81,6 +84,7 @@ const ItemsField = ({
     noItemLabel,
     addItemLabel,
     itemLabel,
+    itemLabelPath,
     itemComponent: ItemComponent,
     itemProps,
     itemFields,
@@ -205,22 +209,26 @@ const ItemsField = ({
         const currentType = (types || []).find(({ id: typeId }) => itemType === typeId) || null;
 
         const renderedItemLabel = renderItemLabel !== null ? renderItemLabel(index) : null;
-        const finalItemLabel = <Label>{itemLabel}</Label>;
+        const basicItemLabel = <Label>{itemLabel}</Label>;
 
         const defaultItemLabel =
             currentType !== null ? (
                 <span>
-                    {finalItemLabel}
+                    {basicItemLabel}
                     {itemLabel !== null ? ' ' : null}
                     {`#${index + 1}`} - {currentType.name}
                 </span>
             ) : (
                 <span>
-                    {finalItemLabel}
+                    {basicItemLabel}
                     {itemLabel !== null ? ' ' : null}
                     {`#${index + 1}`}
                 </span>
             );
+        
+        const labelPath = get(it, itemLabelPath, null);
+        const finalItemLabel = labelPath !== null ? labelPath : defaultItemLabel;
+        const finalRenderedItemLabel = renderedItemLabel !== null ? renderedItemLabel : finalItemLabel;
 
         if (ItemComponent !== null) {
             itemChildren = (
@@ -302,7 +310,7 @@ const ItemsField = ({
                                 />
                             ) : null}
                             <span className="text-truncate">
-                                {renderedItemLabel !== null ? renderedItemLabel : defaultItemLabel}
+                                {finalRenderedItemLabel}
                             </span>
                         </div>
                         <div className="d-flex card-buttons position-relative ms-auto">

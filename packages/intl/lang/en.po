@@ -59,6 +59,12 @@ msgctxt "6nwWPR"
 msgid "Error 401"
 msgstr "Error 401"
 
+# Items field's item label
+#: 7M0o0q
+msgctxt "7M0o0q"
+msgid "Item"
+msgstr "Item"
+
 # Error page description
 #: 82P2dS
 msgctxt "82P2dS"

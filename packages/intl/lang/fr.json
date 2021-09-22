@@ -2,6 +2,9 @@
     "+6cCPF": {
         "defaultMessage": "Erreur 403"
     },
+    "2vB7U4": {
+        "defaultMessage": "Une erreur s’est produite et nous n’avons pas pu enregistrer cet élément avec succès."
+    },
     "3na7F8": {
         "defaultMessage": "Maintenant"
     },
@@ -19,6 +22,9 @@
     },
     "6nwWPR": {
         "defaultMessage": "Erreur 401"
+    },
+    "7M0o0q": {
+        "defaultMessage": "Élément"
     },
     "82P2dS": {
         "defaultMessage": "Vous n’êtes pas autorisé à accéder à cette page."
@@ -66,7 +72,7 @@
         "defaultMessage": "Ajouter un fichier"
     },
     "PKCv5M": {
-        "defaultMessage": "Aucun item..."
+        "defaultMessage": "Aucun élément..."
     },
     "Pih2UO": {
         "defaultMessage": "Erreur 403"
@@ -145,6 +151,9 @@
     },
     "wKPI1y": {
         "defaultMessage": "Cette page n’existe pas"
+    },
+    "y9zauY": {
+        "defaultMessage": "Une erreur s’est produite et nous n’avons pas pu supprimer cet élément avec succès."
     },
     "yALN2p": {
         "defaultMessage": "Il y a eu une erreur"
