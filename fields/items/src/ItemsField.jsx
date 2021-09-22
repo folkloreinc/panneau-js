@@ -225,10 +225,18 @@ const ItemsField = ({
                     {`#${index + 1}`}
                 </span>
             );
-        
+
         const labelPath = get(it, itemLabelPath, null);
-        const finalItemLabel = labelPath !== null ? labelPath : defaultItemLabel;
-        const finalRenderedItemLabel = renderedItemLabel !== null ? renderedItemLabel : finalItemLabel;
+        const finalLabelPath =
+        labelPath !== null && typeof labelPath === 'object'
+                ? Object.values(labelPath).reduce(
+                      (foundValue, value) => (foundValue !== null ? foundValue : value),
+                      null,
+                  )
+                : labelPath;
+        const finalItemLabel = finalLabelPath !== null ? finalLabelPath : defaultItemLabel;
+        const finalRenderedItemLabel =
+            renderedItemLabel !== null ? renderedItemLabel : finalItemLabel;
 
         if (ItemComponent !== null) {
             itemChildren = (
@@ -309,9 +317,7 @@ const ItemsField = ({
                                     icon={collapsed[index] ? faCaretRight : faCaretDown}
                                 />
                             ) : null}
-                            <span className="text-truncate">
-                                {finalRenderedItemLabel}
-                            </span>
+                            <span className="text-truncate">{finalRenderedItemLabel}</span>
                         </div>
                         <div className="d-flex card-buttons position-relative ms-auto">
                             <Button
