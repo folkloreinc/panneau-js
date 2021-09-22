@@ -170,7 +170,7 @@ const UploadField = ({
                                         className="d-flex align-items-center justify-content-between my-1"
                                         key={`file-${id}-${filename}-${idx + 1}`}
                                     >
-                                        <div className="d-flex align-items-center mx-2">
+                                        <div className="d-flex align-items-center mx-2 text-truncate">
                                             {!hasPreview && faIcon !== null ? (
                                                 <FontAwesomeIcon icon={faIcon} className="me-2" />
                                             ) : null}
