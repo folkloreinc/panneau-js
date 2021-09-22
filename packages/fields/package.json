@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "1.0.0-alpha.173",
+    "version": "1.0.0-alpha.174",
     "description": "",
     "keywords": [
         "javascript"
@@ -75,7 +75,7 @@
         "@panneau/field-text": "^1.0.0-alpha.170",
         "@panneau/field-toggle": "^1.0.0-alpha.170",
         "@panneau/field-toggles": "^1.0.0-alpha.170",
-        "@panneau/field-upload": "^1.0.0-alpha.170",
+        "@panneau/field-upload": "^1.0.0-alpha.174",
         "@panneau/field-url": "^1.0.0-alpha.170",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2"
