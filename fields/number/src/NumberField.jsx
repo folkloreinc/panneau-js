@@ -15,6 +15,7 @@ const propTypes = {
     step: PropTypes.number,
     floatStep: PropTypes.number,
     float: PropTypes.bool,
+    required: PropTypes.bool,
     dataList: PropTypes.arrayOf(PropTypes.number),
     autoComplete: PropTypes.bool,
     placeholder: PropTypes.string,
@@ -30,6 +31,7 @@ const defaultProps = {
     step: 1,
     floatStep: 0.1,
     float: false,
+    required: false,
     dataList: null,
     autoComplete: false,
     placeholder: null,
@@ -45,6 +47,7 @@ const NumberField = ({
     step,
     floatStep,
     float,
+    required,
     dataList,
     autoComplete,
     placeholder,
@@ -105,6 +108,7 @@ const NumberField = ({
                 min={min}
                 max={max}
                 step={float ? floatStep : step}
+                required={required}
                 autoComplete={autoComplete ? 'on' : 'off'}
                 placeholder={placeholder}
                 onChange={onInputChange}
