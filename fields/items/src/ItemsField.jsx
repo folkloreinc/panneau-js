@@ -26,6 +26,7 @@ const propTypes = {
         }),
     ),
     newItemValue: PropTypes.oneOfType([PropTypes.func, PropTypes.any]),
+    newItemValueWithUuid: PropTypes.bool,
     noItemLabel: PanneauPropTypes.label,
     addItemLabel: PanneauPropTypes.label,
     itemLabel: PanneauPropTypes.label,
@@ -50,6 +51,7 @@ const defaultProps = {
     value: null,
     types: null,
     newItemValue: () => ({}),
+    newItemValueWithUuid: false,
     noItemLabel: (
         <FormattedMessage
             defaultMessage="No item..."
@@ -81,6 +83,7 @@ const ItemsField = ({
     value,
     types,
     newItemValue,
+    newItemValueWithUuid,
     noItemLabel,
     addItemLabel,
     itemLabel,
@@ -107,19 +110,23 @@ const ItemsField = ({
 
     const onClickAdd = useCallback(
         (newItemContent = null) => {
+            const newId = uuid();
             const defaultValue = isFunction(newItemValue) ? newItemValue() : newItemValue;
-            const newValue =
+            let newValue =
                 newItemContent !== null ? { ...defaultValue, ...newItemContent } : defaultValue;
+            if (newItemValueWithUuid) {
+                newValue = newValue !== null ? {...newValue, id: newId } : { id: newId }; 
+            }
 
             const finalValue = [...(value || []), newValue];
-            idMap.current = [...idMap.current, uuid()];
+            idMap.current = [...idMap.current, newId];
             setCollapsed((previousCollapsed) => [...previousCollapsed, false]);
 
             if (onChange !== null) {
                 onChange(finalValue);
             }
         },
-        [value, onChange, setCollapsed, newItemValue],
+        [value, onChange, setCollapsed, newItemValue, newItemValueWithUuid],
     );
 
     const onItemChange = useCallback(
