@@ -8,51 +8,37 @@ import TextField from '@panneau/field-text';
 import styles from './styles.module.scss';
 
 const propTypes = {
-    name: PropTypes.string,
     value: PropTypes.number,
-    min: PropTypes.number,
-    max: PropTypes.number,
     step: PropTypes.number,
     floatStep: PropTypes.number,
     float: PropTypes.bool,
-    required: PropTypes.bool,
     dataList: PropTypes.arrayOf(PropTypes.number),
     autoComplete: PropTypes.bool,
-    placeholder: PropTypes.string,
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
 
 const defaultProps = {
-    name: null,
     value: null,
-    min: null,
-    max: null,
     step: 1,
     floatStep: 0.1,
     float: false,
-    required: false,
     dataList: null,
     autoComplete: false,
-    placeholder: null,
     className: null,
     onChange: null,
 };
 
 const NumberField = ({
-    name,
     value,
-    min,
-    max,
     step,
     floatStep,
     float,
-    required,
     dataList,
     autoComplete,
-    placeholder,
     className,
     onChange,
+    ...props
 }) => {
     const parseValue = useCallback((newValue) =>
         float ? parseFloat(newValue) : parseInt(newValue, 10),
@@ -103,17 +89,13 @@ const NumberField = ({
             <TextField
                 type="number"
                 className={styles.input}
-                name={name}
                 value={value !== null ? `${value}` : ''}
-                min={min}
-                max={max}
                 step={float ? floatStep : step}
-                required={required}
                 autoComplete={autoComplete ? 'on' : 'off'}
-                placeholder={placeholder}
                 onChange={onInputChange}
                 onFocus={onInputFocus}
                 onBlur={onInputBlur}
+                {...props}
             />
             {hasDataList ? (
                 <div className={styles.arrow}>
