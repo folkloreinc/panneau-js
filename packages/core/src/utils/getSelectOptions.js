@@ -6,11 +6,13 @@ const getSelectOptions = (options) =>
         if (isObject(it)) {
             const { label = null, value } = it;
             if (label === null) {
-                return { value, label: capitalize(value) };
+                return { value, label: capitalize(`${value}`) };
             }
-            return it;
+            return {
+                value, label: `${label}`,
+            };
         }
-        return { value: it, label: capitalize(it) };
+        return { value: it, label: capitalize(`${it}`) };
     });
 
 export default getSelectOptions;
