@@ -73,7 +73,7 @@ const SelectElement = ({
 
     const minWidth = useMemo(
         () =>
-            finalOptions.reduce((width, { label }) => Math.max(width, label.length * 8 + 100), 100),
+            finalOptions.reduce((width, { label = null }) => Math.max(width, (label !== null ? label.length : 0) * 8 + 100), 100),
         [finalOptions],
     );
 

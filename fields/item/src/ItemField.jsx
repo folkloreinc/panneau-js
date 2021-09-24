@@ -36,7 +36,7 @@ const propTypes = {
     itemImagePath: PropTypes.string,
     itemLabelWithId: PropTypes.bool,
     size: PropTypes.oneOf(['sm', 'lg']),
-    placeholder: PanneauPropTypes.text,
+    placeholder: PropTypes.string,
     className: PropTypes.string,
     inputClassName: PropTypes.string,
     onChange: PropTypes.func,

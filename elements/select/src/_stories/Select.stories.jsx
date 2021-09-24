@@ -7,7 +7,7 @@ export default {
     component: Select,
 };
 
-const options = ['One', 'Two', 'Three'];
+const options = ['one', { value: 'two', label: 'Two' }, { value: 'three' }, { value: 'four', label: null }];
 
 const Container = (props) => {
     const [value, setValue] = useState(null);

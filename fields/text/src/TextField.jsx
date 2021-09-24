@@ -14,7 +14,7 @@ const propTypes = {
     required: PropTypes.bool,
     disabled: PropTypes.bool,
     nativeOnChange: PropTypes.bool,
-    type: PropTypes.oneOf(['text', 'email', 'tel', 'password', 'textarea']),
+    type: PropTypes.oneOf(['text', 'email', 'tel', 'password', 'textarea', 'number']),
     placeholder: PropTypes.string,
     onChange: PropTypes.func,
     onFocus: PropTypes.func,
