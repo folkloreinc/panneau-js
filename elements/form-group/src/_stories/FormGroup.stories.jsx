@@ -14,7 +14,11 @@ const Field = () => <div>A field is here</div>;
 
 export const Normal = () => <FormGroup label="Form group label"><Field /></FormGroup>;
 
-export const WithCard = () => <FormGroup label="Form group label" withCard><Field /></FormGroup>;
+export const IsCard = () => <FormGroup label="Form group label" isCard><Field /></FormGroup>;
+export const IsHeading = () => <>
+    <FormGroup label="Form group label"><Field /></FormGroup>
+    <FormGroup label="Form group label" isHeading><Field /></FormGroup>
+</>;
 
 export const WithHelpText = () => (
     <FormGroup label="Form group label" helpText="Help me!">

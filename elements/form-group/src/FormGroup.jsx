@@ -15,7 +15,8 @@ const propTypes = {
     horizontal: PropTypes.bool,
     floating: PropTypes.bool,
     inline: PropTypes.bool,
-    withCard: PropTypes.bool,
+    isCard: PropTypes.bool,
+    isHeading: PropTypes.bool,
     withoutLabel: PropTypes.bool,
     withoutErrors: PropTypes.bool,
     labelAfter: PropTypes.bool,
@@ -32,7 +33,8 @@ const defaultProps = {
     horizontal: false,
     floating: false,
     inline: false,
-    withCard: false,
+    isCard: false,
+    isHeading: false,
     withoutLabel: false,
     withoutErrors: false,
     labelAfter: false,
@@ -49,7 +51,8 @@ const FormGroup = ({
     horizontal,
     floating,
     inline,
-    withCard,
+    isCard,
+    isHeading,
     withoutLabel,
     withoutErrors,
     labelAfter,
@@ -70,7 +73,8 @@ const FormGroup = ({
                         'col-sm-4': horizontal,
                         'px-2': horizontal,
                         'text-nowrap': horizontal,
-                        'card-header': withCard,
+                        'card-header': isCard,
+                        'fw-bold': isHeading,
                         [labelClassName]: labelClassName !== null,
                     },
                 ])}
@@ -81,14 +85,14 @@ const FormGroup = ({
 
     const helpElement =
         helpText !== null ? (
-            <small className={classNames([styles.help, 'form-text', 'text-muted', { 'card-body' : withCard}])}>
+            <small className={classNames([styles.help, 'form-text', 'text-muted', { 'card-body' : isCard}])}>
                 {helpText}
             </small>
         ) : null;
 
     const errorsElement =
         !withoutErrors && errors !== null ? (
-            <div className={classNames([styles.errors, 'invalid-feedback', 'd-block', { 'card-body' : withCard}])}>
+            <div className={classNames([styles.errors, 'invalid-feedback', 'd-block', { 'card-body' : isCard}])}>
                 <ul className="list-unstyled">
                     {errors.map((error) => (
                         <li key={`error-${error}`}>{error}</li>
@@ -117,8 +121,9 @@ const FormGroup = ({
         <div
             className={classNames([
                 styles.container,
-                'mb-3',
+                'mb-3',                
                 {
+                    'border-top pt-2 mt-2': isHeading,
                     [className]: className !== null,
                 },
             ])}
@@ -131,7 +136,7 @@ const FormGroup = ({
                         'align-items-center': vertical,
                         'form-floating': floating,
                         'form-floating': floating,
-                        card: withCard,
+                        card: isCard,
                     },
                 ])}
             >
@@ -139,7 +144,7 @@ const FormGroup = ({
                     {!labelAfter ? labelElement : null}
                 </Column>
                 <Column wrap={vertical} className={classNames({ 'col-sm-9': horizontal })}>
-                    {withCard ? <div className="card-body">{children}</div> : children}
+                    {isCard ? <div className="card-body">{children}</div> : children}
                 </Column>
                 <Column wrap={vertical} className={classNames({ 'col-sm-3': horizontal })}>
                     {labelAfter ? labelElement : null}
