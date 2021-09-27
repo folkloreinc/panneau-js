@@ -123,7 +123,7 @@ const FormGroup = ({
                 styles.container,
                 'mb-3',                
                 {
-                    'border-top pt-2 mt-2': isHeading,
+                    'border-top pt-3 mt-3': isHeading,
                     [className]: className !== null,
                 },
             ])}
