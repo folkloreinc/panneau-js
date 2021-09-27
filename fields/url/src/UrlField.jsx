@@ -28,7 +28,7 @@ const propTypes = {
 
 const defaultProps = {
     value: null,
-    schemes: ['http://', 'https://', 'ftp://'],
+    schemes: ['http://', 'https://', 'ftp://', 'tel:', 'mailto:'],
     url: null,
     disabled: null,
     prepend: null,
