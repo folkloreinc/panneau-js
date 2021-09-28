@@ -115,7 +115,7 @@ const ItemsField = ({
             let newValue =
                 newItemContent !== null ? { ...defaultValue, ...newItemContent } : defaultValue;
             if (newItemValueWithUuid) {
-                newValue = newValue !== null ? {...newValue, id: newId } : { id: newId }; 
+                newValue = newValue !== null ? { ...newValue, id: newId } : { id: newId };
             }
 
             const finalValue = [...(value || []), newValue];
@@ -191,9 +191,9 @@ const ItemsField = ({
     const onClickDropdown = useCallback(
         (e) => {
             e.preventDefault();
-            setDropdownOpened(!dropdownOpened);
+            setDropdownOpened((opened) => !opened);
         },
-        [dropdownOpened, setDropdownOpened],
+        [setDropdownOpened],
     );
     useEffect(() => {
         const onWindowClick = () => {
@@ -235,7 +235,7 @@ const ItemsField = ({
 
         const labelPath = get(it, itemLabelPath, null);
         const finalLabelPath =
-        labelPath !== null && typeof labelPath === 'object'
+            labelPath !== null && typeof labelPath === 'object'
                 ? Object.values(labelPath).reduce(
                       (foundValue, value) => (foundValue !== null ? foundValue : value),
                       null,
