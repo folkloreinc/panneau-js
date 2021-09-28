@@ -102,6 +102,7 @@ const ItemsField = ({
     addItemDisabled,
     inline,
 }) => {
+    const hasTypes = types !== null;
     const idMap = useRef((value || []).map(() => uuid()));
     const [collapsed, setCollapsed] = useState((value || []).map(() => true));
     const { component = null, ...fieldProps } = itemField || {};
@@ -195,17 +196,14 @@ const ItemsField = ({
         },
         [setDropdownOpened],
     );
-    useEffect(() => {
-        const onWindowClick = () => {
+
+    const onBlurDropdown = useCallback(
+        (e) => {
+            e.preventDefault();
             setDropdownOpened(false);
-        };
-        if (dropdownOpened) {
-            window.addEventListener('click', onWindowClick);
-        }
-        return () => {
-            window.removeEventListener('click', onWindowClick);
-        };
-    }, [dropdownOpened]);
+        },
+        [setDropdownOpened],
+    );
 
     const itemElements = items.map(({ id, it }, index) => {
         const { type: itemType = null } = it || {};
@@ -278,7 +276,7 @@ const ItemsField = ({
                     fields={currentType.fields || itemFields}
                 />
             );
-        } else if (types !== null && itemType !== null && currentType === null) {
+        } else if (hasTypes && itemType !== null && currentType === null) {
             itemChildren = (
                 <FormattedMessage
                     defaultMessage="Could not find type for this item"
@@ -377,18 +375,19 @@ const ItemsField = ({
         <div className={className}>
             <div className={classNames(['d-flex', 'align-items-center', 'pb-3', 'header'])}>
                 {label !== null ? <Label>{label}</Label> : null}
-                {types !== null && types.length > 1 ? (
+                {hasTypes && types.length > 1 ? (
                     <div className="position-relative ms-auto">
                         <Button
                             theme="primary"
                             outline
                             className={classNames([
                                 {
-                                    'dropdown-toggle': types !== null,
+                                    'dropdown-toggle': hasTypes,
                                     [className]: className !== null,
                                 },
                             ])}
-                            onClick={types !== null ? onClickDropdown : null}
+                            onClick={onClickDropdown}
+                            onBlur={onBlurDropdown}
                         >
                             <Label>{addItemLabel}</Label>
                         </Button>
@@ -408,7 +407,7 @@ const ItemsField = ({
                         />
                     </div>
                 ) : null}
-                {types !== null && types.length === 1 ? (
+                {hasTypes && types.length === 1 ? (
                     <Button
                         theme="primary"
                         outline
@@ -423,7 +422,7 @@ const ItemsField = ({
                         <Label>{addItemLabel}</Label>
                     </Button>
                 ) : null}
-                {types === null || types.length === 0 ? (
+                {!hasTypes || types.length === 0 ? (
                     <Button
                         theme="primary"
                         outline
