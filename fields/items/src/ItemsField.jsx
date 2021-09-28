@@ -197,13 +197,9 @@ const ItemsField = ({
         [setDropdownOpened],
     );
 
-    const onBlurDropdown = useCallback(
-        (e) => {
-            e.preventDefault();
-            setDropdownOpened(false);
-        },
-        [setDropdownOpened],
-    );
+    const onDropdownClickOutside = useCallback(() => {
+        setDropdownOpened(false);
+    }, [setDropdownOpened]);
 
     const itemElements = items.map(({ id, it }, index) => {
         const { type: itemType = null } = it || {};
@@ -387,11 +383,11 @@ const ItemsField = ({
                                 },
                             ])}
                             onClick={onClickDropdown}
-                            onBlur={onBlurDropdown}
                         >
                             <Label>{addItemLabel}</Label>
                         </Button>
                         <Dropdown
+                            onClickOutside={onDropdownClickOutside}
                             items={types.map(({ id = null, name: typeName = null }) => ({
                                 id,
                                 label: typeName || 'label',
