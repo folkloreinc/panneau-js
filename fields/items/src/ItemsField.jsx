@@ -310,7 +310,7 @@ const ItemsField = ({
                                 onClick={() => toggleCollapse(index)}
                             />
                         ) : null}
-                        <div className="card-content position-relative pe-none">
+                        <div className="card-content position-relative pe-none text-truncate">
                             {!withoutCollapse ? (
                                 <FontAwesomeIcon
                                     style={{ width: 20 }}
