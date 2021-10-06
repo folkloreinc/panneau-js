@@ -25,6 +25,7 @@ const propTypes = {
         }),
     ]),
     types: PropTypes.arrayOf(PropTypes.oneOf(['audio', 'image', 'video'])),
+    fileTypes: PropTypes.arrayOf(PropTypes.string),
     sources: PropTypes.arrayOf(
         PropTypes.oneOf(['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive']),
     ),
@@ -38,6 +39,7 @@ const propTypes = {
 const defaultProps = {
     value: null,
     types: ['audio', 'image', 'video'],
+    fileTypes: null,
     sources: ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'],
     withButton: false,
     addButtonLabel: (
@@ -51,6 +53,7 @@ const defaultProps = {
 const UploadField = ({
     value,
     types,
+    fileTypes,
     sources,
     withButton,
     addButtonLabel,
@@ -94,10 +97,12 @@ const UploadField = ({
     );
 
     const typesString = types.join('.');
-    const allowedFileTypes = useMemo(
-        () => typesString.split('.').map((type) => `${type}/*`),
-        [typesString],
-    );
+    const allowedFileTypes = useMemo(() => {
+        if (fileTypes !== null) {
+            return fileTypes;
+        }
+        return typesString.split('.').map((type) => `${type}/*`);
+    }, [typesString, fileTypes]);
 
     const uppy = useUppy({
         allowedFileTypes,
