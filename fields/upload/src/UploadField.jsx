@@ -16,7 +16,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
-    value: PropTypes.oneOf([
+    value: PropTypes.oneOfType([
         PropTypes.array,
         PropTypes.shape({
             filename: PropTypes.string,

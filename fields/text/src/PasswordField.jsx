@@ -1,12 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import TextField from './TextField';
+import InputField from './InputField';
 
 const propTypes = {};
 
 const defaultProps = {};
 
-const PasswordField = (props) => <TextField {...props} type="password" />;
+const PasswordField = (props) => <InputField {...props} type="password" />;
 
 PasswordField.propTypes = propTypes;
 PasswordField.defaultProps = defaultProps;
