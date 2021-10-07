@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "1.0.0-alpha.194",
+    "version": "1.0.0-alpha.195",
     "description": "",
     "keywords": [
         "javascript"
@@ -59,7 +59,7 @@
         "@panneau/core": "^1.0.0-alpha.193",
         "@panneau/field-autocomplete": "^1.0.0-alpha.193",
         "@panneau/field-checkboxes": "^1.0.0-alpha.193",
-        "@panneau/field-color": "^1.0.0-alpha.194",
+        "@panneau/field-color": "^1.0.0-alpha.195",
         "@panneau/field-date": "^1.0.0-alpha.193",
         "@panneau/field-embed": "^1.0.0-alpha.193",
         "@panneau/field-fields": "^1.0.0-alpha.193",
