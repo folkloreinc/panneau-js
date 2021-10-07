@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-navbar",
-    "version": "1.0.0-alpha.192",
+    "version": "1.0.0-alpha.193",
     "description": "Navbar element",
     "keywords": [
         "javascript"
@@ -54,14 +54,15 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.0.0-alpha.192",
-        "@panneau/element-button": "^1.0.0-alpha.192",
-        "@panneau/element-link": "^1.0.0-alpha.192",
+        "@panneau/core": "^1.0.0-alpha.193",
+        "@panneau/element-button": "^1.0.0-alpha.193",
+        "@panneau/element-link": "^1.0.0-alpha.193",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8"
     },
     "publishConfig": {
         "access": "public"
-    }
+    },
+    "gitHead": "bfebc780e7d298af86d7b3f24b9d95a76594cf00"
 }

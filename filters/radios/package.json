@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-radios",
-    "version": "1.0.0-alpha.192",
+    "version": "1.0.0-alpha.193",
     "description": "Radio buttons filter",
     "keywords": [
         "javascript"
@@ -55,8 +55,8 @@
         "@babel/runtime": "^7.12.5",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
-        "@panneau/core": "^1.0.0-alpha.192",
-        "@panneau/element-radios": "^1.0.0-alpha.192",
+        "@panneau/core": "^1.0.0-alpha.193",
+        "@panneau/element-radios": "^1.0.0-alpha.193",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
@@ -65,5 +65,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "5b9ff6b4b2c02da0d76f06181b682c4627b24c62"
+    "gitHead": "bfebc780e7d298af86d7b3f24b9d95a76594cf00"
 }

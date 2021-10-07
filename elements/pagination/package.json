@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-pagination",
-    "version": "1.0.0-alpha.192",
+    "version": "1.0.0-alpha.193",
     "description": "Pagination element",
     "keywords": [
         "javascript"
@@ -54,9 +54,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.0.0-alpha.192",
-        "@panneau/element-label": "^1.0.0-alpha.192",
-        "@panneau/element-link": "^1.0.0-alpha.192",
+        "@panneau/core": "^1.0.0-alpha.193",
+        "@panneau/element-label": "^1.0.0-alpha.193",
+        "@panneau/element-link": "^1.0.0-alpha.193",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "query-string": "^7.0.0",
@@ -65,5 +65,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "e63c11e6fa563927f5504eb230b08bb4725d48fb"
+    "gitHead": "bfebc780e7d298af86d7b3f24b9d95a76594cf00"
 }

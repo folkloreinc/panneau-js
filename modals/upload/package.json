@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modal-upload",
-    "version": "1.0.0-alpha.192",
+    "version": "1.0.0-alpha.193",
     "description": "File upload modal",
     "keywords": [
         "javascript"
@@ -53,12 +53,13 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.0.0-alpha.192",
+        "@panneau/core": "^1.0.0-alpha.193",
         "@uppy/react": "^1.11.5",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
         "access": "public"
-    }
+    },
+    "gitHead": "bfebc780e7d298af86d7b3f24b9d95a76594cf00"
 }

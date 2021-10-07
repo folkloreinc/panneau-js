@@ -1,6 +1,6 @@
 {
     "name": "@panneau/core",
-    "version": "1.0.0-alpha.192",
+    "version": "1.0.0-alpha.193",
     "description": "",
     "keywords": [
         "javascript"
@@ -114,5 +114,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "e9c4b49e77ddefc4bb0c823eb025f68d885b1aa1"
+    "gitHead": "bfebc780e7d298af86d7b3f24b9d95a76594cf00"
 }

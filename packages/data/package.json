@@ -1,6 +1,6 @@
 {
     "name": "@panneau/data",
-    "version": "1.0.0-alpha.192",
+    "version": "1.0.0-alpha.193",
     "description": "",
     "keywords": [
         "javascript"
@@ -54,7 +54,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.10",
-        "@panneau/core": "^1.0.0-alpha.192",
+        "@panneau/core": "^1.0.0-alpha.193",
         "prop-types": "^15.7.2",
         "query-string": "^7.0.0",
         "react-router": "^5.2.0"
@@ -62,5 +62,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "17e31a9950eb75785c6dd5714beb5b57bf1bc85f"
+    "gitHead": "bfebc780e7d298af86d7b3f24b9d95a76594cf00"
 }

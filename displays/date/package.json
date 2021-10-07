@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-date",
-    "version": "1.0.0-alpha.192",
+    "version": "1.0.0-alpha.193",
     "description": "Label date value in list",
     "keywords": [
         "javascript"
@@ -53,8 +53,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.0.0-alpha.192",
-        "@panneau/themes": "^1.0.0-alpha.192",
+        "@panneau/core": "^1.0.0-alpha.193",
+        "@panneau/themes": "^1.0.0-alpha.193",
         "date-fns": "^2.16.1",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
@@ -62,5 +62,6 @@
     },
     "publishConfig": {
         "access": "public"
-    }
+    },
+    "gitHead": "bfebc780e7d298af86d7b3f24b9d95a76594cf00"
 }

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-portal",
-    "version": "1.0.0-alpha.192",
+    "version": "1.0.0-alpha.193",
     "description": "Portal element",
     "keywords": [
         "javascript"
@@ -58,5 +58,6 @@
     },
     "publishConfig": {
         "access": "public"
-    }
+    },
+    "gitHead": "bfebc780e7d298af86d7b3f24b9d95a76594cf00"
 }
