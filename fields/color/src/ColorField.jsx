@@ -141,16 +141,18 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
                 </span>
             </label>
             {!native ? (
-                <div className={classNames([
-                    'p-absolute',
-                    'mt-1',
-                    'p-2',
-                    'border',
-                    {
-                        'invisible': !pickerOpened,
-
-                    }
-                ])} style={{ zIndex: 1, width: 300 }}>
+                <div
+                    className={classNames([
+                        'p-absolute',
+                        'mt-1',
+                        'p-2',
+                        'border',
+                        {
+                            invisible: !pickerOpened,
+                        },
+                    ])}
+                    style={{ zIndex: 1, width: 300 }}
+                >
                     <SketchPicker
                         disableAlpha={!withAlpha}
                         color={rgbaColor || defaultValue}
