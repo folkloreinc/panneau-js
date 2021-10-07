@@ -5,13 +5,14 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { SketchPicker } from 'react-color';
 import tinycolor from 'tinycolor2';
 
-import styles from './styles.module.scss';
-
 const propTypes = {
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.shape({
-        color: PropTypes.string,
-        alpha: PropTypes.number,
-    })]),
+    value: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+            color: PropTypes.string,
+            alpha: PropTypes.number,
+        }),
+    ]),
     defaultValue: PropTypes.string,
     native: PropTypes.bool,
     withAlpha: PropTypes.bool,
@@ -38,9 +39,11 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
         }
         return null;
     }, [value]);
-    
 
-    const hexColor = useMemo( () => rgbaColor !== null ? rgbaColor.toHexString() : defaultValue, [rgbaColor, defaultValue]);
+    const hexColor = useMemo(
+        () => (rgbaColor !== null ? rgbaColor.toHexString() : defaultValue),
+        [rgbaColor, defaultValue],
+    );
 
     const pickerStyle = useMemo(
         () => ({
@@ -81,12 +84,19 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
     const onPickerChange = useCallback(
         (newValue) => {
             if (onChange !== null) {
-                const { hex, rgb: { a: alpha = 1 }} = newValue || {};
+                const {
+                    hex,
+                    rgb: { a: alpha = 1 },
+                } = newValue || {};
 
-                onChange(withAlpha ? {
-                    color: hex,
-                    alpha,
-                } : hex );
+                onChange(
+                    withAlpha
+                        ? {
+                              color: hex,
+                              alpha,
+                          }
+                        : hex,
+                );
             }
         },
         [onChange, withAlpha],
@@ -107,37 +117,47 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
     return (
         <div
             className={classNames([
-                styles.container,
+                'p-relative',
                 {
                     [className]: className !== null,
-                    [styles.pickerOpened]: pickerOpened,
                 },
             ])}
+            style={{ zIndex: 0 }}
         >
             <label className="input-group">
                 <input
                     type="color"
-                    className={classNames([
-                        styles.colorInput,
-                        'form-control',
-                        'form-control-color',
-                    ])}
+                    className={classNames(['flex-grow-0', 'form-control', 'form-control-color'])}
+                    style={{ width: 40 }}
                     value={hexColor}
                     onChange={onInputChange}
                     onClick={onInputClick}
                 />
-                <span className={classNames([styles.hexLabel, 'input-group-text'])}>
+                <span
+                    className={classNames(['flex-grow-1', 'text-uppercase', 'input-group-text'])}
+                    style={{ minWidth: 100, cursor: 'pointer' }}
+                >
                     {hexColor}
                 </span>
             </label>
             {!native ? (
-                <SketchPicker
-                    disableAlpha={!withAlpha}
-                    className={styles.picker}
-                    color={rgbaColor || defaultValue}
-                    styles={pickerStyle}
-                    onChange={onPickerChange}
-                />
+                <div className={classNames([
+                    'p-absolute',
+                    'mt-1',
+                    'p-2',
+                    'border',
+                    {
+                        'invisible': !pickerOpened,
+
+                    }
+                ])} style={{ zIndex: 1, width: 300 }}>
+                    <SketchPicker
+                        disableAlpha={!withAlpha}
+                        color={rgbaColor || defaultValue}
+                        styles={pickerStyle}
+                        onChange={onPickerChange}
+                    />
+                </div>
             ) : null}
         </div>
     );
