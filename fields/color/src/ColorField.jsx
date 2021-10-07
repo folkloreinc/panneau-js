@@ -116,7 +116,7 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
     return (
         <div
             className={classNames([
-                'p-relative',
+                'position-relative',
                 {
                     [className]: className !== null,
                 },
@@ -142,7 +142,7 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
             {!native ? (
                 <div
                     className={classNames([
-                        'p-absolute',
+                        'position-absolute',
                         'mt-1',
                         'p-2',
                         'border',
