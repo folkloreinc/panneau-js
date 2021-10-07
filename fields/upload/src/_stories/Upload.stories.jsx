@@ -13,7 +13,7 @@ export default {
 };
 
 // eslint-disable-next-line react/prop-types
-const Container = ({ types, value: initialValue = null, ...props }) => {
+const Container = ({ value: initialValue = null, ...props }) => {
     const [value, setValue] = useState(initialValue);
     return <UploadField {...props} value={value} onChange={setValue} />;
 };
@@ -23,6 +23,7 @@ export const WithButton = () => <Container withButton />;
 export const Audio = () => <Container types={['audio']} />;
 export const Image = () => <Container types={['image']} />;
 export const Video = () => <Container types={['video']} />;
+export const PDF = () => <Container fileTypes={['.pdf']} />;
 
 export const WithValue = () => <Container value={[{ data: { file: '1200x300.png' } }]} />;
 export const WithValues = () => (
