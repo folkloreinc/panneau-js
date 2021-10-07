@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDocumentEvent } from '@panneau/core/hooks';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
 import tinycolor from 'tinycolor2';
 
@@ -101,17 +102,20 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
         [onChange, withAlpha],
     );
 
-    useEffect(() => {
-        const onWindowClick = () => {
-            if (!native && pickerOpened) {
+    const pickerRef = useRef(null);
+    const onDocumentClick = useCallback(
+        (e) => {
+            if (
+                pickerRef.current !== null &&
+                !pickerRef.current.contains(e.target) 
+            ) {
+                
                 setPickerOpened(false);
             }
-        };
-        window.addEventListener('click', onWindowClick);
-        return () => {
-            window.removeEventListener('click', onWindowClick);
-        };
-    }, [native, pickerOpened, setPickerOpened]);
+        },
+        [setPickerOpened],
+    );
+    useDocumentEvent('click', onDocumentClick, !native && pickerOpened);
 
     return (
         <div
@@ -151,6 +155,7 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
                         },
                     ])}
                     style={{ zIndex: 4, width: 300 }}
+                    ref={pickerRef}
                 >
                     <SketchPicker
                         disableAlpha={!withAlpha}

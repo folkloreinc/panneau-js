@@ -45,7 +45,7 @@ const Dropdown = ({
         (e) => {
             if (
                 refContainer.current !== null &&
-                !refContainer.current.contains(e.currentTarget) &&
+                !refContainer.current.contains(e.target) &&
                 onClickOutside !== null
             ) {
                 onClickOutside(e);
