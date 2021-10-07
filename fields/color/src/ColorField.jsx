@@ -121,7 +121,6 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
                     [className]: className !== null,
                 },
             ])}
-            style={{ zIndex: 0 }}
         >
             <label className="input-group">
                 <input
@@ -146,11 +145,12 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
                         'mt-1',
                         'p-2',
                         'border',
+                        'bg-white',
                         {
                             invisible: !pickerOpened,
                         },
                     ])}
-                    style={{ zIndex: 1, width: 300 }}
+                    style={{ zIndex: 4, width: 300 }}
                 >
                     <SketchPicker
                         disableAlpha={!withAlpha}
