@@ -23,9 +23,9 @@ const ResourceCreateButtom = ({ resource, className }) => {
     const onClickDropdown = useCallback(
         (e) => {
             e.preventDefault();
-            setDropdownOpened(!dropdownOpened);
+            setDropdownOpened((opened) => !opened);
         },
-        [dropdownOpened, setDropdownOpened],
+        [setDropdownOpened],
     );
 
     const finalTypes =
@@ -33,6 +33,10 @@ const ResourceCreateButtom = ({ resource, className }) => {
             ? types.filter(({ settings: { canCreate = true } = {} }) => canCreate)
             : null;
     const hasMultipleTypes = finalTypes !== null && finalTypes.length > 1;
+
+    const onDropdownClickOutside = useCallback(() => {
+        setDropdownOpened(false);
+    }, [setDropdownOpened]);
 
     const button = (
         <Button
@@ -81,7 +85,8 @@ const ResourceCreateButtom = ({ resource, className }) => {
                     href: `${resourceRoute('create')}?type=${it.id}`,
                 }))}
                 visible={dropdownOpened}
-                align="right"
+                align="end"
+                onClickOutside={onDropdownClickOutside}
             />
         </div>
     ) : (
