@@ -8,7 +8,7 @@ import TextField from '@panneau/field-text';
 import styles from './styles.module.scss';
 
 const propTypes = {
-    value: PropTypes.oneOf([PropTypes.number, PropTypes.string]),
+    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     step: PropTypes.number,
     floatStep: PropTypes.number,
     float: PropTypes.bool,
