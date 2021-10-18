@@ -305,8 +305,8 @@ const ItemsField = ({
                         ])}
                     >
                         {!withoutCollapse ? (
-                            <Button
-                                className="position-absolute top-0 start-0 w-100 h-100"
+                            <div
+                                className="btn position-absolute top-0 start-0 w-100 h-100"
                                 onClick={() => toggleCollapse(index)}
                             />
                         ) : null}
