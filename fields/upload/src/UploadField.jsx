@@ -184,7 +184,14 @@ const UploadField = ({
                                                     className="img-thumbnail me-2"
                                                     src={preview || thumbnailUrl}
                                                     alt="preview"
-                                                    style={{ height: 100 }}
+                                                    style={{
+                                                        height: 100,
+                                                        backgroundImage:
+                                                            'linear-gradient(45deg, #eee 25%, transparent 25%), linear-gradient(-45deg, #eee 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eee 75%), linear-gradient(-45deg, transparent 75%, #eee 75%)',
+                                                        backgroundSize: '20px 20px',
+                                                        backgroundPosition:
+                                                            '0 0, 0 10px, 10px -10px, -10px 0',
+                                                    }}
                                                 />
                                             ) : null}
                                             <div className="media-body text-truncate small me-2">
