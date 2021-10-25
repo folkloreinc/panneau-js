@@ -16,6 +16,7 @@ const propTypes = {
     value: PropTypes.object, // eslint-disable-line
     errors: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     label: PropTypes.string,
+    helpText: PropTypes.string,
     component: PropTypes.string,
     locales: PropTypes.arrayOf(PropTypes.string),
     properties: PropTypes.objectOf(PanneauPropTypes.field),
@@ -31,6 +32,7 @@ const defaultProps = {
     value: null,
     errors: null,
     label: null,
+    helpText: null,
     component: null,
     locales: null,
     properties: {},
@@ -46,6 +48,7 @@ const LocalizedField = ({
     value,
     errors,
     label,
+    helpText,
     properties,
     locales: parentLocales,
     fieldComponent: providedFieldComponent,
@@ -112,6 +115,7 @@ const LocalizedField = ({
                     ) : null}
                 </>
             }
+            helpText={helpText}
             className={className}
             errors={errors}
             labelClassName="d-flex align-items-center"
