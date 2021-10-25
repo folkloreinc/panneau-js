@@ -2,15 +2,15 @@
 import { faCaretDown, faCaretRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { getPathValue } from '@panneau/core/utils';
 import { useFieldComponent } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
 import Label from '@panneau/element-label';
 import classNames from 'classnames';
 import isFunction from 'lodash/isFunction';
-import get from 'lodash/get';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ReactSortable } from 'react-sortablejs';
 import { v4 as uuid } from 'uuid';
@@ -227,15 +227,8 @@ const ItemsField = ({
                 </span>
             );
 
-        const labelPath = get(it, itemLabelPath, null);
-        const finalLabelPath =
-            labelPath !== null && typeof labelPath === 'object'
-                ? Object.values(labelPath).reduce(
-                      (foundValue, value) => (foundValue !== null ? foundValue : value),
-                      null,
-                  )
-                : labelPath;
-        const finalItemLabel = finalLabelPath !== null ? finalLabelPath : defaultItemLabel;
+        const labelPathValue = getPathValue(it, itemLabelPath);
+        const finalItemLabel = labelPathValue !== null ? labelPathValue : defaultItemLabel;
         const finalRenderedItemLabel =
             renderedItemLabel !== null ? renderedItemLabel : finalItemLabel;
 
