@@ -2,7 +2,7 @@
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { isMessage } from '@panneau/core/utils';
+import { getPathValue, isMessage } from '@panneau/core/utils';
 import { useApi } from '@panneau/data';
 import Button from '@panneau/element-button';
 import classNames from 'classnames';
@@ -53,9 +53,9 @@ const defaultProps = {
     requestOptions: null,
     requestQuery: null,
     requestSearchParamName: 'search',
-    getItemLabel: (it, path) => get(it, path, null),
-    getItemDescription: (it, path) => get(it, path, null),
-    getItemImage: (it, path) => get(it, path, null),
+    getItemLabel: getPathValue,
+    getItemDescription: getPathValue,
+    getItemImage: getPathValue,
     itemLabelPath: 'label',
     itemDescriptionPath: null,
     itemImagePath: 'image',

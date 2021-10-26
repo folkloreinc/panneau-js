@@ -11,6 +11,7 @@ export { default as getDisplayName } from './getDisplayName';
 export { default as getFieldByName } from './getFieldByName';
 export { default as getFieldFromPath } from './getFieldFromPath';
 export { default as getFileName } from './getFileName';
+export { default as getPathValue } from './getPathValue';
 export { default as getSelectOptions } from './getSelectOptions';
 export { default as isMessage } from './isMessage';
 export { default as pascalCase } from './pascalCase';
