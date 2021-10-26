@@ -7,7 +7,6 @@ import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Buttons from '@panneau/element-buttons';
 import PropTypes from 'prop-types';
 import React from 'react';
-// import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
