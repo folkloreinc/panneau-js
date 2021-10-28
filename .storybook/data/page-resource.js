@@ -130,8 +130,6 @@ export default {
         },
     },
 
-    
-
     index: {
         columns: [
             'title',
@@ -159,6 +157,18 @@ export default {
             {
                 name: 'featured',
                 component: 'toggle',
+            },
+            {
+                name: 'custom-button',
+                label: 'Button',
+                component: 'button',
+            },
+            {
+                name: 'link-button',
+                label: 'External',
+                component: 'button',
+                href: 'https://www.google.com',
+                external: true,
             },
             {
                 name: 'status',

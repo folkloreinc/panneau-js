@@ -19,7 +19,8 @@ const defaultProps = {
 };
 
 const ToggleFilter = ({ name, value, onChange, className, ...props }) => {
-    const isTrue = value === true || value === 'true' || value === 1 || value === '1';
+    const isTrue =
+        value !== null && (value === true || value === 'true' || value === 1 || value === '1');
     return (
         <div
             className={classNames([

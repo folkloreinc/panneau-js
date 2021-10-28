@@ -76,7 +76,7 @@ const ResourceFilters = ({
             theme={background}
             withoutCollapse
         >
-            {currentFilters.map(({ component, name, ...filterProps }, index) => {
+            {currentFilters.map(({ component, name, groupLabel, ...filterProps }, index) => {
                 const FilterComponent = getComponentFromName(component, FilterComponents, null);
                 const filterValue = value !== null && value[name] ? value[name] : null;
                 const onFilterChange = useCallback(
@@ -91,7 +91,7 @@ const ResourceFilters = ({
                 return FilterComponent !== null ? (
                     <FormGroup
                         key={`filter-${name}-${index + 1}`}
-                        label={filterProps.label}
+                        label={groupLabel}
                         className="me-4"
                     >
                         <FilterComponent

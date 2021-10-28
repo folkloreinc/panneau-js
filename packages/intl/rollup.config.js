@@ -11,6 +11,7 @@ const localesFiles = locales.reduce(
             prependPlugins: [
                 replace({
                     REPLACE_LOCALE: locale,
+                    preventAssignment: true,
                 }),
             ],
         }),
@@ -21,6 +22,7 @@ const localesFiles = locales.reduce(
             prependPlugins: [
                 replace({
                     REPLACE_LOCALE: locale,
+                    preventAssignment: true,
                 }),
             ],
         }),

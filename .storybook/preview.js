@@ -1,11 +1,9 @@
-import { withKnobs } from '@storybook/addon-knobs';
-import withIntlProvider from './decorators/withIntlProvider';
-import withGoogleKeys from './decorators/withGoogleKeys';
-import withAuthProvider from './decorators/withAuthProvider';
-import withRoutesProvider from './decorators/withRoutesProvider';
-import withRouter from './decorators/withRouter';
-
 import '../packages/themes/src/styles/vendor.scss';
+import withAuthProvider from './decorators/withAuthProvider';
+import withGoogleKeys from './decorators/withGoogleKeys';
+import withIntlProvider from './decorators/withIntlProvider';
+import withRouter from './decorators/withRouter';
+import withRoutesProvider from './decorators/withRoutesProvider';
 
 // import './fonts/fonts.scss';
 
@@ -73,7 +71,6 @@ export const parameters = {
 };
 
 export const decorators = [
-    withKnobs,
     withIntlProvider,
     withGoogleKeys,
     withRoutesProvider,
