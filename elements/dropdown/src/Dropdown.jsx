@@ -94,7 +94,7 @@ const Dropdown = ({
                       } else if (type === 'button') {
                           ItemComponent = Button;
                       }
-                      // console.log(id, label);
+
                       const finalOnClickItem =
                           customOnClick !== null || (type === 'link' && onClickItem !== null)
                               ? (e) => {

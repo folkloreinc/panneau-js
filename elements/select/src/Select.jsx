@@ -73,7 +73,11 @@ const SelectElement = ({
 
     const minWidth = useMemo(
         () =>
-            finalOptions.reduce((width, { label = null }) => Math.max(width, (label !== null ? label.length : 0) * 8 + 100), 100),
+            finalOptions.reduce(
+                (width, { label = null }) =>
+                    Math.max(width, (label !== null ? label.length : 0) * 8 + 100),
+                100,
+            ),
         [finalOptions],
     );
 
@@ -84,7 +88,7 @@ const SelectElement = ({
             menuPortalTarget={document.body}
             styles={{
                 container: () => ({ minWidth }),
-                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                menuPortal: (base) => ({ ...base, zIndex: 1 }),
                 placeholder: (base) => ({ ...base, whiteSpace: 'nowrap' }),
             }}
             value={optionValue || null}
