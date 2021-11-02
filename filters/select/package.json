@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-select",
-    "version": "1.0.0-alpha.208",
+    "version": "1.0.0-alpha.209",
     "description": "Select filter",
     "keywords": [
         "javascript"
@@ -55,7 +55,7 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^1.0.0-alpha.208",
         "@panneau/data": "^1.0.0-alpha.208",
-        "@panneau/element-select": "^1.0.0-alpha.208",
+        "@panneau/element-select": "^1.0.0-alpha.209",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filters",
-    "version": "1.0.0-alpha.208",
+    "version": "1.0.0-alpha.209",
     "description": "",
     "keywords": [
         "javascript"
@@ -58,7 +58,7 @@
         "@panneau/filter-date": "^1.0.0-alpha.208",
         "@panneau/filter-radios": "^1.0.0-alpha.208",
         "@panneau/filter-search": "^1.0.0-alpha.208",
-        "@panneau/filter-select": "^1.0.0-alpha.208",
+        "@panneau/filter-select": "^1.0.0-alpha.209",
         "@panneau/filter-toggle": "^1.0.0-alpha.208",
         "prop-types": "^15.7.2"
     },
