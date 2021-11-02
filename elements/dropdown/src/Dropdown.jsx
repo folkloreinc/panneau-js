@@ -46,6 +46,7 @@ const Dropdown = ({
             if (
                 refContainer.current !== null &&
                 !refContainer.current.contains(e.target) &&
+                visible &&
                 onClickOutside !== null
             ) {
                 console.log('oco win', e, e.target);
@@ -54,7 +55,7 @@ const Dropdown = ({
                 console.log('oco', e);
             }
         },
-        [onClickOutside],
+        [visible, onClickOutside],
     );
 
     useDocumentEvent('click', onDocumentClick, visible);

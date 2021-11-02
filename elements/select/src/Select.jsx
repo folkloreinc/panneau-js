@@ -88,7 +88,7 @@ const SelectElement = ({
             menuPortalTarget={document.body}
             styles={{
                 container: () => ({ minWidth }),
-                menuPortal: (base) => ({ ...base, zIndex: 1 }),
+                menuPortal: (base) => ({ ...base, zIndex: 10 }),
                 placeholder: (base) => ({ ...base, whiteSpace: 'nowrap' }),
             }}
             value={optionValue || null}
