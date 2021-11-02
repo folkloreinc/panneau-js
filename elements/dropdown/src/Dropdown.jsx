@@ -43,16 +43,15 @@ const Dropdown = ({
     const refContainer = useRef(null);
     const onDocumentClick = useCallback(
         (e) => {
-            e.stopPropagation();
             if (
                 refContainer.current !== null &&
                 !refContainer.current.contains(e.target) &&
                 onClickOutside !== null
             ) {
-                console.log('oco win');
+                console.log('oco win', e, e.target);
                 onClickOutside(e);
             } else {
-                console.log('oco');
+                console.log('oco', e);
             }
         },
         [onClickOutside],
@@ -99,7 +98,6 @@ const Dropdown = ({
                       const finalOnClickItem =
                           customOnClick !== null || (type === 'link' && onClickItem !== null)
                               ? (e) => {
-                                    e.stopPropagation();
                                     if (customOnClick !== null) {
                                         customOnClick(e);
                                     }
