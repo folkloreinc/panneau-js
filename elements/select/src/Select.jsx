@@ -72,15 +72,15 @@ const SelectElement = ({
         return finalOptions.find((opt) => (opt.value !== null ? isEqual(value, opt.value) : false));
     }, [value, options, multiple]);
 
-    const minWidth = useMemo(
-        () =>
-            finalOptions.reduce(
-                (width, { label = null }) =>
-                    Math.max(width, (label !== null ? label.length : 0) * 8 + 100),
-                100,
-            ),
-        [finalOptions],
-    );
+    // const minWidth = useMemo(
+    //     () =>
+    //         finalOptions.reduce(
+    //             (width, { label = null }) =>
+    //                 Math.max(width, (label !== null ? label.length : 0) * 8 + 100),
+    //             100,
+    //         ),
+    //     [finalOptions],
+    // );
 
     return (
         <div className={classNames(['position-relative', className])}>
@@ -88,7 +88,7 @@ const SelectElement = ({
                 {...props}
                 // menuPortalTarget={document.body}
                 styles={{
-                    container: () => ({ minWidth }),
+                    // container: () => ({ minWidth }),
                     menuPortal: (base) => ({ ...base, zIndex: 10 }),
                     placeholder: (base) => ({ ...base, whiteSpace: 'nowrap' }),
                 }}

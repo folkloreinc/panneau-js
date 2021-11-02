@@ -49,10 +49,7 @@ const Dropdown = ({
                 visible &&
                 onClickOutside !== null
             ) {
-                console.log('oco win', e, e.target);
                 onClickOutside(e);
-            } else {
-                console.log('oco', e);
             }
         },
         [visible, onClickOutside],
