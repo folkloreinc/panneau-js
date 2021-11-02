@@ -18,15 +18,6 @@ const items = [
         label: 'label',
         href: 'https://www.google.com',
         dropdown: [
-            //   {
-            //       label: (
-            //           <FormattedMessage
-            //               defaultMessage="Update account"
-            //               description="Menu label"
-            //           />
-            //       ),
-            //       href: route('panneau.account'),
-            //   },
             {
                 label: 'Menu label',
                 href: '/logout',
@@ -70,7 +61,6 @@ export const WithClickOutside = () => {
     return (
         <MemoryRouter>
             <div style={{ position: 'relative' }}>
-                <Menu items={items} />
                 <Select
                     onChange={setValue}
                     value={value}
@@ -79,6 +69,9 @@ export const WithClickOutside = () => {
                         { value: 'value', label: 'Label 2' },
                     ]}
                 />
+                <div>
+                    <Menu items={items} />
+                </div>
             </div>
         </MemoryRouter>
     );

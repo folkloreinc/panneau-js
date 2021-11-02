@@ -1,6 +1,7 @@
 /* eslint-disable react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getSelectOptions } from '@panneau/core/utils';
+import classNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
@@ -82,25 +83,26 @@ const SelectElement = ({
     );
 
     return (
-        <Select
-            className={className}
-            {...props}
-            menuPortalTarget={document.body}
-            styles={{
-                container: () => ({ minWidth }),
-                menuPortal: (base) => ({ ...base, zIndex: 10 }),
-                placeholder: (base) => ({ ...base, whiteSpace: 'nowrap' }),
-            }}
-            value={optionValue || null}
-            options={finalOptions}
-            disabled={disabled}
-            isMulti={multiple}
-            isClearable={!withoutReset}
-            isSearchable={searchable}
-            noOptionsMessage={() => noOptionsMessage}
-            placeholder={placeholder}
-            onChange={onChangeOption}
-        />
+        <div className={classNames(['position-relative', className])}>
+            <Select
+                {...props}
+                // menuPortalTarget={document.body}
+                styles={{
+                    container: () => ({ minWidth }),
+                    menuPortal: (base) => ({ ...base, zIndex: 10 }),
+                    placeholder: (base) => ({ ...base, whiteSpace: 'nowrap' }),
+                }}
+                value={optionValue || null}
+                options={finalOptions}
+                disabled={disabled}
+                isMulti={multiple}
+                isClearable={!withoutReset}
+                isSearchable={searchable}
+                noOptionsMessage={() => noOptionsMessage}
+                placeholder={placeholder}
+                onChange={onChangeOption}
+            />
+        </div>
     );
 };
 
