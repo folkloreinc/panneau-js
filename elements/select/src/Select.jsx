@@ -16,6 +16,7 @@ const propTypes = {
     withoutReset: PropTypes.bool,
     noOptionsMessage: PropTypes.string,
     placeholder: PropTypes.string,
+    autoSize: PropTypes.bool,
     className: PropTypes.string,
     selectClassName: PropTypes.string,
     onChange: PropTypes.func,
@@ -30,6 +31,7 @@ const defaultProps = {
     withoutReset: false,
     noOptionsMessage: 'No results.',
     placeholder: 'Select...',
+    autoSize: false,
     className: null,
     selectClassName: null,
     onChange: null,
@@ -44,6 +46,7 @@ const SelectElement = ({
     withoutReset,
     noOptionsMessage,
     placeholder,
+    autoSize,
     className,
     selectClassName,
     onChange,
@@ -75,12 +78,24 @@ const SelectElement = ({
         return finalOptions.find((opt) => (opt.value !== null ? isEqual(value, opt.value) : false));
     }, [value, options, multiple]);
 
+    const minWidth = useMemo(
+        () =>
+            finalOptions.reduce(
+                (width, { label = null }) =>
+                    Math.max(width, (label !== null ? label.length : 0) * 8 + 100),
+                100,
+            ),
+        [finalOptions],
+    );
+
     return (
         <div className={classNames(['position-relative', className])}>
             <Select
                 {...props}
                 className={selectClassName !== null ? selectClassName : null}
+                // menuPortalTarget={document.body}
                 styles={{
+                    container: () => ({ ...(autoSize ? { minWidth } : null), maxWidth: '100%' }),
                     menuPortal: (base) => ({ ...base, zIndex: 10 }),
                     placeholder: (base) => ({ ...base, whiteSpace: 'nowrap' }),
                 }}

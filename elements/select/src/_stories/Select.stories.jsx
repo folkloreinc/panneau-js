@@ -7,7 +7,13 @@ export default {
     component: Select,
 };
 
-const options = ['one', { value: 'two', label: 'Two' }, { value: 'three' }, { value: 'four', label: null }, 5];
+const options = [
+    'one',
+    { value: 'two', label: 'Two' },
+    { value: 'three', label: 'Very long label that is very annoying indeed' },
+    { value: 'four', label: null },
+    5,
+];
 
 const Container = (props) => {
     const [value, setValue] = useState(null);
@@ -27,6 +33,12 @@ export const MultiSelect = () => (
 
 export const Searchable = () => (
     <Container options={options} multiple searchable placeholder="Multi select searchable..." />
+);
+
+export const Size = () => <Container className="w-25" options={options} placeholder="With size" />;
+
+export const AutoSize = () => (
+    <Container autoSize options={options} placeholder="With min width..." />
 );
 
 export const Stacked = () => {
