@@ -35,7 +35,14 @@ module.exports = {
         '@storybook/addon-viewport/register',
         '@storybook/addon-docs',
         '@storybook/addon-actions',
-        '@storybook/addon-postcss',
+        {
+            name: '@storybook/addon-postcss',
+            options: {
+                postcssLoaderOptions: {
+                    implementation: require('postcss'),
+                },
+            },
+        },
     ],
     webpackFinal: async (config) => ({
         ...config,
