@@ -15,7 +15,7 @@ export default {
 const props = {
     resource: pageResource,
     item: {
-        id: 1,
+        id: '1',
     },
     size: 'sm',
 };
@@ -23,5 +23,23 @@ const props = {
 export const Normal = () => (
     <ResourceProvider resource={pageResource}>
         <ItemActions {...props} />
+    </ResourceProvider>
+);
+
+export const WithUrl = () => (
+    <ResourceProvider resource={pageResource}>
+        <ItemActions {...props} item={{ id: '2', url: 'http://www.google.com' }} />
+    </ResourceProvider>
+);
+
+export const WithShowUrl = () => (
+    <ResourceProvider resource={pageResource}>
+        <ItemActions {...props} showUrl="http://www.google.com" />
+    </ResourceProvider>
+);
+
+export const WithItems = () => (
+    <ResourceProvider resource={pageResource}>
+        <ItemActions {...props} items={[{ id: 'My way', label: 'My button', theme: 'primary' }]} />
     </ResourceProvider>
 );

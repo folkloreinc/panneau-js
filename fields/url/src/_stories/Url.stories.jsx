@@ -20,6 +20,8 @@ export const Normal = () => <Container />;
 
 export const Disabled = () => <Container disabled value="hello" />;
 
-export const Prepend = () => <Container disabled prepend="hello" append="goodbye" />;
+export const PrependAndAppend = () => <Container prepend="hello" append="goodbye" />;
+
+export const Preview = () => <Container prepend="http://www.google.com/" preview />;
 
 export const WithUrl = () => <Container url="https://test.com/chose/" />;

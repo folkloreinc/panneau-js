@@ -1,4 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { faEye } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TextField from '@panneau/field-text';
 import isEmpty from 'lodash/isEmpty';
 import isString from 'lodash/isString';
@@ -22,6 +24,8 @@ const propTypes = {
     url: PropTypes.string,
     disabled: PropTypes.bool,
     prepend: PropTypes.string,
+    append: PropTypes.string,
+    preview: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
@@ -32,11 +36,24 @@ const defaultProps = {
     url: null,
     disabled: null,
     prepend: null,
+    append: null,
+    preview: false,
     className: null,
     onChange: null,
 };
 
-const UrlField = ({ value, schemes, url, disabled, prepend, className, onChange, ...props }) => {
+const UrlField = ({
+    value,
+    schemes,
+    url,
+    disabled,
+    prepend,
+    append,
+    preview,
+    className,
+    onChange,
+    ...props
+}) => {
     const schemesPattern = useMemo(() => new RegExp(`^(${schemes.join('|')})`, 'i'), [schemes]);
 
     const scheme = useMemo(
@@ -51,14 +68,28 @@ const UrlField = ({ value, schemes, url, disabled, prepend, className, onChange,
 
     const onFieldChange = useCallback(
         (newValue) => {
-            const valueWithScheme = !isEmpty(newValue)
+            const newValueWithScheme = !isEmpty(newValue)
                 ? withScheme(newValue, scheme, schemesPattern)
                 : null;
             if (onChange !== null) {
-                onChange(valueWithScheme);
+                onChange(newValueWithScheme);
             }
         },
         [onChange, scheme, schemesPattern],
+    );
+
+    const finalPrepend = prepend || url || scheme;
+    const finalAppend = preview ? (
+        <a
+            href={value !== null ? `${finalPrepend}${valueWithoutScheme}` : null}
+            className="input-group-text"
+            target="_blank"
+            rel="noreferrer"
+        >
+            <FontAwesomeIcon icon={faEye} />
+        </a>
+    ) : (
+        append
     );
 
     return (
@@ -67,7 +98,8 @@ const UrlField = ({ value, schemes, url, disabled, prepend, className, onChange,
             className={className}
             value={valueWithoutScheme}
             onChange={onFieldChange}
-            prepend={prepend || url || scheme}
+            prepend={finalPrepend}
+            append={finalAppend}
             disabled={disabled}
             type="text"
         />
