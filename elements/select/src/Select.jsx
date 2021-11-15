@@ -101,7 +101,7 @@ const SelectElement = ({
                 }}
                 value={optionValue || null}
                 options={finalOptions}
-                disabled={disabled}
+                isDisabled={disabled}
                 isMulti={multiple}
                 isClearable={!withoutReset}
                 isSearchable={searchable}
