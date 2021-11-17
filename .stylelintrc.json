@@ -1,8 +1,7 @@
 {
     "extends": [
-        "stylelint-config-recommended-scss",
-        "stylelint-config-sass-guidelines",
-        "stylelint-config-property-sort-order-smacss",
+        "stylelint-config-standard-scss",
+        "stylelint-config-idiomatic-order",
         "stylelint-config-prettier"
     ],
     "rules": {

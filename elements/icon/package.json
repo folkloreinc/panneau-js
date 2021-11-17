@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/intl",
-    "version": "1.0.0-alpha.215",
-    "description": "",
+    "name": "@panneau/element-icon",
+    "version": "1.0.0-alpha.214",
+    "description": "Link element",
     "keywords": [
         "javascript"
     ],
@@ -35,20 +35,13 @@
     "license": "ISC",
     "main": "lib/index.js",
     "module": "es/index.js",
-    "exports": {
-        ".": "./lib/index.js",
-        "./locale/*": "./locale/*.cjs.js"
-    },
     "files": [
-        "locale",
         "lib",
         "es",
-        "scripts",
         "assets"
     ],
     "scripts": {
-        "intl": "./scripts/build-intl.sh",
-        "prepare": "npm run intl && ../../scripts/prepare-package.sh"
+        "prepare": "../../scripts/prepare-package.sh --scss"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0",
@@ -60,21 +53,11 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@formatjs/cli": "^4.2.19",
         "@panneau/core": "^1.0.0-alpha.214",
-        "commander": "^8.3.0",
-        "fs-extra": "^10.0.0",
-        "gettext-parser": "^4.0.4",
-        "glob": "^7.1.6",
-        "lodash": "^4.17.21",
-        "prop-types": "^15.7.2",
-        "react-intl": "^5.15.8"
+        "bootstrap-icons": "^1.7.1",
+        "classnames": "^2.2.6",
+        "prop-types": "^15.7.2"
     },
-    "lang": "locale",
-    "supportedLocales": [
-        "en",
-        "fr"
-    ],
     "publishConfig": {
         "access": "public"
     },

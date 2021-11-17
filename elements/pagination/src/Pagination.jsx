@@ -131,7 +131,7 @@ const Pagination = ({
                 },
             ])}
         >
-            {total !== null && withCount && align === 'right' ? (
+            {total !== null && total > 0 && withCount && align === 'right' ? (
                 <div className="mx-3 text-muted">
                     {React.cloneElement(countLabel, {
                         values: { count: total },
@@ -185,7 +185,7 @@ const Pagination = ({
                     </li>
                 ) : null}
 
-                {pages.map((pageNumber, index) => (
+                {pages.length > 1 ? pages.map((pageNumber, index) => (
                     <li
                         key={`page-${pageNumber}-${index}`}
                         className={classNames([
@@ -214,7 +214,7 @@ const Pagination = ({
                             {pageNumber}
                         </Link>
                     </li>
-                ))}
+                )) : null}
 
                 {withPreviousNext ? (
                     <li
@@ -254,7 +254,7 @@ const Pagination = ({
                     </li>
                 ) : null}
             </ul>
-            {total !== null && withCount && align === 'left' ? (
+            {total !== null && total > 0 && withCount && align === 'left' ? (
                 <div className="mx-3 text-muted">
                     {React.cloneElement(countLabel, {
                         values: { count: total },
