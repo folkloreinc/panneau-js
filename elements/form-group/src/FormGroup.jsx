@@ -85,14 +85,28 @@ const FormGroup = ({
 
     const helpElement =
         helpText !== null ? (
-            <small className={classNames([styles.help, 'form-text', 'text-muted', { 'card-body' : isCard}])}>
+            <small
+                className={classNames([
+                    styles.help,
+                    'form-text',
+                    'text-muted',
+                    { 'card-body': isCard },
+                ])}
+            >
                 {helpText}
             </small>
         ) : null;
 
     const errorsElement =
         !withoutErrors && errors !== null ? (
-            <div className={classNames([styles.errors, 'invalid-feedback', 'd-block', { 'card-body' : isCard}])}>
+            <div
+                className={classNames([
+                    styles.errors,
+                    'invalid-feedback',
+                    'd-block',
+                    { 'card-body': isCard },
+                ])}
+            >
                 <ul className="list-unstyled">
                     {errors.map((error) => (
                         <li key={`error-${error}`}>{error}</li>
@@ -108,12 +122,8 @@ const FormGroup = ({
         </div>
     ) : (
         <>
-            <Column wrap={horizontal}>
-                {helpElement}
-            </Column>
-            <Column wrap={horizontal}>
-                {errorsElement}
-            </Column>
+            <Column wrap={horizontal}>{helpElement}</Column>
+            <Column wrap={horizontal}>{errorsElement}</Column>
         </>
     );
 
@@ -121,7 +131,7 @@ const FormGroup = ({
         <div
             className={classNames([
                 styles.container,
-                'mb-3',                
+                'mb-3',
                 {
                     'border-top pt-3 mt-3': isHeading,
                     [className]: className !== null,
@@ -134,7 +144,6 @@ const FormGroup = ({
                         row: vertical,
                         'g-3': vertical,
                         'align-items-center': vertical,
-                        'form-floating': floating,
                         'form-floating': floating,
                         card: isCard,
                     },

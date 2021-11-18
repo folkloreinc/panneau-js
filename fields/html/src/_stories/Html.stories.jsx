@@ -21,8 +21,6 @@ const Container = (props) => {
 
 export const Normal = () => <Container />;
 
-export const Quill = () => <Container type="quill" placeholder="Using Quill" />;
-
 export const WithMediaEmbed = () => (
     <Container
         type="ck-editor"

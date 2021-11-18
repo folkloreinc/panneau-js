@@ -1,9 +1,10 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading, react/prop-types */
 import { faCaretDown, faCaretRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { getPathValue } from '@panneau/core/utils';
 import { useFieldComponent } from '@panneau/core/contexts';
+import { getPathValue } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
 import Label from '@panneau/element-label';
@@ -298,7 +299,8 @@ const ItemsField = ({
                         ])}
                     >
                         {!withoutCollapse ? (
-                            <div
+                            <button
+                                type="button"
                                 className="btn position-absolute top-0 start-0 w-100 h-100"
                                 onClick={() => toggleCollapse(index)}
                             />

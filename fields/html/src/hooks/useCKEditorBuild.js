@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 /**
  * Locale loader
  */
 let packageCache = null;
-const useCKEditorBuild = ({ disabled = false, inline = false }) => {
-    
+const useCKEditorBuild = ({ disabled = false, inline = false } = {}) => {
     const [{ package: loadedPackage }, setLoadedPackage] = useState({
         package: packageCache,
     });
@@ -26,12 +25,12 @@ const useCKEditorBuild = ({ disabled = false, inline = false }) => {
                     });
                 }
             };
-
-            if (inline) {
-                import('@ckeditor/ckeditor5-build-inline').then(onEditorBuildLoaded);
-            } else {
-                import('@ckeditor/ckeditor5-build-classic').then(onEditorBuildLoaded);
-            }         
+            // if (inline) {
+            //     import('@ckeditor/ckeditor5-build-inline').then(onEditorBuildLoaded);
+            // } else {
+            //     import('@ckeditor/ckeditor5-build-classic').then(onEditorBuildLoaded);
+            // }
+            import('@ckeditor/ckeditor5-build-classic').then(onEditorBuildLoaded);
         }
         return () => {
             canceled = true;

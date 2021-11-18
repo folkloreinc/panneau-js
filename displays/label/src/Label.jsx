@@ -12,6 +12,7 @@ const defaultProps = {
 };
 
 const Label = ({ labels, value }) => <div>{labels[value] || value}</div>;
+
 Label.propTypes = propTypes;
 Label.defaultProps = defaultProps;
 
