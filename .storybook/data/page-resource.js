@@ -139,6 +139,7 @@ export default {
                 actions: ['show', 'edit'],
             },
         ],
+        sortable: true,
         filters: [
             // {
             //     name: 'select-filter-chose',

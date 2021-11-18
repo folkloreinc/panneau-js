@@ -10,8 +10,11 @@ const localesFiles = locales.reduce(
             output: `locale/${locale}.js`,
             prependPlugins: [
                 replace({
-                    REPLACE_LOCALE: locale,
-                    preventAssignment: true,
+                    values: {
+                        REPLACE_LOCALE: locale,
+                    },
+                    delimiters: ['', ''],
+                    preventAssignment: false,
                 }),
             ],
         }),
@@ -21,8 +24,11 @@ const localesFiles = locales.reduce(
             format: 'cjs',
             prependPlugins: [
                 replace({
-                    REPLACE_LOCALE: locale,
-                    preventAssignment: true,
+                    values: {
+                        REPLACE_LOCALE: locale,
+                    },
+                    delimiters: ['', ''],
+                    preventAssignment: false,
                 }),
             ],
         }),

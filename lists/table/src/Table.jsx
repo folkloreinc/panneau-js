@@ -10,30 +10,31 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
+import SortLink from './SortLink';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
     items: PanneauPropTypes.items,
-    columns: PropTypes.arrayOf(PropTypes.shape({})),
-    // query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    // page: PropTypes.number,
-    // lastPage: PropTypes.number,
-    // total: PropTypes.number,
-    // baseUrl: PropTypes.string,
+    columns: PanneauPropTypes.tableColumns,
     theme: PropTypes.string,
-    // onQueryChange: PropTypes.func,
+    baseUrl: PropTypes.string,
+    query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    sortable: PropTypes.bool,
+    sortColumnParameter: PropTypes.string,
+    sortDirectionParameter: PropTypes.string,
+    onQueryChange: PropTypes.func,
 };
 
 const defaultProps = {
     items: [],
     columns: [],
-    // query: null,
-    // page: null,
-    // lastPage: null,
-    // total: null,
-    // baseUrl: null,
     theme: null,
-    // onQueryChange: null,
+    baseUrl: null,
+    query: null,
+    sortable: false,
+    sortColumnParameter: 'order',
+    sortDirectionParameter: 'order_direction',
+    onQueryChange: null,
 };
 
 const TableList = ({
@@ -41,7 +42,12 @@ const TableList = ({
     resource,
     items,
     theme,
-    // onQueryChange,
+    baseUrl,
+    query,
+    sortable,
+    sortColumnParameter,
+    sortDirectionParameter,
+    onQueryChange,
 }) => {
     const displayComponents = useDisplaysComponents();
 
@@ -71,12 +77,52 @@ const TableList = ({
                 >
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
-                            {columnsWithFields.map(({ name, label = null }, idx) => (
-                                <th scope="col" key={`col-${name}-${label}-${idx + 1}`}>
-                                    {label}
-                                </th>
-                            ))}
+                            <th scope="col">
+                                {sortable ? (
+                                    <SortLink
+                                        baseUrl={baseUrl}
+                                        query={query}
+                                        field="id"
+                                        columnParameter={sortColumnParameter}
+                                        directionParameter={sortDirectionParameter}
+                                        onQueryChange={onQueryChange}
+                                    >
+                                        #
+                                    </SortLink>
+                                ) : (
+                                    '#'
+                                )}
+                            </th>
+                            {columnsWithFields.map(
+                                (
+                                    {
+                                        id,
+                                        field,
+                                        label = null,
+                                        sortable: columnSortable = true,
+                                        sortDirections,
+                                    },
+                                    idx,
+                                ) => (
+                                    <th scope="col" key={`col-${id}-${label}-${idx + 1}`}>
+                                        {sortable && columnSortable ? (
+                                            <SortLink
+                                                baseUrl={baseUrl}
+                                                query={query}
+                                                field={field}
+                                                columnParameter={sortColumnParameter}
+                                                directionParameter={sortDirectionParameter}
+                                                directions={sortDirections}
+                                                onQueryChange={onQueryChange}
+                                            >
+                                                {label}
+                                            </SortLink>
+                                        ) : (
+                                            label
+                                        )}
+                                    </th>
+                                ),
+                            )}
                             {!hasActionsColumns ? <th scope="col">&nbsp;</th> : null}
                         </tr>
                     </thead>
@@ -172,16 +218,6 @@ const TableList = ({
             ) : (
                 <Loading>Loading</Loading>
             )}
-            {/* {paginated && lastPage > 1 && items !== null ? (
-                <Pagination
-                    page={page}
-                    lastPage={lastPage}
-                    total={total}
-                    url={currentUrl}
-                    className="mt-4"
-                    withCount
-                />
-            ) : null} */}
         </div>
     );
 };

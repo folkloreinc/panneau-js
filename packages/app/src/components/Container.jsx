@@ -75,10 +75,8 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
     }, [baseUrl]);
 
     const onLogout = useCallback(() => {
-        console.log('logout'); // eslint-disable-line
+        window.location.reload();
     }, [baseUrl]);
-
-    console.log('definition', definition); // eslint-disable-line
 
     return (
         <Router>

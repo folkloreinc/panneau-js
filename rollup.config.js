@@ -122,7 +122,9 @@ export const createConfig = ({
             }),
             url({ include: ['**/*.mp4'] }),
             replace({
-                'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+                values: {
+                    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+                },
                 preventAssignment: true,
             }),
             ...appendPlugins,

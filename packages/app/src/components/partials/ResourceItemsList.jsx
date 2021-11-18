@@ -5,7 +5,7 @@ import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Pagination from '@panneau/element-pagination';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import ResourceFilters from './ResourceFilters';
 
 const propTypes = {
@@ -47,8 +47,11 @@ const ResourceItemsList = ({
     } = resource;
     const { background: theme = null } = usePanneauColorScheme();
     const ListComponents = useListsComponents();
-    const { page = 1 } = query || {};
-    const itemsProps = useResourceItems(resource, query, paginated ? parseInt(page, 10) : null);
+    const [page, queryWithoutPage] = useMemo(() => {
+        const { page: currentPage = 1, ...rest } = query || {};
+        return [currentPage, rest]
+    }, [query]);
+    const itemsProps = useResourceItems(resource, queryWithoutPage, paginated ? parseInt(page, 10) : null);
     const { lastPage = 0, total = 0 } = itemsProps || {};
     const ListComponent = getComponentFromName(listComponent || 'table', ListComponents);
 
@@ -76,9 +79,8 @@ const ResourceItemsList = ({
                 <ListComponent
                     {...itemsProps}
                     {...listProps}
-                    page={paginated ? parseInt(page, 10) : null}
-                    baseUrl={baseUrl}
                     resource={resource}
+                    baseUrl={baseUrl}
                     query={query}
                     onQueryChange={onQueryChange}
                     onQueryReset={onQueryReset}

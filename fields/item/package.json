@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-item",
-    "version": "1.0.0-alpha.214",
+    "version": "1.0.0-alpha.218",
     "description": "A repeatable abstract field",
     "keywords": [
         "javascript"
@@ -56,9 +56,9 @@
         "@fortawesome/fontawesome-svg-core": "^1.2.35",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
-        "@panneau/core": "^1.0.0-alpha.214",
-        "@panneau/data": "^1.0.0-alpha.214",
-        "@panneau/element-button": "^1.0.0-alpha.214",
+        "@panneau/core": "^1.0.0-alpha.218",
+        "@panneau/data": "^1.0.0-alpha.218",
+        "@panneau/element-button": "^1.0.0-alpha.218",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

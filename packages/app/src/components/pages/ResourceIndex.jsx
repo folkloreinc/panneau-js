@@ -33,15 +33,27 @@ const ResourceIndexPage = ({ resource }) => {
 
     const onQueryChange = useCallback(
         (submitQuery) => {
-            const newQuery = Object.fromEntries(
-                // eslint-disable-next-line no-unused-vars
-                Object.entries({ ...query, ...submitQuery }).filter(([_, v]) => v != null),
+            const newQuery =
+                submitQuery !== null
+                    ? Object.keys(submitQuery).reduce((currentQuery, key) => {
+                          const value = submitQuery[key];
+                          return value !== null
+                              ? {
+                                    ...currentQuery,
+                                    [key]: value,
+                                }
+                              : currentQuery;
+                      }, null)
+                    : null;
+            history.push(
+                `${url}${
+                    newQuery !== null
+                        ? `?${stringifyQuery(newQuery, {
+                              arrayFormat: 'bracket',
+                          })}`
+                        : ''
+                }`,
             );
-            const { page, ...queryWithoutPage } = newQuery || {};
-            const queryString = stringifyQuery(queryWithoutPage, {
-                arrayFormat: 'bracket',
-            });
-            history.push(`${url}?${queryString}`);
         },
         [history, url, query, paginated],
     );

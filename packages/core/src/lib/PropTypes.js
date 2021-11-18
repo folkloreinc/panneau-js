@@ -62,6 +62,16 @@ export const toggle = PropTypes.shape({
 });
 export const toggles = PropTypes.arrayOf(toggle);
 
+export const tableColumn = PropTypes.shape({
+    id: PropTypes.string,
+    component: PropTypes.string,
+    path: PropTypes.string,
+    field: PropTypes.string,
+    columnClassName: PropTypes.string,
+});
+
+export const tableColumns = PropTypes.arrayOf(tableColumn);
+
 /**
  * Panneau Definitions
  */

@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/field-embed",
+    "name": "@panneau/element-icon",
     "version": "1.0.0-alpha.218",
-    "description": "An embed field",
+    "description": "Link element",
     "keywords": [
         "javascript"
     ],
@@ -41,7 +41,7 @@
         "assets"
     ],
     "scripts": {
-        "prepare": "../../scripts/prepare-package.sh"
+        "prepare": "../../scripts/prepare-package.sh --scss"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0",
@@ -54,13 +54,9 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^1.0.0-alpha.218",
-        "@panneau/element-card": "^1.0.0-alpha.218",
-        "@panneau/field-text": "^1.0.0-alpha.218",
-        "@panneau/themes": "^1.0.0-alpha.218",
+        "bootstrap-icons": "^1.7.1",
         "classnames": "^2.2.6",
-        "lodash": "^4.17.21",
-        "prop-types": "^15.7.2",
-        "react-intl": "^5.15.8"
+        "prop-types": "^15.7.2"
     },
     "publishConfig": {
         "access": "public"
