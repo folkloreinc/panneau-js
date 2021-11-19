@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-horizontal",
-    "version": "1.0.0-alpha.220",
+    "version": "1.0.0-alpha.221",
     "description": "Horizontal form",
     "keywords": [
         "javascript"
@@ -56,7 +56,7 @@
         "@panneau/core": "^1.0.0-alpha.219",
         "@panneau/element-button": "^1.0.0-alpha.219",
         "@panneau/element-form": "^1.0.0-alpha.219",
-        "@panneau/field-fields": "^1.0.0-alpha.220",
+        "@panneau/field-fields": "^1.0.0-alpha.221",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
