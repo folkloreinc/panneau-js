@@ -1,4 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Button from '@panneau/element-button';
 import classNames from 'classnames';
@@ -73,49 +75,41 @@ const FormGroup = ({
         setCollapsed(!collapsed);
     }, [collapsed, setCollapsed]);
 
-    const labelElement =
-        !withoutLabel && label !== null ? (
-            <label
-                htmlFor={name}
-                className={classNames([
-                    styles.label,
-                    {
-                        'form-label': !inline,
-                        'col-form-label': inline || horizontal,
-                        'col-sm-4': horizontal,
-                        'px-2': horizontal,
-                        'text-nowrap': horizontal,
-                        'card-header': isCard,
-                        'fw-bold': isHeading,
-                        'd-flex': isCollapsible,
-                        'justify-content-between': !isCard && isCollapsible,
-                        'align-items-center': !isCard && isCollapsible,
-                        dropup: isCollapsible && !collapsed,
-                        [labelClassName]: labelClassName !== null,
-                    },
-                ])}
-            >
-                {isCollapsible ? (
-                    <>
-                        <Button
-                            className={classNames([
-                                'dropdown-toggle',
-                                'p-0',
-                                'd-flex',
-                                'w-100',
-                                'align-items-center',
-                                'text-start',
-                            ])}
-                            onClick={toggleCollapsed}
-                        >
-                            <span className="d-block w-100">{label}</span>
-                        </Button>
-                    </>
-                ) : (
-                    label
-                )}
-            </label>
-        ) : null;
+    const labelClassNames = classNames([
+        styles.label,
+        {
+            'form-label': !inline,
+            'col-form-label': inline || horizontal,
+            'col-sm-4': horizontal,
+            'px-2': horizontal,
+            'text-nowrap': horizontal,
+            'card-header': isCard,
+            'fw-bold': isHeading,
+            'd-flex': isCollapsible,
+            'align-items-center': isCollapsible,
+            dropup: isCollapsible && !collapsed,
+            [labelClassName]: labelClassName !== null,
+        },
+    ]);
+
+    const innerLabel = isCollapsible ? label || null : label || null;
+
+    const outerLabel = isCollapsible ? (
+        <Button htmlFor={name} className={labelClassNames} onClick={toggleCollapsed}>
+            <FontAwesomeIcon
+                style={{ width: 20 }}
+                className="me-1"
+                icon={collapsed ? faCaretRight : faCaretDown}
+            />
+            {innerLabel}
+        </Button>
+    ) : (
+        <label htmlFor={name} className={labelClassNames}>
+            {innerLabel}
+        </label>
+    );
+
+    const labelElement = !withoutLabel && label !== null ? outerLabel : null;
 
     const helpElement =
         helpText !== null ? (
@@ -212,7 +206,7 @@ const FormGroup = ({
     );
 };
 
-FormGroup.propTypes = propTypes;
 FormGroup.defaultProps = defaultProps;
+FormGroup.propTypes = propTypes;
 
 export default FormGroup;
