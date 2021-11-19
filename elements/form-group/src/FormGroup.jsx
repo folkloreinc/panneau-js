@@ -1,8 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Button from '@panneau/element-button';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import Column from './Column';
 import styles from './styles.module.scss';
 
@@ -17,6 +18,8 @@ const propTypes = {
     inline: PropTypes.bool,
     isCard: PropTypes.bool,
     isHeading: PropTypes.bool,
+    isCollapsible: PropTypes.bool,
+    initialCollapsed: PropTypes.bool,
     withoutLabel: PropTypes.bool,
     withoutErrors: PropTypes.bool,
     labelAfter: PropTypes.bool,
@@ -34,6 +37,8 @@ const defaultProps = {
     floating: false,
     inline: false,
     isCard: false,
+    isCollapsible: false,
+    initialCollapsed: true,
     isHeading: false,
     withoutLabel: false,
     withoutErrors: false,
@@ -53,6 +58,8 @@ const FormGroup = ({
     inline,
     isCard,
     isHeading,
+    isCollapsible,
+    initialCollapsed,
     withoutLabel,
     withoutErrors,
     labelAfter,
@@ -60,6 +67,11 @@ const FormGroup = ({
     labelClassName,
 }) => {
     const vertical = horizontal || inline;
+    const [collapsed, setCollapsed] = useState(initialCollapsed);
+
+    const toggleCollapsed = useCallback(() => {
+        setCollapsed(!collapsed);
+    }, [collapsed, setCollapsed]);
 
     const labelElement =
         !withoutLabel && label !== null ? (
@@ -75,11 +87,33 @@ const FormGroup = ({
                         'text-nowrap': horizontal,
                         'card-header': isCard,
                         'fw-bold': isHeading,
+                        'd-flex': isCollapsible,
+                        'justify-content-between': !isCard && isCollapsible,
+                        'align-items-center': !isCard && isCollapsible,
+                        dropup: isCollapsible && !collapsed,
                         [labelClassName]: labelClassName !== null,
                     },
                 ])}
             >
-                {label}
+                {isCollapsible ? (
+                    <>
+                        <Button
+                            className={classNames([
+                                'dropdown-toggle',
+                                'p-0',
+                                'd-flex',
+                                'w-100',
+                                'align-items-center',
+                                'text-start',
+                            ])}
+                            onClick={toggleCollapsed}
+                        >
+                            <span className="d-block w-100">{label}</span>
+                        </Button>
+                    </>
+                ) : (
+                    label
+                )}
             </label>
         ) : null;
 
@@ -127,6 +161,20 @@ const FormGroup = ({
         </>
     );
 
+    const innerChildren = (
+        <div
+            className={classNames([
+                {
+                    'card-body': isCard,
+                    collapse: isCollapsible,
+                    show: isCollapsible && !collapsed,
+                },
+            ])}
+        >
+            {children}
+        </div>
+    );
+
     return (
         <div
             className={classNames([
@@ -153,7 +201,7 @@ const FormGroup = ({
                     {!labelAfter ? labelElement : null}
                 </Column>
                 <Column wrap={vertical} className={classNames({ 'col-sm-9': horizontal })}>
-                    {isCard ? <div className="card-body">{children}</div> : children}
+                    {innerChildren}
                 </Column>
                 <Column wrap={vertical} className={classNames({ 'col-sm-3': horizontal })}>
                     {labelAfter ? labelElement : null}

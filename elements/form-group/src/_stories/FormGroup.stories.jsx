@@ -1,5 +1,4 @@
 import React from 'react';
-
 import FormGroup from '../FormGroup';
 
 export default {
@@ -12,13 +11,40 @@ export default {
 
 const Field = () => <div>A field is here</div>;
 
-export const Normal = () => <FormGroup label="Form group label"><Field /></FormGroup>;
+export const Normal = () => (
+    <FormGroup label="Form group label">
+        <Field />
+    </FormGroup>
+);
 
-export const IsCard = () => <FormGroup label="Form group label" isCard><Field /></FormGroup>;
-export const IsHeading = () => <>
-    <FormGroup label="Form group label"><Field /></FormGroup>
-    <FormGroup label="Form group label" isHeading><Field /></FormGroup>
-</>;
+export const IsCard = () => (
+    <FormGroup label="Form group label" isCard>
+        <Field />
+    </FormGroup>
+);
+
+export const IsHeading = () => (
+    <>
+        <FormGroup label="Form group label">
+            <Field />
+        </FormGroup>
+        <FormGroup label="Form group label" isHeading>
+            <Field />
+        </FormGroup>
+    </>
+);
+
+export const IsCollapsible = () => (
+    <FormGroup label="Form group label" isCollapsible>
+        <Field />
+    </FormGroup>
+);
+
+export const IsCollapsibleCard = () => (
+    <FormGroup label="Form group label" isCollapsible isCard>
+        <Field />
+    </FormGroup>
+);
 
 export const WithHelpText = () => (
     <FormGroup label="Form group label" helpText="Help me!">
