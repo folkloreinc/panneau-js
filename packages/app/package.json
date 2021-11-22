@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "1.0.0-alpha.221",
+    "version": "1.0.0-alpha.222",
     "description": "",
     "keywords": [
         "javascript"
@@ -66,7 +66,7 @@
         "@panneau/element-buttons": "^1.0.0-alpha.219",
         "@panneau/element-dropdown": "^1.0.0-alpha.219",
         "@panneau/element-form": "^1.0.0-alpha.219",
-        "@panneau/element-form-group": "^1.0.0-alpha.221",
+        "@panneau/element-form-group": "^1.0.0-alpha.222",
         "@panneau/element-label": "^1.0.0-alpha.219",
         "@panneau/element-link": "^1.0.0-alpha.219",
         "@panneau/element-loading": "^1.0.0-alpha.219",
@@ -74,9 +74,9 @@
         "@panneau/element-navbar": "^1.0.0-alpha.219",
         "@panneau/element-pagination": "^1.0.0-alpha.219",
         "@panneau/element-radios": "^1.0.0-alpha.219",
-        "@panneau/fields": "^1.0.0-alpha.221",
+        "@panneau/fields": "^1.0.0-alpha.222",
         "@panneau/filters": "^1.0.0-alpha.219",
-        "@panneau/forms": "^1.0.0-alpha.221",
+        "@panneau/forms": "^1.0.0-alpha.222",
         "@panneau/intl": "^1.0.0-alpha.219",
         "@panneau/lists": "^1.0.0-alpha.219",
         "@panneau/modals": "^1.0.0-alpha.219",
