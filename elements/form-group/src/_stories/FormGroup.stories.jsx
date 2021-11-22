@@ -46,6 +46,20 @@ export const IsCollapsibleCard = () => (
     </FormGroup>
 );
 
+export const Stacked = () => (
+    <>
+        <FormGroup label="Form group label" isCollapsible isCard>
+            <Field />
+        </FormGroup>
+        <FormGroup label="Form group label" isCard>
+            <Field />
+        </FormGroup>
+        <FormGroup label="Form group label" isCollapsible isCard>
+            <Field />
+        </FormGroup>
+    </>
+);
+
 export const WithHelpText = () => (
     <FormGroup label="Form group label" helpText="Help me!">
         <Field />

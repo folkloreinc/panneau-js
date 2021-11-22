@@ -87,6 +87,9 @@ const FormGroup = ({
             'fw-bold': isHeading,
             'd-flex': isCollapsible,
             'align-items-center': isCollapsible,
+            'justify-content-between': isCollapsible,
+            'pe-1': isCollapsible,
+            'rounded border-bottom border-light border-secondary': isCollapsible && collapsed,
             dropup: isCollapsible && !collapsed,
             [labelClassName]: labelClassName !== null,
         },
@@ -96,12 +99,12 @@ const FormGroup = ({
 
     const outerLabel = isCollapsible ? (
         <Button htmlFor={name} className={labelClassNames} onClick={toggleCollapsed}>
+            {innerLabel}
             <FontAwesomeIcon
                 style={{ width: 20 }}
                 className="me-1"
                 icon={collapsed ? faCaretRight : faCaretDown}
             />
-            {innerLabel}
         </Button>
     ) : (
         <label htmlFor={name} className={labelClassNames}>
