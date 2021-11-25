@@ -8,7 +8,7 @@
     "packages/*",
     "layouts/*"
   ],
-  "commands": {
+  "command": {
     "publish": {
       "allowBranch": "master"
     }
