@@ -34,6 +34,7 @@
         "build:docs": "npm run docs:prepare && npm run docs:api && gitbook build",
         "build": "lerna run build",
         "publish": "npm run storybook-deploy && lerna publish",
+        "lint": "eslint */*/src/**.{js,jsx} --quiet",
         "start": "npm run storybook"
     },
     "devDependencies": {

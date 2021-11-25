@@ -217,6 +217,18 @@ module.exports = {
                             compact: true,
                         },
                     },
+                    {
+                        test: /\.(js|jsx|mjs)$/,
+                        include: [
+                            /query-string/,
+                            /strict-uri-encode/,
+                            /split-on-first/,
+                        ],
+                        loader: require.resolve('babel-loader'),
+                        options: {
+                            compact: true,
+                        },
+                    },
                     // The notation here is somewhat confusing.
                     // "postcss" loader applies autoprefixer to our CSS.
                     // "css" loader resolves paths in CSS and adds assets as dependencies.

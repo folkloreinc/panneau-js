@@ -1,7 +1,7 @@
 import React from 'react';
 import get from 'lodash/get';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import { withUrlGenerator } from '@folklore/react-app';
 
 import * as PanneauPropTypes from '../lib/PropTypes';

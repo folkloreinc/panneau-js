@@ -7,5 +7,5 @@ export const errors = PropTypes.oneOfType([
 
 export const form = PropTypes.shape({
     errors,
-    value: PropTypes.object,
+    value: PropTypes.object, // eslint-disable-line
 });

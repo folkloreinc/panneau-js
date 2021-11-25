@@ -16,6 +16,7 @@ const generateUrl = (url, page, pageParamName) => {
 };
 
 const propTypes = {
+    // total: PropTypes.number,
     perPage: PropTypes.number,
     currentPage: PropTypes.number,
     lastPage: PropTypes.number,
@@ -28,7 +29,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-    total: 0,
+    // total: 0,
     perPage: 0,
     currentPage: 0,
     lastPage: 0,

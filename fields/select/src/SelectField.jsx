@@ -23,7 +23,7 @@ const propTypes = {
     options: PropTypes.arrayOf(PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.shape({
-            value: PropTypes.any,
+            value: PropTypes.any, // eslint-disable-line
             label: PropTypes.string,
         }),
     ])),
