@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modal-popover",
-    "version": "0.4.22",
+    "version": "0.4.39",
     "description": "Popover modals for Panneau",
     "keywords": [
         "react",
