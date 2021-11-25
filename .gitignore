@@ -6,4 +6,3 @@ node_modules
 /coverage
 /out*
 /_book
-/package-lock.json
