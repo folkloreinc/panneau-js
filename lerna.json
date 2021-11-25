@@ -10,7 +10,7 @@
   ],
   "command": {
     "publish": {
-      "allowBranch": "master"
+      "allowBranch": ["master", "v0.4"]
     }
   },
   "version": "0.4.38"
