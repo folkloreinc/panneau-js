@@ -1,9 +1,12 @@
-import { routerReducer } from 'react-router-redux';
+import { connectRouter } from 'connected-react-router';
+import { createBrowserHistory } from 'history';
 import layoutReducer from './LayoutReducer';
 import panneauReducer from './PanneauReducer';
 
+export const history = createBrowserHistory();
+
 export default {
-    routing: routerReducer,
+    router: connectRouter(history),
     layout: layoutReducer,
     panneau: panneauReducer,
 };
