@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-color",
-    "version": "0.4.40",
+    "version": "0.4.41",
     "description": "Color field for Panneau",
     "keywords": [
         "react",
@@ -51,10 +51,10 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/core": "^0.4.40",
-        "@panneau/field": "^0.4.40",
-        "@panneau/field-text": "^0.4.40",
-        "@panneau/modal-popover": "^0.4.40",
+        "@panneau/core": "^0.4.41",
+        "@panneau/field": "^0.4.41",
+        "@panneau/field-text": "^0.4.41",
+        "@panneau/modal-popover": "^0.4.41",
         "babel-runtime": "^6.26.0",
         "bootstrap": "^4.1.1",
         "classnames": "^2.2.5",
@@ -70,5 +70,6 @@
     "peerDependencies": {
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
-    }
+    },
+    "gitHead": "d31ead86486ab8cfc054ec46e61e49377e43f23a"
 }

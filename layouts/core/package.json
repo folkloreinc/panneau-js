@@ -1,6 +1,6 @@
 {
   "name": "@panneau/layout",
-  "version": "0.4.40",
+  "version": "0.4.41",
   "description": "Layout core for Panneau",
   "keywords": [
     "react",
@@ -51,7 +51,7 @@
     "start": "npm run storybook"
   },
   "dependencies": {
-    "@panneau/field": "^0.4.40",
+    "@panneau/field": "^0.4.41",
     "babel-runtime": "^6.26.0",
     "bootstrap.native": "^2.0.21",
     "classnames": "^2.2.5",
@@ -67,5 +67,6 @@
   "peerDependencies": {
     "react": ">=15.0.0 || ^16.0.0",
     "react-dom": ">=15.0.0 || ^16.0.0"
-  }
+  },
+  "gitHead": "d31ead86486ab8cfc054ec46e61e49377e43f23a"
 }
