@@ -50,6 +50,7 @@ const Radios = ({
                 },
             ])}
             data-toggle="buttons"
+            style={{ zIndex: 0 }}
         >
             {finalOptions.map(({ value: optionValue, label }, index) => {
                 // eslint-disable-next-line eqeqeq
