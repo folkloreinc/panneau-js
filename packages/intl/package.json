@@ -37,6 +37,7 @@
     "module": "es/index.js",
     "exports": {
         ".": "./lib/index.js",
+        "./locale": "./locale",
         "./locale/*": "./locale/*.cjs.js"
     },
     "files": [
