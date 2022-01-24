@@ -44,6 +44,12 @@ module.exports = {
             },
         },
     ],
+    features: {
+        babelModeV7: true,
+    },
+    core: {
+        builder: 'webpack5',
+    },
     webpackFinal: async (config) => ({
         ...config,
 
