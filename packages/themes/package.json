@@ -35,6 +35,23 @@
     "license": "ISC",
     "main": "lib/index.js",
     "module": "es/index.js",
+    "exports": {
+        ".": "./lib/index.js",
+        "./scss/mixins": "./scss/_mixins.scss",
+        "./scss/mixins.scss": "./scss/_mixins.scss",
+        "./scss/placeholders": "./scss/_placeholders.scss",
+        "./scss/placeholders.scss": "./scss/_placeholders.scss",
+        "./scss/theme": "./scss/_theme.scss",
+        "./scss/theme.scss": "./scss/_theme.scss",
+        "./scss/variables": "./scss/_variables.scss",
+        "./scss/variables.scss": "./scss/_variables.scss",
+        "./scss/styles": "./scss/styles.scss",
+        "./scss/styles.scss": "./scss/styles.scss",
+        "./scss/vendor": "./scss/vendor.scss",
+        "./scss/vendor.scss": "./scss/vendor.scss",
+        "./assets/css/styles.css": "./assets/css/styles.css",
+        "./assets/css/vendor.css": "./assets/css/vendor.css"
+    },
     "files": [
         "lib",
         "es",
