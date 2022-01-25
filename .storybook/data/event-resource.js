@@ -31,12 +31,20 @@ export default {
     index: {
         columns: ['organizer', 'email'],
 
+        actions: [
+            {
+                id: 'export',
+                label: 'Export'
+            },
+            'create'
+        ],
+
         filters: [
             {
                 name: 'search',
                 placeholder: 'Chercher',
                 component: 'search',
-                
+
             },
             {
                 name: 'trucs',
