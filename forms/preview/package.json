@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-preview",
-    "version": "0.6.73",
+    "version": "0.6.74",
     "description": "Preview forms for Panneau",
     "keywords": [
         "react",
@@ -50,9 +50,9 @@
     "dependencies": {
         "@babel/runtime": "^7.0.0",
         "@panneau/core": "^0.6.73",
-        "@panneau/field": "^0.6.73",
+        "@panneau/field": "^0.6.74",
         "@panneau/form": "^0.6.73",
-        "@panneau/form-normal": "^0.6.73",
+        "@panneau/form-normal": "^0.6.74",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
         "prop-types": "^15.6.0",
