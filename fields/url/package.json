@@ -1,6 +1,6 @@
 {
   "name": "@panneau/field-url",
-  "version": "0.6.72",
+  "version": "0.6.73",
   "description": "Url fields for Panneau",
   "keywords": [
     "react",
@@ -48,10 +48,10 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@panneau/core": "^0.6.72",
-    "@panneau/field": "^0.6.72",
-    "@panneau/field-locale": "^0.6.72",
-    "@panneau/field-text": "^0.6.72",
+    "@panneau/core": "^0.6.73",
+    "@panneau/field": "^0.6.73",
+    "@panneau/field-locale": "^0.6.73",
+    "@panneau/field-text": "^0.6.73",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0"
