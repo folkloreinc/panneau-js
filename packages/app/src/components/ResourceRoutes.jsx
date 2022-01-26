@@ -1,9 +1,9 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useUrlGenerator } from '@panneau/core/contexts';
-import { getComponentFromName } from '@panneau/core/utils';
+import { useComponentsManager, useUrlGenerator } from '@panneau/core/contexts';
 import React from 'react';
 import { Route, Switch } from 'react-router';
-import * as basePages from './pages';
+import { ResourceCreate, ResourceDelete, ResourceEdit, ResourceIndex, ResourceShow } from './pages';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -12,9 +12,10 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceRoutes = ({ resource }) => {
-    const { id: resourceId, pages = {} } = resource;
+    const { id: resourceId, pages = {}, extraRoutes = [] } = resource;
 
     const route = useUrlGenerator();
+    const componentsManager = useComponentsManager();
 
     // Load custom pages from resource
     const {
@@ -25,38 +26,49 @@ const ResourceRoutes = ({ resource }) => {
         delete: deletePage = null,
     } = pages || {};
 
-    const ResourceIndexComponent = getComponentFromName(
-        indexPage?.component || 'resource-index',
-        basePages,
-        indexPage?.component,
-    );
+    const ResourceIndexComponent =
+        indexPage !== null && typeof indexPage.component !== 'undefined'
+            ? componentsManager.getComponent(indexPage.component)
+            : ResourceIndex;
 
-    const ResourceShowComponent = getComponentFromName(
-        showPage?.component || 'resource-show',
-        basePages,
-        showPage?.component,
-    );
+    const ResourceShowComponent =
+        showPage !== null && typeof showPage.component !== 'undefined'
+            ? componentsManager.getComponent(showPage.component)
+            : ResourceShow;
 
-    const ResourceCreateComponent = getComponentFromName(
-        createPage?.component || 'resource-create',
-        basePages,
-        createPage?.component,
-    );
+    const ResourceCreateComponent =
+        createPage !== null && typeof createPage.component !== 'undefined'
+            ? componentsManager.getComponent(createPage.component)
+            : ResourceCreate;
 
-    const ResourceEditComponent = getComponentFromName(
-        editPage?.component || 'resource-edit',
-        basePages,
-        editPage?.component,
-    );
+    const ResourceEditComponent =
+        editPage !== null && typeof editPage.component !== 'undefined'
+            ? componentsManager.getComponent(editPage.component)
+            : ResourceEdit;
 
-    const ResourceDeleteComponent = getComponentFromName(
-        deletePage?.component || 'resource-delete',
-        basePages,
-        deletePage?.component,
-    );
+    const ResourceDeleteComponent =
+        deletePage !== null && typeof deletePage.component !== 'undefined'
+            ? componentsManager.getComponent(deletePage.component)
+            : ResourceDelete;
 
     return (
         <Switch>
+            {extraRoutes.map(({ path, component, exact = true, ...routeProps }) => {
+                const RouteComponent = componentsManager.getComponent(component);
+                return RouteComponent !== null ? (
+                    <Route
+                        key={`route-${path}`}
+                        path={path}
+                        exact={exact}
+                        render={({
+                            match: {
+                                params: { id, ...params },
+                            },
+                        }) => <RouteComponent resource={resource} itemId={id} {...params} />}
+                        {...routeProps}
+                    />
+                ) : null;
+            })}
             <Route
                 path={route('resources.index', {
                     resource: resourceId,
