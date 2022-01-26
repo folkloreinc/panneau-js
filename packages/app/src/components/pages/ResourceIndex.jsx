@@ -104,7 +104,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                                     const ActionComponent = isString(component)
                                         ? componentsManager.getComponent(component)
                                         : component;
-                                    return (
+                                    return ActionComponent !== null ? (
                                         <ActionComponent
                                             key={`action-${id}`}
                                             {...actionProps}
@@ -116,7 +116,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                                                   }
                                                 : {})}
                                         />
-                                    );
+                                    ) : null;
                                 })}
                             </div>
                         ) : null
