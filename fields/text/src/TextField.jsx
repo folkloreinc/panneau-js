@@ -43,7 +43,7 @@ const propTypes = {
     ckeditorCustomConfig: PropTypes.string,
     ckeditorBasePath: PropTypes.string,
 
-    itemIndex: PropTypes.number,
+    itemIndex: PropTypes.string,
 };
 
 const defaultProps = {

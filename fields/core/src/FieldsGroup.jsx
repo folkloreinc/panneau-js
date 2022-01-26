@@ -40,7 +40,7 @@ const propTypes = {
     collapsed: PropTypes.bool,
     onChange: PropTypes.func,
     readOnly: PropTypes.bool,
-    itemIndex: PropTypes.number,
+    itemIndex: PropTypes.string,
 };
 
 const defaultProps = {
