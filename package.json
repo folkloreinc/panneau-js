@@ -38,7 +38,8 @@
         "docs:publish": "npm run docs:styleguide && npm run docs:gh-pages",
         "build:docs": "npm run docs:prepare && npm run docs:api && gitbook build",
         "build": "lerna run build",
-        "start": "npm run storybook"
+        "start": "npm run storybook",
+        "server": "npm run storybook"
     },
     "devDependencies": {
         "@babel/cli": "^7.4.3",
@@ -84,9 +85,9 @@
         "eslint-plugin-react": "^7.12.4",
         "expose-loader": "^0.7.3",
         "gh-pages": "^2.0.1",
-        "gitbook-cli": "^2.3.2",
         "glob": "^7.1.2",
         "glob-loader": "^0.3.0",
+        "graceful-fs": "^4.2.9",
         "hoist-non-react-statics": "^3.3.0",
         "html-loader": "^0.5.5",
         "imagemin-cli": "^4.0.1",
@@ -104,7 +105,6 @@
         "lodash": "^4.17.11",
         "mini-css-extract-plugin": "^0.5.0",
         "mkdirp": "^0.5.1",
-        "node-sass": "^4.11.0",
         "node-sass-tilde-importer": "^1.0.2",
         "object-assign": "^4.1.1",
         "optimize-css-assets-webpack-plugin": "^5.0.1",
@@ -127,6 +127,7 @@
         "react-router": "^5.0.0",
         "react-router-dom": "^5.0.0",
         "react-styleguidist": "^8.0.6",
+        "sass": "^1.35.1",
         "sass-loader": "^8.0.0",
         "sinon": "^7.3.2",
         "style-loader": "^1.0.1",
@@ -151,5 +152,8 @@
         "gitUsername": "Folklore",
         "gitEmail": "info@folklore.email",
         "commitMessage": "Deploy Storybook to GitHub Pages"
+    },
+    "resolutions": {
+        "graceful-fs": "^4.2.9"
     }
 }

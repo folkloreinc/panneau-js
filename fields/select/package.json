@@ -60,7 +60,7 @@
         "react-select": "^2.0.0"
     },
     "devDependencies": {
-        "bootstrap": "~4.4.1",
+        "bootstrap": "~4.6.1",
         "react": "^16.7.0",
         "react-dom": "^16.7.0"
     },

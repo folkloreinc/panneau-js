@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions'; // eslint-disable-line import/no-extraneous-dependencies
 
 import storiesOf from '../../../../.storybook/storiesOf';
@@ -43,6 +43,16 @@ storiesOf('Fields/Text', module)
             onChange={action('change')}
         />
     ))
+    .add('editor', () => {
+        const [value, setValue] = useState('Hey');
+        const [itemIndex, setItemIndex] = useState(null);
+        return (
+            <>
+                <TextField label="Editor" type="editor" value={value} onChange={setValue} itemIndex={itemIndex} />
+                <button type="button" onClick={() => { setValue('LOL'); setItemIndex(10); }}>Set a new value from parent</button>
+            </>
+        );
+    })
     .add('other field types', () => (
         <div>
             <KeepValue>

@@ -61,7 +61,7 @@
         "@panneau/lists": "^0.6.72",
         "@panneau/modals": "^0.6.72",
         "@panneau/previews": "^0.6.72",
-        "bootstrap": "~4.4.1",
+        "bootstrap": "~4.6.1",
         "classnames": "^2.2.5",
         "lodash": "^4.17.4",
         "prop-types": "^15.6.0",

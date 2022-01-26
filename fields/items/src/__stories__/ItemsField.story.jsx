@@ -14,7 +14,7 @@ const ItemsFieldWithFields = withFieldsCollection({
 
 const fields = [
     {
-        type: 'text',
+        type: 'editor',
         name: 'text',
         label: 'Text',
     },
@@ -30,6 +30,11 @@ const types = [
     {
         type: 'list',
         label: 'List',
+        fields,
+    },
+    {
+        type: 'editor',
+        label: 'Text',
         fields,
     },
 ];

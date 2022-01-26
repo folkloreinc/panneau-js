@@ -40,6 +40,7 @@ const propTypes = {
     collapsed: PropTypes.bool,
     onChange: PropTypes.func,
     readOnly: PropTypes.bool,
+    itemIndex: PropTypes.number,
 };
 
 const defaultProps = {
@@ -58,6 +59,7 @@ const defaultProps = {
     collapsed: false,
     onChange: null,
     readOnly: false,
+    itemIndex: null,
 };
 
 class FieldsGroup extends Component {
@@ -117,7 +119,7 @@ class FieldsGroup extends Component {
 
     renderField(it, index) {
         const {
-            value, errors, collapsibleTypes, readOnly, name: fieldName,
+            value, errors, collapsibleTypes, readOnly, name: fieldName, itemIndex,
         } = this.props;
         const {
             type, name, hidden, defaultValue, ...props
@@ -155,8 +157,11 @@ class FieldsGroup extends Component {
         const fieldCollapsed = it.collapsed || (fieldCollapsible && typeof fieldValue === 'undefined');
         const key = `${name}${type}${index}${fieldName}`;
 
+        const fullIndex = `${itemIndex || 0}-${index}`;
+
         return (
             <FieldComponent
+                itemIndex={fullIndex}
                 {...props}
                 collapsible={fieldCollapsible}
                 collapsed={fieldCollapsed}
@@ -239,7 +244,6 @@ class FieldsGroup extends Component {
         const {
             label, fields, collapsible, collapsed,
         } = this.props;
-
         const fieldsGroup = this.renderFields(fields);
 
         return label !== null ? (

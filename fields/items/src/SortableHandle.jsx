@@ -17,10 +17,15 @@ const SortableHandle = ({ className }) => (
         className={classNames({
             btn: true,
             'btn-outline-secondary': true,
+            'position-relative': true,
+            'px-0': true,
+            'py-0': true,
             [className]: className !== null,
         })}
     >
-        <span className="fas fa-arrows-alt-v" />
+        <div className="px-2 py-1">
+            <span className="fas fa-arrows-alt-v" />
+        </div>
     </button>
 );
 

@@ -42,6 +42,8 @@ const propTypes = {
     ckeditorConfig: PropTypes.object, // eslint-disable-line
     ckeditorCustomConfig: PropTypes.string,
     ckeditorBasePath: PropTypes.string,
+
+    itemIndex: PropTypes.number,
 };
 
 const defaultProps = {
@@ -72,6 +74,8 @@ const defaultProps = {
     ckeditorConfig: null,
     ckeditorCustomConfig: null,
     ckeditorBasePath: 'https://cdn.ckeditor.com/4.7.2/standard/',
+
+    itemIndex: null,
 };
 
 class TextField extends Component {
@@ -95,6 +99,7 @@ class TextField extends Component {
         this.importCanceled = false;
         this.ckeditor = null;
         this.editor = null;
+        this.editorInstance = null;
         this.refInput = null;
         this.refInputGroup = null;
     }
@@ -115,7 +120,16 @@ class TextField extends Component {
                 });
                 editor.on('instanceReady', this.onEditorReady);
                 editor.on('change', this.onEditorChange);
+                this.editorInstance = editor;
             });
+        }
+    }
+
+    componentDidUpdate(newProps) {
+        const { value: newValue, itemIndex: newItemIndex } = newProps;
+        const { itemIndex } = this.props;
+        if (itemIndex !== newItemIndex && this.editorInstance !== null) {
+            this.editorInstance.setData(newValue || '');
         }
     }
 
@@ -124,8 +138,10 @@ class TextField extends Component {
         this.importCanceled = true;
         if (type === 'editor') {
             this.ckeditor.remove(this.editor);
+            this.editorInstance = null;
         }
     }
+
 
     onEditorReady(e) {
         const { value } = this.props;

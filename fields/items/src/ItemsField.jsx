@@ -191,6 +191,7 @@ class ItemsField extends Component {
             types: props.types,
             fields: props.fields,
             collapsedItems: (props.value || []).map(() => true),
+            changes: 0,
         };
     }
 
@@ -288,8 +289,10 @@ class ItemsField extends Component {
         const currentValue = value || [];
         const newValue = arrayMove(currentValue, oldIndex, newIndex);
         this.triggerChange(newValue);
-        this.setState(({ collapsedItems }) => ({
+
+        this.setState(({ collapsedItems, changes }) => ({
             collapsedItems: arrayMove(collapsedItems, oldIndex, newIndex),
+            changes: changes + 1,
         }));
     }
 
@@ -462,7 +465,7 @@ class ItemsField extends Component {
 
     renderItemField(it, index, collapsed) {
         const { value, renderItemField, FieldComponent } = this.props;
-        const { types, fields } = this.state;
+        const { types, fields, changes } = this.state;
 
         const itemValue = value[index] || null;
         const type = types !== null
@@ -470,12 +473,15 @@ class ItemsField extends Component {
             : null;
         const typeFields = type !== null ? type.fields || fields : fields;
 
+        const itemIndex = `${index}-${changes}`;
+
         if (renderItemField !== null) {
             return renderItemField(it, index, {
                 collapsed,
                 value: itemValue,
                 fields: typeFields || [],
                 onChange: val => this.onItemChange(index, val),
+                itemIndex,
             });
         }
 
@@ -484,12 +490,14 @@ class ItemsField extends Component {
                 value={itemValue}
                 fields={typeFields || []}
                 onChange={val => this.onItemChange(index, val)}
+                itemIndex={itemIndex}
             />
         ) : (
             <FieldsGroup
                 value={itemValue}
                 fields={typeFields || []}
                 onChange={val => this.onItemChange(index, val)}
+                itemIndex={itemIndex}
             />
         );
     }
