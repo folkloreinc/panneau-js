@@ -105,6 +105,7 @@ export const useUppy = ({
 };
 
 const propTypes = {
+    id: PropTypes.string,
     children: PropTypes.node.isRequired,
     transport: PropTypes.oneOf(['xhr', 'transloadit', 'tus']),
     locale: PropTypes.string,
@@ -135,6 +136,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    id: 'uppy',
     transport: null,
     locale: null,
     sources: null,
@@ -145,6 +147,7 @@ const defaultProps = {
 };
 
 export const UppyProvider = ({
+    id,
     children,
     transport: providedTransport,
     locale: providedLocale,
@@ -192,6 +195,7 @@ export const UppyProvider = ({
         return (opts = {}) => {
             const { sources: customSources = sources, ...uppyOpts } = opts || {};
             const newUppy = new Uppy({
+                id,
                 locale: uppyLocale,
                 ...uppyOpts,
             });
@@ -241,6 +245,7 @@ export const UppyProvider = ({
             return newUppy;
         };
     }, [
+        id,
         Uppy,
         uppyLocale,
         uppyTransport,
@@ -254,27 +259,40 @@ export const UppyProvider = ({
         xhr,
     ]);
 
-    return (
-        <UppyContext.Provider
-            value={{
-                transport,
-                locale,
-                sources,
-                transloadit,
-                companion,
-                tus,
-                xhr,
-
-                Uppy,
-                uppyTransport,
-                uppySources,
-                uppyLocale,
-                buildUppy,
-            }}
-        >
-            {children}
-        </UppyContext.Provider>
+    const value = useMemo(
+        () => ({
+            id,
+            transport,
+            locale,
+            sources,
+            transloadit,
+            companion,
+            tus,
+            xhr,
+            Uppy,
+            uppyTransport,
+            uppySources,
+            uppyLocale,
+            buildUppy,
+        }),
+        [
+            id,
+            transport,
+            locale,
+            sources,
+            transloadit,
+            companion,
+            tus,
+            xhr,
+            Uppy,
+            uppyTransport,
+            uppySources,
+            uppyLocale,
+            buildUppy,
+        ],
     );
+
+    return <UppyContext.Provider value={value}>{children}</UppyContext.Provider>;
 };
 
 UppyProvider.propTypes = propTypes;
