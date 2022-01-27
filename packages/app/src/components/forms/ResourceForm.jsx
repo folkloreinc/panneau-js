@@ -69,20 +69,22 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
     );
 
     // Form state
-    const getInitialValue = useCallback(() => {
-        return item !== null
-            ? item
-            : finalFields.reduce(
-                  (defaultValues, { name, defaultValue = null }) =>
-                      defaultValue !== null
-                          ? {
-                                ...defaultValues,
-                                [name]: defaultValue,
-                            }
-                          : defaultValues,
-                  type !== null ? { type } : null,
-              );
-    }, [item, type, finalFields]);
+    const getInitialValue = useCallback(
+        () =>
+            item !== null
+                ? item
+                : finalFields.reduce(
+                      (defaultValues, { name, defaultValue = null }) =>
+                          defaultValue !== null
+                              ? {
+                                    ...defaultValues,
+                                    [name]: defaultValue,
+                                }
+                              : defaultValues,
+                      type !== null ? { type } : null,
+                  ),
+        [item, type, finalFields],
+    );
 
     const [value, setValueState] = useState(getInitialValue());
 
