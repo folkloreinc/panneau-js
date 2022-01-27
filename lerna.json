@@ -18,7 +18,11 @@
             ]
         },
         "bootstrap": {
-            "hoist": true
+            "hoist": true,
+            "npmClientArgs": [
+                "--no-package-lock",
+                "--legacy-peer-deps"
+            ]
         }
     },
     "bootstrap": {

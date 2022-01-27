@@ -16,7 +16,7 @@ const useUppyCore = () => {
                 canceled = true;
             };
         }
-        import('@uppy/core').then(({ Uppy }) => {
+        import('@uppy/core').then(({ default: Uppy }) => {
             packageCache = Uppy;
             if (!canceled) {
                 setLoadedPackage({
