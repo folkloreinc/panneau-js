@@ -53,7 +53,7 @@ const ResourceRoutes = ({ resource }) => {
 
     return (
         <Switch>
-            {extraRoutes.map(({ path, component, exact = true, ...routeProps }) => {
+            {extraRoutes.map(({ path, component, exact = true, ...pageProps }) => {
                 const RouteComponent = componentsManager.getComponent(component);
                 return RouteComponent !== null ? (
                     <Route
@@ -64,8 +64,14 @@ const ResourceRoutes = ({ resource }) => {
                             match: {
                                 params: { id, ...params },
                             },
-                        }) => <RouteComponent resource={resource} itemId={id} {...params} />}
-                        {...routeProps}
+                        }) => (
+                            <RouteComponent
+                                resource={resource}
+                                itemId={id}
+                                {...pageProps}
+                                {...params}
+                            />
+                        )}
                     />
                 ) : null;
             })}
