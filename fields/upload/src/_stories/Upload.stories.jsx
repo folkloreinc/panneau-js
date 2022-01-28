@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import withUppy from '../../../../.storybook/decorators/withUppy';
+import { UppyProvider } from '../../../../packages/core/src/contexts/UppyContext';
 import UploadField from '../UploadField';
 
 export default {
@@ -34,6 +35,15 @@ export const WithValues = () => (
         ]}
         allowMultipleUploads
     />
+);
+
+export const Multiple = () => (
+    <>
+        <Container fileTypes={['.pdf']} />
+        <UppyProvider id="test2">
+            <Container fileTypes={['.pdf']} />
+        </UppyProvider>
+    </>
 );
 
 export const WithModal = () => <Container withButton />;

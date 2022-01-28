@@ -19,7 +19,7 @@ const props = {
 };
 
 const withUppy = (Story) => (
-    <UppyProvider {...props}>
+    <UppyProvider {...props} id="test">
         <Story />
     </UppyProvider>
 );
