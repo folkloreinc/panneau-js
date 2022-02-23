@@ -181,6 +181,12 @@ msgctxt "REIcPg"
 msgid "Logout"
 msgstr "Déconnexion"
 
+# Field label
+#: SdtI90
+msgctxt "SdtI90"
+msgid "Password confirmation"
+msgstr ""
+
 # Error page meta title
 #: US/AMe
 msgctxt "US/AMe"

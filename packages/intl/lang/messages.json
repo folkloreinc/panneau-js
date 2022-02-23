@@ -111,6 +111,10 @@
     "defaultMessage": "Logout",
     "description": "Menu label"
   },
+  "SdtI90": {
+    "defaultMessage": "Password confirmation",
+    "description": "Field label"
+  },
   "US/AMe": {
     "defaultMessage": "Error 404",
     "description": "Error page meta title"
