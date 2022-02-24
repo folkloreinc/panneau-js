@@ -1,7 +1,8 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useCallback, useState } from 'react';
 import fields from '../../../../.storybook/data/fields';
-import FieldsProvider from '../../../../packages/fields';
-import FormsProvider from '../../../../packages/forms';
+import formFields from '../../../../.storybook/data/form-fields';
+import withFormsFields from '../../../../.storybook/decorators/withFormsFields';
 import Form from '../Form';
 
 export default {
@@ -10,18 +11,10 @@ export default {
     parameters: {
         intl: true,
     },
-    decorators: [
-        (Story) => (
-            <FieldsProvider>
-                <FormsProvider>
-                    <Story />
-                </FormsProvider>
-            </FieldsProvider>
-        ),
-    ],
+    decorators: [withFormsFields],
 };
 
-const Container = () => {
+const Container = (props) => {
     const [value, setValue] = useState({});
     const onSubmit = useCallback(
         (e) => {
@@ -30,7 +23,9 @@ const Container = () => {
         },
         [value],
     );
-    return <Form value={value} onChange={setValue} onSubmit={onSubmit} />;
+    return <Form value={value} onChange={setValue} onSubmit={onSubmit} {...props} />;
 };
 
 export const Normal = () => <Container fields={fields} />;
+
+export const WithRegularFields = () => <Container fields={formFields} />;

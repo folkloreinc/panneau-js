@@ -11,21 +11,21 @@ const propTypes = {
     action: PropTypes.string.isRequired,
     postForm: PropTypes.func,
     type: PropTypes.string,
-    submitButtonLabel: PanneauPropTypes.message,
     fields: PanneauPropTypes.fields.isRequired,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onChange: PropTypes.func,
     onComplete: PropTypes.func,
+    submitButtonLabel: PanneauPropTypes.message,
     className: PropTypes.string,
 };
 
 const defaultProps = {
     type: 'normal',
     postForm: null,
-    submitButtonLabel: null,
     value: null,
     onChange: null,
     onComplete: null,
+    submitButtonLabel: null,
     className: null,
 };
 
@@ -33,12 +33,12 @@ const Form = ({
     action,
     type,
     postForm,
-    submitButtonLabel,
     fields: providedFields,
     value: providedValue,
     onChange: parentOnChange,
-    className,
     onComplete,
+    submitButtonLabel,
+    className,
     ...props
 }) => {
     const FormComponent = useFormComponent(type);

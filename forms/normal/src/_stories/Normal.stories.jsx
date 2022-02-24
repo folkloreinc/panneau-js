@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-
-import Normal from '../Normal';
-
-import FieldsProvider from '../../../../packages/fields';
-
 import fields from '../../../../.storybook/data/fields';
+import FieldsProvider from '../../../../packages/fields';
+import Normal from '../Normal';
 
 export default {
     component: Normal,
@@ -12,15 +9,18 @@ export default {
     parameters: {
         intl: true,
     },
+    decorators: [
+        (Story) => (
+            <FieldsProvider>
+                <Story />
+            </FieldsProvider>
+        ),
+    ],
 };
 
 const Container = () => {
     const [value, setValue] = useState({});
-    return (
-        <FieldsProvider>
-            <Normal fields={fields} value={value} onChange={setValue} />
-        </FieldsProvider>
-    );
+    return <Normal fields={fields} value={value} onChange={setValue} />;
 };
 
 export const NormalForm = () => <Container />;

@@ -1,6 +1,5 @@
 import React from 'react';
-import FieldsProvider from '../../../../packages/fields';
-import FormsProvider from '../../../../packages/forms';
+import withFormsFields from '../../../../.storybook/decorators/withFormsFields';
 import ForgotPassword from '../ForgotPassword';
 import Login from '../Login';
 import ResetPassword from '../ResetPassword';
@@ -11,15 +10,7 @@ export default {
     parameters: {
         intl: true,
     },
-    decorators: [
-        (Story) => (
-            <FieldsProvider>
-                <FormsProvider>
-                    <Story />
-                </FormsProvider>
-            </FieldsProvider>
-        ),
-    ],
+    decorators: [withFormsFields],
 };
 
 export const LoginForm = () => <Login />;
