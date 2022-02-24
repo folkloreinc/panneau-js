@@ -10,44 +10,63 @@ const propTypes = {
     action: PropTypes.string,
     fields: PanneauPropTypes.fields,
     size: PropTypes.string,
+    nameLabel: PanneauPropTypes.label,
     emailLabel: PanneauPropTypes.label,
     passwordLabel: PanneauPropTypes.label,
+    passwordConfirmationLabel: PanneauPropTypes.label,
     submitButtonLabel: PanneauPropTypes.label,
-    withForgotPassword: PropTypes.bool,
-    forgotPasswordLink: PropTypes.string,
-    forgotPasswordLabel: PanneauPropTypes.label,
+    withLoginLink: PropTypes.bool,
+    loginLink: PropTypes.string,
+    loginLabel: PanneauPropTypes.label,
 };
 
 const defaultProps = {
-    action: '/login',
+    action: '/register',
     fields: null,
     size: 'lg',
+    nameLabel: <FormattedMessage defaultMessage="Name" description="Field label" />,
     emailLabel: <FormattedMessage defaultMessage="Email" description="Field label" />,
     passwordLabel: <FormattedMessage defaultMessage="Password" description="Field label" />,
-    submitButtonLabel: <FormattedMessage defaultMessage="Log in" description="Button label" />,
-    withForgotPassword: true,
-    forgotPasswordLink: '/forgot-password',
-    forgotPasswordLabel: (
-        <FormattedMessage defaultMessage="Forgot your password?" description="Link label" />
+    passwordConfirmationLabel: (
+        <FormattedMessage defaultMessage="Confirm your password" description="Field label" />
+    ),
+    submitButtonLabel: (
+        <FormattedMessage defaultMessage="Create account" description="Button label" />
+    ),
+    withLoginLink: true,
+    loginLink: '/forgot-password',
+    loginLabel: (
+        <FormattedMessage
+            defaultMessage="Already have an account? Go to login"
+            description="Link label"
+        />
     ),
 };
 
-const Login = ({
+const Register = ({
     action,
     fields,
     size,
+    nameLabel,
     emailLabel,
     passwordLabel,
+    passwordConfirmationLabel,
     submitButtonLabel,
-    withForgotPassword,
-    forgotPasswordLink,
-    forgotPasswordLabel,
+    withLoginLink,
+    loginLink,
+    loginLabel,
     ...props
 }) => (
     <Form
         action={action}
         fields={
             fields || [
+                {
+                    name: 'name',
+                    type: 'text',
+                    size,
+                    label: nameLabel,
+                },
                 {
                     name: 'email',
                     type: 'email',
@@ -60,13 +79,19 @@ const Login = ({
                     size,
                     label: passwordLabel,
                 },
+                {
+                    name: 'password_confirmation',
+                    type: 'password',
+                    size,
+                    label: passwordConfirmationLabel,
+                },
             ]
         }
         submitButtonLabel={submitButtonLabel}
         actions={
-            withForgotPassword ? (
-                <Link className="py-2 px-4" to={forgotPasswordLink}>
-                    {forgotPasswordLabel}
+            withLoginLink ? (
+                <Link className="py-2 px-4" to={loginLink}>
+                    {loginLabel}
                 </Link>
             ) : null
         }
@@ -74,7 +99,7 @@ const Login = ({
     />
 );
 
-Login.propTypes = propTypes;
-Login.defaultProps = defaultProps;
+Register.propTypes = propTypes;
+Register.defaultProps = defaultProps;
 
-export default Login;
+export default Register;

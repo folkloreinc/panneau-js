@@ -6,7 +6,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
-    action: PropTypes.string.isRequired,
+    action: PropTypes.string,
     fields: PanneauPropTypes.fields,
     size: PropTypes.string,
     passwordLabel: PanneauPropTypes.label,
@@ -15,11 +15,12 @@ const propTypes = {
 };
 
 const defaultProps = {
+    action: '/reset-password',
     fields: null,
     size: 'lg',
     passwordLabel: <FormattedMessage defaultMessage="Password" description="Field label" />,
     passwordConfirmationLabel: (
-        <FormattedMessage defaultMessage="Password confirmation" description="Field label" />
+        <FormattedMessage defaultMessage="Confirm your password" description="Field label" />
     ),
     submitButtonLabel: (
         <FormattedMessage defaultMessage="Save new password" description="Button label" />

@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 const propTypes = {
-    action: PropTypes.string.isRequired,
+    action: PropTypes.string,
     fields: PanneauPropTypes.fields,
     size: PropTypes.string,
     emailLabel: PanneauPropTypes.label,
@@ -18,6 +18,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    action: '/forgot-password',
     fields: null,
     size: 'lg',
     emailLabel: <FormattedMessage defaultMessage="Email" description="Field label" />,
@@ -26,7 +27,7 @@ const defaultProps = {
     ),
     withLoginLink: true,
     loginLink: '/login',
-    loginLabel: <FormattedMessage defaultMessage="Go back to login" description="Field label" />,
+    loginLabel: <FormattedMessage defaultMessage="Go back to login" description="Link label" />,
 };
 
 const ForgotPassword = ({
@@ -55,7 +56,7 @@ const ForgotPassword = ({
         submitButtonLabel={submitButtonLabel}
         actions={
             withLoginLink ? (
-                <Link className="py-2 px-5" to={loginLink}>
+                <Link className="py-2 px-4" to={loginLink}>
                     {loginLabel}
                 </Link>
             ) : null
