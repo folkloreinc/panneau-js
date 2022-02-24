@@ -77,7 +77,6 @@
         "@panneau/field-number": "^1.0.0-alpha.237",
         "@panneau/field-radios": "^1.0.0-alpha.237",
         "@panneau/field-select": "^1.0.0-alpha.237",
-        "@panneau/field-test": "^1.0.0-alpha.134",
         "@panneau/field-text": "^1.0.0-alpha.237",
         "@panneau/field-toggle": "^1.0.0-alpha.237",
         "@panneau/field-toggles": "^1.0.0-alpha.237",
