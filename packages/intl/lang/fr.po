@@ -211,6 +211,12 @@ msgctxt "UpStcP"
 msgid "Could not find type for this item"
 msgstr "Nous n'avons pas pu trouver ce type"
 
+# Field label
+#: X4fQOn
+msgctxt "X4fQOn"
+msgid "Go back to login"
+msgstr ""
+
 # Pagination button label
 #: X5RJlB
 msgctxt "X5RJlB"
@@ -257,6 +263,12 @@ msgstr "Chargement..."
 msgctxt "hezcGl"
 msgid "Go to home page"
 msgstr "Aller à la page d’accueil"
+
+# Field label
+#: oKZDBl
+msgctxt "oKZDBl"
+msgid "Forgot your password?"
+msgstr ""
 
 # Error page title
 #: owrRHV

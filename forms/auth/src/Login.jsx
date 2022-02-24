@@ -4,17 +4,18 @@ import Form from '@panneau/form';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 
 const propTypes = {
     action: PropTypes.string,
     fields: PanneauPropTypes.fields,
     size: PropTypes.string,
-    emailLabel: PanneauPropTypes.message,
-    passwordLabel: PanneauPropTypes.message,
-    submitButtonLabel: PanneauPropTypes.message,
+    emailLabel: PanneauPropTypes.label,
+    passwordLabel: PanneauPropTypes.label,
+    submitButtonLabel: PanneauPropTypes.label,
     withForgotPassword: PropTypes.bool,
     forgotPasswordLink: PropTypes.string,
-    forgotPasswordLabel: PanneauPropTypes.message,
+    forgotPasswordLabel: PanneauPropTypes.label,
 };
 
 const defaultProps = {
@@ -64,9 +65,9 @@ const LoginForm = ({
         submitButtonLabel={submitButtonLabel}
         actions={
             withForgotPassword ? (
-                <a className="py-2 px-5" href={forgotPasswordLink}>
+                <Link className="py-2 px-5" to={forgotPasswordLink}>
                     {forgotPasswordLabel}
-                </a>
+                </Link>
             ) : null
         }
         {...props}

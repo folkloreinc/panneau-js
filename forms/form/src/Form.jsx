@@ -15,7 +15,7 @@ const propTypes = {
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onChange: PropTypes.func,
     onComplete: PropTypes.func,
-    submitButtonLabel: PanneauPropTypes.message,
+    submitButtonLabel: PanneauPropTypes.label,
     className: PropTypes.string,
 };
 

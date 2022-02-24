@@ -9,9 +9,9 @@ const propTypes = {
     action: PropTypes.string.isRequired,
     fields: PanneauPropTypes.fields,
     size: PropTypes.string,
-    passwordLabel: PanneauPropTypes.message,
-    passwordConfirmationLabel: PanneauPropTypes.message,
-    submitButtonLabel: PanneauPropTypes.message,
+    passwordLabel: PanneauPropTypes.label,
+    passwordConfirmationLabel: PanneauPropTypes.label,
+    submitButtonLabel: PanneauPropTypes.label,
 };
 
 const defaultProps = {

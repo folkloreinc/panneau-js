@@ -1,5 +1,6 @@
 import React from 'react';
 import withFormsFields from '../../../../.storybook/decorators/withFormsFields';
+import withRouter from '../../../../.storybook/decorators/withRouter';
 import ForgotPassword from '../ForgotPassword';
 import Login from '../Login';
 import ResetPassword from '../ResetPassword';
@@ -10,7 +11,7 @@ export default {
     parameters: {
         intl: true,
     },
-    decorators: [withFormsFields],
+    decorators: [withFormsFields, withRouter],
 };
 
 export const LoginForm = () => <Login />;
