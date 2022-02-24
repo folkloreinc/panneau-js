@@ -11,6 +11,7 @@ const propTypes = {
     size: PropTypes.string,
     passwordLabel: PanneauPropTypes.message,
     passwordConfirmationLabel: PanneauPropTypes.message,
+    submitButtonLabel: PanneauPropTypes.message,
 };
 
 const defaultProps = {
@@ -20,6 +21,9 @@ const defaultProps = {
     passwordConfirmationLabel: (
         <FormattedMessage defaultMessage="Password confirmation" description="Field label" />
     ),
+    submitButtonLabel: (
+        <FormattedMessage defaultMessage="Save new password" description="Button label" />
+    ),
 };
 
 const ResetPassword = ({
@@ -28,6 +32,7 @@ const ResetPassword = ({
     size,
     passwordLabel,
     passwordConfirmationLabel,
+    submitButtonLabel,
     ...props
 }) => (
     <Form
@@ -48,9 +53,7 @@ const ResetPassword = ({
                 },
             ]
         }
-        submitButtonLabel={
-            <FormattedMessage defaultMessage="Save new password" description="Button label" />
-        }
+        submitButtonLabel={submitButtonLabel}
         {...props}
     />
 );

@@ -3,6 +3,10 @@
     "defaultMessage": "Error 403",
     "description": "Error page meta title"
   },
+  "12Px0g": {
+    "defaultMessage": "Send reset link",
+    "description": "Button label"
+  },
   "2vB7U4": {
     "defaultMessage": "An error occured and we could not save this item successfully.",
     "description": "Error message"
@@ -105,6 +109,10 @@
   },
   "PyxZY2": {
     "defaultMessage": "Cancel",
+    "description": "Button label"
+  },
+  "R1HYj0": {
+    "defaultMessage": "Save",
     "description": "Button label"
   },
   "REIcPg": {
@@ -213,5 +221,9 @@
   "yALN2p": {
     "defaultMessage": "There was an error",
     "description": "Error page description"
+  },
+  "zwks3g": {
+    "defaultMessage": "Save new password",
+    "description": "Button label"
   }
 }

@@ -52,6 +52,7 @@ const Form = ({
     );
 
     const { value, setValue, fields, onSubmit, status, generalError, errors } = useForm({
+        action,
         fields: providedFields,
         postForm: postForm || defaultPostForm,
         onComplete,

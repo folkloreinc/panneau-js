@@ -17,6 +17,12 @@ msgctxt "+6cCPF"
 msgid "Error 403"
 msgstr "Erreur 403"
 
+# Button label
+#: 12Px0g
+msgctxt "12Px0g"
+msgid "Send reset link"
+msgstr ""
+
 # Error message
 #: 2vB7U4
 msgctxt "2vB7U4"
@@ -174,6 +180,12 @@ msgstr "Erreur 403"
 msgctxt "PyxZY2"
 msgid "Cancel"
 msgstr "Annuler"
+
+# Button label
+#: R1HYj0
+msgctxt "R1HYj0"
+msgid "Save"
+msgstr ""
 
 # Menu label
 #: REIcPg
@@ -337,3 +349,9 @@ msgstr ""
 msgctxt "yALN2p"
 msgid "There was an error"
 msgstr "Il y a eu une erreur"
+
+# Button label
+#: zwks3g
+msgctxt "zwks3g"
+msgid "Save new password"
+msgstr ""

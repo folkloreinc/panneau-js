@@ -98,8 +98,7 @@ export const page = PropTypes.shape({
 export const pages = PropTypes.objectOf(page);
 
 export const field = PropTypes.shape({
-    // type: PropTypes.string.isRequired,
-    name: PropTypes.isRequired,
+    name: PropTypes.string.isRequired,
     type: PropTypes.string,
     component: PropTypes.string,
     label: PropTypes.node,

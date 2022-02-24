@@ -10,15 +10,35 @@ const propTypes = {
     fields: PanneauPropTypes.fields,
     size: PropTypes.string,
     emailLabel: PanneauPropTypes.message,
+    submitButtonLabel: PanneauPropTypes.message,
+    withLoginLink: PropTypes.bool,
+    loginLink: PropTypes.string,
+    loginLabel: PanneauPropTypes.message,
 };
 
 const defaultProps = {
     fields: null,
     size: 'lg',
     emailLabel: <FormattedMessage defaultMessage="Email" description="Field label" />,
+    submitButtonLabel: (
+        <FormattedMessage defaultMessage="Send reset link" description="Button label" />
+    ),
+    withLoginLink: true,
+    loginLink: '/login',
+    loginLabel: <FormattedMessage defaultMessage="Go back to login" description="Field label" />,
 };
 
-const ForgotPassword = ({ action, fields, emailLabel, size, ...props }) => (
+const ForgotPassword = ({
+    action,
+    fields,
+    emailLabel,
+    submitButtonLabel,
+    size,
+    withLoginLink,
+    loginLink,
+    loginLabel,
+    ...props
+}) => (
     <Form
         action={action}
         fields={
@@ -31,8 +51,13 @@ const ForgotPassword = ({ action, fields, emailLabel, size, ...props }) => (
                 },
             ]
         }
-        submitButtonLabel={
-            <FormattedMessage defaultMessage="Send reset link" description="Button label" />
+        submitButtonLabel={submitButtonLabel}
+        actions={
+            withLoginLink ? (
+                <a className="py-2 px-5" href={loginLink}>
+                    {loginLabel}
+                </a>
+            ) : null
         }
         {...props}
     />

@@ -28,4 +28,6 @@ const Container = (props) => {
 
 export const Normal = () => <Container fields={fields} />;
 
-export const WithRegularFields = () => <Container fields={formFields} />;
+export const WithFields = () => <Container fields={formFields} />;
+
+export const WithFieldsAndAction = () => <Container fields={formFields} action="/login" />;
