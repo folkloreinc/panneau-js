@@ -130,7 +130,9 @@ const useForm = (opts = {}) => {
             error: false,
         });
         setResponse(resp);
-        onComplete(resp);
+        if (onComplete !== null) {
+            onComplete(resp);
+        }
     };
 
     const finalPostForm = useCallback(
