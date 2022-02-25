@@ -9,33 +9,33 @@ const propTypes = {
     action: PropTypes.string,
     fields: PanneauPropTypes.fields,
     size: PropTypes.string,
-    passwordLabel: PanneauPropTypes.label,
+    codeLabel: PanneauPropTypes.label,
     submitButtonLabel: PanneauPropTypes.label,
 };
 
 const defaultProps = {
-    action: '/user/confirm-password',
+    action: '/two-factor-challenge',
     fields: null,
     size: 'lg',
-    passwordLabel: (
+    codeLabel: (
         <FormattedMessage
-            defaultMessage="Please enter your password to continue"
+            defaultMessage="Enter the code from your authenticator app to continue"
             description="Field label"
         />
     ),
     submitButtonLabel: <FormattedMessage defaultMessage="Continue" description="Button label" />,
 };
 
-const ConfirmPassword = ({ action, fields, size, passwordLabel, submitButtonLabel, ...props }) => (
+const TwoFactorChallenge = ({ action, fields, size, codeLabel, submitButtonLabel, ...props }) => (
     <Form
         action={action}
         fields={
             fields || [
                 {
-                    name: 'password',
-                    type: 'password',
+                    name: 'code',
+                    type: 'text',
                     size,
-                    label: passwordLabel,
+                    label: codeLabel,
                 },
             ]
         }
@@ -44,7 +44,7 @@ const ConfirmPassword = ({ action, fields, size, passwordLabel, submitButtonLabe
     />
 );
 
-ConfirmPassword.propTypes = propTypes;
-ConfirmPassword.defaultProps = defaultProps;
+TwoFactorChallenge.propTypes = propTypes;
+TwoFactorChallenge.defaultProps = defaultProps;
 
-export default ConfirmPassword;
+export default TwoFactorChallenge;

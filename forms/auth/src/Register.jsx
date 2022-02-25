@@ -21,7 +21,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-    action: '/register',
+    action: '/register', // https://bold.media.test:8080/register
     fields: null,
     size: 'lg',
     nameLabel: <FormattedMessage defaultMessage="Name" description="Field label" />,

@@ -29,7 +29,7 @@ const defaultProps = {
     ),
     submitButtonLabel: (
         <FormattedMessage
-            defaultMessage="Enable Two Factor authentication"
+            defaultMessage="Enable two factor authentication"
             description="Button label"
         />
     ),
@@ -38,7 +38,7 @@ const defaultProps = {
     skipLabel: <FormattedMessage defaultMessage="Skip setup" description="Link label" />,
 };
 
-const TwoFactor = ({
+const TwoFactorEnable = ({
     action,
     fields,
     explainationLabel,
@@ -65,7 +65,7 @@ const TwoFactor = ({
     </Form>
 );
 
-TwoFactor.propTypes = propTypes;
-TwoFactor.defaultProps = defaultProps;
+TwoFactorEnable.propTypes = propTypes;
+TwoFactorEnable.defaultProps = defaultProps;
 
-export default TwoFactor;
+export default TwoFactorEnable;

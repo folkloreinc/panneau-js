@@ -6,7 +6,9 @@ import ForgotPassword from '../ForgotPassword';
 import Login from '../Login';
 import Register from '../Register';
 import ResetPassword from '../ResetPassword';
-import TwoFactor from '../TwoFactor';
+import TwoFactorChallenge from '../TwoFactorChallenge';
+import TwoFactorDisable from '../TwoFactorDisable';
+import TwoFactorEnable from '../TwoFactorEnable';
 
 export default {
     component: Login,
@@ -25,6 +27,10 @@ export const ResetPasswordForm = () => <ResetPassword />;
 
 export const RegisterForm = () => <Register />;
 
-export const TwoFactorForm = () => <TwoFactor />;
-
 export const ConfirmPasswordForm = () => <ConfirmPassword />;
+
+export const TwoFactorChallengeForm = () => <TwoFactorChallenge />;
+
+export const TwoFactorEnableForm = () => <TwoFactorEnable />;
+
+export const TwoFactorDisableForm = () => <TwoFactorDisable />;

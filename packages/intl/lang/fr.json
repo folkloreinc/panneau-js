@@ -2,6 +2,12 @@
     "+6cCPF": {
         "defaultMessage": "Erreur 403"
     },
+    "12Px0g": {
+        "defaultMessage": "Envoyer le lien"
+    },
+    "22Ld5M": {
+        "defaultMessage": "Entrez le code de votre application d'authentification pour continuer"
+    },
     "2vB7U4": {
         "defaultMessage": "Une erreur s’est produite et nous n’avons pas pu enregistrer cet élément avec succès."
     },
@@ -13,6 +19,9 @@
     },
     "4yfet+": {
         "defaultMessage": "Mot de passe"
+    },
+    "5nHK/H": {
+        "defaultMessage": "Voulez-vous vraiment désactiver l'authentification à deux facteurs ?"
     },
     "5rMPIj": {
         "defaultMessage": "Chargement..."
@@ -37,6 +46,9 @@
     },
     "AeOZq+": {
         "defaultMessage": "Connexion"
+    },
+    "B1h3gd": {
+        "defaultMessage": "Entrez votre mot de passe pour continuer"
     },
     "Bhu3B2": {
         "defaultMessage": "Supprimer"
@@ -74,23 +86,44 @@
     "PKCv5M": {
         "defaultMessage": "Aucun élément..."
     },
+    "PQX/ph": {
+        "defaultMessage": "Créer mon compte"
+    },
     "Pih2UO": {
         "defaultMessage": "Erreur 403"
     },
     "PyxZY2": {
         "defaultMessage": "Annuler"
     },
+    "QUAHwy": {
+        "defaultMessage": "Continuer"
+    },
+    "R1HYj0": {
+        "defaultMessage": "Sauvegarder"
+    },
     "REIcPg": {
         "defaultMessage": "Déconnexion"
+    },
+    "U/ye2x": {
+        "defaultMessage": "Annuler"
     },
     "US/AMe": {
         "defaultMessage": "Erreur 404"
     },
+    "UUv8FR": {
+        "defaultMessage": "Nom"
+    },
     "UpStcP": {
         "defaultMessage": "Nous n'avons pas pu trouver ce type"
     },
+    "VhJUeW": {
+        "defaultMessage": "Confirmez votre mot de passe"
+    },
     "X5RJlB": {
         "defaultMessage": "Suivant"
+    },
+    "ZBNqY2": {
+        "defaultMessage": "Mot de passe oublié ?"
     },
     "ZxgNge": {
         "defaultMessage": "Ajouter un élement"
@@ -107,14 +140,23 @@
     "g6qbbX": {
         "defaultMessage": "Connexion"
     },
+    "gWmL5V": {
+        "defaultMessage": "Désactiver l'authentification à deux facteurs"
+    },
     "gjBiyj": {
         "defaultMessage": "Chargement..."
     },
     "hezcGl": {
         "defaultMessage": "Aller à la page d’accueil"
     },
+    "li2Qqu": {
+        "defaultMessage": "Passer l'étape"
+    },
     "owrRHV": {
         "defaultMessage": "Erreur 500"
+    },
+    "pVHYDd": {
+        "defaultMessage": "Activer l'authentification à deux facteurs"
     },
     "rSt+KL": {
         "defaultMessage": "Non"
@@ -146,16 +188,28 @@
     "s4Xrs9": {
         "defaultMessage": "Heure"
     },
+    "tPeIKO": {
+        "defaultMessage": "Retour à la connexion"
+    },
     "v4Qtl9": {
         "defaultMessage": "Autjourd'hui"
     },
     "wKPI1y": {
         "defaultMessage": "Cette page n’existe pas"
     },
+    "wa783M": {
+        "defaultMessage": "Vous avez un compte? Connectez-vous ici"
+    },
     "y9zauY": {
         "defaultMessage": "Une erreur s’est produite et nous n’avons pas pu supprimer cet élément avec succès."
     },
     "yALN2p": {
         "defaultMessage": "Il y a eu une erreur"
+    },
+    "zTiC4D": {
+        "defaultMessage": "Voulez-vous activer l'authentification à deux facteurs ? Vous devrez utiliser une application de connexion telle que Google Authenticator ou Microsoft Authenticator en plus de votre mot de passe pour vous connecter."
+    },
+    "zwks3g": {
+        "defaultMessage": "Sauvegarder le nouveau mot de passe"
     }
 }

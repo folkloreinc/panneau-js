@@ -21,7 +21,13 @@ msgstr "Erreur 403"
 #: 12Px0g
 msgctxt "12Px0g"
 msgid "Send reset link"
-msgstr ""
+msgstr "Envoyer le lien"
+
+# Field label
+#: 22Ld5M
+msgctxt "22Ld5M"
+msgid "Enter the code from your authenticator app to continue"
+msgstr "Entrez le code de votre application d'authentification pour continuer"
 
 # Error message
 #: 2vB7U4
@@ -48,6 +54,12 @@ msgstr "{count, plural, =0 {Aucun item.} =1 {# item} other {# items}}"
 msgctxt "4yfet+"
 msgid "Password"
 msgstr "Mot de passe"
+
+# Explaination label
+#: 5nHK/H
+msgctxt "5nHK/H"
+msgid "Do you really wish to disable two factor authentication on your account?"
+msgstr "Voulez-vous vraiment désactiver l'authentification à deux facteurs ?"
 
 # Form status
 #: 5rMPIj
@@ -96,6 +108,12 @@ msgstr "Oui"
 msgctxt "AeOZq+"
 msgid "Login"
 msgstr "Connexion"
+
+# Field label
+#: B1h3gd
+msgctxt "B1h3gd"
+msgid "Please enter your password to continue"
+msgstr "Entrez votre mot de passe pour continuer"
 
 # Button label
 #: Bhu3B2
@@ -169,6 +187,12 @@ msgctxt "PKCv5M"
 msgid "No item..."
 msgstr "Aucun élément..."
 
+# Button label
+#: PQX/ph
+msgctxt "PQX/ph"
+msgid "Create account"
+msgstr "Créer mon compte"
+
 # Error page title
 #: Pih2UO
 msgctxt "Pih2UO"
@@ -182,10 +206,16 @@ msgid "Cancel"
 msgstr "Annuler"
 
 # Button label
+#: QUAHwy
+msgctxt "QUAHwy"
+msgid "Continue"
+msgstr "Continuer"
+
+# Button label
 #: R1HYj0
 msgctxt "R1HYj0"
 msgid "Save"
-msgstr ""
+msgstr "Sauvegarder"
 
 # Menu label
 #: REIcPg
@@ -193,17 +223,23 @@ msgctxt "REIcPg"
 msgid "Logout"
 msgstr "Déconnexion"
 
-# Field label
-#: SdtI90
-msgctxt "SdtI90"
-msgid "Password confirmation"
-msgstr ""
+# Link label
+#: U/ye2x
+msgctxt "U/ye2x"
+msgid "Cancel"
+msgstr "Annuler"
 
 # Error page meta title
 #: US/AMe
 msgctxt "US/AMe"
 msgid "Error 404"
 msgstr "Erreur 404"
+
+# Field label
+#: UUv8FR
+msgctxt "UUv8FR"
+msgid "Name"
+msgstr "Nom"
 
 # Error message
 #: UpStcP
@@ -212,16 +248,22 @@ msgid "Could not find type for this item"
 msgstr "Nous n'avons pas pu trouver ce type"
 
 # Field label
-#: X4fQOn
-msgctxt "X4fQOn"
-msgid "Go back to login"
-msgstr ""
+#: VhJUeW
+msgctxt "VhJUeW"
+msgid "Confirm your password"
+msgstr "Confirmez votre mot de passe"
 
 # Pagination button label
 #: X5RJlB
 msgctxt "X5RJlB"
 msgid "Next"
 msgstr "Suivant"
+
+# Link label
+#: ZBNqY2
+msgctxt "ZBNqY2"
+msgid "Forgot your password?"
+msgstr "Mot de passe oublié ?"
 
 # Button label in items field
 #: ZxgNge
@@ -253,6 +295,12 @@ msgctxt "g6qbbX"
 msgid "Log in"
 msgstr "Connexion"
 
+# Button label
+#: gWmL5V
+msgctxt "gWmL5V"
+msgid "Disable two factor authentication"
+msgstr "Désactiver l'authentification à deux facteurs"
+
 #: gjBiyj
 msgctxt "gjBiyj"
 msgid "Loading..."
@@ -264,17 +312,23 @@ msgctxt "hezcGl"
 msgid "Go to home page"
 msgstr "Aller à la page d’accueil"
 
-# Field label
-#: oKZDBl
-msgctxt "oKZDBl"
-msgid "Forgot your password?"
-msgstr ""
+# Link label
+#: li2Qqu
+msgctxt "li2Qqu"
+msgid "Skip setup"
+msgstr "Passer l'étape"
 
 # Error page title
 #: owrRHV
 msgctxt "owrRHV"
 msgid "Error 500"
 msgstr "Erreur 500"
+
+# Button label
+#: pVHYDd
+msgctxt "pVHYDd"
+msgid "Enable two factor authentication"
+msgstr "Activer l'authentification à deux facteurs"
 
 # Boolean value
 #: rSt+KL
@@ -336,6 +390,12 @@ msgctxt "s4Xrs9"
 msgid "Time"
 msgstr "Heure"
 
+# Link label
+#: tPeIKO
+msgctxt "tPeIKO"
+msgid "Go back to login"
+msgstr "Retour à la connexion"
+
 # Today date message
 #: v4Qtl9
 msgctxt "v4Qtl9"
@@ -347,6 +407,12 @@ msgstr "Autjourd'hui"
 msgctxt "wKPI1y"
 msgid "This page doesn’t exist"
 msgstr "Cette page n’existe pas"
+
+# Link label
+#: wa783M
+msgctxt "wa783M"
+msgid "Already have an account? Go to login"
+msgstr "Vous avez un compte? Connectez-vous ici"
 
 # Error message
 #: y9zauY
@@ -362,8 +428,20 @@ msgctxt "yALN2p"
 msgid "There was an error"
 msgstr "Il y a eu une erreur"
 
+# Explaination label
+#: zTiC4D
+msgctxt "zTiC4D"
+msgid ""
+"Do you wish to enable two factor authentication on your account? You will "
+"have to use an authentication app such as Google Authenticator or Microsoft "
+"Authenticator in addition to your password to connect."
+msgstr ""
+"Voulez-vous activer l'authentification à deux facteurs ? Vous devrez "
+"utiliser une application de connexion telle que Google Authenticator ou "
+"Microsoft Authenticator en plus de votre mot de passe pour vous connecter."
+
 # Button label
 #: zwks3g
 msgctxt "zwks3g"
 msgid "Save new password"
-msgstr ""
+msgstr "Sauvegarder le nouveau mot de passe"

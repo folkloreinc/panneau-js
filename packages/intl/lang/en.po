@@ -23,6 +23,12 @@ msgctxt "12Px0g"
 msgid "Send reset link"
 msgstr ""
 
+# Field label
+#: 22Ld5M
+msgctxt "22Ld5M"
+msgid "Enter the code from your authenticator app to continue"
+msgstr ""
+
 # Error message
 #: 2vB7U4
 msgctxt "2vB7U4"
@@ -46,6 +52,12 @@ msgstr "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
 msgctxt "4yfet+"
 msgid "Password"
 msgstr "Password"
+
+# Explaination label
+#: 5nHK/H
+msgctxt "5nHK/H"
+msgid "Do you really wish to disable two factor authentication on your account?"
+msgstr ""
 
 # Form status
 #: 5rMPIj
@@ -94,6 +106,12 @@ msgstr "Yes"
 msgctxt "AeOZq+"
 msgid "Login"
 msgstr "Login"
+
+# Field label
+#: B1h3gd
+msgctxt "B1h3gd"
+msgid "Please enter your password to continue"
+msgstr ""
 
 # Button label
 #: Bhu3B2
@@ -167,6 +185,12 @@ msgctxt "PKCv5M"
 msgid "No item..."
 msgstr "No item..."
 
+# Button label
+#: PQX/ph
+msgctxt "PQX/ph"
+msgid "Create account"
+msgstr ""
+
 # Error page title
 #: Pih2UO
 msgctxt "Pih2UO"
@@ -180,6 +204,12 @@ msgid "Cancel"
 msgstr "Cancel"
 
 # Button label
+#: QUAHwy
+msgctxt "QUAHwy"
+msgid "Continue"
+msgstr ""
+
+# Button label
 #: R1HYj0
 msgctxt "R1HYj0"
 msgid "Save"
@@ -191,10 +221,10 @@ msgctxt "REIcPg"
 msgid "Logout"
 msgstr "Logout"
 
-# Field label
-#: SdtI90
-msgctxt "SdtI90"
-msgid "Password confirmation"
+# Link label
+#: U/ye2x
+msgctxt "U/ye2x"
+msgid "Cancel"
 msgstr ""
 
 # Error page meta title
@@ -203,6 +233,12 @@ msgctxt "US/AMe"
 msgid "Error 404"
 msgstr "Error 404"
 
+# Field label
+#: UUv8FR
+msgctxt "UUv8FR"
+msgid "Name"
+msgstr ""
+
 # Error message
 #: UpStcP
 msgctxt "UpStcP"
@@ -210,9 +246,9 @@ msgid "Could not find type for this item"
 msgstr "Could not find type for this item"
 
 # Field label
-#: X4fQOn
-msgctxt "X4fQOn"
-msgid "Go back to login"
+#: VhJUeW
+msgctxt "VhJUeW"
+msgid "Confirm your password"
 msgstr ""
 
 # Pagination button label
@@ -220,6 +256,12 @@ msgstr ""
 msgctxt "X5RJlB"
 msgid "Next"
 msgstr "Next"
+
+# Link label
+#: ZBNqY2
+msgctxt "ZBNqY2"
+msgid "Forgot your password?"
+msgstr ""
 
 # Button label in items field
 #: ZxgNge
@@ -251,6 +293,12 @@ msgctxt "g6qbbX"
 msgid "Log in"
 msgstr "Log in"
 
+# Button label
+#: gWmL5V
+msgctxt "gWmL5V"
+msgid "Disable two factor authentication"
+msgstr ""
+
 #: gjBiyj
 msgctxt "gjBiyj"
 msgid "Loading..."
@@ -262,10 +310,10 @@ msgctxt "hezcGl"
 msgid "Go to home page"
 msgstr "Go to home page"
 
-# Field label
-#: oKZDBl
-msgctxt "oKZDBl"
-msgid "Forgot your password?"
+# Link label
+#: li2Qqu
+msgctxt "li2Qqu"
+msgid "Skip setup"
 msgstr ""
 
 # Error page title
@@ -273,6 +321,12 @@ msgstr ""
 msgctxt "owrRHV"
 msgid "Error 500"
 msgstr "Error 500"
+
+# Button label
+#: pVHYDd
+msgctxt "pVHYDd"
+msgid "Enable two factor authentication"
+msgstr ""
 
 # Boolean value
 #: rSt+KL
@@ -334,6 +388,12 @@ msgctxt "s4Xrs9"
 msgid "Time"
 msgstr "Time"
 
+# Link label
+#: tPeIKO
+msgctxt "tPeIKO"
+msgid "Go back to login"
+msgstr ""
+
 # Today date message
 #: v4Qtl9
 msgctxt "v4Qtl9"
@@ -346,6 +406,12 @@ msgctxt "wKPI1y"
 msgid "This page doesn’t exist"
 msgstr "This page doesn’t exist"
 
+# Link label
+#: wa783M
+msgctxt "wa783M"
+msgid "Already have an account? Go to login"
+msgstr ""
+
 # Error message
 #: y9zauY
 msgctxt "y9zauY"
@@ -357,6 +423,15 @@ msgstr "An error occured and we could not delete this item successfully."
 msgctxt "yALN2p"
 msgid "There was an error"
 msgstr "There was an error"
+
+# Explaination label
+#: zTiC4D
+msgctxt "zTiC4D"
+msgid ""
+"Do you wish to enable two factor authentication on your account? You will "
+"have to use an authentication app such as Google Authenticator or Microsoft "
+"Authenticator in addition to your password to connect."
+msgstr ""
 
 # Button label
 #: zwks3g

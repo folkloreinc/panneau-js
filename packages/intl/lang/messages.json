@@ -7,6 +7,10 @@
     "defaultMessage": "Send reset link",
     "description": "Button label"
   },
+  "22Ld5M": {
+    "defaultMessage": "Enter the code from your authenticator app to continue",
+    "description": "Field label"
+  },
   "2vB7U4": {
     "defaultMessage": "An error occured and we could not save this item successfully.",
     "description": "Error message"
@@ -22,6 +26,10 @@
   "4yfet+": {
     "defaultMessage": "Password",
     "description": "Field label"
+  },
+  "5nHK/H": {
+    "defaultMessage": "Do you really wish to disable two factor authentication on your account?",
+    "description": "Explaination label"
   },
   "5rMPIj": {
     "defaultMessage": "Loading...",
@@ -54,6 +62,10 @@
   "AeOZq+": {
     "defaultMessage": "Login",
     "description": "Page title"
+  },
+  "B1h3gd": {
+    "defaultMessage": "Please enter your password to continue",
+    "description": "Field label"
   },
   "Bhu3B2": {
     "defaultMessage": "Delete",
@@ -103,12 +115,20 @@
     "defaultMessage": "No item...",
     "description": "Label when there is no item in items field"
   },
+  "PQX/ph": {
+    "defaultMessage": "Create account",
+    "description": "Button label"
+  },
   "Pih2UO": {
     "defaultMessage": "Error 403",
     "description": "Error page title"
   },
   "PyxZY2": {
     "defaultMessage": "Cancel",
+    "description": "Button label"
+  },
+  "QUAHwy": {
+    "defaultMessage": "Continue",
     "description": "Button label"
   },
   "R1HYj0": {
@@ -119,25 +139,33 @@
     "defaultMessage": "Logout",
     "description": "Menu label"
   },
-  "SdtI90": {
-    "defaultMessage": "Password confirmation",
-    "description": "Field label"
+  "U/ye2x": {
+    "defaultMessage": "Cancel",
+    "description": "Link label"
   },
   "US/AMe": {
     "defaultMessage": "Error 404",
     "description": "Error page meta title"
   },
+  "UUv8FR": {
+    "defaultMessage": "Name",
+    "description": "Field label"
+  },
   "UpStcP": {
     "defaultMessage": "Could not find type for this item",
     "description": "Error message"
   },
-  "X4fQOn": {
-    "defaultMessage": "Go back to login",
+  "VhJUeW": {
+    "defaultMessage": "Confirm your password",
     "description": "Field label"
   },
   "X5RJlB": {
     "defaultMessage": "Next",
     "description": "Pagination button label"
+  },
+  "ZBNqY2": {
+    "defaultMessage": "Forgot your password?",
+    "description": "Link label"
   },
   "ZxgNge": {
     "defaultMessage": "Add an item",
@@ -159,6 +187,10 @@
     "defaultMessage": "Log in",
     "description": "Button label"
   },
+  "gWmL5V": {
+    "defaultMessage": "Disable two factor authentication",
+    "description": "Button label"
+  },
   "gjBiyj": {
     "defaultMessage": "Loading..."
   },
@@ -166,13 +198,17 @@
     "defaultMessage": "Go to home page",
     "description": "Button label"
   },
-  "oKZDBl": {
-    "defaultMessage": "Forgot your password?",
-    "description": "Field label"
+  "li2Qqu": {
+    "defaultMessage": "Skip setup",
+    "description": "Link label"
   },
   "owrRHV": {
     "defaultMessage": "Error 500",
     "description": "Error page title"
+  },
+  "pVHYDd": {
+    "defaultMessage": "Enable two factor authentication",
+    "description": "Button label"
   },
   "rSt+KL": {
     "defaultMessage": "No",
@@ -214,6 +250,10 @@
     "defaultMessage": "Time",
     "description": "DateTimeField time caption"
   },
+  "tPeIKO": {
+    "defaultMessage": "Go back to login",
+    "description": "Link label"
+  },
   "v4Qtl9": {
     "defaultMessage": "Today",
     "description": "Today date message"
@@ -222,6 +262,10 @@
     "defaultMessage": "This page doesn’t exist",
     "description": "Error page description"
   },
+  "wa783M": {
+    "defaultMessage": "Already have an account? Go to login",
+    "description": "Link label"
+  },
   "y9zauY": {
     "defaultMessage": "An error occured and we could not delete this item successfully.",
     "description": "Error message"
@@ -229,6 +273,10 @@
   "yALN2p": {
     "defaultMessage": "There was an error",
     "description": "Error page description"
+  },
+  "zTiC4D": {
+    "defaultMessage": "Do you wish to enable two factor authentication on your account? You will have to use an authentication app such as Google Authenticator or Microsoft Authenticator in addition to your password to connect.",
+    "description": "Explaination label"
   },
   "zwks3g": {
     "defaultMessage": "Save new password",
