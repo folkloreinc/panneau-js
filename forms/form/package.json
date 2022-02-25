@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form",
-    "version": "1.0.0-alpha.238",
+    "version": "1.0.0-alpha.242",
     "description": "Basic form",
     "keywords": [
         "javascript"
@@ -46,10 +46,10 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.15",
-        "@panneau/core": "^1.0.0-alpha.237",
-        "@panneau/element-button": "^1.0.0-alpha.237",
-        "@panneau/element-form": "^1.0.0-alpha.237",
-        "@panneau/field-fields": "^1.0.0-alpha.237",
+        "@panneau/core": "^1.0.0-alpha.242",
+        "@panneau/element-button": "^1.0.0-alpha.242",
+        "@panneau/element-form": "^1.0.0-alpha.242",
+        "@panneau/field-fields": "^1.0.0-alpha.242",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
