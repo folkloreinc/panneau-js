@@ -9,7 +9,9 @@ import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
     action: PropTypes.string.isRequired,
+    method: PropTypes.string,
     postForm: PropTypes.func,
+    postOptions: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     type: PropTypes.string,
     fields: PanneauPropTypes.fields.isRequired,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -21,7 +23,9 @@ const propTypes = {
 
 const defaultProps = {
     type: 'normal',
+    method: null,
     postForm: null,
+    postOptions: null,
     value: null,
     onChange: null,
     onComplete: null,
@@ -31,8 +35,10 @@ const defaultProps = {
 
 const Form = ({
     action,
+    method,
     type,
     postForm,
+    postOptions,
     fields: providedFields,
     value: providedValue,
     onChange: parentOnChange,
@@ -47,8 +53,10 @@ const Form = ({
             postJSON(act, data, {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
+                ...(method !== null ? { method } : null),
+                ...(postOptions !== null ? postOptions : null),
             }),
-        [],
+        [method, postOptions],
     );
 
     const { value, setValue, fields, onSubmit, status, generalError, errors } = useForm({
