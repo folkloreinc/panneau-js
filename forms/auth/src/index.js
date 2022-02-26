@@ -6,3 +6,4 @@ export { default as ResetPassword } from './ResetPassword';
 export { default as TwoFactorChallenge } from './TwoFactorChallenge';
 export { default as TwoFactorDisable } from './TwoFactorDisable';
 export { default as TwoFactorEnable } from './TwoFactorEnable';
+export { default as UpdatePassword } from './UpdatePassword';

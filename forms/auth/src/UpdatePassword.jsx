@@ -9,28 +9,33 @@ const propTypes = {
     action: PropTypes.string,
     fields: PanneauPropTypes.fields,
     size: PropTypes.string,
+    currentPasswordLabel: PanneauPropTypes.label,
     passwordLabel: PanneauPropTypes.label,
     passwordConfirmationLabel: PanneauPropTypes.label,
     submitButtonLabel: PanneauPropTypes.label,
 };
 
 const defaultProps = {
-    action: '/reset-password',
+    action: '/user/password',
     fields: null,
     size: 'lg',
+    currentPasswordLabel: (
+        <FormattedMessage defaultMessage="Current password" description="Field label" />
+    ),
     passwordLabel: <FormattedMessage defaultMessage="Password" description="Field label" />,
     passwordConfirmationLabel: (
         <FormattedMessage defaultMessage="Confirm your password" description="Field label" />
     ),
     submitButtonLabel: (
-        <FormattedMessage defaultMessage="Save new password" description="Button label" />
+        <FormattedMessage defaultMessage="Update password" description="Button label" />
     ),
 };
 
-const ResetPassword = ({
+const UpdatePassword = ({
     action,
     fields,
     size,
+    currentPasswordLabel,
     passwordLabel,
     passwordConfirmationLabel,
     submitButtonLabel,
@@ -38,8 +43,15 @@ const ResetPassword = ({
 }) => (
     <Form
         action={action}
+        method="PUT"
         fields={
             fields || [
+                {
+                    name: 'current_password',
+                    type: 'password',
+                    size,
+                    label: currentPasswordLabel,
+                },
                 {
                     name: 'password',
                     type: 'password',
@@ -59,7 +71,7 @@ const ResetPassword = ({
     />
 );
 
-ResetPassword.propTypes = propTypes;
-ResetPassword.defaultProps = defaultProps;
+UpdatePassword.propTypes = propTypes;
+UpdatePassword.defaultProps = defaultProps;
 
-export default ResetPassword;
+export default UpdatePassword;
