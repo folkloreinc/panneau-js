@@ -9,6 +9,7 @@ const propTypes = {
     action: PropTypes.string,
     fields: PanneauPropTypes.fields,
     size: PropTypes.string,
+    currentPasswordLabel: PanneauPropTypes.label,
     passwordLabel: PanneauPropTypes.label,
     passwordConfirmationLabel: PanneauPropTypes.label,
     submitButtonLabel: PanneauPropTypes.label,
@@ -18,6 +19,9 @@ const defaultProps = {
     action: '/reset-password',
     fields: null,
     size: 'lg',
+    currentPasswordLabel: (
+        <FormattedMessage defaultMessage="Current password" description="Field label" />
+    ),
     passwordLabel: <FormattedMessage defaultMessage="Password" description="Field label" />,
     passwordConfirmationLabel: (
         <FormattedMessage defaultMessage="Confirm your password" description="Field label" />
@@ -31,6 +35,7 @@ const ResetPassword = ({
     action,
     fields,
     size,
+    currentPasswordLabel,
     passwordLabel,
     passwordConfirmationLabel,
     submitButtonLabel,
@@ -40,6 +45,12 @@ const ResetPassword = ({
         action={action}
         fields={
             fields || [
+                {
+                    name: 'current_password',
+                    type: 'password',
+                    size,
+                    label: currentPasswordLabel,
+                },
                 {
                     name: 'password',
                     type: 'password',
