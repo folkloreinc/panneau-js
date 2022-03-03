@@ -57,7 +57,7 @@ const ResetPassword = ({
                     label: passwordLabel,
                 },
                 {
-                    name: 'password_confrmation',
+                    name: 'password_confirmation',
                     type: 'password',
                     size,
                     label: passwordConfirmationLabel,
