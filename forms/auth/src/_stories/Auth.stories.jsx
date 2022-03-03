@@ -1,6 +1,7 @@
 import React from 'react';
 import withFormsFields from '../../../../.storybook/decorators/withFormsFields';
 import withRouter from '../../../../.storybook/decorators/withRouter';
+import ChangePassword from '../ChangePassword';
 import ConfirmPassword from '../ConfirmPassword';
 import ForgotPassword from '../ForgotPassword';
 import Login from '../Login';
@@ -28,6 +29,8 @@ export const ResetPasswordForm = () => <ResetPassword value={{ email: 'paul@paul
 export const RegisterForm = () => <Register />;
 
 export const ConfirmPasswordForm = () => <ConfirmPassword />;
+
+export const ChangePasswordForm = () => <ChangePassword />;
 
 export const TwoFactorChallengeForm = () => <TwoFactorChallenge />;
 

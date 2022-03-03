@@ -22,16 +22,16 @@ const defaultProps = {
     currentPasswordLabel: (
         <FormattedMessage defaultMessage="Current password" description="Field label" />
     ),
-    passwordLabel: <FormattedMessage defaultMessage="Password" description="Field label" />,
+    passwordLabel: <FormattedMessage defaultMessage="New password" description="Field label" />,
     passwordConfirmationLabel: (
-        <FormattedMessage defaultMessage="Confirm your password" description="Field label" />
+        <FormattedMessage defaultMessage="Confirm your new password" description="Field label" />
     ),
     submitButtonLabel: (
         <FormattedMessage defaultMessage="Update password" description="Button label" />
     ),
 };
 
-const UpdatePassword = ({
+const ChangePassword = ({
     action,
     fields,
     size,
@@ -59,7 +59,7 @@ const UpdatePassword = ({
                     label: passwordLabel,
                 },
                 {
-                    name: 'password_confrmation',
+                    name: 'password_confirmation',
                     type: 'password',
                     size,
                     label: passwordConfirmationLabel,
@@ -71,7 +71,7 @@ const UpdatePassword = ({
     />
 );
 
-UpdatePassword.propTypes = propTypes;
-UpdatePassword.defaultProps = defaultProps;
+ChangePassword.propTypes = propTypes;
+ChangePassword.defaultProps = defaultProps;
 
-export default UpdatePassword;
+export default ChangePassword;
