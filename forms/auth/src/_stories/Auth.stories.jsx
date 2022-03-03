@@ -23,7 +23,7 @@ export const LoginForm = () => <Login />;
 
 export const ForgotPasswordForm = () => <ForgotPassword />;
 
-export const ResetPasswordForm = () => <ResetPassword />;
+export const ResetPasswordForm = () => <ResetPassword value={{ email: 'paul@paul.com' }} />;
 
 export const RegisterForm = () => <Register />;
 

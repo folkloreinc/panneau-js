@@ -13,6 +13,7 @@ const propTypes = {
     errors: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     required: PropTypes.bool,
     disabled: PropTypes.bool,
+    readOnly: PropTypes.bool,
     nativeOnChange: PropTypes.bool,
     type: PropTypes.oneOf(['text', 'email', 'tel', 'password', 'textarea', 'number']),
     placeholder: PropTypes.string,
@@ -42,6 +43,7 @@ const defaultProps = {
     errors: null,
     required: false,
     disabled: false,
+    readOnly: false,
     nativeOnChange: false,
     type: null,
     placeholder: null,
@@ -66,6 +68,7 @@ const InputField = ({
     errors,
     required,
     disabled,
+    readOnly,
     nativeOnChange,
     type,
     placeholder,
@@ -84,7 +87,7 @@ const InputField = ({
     className,
 }) => {
     const dataListId = useMemo(() => (dataList !== null ? uuid() : null), [dataList]);
-
+    console.log(readOnly);
     const elProps = {
         ref: inputRef,
         className: classNames([
@@ -108,6 +111,7 @@ const InputField = ({
         max,
         required,
         disabled,
+        readOnly,
         list: dataListId,
         onChange: nativeOnChange
             ? onChange

@@ -34,7 +34,7 @@ const defaultProps = {
         <FormattedMessage defaultMessage="Create account" description="Button label" />
     ),
     withLoginLink: true,
-    loginLink: '/forgot-password',
+    loginLink: '/login',
     loginLabel: (
         <FormattedMessage
             defaultMessage="Already have an account? Go to login"
