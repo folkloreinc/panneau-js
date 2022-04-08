@@ -87,7 +87,7 @@ const InputField = ({
     className,
 }) => {
     const dataListId = useMemo(() => (dataList !== null ? uuid() : null), [dataList]);
-    console.log(readOnly);
+
     const elProps = {
         ref: inputRef,
         className: classNames([

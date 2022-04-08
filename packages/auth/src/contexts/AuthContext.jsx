@@ -74,7 +74,6 @@ export const AuthProvider = ({ user: initialUser, checkOnMount, onLogout, childr
                     setUser(null);
                 })
                 .then(() => {
-                    console.log('logout redirect'); // eslint-disable-line
                     if (onLogout !== null) {
                         onLogout();
                     }

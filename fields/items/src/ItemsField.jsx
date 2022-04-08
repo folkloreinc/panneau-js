@@ -182,6 +182,7 @@ const ItemsField = ({
                 const newIdMap = newItems.map(({ index }) => idMap.current[index]);
                 idMap.current = newIdMap;
                 setCollapsed((prevCollapsed) => newItems.map(({ index }) => prevCollapsed[index]));
+                console.log('Change', newItems, newIdMap); // eslint-disable-line
                 onChange(newItems.map(({ it }) => it));
             }
         },
@@ -201,6 +202,8 @@ const ItemsField = ({
     const onDropdownClickOutside = useCallback(() => {
         setDropdownOpened(false);
     }, [setDropdownOpened]);
+
+    console.log('value, items', value, items); // eslint-disable-line
 
     const itemElements = items.map(({ id, it }, index) => {
         const { type: itemType = null } = it || {};
