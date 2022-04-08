@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-search",
-    "version": "1.0.0-alpha.247",
+    "version": "1.0.0-alpha.251",
     "description": "Search filter",
     "keywords": [
         "javascript"
@@ -58,7 +58,7 @@
         "@panneau/core": "^1.0.0-alpha.242",
         "@panneau/element-button": "^1.0.0-alpha.242",
         "@panneau/element-form": "^1.0.0-alpha.242",
-        "@panneau/field-text": "^1.0.0-alpha.247",
+        "@panneau/field-text": "^1.0.0-alpha.251",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
