@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading, react/prop-types */
 import { faCaretDown, faCaretRight, faGripLines, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -182,7 +183,7 @@ const ItemsField = ({
                 const newIdMap = newItems.map(({ index }) => idMap.current[index]);
                 idMap.current = newIdMap;
                 setCollapsed((prevCollapsed) => newItems.map(({ index }) => prevCollapsed[index]));
-                console.log('Change', newItems, newIdMap); // eslint-disable-line
+                // console.log('Change', newItems, newIdMap); // eslint-disable-line
                 onChange(newItems.map(({ it }) => it));
             }
         },
@@ -203,7 +204,7 @@ const ItemsField = ({
         setDropdownOpened(false);
     }, [setDropdownOpened]);
 
-    console.log('value, items', value, items); // eslint-disable-line
+    // console.log('value, items', value, items); // eslint-disable-line
 
     const itemElements = items.map(({ id, it }, index) => {
         const { type: itemType = null } = it || {};
@@ -278,6 +279,8 @@ const ItemsField = ({
             );
         }
 
+        const isCollapsed = !inline && !withoutCollapse && collapsed[index];
+
         return (
             <div
                 className={classNames([
@@ -319,11 +322,13 @@ const ItemsField = ({
                             <span className="text-truncate">{finalRenderedItemLabel}</span>
                         </div>
                         <div className="d-flex card-buttons position-relative ms-auto">
-                            <Button className="p-0 me-2" theme="secondary" size="sm" outline>
-                                <div className="py-1 px-2">
-                                    <FontAwesomeIcon icon={faGripLines} />
-                                </div>
-                            </Button>
+                            {!withoutSort ? (
+                                <Button className="p-0 me-2" theme="secondary" size="sm" outline>
+                                    <div className="py-1 px-2">
+                                        <FontAwesomeIcon icon={faGripLines} />
+                                    </div>
+                                </Button>
+                            ) : null}
                             <Button
                                 theme="secondary"
                                 size="sm"
@@ -340,17 +345,19 @@ const ItemsField = ({
                         'position-relative',
                         'p-3',
                         {
-                            collapse: !inline && !withoutCollapse && collapsed[index],
+                            collapse: isCollapsed,
                         },
                     ])}
                 >
-                    {renderItem !== null
-                        ? renderItem(it, index, {
-                              ...(isFunction(itemProps) ? itemProps(it, index) : itemProps),
-                              children: itemChildren,
-                              onChange: (newValue) => onItemChange(it, index, newValue),
-                          })
-                        : itemChildren}
+                    {!isCollapsed
+                        ? renderItem !== null
+                            ? renderItem(it, index, {
+                                  ...(isFunction(itemProps) ? itemProps(it, index) : itemProps),
+                                  children: itemChildren,
+                                  onChange: (newValue) => onItemChange(it, index, newValue),
+                              })
+                            : itemChildren
+                        : null}
                 </div>
                 {inline ? (
                     <div className={classNames(['card-header', 'd-flex', 'border-bottom-0'])}>
