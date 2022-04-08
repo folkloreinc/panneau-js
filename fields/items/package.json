@@ -65,8 +65,8 @@
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8",
-        "react-sortablejs": "^6.0.0",
-        "sortablejs": "^1.10.0",
+        "react-sortablejs": "^6.1.1",
+        "sortablejs": "^1.15.0",
         "uuid": "^8.3.2"
     },
     "publishConfig": {

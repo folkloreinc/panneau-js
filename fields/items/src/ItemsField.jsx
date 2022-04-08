@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading, react/prop-types */
-import { faCaretDown, faCaretRight, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown, faCaretRight, faGripLines, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFieldComponent } from '@panneau/core/contexts';
@@ -18,7 +18,7 @@ import { v4 as uuid } from 'uuid';
 
 const propTypes = {
     label: PropTypes.string,
-    value: PropTypes.arrayOf(PropTypes.any),
+    value: PropTypes.arrayOf(PropTypes.any), // eslint-disable-line
     types: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string,
@@ -316,6 +316,11 @@ const ItemsField = ({
                             <span className="text-truncate">{finalRenderedItemLabel}</span>
                         </div>
                         <div className="d-flex card-buttons position-relative ms-auto">
+                            <Button className="p-0 me-2" theme="secondary" size="sm" outline>
+                                <div className="py-1 px-2">
+                                    <FontAwesomeIcon icon={faGripLines} />
+                                </div>
+                            </Button>
                             <Button
                                 theme="secondary"
                                 size="sm"
