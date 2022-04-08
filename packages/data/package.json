@@ -53,7 +53,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@folklore/fetch": "^0.1.10",
+        "@folklore/fetch": "^0.1.15",
         "@panneau/core": "^1.0.0-alpha.242",
         "prop-types": "^15.7.2",
         "query-string": "^7.0.0",

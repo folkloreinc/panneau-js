@@ -97,6 +97,12 @@ msgctxt "8HFiMs"
 msgid "Access to this page is forbidden"
 msgstr "L’accès à cette page est interdit"
 
+# Field label
+#: 8LSb8C
+msgctxt "8LSb8C"
+msgid "Current password"
+msgstr ""
+
 # Boolean value
 #: 9XBwF1
 msgctxt "9XBwF1"
@@ -120,6 +126,12 @@ msgstr "Entrez votre mot de passe pour continuer"
 msgctxt "Bhu3B2"
 msgid "Delete"
 msgstr "Supprimer"
+
+# Field label
+#: DUbv+u
+msgctxt "DUbv+u"
+msgid "Confirm your new password"
+msgstr ""
 
 # Form status
 #: ESkxLX
@@ -258,6 +270,18 @@ msgstr "Confirmez votre mot de passe"
 msgctxt "X5RJlB"
 msgid "Next"
 msgstr "Suivant"
+
+# Field label
+#: XJ1dc3
+msgctxt "XJ1dc3"
+msgid "New password"
+msgstr ""
+
+# Button label
+#: XW9IKQ
+msgctxt "XW9IKQ"
+msgid "Update password"
+msgstr ""
 
 # Link label
 #: ZBNqY2

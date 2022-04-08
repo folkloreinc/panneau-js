@@ -55,6 +55,10 @@
     "defaultMessage": "Access to this page is forbidden",
     "description": "Error page description"
   },
+  "8LSb8C": {
+    "defaultMessage": "Current password",
+    "description": "Field label"
+  },
   "9XBwF1": {
     "defaultMessage": "Yes",
     "description": "Boolean value"
@@ -70,6 +74,10 @@
   "Bhu3B2": {
     "defaultMessage": "Delete",
     "description": "Button label"
+  },
+  "DUbv+u": {
+    "defaultMessage": "Confirm your new password",
+    "description": "Field label"
   },
   "ESkxLX": {
     "defaultMessage": "Success!",
@@ -162,6 +170,14 @@
   "X5RJlB": {
     "defaultMessage": "Next",
     "description": "Pagination button label"
+  },
+  "XJ1dc3": {
+    "defaultMessage": "New password",
+    "description": "Field label"
+  },
+  "XW9IKQ": {
+    "defaultMessage": "Update password",
+    "description": "Button label"
   },
   "ZBNqY2": {
     "defaultMessage": "Forgot your password?",
