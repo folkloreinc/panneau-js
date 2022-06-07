@@ -60,6 +60,7 @@
         "@panneau/field-text": "^1.0.0-alpha.251",
         "@panneau/themes": "^1.0.0-alpha.242",
         "classnames": "^2.2.6",
+        "lodash": "^4.17.21",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {

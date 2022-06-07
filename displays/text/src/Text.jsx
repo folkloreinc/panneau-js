@@ -1,5 +1,6 @@
-import React from 'react';
+/* eslint-disable react/jsx-no-useless-fragment */
 import PropTypes from 'prop-types';
+import React from 'react';
 
 const propTypes = {
     value: PropTypes.string,
@@ -10,6 +11,7 @@ const defaultProps = {
 };
 
 const Text = ({ value }) => <>{value}</>;
+
 Text.propTypes = propTypes;
 Text.defaultProps = defaultProps;
 

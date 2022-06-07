@@ -11,7 +11,7 @@ const Container = (props) => {
     const [value, setValue] = useState(null);
     return (
         <>
-            <button type="button" onClick={() => setValue(null)}>
+            <button type="button" className="mb-2" onClick={() => setValue(null)}>
                 Reset
             </button>
             <HtmlField {...props} value={value} onChange={setValue} />

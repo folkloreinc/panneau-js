@@ -1,15 +1,16 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-12-14 14:06-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2022-06-07 16:42-0400\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 3.2.0\n"
+"X-Generator: Poedit 3.0.1\n"
 
 # Error page meta title
 #: +6cCPF
@@ -34,8 +35,8 @@ msgstr "Entrez le code de votre application d'authentification pour continuer"
 msgctxt "2vB7U4"
 msgid "An error occured and we could not save this item successfully."
 msgstr ""
-"Une erreur s’est produite et nous n’avons pas pu enregistrer cet élément "
-"avec succès."
+"Une erreur s’est produite et nous n’avons pas pu enregistrer cet élément avec "
+"succès."
 
 # Now date time message
 #: 3na7F8
@@ -101,7 +102,7 @@ msgstr "L’accès à cette page est interdit"
 #: 8LSb8C
 msgctxt "8LSb8C"
 msgid "Current password"
-msgstr ""
+msgstr "Mot de passe actuel"
 
 # Boolean value
 #: 9XBwF1
@@ -131,7 +132,7 @@ msgstr "Supprimer"
 #: DUbv+u
 msgctxt "DUbv+u"
 msgid "Confirm your new password"
-msgstr ""
+msgstr "Confirmez votre mot de passe"
 
 # Form status
 #: ESkxLX
@@ -275,13 +276,13 @@ msgstr "Suivant"
 #: XJ1dc3
 msgctxt "XJ1dc3"
 msgid "New password"
-msgstr ""
+msgstr "Nouveau mot de passe"
 
 # Button label
 #: XW9IKQ
 msgctxt "XW9IKQ"
 msgid "Update password"
-msgstr ""
+msgstr "Mettre à jour votre mot de passe"
 
 # Link label
 #: ZBNqY2
@@ -460,9 +461,9 @@ msgid ""
 "have to use an authentication app such as Google Authenticator or Microsoft "
 "Authenticator in addition to your password to connect."
 msgstr ""
-"Voulez-vous activer l'authentification à deux facteurs ? Vous devrez "
-"utiliser une application de connexion telle que Google Authenticator ou "
-"Microsoft Authenticator en plus de votre mot de passe pour vous connecter."
+"Voulez-vous activer l'authentification à deux facteurs ? Vous devrez utiliser "
+"une application de connexion telle que Google Authenticator ou Microsoft "
+"Authenticator en plus de votre mot de passe pour vous connecter."
 
 # Button label
 #: zwks3g

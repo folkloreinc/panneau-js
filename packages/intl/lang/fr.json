@@ -41,6 +41,9 @@
     "8HFiMs": {
         "defaultMessage": "L’accès à cette page est interdit"
     },
+    "8LSb8C": {
+        "defaultMessage": "Mot de passe actuel"
+    },
     "9XBwF1": {
         "defaultMessage": "Oui"
     },
@@ -52,6 +55,9 @@
     },
     "Bhu3B2": {
         "defaultMessage": "Supprimer"
+    },
+    "DUbv+u": {
+        "defaultMessage": "Confirmez votre mot de passe"
     },
     "ESkxLX": {
         "defaultMessage": "Réussi!"
@@ -121,6 +127,12 @@
     },
     "X5RJlB": {
         "defaultMessage": "Suivant"
+    },
+    "XJ1dc3": {
+        "defaultMessage": "Nouveau mot de passe"
+    },
+    "XW9IKQ": {
+        "defaultMessage": "Mettre à jour votre mot de passe"
     },
     "ZBNqY2": {
         "defaultMessage": "Mot de passe oublié ?"

@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import TextField from '@panneau/field-text';
+import classNames from 'classnames';
 import isEmpty from 'lodash/isEmpty';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
+import TextField from '@panneau/field-text';
 
 const getScheme = (url, schemesPattern) => {
     const match = url !== null && isString(url) ? url.match(schemesPattern) : null;
@@ -19,6 +20,7 @@ const withScheme = (url, prefix, schemesPattern) =>
     url !== null && isString(url) && !url.match(schemesPattern) ? `${prefix}${url}` : url;
 
 const propTypes = {
+    name: PropTypes.string,
     value: PropTypes.string,
     schemes: PropTypes.arrayOf(PropTypes.string),
     url: PropTypes.string,
@@ -31,8 +33,9 @@ const propTypes = {
 };
 
 const defaultProps = {
+    name: null,
     value: null,
-    schemes: ['http://', 'https://', 'ftp://', 'tel:', 'mailto:'],
+    schemes: ['https://', 'http://', 'tel:', 'mailto:'],
     url: null,
     disabled: null,
     prepend: null,
@@ -43,6 +46,7 @@ const defaultProps = {
 };
 
 const UrlField = ({
+    name,
     value,
     schemes,
     url,
@@ -54,6 +58,11 @@ const UrlField = ({
     onChange,
     ...props
 }) => {
+    const [open, setOpen] = useState(false);
+    useEffect(() => {
+        setOpen(false);
+    }, [value, disabled]);
+
     const schemesPattern = useMemo(() => new RegExp(`^(${schemes.join('|')})`, 'i'), [schemes]);
 
     const scheme = useMemo(
@@ -71,6 +80,7 @@ const UrlField = ({
             const newValueWithScheme = !isEmpty(newValue)
                 ? withScheme(newValue, scheme, schemesPattern)
                 : null;
+
             if (onChange !== null) {
                 onChange(newValueWithScheme);
             }
@@ -78,7 +88,68 @@ const UrlField = ({
         [onChange, scheme, schemesPattern],
     );
 
-    const finalPrepend = prepend || url || scheme;
+    const onClickOpen = useCallback(() => {
+        setOpen(!open);
+    }, [open, setOpen]);
+
+    const onClickScheme = useCallback(
+        (sch) => {
+            setOpen(false);
+            const newValueWithScheme = !isEmpty(value)
+                ? withScheme(valueWithoutScheme, sch, schemesPattern)
+                : null;
+            if (onChange !== null) {
+                onChange(newValueWithScheme);
+            }
+        },
+        [open, setOpen, schemesPattern, valueWithoutScheme, onChange],
+    );
+
+    const finalPrependValue = prepend || url || scheme;
+
+    const finalPrepend =
+        prepend === null && url === null ? (
+            <>
+                <button
+                    className={classNames([
+                        'btn',
+                        'btn-outline-secondary',
+                        disabled,
+                        {
+                            show: open,
+                            'dropdown-toggle': !disabled,
+
+                            'btn-secondary': disabled,
+                            'text-light': disabled,
+                        },
+                    ])}
+                    type="button"
+                    aria-expanded={open ? 'false' : 'true'}
+                    onClick={!disabled ? onClickOpen : null}
+                >
+                    {finalPrependValue}
+                </button>
+                <ul className={classNames(['dropdown-menu', { show: open }])}>
+                    {schemes.map((sch) => (
+                        <li key={`${name}-${sch}`}>
+                            <button
+                                className={classNames([
+                                    'dropdown-item',
+                                    { active: sch === scheme },
+                                ])}
+                                type="button"
+                                onClick={() => onClickScheme(sch)}
+                            >
+                                {sch}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </>
+        ) : (
+            prepend || url
+        );
+
     const finalAppend = preview ? (
         <a
             href={value !== null ? `${finalPrepend}${valueWithoutScheme}` : null}
