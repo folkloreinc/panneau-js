@@ -1,14 +1,15 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
+
 import { useFiltersComponents, usePanneauColorScheme } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import FormGroup from '@panneau/element-form-group';
 import Navbar from '@panneau/element-navbar';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
 
 const propTypes = {
     filters: PropTypes.arrayOf(

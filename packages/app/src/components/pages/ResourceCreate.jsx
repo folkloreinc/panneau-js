@@ -1,10 +1,12 @@
+import { parse as parseQuery } from 'query-string';
+import React, { useCallback, useMemo } from 'react';
+import { useHistory, useLocation } from 'react-router';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { ResourceMessage } from '@panneau/intl';
-import { parse as parseQuery } from 'query-string';
-import React, { useCallback, useMemo } from 'react';
-import { useHistory, useLocation } from 'react-router';
+
 import ResourceForm from '../forms/ResourceForm';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';

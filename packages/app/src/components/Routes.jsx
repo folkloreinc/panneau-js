@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from 'react';
+import { Redirect, Route, Switch, useLocation } from 'react-router';
+
 import { useUser } from '@panneau/auth';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 // import { parse as parseQuery } from 'query-string';
@@ -8,10 +11,9 @@ import {
     useUrlGenerator,
 } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
-import React, { useEffect, useState } from 'react';
-import { Redirect, Route, Switch, useLocation } from 'react-router';
-import * as basePages from './pages';
+
 import ResourceRoutes from './ResourceRoutes';
+import * as basePages from './pages';
 
 const propTypes = {
     statusCode: PanneauPropTypes.statusCode,

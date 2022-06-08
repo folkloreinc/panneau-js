@@ -1,16 +1,18 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { ResourceProvider, useComponentsManager } from '@panneau/core/contexts';
-import { useResourceUrlGenerator } from '@panneau/core/hooks';
-import Alert from '@panneau/element-alert';
-import Button from '@panneau/element-button';
-import { ResourceMessage } from '@panneau/intl';
 import classNames from 'classnames';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import { parse as parseQuery, stringify as stringifyQuery } from 'query-string';
 import React, { useCallback, useMemo } from 'react';
 import { useHistory, useLocation } from 'react-router';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { ResourceProvider, useComponentsManager } from '@panneau/core/contexts';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import Alert from '@panneau/element-alert';
+import Button from '@panneau/element-button';
+import { ResourceMessage } from '@panneau/intl';
+
 import ResourceCreateButton from '../buttons/ResourceCreate';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';

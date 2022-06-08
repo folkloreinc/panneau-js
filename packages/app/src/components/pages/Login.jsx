@@ -3,8 +3,9 @@ import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useUrlGenerator } from '@panneau/core/contexts';
-import GuestLayout from '../layouts/Guest';
+
 import LoginForm from '../forms/Login';
+import GuestLayout from '../layouts/Guest';
 
 const propTypes = {};
 

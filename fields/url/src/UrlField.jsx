@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import isEmpty from 'lodash/isEmpty';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
 import TextField from '@panneau/field-text';
 
 const getScheme = (url, schemesPattern) => {
@@ -121,7 +122,6 @@ const UrlField = ({
                             disabled: disabled || empty,
                             'dropdown-toggle': !disabled && !empty,
                             'btn-secondary': disabled || empty,
-                            'text-light': disabled,
                         },
                     ])}
                     type="button"

@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Button from '@panneau/element-button';
-import Form from '@panneau/element-form';
-import { ResourceMessage } from '@panneau/intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Button from '@panneau/element-button';
+import Form from '@panneau/element-form';
+import { ResourceMessage } from '@panneau/intl';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,

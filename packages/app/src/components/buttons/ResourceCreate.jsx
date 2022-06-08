@@ -1,11 +1,12 @@
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
 import { ResourceMessage } from '@panneau/intl';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,

@@ -4,6 +4,14 @@
     "trailingComma": "all",
     "tabWidth": 4,
     "semi": true,
-    "importOrder": ["^react(.*)$", "<THIRD_PARTY_MODULES>", "^@panneau/(.*)$", "^[./]"],
+    "importOrder": [
+        "<THIRD_PARTY_MODULES>",
+        "^@panneau/(.*)$",
+        "^[./](.*)?/(utils|hooks|lib)",
+        "^[./].*(?<!(\\.[a-z]+))$",
+        "\\.scss$",
+        "\\.[a-z]+$"
+    ],
+    "importOrderSeparation": true,
     "importOrderSortSpecifiers": true
 }

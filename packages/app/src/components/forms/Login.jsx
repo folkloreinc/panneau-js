@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
+import { FormattedMessage } from 'react-intl';
+
 import { useAuth } from '@panneau/auth';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFormComponent, useUrlGenerator } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
-import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
-import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
     fields: PanneauPropTypes.fields,

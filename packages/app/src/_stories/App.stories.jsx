@@ -1,16 +1,15 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 
-import PanneauContainer from '../components/Container';
-
 import panneauDefinition from '../../../../.storybook/data/panneau-definition';
+import PanneauContainer from '../components/Container';
 
 export default {
     component: PanneauContainer,
     title: 'App',
     parameters: {
         intl: {
-            locale: panneauDefinition.intl.locale
+            locale: panneauDefinition.intl.locale,
         },
     },
 };
