@@ -2,6 +2,12 @@
     "+6cCPF": {
         "defaultMessage": "Error 403"
     },
+    "12Px0g": {
+        "defaultMessage": "Send reset link"
+    },
+    "22Ld5M": {
+        "defaultMessage": "Enter the code from your authenticator app to continue"
+    },
     "2vB7U4": {
         "defaultMessage": "An error occured and we could not save this item successfully."
     },
@@ -13,6 +19,9 @@
     },
     "4yfet+": {
         "defaultMessage": "Password"
+    },
+    "5nHK/H": {
+        "defaultMessage": "Do you really wish to disable two factor authentication on your account?"
     },
     "5rMPIj": {
         "defaultMessage": "Loading..."
@@ -32,14 +41,23 @@
     "8HFiMs": {
         "defaultMessage": "Access to this page is forbidden"
     },
+    "8LSb8C": {
+        "defaultMessage": "Current password"
+    },
     "9XBwF1": {
         "defaultMessage": "Yes"
     },
     "AeOZq+": {
         "defaultMessage": "Login"
     },
+    "B1h3gd": {
+        "defaultMessage": "Please enter your password to continue"
+    },
     "Bhu3B2": {
         "defaultMessage": "Delete"
+    },
+    "DUbv+u": {
+        "defaultMessage": "Confirm your new password"
     },
     "ESkxLX": {
         "defaultMessage": "Success!"
@@ -74,23 +92,50 @@
     "PKCv5M": {
         "defaultMessage": "No item..."
     },
+    "PQX/ph": {
+        "defaultMessage": "Create account"
+    },
     "Pih2UO": {
         "defaultMessage": "Error 403"
     },
     "PyxZY2": {
         "defaultMessage": "Cancel"
     },
+    "QUAHwy": {
+        "defaultMessage": "Continue"
+    },
+    "R1HYj0": {
+        "defaultMessage": "Save"
+    },
     "REIcPg": {
         "defaultMessage": "Logout"
+    },
+    "U/ye2x": {
+        "defaultMessage": "Cancel"
     },
     "US/AMe": {
         "defaultMessage": "Error 404"
     },
+    "UUv8FR": {
+        "defaultMessage": "Name"
+    },
     "UpStcP": {
         "defaultMessage": "Could not find type for this item"
     },
+    "VhJUeW": {
+        "defaultMessage": "Confirm your password"
+    },
     "X5RJlB": {
         "defaultMessage": "Next"
+    },
+    "XJ1dc3": {
+        "defaultMessage": "New password"
+    },
+    "XW9IKQ": {
+        "defaultMessage": "Update password"
+    },
+    "ZBNqY2": {
+        "defaultMessage": "Forgot your password?"
     },
     "ZxgNge": {
         "defaultMessage": "Add an item"
@@ -107,14 +152,23 @@
     "g6qbbX": {
         "defaultMessage": "Log in"
     },
+    "gWmL5V": {
+        "defaultMessage": "Disable two factor authentication"
+    },
     "gjBiyj": {
         "defaultMessage": "Loading..."
     },
     "hezcGl": {
         "defaultMessage": "Go to home page"
     },
+    "li2Qqu": {
+        "defaultMessage": "Skip setup"
+    },
     "owrRHV": {
         "defaultMessage": "Error 500"
+    },
+    "pVHYDd": {
+        "defaultMessage": "Enable two factor authentication"
     },
     "rSt+KL": {
         "defaultMessage": "No"
@@ -146,16 +200,28 @@
     "s4Xrs9": {
         "defaultMessage": "Time"
     },
+    "tPeIKO": {
+        "defaultMessage": "Go back to login"
+    },
     "v4Qtl9": {
         "defaultMessage": "Today"
     },
     "wKPI1y": {
         "defaultMessage": "This page doesn’t exist"
     },
+    "wa783M": {
+        "defaultMessage": "Already have an account? Go to login"
+    },
     "y9zauY": {
         "defaultMessage": "An error occured and we could not delete this item successfully."
     },
     "yALN2p": {
         "defaultMessage": "There was an error"
+    },
+    "zTiC4D": {
+        "defaultMessage": "Do you wish to enable two factor authentication on your account? You will have to use an authentication app such as Google Authenticator or Microsoft Authenticator in addition to your password to connect."
+    },
+    "zwks3g": {
+        "defaultMessage": "Save new password"
     }
 }

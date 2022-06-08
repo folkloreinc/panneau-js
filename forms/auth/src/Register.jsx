@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Form from '@panneau/form';
-import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Form from '@panneau/form';
 
 const propTypes = {
     action: PropTypes.string,
