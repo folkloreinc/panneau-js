@@ -126,7 +126,7 @@ const UrlField = ({
                     ])}
                     type="button"
                     aria-expanded={open ? 'false' : 'true'}
-                    onClick={!disabled ? onClickOpen : null}
+                    onClick={!disabled && !empty ? onClickOpen : null}
                 >
                     {finalPrependValue}
                 </button>
