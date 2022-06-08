@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Dialog from '../Dialog';
 
 export default {
@@ -10,4 +9,4 @@ export default {
     },
 };
 
-export const Normal = () => <Dialog label="Hello" />;
+export const Normal = () => <Dialog title="Hello" />;
