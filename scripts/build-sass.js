@@ -35,6 +35,5 @@ postcss(postcssConfig.plugins)
     .then((postCssResult) => {
         mkdirp.sync(path.dirname(outFile));
         fs.writeFileSync(outFile, postCssResult.css);
-
         console.log(`Generated ${outFile} from ${result.stats.entry} in ${result.stats.duration}s`);
     });

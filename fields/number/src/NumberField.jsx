@@ -70,14 +70,12 @@ const NumberField = ({
 
     const onInputChange = useCallback(
         (val) => {
-            console.log(val);
             if (onChange !== null) {
                 if (float) {
                     onChange(val !== null && val.length > 0 ? val : null);
                 } else {
                     onChange(val !== null && val.length > 0 ? parseValue(val) : null);
                 }
-
                 onChange(val !== null && val.length > 0 ? parseValue(val) : null);
             }
         },
@@ -110,8 +108,6 @@ const NumberField = ({
         },
         [onChange, setDataListActive],
     );
-
-    console.log(value);
 
     return (
         <div className={classNames([styles.container, { [className]: className !== null }])}>

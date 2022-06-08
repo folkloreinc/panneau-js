@@ -58,6 +58,8 @@ const UrlField = ({
     onChange,
     ...props
 }) => {
+    const empty = isEmpty(value);
+
     const [open, setOpen] = useState(false);
     useEffect(() => {
         setOpen(false);
@@ -114,12 +116,11 @@ const UrlField = ({
                     className={classNames([
                         'btn',
                         'btn-outline-secondary',
-                        disabled,
                         {
                             show: open,
-                            'dropdown-toggle': !disabled,
-
-                            'btn-secondary': disabled,
+                            disabled: disabled || empty,
+                            'dropdown-toggle': !disabled && !empty,
+                            'btn-secondary': disabled || empty,
                             'text-light': disabled,
                         },
                     ])}
