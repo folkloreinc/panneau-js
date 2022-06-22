@@ -38,6 +38,7 @@ const PageHeader = ({ title, actions, small, className, children }) => {
             {actions !== null ? <div className="ms-auto">{actions}</div> : null}
         </div>
     );
+
     return (
         <div
             className={classNames([

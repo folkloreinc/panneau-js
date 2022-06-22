@@ -1,9 +1,11 @@
 /* eslint-disable react/button-has-type, react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+
 import styles from './styles.module.scss';
 
 const propTypes = {

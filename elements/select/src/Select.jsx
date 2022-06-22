@@ -1,11 +1,12 @@
 /* eslint-disable react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { getSelectOptions } from '@panneau/core/utils';
 import classNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import Select from 'react-select';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { getSelectOptions } from '@panneau/core/utils';
 
 const propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
@@ -87,6 +88,8 @@ const SelectElement = ({
             ),
         [finalOptions],
     );
+
+    // TODO: fix dark mode for this one
 
     return (
         <div className={classNames(['position-relative', className])}>
