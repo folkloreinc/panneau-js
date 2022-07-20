@@ -8,7 +8,7 @@ export default {
         messages: {
             index: 'Voir {the_plural}',
             create: 'Ajouter une page',
-            create_button: 'Yo le jeune',
+            create_btn: 'Yo le jeune {a_singular}',
         },
         values: {
             name: 'page',

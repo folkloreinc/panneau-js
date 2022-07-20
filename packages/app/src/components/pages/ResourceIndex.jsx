@@ -130,7 +130,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                             <ResourceMessage
                                 resource={resource}
                                 id="resources.created"
-                                defaultMessage="{the_singular} has been created."
+                                defaultMessage="{The_singular} has been created."
                                 description="Alert message"
                             />
                         </Alert>
@@ -140,7 +140,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                             <ResourceMessage
                                 resource={resource}
                                 id="resources.deleted"
-                                defaultMessage="{the_singular} has been deleted."
+                                defaultMessage="{The_singular} has been deleted."
                                 description="Alert message"
                             />
                         </Alert>

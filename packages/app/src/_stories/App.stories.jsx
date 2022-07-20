@@ -41,3 +41,25 @@ export const DarkMode = () => (
         {...props}
     />
 );
+
+export const Englishe = () => (
+    <PanneauContainer
+        definition={{
+            ...panneauDefinition,
+            intl: {
+                locale: 'en',
+                locales: ['en', 'fr'],
+                values: {
+                    name: 'Panneau in Englishe',
+                },
+                messages: {
+                    'resources.index': 'Lire {a_plural}',
+                    'resources.create': 'Blabla',
+                },
+            },
+        }}
+        memoryRouter
+        user={user}
+        {...props}
+    />
+);
