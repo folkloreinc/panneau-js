@@ -243,7 +243,7 @@
     "description": "Button label"
   },
   "resources.created": {
-    "defaultMessage": "{the_singular} has been created.",
+    "defaultMessage": "{The_singular} has been created.",
     "description": "Alert message"
   },
   "resources.delete": {
@@ -251,7 +251,7 @@
     "description": "Page title"
   },
   "resources.deleted": {
-    "defaultMessage": "{the_singular} has been deleted.",
+    "defaultMessage": "{The_singular} has been deleted.",
     "description": "Alert message"
   },
   "resources.edit": {

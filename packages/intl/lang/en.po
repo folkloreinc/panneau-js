@@ -379,7 +379,7 @@ msgstr "Create {a_singular}"
 # Alert message
 #: resources.created
 msgctxt "resources.created"
-msgid "{the_singular} has been created."
+msgid "{The_singular} has been created."
 msgstr "{the_singular} has been created."
 
 # Page title
@@ -391,7 +391,7 @@ msgstr "Delete {a_singular}"
 # Alert message
 #: resources.deleted
 msgctxt "resources.deleted"
-msgid "{the_singular} has been deleted."
+msgid "{The_singular} has been deleted."
 msgstr "{the_singular} has been deleted."
 
 # Page title
