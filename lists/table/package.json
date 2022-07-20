@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-table",
-    "version": "1.0.0-alpha.258",
+    "version": "1.0.0-alpha.260",
     "description": "Table list",
     "keywords": [
         "javascript"
@@ -60,7 +60,7 @@
         "@panneau/element-item-actions": "^1.0.0-alpha.258",
         "@panneau/element-label": "^1.0.0-alpha.256",
         "@panneau/element-link": "^1.0.0-alpha.256",
-        "@panneau/element-loading": "^1.0.0-alpha.256",
+        "@panneau/element-loading": "^1.0.0-alpha.260",
         "@panneau/element-pagination": "^1.0.0-alpha.256",
         "@panneau/themes": "^1.0.0-alpha.256",
         "classnames": "^2.2.6",
