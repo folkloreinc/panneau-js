@@ -32,6 +32,9 @@
     "6nwWPR": {
         "defaultMessage": "Error 401"
     },
+    "6viUpq": {
+        "defaultMessage": "Create {a_singular}"
+    },
     "7M0o0q": {
         "defaultMessage": "Item"
     },
@@ -65,11 +68,11 @@
     "EsoYzX": {
         "defaultMessage": "Previous"
     },
+    "FntHPK": {
+        "defaultMessage": "View {the_plural}"
+    },
     "HOobY2": {
         "defaultMessage": "Error 401"
-    },
-    "IbZVf0": {
-        "defaultMessage": "Submit"
     },
     "IuqEHB": {
         "defaultMessage": "Account"
@@ -88,9 +91,6 @@
     },
     "NI9440": {
         "defaultMessage": "Add file"
-    },
-    "PKCv5M": {
-        "defaultMessage": "No item..."
     },
     "PQX/ph": {
         "defaultMessage": "Create account"
@@ -119,6 +119,9 @@
     "UUv8FR": {
         "defaultMessage": "Name"
     },
+    "UbmsLL": {
+        "defaultMessage": "No item found."
+    },
     "UpStcP": {
         "defaultMessage": "Could not find type for this item"
     },
@@ -143,8 +146,14 @@
     "bPk79b": {
         "defaultMessage": "Show"
     },
+    "bfP/d8": {
+        "defaultMessage": "{The_singular} has been created."
+    },
     "d0g58T": {
         "defaultMessage": "Login"
+    },
+    "dkRdks": {
+        "defaultMessage": "{The_singular} has been deleted."
     },
     "ejwBSw": {
         "defaultMessage": "Error 500"
@@ -155,14 +164,20 @@
     "gWmL5V": {
         "defaultMessage": "Disable two factor authentication"
     },
-    "gjBiyj": {
-        "defaultMessage": "Loading..."
-    },
     "hezcGl": {
         "defaultMessage": "Go to home page"
     },
+    "iFsDVR": {
+        "defaultMessage": "Loading"
+    },
+    "l+ddDH": {
+        "defaultMessage": "Create {a_singular}"
+    },
     "li2Qqu": {
         "defaultMessage": "Skip setup"
+    },
+    "mCfzkJ": {
+        "defaultMessage": "Edit {a_singular}"
     },
     "owrRHV": {
         "defaultMessage": "Error 500"
@@ -172,30 +187,6 @@
     },
     "rSt+KL": {
         "defaultMessage": "No"
-    },
-    "resources.confirm_delete": {
-        "defaultMessage": "Are you sure you want to delete {the_singular} #{id}?"
-    },
-    "resources.create": {
-        "defaultMessage": "Create {a_singular}"
-    },
-    "resources.create_btn": {
-        "defaultMessage": "Create {a_singular}"
-    },
-    "resources.created": {
-        "defaultMessage": "{the_singular} has been created."
-    },
-    "resources.delete": {
-        "defaultMessage": "Delete {a_singular}"
-    },
-    "resources.deleted": {
-        "defaultMessage": "{the_singular} has been deleted."
-    },
-    "resources.edit": {
-        "defaultMessage": "Edit {a_singular}"
-    },
-    "resources.view": {
-        "defaultMessage": "View {plural}"
     },
     "s4Xrs9": {
         "defaultMessage": "Time"
@@ -217,6 +208,12 @@
     },
     "yALN2p": {
         "defaultMessage": "There was an error"
+    },
+    "yzfiXJ": {
+        "defaultMessage": "Are you sure you want to delete {the_singular} #{id}?"
+    },
+    "zN5N/Q": {
+        "defaultMessage": "Delete {a_singular}"
     },
     "zTiC4D": {
         "defaultMessage": "Do you wish to enable two factor authentication on your account? You will have to use an authentication app such as Google Authenticator or Microsoft Authenticator in addition to your password to connect."

@@ -1,13 +1,15 @@
 /* eslint-disable react/jsx-indent */
+
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Button from '@panneau/element-button';
-import Buttons from '@panneau/element-buttons';
-import FormStatus from '@panneau/element-form-status';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Button from '@panneau/element-button';
+import Buttons from '@panneau/element-buttons';
+import FormStatus from '@panneau/element-form-status';
 
 const propTypes = {
     action: PropTypes.string,
@@ -121,7 +123,7 @@ const Form = ({
                                 label={
                                     submitButtonLabel || (
                                         <FormattedMessage
-                                            defaultMessage="Submit"
+                                            defaultMessage="Save"
                                             description="Button label"
                                         />
                                     )

@@ -129,7 +129,6 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                         <Alert className="mb-4" onClose={onClickCloseAlert}>
                             <ResourceMessage
                                 resource={resource}
-                                id="resources.created"
                                 defaultMessage="{The_singular} has been created."
                                 description="Alert message"
                             />
@@ -139,7 +138,6 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                         <Alert className="mb-4" onClose={onClickCloseAlert}>
                             <ResourceMessage
                                 resource={resource}
-                                id="resources.deleted"
                                 defaultMessage="{The_singular} has been deleted."
                                 description="Alert message"
                             />

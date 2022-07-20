@@ -43,6 +43,10 @@
     "defaultMessage": "Error 401",
     "description": "Error page title"
   },
+  "6viUpq": {
+    "defaultMessage": "Create {a_singular}",
+    "description": "Page title"
+  },
   "7M0o0q": {
     "defaultMessage": "Item",
     "description": "Items field's item label"
@@ -87,13 +91,13 @@
     "defaultMessage": "Previous",
     "description": "Pagination button label"
   },
+  "FntHPK": {
+    "defaultMessage": "View {the_plural}",
+    "description": "Button label"
+  },
   "HOobY2": {
     "defaultMessage": "Error 401",
     "description": "Error page meta title"
-  },
-  "IbZVf0": {
-    "defaultMessage": "Submit",
-    "description": "Button label"
   },
   "IuqEHB": {
     "defaultMessage": "Account",
@@ -118,10 +122,6 @@
   "NI9440": {
     "defaultMessage": "Add file",
     "description": "Default upload add button label"
-  },
-  "PKCv5M": {
-    "defaultMessage": "No item...",
-    "description": "Label when there is no item in items field"
   },
   "PQX/ph": {
     "defaultMessage": "Create account",
@@ -159,6 +159,10 @@
     "defaultMessage": "Name",
     "description": "Field label"
   },
+  "UbmsLL": {
+    "defaultMessage": "No item found.",
+    "description": "Label when there is no item in items field"
+  },
   "UpStcP": {
     "defaultMessage": "Could not find type for this item",
     "description": "Error message"
@@ -191,9 +195,17 @@
     "defaultMessage": "Show",
     "description": "Button label"
   },
+  "bfP/d8": {
+    "defaultMessage": "{The_singular} has been created.",
+    "description": "Alert message"
+  },
   "d0g58T": {
     "defaultMessage": "Login",
     "description": "Menu label"
+  },
+  "dkRdks": {
+    "defaultMessage": "{The_singular} has been deleted.",
+    "description": "Alert message"
   },
   "ejwBSw": {
     "defaultMessage": "Error 500",
@@ -207,16 +219,24 @@
     "defaultMessage": "Disable two factor authentication",
     "description": "Button label"
   },
-  "gjBiyj": {
-    "defaultMessage": "Loading..."
-  },
   "hezcGl": {
     "defaultMessage": "Go to home page",
+    "description": "Button label"
+  },
+  "iFsDVR": {
+    "defaultMessage": "Loading"
+  },
+  "l+ddDH": {
+    "defaultMessage": "Create {a_singular}",
     "description": "Button label"
   },
   "li2Qqu": {
     "defaultMessage": "Skip setup",
     "description": "Link label"
+  },
+  "mCfzkJ": {
+    "defaultMessage": "Edit {a_singular}",
+    "description": "Page title"
   },
   "owrRHV": {
     "defaultMessage": "Error 500",
@@ -229,38 +249,6 @@
   "rSt+KL": {
     "defaultMessage": "No",
     "description": "Boolean value"
-  },
-  "resources.confirm_delete": {
-    "defaultMessage": "Are you sure you want to delete {the_singular} #{id}?",
-    "description": "Confirmation message"
-  },
-  "resources.create": {
-    "defaultMessage": "Create {a_singular}",
-    "description": "Page title"
-  },
-  "resources.create_btn": {
-    "defaultMessage": "Create {a_singular}",
-    "description": "Button label"
-  },
-  "resources.created": {
-    "defaultMessage": "{The_singular} has been created.",
-    "description": "Alert message"
-  },
-  "resources.delete": {
-    "defaultMessage": "Delete {a_singular}",
-    "description": "Page title"
-  },
-  "resources.deleted": {
-    "defaultMessage": "{The_singular} has been deleted.",
-    "description": "Alert message"
-  },
-  "resources.edit": {
-    "defaultMessage": "Edit {a_singular}",
-    "description": "Page title"
-  },
-  "resources.view": {
-    "defaultMessage": "View {the_plural}",
-    "description": "Button label"
   },
   "s4Xrs9": {
     "defaultMessage": "Time",
@@ -289,6 +277,14 @@
   "yALN2p": {
     "defaultMessage": "There was an error",
     "description": "Error page description"
+  },
+  "yzfiXJ": {
+    "defaultMessage": "Are you sure you want to delete {the_singular} #{id}?",
+    "description": "Confirmation message"
+  },
+  "zN5N/Q": {
+    "defaultMessage": "Delete {a_singular}",
+    "description": "Page title"
   },
   "zTiC4D": {
     "defaultMessage": "Do you wish to enable two factor authentication on your account? You will have to use an authentication app such as Google Authenticator or Microsoft Authenticator in addition to your password to connect.",

@@ -33,7 +33,6 @@ const ResourceCreatePage = ({ resource }) => {
                     title={
                         <ResourceMessage
                             resource={resource}
-                            id="resources.create"
                             defaultMessage="Create {a_singular}"
                             description="Page title"
                         />

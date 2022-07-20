@@ -44,7 +44,6 @@ const ResourceDeletePage = ({ resource, itemId }) => {
                     title={
                         <ResourceMessage
                             resource={resource}
-                            id="resources.delete"
                             defaultMessage="Delete {a_singular}"
                             description="Page title"
                         />

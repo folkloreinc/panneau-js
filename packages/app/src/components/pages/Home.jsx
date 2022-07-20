@@ -33,7 +33,6 @@ const HomePage = () => {
                         >
                             <ResourceMessage
                                 resource={resource}
-                                id="resources.view"
                                 defaultMessage="View {the_plural}"
                                 description="Button label"
                             />

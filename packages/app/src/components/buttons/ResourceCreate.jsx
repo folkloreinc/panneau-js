@@ -62,7 +62,6 @@ const ResourceCreateButtom = ({ resource, className }) => {
         >
             <ResourceMessage
                 resource={resource}
-                id="resources.create_btn"
                 defaultMessage="Create {a_singular}"
                 description="Button label"
             />

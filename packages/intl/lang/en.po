@@ -77,6 +77,12 @@ msgctxt "6nwWPR"
 msgid "Error 401"
 msgstr "Error 401"
 
+# Page title
+#: 6viUpq
+msgctxt "6viUpq"
+msgid "Create {a_singular}"
+msgstr "Create {a_singular}"
+
 # Items field's item label
 #: 7M0o0q
 msgctxt "7M0o0q"
@@ -143,17 +149,17 @@ msgctxt "EsoYzX"
 msgid "Previous"
 msgstr "Previous"
 
+# Button label
+#: FntHPK
+msgctxt "FntHPK"
+msgid "View {the_plural}"
+msgstr "View {the_plural}"
+
 # Error page meta title
 #: HOobY2
 msgctxt "HOobY2"
 msgid "Error 401"
 msgstr "Error 401"
-
-# Button label
-#: IbZVf0
-msgctxt "IbZVf0"
-msgid "Submit"
-msgstr "Submit"
 
 # Menu label
 #: IuqEHB
@@ -190,12 +196,6 @@ msgstr "Error"
 msgctxt "NI9440"
 msgid "Add file"
 msgstr "Add file"
-
-# Label when there is no item in items field
-#: PKCv5M
-msgctxt "PKCv5M"
-msgid "No item..."
-msgstr "No item..."
 
 # Button label
 #: PQX/ph
@@ -251,6 +251,12 @@ msgctxt "UUv8FR"
 msgid "Name"
 msgstr "Name"
 
+# Label when there is no item in items field
+#: UbmsLL
+msgctxt "UbmsLL"
+msgid "No item found."
+msgstr "No item found."
+
 # Error message
 #: UpStcP
 msgctxt "UpStcP"
@@ -299,11 +305,23 @@ msgctxt "bPk79b"
 msgid "Show"
 msgstr "Show"
 
+# Alert message
+#: bfP/d8
+msgctxt "bfP/d8"
+msgid "{The_singular} has been created."
+msgstr "{The_singular} has been created."
+
 # Menu label
 #: d0g58T
 msgctxt "d0g58T"
 msgid "Login"
 msgstr "Login"
+
+# Alert message
+#: dkRdks
+msgctxt "dkRdks"
+msgid "{The_singular} has been deleted."
+msgstr "{The_singular} has been deleted."
 
 # Error page meta title
 #: ejwBSw
@@ -323,22 +341,34 @@ msgctxt "gWmL5V"
 msgid "Disable two factor authentication"
 msgstr "Disable two factor authentication"
 
-#: gjBiyj
-msgctxt "gjBiyj"
-msgid "Loading..."
-msgstr "Loading..."
-
 # Button label
 #: hezcGl
 msgctxt "hezcGl"
 msgid "Go to home page"
 msgstr "Go to home page"
 
+#: iFsDVR
+msgctxt "iFsDVR"
+msgid "Loading"
+msgstr "Loading"
+
+# Button label
+#: l+ddDH
+msgctxt "l+ddDH"
+msgid "Create {a_singular}"
+msgstr "Create {a_singular}"
+
 # Link label
 #: li2Qqu
 msgctxt "li2Qqu"
 msgid "Skip setup"
 msgstr "Skip setup"
+
+# Page title
+#: mCfzkJ
+msgctxt "mCfzkJ"
+msgid "Edit {a_singular}"
+msgstr "Edit {a_singular}"
 
 # Error page title
 #: owrRHV
@@ -357,54 +387,6 @@ msgstr "Enable two factor authentication"
 msgctxt "rSt+KL"
 msgid "No"
 msgstr "No"
-
-# Confirmation message
-#: resources.confirm_delete
-msgctxt "resources.confirm_delete"
-msgid "Are you sure you want to delete {the_singular} #{id}?"
-msgstr "Are you sure you want to delete {the_singular} #{id}?"
-
-# Page title
-#: resources.create
-msgctxt "resources.create"
-msgid "Create {a_singular}"
-msgstr "Create {a_singular}"
-
-# Button label
-#: resources.create_btn
-msgctxt "resources.create_btn"
-msgid "Create {a_singular}"
-msgstr "Create {a_singular}"
-
-# Alert message
-#: resources.created
-msgctxt "resources.created"
-msgid "{The_singular} has been created."
-msgstr "{the_singular} has been created."
-
-# Page title
-#: resources.delete
-msgctxt "resources.delete"
-msgid "Delete {a_singular}"
-msgstr "Delete {a_singular}"
-
-# Alert message
-#: resources.deleted
-msgctxt "resources.deleted"
-msgid "{The_singular} has been deleted."
-msgstr "{the_singular} has been deleted."
-
-# Page title
-#: resources.edit
-msgctxt "resources.edit"
-msgid "Edit {a_singular}"
-msgstr "Edit {a_singular}"
-
-# Button label
-#: resources.view
-msgctxt "resources.view"
-msgid "View {the_plural}"
-msgstr "View {plural}"
 
 # DateTimeField time caption
 #: s4Xrs9
@@ -447,6 +429,18 @@ msgstr "An error occured and we could not delete this item successfully."
 msgctxt "yALN2p"
 msgid "There was an error"
 msgstr "There was an error"
+
+# Confirmation message
+#: yzfiXJ
+msgctxt "yzfiXJ"
+msgid "Are you sure you want to delete {the_singular} #{id}?"
+msgstr "Are you sure you want to delete {the_singular} #{id}?"
+
+# Page title
+#: zN5N/Q
+msgctxt "zN5N/Q"
+msgid "Delete {a_singular}"
+msgstr "Delete {a_singular}"
 
 # Explaination label
 #: zTiC4D

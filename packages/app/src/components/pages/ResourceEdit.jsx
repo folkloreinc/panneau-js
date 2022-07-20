@@ -35,7 +35,6 @@ const ResourceEditPage = ({ resource, itemId }) => {
                     title={
                         <ResourceMessage
                             resource={resource}
-                            id="resources.edit"
                             defaultMessage="Edit {a_singular}"
                             description="Page title"
                         />

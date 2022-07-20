@@ -3,7 +3,7 @@
         "defaultMessage": "Erreur 403"
     },
     "12Px0g": {
-        "defaultMessage": "Envoyer le lien"
+        "defaultMessage": "Envoyer le lien de réinitialisation du mot de passe"
     },
     "22Ld5M": {
         "defaultMessage": "Entrez le code de votre application d'authentification pour continuer"
@@ -31,6 +31,9 @@
     },
     "6nwWPR": {
         "defaultMessage": "Erreur 401"
+    },
+    "6viUpq": {
+        "defaultMessage": "Créer {a_singular}"
     },
     "7M0o0q": {
         "defaultMessage": "Élément"
@@ -65,11 +68,11 @@
     "EsoYzX": {
         "defaultMessage": "Précédent"
     },
+    "FntHPK": {
+        "defaultMessage": "Voir {the_plural}"
+    },
     "HOobY2": {
         "defaultMessage": "Erreur 401"
-    },
-    "IbZVf0": {
-        "defaultMessage": "Sauvegarder"
     },
     "IuqEHB": {
         "defaultMessage": "Compte"
@@ -88,9 +91,6 @@
     },
     "NI9440": {
         "defaultMessage": "Ajouter un fichier"
-    },
-    "PKCv5M": {
-        "defaultMessage": "Aucun élément..."
     },
     "PQX/ph": {
         "defaultMessage": "Créer mon compte"
@@ -119,8 +119,11 @@
     "UUv8FR": {
         "defaultMessage": "Nom"
     },
+    "UbmsLL": {
+        "defaultMessage": "Aucun élément trouvé."
+    },
     "UpStcP": {
-        "defaultMessage": "Nous n'avons pas pu trouver ce type"
+        "defaultMessage": "Nous n'avons pas pu trouver ce type d'élément"
     },
     "VhJUeW": {
         "defaultMessage": "Confirmez votre mot de passe"
@@ -143,8 +146,14 @@
     "bPk79b": {
         "defaultMessage": "Afficher"
     },
+    "bfP/d8": {
+        "defaultMessage": "{The_singular} a été créé."
+    },
     "d0g58T": {
         "defaultMessage": "Connexion"
+    },
+    "dkRdks": {
+        "defaultMessage": "{The_singular} a été supprimé."
     },
     "ejwBSw": {
         "defaultMessage": "Erreur 500"
@@ -155,14 +164,20 @@
     "gWmL5V": {
         "defaultMessage": "Désactiver l'authentification à deux facteurs"
     },
-    "gjBiyj": {
-        "defaultMessage": "Chargement..."
-    },
     "hezcGl": {
         "defaultMessage": "Aller à la page d’accueil"
     },
+    "iFsDVR": {
+        "defaultMessage": "Chargement"
+    },
+    "l+ddDH": {
+        "defaultMessage": "Créer {a_singular}"
+    },
     "li2Qqu": {
         "defaultMessage": "Passer l'étape"
+    },
+    "mCfzkJ": {
+        "defaultMessage": "Modifier {a_singular}"
     },
     "owrRHV": {
         "defaultMessage": "Erreur 500"
@@ -173,30 +188,6 @@
     "rSt+KL": {
         "defaultMessage": "Non"
     },
-    "resources.confirm_delete": {
-        "defaultMessage": "Êtes-vous certain de vouloir supprimer {the_singular} #{id}?"
-    },
-    "resources.create": {
-        "defaultMessage": "Créer {a_singular}"
-    },
-    "resources.create_btn": {
-        "defaultMessage": "Créer {a_singular}"
-    },
-    "resources.created": {
-        "defaultMessage": "{the_singular} a été créé."
-    },
-    "resources.delete": {
-        "defaultMessage": "Supprimer {a_singular}"
-    },
-    "resources.deleted": {
-        "defaultMessage": "{the_singular} a été supprimé."
-    },
-    "resources.edit": {
-        "defaultMessage": "Modifier {a_singular}"
-    },
-    "resources.view": {
-        "defaultMessage": "Afficher {the_plural}"
-    },
     "s4Xrs9": {
         "defaultMessage": "Heure"
     },
@@ -204,7 +195,7 @@
         "defaultMessage": "Retour à la connexion"
     },
     "v4Qtl9": {
-        "defaultMessage": "Autjourd'hui"
+        "defaultMessage": "Aujourd'hui"
     },
     "wKPI1y": {
         "defaultMessage": "Cette page n’existe pas"
@@ -217,6 +208,12 @@
     },
     "yALN2p": {
         "defaultMessage": "Il y a eu une erreur"
+    },
+    "yzfiXJ": {
+        "defaultMessage": "Êtes-vous certain de vouloir supprimer {the_singular} #{id}?"
+    },
+    "zN5N/Q": {
+        "defaultMessage": "Supprimer {a_singular}"
     },
     "zTiC4D": {
         "defaultMessage": "Voulez-vous activer l'authentification à deux facteurs ? Vous devrez utiliser une application de connexion telle que Google Authenticator ou Microsoft Authenticator en plus de votre mot de passe pour vous connecter."

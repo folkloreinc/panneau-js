@@ -65,7 +65,6 @@ const DeleteForm = ({
                 <ResourceMessage
                     resource={resource}
                     values={value}
-                    id="resources.confirm_delete"
                     defaultMessage="Are you sure you want to delete {the_singular} #{id}?"
                     description="Confirmation message"
                 />
