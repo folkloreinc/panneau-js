@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import { useResource } from '@panneau/core/contexts';
 
 const useResourceValues = (resource, values = null) => {
+    const contextResource = useResource();
     const allValues = useMemo(() => {
-        const contextResource = useResource();
         const { name = null, intl: { values: resourceValues } = {} } =
             resource || contextResource || {};
         return {
@@ -12,7 +12,7 @@ const useResourceValues = (resource, values = null) => {
             ...resourceValues,
             ...values,
         };
-    }, [resource, values]);
+    }, [resource, values, contextResource]);
 
     return allValues;
 };
