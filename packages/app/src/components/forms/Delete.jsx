@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Form from '@panneau/element-form';
-import { ResourceMessage } from '@panneau/intl';
+import { useResourceValues } from '@panneau/intl';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -45,51 +45,54 @@ const DeleteForm = ({
     generalError,
     className,
     ...props
-}) => (
-    <Form
-        className={classNames([
-            'form',
-            {
-                'invalid-feedback': generalError !== null,
-                [className]: className !== null,
-            },
-        ])}
-        action={action}
-        onSubmit={onSubmit}
-        withoutActions
-        withoutErrors
-        {...props}
-    >
-        <div className="card">
-            <div className="card-body">
-                <ResourceMessage
-                    resource={resource}
-                    values={value}
-                    defaultMessage="Are you sure you want to delete {the_singular} #{id}?"
-                    description="Confirmation message"
-                />
-                {generalError ? (
-                    <p className="text-danger">
-                        <FormattedMessage
-                            defaultMessage="An error occured and we could not delete this item successfully."
-                            description="Error message"
-                        />
-                    </p>
-                ) : null}
-            </div>
-            <div className="card-body d-flex">
-                {previous !== null ? (
-                    <Button href={previous} className="me-2" theme="secondary" outline>
-                        <FormattedMessage defaultMessage="Cancel" description="Button label" />
+}) => {
+    const { id = null } = value || {};
+    const resourceValues = useResourceValues(resource, { id });
+    return (
+        <Form
+            className={classNames([
+                'form',
+                {
+                    'invalid-feedback': generalError !== null,
+                    [className]: className !== null,
+                },
+            ])}
+            action={action}
+            onSubmit={onSubmit}
+            withoutActions
+            withoutErrors
+            {...props}
+        >
+            <div className="card">
+                <div className="card-body">
+                    <FormattedMessage
+                        values={resourceValues}
+                        defaultMessage="Are you sure you want to delete {the_singular} #{id}?"
+                        description="Confirmation message"
+                    />
+                    {generalError ? (
+                        <p className="text-danger">
+                            <FormattedMessage
+                                defaultMessage="An error occured and we could not delete this item successfully."
+                                description="Error message"
+                            />
+                        </p>
+                    ) : null}
+                </div>
+                <div className="card-body d-flex">
+                    {previous !== null ? (
+                        <Button href={previous} className="me-2" theme="secondary" outline>
+                            <FormattedMessage defaultMessage="Cancel" description="Button label" />
+                        </Button>
+                    ) : null}
+                    <Button type="submit" className="ms-auto" theme="danger">
+                        <FormattedMessage defaultMessage="Delete" description="Button label" />
                     </Button>
-                ) : null}
-                <Button type="submit" className="ms-auto" theme="danger">
-                    <FormattedMessage defaultMessage="Delete" description="Button label" />
-                </Button>
+                </div>
             </div>
-        </div>
-    </Form>
-);
+        </Form>
+    );
+};
 
 DeleteForm.propTypes = propTypes;
 DeleteForm.defaultProps = defaultProps;

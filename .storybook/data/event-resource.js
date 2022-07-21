@@ -4,8 +4,15 @@ export default {
 
     intl: {
         values: {
-            a_singular: 'event',
+            name: 'event',
+            a_singular: 'an event',
             a_plural: 'events',
+            A_singular: 'An event',
+            A_plural: 'Events',
+            the_singular: 'the event',
+            the_plural: 'the events',
+            The_singular: 'The event',
+            The_plural: 'The events',
         },
     },
 
@@ -34,9 +41,9 @@ export default {
         actions: [
             {
                 id: 'export',
-                label: 'Export'
+                label: 'Export',
             },
-            'create'
+            'create',
         ],
 
         filters: [
@@ -44,7 +51,6 @@ export default {
                 name: 'search',
                 placeholder: 'Chercher',
                 component: 'search',
-
             },
             {
                 name: 'trucs',

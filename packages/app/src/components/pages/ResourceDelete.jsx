@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { useResourceItem } from '@panneau/data';
-import { ResourceMessage } from '@panneau/intl';
+import { useResourceValues } from '@panneau/intl';
 
 import ResourceForm from '../forms/ResourceForm';
 import MainLayout from '../layouts/Main';
@@ -36,14 +37,15 @@ const ResourceDeletePage = ({ resource, itemId }) => {
     const previousEntry =
         entries !== null && entries.length > 1 ? entries[entries.length - 2] : null;
     const previous = previousEntry?.pathname || null;
+    const resourceValues = useResourceValues(resource);
 
     return (
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
                     title={
-                        <ResourceMessage
-                            resource={resource}
+                        <FormattedMessage
+                            values={resourceValues}
                             defaultMessage="Delete {a_singular}"
                             description="Page title"
                         />

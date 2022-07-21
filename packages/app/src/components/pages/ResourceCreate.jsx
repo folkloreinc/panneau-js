@@ -1,11 +1,12 @@
 import { parse as parseQuery } from 'query-string';
 import React, { useCallback, useMemo } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
-import { ResourceMessage } from '@panneau/intl';
+import { useResourceValues } from '@panneau/intl';
 
 import ResourceForm from '../forms/ResourceForm';
 import MainLayout from '../layouts/Main';
@@ -25,14 +26,15 @@ const ResourceCreatePage = ({ resource }) => {
         history.push(`${resourceRoute('index')}?created=true`);
     }, [history, resourceRoute]);
     const { type = null } = useMemo(() => parseQuery(search), [search]);
+    const resourceValues = useResourceValues(resource);
 
     return (
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
                     title={
-                        <ResourceMessage
-                            resource={resource}
+                        <FormattedMessage
+                            values={resourceValues}
                             defaultMessage="Create {a_singular}"
                             description="Page title"
                         />
