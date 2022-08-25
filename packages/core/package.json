@@ -1,6 +1,6 @@
 {
     "name": "@panneau/core",
-    "version": "1.0.0-alpha.233",
+    "version": "1.0.0-alpha.256",
     "description": "",
     "keywords": [
         "javascript"
@@ -60,16 +60,16 @@
         "prepare": "../../scripts/prepare-package.sh --scss"
     },
     "devDependencies": {
-        "react": "^16.8.0 || ^17.0.0",
-        "react-dom": "^16.8.0 || ^17.0.0"
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
     },
     "peerDependencies": {
-        "react": "^16.8.0 || ^17.0.0",
-        "react-dom": "^16.8.0 || ^17.0.0"
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@folklore/fetch": "^0.1.10",
+        "@folklore/fetch": "^0.1.15",
         "@folklore/forms": "^0.0.10",
         "@folklore/services": "^0.1.24",
         "@folklore/tracking": "^0.0.9",
@@ -88,7 +88,7 @@
         "@uppy/tus": "^2.2.0",
         "@uppy/webcam": "^2.0.5",
         "@uppy/xhr-upload": "^2.0.7",
-        "bootstrap": "^5.0.2",
+        "bootstrap": "5.2.0-beta1",
         "change-case": "^4.1.2",
         "classnames": "^2.2.6",
         "css-mediaquery": "^0.1.2",

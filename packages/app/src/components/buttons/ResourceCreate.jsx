@@ -1,11 +1,13 @@
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
-import { ResourceMessage } from '@panneau/intl';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import { useResourceValues } from '@panneau/intl';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -18,7 +20,10 @@ const defaultProps = {
 
 const ResourceCreateButtom = ({ resource, className }) => {
     const { types = null } = resource;
+    // const intl = useIntl();
     const resourceRoute = useResourceUrlGenerator(resource);
+    const resourceValues = useResourceValues(resource);
+
     const [dropdownOpened, setDropdownOpened] = useState(false);
     const onClickDropdown = useCallback(
         (e) => {
@@ -59,9 +64,8 @@ const ResourceCreateButtom = ({ resource, className }) => {
             ])}
             onClick={hasMultipleTypes ? onClickDropdown : null}
         >
-            <ResourceMessage
-                resource={resource}
-                id="resources.create_btn"
+            <FormattedMessage
+                values={resourceValues}
                 defaultMessage="Create {a_singular}"
                 description="Button label"
             />

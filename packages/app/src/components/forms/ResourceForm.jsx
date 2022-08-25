@@ -1,11 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { FormProvider, useFormsComponents, useLocales } from '@panneau/core/contexts';
 import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceDestroy, useResourceStore, useResourceUpdate } from '@panneau/data';
-import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
 import DeleteForm from './Delete';
 
 const propTypes = {

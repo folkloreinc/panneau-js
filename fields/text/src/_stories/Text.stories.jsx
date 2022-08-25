@@ -32,3 +32,5 @@ export const TextArea = () => <Container type="textarea" placeholder="Textarea" 
 export const WithErrors = () => <Container placeholder="Text" errors={['Invalid field']} />;
 
 export const MaxLength = () => <Container placeholder="Max 3 characters" maxLength={3} />;
+
+export const ReadOnly = () => <Container placeholder="Max 3 characters" readOnly />;

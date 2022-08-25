@@ -77,7 +77,12 @@ export const WithTypes = () => (
             {
                 id: 'text',
                 name: 'Text',
-                fields: [{ component: 'text', name: 'text-plain', label: 'Texte' }],
+                fields: [{ component: 'text', type: 'editor', name: 'text-plain', label: 'Texte' }],
+            },
+            {
+                id: 'html',
+                name: 'HTML',
+                fields: [{ component: 'html', name: 'text-html', label: 'Texte html' }],
             },
             {
                 id: 'text-localized',

@@ -1,16 +1,15 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 
-import PanneauContainer from '../components/Container';
-
 import panneauDefinition from '../../../../.storybook/data/panneau-definition';
+import PanneauContainer from '../components/Container';
 
 export default {
     component: PanneauContainer,
     title: 'App',
     parameters: {
         intl: {
-            locale: panneauDefinition.intl.locale
+            locale: panneauDefinition.intl.locale,
         },
     },
 };
@@ -37,6 +36,28 @@ export const LightMode = () => (
 export const DarkMode = () => (
     <PanneauContainer
         definition={{ ...panneauDefinition, theme: { colorScheme: 'dark' } }}
+        memoryRouter
+        user={user}
+        {...props}
+    />
+);
+
+export const Englishe = () => (
+    <PanneauContainer
+        definition={{
+            ...panneauDefinition,
+            intl: {
+                locale: 'en',
+                locales: ['en', 'fr'],
+                values: {
+                    name: 'Panneau in Englishe',
+                },
+                messages: {
+                    'resources.index': 'Lire {a_plural}',
+                    'resources.create': 'Blabla',
+                },
+            },
+        }}
         memoryRouter
         user={user}
         {...props}

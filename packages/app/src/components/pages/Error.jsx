@@ -1,7 +1,9 @@
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Label from '@panneau/element-label';
 import React from 'react';
 import { defineMessages } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Label from '@panneau/element-label';
+
 import GuestLayout from '../layouts/Guest';
 
 export const messages = defineMessages({

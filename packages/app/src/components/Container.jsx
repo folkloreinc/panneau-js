@@ -1,4 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import PropTypes from 'prop-types';
+import React, { useCallback, useMemo } from 'react';
+import { MemoryRouter } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
+
 import { AuthProvider } from '@panneau/auth';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import {
@@ -14,12 +19,10 @@ import FiltersProvider from '@panneau/filters';
 import FormsProvider from '@panneau/forms';
 import { IntlProvider } from '@panneau/intl';
 import ListsProvider from '@panneau/lists';
-import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
-import { MemoryRouter } from 'react-router';
-import { BrowserRouter } from 'react-router-dom';
-import '../styles/styles.scss';
+
 import Routes from './Routes';
+
+import '../styles/styles.scss';
 
 const propTypes = {
     definition: PanneauPropTypes.panneauDefinition.isRequired,

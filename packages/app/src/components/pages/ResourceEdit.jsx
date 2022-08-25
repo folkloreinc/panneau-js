@@ -1,12 +1,16 @@
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceItem } from '@panneau/data';
-import { ResourceMessage } from '@panneau/intl';
-import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useResourceValues } from '@panneau/intl';
+
 import ResourceForm from '../forms/ResourceForm';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
+
 // import Button from '../buttons/Button';
 
 const propTypes = {
@@ -24,15 +28,15 @@ const ResourceEditPage = ({ resource, itemId }) => {
     useEffect(() => {
         setEditItem(item);
     }, [item, setEditItem]);
+    const resourceValues = useResourceValues(resource);
 
     return (
         <ResourceProvider resource={resource}>
             <MainLayout>
                 <PageHeader
                     title={
-                        <ResourceMessage
-                            resource={resource}
-                            id="resources.edit"
+                        <FormattedMessage
+                            values={resourceValues}
                             defaultMessage="Edit {a_singular}"
                             description="Page title"
                         />

@@ -10,6 +10,7 @@ echo "Building intl..."
 
 for lang in $languages
 do
+    echo $lang
     if [ "$lang" = "en" ]; then
         ./scripts/json2po.js --default ./lang/messages.json ./lang/$lang.po
     else

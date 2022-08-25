@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
     useAuthCheck,
     useAuthLogin,
@@ -74,7 +74,6 @@ export const AuthProvider = ({ user: initialUser, checkOnMount, onLogout, childr
                     setUser(null);
                 })
                 .then(() => {
-                    console.log('logout redirect'); // eslint-disable-line
                     if (onLogout !== null) {
                         onLogout();
                     }
@@ -110,22 +109,21 @@ export const AuthProvider = ({ user: initialUser, checkOnMount, onLogout, childr
         }
     }, [authCheck, setUser, checkOnMount]);
 
-    return (
-        <AuthContext.Provider
-            value={{
-                user,
-                setUser,
-                loggedIn: user !== null,
-                logout,
-                login,
-                register,
-                requestPassword,
-                resetPassword,
-            }}
-        >
-            {children}
-        </AuthContext.Provider>
+    const value = useMemo(
+        () => ({
+            user,
+            setUser,
+            loggedIn: user !== null,
+            logout,
+            login,
+            register,
+            requestPassword,
+            resetPassword,
+        }),
+        [user, setUser, logout, login, register, requestPassword, resetPassword],
     );
+
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 AuthProvider.propTypes = propTypes;

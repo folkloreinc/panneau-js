@@ -45,11 +45,12 @@ class AuthApi {
         return fetch(url, {
             method: 'POST',
             headers: {
-                ...getCSRFHeaders()
+                ...getCSRFHeaders(),
             },
             credentials: 'include',
-        }).catch(err => {
+        }).catch((err) => {
             console.log('logout err', err); // eslint-disable-line
+            throw err;
         });
     }
 

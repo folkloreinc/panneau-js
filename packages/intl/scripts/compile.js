@@ -21,8 +21,9 @@ globSync(srcPath, {
     nodir: true,
     cwd: process.cwd(),
 }).forEach((file) => {
+    const options = program.opts();
     compileAndWrite([path.join(process.cwd(), file)], {
-        ast: program.ast,
+        ast: options.ast,
         throws: true,
         // format: 'crowdin',
         idInterpolationPattern,

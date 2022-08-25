@@ -1,16 +1,21 @@
+/* eslint-disable formatjs/no-camel-case */
+
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { ResourceProvider, useComponentsManager } from '@panneau/core/contexts';
-import { useResourceUrlGenerator } from '@panneau/core/hooks';
-import Alert from '@panneau/element-alert';
-import Button from '@panneau/element-button';
-import { ResourceMessage } from '@panneau/intl';
 import classNames from 'classnames';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import { parse as parseQuery, stringify as stringifyQuery } from 'query-string';
 import React, { useCallback, useMemo } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { ResourceProvider, useComponentsManager } from '@panneau/core/contexts';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import Alert from '@panneau/element-alert';
+import Button from '@panneau/element-button';
+import { useResourceValues } from '@panneau/intl';
+
 import ResourceCreateButton from '../buttons/ResourceCreate';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
@@ -18,7 +23,7 @@ import ResourceItemsList from '../partials/ResourceItemsList';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
-    defaultActions: PropTypes.arrayOf(PropTypes.object),
+    defaultActions: PropTypes.arrayOf(PropTypes.object), // eslint-disable-line react/forbid-prop-types
 };
 
 const defaultProps = {
@@ -44,6 +49,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
         [canCreate, actions],
     );
 
+    const resourceValues = useResourceValues(resource);
     const componentsManager = useComponentsManager();
     const { search } = useLocation();
     const history = useHistory();
@@ -125,20 +131,18 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                 <div className={classNames(['container-sm py-4'])}>
                     {created ? (
                         <Alert className="mb-4" onClose={onClickCloseAlert}>
-                            <ResourceMessage
-                                resource={resource}
-                                id="resources.created"
-                                defaultMessage="{the_singular} has been created."
+                            <FormattedMessage
+                                values={resourceValues}
+                                defaultMessage="{The_singular} has been created."
                                 description="Alert message"
                             />
                         </Alert>
                     ) : null}
                     {deleted ? (
                         <Alert className="mb-4" onClose={onClickCloseAlert}>
-                            <ResourceMessage
-                                resource={resource}
-                                id="resources.deleted"
-                                defaultMessage="{the_singular} has been deleted."
+                            <FormattedMessage
+                                values={resourceValues}
+                                defaultMessage="{The_singular} has been deleted."
                                 description="Alert message"
                             />
                         </Alert>
@@ -156,6 +160,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
         </ResourceProvider>
     );
 };
+
 ResourceIndexPage.propTypes = propTypes;
 ResourceIndexPage.defaultProps = defaultProps;
 

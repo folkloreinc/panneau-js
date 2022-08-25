@@ -1,10 +1,12 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import classNames from 'classnames';
+import isNaN from 'lodash/isNaN';
+import isNumber from 'lodash/isNumber';
+import PropTypes from 'prop-types';
 import TextField from '@panneau/field-text';
-
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -29,6 +31,14 @@ const defaultProps = {
     onChange: null,
 };
 
+function isNumeric(str) {
+    if (typeof str !== 'string') return false; // we only process strings!
+    return (
+        !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+        !isNaN(parseFloat(str))
+    );
+}
+
 const NumberField = ({
     value,
     step,
@@ -40,16 +50,36 @@ const NumberField = ({
     onChange,
     ...props
 }) => {
-    const parseValue = useCallback((newValue) =>
-        float ? parseFloat(newValue) : parseInt(newValue, 10),
+    const parseValue = useCallback(
+        (newValue) => {
+            if (newValue !== null) {
+                if (float) {
+                    return newValue;
+                }
+                if (isNumber(newValue)) {
+                    return newValue;
+                }
+                if (isNumeric(newValue)) {
+                    return float ? parseFloat(newValue) : parseInt(newValue, 10);
+                }
+            }
+            return null;
+        },
+        [float],
     );
+
     const onInputChange = useCallback(
         (val) => {
             if (onChange !== null) {
-                onChange(val !== null && val.length ? parseValue(val) : null);
+                if (float) {
+                    onChange(val !== null && val.length > 0 ? val : null);
+                } else {
+                    onChange(val !== null && val.length > 0 ? parseValue(val) : null);
+                }
+                onChange(val !== null && val.length > 0 ? parseValue(val) : null);
             }
         },
-        [onChange],
+        [onChange, float],
     );
 
     // Datalist
@@ -71,7 +101,7 @@ const NumberField = ({
 
     const onDataListClick = useCallback(
         (dataListValue) => {
-            if (onChange !== null) {
+            if (onChange !== null && dataListValue !== null) {
                 onChange(parseValue(dataListValue));
                 setDataListActive(false);
             }
@@ -80,12 +110,7 @@ const NumberField = ({
     );
 
     return (
-        <div
-            className={classNames([
-                styles.container,
-                { [className]: className !== null },
-            ])}
-        >
+        <div className={classNames([styles.container, { [className]: className !== null }])}>
             <TextField
                 type="number"
                 className={styles.input}

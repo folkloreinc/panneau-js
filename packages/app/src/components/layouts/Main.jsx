@@ -1,7 +1,9 @@
-import { usePanneauColorScheme } from '@panneau/core/contexts';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+
+import { usePanneauColorScheme } from '@panneau/core/contexts';
+
 import MainNavbar from '../menus/MainNavbar';
 
 const propTypes = {

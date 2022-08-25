@@ -2,11 +2,6 @@
 @import '~@panneau/themes/scss/placeholders';
 
 .container {
-
-    // .input {
-        
-    // }
-
     .list {
         position: absolute;
         z-index: 1;
@@ -14,7 +9,14 @@
         max-height: 150px;
         margin-top: 5px;
         overflow-y: auto;
-        border: 1px solid rgba(#000, 0.25);
+        // border: 1px solid rgba(#000, 0.25);
+    }
+
+    .btn {
+        &:hover, &:active {
+            border-color: transparent;
+            text-decoration: underline;
+        }
     }
 
     .item {

@@ -1,11 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useListsComponents, usePanneauColorScheme } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Pagination from '@panneau/element-pagination';
-import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+
 import ResourceFilters from './ResourceFilters';
 
 const propTypes = {
@@ -49,9 +51,13 @@ const ResourceItemsList = ({
     const ListComponents = useListsComponents();
     const [page, queryWithoutPage] = useMemo(() => {
         const { page: currentPage = 1, ...rest } = query || {};
-        return [currentPage, rest]
+        return [currentPage, rest];
     }, [query]);
-    const itemsProps = useResourceItems(resource, queryWithoutPage, paginated ? parseInt(page, 10) : null);
+    const itemsProps = useResourceItems(
+        resource,
+        queryWithoutPage,
+        paginated ? parseInt(page, 10) : null,
+    );
     const { lastPage = 0, total = 0 } = itemsProps || {};
     const ListComponent = getComponentFromName(listComponent || 'table', ListComponents);
 

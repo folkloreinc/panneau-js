@@ -1,9 +1,9 @@
-import { useState, useMemo, useCallback } from 'react';
-import { getCsrfToken, postJSON, getCSRFHeaders } from '@folklore/fetch';
-import isString from 'lodash/isString';
-import isObject from 'lodash/isObject';
-import isArray from 'lodash/isArray';
+import { getCSRFHeaders, getCsrfToken, postJSON } from '@folklore/fetch';
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
+import { useCallback, useMemo, useState } from 'react';
 
 // prettier-ignore
 const getFieldsPropsFromFields = (fields, {
@@ -14,7 +14,7 @@ const getFieldsPropsFromFields = (fields, {
             name = isString(field) ? field : null,
             component = null,
         } = isObject(field) ? field : {};
-        
+
         const fieldErrors = errors !== null ? errors[name] || [] : [];
         const localizedErrors = component === 'localized' ? (locales || []).reduce((previousErrors, locale) => {
             const items = errors !== null ? get(errors, `${name}.${locale}`, []) || [] : [];
@@ -101,7 +101,7 @@ const useForm = (opts = {}) => {
             [fieldName]: fieldValue,
         });
     }, fieldsKey);
-    
+
     const fieldsProps = useMemo(
         () => getFieldsPropsFromFields(fields, { value, errors, onChange: onFieldChange }, locales),
         fieldsKey,
@@ -130,7 +130,9 @@ const useForm = (opts = {}) => {
             error: false,
         });
         setResponse(resp);
-        onComplete(resp);
+        if (onComplete !== null) {
+            onComplete(resp);
+        }
     };
 
     const finalPostForm = useCallback(

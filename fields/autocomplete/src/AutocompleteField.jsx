@@ -1,10 +1,8 @@
-import React, { useRef, useEffect, useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import Fuse from 'fuse.js';
-
+import PropTypes from 'prop-types';
 import TextField from '@panneau/field-text';
-
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -117,7 +115,7 @@ const AutocompleteField = ({
                         >
                             <button
                                 type="button"
-                                className="btn"
+                                className={classNames(['btn', styles.btn])}
                                 data-value={item.label}
                                 onClick={onClick}
                             >
@@ -138,11 +136,7 @@ const AutocompleteField = ({
                 },
             ])}
         >
-            <TextField
-                value={value}
-                placeholder={placeholder}
-                onChange={onInputChange}
-            />
+            <TextField value={value} placeholder={placeholder} onChange={onInputChange} />
             {open && maxedList.length > 0 ? listItems : null}
         </div>
     );

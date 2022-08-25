@@ -1,9 +1,10 @@
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { usePanneauColorScheme } from '@panneau/core/contexts';
-import Label from '@panneau/element-label';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { usePanneauColorScheme } from '@panneau/core/contexts';
+import Label from '@panneau/element-label';
 
 const propTypes = {
     title: PanneauPropTypes.label,
@@ -37,6 +38,7 @@ const PageHeader = ({ title, actions, small, className, children }) => {
             {actions !== null ? <div className="ms-auto">{actions}</div> : null}
         </div>
     );
+
     return (
         <div
             className={classNames([

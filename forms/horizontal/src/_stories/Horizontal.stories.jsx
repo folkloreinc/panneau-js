@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-
-import Horizontal from '../Horizontal';
-
-import FieldsProvider from '../../../../packages/fields';
-
 import fields from '../../../../.storybook/data/fields';
+import FieldsProvider from '../../../../packages/fields';
+import Horizontal from '../Horizontal';
 
 export default {
     component: Horizontal,
@@ -12,15 +9,18 @@ export default {
     parameters: {
         intl: true,
     },
+    decorators: [
+        (Story) => (
+            <FieldsProvider>
+                <Story />
+            </FieldsProvider>
+        ),
+    ],
 };
 
 const Container = () => {
     const [value, setValue] = useState({});
-    return (
-        <FieldsProvider>
-            <Horizontal fields={fields} value={value} onChange={setValue} />
-        </FieldsProvider>
-    );
+    return <Horizontal fields={fields} value={value} onChange={setValue} />;
 };
 
 export const Normal = () => <Container fields={fields} />;

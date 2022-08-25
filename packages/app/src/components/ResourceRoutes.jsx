@@ -1,8 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useComponentsManager, useUrlGenerator } from '@panneau/core/contexts';
 import React from 'react';
 import { Route, Switch } from 'react-router';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useComponentsManager, useUrlGenerator } from '@panneau/core/contexts';
+
 import { ResourceCreate, ResourceDelete, ResourceEdit, ResourceIndex, ResourceShow } from './pages';
 
 const propTypes = {

@@ -3,6 +3,14 @@
     "defaultMessage": "Error 403",
     "description": "Error page meta title"
   },
+  "12Px0g": {
+    "defaultMessage": "Send reset link",
+    "description": "Button label"
+  },
+  "22Ld5M": {
+    "defaultMessage": "Enter the code from your authenticator app to continue",
+    "description": "Field label"
+  },
   "2vB7U4": {
     "defaultMessage": "An error occured and we could not save this item successfully.",
     "description": "Error message"
@@ -19,6 +27,10 @@
     "defaultMessage": "Password",
     "description": "Field label"
   },
+  "5nHK/H": {
+    "defaultMessage": "Do you really wish to disable two factor authentication on your account?",
+    "description": "Explaination label"
+  },
   "5rMPIj": {
     "defaultMessage": "Loading...",
     "description": "Form status"
@@ -30,6 +42,10 @@
   "6nwWPR": {
     "defaultMessage": "Error 401",
     "description": "Error page title"
+  },
+  "6viUpq": {
+    "defaultMessage": "Create {a_singular}",
+    "description": "Page title"
   },
   "7M0o0q": {
     "defaultMessage": "Item",
@@ -43,6 +59,10 @@
     "defaultMessage": "Access to this page is forbidden",
     "description": "Error page description"
   },
+  "8LSb8C": {
+    "defaultMessage": "Current password",
+    "description": "Field label"
+  },
   "9XBwF1": {
     "defaultMessage": "Yes",
     "description": "Boolean value"
@@ -51,9 +71,17 @@
     "defaultMessage": "Login",
     "description": "Page title"
   },
+  "B1h3gd": {
+    "defaultMessage": "Please enter your password to continue",
+    "description": "Field label"
+  },
   "Bhu3B2": {
     "defaultMessage": "Delete",
     "description": "Button label"
+  },
+  "DUbv+u": {
+    "defaultMessage": "Confirm your new password",
+    "description": "Field label"
   },
   "ESkxLX": {
     "defaultMessage": "Success!",
@@ -63,13 +91,13 @@
     "defaultMessage": "Previous",
     "description": "Pagination button label"
   },
+  "FntHPK": {
+    "defaultMessage": "View {the_plural}",
+    "description": "Button label"
+  },
   "HOobY2": {
     "defaultMessage": "Error 401",
     "description": "Error page meta title"
-  },
-  "IbZVf0": {
-    "defaultMessage": "Submit",
-    "description": "Button label"
   },
   "IuqEHB": {
     "defaultMessage": "Account",
@@ -95,9 +123,9 @@
     "defaultMessage": "Add file",
     "description": "Default upload add button label"
   },
-  "PKCv5M": {
-    "defaultMessage": "No item...",
-    "description": "Label when there is no item in items field"
+  "PQX/ph": {
+    "defaultMessage": "Create account",
+    "description": "Button label"
   },
   "Pih2UO": {
     "defaultMessage": "Error 403",
@@ -107,21 +135,57 @@
     "defaultMessage": "Cancel",
     "description": "Button label"
   },
+  "QUAHwy": {
+    "defaultMessage": "Continue",
+    "description": "Button label"
+  },
+  "R1HYj0": {
+    "defaultMessage": "Save",
+    "description": "Button label"
+  },
   "REIcPg": {
     "defaultMessage": "Logout",
     "description": "Menu label"
+  },
+  "U/ye2x": {
+    "defaultMessage": "Cancel",
+    "description": "Link label"
   },
   "US/AMe": {
     "defaultMessage": "Error 404",
     "description": "Error page meta title"
   },
+  "UUv8FR": {
+    "defaultMessage": "Name",
+    "description": "Field label"
+  },
+  "UbmsLL": {
+    "defaultMessage": "No item found.",
+    "description": "Label when there is no item in items field"
+  },
   "UpStcP": {
     "defaultMessage": "Could not find type for this item",
     "description": "Error message"
   },
+  "VhJUeW": {
+    "defaultMessage": "Confirm your password",
+    "description": "Field label"
+  },
   "X5RJlB": {
     "defaultMessage": "Next",
     "description": "Pagination button label"
+  },
+  "XJ1dc3": {
+    "defaultMessage": "New password",
+    "description": "Field label"
+  },
+  "XW9IKQ": {
+    "defaultMessage": "Update password",
+    "description": "Button label"
+  },
+  "ZBNqY2": {
+    "defaultMessage": "Forgot your password?",
+    "description": "Link label"
   },
   "ZxgNge": {
     "defaultMessage": "Add an item",
@@ -131,9 +195,17 @@
     "defaultMessage": "Show",
     "description": "Button label"
   },
+  "bfP/d8": {
+    "defaultMessage": "{The_singular} has been created.",
+    "description": "Alert message"
+  },
   "d0g58T": {
     "defaultMessage": "Login",
     "description": "Menu label"
+  },
+  "dkRdks": {
+    "defaultMessage": "{The_singular} has been deleted.",
+    "description": "Alert message"
   },
   "ejwBSw": {
     "defaultMessage": "Error 500",
@@ -143,56 +215,48 @@
     "defaultMessage": "Log in",
     "description": "Button label"
   },
-  "gjBiyj": {
-    "defaultMessage": "Loading..."
+  "gWmL5V": {
+    "defaultMessage": "Disable two factor authentication",
+    "description": "Button label"
   },
   "hezcGl": {
     "defaultMessage": "Go to home page",
     "description": "Button label"
   },
+  "iFsDVR": {
+    "defaultMessage": "Loading"
+  },
+  "l+ddDH": {
+    "defaultMessage": "Create {a_singular}",
+    "description": "Button label"
+  },
+  "li2Qqu": {
+    "defaultMessage": "Skip setup",
+    "description": "Link label"
+  },
+  "mCfzkJ": {
+    "defaultMessage": "Edit {a_singular}",
+    "description": "Page title"
+  },
   "owrRHV": {
     "defaultMessage": "Error 500",
     "description": "Error page title"
+  },
+  "pVHYDd": {
+    "defaultMessage": "Enable two factor authentication",
+    "description": "Button label"
   },
   "rSt+KL": {
     "defaultMessage": "No",
     "description": "Boolean value"
   },
-  "resources.confirm_delete": {
-    "defaultMessage": "Are you sure you want to delete {the_singular} #{id}?",
-    "description": "Confirmation message"
-  },
-  "resources.create": {
-    "defaultMessage": "Create {a_singular}",
-    "description": "Page title"
-  },
-  "resources.create_btn": {
-    "defaultMessage": "Create {a_singular}",
-    "description": "Button label"
-  },
-  "resources.created": {
-    "defaultMessage": "{the_singular} has been created.",
-    "description": "Alert message"
-  },
-  "resources.delete": {
-    "defaultMessage": "Delete {a_singular}",
-    "description": "Page title"
-  },
-  "resources.deleted": {
-    "defaultMessage": "{the_singular} has been deleted.",
-    "description": "Alert message"
-  },
-  "resources.edit": {
-    "defaultMessage": "Edit {a_singular}",
-    "description": "Page title"
-  },
-  "resources.view": {
-    "defaultMessage": "View {the_plural}",
-    "description": "Button label"
-  },
   "s4Xrs9": {
     "defaultMessage": "Time",
     "description": "DateTimeField time caption"
+  },
+  "tPeIKO": {
+    "defaultMessage": "Go back to login",
+    "description": "Link label"
   },
   "v4Qtl9": {
     "defaultMessage": "Today",
@@ -202,6 +266,10 @@
     "defaultMessage": "This page doesn’t exist",
     "description": "Error page description"
   },
+  "wa783M": {
+    "defaultMessage": "Already have an account? Go to login",
+    "description": "Link label"
+  },
   "y9zauY": {
     "defaultMessage": "An error occured and we could not delete this item successfully.",
     "description": "Error message"
@@ -209,5 +277,21 @@
   "yALN2p": {
     "defaultMessage": "There was an error",
     "description": "Error page description"
+  },
+  "yzfiXJ": {
+    "defaultMessage": "Are you sure you want to delete {the_singular} #{id}?",
+    "description": "Confirmation message"
+  },
+  "zN5N/Q": {
+    "defaultMessage": "Delete {a_singular}",
+    "description": "Page title"
+  },
+  "zTiC4D": {
+    "defaultMessage": "Do you wish to enable two factor authentication on your account? You will have to use an authentication app such as Google Authenticator or Microsoft Authenticator in addition to your password to connect.",
+    "description": "Explaination label"
+  },
+  "zwks3g": {
+    "defaultMessage": "Save new password",
+    "description": "Button label"
   }
 }

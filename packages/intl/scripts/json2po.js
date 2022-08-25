@@ -15,11 +15,12 @@ program
     });
 
 program.parse(process.argv);
+const options = program.opts();
 
 const messages = fsExtra.readJsonSync(srcPath);
 
 const poFile = new POFile(destPath, {
-    useDefaultMessage: program.default || false,
+    useDefaultMessage: options.default || false,
 });
 poFile.update(messages);
 poFile.save();

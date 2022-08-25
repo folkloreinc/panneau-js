@@ -1,13 +1,10 @@
+/* eslint-disable no-nested-ternary */
+
 /* eslint-disable jsx-a11y/control-has-associated-label */
+
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading, react/prop-types */
-import { faCaretDown, faCaretRight, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown, faCaretRight, faGripLines, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useFieldComponent } from '@panneau/core/contexts';
-import { getPathValue } from '@panneau/core/utils';
-import Button from '@panneau/element-button';
-import Dropdown from '@panneau/element-dropdown';
-import Label from '@panneau/element-label';
 import classNames from 'classnames';
 import isFunction from 'lodash/isFunction';
 import PropTypes from 'prop-types';
@@ -16,9 +13,16 @@ import { FormattedMessage } from 'react-intl';
 import { ReactSortable } from 'react-sortablejs';
 import { v4 as uuid } from 'uuid';
 
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useFieldComponent } from '@panneau/core/contexts';
+import { getPathValue } from '@panneau/core/utils';
+import Button from '@panneau/element-button';
+import Dropdown from '@panneau/element-dropdown';
+import Label from '@panneau/element-label';
+
 const propTypes = {
     label: PropTypes.string,
-    value: PropTypes.arrayOf(PropTypes.any),
+    value: PropTypes.arrayOf(PropTypes.any), // eslint-disable-line
     types: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string,
@@ -55,7 +59,7 @@ const defaultProps = {
     newItemValueWithUuid: false,
     noItemLabel: (
         <FormattedMessage
-            defaultMessage="No item..."
+            defaultMessage="No item found."
             description="Label when there is no item in items field"
         />
     ),
@@ -182,6 +186,7 @@ const ItemsField = ({
                 const newIdMap = newItems.map(({ index }) => idMap.current[index]);
                 idMap.current = newIdMap;
                 setCollapsed((prevCollapsed) => newItems.map(({ index }) => prevCollapsed[index]));
+                // console.log('Change', newItems, newIdMap); // eslint-disable-line
                 onChange(newItems.map(({ it }) => it));
             }
         },
@@ -201,6 +206,8 @@ const ItemsField = ({
     const onDropdownClickOutside = useCallback(() => {
         setDropdownOpened(false);
     }, [setDropdownOpened]);
+
+    // console.log('value, items', value, items); // eslint-disable-line
 
     const itemElements = items.map(({ id, it }, index) => {
         const { type: itemType = null } = it || {};
@@ -275,6 +282,8 @@ const ItemsField = ({
             );
         }
 
+        const isCollapsed = !inline && !withoutCollapse && collapsed[index];
+
         return (
             <div
                 className={classNames([
@@ -316,6 +325,13 @@ const ItemsField = ({
                             <span className="text-truncate">{finalRenderedItemLabel}</span>
                         </div>
                         <div className="d-flex card-buttons position-relative ms-auto">
+                            {!withoutSort ? (
+                                <Button className="p-0 me-2" theme="secondary" size="sm" outline>
+                                    <div className="py-1 px-2">
+                                        <FontAwesomeIcon icon={faGripLines} />
+                                    </div>
+                                </Button>
+                            ) : null}
                             <Button
                                 theme="secondary"
                                 size="sm"
@@ -332,17 +348,19 @@ const ItemsField = ({
                         'position-relative',
                         'p-3',
                         {
-                            collapse: !inline && !withoutCollapse && collapsed[index],
+                            collapse: isCollapsed,
                         },
                     ])}
                 >
-                    {renderItem !== null
-                        ? renderItem(it, index, {
-                              ...(isFunction(itemProps) ? itemProps(it, index) : itemProps),
-                              children: itemChildren,
-                              onChange: (newValue) => onItemChange(it, index, newValue),
-                          })
-                        : itemChildren}
+                    {!isCollapsed
+                        ? renderItem !== null
+                            ? renderItem(it, index, {
+                                  ...(isFunction(itemProps) ? itemProps(it, index) : itemProps),
+                                  children: itemChildren,
+                                  onChange: (newValue) => onItemChange(it, index, newValue),
+                              })
+                            : itemChildren
+                        : null}
                 </div>
                 {inline ? (
                     <div className={classNames(['card-header', 'd-flex', 'border-bottom-0'])}>

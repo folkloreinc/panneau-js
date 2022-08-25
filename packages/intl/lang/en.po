@@ -17,6 +17,18 @@ msgctxt "+6cCPF"
 msgid "Error 403"
 msgstr "Error 403"
 
+# Button label
+#: 12Px0g
+msgctxt "12Px0g"
+msgid "Send reset link"
+msgstr "Send reset link"
+
+# Field label
+#: 22Ld5M
+msgctxt "22Ld5M"
+msgid "Enter the code from your authenticator app to continue"
+msgstr "Enter the code from your authenticator app to continue"
+
 # Error message
 #: 2vB7U4
 msgctxt "2vB7U4"
@@ -41,6 +53,12 @@ msgctxt "4yfet+"
 msgid "Password"
 msgstr "Password"
 
+# Explaination label
+#: 5nHK/H
+msgctxt "5nHK/H"
+msgid "Do you really wish to disable two factor authentication on your account?"
+msgstr "Do you really wish to disable two factor authentication on your account?"
+
 # Form status
 #: 5rMPIj
 msgctxt "5rMPIj"
@@ -58,6 +76,12 @@ msgstr "Error 404"
 msgctxt "6nwWPR"
 msgid "Error 401"
 msgstr "Error 401"
+
+# Page title
+#: 6viUpq
+msgctxt "6viUpq"
+msgid "Create {a_singular}"
+msgstr "Create {a_singular}"
 
 # Items field's item label
 #: 7M0o0q
@@ -77,6 +101,12 @@ msgctxt "8HFiMs"
 msgid "Access to this page is forbidden"
 msgstr "Access to this page is forbidden"
 
+# Field label
+#: 8LSb8C
+msgctxt "8LSb8C"
+msgid "Current password"
+msgstr "Current password"
+
 # Boolean value
 #: 9XBwF1
 msgctxt "9XBwF1"
@@ -89,11 +119,23 @@ msgctxt "AeOZq+"
 msgid "Login"
 msgstr "Login"
 
+# Field label
+#: B1h3gd
+msgctxt "B1h3gd"
+msgid "Please enter your password to continue"
+msgstr "Please enter your password to continue"
+
 # Button label
 #: Bhu3B2
 msgctxt "Bhu3B2"
 msgid "Delete"
 msgstr "Delete"
+
+# Field label
+#: DUbv+u
+msgctxt "DUbv+u"
+msgid "Confirm your new password"
+msgstr "Confirm your new password"
 
 # Form status
 #: ESkxLX
@@ -107,17 +149,17 @@ msgctxt "EsoYzX"
 msgid "Previous"
 msgstr "Previous"
 
+# Button label
+#: FntHPK
+msgctxt "FntHPK"
+msgid "View {the_plural}"
+msgstr "View {the_plural}"
+
 # Error page meta title
 #: HOobY2
 msgctxt "HOobY2"
 msgid "Error 401"
 msgstr "Error 401"
-
-# Button label
-#: IbZVf0
-msgctxt "IbZVf0"
-msgid "Submit"
-msgstr "Submit"
 
 # Menu label
 #: IuqEHB
@@ -155,11 +197,11 @@ msgctxt "NI9440"
 msgid "Add file"
 msgstr "Add file"
 
-# Label when there is no item in items field
-#: PKCv5M
-msgctxt "PKCv5M"
-msgid "No item..."
-msgstr "No item..."
+# Button label
+#: PQX/ph
+msgctxt "PQX/ph"
+msgid "Create account"
+msgstr "Create account"
 
 # Error page title
 #: Pih2UO
@@ -173,11 +215,29 @@ msgctxt "PyxZY2"
 msgid "Cancel"
 msgstr "Cancel"
 
+# Button label
+#: QUAHwy
+msgctxt "QUAHwy"
+msgid "Continue"
+msgstr "Continue"
+
+# Button label
+#: R1HYj0
+msgctxt "R1HYj0"
+msgid "Save"
+msgstr "Save"
+
 # Menu label
 #: REIcPg
 msgctxt "REIcPg"
 msgid "Logout"
 msgstr "Logout"
+
+# Link label
+#: U/ye2x
+msgctxt "U/ye2x"
+msgid "Cancel"
+msgstr "Cancel"
 
 # Error page meta title
 #: US/AMe
@@ -185,17 +245,53 @@ msgctxt "US/AMe"
 msgid "Error 404"
 msgstr "Error 404"
 
+# Field label
+#: UUv8FR
+msgctxt "UUv8FR"
+msgid "Name"
+msgstr "Name"
+
+# Label when there is no item in items field
+#: UbmsLL
+msgctxt "UbmsLL"
+msgid "No item found."
+msgstr "No item found."
+
 # Error message
 #: UpStcP
 msgctxt "UpStcP"
 msgid "Could not find type for this item"
 msgstr "Could not find type for this item"
 
+# Field label
+#: VhJUeW
+msgctxt "VhJUeW"
+msgid "Confirm your password"
+msgstr "Confirm your password"
+
 # Pagination button label
 #: X5RJlB
 msgctxt "X5RJlB"
 msgid "Next"
 msgstr "Next"
+
+# Field label
+#: XJ1dc3
+msgctxt "XJ1dc3"
+msgid "New password"
+msgstr "New password"
+
+# Button label
+#: XW9IKQ
+msgctxt "XW9IKQ"
+msgid "Update password"
+msgstr "Update password"
+
+# Link label
+#: ZBNqY2
+msgctxt "ZBNqY2"
+msgid "Forgot your password?"
+msgstr "Forgot your password?"
 
 # Button label in items field
 #: ZxgNge
@@ -209,11 +305,23 @@ msgctxt "bPk79b"
 msgid "Show"
 msgstr "Show"
 
+# Alert message
+#: bfP/d8
+msgctxt "bfP/d8"
+msgid "{The_singular} has been created."
+msgstr "{The_singular} has been created."
+
 # Menu label
 #: d0g58T
 msgctxt "d0g58T"
 msgid "Login"
 msgstr "Login"
+
+# Alert message
+#: dkRdks
+msgctxt "dkRdks"
+msgid "{The_singular} has been deleted."
+msgstr "{The_singular} has been deleted."
 
 # Error page meta title
 #: ejwBSw
@@ -227,10 +335,11 @@ msgctxt "g6qbbX"
 msgid "Log in"
 msgstr "Log in"
 
-#: gjBiyj
-msgctxt "gjBiyj"
-msgid "Loading..."
-msgstr "Loading..."
+# Button label
+#: gWmL5V
+msgctxt "gWmL5V"
+msgid "Disable two factor authentication"
+msgstr "Disable two factor authentication"
 
 # Button label
 #: hezcGl
@@ -238,11 +347,40 @@ msgctxt "hezcGl"
 msgid "Go to home page"
 msgstr "Go to home page"
 
+#: iFsDVR
+msgctxt "iFsDVR"
+msgid "Loading"
+msgstr "Loading"
+
+# Button label
+#: l+ddDH
+msgctxt "l+ddDH"
+msgid "Create {a_singular}"
+msgstr "Create {a_singular}"
+
+# Link label
+#: li2Qqu
+msgctxt "li2Qqu"
+msgid "Skip setup"
+msgstr "Skip setup"
+
+# Page title
+#: mCfzkJ
+msgctxt "mCfzkJ"
+msgid "Edit {a_singular}"
+msgstr "Edit {a_singular}"
+
 # Error page title
 #: owrRHV
 msgctxt "owrRHV"
 msgid "Error 500"
 msgstr "Error 500"
+
+# Button label
+#: pVHYDd
+msgctxt "pVHYDd"
+msgid "Enable two factor authentication"
+msgstr "Enable two factor authentication"
 
 # Boolean value
 #: rSt+KL
@@ -250,59 +388,17 @@ msgctxt "rSt+KL"
 msgid "No"
 msgstr "No"
 
-# Confirmation message
-#: resources.confirm_delete
-msgctxt "resources.confirm_delete"
-msgid "Are you sure you want to delete {the_singular} #{id}?"
-msgstr "Are you sure you want to delete {the_singular} #{id}?"
-
-# Page title
-#: resources.create
-msgctxt "resources.create"
-msgid "Create {a_singular}"
-msgstr "Create {a_singular}"
-
-# Button label
-#: resources.create_btn
-msgctxt "resources.create_btn"
-msgid "Create {a_singular}"
-msgstr "Create {a_singular}"
-
-# Alert message
-#: resources.created
-msgctxt "resources.created"
-msgid "{the_singular} has been created."
-msgstr "{the_singular} has been created."
-
-# Page title
-#: resources.delete
-msgctxt "resources.delete"
-msgid "Delete {a_singular}"
-msgstr "Delete {a_singular}"
-
-# Alert message
-#: resources.deleted
-msgctxt "resources.deleted"
-msgid "{the_singular} has been deleted."
-msgstr "{the_singular} has been deleted."
-
-# Page title
-#: resources.edit
-msgctxt "resources.edit"
-msgid "Edit {a_singular}"
-msgstr "Edit {a_singular}"
-
-# Button label
-#: resources.view
-msgctxt "resources.view"
-msgid "View {the_plural}"
-msgstr "View {plural}"
-
 # DateTimeField time caption
 #: s4Xrs9
 msgctxt "s4Xrs9"
 msgid "Time"
 msgstr "Time"
+
+# Link label
+#: tPeIKO
+msgctxt "tPeIKO"
+msgid "Go back to login"
+msgstr "Go back to login"
 
 # Today date message
 #: v4Qtl9
@@ -316,6 +412,12 @@ msgctxt "wKPI1y"
 msgid "This page doesn’t exist"
 msgstr "This page doesn’t exist"
 
+# Link label
+#: wa783M
+msgctxt "wa783M"
+msgid "Already have an account? Go to login"
+msgstr "Already have an account? Go to login"
+
 # Error message
 #: y9zauY
 msgctxt "y9zauY"
@@ -327,3 +429,33 @@ msgstr "An error occured and we could not delete this item successfully."
 msgctxt "yALN2p"
 msgid "There was an error"
 msgstr "There was an error"
+
+# Confirmation message
+#: yzfiXJ
+msgctxt "yzfiXJ"
+msgid "Are you sure you want to delete {the_singular} #{id}?"
+msgstr "Are you sure you want to delete {the_singular} #{id}?"
+
+# Page title
+#: zN5N/Q
+msgctxt "zN5N/Q"
+msgid "Delete {a_singular}"
+msgstr "Delete {a_singular}"
+
+# Explaination label
+#: zTiC4D
+msgctxt "zTiC4D"
+msgid ""
+"Do you wish to enable two factor authentication on your account? You will "
+"have to use an authentication app such as Google Authenticator or Microsoft "
+"Authenticator in addition to your password to connect."
+msgstr ""
+"Do you wish to enable two factor authentication on your account? You will "
+"have to use an authentication app such as Google Authenticator or Microsoft "
+"Authenticator in addition to your password to connect."
+
+# Button label
+#: zwks3g
+msgctxt "zwks3g"
+msgid "Save new password"
+msgstr "Save new password"

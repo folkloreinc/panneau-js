@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "1.0.0-alpha.234",
+    "version": "1.0.0-alpha.260",
     "description": "",
     "keywords": [
         "javascript"
@@ -53,36 +53,35 @@
         "prepare": "../../scripts/prepare-package.sh && npm run scss && npm run css"
     },
     "devDependencies": {
-        "react": "^16.8.0 || ^17.0.0",
-        "react-dom": "^16.8.0 || ^17.0.0"
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
     },
     "peerDependencies": {
-        "react": "^16.8.0 || ^17.0.0",
-        "react-dom": "^16.8.0 || ^17.0.0"
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.0.0-alpha.233",
-        "@panneau/field-autocomplete": "^1.0.0-alpha.233",
-        "@panneau/field-checkboxes": "^1.0.0-alpha.233",
-        "@panneau/field-color": "^1.0.0-alpha.233",
-        "@panneau/field-date": "^1.0.0-alpha.233",
-        "@panneau/field-embed": "^1.0.0-alpha.233",
-        "@panneau/field-fields": "^1.0.0-alpha.233",
-        "@panneau/field-html": "^1.0.0-alpha.233",
-        "@panneau/field-input-group": "^1.0.0-alpha.233",
-        "@panneau/field-item": "^1.0.0-alpha.233",
-        "@panneau/field-items": "^1.0.0-alpha.233",
-        "@panneau/field-localized": "^1.0.0-alpha.233",
-        "@panneau/field-number": "^1.0.0-alpha.233",
-        "@panneau/field-radios": "^1.0.0-alpha.233",
-        "@panneau/field-select": "^1.0.0-alpha.233",
-        "@panneau/field-test": "^1.0.0-alpha.134",
-        "@panneau/field-text": "^1.0.0-alpha.233",
-        "@panneau/field-toggle": "^1.0.0-alpha.233",
-        "@panneau/field-toggles": "^1.0.0-alpha.233",
-        "@panneau/field-upload": "^1.0.0-alpha.234",
-        "@panneau/field-url": "^1.0.0-alpha.233",
+        "@panneau/core": "^1.0.0-alpha.256",
+        "@panneau/field-autocomplete": "^1.0.0-alpha.256",
+        "@panneau/field-checkboxes": "^1.0.0-alpha.256",
+        "@panneau/field-color": "^1.0.0-alpha.256",
+        "@panneau/field-date": "^1.0.0-alpha.256",
+        "@panneau/field-embed": "^1.0.0-alpha.258",
+        "@panneau/field-fields": "^1.0.0-alpha.258",
+        "@panneau/field-html": "^1.0.0-alpha.256",
+        "@panneau/field-input-group": "^1.0.0-alpha.256",
+        "@panneau/field-item": "^1.0.0-alpha.258",
+        "@panneau/field-items": "^1.0.0-alpha.260",
+        "@panneau/field-localized": "^1.0.0-alpha.258",
+        "@panneau/field-number": "^1.0.0-alpha.256",
+        "@panneau/field-radios": "^1.0.0-alpha.256",
+        "@panneau/field-select": "^1.0.0-alpha.258",
+        "@panneau/field-text": "^1.0.0-alpha.256",
+        "@panneau/field-toggle": "^1.0.0-alpha.256",
+        "@panneau/field-toggles": "^1.0.0-alpha.256",
+        "@panneau/field-upload": "^1.0.0-alpha.258",
+        "@panneau/field-url": "^1.0.0-alpha.257",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2"
     },

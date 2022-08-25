@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -29,7 +29,7 @@ const Loading = ({ theme, children, className }) => (
         <div className="card-body d-flex align-items-center justify-content-center text-muted">
             <div className={classNames(['spinner-border', { [`text-${theme}`]: theme !== null }])}>
                 <span className="visually-hidden">
-                    <FormattedMessage defaultMessage="Loading..." />
+                    <FormattedMessage defaultMessage="Loading" />
                 </span>
             </div>
             {children !== null ? (

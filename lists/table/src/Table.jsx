@@ -23,6 +23,7 @@ const propTypes = {
     sortColumnParameter: PropTypes.string,
     sortDirectionParameter: PropTypes.string,
     onQueryChange: PropTypes.func,
+    withoutId: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -35,6 +36,7 @@ const defaultProps = {
     sortColumnParameter: 'order',
     sortDirectionParameter: 'order_direction',
     onQueryChange: null,
+    withoutId: false,
 };
 
 const TableList = ({
@@ -48,6 +50,7 @@ const TableList = ({
     sortColumnParameter,
     sortDirectionParameter,
     onQueryChange,
+    withoutId,
 }) => {
     const displayComponents = useDisplaysComponents();
 
@@ -77,22 +80,24 @@ const TableList = ({
                 >
                     <thead>
                         <tr>
-                            <th scope="col">
-                                {sortable ? (
-                                    <SortLink
-                                        baseUrl={baseUrl}
-                                        query={query}
-                                        field="id"
-                                        columnParameter={sortColumnParameter}
-                                        directionParameter={sortDirectionParameter}
-                                        onQueryChange={onQueryChange}
-                                    >
-                                        #
-                                    </SortLink>
-                                ) : (
-                                    '#'
-                                )}
-                            </th>
+                            {!withoutId ? (
+                                <th scope="col">
+                                    {sortable ? (
+                                        <SortLink
+                                            baseUrl={baseUrl}
+                                            query={query}
+                                            field="id"
+                                            columnParameter={sortColumnParameter}
+                                            directionParameter={sortDirectionParameter}
+                                            onQueryChange={onQueryChange}
+                                        >
+                                            #
+                                        </SortLink>
+                                    ) : (
+                                        '#'
+                                    )}
+                                </th>
+                            ) : null}
                             {columnsWithFields.map(
                                 (
                                     {
@@ -131,7 +136,7 @@ const TableList = ({
                             const { id = null } = it || {};
                             return (
                                 <tr key={`row-${id}-${rowIdx + 1}`}>
-                                    <td className="col-auto">{id}</td>
+                                    {!withoutId ? <td className="col-auto">{id}</td> : null}
                                     {columnsWithFields.map((column, idx) => {
                                         const {
                                             id: colId,

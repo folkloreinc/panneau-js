@@ -1,9 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading, formatjs/enforce-default-message */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useResource } from '@panneau/core/contexts';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useResource } from '@panneau/core/contexts';
 
 const propTypes = {
     resource: PanneauPropTypes.resource,

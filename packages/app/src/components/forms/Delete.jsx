@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Button from '@panneau/element-button';
-import Form from '@panneau/element-form';
-import { ResourceMessage } from '@panneau/intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Button from '@panneau/element-button';
+import Form from '@panneau/element-form';
+import { useResourceValues } from '@panneau/intl';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -45,6 +46,8 @@ const DeleteForm = ({
     className,
     ...props
 }) => {
+    const { id = null } = value || {};
+    const resourceValues = useResourceValues(resource, { id });
     return (
         <Form
             className={classNames([
@@ -62,10 +65,8 @@ const DeleteForm = ({
         >
             <div className="card">
                 <div className="card-body">
-                    <ResourceMessage
-                        resource={resource}
-                        values={value}
-                        id="resources.confirm_delete"
+                    <FormattedMessage
+                        values={resourceValues}
                         defaultMessage="Are you sure you want to delete {the_singular} #{id}?"
                         description="Confirmation message"
                     />

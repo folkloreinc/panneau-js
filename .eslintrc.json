@@ -15,7 +15,17 @@
     "rules": {
         "react/jsx-indent": ["error", 4],
         "react/jsx-indent-props": ["error", 4],
-        "react/function-component-definition": [2, { "namedComponents": "arrow-function" }],
+        "react/function-component-definition": [
+            "error",
+            {
+                "namedComponents": [
+                    "arrow-function",
+                    "function-declaration",
+                    "function-expression"
+                ],
+                "unnamedComponents": "function-expression"
+            }
+        ],
         "no-console": ["error", { "allow": ["warn", "error"] }],
         "formatjs/enforce-default-message": ["error", "literal"],
         "formatjs/no-camel-case": ["error"],

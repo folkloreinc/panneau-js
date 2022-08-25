@@ -1,8 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import Button from '@panneau/element-button';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
+
+import Button from '@panneau/element-button';
+
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -40,11 +42,11 @@ const ButtonFilter = ({
     className,
     ...props
 }) => {
-    const isActive = useMemo(() => {
-        return (
-            value !== null && (value === true || value === 'true' || value === 1 || value === '1')
-        );
-    }, [value]);
+    const isActive = useMemo(
+        () =>
+            value !== null && (value === true || value === 'true' || value === 1 || value === '1'),
+        [value],
+    );
 
     const onClick = useCallback(() => {
         if (href === null) {

@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Button from '@panneau/element-button';
-import TextField from '@panneau/field-text';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
+
+import Button from '@panneau/element-button';
+import TextField from '@panneau/field-text';
 
 const propTypes = {
     name: PropTypes.string,
@@ -60,7 +61,8 @@ const SearchFilter = ({ name, value, onChange, placeholder, className }) => {
                     <Button
                         type="button"
                         onClick={onReset}
-                        className="position-absolute top-0 end-0"
+                        className="position-absolute top-0 end-0 me-2 border-0"
+                        outline={false}
                         style={{
                             transform: 'translateX(-100%)',
                             zIndex: 10,
