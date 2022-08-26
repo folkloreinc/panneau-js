@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-card",
-    "version": "1.0.3-alpha.1",
+    "version": "1.0.3-alpha.2",
     "description": "Card element",
     "keywords": [
         "javascript"
@@ -59,7 +59,7 @@
         "@panneau/core": "^1.0.3-alpha.1",
         "@panneau/element-button": "^1.0.3-alpha.1",
         "@panneau/element-label": "^1.0.3-alpha.1",
-        "@panneau/element-link": "^1.0.3-alpha.1",
+        "@panneau/element-link": "^1.0.3-alpha.2",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
