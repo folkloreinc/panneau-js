@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-item-actions",
-    "version": "1.0.2-alpha.0",
+    "version": "1.0.3-alpha.0",
     "description": "Form actions element",
     "keywords": [
         "javascript"
@@ -56,10 +56,10 @@
         "@fortawesome/fontawesome-svg-core": "^1.2.35",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
-        "@panneau/core": "^1.0.2-alpha.0",
-        "@panneau/element-buttons": "^1.0.2-alpha.0",
-        "@panneau/element-label": "^1.0.2-alpha.0",
-        "@panneau/themes": "^1.0.2-alpha.0",
+        "@panneau/core": "^1.0.3-alpha.0",
+        "@panneau/element-buttons": "^1.0.3-alpha.0",
+        "@panneau/element-label": "^1.0.3-alpha.0",
+        "@panneau/themes": "^1.0.3-alpha.0",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
