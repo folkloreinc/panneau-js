@@ -1,7 +1,7 @@
 import { parse as parseQuery } from 'query-string';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useHistory, useLocation } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
@@ -19,12 +19,12 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceCreatePage = ({ resource }) => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const { search } = useLocation();
     const resourceRoute = useResourceUrlGenerator(resource);
     const onSuccess = useCallback(() => {
-        history.push(`${resourceRoute('index')}?created=true`);
-    }, [history, resourceRoute]);
+        navigate(`${resourceRoute('index')}?created=true`);
+    }, [navigate, resourceRoute]);
     const { type = null } = useMemo(() => parseQuery(search), [search]);
     const resourceValues = useResourceValues(resource);
 

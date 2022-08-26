@@ -40,7 +40,7 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                           label: (
                               <FormattedMessage defaultMessage="Account" description="Menu label" />
                           ),
-                          href: route('panneau.account'),
+                          href: route('account'),
                           dropdown: [
                               //   {
                               //       label: (

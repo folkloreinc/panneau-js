@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
@@ -17,19 +17,19 @@ import PageHeader from '../partials/PageHeader';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
-    itemId: PropTypes.string.isRequired,
 };
 
 const defaultProps = {};
 
-const ResourceDeletePage = ({ resource, itemId }) => {
-    const history = useHistory();
+const ResourceDeletePage = ({ resource }) => {
+    const { id: itemId } = useParams();
+    const navigate = useNavigate();
     const resourceRoute = useResourceUrlGenerator(resource);
     const { item } = useResourceItem(resource, itemId);
 
     const onSuccess = useCallback(
-        () => history.push(`${resourceRoute('index')}?deleted=true`),
-        [history, resourceRoute],
+        () => navigate(`${resourceRoute('index')}?deleted=true`),
+        [navigate, resourceRoute],
     );
 
     // Navigate back

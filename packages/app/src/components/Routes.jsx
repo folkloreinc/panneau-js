@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Redirect, Route, Switch, useLocation } from 'react-router';
+import { Redirect, Route, Routes, useLocation } from 'react-router';
 
 import { useUser } from '@panneau/auth';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -9,10 +9,11 @@ import {
     usePanneauResources,
     useRoutes,
     useUrlGenerator,
+    useComponentsManager,
 } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 
-import ResourceRoutes from './ResourceRoutes';
+import createResourceRoutes from './createResourceRoutes';
 import * as basePages from './pages';
 
 const propTypes = {
@@ -35,6 +36,7 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     const user = useUser();
     const route = useUrlGenerator();
     const resources = usePanneauResources();
+    const componentsManager = useComponentsManager();
 
     // const nextUrl = useMemo(() => {
     //     const query = parseQuery(search);
@@ -83,49 +85,71 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     );
 
     return (
-        <Switch>
+        <Routes>
             {statusCode !== null ? (
-                <Route path="*" render={() => <ErrorComponent statusCode={statusCode} />} />
+                <Route path="*" element={<ErrorComponent statusCode={statusCode} />} />
             ) : null}
 
-            {user === null ? <Route path="*" exact component={LoginComponent} /> : null}
-
             {/* TODO fix this shit it doesnt work */}
-            {/* {user !== null ? (
-                <Redirect from={routes.login} to={nextUrl !== null ? nextUrl : homeUrl} exact />
-            ) : (
-                <Route path={routes.login} exact component={AuthLogin} />
-            )} */}
+            {/* <Route
+                path={routes.login}
+                exact
+                element={
+                    user !== null ? (
+                        <Navigate to={nextUrl !== null ? nextUrl : homeUrl} />
+                    ) : (
+                        <AuthLogin />
+                    )
+                }
+            /> */}
 
-            {user !== null ? (
-                <Route path={routes.home} exact component={HomeComponent} />
-            ) : (
-                <Redirect from={routes.home} exact to={route('login')} />
-            )}
+            <Route
+                path={routes.home}
+                exact
+                element={
+                    user !== null ? <HomeComponent /> : <Navigate to={route('login')} replace />
+                }
+            />
+
+            {user === null ? (
+                <Route path={routes.login} exact element={<LoginComponent />} />
+            ) : null}
 
             {resources.map((resource) => {
                 const { id: resourceId } = resource || {};
                 return user !== null ? (
+                    createResourceRoutes(resource, { route, componentsManager })
+                ) : (
                     <Route
                         key={`resource-${resourceId}`}
                         path={route('resources.index', {
                             resource: resourceId,
                         })}
-                        render={() => <ResourceRoutes resource={resource} />}
-                    />
-                ) : (
-                    <Redirect
-                        key={`resource-${resourceId}`}
-                        from={route('resources.index', {
-                            resource: resourceId,
-                        })}
-                        to={`${route('login')}?next=${encodeURIComponent(pathname)}`}
+                        element={
+                            <Navigate
+                                to={`${route('login')}?next=${encodeURIComponent(pathname)}`}
+                                replace
+                            />
+                        }
                     />
                 );
             })}
-            <Route path={route('auth.account')} component={AccountComponent} />
-            <Route path="*" component={ErrorComponent} />
-        </Switch>
+            <Route
+                path={route('account')}
+                exact
+                element={
+                    user !== null ? (
+                        <AccountComponent />
+                    ) : (
+                        <Navigate
+                            to={`${route('login')}?next=${encodeURIComponent(pathname)}`}
+                            replace
+                        />
+                    )
+                }
+            />
+            <Route path="*" elmeent={<ErrorComponent />} />
+        </Routes>
     );
 };
 PanneauRoutes.propTypes = propTypes;

@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useContext, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { generatePath, useHistory } from 'react-router';
+import { generatePath, useNavigate } from 'react-router';
 import isString from 'lodash/isString';
 
 export const RoutesContext = React.createContext(null);
@@ -28,25 +28,25 @@ export const useUrlGenerator = () => {
 
 export const useRoutePush = () => {
     const url = useUrlGenerator();
-    const history = useHistory();
+    const navigate = useNavigate();
     const push = useCallback(
         (route, data, ...args) => {
             if (isString(route)) {
                 history.push(url(route, data), ...args);
             } else {
                 const { pathname = null, search = null } = route || {};
-                history.push({ pathname: url(pathname, data), search }, ...args);
+                navigate({ pathname: url(pathname, data), search }, ...args);
             }
         },
-        [history, url],
+        [navigate, url],
     );
     return push;
 };
 
 export const useRouteBack = () => {
     const url = useUrlGenerator();
-    const history = useHistory();
-    const back = useCallback(() => history.goBack(), [history, url]);
+    const navigate = useNavigate();
+    const back = useCallback(() => navigate(-1), [navigate, url]);
     return back;
 };
 

@@ -7,9 +7,10 @@ export default {
 
     routes: {
         home: '/',
-        'auth.account': '/account',
         'auth.login': '/login',
         'auth.logout': '/logout',
+
+        'account': '/account',
 
         // Base routes
         'resources.index': '/:resource', // the page

@@ -11,6 +11,7 @@ export default {
         intl: {
             locale: panneauDefinition.intl.locale,
         },
+        router: false
     },
 };
 

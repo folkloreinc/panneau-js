@@ -60,7 +60,7 @@
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0",
-        "react-router-dom": "^5.2.0"
+        "react-router-dom": "^6.2.1"
     },
     "publishConfig": {
         "access": "public"

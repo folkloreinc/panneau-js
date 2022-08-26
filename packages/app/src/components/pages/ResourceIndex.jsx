@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { parse as parseQuery, stringify as stringifyQuery } from 'query-string';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useHistory, useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider, useComponentsManager } from '@panneau/core/contexts';
@@ -52,7 +52,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
     const resourceValues = useResourceValues(resource);
     const componentsManager = useComponentsManager();
     const { search } = useLocation();
-    const history = useHistory();
+    const navigate = useNavigate();
     const query = useMemo(() => parseQuery(search), [search]);
     const listQuery = useMemo(() => query, [query]); // TODO: omit routes
     const { created = false, deleted = false } = query || {};
@@ -74,7 +74,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                               : currentQuery;
                       }, null)
                     : null;
-            history.push(
+            navigate(
                 `${url}${
                     newQuery !== null
                         ? `?${stringifyQuery(newQuery, {
@@ -84,15 +84,15 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                 }`,
             );
         },
-        [history, url, query, paginated],
+        [navigate, url, query, paginated],
     );
 
     const onQueryReset = useCallback(() => {
         const queryString = stringifyQuery(null, {
             arrayFormat: 'bracket',
         });
-        history.push(`${url}?${queryString}`);
-    }, [history, url, paginated]);
+        navigate(`${url}?${queryString}`);
+    }, [navigate, url, paginated]);
 
     const onClickCloseAlert = useCallback(() => {
         history.replace(url);

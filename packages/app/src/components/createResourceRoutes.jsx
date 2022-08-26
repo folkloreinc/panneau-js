@@ -1,23 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { Route, Switch } from 'react-router';
-
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useComponentsManager, useUrlGenerator } from '@panneau/core/contexts';
+import { Route } from 'react-router';
 
 import { ResourceCreate, ResourceDelete, ResourceEdit, ResourceIndex, ResourceShow } from './pages';
 
-const propTypes = {
-    resource: PanneauPropTypes.resource.isRequired,
-};
-
-const defaultProps = {};
-
-const ResourceRoutes = ({ resource }) => {
+const createResourceRoutes = (resource, { route, componentsManager }) => {
     const { id: resourceId, pages = {}, extraRoutes = [] } = resource;
-
-    const route = useUrlGenerator();
-    const componentsManager = useComponentsManager();
 
     // Load custom pages from resource
     const {
@@ -54,7 +42,7 @@ const ResourceRoutes = ({ resource }) => {
             : ResourceDelete;
 
     return (
-        <Switch>
+        <>
             {extraRoutes.map(({ path, component, exact = true, ...pageProps }) => {
                 const RouteComponent = componentsManager.getComponent(component);
                 return RouteComponent !== null ? (
@@ -62,18 +50,7 @@ const ResourceRoutes = ({ resource }) => {
                         key={`route-${path}`}
                         path={path}
                         exact={exact}
-                        render={({
-                            match: {
-                                params: { id, ...params },
-                            },
-                        }) => (
-                            <RouteComponent
-                                resource={resource}
-                                itemId={id}
-                                {...pageProps}
-                                {...params}
-                            />
-                        )}
+                        element={<RouteComponent resource={resource} {...pageProps} />}
                     />
                 ) : null;
             })}
@@ -82,14 +59,14 @@ const ResourceRoutes = ({ resource }) => {
                     resource: resourceId,
                 })}
                 exact
-                render={() => <ResourceIndexComponent resource={resource} />}
+                element={<ResourceIndexComponent resource={resource} />}
             />
             <Route
                 path={route('resources.create', {
                     resource: resourceId,
                 })}
                 exact
-                render={() => <ResourceCreateComponent resource={resource} />}
+                element={<ResourceCreateComponent resource={resource} />}
             />
             <Route
                 path={route('resources.show', {
@@ -97,11 +74,7 @@ const ResourceRoutes = ({ resource }) => {
                     id: ':id',
                 })}
                 exact
-                render={({
-                    match: {
-                        params: { id },
-                    },
-                }) => <ResourceShowComponent resource={resource} itemId={id} />}
+                element={<ResourceShowComponent resource={resource} />}
             />
             <Route
                 path={route('resources.edit', {
@@ -109,11 +82,7 @@ const ResourceRoutes = ({ resource }) => {
                     id: ':id',
                 })}
                 exact
-                render={({
-                    match: {
-                        params: { id },
-                    },
-                }) => <ResourceEditComponent resource={resource} itemId={id} />}
+                element={<ResourceEditComponent resource={resource} />}
             />
             <Route
                 path={route('resources.delete', {
@@ -121,16 +90,10 @@ const ResourceRoutes = ({ resource }) => {
                     id: ':id',
                 })}
                 exact
-                render={({
-                    match: {
-                        params: { id },
-                    },
-                }) => <ResourceDeleteComponent resource={resource} itemId={id} />}
+                element={<ResourceDeleteComponent resource={resource} />}
             />
-        </Switch>
+        </>
     );
 };
-ResourceRoutes.propTypes = propTypes;
-ResourceRoutes.defaultProps = defaultProps;
 
-export default ResourceRoutes;
+export default createResourceRoutes;
