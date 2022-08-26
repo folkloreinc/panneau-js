@@ -14,7 +14,8 @@
         "publish": {
             "allowBranch": [
                 "master",
-                "v0.8"
+                "v0.8",
+                "v0.9"
             ]
         },
         "bootstrap": {
