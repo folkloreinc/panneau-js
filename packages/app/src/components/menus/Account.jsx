@@ -49,7 +49,7 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                               //               description="Menu label"
                               //           />
                               //       ),
-                              //       href: route('panneau.account'),
+                              //       href: route('account'),
                               //   },
                               {
                                   label: (

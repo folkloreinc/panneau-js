@@ -1,12 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Link from '@panneau/element-link';
-import Label from '@panneau/element-label';
 import Dropdown from '@panneau/element-dropdown';
+import Label from '@panneau/element-label';
+import Link from '@panneau/element-link';
 
 const propTypes = {
     items: PanneauPropTypes.menuItems,
@@ -91,6 +91,7 @@ const Menu = ({
                           dropdown !== null
                               ? (e) => {
                                     e.preventDefault();
+                                    e.stopPropagation();
                                     setDropdownsVisible([
                                         ...dropdownsVisible.slice(0, index),
                                         !(dropdownsVisible[index] || false),
@@ -112,6 +113,7 @@ const Menu = ({
                                 }
                               : null;
                       const ItemComponent = itemTagName;
+                      const dropdownVisible = dropdownsVisible[index] || false;
                       return linkAsItem ? (
                           <Link
                               {...itemProps}
@@ -143,11 +145,11 @@ const Menu = ({
                                       subItems !== null && hasDropdownClassName !== null,
                               })}
                           >
-                              {href !== null ? (
+                              {href !== null || dropdown !== null ? (
                                   <Link
                                       {...itemProps}
                                       onClick={onClickItem}
-                                      href={href}
+                                      href={href || '#'}
                                       external={external}
                                       className={classNames({
                                           [linkClassName]: linkClassName !== null,
@@ -181,7 +183,7 @@ const Menu = ({
                               {dropdown !== null ? (
                                   <Dropdown
                                       items={dropdown}
-                                      visible={dropdownsVisible[index] || false}
+                                      visible={dropdownVisible}
                                       className={dropdownClassName}
                                       itemClassName={classNames({
                                           [dropdownItemClassName]: dropdownItemClassName !== null,

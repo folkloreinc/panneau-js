@@ -1,5 +1,4 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom'; // eslint-disable-line import/no-extraneous-dependencies
 
 import Menu from '../Menu';
 
@@ -12,14 +11,27 @@ export default {
 };
 
 export const Normal = () => (
-    <MemoryRouter>
-        <div style={{ position: 'relative' }}>
-            <Menu
-                items={[
-                    { value: 'value', label: 'Label 1' },
-                    { value: 'value', label: 'Label 2' },
-                ]}
-            />
-        </div>
-    </MemoryRouter>
+    <div style={{ position: 'relative' }}>
+        <Menu
+            items={[
+                { value: 'value', label: 'Label 1' },
+                { value: 'value', label: 'Label 2' },
+            ]}
+        />
+    </div>
+);
+
+export const WithDropdown = () => (
+    <div style={{ position: 'relative' }}>
+        <Menu
+            items={[
+                { value: 'value', label: 'Label 1' },
+                {
+                    value: 'value',
+                    label: 'Label 2',
+                    dropdown: [{ value: 'value', label: 'Sub Label 1' }],
+                },
+            ]}
+        />
+    </div>
 );

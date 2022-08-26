@@ -1,5 +1,5 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
+
 import LinkElement from '../Link';
 
 export default {
@@ -11,17 +11,11 @@ export default {
 };
 
 export const Normal = () => (
-    <MemoryRouter>
-        <LinkElement href="/blabla">
-            {{ id: 'test', defaultMessage: 'Translated Link' }}
-        </LinkElement>
-    </MemoryRouter>
+    <LinkElement href="/blabla">{{ id: 'test', defaultMessage: 'Translated Link' }}</LinkElement>
 );
 
 export const External = () => (
-    <MemoryRouter>
-        <LinkElement href="/blabla" external>
-            {{ id: 'test', defaultMessage: 'Translated Link' }}
-        </LinkElement>
-    </MemoryRouter>
+    <LinkElement href="/blabla" external>
+        {{ id: 'test', defaultMessage: 'Translated Link' }}
+    </LinkElement>
 );

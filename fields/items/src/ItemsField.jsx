@@ -198,6 +198,7 @@ const ItemsField = ({
     const onClickDropdown = useCallback(
         (e) => {
             e.preventDefault();
+            e.stopPropagation();
             setDropdownOpened((opened) => !opened);
         },
         [setDropdownOpened],

@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useCallback, useRef } from 'react';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDocumentEvent } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import Link from '@panneau/element-link';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback, useRef } from 'react';
 
 const propTypes = {
     items: PanneauPropTypes.menuItems,
