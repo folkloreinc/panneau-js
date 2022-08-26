@@ -4,8 +4,8 @@ import { Route } from 'react-router';
 
 import { ResourceCreate, ResourceDelete, ResourceEdit, ResourceIndex, ResourceShow } from './pages';
 
-const createResourceRoutes = (resource, { route, componentsManager }) => {
-    const { id: resourceId, pages = {}, extraRoutes = [] } = resource;
+const createResourceRoutes = (resource, { route, componentsManager, pages = {} }) => {
+    const { id: resourceId, pages: resourcePages = {}, extraRoutes = [] } = resource;
 
     // Load custom pages from resource
     const {
@@ -16,84 +16,86 @@ const createResourceRoutes = (resource, { route, componentsManager }) => {
         delete: deletePage = null,
     } = pages || {};
 
+    const {
+        index: resourceIndexPage = null,
+        show: resourceShowPage = null,
+        create: resourceCreatePage = null,
+        edit: resourceEditPage = null,
+        delete: resourceDeletePage = null,
+    } = resourcePages || {};
+
     const ResourceIndexComponent =
-        indexPage !== null && typeof indexPage.component !== 'undefined'
-            ? componentsManager.getComponent(indexPage.component)
-            : ResourceIndex;
-
+        componentsManager.getComponent(resourceIndexPage?.component) ||
+        componentsManager.getComponent(indexPage?.component) ||
+        ResourceIndex;
     const ResourceShowComponent =
-        showPage !== null && typeof showPage.component !== 'undefined'
-            ? componentsManager.getComponent(showPage.component)
-            : ResourceShow;
-
+        componentsManager.getComponent(resourceShowPage?.component) ||
+        componentsManager.getComponent(showPage?.component) ||
+        ResourceShow;
     const ResourceCreateComponent =
-        createPage !== null && typeof createPage.component !== 'undefined'
-            ? componentsManager.getComponent(createPage.component)
-            : ResourceCreate;
-
+        componentsManager.getComponent(resourceCreatePage?.component) ||
+        componentsManager.getComponent(createPage?.component) ||
+        ResourceCreate;
     const ResourceEditComponent =
-        editPage !== null && typeof editPage.component !== 'undefined'
-            ? componentsManager.getComponent(editPage.component)
-            : ResourceEdit;
-
+        componentsManager.getComponent(resourceEditPage?.component) ||
+        componentsManager.getComponent(editPage?.component) ||
+        ResourceEdit;
     const ResourceDeleteComponent =
-        deletePage !== null && typeof deletePage.component !== 'undefined'
-            ? componentsManager.getComponent(deletePage.component)
-            : ResourceDelete;
+        componentsManager.getComponent(resourceDeletePage?.component) ||
+        componentsManager.getComponent(deletePage?.component) ||
+        ResourceDelete;
 
-    return (
-        <>
-            {extraRoutes.map(({ path, component, exact = true, ...pageProps }) => {
-                const RouteComponent = componentsManager.getComponent(component);
-                return RouteComponent !== null ? (
-                    <Route
-                        key={`route-${path}`}
-                        path={path}
-                        exact={exact}
-                        element={<RouteComponent resource={resource} {...pageProps} />}
-                    />
-                ) : null;
+    return [
+        <Route
+            path={route('resources.index', {
+                resource: resourceId,
             })}
-            <Route
-                path={route('resources.index', {
-                    resource: resourceId,
-                })}
-                exact
-                element={<ResourceIndexComponent resource={resource} />}
-            />
-            <Route
-                path={route('resources.create', {
-                    resource: resourceId,
-                })}
-                exact
-                element={<ResourceCreateComponent resource={resource} />}
-            />
-            <Route
-                path={route('resources.show', {
-                    resource: resourceId,
-                    id: ':id',
-                })}
-                exact
-                element={<ResourceShowComponent resource={resource} />}
-            />
-            <Route
-                path={route('resources.edit', {
-                    resource: resourceId,
-                    id: ':id',
-                })}
-                exact
-                element={<ResourceEditComponent resource={resource} />}
-            />
-            <Route
-                path={route('resources.delete', {
-                    resource: resourceId,
-                    id: ':id',
-                })}
-                exact
-                element={<ResourceDeleteComponent resource={resource} />}
-            />
-        </>
-    );
+            exact
+            element={<ResourceIndexComponent resource={resource} />}
+        />,
+        <Route
+            path={route('resources.create', {
+                resource: resourceId,
+            })}
+            exact
+            element={<ResourceCreateComponent resource={resource} />}
+        />,
+        <Route
+            path={route('resources.show', {
+                resource: resourceId,
+                id: ':id',
+            })}
+            exact
+            element={<ResourceShowComponent resource={resource} />}
+        />,
+        <Route
+            path={route('resources.edit', {
+                resource: resourceId,
+                id: ':id',
+            })}
+            exact
+            element={<ResourceEditComponent resource={resource} />}
+        />,
+        <Route
+            path={route('resources.delete', {
+                resource: resourceId,
+                id: ':id',
+            })}
+            exact
+            element={<ResourceDeleteComponent resource={resource} />}
+        />,
+        ...extraRoutes.map(({ path, component, exact = true, ...pageProps }) => {
+            const RouteComponent = componentsManager.getComponent(component);
+            return RouteComponent !== null ? (
+                <Route
+                    key={`route-${path}`}
+                    path={path}
+                    exact={exact}
+                    element={<RouteComponent resource={resource} {...pageProps} />}
+                />
+            ) : null;
+        }),
+    ];
 };
 
 export default createResourceRoutes;

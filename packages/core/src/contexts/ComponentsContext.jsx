@@ -11,6 +11,7 @@ export const FORMS_NAMESPACE = 'forms';
 export const FILTERS_NAMESPACE = 'filters';
 export const LISTS_NAMESPACE = 'lists';
 export const DISPLAYS_NAMESPACE = 'displays';
+export const PAGES_NAMESPACE = 'pages';
 export const APP_NAMESPACE = 'app';
 
 export const ComponentsContext = React.createContext(null);
@@ -110,6 +111,17 @@ export const useDisplaysComponents = (defaultComponents = {}) =>
 
 export const useDisplayComponent = (name, defaultComponent = null) =>
     useComponent(name, defaultComponent, DISPLAYS_NAMESPACE);
+
+/**
+ * Pages hooks
+ */
+ export const usePagesComponentsManager = () => useComponentsManager(PAGES_NAMESPACE);
+
+ export const usePagesComponents = (defaultComponents = {}) =>
+     useComponents(PAGES_NAMESPACE, defaultComponents);
+
+ export const usePageComponent = (name, defaultComponent = null) =>
+     useComponent(name, defaultComponent, PAGES_NAMESPACE);
 
 /**
  * App hooks

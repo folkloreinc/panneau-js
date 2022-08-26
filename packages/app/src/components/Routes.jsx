@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { Redirect, Route, Routes, useLocation } from 'react-router';
+import React, { Fragment, useEffect, useState } from 'react';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 
 import { useUser } from '@panneau/auth';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-// import { parse as parseQuery } from 'query-string';
 import {
+    usePagesComponentsManager,
     usePanneau,
     usePanneauResources,
     useRoutes,
     useUrlGenerator,
-    useComponentsManager,
 } from '@panneau/core/contexts';
-import { getComponentFromName } from '@panneau/core/utils';
 
 import createResourceRoutes from './createResourceRoutes';
-import * as basePages from './pages';
+import AccountPage from './pages/Account';
+import ErrorPage from './pages/Error';
+import HomePage from './pages/Home';
+import LoginPage from './pages/Login';
 
 const propTypes = {
     statusCode: PanneauPropTypes.statusCode,
@@ -25,34 +26,28 @@ const defaultProps = {
 };
 
 const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
-    const { pages = {} } = usePanneau();
     const routes = useRoutes();
-    const { pathname } = useLocation(); // search
-
-    const [{ statusCode, pathname: initialPathname }, setInitialRequest] = useState({
+    const { pathname } = useLocation();
+    const [{ statusCode, pathname: lastPathname }, setInitialRequest] = useState({
         statusCode: initialStatusCode,
         pathname,
     });
     const user = useUser();
     const route = useUrlGenerator();
     const resources = usePanneauResources();
-    const componentsManager = useComponentsManager();
-
-    // const nextUrl = useMemo(() => {
-    //     const query = parseQuery(search);
-    //     return query !== null ? query.next || null : null;
-    // }, [search]);
+    const componentsManager = usePagesComponentsManager();
 
     useEffect(() => {
-        if (pathname !== initialPathname) {
+        if (pathname !== lastPathname) {
             setInitialRequest({
                 pathname,
                 statusCode: null,
             });
         }
-    }, [pathname, initialPathname]);
+    }, [pathname, lastPathname]);
 
     // Custom Pages
+    const { pages = null } = usePanneau();
     const {
         home: homePage = null,
         login: loginPage = null,
@@ -60,95 +55,48 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
         error: errorPage = null,
     } = pages || {};
 
-    const HomeComponent = getComponentFromName(
-        homePage?.component || 'home',
-        basePages,
-        homePage?.component,
-    );
+    const HomeComponent = componentsManager.getComponent(homePage?.component) || HomePage;
+    const LoginComponent = componentsManager.getComponent(loginPage?.component) || LoginPage;
+    const AccountComponent = componentsManager.getComponent(accountPage?.component) || AccountPage;
+    const ErrorComponent = componentsManager.getComponent(errorPage?.component) || ErrorPage;
 
-    const LoginComponent = getComponentFromName(
-        loginPage?.component || 'login',
-        basePages,
-        loginPage?.component,
-    );
+    // If there is an error status code
+    if (statusCode !== null) {
+        return <ErrorComponent statusCode={statusCode} />;
+    }
 
-    const AccountComponent = getComponentFromName(
-        accountPage?.component || 'account',
-        basePages,
-        accountPage?.component,
-    );
-
-    const ErrorComponent = getComponentFromName(
-        errorPage?.component || 'error',
-        basePages,
-        errorPage?.component,
-    );
-
-    return (
-        <Routes>
-            {statusCode !== null ? (
-                <Route path="*" element={<ErrorComponent statusCode={statusCode} />} />
-            ) : null}
-
-            {/* TODO fix this shit it doesnt work */}
-            {/* <Route
-                path={routes.login}
-                exact
-                element={
-                    user !== null ? (
-                        <Navigate to={nextUrl !== null ? nextUrl : homeUrl} />
-                    ) : (
-                        <AuthLogin />
-                    )
-                }
-            /> */}
-
-            <Route
-                path={routes.home}
-                exact
-                element={
-                    user !== null ? <HomeComponent /> : <Navigate to={route('login')} replace />
-                }
-            />
-
-            {user === null ? (
-                <Route path={routes.login} exact element={<LoginComponent />} />
-            ) : null}
-
-            {resources.map((resource) => {
-                const { id: resourceId } = resource || {};
-                return user !== null ? (
-                    createResourceRoutes(resource, { route, componentsManager })
-                ) : (
-                    <Route
-                        key={`resource-${resourceId}`}
-                        path={route('resources.index', {
-                            resource: resourceId,
-                        })}
-                        element={
-                            <Navigate
-                                to={`${route('login')}?next=${encodeURIComponent(pathname)}`}
-                                replace
-                            />
-                        }
-                    />
-                );
-            })}
-            <Route
-                path={route('account')}
-                exact
-                element={
-                    user !== null ? (
-                        <AccountComponent />
-                    ) : (
+    // If user is unauthenticated
+    if (user === null) {
+        return (
+            <Routes>
+                <Route path={routes['auth.login']} exact element={<LoginComponent />} />
+                <Route
+                    path="*"
+                    element={
                         <Navigate
-                            to={`${route('login')}?next=${encodeURIComponent(pathname)}`}
+                            to={`${route('auth.login')}?next=${encodeURIComponent(pathname)}`}
                             replace
                         />
-                    )
-                }
-            />
-            <Route path="*" elmeent={<ErrorComponent />} />
+                    }
+                />
+            </Routes>
+        );
+    }
+
+    // Normal routes
+    return (
+        <Routes>
+            <Route path={routes.home} exact element={<HomeComponent />} />
+            {resources.map((resource) => {
+                const { id: resourceId } = resource || {};
+                return (
+                    <Fragment key={`resource-${resourceId}`}>
+                        {createResourceRoutes(resource, { route, componentsManager, pages })}
+                    </Fragment>
+                );
+            })}
+            <Route path={routes.account} exact element={<AccountComponent />} />
+            <Route path="*" element={<ErrorComponent />} />
         </Routes>
     );
 };

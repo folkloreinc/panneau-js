@@ -69,7 +69,7 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                           label: (
                               <FormattedMessage defaultMessage="Login" description="Menu label" />
                           ),
-                          href: route('login'),
+                          href: route('auth.login'),
                       },
                   ],
         [user, route, onClickLogout],
