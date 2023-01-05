@@ -1,15 +1,17 @@
 import { useState, useEffect, useMemo } from 'react';
 
+import loadPackage from '../utils/loadPackage';
+
 /**
  * Locale loader
  */
 let packagesCache = {};
 const defaultPackagesMap = {
-    webcam: () => import('@uppy/webcam'),
-    facebook: () => import('@uppy/facebook'),
-    instagram: () => import('@uppy/instagram'),
-    dropbox: () => import('@uppy/dropbox'),
-    'google-drive': () => import('@uppy/google-drive'),
+    webcam: () => loadPackage('@uppy/webcam', () => import('@uppy/webcam')),
+    facebook: () => loadPackage('@uppy/facebook', () => import('@uppy/facebook')),
+    instagram: () => loadPackage('@uppy/instagram', () => import('@uppy/instagram')),
+    dropbox: () => loadPackage('@uppy/dropbox', () => import('@uppy/dropbox')),
+    'google-drive': () => loadPackage('@uppy/google-drive', () => import('@uppy/google-drive')),
 };
 const useUppySources = (sources, { packagesMap = defaultPackagesMap } = {}) => {
     // transport

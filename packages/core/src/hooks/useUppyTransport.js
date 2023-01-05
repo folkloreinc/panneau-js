@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 
+import loadPackage from '../utils/loadPackage';
+
 /**
  * Locale loader
  */
 const packagesCache = {};
 const defaultPackagesMap = {
-    transloadit: () => import('@uppy/transloadit'),
-    tus: () => import('@uppy/tus'),
-    xhr: () => import('@uppy/xhr-upload'),
+    transloadit: () => loadPackage('@uppy/transloadit', () => import('@uppy/transloadit')),
+    tus: () => loadPackage('@uppy/tus', () => import('@uppy/tus')),
+    xhr: () => loadPackage('@uppy/xhr-upload', () => import('@uppy/xhr-upload')),
 };
 const useUppyTransport = (transport, { packagesMap = defaultPackagesMap } = {}) => {
     // transport

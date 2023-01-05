@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { loadPackage } from '@panneau/core/utils';
+
 /**
  * Locale loader
  */
@@ -30,7 +32,9 @@ const useCKEditorBuild = ({ disabled = false, inline = false } = {}) => {
             // } else {
             //     import('@ckeditor/ckeditor5-build-classic').then(onEditorBuildLoaded);
             // }
-            import('@ckeditor/ckeditor5-build-classic').then(onEditorBuildLoaded);
+            loadPackage('@ckeditor/ckeditor5-build-classic', () =>
+                import('@ckeditor/ckeditor5-build-classic'),
+            ).then(onEditorBuildLoaded);
         }
         return () => {
             canceled = true;

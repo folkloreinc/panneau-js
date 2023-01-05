@@ -1,7 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { isMessage } from '@panneau/core/utils';
-import TextField from '@panneau/field-text';
 import format from 'date-fns/format';
 import formatISO from 'date-fns/formatISO';
 import parse from 'date-fns/parse';
@@ -11,6 +9,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 // import classNames from 'classnames';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { defineMessage, useIntl } from 'react-intl';
+
+import { isMessage, loadPackage } from '@panneau/core/utils';
+import TextField from '@panneau/field-text';
+
 import styles from './styles.module.scss';
 import './styles/datepicker.global.scss';
 
@@ -114,7 +116,9 @@ const DateTimeField = ({
     useEffect(() => {
         const localeName = `${locale}-CA`;
         const loader =
-            locale === 'fr' ? import('date-fns/locale/fr-CA') : import('date-fns/locale/en-CA');
+            locale === 'fr'
+                ? loadPackage('date-fns/locale/fr-CA', () => import('date-fns/locale/fr-CA'))
+                : loadPackage('date-fns/locale/en-CA', () => import('date-fns/locale/en-CA'));
         loader.then(({ default: localePackage }) => {
             registerLocale(localeName, localePackage);
             setLoadedLocale(localeName);

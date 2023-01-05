@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 
+import loadPackage from '../utils/loadPackage';
+
 /**
  * Locale loader
  */
 const packagesCache = {};
 const defaultPackagesMap = {
-    fr: () => import('@uppy/locales/lib/fr_FR'),
-    en: () => import('@uppy/locales/lib/en_US'),
+    fr: () => loadPackage('@uppy/locales/lib/fr_FR', () => import('@uppy/locales/lib/fr_FR')),
+    en: () => loadPackage('@uppy/locales/lib/en_US', () => import('@uppy/locales/lib/en_US')),
 };
 const useUppyLocale = (locale, { packagesMap = defaultPackagesMap } = {}) => {
     const [{ package: loadedPackage }, setLoadedPackage] = useState({

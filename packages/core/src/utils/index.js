@@ -14,6 +14,7 @@ export { default as getFileName } from './getFileName';
 export { default as getPathValue } from './getPathValue';
 export { default as getSelectOptions } from './getSelectOptions';
 export { default as isMessage } from './isMessage';
+export { default as loadPackage } from './loadPackage';
 export { default as pascalCase } from './pascalCase';
 export { default as setFieldValue } from './setFieldValue';
 export { default as slug } from './slug';

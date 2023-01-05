@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
+import loadPackage from '../utils/loadPackage';
 
 /**
  * Locale loader
  */
 let packageCache = null;
+
 const useUppyCore = () => {
     // transport
     const [{ package: loadedPackage }, setLoadedPackage] = useState({
@@ -16,7 +19,7 @@ const useUppyCore = () => {
                 canceled = true;
             };
         }
-        import('@uppy/core').then(({ default: Uppy }) => {
+        loadPackage('@uppy/core', () => import('@uppy/core')).then(({ default: Uppy }) => {
             packageCache = Uppy;
             if (!canceled) {
                 setLoadedPackage({
