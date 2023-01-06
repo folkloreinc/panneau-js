@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+
 import withUppy from '../../../../.storybook/decorators/withUppy';
 import { UppyProvider } from '../../../../packages/core/src/contexts/UppyContext';
 import UploadField from '../UploadField';
@@ -30,8 +31,8 @@ export const WithValue = () => <Container value={[{ data: { file: '1200x300.png'
 export const WithValues = () => (
     <Container
         value={[
-            { data: { file: '1200x300.png' }, preview: 'http://www.fillmurray.com/500/500' },
-            { data: { file: '1200x301.png' } },
+            { data: { file: '1200x300.png' }, preview: 'https://picsum.photos/200/300' },
+            { data: { file: '1200x301.png' }, size: 2000078, type: 'image' },
         ]}
         allowMultipleUploads
     />

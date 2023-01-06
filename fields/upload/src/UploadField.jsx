@@ -1,19 +1,23 @@
 import { faFileAudio, faFileImage, faFileVideo, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useUppy } from '@panneau/core/contexts';
-import Button from '@panneau/element-button';
-import Label from '@panneau/element-label';
-import '@uppy/core/dist/style.css';
-import '@uppy/dashboard/dist/style.css';
 // import classNames from 'classnames';
 import { Dashboard, DashboardModal } from '@uppy/react';
+import classNames from 'classnames';
+import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useUppy } from '@panneau/core/contexts';
+import Button from '@panneau/element-button';
+import Label from '@panneau/element-label';
+
+import '@uppy/core/dist/style.css';
+import '@uppy/dashboard/dist/style.css';
 
 const propTypes = {
     value: PropTypes.oneOfType([
@@ -32,6 +36,9 @@ const propTypes = {
     withButton: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.label,
     allowMultipleUploads: PropTypes.bool,
+    namePath: PropTypes.string,
+    thumbnailPath: PropTypes.string,
+    sizePath: PropTypes.string,
     onChange: PropTypes.func,
     className: PropTypes.string,
 };
@@ -46,6 +53,9 @@ const defaultProps = {
         <FormattedMessage defaultMessage="Add file" description="Default upload add button label" />
     ),
     allowMultipleUploads: false,
+    namePath: null,
+    thumbnailPath: null,
+    sizePath: null,
     onChange: null,
     className: null,
 };
@@ -58,6 +68,9 @@ const UploadField = ({
     withButton,
     addButtonLabel,
     allowMultipleUploads,
+    namePath,
+    thumbnailPath,
+    sizePath,
     onChange,
     className,
 }) => {
@@ -133,109 +146,148 @@ const UploadField = ({
         setModalOpened(false);
     }, [setModalOpened]);
 
-    const values = isArray(value) ? value : [value];
+    const values = useMemo(() => {
+        if (isArray(value)) {
+            return value;
+        }
+        return value !== null ? [value] : null;
+    }, [value]);
+    const hasMedia = values !== null && values.length > 0;
 
     return (
         <div className={className}>
-            {value !== null ? (
-                <div className="card">
-                    <div className="card-body p-1 pl-2">
-                        <div className="media align-items-center">
-                            {values.map((val, idx) => {
-                                const {
-                                    id = null,
-                                    filename = null,
-                                    size = 0,
-                                    thumbnail_url: thumbnailUrl = null,
-                                    preview = null,
-                                    data = {},
-                                    type,
-                                } = val || {};
-                                const { file = null } = data || {};
+            {values !== null
+                ? values.map((media, idx) => {
+                      const {
+                          id = null,
+                          filename = null,
+                          size: fileSize = 0,
+                          thumbnail_url: thumbnailUrl = null,
+                          preview = null,
+                          data = {},
+                          type,
+                      } = media;
+                      const { file = null } = data || {};
 
-                                let faIcon = null;
-                                switch (type) {
-                                    case 'audio':
-                                        faIcon = faFileAudio;
-                                        break;
-                                    case 'image':
-                                        faIcon = faFileImage;
-                                        break;
-                                    case 'video':
-                                        faIcon = faFileVideo;
-                                        break;
-                                    default:
-                                        break;
-                                }
+                      let faIcon = null;
+                      switch (type) {
+                          case 'audio':
+                              faIcon = faFileAudio;
+                              break;
+                          case 'image':
+                              faIcon = faFileImage;
+                              break;
+                          case 'video':
+                              faIcon = faFileVideo;
+                              break;
+                          default:
+                              break;
+                      }
 
-                                const hasPreview = preview !== null || thumbnailUrl !== null;
+                      const name =
+                          (namePath !== null ? get(media || {}, namePath) : null) ||
+                          filename ||
+                          file;
+                      const thumbnail =
+                          (thumbnailPath !== null ? get(media || {}, thumbnailPath) : null) ||
+                          thumbnailUrl ||
+                          preview;
+                      const size =
+                          (sizePath !== null ? get(media || {}, sizePath) : null) || fileSize;
 
-                                return (
-                                    <div
-                                        className="d-flex align-items-center justify-content-between my-1"
-                                        key={`file-${id}-${filename}-${idx + 1}`}
-                                    >
-                                        <div className="d-flex align-items-center mx-2 text-truncate">
-                                            {!hasPreview && faIcon !== null ? (
-                                                <FontAwesomeIcon icon={faIcon} className="me-2" />
-                                            ) : null}
-                                            {hasPreview ? (
-                                                <img
-                                                    className="img-thumbnail me-2"
-                                                    src={preview || thumbnailUrl}
-                                                    alt="preview"
-                                                    style={{
-                                                        height: 100,
+                      const hasThumbnail = preview !== null || thumbnailUrl !== null;
+
+                      return (
+                          <div
+                              className="card mb-1"
+                              key={`media-${id}`}
+                              style={{
+                                  maxWidth: 500,
+                              }}
+                          >
+                              <div className="d-flex align-items-center">
+                                  {hasThumbnail || faIcon !== null ? (
+                                      <div
+                                          className="p-2 text-center"
+                                          style={
+                                              hasThumbnail
+                                                  ? {
+                                                        width: 100,
                                                         backgroundImage:
                                                             'linear-gradient(45deg, #eee 25%, transparent 25%), linear-gradient(-45deg, #eee 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eee 75%), linear-gradient(-45deg, transparent 75%, #eee 75%)',
                                                         backgroundSize: '20px 20px',
                                                         backgroundPosition:
                                                             '0 0, 0 10px, 10px -10px, -10px 0',
-                                                    }}
-                                                />
-                                            ) : null}
-                                            <div className="media-body text-truncate small me-2">
-                                                <strong>{file || filename}</strong>
-                                            </div>
+                                                    }
+                                                  : {
+                                                        width: 100,
+                                                    }
+                                          }
+                                      >
+                                          {!hasThumbnail && faIcon !== null ? (
+                                              <FontAwesomeIcon
+                                                  icon={faIcon}
+                                                  className="m-auto fs-3"
+                                              />
+                                          ) : null}
+                                          {hasThumbnail ? (
+                                              <img
+                                                  className="img-fluid"
+                                                  src={thumbnail}
+                                                  alt="thumbnail"
+                                                  style={{
+                                                      maxHeight: 75,
+                                                  }}
+                                              />
+                                          ) : null}
+                                      </div>
+                                  ) : null}
+                                  <div className="flex-grow-1">
+                                      <div className="card-body">
+                                          <h5
+                                              className={classNames([
+                                                  'card-title',
+                                                  'fs-6',
+                                                  {
+                                                      'mb-1': size !== null && size > 0,
+                                                      'mb-0': size === null || size <= 0,
+                                                  },
+                                              ])}
+                                          >
+                                              {name}
+                                          </h5>
+                                          {size !== null && size > 0 ? (
+                                              <p className="card-text text-muted small">
+                                                  {prettyBytes(size)}
+                                              </p>
+                                          ) : null}
+                                      </div>
+                                  </div>
+                                  <div className="p-2">
+                                      <Button
+                                          type="button"
+                                          size="sm"
+                                          theme="secondary"
+                                          outline
+                                          onClick={() => onClickRemove(idx)}
+                                      >
+                                          <FontAwesomeIcon icon={faTimes} />
+                                      </Button>
+                                  </div>
+                              </div>
+                          </div>
+                      );
+                  })
+                : null}
 
-                                            <small className="text-muted me-2">
-                                                {size > 0 ? prettyBytes(size) : size}
-                                            </small>
-                                        </div>
-                                        <div className="mx-2">
-                                            <Button
-                                                type="button"
-                                                size="sm"
-                                                theme="secondary"
-                                                outline
-                                                onClick={() => onClickRemove(idx)}
-                                            >
-                                                <FontAwesomeIcon icon={faTimes} />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
-            ) : (
-                <>
-                    {withButton ? (
-                        <>
-                            <Button type="button" theme="primary" onClick={openModal}>
-                                <Label>{addButtonLabel}</Label>
-                            </Button>
-                        </>
-                    ) : (
-                        <>
-                            {uppy !== null ? (
-                                <Dashboard uppy={uppy} height={300} plugins={sources} />
-                            ) : null}
-                        </>
-                    )}
-                </>
-            )}
+            {!hasMedia && withButton ? (
+                <Button type="button" theme="primary" onClick={openModal}>
+                    <Label>{addButtonLabel}</Label>
+                </Button>
+            ) : null}
+            {!hasMedia && !withButton && uppy !== null ? (
+                <Dashboard uppy={uppy} height={300} plugins={sources} />
+            ) : null}
             {withButton && uppy !== null ? (
                 <DashboardModal
                     uppy={uppy}
