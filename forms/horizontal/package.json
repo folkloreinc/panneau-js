@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-horizontal",
-    "version": "1.0.3-alpha.4",
+    "version": "1.0.3-alpha.7",
     "description": "Horizontal form",
     "keywords": [
         "javascript"
@@ -53,10 +53,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.0.3-alpha.4",
-        "@panneau/element-button": "^1.0.3-alpha.4",
-        "@panneau/element-form": "^1.0.3-alpha.4",
-        "@panneau/field-fields": "^1.0.3-alpha.4",
+        "@panneau/core": "^1.0.3-alpha.7",
+        "@panneau/element-button": "^1.0.3-alpha.7",
+        "@panneau/element-form": "^1.0.3-alpha.7",
+        "@panneau/field-fields": "^1.0.3-alpha.7",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
