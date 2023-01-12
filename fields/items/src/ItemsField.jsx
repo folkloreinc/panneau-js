@@ -47,6 +47,8 @@ const propTypes = {
     renderItemLabel: PropTypes.func,
     withoutCollapse: PropTypes.bool,
     withoutSort: PropTypes.bool,
+    withoutCard: PropTypes.bool,
+    withoutListGroup: PropTypes.bool,
     addItemDisabled: PropTypes.bool,
     inline: PropTypes.bool,
 };
@@ -77,8 +79,10 @@ const defaultProps = {
     renderBefore: null,
     renderItem: null,
     renderItemLabel: null,
+    withoutListGroup: false,
     withoutCollapse: false,
     withoutSort: false,
+    withoutCard: false,
     addItemDisabled: false,
     inline: false,
 };
@@ -102,8 +106,10 @@ const ItemsField = ({
     renderBefore,
     renderItem,
     renderItemLabel,
+    withoutListGroup,
     withoutCollapse,
     withoutSort,
+    withoutCard,
     addItemDisabled,
     inline,
 }) => {
@@ -288,16 +294,17 @@ const ItemsField = ({
         return (
             <div
                 className={classNames([
-                    'mb-3',
-                    'card',
                     {
-                        'd-inline-flex flex-row me-3': inline,
+                        'mb-3': !withoutCard,
+                        card: !withoutCard,
+                        'd-inline-flex flex-row': inline || withoutCard,
+                        'list-group-item': withoutCard && !withoutListGroup,
                         show: !inline && !collapsed[index],
                     },
                 ])}
                 key={`item-${id}`}
             >
-                {!inline ? (
+                {!inline && !withoutCard ? (
                     <div
                         className={classNames([
                             'card-header',
@@ -347,8 +354,9 @@ const ItemsField = ({
                 <div
                     className={classNames([
                         'position-relative',
-                        'p-3',
                         {
+                            'p-2': !withoutCard,
+                            'flex-grow-1': inline || withoutCard,
                             collapse: isCollapsed,
                         },
                     ])}
@@ -363,18 +371,26 @@ const ItemsField = ({
                             : itemChildren
                         : null}
                 </div>
-                {inline ? (
-                    <div className={classNames(['card-header', 'd-flex', 'border-bottom-0'])}>
-                        <div className={classNames(['cardHeaderButtons', 'm-auto'])}>
-                            <Button
-                                theme="secondary"
-                                size="sm"
-                                onClick={(e) => onClickRemove(e, it, index)}
-                                outline
-                            >
-                                <FontAwesomeIcon icon={faTimes} />
-                            </Button>
-                        </div>
+                {inline || withoutCard ? (
+                    <div
+                        className={classNames([
+                            {
+                                'card-header': !withoutCard,
+                                'd-flex': true,
+                                'border-bottom-0': !withoutCard,
+                                'ps-2': withoutCard,
+                            },
+                        ])}
+                    >
+                        <Button
+                            theme="secondary"
+                            size="sm"
+                            className="m-auto"
+                            onClick={(e) => onClickRemove(e, it, index)}
+                            outline
+                        >
+                            <FontAwesomeIcon icon={faTimes} />
+                        </Button>
                     </div>
                 ) : null}
             </div>
@@ -449,8 +465,8 @@ const ItemsField = ({
                 {value !== null && value.length > 0 ? (
                     <div
                         className={classNames([
-                            'list-group',
                             {
+                                'list-group': withoutSort && !withoutListGroup,
                                 [className]: className !== null,
                             },
                         ])}
@@ -460,6 +476,11 @@ const ItemsField = ({
                                 list={items}
                                 setList={sortList}
                                 handle=".card-header"
+                                className={classNames([
+                                    {
+                                        'list-group': !withoutSort && !withoutListGroup,
+                                    },
+                                ])}
                                 direction={inline ? 'horizontal' : 'vertical'}
                             >
                                 {itemElements}

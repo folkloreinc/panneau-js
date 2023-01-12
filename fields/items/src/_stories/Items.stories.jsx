@@ -62,6 +62,7 @@ export const Normal = () => (
     />
 );
 export const Inline = () => <Container itemFields={itemFields} inline />;
+export const WithoutCard = () => <Container itemFields={itemFields} withoutCard />;
 export const WithoutSort = () => <Container itemFields={itemFields} withoutSort />;
 export const WithoutCollapse = () => <Container itemFields={itemFields} withoutCollapse />;
 export const WithItemRender = () => (
