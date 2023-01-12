@@ -6,22 +6,10 @@
     user-select: none;
 
     :global {
-        @import '~react-datepicker/dist/react-datepicker.css';
-
         /* stylelint-disable */
         .react-datepicker-popper {
             z-index: 4;
         }
         /* stylelint-enable */
     }
-}
-
-:global {
-    @import '~react-datepicker/dist/react-datepicker.css';
-
-    /* stylelint-disable */
-    .react-datepicker-popper {
-        z-index: 4;
-    }
-    /* stylelint-enable */
 }
