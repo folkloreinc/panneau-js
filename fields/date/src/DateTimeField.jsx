@@ -14,7 +14,7 @@ import { isMessage, loadPackage } from '@panneau/core/utils';
 import TextField from '@panneau/field-text';
 
 import styles from './styles.module.scss';
-import './styles/datepicker.global.scss';
+// import './styles/datepicker.global.scss';
 
 const propTypes = {
     name: PropTypes.string,
