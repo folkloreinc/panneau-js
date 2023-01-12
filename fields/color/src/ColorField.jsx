@@ -1,9 +1,10 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { useDocumentEvent } from '@panneau/core/hooks';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
 import tinycolor from 'tinycolor2';
+
+import { useDocumentEvent } from '@panneau/core/hooks';
 
 const propTypes = {
     value: PropTypes.oneOfType([
@@ -75,10 +76,10 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
         (e) => {
             if (!native) {
                 e.preventDefault();
-                setPickerOpened((prevPickerOpened) => !prevPickerOpened);
+                setPickerOpened(!pickerOpened);
             }
         },
-        [native, setPickerOpened],
+        [native, setPickerOpened, pickerOpened],
     );
 
     const onPickerChange = useCallback(
@@ -105,11 +106,7 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
     const pickerRef = useRef(null);
     const onDocumentClick = useCallback(
         (e) => {
-            if (
-                pickerRef.current !== null &&
-                !pickerRef.current.contains(e.target) 
-            ) {
-                
+            if (pickerRef.current !== null && !pickerRef.current.contains(e.target)) {
                 setPickerOpened(false);
             }
         },
@@ -125,6 +122,7 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
                     [className]: className !== null,
                 },
             ])}
+            ref={pickerRef}
         >
             <label className="input-group">
                 <input
@@ -138,6 +136,7 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
                 <span
                     className={classNames(['flex-grow-1', 'text-uppercase', 'input-group-text'])}
                     style={{ minWidth: 100, cursor: 'pointer' }}
+                    onClick={onInputClick}
                 >
                     {hexColor}
                 </span>
@@ -155,7 +154,6 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
                         },
                     ])}
                     style={{ zIndex: 4, width: 300 }}
-                    ref={pickerRef}
                 >
                     <SketchPicker
                         disableAlpha={!withAlpha}
