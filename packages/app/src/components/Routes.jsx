@@ -1,4 +1,6 @@
-import React, { Fragment, useEffect, useState } from 'react';
+/* eslint-disable react/jsx-props-no-spreading */
+import isObject from 'lodash/isObject';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router';
 
 import { useUser } from '@panneau/auth';
@@ -47,13 +49,47 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     }, [pathname, lastPathname]);
 
     // Custom Pages
-    const { pages = null } = usePanneau();
+    const { pages = null, routes: routesDefinition } = usePanneau();
     const {
         home: homePage = null,
         login: loginPage = null,
         account: accountPage = null,
         error: errorPage = null,
+        index: indexPage = null,
+        show: showPage = null,
+        create: createPage = null,
+        edit: editPage = null,
+        delete: deletePage = null,
+        ...otherPages
     } = pages || {};
+
+    const customRoutes = useMemo(
+        () => [
+            ...Object.keys(routesDefinition)
+                .filter(
+                    (key) =>
+                        key.match(/^(resources\.|auth\.)/) === null &&
+                        key !== 'home' &&
+                        key !== 'account',
+                )
+                .filter((key) => {
+                    const routeDef = routesDefinition[key];
+                    return (
+                        isObject(routeDef) &&
+                        typeof routeDef.component !== 'undefined' &&
+                        typeof routeDef.path !== 'undefined'
+                    );
+                })
+                .map((key) => routesDefinition[key]),
+            ...Object.keys(otherPages)
+                .map((key) => otherPages[key])
+                .filter(
+                    ({ path = null, route: pageRoute = null }) =>
+                        path !== null || pageRoute !== null,
+                ),
+        ],
+        [routesDefinition, otherPages],
+    );
 
     const HomeComponent = componentsManager.getComponent(homePage?.component) || HomePage;
     const LoginComponent = componentsManager.getComponent(loginPage?.component) || LoginPage;
@@ -96,6 +132,18 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
                 );
             })}
             <Route path={routes.account} exact element={<AccountComponent />} />
+            {customRoutes.map(
+                ({ path = null, route: pageRoute = null, component, exact = true, ...props }) => {
+                    const PageComponent = componentsManager.getComponent(component);
+                    return PageComponent !== null ? (
+                        <Route
+                            path={path || routes[pageRoute]}
+                            exact={exact}
+                            element={<PageComponent {...props} />}
+                        />
+                    ) : null;
+                },
+            )}
             <Route path="*" element={<ErrorComponent />} />
         </Routes>
     );

@@ -28,9 +28,10 @@ const ResourceCreateButtom = ({ resource, className }) => {
     const onClickDropdown = useCallback(
         (e) => {
             e.preventDefault();
-            setDropdownOpened((opened) => !opened);
+            e.stopPropagation();
+            setDropdownOpened(!dropdownOpened);
         },
-        [setDropdownOpened],
+        [setDropdownOpened, dropdownOpened],
     );
 
     const finalTypes =
@@ -40,8 +41,10 @@ const ResourceCreateButtom = ({ resource, className }) => {
     const hasMultipleTypes = finalTypes !== null && finalTypes.length > 1;
 
     const onDropdownClickOutside = useCallback(() => {
-        setDropdownOpened(false);
-    }, [setDropdownOpened]);
+        if (dropdownOpened) {
+            setDropdownOpened(false);
+        }
+    }, [setDropdownOpened, dropdownOpened]);
 
     const button = (
         <Button

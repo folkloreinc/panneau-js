@@ -1,8 +1,20 @@
+import { tSPropertySignature } from "@babel/types";
+
 export default {
     id: 'pages',
     name: 'Page',
 
-    types: [{ id: 'contact', name: 'Contact', fields: [] }],
+    types: [
+        {
+            id: 'page',
+            name: 'Page',
+        },
+        {
+            id: 'home',
+            name: 'Accueil',
+        },
+        { id: 'contact', name: 'Contact', fields: [] },
+    ],
 
     intl: {
         messages: {
@@ -132,14 +144,17 @@ export default {
 
     index: {
         columns: [
-            'title',
+            {
+                id: 'title',
+                field: 'title',
+                sortable: true,
+            },
             'slug',
             {
                 id: 'actions',
                 actions: ['show', 'edit'],
             },
         ],
-        sortable: true,
         filters: [
             // {
             //     name: 'select-filter-chose',

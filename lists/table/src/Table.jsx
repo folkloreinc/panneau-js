@@ -1,15 +1,17 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // import { defineMessages } from 'react-intl';
+import classNames from 'classnames';
+import get from 'lodash/get';
+import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
 // import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getColumnsWithFields, getComponentFromName } from '@panneau/core/utils';
 import ItemActions from '@panneau/element-item-actions';
 import Loading from '@panneau/element-loading';
-import classNames from 'classnames';
-import get from 'lodash/get';
-import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+
 import SortLink from './SortLink';
 
 const propTypes = {
@@ -62,7 +64,10 @@ const TableList = ({
         [resource, columns],
     );
 
-    const hasActionsColumns =
+    const hasIdColumn =
+        (columnsWithFields.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
+
+    const hasActionsColumn =
         (columnsWithFields.find((it) => it.id === 'actions') || null) !== null;
 
     return (
@@ -80,43 +85,33 @@ const TableList = ({
                 >
                     <thead>
                         <tr>
-                            {!withoutId ? (
-                                <th scope="col">
-                                    {sortable ? (
-                                        <SortLink
-                                            baseUrl={baseUrl}
-                                            query={query}
-                                            field="id"
-                                            columnParameter={sortColumnParameter}
-                                            directionParameter={sortDirectionParameter}
-                                            onQueryChange={onQueryChange}
-                                        >
-                                            #
-                                        </SortLink>
-                                    ) : (
-                                        '#'
-                                    )}
-                                </th>
-                            ) : null}
+                            {!withoutId && !hasIdColumn ? <th scope="col">#</th> : null}
                             {columnsWithFields.map(
                                 (
                                     {
                                         id,
                                         field,
                                         label = null,
-                                        sortable: columnSortable = true,
+                                        sortable: columnSortable = false,
+                                        sortColumnParameter: columnSortColumnParameter,
+                                        sortDirectionParameter: columnSortDirectionParameter,
                                         sortDirections,
                                     },
                                     idx,
                                 ) => (
                                     <th scope="col" key={`col-${id}-${label}-${idx + 1}`}>
-                                        {sortable && columnSortable ? (
+                                        {columnSortable ? (
                                             <SortLink
                                                 baseUrl={baseUrl}
                                                 query={query}
                                                 field={field}
-                                                columnParameter={sortColumnParameter}
-                                                directionParameter={sortDirectionParameter}
+                                                parameterName={
+                                                    columnSortColumnParameter || sortColumnParameter
+                                                }
+                                                directionParameterName={
+                                                    columnSortDirectionParameter ||
+                                                    sortDirectionParameter
+                                                }
                                                 directions={sortDirections}
                                                 onQueryChange={onQueryChange}
                                             >
@@ -128,7 +123,7 @@ const TableList = ({
                                     </th>
                                 ),
                             )}
-                            {!hasActionsColumns ? <th scope="col">&nbsp;</th> : null}
+                            {!hasActionsColumn ? <th scope="col">&nbsp;</th> : null}
                         </tr>
                     </thead>
                     <tbody>
@@ -136,7 +131,7 @@ const TableList = ({
                             const { id = null } = it || {};
                             return (
                                 <tr key={`row-${id}-${rowIdx + 1}`}>
-                                    {!withoutId ? <td className="col-auto">{id}</td> : null}
+                                    {!withoutId && !hasIdColumn ? <td className="col-auto">{id}</td> : null}
                                     {columnsWithFields.map((column, idx) => {
                                         const {
                                             id: colId,
@@ -210,7 +205,7 @@ const TableList = ({
                                             </td>
                                         );
                                     })}
-                                    {!hasActionsColumns ? (
+                                    {!hasActionsColumn ? (
                                         <td className="text-end col-auto">
                                             <ItemActions resource={resource} item={it} />
                                         </td>

@@ -95,8 +95,10 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
     }, [navigate, url, paginated]);
 
     const onClickCloseAlert = useCallback(() => {
-        history.replace(url);
-    }, [history, url]);
+        navigate(url, {
+            replace: true,
+        });
+    }, [navigate, url]);
 
     return (
         <ResourceProvider resource={resource}>

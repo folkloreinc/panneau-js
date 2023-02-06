@@ -30,6 +30,20 @@ export default {
 
     resources: [pageResource, eventResource],
 
+    menus: {
+        main: [
+            {
+                label: 'test',
+                href: '/custom'
+            },
+            'separator',
+            {
+                label: 'test2',
+                href: '/custom'
+            }
+        ]
+    },
+
     intl: {
         locale: 'fr',
         locales: ['fr', 'en', 'es'],
@@ -43,13 +57,6 @@ export default {
     },
 
     components: {
-        'pages.home': 'home',
-        'pages.account': 'account',
-        'pages.login': {
-            component: 'login',
-            someProp: true,
-        },
-        'pages.error': 'error',
         header: { component: 'header' },
     },
 
