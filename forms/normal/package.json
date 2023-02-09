@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-normal",
-    "version": "1.0.3-alpha.10",
+    "version": "1.0.3-alpha.11",
     "description": "Default resource forms",
     "keywords": [
         "javascript"
@@ -57,7 +57,7 @@
         "@panneau/data": "^1.0.3-alpha.10",
         "@panneau/element-button": "^1.0.3-alpha.10",
         "@panneau/element-form": "^1.0.3-alpha.10",
-        "@panneau/field-fields": "^1.0.3-alpha.10",
+        "@panneau/field-fields": "^1.0.3-alpha.11",
         "@panneau/themes": "^1.0.3-alpha.10",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
