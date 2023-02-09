@@ -2,5 +2,6 @@
 @import '~@panneau/themes/scss/placeholders';
 
 .container {
-    //
+    display: inline-flex;
+    flex-direction: row;
 }
