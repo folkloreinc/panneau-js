@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-date",
-    "version": "0.4.38",
+    "version": "0.4.42",
     "description": "Date field for Panneau",
     "keywords": [
         "react",
@@ -51,10 +51,10 @@
         "start": "npm run storybook"
     },
     "dependencies": {
-        "@panneau/core": "^0.4.38",
-        "@panneau/field": "^0.4.38",
-        "@panneau/field-text": "^0.4.38",
-        "@panneau/modal-popover": "^0.4.22",
+        "@panneau/core": "^0.4.42",
+        "@panneau/field": "^0.4.42",
+        "@panneau/field-text": "^0.4.42",
+        "@panneau/modal-popover": "^0.4.42",
         "array-flatten": "^2.1.1",
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.5",
@@ -73,5 +73,6 @@
     "peerDependencies": {
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
-    }
+    },
+    "gitHead": "d31ead86486ab8cfc054ec46e61e49377e43f23a"
 }

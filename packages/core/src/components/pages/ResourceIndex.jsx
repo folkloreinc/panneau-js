@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import isString from 'lodash/isString';

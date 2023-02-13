@@ -1,6 +1,6 @@
 {
     "name": "@panneau/core",
-    "version": "0.4.38",
+    "version": "0.4.42",
     "description": "Core utilities of the Panneau package",
     "keywords": [
         "react",
@@ -90,5 +90,6 @@
     "peerDependencies": {
         "react": ">=15.0.0 || ^16.0.0",
         "react-dom": ">=15.0.0 || ^16.0.0"
-    }
+    },
+    "gitHead": "d31ead86486ab8cfc054ec46e61e49377e43f23a"
 }

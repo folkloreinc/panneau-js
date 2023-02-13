@@ -26,7 +26,7 @@ const propTypes = {
     onChange: PropTypes.func,
 
     selectOptions: PropTypes.arrayOf(PropTypes.shape({
-        value: PropTypes.any,
+        value: PropTypes.any, // eslint-disable-line
         label: PropTypes.string,
     })),
     clearable: PropTypes.bool,

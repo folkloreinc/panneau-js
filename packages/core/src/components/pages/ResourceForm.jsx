@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import isObject from 'lodash/isObject';
 import classNames from 'classnames';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import { withUrlGenerator } from '@folklore/react-app';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { PulseLoader } from 'react-spinners';
@@ -52,7 +52,7 @@ const propTypes = {
     }).isRequired,
     location: PropTypes.shape({
         search: PropTypes.string,
-        state: PropTypes.object,
+        state: PropTypes.object, // eslint-disable-line
     }).isRequired,
     title: PanneauPropTypes.message,
     action: PropTypes.string,

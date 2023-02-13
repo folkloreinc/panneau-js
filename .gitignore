@@ -6,4 +6,9 @@ node_modules
 /coverage
 /out*
 /_book
-/package-lock.json
+/*/*/lib
+/*/*/es
+/*/*/assets
+/*/*/scss
+/*/*/locale
+.env
