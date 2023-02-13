@@ -1,17 +1,10 @@
 {
-  "lerna": "2.4.0",
-  "packages": [
-    "fields/*",
-    "lists/*",
-    "forms/*",
-    "modals/*",
-    "packages/*",
-    "layouts/*"
-  ],
-  "command": {
-    "publish": {
-      "allowBranch": "master"
-    }
-  },
-  "version": "0.4.38"
+    "lerna": "2.4.0",
+    "packages": ["fields/*", "lists/*", "forms/*", "modals/*", "packages/*", "layouts/*"],
+    "command": {
+        "publish": {
+            "allowBranch": ["v0.4", "v0.6", "v1.0-react-router5", "v1.1"]
+        }
+    },
+    "version": "0.4.38"
 }
