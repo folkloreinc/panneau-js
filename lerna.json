@@ -12,8 +12,10 @@
     "command": {
         "publish": {
             "allowBranch": [
-                "master",
-                "v0.6.x"
+                "v0.4",
+                "v0.6",
+                "v1.0-react-router5",
+                "v1.1"
             ]
         }
     }
