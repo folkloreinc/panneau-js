@@ -82,7 +82,7 @@
         "gettext-parser": "^4.0.4",
         "glob": "^7.1.6",
         "http-proxy-middleware": "^2.0.0",
-        "lerna": "^4.0.0",
+        "lerna": "^6.5.0",
         "lodash": "^4.17.21",
         "mkdirp": "^1.0.4",
         "node-sass-tilde-importer": "^1.0.2",
