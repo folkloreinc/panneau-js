@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-select",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "description": "A select field",
     "keywords": [
         "javascript"
@@ -53,9 +53,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^1.1.0",
-        "@panneau/element-select": "^1.1.0",
-        "@panneau/themes": "^1.1.0",
+        "@panneau/core": "^2.0.0",
+        "@panneau/element-select": "^2.0.0",
+        "@panneau/themes": "^2.0.0",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2"
