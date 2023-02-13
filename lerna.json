@@ -14,7 +14,7 @@
         "publish": {
             "allowBranch": [
                 "master",
-                "v0.8"
+                "v1.0-react-router5"
             ]
         },
         "bootstrap": {
