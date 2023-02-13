@@ -1,5 +1,3 @@
-import { tSPropertySignature } from "@babel/types";
-
 export default {
     id: 'pages',
     name: 'Page',
@@ -146,7 +144,6 @@ export default {
         columns: [
             {
                 id: 'title',
-                field: 'title',
                 sortable: true,
             },
             'slug',

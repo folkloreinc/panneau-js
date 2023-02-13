@@ -178,7 +178,7 @@ const TableList = ({
                                             'span',
                                         );
 
-                                        let displayValue = it;
+                                        let displayValue = null;
                                         if (path !== null) {
                                             displayValue = get(it, path, null);
                                         } else if (field !== null) {
