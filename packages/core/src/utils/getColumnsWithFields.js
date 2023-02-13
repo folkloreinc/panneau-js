@@ -1,4 +1,5 @@
 import isString from 'lodash/isString';
+
 import getComponent from './getComponent';
 
 export const getColumnFromField = (field) => {
@@ -24,17 +25,23 @@ export const getColumnsWithFields = (resource, columns) => {
         columns !== null
             ? columns
                   .map((column) => {
-                      const { field: fieldName = null, ...otherProps } = isString(column)
-                          ? { field: column }
-                          : column;
+                      const {
+                          id: colId = null,
+                          field: colField = null,
+                          ...otherProps
+                      } = isString(column) ? { field: column } : column;
+                      const fieldName = colField || colId;
                       return {
-                        ...(fieldName !== null
-                          ? getColumnFromField(fields.find((it) => it.name === fieldName) || null)
-                          : null),
-                        ...otherProps
-                    };
+                          ...(fieldName !== null
+                              ? getColumnFromField(
+                                    fields.find((it) => it.name === fieldName) || null,
+                                )
+                              : null),
+                          ...otherProps,
+                      };
                   })
-                  .filter((it) => it !== null) : [];
+                  .filter((it) => it !== null)
+            : [];
 
     return newColumns;
 };
