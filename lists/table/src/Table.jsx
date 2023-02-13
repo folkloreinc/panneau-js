@@ -67,8 +67,7 @@ const TableList = ({
     const hasIdColumn =
         (columnsWithFields.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
 
-    const hasActionsColumn =
-        (columnsWithFields.find((it) => it.id === 'actions') || null) !== null;
+    const hasActionsColumn = (columnsWithFields.find((it) => it.id === 'actions') || null) !== null;
 
     return (
         <div>
@@ -131,13 +130,15 @@ const TableList = ({
                             const { id = null } = it || {};
                             return (
                                 <tr key={`row-${id}-${rowIdx + 1}`}>
-                                    {!withoutId && !hasIdColumn ? <td className="col-auto">{id}</td> : null}
+                                    {!withoutId && !hasIdColumn ? (
+                                        <td className="col-auto">{id}</td>
+                                    ) : null}
                                     {columnsWithFields.map((column, idx) => {
                                         const {
                                             id: colId,
                                             component,
-                                            path = null,
                                             field = null,
+                                            path = null,
                                             columnClassName = null,
                                             ...displayProps
                                         } = column || {};
@@ -177,8 +178,12 @@ const TableList = ({
                                             'span',
                                         );
 
-                                        const fieldValue =
-                                            path !== null ? get(it, path, null) : null;
+                                        let displayValue = it;
+                                        if (path !== null) {
+                                            displayValue = get(it, path, null);
+                                        } else if (field !== null) {
+                                            displayValue = get(it, field.name, null);
+                                        }
 
                                         return (
                                             <td
@@ -194,11 +199,7 @@ const TableList = ({
                                                     <FieldDisplayComponent
                                                         {...displayProps}
                                                         field={field}
-                                                        value={
-                                                            fieldValue !== null
-                                                                ? fieldValue
-                                                                : it[colId] || null
-                                                        }
+                                                        value={displayValue}
                                                         item={it}
                                                     />
                                                 ) : null}
