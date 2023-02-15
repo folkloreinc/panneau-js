@@ -14,7 +14,7 @@ import { ReactSortable } from 'react-sortablejs';
 import { v4 as uuid } from 'uuid';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useFieldComponent } from '@panneau/core/contexts';
+import { useFieldComponent, useFieldsComponentsManager } from '@panneau/core/contexts';
 import { getPathValue } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
@@ -119,6 +119,7 @@ const ItemsField = ({
     const { component = null, ...fieldProps } = itemField || {};
     const FieldsComponent = useFieldComponent('fields');
     const FieldComponent = useFieldComponent(component);
+    const fieldsManager = useFieldsComponentsManager();
 
     const onClickAdd = useCallback(
         (newItemContent = null) => {
@@ -273,11 +274,22 @@ const ItemsField = ({
                 />
             );
         } else if (currentType !== null) {
+            const {
+                component: typeComponent = null,
+                fields: typeFields = null,
+                id: typeId,
+                ...typeProps
+            } = currentType;
+            const FieldTypeComponent =
+                typeComponent !== null
+                    ? fieldsManager.getComponent(typeComponent) || FieldsComponent
+                    : FieldsComponent;
             itemChildren = (
-                <FieldsComponent
+                <FieldTypeComponent
+                    {...typeProps}
                     value={it}
                     onChange={(newValue) => onItemChange(it, index, newValue)}
-                    fields={currentType.fields || itemFields}
+                    fields={typeFields || itemFields}
                 />
             );
         } else if (hasTypes && itemType !== null && currentType === null) {
