@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { Fragment, useCallback } from 'react';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFieldsComponents, useFieldsManager } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import FormGroup from '@panneau/element-form-group';
 import FormRow from '@panneau/element-form-row';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { Fragment, useCallback } from 'react';
 
 const propTypes = {
     components: PropTypes.object, // eslint-disable-line react/forbid-prop-types
