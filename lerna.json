@@ -1,5 +1,5 @@
 {
-    "version": "2.0.2",
+    "version": "2.0.3",
     "packages": [
         "displays/*",
         "fields/*",
@@ -12,25 +12,14 @@
     ],
     "command": {
         "publish": {
-            "allowBranch": [
-                "v0.4",
-                "v0.6",
-                "v1.0-react-router5",
-                "v2.0"
-            ]
+            "allowBranch": ["v0.4", "v0.6", "v1.0-react-router5", "v2.0"]
         },
         "bootstrap": {
             "hoist": true,
-            "npmClientArgs": [
-                "--no-package-lock",
-                "--legacy-peer-deps"
-            ]
+            "npmClientArgs": ["--no-package-lock", "--legacy-peer-deps"]
         }
     },
     "bootstrap": {
-        "npmClientArgs": [
-            "--no-package-lock",
-            "--legacy-peer-deps"
-        ]
+        "npmClientArgs": ["--no-package-lock", "--legacy-peer-deps"]
     }
 }
