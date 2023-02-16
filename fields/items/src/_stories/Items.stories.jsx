@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+
 import FieldsProvider from '../../../../packages/fields';
 import IntlProvider from '../../../../packages/intl/src/IntlProvider';
 import ItemsField from '../ItemsField';
@@ -71,6 +72,7 @@ export const WithItemRender = () => (
 
 export const WithItemComponent = () => <Container itemComponent={Dummy} />;
 export const WithFieldComponent = () => <Container itemField={itemField} newItemValue={null} />;
+export const WithMaxItems = () => <Container itemFields={itemFields} maxItems={2} />;
 
 export const WithTypes = () => (
     <Container

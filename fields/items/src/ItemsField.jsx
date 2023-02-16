@@ -50,6 +50,7 @@ const propTypes = {
     withoutCard: PropTypes.bool,
     withoutListGroup: PropTypes.bool,
     addItemDisabled: PropTypes.bool,
+    maxItems: PropTypes.number,
     inline: PropTypes.bool,
 };
 
@@ -84,6 +85,7 @@ const defaultProps = {
     withoutSort: false,
     withoutCard: false,
     addItemDisabled: false,
+    maxItems: null,
     inline: false,
 };
 
@@ -111,6 +113,7 @@ const ItemsField = ({
     withoutSort,
     withoutCard,
     addItemDisabled,
+    maxItems,
     inline,
 }) => {
     const hasTypes = types !== null;
@@ -182,6 +185,9 @@ const ItemsField = ({
     );
 
     const items = (value || []).map((it, index) => ({ id: idMap.current[index], it, index }));
+    const itemsCount = items ? items.length : 0;
+    const isAddItemDisabled =
+        addItemDisabled || (maxItems !== null ? itemsCount >= maxItems : false);
 
     const sortList = useCallback(
         (newItems) => {
@@ -434,7 +440,7 @@ const ItemsField = ({
                                 id,
                                 label: typeName || 'label',
                                 type: 'button',
-                                disabled: addItemDisabled,
+                                disabled: isAddItemDisabled,
                                 onClick: () => {
                                     onClickAdd({ type: id });
                                     setDropdownOpened(false);
@@ -449,7 +455,7 @@ const ItemsField = ({
                     <Button
                         theme="primary"
                         outline
-                        disabled={addItemDisabled}
+                        disabled={isAddItemDisabled}
                         onClick={() => {
                             onClickAdd({
                                 type: types[0].id || null,
@@ -464,7 +470,7 @@ const ItemsField = ({
                     <Button
                         theme="primary"
                         outline
-                        disabled={addItemDisabled}
+                        disabled={isAddItemDisabled}
                         onClick={() => onClickAdd()}
                         className="ms-auto"
                     >
