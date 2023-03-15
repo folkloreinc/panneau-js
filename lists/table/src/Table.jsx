@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-// import { defineMessages } from 'react-intl';
 import classNames from 'classnames';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
@@ -7,7 +6,6 @@ import React, { useMemo } from 'react';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
-// import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getColumnsWithFields, getComponentFromName } from '@panneau/core/utils';
 import ItemActions from '@panneau/element-item-actions';
 import Loading from '@panneau/element-loading';
@@ -17,11 +15,12 @@ import SortLink from './SortLink';
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
     items: PanneauPropTypes.items,
+    actions: PropTypes.arrayOf(PropTypes.string),
+    actionItems: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
     columns: PanneauPropTypes.tableColumns,
     theme: PropTypes.string,
     baseUrl: PropTypes.string,
     query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    sortable: PropTypes.bool,
     sortColumnParameter: PropTypes.string,
     sortDirectionParameter: PropTypes.string,
     onQueryChange: PropTypes.func,
@@ -30,11 +29,12 @@ const propTypes = {
 
 const defaultProps = {
     items: [],
+    actions: ['show', 'edit', 'delete'],
+    actionItems: null,
     columns: [],
     theme: null,
     baseUrl: null,
     query: null,
-    sortable: false,
     sortColumnParameter: 'order',
     sortDirectionParameter: 'order_direction',
     onQueryChange: null,
@@ -42,22 +42,20 @@ const defaultProps = {
 };
 
 const TableList = ({
-    columns,
     resource,
     items,
+    actions,
+    actionItems,
+    columns,
     theme,
     baseUrl,
     query,
-    sortable,
     sortColumnParameter,
     sortDirectionParameter,
     onQueryChange,
     withoutId,
 }) => {
     const displayComponents = useDisplaysComponents();
-
-    // const { page: queryPage } = query || {};
-    // const hasQuery = Object.keys(queryWithoutPage).length > 0;
 
     const columnsWithFields = useMemo(
         () => getColumnsWithFields(resource, columns),
@@ -208,7 +206,12 @@ const TableList = ({
                                     })}
                                     {!hasActionsColumn ? (
                                         <td className="text-end col-auto">
-                                            <ItemActions resource={resource} item={it} />
+                                            <ItemActions
+                                                resource={resource}
+                                                item={it}
+                                                actions={actions}
+                                                items={actionItems}
+                                            />
                                         </td>
                                     ) : null}
                                 </tr>

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import pageResource from '../../../../.storybook/data/page-resource';
 import { ResourceProvider } from '../../../../packages/core/contexts';
 import DisplayProvider from '../../../../packages/displays';
@@ -11,15 +12,13 @@ export default {
         intl: true,
     },
     decorators: [
-        (Story) => {
-            return (
-                <ResourceProvider resource={pageResource}>
-                    <DisplayProvider>
-                        <Story />
-                    </DisplayProvider>
-                </ResourceProvider>
-            );
-        },
+        (Story) => (
+            <ResourceProvider resource={pageResource}>
+                <DisplayProvider>
+                    <Story />
+                </DisplayProvider>
+            </ResourceProvider>
+        ),
     ],
 };
 
@@ -31,6 +30,19 @@ const items = [
     { id: '5', title: { fr: 'Paul', en: 'Paul' }, description: 'Paul' },
 ];
 
-export const Normal = () => <Table resource={pageResource} items={items} columns={['title', 'description']} />;
+export const Normal = () => (
+    <Table resource={pageResource} items={items} columns={['title', 'description']} />
+);
 
-export const Sortable = () => <Table resource={pageResource} items={items} columns={['title', 'description']} sortable />;
+export const Sortable = () => (
+    <Table resource={pageResource} items={items} columns={['title', 'description']} sortable />
+);
+
+export const WithActions = () => (
+    <Table
+        resource={pageResource}
+        items={items}
+        columns={['title', 'description']}
+        actions={['view', 'delete']}
+    />
+);

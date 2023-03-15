@@ -1,13 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { faEdit, faEye, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import * as AppPropTypes from '../../../lib/PropTypes';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useResourceUrlGenerator } from '@panneau/core/hooks';
-import Buttons from '@panneau/element-buttons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import Buttons from '@panneau/element-buttons';
 
 const propTypes = {
     resource: PanneauPropTypes.resource,
@@ -49,7 +49,7 @@ const defaultProps = {
     className: null,
 };
 
-const FormActions = ({
+const ItemActions = ({
     resource,
     size,
     item,
@@ -118,7 +118,7 @@ const FormActions = ({
     );
 };
 
-FormActions.propTypes = propTypes;
-FormActions.defaultProps = defaultProps;
+ItemActions.propTypes = propTypes;
+ItemActions.defaultProps = defaultProps;
 
-export default FormActions;
+export default ItemActions;
