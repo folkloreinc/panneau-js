@@ -1,7 +1,6 @@
-import { postJSON, getJSON, getCSRFHeaders } from '@folklore/fetch';
+import { getCSRFHeaders, getJSON, postJSON } from '@folklore/fetch';
+import queryString from 'query-string';
 import { generatePath } from 'react-router';
-import { stringify as stringifyQuery } from 'query-string';
-
 
 class Base {
     constructor(opts = {}) {
@@ -12,32 +11,27 @@ class Base {
             baseUrl: opts.baseUrl,
             onUnauthorized: opts.onUnauthorized || null,
         };
-        
     }
 
     requestGet(path, query = null) {
-        const queryString =
-            query !== null ? stringifyQuery(query, { arrayFormat: 'bracket' }) : null;
+        const finalQuery =
+            query !== null ? queryString.stringify(query, { arrayFormat: 'bracket' }) : null;
         return getJSON(
             `${this.getFullUrl(path)}${
-                queryString !== null && queryString.length > 0 ? `?${queryString}` : ''
+                finalQuery !== null && finalQuery.length > 0 ? `?${finalQuery}` : ''
             }`,
             {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
             },
-        ).catch((error) => {
-            return this.onError(error);
-        });
+        ).catch((error) => this.onError(error));
     }
 
     requestPost(path, data) {
         return postJSON(this.getFullUrl(path), data, {
             credentials: 'include',
             headers: getCSRFHeaders(),
-        }).catch((error) => {
-            return this.onError(error);
-        });
+        }).catch((error) => this.onError(error));
     }
 
     requestPut(path, data) {
@@ -51,9 +45,7 @@ class Base {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
             },
-        ).catch((error) => {
-            return this.onError(error);
-        });
+        ).catch((error) => this.onError(error));
     }
 
     requestPatch(path, data) {
@@ -67,17 +59,13 @@ class Base {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
             },
-        ).catch((error) => {
-            return this.onError(error);
-        });
+        ).catch((error) => this.onError(error));
     }
 
     requestDelete(path) {
         return this.requestPost(path, {
             _method: 'DELETE',
-        }).catch((error) => {
-            return this.onError(error);
-        });
+        }).catch((error) => this.onError(error));
     }
 
     route(route, params) {
@@ -98,7 +86,7 @@ class Base {
         const { status = null } = err || {};
         const statusCode = parseInt(status, 10);
         // If status is refused and callback exists
-        if ((statusCode === 401 || statusCode === 419) && onUnauthorized !== null){
+        if ((statusCode === 401 || statusCode === 419) && onUnauthorized !== null) {
             return onUnauthorized();
         }
         throw err;

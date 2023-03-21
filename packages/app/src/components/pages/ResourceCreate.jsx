@@ -1,4 +1,4 @@
-import { parse as parseQuery } from 'query-string';
+import queryString from 'query-string';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router';
@@ -25,7 +25,7 @@ const ResourceCreatePage = ({ resource }) => {
     const onSuccess = useCallback(() => {
         navigate(`${resourceRoute('index')}?created=true`);
     }, [navigate, resourceRoute]);
-    const { type = null } = useMemo(() => parseQuery(search), [search]);
+    const { type = null } = useMemo(() => queryString.parse(search), [search]);
     const resourceValues = useResourceValues(resource);
     return (
         <ResourceProvider resource={resource}>

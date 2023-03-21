@@ -1,10 +1,13 @@
+/* eslint-disable react/jsx-indent */
+
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
-import Link from '@panneau/element-link';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { stringify as stringifyQuery } from 'query-string';
+import queryString from 'query-string';
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import Link from '@panneau/element-link';
 
 const propTypes = {
     page: PropTypes.number,
@@ -87,7 +90,7 @@ const Pagination = ({
     const getUrl = useCallback(
         (currentPage) =>
             url !== null
-                ? `${url}?${stringifyQuery(
+                ? `${url}?${queryString.stringify(
                       { ...query, page: currentPage },
                       {
                           arrayFormat: 'bracket',
@@ -185,36 +188,38 @@ const Pagination = ({
                     </li>
                 ) : null}
 
-                {pages.length > 1 ? pages.map((pageNumber, index) => (
-                    <li
-                        key={`page-${pageNumber}-${index}`}
-                        className={classNames([
-                            'page-item',
-                            {
-                                disabled: pageNumber === '...' || pages.length < 2,
-                                active: pageNumber === page && pages.length > 1,
-                                [itemClassName]: itemClassName !== null,
-                            },
-                        ])}
-                    >
-                        <Link
-                            className={classNames([
-                                'page-link',
-                                {
-                                    [linkClassName]: linkClassName !== null,
-                                },
-                            ])}
-                            href={pageNumber !== '...' ? getUrl(pageNumber) : '#'}
-                            onClick={
-                                pageNumber !== '...' && onClickPage !== null
-                                    ? () => onClickPage(pageNumber)
-                                    : null
-                            }
-                        >
-                            {pageNumber}
-                        </Link>
-                    </li>
-                )) : null}
+                {pages.length > 1
+                    ? pages.map((pageNumber, index) => (
+                          <li
+                              key={`page-${pageNumber}-${index}`}
+                              className={classNames([
+                                  'page-item',
+                                  {
+                                      disabled: pageNumber === '...' || pages.length < 2,
+                                      active: pageNumber === page && pages.length > 1,
+                                      [itemClassName]: itemClassName !== null,
+                                  },
+                              ])}
+                          >
+                              <Link
+                                  className={classNames([
+                                      'page-link',
+                                      {
+                                          [linkClassName]: linkClassName !== null,
+                                      },
+                                  ])}
+                                  href={pageNumber !== '...' ? getUrl(pageNumber) : '#'}
+                                  onClick={
+                                      pageNumber !== '...' && onClickPage !== null
+                                          ? () => onClickPage(pageNumber)
+                                          : null
+                                  }
+                              >
+                                  {pageNumber}
+                              </Link>
+                          </li>
+                      ))
+                    : null}
 
                 {withPreviousNext ? (
                     <li

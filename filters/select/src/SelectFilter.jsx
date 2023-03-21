@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useApi } from '@panneau/data';
-import Select from '@panneau/element-select';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
-import { parse as parseQuery } from 'query-string';
+import queryString from 'query-string';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
+
+import { useApi } from '@panneau/data';
+import Select from '@panneau/element-select';
 
 const propTypes = {
     options: PropTypes.arrayOf(
@@ -53,7 +54,7 @@ const SelectFilter = ({
     const [options, setOptions] = useState(initialOptions || []);
 
     const { search } = useLocation();
-    const query = useMemo(() => parseQuery(search), [search]);
+    const query = useMemo(() => queryString.parse(search), [search]);
     const finalParams = useMemo(() => {
         const currentQuery = query || {};
         const currentParams = requestParams || [];

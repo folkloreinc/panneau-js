@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Icon from '@panneau/element-icon';
-import Link from '@panneau/element-link';
 import isObject from 'lodash/isObject';
 import omit from 'lodash/omit';
 import PropTypes from 'prop-types';
-import { stringify as stringifyQuery } from 'query-string';
+import queryString from 'query-string';
 import React, { useCallback, useMemo } from 'react';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Icon from '@panneau/element-icon';
+import Link from '@panneau/element-link';
 
 const propTypes = {
     baseUrl: PropTypes.string,
@@ -99,7 +100,9 @@ const SortLink = ({
     );
     return (
         <Link
-            href={`${baseUrl || ''}${newQuery !== null ? `?${stringifyQuery(newQuery)}` : ''}`}
+            href={`${baseUrl || ''}${
+                newQuery !== null ? `?${queryString.stringify(newQuery)}` : ''
+            }`}
             onClick={onClick}
             {...props}
         >

@@ -4,7 +4,7 @@
 import classNames from 'classnames';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
-import { parse as parseQuery, stringify as stringifyQuery } from 'query-string';
+import queryString from 'query-string';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router';
@@ -53,7 +53,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
     const componentsManager = useComponentsManager();
     const { search } = useLocation();
     const navigate = useNavigate();
-    const query = useMemo(() => parseQuery(search), [search]);
+    const query = useMemo(() => queryString.parse(search), [search]);
     const listQuery = useMemo(() => query, [query]); // TODO: omit routes
     const { created = false, deleted = false } = query || {};
 
@@ -77,7 +77,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
             navigate(
                 `${url}${
                     newQuery !== null
-                        ? `?${stringifyQuery(newQuery, {
+                        ? `?${queryString.stringify(newQuery, {
                               arrayFormat: 'bracket',
                           })}`
                         : ''
@@ -88,10 +88,10 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
     );
 
     const onQueryReset = useCallback(() => {
-        const queryString = stringifyQuery(null, {
+        const resetQuery = queryString.stringify(null, {
             arrayFormat: 'bracket',
         });
-        navigate(`${url}?${queryString}`);
+        navigate(`${url}?${resetQuery}`);
     }, [navigate, url, paginated]);
 
     const onClickCloseAlert = useCallback(() => {
