@@ -1,5 +1,6 @@
-import pageResource from './page-resource';
 import eventResource from './event-resource';
+import pageResource from './page-resource';
+import personResource from './person-resource';
 
 export default {
     type: 'panneau',
@@ -9,8 +10,7 @@ export default {
         home: '/',
         'auth.login': '/login',
         'auth.logout': '/logout',
-
-        'account': '/account',
+        account: '/account',
 
         // Base routes
         'resources.index': '/:resource', // the page
@@ -28,20 +28,20 @@ export default {
         },
     },
 
-    resources: [pageResource, eventResource],
+    resources: [pageResource, eventResource, personResource],
 
     menus: {
         main: [
             {
                 label: 'test',
-                href: '/custom'
+                href: '/custom',
             },
             'separator',
             {
                 label: 'test2',
-                href: '/custom'
-            }
-        ]
+                href: '/custom',
+            },
+        ],
     },
 
     intl: {

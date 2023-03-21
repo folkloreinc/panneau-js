@@ -154,9 +154,19 @@ module.exports = () => {
         const items = getResourceItems(resource);
         const filteredItems = sortItems(filterItems(items, query), sort, sortDirection);
         if (page !== null) {
-            res.json(getItemsPage(filteredItems, parseInt(page, 10), parseInt(count || defaultCount, 10)));
+            res.json(
+                getItemsPage(
+                    filteredItems,
+                    parseInt(page, 10),
+                    parseInt(count || defaultCount, 10),
+                ),
+            );
         } else {
-            res.json(count !== null && paginate === false ? filteredItems.slice(0, count - 1) : filteredItems);
+            res.json(
+                count !== null && paginate === false
+                    ? filteredItems.slice(0, count - 1)
+                    : filteredItems,
+            );
         }
         res.end();
     });
