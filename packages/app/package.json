@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "2.0.3",
+    "version": "2.0.4",
     "description": "",
     "keywords": [
         "javascript"
@@ -84,7 +84,7 @@
         "@panneau/filters": "^2.0.2",
         "@panneau/forms": "^2.0.3",
         "@panneau/intl": "^2.0.2",
-        "@panneau/lists": "^2.0.2",
+        "@panneau/lists": "^2.0.4",
         "@panneau/modals": "^2.0.2",
         "@panneau/themes": "^2.0.2",
         "classnames": "^2.2.6",
