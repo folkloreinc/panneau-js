@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "2.0.5",
+    "version": "2.0.6",
     "description": "",
     "keywords": [
         "javascript"
@@ -63,9 +63,9 @@
         "@fortawesome/fontawesome-svg-core": "^1.2.35",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
-        "@panneau/auth": "^2.0.5",
+        "@panneau/auth": "^2.0.6",
         "@panneau/core": "^2.0.2",
-        "@panneau/data": "^2.0.5",
+        "@panneau/data": "^2.0.6",
         "@panneau/displays": "^2.0.2",
         "@panneau/element-alert": "^2.0.2",
         "@panneau/element-button": "^2.0.2",
@@ -80,9 +80,9 @@
         "@panneau/element-navbar": "^2.0.2",
         "@panneau/element-pagination": "^2.0.5",
         "@panneau/element-radios": "^2.0.2",
-        "@panneau/fields": "^2.0.5",
-        "@panneau/filters": "^2.0.5",
-        "@panneau/forms": "^2.0.5",
+        "@panneau/fields": "^2.0.6",
+        "@panneau/filters": "^2.0.6",
+        "@panneau/forms": "^2.0.6",
         "@panneau/intl": "^2.0.2",
         "@panneau/lists": "^2.0.5",
         "@panneau/modals": "^2.0.2",
