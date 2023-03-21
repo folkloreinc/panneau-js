@@ -19,7 +19,6 @@ export const messages = defineMessages({
         defaultMessage: 'You are not authorized to access this page.',
         description: 'Error page description',
     },
-
     metaTitle403: {
         defaultMessage: 'Error 403',
         description: 'Error page meta title',
@@ -32,7 +31,6 @@ export const messages = defineMessages({
         defaultMessage: 'Access to this page is forbidden',
         description: 'Error page description',
     },
-
     metaTitle404: {
         defaultMessage: 'Error 404',
         description: 'Error page meta title',
@@ -45,7 +43,6 @@ export const messages = defineMessages({
         defaultMessage: 'This page doesn’t exist',
         description: 'Error page description',
     },
-
     metaTitle500: {
         defaultMessage: 'Error 500',
         description: 'Error page meta title',

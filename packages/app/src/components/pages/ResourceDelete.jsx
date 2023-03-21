@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useNavigate, useParams } from 'react-router';
@@ -13,8 +13,6 @@ import ResourceForm from '../forms/ResourceForm';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
 
-// import Button from '../buttons/Button';
-
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
 };
@@ -26,18 +24,12 @@ const ResourceDeletePage = ({ resource }) => {
     const navigate = useNavigate();
     const resourceRoute = useResourceUrlGenerator(resource);
     const { item } = useResourceItem(resource, itemId);
+    const resourceValues = useResourceValues(resource);
 
     const onSuccess = useCallback(
         () => navigate(`${resourceRoute('index')}?deleted=true`),
         [navigate, resourceRoute],
     );
-
-    // Navigate back
-    const { entries = [] } = history || {};
-    const previousEntry =
-        entries !== null && entries.length > 1 ? entries[entries.length - 2] : null;
-    const previous = previousEntry?.pathname || null;
-    const resourceValues = useResourceValues(resource);
 
     return (
         <ResourceProvider resource={resource}>
@@ -57,11 +49,9 @@ const ResourceDeletePage = ({ resource }) => {
                         <div className="col-12 col-md-8 col-lg-7">
                             {item !== null ? (
                                 <ResourceForm
-                                    component=""
                                     resource={resource}
                                     item={item}
                                     onSuccess={onSuccess}
-                                    previous={previous}
                                     isDelete
                                 />
                             ) : null}

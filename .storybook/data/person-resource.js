@@ -1,23 +1,23 @@
 export default {
-    id: 'events',
-    name: 'Event',
+    id: 'persons',
+    name: 'Person',
 
     intl: {
         values: {
-            name: 'event',
-            a_singular: 'an event',
-            a_plural: 'events',
-            A_singular: 'An event',
-            A_plural: 'Events',
-            the_singular: 'the event',
-            the_plural: 'the events',
-            The_singular: 'The event',
-            The_plural: 'The events',
+            name: 'person',
+            a_singular: 'an person',
+            a_plural: 'persons',
+            A_singular: 'An person',
+            A_plural: 'Persons',
+            the_singular: 'the person',
+            the_plural: 'the persons',
+            The_singular: 'The person',
+            The_plural: 'The persons',
         },
     },
 
     fields: [
-        { name: 'organizer', label: 'Organisateur', type: 'text', component: 'text' },
+        { name: 'name', label: 'Name', type: 'text', component: 'text' },
         {
             name: 'email',
             label: 'Email',
@@ -36,15 +36,7 @@ export default {
     },
 
     index: {
-        columns: ['organizer', 'email'],
-
-        actions: [
-            {
-                id: 'export',
-                label: 'Export',
-            },
-            'create',
-        ],
+        columns: ['name', 'email', 'id'],
 
         filters: [
             {
@@ -57,10 +49,10 @@ export default {
                 placeholder: 'Sélectionner un truc',
                 component: 'select',
                 options: [
-                    { label: 'Truc A', value: 'A' },
-                    { label: 'Truc B', value: 'B' },
-                    { label: 'Truc C', value: 'C' },
-                    { label: 'Truc D', value: 'D' },
+                    { label: 'Truc ZZZ', value: 'ZZZ' },
+                    { label: 'Truc XXX', value: 'XXX' },
+                    { label: 'Truc YYY', value: 'YYY' },
+                    { label: 'Truc WWW', value: 'WWW' },
                 ],
             },
         ],

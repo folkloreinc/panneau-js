@@ -65,7 +65,24 @@ const ResourceFilters = ({
         return isActive;
     }, false);
 
-    // console.log('value', value);
+    const onFilterChange = useCallback(
+        (name, newFilterValue) => {
+            if (name !== null && onChange !== null) {
+                onChange({ ...value, [name]: newFilterValue, ...defaultValue });
+            }
+        },
+        [onChange, value, defaultValue],
+    );
+
+    const onFilterClear = useCallback(
+        (name) => {
+            if (name !== null && onChange !== null) {
+                const { [name]: oldName, ...newValue } = value || {};
+                onChange({ ...newValue, ...defaultValue });
+            }
+        },
+        [onChange, value, defaultValue],
+    );
 
     return (
         <Navbar
@@ -85,23 +102,6 @@ const ResourceFilters = ({
             {currentFilters.map(({ component, name, groupLabel, ...filterProps }, index) => {
                 const FilterComponent = getComponentFromName(component, FilterComponents, null);
                 const filterValue = value !== null && value[name] ? value[name] : null;
-
-                const onFilterChange = useCallback(
-                    (newFilterValue) => {
-                        if (name !== null && onChange !== null) {
-                            onChange({ ...value, [name]: newFilterValue, ...defaultValue });
-                        }
-                    },
-                    [onChange, name, value, defaultValue],
-                );
-
-                const onFilterClear = useCallback(() => {
-                    if (name !== null && onChange !== null) {
-                        const { [name]: oldName, ...newValue } = value || {};
-                        onChange({ ...newValue, ...defaultValue });
-                    }
-                }, [onChange, name, value, defaultValue]);
-
                 return FilterComponent !== null ? (
                     <FormGroup
                         key={`filter-${name}-${index + 1}`}
@@ -111,8 +111,8 @@ const ResourceFilters = ({
                         <FilterComponent
                             {...filterProps}
                             value={filterValue}
-                            onChange={onFilterChange}
-                            onClear={onFilterClear}
+                            onChange={(newValue) => onFilterChange(name, newValue)}
+                            onClear={() => onFilterClear(name)}
                         />
                     </FormGroup>
                 ) : null;

@@ -18,7 +18,6 @@ const HomePage = () => {
     const visibleResources = resources.filter(
         ({ settings: { hideInNavbar = false } = {} }) => !hideInNavbar,
     );
-
     return (
         <MainLayout>
             <div className="container-sm py-4">
