@@ -36,12 +36,22 @@ export default {
     },
 
     index: {
-        columns: ['organizer', 'email'],
+        columns: [
+            'organizer',
+            'email',
+            // {
+            //     id: 'actions',
+            //     actions: ['delete'],
+            // },
+        ],
 
         actions: [
             {
                 id: 'export',
                 label: 'Export',
+                href: 'https://google.com',
+                external: true,
+                theme: 'secondary',
             },
             'create',
         ],

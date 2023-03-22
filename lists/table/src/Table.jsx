@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
@@ -15,8 +16,9 @@ import SortLink from './SortLink';
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
     items: PanneauPropTypes.items,
-    actions: PropTypes.arrayOf(PropTypes.string),
-    actionItems: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
+    actions: PropTypes.arrayOf(
+        PropTypes.oneOfType([PropTypes.string, PropTypes.shape({ id: PropTypes.string })]),
+    ),
     columns: PanneauPropTypes.tableColumns,
     theme: PropTypes.string,
     baseUrl: PropTypes.string,
@@ -30,7 +32,6 @@ const propTypes = {
 const defaultProps = {
     items: [],
     actions: ['show', 'edit', 'delete'],
-    actionItems: null,
     columns: [],
     theme: null,
     baseUrl: null,
@@ -45,7 +46,6 @@ const TableList = ({
     resource,
     items,
     actions,
-    actionItems,
     columns,
     theme,
     baseUrl,
@@ -65,7 +65,8 @@ const TableList = ({
     const hasIdColumn =
         (columnsWithFields.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
 
-    const hasActionsColumn = (columnsWithFields.find((it) => it.id === 'actions') || null) !== null;
+    const actionColumn = (columnsWithFields || []).find((it) => it.id === 'actions') || null;
+    const hasActionsColumn = actionColumn !== null;
 
     return (
         <div>
@@ -210,7 +211,6 @@ const TableList = ({
                                                 resource={resource}
                                                 item={it}
                                                 actions={actions}
-                                                items={actionItems}
                                             />
                                         </td>
                                     ) : null}

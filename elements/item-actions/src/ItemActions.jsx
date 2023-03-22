@@ -1,6 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { faEdit, faEye, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -67,50 +69,79 @@ const ItemActions = ({
 }) => {
     const urlGenerator = useResourceUrlGenerator(resource);
     const { id, url = null } = item || {};
+
     return (
         <Buttons
             size={size}
             items={
                 items ||
-                [
-                    ...(showUrl !== null || url !== null
-                        ? [
-                              {
-                                  id: 'show',
-                                  label: iconsOnly ? <FontAwesomeIcon icon={faEye} /> : showLabel,
-                                  href: showUrl || url,
-                                  external: true,
-                                  theme: 'info',
-                                  target: '_blank',
-                                  onClick: onClickShow,
-                              },
-                          ]
-                        : []),
-                    {
-                        id: 'edit',
-                        label: iconsOnly ? <FontAwesomeIcon icon={faEdit} /> : editLabel,
-                        href:
-                            urlGenerator !== null
-                                ? urlGenerator('edit', {
-                                      id,
-                                  })
-                                : null,
-                        theme: 'primary',
-                        onClick: onClickEdit,
-                    },
-                    {
-                        id: 'delete',
-                        label: iconsOnly ? <FontAwesomeIcon icon={faTrash} /> : deleteLabel,
-                        href:
-                            urlGenerator !== null
-                                ? urlGenerator('delete', {
-                                      id,
-                                  })
-                                : null,
-                        theme: 'danger',
-                        onClick: onClickDelete,
-                    },
-                ].filter(({ id: actionId }) => actions.indexOf(actionId) !== -1)
+                (actions || [])
+                    .map((action = null) => {
+                        if (action !== null) {
+                            if (isObject(action)) {
+                                return action;
+                            }
+                            if (isString(action)) {
+                                switch (action) {
+                                    case 'show':
+                                        if (showUrl !== null || url !== null) {
+                                            return {
+                                                id: 'show',
+                                                label: iconsOnly ? (
+                                                    <FontAwesomeIcon icon={faEye} />
+                                                ) : (
+                                                    showLabel
+                                                ),
+                                                href: showUrl || url,
+                                                external: true,
+                                                theme: 'info',
+                                                target: '_blank',
+                                                onClick: onClickShow,
+                                            };
+                                        }
+                                        break;
+                                    case 'edit':
+                                        return {
+                                            id: 'edit',
+                                            label: iconsOnly ? (
+                                                <FontAwesomeIcon icon={faEdit} />
+                                            ) : (
+                                                editLabel
+                                            ),
+                                            href:
+                                                urlGenerator !== null
+                                                    ? urlGenerator('edit', {
+                                                          id,
+                                                      })
+                                                    : null,
+                                            theme: 'primary',
+                                            onClick: onClickEdit,
+                                        };
+                                    case 'delete':
+                                        return {
+                                            id: 'delete',
+                                            label: iconsOnly ? (
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            ) : (
+                                                deleteLabel
+                                            ),
+                                            href:
+                                                urlGenerator !== null
+                                                    ? urlGenerator('delete', {
+                                                          id,
+                                                      })
+                                                    : null,
+                                            theme: 'danger',
+                                            onClick: onClickDelete,
+                                        };
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+                        return null;
+                    })
+                    .filter((action) => action !== null)
             }
             outline
             className={className}

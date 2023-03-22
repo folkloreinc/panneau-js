@@ -149,7 +149,18 @@ export default {
             'slug',
             {
                 id: 'actions',
-                actions: ['show', 'edit'],
+                actions: [
+                    'show',
+                    {
+                        id: 'export',
+                        label: 'Export',
+                        href: 'https://google.com',
+                        external: true,
+                        theme: 'secondary',
+                    },
+                    'edit',
+                    'delete',
+                ],
             },
         ],
         filters: [

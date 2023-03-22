@@ -11,7 +11,7 @@ export default {
         intl: {
             locale: panneauDefinition.intl.locale,
         },
-        router: false
+        router: false,
     },
 };
 
@@ -37,6 +37,15 @@ export const LightMode = () => (
 export const DarkMode = () => (
     <PanneauContainer
         definition={{ ...panneauDefinition, theme: { colorScheme: 'dark' } }}
+        memoryRouter
+        user={user}
+        {...props}
+    />
+);
+
+export const NicheMode = () => (
+    <PanneauContainer
+        definition={{ ...panneauDefinition, theme: { colorScheme: 'niche' } }}
         memoryRouter
         user={user}
         {...props}

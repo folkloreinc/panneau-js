@@ -44,15 +44,19 @@ const ResourceItemsList = ({
             component: listComponent = null,
             showPagination = true,
             filters = null,
+            actions = null, // eslint-disable-line no-unused-vars
             ...listProps
         } = {},
     } = resource;
+
     const { background: theme = null } = usePanneauColorScheme();
     const ListComponents = useListsComponents();
+
     const [page, queryWithoutPage] = useMemo(() => {
         const { page: currentPage = 1, ...rest } = query || {};
         return [currentPage, rest];
     }, [query]);
+
     const itemsProps = useResourceItems(
         resource,
         queryWithoutPage,

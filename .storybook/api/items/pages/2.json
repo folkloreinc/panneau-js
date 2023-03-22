@@ -2,5 +2,6 @@
     "id": "2",
     "type": "page",
     "title": { "fr": "Une page autre", "en": "Another page" },
-    "slug": "mon-slug"
+    "slug": "mon-slug",
+    "url": "/mon-slug"
 }
