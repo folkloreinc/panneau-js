@@ -10,6 +10,7 @@
         "lists/*",
         "packages/*"
     ],
+    "useNx": true,
     "command": {
         "publish": {
             "allowBranch": ["v0.4", "v0.6", "v1.0-react-router5", "v2.0"]

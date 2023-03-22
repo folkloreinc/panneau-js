@@ -170,3 +170,15 @@ export const formErrors = PropTypes.arrayOf(formError);
 export const uppy = PropTypes.shape({ tus: PropTypes.object }); // eslint-disable-line
 
 export const triggerUpdate = PropTypes.string;
+
+export const breadcrumb = PropTypes.shape({
+    url: PropTypes.string,
+});
+
+export const breadcrumbs = PropTypes.arrayOf(breadcrumb);
+
+export const font = PropTypes.shape({
+    // url: PropTypes.string,
+});
+
+export const fonts = PropTypes.arrayOf(font);

@@ -2,7 +2,7 @@
 const path = require('path');
 const { program } = require('commander');
 const { sync: globSync } = require('glob');
-const { compileAndWrite } = require('@formatjs/cli');
+const { compileAndWrite } = require('@formatjs/cli-lib');
 const { idInterpolationPattern } = require('./config');
 
 let srcPath;

@@ -91,8 +91,6 @@ const SelectElement = ({
         [finalOptions],
     );
 
-    // TODO: fix dark mode for this one
-
     return (
         <div className={classNames(['position-relative', className])}>
             <Select
@@ -103,6 +101,7 @@ const SelectElement = ({
                     container: () => ({ ...(autoSize ? { minWidth } : null), maxWidth: '100%' }),
                     menuPortal: (base) => ({ ...base, zIndex: 10 }),
                     placeholder: (base) => ({ ...base, whiteSpace: 'nowrap' }),
+                    option: (base) => ({ ...base, color: '#343434' }),
                 }}
                 value={optionValue || null}
                 options={finalOptions}

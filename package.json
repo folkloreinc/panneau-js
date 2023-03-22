@@ -27,7 +27,7 @@
         "@babel/plugin-transform-runtime": "^7.12.15",
         "@babel/preset-env": "^7.16.7",
         "@babel/preset-react": "^7.16.7",
-        "@formatjs/cli": "^5.0.9",
+        "@formatjs/cli-lib": "^6.0.3",
         "@rollup/plugin-alias": "^3.1.2",
         "@rollup/plugin-babel": "^5.2.3",
         "@rollup/plugin-commonjs": "^22.0.0",
@@ -61,7 +61,7 @@
         "chalk": "^5.0.0",
         "chance": "^1.1.7",
         "classnames": "^2.2.6",
-        "commander": "^8.3.0",
+        "commander": "^10.0.0",
         "css-loader": "^6.5.1",
         "cssnano": "^5.0.5",
         "dayjs": "^1.10.4",
@@ -82,10 +82,11 @@
         "gettext-parser": "^4.0.4",
         "glob": "^7.1.6",
         "http-proxy-middleware": "^2.0.0",
-        "lerna": "^4.0.0",
+        "lerna": "^6.5.1",
         "lodash": "^4.17.21",
         "mkdirp": "^1.0.4",
         "node-sass-tilde-importer": "^1.0.2",
+        "nx": "^15.8.7",
         "pkg-up": "^4.0.0",
         "postcss": "^8.2.8",
         "postcss-cli": "^10.0.0",
@@ -116,6 +117,6 @@
         "stylelint-config-property-sort-order-smacss": "^9.0.0",
         "stylelint-config-sass-guidelines": "^9.0.1",
         "uuid": "^8.3.2",
-        "webpack": "^5.0.0"
+        "webpack": "^5.76.3"
     }
 }
