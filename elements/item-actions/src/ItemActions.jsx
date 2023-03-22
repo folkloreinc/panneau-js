@@ -1,6 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { faEdit, faEye, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
@@ -10,6 +8,7 @@ import { FormattedMessage } from 'react-intl';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Buttons from '@panneau/element-buttons';
+import Icon from '@panneau/element-icon';
 
 const propTypes = {
     resource: PanneauPropTypes.resource,
@@ -79,7 +78,11 @@ const ItemActions = ({
                     .map((action = null) => {
                         if (action !== null) {
                             if (isObject(action)) {
-                                return action;
+                                const { label = null, icon = null } = action;
+                                return {
+                                    ...action,
+                                    label: icon !== null ? <Icon name={icon} /> : label,
+                                };
                             }
                             if (isString(action)) {
                                 switch (action) {
@@ -88,7 +91,7 @@ const ItemActions = ({
                                             return {
                                                 id: 'show',
                                                 label: iconsOnly ? (
-                                                    <FontAwesomeIcon icon={faEye} />
+                                                    <Icon name="eye-fill" />
                                                 ) : (
                                                     showLabel
                                                 ),
@@ -104,7 +107,7 @@ const ItemActions = ({
                                         return {
                                             id: 'edit',
                                             label: iconsOnly ? (
-                                                <FontAwesomeIcon icon={faEdit} />
+                                                <Icon name="pencil-square" />
                                             ) : (
                                                 editLabel
                                             ),
@@ -121,7 +124,7 @@ const ItemActions = ({
                                         return {
                                             id: 'delete',
                                             label: iconsOnly ? (
-                                                <FontAwesomeIcon icon={faTrash} />
+                                                <Icon name="trash-fill" />
                                             ) : (
                                                 deleteLabel
                                             ),

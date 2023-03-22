@@ -1,13 +1,16 @@
+/* eslint-disable no-nested-ternary */
+
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import { PropTypes as MicromagPropTypes } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import Link from '@panneau/element-link';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React from 'react';
 
 const propTypes = {
     href: PropTypes.string,
@@ -226,33 +229,31 @@ const Card = ({
                 <div className="card-body">{linksElements}</div>
             ) : null}
             {footer !== null ? (
-                <>
-                    {onClickFooter !== null ? (
-                        <button
-                            type="button"
-                            className={classNames([
-                                'card-footer',
-                                {
-                                    [footerClassName]: footerClassName !== null,
-                                },
-                            ])}
-                            onClick={onClickFooter}
-                        >
-                            <Label>{footer}</Label>
-                        </button>
-                    ) : (
-                        <div
-                            className={classNames([
-                                'card-footer',
-                                {
-                                    [footerClassName]: footerClassName !== null,
-                                },
-                            ])}
-                        >
-                            <Label>{footer}</Label>
-                        </div>
-                    )}
-                </>
+                onClickFooter !== null ? (
+                    <button
+                        type="button"
+                        className={classNames([
+                            'card-footer',
+                            {
+                                [footerClassName]: footerClassName !== null,
+                            },
+                        ])}
+                        onClick={onClickFooter}
+                    >
+                        <Label>{footer}</Label>
+                    </button>
+                ) : (
+                    <div
+                        className={classNames([
+                            'card-footer',
+                            {
+                                [footerClassName]: footerClassName !== null,
+                            },
+                        ])}
+                    >
+                        <Label>{footer}</Label>
+                    </div>
+                )
             ) : null}
         </>
     );

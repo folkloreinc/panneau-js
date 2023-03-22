@@ -1,13 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-
-import Label from '@panneau/element-label';
 import Button from '@panneau/element-button';
+import Icon from '@panneau/element-icon';
+import Label from '@panneau/element-label';
 
 const propTypes = {
     theme: PanneauPropTypes.buttonTheme,
@@ -44,7 +42,7 @@ const Alert = ({ theme, children, onClose, className }) => (
             aria-label="Close"
             onClick={onClose}
         >
-            <FontAwesomeIcon icon={faTimes} className="d-block" />
+            <Icon name="x-lg" bold className="d-block" />
         </Button>
     </div>
 );

@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import get from 'lodash/get';
-import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
@@ -64,7 +63,6 @@ const TableList = ({
 
     const hasIdColumn =
         (columnsWithFields.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
-
     const actionColumn = (columnsWithFields || []).find((it) => it.id === 'actions') || null;
     const hasActionsColumn = actionColumn !== null;
 
