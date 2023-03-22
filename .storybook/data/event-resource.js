@@ -52,6 +52,7 @@ export default {
                 href: 'https://google.com',
                 external: true,
                 theme: 'secondary',
+                className: 'me-1',
             },
             'create',
         ],
