@@ -54,6 +54,7 @@ const SelectElement = ({
     ...props
 }) => {
     const finalOptions = useMemo(() => getSelectOptions(options), [options]);
+
     const onChangeOption = useCallback(
         (newValue) => {
             if (onChange !== null) {
@@ -66,6 +67,7 @@ const SelectElement = ({
         },
         [onChange, multiple],
     );
+
     const optionValue = useMemo(() => {
         if (multiple) {
             return value !== null

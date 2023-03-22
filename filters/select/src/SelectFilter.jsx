@@ -52,9 +52,13 @@ const SelectFilter = ({
 }) => {
     const api = useApi();
     const [options, setOptions] = useState(initialOptions || []);
+    useEffect(() => {
+        setOptions(initialOptions);
+    }, [initialOptions, setOptions]);
 
     const { search } = useLocation();
     const query = useMemo(() => queryString.parse(search), [search]);
+
     const finalParams = useMemo(() => {
         const currentQuery = query || {};
         const currentParams = requestParams || [];

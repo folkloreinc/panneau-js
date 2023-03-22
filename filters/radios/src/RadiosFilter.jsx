@@ -1,8 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Radios from '@panneau/element-radios';
 import PropTypes from 'prop-types';
 import React from 'react';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Radios from '@panneau/element-radios';
 
 const propTypes = {
     name: PropTypes.string,
@@ -19,20 +20,18 @@ const defaultProps = {
     className: null,
 };
 
-const RadiosFilter = ({ name, value, options, onChange, className, ...props }) => {
-    return (
-        <div className={className}>
-            <Radios
-                {...props}
-                name={name}
-                value={value}
-                options={options}
-                onChange={onChange}
-                uncheckable
-            />
-        </div>
-    );
-};
+const RadiosFilter = ({ name, value, options, onChange, className, ...props }) => (
+    <div className={className}>
+        <Radios
+            {...props}
+            name={name}
+            value={value}
+            options={options}
+            onChange={onChange}
+            uncheckable
+        />
+    </div>
+);
 
 RadiosFilter.propTypes = propTypes;
 RadiosFilter.defaultProps = defaultProps;
