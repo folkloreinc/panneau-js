@@ -25,6 +25,7 @@ const useResourceItems = (resource, query = null, page = null, count = null, opt
                 }),
         [api, resource, query, count],
     );
+
     const { items, pageItems, ...request } = useItems({
         getPage: page !== null ? getItems : null,
         getItems: page === null ? getItems : null,
