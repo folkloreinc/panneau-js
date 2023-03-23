@@ -19,6 +19,7 @@ const propTypes = {
     componentProps: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onQueryChange: PropTypes.func,
     onQueryReset: PropTypes.func,
+    showFilters: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -29,6 +30,7 @@ const defaultProps = {
     componentProps: null,
     onQueryChange: null,
     onQueryReset: null,
+    showFilters: true,
 };
 
 const ResourceItemsList = ({
@@ -38,6 +40,7 @@ const ResourceItemsList = ({
     onQueryChange,
     onQueryReset,
     paginated,
+    showFilters,
 }) => {
     const {
         index: {
@@ -67,7 +70,7 @@ const ResourceItemsList = ({
 
     return (
         <>
-            {filters !== null ? (
+            {showFilters && filters !== null ? (
                 <ResourceFilters
                     filters={filters}
                     value={query}
