@@ -81,7 +81,8 @@ const ItemActions = ({
                                 const { label = null, icon = null } = action;
                                 return {
                                     ...action,
-                                    label: icon !== null ? <Icon name={icon} /> : label,
+                                    label: iconsOnly && icon !== null ? null : label,
+                                    icon: iconsOnly && icon !== null ? <Icon name={icon} /> : null,
                                 };
                             }
                             if (isString(action)) {
@@ -90,11 +91,8 @@ const ItemActions = ({
                                         if (showUrl !== null || url !== null) {
                                             return {
                                                 id: 'show',
-                                                label: iconsOnly ? (
-                                                    <Icon name="eye-fill" />
-                                                ) : (
-                                                    showLabel
-                                                ),
+                                                label: iconsOnly ? null : showLabel,
+                                                icon: iconsOnly ? <Icon name="eye-fill" /> : null,
                                                 href: showUrl || url,
                                                 external: true,
                                                 theme: 'info',
@@ -106,11 +104,8 @@ const ItemActions = ({
                                     case 'edit':
                                         return {
                                             id: 'edit',
-                                            label: iconsOnly ? (
-                                                <Icon name="pencil-square" />
-                                            ) : (
-                                                editLabel
-                                            ),
+                                            label: iconsOnly ? null : editLabel,
+                                            icon: iconsOnly ? <Icon name="pencil-square" /> : null,
                                             href:
                                                 urlGenerator !== null
                                                     ? urlGenerator('edit', {
@@ -123,11 +118,8 @@ const ItemActions = ({
                                     case 'delete':
                                         return {
                                             id: 'delete',
-                                            label: iconsOnly ? (
-                                                <Icon name="trash-fill" />
-                                            ) : (
-                                                deleteLabel
-                                            ),
+                                            label: iconsOnly ? null : deleteLabel,
+                                            icon: iconsOnly ? <Icon name="trash3" /> : null,
                                             href:
                                                 urlGenerator !== null
                                                     ? urlGenerator('delete', {

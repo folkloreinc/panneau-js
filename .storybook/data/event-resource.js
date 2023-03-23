@@ -39,10 +39,21 @@ export default {
         columns: [
             'organizer',
             'email',
-            // {
-            //     id: 'actions',
-            //     actions: ['delete'],
-            // },
+            {
+                id: 'actions',
+                actions: [
+                    'edit',
+                    'delete',
+                    {
+                        id: 'export',
+                        icon: 'gear',
+                        href: 'https://google.com',
+                        external: true,
+                        theme: 'secondary',
+                        className: 'me-1',
+                    },
+                ],
+            },
         ],
 
         actions: [
