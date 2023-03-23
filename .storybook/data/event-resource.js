@@ -51,6 +51,7 @@ export default {
                         external: true,
                         theme: 'secondary',
                         className: 'me-1',
+                        itemLinkProp: 'email',
                     },
                 ],
             },

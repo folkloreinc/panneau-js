@@ -78,11 +78,14 @@ const ItemActions = ({
                     .map((action = null) => {
                         if (action !== null) {
                             if (isObject(action)) {
-                                const { label = null, icon = null } = action;
+                                const { label = null, icon = null, itemLinkProp = null } = action;
                                 return {
                                     ...action,
                                     label: iconsOnly && icon !== null ? null : label,
                                     icon: iconsOnly && icon !== null ? <Icon name={icon} /> : null,
+                                    ...(itemLinkProp !== null && item !== null && item[itemLinkProp]
+                                        ? { href: item[itemLinkProp] }
+                                        : null),
                                 };
                             }
                             if (isString(action)) {
