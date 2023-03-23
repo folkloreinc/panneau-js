@@ -14,12 +14,15 @@ module.exports = {
                 'default',
                 {
                     svgo: {
-                        plugins: extendDefaultPlugins([
+                        plugins: [
                             {
-                                name: 'removeViewBox',
-                                active: false,
+                                name: 'preset-default',
+                                overrides: {
+                                    name: 'removeViewBox',
+                                    active: false,
+                                },
                             },
-                        ]),
+                        ],
                     },
                 },
             ],
