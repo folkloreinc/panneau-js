@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import React, { useContext, useMemo } from 'react';
 
 const FormContext = React.createContext(null);
 
@@ -24,16 +24,16 @@ const propTypes = {
 
 const defaultProps = {};
 
-export const FormProvider = ({ value, setValue, children }) => (
-    <FormContext.Provider
-        value={{
+export const FormProvider = ({ value, setValue, children }) => {
+    const values = useMemo(
+        () => ({
             value,
             setValue,
-        }}
-    >
-        {children}
-    </FormContext.Provider>
-);
+        }),
+        [value, setValue],
+    );
+    return <FormContext.Provider value={values}>{children}</FormContext.Provider>;
+};
 
 FormProvider.propTypes = propTypes;
 FormProvider.defaultProps = defaultProps;

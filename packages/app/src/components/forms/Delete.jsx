@@ -5,7 +5,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { usePanneauColorScheme } from '@panneau/core/contexts';
+// import { usePanneauColorScheme } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Form from '@panneau/element-form';
 import { useResourceValues } from '@panneau/intl';
@@ -49,7 +49,7 @@ const DeleteForm = ({
 }) => {
     const { id = null } = value || {};
     const resourceValues = useResourceValues(resource, { id });
-    const { text, background } = usePanneauColorScheme();
+    // const { text, background } = usePanneauColorScheme();
 
     return (
         <Form
@@ -70,8 +70,8 @@ const DeleteForm = ({
                 className={classNames([
                     'card',
                     {
-                        [`bg-${background}`]: background !== null,
-                        [`border-${text}`]: text !== null,
+                        // [`bg-${background}`]: background !== null,
+                        // [`border-${text}`]: text !== null,
                         [className]: className !== null,
                     },
                 ])}

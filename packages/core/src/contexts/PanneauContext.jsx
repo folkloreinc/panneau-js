@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
-import isString from 'lodash/isString';
 import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
+import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 
 import * as PanneauPropTypes from '../lib/PropTypes';
 
@@ -24,15 +24,24 @@ export const usePanneauColorScheme = () => {
     const { theme = {} } = usePanneau() || {};
     const { colorScheme = 'light' } = theme || {};
 
-    return colorScheme === 'dark'
-        ? {
-              background: 'dark',
-              text: 'light',
-          }
-        : {
-              background: 'light',
-              text: 'dark',
-          };
+    if (colorScheme === null || colorScheme === 'light' || colorScheme === 'dark') {
+        return colorScheme === 'dark'
+            ? {
+                  theme: 'dark',
+                  background: 'dark',
+                  text: 'light',
+              }
+            : {
+                  theme: 'light',
+                  background: 'light',
+                  text: 'dark',
+              };
+    }
+    return {
+        theme: colorScheme,
+        background: null,
+        text: null,
+    };
 };
 
 export const usePanneauComponents = () => {

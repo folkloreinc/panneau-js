@@ -21,8 +21,30 @@ const props = {
 
 const user = { id: 1, name: 'Folklore', email: 'info@atelierfolklore.ca' };
 
-export const Normal = () => (
+export const Guest = () => (
     <PanneauContainer definition={panneauDefinition} memoryRouter {...props} />
+);
+
+export const GuestDarkEnglish = () => (
+    <PanneauContainer
+        definition={{
+            ...panneauDefinition,
+            theme: { colorScheme: 'dark' },
+            intl: {
+                locale: 'en',
+                locales: ['en', 'fr'],
+                values: {
+                    name: 'Panneau in Englishe',
+                },
+                messages: {
+                    'resources.index': 'Lire {a_plural}',
+                    'resources.create': 'Blabla',
+                },
+            },
+        }}
+        memoryRouter
+        {...props}
+    />
 );
 
 export const LightMode = () => (
@@ -52,7 +74,7 @@ export const NicheMode = () => (
     />
 );
 
-export const Englishe = () => (
+export const English = () => (
     <PanneauContainer
         definition={{
             ...panneauDefinition,

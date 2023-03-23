@@ -18,7 +18,7 @@ const defaultProps = {
 };
 
 const GuestLayout = ({ fullscreen, children }) => {
-    const { background, text } = usePanneauColorScheme();
+    const { theme = null, background = null, text = null } = usePanneauColorScheme();
     return (
         <div
             className={classNames([
@@ -27,7 +27,7 @@ const GuestLayout = ({ fullscreen, children }) => {
                     'd-flex flex-column min-vh-100': fullscreen,
                 },
             ])}
-            data-bs-theme="dark"
+            data-bs-theme={theme !== null ? theme : null}
         >
             <MainNavbar className={classNames(['sticky-top', 'px-3'])} />
             <div

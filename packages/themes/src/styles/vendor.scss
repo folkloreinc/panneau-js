@@ -5,6 +5,14 @@
 @import './mixins';
 @import '~bootstrap/scss/bootstrap';
 
+// TEST
+@include color-mode(niche) {
+    // CSS variable overrides here...
+    --bs-primary: #c8d;
+    --bs-btn-bg: #c8d;
+    --main-bg-color: #0f7;
+}
+
 .container-small {
     @include make-container();
 

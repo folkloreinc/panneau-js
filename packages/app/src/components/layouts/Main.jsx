@@ -18,9 +18,12 @@ const defaultProps = {
 };
 
 const MainLayout = ({ children, fullscreen }) => {
-    const { background, text } = usePanneauColorScheme();
+    const { theme = null, background = null, text = null } = usePanneauColorScheme();
     return (
-        <div className={classNames([styles.container, 'd-flex', 'flex-column', 'min-vh-100'])}>
+        <div
+            className={classNames([styles.container, 'd-flex', 'flex-column', 'min-vh-100'])}
+            data-bs-theme={theme !== null ? theme : null}
+        >
             <MainNavbar className={classNames(['border-bottom', 'sticky-top', 'px-3'])} />
             <div
                 className={classNames([

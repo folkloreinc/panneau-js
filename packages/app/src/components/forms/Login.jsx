@@ -4,60 +4,30 @@ import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useAuth } from '@panneau/auth';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useFormComponent, useUrlGenerator } from '@panneau/core/contexts';
-import { useForm } from '@panneau/core/hooks';
+import { useUrlGenerator } from '@panneau/core/contexts';
+import { Login as PanneauLoginForm } from '@panneau/form-auth';
 
 const propTypes = {
-    fields: PanneauPropTypes.fields,
     className: PropTypes.string,
     onSuccess: PropTypes.func,
 };
 
 const defaultProps = {
-    fields: [
-        {
-            name: 'email',
-            type: 'email',
-            size: 'lg',
-            label: <FormattedMessage defaultMessage="Email" description="Field label" />,
-        },
-        {
-            name: 'password',
-            type: 'password',
-            size: 'lg',
-            label: <FormattedMessage defaultMessage="Password" description="Field label" />,
-        },
-    ],
     className: null,
     onSuccess: null,
 };
 
-const LoginForm = ({ fields: formFields, className, onSuccess }) => {
+const LoginForm = ({ className, onSuccess }) => {
     const url = useUrlGenerator();
     const { login } = useAuth();
     const postForm = useCallback((action, { email, password }) => login(email, password), [login]);
 
-    const { value, setValue, fields, onSubmit, status, generalError, errors } = useForm({
-        fields: formFields,
-        postForm,
-        onComplete: onSuccess,
-    });
-
-    const NormalForm = useFormComponent('normal');
-
     return (
-        <NormalForm
+        <PanneauLoginForm
             action={url('auth.login')}
-            method="post"
-            fields={fields}
-            onSubmit={onSubmit}
+            postForm={postForm}
+            onComplete={onSuccess}
             className={className}
-            status={status}
-            generalError={generalError}
-            errors={errors}
-            value={value}
-            onChange={setValue}
             submitButtonLabel={
                 <FormattedMessage defaultMessage="Log in" description="Button label" />
             }

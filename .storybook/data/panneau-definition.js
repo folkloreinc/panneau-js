@@ -66,7 +66,8 @@ export default {
     },
 
     theme: {
-        colorScheme: 'dark',
+        // colorScheme: 'dark',
+        //  colorScheme: 'niche',
         header: {
             withMenu: false,
         },

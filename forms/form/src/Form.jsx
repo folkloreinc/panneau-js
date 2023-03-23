@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useFormComponent } from '@panneau/core/contexts';
-import { useForm } from '@panneau/core/hooks';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useFormComponent } from '@panneau/core/contexts';
+import { useForm } from '@panneau/core/hooks';
 
 const propTypes = {
     action: PropTypes.string.isRequired,
@@ -48,6 +49,7 @@ const Form = ({
     ...props
 }) => {
     const FormComponent = useFormComponent(type);
+
     const defaultPostForm = useCallback(
         (act, data) =>
             postJSON(act, data, {
