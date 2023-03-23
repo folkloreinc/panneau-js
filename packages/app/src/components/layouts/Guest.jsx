@@ -6,6 +6,8 @@ import { usePanneauColorScheme } from '@panneau/core/contexts';
 
 import MainNavbar from '../menus/MainNavbar';
 
+import styles from '../../styles/layouts/guest.module.scss';
+
 const propTypes = {
     children: PropTypes.node.isRequired,
     fullscreen: PropTypes.bool,
@@ -19,9 +21,13 @@ const GuestLayout = ({ fullscreen, children }) => {
     const { background, text } = usePanneauColorScheme();
     return (
         <div
-            className={classNames({
-                'd-flex flex-column min-vh-100': fullscreen,
-            })}
+            className={classNames([
+                styles.container,
+                {
+                    'd-flex flex-column min-vh-100': fullscreen,
+                },
+            ])}
+            data-bs-theme="dark"
         >
             <MainNavbar className={classNames(['sticky-top', 'px-3'])} />
             <div
