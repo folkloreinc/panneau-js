@@ -1,5 +1,3 @@
-const { extendDefaultPlugins } = require('svgo');
-
 module.exports = {
     plugins: [
         require('postcss-flexbugs-fixes'),
