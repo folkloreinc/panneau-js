@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-search",
-    "version": "2.0.15",
+    "version": "2.0.16",
     "description": "Search filter",
     "keywords": [
         "javascript"
@@ -56,8 +56,8 @@
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^2.0.15",
-        "@panneau/element-button": "^2.0.15",
-        "@panneau/element-form": "^2.0.15",
+        "@panneau/element-button": "^2.0.16",
+        "@panneau/element-form": "^2.0.16",
         "@panneau/field-text": "^2.0.15",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
