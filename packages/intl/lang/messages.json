@@ -79,6 +79,10 @@
     "defaultMessage": "Delete",
     "description": "Button label"
   },
+  "CGvQxc": {
+    "defaultMessage": "User",
+    "description": "Avatar label"
+  },
   "DUbv+u": {
     "defaultMessage": "Confirm your new password",
     "description": "Field label"

@@ -4,8 +4,8 @@ import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useAuth } from '@panneau/auth';
-import { useUrlGenerator } from '@panneau/core/contexts';
-import { Login as PanneauLoginForm } from '@panneau/form-auth';
+import { useFormsComponents, useUrlGenerator } from '@panneau/core/contexts';
+import { getComponentFromName } from '@panneau/core/utils';
 
 const propTypes = {
     className: PropTypes.string,
@@ -21,9 +21,12 @@ const LoginForm = ({ className, onSuccess }) => {
     const url = useUrlGenerator();
     const { login } = useAuth();
     const postForm = useCallback((action, { email, password }) => login(email, password), [login]);
+    const FormComponents = useFormsComponents();
 
-    return (
-        <PanneauLoginForm
+    const FormComponent = getComponentFromName('login', FormComponents);
+
+    return FormComponent !== null ? (
+        <FormComponent
             action={url('auth.login')}
             postForm={postForm}
             onComplete={onSuccess}
@@ -32,7 +35,7 @@ const LoginForm = ({ className, onSuccess }) => {
                 <FormattedMessage defaultMessage="Log in" description="Button label" />
             }
         />
-    );
+    ) : null;
 };
 
 LoginForm.propTypes = propTypes;

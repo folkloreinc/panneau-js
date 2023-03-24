@@ -133,6 +133,12 @@ msgctxt "Bhu3B2"
 msgid "Delete"
 msgstr "Supprimer"
 
+# Avatar label
+#: CGvQxc
+msgctxt "CGvQxc"
+msgid "User"
+msgstr ""
+
 # Field label
 #: DUbv+u
 msgctxt "DUbv+u"

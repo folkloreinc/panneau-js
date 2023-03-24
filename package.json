@@ -57,7 +57,7 @@
         "babel-plugin-static-fs": "^3.0.0",
         "babel-plugin-transform-assets-import-to-string": "^1.2.0",
         "babel-preset-react-app": "^10.0.0",
-        "bootstrap": "^5.3.0-alpha1",
+        "bootstrap": "^5.3.0-alpha2",
         "chalk": "^5.0.0",
         "chance": "^1.1.7",
         "classnames": "^2.2.6",
