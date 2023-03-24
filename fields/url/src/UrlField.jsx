@@ -36,7 +36,7 @@ const propTypes = {
 const defaultProps = {
     name: null,
     value: null,
-    schemes: ['https://', 'http://', 'tel:', 'mailto:'],
+    schemes: ['https://', 'http://'],
     url: null,
     disabled: null,
     prepend: null,

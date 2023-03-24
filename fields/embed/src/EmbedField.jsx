@@ -1,24 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import Card from '@panneau/element-card';
-import TextField from '@panneau/field-text';
 import isEmpty from 'lodash/isEmpty';
 import isNumber from 'lodash/isNumber';
 import isObject from 'lodash/isObject';
-import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-const getScheme = (url, schemesPattern) => {
-    const match = url !== null && isString(url) ? url.match(schemesPattern) : null;
-    return match !== null && match[1].length !== url.length ? match[1].toLowerCase() : null;
-};
-
-const removeScheme = (url, schemesPattern) =>
-    url !== null && isString(url) ? url.replace(schemesPattern, '') : null;
-
-const withScheme = (url, prefix, schemesPattern) =>
-    url !== null && isString(url) && !url.match(schemesPattern) ? `${prefix}${url}` : url;
+import Card from '@panneau/element-card';
+import UrlField from '@panneau/field-url';
 
 const propTypes = {
     value: PropTypes.shape({
@@ -59,7 +48,8 @@ const EmbedField = ({
     onChange,
     ...props
 }) => {
-    const { url = null, metadata = null } = isObject(value) ? value : {};
+    const { url = null, metadata = null } = isObject(value) ? value : { url: value };
+    const urlValue = url || null;
     const {
         title = null,
         providerName = null,
@@ -71,28 +61,13 @@ const EmbedField = ({
         height = null,
     } = metadata || {};
 
-    const schemesPattern = useMemo(() => new RegExp(`^(${schemes.join('|')})`, 'i'), [schemes]);
-
-    const scheme = useMemo(
-        () => getScheme(url, schemesPattern) || schemes[0],
-        [url, schemes, schemesPattern],
-    );
-
-    const valueWithoutScheme = useMemo(
-        () => removeScheme(url, schemesPattern),
-        [url, schemesPattern],
-    );
-
     const onFieldChange = useCallback(
         (newValue) => {
-            const valueWithScheme = !isEmpty(newValue)
-                ? withScheme(newValue, scheme, schemesPattern)
-                : null;
             if (onChange !== null) {
-                onChange({ url: valueWithScheme, metadata: null });
+                onChange({ url: newValue, metadata: null });
             }
         },
-        [onChange, scheme, schemesPattern],
+        [onChange],
     );
 
     const onClose = useCallback(() => {
@@ -132,14 +107,12 @@ const EmbedField = ({
             </div>
         </Card>
     ) : (
-        <TextField
+        <UrlField
             {...props}
             className={className}
-            value={valueWithoutScheme}
+            value={urlValue}
             onChange={onFieldChange}
-            prepend={prefixUrl || scheme}
             disabled={disabled}
-            type="text"
         />
     );
 };

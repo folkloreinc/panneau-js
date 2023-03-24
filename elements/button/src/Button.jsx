@@ -1,10 +1,12 @@
 /* eslint-disable react/button-has-type, react/jsx-props-no-spreading */
 import classNames from 'classnames';
+import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Icon from '@panneau/element-icon';
 
 import styles from './styles.module.scss';
 
@@ -19,7 +21,7 @@ const propTypes = {
     label: PanneauPropTypes.label,
     children: PanneauPropTypes.label,
     active: PropTypes.bool,
-    icon: PropTypes.node,
+    icon: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     iconPosition: PropTypes.oneOf(['left', 'right', 'inline']),
     disabled: PropTypes.bool,
     loading: PropTypes.bool,
@@ -103,6 +105,8 @@ const Button = ({
     const hasIcon = icon !== null;
     const hasInlineIcon = hasIcon && (iconPosition === 'inline' || text === null);
     const hasIconColumns = hasIcon && !hasInlineIcon;
+    const finalIcon = isString(icon) ? <Icon name={icon} /> : icon;
+
     const content = (
         <>
             {hasInlineIcon ? (
@@ -115,7 +119,7 @@ const Button = ({
                             },
                         ])}
                     >
-                        {icon}
+                        {finalIcon}
                     </span>
                     {text !== null ? (
                         <span
@@ -141,7 +145,7 @@ const Button = ({
                             },
                         ])}
                     >
-                        {iconPosition === 'left' ? icon : null}
+                        {iconPosition === 'left' ? finalIcon : null}
                     </span>
                     <span
                         className={classNames([
@@ -161,7 +165,7 @@ const Button = ({
                             },
                         ])}
                     >
-                        {iconPosition === 'right' ? icon : null}
+                        {iconPosition === 'right' ? finalIcon : null}
                     </span>
                     {hasChildren ? children : null}
                 </>

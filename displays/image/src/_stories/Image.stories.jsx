@@ -1,5 +1,8 @@
 import React from 'react';
+
 import Image from '../Image';
+
+import test from './test.png';
 
 export default {
     component: Image,
@@ -12,8 +15,8 @@ export default {
 export const Normal = () => (
     <Image
         value={{
-            url: 'http://www.fillmurray.com/g/200/300',
-            thumbnailUrl: 'http://www.fillmurray.com/g/200/300',
+            url: test,
+            thumbnailUrl: test,
         }}
     />
 );
@@ -21,8 +24,8 @@ export const Normal = () => (
 export const Small = () => (
     <Image
         value={{
-            url: 'http://www.fillmurray.com/g/200/300',
-            thumbnailUrl: 'http://www.fillmurray.com/g/200/300',
+            url: test,
+            thumbnailUrl: test,
         }}
         maxHeight={80}
     />

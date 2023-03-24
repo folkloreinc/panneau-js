@@ -373,7 +373,7 @@ const ItemsField = ({
                     className={classNames([
                         'position-relative',
                         {
-                            'p-2': !withoutCard,
+                            'p-4': !withoutCard,
                             'flex-grow-1': inline || withoutCard,
                             collapse: isCollapsed,
                         },

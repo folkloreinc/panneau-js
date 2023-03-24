@@ -89,6 +89,7 @@ const TableList = ({
                                         field,
                                         label = null,
                                         sortable: columnSortable = false,
+                                        sortColumnName = null,
                                         sortColumnParameter: columnSortColumnParameter,
                                         sortDirectionParameter: columnSortDirectionParameter,
                                         sortDirections,
@@ -100,7 +101,7 @@ const TableList = ({
                                             <SortLink
                                                 baseUrl={baseUrl}
                                                 query={query}
-                                                field={field}
+                                                field={sortColumnName || field}
                                                 parameterName={
                                                     columnSortColumnParameter || sortColumnParameter
                                                 }

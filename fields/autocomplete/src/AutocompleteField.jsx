@@ -1,9 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
-import Fuse from 'fuse.js';
 import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
+import Button from '@panneau/element-button';
 import TextField from '@panneau/field-text';
+
 import styles from './styles.module.scss';
+
+// eslint-disable-next-line import/order
+import Fuse from 'fuse.js';
 
 const propTypes = {
     items: PropTypes.arrayOf(
@@ -24,6 +29,7 @@ const propTypes = {
     }),
     maxResults: PropTypes.number,
     showEmpty: PropTypes.bool,
+    withoutClear: PropTypes.bool,
     placeholder: PropTypes.string,
     className: PropTypes.string,
     onChange: PropTypes.func,
@@ -38,8 +44,9 @@ const defaultProps = {
         keys: ['label', 'value'],
     },
     maxResults: 10,
-    showEmpty: false,
+    showEmpty: true,
     placeholder: null,
+    withoutClear: false,
     className: null,
     onChange: null,
     children: null,
@@ -52,6 +59,7 @@ const AutocompleteField = ({
     maxResults,
     showEmpty,
     placeholder,
+    withoutClear,
     className,
     onChange,
     children,
@@ -82,10 +90,29 @@ const AutocompleteField = ({
 
     const onClick = useCallback(
         (e) => {
+            e.preventDefault();
             if (e.target.dataset.value) {
                 onChange(e.target.dataset.value);
                 setOpen(false);
             }
+        },
+        [onChange],
+    );
+
+    // TODO: order of events is messing up with this, might need a on click outside
+    // const onFocus = useCallback(() => {
+    //     setOpen(true);
+    // }, [onChange]);
+
+    // const onBlur = useCallback(() => {
+    //     setOpen(false);
+    // }, [onChange]);
+
+    const onClear = useCallback(
+        (e) => {
+            e.stopPropagation();
+            onChange(null);
+            setOpen(false);
         },
         [onChange],
     );
@@ -132,12 +159,23 @@ const AutocompleteField = ({
             className={classNames([
                 styles.container,
                 {
+                    [styles.withClearButton]: !withoutClear,
                     [className]: className !== null,
                 },
             ])}
         >
-            <TextField value={value} placeholder={placeholder} onChange={onInputChange} />
+            <TextField
+                className={styles.input}
+                value={value}
+                placeholder={placeholder}
+                onChange={onInputChange}
+                // onFocus={onFocus}
+                // onBlur={onBlur}
+            />
             {open && maxedList.length > 0 ? listItems : null}
+            {!withoutClear && value !== null ? (
+                <Button className={styles.clear} onClick={onClear} icon="x-circle" />
+            ) : null}
         </div>
     );
 };
