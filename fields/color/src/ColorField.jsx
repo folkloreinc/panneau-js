@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
@@ -5,6 +6,8 @@ import { SketchPicker } from 'react-color';
 import tinycolor from 'tinycolor2';
 
 import { useDocumentEvent } from '@panneau/core/hooks';
+
+import styles from './styles.module.scss';
 
 const propTypes = {
     value: PropTypes.oneOfType([
@@ -17,6 +20,7 @@ const propTypes = {
     defaultValue: PropTypes.string,
     native: PropTypes.bool,
     withAlpha: PropTypes.bool,
+    disabled: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
@@ -26,11 +30,20 @@ const defaultProps = {
     defaultValue: '#000000',
     native: false,
     withAlpha: false,
+    disabled: false,
     className: null,
     onChange: null,
 };
 
-const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, onChange }) => {
+const ColorPickerField = ({
+    value,
+    defaultValue,
+    native,
+    withAlpha,
+    disabled,
+    className,
+    onChange,
+}) => {
     const [pickerOpened, setPickerOpened] = useState(false);
     const rgbaColor = useMemo(() => {
         if (value !== null) {
@@ -45,6 +58,14 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
         () => (rgbaColor !== null ? rgbaColor.toHexString() : defaultValue),
         [rgbaColor, defaultValue],
     );
+    const alphaValue = useMemo(
+        () => (rgbaColor !== null ? rgbaColor.getAlpha() || null : null),
+        [rgbaColor, defaultValue],
+    );
+    const finalColor =
+        withAlpha && alphaValue !== null && alphaValue !== 1
+            ? `${hexColor} (${alphaValue.toFixed(2)})`
+            : hexColor;
 
     const pickerStyle = useMemo(
         () => ({
@@ -117,8 +138,10 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
     return (
         <div
             className={classNames([
+                styles.container,
                 'position-relative',
                 {
+                    [styles.disabled]: disabled,
                     [className]: className !== null,
                 },
             ])}
@@ -130,16 +153,38 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
                     className={classNames(['flex-grow-0', 'form-control', 'form-control-color'])}
                     style={{ width: 40 }}
                     value={hexColor}
+                    disabled={disabled}
                     onChange={onInputChange}
                     onClick={onInputClick}
                 />
-                <span
-                    className={classNames(['flex-grow-1', 'text-uppercase', 'input-group-text'])}
-                    style={{ minWidth: 100, cursor: 'pointer' }}
-                    onClick={onInputClick}
-                >
-                    {hexColor}
-                </span>
+                {!native ? (
+                    <button
+                        type="button"
+                        className={classNames([
+                            styles.button,
+                            'flex-grow-1',
+                            'text-uppercase',
+                            'input-group-text',
+                        ])}
+                        disabled={disabled}
+                        style={{ minWidth: 100, cursor: 'pointer' }}
+                        onClick={onInputClick}
+                    >
+                        {finalColor}
+                    </button>
+                ) : (
+                    <span
+                        className={classNames([
+                            'flex-grow-1',
+                            'text-uppercase',
+                            'input-group-text',
+                        ])}
+                        disabled={disabled}
+                        style={{ minWidth: 100, cursor: 'pointer' }}
+                    >
+                        {finalColor}
+                    </span>
+                )}
             </label>
             {!native ? (
                 <div
@@ -160,6 +205,7 @@ const ColorPickerField = ({ className, value, defaultValue, native, withAlpha, o
                         color={rgbaColor || defaultValue}
                         styles={pickerStyle}
                         onChange={onPickerChange}
+                        disabled={disabled}
                     />
                 </div>
             ) : null}

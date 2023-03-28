@@ -39,6 +39,7 @@ const propTypes = {
     namePath: PropTypes.string,
     thumbnailPath: PropTypes.string,
     sizePath: PropTypes.string,
+    disabled: PropTypes.bool,
     onChange: PropTypes.func,
     className: PropTypes.string,
 };
@@ -56,6 +57,7 @@ const defaultProps = {
     namePath: null,
     thumbnailPath: null,
     sizePath: null,
+    disabled: false,
     onChange: null,
     className: null,
 };
@@ -71,6 +73,7 @@ const UploadField = ({
     namePath,
     thumbnailPath,
     sizePath,
+    disabled,
     onChange,
     className,
 }) => {
@@ -270,6 +273,7 @@ const UploadField = ({
                                           theme="secondary"
                                           outline
                                           onClick={() => onClickRemove(idx)}
+                                          disabled={disabled}
                                       >
                                           <FontAwesomeIcon icon={faTimes} />
                                       </Button>
@@ -281,14 +285,14 @@ const UploadField = ({
                 : null}
 
             {!hasMedia && withButton ? (
-                <Button type="button" theme="primary" onClick={openModal}>
+                <Button type="button" theme="primary" onClick={openModal} disabled={disabled}>
                     <Label>{addButtonLabel}</Label>
                 </Button>
             ) : null}
-            {!hasMedia && !withButton && uppy !== null ? (
+            {!disabled && !hasMedia && !withButton && uppy !== null ? (
                 <Dashboard uppy={uppy} height={300} plugins={sources} />
             ) : null}
-            {withButton && uppy !== null ? (
+            {!disabled && withButton && uppy !== null ? (
                 <DashboardModal
                     uppy={uppy}
                     plugins={sources}

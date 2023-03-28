@@ -1,0 +1,23 @@
+@import '~@panneau/themes/scss/variables';
+@import '~@panneau/themes/scss/placeholders';
+
+.container {
+    &.disabled {
+        pointer-events: none;
+    }
+
+    .button {
+        position: relative;
+        color: inherit;
+        font-family: inherit;
+        line-height: 1;
+        text-align: left;
+        cursor: pointer;
+        appearance: none;
+
+        &:focus {
+            outline: none;
+        }
+
+    }
+}

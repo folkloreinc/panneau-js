@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+
 import InputField from '../InputField';
 
 export default {
@@ -16,6 +17,8 @@ const Container = (props) => {
 };
 
 export const Normal = () => <Container placeholder="Text" />;
+
+export const Disabled = () => <Container placeholder="Text" disabled />;
 
 export const WithDataList = () => (
     <Container placeholder="With data list" dataList={['Bird', 'Cat', 'Dog', 'Fish', 'Snail']} />

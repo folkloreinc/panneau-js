@@ -1,7 +1,8 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getSelectOptions } from '@panneau/core/utils';
 
@@ -11,6 +12,7 @@ const propTypes = {
     name: PropTypes.string,
     value: PropTypes.arrayOf(PropTypes.string),
     options: PanneauPropTypes.selectOptions,
+    disabled: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
@@ -19,20 +21,21 @@ const defaultProps = {
     name: null,
     value: null,
     options: [],
+    disabled: false,
     className: null,
     onChange: null,
 };
 
-const Checkboxes = ({ name, value, options, className, onChange }) => {
+const Checkboxes = ({ name, value, options, disabled, className, onChange }) => {
     const finalOptions = useMemo(() => getSelectOptions(options), [options]);
-
     return (
         <div
             className={classNames([
+                styles.container,
                 'btn-group',
                 'btn-group-toggle',
-                styles.container,
                 {
+                    [styles.disabled]: disabled,
                     [className]: className !== null,
                 },
             ])}
@@ -51,15 +54,15 @@ const Checkboxes = ({ name, value, options, className, onChange }) => {
                 >
                     <input
                         type="checkbox"
-                        className="btn-check"
+                        className={classNames(['btn-check', styles.btnCheck])}
                         name={`${name}[]`}
                         autoComplete="off"
                         value={optionValue}
+                        disabled={disabled}
                         onChange={(e) => {
                             const newValue = e.currentTarget.checked
                                 ? [...value, optionValue].filter((v) => v !== null)
                                 : (value || []).filter((it) => it !== optionValue) || null;
-
                             if (onChange !== null) {
                                 onChange(newValue);
                             }

@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+
 import DateField from '../DateField';
 import DateTimeField from '../DateTimeField';
 import TimeField from '../TimeField';
@@ -16,6 +17,18 @@ export const Normal = () => {
     const [value, setValue] = useState('2002-01-02T00:00:00-05:00');
     return (
         <DateTimeField value={value} onChange={setValue} placeholder="Select date and time..." />
+    );
+};
+
+export const Disabled = () => {
+    const [value, setValue] = useState('2002-01-02T00:00:00-05:00');
+    return (
+        <DateTimeField
+            value={value}
+            onChange={setValue}
+            placeholder="Select date and time..."
+            disabled
+        />
     );
 };
 

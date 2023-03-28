@@ -1,7 +1,10 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
+
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback, useEffect, useState } from 'react';
+import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useState } from 'react';
+
 // import classNames from 'classnames';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFieldsComponents, useLocales } from '@panneau/core/contexts';
@@ -9,7 +12,6 @@ import { getComponentFromName } from '@panneau/core/utils';
 import Buttons from '@panneau/element-buttons';
 import FormGroup from '@panneau/element-form-group';
 import Label from '@panneau/element-label';
-import isEmpty from 'lodash/isEmpty';
 
 const propTypes = {
     name: PropTypes.string,
@@ -22,6 +24,7 @@ const propTypes = {
     properties: PropTypes.objectOf(PanneauPropTypes.field),
     fieldComponent: PropTypes.elementType,
     fieldProps: PropTypes.object, // eslint-disable-line
+    disabled: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
     onCurrentLocaleChange: PropTypes.func,
@@ -38,6 +41,7 @@ const defaultProps = {
     properties: {},
     fieldComponent: null,
     fieldProps: null,
+    disabled: false,
     className: null,
     onChange: null,
     onCurrentLocaleChange: null,
@@ -56,6 +60,7 @@ const LocalizedField = ({
     fieldProps,
     onChange,
     onCurrentLocaleChange,
+    disabled,
     className,
 }) => {
     const contextLocales = useLocales();
@@ -137,6 +142,7 @@ const LocalizedField = ({
                         <div key={`field-${locale}`}>
                             <FieldComponent
                                 fieldLocale={locale}
+                                {...(disabled === true ? { disabled } : null)}
                                 {...property}
                                 {...fieldProps}
                                 name={propertyName || fieldName}

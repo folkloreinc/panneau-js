@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+
 import FieldsProvider from '../../../../packages/fields';
 import IntlProvider from '../../../../packages/intl/src/IntlProvider';
 import ItemField from '../ItemField';
@@ -18,7 +19,9 @@ const items = [
 ];
 
 const Container = (props) => {
-    const [value, setValue] = useState(null);
+    const { value: defaultValue = null } = props || {};
+    const [value, setValue] = useState(defaultValue);
+
     return (
         <FieldsProvider>
             <IntlProvider>
@@ -29,3 +32,7 @@ const Container = (props) => {
 };
 
 export const Normal = () => <Container items={items} />;
+
+export const Disabled = () => <Container items={items} disabled />;
+
+export const DisabledWithValue = () => <Container items={items} value={items[0]} disabled />;

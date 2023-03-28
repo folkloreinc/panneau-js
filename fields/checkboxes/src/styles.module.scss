@@ -1,6 +1,14 @@
 @import '~@panneau/themes/scss/variables';
 @import '~@panneau/themes/scss/placeholders';
 
-// .container {
+.container {
+    &.disabled {
+        pointer-events: none;
 
-// }
+        .btnCheck {
+            &:hover {
+                background-color: none;
+            }
+        }
+    }
+}

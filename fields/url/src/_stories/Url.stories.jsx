@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+
 import UrlField from '../UrlField';
 
 export default {
@@ -18,7 +19,7 @@ const Container = ({ value: initialValue, ...props }) => {
 
 export const Normal = () => <Container />;
 
-export const Disabled = () => <Container disabled value="hello" />;
+export const Disabled = () => <Container disabled value="https://hello" />;
 
 export const PrependAndAppend = () => <Container prepend="hello" append="goodbye" />;
 

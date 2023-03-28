@@ -127,6 +127,7 @@ const UrlField = ({
                     type="button"
                     aria-expanded={open ? 'false' : 'true'}
                     onClick={!disabled && !empty ? onClickOpen : null}
+                    disabled={disabled}
                 >
                     {finalPrependValue}
                 </button>
@@ -140,6 +141,7 @@ const UrlField = ({
                                 ])}
                                 type="button"
                                 onClick={() => onClickScheme(sch)}
+                                disabled={disabled}
                             >
                                 {sch}
                             </button>

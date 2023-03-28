@@ -28,6 +28,7 @@ const propTypes = {
         distance: PropTypes.number,
     }),
     maxResults: PropTypes.number,
+    disabled: PropTypes.bool,
     showEmpty: PropTypes.bool,
     withoutClear: PropTypes.bool,
     placeholder: PropTypes.string,
@@ -44,6 +45,7 @@ const defaultProps = {
         keys: ['label', 'value'],
     },
     maxResults: 10,
+    disabled: false,
     showEmpty: true,
     placeholder: null,
     withoutClear: false,
@@ -57,6 +59,7 @@ const AutocompleteField = ({
     value,
     searchOptions,
     maxResults,
+    disabled,
     showEmpty,
     placeholder,
     withoutClear,
@@ -66,6 +69,7 @@ const AutocompleteField = ({
 }) => {
     const fuse = useRef(null);
     const [open, setOpen] = useState(false);
+    const [showListIcon, setShowListIcon] = useState(false);
 
     useEffect(() => {
         const options = {
@@ -99,14 +103,13 @@ const AutocompleteField = ({
         [onChange],
     );
 
-    // TODO: order of events is messing up with this, might need a on click outside
-    // const onFocus = useCallback(() => {
-    //     setOpen(true);
-    // }, [onChange]);
+    const onFocus = useCallback(() => {
+        setShowListIcon(true);
+    }, [setShowListIcon]);
 
-    // const onBlur = useCallback(() => {
-    //     setOpen(false);
-    // }, [onChange]);
+    const onToggleOpen = useCallback(() => {
+        setOpen(!open);
+    }, [open, setOpen]);
 
     const onClear = useCallback(
         (e) => {
@@ -169,12 +172,15 @@ const AutocompleteField = ({
                 value={value}
                 placeholder={placeholder}
                 onChange={onInputChange}
-                // onFocus={onFocus}
-                // onBlur={onBlur}
+                disabled={disabled}
+                onFocus={onFocus}
             />
-            {open && maxedList.length > 0 ? listItems : null}
-            {!withoutClear && value !== null ? (
+            {open && maxedList.length > 0 && !disabled ? listItems : null}
+            {!withoutClear && !disabled && value !== null ? (
                 <Button className={styles.clear} onClick={onClear} icon="x-circle" />
+            ) : null}
+            {showListIcon && maxedList.length > 0 && !disabled && value === null ? (
+                <Button className={styles.clear} onClick={onToggleOpen} icon="caret-down-fill" />
             ) : null}
         </div>
     );

@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+
 import HtmlField from '../HtmlField';
 
 export default {
@@ -20,6 +21,8 @@ const Container = (props) => {
 };
 
 export const Normal = () => <Container />;
+
+export const Disabled = () => <Container disabled />;
 
 export const WithMediaEmbed = () => (
     <Container

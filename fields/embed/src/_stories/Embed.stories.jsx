@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+
 import EmbedField from '../EmbedField';
 
 export default {
@@ -20,6 +21,10 @@ const Container = ({ value: initialValue, ...props }) => {
 
 export const Normal = () => (
     <Container value="https://www.youtube.com/watch?v=Xw5AiRVqfqk&t=1058s" />
+);
+
+export const Disabled = () => (
+    <Container value="https://www.youtube.com/watch?v=Xw5AiRVqfqk&t=1058s" disabled />
 );
 
 export const WithValue = () => (

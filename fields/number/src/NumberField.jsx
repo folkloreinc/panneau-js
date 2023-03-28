@@ -1,12 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback, useState } from 'react';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import isNaN from 'lodash/isNaN';
 import isNumber from 'lodash/isNumber';
 import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
+
 import TextField from '@panneau/field-text';
+
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -16,6 +18,7 @@ const propTypes = {
     float: PropTypes.bool,
     dataList: PropTypes.arrayOf(PropTypes.number),
     autoComplete: PropTypes.bool,
+    disabled: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
@@ -27,6 +30,7 @@ const defaultProps = {
     float: false,
     dataList: null,
     autoComplete: false,
+    disabled: false,
     className: null,
     onChange: null,
 };
@@ -46,6 +50,7 @@ const NumberField = ({
     float,
     dataList,
     autoComplete,
+    disabled,
     className,
     onChange,
     ...props
@@ -120,14 +125,15 @@ const NumberField = ({
                 onChange={onInputChange}
                 onFocus={onInputFocus}
                 onBlur={onInputBlur}
+                disabled={disabled}
                 {...props}
             />
-            {hasDataList ? (
+            {!disabled && hasDataList ? (
                 <div className={styles.arrow}>
                     <FontAwesomeIcon className={styles.arrowIcon} icon={faChevronDown} />
                 </div>
             ) : null}
-            {hasDataList && dataListActive ? (
+            {!disabled && hasDataList && dataListActive ? (
                 <ul className={styles.dataListItems}>
                     {dataList.map((dataListValue) => (
                         <li key={`data-list-${dataListValue}`} className={styles.dataListItem}>

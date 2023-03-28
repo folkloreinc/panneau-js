@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+
 import ToggleField from '../ToggleField';
 
 export default {
@@ -7,11 +8,11 @@ export default {
     component: ToggleField,
 };
 
-const Container = (props) => {
+const Container = (props = null) => {
     const [value, setValue] = useState(null);
-    return (
-        <ToggleField {...props} value={value} onChange={setValue} />
-    );
+    return <ToggleField {...props} value={value} onChange={setValue} />;
 };
 
 export const Normal = () => <Container />;
+
+export const Disabled = () => <Container disabled />;

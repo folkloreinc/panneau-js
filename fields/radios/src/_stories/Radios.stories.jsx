@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+
 import RadiosField from '../RadiosField';
 
 export default {
@@ -13,3 +14,5 @@ const Container = (props) => {
 };
 
 export const Normal = () => <Container options={['One', 'Two', 'Three']} />;
+
+export const Disabled = () => <Container options={['One', 'Two', 'Three']} disabled />;

@@ -1,10 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import InputGroup from '@panneau/field-input-group';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
+
+import InputGroup from '@panneau/field-input-group';
+
 import useCKEditorBuild from './hooks/useCKEditorBuild';
+
 import './styles.global.scss';
 
 const propTypes = {
@@ -13,6 +16,7 @@ const propTypes = {
     value: PropTypes.string,
     placeholder: PropTypes.string,
     inline: PropTypes.bool,
+    disabled: PropTypes.bool,
     onChange: PropTypes.func,
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
@@ -27,6 +31,7 @@ const defaultProps = {
     value: null,
     placeholder: null,
     inline: false,
+    disabled: false,
     onChange: null,
     onFocus: null,
     onBlur: null,
@@ -67,6 +72,7 @@ const HtmlField = ({
     value,
     // placeholder,
     inline,
+    disabled,
     onChange,
     onFocus,
     onBlur,
@@ -115,6 +121,7 @@ const HtmlField = ({
                     onChange={onCkEditorChange}
                     {...commonProps}
                     {...ckOptions}
+                    disabled={disabled}
                 />
             </div>
         ) : null;

@@ -21,13 +21,21 @@ const Container = ({ value: initialValue = null, ...props }) => {
 };
 
 export const Normal = () => <Container />;
+
+export const Disabled = () => <Container disabled value={{ url: 'lol' }} />;
+
 export const WithButton = () => <Container withButton />;
+
 export const Audio = () => <Container types={['audio']} />;
+
 export const Image = () => <Container types={['image']} />;
+
 export const Video = () => <Container types={['video']} />;
+
 export const PDF = () => <Container fileTypes={['.pdf']} />;
 
 export const WithValue = () => <Container value={[{ data: { file: '1200x300.png' } }]} />;
+
 export const WithValues = () => (
     <Container
         value={[
@@ -48,3 +56,5 @@ export const Multiple = () => (
 );
 
 export const WithModal = () => <Container withButton />;
+
+export const WithButtonDisabled = () => <Container withButton disabled />;

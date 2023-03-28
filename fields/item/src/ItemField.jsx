@@ -1,10 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { getPathValue, isMessage } from '@panneau/core/utils';
-import { useApi } from '@panneau/data';
-import Button from '@panneau/element-button';
+/* eslint-disable no-shadow, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
@@ -12,6 +6,11 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useRef, useState } from 'react';
 import Autosuggest from 'react-autosuggest';
 import { useIntl } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { getPathValue, isMessage } from '@panneau/core/utils';
+import { useApi } from '@panneau/data';
+import Button from '@panneau/element-button';
 
 const propTypes = {
     name: PropTypes.string,
@@ -37,6 +36,7 @@ const propTypes = {
     itemLabelWithId: PropTypes.bool,
     size: PropTypes.oneOf(['sm', 'lg']),
     placeholder: PropTypes.string,
+    disabled: PropTypes.bool,
     className: PropTypes.string,
     inputClassName: PropTypes.string,
     onChange: PropTypes.func,
@@ -62,6 +62,7 @@ const defaultProps = {
     itemLabelWithId: false,
     size: null,
     placeholder: null,
+    disabled: false,
     className: null,
     inputClassName: null,
     onChange: null,
@@ -87,13 +88,15 @@ const ItemField = ({
     itemDescriptionPath,
     itemImagePath,
     itemLabelWithId,
-    onChange,
+    disabled,
     className,
     inputClassName,
+    onChange,
 }) => {
     const intl = useIntl();
     const api = useApi();
     const [inputValue, setInputValue] = useState('');
+    const [showSuggestions, setShowSuggestions] = useState(false);
     const [items, setItems] = useState(initialItems || []);
     const lastRequest = useRef(null);
 
@@ -175,6 +178,7 @@ const ItemField = ({
 
     const onClickRemove = useCallback(() => {
         setInputValue('');
+        setShowSuggestions(false);
         if (onChange !== null) {
             onChange(null);
         }
@@ -222,14 +226,23 @@ const ItemField = ({
         [getItemLabel, itemLabelPath],
     );
 
+    const toggleSuggestions = useCallback(() => {
+        setShowSuggestions(!showSuggestions);
+    }, [showSuggestions, setShowSuggestions]);
+
     const itemLabel = value !== null ? getItemLabel(value, itemLabelPath) : null;
     const itemDescription = value !== null ? getItemDescription(value, itemDescriptionPath) : null;
     const itemImage = value !== null ? getItemImage(value, itemImagePath) : null;
 
     return (
-        <div className={className}>
+        <div className={classNames(['position-relative', { [className]: className != null }])}>
             {value !== null ? (
-                <div className="card">
+                <div
+                    className={classNames([
+                        'card',
+                        { [`bg-muted`]: disabled, [`text-muted`]: disabled },
+                    ])}
+                >
                     <div className="card-body p-1 pl-2">
                         <div className="d-flex align-items-center">
                             {itemImage !== null ? (
@@ -253,42 +266,63 @@ const ItemField = ({
                                     type="button"
                                     size="sm"
                                     theme="secondary"
+                                    icon="x-lg"
                                     outline
                                     onClick={onClickRemove}
-                                >
-                                    <FontAwesomeIcon icon={faTimes} />
-                                </Button>
+                                    disabled={disabled}
+                                />
                             </div>
                         </div>
                     </div>
                 </div>
             ) : (
-                <Autosuggest
-                    suggestions={items}
-                    onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-                    onSuggestionsClearRequested={onSuggestionsClearRequested}
-                    onSuggestionSelected={onSuggestionSelected}
-                    getSuggestionValue={getSuggestionValue}
-                    renderSuggestion={renderSuggestion}
-                    renderSectionTitle={renderSectionTitle}
-                    inputProps={inputProps}
-                    theme={{
-                        container: 'position-relative',
-                        containerOpen: 'show',
-                        input: classNames([
-                            'form-control',
-                            {
-                                'is-invalid': errors !== null,
-                                [`form-control-${size}`]: size !== null,
-                                [inputClassName]: inputClassName !== null,
-                            },
-                        ]),
-                        suggestionsContainer: 'dropdown-menu',
-                        suggestionsContainerOpen: 'show',
-                        suggestionsList: 'list-unstyled m-0 p-0',
-                        suggestion: 'm-0 p-0',
-                    }}
-                />
+                <>
+                    <Autosuggest
+                        suggestions={items}
+                        onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                        onSuggestionsClearRequested={onSuggestionsClearRequested}
+                        onSuggestionSelected={onSuggestionSelected}
+                        getSuggestionValue={getSuggestionValue}
+                        renderSuggestion={renderSuggestion}
+                        renderSectionTitle={renderSectionTitle}
+                        renderInputComponent={(inputProps) => (
+                            <input {...inputProps} disabled={disabled} />
+                        )}
+                        inputProps={inputProps}
+                        alwaysRenderSuggestions={showSuggestions}
+                        theme={{
+                            container: 'position-relative',
+                            containerOpen: 'show',
+                            input: classNames([
+                                'form-control',
+                                {
+                                    [`disabled`]: disabled,
+                                    'is-invalid': errors !== null,
+                                    [`form-control-${size}`]: size !== null,
+                                    [inputClassName]: inputClassName !== null,
+                                },
+                            ]),
+                            suggestionsContainer: 'dropdown-menu',
+                            suggestionsContainerOpen: 'show',
+                            suggestionsList: 'list-unstyled m-0 p-0',
+                            suggestion: 'm-0 p-0',
+                        }}
+                    />
+                    {!disabled ? (
+                        <div className="position-absolute top-0 end-0 ms-1 me-1 mt-1">
+                            <Button
+                                type="button"
+                                size="sm"
+                                theme="secondary"
+                                icon="caret-down-fill"
+                                outline
+                                onClick={toggleSuggestions}
+                                className="border-light"
+                                disabled={disabled}
+                            />
+                        </div>
+                    ) : null}
+                </>
             )}
         </div>
     );

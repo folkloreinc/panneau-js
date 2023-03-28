@@ -1,19 +1,21 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { getSelectOptions } from '@panneau/core/utils';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { getSelectOptions } from '@panneau/core/utils';
 
 const propTypes = {
     name: PropTypes.string,
     value: PropTypes.string,
     options: PanneauPropTypes.selectOptions,
     withBackground: PropTypes.bool,
+    disabled: PropTypes.bool,
+    uncheckable: PropTypes.bool,
     className: PropTypes.string,
     buttonClassName: PropTypes.string,
     onChange: PropTypes.func,
-    uncheckable: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -21,10 +23,11 @@ const defaultProps = {
     value: null,
     options: [],
     withBackground: false,
+    disabled: false,
+    uncheckable: false,
     className: null,
     buttonClassName: null,
     onChange: null,
-    uncheckable: false,
 };
 
 const Radios = ({
@@ -32,10 +35,11 @@ const Radios = ({
     value,
     options,
     withBackground,
+    disabled,
+    uncheckable,
     className,
     buttonClassName,
     onChange,
-    uncheckable,
 }) => {
     const finalOptions = useMemo(() => getSelectOptions(options), [options]);
 
@@ -63,6 +67,7 @@ const Radios = ({
                             withBackground ? 'btn-secondary' : 'btn-outline-secondary',
                             {
                                 active: isCurrent,
+                                disabled,
                                 [buttonClassName]: buttonClassName !== null,
                             },
                         ])}
@@ -72,6 +77,7 @@ const Radios = ({
                             name={name}
                             className="btn-check"
                             autoComplete="off"
+                            disabled={disabled}
                             value={optionValue || ''}
                             onClick={(e) => {
                                 if (onChange !== null) {
