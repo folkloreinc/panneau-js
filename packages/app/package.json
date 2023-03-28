@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "2.0.16",
+    "version": "2.0.17",
     "description": "",
     "keywords": [
         "javascript"
@@ -79,9 +79,9 @@
         "@panneau/element-menu": "^2.0.16",
         "@panneau/element-navbar": "^2.0.16",
         "@panneau/element-pagination": "^2.0.15",
-        "@panneau/element-radios": "^2.0.15",
-        "@panneau/fields": "^2.0.16",
-        "@panneau/filters": "^2.0.16",
+        "@panneau/element-radios": "^2.0.17",
+        "@panneau/fields": "^2.0.17",
+        "@panneau/filters": "^2.0.17",
         "@panneau/forms": "^2.0.16",
         "@panneau/intl": "^2.0.15",
         "@panneau/lists": "^2.0.16",
