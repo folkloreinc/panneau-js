@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "2.0.17",
+    "version": "2.0.18",
     "description": "",
     "keywords": [
         "javascript"
@@ -63,7 +63,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^2.0.15",
-        "@panneau/field-autocomplete": "^2.0.17",
+        "@panneau/field-autocomplete": "^2.0.18",
         "@panneau/field-checkboxes": "^2.0.17",
         "@panneau/field-color": "^2.0.17",
         "@panneau/field-date": "^2.0.17",
@@ -74,7 +74,7 @@
         "@panneau/field-item": "^2.0.17",
         "@panneau/field-items": "^2.0.16",
         "@panneau/field-localized": "^2.0.17",
-        "@panneau/field-number": "^2.0.17",
+        "@panneau/field-number": "^2.0.18",
         "@panneau/field-radios": "^2.0.17",
         "@panneau/field-select": "^2.0.17",
         "@panneau/field-text": "^2.0.17",
