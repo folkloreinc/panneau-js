@@ -17,6 +17,12 @@ msgctxt "+6cCPF"
 msgid "Error 403"
 msgstr "Erreur 403"
 
+# Hidden label
+#: 0xeItT
+msgctxt "0xeItT"
+msgid "Loading..."
+msgstr ""
+
 # Button label
 #: 12Px0g
 msgctxt "12Px0g"

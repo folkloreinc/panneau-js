@@ -3,6 +3,10 @@
     "defaultMessage": "Error 403",
     "description": "Error page meta title"
   },
+  "0xeItT": {
+    "defaultMessage": "Loading...",
+    "description": "Hidden label"
+  },
   "12Px0g": {
     "defaultMessage": "Send reset link",
     "description": "Button label"
