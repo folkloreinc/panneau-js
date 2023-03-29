@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useListsComponents, usePanneauColorScheme } from '@panneau/core/contexts';
@@ -20,6 +21,7 @@ const propTypes = {
     onQueryChange: PropTypes.func,
     onQueryReset: PropTypes.func,
     showFilters: PropTypes.bool,
+    listProps: PropTypes.shape({}),
 };
 
 const defaultProps = {
@@ -31,6 +33,7 @@ const defaultProps = {
     onQueryChange: null,
     onQueryReset: null,
     showFilters: true,
+    listProps: null,
 };
 
 const ResourceItemsList = ({
@@ -41,6 +44,7 @@ const ResourceItemsList = ({
     onQueryReset,
     paginated,
     showFilters,
+    listProps: customListProps,
 }) => {
     const {
         index: {
@@ -65,7 +69,9 @@ const ResourceItemsList = ({
         queryWithoutPage,
         paginated ? parseInt(page, 10) : null,
     );
-    const { lastPage = 0, total = 0 } = itemsProps || {};
+    const { loaded = false, loading = false, lastPage = 0, total = 0 } = itemsProps || {};
+    const finalEmpty = loaded && !loading && total === 0;
+
     const ListComponent = getComponentFromName(listComponent || 'table', ListComponents);
 
     return (
@@ -98,6 +104,16 @@ const ResourceItemsList = ({
                     onQueryChange={onQueryChange}
                     onQueryReset={onQueryReset}
                     theme={theme}
+                    showEmptyLabel={finalEmpty}
+                    emptyLabel={
+                        <p className="my-2">
+                            <FormattedMessage
+                                defaultMessage="No results found"
+                                description="Table label"
+                            />
+                        </p>
+                    }
+                    {...customListProps}
                 />
             ) : null}
             {paginated && showPagination ? (

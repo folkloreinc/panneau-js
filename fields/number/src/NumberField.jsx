@@ -1,12 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import isNaN from 'lodash/isNaN';
 import isNumber from 'lodash/isNumber';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
+import Icon from '@panneau/element-icon';
 import TextField from '@panneau/field-text';
 
 import styles from './styles.module.scss';
@@ -130,7 +129,7 @@ const NumberField = ({
             />
             {!disabled && hasDataList ? (
                 <div className={styles.arrow}>
-                    <FontAwesomeIcon className={styles.arrowIcon} icon={faChevronDown} />
+                    <Icon name={dataListActive ? 'caret-up' : 'caret-down'} />
                 </div>
             ) : null}
             {!disabled && hasDataList && dataListActive ? (

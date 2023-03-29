@@ -123,6 +123,13 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     return (
         <Routes>
             <Route path={routes.home} exact element={<HomeComponent />} />
+            {user !== null ? (
+                <Route
+                    path={routes['auth.login']}
+                    exact
+                    element={<Navigate to={routes.home} replace />}
+                />
+            ) : null}
             {resources.map((resource) => {
                 const { id: resourceId } = resource || {};
                 return (

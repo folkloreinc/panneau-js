@@ -25,6 +25,8 @@ const propTypes = {
     sortColumnParameter: PropTypes.string,
     sortDirectionParameter: PropTypes.string,
     onQueryChange: PropTypes.func,
+    showEmptyLabel: PropTypes.bool,
+    emptyLabel: PanneauPropTypes.message,
     withoutId: PropTypes.bool,
 };
 
@@ -38,6 +40,8 @@ const defaultProps = {
     sortColumnParameter: 'order',
     sortDirectionParameter: 'order_direction',
     onQueryChange: null,
+    showEmptyLabel: false,
+    emptyLabel: null,
     withoutId: false,
 };
 
@@ -52,6 +56,8 @@ const TableList = ({
     sortColumnParameter,
     sortDirectionParameter,
     onQueryChange,
+    showEmptyLabel,
+    emptyLabel,
     withoutId,
 }) => {
     const displayComponents = useDisplaysComponents();
@@ -216,6 +222,7 @@ const TableList = ({
                                 </tr>
                             );
                         })}
+                        {showEmptyLabel && emptyLabel !== null ? emptyLabel : null}
                     </tbody>
                 </table>
             ) : (

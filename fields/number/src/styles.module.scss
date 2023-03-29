@@ -18,15 +18,17 @@
         position: absolute;
         top: 0;
         right: 0;
-        width: 20px;
+        width: 30px;
         height: 100%;
         pointer-events: none;
+        align-items: center;
+        justify-content: center;
     }
 
-    .arrowIcon {
-        margin: auto;
-        font-size: 10px;
-    }
+    // .arrowIcon {
+    //     margin: auto;
+    //     font-size: 10px;
+    // }
 
     .dataListItems {
         position: absolute;
@@ -38,7 +40,7 @@
         list-style-type: none;
         border: 1px solid rgba(#000, 0.25);
         border-radius: 4px;
-        background-color: $white;        
+        background-color: $white;
     }
 
     .dataListItem {

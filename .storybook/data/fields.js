@@ -1,16 +1,22 @@
 export default [
     {
-        component: 'test',
+        type: 'text',
         name: 'a-test',
         label: 'A Test',
         placeholder: 'cool',
     },
     {
-        component: 'test',
-        name: 'a-test-h',
-        label: 'A test H',
-        horizontal: true,
+        type: 'text',
+        name: 'b-test',
+        label: 'A Test',
+        placeholder: 'cool',
     },
+    // {
+    //     type: 'image',
+    //     name: 'a-test-h',
+    //     label: 'A test H',
+    //     horizontal: true,
+    // },
     {
         component: 'fields',
         name: 'cool-row',

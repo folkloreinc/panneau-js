@@ -180,7 +180,11 @@ const AutocompleteField = ({
                 <Button className={styles.clear} onClick={onClear} icon="x-circle" />
             ) : null}
             {showListIcon && maxedList.length > 0 && !disabled && value === null ? (
-                <Button className={styles.clear} onClick={onToggleOpen} icon="caret-down-fill" />
+                <Button
+                    className={styles.clear}
+                    onClick={onToggleOpen}
+                    icon={open ? 'caret-up' : 'caret-down'}
+                />
             ) : null}
         </div>
     );
