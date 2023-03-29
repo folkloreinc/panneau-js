@@ -1,8 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback } from 'react';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
-
-import { useUrlGenerator } from '@panneau/core/contexts';
 
 import LoginForm from '../forms/Login';
 import GuestLayout from '../layouts/Guest';
@@ -11,26 +9,20 @@ const propTypes = {};
 
 const defaultProps = {};
 
-const LoginPage = () => {
-    const route = useUrlGenerator();
-    const onSuccess = useCallback(() => {
-        window.location.href = route('home');
-    }, [route]);
-    return (
-        <GuestLayout fullscreen>
-            <div className="container-sm py-4">
-                <div className="row justify-content-center">
-                    <div className="col-12 col-sm-8 col-md-6">
-                        <h1 className="mb-4">
-                            <FormattedMessage defaultMessage="Login" description="Page title" />
-                        </h1>
-                        <LoginForm onSuccess={onSuccess} />
-                    </div>
+const LoginPage = () => (
+    <GuestLayout fullscreen>
+        <div className="container-sm py-4">
+            <div className="row justify-content-center">
+                <div className="col-12 col-sm-8 col-md-6">
+                    <h1 className="mb-4">
+                        <FormattedMessage defaultMessage="Login" description="Page title" />
+                    </h1>
+                    <LoginForm />
                 </div>
             </div>
-        </GuestLayout>
-    );
-};
+        </div>
+    </GuestLayout>
+);
 LoginPage.propTypes = propTypes;
 LoginPage.defaultProps = defaultProps;
 

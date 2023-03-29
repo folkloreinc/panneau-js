@@ -77,10 +77,6 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
         window.location.href = baseUrl;
     }, [baseUrl]);
 
-    const onLogout = useCallback(() => {
-        window.location.reload();
-    }, [baseUrl]);
-
     return (
         <Router>
             <IntlProvider locale={locale} locales={locales} extraMessages={extraMessages}>
@@ -96,7 +92,7 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
                                                     baseUrl={baseUrl}
                                                     onUnauthorized={onUnauthorized}
                                                 >
-                                                    <AuthProvider user={user} onLogout={onLogout}>
+                                                    <AuthProvider user={user}>
                                                         <ComponentsProvider components={components}>
                                                             <Routes statusCode={statusCode} />
                                                         </ComponentsProvider>
