@@ -275,6 +275,12 @@ msgctxt "VhJUeW"
 msgid "Confirm your password"
 msgstr "Confirm your password"
 
+# Table label
+#: WgIC2T
+msgctxt "WgIC2T"
+msgid "No results found"
+msgstr "No results found"
+
 # Pagination button label
 #: X5RJlB
 msgctxt "X5RJlB"

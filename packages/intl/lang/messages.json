@@ -175,6 +175,10 @@
     "defaultMessage": "Confirm your password",
     "description": "Field label"
   },
+  "WgIC2T": {
+    "defaultMessage": "No results found",
+    "description": "Table label"
+  },
   "X5RJlB": {
     "defaultMessage": "Next",
     "description": "Pagination button label"

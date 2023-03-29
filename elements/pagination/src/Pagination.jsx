@@ -16,6 +16,7 @@ const propTypes = {
     url: PropTypes.string,
     query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     maxPages: PropTypes.number,
+    loading: PropTypes.bool,
     withPreviousNext: PropTypes.bool,
     withCount: PropTypes.bool,
     autohide: PropTypes.bool,
@@ -37,6 +38,7 @@ const defaultProps = {
     url: null,
     query: null,
     maxPages: 8,
+    loading: false,
     withPreviousNext: false,
     withCount: true,
     autohide: false,
@@ -65,6 +67,7 @@ const Pagination = ({
     url,
     query,
     maxPages: parentMaxPages,
+    loading,
     withPreviousNext,
     withCount,
     autohide,
@@ -122,6 +125,18 @@ const Pagination = ({
 
     const pages = strippedPages.length > 0 ? strippedPages : [1];
 
+    const element = !loading ? (
+        React.cloneElement(countLabel, {
+            values: { count: total },
+        })
+    ) : (
+        <div className="spinner-border" role="status">
+            <span className="visually-hidden">
+                <FormattedMessage defaultMessage="Loading..." description="Hidden label" />
+            </span>
+        </div>
+    );
+
     return (
         <nav
             className={classNames([
@@ -135,11 +150,7 @@ const Pagination = ({
             ])}
         >
             {total !== null && total > 0 && withCount && align === 'right' ? (
-                <div className="mx-3 text-muted">
-                    {React.cloneElement(countLabel, {
-                        values: { count: total },
-                    })}
-                </div>
+                <div className="mx-3 text-muted">{element}</div>
             ) : null}
             <ul
                 className={classNames([
@@ -260,11 +271,7 @@ const Pagination = ({
                 ) : null}
             </ul>
             {total !== null && total > 0 && withCount && align === 'left' ? (
-                <div className="mx-3 text-muted">
-                    {React.cloneElement(countLabel, {
-                        values: { count: total },
-                    })}
-                </div>
+                <div className="mx-3 text-muted">{element}</div>
             ) : null}
         </nav>
     );
