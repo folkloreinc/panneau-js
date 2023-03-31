@@ -17,6 +17,7 @@ const propTypes = {
     withoutCollapse: PropTypes.bool,
     children: PropTypes.node,
     className: PropTypes.string,
+    collapseClassName: PropTypes.string,
     brandClassName: PropTypes.string,
     breadCrumbsClassName: PropTypes.string,
 };
@@ -32,6 +33,7 @@ const defaultProps = {
     withoutCollapse: false,
     children: null,
     className: null,
+    collapseClassName: null,
     brandClassName: null,
     breadCrumbsClassName: null,
 };
@@ -47,6 +49,7 @@ const Navbar = ({
     withoutCollapse,
     children,
     className,
+    collapseClassName,
     brandClassName,
     breadCrumbsClassName,
 }) => {
@@ -130,6 +133,7 @@ const Navbar = ({
                         'collapse',
                         {
                             show: menuVisible,
+                            [collapseClassName]: collapseClassName !== null,
                         },
                     ])}
                 >

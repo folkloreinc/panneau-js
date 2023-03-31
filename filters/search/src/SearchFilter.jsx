@@ -1,11 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import Button from '@panneau/element-button';
+import Icon from '@panneau/element-icon';
 import TextField from '@panneau/field-text';
 
 const propTypes = {
@@ -50,10 +49,14 @@ const SearchFilter = ({ name, value, onChange, placeholder, className }) => {
     return (
         <form className={className} onSubmit={onSubmit}>
             <div className="input-group">
+                <Button theme="light" type="submit" onClick={onSubmit}>
+                    <Icon name="search" bold />
+                </Button>
                 <TextField
                     type="search"
                     name={name}
                     value={searchValue}
+                    theme="light"
                     onChange={setSearchValue}
                     placeholder={placeholder}
                 />
@@ -61,19 +64,15 @@ const SearchFilter = ({ name, value, onChange, placeholder, className }) => {
                     <Button
                         type="button"
                         onClick={onReset}
-                        className="position-absolute top-0 end-0 me-2 border-0"
+                        className="position-absolute top-0 end-0 me-1 border-0"
                         outline={false}
                         style={{
-                            transform: 'translateX(-100%)',
                             zIndex: 10,
                         }}
                     >
-                        <FontAwesomeIcon icon={faTimes} />
+                        <Icon name="x-circle" bold />
                     </Button>
                 ) : null}
-                <Button theme="secondary" type="submit" onClick={onSubmit}>
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
             </div>
         </form>
     );

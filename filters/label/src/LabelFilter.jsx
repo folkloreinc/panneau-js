@@ -18,7 +18,7 @@ const propTypes = {
 
 const defaultProps = {
     label: null,
-    sublabel: 'button',
+    sublabel: null,
     href: null,
     disabled: false,
     onClick: null,
