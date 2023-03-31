@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filters",
-    "version": "2.0.24",
+    "version": "2.0.25",
     "description": "",
     "keywords": [
         "javascript"
@@ -67,7 +67,7 @@
         "@panneau/filter-date": "^2.0.17",
         "@panneau/filter-label": "^2.0.24",
         "@panneau/filter-radios": "^2.0.17",
-        "@panneau/filter-search": "^2.0.24",
+        "@panneau/filter-search": "^2.0.25",
         "@panneau/filter-select": "^2.0.15",
         "@panneau/filter-toggle": "^2.0.17",
         "prop-types": "^15.7.2"
