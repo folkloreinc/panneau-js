@@ -69,6 +69,7 @@
         "@panneau/filter-search": "^2.0.17",
         "@panneau/filter-select": "^2.0.15",
         "@panneau/filter-toggle": "^2.0.17",
+        "@panneau/filter-label": "^2.0.22",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
