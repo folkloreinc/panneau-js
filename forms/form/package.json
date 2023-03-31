@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form",
-    "version": "2.0.16",
+    "version": "2.0.22",
     "description": "Basic form",
     "keywords": [
         "javascript"
@@ -49,7 +49,7 @@
         "@panneau/core": "^2.0.15",
         "@panneau/element-button": "^2.0.16",
         "@panneau/element-form": "^2.0.16",
-        "@panneau/field-fields": "^2.0.16",
+        "@panneau/field-fields": "^2.0.22",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
