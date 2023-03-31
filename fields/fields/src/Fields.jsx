@@ -116,7 +116,7 @@ const Fields = ({
                         {...fieldProps}
                         horizontal={horizontal}
                         inline={inline}
-                        className={classNames([groupClassName])}
+                        className={classNames(['mb-3', groupClassName])}
                         labelClassName={classNames([labelClassName])}
                     >
                         {fieldElement}

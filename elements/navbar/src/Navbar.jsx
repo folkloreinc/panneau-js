@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
 
-import Link from '@panneau/element-link';
 import Button from '@panneau/element-button';
+import Link from '@panneau/element-link';
 
 const propTypes = {
     brand: PropTypes.node,
@@ -25,7 +25,7 @@ const defaultProps = {
     brand: null,
     brandLink: null,
     breadcrumbs: null,
-    theme: 'light',
+    theme: null,
     size: 'md',
     compact: false,
     noWrap: false,
@@ -51,10 +51,10 @@ const Navbar = ({
     breadCrumbsClassName,
 }) => {
     const [menuVisible, setMenuVisible] = useState(false);
-    const onClickMenu = useCallback(() => setMenuVisible(!menuVisible), [
-        setMenuVisible,
-        menuVisible,
-    ]);
+    const onClickMenu = useCallback(
+        () => setMenuVisible(!menuVisible),
+        [setMenuVisible, menuVisible],
+    );
     return (
         <nav
             className={classNames([

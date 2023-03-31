@@ -106,7 +106,7 @@ const ResourceFilters = ({
                     <FormGroup
                         key={`filter-${name}-${index + 1}`}
                         label={groupLabel}
-                        className="me-4"
+                        className="mb-3 me-3"
                     >
                         <FilterComponent
                             {...filterProps}

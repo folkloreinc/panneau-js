@@ -1,4 +1,5 @@
 import React from 'react';
+
 import FormGroup from '../FormGroup';
 
 export default {
@@ -48,10 +49,10 @@ export const IsCollapsibleCard = () => (
 
 export const Stacked = () => (
     <>
-        <FormGroup label="Form group label" isCollapsible isCard>
+        <FormGroup label="Form group label" isCollapsible isCard className="mb-3">
             <Field />
         </FormGroup>
-        <FormGroup label="Form group label" isCard>
+        <FormGroup label="Form group label" isCard className="mb-3">
             <Field />
         </FormGroup>
         <FormGroup label="Form group label" isCollapsible isCard>

@@ -1,12 +1,15 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Button from '@panneau/element-button';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Button from '@panneau/element-button';
+
 import Column from './Column';
+
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -176,7 +179,6 @@ const FormGroup = ({
         <div
             className={classNames([
                 styles.container,
-                'mb-3',
                 {
                     'border-top pt-3 mt-3': isHeading,
                     [className]: className !== null,

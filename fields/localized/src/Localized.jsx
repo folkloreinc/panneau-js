@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 
 /* eslint-disable react/jsx-props-no-spreading */
+import classNames from 'classnames';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 
-// import classNames from 'classnames';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFieldsComponents, useLocales } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
@@ -121,7 +121,7 @@ const LocalizedField = ({
                 </>
             }
             helpText={helpText}
-            className={className}
+            className={classNames(['mb-2', className])}
             errors={errors}
             labelClassName="d-flex align-items-center"
         >

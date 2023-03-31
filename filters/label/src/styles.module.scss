@@ -1,0 +1,30 @@
+// stylelint-disable selector-pseudo-class-no-unknown
+@import '~@panneau/themes/scss/variables';
+@import '~@panneau/themes/scss/placeholders';
+
+.container {
+    line-height: 1.2;
+
+    &.disabled {
+        pointer-events: none;
+    }
+
+    .button {
+        @extend %reset-button;
+        text-align: left;
+    }
+
+    .link {
+        text-decoration: none;
+    }
+
+    .label {
+        display: block;
+    }
+
+    .sublabel {
+        display: block;
+        font-size: 0.9em;
+        font-weight: 300;
+    }
+}
