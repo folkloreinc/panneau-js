@@ -58,6 +58,7 @@ const SortLink = ({
     const sortDirectionIndex = directions.indexOf(currentSortDirection);
     const newSortDirection =
         directions[sortDirectionIndex === directions.length - 1 ? 0 : sortDirectionIndex + 1];
+
     const newQuery = useMemo(() => {
         const queryWithoutSort = omit(
             query || {},
@@ -86,6 +87,7 @@ const SortLink = ({
               }
             : queryWithoutSort;
     }, [query, parameterName, columnName, directionParameterName, newSortDirection]);
+
     const onClick = useCallback(
         (e) => {
             if (onQueryChange !== null) {
@@ -98,6 +100,7 @@ const SortLink = ({
         },
         [newQuery, onQueryChange, customOnClick],
     );
+
     return (
         <Link
             href={`${baseUrl || ''}${

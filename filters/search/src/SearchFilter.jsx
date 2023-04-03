@@ -49,7 +49,7 @@ const SearchFilter = ({ name, value, onChange, placeholder, className }) => {
     return (
         <form className={className} onSubmit={onSubmit}>
             <div className="input-group">
-                <Button theme="light" type="submit" onClick={onSubmit}>
+                <Button theme="secondary" type="submit" onClick={onSubmit}>
                     <Icon name="search" bold />
                 </Button>
                 <TextField
