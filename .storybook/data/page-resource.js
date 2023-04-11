@@ -113,6 +113,11 @@ export default {
             component: 'toggle',
         },
         {
+            name: 'custom-url',
+            label: 'Custom url',
+            component: 'url',
+        },
+        {
             name: 'publish_at',
             label: 'Publish at',
             component: 'date',
