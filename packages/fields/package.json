@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "2.0.29",
+    "version": "2.0.30",
     "description": "",
     "keywords": [
         "javascript"
@@ -66,7 +66,7 @@
         "@panneau/field-autocomplete": "^2.0.18",
         "@panneau/field-checkboxes": "^2.0.17",
         "@panneau/field-color": "^2.0.17",
-        "@panneau/field-date": "^2.0.29",
+        "@panneau/field-date": "^2.0.30",
         "@panneau/field-embed": "^2.0.17",
         "@panneau/field-fields": "^2.0.22",
         "@panneau/field-html": "^2.0.17",
