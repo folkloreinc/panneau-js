@@ -25,6 +25,7 @@ const ResourceCreatePage = ({ resource }) => {
     const onSuccess = useCallback(() => {
         navigate(`${resourceRoute('index')}?created=true`);
     }, [navigate, resourceRoute]);
+
     const { type = null } = useMemo(() => queryString.parse(search), [search]);
     const resourceValues = useResourceValues(resource);
     return (

@@ -25,6 +25,8 @@ const LoginForm = ({ className, onSuccess }) => {
 
     const FormComponent = getComponentFromName('login', FormComponents);
 
+    console.log(onSuccess);
+
     return FormComponent !== null ? (
         <FormComponent
             action={url('auth.login')}

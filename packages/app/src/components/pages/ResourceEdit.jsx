@@ -26,9 +26,11 @@ const ResourceEditPage = ({ resource }) => {
     const { type = null } = item || {};
     const [editItem, setEditItem] = useState(item);
     const onSuccess = useCallback((newItem) => setEditItem(newItem), []);
+
     useEffect(() => {
         setEditItem(item);
     }, [item, setEditItem]);
+
     const resourceValues = useResourceValues(resource);
 
     return (
