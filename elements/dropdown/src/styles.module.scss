@@ -2,5 +2,5 @@
 @import '~@panneau/themes/scss/placeholders';
 
 .container {
-    z-index: $zindex-dropdown;
+    z-index: 1000;
 }

@@ -41,7 +41,7 @@
         "assets"
     ],
     "scripts": {
-        "prepare": "../../scripts/prepare-package.sh"
+        "prepare": "../../scripts/prepare-package.sh --scss"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",

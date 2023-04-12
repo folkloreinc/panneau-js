@@ -43,7 +43,7 @@ module.exports = {
                 },
             },
         },
-        '@storybook/addon-mdx-gfm',
+        // '@storybook/addon-mdx-gfm',
     ],
     // features: {
     //     babelModeV7: true,
