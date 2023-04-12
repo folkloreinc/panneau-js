@@ -9,6 +9,8 @@ import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import Link from '@panneau/element-link';
 
+import styles from './styles.module.scss';
+
 const propTypes = {
     items: PanneauPropTypes.menuItems,
     children: PropTypes.node,
@@ -61,6 +63,7 @@ const Dropdown = ({
     return (
         <div
             className={classNames([
+                styles.container,
                 'dropdown-menu',
                 'relative',
                 {
