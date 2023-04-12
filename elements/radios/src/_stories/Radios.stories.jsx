@@ -1,9 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+
 import Radios from '../Radios';
 
 export default {
-    title: 'Fields/Radios',
+    title: 'Elements/Radios',
     component: Radios,
 };
 

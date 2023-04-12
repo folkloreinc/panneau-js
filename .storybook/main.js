@@ -43,16 +43,13 @@ module.exports = {
                 },
             },
         },
+        '@storybook/addon-mdx-gfm',
     ],
-    features: {
-        babelModeV7: true,
-    },
-    core: {
-        builder: 'webpack5',
-    },
+    // features: {
+    //     babelModeV7: true,
+    // },
     webpackFinal: async (config) => ({
         ...config,
-
         resolve: {
             ...config.resolve,
             alias: {
@@ -66,18 +63,18 @@ module.exports = {
                 ...getPackagesAliases(),
             },
         },
-
         module: {
             ...config.module,
             rules: [
-                ...config.module.rules.map((rule, index) =>
-                    index === 0
-                        ? {
-                              ...rule,
-                              exclude: [rule.exclude, /@ckeditor/],
-                          }
-                        : rule,
-                ),
+                ...config.module.rules,
+                // ...config.module.rules.map((rule, index) =>
+                //     index === 0
+                //         ? {
+                //               ...rule,
+                //               exclude: [rule.exclude, /@ckeditor/],
+                //           }
+                //         : rule,
+                // ),
                 ...getPackagesPaths().map((packagePath) => ({
                     loader: require.resolve('babel-loader'),
                     test: /\.(js|jsx)$/,
@@ -121,4 +118,11 @@ module.exports = {
             ],
         },
     }),
+    framework: {
+        name: '@storybook/react-webpack5',
+        options: {},
+    },
+    docs: {
+        autodocs: true,
+    },
 };
