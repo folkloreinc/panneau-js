@@ -4,17 +4,17 @@ import { RoutesProvider } from '@panneau/core/contexts';
 
 import pageResource from '../../../../.storybook/data/page-resource';
 import { ResourceProvider } from '../../../../packages/core/contexts';
-import Cards from '../Cards';
+import Calendar from '../Calendar';
 
 export default {
-    component: Cards,
-    title: 'Lists/Cards',
+    component: Calendar,
+    title: 'Lists/Calendar',
     parameters: {
         intl: true,
     },
 };
 
-const Container = () => (
+const CalendarContainer = () => (
     <RoutesProvider
         routes={{
             'resources.show': '/{resource}/{id}',
@@ -23,7 +23,7 @@ const Container = () => (
         }}
     >
         <ResourceProvider resource={pageResource}>
-            <Cards
+            <Calendar
                 resource={pageResource}
                 items={[
                     { id: '1', slug: 'paul', title: 'Paul' },
@@ -36,4 +36,4 @@ const Container = () => (
     </RoutesProvider>
 );
 
-export const Normal = () => <Container />;
+export const Normal = () => <CalendarContainer />;

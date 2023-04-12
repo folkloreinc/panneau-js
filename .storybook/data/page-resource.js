@@ -235,6 +235,9 @@ export default {
     columns: ['title', 'description', 'slug'],
 
     routes: {
-        'resource.whatever': '/whatever-something-something',
+        // 'resources.show': '/show',
+        // 'resources.edit': '/edit',
+        // 'resources.delete': '/delete',
+        'resources.whatever': '/whatever-something-something',
     },
 };

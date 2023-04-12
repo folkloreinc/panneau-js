@@ -1,0 +1,69 @@
+{
+    "name": "@panneau/list-calendar",
+    "version": "2.0.20",
+    "description": "Calendar list",
+    "keywords": [
+        "javascript"
+    ],
+    "homepage": "https://github.com/folkloreinc/panneau-js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git"
+    },
+    "author": {
+        "name": "Folklore",
+        "email": "info@folklore.email"
+    },
+    "contributors": [
+        {
+            "name": "David Mongeau-Petitpas",
+            "email": "dmp@folklore.email"
+        },
+        {
+            "name": "Nicolas Roy-Bourdages",
+            "email": "nrb@folklore.email"
+        }
+    ],
+    "license": "ISC",
+    "main": "lib/index.js",
+    "module": "es/index.js",
+    "files": [
+        "lib",
+        "es",
+        "assets"
+    ],
+    "scripts": {
+        "prepare": "../../scripts/prepare-package.sh"
+    },
+    "devDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.12.5",
+        "@fortawesome/fontawesome-svg-core": "^1.2.35",
+        "@fortawesome/free-solid-svg-icons": "^5.15.3",
+        "@fortawesome/react-fontawesome": "^0.1.14",
+        "@panneau/core": "^2.0.15",
+        "@panneau/element-button": "^2.0.16",
+        "@panneau/element-buttons": "^2.0.16",
+        "@panneau/element-card": "^2.0.16",
+        "@panneau/element-item-actions": "^2.0.16",
+        "@panneau/element-label": "^2.0.15",
+        "@panneau/element-loading": "^2.0.15",
+        "@panneau/element-pagination": "^2.0.20",
+        "@panneau/themes": "^2.0.15",
+        "classnames": "^2.2.6",
+        "lodash": "^4.17.21",
+        "prop-types": "^15.7.2",
+        "query-string": "^8.1.0",
+        "react-intl": "^5.15.8||^6.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

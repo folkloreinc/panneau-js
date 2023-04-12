@@ -1,4 +1,5 @@
 import isObject from 'lodash/isObject';
+
 import { usePanneauResources, useResource, useUrlGenerator } from '../contexts';
 
 const getResource = (resources, resourceId) =>
@@ -20,6 +21,7 @@ const useResourceUrlGenerator = (resourceId = null) => {
         //     ...finalParams,
         //     resource: id,
         // }));
+        // console.log(finalRouteName, id, finalParams);
         return id !== null
             ? route(`resources.${finalRouteName}`, {
                   ...finalParams,

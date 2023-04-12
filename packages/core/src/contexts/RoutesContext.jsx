@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { generatePath, useNavigate } from 'react-router';
 import isString from 'lodash/isString';
+import PropTypes from 'prop-types';
+import React, { useCallback, useContext, useMemo } from 'react';
+import { generatePath, useNavigate } from 'react-router';
 
 export const RoutesContext = React.createContext(null);
 
@@ -13,10 +13,12 @@ export const useRoutes = () => {
 
 export const useUrlGenerator = () => {
     const { routes, basePath } = useContext(RoutesContext);
+
     const urlGenerator = useCallback(
         (key, data) => {
+            // console.log('urlGenerator', basePath, routes, routes[key], data);
             const url = generatePath(routes[key], data);
-            // console.log('urlGenerator', basePath, routes[key], url, data);
+            // console.log('url', url);
             return basePath !== null
                 ? `${basePath.replace(/\/$/, '')}/${url.replace(/^\//, '')}`
                 : url;
@@ -32,9 +34,10 @@ export const useRoutePush = () => {
     const push = useCallback(
         (route, data, ...args) => {
             if (isString(route)) {
-                history.push(url(route, data), ...args);
+                navigate(url(route, data), ...args);
             } else {
                 const { pathname = null, search = null } = route || {};
+                // TODO: test this
                 navigate({ pathname: url(pathname, data), search }, ...args);
             }
         },
@@ -61,9 +64,17 @@ const defaultProps = {
     basePath: null,
 };
 
-export const RoutesProvider = ({ routes, basePath, children }) => (
-    <RoutesContext.Provider value={{ routes, basePath }}>{children}</RoutesContext.Provider>
-);
+export const RoutesProvider = ({ routes, basePath, children }) => {
+    const value = useMemo(
+        () => ({
+            routes,
+            basePath,
+        }),
+        [routes, basePath],
+    );
+    // console.log(routes, basePath);
+    return <RoutesContext.Provider value={value}>{children}</RoutesContext.Provider>;
+};
 
 RoutesProvider.propTypes = propTypes;
 RoutesProvider.defaultProps = defaultProps;

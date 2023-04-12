@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Card from '@panneau/element-card';
 import FormActions from '@panneau/element-item-actions';
 import Loading from '@panneau/element-loading';
 
@@ -20,7 +19,7 @@ const defaultProps = {
     loading: false,
 };
 
-const CardsList = ({
+const CalendarList = ({
     resource,
     items,
     loading,
@@ -33,13 +32,11 @@ const CardsList = ({
                   const { id = null } = it || {};
                   return (
                       <div className="w-50 p-2" key={`card-${id}`}>
-                          <Card header={id}>
-                              <FormActions
-                                  resource={resource}
-                                  item={it}
-                                  // actions={[{ label: 'Edit', theme: 'primary' }]}
-                              />
-                          </Card>
+                          <FormActions
+                              resource={resource}
+                              item={it}
+                              // actions={[{ label: 'Edit', theme: 'primary' }]}
+                          />
                       </div>
                   );
               })
@@ -47,7 +44,7 @@ const CardsList = ({
         {loading ? <Loading /> : null}
     </div>
 );
-CardsList.propTypes = propTypes;
-CardsList.defaultProps = defaultProps;
+CalendarList.propTypes = propTypes;
+CalendarList.defaultProps = defaultProps;
 
-export default CardsList;
+export default CalendarList;
