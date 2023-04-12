@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 

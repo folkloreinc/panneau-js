@@ -1,11 +1,10 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 // import Label from '@panneau/element-label';
-
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -41,9 +40,7 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
     const [openedItems, setOpenedItems] = useState(items.map(() => false));
 
     const isItemOpened = useCallback(
-        (idx) => {
-            return openedItem === idx || openedItems[idx] === true;
-        },
+        (idx) => openedItem === idx || openedItems[idx] === true,
         [items, oneAtATime, openedItem, openedItems],
     );
 
