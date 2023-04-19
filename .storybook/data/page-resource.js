@@ -91,6 +91,32 @@ export default {
             },
         },
         {
+            name: 'title',
+            label: 'Concept',
+            component: 'localized',
+            components: {
+                display: 'html-localized',
+            },
+            withoutFormGroup: true,
+            properties: {
+                fr: {
+                    name: 'fr',
+                    label: 'Fr',
+                    component: 'html',
+                },
+                en: {
+                    name: 'en',
+                    label: 'En',
+                    component: 'html',
+                },
+                es: {
+                    name: 'wendat',
+                    label: 'Wendat',
+                    component: 'html',
+                },
+            },
+        },
+        {
             name: 'upload',
             label: 'Media',
             component: 'upload',

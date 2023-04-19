@@ -27,11 +27,13 @@ const useCKEditorBuild = ({ disabled = false, inline = false } = {}) => {
                     });
                 }
             };
+
             // if (inline) {
             //     import('@ckeditor/ckeditor5-build-inline').then(onEditorBuildLoaded);
             // } else {
             //     import('@ckeditor/ckeditor5-build-classic').then(onEditorBuildLoaded);
             // }
+
             loadPackage('@ckeditor/ckeditor5-build-classic', () =>
                 import('@ckeditor/ckeditor5-build-classic'),
             ).then(onEditorBuildLoaded);

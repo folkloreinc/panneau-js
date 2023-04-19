@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import React, { useContext, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 
 const defaultLocales = ['en', 'fr'];
@@ -28,9 +28,10 @@ const defaultProps = {
     locales: [],
 };
 
-export const LocalesProvider = ({ locales, children }) => (
-    <LocalesContext.Provider value={{ locales }}>{children}</LocalesContext.Provider>
-);
+export const LocalesProvider = ({ locales, children }) => {
+    const value = useMemo(() => ({ locales }), [locales]);
+    return <LocalesContext.Provider value={value}>{children}</LocalesContext.Provider>;
+};
 
 LocalesProvider.propTypes = propTypes;
 LocalesProvider.defaultProps = defaultProps;

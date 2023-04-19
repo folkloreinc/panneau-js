@@ -101,7 +101,7 @@ export const page = PropTypes.shape({
 export const pages = PropTypes.objectOf(page);
 
 export const field = PropTypes.shape({
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string, // Not required on localized fields
     type: PropTypes.string,
     component: PropTypes.string,
     label: PropTypes.node,

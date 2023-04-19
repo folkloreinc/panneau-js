@@ -6,7 +6,7 @@ const getPackagesAliases = require('../scripts/lib/getPackagesAliases');
 const { idInterpolationPattern } = require('../packages/intl/scripts/config');
 require('dotenv').config();
 
-console.log(getPackagesPaths());
+// console.log(getPackagesPaths());
 
 module.exports = {
     stories: getPackagesPaths().map((packagePath) =>

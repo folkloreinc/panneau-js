@@ -1,7 +1,9 @@
-import { LocalesProvider, useLocales } from '@panneau/core/contexts';
 import PropTypes from 'prop-types';
 import React, { useContext, useMemo } from 'react';
-import { IntlContext, IntlProvider as BaseIntlProvider } from 'react-intl';
+import { IntlProvider as BaseIntlProvider, IntlContext } from 'react-intl';
+
+import { LocalesProvider, useLocales } from '@panneau/core/contexts';
+
 import IntlManager from './IntlManager';
 import defaultManager from './manager';
 

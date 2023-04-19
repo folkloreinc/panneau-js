@@ -223,7 +223,9 @@ const TableList = ({
                                 </tr>
                             );
                         })}
-                        {showEmptyLabel && emptyLabel !== null ? emptyLabel : null}
+                        {showEmptyLabel && emptyLabel !== null ? (
+                            <tr key="empty">{emptyLabel}</tr>
+                        ) : null}
                     </tbody>
                 </table>
             ) : (

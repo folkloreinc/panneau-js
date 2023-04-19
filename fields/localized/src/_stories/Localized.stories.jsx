@@ -15,12 +15,18 @@ export default {
     },
 };
 
-const locales = ['fr', 'en', 'jp'];
+const defaultLocales = ['fr', 'en', 'jp'];
+const defaultValue = defaultLocales.reduce(
+    (acc, it) => ({
+        ...acc,
+        [it]: 'Valeur',
+    }),
+    {},
+);
 
 const Container = (props = null) => {
     const { component = null, locales: containerLocales = null } = props || {};
-    const finalLocales = containerLocales || locales;
-
+    const finalLocales = containerLocales || defaultLocales;
     const [value, setValue] = useState(Object.assign(finalLocales));
     const onChange = (newValue) => {
         setValue(newValue);
@@ -30,12 +36,12 @@ const Container = (props = null) => {
             <IntlProvider locale="fr" locales={finalLocales}>
                 <LocalizedField
                     fieldComponent={component || TextField}
-                    value={value}
+                    value={defaultValue}
                     onChange={onChange}
                     {...props}
                 />
                 {finalLocales.map((locale) => (
-                    <div>
+                    <div key={`version-${locale}`}>
                         Version&nbsp;{locale}&nbsp;:&nbsp;{value[locale]}
                     </div>
                 ))}
@@ -45,23 +51,22 @@ const Container = (props = null) => {
 };
 
 const ContainerTwo = (props = null) => {
-    const [value, setValue] = useState(Object.assign(locales));
+    const [value, setValue] = useState(Object.assign(defaultLocales));
     const onChange = (newValue) => {
         setValue(newValue);
     };
-
     return (
         <FieldsProvider>
-            <IntlProvider locale="en" locales={locales}>
+            <IntlProvider locale="en" locales={defaultLocales}>
                 <LocalizedField
                     component="text"
                     fieldProps={{ type: 'textarea' }}
-                    value={value}
+                    value={defaultValue}
                     onChange={onChange}
                     {...props}
                 />
-                {locales.map((locale) => (
-                    <div>
+                {defaultLocales.map((locale) => (
+                    <div key={`version-${locale}`}>
                         Version&nbsp;{locale}&nbsp;:&nbsp;{value[locale]}
                     </div>
                 ))}
@@ -76,4 +81,4 @@ export const NormalFromContextComponents = () => <ContainerTwo />;
 
 export const NormalDisabled = () => <ContainerTwo disabled />;
 
-export const Html = () => <Container locales={['fr', 'en', 'wendat']} component={HtmlField} />;
+export const Html = () => <Container locales={['fr', 'en', 'wendat']} fieldComponent={HtmlField} />;
