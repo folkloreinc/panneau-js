@@ -1,6 +1,115 @@
-// @import '~@panneau/themes/scss/variables';
-// @import '~@panneau/themes/scss/placeholders';
+@import '~@panneau/themes/scss/variables';
+@import '~@panneau/themes/scss/placeholders';
 
 .container {
-    //
+    color: $gray-600;
+
+    button {
+        margin: 0 auto;
+    }
+
+    .inner {
+        width: 100%;
+        max-width: 25rem;
+        margin: 0.25rem auto 1rem;
+    }
+
+    .calendarHeader {
+        display: flex;
+        position: relative;
+        align-items: center;
+        padding: 0.5rem 0.75rem 1.25rem;
+        font-weight: 700;
+        text-align: center;
+        user-select: none;
+    }
+
+    .activePeriod {
+        flex-grow: 1;
+        line-height: 2rem;
+        text-transform: uppercase;
+    }
+
+    .activePeriodWithDates {
+        color: orange;
+    }
+
+    .arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        padding: 0.25rem;
+    }
+
+    .calendarGrid {
+        display: grid;
+        grid-template:
+            'a a a a a a a'
+            'a a a a a a a'
+            'a a a a a a a'
+            'a a a a a a a'
+            'a a a a a a a';
+    }
+
+    .calendarBox {
+        display: flex;
+        justify-content: center;
+        padding: 1px;
+
+        &.headerBox {
+            padding-bottom: 0.5rem;
+            font-size: 0.75em;
+        }
+    }
+
+    .day {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 50%;
+        color: rgba(#ccc, 0.75);
+        font-weight: 700;
+        line-height: 1;
+        user-select: none;
+
+        &.isToday {
+            color: blue;
+        }
+
+        &.isPast {
+            color: orange;
+        }
+    }
+
+    .dayButton {
+        // @extend %transition-dark;
+
+        background-color: rgba(#fff, 0.05);
+        color: red;
+
+        &.isPast {
+            color: #555;
+        }
+
+        @media (hover: hover) {
+            &:hover {
+                color: #fff;
+            }
+        }
+
+        &.active {
+            background-color: yellow;
+            color: #777;
+        }
+
+        &:active {
+            background-color: yellowgreen;
+            color: #777;
+        }
+    }
 }
+
+

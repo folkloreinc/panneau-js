@@ -55,7 +55,12 @@ export const useRouteBack = () => {
 
 const propTypes = {
     children: PropTypes.node.isRequired,
-    routes: PropTypes.objectOf(PropTypes.string), // .isRequired,
+    routes: PropTypes.objectOf(
+        PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.shape({ path: PropTypes.string, component: PropTypes.string }),
+        ]),
+    ),
     basePath: PropTypes.string,
 };
 

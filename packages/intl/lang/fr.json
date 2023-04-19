@@ -2,6 +2,12 @@
     "+6cCPF": {
         "defaultMessage": "Erreur 403"
     },
+    "0F5X3C": {
+        "defaultMessage": "S"
+    },
+    "0xeItT": {
+        "defaultMessage": "Chargement..."
+    },
     "12Px0g": {
         "defaultMessage": "Envoyer le lien de réinitialisation du mot de passe"
     },
@@ -56,11 +62,17 @@
     "B1h3gd": {
         "defaultMessage": "Entrez votre mot de passe pour continuer"
     },
+    "BAKfhq": {
+        "defaultMessage": "M"
+    },
     "Bhu3B2": {
         "defaultMessage": "Supprimer"
     },
     "CGvQxc": {
         "defaultMessage": "Utilisateur"
+    },
+    "DBU3cu": {
+        "defaultMessage": "M"
     },
     "DUbv+u": {
         "defaultMessage": "Confirmez votre mot de passe"
@@ -80,6 +92,9 @@
     "IuqEHB": {
         "defaultMessage": "Compte"
     },
+    "J6Mhku": {
+        "defaultMessage": "V"
+    },
     "Ke35Pv": {
         "defaultMessage": "Modifier"
     },
@@ -94,6 +109,9 @@
     },
     "NI9440": {
         "defaultMessage": "Ajouter un fichier"
+    },
+    "Of2stw": {
+        "defaultMessage": "J"
     },
     "PQX/ph": {
         "defaultMessage": "Créer mon compte"
@@ -164,6 +182,9 @@
     "ejwBSw": {
         "defaultMessage": "Erreur 500"
     },
+    "fSfLk8": {
+        "defaultMessage": "S"
+    },
     "g6qbbX": {
         "defaultMessage": "Connexion"
     },
@@ -175,6 +196,9 @@
     },
     "iFsDVR": {
         "defaultMessage": "Chargement"
+    },
+    "jbT/g6": {
+        "defaultMessage": "L"
     },
     "l+ddDH": {
         "defaultMessage": "Créer {a_singular}"

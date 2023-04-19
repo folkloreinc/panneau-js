@@ -142,8 +142,10 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
             {customRoutes.map(
                 ({ path = null, route: pageRoute = null, component, exact = true, ...props }) => {
                     const PageComponent = componentsManager.getComponent(component);
+                    const finalPath = path || routes[pageRoute];
                     return PageComponent !== null ? (
                         <Route
+                            key={`custom-route-${finalPath}`}
                             path={path || routes[pageRoute]}
                             exact={exact}
                             element={<PageComponent {...props} />}

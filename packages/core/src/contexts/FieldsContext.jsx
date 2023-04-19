@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext, useMemo } from 'react';
-import PropTypes from 'prop-types';
-import uniqBy from 'lodash/uniqBy';
 import isString from 'lodash/isString';
+import uniqBy from 'lodash/uniqBy';
+import PropTypes from 'prop-types';
+import React, { useContext, useMemo } from 'react';
+
+import { FieldsManager, PropTypes as PanneauPropTypes } from '../lib';
 
 import { ComponentsProvider, FIELDS_NAMESPACE } from './ComponentsContext';
-import { FieldsManager, PropTypes as PanneauPropTypes } from '../lib';
 
 export const FieldsContext = React.createContext(null);
 

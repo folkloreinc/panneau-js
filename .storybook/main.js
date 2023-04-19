@@ -6,6 +6,8 @@ const getPackagesAliases = require('../scripts/lib/getPackagesAliases');
 const { idInterpolationPattern } = require('../packages/intl/scripts/config');
 require('dotenv').config();
 
+console.log(getPackagesPaths());
+
 module.exports = {
     stories: getPackagesPaths().map((packagePath) =>
         path.join(packagePath, './src/**/*.stories.@(jsx|mdx)'),
@@ -33,7 +35,7 @@ module.exports = {
             },
         },
         '@storybook/addon-viewport/register',
-        '@storybook/addon-docs',
+        // '@storybook/addon-docs',
         '@storybook/addon-actions',
         {
             name: '@storybook/addon-postcss',

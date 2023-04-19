@@ -2,6 +2,9 @@
     "+6cCPF": {
         "defaultMessage": "Error 403"
     },
+    "0F5X3C": {
+        "defaultMessage": "S"
+    },
     "0xeItT": {
         "defaultMessage": "Loading..."
     },
@@ -59,11 +62,17 @@
     "B1h3gd": {
         "defaultMessage": "Please enter your password to continue"
     },
+    "BAKfhq": {
+        "defaultMessage": "W"
+    },
     "Bhu3B2": {
         "defaultMessage": "Delete"
     },
     "CGvQxc": {
         "defaultMessage": "User"
+    },
+    "DBU3cu": {
+        "defaultMessage": "T"
     },
     "DUbv+u": {
         "defaultMessage": "Confirm your new password"
@@ -83,6 +92,9 @@
     "IuqEHB": {
         "defaultMessage": "Account"
     },
+    "J6Mhku": {
+        "defaultMessage": "F"
+    },
     "Ke35Pv": {
         "defaultMessage": "Edit"
     },
@@ -97,6 +109,9 @@
     },
     "NI9440": {
         "defaultMessage": "Add file"
+    },
+    "Of2stw": {
+        "defaultMessage": "T"
     },
     "PQX/ph": {
         "defaultMessage": "Create account"
@@ -167,6 +182,9 @@
     "ejwBSw": {
         "defaultMessage": "Error 500"
     },
+    "fSfLk8": {
+        "defaultMessage": "S"
+    },
     "g6qbbX": {
         "defaultMessage": "Log in"
     },
@@ -178,6 +196,9 @@
     },
     "iFsDVR": {
         "defaultMessage": "Loading"
+    },
+    "jbT/g6": {
+        "defaultMessage": "M"
     },
     "l+ddDH": {
         "defaultMessage": "Create {a_singular}"

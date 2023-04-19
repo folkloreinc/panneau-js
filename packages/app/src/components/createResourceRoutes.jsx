@@ -47,6 +47,7 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
 
     return [
         <Route
+            key={`${resourceId}-index`}
             path={route('resources.index', {
                 resource: resourceId,
             })}
@@ -54,6 +55,7 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
             element={<ResourceIndexComponent resource={resource} />}
         />,
         <Route
+            key={`${resourceId}-create`}
             path={route('resources.create', {
                 resource: resourceId,
             })}
@@ -61,6 +63,7 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
             element={<ResourceCreateComponent resource={resource} />}
         />,
         <Route
+            key={`${resourceId}-show`}
             path={route('resources.show', {
                 resource: resourceId,
                 id: ':id',
@@ -69,6 +72,7 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
             element={<ResourceShowComponent resource={resource} />}
         />,
         <Route
+            key={`${resourceId}-edit`}
             path={route('resources.edit', {
                 resource: resourceId,
                 id: ':id',
@@ -77,6 +81,7 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
             element={<ResourceEditComponent resource={resource} />}
         />,
         <Route
+            key={`${resourceId}-delete`}
             path={route('resources.delete', {
                 resource: resourceId,
                 id: ':id',

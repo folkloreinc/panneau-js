@@ -34,11 +34,12 @@ const MainNavbar = (props) => {
             !hasAccount ? 'account' : null,
         ]
             .filter((it) => it !== null)
-            .reduce((currentItems, item) => {
+            .reduce((currentItems, item, index) => {
                 if (item === 'resources') {
                     return [
                         ...currentItems,
                         <ResourcesMenu
+                            key={`menu-item-resource-${index + 1}`}
                             className="navbar-nav"
                             itemClassName="nav-item"
                             linkClassName="nav-link"
@@ -49,6 +50,7 @@ const MainNavbar = (props) => {
                     return [
                         ...currentItems,
                         <AccountMenu
+                            key={`menu-item-account-${index + 1}`}
                             className="navbar-nav"
                             itemClassName="nav-item"
                             linkClassName="nav-link"
@@ -56,18 +58,23 @@ const MainNavbar = (props) => {
                     ];
                 }
                 if (item === 'separator') {
-                    return [...currentItems, <span className="ms-auto" />];
+                    return [
+                        ...currentItems,
+                        <span key={`menu-item-spacer-${index + 1}`} className="ms-auto" />,
+                    ];
                 }
                 const lastItem =
                     currentItems.length > 0 ? currentItems[currentItems.length - 1] : null;
+
                 return isArray(lastItem)
                     ? [...currentItems.slice(0, currentItems.length - 1), [...lastItem, item]]
                     : [...currentItems, [item]];
             }, [])
-            .map((it) =>
+            .map((it, index) =>
                 isArray(it) ? (
                     <Menu
                         items={it}
+                        key={`submenu-item-${index + 1}`}
                         className="navbar-nav"
                         itemClassName="nav-item"
                         linkClassName="nav-link"

@@ -182,3 +182,5 @@ export const font = PropTypes.shape({
 });
 
 export const fonts = PropTypes.arrayOf(font);
+
+export const trackingVariables = PropTypes.shape({});

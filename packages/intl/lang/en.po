@@ -17,6 +17,12 @@ msgctxt "+6cCPF"
 msgid "Error 403"
 msgstr "Error 403"
 
+# Saturday letter
+#: 0F5X3C
+msgctxt "0F5X3C"
+msgid "S"
+msgstr "S"
+
 # Hidden label
 #: 0xeItT
 msgctxt "0xeItT"
@@ -131,6 +137,12 @@ msgctxt "B1h3gd"
 msgid "Please enter your password to continue"
 msgstr "Please enter your password to continue"
 
+# Wednesday letter
+#: BAKfhq
+msgctxt "BAKfhq"
+msgid "W"
+msgstr "W"
+
 # Button label
 #: Bhu3B2
 msgctxt "Bhu3B2"
@@ -142,6 +154,12 @@ msgstr "Delete"
 msgctxt "CGvQxc"
 msgid "User"
 msgstr "User"
+
+# Thursday letter
+#: DBU3cu
+msgctxt "DBU3cu"
+msgid "T"
+msgstr "T"
 
 # Field label
 #: DUbv+u
@@ -179,6 +197,12 @@ msgctxt "IuqEHB"
 msgid "Account"
 msgstr "Account"
 
+# Friday letter
+#: J6Mhku
+msgctxt "J6Mhku"
+msgid "F"
+msgstr "F"
+
 # Button label
 #: Ke35Pv
 msgctxt "Ke35Pv"
@@ -208,6 +232,12 @@ msgstr "Error"
 msgctxt "NI9440"
 msgid "Add file"
 msgstr "Add file"
+
+# Tuesday letter
+#: Of2stw
+msgctxt "Of2stw"
+msgid "T"
+msgstr "T"
 
 # Button label
 #: PQX/ph
@@ -347,6 +377,12 @@ msgctxt "ejwBSw"
 msgid "Error 500"
 msgstr "Error 500"
 
+# Sunday letter
+#: fSfLk8
+msgctxt "fSfLk8"
+msgid "S"
+msgstr "S"
+
 # Button label
 #: g6qbbX
 msgctxt "g6qbbX"
@@ -369,6 +405,12 @@ msgstr "Go to home page"
 msgctxt "iFsDVR"
 msgid "Loading"
 msgstr "Loading"
+
+# Monday letter
+#: jbT/g6
+msgctxt "jbT/g6"
+msgid "M"
+msgstr "M"
 
 # Button label
 #: l+ddDH

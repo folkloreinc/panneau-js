@@ -23,7 +23,7 @@ import ResourceItemsList from '../partials/ResourceItemsList';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
-    defaultActions: PropTypes.arrayOf(PropTypes.object), // eslint-disable-line react/forbid-prop-types
+    defaultActions: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.object])), // eslint-disable-line react/forbid-prop-types
 };
 
 const defaultProps = {
@@ -34,6 +34,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
     const { name, settings = {}, index = {} } = resource;
     const { canCreate = true, indexIsPaginated: paginated = false } = settings || {};
     const { actions = null } = index || {};
+
     const finalActions = useMemo(
         () =>
             (actions || defaultActions.filter((it) => it !== 'create' || canCreate)).map((it) =>

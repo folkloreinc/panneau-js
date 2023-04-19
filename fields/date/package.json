@@ -60,7 +60,7 @@
         "@panneau/field-text": "^2.0.17",
         "@panneau/themes": "^2.0.15",
         "classnames": "^2.2.6",
-        "date-fns": "^2.16.1",
+        "date-fns": "^2.29.3",
         "prop-types": "^15.7.2",
         "react-datepicker": "4.11.0",
         "react-intl": "^5.15.8||^6.0.0"

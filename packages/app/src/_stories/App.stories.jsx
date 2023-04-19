@@ -5,8 +5,8 @@ import panneauDefinition from '../../../../.storybook/data/panneau-definition';
 import PanneauContainer from '../components/Container';
 
 export default {
-    component: PanneauContainer,
-    title: 'App',
+    component: <p>YO</p>,
+    title: 'App/Interface',
     parameters: {
         intl: {
             locale: panneauDefinition.intl.locale,
@@ -21,6 +21,20 @@ const props = {
 
 const user = { id: 1, name: 'Folklore', email: 'info@atelierfolklore.ca' };
 
+const englishIntl = {
+    locale: 'en',
+    locales: ['en', 'fr'],
+    values: {
+        name: 'Panneau in Englishe',
+    },
+    messages: {
+        'resources.index': 'Read {a_plural}',
+        'resources.create': 'Blabla',
+    },
+};
+
+// console.log('panneauDefinition', panneauDefinition);
+
 export const Guest = () => (
     <PanneauContainer definition={panneauDefinition} memoryRouter {...props} />
 );
@@ -30,17 +44,7 @@ export const GuestDarkEnglish = () => (
         definition={{
             ...panneauDefinition,
             theme: { colorScheme: 'dark' },
-            intl: {
-                locale: 'en',
-                locales: ['en', 'fr'],
-                values: {
-                    name: 'Panneau in Englishe',
-                },
-                messages: {
-                    'resources.index': 'Lire {a_plural}',
-                    'resources.create': 'Blabla',
-                },
-            },
+            intl: englishIntl,
         }}
         memoryRouter
         {...props}
@@ -78,17 +82,7 @@ export const English = () => (
     <PanneauContainer
         definition={{
             ...panneauDefinition,
-            intl: {
-                locale: 'en',
-                locales: ['en', 'fr'],
-                values: {
-                    name: 'Panneau in Englishe',
-                },
-                messages: {
-                    'resources.index': 'Lire {a_plural}',
-                    'resources.create': 'Blabla',
-                },
-            },
+            intl: englishIntl,
         }}
         memoryRouter
         user={user}

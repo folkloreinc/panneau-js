@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 import FieldsProvider from '../../../../packages/fields';
 import IntlProvider from '../../../../packages/intl/src/IntlProvider';
+import HtmlField from '../../../html/src';
 import TextField from '../../../text/src';
 import LocalizedField from '../Localized';
 
@@ -17,21 +18,23 @@ export default {
 const locales = ['fr', 'en', 'jp'];
 
 const Container = (props = null) => {
-    const [value, setValue] = useState(Object.assign(locales));
+    const { component = null, locales: containerLocales = null } = props || {};
+    const finalLocales = containerLocales || locales;
+
+    const [value, setValue] = useState(Object.assign(finalLocales));
     const onChange = (newValue) => {
         setValue(newValue);
     };
-
     return (
         <FieldsProvider>
-            <IntlProvider locale="fr" locales={locales}>
+            <IntlProvider locale="fr" locales={finalLocales}>
                 <LocalizedField
-                    fieldComponent={TextField}
+                    fieldComponent={component || TextField}
                     value={value}
                     onChange={onChange}
                     {...props}
                 />
-                {locales.map((locale) => (
+                {finalLocales.map((locale) => (
                     <div>
                         Version&nbsp;{locale}&nbsp;:&nbsp;{value[locale]}
                     </div>
@@ -72,3 +75,5 @@ export const Normal = () => <Container />;
 export const NormalFromContextComponents = () => <ContainerTwo />;
 
 export const NormalDisabled = () => <ContainerTwo disabled />;
+
+export const Html = () => <Container locales={['fr', 'en', 'wendat']} component={HtmlField} />;
