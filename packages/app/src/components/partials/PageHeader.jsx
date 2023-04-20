@@ -25,8 +25,8 @@ const defaultProps = {
 const PageHeader = ({ title, actions, small, className, children }) => {
     // TODO: fix page header components
     // const { components } = usePanneau();
-    const { text, background } = usePanneauColorScheme();
     // console.log('page-header', components); // eslint-disable-line
+    const { text, background } = usePanneauColorScheme();
 
     const inner = (
         <div className="d-flex align-items-center flex-wrap">

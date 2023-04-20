@@ -1,6 +1,11 @@
 // @import '~@panneau/themes/scss/variables';
 // @import '~@panneau/themes/scss/placeholders';
 
-// .container {
-
-// }
+.container {
+    :global(body) {
+        /* stylelint-disable-next-line selector-class-pattern */
+        .uppy-Dashboard-innerWrap {
+            opacity: 1;
+        }
+    }
+}

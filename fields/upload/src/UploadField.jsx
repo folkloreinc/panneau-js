@@ -16,6 +16,8 @@ import { useUppy } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 
+import styles from './styles.module.scss';
+
 import '@uppy/core/dist/style.css';
 import '@uppy/dashboard/dist/style.css';
 
@@ -158,7 +160,7 @@ const UploadField = ({
     const hasMedia = values !== null && values.length > 0;
 
     return (
-        <div className={className}>
+        <div className={classNames([styles.container, { [className]: className !== null }])}>
             {values !== null
                 ? values.map((media, idx) => {
                       const {

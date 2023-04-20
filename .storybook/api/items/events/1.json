@@ -2,5 +2,12 @@
     "id": "1",
     "type": "event",
     "title": "Un événement",
-    "email": "1@email.com"
+    "email": "1@email.com",
+    "blocks": [
+        {
+            "id": 1,
+            "type": "lol",
+            "name": "Paul"
+        }
+    ]
 }

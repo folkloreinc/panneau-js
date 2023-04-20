@@ -12,6 +12,7 @@ const propTypes = {
     label: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
+    vertical: PropTypes.bool,
     className: PropTypes.string,
 };
 
@@ -19,10 +20,11 @@ const defaultProps = {
     name: 'toggle',
     value: false,
     label: null,
+    vertical: false,
     className: null,
 };
 
-const ToggleFilter = ({ name, value, label, onChange, onClear, className, ...props }) => {
+const ToggleFilter = ({ name, value, label, vertical, onChange, onClear, className, ...props }) => {
     const isTrue =
         value !== null && (value === true || value === 'true' || value === 1 || value === '1');
 
@@ -42,6 +44,7 @@ const ToggleFilter = ({ name, value, label, onChange, onClear, className, ...pro
             className={classNames([
                 styles.container,
                 {
+                    [styles.vertical]: vertical,
                     [className]: className !== null,
                 },
             ])}

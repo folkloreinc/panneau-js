@@ -1,10 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useFieldComponent } from '@panneau/core/contexts';
-import Form from '@panneau/element-form';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useFieldComponent } from '@panneau/core/contexts';
+import Form from '@panneau/element-form';
 
 const propTypes = {
     fields: PanneauPropTypes.fields.isRequired,
@@ -23,6 +24,7 @@ const propTypes = {
             onClick: PropTypes.func,
         }),
     ),
+    disabled: PropTypes.bool,
     children: PropTypes.node,
     className: PropTypes.string,
 };
@@ -34,6 +36,7 @@ const defaultProps = {
     generalError: null,
     errors: null,
     buttons: null,
+    disabled: false,
     children: null,
     className: null,
 };
@@ -45,6 +48,7 @@ const NormalForm = ({
     onChange,
     onSubmit,
     buttons,
+    disabled,
     children,
     className,
     ...props
@@ -60,13 +64,19 @@ const NormalForm = ({
             ])}
             status={status}
             buttons={buttons}
+            disabled={disabled}
             onSubmit={onSubmit}
             {...props}
         >
             {children !== null ? (
                 children
             ) : (
-                <FieldsComponent fields={fields} value={value} onChange={onChange} />
+                <FieldsComponent
+                    fields={fields}
+                    value={value}
+                    onChange={onChange}
+                    disabled={disabled}
+                />
             )}
         </Form>
     );

@@ -91,7 +91,7 @@ export default {
             },
         },
         {
-            name: 'title',
+            name: 'concept',
             label: 'Concept',
             component: 'localized',
             components: {
@@ -181,7 +181,7 @@ export default {
             {
                 id: 'actions',
                 actions: [
-                    'show',
+                    // 'show',
                     {
                         id: 'export',
                         label: 'Export',
@@ -212,6 +212,8 @@ export default {
             {
                 name: 'featured',
                 component: 'toggle',
+                label: 'Blabla blablablabla ',
+                // vertical: true,
             },
             {
                 name: 'custom-button',

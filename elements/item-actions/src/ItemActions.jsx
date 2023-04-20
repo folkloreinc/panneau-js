@@ -31,13 +31,14 @@ const propTypes = {
     onClickShow: PropTypes.func,
     onClickEdit: PropTypes.func,
     onClickDelete: PropTypes.func,
+    withoutItemShowUrl: PropTypes.bool,
     className: PropTypes.string,
 };
 
 const defaultProps = {
     resource: null,
     items: null,
-    actions: ['show', 'edit', 'delete'],
+    actions: ['edit', 'delete'],
     size: 'sm',
     iconsOnly: true,
     showLabel: <FormattedMessage defaultMessage="Show" description="Button label" />,
@@ -47,6 +48,7 @@ const defaultProps = {
     onClickShow: null,
     onClickEdit: null,
     onClickDelete: null,
+    withoutItemShowUrl: false,
     className: null,
 };
 
@@ -64,10 +66,12 @@ const ItemActions = ({
     onClickShow,
     onClickEdit,
     onClickDelete,
+    withoutItemShowUrl,
     className,
 }) => {
     const urlGenerator = useResourceUrlGenerator(resource);
     const { id, url = null } = item || {};
+    const hasCustomShowUrl = showUrl !== null || url !== null;
 
     return (
         <Buttons
@@ -82,6 +86,7 @@ const ItemActions = ({
                                     label = null,
                                     icon = null,
                                     itemLinkProp = null,
+                                    linkProps = null,
                                     ...otherProps
                                 } = action;
                                 return {
@@ -89,26 +94,30 @@ const ItemActions = ({
                                     label: iconsOnly && icon !== null ? null : label,
                                     icon: iconsOnly && icon !== null ? <Icon name={icon} /> : null,
                                     ...(itemLinkProp !== null && item !== null && item[itemLinkProp]
-                                        ? { href: item[itemLinkProp] }
+                                        ? { href: item[itemLinkProp], ...linkProps }
                                         : null),
                                 };
                             }
                             if (isString(action)) {
                                 switch (action) {
                                     case 'show':
-                                        if (showUrl !== null || url !== null) {
-                                            return {
-                                                id: 'show',
-                                                label: iconsOnly ? null : showLabel,
-                                                icon: iconsOnly ? <Icon name="eye-fill" /> : null,
-                                                href: showUrl || url,
-                                                external: true,
-                                                theme: 'info',
-                                                target: '_blank',
-                                                onClick: onClickShow,
-                                            };
-                                        }
-                                        break;
+                                        return {
+                                            id: 'show',
+                                            label: iconsOnly ? null : showLabel,
+                                            icon: iconsOnly ? <Icon name="eye-fill" /> : null,
+                                            href:
+                                                urlGenerator !== null &&
+                                                (!hasCustomShowUrl || withoutItemShowUrl)
+                                                    ? urlGenerator('show', {
+                                                          id,
+                                                      })
+                                                    : showUrl || url,
+                                            external: hasCustomShowUrl,
+                                            theme: 'info',
+                                            target: '_blank',
+                                            onClick: onClickShow,
+                                        };
+
                                     case 'edit':
                                         return {
                                             id: 'edit',

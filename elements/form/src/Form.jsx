@@ -26,6 +26,7 @@ const propTypes = {
     withoutActions: PropTypes.bool,
     withoutStatus: PropTypes.bool,
     withoutErrors: PropTypes.bool,
+    disabled: PropTypes.bool,
     className: PropTypes.string,
     buttonsClassName: PropTypes.string,
     cancelClassName: PropTypes.string,
@@ -46,6 +47,7 @@ const defaultProps = {
     withoutActions: false,
     withoutStatus: false,
     withoutErrors: false,
+    disabled: false,
     className: null,
     buttonsClassName: null,
     cancelClassName: null,
@@ -66,13 +68,20 @@ const Form = ({
     withoutActions,
     withoutStatus,
     withoutErrors,
+    disabled,
     className,
     buttonsClassName,
     cancelClassName,
 }) => (
-    <form action={action} method={method} onSubmit={onSubmit} className={className}>
+    <form
+        action={action}
+        method={method}
+        onSubmit={onSubmit}
+        disabled={disabled}
+        className={className}
+    >
         {children}
-        {!withoutErrors && generalError !== null ? (
+        {!withoutErrors && generalError !== null && !disabled ? (
             <p className="text-danger mt-4">
                 <FormattedMessage
                     defaultMessage="An error occured and we could not save this item successfully."
@@ -80,7 +89,7 @@ const Form = ({
                 />
             </p>
         ) : null}
-        {(!withoutStatus && status !== null) || !withoutActions ? (
+        {((!withoutStatus && status !== null) || !withoutActions) && !disabled ? (
             <div className="mt-4 d-flex align-items-center">
                 {!withoutStatus && status !== null ? <FormStatus status={status} /> : null}
                 {!withoutActions ? (

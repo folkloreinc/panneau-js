@@ -3,7 +3,16 @@
 @import '~@panneau/themes/scss/placeholders';
 
 .container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 38px;
     user-select: none;
+
+    &.vertical {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 
     :global {
         @import '~rc-switch/assets/index';

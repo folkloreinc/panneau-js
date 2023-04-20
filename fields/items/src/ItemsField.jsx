@@ -47,11 +47,13 @@ const propTypes = {
     renderItemLabel: PropTypes.func,
     withoutCollapse: PropTypes.bool,
     withoutSort: PropTypes.bool,
+    withoutRemove: PropTypes.bool,
     withoutCard: PropTypes.bool,
     withoutListGroup: PropTypes.bool,
     addItemDisabled: PropTypes.bool,
     maxItems: PropTypes.number,
     inline: PropTypes.bool,
+    disabled: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -83,10 +85,12 @@ const defaultProps = {
     withoutListGroup: false,
     withoutCollapse: false,
     withoutSort: false,
+    withoutRemove: false,
     withoutCard: false,
     addItemDisabled: false,
     maxItems: null,
     inline: false,
+    disabled: false,
 };
 
 const ItemsField = ({
@@ -111,10 +115,12 @@ const ItemsField = ({
     withoutListGroup,
     withoutCollapse,
     withoutSort,
+    withoutRemove,
     withoutCard,
     addItemDisabled,
     maxItems,
     inline,
+    disabled,
 }) => {
     const hasTypes = types !== null;
     const idMap = useRef((value || []).map(() => uuid()));
@@ -123,6 +129,7 @@ const ItemsField = ({
     const FieldsComponent = useFieldComponent('fields');
     const FieldComponent = useFieldComponent(component);
     const fieldsManager = useFieldsComponentsManager();
+    const generalFieldProps = disabled === true ? { disabled } : null;
 
     const onClickAdd = useCallback(
         (newItemContent = null) => {
@@ -187,7 +194,7 @@ const ItemsField = ({
     const items = (value || []).map((it, index) => ({ id: idMap.current[index], it, index }));
     const itemsCount = items ? items.length : 0;
     const isAddItemDisabled =
-        addItemDisabled || (maxItems !== null ? itemsCount >= maxItems : false);
+        disabled || addItemDisabled || (maxItems !== null ? itemsCount >= maxItems : false);
 
     const sortList = useCallback(
         (newItems) => {
@@ -257,6 +264,7 @@ const ItemsField = ({
         if (ItemComponent !== null) {
             itemChildren = (
                 <ItemComponent
+                    {...generalFieldProps}
                     value={it}
                     onChange={(newValue) => onItemChange(it, index, newValue)}
                     {...(isFunction(itemProps) ? itemProps(it, index) : itemProps)}
@@ -265,6 +273,7 @@ const ItemsField = ({
         } else if (FieldComponent !== null) {
             itemChildren = (
                 <FieldComponent
+                    {...generalFieldProps}
                     value={it}
                     onChange={(newValue) => onItemChange(it, index, newValue)}
                     {...fieldProps}
@@ -274,6 +283,7 @@ const ItemsField = ({
         } else if (itemFields !== null) {
             itemChildren = (
                 <FieldsComponent
+                    {...generalFieldProps}
                     value={it}
                     onChange={(newValue) => onItemChange(it, index, newValue)}
                     fields={itemFields}
@@ -292,6 +302,7 @@ const ItemsField = ({
                     : FieldsComponent;
             itemChildren = (
                 <FieldTypeComponent
+                    {...generalFieldProps}
                     {...typeProps}
                     value={it}
                     onChange={(newValue) => onItemChange(it, index, newValue)}
@@ -351,21 +362,23 @@ const ItemsField = ({
                             <span className="text-truncate">{finalRenderedItemLabel}</span>
                         </div>
                         <div className="d-flex card-buttons position-relative ms-auto">
-                            {!withoutSort ? (
+                            {!withoutSort && !disabled ? (
                                 <Button className="p-0 me-2" theme="secondary" size="sm" outline>
                                     <div className="py-1 px-2">
                                         <FontAwesomeIcon icon={faGripLines} />
                                     </div>
                                 </Button>
                             ) : null}
-                            <Button
-                                theme="secondary"
-                                size="sm"
-                                onClick={(e) => onClickRemove(e, it, index)}
-                                outline
-                            >
-                                <FontAwesomeIcon icon={faTimes} />
-                            </Button>
+                            {!withoutRemove && !disabled ? (
+                                <Button
+                                    theme="secondary"
+                                    size="sm"
+                                    onClick={(e) => onClickRemove(e, it, index)}
+                                    outline
+                                >
+                                    <FontAwesomeIcon icon={faTimes} />
+                                </Button>
+                            ) : null}
                         </div>
                     </div>
                 ) : null}
@@ -400,15 +413,17 @@ const ItemsField = ({
                             },
                         ])}
                     >
-                        <Button
-                            theme="secondary"
-                            size="sm"
-                            className="m-auto"
-                            onClick={(e) => onClickRemove(e, it, index)}
-                            outline
-                        >
-                            <FontAwesomeIcon icon={faTimes} />
-                        </Button>
+                        {!withoutRemove && !disabled ? (
+                            <Button
+                                theme="secondary"
+                                size="sm"
+                                className="m-auto"
+                                onClick={(e) => onClickRemove(e, it, index)}
+                                outline
+                            >
+                                <FontAwesomeIcon icon={faTimes} />
+                            </Button>
+                        ) : null}
                     </div>
                 ) : null}
             </div>
@@ -489,7 +504,7 @@ const ItemsField = ({
                             },
                         ])}
                     >
-                        {!withoutSort ? (
+                        {!withoutSort && !disabled ? (
                             <ReactSortable
                                 list={items}
                                 setList={sortList}

@@ -64,13 +64,13 @@ const SearchFilter = ({ name, value, onChange, placeholder, className }) => {
                     <Button
                         type="button"
                         onClick={onReset}
-                        className="position-absolute top-0 end-0 me-1 border-0"
+                        className="position-absolute top-0 end-0 me-0 border-0"
                         outline={false}
                         style={{
                             zIndex: 10,
                         }}
                     >
-                        <Icon name="x-circle" bold />
+                        <Icon name="x-circle" />
                     </Button>
                 ) : null}
             </div>

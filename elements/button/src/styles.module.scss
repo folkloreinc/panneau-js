@@ -8,6 +8,10 @@
         display: block;
     }
 
+    &.underlined {
+        text-decoration: underline;
+    }
+
     &.withoutStyle {
         @extend %reset-button;
     }

@@ -27,6 +27,7 @@ export default {
                 index: 'text',
             },
         },
+        { name: 'blocks', label: 'Blocks', component: 'items', withoutFormGroup: true },
     ],
 
     components: {
@@ -42,6 +43,7 @@ export default {
             {
                 id: 'actions',
                 actions: [
+                    'show',
                     'edit',
                     'delete',
                     {

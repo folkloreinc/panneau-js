@@ -27,7 +27,7 @@ const defaultValue = defaultLocales.reduce(
 const Container = (props = null) => {
     const { component = null, locales: containerLocales = null } = props || {};
     const finalLocales = containerLocales || defaultLocales;
-    const [value, setValue] = useState(Object.assign(finalLocales));
+    const [value, setValue] = useState(defaultValue);
     const onChange = (newValue) => {
         setValue(newValue);
     };
@@ -36,13 +36,13 @@ const Container = (props = null) => {
             <IntlProvider locale="fr" locales={finalLocales}>
                 <LocalizedField
                     fieldComponent={component || TextField}
-                    value={defaultValue}
+                    value={value}
                     onChange={onChange}
                     {...props}
                 />
                 {finalLocales.map((locale) => (
                     <div key={`version-${locale}`}>
-                        Version&nbsp;{locale}&nbsp;:&nbsp;{value[locale]}
+                        Version&nbsp;{locale}&nbsp;:&nbsp;{value[locale] || ''}
                     </div>
                 ))}
             </IntlProvider>
@@ -50,8 +50,8 @@ const Container = (props = null) => {
     );
 };
 
-const ContainerTwo = (props = null) => {
-    const [value, setValue] = useState(Object.assign(defaultLocales));
+const ContainerCustom = (props = null) => {
+    const [value, setValue] = useState(defaultValue);
     const onChange = (newValue) => {
         setValue(newValue);
     };
@@ -77,8 +77,8 @@ const ContainerTwo = (props = null) => {
 
 export const Normal = () => <Container />;
 
-export const NormalFromContextComponents = () => <ContainerTwo />;
+export const NormalFromContextComponents = () => <ContainerCustom />;
 
-export const NormalDisabled = () => <ContainerTwo disabled />;
+export const NormalDisabled = () => <ContainerCustom disabled />;
 
 export const Html = () => <Container locales={['fr', 'en', 'wendat']} fieldComponent={HtmlField} />;

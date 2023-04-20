@@ -1,12 +1,11 @@
 /* eslint-disable react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
-import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import isArray from 'lodash/isArray';
-
-import Button from '@panneau/element-button';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Button from '@panneau/element-button';
 
 import styles from './styles.module.scss';
 
@@ -48,7 +47,6 @@ const Buttons = ({ items, size, renderButton, onClickButton, buttonClassName, cl
                   const {
                       className: customClassName = null,
                       onClick = null,
-
                       ...buttonProps
                   } = button || {};
                   const fixedProps = {

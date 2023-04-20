@@ -105,6 +105,7 @@ const LocalizedField = ({
                                         id: locale,
                                         label: localeLabel || locale.toUpperCase(),
                                         active: locale === currentLocale,
+                                        underlined: locale === currentLocale,
                                         theme:
                                             value !== null && !isEmpty(value[locale] || null)
                                                 ? 'success'

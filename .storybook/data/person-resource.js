@@ -37,7 +37,6 @@ export default {
 
     index: {
         columns: ['name', 'email', 'id'],
-
         filters: [
             {
                 name: 'search',

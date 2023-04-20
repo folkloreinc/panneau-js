@@ -14,6 +14,7 @@ const propTypes = {
     fields: PanneauPropTypes.fields,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     horizontal: PropTypes.bool,
+    disabled: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
@@ -23,6 +24,7 @@ const defaultProps = {
     fields: [],
     value: null,
     horizontal: false,
+    disabled: false,
     className: null,
     onChange: null,
 };
@@ -32,6 +34,7 @@ const Fields = ({
     fields,
     value,
     horizontal: fieldsHorizontal,
+    disabled,
     onChange,
     className,
 }) => {
@@ -99,6 +102,7 @@ const Fields = ({
             FieldComponent !== null ? (
                 <FieldComponent
                     {...definitionProps}
+                    {...(disabled === true ? { disabled } : null)}
                     {...fieldProps}
                     name={name}
                     value={fieldValue}
