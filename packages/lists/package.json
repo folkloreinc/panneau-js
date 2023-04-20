@@ -1,6 +1,6 @@
 {
     "name": "@panneau/lists",
-    "version": "2.0.35",
+    "version": "2.0.36",
     "description": "",
     "keywords": [
         "javascript"
@@ -63,8 +63,8 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^2.0.35",
-        "@panneau/list-cards": "^2.0.35",
-        "@panneau/list-table": "^2.0.35",
+        "@panneau/list-cards": "^2.0.36",
+        "@panneau/list-table": "^2.0.36",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
