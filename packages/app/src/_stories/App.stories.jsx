@@ -69,9 +69,9 @@ export const DarkMode = () => (
     />
 );
 
-export const NicheMode = () => (
+export const BlueMode = () => (
     <PanneauContainer
-        definition={{ ...panneauDefinition, theme: { colorScheme: 'niche' } }}
+        definition={{ ...panneauDefinition, theme: { colorScheme: 'blue' } }}
         memoryRouter
         user={user}
         {...props}
