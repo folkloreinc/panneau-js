@@ -180,7 +180,7 @@ const Pagination = ({
                                     },
                                 ])}
                                 href={getUrl(page - 1)}
-                                onClick={onClickPage !== null ? () => onClickPage(page - 1) : null}
+                                onClick={onClickPage !== null ? (e) => onClickPage(page - 1, e) : null}
                             >
                                 {previousLabel}
                             </Link>
@@ -222,7 +222,7 @@ const Pagination = ({
                                   href={pageNumber !== '...' ? getUrl(pageNumber) : '#'}
                                   onClick={
                                       pageNumber !== '...' && onClickPage !== null
-                                          ? () => onClickPage(pageNumber)
+                                          ? (e) => onClickPage(pageNumber, e)
                                           : null
                                   }
                               >
@@ -251,7 +251,7 @@ const Pagination = ({
                                     },
                                 ])}
                                 href={getUrl(page + 1)}
-                                onClick={onClickPage !== null ? () => onClickPage(page + 1) : null}
+                                onClick={onClickPage !== null ? (e) => onClickPage(page + 1, e) : null}
                             >
                                 {nextLabel}
                             </Link>

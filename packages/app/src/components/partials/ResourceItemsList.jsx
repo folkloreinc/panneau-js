@@ -20,6 +20,7 @@ const propTypes = {
     componentProps: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onQueryChange: PropTypes.func,
     onQueryReset: PropTypes.func,
+    onClickPage: PropTypes.func,
     showFilters: PropTypes.bool,
     listProps: PropTypes.shape({}),
 };
@@ -32,6 +33,7 @@ const defaultProps = {
     componentProps: null,
     onQueryChange: null,
     onQueryReset: null,
+    onClickPage: null,
     showFilters: true,
     listProps: null,
 };
@@ -42,6 +44,7 @@ const ResourceItemsList = ({
     baseUrl,
     onQueryChange,
     onQueryReset,
+    onClickPage,
     paginated,
     showFilters,
     listProps: customListProps,
@@ -91,6 +94,7 @@ const ResourceItemsList = ({
                     total={total}
                     url={baseUrl}
                     query={query}
+                    onClickPage={onClickPage}
                     className="mt-1 mb-1"
                 />
             ) : null}
@@ -123,6 +127,7 @@ const ResourceItemsList = ({
                     total={total}
                     url={baseUrl}
                     query={query}
+                    onClickPage={onClickPage}
                     className="mt-4 mb-1"
                 />
             ) : null}
