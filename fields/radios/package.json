@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-radios",
-    "version": "2.0.36",
+    "version": "2.0.38",
     "description": "A radios field",
     "keywords": [
         "javascript"
@@ -53,9 +53,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^2.0.35",
-        "@panneau/element-radios": "^2.0.36",
-        "@panneau/themes": "^2.0.36",
+        "@panneau/core": "^2.0.38",
+        "@panneau/element-radios": "^2.0.38",
+        "@panneau/themes": "^2.0.38",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2"
     },
