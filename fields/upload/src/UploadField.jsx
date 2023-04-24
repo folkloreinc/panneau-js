@@ -18,8 +18,9 @@ import Label from '@panneau/element-label';
 
 import styles from './styles.module.scss';
 
-import '@uppy/core/dist/style.css';
-import '@uppy/dashboard/dist/style.css';
+import '@uppy/core/dist/style.min.css';
+import '@uppy/dashboard/dist/style.min.css';
+import '@uppy/drag-drop/dist/style.min.css';
 
 const propTypes = {
     value: PropTypes.oneOfType([

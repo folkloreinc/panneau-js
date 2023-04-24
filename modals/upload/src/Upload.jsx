@@ -1,10 +1,15 @@
-import React, { useCallback, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { DashboardModal } from '@uppy/react';
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect } from 'react';
 
 import { useUppy } from '@panneau/core/contexts';
 
 import './styles.scss';
+
+import '@uppy/core/dist/style.min.css';
+import '@uppy/dashboard/dist/style.min.css';
+
+// import '@uppy/webcam/dist/style.min.css';
 
 const propTypes = {
     opened: PropTypes.bool,
