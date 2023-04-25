@@ -12,6 +12,7 @@ export const FILTERS_NAMESPACE = 'filters';
 export const LISTS_NAMESPACE = 'lists';
 export const DISPLAYS_NAMESPACE = 'displays';
 export const ACTIONS_NAMESPACE = 'actions';
+export const BUTTONS_NAMESPACE = 'buttons';
 export const PAGES_NAMESPACE = 'pages';
 export const APP_NAMESPACE = 'app';
 
@@ -122,6 +123,17 @@ export const useActionsComponents = (defaultComponents = {}) =>
 
 export const useActionComponent = (name, defaultComponent = null) =>
     useComponent(name, defaultComponent, ACTIONS_NAMESPACE);
+
+/**
+ * Buttons hooks
+ */
+export const useButtonsComponentsManager = () => useComponentsManager(BUTTONS_NAMESPACE);
+
+export const useButtonsComponents = (defaultComponents = {}) =>
+    useComponents(BUTTONS_NAMESPACE, defaultComponents);
+
+export const useButtonComponent = (name, defaultComponent = null) =>
+    useComponent(name, defaultComponent, BUTTONS_NAMESPACE);
 
 /**
  * Pages hooks
