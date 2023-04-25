@@ -46,6 +46,8 @@ export const WithValues = () => (
     />
 );
 
+export const WithNullValue = () => <Container types={['video']} value={null} />;
+
 export const Multiple = () => (
     <>
         <Container fileTypes={['.pdf']} />

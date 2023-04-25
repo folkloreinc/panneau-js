@@ -13,6 +13,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useUppy } from '@panneau/core/contexts';
+import { useResizeObserver } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 
@@ -80,6 +81,10 @@ const UploadField = ({
     onChange,
     className,
 }) => {
+    const { ref: containerRef, entry = null } = useResizeObserver();
+    const { contentRect } = entry || {};
+    const { width: containerWidth = null } = contentRect || {};
+
     const onComplete = useCallback(
         (response) => {
             console.log('upload complete', response); // eslint-disable-line
@@ -160,8 +165,13 @@ const UploadField = ({
     }, [value]);
     const hasMedia = values !== null && values.length > 0;
 
+    console.log(containerWidth);
+
     return (
-        <div className={classNames([styles.container, { [className]: className !== null }])}>
+        <div
+            className={classNames([styles.container, { [className]: className !== null }])}
+            ref={containerRef}
+        >
             {values !== null
                 ? values.map((media, idx) => {
                       const {
@@ -293,7 +303,15 @@ const UploadField = ({
                 </Button>
             ) : null}
             {!disabled && !hasMedia && !withButton && uppy !== null ? (
-                <Dashboard uppy={uppy} height={300} plugins={sources} />
+                <Dashboard
+                    uppy={uppy}
+                    // eslint-disable-next-line react/jsx-props-no-spreading
+                    {...(containerWidth !== null ? { width: containerWidth } : null)}
+                    height={300}
+                    plugins={sources}
+                    inline
+                    areInsidesReadyToBeVisible
+                />
             ) : null}
             {!disabled && withButton && uppy !== null ? (
                 <DashboardModal
