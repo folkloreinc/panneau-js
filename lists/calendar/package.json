@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-calendar",
-    "version": "2.0.42",
+    "version": "2.0.43",
     "description": "Calendar list",
     "keywords": [
         "javascript"
@@ -49,7 +49,7 @@
         "@panneau/element-button": "^2.0.42",
         "@panneau/element-card": "^2.0.42",
         "@panneau/element-icon": "^2.0.42",
-        "@panneau/element-item-actions": "^2.0.42",
+        "@panneau/element-item-actions": "^2.0.43",
         "@panneau/element-loading": "^2.0.42",
         "@panneau/themes": "^2.0.42",
         "classnames": "^2.2.6",
