@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext, useMemo } from 'react';
-import PropTypes from 'prop-types';
 import isString from 'lodash/isString';
+import PropTypes from 'prop-types';
+import React, { useContext, useMemo } from 'react';
 
 import { ComponentsManager } from '../lib';
 
@@ -11,6 +11,7 @@ export const FORMS_NAMESPACE = 'forms';
 export const FILTERS_NAMESPACE = 'filters';
 export const LISTS_NAMESPACE = 'lists';
 export const DISPLAYS_NAMESPACE = 'displays';
+export const ACTIONS_NAMESPACE = 'actions';
 export const PAGES_NAMESPACE = 'pages';
 export const APP_NAMESPACE = 'app';
 
@@ -39,11 +40,10 @@ export const useComponent = (name, defaultComponent = null, namespace = null) =>
         return name || defaultComponent;
     }
     const manager = useComponentsManager(namespace);
-    return useMemo(() => manager.getComponent(name) || defaultComponent, [
-        manager,
-        name,
-        defaultComponent,
-    ]);
+    return useMemo(
+        () => manager.getComponent(name) || defaultComponent,
+        [manager, name, defaultComponent],
+    );
 };
 
 /**
@@ -113,15 +113,26 @@ export const useDisplayComponent = (name, defaultComponent = null) =>
     useComponent(name, defaultComponent, DISPLAYS_NAMESPACE);
 
 /**
+ * Actions hooks
+ */
+export const useActionsComponentsManager = () => useComponentsManager(ACTIONS_NAMESPACE);
+
+export const useActionsComponents = (defaultComponents = {}) =>
+    useComponents(ACTIONS_NAMESPACE, defaultComponents);
+
+export const useActionComponent = (name, defaultComponent = null) =>
+    useComponent(name, defaultComponent, ACTIONS_NAMESPACE);
+
+/**
  * Pages hooks
  */
- export const usePagesComponentsManager = () => useComponentsManager(PAGES_NAMESPACE);
+export const usePagesComponentsManager = () => useComponentsManager(PAGES_NAMESPACE);
 
- export const usePagesComponents = (defaultComponents = {}) =>
-     useComponents(PAGES_NAMESPACE, defaultComponents);
+export const usePagesComponents = (defaultComponents = {}) =>
+    useComponents(PAGES_NAMESPACE, defaultComponents);
 
- export const usePageComponent = (name, defaultComponent = null) =>
-     useComponent(name, defaultComponent, PAGES_NAMESPACE);
+export const usePageComponent = (name, defaultComponent = null) =>
+    useComponent(name, defaultComponent, PAGES_NAMESPACE);
 
 /**
  * App hooks

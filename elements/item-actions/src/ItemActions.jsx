@@ -6,6 +6,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useActionsComponentsManager } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Buttons from '@panneau/element-buttons';
 import Icon from '@panneau/element-icon';
@@ -72,6 +73,7 @@ const ItemActions = ({
     const urlGenerator = useResourceUrlGenerator(resource);
     const { id, url = null } = item || {};
     const hasCustomShowUrl = showUrl !== null || url !== null;
+    const componentsManager = useActionsComponentsManager();
 
     return (
         <Buttons
@@ -87,9 +89,23 @@ const ItemActions = ({
                                     icon = null,
                                     itemLinkProp = null,
                                     linkProps = null,
+                                    component = null,
                                     ...otherProps
                                 } = action;
+                                const ActionComponent =
+                                    component !== null
+                                        ? componentsManager.getComponent(component)
+                                        : null;
                                 return {
+                                    renderButton:
+                                        ActionComponent !== null
+                                            ? (buttonProps, index, fixedProps) => (
+                                                  <ActionComponent
+                                                      {...fixedProps}
+                                                      {...buttonProps}
+                                                  />
+                                              )
+                                            : null,
                                     ...otherProps,
                                     label: iconsOnly && icon !== null ? null : label,
                                     icon: iconsOnly && icon !== null ? <Icon name={icon} /> : null,
