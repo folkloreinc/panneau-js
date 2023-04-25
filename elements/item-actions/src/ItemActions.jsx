@@ -101,6 +101,8 @@ const ItemActions = ({
                                         ActionComponent !== null
                                             ? (buttonProps, index, fixedProps) => (
                                                   <ActionComponent
+                                                      resource={resource}
+                                                      item={item}
                                                       {...fixedProps}
                                                       {...buttonProps}
                                                   />
