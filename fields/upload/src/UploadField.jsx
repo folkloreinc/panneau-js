@@ -165,7 +165,7 @@ const UploadField = ({
     }, [value]);
     const hasMedia = values !== null && values.length > 0;
 
-    console.log(containerWidth);
+    // console.log(containerWidth);
 
     return (
         <div
