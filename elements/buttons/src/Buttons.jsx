@@ -4,7 +4,7 @@ import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { useButtonsComponents } from '@panneau/contexts';
+import { useButtonsComponents } from '@panneau/core/contexts';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Button from '@panneau/element-button';
 
