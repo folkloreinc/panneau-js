@@ -28,6 +28,9 @@ const propTypes = {
     showEmptyLabel: PropTypes.bool,
     emptyLabel: PanneauPropTypes.message,
     withoutId: PropTypes.bool,
+    reload: PropTypes.func,
+    reloadPage: PropTypes.func,
+    updateItem: PropTypes.func,
 };
 
 const defaultProps = {
@@ -43,6 +46,9 @@ const defaultProps = {
     showEmptyLabel: false,
     emptyLabel: null,
     withoutId: false,
+    reload: null,
+    reloadPage: null,
+    updateItem: null,
 };
 
 const TableList = ({
@@ -59,6 +65,9 @@ const TableList = ({
     showEmptyLabel,
     emptyLabel,
     withoutId,
+    reload,
+    reloadPage,
+    updateItem,
 }) => {
     const displayComponents = useDisplaysComponents();
 
@@ -172,6 +181,9 @@ const TableList = ({
                                                         {...displayProps}
                                                         resource={resource}
                                                         item={it}
+                                                        reload={reload}
+                                                        reloadPage={reloadPage}
+                                                        updateItem={updateItem}
                                                     />
                                                 </td>
                                             );
@@ -217,6 +229,9 @@ const TableList = ({
                                                 resource={resource}
                                                 item={it}
                                                 actions={actions}
+                                                reload={reload}
+                                                reloadPage={reloadPage}
+                                                updateItem={updateItem}
                                             />
                                         </td>
                                     ) : null}

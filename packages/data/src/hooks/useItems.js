@@ -156,6 +156,46 @@ const useItems = ({
         return nextPage !== null ? loadItems(nextPage) : Promise.resolve();
     };
 
+    const reloadPage = () => {
+        if (loading) {
+            return Promise.reject();
+        }
+        return loadItems(page);
+    };
+
+    const reload = () => {
+        if (loading) {
+            return Promise.reject();
+        }
+        return loadItems();
+    };
+
+    const updateItem = (newItem) => {
+        if (loading) {
+            return;
+        }
+        if (isPaginated) {
+            const currentPages = pages || [];
+            updateState({
+                pages: currentPages.map((pageData) => {
+                    const pageItems = pageData.items || [];
+                    if (pageItems.findIndex(({ id }) => id === newItem.id) !== -1) {
+                        return {
+                            ...pageData,
+                            items: pageItems.map((it) => (it.id === newItem.id ? newItem : it)),
+                        };
+                    }
+                    return pageData;
+                }),
+            });
+        } else {
+            const currentItems = items || [];
+            updateState({
+                items: currentItems.map((it) => (it.id === newItem.id ? newItem : it)),
+            });
+        }
+    };
+
     useEffect(() => {
         const hadState = lastState.current !== null;
         lastState.current = initialState;
@@ -200,6 +240,9 @@ const useItems = ({
         loading,
         loadNextPage,
         loadPage,
+        reloadPage,
+        reload,
+        updateItem,
     };
 };
 
