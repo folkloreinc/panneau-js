@@ -33,6 +33,8 @@ const propTypes = {
     withoutClear: PropTypes.bool,
     placeholder: PropTypes.string,
     className: PropTypes.string,
+    onFocus: PropTypes.func,
+    onBlur: PropTypes.func,
     onChange: PropTypes.func,
     children: PropTypes.node,
 };
@@ -50,6 +52,8 @@ const defaultProps = {
     placeholder: null,
     withoutClear: false,
     className: null,
+    onFocus: null,
+    onBlur: null,
     onChange: null,
     children: null,
 };
@@ -64,6 +68,8 @@ const AutocompleteField = ({
     placeholder,
     withoutClear,
     className,
+    onFocus,
+    onBlur,
     onChange,
     children,
 }) => {
@@ -103,9 +109,18 @@ const AutocompleteField = ({
         [onChange],
     );
 
-    const onFocus = useCallback(() => {
+    const onFieldFocus = useCallback(() => {
         setShowListIcon(true);
-    }, [setShowListIcon]);
+        if (onFocus !== null) {
+            onFocus();
+        }
+    }, [onFocus, setShowListIcon]);
+
+    const onFieldBlur = useCallback(() => {
+        if (onBlur !== null) {
+            onBlur();
+        }
+    }, [onBlur, setShowListIcon]);
 
     const onToggleOpen = useCallback(() => {
         setOpen(!open);
@@ -173,7 +188,8 @@ const AutocompleteField = ({
                 placeholder={placeholder}
                 onChange={onInputChange}
                 disabled={disabled}
-                onFocus={onFocus}
+                onFocus={onFieldFocus}
+                onBlur={onFieldBlur}
             />
             {open && maxedList.length > 0 && !disabled ? listItems : null}
             {!withoutClear && !disabled && value !== null ? (

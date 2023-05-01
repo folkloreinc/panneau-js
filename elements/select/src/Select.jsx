@@ -4,6 +4,7 @@ import isEqual from 'lodash/isEqual';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import Select from 'react-select';
+import AsyncSelect from 'react-select/async';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getSelectOptions } from '@panneau/core/utils';
@@ -11,6 +12,7 @@ import { getSelectOptions } from '@panneau/core/utils';
 const propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     options: PanneauPropTypes.selectOptions,
+    isAsync: PropTypes.bool,
     disabled: PropTypes.bool,
     multiple: PropTypes.bool,
     searchable: PropTypes.bool,
@@ -26,6 +28,7 @@ const propTypes = {
 const defaultProps = {
     value: null,
     options: [],
+    isAsync: false,
     disabled: false,
     multiple: false,
     searchable: true,
@@ -41,6 +44,7 @@ const defaultProps = {
 const SelectElement = ({
     value,
     options,
+    isAsync,
     disabled,
     multiple,
     searchable,
@@ -91,9 +95,11 @@ const SelectElement = ({
         [finalOptions],
     );
 
+    const SelectComponent = isAsync ? AsyncSelect : Select;
+
     return (
         <div className={classNames(['position-relative', className])}>
-            <Select
+            <SelectComponent
                 {...props}
                 className={selectClassName !== null ? selectClassName : null}
                 // menuPortalTarget={document.body}

@@ -185,6 +185,7 @@ const Button = ({
             btn: withStyle,
             [`btn-${outline ? 'outline-' : ''}${theme}`]: withStyle && theme !== null,
             [`btn-${size}`]: withStyle && size !== null,
+            [`text-decoration-underline`]: !withoutStyle && underlined,
             active: !withoutStyle && active,
         },
         styles.container,
@@ -199,7 +200,6 @@ const Button = ({
             [styles.isDisabled]: disabled,
             [styles.isLoading]: loading,
             [styles.active]: !withoutStyle && active,
-            [styles.underlined]: !withoutStyle && underlined,
             [className]: className !== null,
         },
     ]);

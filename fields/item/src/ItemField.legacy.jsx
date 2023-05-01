@@ -3,14 +3,14 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
+import Autosuggest from 'react-autosuggest';
 import { useIntl } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getPathValue, isMessage } from '@panneau/core/utils';
 import { useApi } from '@panneau/data';
 import Button from '@panneau/element-button';
-import Select from '@panneau/element-select';
 
 const propTypes = {
     name: PropTypes.string,
@@ -36,7 +36,6 @@ const propTypes = {
     itemLabelWithId: PropTypes.bool,
     size: PropTypes.oneOf(['sm', 'lg']),
     placeholder: PropTypes.string,
-    autoload: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
     inputClassName: PropTypes.string,
@@ -63,7 +62,6 @@ const defaultProps = {
     itemLabelWithId: false,
     size: null,
     placeholder: null,
-    autoload: false,
     disabled: false,
     className: null,
     inputClassName: null,
@@ -90,7 +88,6 @@ const ItemField = ({
     itemDescriptionPath,
     itemImagePath,
     itemLabelWithId,
-    autoload,
     disabled,
     className,
     inputClassName,
@@ -98,8 +95,8 @@ const ItemField = ({
 }) => {
     const intl = useIntl();
     const api = useApi();
-    // const [inputValue, setInputValue] = useState('');
-    // const [showSuggestions, setShowSuggestions] = useState(false);
+    const [inputValue, setInputValue] = useState('');
+    const [showSuggestions, setShowSuggestions] = useState(false);
     const [items, setItems] = useState(initialItems || []);
     const lastRequest = useRef(null);
 
@@ -115,54 +112,35 @@ const ItemField = ({
         [initialGetItemLabel, itemLabelWithId],
     );
 
-    const parseItem = useCallback(
-        (it) => {
-            const label = getItemLabel(it, itemLabelPath);
-            const description = getItemDescription(it, itemDescriptionPath);
-            const finalLabel = description !== null ? `${label}: ${description}` : label;
-            return {
-                value: it.id,
-                label: finalLabel,
-            };
-        },
-        [getItemLabel, getItemDescription, itemLabelPath, itemDescriptionPath],
-    );
-
-    const getOptions = useCallback(
-        (request = null, callback = null) => {
+    const onSuggestionsFetchRequested = useCallback(
+        (request) => {
             if (loadItems !== null) {
                 const currentRequest = loadItems(request);
                 lastRequest.current = currentRequest;
                 currentRequest.then((newItems) => {
                     if (currentRequest === lastRequest.current) {
                         setItems(newItems);
-                        callback(newItems);
                     }
                 });
             } else if (requestUrl !== null) {
-                const requestValue = request !== null ? request.value || null : null;
                 const currentRequest = api.requestGet(
                     requestUrl,
                     {
                         ...requestQuery,
-                        ...(requestValue !== null
-                            ? { [requestSearchParamName]: requestValue }
-                            : null),
+                        [requestSearchParamName]: request.value,
                     },
                     requestOptions,
                 );
                 lastRequest.current = currentRequest;
                 currentRequest.then((newItems) => {
                     if (currentRequest === lastRequest.current) {
-                        const finalNewItems =
-                            maxItemsCount !== null ? newItems.slice(0, maxItemsCount) : newItems;
-                        setItems(finalNewItems);
-                        callback(newItems);
+                        setItems(
+                            maxItemsCount !== null ? newItems.slice(0, maxItemsCount) : newItems,
+                        );
                     }
                 });
             } else if (initialItems !== null) {
                 setItems(initialItems);
-                callback(initialItems);
             }
         },
         [
@@ -177,65 +155,84 @@ const ItemField = ({
         ],
     );
 
-    // const onSuggestionsClearRequested = useCallback(() => {
-    //     setItems([]);
-    // }, [setItems]);
+    const onSuggestionsClearRequested = useCallback(() => {
+        setItems([]);
+    }, [setItems]);
 
-    // const onInputChange = useCallback(
-    //     (e, { newValue }) => {
-    //         setInputValue(newValue);
-    //     },
-    //     [setInputValue],
-    // );
+    const onInputChange = useCallback(
+        (e, { newValue }) => {
+            setInputValue(newValue);
+        },
+        [setInputValue],
+    );
+
+    const onSuggestionSelected = useCallback(
+        (e, { suggestion }) => {
+            setInputValue('');
+            if (onChange !== null) {
+                onChange(suggestion);
+            }
+        },
+        [setInputValue, onChange],
+    );
 
     const onClickRemove = useCallback(() => {
-        //  setInputValue('');
-
+        setInputValue('');
+        setShowSuggestions(false);
         if (onChange !== null) {
             onChange(null);
         }
-    }, [onChange]);
+    }, [setInputValue, onChange]);
 
-    const onFieldFocus = useCallback(() => {}, []);
+    const renderSuggestion = useCallback(
+        (suggestion, { isHighlighted }) => {
+            const label = getItemLabel(suggestion, itemLabelPath);
+            const description = getItemDescription(suggestion, itemDescriptionPath);
+            return (
+                <button
+                    type="button"
+                    className={classNames([
+                        'dropdown-item',
+                        {
+                            active: isHighlighted,
+                        },
+                    ])}
+                >
+                    {label}
+                    {description !== null ? (
+                        <small className="d-block text-muted">{description}</small>
+                    ) : null}
+                </button>
+            );
+        },
+        [getItemLabel, itemLabelPath, getItemDescription, itemDescriptionPath],
+    );
 
-    // const renderSectionTitle = useCallback(
-    //     (section) => <h6 className="dropdown-header">{section.title}</h6>,
-    //     [],
-    // );
+    const renderSectionTitle = useCallback(
+        (section) => <h6 className="dropdown-header">{section.title}</h6>,
+        [],
+    );
 
-    // const inputProps = {
-    //     placeholder: isMessage(placeholder) ? intl.formatMessage(placeholder) : placeholder,
-    //     value: inputValue || '',
-    //     name,
-    //     type: 'search',
-    //     onChange: onInputChange,
-    // };
+    const inputProps = {
+        placeholder: isMessage(placeholder) ? intl.formatMessage(placeholder) : placeholder,
+        value: inputValue || '',
+        name,
+        type: 'search',
+        onChange: onInputChange,
+    };
+
+    const getSuggestionValue = useCallback(
+        (suggestion) => getItemLabel(suggestion, itemLabelPath),
+        [getItemLabel, itemLabelPath],
+    );
+
+    const toggleSuggestions = useCallback(() => {
+        setShowSuggestions(!showSuggestions);
+    }, [showSuggestions, setShowSuggestions]);
 
     const itemLabel = value !== null ? getItemLabel(value, itemLabelPath) : null;
     const itemDescription = value !== null ? getItemDescription(value, itemDescriptionPath) : null;
     const itemImage = value !== null ? getItemImage(value, itemImagePath) : null;
-    const hasItems = items !== null && items.length > 0;
-
-    useEffect(() => {
-        if (!hasItems && autoload) {
-            // onSuggestionsFetchRequested();
-        }
-    }, [hasItems, autoload]);
-
-    const onValueChange = useCallback(
-        (newId) => {
-            if (onChange === null) return;
-            const newValue = items.filter(({ id = null }) => id === newId) || [];
-            if (newValue !== null && newValue.length > 0) {
-                onChange(newValue[0]);
-            } else {
-                onChange(null);
-            }
-        },
-        [items, onChange],
-    );
-
-    const options = items.map((it) => parseItem(it));
 
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
@@ -279,25 +276,53 @@ const ItemField = ({
                     </div>
                 </div>
             ) : (
-                <Select
-                    isAsync={requestUrl !== null}
-                    value={value}
-                    options={options}
-                    isClearable
-                    isSearchable
-                    onChange={onValueChange}
-                    onFocus={onFieldFocus}
-                    loadOptions={(inputValue, callback) => {
-                        // console.log('haha', inputValue);
-                        setTimeout(() => {
-                            getOptions(inputValue, (newItems) =>
-                                callback(
-                                    newItems !== null ? newItems.map((i) => parseItem(i)) : [],
-                                ),
-                            );
-                        }, 500);
-                    }}
-                />
+                <>
+                    <Autosuggest
+                        suggestions={items}
+                        onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                        onSuggestionsClearRequested={onSuggestionsClearRequested}
+                        onSuggestionSelected={onSuggestionSelected}
+                        getSuggestionValue={getSuggestionValue}
+                        renderSuggestion={renderSuggestion}
+                        renderSectionTitle={renderSectionTitle}
+                        renderInputComponent={(inputProps) => (
+                            <input {...inputProps} disabled={disabled} />
+                        )}
+                        inputProps={inputProps}
+                        alwaysRenderSuggestions={showSuggestions}
+                        theme={{
+                            container: 'position-relative',
+                            containerOpen: 'show',
+                            input: classNames([
+                                'form-control',
+                                {
+                                    [`disabled`]: disabled,
+                                    'is-invalid': errors !== null,
+                                    [`form-control-${size}`]: size !== null,
+                                    [inputClassName]: inputClassName !== null,
+                                },
+                            ]),
+                            suggestionsContainer: 'dropdown-menu',
+                            suggestionsContainerOpen: 'show',
+                            suggestionsList: 'list-unstyled m-0 p-0',
+                            suggestion: 'm-0 p-0',
+                        }}
+                    />
+                    {!disabled ? (
+                        <div className="position-absolute top-0 end-0 ms-1 me-1 mt-1">
+                            <Button
+                                type="button"
+                                size="sm"
+                                theme="secondary"
+                                icon="caret-down-fill"
+                                outline
+                                onClick={toggleSuggestions}
+                                className="border-light"
+                                disabled={disabled}
+                            />
+                        </div>
+                    ) : null}
+                </>
             )}
         </div>
     );

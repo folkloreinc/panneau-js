@@ -15,6 +15,12 @@
     }
 }
 
+.form-control:focus {
+    // border-color: var(--bs-primary);
+    border-color: rgba(13, 110, 253, 0.25);
+    box-shadow: 0 0 0 1px rgba(13, 110, 253, 0.25);
+}
+
 [data-bs-theme="blue"] {
     --bs-primary: #c8d;
     --bs-btn-bg: #c8d;

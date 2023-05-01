@@ -9,6 +9,7 @@ import InputGroup from '@panneau/field-input-group';
 import useCKEditorBuild from './hooks/useCKEditorBuild';
 
 import './styles.global.scss';
+import styles from './styles.module.scss';
 
 const propTypes = {
     feedback: PropTypes.oneOf(['valid', 'invalid', 'loading']),
@@ -85,6 +86,7 @@ const HtmlField = ({
 
     const finalClassName = inline
         ? classNames([
+              styles.container,
               'form-control',
               {
                   [className]: className !== null,
@@ -92,7 +94,12 @@ const HtmlField = ({
                   'is-invalid': feedback === 'invalid' || (errors !== null && errors.length > 0),
               },
           ])
-        : className;
+        : classNames([
+              styles.container,
+              {
+                  [className]: className !== null,
+              },
+          ]);
 
     const onCkEditorChange = useCallback(
         (event, editor) => {

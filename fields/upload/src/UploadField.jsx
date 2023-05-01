@@ -43,6 +43,8 @@ const propTypes = {
     namePath: PropTypes.string,
     thumbnailPath: PropTypes.string,
     sizePath: PropTypes.string,
+    width: PropTypes.number,
+    height: PropTypes.number,
     disabled: PropTypes.bool,
     onChange: PropTypes.func,
     className: PropTypes.string,
@@ -61,6 +63,8 @@ const defaultProps = {
     namePath: null,
     thumbnailPath: null,
     sizePath: null,
+    width: null,
+    height: 300,
     disabled: false,
     onChange: null,
     className: null,
@@ -77,6 +81,8 @@ const UploadField = ({
     namePath,
     thumbnailPath,
     sizePath,
+    width,
+    height,
     disabled,
     onChange,
     className,
@@ -164,8 +170,6 @@ const UploadField = ({
         return value !== null ? [value] : null;
     }, [value]);
     const hasMedia = values !== null && values.length > 0;
-
-    // console.log(containerWidth);
 
     return (
         <div
@@ -306,11 +310,14 @@ const UploadField = ({
                 <Dashboard
                     uppy={uppy}
                     // eslint-disable-next-line react/jsx-props-no-spreading
-                    {...(containerWidth !== null ? { width: containerWidth } : null)}
-                    height={300}
+                    {...(containerWidth !== null && height !== null
+                        ? { width: containerWidth }
+                        : { width })}
+                    height={height}
                     plugins={sources}
                     inline
                     areInsidesReadyToBeVisible
+                    proudlyDisplayPoweredByUppy={false}
                 />
             ) : null}
             {!disabled && withButton && uppy !== null ? (

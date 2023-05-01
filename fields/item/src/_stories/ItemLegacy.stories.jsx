@@ -4,11 +4,12 @@ import React, { useCallback, useState } from 'react';
 import withApi from '../../../../.storybook/decorators/withApiProvider';
 import FieldsProvider from '../../../../packages/fields';
 import IntlProvider from '../../../../packages/intl/src/IntlProvider';
-import ItemField from '../ItemField';
+
+import ItemFieldLegacy from '../ItemField.legacy';
 
 export default {
-    title: 'Fields/Item',
-    component: ItemField,
+    title: 'Fields/ItemLegacy',
+    component: ItemFieldLegacy,
     decorators: [withApi],
     parameters: {
         intl: true,
@@ -33,7 +34,7 @@ const Container = (props) => {
     return (
         <FieldsProvider>
             <IntlProvider>
-                <ItemField {...props} label="Item" value={value} onChange={onChange} />
+                <ItemFieldLegacy {...props} label="Item" value={value} onChange={onChange} />
             </IntlProvider>
         </FieldsProvider>
     );

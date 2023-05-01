@@ -46,7 +46,9 @@ export const WithValues = () => (
     />
 );
 
-export const WithNullValue = () => <Container types={['video']} value={null} />;
+export const WithoutSize = () => (
+    <Container types={['video']} value={null} width={null} height={null} />
+);
 
 export const Multiple = () => (
     <>
