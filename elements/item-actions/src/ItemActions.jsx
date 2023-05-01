@@ -6,6 +6,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useActionsComponentsManager } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Buttons from '@panneau/element-buttons';
 import Icon from '@panneau/element-icon';
@@ -28,6 +29,9 @@ const propTypes = {
     showUrl: PropTypes.string,
     editLabel: PropTypes.node,
     deleteLabel: PropTypes.node,
+    reload: PropTypes.func,
+    reloadPage: PropTypes.func,
+    updateItem: PropTypes.func,
     onClickShow: PropTypes.func,
     onClickEdit: PropTypes.func,
     onClickDelete: PropTypes.func,
@@ -45,6 +49,9 @@ const defaultProps = {
     showUrl: null,
     editLabel: <FormattedMessage defaultMessage="Edit" description="Button label" />,
     deleteLabel: <FormattedMessage defaultMessage="Delete" description="Button label" />,
+    reload: null,
+    reloadPage: null,
+    updateItem: null,
     onClickShow: null,
     onClickEdit: null,
     onClickDelete: null,
@@ -63,6 +70,9 @@ const ItemActions = ({
     showUrl,
     editLabel,
     deleteLabel,
+    reload,
+    reloadPage,
+    updateItem,
     onClickShow,
     onClickEdit,
     onClickDelete,
@@ -72,6 +82,7 @@ const ItemActions = ({
     const urlGenerator = useResourceUrlGenerator(resource);
     const { id, url = null } = item || {};
     const hasCustomShowUrl = showUrl !== null || url !== null;
+    const componentsManager = useActionsComponentsManager();
 
     return (
         <Buttons
@@ -87,10 +98,29 @@ const ItemActions = ({
                                     icon = null,
                                     itemLinkProp = null,
                                     linkProps = null,
+                                    component = null,
                                     ...otherProps
                                 } = action;
+                                const ActionComponent =
+                                    component !== null
+                                        ? componentsManager.getComponent(component)
+                                        : null;
                                 return {
+                                    renderButton:
+                                        ActionComponent !== null
+                                            ? (buttonProps, index, fixedProps) => (
+                                                  <ActionComponent
+                                                      resource={resource}
+                                                      item={item}
+                                                      {...fixedProps}
+                                                      {...buttonProps}
+                                                  />
+                                              )
+                                            : null,
                                     ...otherProps,
+                                    reload,
+                                    reloadPage,
+                                    updateItem,
                                     label: iconsOnly && icon !== null ? null : label,
                                     icon: iconsOnly && icon !== null ? <Icon name={icon} /> : null,
                                     ...(itemLinkProp !== null && item !== null && item[itemLinkProp]
