@@ -211,6 +211,7 @@ const ItemField = ({
     //         // onSuggestionsFetchRequested();
     //     }
     // }, [hasItems, autoload]);
+
     const timeoutRef = useRef(null);
     const loadOptions = useCallback(
         (inputValue, callback) => {
@@ -297,7 +298,7 @@ const ItemField = ({
                     ])}
                     disabled={disabled}
                     isAsync={requestUrl !== null}
-                    defaultOptions={requestUrl !== null && (autoload || initialValue === null)}
+                    defaultOptions={requestUrl !== null && (autoload || value === null)}
                     name={name}
                     value={value}
                     options={options}
