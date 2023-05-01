@@ -2,6 +2,7 @@
 import React from 'react';
 
 import panneauDefinition from '../../../../.storybook/data/panneau-definition';
+import { PAGES_NAMESPACE } from '../../../core/src/contexts';
 import PanneauContainer from '../components/Container';
 
 export default {
@@ -34,6 +35,9 @@ const englishIntl = {
 };
 
 // console.log('panneauDefinition', panneauDefinition);
+
+const CustomHomePage = () => <div className="text-primary bg-info">Home sweet home</div>;
+const CustomEventPage = () => <div className="text-primary bg-info">Events page replacement</div>;
 
 export const Guest = () => (
     <PanneauContainer definition={panneauDefinition} memoryRouter {...props} />
@@ -69,9 +73,19 @@ export const DarkMode = () => (
     />
 );
 
-export const BlueMode = () => (
+export const BlueModeWithComps = () => (
     <PanneauContainer
         definition={{ ...panneauDefinition, theme: { colorScheme: 'blue' } }}
+        components={{
+            [PAGES_NAMESPACE]: {
+                Home: CustomHomePage,
+                // EventIndex: CustomEventPage,
+                EventShow: CustomEventPage,
+                EventCreate: CustomEventPage,
+                EventEdit: CustomEventPage,
+                EventDelete: CustomEventPage,
+            },
+        }}
         memoryRouter
         user={user}
         {...props}

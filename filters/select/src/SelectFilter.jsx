@@ -117,7 +117,7 @@ const SelectFilter = ({
         fetchOptions(requestUrl);
     }, [requestUrl, finalParams]);
 
-    return <Select {...props} className={className} options={options} />;
+    return <Select autoSize {...props} className={className} options={options} />;
 };
 
 SelectFilter.propTypes = propTypes;

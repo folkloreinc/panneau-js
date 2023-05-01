@@ -14,7 +14,7 @@ import Navbar from '@panneau/element-navbar';
 const propTypes = {
     filters: PropTypes.arrayOf(
         PropTypes.shape({
-            id: PropTypes.string.isRequired,
+            id: PropTypes.string,
             component: PropTypes.string.isRequired,
         }),
     ),

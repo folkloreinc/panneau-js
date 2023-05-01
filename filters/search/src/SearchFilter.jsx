@@ -12,6 +12,7 @@ const propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     placeholder: PropTypes.string,
+    position: PropTypes.string,
     className: PropTypes.string,
 };
 
@@ -19,10 +20,11 @@ const defaultProps = {
     name: 'q',
     value: null,
     placeholder: 'Search...',
+    position: null,
     className: null,
 };
 
-const SearchFilter = ({ name, value, onChange, placeholder, className }) => {
+const SearchFilter = ({ name, value, onChange, position, placeholder, className }) => {
     const [searchValue, setSearchValue] = useState(value);
 
     const onSubmit = useCallback(
@@ -46,12 +48,20 @@ const SearchFilter = ({ name, value, onChange, placeholder, className }) => {
         setSearchValue(value);
     }, [value, setSearchValue]);
 
+    const active = !isEmpty(searchValue);
+
     return (
         <form className={className} onSubmit={onSubmit}>
             <div className="input-group">
-                <Button theme="secondary" type="submit" onClick={onSubmit}>
-                    <Icon name="search" bold />
-                </Button>
+                {position === 'left' ? (
+                    <Button
+                        theme={active ? 'primary' : 'secondary'}
+                        type="submit"
+                        onClick={onSubmit}
+                    >
+                        <Icon name="search" bold />
+                    </Button>
+                ) : null}
                 <TextField
                     type="search"
                     name={name}
@@ -60,17 +70,27 @@ const SearchFilter = ({ name, value, onChange, placeholder, className }) => {
                     onChange={setSearchValue}
                     placeholder={placeholder}
                 />
-                {!isEmpty(searchValue) ? (
+                {active ? (
                     <Button
                         type="button"
                         onClick={onReset}
-                        className="position-absolute top-0 end-0 me-0 border-0"
+                        className="position-absolute top-0 me-0 border-0"
                         outline={false}
                         style={{
                             zIndex: 10,
+                            right: position !== 'left' ? `40px` : 0,
                         }}
                     >
-                        <Icon name="x-circle" />
+                        <Icon name="x-circle" opaque />
+                    </Button>
+                ) : null}
+                {position !== 'left' ? (
+                    <Button
+                        theme={active ? 'primary' : 'secondary'}
+                        type="submit"
+                        onClick={onSubmit}
+                    >
+                        <Icon name="search" bold />
                     </Button>
                 ) : null}
             </div>

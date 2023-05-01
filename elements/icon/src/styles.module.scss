@@ -1,4 +1,8 @@
 .bold {
     -webkit-text-stroke: 1px currentColor;
-    text-stroke: 1px currentColor;
+    // text-stroke: 1px currentColor;
+}
+
+.opaque {
+    background-color: var(--bs-body-bg);
 }

@@ -14,10 +14,13 @@ const defaultProps = {};
 const LoginPage = () => {
     const route = useUrlGenerator();
 
-    // Necessary to update cookies and routes correctly from the backend
+    // Sadly necessary to update cookies and routes correctly from the backend,
+    // make it post directly instead of api call
     const onSuccess = useCallback(() => {
         window.location.href = route('home');
     }, [route]);
+
+    // TODO: add overrides
 
     return (
         <GuestLayout fullscreen>

@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable react/no-unstable-nested-components, react/jsx-props-no-spreading, react/jsx-indent */
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';

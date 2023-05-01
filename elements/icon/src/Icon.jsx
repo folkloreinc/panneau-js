@@ -9,18 +9,21 @@ import 'bootstrap-icons/font/bootstrap-icons.scss';
 const propTypes = {
     name: PropTypes.string.isRequired,
     bold: PropTypes.bool,
+    opaque: PropTypes.bool,
     className: PropTypes.string,
 };
 
 const defaultProps = {
     bold: false,
+    opaque: false,
     className: null,
 };
 
-const Icon = ({ name, bold, className, ...props }) => (
+const Icon = ({ name, bold, opaque, className, ...props }) => (
     <i
         className={classNames([`bi-${name}`], {
             [styles.bold]: bold,
+            [styles.opaque]: opaque,
             [className]: className !== null,
         })}
         {...props}

@@ -4,8 +4,8 @@ import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { useButtonsComponents } from '@panneau/core/contexts';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useButtonsComponents } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 
 import styles from './styles.module.scss';

@@ -107,7 +107,8 @@ const SelectElement = ({
                     container: () => ({ ...(autoSize ? { minWidth } : null), maxWidth: '100%' }),
                     menuPortal: (base) => ({ ...base, zIndex: 10 }),
                     placeholder: (base) => ({ ...base, whiteSpace: 'nowrap' }),
-                    option: (base) => ({ ...base, color: '#343434' }),
+                    // TODO: fix dark or themed mode
+                    // option: (base) => ({ ...base, color: '#343434' }),
                 }}
                 value={optionValue || null}
                 options={finalOptions}

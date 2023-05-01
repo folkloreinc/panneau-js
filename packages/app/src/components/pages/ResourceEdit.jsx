@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { useParams } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { ResourceProvider } from '@panneau/core/contexts';
+import { ResourceProvider, usePagesComponentsManager } from '@panneau/core/contexts';
 import { useResourceItem } from '@panneau/data';
 import { useResourceValues } from '@panneau/intl';
 
@@ -21,10 +21,15 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceEditPage = ({ resource }) => {
+    const { name } = resource;
     const { id: itemId } = useParams();
     const { item } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
     const [editItem, setEditItem] = useState(item);
+
+    const pagesComponentsManager = usePagesComponentsManager();
+    const CustomPage = pagesComponentsManager.getComponent(`${name}Edit`);
+
     const onSuccess = useCallback((newItem) => setEditItem(newItem), []);
 
     useEffect(() => {
@@ -36,30 +41,41 @@ const ResourceEditPage = ({ resource }) => {
     return (
         <ResourceProvider resource={resource}>
             <MainLayout>
-                <PageHeader
-                    title={
-                        <FormattedMessage
-                            values={resourceValues}
-                            defaultMessage="Edit {a_singular}"
-                            description="Page title"
-                        />
-                    }
-                    small
-                />
-                <div className="container-sm py-4">
-                    <div className="row justify-content-center">
-                        <div className="col-12 col-md-8 col-lg-7">
-                            {editItem !== null ? (
-                                <ResourceForm
-                                    resource={resource}
-                                    item={editItem}
-                                    type={type}
-                                    onSuccess={onSuccess}
+                {CustomPage !== null ? (
+                    <CustomPage
+                        resource={resource}
+                        item={editItem}
+                        type={type}
+                        onSuccess={onSuccess}
+                    />
+                ) : (
+                    <>
+                        <PageHeader
+                            title={
+                                <FormattedMessage
+                                    values={resourceValues}
+                                    defaultMessage="Edit {a_singular}"
+                                    description="Page title"
                                 />
-                            ) : null}
+                            }
+                            small
+                        />
+                        <div className="container-sm py-4">
+                            <div className="row justify-content-center">
+                                <div className="col-12 col-md-8 col-lg-7">
+                                    {editItem !== null ? (
+                                        <ResourceForm
+                                            resource={resource}
+                                            item={editItem}
+                                            type={type}
+                                            onSuccess={onSuccess}
+                                        />
+                                    ) : null}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </>
+                )}
             </MainLayout>
         </ResourceProvider>
     );

@@ -8,3 +8,7 @@ export default {
 };
 
 export const Normal = () => <Icon name="caret-down" />;
+
+export const Bold = () => <Icon name="caret-down" bold />;
+
+export const Opaque = () => <Icon name="caret-down" opaque />;
