@@ -282,7 +282,7 @@ const ItemField = ({
                     ])}
                     disabled={disabled}
                     isAsync={requestUrl !== null}
-                    defaultOptions={requestUrl !== null && autoload}
+                    defaultOptions={requestUrl !== null && (autoload || value === null)}
                     name={name}
                     value={value}
                     options={options}
