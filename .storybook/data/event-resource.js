@@ -19,6 +19,14 @@ export default {
     fields: [
         { name: 'organizer', label: 'Organisateur', type: 'text', component: 'text' },
         {
+            name: 'page',
+            label: 'Page',
+            type: 'item',
+            component: 'item',
+            requestUrl: '/pages',
+            requestQuery: { paginated: false },
+        },
+        {
             name: 'email',
             label: 'Email',
             type: 'email',

@@ -42,7 +42,7 @@ const Container = (props) => {
 export const Normal = () => <Container items={items} />;
 
 export const WithRequestUrl = () => (
-    <Container requestUrl="/events" requestQuery={null} itemLabelPath="title" autoload />
+    <Container requestUrl="/events/" requestQuery={null} itemLabelPath="title" autoload />
 );
 
 export const Disabled = () => <Container items={items} disabled />;

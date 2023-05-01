@@ -58,7 +58,7 @@ module.exports = () => {
         if (query === null || Object.keys(query).length === 0) {
             return items;
         }
-        const { source, ...queryWithoutSource } = query;
+        const { source, search = null, ...queryWithoutSource } = query;
         return _.values(_.filter(items, _.matches(queryWithoutSource)));
     };
 
@@ -149,10 +149,12 @@ module.exports = () => {
             sort = 'id',
             sort_direction: sortDirection = 'asc',
             paginate = true,
+            paginated = true,
             ...query
         } = req.query;
         const items = getResourceItems(resource);
         const filteredItems = sortItems(filterItems(items, query), sort, sortDirection);
+
         if (page !== null) {
             res.json(
                 getItemsPage(
@@ -163,7 +165,7 @@ module.exports = () => {
             );
         } else {
             res.json(
-                count !== null && paginate === false
+                count !== null && (paginate === false || paginated === false)
                     ? filteredItems.slice(0, count - 1)
                     : filteredItems,
             );

@@ -278,6 +278,10 @@
     "defaultMessage": "Edit {a_singular}",
     "description": "Page title"
   },
+  "oc3YLT": {
+    "defaultMessage": "Choose an item",
+    "description": "Default placeholder"
+  },
   "owrRHV": {
     "defaultMessage": "Error 500",
     "description": "Error page title"

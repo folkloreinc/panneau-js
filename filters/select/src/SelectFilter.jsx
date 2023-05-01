@@ -52,6 +52,7 @@ const SelectFilter = ({
 }) => {
     const api = useApi();
     const [options, setOptions] = useState(initialOptions || []);
+
     useEffect(() => {
         setOptions(initialOptions);
     }, [initialOptions, setOptions]);

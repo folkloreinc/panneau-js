@@ -1,7 +1,7 @@
 {
     "id": "1",
     "type": "event",
-    "title": "Un événement",
+    "title": "1 événement",
     "email": "1@email.com",
     "blocks": [
         {

@@ -3,8 +3,8 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useIntl } from 'react-intl';
+import React, { useCallback, useRef, useState } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getPathValue, isMessage } from '@panneau/core/utils';
@@ -98,8 +98,7 @@ const ItemField = ({
 }) => {
     const intl = useIntl();
     const api = useApi();
-    // const [inputValue, setInputValue] = useState('');
-    // const [showSuggestions, setShowSuggestions] = useState(false);
+    const [inputTextValue, setInputTextValue] = useState('');
     const [items, setItems] = useState(initialItems || []);
     const lastRequest = useRef(null);
 
@@ -140,16 +139,19 @@ const ItemField = ({
                     }
                 });
             } else if (requestUrl !== null) {
-                const requestValue = request !== null ? request.value || null : null;
+                const requestValue =
+                    request !== null ? request.value || inputTextValue : inputTextValue;
+
                 const currentRequest = api.requestGet(
                     requestUrl,
                     {
+                        paginated: false,
                         ...requestQuery,
                         ...(requestValue !== null
                             ? { [requestSearchParamName]: requestValue }
                             : null),
                     },
-                    requestOptions,
+                    requestOptions, // this is useless
                 );
                 lastRequest.current = currentRequest;
                 currentRequest.then((newItems) => {
@@ -170,6 +172,7 @@ const ItemField = ({
             loadItems,
             initialItems,
             maxItemsCount,
+            inputTextValue,
             requestUrl,
             requestQuery,
             requestOptions,
@@ -177,50 +180,36 @@ const ItemField = ({
         ],
     );
 
-    // const onSuggestionsClearRequested = useCallback(() => {
-    //     setItems([]);
-    // }, [setItems]);
-
-    // const onInputChange = useCallback(
-    //     (e, { newValue }) => {
-    //         setInputValue(newValue);
-    //     },
-    //     [setInputValue],
-    // );
-
     const onClickRemove = useCallback(() => {
-        //  setInputValue('');
-
         if (onChange !== null) {
             onChange(null);
         }
     }, [onChange]);
 
-    const onFieldFocus = useCallback(() => {}, []);
+    // const onFieldFocus = useCallback(() => {
+    //     // getOptions();
+    // }, [getOptions]);
+
+    const onInputChange = useCallback((textValue) => {
+        setInputTextValue(textValue);
+    }, []);
 
     // const renderSectionTitle = useCallback(
     //     (section) => <h6 className="dropdown-header">{section.title}</h6>,
     //     [],
     // );
 
-    // const inputProps = {
-    //     placeholder: isMessage(placeholder) ? intl.formatMessage(placeholder) : placeholder,
-    //     value: inputValue || '',
-    //     name,
-    //     type: 'search',
-    //     onChange: onInputChange,
-    // };
-
     const itemLabel = value !== null ? getItemLabel(value, itemLabelPath) : null;
     const itemDescription = value !== null ? getItemDescription(value, itemDescriptionPath) : null;
     const itemImage = value !== null ? getItemImage(value, itemImagePath) : null;
-    const hasItems = items !== null && items.length > 0;
 
-    useEffect(() => {
-        if (!hasItems && autoload) {
-            // onSuggestionsFetchRequested();
-        }
-    }, [hasItems, autoload]);
+    // const hasItems = items !== null && items.length > 0;
+
+    // useEffect(() => {
+    //     if (!hasItems && autoload) {
+    //         // onSuggestionsFetchRequested();
+    //     }
+    // }, [hasItems, autoload]);
 
     const onValueChange = useCallback(
         (newId) => {
@@ -270,7 +259,7 @@ const ItemField = ({
                                     size="sm"
                                     theme="secondary"
                                     icon="x-lg"
-                                    outline
+                                    outline={disabled}
                                     onClick={onClickRemove}
                                     disabled={disabled}
                                 />
@@ -280,15 +269,39 @@ const ItemField = ({
                 </div>
             ) : (
                 <Select
+                    className={classNames([
+                        'form-control',
+                        'p-0',
+                        'shadow-none',
+                        {
+                            [disabled]: disabled,
+                            'is-invalid': errors !== null,
+                            [`form-control-${size}`]: size !== null,
+                            [inputClassName]: inputClassName !== null,
+                        },
+                    ])}
+                    disabled={disabled}
                     isAsync={requestUrl !== null}
+                    defaultOptions={requestUrl !== null && autoload}
+                    name={name}
                     value={value}
                     options={options}
                     isClearable
                     isSearchable
+                    placeholder={
+                        isMessage(placeholder) ? (
+                            intl.formatMessage(placeholder)
+                        ) : (
+                            <FormattedMessage
+                                defaultMessage="Choose an item"
+                                description="Default placeholder"
+                            />
+                        )
+                    }
                     onChange={onValueChange}
-                    onFocus={onFieldFocus}
+                    // onFocus={onFieldFocus}
+                    onInputChange={onInputChange}
                     loadOptions={(inputValue, callback) => {
-                        // console.log('haha', inputValue);
                         setTimeout(() => {
                             getOptions(inputValue, (newItems) =>
                                 callback(

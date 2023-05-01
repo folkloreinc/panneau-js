@@ -432,6 +432,12 @@ msgctxt "mCfzkJ"
 msgid "Edit {a_singular}"
 msgstr "Modifier {a_singular}"
 
+# Default placeholder
+#: oc3YLT
+msgctxt "oc3YLT"
+msgid "Choose an item"
+msgstr "Choisissez un item"
+
 # Error page title
 #: owrRHV
 msgctxt "owrRHV"
