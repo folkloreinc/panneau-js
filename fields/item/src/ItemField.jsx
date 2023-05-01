@@ -98,6 +98,7 @@ const ItemField = ({
 }) => {
     const intl = useIntl();
     const api = useApi();
+    const [initialValue] = useState(value);
     const [inputTextValue, setInputTextValue] = useState('');
     const [items, setItems] = useState(initialItems || []);
     const lastRequest = useRef(null);
@@ -210,6 +211,20 @@ const ItemField = ({
     //         // onSuggestionsFetchRequested();
     //     }
     // }, [hasItems, autoload]);
+    const timeoutRef = useRef(null);
+    const loadOptions = useCallback(
+        (inputValue, callback) => {
+            if (timeoutRef.current !== null) {
+                clearTimeout(timeoutRef.current);
+            }
+            timeoutRef.current = setTimeout(() => {
+                getOptions(inputValue, (newItems) =>
+                    callback(newItems !== null ? newItems.map((i) => parseItem(i)) : []),
+                );
+            }, 300);
+        },
+        [getOptions],
+    );
 
     const onValueChange = useCallback(
         (newId) => {
@@ -282,7 +297,7 @@ const ItemField = ({
                     ])}
                     disabled={disabled}
                     isAsync={requestUrl !== null}
-                    defaultOptions={requestUrl !== null && (autoload || value === null)}
+                    defaultOptions={requestUrl !== null && (autoload || initialValue === null)}
                     name={name}
                     value={value}
                     options={options}
@@ -299,17 +314,9 @@ const ItemField = ({
                         )
                     }
                     onChange={onValueChange}
-                    // onFocus={onFieldFocus}
                     onInputChange={onInputChange}
-                    loadOptions={(inputValue, callback) => {
-                        setTimeout(() => {
-                            getOptions(inputValue, (newItems) =>
-                                callback(
-                                    newItems !== null ? newItems.map((i) => parseItem(i)) : [],
-                                ),
-                            );
-                        }, 500);
-                    }}
+                    loadOptions={loadOptions}
+                    // onFocus={onFieldFocus}
                 />
             )}
         </div>
