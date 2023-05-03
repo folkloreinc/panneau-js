@@ -13,15 +13,11 @@ const defaultProps = {};
 
 const LoginPage = () => {
     const route = useUrlGenerator();
-
     // Sadly necessary to update cookies and routes correctly from the backend,
     // make it post directly instead of api call
     const onSuccess = useCallback(() => {
         window.location.href = route('home');
     }, [route]);
-
-    // TODO: add overrides
-
     return (
         <GuestLayout fullscreen>
             <div className="container-sm py-4">

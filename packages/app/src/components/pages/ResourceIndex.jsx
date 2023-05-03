@@ -10,11 +10,7 @@ import { FormattedMessage } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import {
-    ResourceProvider,
-    useComponentsManager,
-    usePagesComponentsManager,
-} from '@panneau/core/contexts';
+import { ResourceProvider, useComponentsManager } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Alert from '@panneau/element-alert';
 import Button from '@panneau/element-button';
@@ -61,10 +57,6 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
     const query = useMemo(() => queryString.parse(search), [search]);
     const listQuery = useMemo(() => query, [query]); // TODO: omit routes
     const { created = false, deleted = false } = query || {};
-
-    const pagesComponentsManager = usePagesComponentsManager();
-    const CustomPage = pagesComponentsManager.getComponent(`${name}Index`);
-    const PageComponent = CustomPage !== null ? CustomPage : ResourceItemsList;
 
     const resourceRoute = useResourceUrlGenerator(resource);
     const url = resourceRoute('index');
@@ -158,7 +150,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                             />
                         </Alert>
                     ) : null}
-                    <PageComponent
+                    <ResourceItemsList
                         resource={resource}
                         baseUrl={url}
                         query={listQuery}
