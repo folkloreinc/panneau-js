@@ -1,6 +1,6 @@
 {
     "name": "@panneau/forms",
-    "version": "2.0.51",
+    "version": "2.0.52",
     "description": "",
     "keywords": [
         "javascript"
@@ -66,8 +66,8 @@
         "@panneau/form-auth": "^2.0.51",
         "@panneau/form-horizontal": "^2.0.51",
         "@panneau/form-inline": "^2.0.51",
-        "@panneau/form-normal": "^2.0.51",
-        "@panneau/form-two-pane": "^2.0.51",
+        "@panneau/form-normal": "^2.0.52",
+        "@panneau/form-two-pane": "^2.0.52",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
