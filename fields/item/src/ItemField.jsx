@@ -285,7 +285,7 @@ const ItemField = ({
                     <div className="col-auto flex-grow-1">
                         <Select
                             className={classNames([
-                                'p-0',
+                                'py-1',
                                 'shadow-none',
                                 {
                                     [disabled]: disabled,

@@ -122,7 +122,7 @@ const LocalizedField = ({
                 </>
             }
             helpText={helpText}
-            className={classNames(['mb-2', className])}
+            className={classNames(['mb-3', className])}
             errors={errors}
             labelClassName="d-flex align-items-center"
         >
