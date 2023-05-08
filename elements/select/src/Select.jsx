@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
+import { FormattedMessage } from 'react-intl';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 
@@ -17,8 +18,8 @@ const propTypes = {
     multiple: PropTypes.bool,
     searchable: PropTypes.bool,
     withoutReset: PropTypes.bool,
-    noOptionsMessage: PropTypes.string,
-    placeholder: PropTypes.string,
+    noOptionsMessage: PanneauPropTypes.label,
+    placeholder: PanneauPropTypes.label,
     autoSize: PropTypes.bool,
     className: PropTypes.string,
     selectClassName: PropTypes.string,
@@ -33,8 +34,8 @@ const defaultProps = {
     multiple: false,
     searchable: true,
     withoutReset: false,
-    noOptionsMessage: 'No results.',
-    placeholder: 'Select...',
+    noOptionsMessage: <FormattedMessage defaultMessage="No result" description="Default label" />,
+    placeholder: <FormattedMessage defaultMessage="Choose an option" description="Default label" />,
     autoSize: false,
     className: null,
     selectClassName: null,

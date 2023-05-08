@@ -85,6 +85,12 @@ msgctxt "6Ie+vL"
 msgid "Error 404"
 msgstr "Erreur 404"
 
+# Default label
+#: 6TuTuq
+msgctxt "6TuTuq"
+msgid "Choose an option"
+msgstr "Choisissez une option"
+
 # Error page title
 #: 6nwWPR
 msgctxt "6nwWPR"
@@ -432,6 +438,12 @@ msgctxt "mCfzkJ"
 msgid "Edit {a_singular}"
 msgstr "Modifier {a_singular}"
 
+# Default upload add button label
+#: oTrX3h
+msgctxt "oTrX3h"
+msgid "Search media"
+msgstr "Chercher un média"
+
 # Default placeholder
 #: oc3YLT
 msgctxt "oc3YLT"
@@ -449,6 +461,12 @@ msgstr "Erreur 500"
 msgctxt "pVHYDd"
 msgid "Enable two factor authentication"
 msgstr "Activer l'authentification à deux facteurs"
+
+# Default label
+#: pZytAx
+msgctxt "pZytAx"
+msgid "No result"
+msgstr "Aucun résultat"
 
 # Boolean value
 #: rSt+KL

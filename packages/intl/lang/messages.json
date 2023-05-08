@@ -47,6 +47,10 @@
     "defaultMessage": "Error 404",
     "description": "Error page title"
   },
+  "6TuTuq": {
+    "defaultMessage": "Choose an option",
+    "description": "Default label"
+  },
   "6nwWPR": {
     "defaultMessage": "Error 401",
     "description": "Error page title"
@@ -278,6 +282,10 @@
     "defaultMessage": "Edit {a_singular}",
     "description": "Page title"
   },
+  "oTrX3h": {
+    "defaultMessage": "Search media",
+    "description": "Default upload add button label"
+  },
   "oc3YLT": {
     "defaultMessage": "Choose an item",
     "description": "Default placeholder"
@@ -289,6 +297,10 @@
   "pVHYDd": {
     "defaultMessage": "Enable two factor authentication",
     "description": "Button label"
+  },
+  "pZytAx": {
+    "defaultMessage": "No result",
+    "description": "Default label"
   },
   "rSt+KL": {
     "defaultMessage": "No",

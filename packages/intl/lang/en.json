@@ -35,6 +35,9 @@
     "6Ie+vL": {
         "defaultMessage": "Error 404"
     },
+    "6TuTuq": {
+        "defaultMessage": "Choose an option"
+    },
     "6nwWPR": {
         "defaultMessage": "Error 401"
     },
@@ -209,6 +212,9 @@
     "mCfzkJ": {
         "defaultMessage": "Edit {a_singular}"
     },
+    "oTrX3h": {
+        "defaultMessage": "Search media"
+    },
     "oc3YLT": {
         "defaultMessage": "Choose an item"
     },
@@ -217,6 +223,9 @@
     },
     "pVHYDd": {
         "defaultMessage": "Enable two factor authentication"
+    },
+    "pZytAx": {
+        "defaultMessage": "No result"
     },
     "rSt+KL": {
         "defaultMessage": "No"
