@@ -63,7 +63,7 @@ class Base {
     }
 
     requestDelete(path) {
-        return this.requestPost(path, {
+        return this.requestPost(this.getFullUrl(path), {
             _method: 'DELETE',
         }).catch((error) => this.onError(error));
     }
@@ -78,7 +78,10 @@ class Base {
 
     getFullUrl(path) {
         const { baseUrl = null } = this.options;
-        return baseUrl !== null ? `${baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}` : path;
+        const hasProtocol = path.indexOf('://') !== -1;
+        return baseUrl !== null && !hasProtocol
+            ? `${baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}`
+            : path;
     }
 
     onError(err) {

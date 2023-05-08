@@ -146,7 +146,6 @@ const ItemField = ({
             } else if (requestUrl !== null) {
                 const requestValue =
                     request !== null ? request.value || inputTextValue : inputTextValue;
-
                 const currentRequest = api.requestGet(
                     requestUrl,
                     {
