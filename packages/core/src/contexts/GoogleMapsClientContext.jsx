@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { loadGoogleMaps } from '@folklore/services';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { useGoogleKeys } from './GoogleKeysContext';
 

@@ -23,6 +23,8 @@ export default {
             label: 'Page',
             type: 'item',
             component: 'item',
+            itemLabelPath: 'title.fr',
+            itemLabelWithId: true,
             requestUrl: '/pages',
             requestQuery: { paginated: false },
         },

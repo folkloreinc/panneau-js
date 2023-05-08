@@ -27,15 +27,11 @@ export default {
                 index: 'text',
             },
         },
+        { name: 'event', label: 'Event', type: 'event', component: 'item' },
     ],
 
-    components: {
-        'pages.index': {
-            component: 'cards',
-        },
-    },
-
     index: {
+        component: 'cards',
         columns: ['name', 'email', 'id'],
         filters: [
             {

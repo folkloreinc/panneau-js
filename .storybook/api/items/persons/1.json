@@ -1,7 +1,7 @@
 {
     "id": "1",
     "type": "person",
-    "title": "Une personne",
+    "title": "Une personne #1 avec un long titre",
     "email": "1@email.com",
-    "url": "/url/chose"
+    "url": "/url/chose/1"
 }

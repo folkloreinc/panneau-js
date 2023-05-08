@@ -38,7 +38,9 @@ const propTypes = {
         PropTypes.oneOf(['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive']),
     ),
     withButton: PropTypes.bool,
+    withSearchModal: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.label,
+    searchButtonLabel: PanneauPropTypes.label,
     allowMultipleUploads: PropTypes.bool,
     namePath: PropTypes.string,
     thumbnailPath: PropTypes.string,
@@ -56,8 +58,15 @@ const defaultProps = {
     fileTypes: null,
     sources: ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'],
     withButton: false,
+    withSearchModal: false,
     addButtonLabel: (
         <FormattedMessage defaultMessage="Add file" description="Default upload add button label" />
+    ),
+    searchButtonLabel: (
+        <FormattedMessage
+            defaultMessage="Search media"
+            description="Default upload add button label"
+        />
     ),
     allowMultipleUploads: false,
     namePath: null,
@@ -76,7 +85,9 @@ const UploadField = ({
     fileTypes,
     sources,
     withButton,
+    withSearchModal,
     addButtonLabel,
+    searchButtonLabel,
     allowMultipleUploads,
     namePath,
     thumbnailPath,
@@ -90,6 +101,13 @@ const UploadField = ({
     const { ref: containerRef, entry = null } = useResizeObserver();
     const { contentRect } = entry || {};
     const { width: containerWidth = null } = contentRect || {};
+
+    const [mediaModalOpen, setMediaModalOpen] = useState(false);
+    const showMediaModal = withSearchModal && mediaModalOpen;
+
+    const toggleSearchModal = useCallback(() => {
+        setMediaModalOpen(!mediaModalOpen);
+    }, [mediaModalOpen, setMediaModalOpen]);
 
     const onComplete = useCallback(
         (response) => {
@@ -169,6 +187,7 @@ const UploadField = ({
         }
         return value !== null ? [value] : null;
     }, [value]);
+
     const hasMedia = values !== null && values.length > 0;
 
     return (
@@ -302,11 +321,32 @@ const UploadField = ({
                 : null}
 
             {!hasMedia && withButton ? (
-                <Button type="button" theme="primary" onClick={openModal} disabled={disabled}>
-                    <Label>{addButtonLabel}</Label>
-                </Button>
+                <div className="row">
+                    <div className="col-auto">
+                        <Button
+                            type="button"
+                            theme="primary"
+                            onClick={openModal}
+                            disabled={disabled}
+                        >
+                            <Label>{addButtonLabel}</Label>
+                        </Button>
+                    </div>
+                    {withSearchModal ? (
+                        <div className="col-auto ps-0">
+                            <Button
+                                type="button"
+                                theme="primary"
+                                onClick={toggleSearchModal}
+                                disabled={disabled}
+                            >
+                                <Label>{searchButtonLabel}</Label>
+                            </Button>
+                        </div>
+                    ) : null}
+                </div>
             ) : null}
-            {!disabled && !hasMedia && !withButton && uppy !== null ? (
+            {!showMediaModal && !disabled && !hasMedia && !withButton && uppy !== null ? (
                 <Dashboard
                     uppy={uppy}
                     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -320,7 +360,7 @@ const UploadField = ({
                     proudlyDisplayPoweredByUppy={false}
                 />
             ) : null}
-            {!disabled && withButton && uppy !== null ? (
+            {!showMediaModal && !disabled && withButton && uppy !== null ? (
                 <DashboardModal
                     uppy={uppy}
                     plugins={sources}
@@ -329,6 +369,7 @@ const UploadField = ({
                     closeModalOnClickOutside
                 />
             ) : null}
+            {showMediaModal ? 'Hello' : null}
         </div>
     );
 };

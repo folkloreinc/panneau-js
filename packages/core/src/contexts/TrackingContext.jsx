@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext, useMemo } from 'react';
-import PropTypes from 'prop-types';
 import { TrackingContainer, TrackingContext } from '@folklore/tracking';
+import PropTypes from 'prop-types';
+import React, { useContext, useMemo } from 'react';
 
-import { Tracking, PropTypes as PanneauPropTypes } from '../lib';
+import { PropTypes as PanneauPropTypes, Tracking } from '../lib';
 
 export { TrackingContext };
 

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { v1 as uuid } from 'uuid';
+
 import useUppyCore from '../hooks/useUppyCore';
 import useUppyLocale from '../hooks/useUppyLocale';
 import useUppySources from '../hooks/useUppySources';

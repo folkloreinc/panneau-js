@@ -98,14 +98,18 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
 
     // If there is an error status code
     if (statusCode !== null) {
-        return <ErrorComponent statusCode={statusCode} />;
+        return <ErrorComponent statusCode={statusCode} {...errorPage} />;
     }
 
     // If user is unauthenticated
     if (user === null) {
         return (
             <Routes>
-                <Route path={routes['auth.login']} exact element={<LoginComponent />} />
+                <Route
+                    path={routes['auth.login']}
+                    exact
+                    element={<LoginComponent {...loginPage} />}
+                />
                 <Route
                     path="*"
                     element={
@@ -122,7 +126,7 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     // Normal routes
     return (
         <Routes>
-            <Route path={routes.home} exact element={<HomeComponent />} />
+            <Route path={routes.home} exact element={<HomeComponent {...homePage} />} />
             {user !== null ? (
                 <Route
                     path={routes['auth.login']}
@@ -138,7 +142,7 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
                     </Fragment>
                 );
             })}
-            <Route path={routes.account} exact element={<AccountComponent />} />
+            <Route path={routes.account} exact element={<AccountComponent {...accountPage} />} />
             {customRoutes.map(
                 ({ path = null, route: pageRoute = null, component, exact = true, ...props }) => {
                     const PageComponent = componentsManager.getComponent(component);

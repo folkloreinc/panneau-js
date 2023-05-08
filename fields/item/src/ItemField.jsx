@@ -36,6 +36,7 @@ const propTypes = {
     itemLabelWithId: PropTypes.bool,
     size: PropTypes.oneOf(['sm', 'lg']),
     placeholder: PropTypes.string,
+    canCreate: PropTypes.bool,
     autoload: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
@@ -48,7 +49,7 @@ const defaultProps = {
     value: null,
     errors: null,
     items: null,
-    maxItemsCount: 5,
+    maxItemsCount: null,
     loadItems: null,
     requestUrl: null,
     requestOptions: null,
@@ -63,6 +64,7 @@ const defaultProps = {
     itemLabelWithId: false,
     size: null,
     placeholder: null,
+    canCreate: false,
     autoload: false,
     disabled: false,
     className: null,
@@ -90,6 +92,7 @@ const ItemField = ({
     itemDescriptionPath,
     itemImagePath,
     itemLabelWithId,
+    canCreate,
     autoload,
     disabled,
     className,
@@ -98,19 +101,19 @@ const ItemField = ({
 }) => {
     const intl = useIntl();
     const api = useApi();
-    const [initialValue] = useState(value);
+    // const [initialValue] = useState(value);
     const [inputTextValue, setInputTextValue] = useState('');
     const [items, setItems] = useState(initialItems || []);
     const lastRequest = useRef(null);
 
     const getItemLabel = useCallback(
         (it, path) => {
+            const id = get(it, 'id', null);
             if (itemLabelWithId) {
                 const label = initialGetItemLabel(it, path);
-                const id = get(it, 'id', null);
                 return label ? `${label} (#${id})` : `#${id}`;
             }
-            return initialGetItemLabel(it, path);
+            return path !== null ? initialGetItemLabel(it, path) : `#${id}`;
         },
         [initialGetItemLabel, itemLabelWithId],
     );
@@ -120,6 +123,7 @@ const ItemField = ({
             const label = getItemLabel(it, itemLabelPath);
             const description = getItemDescription(it, itemDescriptionPath);
             const finalLabel = description !== null ? `${label}: ${description}` : label;
+
             return {
                 value: it.id,
                 label: finalLabel,
@@ -187,30 +191,13 @@ const ItemField = ({
         }
     }, [onChange]);
 
-    // const onFieldFocus = useCallback(() => {
-    //     // getOptions();
-    // }, [getOptions]);
-
     const onInputChange = useCallback((textValue) => {
         setInputTextValue(textValue);
     }, []);
 
-    // const renderSectionTitle = useCallback(
-    //     (section) => <h6 className="dropdown-header">{section.title}</h6>,
-    //     [],
-    // );
-
     const itemLabel = value !== null ? getItemLabel(value, itemLabelPath) : null;
     const itemDescription = value !== null ? getItemDescription(value, itemDescriptionPath) : null;
     const itemImage = value !== null ? getItemImage(value, itemImagePath) : null;
-
-    // const hasItems = items !== null && items.length > 0;
-
-    // useEffect(() => {
-    //     if (!hasItems && autoload) {
-    //         // onSuggestionsFetchRequested();
-    //     }
-    // }, [hasItems, autoload]);
 
     const timeoutRef = useRef(null);
     const loadOptions = useCallback(
@@ -241,6 +228,17 @@ const ItemField = ({
     );
 
     const options = items.map((it) => parseItem(it));
+
+    const isRow = canCreate === true;
+
+    // const renderSectionTitle = useCallback(
+    //     (section) => <h6 className="dropdown-header">{section.title}</h6>,
+    //     [],
+    // );
+
+    // const onFieldFocus = useCallback(() => {
+    //     // getOptions();
+    // }, [getOptions]);
 
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
@@ -284,41 +282,50 @@ const ItemField = ({
                     </div>
                 </div>
             ) : (
-                <Select
-                    className={classNames([
-                        'form-control',
-                        'p-0',
-                        'shadow-none',
-                        {
-                            [disabled]: disabled,
-                            'is-invalid': errors !== null,
-                            [`form-control-${size}`]: size !== null,
-                            [inputClassName]: inputClassName !== null,
-                        },
-                    ])}
-                    disabled={disabled}
-                    isAsync={requestUrl !== null}
-                    defaultOptions={requestUrl !== null && (autoload || value === null)}
-                    name={name}
-                    value={value}
-                    options={options}
-                    isClearable
-                    isSearchable
-                    placeholder={
-                        isMessage(placeholder) ? (
-                            intl.formatMessage(placeholder)
-                        ) : (
-                            <FormattedMessage
-                                defaultMessage="Choose an item"
-                                description="Default placeholder"
-                            />
-                        )
-                    }
-                    onChange={onValueChange}
-                    onInputChange={onInputChange}
-                    loadOptions={loadOptions}
-                    // onFocus={onFieldFocus}
-                />
+                <div className={classNames([{ row: isRow, 'align-items-center': isRow }])}>
+                    <div className="col-auto flex-grow-1">
+                        <Select
+                            className={classNames([
+                                'p-0',
+                                'shadow-none',
+                                {
+                                    [disabled]: disabled,
+                                    'is-invalid': errors !== null,
+                                    [`form-control`]: size !== null,
+                                    [`form-control-${size}`]: size !== null,
+                                    [inputClassName]: inputClassName !== null,
+                                },
+                            ])}
+                            disabled={disabled}
+                            isAsync={requestUrl !== null}
+                            defaultOptions={requestUrl !== null && (autoload || value === null)}
+                            name={name}
+                            value={value}
+                            options={options}
+                            isClearable
+                            isSearchable
+                            placeholder={
+                                isMessage(placeholder) ? (
+                                    intl.formatMessage(placeholder)
+                                ) : (
+                                    <FormattedMessage
+                                        defaultMessage="Choose an item"
+                                        description="Default placeholder"
+                                    />
+                                )
+                            }
+                            onChange={onValueChange}
+                            onInputChange={onInputChange}
+                            loadOptions={loadOptions}
+                            // onFocus={onFieldFocus}
+                        />
+                    </div>
+                    {canCreate ? (
+                        <div className="col-auto">
+                            <Button theme="primary" icon="plus-lg" />
+                        </div>
+                    ) : null}
+                </div>
             )}
         </div>
     );

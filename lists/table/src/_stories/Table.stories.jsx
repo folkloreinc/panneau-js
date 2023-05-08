@@ -36,8 +36,13 @@ const items = [
     { id: '1', title: { fr: 'Paul1', en: 'Paul1' }, description: 'Paul1' },
     { id: '2', title: { fr: 'Paul2', en: 'Paul2' }, description: 'Paul2' },
     { id: '3', title: { fr: 'Paul3', en: 'Paul3' }, description: 'Paul3' },
-    { id: '4', title: { fr: 'Paul4', en: 'Paul4' }, description: 'Paul4' },
-    { id: '5', title: { fr: 'Paul5', en: 'Paul5' }, description: 'Paul5' },
+    { id: '4', title: { fr: 'Paul4', en: 'Paul4' }, description: 'Paul4', rowDisabled: true },
+    {
+        id: '5',
+        title: { fr: 'Paul5', en: 'Paul5' },
+        description: 'Paul5',
+        rowClassName: 'table-info',
+    },
 ];
 
 export const Normal = () => (

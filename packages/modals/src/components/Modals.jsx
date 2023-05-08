@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
-import React, { useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef } from 'react';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { withModals } from '@panneau/core/contexts';
@@ -20,6 +20,7 @@ const defaultProps = {
 
 const ModalsContainer = ({ modals, setModalsContainer, className }) => {
     const containerRef = useRef(null);
+
     useEffect(() => {
         setModalsContainer(containerRef.current);
     }, []);

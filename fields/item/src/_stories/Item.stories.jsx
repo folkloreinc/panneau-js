@@ -25,7 +25,7 @@ const Container = (props) => {
     const [value, setValue] = useState(defaultValue);
     const onChange = useCallback(
         (newValue) => {
-            console.log('newValue', newValue);
+            // console.log('newValue', newValue);
             setValue(newValue);
         },
         [setValue],
@@ -48,3 +48,7 @@ export const WithRequestUrl = () => (
 export const Disabled = () => <Container items={items} disabled />;
 
 export const DisabledWithValue = () => <Container items={items} value={items[0]} disabled />;
+
+export const CanCreate = () => (
+    <Container canCreate requestUrl="/pages/" requestQuery={null} itemLabelPath="title" />
+);

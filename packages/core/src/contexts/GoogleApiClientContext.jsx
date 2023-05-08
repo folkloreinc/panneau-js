@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { loadGoogleApi } from '@folklore/services';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { useGoogleKeys } from './GoogleKeysContext';
 
@@ -9,13 +9,13 @@ export const GoogleApiClientContext = React.createContext(null);
 
 export const useGoogleApiClient = () => useContext(GoogleApiClientContext);
 
-export const withGoogleApiClient = WrappedComponent => {
+export const withGoogleApiClient = (WrappedComponent) => {
     const getDisplayName = ({ displayName = null, name = null }) =>
         displayName || name || 'Component';
 
-    const WithGoogleApiClientComponent = props => (
+    const WithGoogleApiClientComponent = (props) => (
         <GoogleApiClientContext.Consumer>
-            {client => <WrappedComponent googleApiClient={client} {...props} />}
+            {(client) => <WrappedComponent googleApiClient={client} {...props} />}
         </GoogleApiClientContext.Consumer>
     );
     WithGoogleApiClientComponent.displayName = `WithGoogleApiClient(${getDisplayName(
@@ -35,14 +35,14 @@ export const GoogleApiClientProvider = ({ children }) => {
     const [client, setClient] = useState(null);
     useEffect(() => {
         loadGoogleApi()
-            .then(gapi =>
+            .then((gapi) =>
                 gapi.client
                     .init({
                         apiKey,
                     })
                     .then(() => gapi),
             )
-            .then(gapi => setClient(gapi));
+            .then((gapi) => setClient(gapi));
     }, [apiKey, setClient]);
     return (
         <GoogleApiClientContext.Provider value={client}>{children}</GoogleApiClientContext.Provider>

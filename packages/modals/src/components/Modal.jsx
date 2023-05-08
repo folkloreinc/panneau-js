@@ -1,9 +1,10 @@
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
 
 import { getDisplayName } from '@panneau/core/utils';
+
 import ModalPortal from './ModalPortal';
 
 import styles from '../styles/modal.module.scss';

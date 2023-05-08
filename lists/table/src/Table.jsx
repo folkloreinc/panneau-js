@@ -141,9 +141,21 @@ const TableList = ({
                     </thead>
                     <tbody>
                         {items.map((it, rowIdx) => {
-                            const { id = null } = it || {};
+                            const {
+                                id = null,
+                                rowClassName = null,
+                                rowDisabled = false,
+                            } = it || {};
                             return (
-                                <tr key={`row-${id}-${rowIdx + 1}`}>
+                                <tr
+                                    key={`row-${id}-${rowIdx + 1}`}
+                                    className={classNames([
+                                        {
+                                            'table-secondary': rowDisabled,
+                                            [rowClassName]: rowClassName !== null,
+                                        },
+                                    ])}
+                                >
                                     {!withoutId && !hasIdColumn ? (
                                         <td className="col-auto">{id}</td>
                                     ) : null}
@@ -165,7 +177,7 @@ const TableList = ({
                                             );
                                             return (
                                                 <td
-                                                    key={`row-${id}-${colId}-${idx + 1}`}
+                                                    key={`col-${id}-${colId}-${idx + 1}`}
                                                     className={classNames([
                                                         'col-auto',
                                                         {
@@ -210,7 +222,7 @@ const TableList = ({
                                                         [columnClassName]: columnClassName !== null,
                                                     },
                                                 ])}
-                                                key={`row-${id}-${colId}-${idx + 1}`}
+                                                key={`col-${id}-${colId}-${idx + 1}`}
                                             >
                                                 {FieldDisplayComponent !== null ? (
                                                     <FieldDisplayComponent
