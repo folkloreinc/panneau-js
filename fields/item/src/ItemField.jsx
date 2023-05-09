@@ -1,6 +1,7 @@
 /* eslint-disable no-shadow, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useCallback, useRef, useState } from 'react';
@@ -38,6 +39,7 @@ const propTypes = {
     placeholder: PropTypes.string,
     canCreate: PropTypes.bool,
     autoload: PropTypes.bool,
+    multiple: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
     inputClassName: PropTypes.string,
@@ -66,6 +68,7 @@ const defaultProps = {
     placeholder: null,
     canCreate: false,
     autoload: false,
+    multiple: false,
     disabled: false,
     className: null,
     inputClassName: null,
@@ -94,6 +97,7 @@ const ItemField = ({
     itemLabelWithId,
     canCreate,
     autoload,
+    multiple,
     disabled,
     className,
     inputClassName,
@@ -216,18 +220,23 @@ const ItemField = ({
     const onValueChange = useCallback(
         (newId) => {
             if (onChange === null) return;
-            const newValue = items.filter(({ id = null }) => id === newId) || [];
-            if (newValue !== null && newValue.length > 0) {
-                onChange(newValue[0]);
+            if (multiple) {
+                const newValue = items.filter(({ id = null }) => newId.indexOf(id) !== -1) || [];
+                onChange(newValue);
             } else {
-                onChange(null);
+                const newValue = items.filter(({ id = null }) => id === newId) || [];
+                if (newValue !== null && newValue.length > 0) {
+                    onChange(newValue[0]);
+                } else {
+                    onChange(null);
+                }
             }
         },
-        [items, onChange],
+        [items, onChange, multiple],
     );
 
     const options = items.map((it) => parseItem(it));
-
+    const finalValue = multiple && isArray(value) ? value.map((it) => parseItem(it)) : value;
     const isRow = canCreate === true;
 
     // const renderSectionTitle = useCallback(
@@ -241,7 +250,7 @@ const ItemField = ({
 
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
-            {value !== null ? (
+            {value !== null && !multiple ? (
                 <div
                     className={classNames([
                         'card',
@@ -299,7 +308,7 @@ const ItemField = ({
                             isAsync={requestUrl !== null}
                             defaultOptions={requestUrl !== null && (autoload || value === null)}
                             name={name}
-                            value={value}
+                            value={finalValue}
                             options={options}
                             isClearable
                             isSearchable
@@ -316,6 +325,7 @@ const ItemField = ({
                             onChange={onValueChange}
                             onInputChange={onInputChange}
                             loadOptions={loadOptions}
+                            multiple={multiple}
                             // onFocus={onFieldFocus}
                         />
                     </div>

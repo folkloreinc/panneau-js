@@ -1,6 +1,7 @@
 /* eslint-disable react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isEqual from 'lodash/isEqual';
+import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -78,7 +79,12 @@ const SelectElement = ({
             return value !== null
                 ? value.map((val) =>
                       finalOptions.find((opt) =>
-                          opt.value !== null ? isEqual(val, opt.value) : false,
+                          // eslint-disable-next-line no-nested-ternary
+                          opt.value !== null
+                              ? isObject(val) && val.value
+                                  ? isEqual(val.value, opt.value)
+                                  : isEqual(val, opt.value)
+                              : false,
                       ),
                   )
                 : [];
