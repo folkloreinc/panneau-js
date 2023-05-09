@@ -38,7 +38,6 @@ const propTypes = {
     size: PropTypes.oneOf(['sm', 'lg']),
     placeholder: PropTypes.string,
     canCreate: PropTypes.bool,
-    autoload: PropTypes.bool,
     multiple: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
@@ -67,7 +66,6 @@ const defaultProps = {
     size: null,
     placeholder: null,
     canCreate: false,
-    autoload: false,
     multiple: false,
     disabled: false,
     className: null,
@@ -96,7 +94,6 @@ const ItemField = ({
     itemImagePath,
     itemLabelWithId,
     canCreate,
-    autoload,
     multiple,
     disabled,
     className,
@@ -105,9 +102,9 @@ const ItemField = ({
 }) => {
     const intl = useIntl();
     const api = useApi();
-    // const [initialValue] = useState(value);
+    const [initialValue] = useState(multiple ? value : null);
     const [inputTextValue, setInputTextValue] = useState('');
-    const [items, setItems] = useState(initialItems || []);
+    const [items, setItems] = useState(initialItems || initialValue || []);
     const lastRequest = useRef(null);
 
     const getItemLabel = useCallback(
@@ -149,7 +146,9 @@ const ItemField = ({
                 });
             } else if (requestUrl !== null) {
                 const requestValue =
-                    request !== null ? request.value || inputTextValue : inputTextValue;
+                    request !== null
+                        ? request.value || inputTextValue || null
+                        : inputTextValue || null;
                 const currentRequest = api.requestGet(
                     requestUrl,
                     {
@@ -245,8 +244,10 @@ const ItemField = ({
     // );
 
     // const onFieldFocus = useCallback(() => {
-    //     // getOptions();
-    // }, [getOptions]);
+    //     if (items.length === 0) {
+    //         getOptions();
+    //     }
+    // }, [items, getOptions]);
 
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
@@ -306,7 +307,7 @@ const ItemField = ({
                             ])}
                             disabled={disabled}
                             isAsync={requestUrl !== null}
-                            defaultOptions={requestUrl !== null && (autoload || value === null)}
+                            defaultOptions={requestUrl !== null}
                             name={name}
                             value={finalValue}
                             options={options}
@@ -326,7 +327,6 @@ const ItemField = ({
                             onInputChange={onInputChange}
                             loadOptions={loadOptions}
                             multiple={multiple}
-                            // onFocus={onFieldFocus}
                         />
                     </div>
                     {canCreate ? (

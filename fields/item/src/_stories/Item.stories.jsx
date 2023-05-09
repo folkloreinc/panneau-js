@@ -46,8 +46,18 @@ export const WithRequestUrl = () => (
     <Container requestUrl="/events/" requestQuery={null} itemLabelPath="title" autoload />
 );
 
+export const WithValueAndRequestUrl = () => (
+    <Container
+        requestUrl="/events/"
+        requestQuery={null}
+        itemLabelPath="title"
+        value={[{ id: '1', label: 'Title' }]}
+        multiple
+    />
+);
+
 export const MultipleWithRequestUrl = () => (
-    <Container requestUrl="/events/" requestQuery={null} itemLabelPath="title" autoload multiple />
+    <Container requestUrl="/events/" requestQuery={null} itemLabelPath="title" multiple />
 );
 
 export const Disabled = () => <Container items={items} disabled />;
