@@ -185,6 +185,8 @@ export const fonts = PropTypes.arrayOf(font);
 
 export const trackingVariables = PropTypes.shape({});
 
-export const modal = PropTypes.shape({});
+export const modal = PropTypes.shape({
+    name: PropTypes.string,
+});
 
 export const modals = PropTypes.arrayOf(modal);

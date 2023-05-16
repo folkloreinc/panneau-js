@@ -23,7 +23,9 @@ const propTypes = {
             theme: PropTypes.string,
         }),
     ),
-    actions: PropTypes.arrayOf(PropTypes.string),
+    actions: PropTypes.arrayOf(
+        PropTypes.oneOfType([PropTypes.string, PropTypes.shape({ id: PropTypes.string })]),
+    ),
     iconsOnly: PropTypes.bool,
     showLabel: PropTypes.node,
     showUrl: PropTypes.string,
@@ -118,9 +120,9 @@ const ItemActions = ({
                                               )
                                             : null,
                                     ...otherProps,
-                                    reload,
-                                    reloadPage,
-                                    updateItem,
+                                    ...(ActionComponent !== null
+                                        ? { reload, reloadPage, updateItem }
+                                        : null),
                                     label: iconsOnly && icon !== null ? null : label,
                                     icon: iconsOnly && icon !== null ? <Icon name={icon} /> : null,
                                     ...(itemLinkProp !== null && item !== null && item[itemLinkProp]

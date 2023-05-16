@@ -26,7 +26,11 @@ const propTypes = {
     sortDirectionParameter: PropTypes.string,
     onQueryChange: PropTypes.func,
     showEmptyLabel: PropTypes.bool,
-    emptyLabel: PanneauPropTypes.message,
+    emptyLabel: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.node,
+        PropTypes.shape({ defaultMessage: PropTypes.string }),
+    ]),
     withoutId: PropTypes.bool,
     reload: PropTypes.func,
     reloadPage: PropTypes.func,
