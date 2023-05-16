@@ -1,20 +1,4 @@
-@import '~@panneau/themes/scss/variables';
-@import '~@panneau/themes/scss/placeholders';
 
 .quill {
     border-radius: 0.25rem;
-    background-color: $white;
-    color: $dark;
 }
-
-/* stylelint-disable */
-.ql-toolbar {
-    border-top-left-radius: 0.25rem;
-    border-top-right-radius: 0.25rem;
-}
-
-.ql-container {
-    border-bottom-right-radius: 0.25rem;
-    border-bottom-left-radius: 0.25rem;
-}
-/* stylelint-enable */
