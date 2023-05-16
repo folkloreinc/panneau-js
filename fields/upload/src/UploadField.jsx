@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { faFileAudio, faFileImage, faFileVideo, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import classNames from 'classnames';
@@ -22,6 +23,7 @@ import styles from './styles.module.scss';
 import '@uppy/core/dist/style.min.css';
 import '@uppy/dashboard/dist/style.min.css';
 import '@uppy/drag-drop/dist/style.min.css';
+import '@uppy/status-bar/dist/style.min.css';
 
 const propTypes = {
     value: PropTypes.oneOfType([
@@ -347,18 +349,21 @@ const UploadField = ({
                 </div>
             ) : null}
             {!showMediaModal && !disabled && !hasMedia && !withButton && uppy !== null ? (
-                <Dashboard
-                    uppy={uppy}
-                    // eslint-disable-next-line react/jsx-props-no-spreading
-                    {...(containerWidth !== null && height !== null
-                        ? { width: containerWidth }
-                        : { width })}
-                    height={height}
-                    plugins={sources}
-                    inline
-                    areInsidesReadyToBeVisible
-                    proudlyDisplayPoweredByUppy={false}
-                />
+                <div className={styles.dashboard}>
+                    <Dashboard
+                        uppy={uppy}
+                        {...(containerWidth !== null && height !== null
+                            ? { width: containerWidth }
+                            : null)}
+                        {...(width !== null ? { width } : null)}
+                        {...(height !== null ? { height } : null)}
+                        plugins={sources}
+                        inline
+                        areInsidesReadyToBeVisible
+                        proudlyDisplayPoweredByUppy={false}
+                        showProgressDetails
+                    />
+                </div>
             ) : null}
             {!showMediaModal && !disabled && withButton && uppy !== null ? (
                 <DashboardModal
@@ -377,4 +382,4 @@ const UploadField = ({
 UploadField.propTypes = propTypes;
 UploadField.defaultProps = defaultProps;
 
-export default React.memo(UploadField);
+export default UploadField;

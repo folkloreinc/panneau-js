@@ -36,6 +36,8 @@ export const Video = () => <Container types={['video']} />;
 
 export const PDF = () => <Container fileTypes={['.pdf']} />;
 
+export const Fonts = () => <Container fileTypes={['.ttf', '.otf']} />;
+
 export const WithValue = () => <Container value={[{ data: { file: '1200x300.png' } }]} />;
 
 export const WithValues = () => (

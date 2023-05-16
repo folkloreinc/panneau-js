@@ -7,7 +7,7 @@ export * from './GoogleApiClientContext';
 export * from './GoogleKeysContext';
 export * from './GoogleMapsClientContext';
 export * from './LocalesContext';
-export * from './ModalsContext';
+export * from './ModalContext';
 export * from './PanelsContext';
 export * from './PanneauContext';
 export * from './ResourceContext';

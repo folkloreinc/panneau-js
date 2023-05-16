@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
 import { ComponentsProvider, MODALS_NAMESPACE } from '@panneau/core/contexts';
 
 import ModalsComponents from './modals';

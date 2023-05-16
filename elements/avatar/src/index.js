@@ -1,3 +1,3 @@
-import Alert from './Alert';
+import Avatar from './Avatar';
 
-export default Alert;
+export default Avatar;

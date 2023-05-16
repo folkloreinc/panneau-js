@@ -2,32 +2,11 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
 
-import { getDisplayName } from '../utils';
+// import { getDisplayName } from '../utils';
 
-export const ModalsContext = React.createContext({
-    container: null,
-});
+export const ModalContext = React.createContext(null);
 
-export const useModals = () => useContext(ModalsContext) || {};
-
-export const withModals = (WrappedComponent) => {
-    const WithModalsComponent = (props) => (
-        <ModalsContext.Consumer>
-            {({ modals, container, setContainer, register, unregister }) => (
-                <WrappedComponent
-                    modalsContainer={container}
-                    setModalsContainer={setContainer}
-                    modals={modals}
-                    registerModal={register}
-                    unregisterModal={unregister}
-                    {...props}
-                />
-            )}
-        </ModalsContext.Consumer>
-    );
-    WithModalsComponent.displayName = `WithModals(${getDisplayName(WrappedComponent)})`;
-    return WithModalsComponent;
-};
+export const useModal = () => useContext(ModalContext) || {};
 
 const propTypes = {
     children: PropTypes.node.isRequired,
@@ -38,7 +17,7 @@ const defaultProps = {
     container: null,
 };
 
-export const ModalsProvider = ({ children, container: initialContainer }) => {
+export const ModalProvider = ({ children, container: initialContainer }) => {
     const [container, setContainer] = useState(initialContainer);
     const [modals, setModals] = useState([]);
     const modalsRef = useRef(modals);
@@ -81,8 +60,8 @@ export const ModalsProvider = ({ children, container: initialContainer }) => {
         [modals, container, setContainer, register, unregister],
     );
 
-    return <ModalsContext.Provider value={value}>{children}</ModalsContext.Provider>;
+    return <ModalContext.Provider value={value}>{children}</ModalContext.Provider>;
 };
 
-ModalsProvider.propTypes = propTypes;
-ModalsProvider.defaultProps = defaultProps;
+ModalProvider.propTypes = propTypes;
+ModalProvider.defaultProps = defaultProps;

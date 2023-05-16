@@ -8,6 +8,7 @@ import { AuthProvider } from '@panneau/auth';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import {
     ComponentsProvider,
+    ModalProvider,
     PanneauProvider,
     RoutesProvider,
     UppyProvider,
@@ -19,6 +20,7 @@ import FiltersProvider from '@panneau/filters';
 import FormsProvider from '@panneau/forms';
 import { IntlProvider } from '@panneau/intl';
 import ListsProvider from '@panneau/lists';
+import ModalsProvider from '@panneau/modals';
 
 import Routes from './Routes';
 
@@ -92,16 +94,27 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
                                     <ListsProvider>
                                         <DisplaysProvider>
                                             <FiltersProvider>
-                                                <ApiProvider
-                                                    baseUrl={baseUrl}
-                                                    onUnauthorized={onUnauthorized}
-                                                >
-                                                    <AuthProvider user={user} onLogout={onLogout}>
-                                                        <ComponentsProvider components={components}>
-                                                            <Routes statusCode={statusCode} />
-                                                        </ComponentsProvider>
-                                                    </AuthProvider>
-                                                </ApiProvider>
+                                                <ModalProvider>
+                                                    <ModalsProvider>
+                                                        <ApiProvider
+                                                            baseUrl={baseUrl}
+                                                            onUnauthorized={onUnauthorized}
+                                                        >
+                                                            <AuthProvider
+                                                                user={user}
+                                                                onLogout={onLogout}
+                                                            >
+                                                                <ComponentsProvider
+                                                                    components={components}
+                                                                >
+                                                                    <Routes
+                                                                        statusCode={statusCode}
+                                                                    />
+                                                                </ComponentsProvider>
+                                                            </AuthProvider>
+                                                        </ApiProvider>
+                                                    </ModalsProvider>
+                                                </ModalProvider>
                                             </FiltersProvider>
                                         </DisplaysProvider>
                                     </ListsProvider>

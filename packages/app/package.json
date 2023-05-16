@@ -77,6 +77,7 @@
         "@panneau/element-link": "^2.0.51",
         "@panneau/element-loading": "^2.0.51",
         "@panneau/element-menu": "^2.0.51",
+        "@panneau/element-modal": "^2.0.51",
         "@panneau/element-navbar": "^2.0.51",
         "@panneau/element-pagination": "^2.0.51",
         "@panneau/element-radios": "^2.0.51",

@@ -7,7 +7,7 @@ import { getDisplayName } from '@panneau/core/utils';
 
 import ModalPortal from './ModalPortal';
 
-import styles from '../styles/modal.module.scss';
+import styles from './styles.module.scss';
 
 const propTypes = {
     id: PropTypes.string,
@@ -24,7 +24,8 @@ const defaultProps = {
 };
 
 const Modal = ({ id, children, position, title }) => {
-    const finalId = useMemo(() => id || getDisplayName(children.type), [id, children.type]);
+    const name = getDisplayName(children);
+    const finalId = useMemo(() => id || name || 'Modal', [id, name]);
     const data = useMemo(
         () => ({
             title,
@@ -35,7 +36,7 @@ const Modal = ({ id, children, position, title }) => {
         <ModalPortal id={finalId} data={data}>
             <div
                 className={classNames([
-                    styles.container,
+                    styles.modal,
                     {
                         [styles[position]]: position !== null,
                     },

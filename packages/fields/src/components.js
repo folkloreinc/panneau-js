@@ -15,5 +15,13 @@ export { default as Select } from '@panneau/field-select';
 export { default as Text, Email, Password, Telephone, Textarea } from '@panneau/field-text';
 export { default as Toggle } from '@panneau/field-toggle';
 export { default as Toggles } from '@panneau/field-toggles';
-export { default as Upload, AudioField as Audio, VideoField as Video, ImageField as Image } from '@panneau/field-upload';
+export {
+    default as Upload,
+    AudioField as Audio,
+    VideoField as Video,
+    ImageField as Image,
+    DocumentField as Document,
+    FontField as Font,
+} from '@panneau/field-upload';
 export { default as Url } from '@panneau/field-url';
+export { default as ResourceItem } from '@panneau/field-resource-item';

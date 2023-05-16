@@ -1,4 +1,5 @@
 import isArray from 'lodash/isArray';
+
 import { definition as Autocomplete } from '@panneau/field-autocomplete';
 import { definition as Checkboxes } from '@panneau/field-checkboxes';
 import { definition as Color } from '@panneau/field-color';
@@ -12,13 +13,13 @@ import { definition as Items } from '@panneau/field-items';
 import { definition as Localized } from '@panneau/field-localized';
 import { definition as Number } from '@panneau/field-number';
 import { definition as Radios } from '@panneau/field-radios';
+import { definition as ResourceItem } from '@panneau/field-resource-item';
 import { definition as Select } from '@panneau/field-select';
 import { definition as Text } from '@panneau/field-text';
 import { definition as Toggle } from '@panneau/field-toggle';
 import { definition as Toggles } from '@panneau/field-toggles';
 import { definition as Upload } from '@panneau/field-upload';
 import { definition as Url } from '@panneau/field-url';
-
 
 export default [
     Autocomplete,
@@ -29,6 +30,7 @@ export default [
     Fields,
     Html,
     InputGroup,
+    ResourceItem,
     Item,
     Items,
     Localized,

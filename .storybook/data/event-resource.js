@@ -21,12 +21,13 @@ export default {
         {
             name: 'page',
             label: 'Page',
-            type: 'item',
-            component: 'item',
+            type: 'resource-item',
+            component: 'resource-item',
+            resource: 'pages',
+            query: { paginated: false },
+            canCreate: true,
             itemLabelPath: 'title.fr',
             itemLabelWithId: true,
-            requestUrl: '/pages',
-            requestQuery: { paginated: false },
         },
         {
             name: 'email',
@@ -37,6 +38,7 @@ export default {
                 index: 'text',
             },
         },
+        { name: 'organizer', label: 'Organisateur', type: 'document', component: 'document' },
         { name: 'blocks', label: 'Blocks', component: 'items', withoutFormGroup: true },
     ],
 

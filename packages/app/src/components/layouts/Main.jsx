@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { usePanneauColorScheme } from '@panneau/core/contexts';
+import { Modals } from '@panneau/element-modal';
 
 import MainNavbar from '../menus/MainNavbar';
 
@@ -19,6 +20,7 @@ const defaultProps = {
 
 const MainLayout = ({ children, fullscreen }) => {
     const { theme = null, background = null, text = null } = usePanneauColorScheme();
+
     return (
         <div
             className={classNames([styles.container, 'd-flex', 'flex-column', 'min-vh-100'])}
@@ -37,6 +39,7 @@ const MainLayout = ({ children, fullscreen }) => {
             >
                 {children}
             </div>
+            <Modals />
         </div>
     );
 };

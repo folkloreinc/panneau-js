@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
 import isObject from 'lodash/isObject';
+import React, { useEffect, useState } from 'react';
+
 import IntlProvider from '../../packages/intl/src/IntlProvider';
 
 const withIntlProvider = (Story, { parameters: { intl = null } }) => {
@@ -22,9 +23,7 @@ const withIntlProvider = (Story, { parameters: { intl = null } }) => {
     }, [locale]);
 
     if (!enabled) {
-        return (
-            <Story />
-        );
+        return <Story />;
     }
     return localeLoaded ? (
         <IntlProvider locale={locale} messages={messages}>

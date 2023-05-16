@@ -1,0 +1,60 @@
+{
+    "name": "@panneau/element-modal",
+    "version": "2.0.51",
+    "description": "Modal element",
+    "keywords": [
+        "javascript"
+    ],
+    "homepage": "https://github.com/folkloreinc/panneau-js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git"
+    },
+    "author": {
+        "name": "Folklore",
+        "email": "info@folklore.email"
+    },
+    "contributors": [
+        {
+            "name": "David Mongeau-Petitpas",
+            "email": "dmp@folklore.email"
+        },
+        {
+            "name": "Nicolas Roy-Bourdages",
+            "email": "nrb@folklore.email"
+        }
+    ],
+    "license": "ISC",
+    "main": "lib/index.js",
+    "module": "es/index.js",
+    "files": [
+        "lib",
+        "es",
+        "assets"
+    ],
+    "scripts": {
+        "prepare": "../../scripts/prepare-package.sh"
+    },
+    "devDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.12.5",
+        "@panneau/core": "^2.0.51",
+        "@panneau/element-button": "^2.0.51",
+        "@panneau/element-icon": "^2.0.51",
+        "@panneau/element-label": "^2.0.51",
+        "classnames": "^2.2.6",
+        "prop-types": "^15.7.2",
+        "react-intl": "^5.15.8||^6.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "gitHead": "bfebc780e7d298af86d7b3f24b9d95a76594cf00"
+}

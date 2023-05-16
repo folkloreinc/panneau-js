@@ -3,14 +3,12 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { withModals } from '@panneau/core/contexts';
+// import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useModal } from '@panneau/core/contexts';
 
-import styles from '../styles/modals.module.scss';
+import styles from './styles.module.scss';
 
 const propTypes = {
-    modals: PanneauPropTypes.modals.isRequired,
-    setModalsContainer: PropTypes.func.isRequired,
     className: PropTypes.string,
 };
 
@@ -18,17 +16,20 @@ const defaultProps = {
     className: null,
 };
 
-const ModalsContainer = ({ modals, setModalsContainer, className }) => {
-    const containerRef = useRef(null);
+const Modals = ({ className }) => {
+    const { modals = null, setContainer = null } = useModal();
 
+    const containerRef = useRef(null);
     useEffect(() => {
-        setModalsContainer(containerRef.current);
-    }, []);
+        if (setContainer !== null) {
+            setContainer(containerRef.current);
+        }
+    }, [setContainer]);
 
     return (
         <div
             className={classNames([
-                styles.container,
+                styles.modalsContainer,
                 {
                     [className]: className,
                 },
@@ -47,7 +48,7 @@ const ModalsContainer = ({ modals, setModalsContainer, className }) => {
     );
 };
 
-ModalsContainer.propTypes = propTypes;
-ModalsContainer.defaultProps = defaultProps;
+Modals.propTypes = propTypes;
+Modals.defaultProps = defaultProps;
 
-export default withModals(ModalsContainer);
+export default Modals;

@@ -1,7 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import React, { useMemo } from 'react';
+
 import UploadField from './UploadField';
 
-const ImageField = (props) => <UploadField {...props} types={['image']} />;
+const ImageField = (props) => {
+    const types = useMemo(() => ['image'], []);
+    return <UploadField {...props} types={types} />;
+};
 
-export default React.memo(ImageField);
+export default ImageField;

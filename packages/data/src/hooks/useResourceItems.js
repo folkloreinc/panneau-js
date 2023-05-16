@@ -5,6 +5,7 @@ import useItems from './useItems';
 
 const useResourceItems = (resource, query = null, page = null, count = null, opts = null) => {
     const api = useApi();
+
     const { id = null } = resource || {};
     const lastResourceRef = useRef(id);
     const resourceChanging = lastResourceRef.current !== id;

@@ -2,7 +2,9 @@
 import React from 'react';
 
 import pageResource from '../../../../.storybook/data/page-resource';
-import { ResourceProvider } from '../../../../packages/core/contexts';
+import panneauDefinition from '../../../../.storybook/data/panneau-definition';
+import { PanneauProvider } from '../../../../packages/core/contexts';
+// import ApiProvider from '../../../../packages/data/src/contexts/ApiContext';
 import ItemActions from '../ItemActions';
 
 export default {
@@ -22,25 +24,25 @@ const props = {
 };
 
 export const Normal = () => (
-    <ResourceProvider resource={pageResource}>
+    <PanneauProvider definition={panneauDefinition}>
         <ItemActions {...props} />
-    </ResourceProvider>
+    </PanneauProvider>
 );
 
 export const WithUrl = () => (
-    <ResourceProvider resource={pageResource}>
+    <PanneauProvider definition={panneauDefinition}>
         <ItemActions {...props} item={{ id: '2', url: 'http://www.google.com' }} />
-    </ResourceProvider>
+    </PanneauProvider>
 );
 
 export const WithShowUrl = () => (
-    <ResourceProvider resource={pageResource}>
+    <PanneauProvider definition={panneauDefinition}>
         <ItemActions {...props} showUrl="http://www.google.com" />
-    </ResourceProvider>
+    </PanneauProvider>
 );
 
 export const WithItems = () => (
-    <ResourceProvider resource={pageResource}>
+    <PanneauProvider definition={panneauDefinition}>
         <ItemActions {...props} items={[{ id: 'My way', label: 'My button', theme: 'primary' }]} />
-    </ResourceProvider>
+    </PanneauProvider>
 );

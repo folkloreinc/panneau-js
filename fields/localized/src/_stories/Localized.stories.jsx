@@ -5,7 +5,7 @@ import FieldsProvider from '../../../../packages/fields';
 import IntlProvider from '../../../../packages/intl/src/IntlProvider';
 import HtmlField from '../../../html/src';
 import TextField from '../../../text/src';
-import LocalizedField from '../Localized';
+import LocalizedField from '../LocalizedField';
 
 export default {
     title: 'Fields/Localized',

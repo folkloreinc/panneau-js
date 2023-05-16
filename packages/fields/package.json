@@ -76,6 +76,7 @@
         "@panneau/field-localized": "^2.0.53",
         "@panneau/field-number": "^2.0.51",
         "@panneau/field-radios": "^2.0.51",
+        "@panneau/field-resource-item": "^2.0.51",
         "@panneau/field-select": "^2.0.54",
         "@panneau/field-text": "^2.0.51",
         "@panneau/field-toggle": "^2.0.51",

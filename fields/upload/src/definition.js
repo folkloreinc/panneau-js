@@ -15,4 +15,12 @@ export default [
         id: 'video',
         component: 'Video',
     },
+    {
+        id: 'document',
+        component: 'Document',
+    },
+    {
+        id: 'font',
+        component: 'Font',
+    },
 ];

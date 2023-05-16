@@ -59,8 +59,6 @@ const ResourceItemsList = ({
         } = {},
     } = resource;
 
-    console.log('resource', resource);
-
     const { background: theme = null } = usePanneauColorScheme();
     const ListComponents = useListsComponents();
 

@@ -1,4 +1,4 @@
-import LocalizedField from './Localized';
+import LocalizedField from './LocalizedField';
 
 export { default as definition } from './definition';
 

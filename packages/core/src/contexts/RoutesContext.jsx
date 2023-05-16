@@ -77,7 +77,7 @@ export const RoutesProvider = ({ routes, basePath, children }) => {
         }),
         [routes, basePath],
     );
-    // console.log(routes, basePath);
+    // console.log('routes context', routes, basePath);
     return <RoutesContext.Provider value={value}>{children}</RoutesContext.Provider>;
 };
 

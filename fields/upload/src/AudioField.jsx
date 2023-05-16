@@ -1,7 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import React, { useMemo } from 'react';
+
 import UploadField from './UploadField';
 
-const AudioField = (props) => <UploadField {...props} types={['audio']} />;
+const AudioField = (props) => {
+    const types = useMemo(() => ['audio'], []);
+    return <UploadField {...props} types={types} />;
+};
 
-export default React.memo(AudioField);
+export default AudioField;

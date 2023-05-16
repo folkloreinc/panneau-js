@@ -203,6 +203,7 @@ const Button = ({
             [className]: className !== null,
         },
     ]);
+
     if (href !== null) {
         return external || direct ? (
             <a

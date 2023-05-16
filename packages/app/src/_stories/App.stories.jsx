@@ -37,6 +37,7 @@ const englishIntl = {
 // console.log('panneauDefinition', panneauDefinition);
 
 const CustomHomePage = () => <div className="text-primary bg-info">Home sweet home</div>;
+
 const CustomEventPage = () => <div className="text-primary bg-info">Events page replacement</div>;
 
 export const Guest = () => (

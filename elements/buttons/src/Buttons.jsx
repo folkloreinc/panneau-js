@@ -30,6 +30,7 @@ const defaultProps = {
 
 function Buttons({ items, size, renderButton, onClickButton, buttonClassName, className }) {
     const componentsManager = useButtonsComponents();
+
     return (
         <div
             className={classNames([
@@ -72,8 +73,10 @@ function Buttons({ items, size, renderButton, onClickButton, buttonClassName, cl
                               }
                           },
                       };
+
                       const ButtonComponent =
                           component !== null ? componentsManager.getComponent(component) : null;
+
                       if (ButtonComponent !== null) {
                           return <ButtonComponent {...fixedProps} {...buttonProps} />;
                       }
@@ -81,6 +84,7 @@ function Buttons({ items, size, renderButton, onClickButton, buttonClassName, cl
                       if (finalRenderButton) {
                           return finalRenderButton(button, index, fixedProps);
                       }
+
                       return <Button {...fixedProps} {...buttonProps} />;
                   })
                 : null}
