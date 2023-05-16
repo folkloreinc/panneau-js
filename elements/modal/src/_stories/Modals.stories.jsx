@@ -13,6 +13,6 @@ export default {
 
 export const Basic = () => (
     <ModalElement>
-        <div>My modale</div>
+        <div>My modaleee</div>
     </ModalElement>
 );

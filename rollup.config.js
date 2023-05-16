@@ -1,13 +1,14 @@
-import path from 'path';
-import postcss from 'rollup-plugin-postcss';
 import babel from '@rollup/plugin-babel';
-import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import image from '@rollup/plugin-image';
 // import svgo from 'rollup-plugin-svgo';
 import json from '@rollup/plugin-json';
-import url from '@rollup/plugin-url';
+import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
+import url from '@rollup/plugin-url';
+import path from 'path';
+import postcss from 'rollup-plugin-postcss';
+
 import generateScopedName from './scripts/lib/generateScopedName';
 
 export const createConfig = ({
@@ -28,12 +29,12 @@ export const createConfig = ({
         file: output || `lib/${file}`,
         format: 'cjs',
         banner,
-        exports: 'named'
+        exports: 'named',
     };
     const outputEs = {
         file: output || `es/${file}`,
         banner,
-        exports: 'named'
+        exports: 'named',
     };
     let outputConfig;
     if (format === 'both') {
@@ -41,6 +42,7 @@ export const createConfig = ({
     } else {
         outputConfig = isCjs ? outputCjs : outputEs;
     }
+
     return {
         input: input || `src/${file}`,
         output: outputConfig,

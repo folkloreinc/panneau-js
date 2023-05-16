@@ -13,8 +13,7 @@ import { getPathValue, isMessage } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Button from '@panneau/element-button';
 import Select from '@panneau/element-select';
-
-// import Dialog from '@panneau/modal-dialog';
+import Dialog from '@panneau/modal-dialog';
 
 const propTypes = {
     name: PropTypes.string,
@@ -233,13 +232,13 @@ const ResourceItemField = ({
                         />
                     </div>
                 ) : null}
-                {/* {createOpen ? (
-                    // <Dialog onClickClose={onCloseCreate}>
-                    //     <div className="card p-2">
-                    //         <div>My create Modale</div>
-                    //     </div>
-                    // </Dialog>
-                ) : null} */}
+                {createOpen ? (
+                    <Dialog onClickClose={onCloseCreate}>
+                        <div className="card p-2">
+                            <div>My create Modale</div>
+                        </div>
+                    </Dialog>
+                ) : null}
             </div>
         </div>
     );
