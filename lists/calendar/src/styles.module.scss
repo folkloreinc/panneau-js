@@ -1,8 +1,5 @@
-@import '~@panneau/themes/scss/variables';
-@import '~@panneau/themes/scss/placeholders';
-
 .container {
-    color: $gray-600;
+    color: var(--bs-gray-600);
 
     button {
         margin: 0 auto;

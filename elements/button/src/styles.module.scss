@@ -1,6 +1,3 @@
-@import '~@panneau/themes/scss/variables';
-@import '~@panneau/themes/scss/placeholders';
-
 .container {
     display: inline-block;
 
@@ -8,13 +5,24 @@
         display: block;
     }
 
-    &.withoutStyle {
-        @extend %reset-button;
+    &.withoutStyle, &.asLink {
+        display: inline-block;
+        position: relative;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font-family: inherit;
+        cursor: pointer;
+        appearance: none;
+
+        &:focus {
+            outline: none;
+        }
     }
 
     &.asLink {
-        @extend %reset-button;
-        color: $primary;
+        color: var(--bs-primary);
         font-weight: bold;
     }
 

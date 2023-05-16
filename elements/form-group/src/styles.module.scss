@@ -1,24 +1,21 @@
-@import '~@panneau/themes/scss/variables';
-@import '~@panneau/themes/scss/placeholders';
-
 .container {
     .help {
         display: block;
         margin: 2px 0;
-        color: $gray-900;
+        color: var(--bs-gray-900);
         font-size: 0.9rem;
     }
 
     .errors {
         margin: 2px 0;
-        color: $red;
+        color: var(--bs-color-red);
         font-size: 0.9rem;
     }
 
     &.hasErrors {
         .label,
         .help {
-            color: $red;
+            color: var(--bs-color-red);
         }
     }
 }
