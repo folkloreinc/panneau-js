@@ -38,7 +38,7 @@ export default {
                 index: 'text',
             },
         },
-        { name: 'organizer', label: 'Organisateur', type: 'document', component: 'document' },
+        { name: 'organizer', label: 'Organisateur image', type: 'image', component: 'image' },
         { name: 'blocks', label: 'Blocks', component: 'items', withoutFormGroup: true },
     ],
 

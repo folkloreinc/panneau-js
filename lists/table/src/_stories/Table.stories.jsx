@@ -4,7 +4,7 @@ import { RoutesProvider } from '@panneau/core/contexts';
 
 import pageResource from '../../../../.storybook/data/page-resource';
 import { ResourceProvider } from '../../../../packages/core/contexts';
-import DisplayProvider from '../../../../packages/displays';
+// import DisplayProvider from '../../../../packages/displays';
 import Table from '../Table';
 
 export default {
@@ -23,9 +23,9 @@ export default {
                 }}
             >
                 <ResourceProvider resource={pageResource}>
-                    <DisplayProvider>
-                        <Story />
-                    </DisplayProvider>
+                    {/* <DisplayProvider> */}
+                    <Story />
+                    {/* </DisplayProvider> */}
                 </ResourceProvider>
             </RoutesProvider>
         ),

@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const propTypes = {
     wrap: PropTypes.bool,
@@ -15,8 +15,8 @@ const defaultProps = {
     children: null,
 };
 
-const Column = ({ wrap, className, children }) => {
-    return wrap ? (
+const Column = ({ wrap, className, children }) =>
+    wrap ? (
         <div
             className={classNames([
                 {
@@ -30,7 +30,6 @@ const Column = ({ wrap, className, children }) => {
     ) : (
         children
     );
-};
 
 Column.propTypes = propTypes;
 Column.defaultProps = defaultProps;

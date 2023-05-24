@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 
-import Fields from '../Fields';
-
-import FieldsProvider from '../../../../packages/fields';
-
 import fields from '../../../../.storybook/data/fields';
+import FieldsProvider from '../../../../packages/fields';
+import Fields from '../Fields';
 
 export default {
     component: Fields,
@@ -24,3 +22,5 @@ const Container = () => {
 };
 
 export const Normal = () => <Container />;
+
+export const WithFlat = () => <Container />;

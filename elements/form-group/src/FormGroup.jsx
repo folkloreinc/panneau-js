@@ -83,9 +83,9 @@ const FormGroup = ({
         {
             'form-label': !inline,
             'col-form-label': inline || horizontal,
-            'col-sm-4': horizontal,
+            // 'col-sm-3': horizontal,
             'px-2': horizontal,
-            'text-nowrap': horizontal,
+            // 'text-nowrap': horizontal, // ?
             'card-header': isCard,
             'fw-bold': isHeading,
             'd-flex': isCollapsible,

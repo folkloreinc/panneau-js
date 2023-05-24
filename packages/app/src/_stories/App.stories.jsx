@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { getCSRFHeaders } from '@folklore/fetch';
 import React from 'react';
 
 import panneauDefinition from '../../../../.storybook/data/panneau-definition';
@@ -18,6 +19,14 @@ export default {
 
 const props = {
     baseUrl: 'http://localhost:58800/api', // Should be whatever, /api is for storybook
+    uppy: {
+        transport: 'xhr',
+        xhr: {
+            endpoint: 'https://ondinnok.test:8080/panneau/upload',
+            headers: getCSRFHeaders(),
+            timeout: 0,
+        },
+    },
 };
 
 const user = { id: 1, name: 'Folklore', email: 'info@atelierfolklore.ca' };

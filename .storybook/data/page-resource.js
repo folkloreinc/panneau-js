@@ -116,16 +116,16 @@ export default {
                 },
             },
         },
-        {
-            name: 'upload',
-            label: 'Media',
-            component: 'upload',
-        },
-        {
-            name: 'image',
-            label: 'Image',
-            component: 'image',
-        },
+        // {
+        //     name: 'upload',
+        //     label: 'Media',
+        //     component: 'upload',
+        // },
+        // {
+        //     name: 'image',
+        //     label: 'Image',
+        //     component: 'image',
+        // },
         { name: 'blocks', label: 'Blocks', component: 'items' },
         {
             name: 'color',

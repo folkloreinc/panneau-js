@@ -1,5 +1,6 @@
 import React from 'react';
 
+import TextField from '../../../../fields/text/src/TextField';
 import FormGroup from '../FormGroup';
 
 export default {
@@ -10,7 +11,11 @@ export default {
     },
 };
 
-const Field = () => <div>A field is here</div>;
+const Field = () => (
+    <FormGroup label="Field form group label">
+        <TextField placeholder="My text field" />
+    </FormGroup>
+);
 
 export const Normal = () => (
     <FormGroup label="Form group label">
@@ -43,6 +48,27 @@ export const IsCollapsible = () => (
 
 export const IsCollapsibleCard = () => (
     <FormGroup label="Form group label" isCollapsible isCard>
+        <Field />
+    </FormGroup>
+);
+
+export const Horizontal = () => (
+    <FormGroup label="Form group label" horizontal>
+        <Field />
+        <Field />
+        <Field />
+    </FormGroup>
+);
+
+export const Inline = () => (
+    <FormGroup
+        label="Form group label"
+        inline
+        errors={['This is bad', "Don't do this"]}
+        helpText="Help me!"
+    >
+        <Field />
+        <Field />
         <Field />
     </FormGroup>
 );

@@ -39,7 +39,6 @@ const TogglesField = ({ name, value, toggles, disabled, onChange, className }) =
         },
         [value, onChange],
     );
-
     return (
         <div
             className={classNames([

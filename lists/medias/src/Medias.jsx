@@ -3,7 +3,8 @@
 import React from 'react';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import TableList from '@panneau/list-table';
+
+// import TableList from '@panneau/list-table';
 
 const propTypes = {
     columns: PanneauPropTypes.tableColumns,
@@ -16,10 +17,14 @@ const defaultProps = {
 const MediasList = ({ columns }) => {
     console.log(columns);
 
+    // TODO: make a default nice list for medias,
+    // perhaps with the new resource-items thingie or from back-end
+    // Not sure
+
     return (
         <div className="d-flex flex-wrap">
-            Media list
-            <TableList />
+            <p>Media list</p>
+            {/* <TableList /> */}
         </div>
     );
 };

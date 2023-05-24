@@ -1,9 +1,11 @@
+@import '~rc-switch/assets/index.css';
 // stylelint-disable selector-pseudo-class-no-unknown
 
 .container {
     user-select: none;
 
-    :global {
-        @import '~rc-switch/assets/index';
-    }
+    // Tis doesent wrk
+    // :global {
+    //     @import '~rc-switch/assets/index';
+    // }
 }

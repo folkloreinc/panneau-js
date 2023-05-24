@@ -1,7 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { ComponentsProvider, FILTERS_NAMESPACE } from '@panneau/core/contexts';
 import PropTypes from 'prop-types';
 import React from 'react';
+
+import { ComponentsProvider, FILTERS_NAMESPACE } from '@panneau/core/contexts';
+
 import * as components from './components';
 
 const propTypes = {

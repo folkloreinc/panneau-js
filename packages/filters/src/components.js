@@ -5,3 +5,4 @@ export { default as Search } from '@panneau/filter-search';
 export { default as Select } from '@panneau/filter-select';
 export { default as Toggle } from '@panneau/filter-toggle';
 export { default as Label } from '@panneau/filter-label';
+export { default as Filters } from '@panneau/filter-filters';

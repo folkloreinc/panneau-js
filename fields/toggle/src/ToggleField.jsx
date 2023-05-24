@@ -5,6 +5,8 @@ import React from 'react';
 
 import styles from './styles.module.scss';
 
+import 'rc-switch/assets/index.css';
+
 const propTypes = {
     value: PropTypes.bool,
     name: PropTypes.string,

@@ -48,7 +48,8 @@ const SearchFilter = ({ name, value, onChange, position, placeholder, className 
         setSearchValue(value);
     }, [value, setSearchValue]);
 
-    const active = !isEmpty(searchValue);
+    const active = !isEmpty(value);
+    const canClear = !isEmpty(searchValue);
 
     return (
         <form className={className} onSubmit={onSubmit}>
@@ -70,7 +71,7 @@ const SearchFilter = ({ name, value, onChange, position, placeholder, className 
                     onChange={setSearchValue}
                     placeholder={placeholder}
                 />
-                {active ? (
+                {canClear ? (
                     <Button
                         type="button"
                         onClick={onReset}

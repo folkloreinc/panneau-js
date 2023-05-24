@@ -21,7 +21,8 @@ export default [
         component: 'fields',
         name: 'cool-row',
         horizontal: true,
-        label: '<Fields> of fields horizontal',
+        label: '<Fields> of fields horizontal... .... ... ',
+        flat: true,
         fields: [
             {
                 component: 'text',
