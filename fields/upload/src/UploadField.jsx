@@ -9,7 +9,7 @@ import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -174,6 +174,7 @@ const UploadField = ({
     );
 
     const [modalOpened, setModalOpened] = useState(false);
+    const [, setModalHasOpened] = useState(false);
 
     const openModal = useCallback(() => {
         setModalOpened(true);
@@ -182,6 +183,10 @@ const UploadField = ({
     const closeModal = useCallback(() => {
         setModalOpened(false);
     }, [setModalOpened]);
+
+    useEffect(() => {
+        setModalHasOpened(modalOpened);
+    }, [modalOpened, setModalHasOpened]);
 
     const values = useMemo(() => {
         if (isArray(value)) {
