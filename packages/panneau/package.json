@@ -1,6 +1,6 @@
 {
     "name": "panneau",
-    "version": "2.0.62",
+    "version": "2.0.63",
     "description": "",
     "keywords": [
         "javascript"
@@ -53,7 +53,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/app": "^2.0.62",
+        "@panneau/app": "^2.0.63",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
