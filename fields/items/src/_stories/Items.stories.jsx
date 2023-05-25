@@ -33,7 +33,7 @@ const itemField = {
     properties: [],
     requestUrl: '/api/pages',
     placeholder: 'panneau.forms.pages_placeholder',
-    itemLabelPath: 'title.en',
+    itemLabelPath: 'title',
     itemImagePath: null,
     requestQuery: {
         paginated: false,
@@ -64,6 +64,10 @@ export const Normal = () => (
 );
 export const Inline = () => <Container itemFields={itemFields} inline />;
 export const WithoutCard = () => <Container itemFields={itemFields} withoutCard />;
+export const WithoutCardWithoutSort = () => (
+    <Container itemFields={itemFields} withoutCard withoutSort />
+);
+export const InlineWithoutSort = () => <Container itemFields={itemFields} inline withoutSort />;
 export const WithoutSort = () => <Container itemFields={itemFields} withoutSort />;
 export const WithoutCollapse = () => <Container itemFields={itemFields} withoutCollapse />;
 export const WithItemRender = () => (

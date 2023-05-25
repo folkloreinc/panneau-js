@@ -413,6 +413,16 @@ const ItemsField = ({
                             },
                         ])}
                     >
+                        {!withoutSort && !disabled ? (
+                            <Button
+                                className="m-auto me-2 item-handle"
+                                theme="secondary"
+                                size="sm"
+                                outline
+                            >
+                                <FontAwesomeIcon icon={faGripLines} />
+                            </Button>
+                        ) : null}
                         {!withoutRemove && !disabled ? (
                             <Button
                                 theme="secondary"
@@ -508,7 +518,7 @@ const ItemsField = ({
                             <ReactSortable
                                 list={items}
                                 setList={sortList}
-                                handle=".card-header"
+                                handle={!withoutCard ? '.card-header' : '.item-handle'}
                                 className={classNames([
                                     {
                                         'list-group': !withoutSort && !withoutListGroup,
