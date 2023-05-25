@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 
+import BlocksResource from '../../../../.storybook/data/blocks-resource';
 import FieldsProvider from '../../../../packages/fields';
 import IntlProvider from '../../../../packages/intl/src/IntlProvider';
 import ItemsField from '../ItemsField';
@@ -75,7 +76,15 @@ export const WithItemRender = () => (
 );
 
 export const WithItemComponent = () => <Container itemComponent={Dummy} />;
+
 export const WithFieldComponent = () => <Container itemField={itemField} newItemValue={null} />;
+
+export const WithBlocks = () => (
+    <div style={{ maxWidth: 500 }}>
+        <Container types={BlocksResource.types} newItemValue={null} inline />
+    </div>
+);
+
 export const WithMaxItems = () => <Container itemFields={itemFields} maxItems={2} />;
 
 export const WithTypes = () => (

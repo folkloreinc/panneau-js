@@ -14,7 +14,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useUppy } from '@panneau/core/contexts';
-import { useResizeObserver } from '@panneau/core/hooks';
+// import { useResizeObserver } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 
@@ -100,9 +100,9 @@ const UploadField = ({
     onChange,
     className,
 }) => {
-    const { ref: containerRef, entry = null } = useResizeObserver();
-    const { contentRect } = entry || {};
-    const { width: containerWidth = null } = contentRect || {};
+    // const { ref: containerRef, entry = null } = useResizeObserver();
+    // const { contentRect } = entry || {};
+    // const { width: containerWidth = null } = contentRect || {};
 
     const [mediaModalOpen, setMediaModalOpen] = useState(false);
     const showMediaModal = withSearchModal && mediaModalOpen;
@@ -352,9 +352,9 @@ const UploadField = ({
                 <div className={styles.dashboard}>
                     <Dashboard
                         uppy={uppy}
-                        {...(containerWidth !== null && height !== null
-                            ? { width: containerWidth }
-                            : null)}
+                        // {...(containerWidth !== null && height !== null
+                        //     ? { width: containerWidth }
+                        // : null)}
                         {...(width !== null ? { width } : null)}
                         {...(height !== null ? { height } : null)}
                         plugins={sources}
