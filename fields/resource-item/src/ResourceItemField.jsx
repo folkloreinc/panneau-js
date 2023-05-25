@@ -129,7 +129,7 @@ const ResourceItemField = ({
     );
 
     const resourceItems = useResourceItems(queryResource, finalQuery, page, count, resourceOptions);
-    const { items: responseItems = null } = resourceItems || {};
+    const { data: responseItems = null } = resourceItems || {};
     const { id: valueId = null } = value || {};
     const filteredItems =
         responseItems !== null && valueId !== null
@@ -200,7 +200,7 @@ const ResourceItemField = ({
         (newValue) => {
             onChange(newValue);
             setCreateOpen(false);
-            setInputTextValue('');
+            // setInputTextValue('');
         },
         [onChange],
     );
