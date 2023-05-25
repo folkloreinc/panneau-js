@@ -195,7 +195,7 @@ const UploadField = ({
     return (
         <div
             className={classNames([styles.container, { [className]: className !== null }])}
-            ref={containerRef}
+            // ref={containerRef}
         >
             {values !== null
                 ? values.map((media, idx) => {
