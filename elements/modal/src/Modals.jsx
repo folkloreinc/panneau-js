@@ -20,11 +20,22 @@ const Modals = ({ className }) => {
     const { modals = null, setContainer = null } = useModal();
 
     const containerRef = useRef(null);
+
     useEffect(() => {
         if (setContainer !== null) {
             setContainer(containerRef.current);
         }
     }, [setContainer]);
+
+    useEffect(() => {
+        if (document.body) {
+            if (modals !== null && modals.length > 0) {
+                document.body.className = 'modal-open';
+            } else {
+                document.body.className = '';
+            }
+        }
+    }, [modals]);
 
     return (
         <div
