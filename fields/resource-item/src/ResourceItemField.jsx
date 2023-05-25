@@ -13,6 +13,8 @@ import { getPathValue, isMessage } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Button from '@panneau/element-button';
 import Select from '@panneau/element-select';
+import ResourceForm from '@panneau/form-resource';
+import { useResourceValues } from '@panneau/intl';
 import Dialog from '@panneau/modal-dialog';
 
 const propTypes = {
@@ -114,11 +116,10 @@ const ResourceItemField = ({
     // The search query
     const [inputTextValue, setInputTextValue] = useState('');
 
-    const completeResource = usePanneauResource(resourceId);
+    const resource = usePanneauResource(resourceId);
+    const resourceValues = useResourceValues(resource);
 
-    console.log(resourceId, completeResource);
-
-    const resource = useMemo(() => ({ id: resourceId }), [resourceId]);
+    const queryResource = useMemo(() => ({ id: resourceId }), [resourceId]);
     const finalQuery = useMemo(
         () => ({
             ...query,
@@ -127,8 +128,14 @@ const ResourceItemField = ({
         [inputTextValue],
     );
 
-    const resourceItems = useResourceItems(resource, finalQuery, page, count, resourceOptions);
-    const { items = null } = resourceItems || {};
+    const resourceItems = useResourceItems(queryResource, finalQuery, page, count, resourceOptions);
+    const { items: responseItems = null } = resourceItems || {};
+    const { id: valueId = null } = value || {};
+    const filteredItems =
+        responseItems !== null && valueId !== null
+            ? responseItems.filter((it) => (it !== null && it.id ? it.id !== valueId : true))
+            : responseItems || [];
+    const items = [...filteredItems, ...(value !== null ? value : [])];
 
     const getItemLabel = useCallback(
         (it, path) => {
@@ -141,6 +148,7 @@ const ResourceItemField = ({
         },
         [initialGetItemLabel, itemLabelWithId],
     );
+
     const parseItem = useCallback(
         (it) => {
             const label = getItemLabel(it, itemLabelPath);
@@ -188,6 +196,15 @@ const ResourceItemField = ({
         setCreateOpen(false);
     }, [setCreateOpen]);
 
+    const onCreateSuccess = useCallback(
+        (newValue) => {
+            onChange(newValue);
+            setCreateOpen(false);
+            setInputTextValue('');
+        },
+        [onChange],
+    );
+
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
             <div className={classNames(['row', 'align-items-center'])}>
@@ -233,10 +250,17 @@ const ResourceItemField = ({
                     </div>
                 ) : null}
                 {createOpen ? (
-                    <Dialog onClickClose={onCloseCreate}>
-                        <div className="card p-2">
-                            <div>My create Modale</div>
-                        </div>
+                    <Dialog
+                        title={
+                            <FormattedMessage
+                                values={resourceValues}
+                                defaultMessage="Create {a_singular}"
+                                description="Page title"
+                            />
+                        }
+                        onClickClose={onCloseCreate}
+                    >
+                        <ResourceForm resource={resource} onSuccess={onCreateSuccess} />
                     </Dialog>
                 ) : null}
             </div>

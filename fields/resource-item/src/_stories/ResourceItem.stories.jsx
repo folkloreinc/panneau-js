@@ -28,7 +28,6 @@ const Container = (props) => {
         },
         [setValue],
     );
-
     return (
         <PanneauProvider definition={panneauDefinition}>
             <FieldsProvider>

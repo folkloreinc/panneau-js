@@ -42,7 +42,12 @@ const Modal = ({ id, children, position, title }) => {
                     },
                 ])}
             >
-                <div className={styles.inner}>{children}</div>
+                <div
+                    className={classNames(['modal', 'fade', 'show', 'd-block', styles.inner])}
+                    tabIndex="-1"
+                >
+                    {children}
+                </div>
             </div>
         </ModalPortal>
     );

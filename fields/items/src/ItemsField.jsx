@@ -52,7 +52,7 @@ const propTypes = {
     withoutListGroup: PropTypes.bool,
     addItemDisabled: PropTypes.bool,
     maxItems: PropTypes.number,
-    inline: PropTypes.bool,
+    inline: PropTypes.bool, // TODO: This one aint doing the right thing
     disabled: PropTypes.bool,
 };
 

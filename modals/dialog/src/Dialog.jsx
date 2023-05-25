@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { isMessage } from '@panneau/core/utils';
+import Button from '@panneau/element-button';
 import Buttons from '@panneau/element-buttons';
 import Label from '@panneau/element-label';
 import Modal from '@panneau/element-modal';
@@ -16,7 +18,6 @@ const propTypes = {
     children: PropTypes.node,
     footer: PropTypes.node,
     buttons: PanneauPropTypes.buttons,
-    // theme: PropTypes.oneOf([null, 'dark', 'light']),
     onClickClose: PropTypes.func,
     className: PropTypes.string,
 };
@@ -27,21 +28,11 @@ const defaultProps = {
     children: null,
     footer: null,
     buttons: null,
-    // theme: 'dark',
     onClickClose: null,
     className: null,
 };
 
-const ModalDialog = ({
-    title,
-    header,
-    children,
-    buttons,
-    footer,
-    // theme,
-    onClickClose,
-    className,
-}) => (
+const ModalDialog = ({ title, header, children, buttons, footer, onClickClose, className }) => (
     <Modal>
         <div
             className={classNames([
@@ -55,42 +46,19 @@ const ModalDialog = ({
         >
             <div className="modal-content">
                 {header || (
-                    <div
-                        className={classNames([
-                            'modal-header',
-                            styles.header,
-                            {
-                                // 'bg-dark': theme === 'dark',
-                                // 'border-dark': theme === 'dark',
-                                // 'text-light': theme === 'dark',
-                            },
-                        ])}
-                    >
-                        <h5 className="modal-title">
-                            <Label>{title}</Label>
+                    <div className={classNames(['modal-header', styles.header])}>
+                        <h5 className="modal-title pe-2">
+                            {isMessage ? <Label>{title}</Label> : title}
                         </h5>
-                        <button
+                        <Button
                             type="button"
-                            className="btn btn-secondary close text-light"
+                            className="btn-close close"
                             aria-label="Close"
                             onClick={onClickClose}
-                        >
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        />
                     </div>
                 )}
-                <div
-                    className={classNames([
-                        'modal-body',
-                        styles.body,
-                        {
-                            // [`bg-${theme}`]: theme !== null,
-                            // 'text-light': theme === 'dark',
-                        },
-                    ])}
-                >
-                    {children}
-                </div>
+                <div className={classNames(['modal-body', styles.body])}>{children}</div>
                 {footer !== null || buttons !== null ? (
                     <div className={classNames(['modal-footer', styles.footer])}>
                         {footer}
