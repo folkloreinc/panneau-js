@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-resource-card",
-    "version": "2.0.59",
+    "version": "2.0.68",
     "description": "Resource card element",
     "keywords": [
         "javascript"
@@ -50,8 +50,8 @@
         "@panneau/element-icon": "^2.0.58",
         "@panneau/element-label": "^2.0.58",
         "classnames": "^2.2.6",
-        "prop-types": "^15.7.2",
         "lodash": "^4.17.21",
+        "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
     },
     "publishConfig": {
