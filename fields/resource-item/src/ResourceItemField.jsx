@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+
 /* eslint-disable no-shadow, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import get from 'lodash/get';
@@ -12,6 +14,7 @@ import { usePanneauResource } from '@panneau/core/contexts';
 import { getPathValue, isMessage } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Button from '@panneau/element-button';
+import ResourceCard from '@panneau/element-resource-card';
 import Select from '@panneau/element-select';
 import ResourceForm from '@panneau/form-resource';
 import { useResourceValues } from '@panneau/intl';
@@ -39,6 +42,7 @@ const propTypes = {
 
     placeholder: PropTypes.string,
     canCreate: PropTypes.bool,
+    createInPlace: PropTypes.bool,
     multiple: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
@@ -68,6 +72,7 @@ const defaultProps = {
 
     placeholder: null,
     canCreate: false,
+    createInPlace: false,
     multiple: false,
     disabled: false,
     className: null,
@@ -97,6 +102,7 @@ const ResourceItemField = ({
 
     placeholder,
     canCreate,
+    createInPlace,
     multiple,
     disabled,
     className,
@@ -124,18 +130,24 @@ const ResourceItemField = ({
         () => ({
             ...query,
             ...(!isEmpty(inputTextValue) ? { [searchParamName]: inputTextValue } : null),
+            paginated: false, // TODO: implement this hahahaha
         }),
         [inputTextValue],
     );
 
+    // console.log('resource', resourceId, resource);
+    // console.log('value', value);
+
     const resourceItems = useResourceItems(queryResource, finalQuery, page, count, resourceOptions);
-    const { data: responseItems = null } = resourceItems || {};
+
+    const { items: responseItems = null } = resourceItems || {};
     const { id: valueId = null } = value || {};
     const filteredItems =
         responseItems !== null && valueId !== null
             ? responseItems.filter((it) => (it !== null && it.id ? it.id !== valueId : true))
             : responseItems || [];
-    const items = [...filteredItems, ...(value !== null ? value : [])];
+    const arrayedValue = multiple ? value : [value];
+    const items = [...filteredItems, ...(value !== null ? arrayedValue : [])];
 
     const getItemLabel = useCallback(
         (it, path) => {
@@ -163,7 +175,12 @@ const ResourceItemField = ({
     );
 
     const options = (items || []).map((it) => parseItem(it));
-    const finalValue = multiple && isArray(value) ? value.map((it) => parseItem(it)) : value;
+
+    const partialValue =
+        multiple && isArray(value) ? value.map((it) => parseItem(it)) : value || null;
+    const finalValue =
+        multiple && isArray(partialValue) ? partialValue.map(({ id = null }) => id) : value?.id;
+    // console.log('ultimate', options, finalValue);
 
     const onInputChange = useCallback((textValue) => {
         setInputTextValue(textValue);
@@ -198,72 +215,91 @@ const ResourceItemField = ({
 
     const onCreateSuccess = useCallback(
         (newValue) => {
-            onChange(newValue);
-            setCreateOpen(false);
-            // setInputTextValue('');
+            // console.log('newValue', newValue);
+            if (multiple) {
+                onChange(value !== null && isArray(value) ? [...value, newValue] : [newValue]);
+            } else {
+                onChange(newValue);
+            }
+            setTimeout(() => {
+                setCreateOpen(false);
+            }, 1000);
         },
-        [onChange],
+        [onChange, multiple, value],
     );
 
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
-            <div className={classNames(['row', 'align-items-center'])}>
-                <div className="col-auto flex-grow-1">
-                    <Select
-                        className={classNames([
-                            'py-1',
-                            'shadow-none',
-                            {
-                                [disabled]: disabled,
-                                'is-invalid': errors !== null,
-                                [inputClassName]: inputClassName !== null,
-                            },
-                        ])}
-                        disabled={disabled}
-                        name={name}
-                        value={finalValue}
-                        options={options}
-                        isClearable
-                        isSearchable
-                        placeholder={
-                            isMessage(placeholder) ? (
-                                intl.formatMessage(placeholder)
-                            ) : (
-                                <FormattedMessage
-                                    defaultMessage="Choose an item"
-                                    description="Default placeholder"
-                                />
-                            )
-                        }
-                        onChange={onValueChange}
-                        onInputChange={onInputChange}
-                        multiple={multiple}
-                    />
-                </div>
-                {canCreate ? (
-                    <div className="col-auto">
-                        <Button
-                            theme="primary"
-                            icon="plus-lg"
-                            onClick={createOpen ? onCloseCreate : onOpenCreate}
+            {value !== null && !multiple ? (
+                <ResourceCard item={value} />
+            ) : (
+                <div className={classNames(['row', 'align-items-center'])}>
+                    <div className="col-auto flex-grow-1">
+                        <Select
+                            className={classNames([
+                                'py-1',
+                                'shadow-none',
+                                {
+                                    [disabled]: disabled,
+                                    'is-invalid': errors !== null,
+                                    [inputClassName]: inputClassName !== null,
+                                },
+                            ])}
+                            disabled={disabled}
+                            name={name}
+                            value={finalValue}
+                            options={options}
+                            isClearable
+                            isSearchable
+                            placeholder={
+                                isMessage(placeholder) ? (
+                                    intl.formatMessage(placeholder)
+                                ) : (
+                                    <FormattedMessage
+                                        defaultMessage="Choose an item"
+                                        description="Default placeholder"
+                                    />
+                                )
+                            }
+                            onChange={onValueChange}
+                            onInputChange={onInputChange}
+                            multiple={multiple}
                         />
                     </div>
-                ) : null}
-                {createOpen ? (
-                    <Dialog
-                        title={
-                            <FormattedMessage
-                                values={resourceValues}
-                                defaultMessage="Create {a_singular}"
-                                description="Page title"
+
+                    {canCreate ? (
+                        <div className="col-auto">
+                            <Button
+                                theme="primary"
+                                icon="plus-lg"
+                                onClick={createOpen ? onCloseCreate : onOpenCreate}
+                                outline
                             />
-                        }
-                        onClickClose={onCloseCreate}
-                    >
-                        <ResourceForm resource={resource} onSuccess={onCreateSuccess} />
-                    </Dialog>
-                ) : null}
-            </div>
+                        </div>
+                    ) : null}
+
+                    {createOpen ? (
+                        createInPlace ? (
+                            <div>
+                                <ResourceForm resource={resource} onSuccess={onCreateSuccess} />
+                            </div>
+                        ) : (
+                            <Dialog
+                                title={
+                                    <FormattedMessage
+                                        values={resourceValues}
+                                        defaultMessage="Create {a_singular}"
+                                        description="Page title"
+                                    />
+                                }
+                                onClickClose={onCloseCreate}
+                            >
+                                <ResourceForm resource={resource} onSuccess={onCreateSuccess} />
+                            </Dialog>
+                        )
+                    ) : null}
+                </div>
+            )}
         </div>
     );
 };

@@ -52,7 +52,7 @@ const propTypes = {
     withoutListGroup: PropTypes.bool,
     addItemDisabled: PropTypes.bool,
     maxItems: PropTypes.number,
-    inline: PropTypes.bool, // TODO: This one aint doing the right thing
+    inline: PropTypes.bool,
     disabled: PropTypes.bool,
 };
 
@@ -326,13 +326,47 @@ const ItemsField = ({
                     {
                         'mb-3': !withoutCard,
                         card: !withoutCard,
-                        'd-inline-flex flex-row': inline || withoutCard,
+                        'd-inline-flex flex-row': inline,
                         'list-group-item': withoutCard && !withoutListGroup,
                         show: !inline && !collapsed[index],
                     },
                 ])}
                 key={`item-${id}`}
             >
+                {withoutCard && !inline ? (
+                    <div
+                        className={classNames([
+                            {
+                                'd-flex': true,
+                                'align-items-end': true,
+                                'justify-content-end': true,
+                                'w-100': true,
+                                'border-bottom-0': !withoutCard,
+                            },
+                        ])}
+                    >
+                        {!withoutSort && !disabled ? (
+                            <Button
+                                className="me-2 item-handle"
+                                theme="secondary"
+                                size="sm"
+                                outline
+                            >
+                                <FontAwesomeIcon icon={faGripLines} />
+                            </Button>
+                        ) : null}
+                        {!withoutRemove && !disabled ? (
+                            <Button
+                                theme="secondary"
+                                size="sm"
+                                onClick={(e) => onClickRemove(e, it, index)}
+                                outline
+                            >
+                                <FontAwesomeIcon icon={faTimes} />
+                            </Button>
+                        ) : null}
+                    </div>
+                ) : null}
                 {!inline && !withoutCard ? (
                     <div
                         className={classNames([
@@ -402,17 +436,8 @@ const ItemsField = ({
                             : itemChildren
                         : null}
                 </div>
-                {inline || withoutCard ? (
-                    <div
-                        className={classNames([
-                            {
-                                'card-header': !withoutCard,
-                                'd-flex': true,
-                                'border-bottom-0': !withoutCard,
-                                'ps-2': withoutCard,
-                            },
-                        ])}
-                    >
+                {inline && !withoutCard ? (
+                    <div className={classNames(['card-header', 'd-flex', 'border-bottom-0'])}>
                         {!withoutSort && !disabled ? (
                             <Button
                                 className="m-auto me-2 item-handle"
@@ -425,9 +450,9 @@ const ItemsField = ({
                         ) : null}
                         {!withoutRemove && !disabled ? (
                             <Button
+                                className="m-auto"
                                 theme="secondary"
                                 size="sm"
-                                className="m-auto"
                                 onClick={(e) => onClickRemove(e, it, index)}
                                 outline
                             >

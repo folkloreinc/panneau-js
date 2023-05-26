@@ -311,6 +311,12 @@ msgctxt "UpStcP"
 msgid "Could not find type for this item"
 msgstr "Could not find type for this item"
 
+# Menu label
+#: V7Us0a
+msgctxt "V7Us0a"
+msgid "Update account"
+msgstr "Update account"
+
 # Field label
 #: VhJUeW
 msgctxt "VhJUeW"

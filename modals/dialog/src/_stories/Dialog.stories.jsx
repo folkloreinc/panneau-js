@@ -21,12 +21,3 @@ export const Normal = () => (
         </Dialog>
     </ModalProvider>
 );
-
-export const White = () => (
-    <ModalProvider>
-        <Modals />
-        <Dialog title="Hello">
-            <div>Helloooooo</div>
-        </Dialog>
-    </ModalProvider>
-);

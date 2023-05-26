@@ -7,18 +7,20 @@ import { useUrlGenerator } from '@panneau/core/contexts';
 import Menu from '@panneau/element-menu';
 
 const propTypes = {
+    withAccountForm: PropTypes.bool,
     className: PropTypes.string,
     itemClassName: PropTypes.string,
     linkClassName: PropTypes.string,
 };
 
 const defaultProps = {
+    withAccountForm: false,
     className: null,
     itemClassName: null,
     linkClassName: null,
 };
 
-const AccountMenu = ({ className, itemClassName, linkClassName }) => {
+const AccountMenu = ({ withAccountForm, className, itemClassName, linkClassName }) => {
     const route = useUrlGenerator();
     const user = useUser();
     const logout = useLogout();
@@ -42,15 +44,19 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                           ),
                           href: route('account'),
                           dropdown: [
-                              //   {
-                              //       label: (
-                              //           <FormattedMessage
-                              //               defaultMessage="Update account"
-                              //               description="Menu label"
-                              //           />
-                              //       ),
-                              //       href: route('account'),
-                              //   },
+                              ...(withAccountForm
+                                  ? [
+                                        {
+                                            label: (
+                                                <FormattedMessage
+                                                    defaultMessage="Update account"
+                                                    description="Menu label"
+                                                />
+                                            ),
+                                            href: route('account'),
+                                        },
+                                    ]
+                                  : []),
                               {
                                   label: (
                                       <FormattedMessage
@@ -72,7 +78,7 @@ const AccountMenu = ({ className, itemClassName, linkClassName }) => {
                           href: route('auth.login'),
                       },
                   ],
-        [user, route, onClickLogout],
+        [user, route, onClickLogout, withAccountForm],
     );
     return items !== null ? (
         <Menu

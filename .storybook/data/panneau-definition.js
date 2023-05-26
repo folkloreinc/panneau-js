@@ -33,7 +33,21 @@ export default {
     menus: {
         main: [
             {
-                label: 'test',
+                component: 'dropdown',
+                label: 'Drop',
+                dropdown: [
+                    {
+                        label: 'Pages',
+                        href: '/pages',
+                    },
+                    {
+                        label: 'Events',
+                        href: '/events',
+                    },
+                ],
+            },
+            {
+                label: 'Custom Url',
                 href: '/custom',
             },
             'separator',

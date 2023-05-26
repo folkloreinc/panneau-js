@@ -199,6 +199,10 @@
     "defaultMessage": "Could not find type for this item",
     "description": "Error message"
   },
+  "V7Us0a": {
+    "defaultMessage": "Update account",
+    "description": "Menu label"
+  },
   "VhJUeW": {
     "defaultMessage": "Confirm your password",
     "description": "Field label"
