@@ -26,6 +26,8 @@ const propTypes = {
     errors: PanneauPropTypes.formErrors,
 
     resource: PropTypes.string,
+    resourceType: PropTypes.string,
+
     query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     page: PropTypes.oneOfType([PropTypes.number, PropTypes.string]), // eslint-disable-line react/forbid-prop-types
     count: PropTypes.oneOfType([PropTypes.number, PropTypes.string]), // eslint-disable-line react/forbid-prop-types
@@ -56,6 +58,8 @@ const defaultProps = {
     errors: null,
 
     resource: null,
+    resourceType: null,
+
     query: null,
     page: null,
     count: null,
@@ -86,6 +90,7 @@ const ResourceItemField = ({
     errors,
 
     resource: resourceId,
+    resourceType,
     query: initialQuery,
     page: initialPage,
     count: initialCount,
@@ -222,15 +227,18 @@ const ResourceItemField = ({
     const onCreateSuccess = useCallback(
         (newValue) => {
             if (onChange === null) return;
-
+            const finalNewValue =
+                resourceType !== null ? { type: resourceType, ...newValue } : newValue;
             if (multiple) {
-                onChange(value !== null && isArray(value) ? [...value, newValue] : [newValue]);
+                onChange(
+                    value !== null && isArray(value) ? [...value, finalNewValue] : [finalNewValue],
+                );
             } else {
-                onChange(newValue);
+                onChange(finalNewValue);
             }
             setCreateOpen(false);
         },
-        [onChange, multiple, value, setCreateOpen],
+        [onChange, multiple, value, setCreateOpen, resourceType],
     );
 
     const onClickRemove = useCallback(() => {
@@ -302,7 +310,11 @@ const ResourceItemField = ({
 
                     {createOpen ? (
                         createInPlace ? (
-                            <ResourceForm resource={resource} onSuccess={onCreateSuccess} />
+                            <ResourceForm
+                                resource={resource}
+                                type={resourceType}
+                                onSuccess={onCreateSuccess}
+                            />
                         ) : (
                             <Dialog
                                 title={
@@ -315,7 +327,11 @@ const ResourceItemField = ({
                                 size="lg"
                                 onClickClose={onCloseCreate}
                             >
-                                <ResourceForm resource={resource} onSuccess={onCreateSuccess} />
+                                <ResourceForm
+                                    resource={resource}
+                                    type={resourceType}
+                                    onSuccess={onCreateSuccess}
+                                />
                             </Dialog>
                         )
                     ) : null}
