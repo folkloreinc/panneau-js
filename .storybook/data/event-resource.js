@@ -21,7 +21,7 @@ export default {
         {
             name: 'page',
             label: 'Page',
-            type: 'resource-item',
+            type: 'page',
             component: 'resource-item',
             resource: 'pages',
             query: { paginated: false },
@@ -29,6 +29,17 @@ export default {
             itemLabelPath: 'title.fr',
             itemLabelWithId: true,
         },
+        // {
+        //     name: 'page',
+        //     label: 'Page',
+        //     type: 'page',
+        //     component: 'item',
+        //     resource: 'pages',
+        //     query: { paginated: false },
+        //     canCreate: true,
+        //     itemLabelPath: 'title.fr',
+        //     itemLabelWithId: true,
+        // },
         {
             name: 'email',
             label: 'Email',
@@ -38,7 +49,14 @@ export default {
                 index: 'text',
             },
         },
-        { name: 'organizer', label: 'Organisateur image', type: 'image', component: 'image' },
+        {
+            name: 'organizer_image',
+            label: 'Organisateur image',
+            type: 'image',
+            component: 'image',
+            withButton: true,
+            withResourceList: true,
+        },
         { name: 'blocks', label: 'Blocks', component: 'items', withoutFormGroup: true },
     ],
 

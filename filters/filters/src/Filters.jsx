@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
-import { useFiltersComponents, usePanneauColorScheme } from '@panneau/core/contexts';
+import { useFiltersComponents } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import FormGroup from '@panneau/element-form-group';
@@ -48,7 +48,6 @@ const ResourceFilters = ({
     className,
 }) => {
     const FilterComponents = useFiltersComponents();
-    const { background } = usePanneauColorScheme();
     const currentFilters = filters || [];
 
     const onFiltersReset = useCallback(() => {
@@ -98,7 +97,6 @@ const ResourceFilters = ({
                 'flex-column',
                 'flex-md-row',
             ])}
-            theme={background}
             withoutCollapse
         >
             {currentFilters.map(({ component, name, groupLabel, ...filterProps }, index) => {

@@ -31,12 +31,14 @@ const propTypes = {
     showUrl: PropTypes.string,
     editLabel: PropTypes.node,
     deleteLabel: PropTypes.node,
+    selectLabel: PropTypes.node,
     reload: PropTypes.func,
     reloadPage: PropTypes.func,
     updateItem: PropTypes.func,
     onClickShow: PropTypes.func,
     onClickEdit: PropTypes.func,
     onClickDelete: PropTypes.func,
+    onClickSelect: PropTypes.func,
     withoutItemShowUrl: PropTypes.bool,
     className: PropTypes.string,
 };
@@ -51,12 +53,14 @@ const defaultProps = {
     showUrl: null,
     editLabel: <FormattedMessage defaultMessage="Edit" description="Button label" />,
     deleteLabel: <FormattedMessage defaultMessage="Delete" description="Button label" />,
+    selectLabel: <FormattedMessage defaultMessage="Select" description="Button label" />,
     reload: null,
     reloadPage: null,
     updateItem: null,
     onClickShow: null,
     onClickEdit: null,
     onClickDelete: null,
+    onClickSelect: null,
     withoutItemShowUrl: false,
     className: null,
 };
@@ -72,12 +76,14 @@ const ItemActions = ({
     showUrl,
     editLabel,
     deleteLabel,
+    selectLabel,
     reload,
     reloadPage,
     updateItem,
     onClickShow,
     onClickEdit,
     onClickDelete,
+    onClickSelect,
     withoutItemShowUrl,
     className,
 }) => {
@@ -177,6 +183,14 @@ const ItemActions = ({
                                                     : null,
                                             theme: 'danger',
                                             onClick: onClickDelete,
+                                        };
+                                    case 'select':
+                                        return {
+                                            id: 'select',
+                                            label: iconsOnly ? null : selectLabel,
+                                            icon: iconsOnly ? <Icon name="check" /> : null,
+                                            theme: 'primary',
+                                            onClick: () => onClickSelect(item),
                                         };
                                     default:
                                         break;

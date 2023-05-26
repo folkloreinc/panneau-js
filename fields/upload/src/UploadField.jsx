@@ -17,6 +17,8 @@ import { useUppy } from '@panneau/core/contexts';
 // import { useResizeObserver } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
+import ResourceItemsList from '@panneau/list-resource-items';
+import Dialog from '@panneau/modal-dialog';
 
 import styles from './styles.module.scss';
 
@@ -40,7 +42,7 @@ const propTypes = {
         PropTypes.oneOf(['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive']),
     ),
     withButton: PropTypes.bool,
-    withSearchModal: PropTypes.bool,
+    withResourceList: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.label,
     searchButtonLabel: PanneauPropTypes.label,
     allowMultipleUploads: PropTypes.bool,
@@ -60,7 +62,7 @@ const defaultProps = {
     fileTypes: null,
     sources: ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'],
     withButton: false,
-    withSearchModal: false,
+    withResourceList: false,
     addButtonLabel: (
         <FormattedMessage defaultMessage="Add file" description="Default upload add button label" />
     ),
@@ -87,7 +89,7 @@ const UploadField = ({
     fileTypes,
     sources,
     withButton,
-    withSearchModal,
+    withResourceList,
     addButtonLabel,
     searchButtonLabel,
     allowMultipleUploads,
@@ -103,13 +105,6 @@ const UploadField = ({
     // const { ref: containerRef, entry = null } = useResizeObserver();
     // const { contentRect } = entry || {};
     // const { width: containerWidth = null } = contentRect || {};
-
-    const [mediaModalOpen, setMediaModalOpen] = useState(false);
-    const showMediaModal = withSearchModal && mediaModalOpen;
-
-    const toggleSearchModal = useCallback(() => {
-        setMediaModalOpen(!mediaModalOpen);
-    }, [mediaModalOpen, setMediaModalOpen]);
 
     const onComplete = useCallback(
         (response) => {
@@ -153,7 +148,6 @@ const UploadField = ({
         }
         return typesString.split('.').map((type) => `${type}/*`);
     }, [typesString, fileTypes]);
-
     const uppy = useUppy({
         allowedFileTypes,
         allowMultipleUploads,
@@ -161,6 +155,14 @@ const UploadField = ({
         autoProceed: true,
         onComplete,
     });
+
+    const [modalOpened, setModalOpened] = useState(false);
+    const openModal = useCallback(() => {
+        setModalOpened(true);
+    }, [setModalOpened]);
+    const closeModal = useCallback(() => {
+        setModalOpened(false);
+    }, [setModalOpened]);
 
     const onClickRemove = useCallback(
         (idx) => {
@@ -173,24 +175,33 @@ const UploadField = ({
         [value, onChange],
     );
 
-    const [modalOpened, setModalOpened] = useState(false);
-
-    const openModal = useCallback(() => {
-        setModalOpened(true);
-    }, [setModalOpened]);
-
-    const closeModal = useCallback(() => {
-        setModalOpened(false);
-    }, [setModalOpened]);
-
     const values = useMemo(() => {
         if (isArray(value)) {
             return value;
         }
         return value !== null ? [value] : null;
     }, [value]);
-
     const hasMedia = values !== null && values.length > 0;
+
+    const [resourceModalOpen, setResourceModalOpen] = useState(false);
+    const showResourceModal = withResourceList && resourceModalOpen;
+    const toggleResourceModal = useCallback(() => {
+        setResourceModalOpen(!resourceModalOpen);
+    }, [resourceModalOpen, setResourceModalOpen]);
+    const closeResourceModal = useCallback(() => {
+        setResourceModalOpen(false);
+    }, [resourceModalOpen, setResourceModalOpen]);
+
+    const onClickSelect = useCallback(
+        (newValue) => {
+            if (onChange !== null) {
+                console.log(newValue, onChange);
+                onChange(newValue);
+                setResourceModalOpen(false);
+            }
+        },
+        [onChange, setResourceModalOpen],
+    );
 
     return (
         <div
@@ -334,12 +345,12 @@ const UploadField = ({
                             <Label>{addButtonLabel}</Label>
                         </Button>
                     </div>
-                    {withSearchModal ? (
+                    {withResourceList ? (
                         <div className="col-auto ps-0">
                             <Button
                                 type="button"
                                 theme="primary"
-                                onClick={toggleSearchModal}
+                                onClick={toggleResourceModal}
                                 disabled={disabled}
                             >
                                 <Label>{searchButtonLabel}</Label>
@@ -348,7 +359,7 @@ const UploadField = ({
                     ) : null}
                 </div>
             ) : null}
-            {!showMediaModal && !disabled && !hasMedia && !withButton && uppy !== null ? (
+            {!showResourceModal && !disabled && !hasMedia && !withButton && uppy !== null ? (
                 <div className={styles.dashboard}>
                     <Dashboard
                         uppy={uppy}
@@ -365,7 +376,7 @@ const UploadField = ({
                     />
                 </div>
             ) : null}
-            {!showMediaModal && !disabled && withButton && uppy !== null ? (
+            {!showResourceModal && !disabled && withButton && uppy !== null ? (
                 <DashboardModal
                     uppy={uppy}
                     plugins={sources}
@@ -374,7 +385,18 @@ const UploadField = ({
                     closeModalOnClickOutside
                 />
             ) : null}
-            {showMediaModal ? 'Hello' : null}
+            {showResourceModal ? (
+                <Dialog
+                    title={<Label>{searchButtonLabel}</Label>}
+                    size="lg"
+                    onClickClose={closeResourceModal}
+                >
+                    <ResourceItemsList
+                        resource="medias"
+                        listProps={{ actions: ['select'], actionsProps: { onClickSelect } }}
+                    />
+                </Dialog>
+            ) : null}
         </div>
     );
 };

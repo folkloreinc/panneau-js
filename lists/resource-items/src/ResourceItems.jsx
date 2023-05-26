@@ -4,12 +4,14 @@ import React, { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useListsComponents, usePanneauColorScheme } from '@panneau/core/contexts';
+import {
+    useListsComponents, // usePanneauColorScheme,
+    usePanneauResource,
+} from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Pagination from '@panneau/element-pagination';
-
-// import ResourceFilters from './ResourceFilters';
+import Filters from '@panneau/filter-filters';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -39,7 +41,7 @@ const defaultProps = {
 };
 
 const ResourceItemsList = ({
-    resource,
+    resource: resourceId,
     query,
     baseUrl,
     onQueryChange,
@@ -49,6 +51,8 @@ const ResourceItemsList = ({
     showFilters,
     listProps: customListProps,
 }) => {
+    const resource = usePanneauResource(resourceId);
+
     const {
         index: {
             component: listComponent = null,
@@ -59,7 +63,7 @@ const ResourceItemsList = ({
         } = {},
     } = resource;
 
-    const { background: theme = null } = usePanneauColorScheme();
+    // const { background: theme = null } = usePanneauColorScheme();
     const ListComponents = useListsComponents();
 
     const [page, queryWithoutPage] = useMemo(() => {
@@ -72,6 +76,7 @@ const ResourceItemsList = ({
         queryWithoutPage,
         paginated ? parseInt(page, 10) : null,
     );
+
     const { loaded = false, loading = false, lastPage = 0, total = 0 } = itemsProps || {};
     const finalEmpty = loaded && !loading && total === 0;
 
@@ -79,15 +84,14 @@ const ResourceItemsList = ({
 
     return (
         <>
-            {showFilters && filters !== null
-                ? // <ResourceFilters
-                  //     filters={filters}
-                  //     value={query}
-                  //     onChange={onQueryChange}
-                  //     onReset={onQueryReset}
-                  // />
-                  'Lol filters'
-                : null}
+            {showFilters && filters !== null ? (
+                <Filters
+                    filters={filters}
+                    value={query}
+                    onChange={onQueryChange}
+                    onReset={onQueryReset}
+                />
+            ) : null}
             {paginated && showPagination ? (
                 <Pagination
                     page={page}
@@ -108,7 +112,6 @@ const ResourceItemsList = ({
                     query={query}
                     onQueryChange={onQueryChange}
                     onQueryReset={onQueryReset}
-                    theme={theme}
                     showEmptyLabel={finalEmpty}
                     emptyLabel={
                         <p className="my-2">

@@ -131,6 +131,10 @@
     "defaultMessage": "F",
     "description": "Friday letter"
   },
+  "JeVLdN": {
+    "defaultMessage": "Select",
+    "description": "Button label"
+  },
   "Ke35Pv": {
     "defaultMessage": "Edit",
     "description": "Button label"

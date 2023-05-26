@@ -14,6 +14,7 @@ import styles from './styles.module.scss';
 
 const propTypes = {
     title: PanneauPropTypes.label,
+    size: PropTypes.string,
     header: PropTypes.node,
     children: PropTypes.node,
     footer: PropTypes.node,
@@ -24,6 +25,7 @@ const propTypes = {
 
 const defaultProps = {
     title: null,
+    size: null,
     header: null,
     children: null,
     footer: null,
@@ -32,13 +34,23 @@ const defaultProps = {
     className: null,
 };
 
-const ModalDialog = ({ title, header, children, buttons, footer, onClickClose, className }) => (
+const ModalDialog = ({
+    title,
+    size,
+    header,
+    children,
+    buttons,
+    footer,
+    onClickClose,
+    className,
+}) => (
     <Modal>
         <div
             className={classNames([
                 'modal-dialog',
                 styles.container,
                 {
+                    [`modal-${size}`]: size !== null,
                     [className]: className,
                 },
             ])}

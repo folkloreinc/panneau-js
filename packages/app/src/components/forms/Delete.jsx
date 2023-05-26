@@ -35,6 +35,8 @@ const defaultProps = {
     className: null,
 };
 
+// TODO: remove this? unused
+
 const DeleteForm = ({
     resource,
     action,

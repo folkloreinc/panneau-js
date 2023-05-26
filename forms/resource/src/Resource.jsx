@@ -88,23 +88,12 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
     );
 
     const [value, setValueState] = useState(getInitialValue());
-
     const setValue = useCallback(
         (newValue) => {
-            // console.log('new value in resource form', newValue); // eslint-disable-line
             setValueState(newValue);
         },
         [setValueState],
     );
-
-    const { fields, onSubmit, status, generalError, errors } = useForm({
-        fields: finalFields,
-        value,
-        postForm,
-        setValue,
-        onComplete: onSuccess,
-        locales,
-    });
 
     // Form action
     const modifyAction = isCreate
@@ -119,6 +108,16 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
           })
         : modifyAction;
 
+    const { fields, onSubmit, status, generalError, errors } = useForm({
+        action,
+        fields: finalFields,
+        value,
+        postForm,
+        setValue,
+        onComplete: onSuccess,
+        locales,
+    });
+
     const defaultFormName = isDelete
         ? component || formComponent || null
         : component || formComponent || defaultComponent || 'normal';
@@ -130,9 +129,8 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
         isDelete ? DeleteForm : component,
     );
 
-    // Lisen to item value change - this is important
+    // Listen to item value change - this is important
     useEffect(() => {
-        // console.log('get initial value from the top'); // eslint-disable-line
         setValue(getInitialValue());
     }, [getInitialValue, setValue]);
 

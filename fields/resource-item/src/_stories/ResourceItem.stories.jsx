@@ -29,7 +29,8 @@ const Container = (props) => {
         },
         [setValue],
     );
-    console.log('panneauDefinition', panneauDefinition);
+
+    // console.log('panneauDefinition', panneauDefinition);
 
     return (
         <ModalProvider>

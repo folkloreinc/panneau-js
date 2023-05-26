@@ -210,6 +210,12 @@ msgid "F"
 msgstr "F"
 
 # Button label
+#: JeVLdN
+msgctxt "JeVLdN"
+msgid "Select"
+msgstr "Select"
+
+# Button label
 #: Ke35Pv
 msgctxt "Ke35Pv"
 msgid "Edit"

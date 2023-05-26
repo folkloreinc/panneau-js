@@ -35,6 +35,7 @@ const propTypes = {
     reload: PropTypes.func,
     reloadPage: PropTypes.func,
     updateItem: PropTypes.func,
+    actionsProps: PropTypes.shape({}),
 };
 
 const defaultProps = {
@@ -53,6 +54,7 @@ const defaultProps = {
     reload: null,
     reloadPage: null,
     updateItem: null,
+    actionsProps: null,
 };
 
 const TableList = ({
@@ -72,6 +74,7 @@ const TableList = ({
     reload,
     reloadPage,
     updateItem,
+    actionsProps,
 }) => {
     const displayComponents = useDisplaysComponents();
 
@@ -248,6 +251,7 @@ const TableList = ({
                                                 reload={reload}
                                                 reloadPage={reloadPage}
                                                 updateItem={updateItem}
+                                                {...actionsProps}
                                             />
                                         </td>
                                     ) : null}

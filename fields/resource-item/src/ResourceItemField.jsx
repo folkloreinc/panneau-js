@@ -34,10 +34,10 @@ const propTypes = {
 
     getItemLabel: PropTypes.func,
     getItemDescription: PropTypes.func,
-    // getItemImage: PropTypes.func,
+    getItemImage: PropTypes.func,
     itemLabelPath: PropTypes.string,
     itemDescriptionPath: PropTypes.string,
-    // itemImagePath: PropTypes.string,
+    itemImagePath: PropTypes.string,
     itemLabelWithId: PropTypes.bool,
 
     placeholder: PropTypes.string,
@@ -64,10 +64,10 @@ const defaultProps = {
 
     getItemLabel: getPathValue,
     getItemDescription: getPathValue,
-    // getItemImage: getPathValue,
+    getItemImage: getPathValue,
     itemLabelPath: 'label',
     itemDescriptionPath: null,
-    // itemImagePath: 'image',
+    itemImagePath: 'image',
     itemLabelWithId: false,
 
     placeholder: null,
@@ -94,10 +94,10 @@ const ResourceItemField = ({
 
     getItemLabel: initialGetItemLabel,
     getItemDescription,
-    // getItemImage,
+    getItemImage,
     itemLabelPath,
     itemDescriptionPath,
-    // itemImagePath,
+    itemImagePath,
     itemLabelWithId,
 
     placeholder,
@@ -130,24 +130,18 @@ const ResourceItemField = ({
         () => ({
             ...query,
             ...(!isEmpty(inputTextValue) ? { [searchParamName]: inputTextValue } : null),
-            paginated: false, // TODO: implement this hahahaha
+            paginated: false, // TODO: implement this...
         }),
         [inputTextValue],
     );
 
     // console.log('resource', resourceId, resource);
-    // console.log('value', value);
 
     const resourceItems = useResourceItems(queryResource, finalQuery, page, count, resourceOptions);
-
-    const { items: responseItems = null } = resourceItems || {};
-    const { id: valueId = null } = value || {};
-    const filteredItems =
-        responseItems !== null && valueId !== null
-            ? responseItems.filter((it) => (it !== null && it.id ? it.id !== valueId : true))
-            : responseItems || [];
-    const arrayedValue = multiple ? value : [value];
-    const items = [...filteredItems, ...(value !== null ? arrayedValue : [])];
+    const { items: partialItems = null } = resourceItems || {};
+    const items = (partialItems || [])
+        .concat(multiple && isArray(value) ? value : [value])
+        .filter((it) => it !== null);
 
     const getItemLabel = useCallback(
         (it, path) => {
@@ -174,12 +168,25 @@ const ResourceItemField = ({
         [getItemLabel, getItemDescription, itemLabelPath, itemDescriptionPath],
     );
 
-    const options = (items || []).map((it) => parseItem(it));
-
     const partialValue =
         multiple && isArray(value) ? value.map((it) => parseItem(it)) : value || null;
+
     const finalValue =
-        multiple && isArray(partialValue) ? partialValue.map(({ id = null }) => id) : value?.id;
+        multiple && isArray(partialValue)
+            ? partialValue.map(({ id = null }) => id)
+            : value?.id || null;
+
+    const options = (items || []).map((it) => parseItem(it));
+
+    // TODO: filter duplicate IDs blabla
+    // const { id: valueId = null } = value || {};
+    // const filteredItems =
+    //     responseItems !== null && valueId !== null
+    //         ? responseItems.filter((it) => (it !== null && it.id ? it.id !== valueId : true))
+    //         : responseItems || [];
+    // const arrayedValue = multiple ? value : [value];
+    // const items = [...filteredItems, ...(value !== null ? arrayedValue : [])];
+    // console.log(options, items, value, finalValue, onChange);
     // console.log('ultimate', options, finalValue);
 
     const onInputChange = useCallback((textValue) => {
@@ -189,7 +196,6 @@ const ResourceItemField = ({
     const onValueChange = useCallback(
         (newId) => {
             if (onChange === null) return;
-
             if (multiple) {
                 const newValue = items.filter(({ id = null }) => newId.indexOf(id) !== -1) || [];
                 onChange(newValue);
@@ -215,23 +221,39 @@ const ResourceItemField = ({
 
     const onCreateSuccess = useCallback(
         (newValue) => {
-            // console.log('newValue', newValue);
+            if (onChange === null) return;
+
             if (multiple) {
                 onChange(value !== null && isArray(value) ? [...value, newValue] : [newValue]);
             } else {
                 onChange(newValue);
             }
-            setTimeout(() => {
-                setCreateOpen(false);
-            }, 1000);
+            setCreateOpen(false);
         },
-        [onChange, multiple, value],
+        [onChange, multiple, value, setCreateOpen],
     );
+
+    const onClickRemove = useCallback(() => {
+        if (onChange !== null) {
+            onChange(null);
+        }
+    }, [onChange]);
 
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
             {value !== null && !multiple ? (
-                <ResourceCard item={value} />
+                <ResourceCard
+                    item={value}
+                    getItemLabel={initialGetItemLabel}
+                    getItemDescription={getItemDescription}
+                    getItemImage={getItemImage}
+                    itemLabelPath={itemLabelPath}
+                    itemDescriptionPath={itemDescriptionPath}
+                    itemImagePath={itemImagePath}
+                    itemLabelWithId={itemLabelWithId}
+                    disable={disabled}
+                    onClickRemove={onClickRemove}
+                />
             ) : (
                 <div className={classNames(['row', 'align-items-center'])}>
                     <div className="col-auto flex-grow-1">
@@ -280,9 +302,7 @@ const ResourceItemField = ({
 
                     {createOpen ? (
                         createInPlace ? (
-                            <div>
-                                <ResourceForm resource={resource} onSuccess={onCreateSuccess} />
-                            </div>
+                            <ResourceForm resource={resource} onSuccess={onCreateSuccess} />
                         ) : (
                             <Dialog
                                 title={
@@ -292,6 +312,7 @@ const ResourceItemField = ({
                                         description="Page title"
                                     />
                                 }
+                                size="lg"
                                 onClickClose={onCloseCreate}
                             >
                                 <ResourceForm resource={resource} onSuccess={onCreateSuccess} />

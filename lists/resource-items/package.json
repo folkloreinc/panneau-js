@@ -51,6 +51,7 @@
         "@panneau/element-form-group": "^2.0.60",
         "@panneau/element-navbar": "^2.0.59",
         "@panneau/element-pagination": "^2.0.58",
+        "@panneau/filter-filters": "^2.0.58",
         "@panneau/list-table": "^2.0.60",
         "@panneau/themes": "^2.0.58",
         "classnames": "^2.2.6",

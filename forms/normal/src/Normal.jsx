@@ -54,6 +54,7 @@ const NormalForm = ({
     ...props
 }) => {
     const FieldsComponent = useFieldComponent('fields');
+
     return (
         <Form
             className={classNames([

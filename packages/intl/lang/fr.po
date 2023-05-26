@@ -212,6 +212,12 @@ msgid "F"
 msgstr "V"
 
 # Button label
+#: JeVLdN
+msgctxt "JeVLdN"
+msgid "Select"
+msgstr "Sélectionner"
+
+# Button label
 #: Ke35Pv
 msgctxt "Ke35Pv"
 msgid "Edit"
@@ -317,7 +323,7 @@ msgstr "Nous n'avons pas pu trouver ce type d'élément"
 #: V7Us0a
 msgctxt "V7Us0a"
 msgid "Update account"
-msgstr ""
+msgstr "Mon compte"
 
 # Field label
 #: VhJUeW

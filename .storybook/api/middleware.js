@@ -213,6 +213,7 @@ module.exports = () => {
             updated_at: now,
         };
         addResourceItem(resource, newItem);
+        // console.log('create', newItem);
         res.json(newItem);
         res.end();
     });
@@ -226,11 +227,13 @@ module.exports = () => {
             return;
         }
         const { _method, ...item } = req.body;
+        // console.log('update item', item);
         const newItem = {
             ...currentItem,
             ...item,
             updated_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         };
+        // console.log('update', newItem);
         updateResourceItem(resource, newItem);
         res.json(newItem);
         res.end();

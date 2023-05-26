@@ -26,7 +26,7 @@ export const Disabled = () => <Container disabled value={{ url: 'lol' }} />;
 
 export const WithButton = () => <Container withButton />;
 
-export const WithSearchModal = () => <Container withButton withSearchModal />;
+export const WithResourceList = () => <Container withButton withResourceList />;
 
 export const Audio = () => <Container types={['audio']} />;
 
