@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-pagination",
-    "version": "2.0.58",
+    "version": "2.0.69",
     "description": "Pagination element",
     "keywords": [
         "javascript"
@@ -54,10 +54,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^2.0.58",
-        "@panneau/element-icon": "^2.0.58",
-        "@panneau/element-label": "^2.0.58",
-        "@panneau/element-link": "^2.0.58",
+        "@panneau/core": "^2.0.69",
+        "@panneau/element-icon": "^2.0.69",
+        "@panneau/element-label": "^2.0.69",
+        "@panneau/element-link": "^2.0.69",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "query-string": "^8.1.0",

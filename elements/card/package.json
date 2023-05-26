@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-card",
-    "version": "2.0.59",
+    "version": "2.0.69",
     "description": "Card element",
     "keywords": [
         "javascript"
@@ -56,10 +56,10 @@
         "@fortawesome/fontawesome-svg-core": "^1.2.35",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
-        "@panneau/core": "^2.0.58",
-        "@panneau/element-button": "^2.0.59",
-        "@panneau/element-label": "^2.0.58",
-        "@panneau/element-link": "^2.0.58",
+        "@panneau/core": "^2.0.69",
+        "@panneau/element-button": "^2.0.69",
+        "@panneau/element-label": "^2.0.69",
+        "@panneau/element-link": "^2.0.69",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"

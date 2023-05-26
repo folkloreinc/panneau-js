@@ -1,6 +1,6 @@
 {
     "name": "@panneau/data",
-    "version": "2.0.58",
+    "version": "2.0.69",
     "description": "",
     "keywords": [
         "javascript"
@@ -54,7 +54,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.15",
-        "@panneau/core": "^2.0.58",
+        "@panneau/core": "^2.0.69",
         "prop-types": "^15.7.2",
         "query-string": "^8.1.0",
         "react-router": "^6.2.1"
