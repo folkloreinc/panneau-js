@@ -116,6 +116,9 @@
     "NI9440": {
         "defaultMessage": "Ajouter un fichier"
     },
+    "NdhsZI": {
+        "defaultMessage": "Trouver un média"
+    },
     "Of2stw": {
         "defaultMessage": "J"
     },
@@ -217,9 +220,6 @@
     },
     "mCfzkJ": {
         "defaultMessage": "Modifier {a_singular}"
-    },
-    "oTrX3h": {
-        "defaultMessage": "Chercher un média"
     },
     "oc3YLT": {
         "defaultMessage": "Choisissez un item"

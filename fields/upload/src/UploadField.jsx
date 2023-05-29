@@ -68,7 +68,7 @@ const defaultProps = {
     ),
     searchButtonLabel: (
         <FormattedMessage
-            defaultMessage="Search media"
+            defaultMessage="Find media"
             description="Default upload add button label"
         />
     ),

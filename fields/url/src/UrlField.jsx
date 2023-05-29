@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { faEye } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import isEmpty from 'lodash/isEmpty';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { copyToClipboard } from '@panneau/core/utils';
+import Button from '@panneau/element-button';
+import Icon from '@panneau/element-icon';
 import TextField from '@panneau/field-text';
 
 const getScheme = (url, schemesPattern) => {
@@ -29,6 +30,7 @@ const propTypes = {
     prepend: PropTypes.string,
     append: PropTypes.string,
     preview: PropTypes.bool,
+    copy: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
 };
@@ -42,6 +44,7 @@ const defaultProps = {
     prepend: null,
     append: null,
     preview: false,
+    copy: false,
     className: null,
     onChange: null,
 };
@@ -55,6 +58,7 @@ const UrlField = ({
     prepend,
     append,
     preview,
+    copy,
     className,
     onChange,
     ...props
@@ -83,7 +87,6 @@ const UrlField = ({
             const newValueWithScheme = !isEmpty(newValue)
                 ? withScheme(newValue, scheme, schemesPattern)
                 : null;
-
             if (onChange !== null) {
                 onChange(newValueWithScheme);
             }
@@ -107,6 +110,10 @@ const UrlField = ({
         },
         [open, setOpen, schemesPattern, valueWithoutScheme, onChange],
     );
+
+    const onClickCopy = useCallback(() => {
+        copyToClipboard(valueWithoutScheme);
+    }, [valueWithoutScheme]);
 
     const finalPrependValue = prepend || url || scheme;
 
@@ -153,17 +160,27 @@ const UrlField = ({
             prepend || url
         );
 
-    const finalAppend = preview ? (
+    const partialAppend = preview ? (
         <a
             href={value !== null ? `${finalPrepend}${valueWithoutScheme}` : null}
             className="input-group-text"
             target="_blank"
             rel="noreferrer"
         >
-            <FontAwesomeIcon icon={faEye} />
+            <Icon name="eye-fill" />
         </a>
     ) : (
         append
+    );
+
+    const finalAppend = copy ? (
+        <div className="input-group-text p-0">
+            <Button size="sm" onClick={onClickCopy}>
+                <Icon name="clipboard" />
+            </Button>
+        </div>
+    ) : (
+        partialAppend
     );
 
     return (

@@ -245,6 +245,12 @@ msgctxt "NI9440"
 msgid "Add file"
 msgstr "Add file"
 
+# Default upload add button label
+#: NdhsZI
+msgctxt "NdhsZI"
+msgid "Find media"
+msgstr "Find media"
+
 # Tuesday letter
 #: Of2stw
 msgctxt "Of2stw"
@@ -447,12 +453,6 @@ msgstr "Skip setup"
 msgctxt "mCfzkJ"
 msgid "Edit {a_singular}"
 msgstr "Edit {a_singular}"
-
-# Default upload add button label
-#: oTrX3h
-msgctxt "oTrX3h"
-msgid "Search media"
-msgstr "Search media"
 
 # Default placeholder
 #: oc3YLT

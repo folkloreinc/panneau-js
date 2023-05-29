@@ -1,6 +1,7 @@
 export { default as convertStyleToString } from './convertStyleToString';
 export { default as createNullableOnChange } from './createNullableOnChange';
 export { default as createUseEvent } from './createUseEvent';
+export { default as copyToClipboard } from './copyToClipboard';
 export { default as dashCase } from './dashCase';
 export { default as flattenComponents } from './flattenComponents';
 export { default as getColumnsWithFields } from './getColumnsWithFields';

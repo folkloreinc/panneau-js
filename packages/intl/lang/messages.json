@@ -155,6 +155,10 @@
     "defaultMessage": "Add file",
     "description": "Default upload add button label"
   },
+  "NdhsZI": {
+    "defaultMessage": "Find media",
+    "description": "Default upload add button label"
+  },
   "Of2stw": {
     "defaultMessage": "T",
     "description": "Tuesday letter"
@@ -289,10 +293,6 @@
   "mCfzkJ": {
     "defaultMessage": "Edit {a_singular}",
     "description": "Page title"
-  },
-  "oTrX3h": {
-    "defaultMessage": "Search media",
-    "description": "Default upload add button label"
   },
   "oc3YLT": {
     "defaultMessage": "Choose an item",

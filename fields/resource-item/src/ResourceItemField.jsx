@@ -45,6 +45,7 @@ const propTypes = {
     placeholder: PropTypes.string,
     canCreate: PropTypes.bool,
     createInPlace: PropTypes.bool,
+    createButtonLabel: PropTypes.string,
     multiple: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
@@ -77,6 +78,7 @@ const defaultProps = {
     placeholder: null,
     canCreate: false,
     createInPlace: false,
+    createButtonLabel: null,
     multiple: false,
     disabled: false,
     className: null,
@@ -108,6 +110,7 @@ const ResourceItemField = ({
     placeholder,
     canCreate,
     createInPlace,
+    createButtonLabel,
     multiple,
     disabled,
     className,
@@ -301,10 +304,12 @@ const ResourceItemField = ({
                         <div className="col-auto">
                             <Button
                                 theme="primary"
-                                icon="plus-lg"
+                                icon={createButtonLabel === null ? 'plus-lg' : null}
                                 onClick={createOpen ? onCloseCreate : onOpenCreate}
                                 outline
-                            />
+                            >
+                                {createButtonLabel}
+                            </Button>
                         </div>
                     ) : null}
 
