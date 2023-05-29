@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const useItems = ({
     getPage = null,
@@ -24,6 +24,7 @@ const useItems = ({
     onError = null,
 }) => {
     const isPaginated = getPage !== null || initialPages !== null;
+
     const lastState = useRef(null);
     const initialState = useMemo(() => {
         const finalInitialPages =
@@ -66,6 +67,8 @@ const useItems = ({
         }
         if (isPaginated) {
             const newPage = getPageFromResponse(response);
+            // console.log('new page', newPage);
+
             const newPages = (
                 reset
                     ? [newPage]
@@ -170,6 +173,17 @@ const useItems = ({
         return loadItems();
     };
 
+    const reset = useCallback(() => {
+        setState({
+            loaded: false,
+            loading: false,
+            lastPage: -1,
+            total: 0,
+            pages: null,
+            items: null,
+        });
+    }, [page, setState]);
+
     const updateItem = (newItem) => {
         if (loading) {
             return;
@@ -227,6 +241,8 @@ const useItems = ({
               ) || null
             : null;
 
+    // console.log('yo state', state);
+
     return {
         items,
         pages,
@@ -242,6 +258,7 @@ const useItems = ({
         loadPage,
         reloadPage,
         reload,
+        reset,
         updateItem,
     };
 };

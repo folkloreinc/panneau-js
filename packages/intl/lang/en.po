@@ -245,12 +245,6 @@ msgctxt "NI9440"
 msgid "Add file"
 msgstr "Add file"
 
-# Default upload add button label
-#: NdhsZI
-msgctxt "NdhsZI"
-msgid "Find media"
-msgstr "Find media"
-
 # Tuesday letter
 #: Of2stw
 msgctxt "Of2stw"
@@ -495,6 +489,12 @@ msgstr "Time"
 msgctxt "tPeIKO"
 msgid "Go back to login"
 msgstr "Go back to login"
+
+# Default upload add button label
+#: une5WQ
+msgctxt "une5WQ"
+msgid "Find a file"
+msgstr "Find a file"
 
 # Today date message
 #: v4Qtl9

@@ -14,7 +14,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useUppy } from '@panneau/core/contexts';
-// import { useResizeObserver } from '@panneau/core/hooks';
+import { useResourceQuery } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import ResourceItemsList from '@panneau/list-resource-items';
@@ -42,7 +42,7 @@ const propTypes = {
         PropTypes.oneOf(['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive']),
     ),
     withButton: PropTypes.bool,
-    withResourceList: PropTypes.bool,
+    withFind: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.label,
     searchButtonLabel: PanneauPropTypes.label,
     allowMultipleUploads: PropTypes.bool,
@@ -62,13 +62,13 @@ const defaultProps = {
     fileTypes: null,
     sources: ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'],
     withButton: false,
-    withResourceList: false,
+    withFind: false,
     addButtonLabel: (
         <FormattedMessage defaultMessage="Add file" description="Default upload add button label" />
     ),
     searchButtonLabel: (
         <FormattedMessage
-            defaultMessage="Find media"
+            defaultMessage="Find a file"
             description="Default upload add button label"
         />
     ),
@@ -89,7 +89,7 @@ const UploadField = ({
     fileTypes,
     sources,
     withButton,
-    withResourceList,
+    withFind,
     addButtonLabel,
     searchButtonLabel,
     allowMultipleUploads,
@@ -184,7 +184,7 @@ const UploadField = ({
     const hasMedia = values !== null && values.length > 0;
 
     const [resourceModalOpen, setResourceModalOpen] = useState(false);
-    const showResourceModal = withResourceList && resourceModalOpen;
+    const showResourceModal = withFind && resourceModalOpen;
     const toggleResourceModal = useCallback(() => {
         setResourceModalOpen(!resourceModalOpen);
     }, [resourceModalOpen, setResourceModalOpen]);
@@ -195,13 +195,20 @@ const UploadField = ({
     const onClickSelect = useCallback(
         (newValue) => {
             if (onChange !== null) {
-                console.log(newValue, onChange);
                 onChange(newValue);
                 setResourceModalOpen(false);
             }
         },
         [onChange, setResourceModalOpen],
     );
+
+    const initialQuery = useMemo(() => ({ types }), [types]);
+    const {
+        query: listQuery,
+        onPageChange: onListPageChange,
+        onQueryChange: onListQueryChange,
+        onQueryReset: onListQueryReset,
+    } = useResourceQuery(initialQuery);
 
     return (
         <div
@@ -341,17 +348,19 @@ const UploadField = ({
                             theme="primary"
                             onClick={openModal}
                             disabled={disabled}
+                            outline
                         >
                             <Label>{addButtonLabel}</Label>
                         </Button>
                     </div>
-                    {withResourceList ? (
+                    {withFind ? (
                         <div className="col-auto ps-0">
                             <Button
                                 type="button"
                                 theme="primary"
                                 onClick={toggleResourceModal}
                                 disabled={disabled}
+                                outline
                             >
                                 <Label>{searchButtonLabel}</Label>
                             </Button>
@@ -393,6 +402,10 @@ const UploadField = ({
                 >
                     <ResourceItemsList
                         resource="medias"
+                        query={listQuery}
+                        onPageChange={onListPageChange}
+                        onQueryChange={onListQueryChange}
+                        onQueryReset={onListQueryReset}
                         listProps={{ actions: ['select'], actionsProps: { onClickSelect } }}
                     />
                 </Dialog>

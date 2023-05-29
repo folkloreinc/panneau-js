@@ -155,10 +155,6 @@
     "defaultMessage": "Add file",
     "description": "Default upload add button label"
   },
-  "NdhsZI": {
-    "defaultMessage": "Find media",
-    "description": "Default upload add button label"
-  },
   "Of2stw": {
     "defaultMessage": "T",
     "description": "Tuesday letter"
@@ -321,6 +317,10 @@
   "tPeIKO": {
     "defaultMessage": "Go back to login",
     "description": "Link label"
+  },
+  "une5WQ": {
+    "defaultMessage": "Find a file",
+    "description": "Default upload add button label"
   },
   "v4Qtl9": {
     "defaultMessage": "Today",

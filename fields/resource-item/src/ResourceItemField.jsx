@@ -6,7 +6,7 @@ import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -27,6 +27,7 @@ const propTypes = {
 
     resource: PropTypes.string,
     resourceType: PropTypes.string,
+    paginated: PropTypes.bool,
 
     query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     page: PropTypes.oneOfType([PropTypes.number, PropTypes.string]), // eslint-disable-line react/forbid-prop-types
@@ -44,8 +45,10 @@ const propTypes = {
 
     placeholder: PropTypes.string,
     canCreate: PropTypes.bool,
-    createInPlace: PropTypes.bool,
-    createButtonLabel: PropTypes.string,
+    canEdit: PropTypes.bool,
+    withoutModal: PropTypes.bool,
+    createButtonLabel: PanneauPropTypes.string,
+    editButtonLabel: PanneauPropTypes.message,
     multiple: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
@@ -60,6 +63,7 @@ const defaultProps = {
 
     resource: null,
     resourceType: null,
+    paginated: true,
 
     query: null,
     page: null,
@@ -77,8 +81,10 @@ const defaultProps = {
 
     placeholder: null,
     canCreate: false,
-    createInPlace: false,
+    canEdit: false,
+    withoutModal: false,
     createButtonLabel: null,
+    editButtonLabel: null,
     multiple: false,
     disabled: false,
     className: null,
@@ -93,6 +99,8 @@ const ResourceItemField = ({
 
     resource: resourceId,
     resourceType,
+    paginated,
+
     query: initialQuery,
     page: initialPage,
     count: initialCount,
@@ -109,8 +117,10 @@ const ResourceItemField = ({
 
     placeholder,
     canCreate,
-    createInPlace,
+    canEdit,
+    withoutModal,
     createButtonLabel,
+    editButtonLabel,
     multiple,
     disabled,
     className,
@@ -118,38 +128,65 @@ const ResourceItemField = ({
     onChange,
 }) => {
     const intl = useIntl();
-    // const [initialValue] = useState(value);
-    const [query, setQuery] = useState(initialQuery);
-    const [page, setPage] = useState(initialPage);
-    const [count, setCount] = useState(initialCount);
-    const [resourceOptions, setOptions] = useState(initialOptions);
-
-    // The create option
-    const [createOpen, setCreateOpen] = useState(initialCount);
-
-    // The search query
-    const [inputTextValue, setInputTextValue] = useState('');
-
     const resource = usePanneauResource(resourceId);
     const resourceValues = useResourceValues(resource);
+    const defaultPage = initialPage || (paginated ? 1 : null);
+    const defaultCount = initialCount || (paginated ? 10 : null);
+    // const [initialValue] = useState(value);
+
+    const [formOpen, setFormOpen] = useState(initialCount);
+
+    // The text input search query
+    const [inputTextValue, setInputTextValue] = useState('');
+    const onInputChange = useCallback((textValue) => {
+        setInputTextValue(textValue);
+    }, []);
+
+    // TODO: list state controls?
+    const [query, setQuery] = useState(initialQuery);
+    const [page, setPage] = useState(defaultPage);
+    const [count, setCount] = useState(defaultCount);
+    const [resourceOptions, setOptions] = useState(initialOptions);
 
     const queryResource = useMemo(() => ({ id: resourceId }), [resourceId]);
     const finalQuery = useMemo(
         () => ({
             ...query,
             ...(!isEmpty(inputTextValue) ? { [searchParamName]: inputTextValue } : null),
-            paginated: false, // TODO: implement this...
+            paginated,
         }),
-        [inputTextValue],
+        [inputTextValue, paginated],
     );
 
-    // console.log('resource', resourceId, resource);
+    const resourceItems = useResourceItems(
+        queryResource,
+        finalQuery,
+        paginated ? page : null,
+        paginated ? count : null,
+        resourceOptions,
+    );
 
-    const resourceItems = useResourceItems(queryResource, finalQuery, page, count, resourceOptions);
-    const { items: partialItems = null } = resourceItems || {};
+    const {
+        allItems: partialItems = null,
+        reload = null,
+        reloadPage = null,
+        reset = null,
+        lastPage = null,
+    } = resourceItems || {};
+
     const items = (partialItems || [])
         .concat(multiple && isArray(value) ? value : [value])
-        .filter((it) => it !== null);
+        .filter((it) => it !== null)
+        .filter((v, i, a) => a.findIndex((v2) => v2.id === v.id) === i);
+
+    const onScrollEnd = useCallback(() => {
+        if (page !== null && page >= lastPage) {
+            return;
+        }
+        if (paginated) {
+            setPage(page + 1);
+        }
+    }, [paginated, page, setPage, lastPage]);
 
     const getItemLabel = useCallback(
         (it, path) => {
@@ -176,30 +213,10 @@ const ResourceItemField = ({
         [getItemLabel, getItemDescription, itemLabelPath, itemDescriptionPath],
     );
 
-    const partialValue =
-        multiple && isArray(value) ? value.map((it) => parseItem(it)) : value || null;
-
     const finalValue =
-        multiple && isArray(partialValue)
-            ? partialValue.map(({ id = null }) => id)
-            : value?.id || null;
-
+        multiple && isArray(value) ? value.map(({ id = null }) => id) : value?.id || null;
+    const { type: finalType = null } = !multiple && value !== null ? value : { type: resourceType };
     const options = (items || []).map((it) => parseItem(it));
-
-    // TODO: filter duplicate IDs blabla
-    // const { id: valueId = null } = value || {};
-    // const filteredItems =
-    //     responseItems !== null && valueId !== null
-    //         ? responseItems.filter((it) => (it !== null && it.id ? it.id !== valueId : true))
-    //         : responseItems || [];
-    // const arrayedValue = multiple ? value : [value];
-    // const items = [...filteredItems, ...(value !== null ? arrayedValue : [])];
-    // console.log(options, items, value, finalValue, onChange);
-    // console.log('ultimate', options, finalValue);
-
-    const onInputChange = useCallback((textValue) => {
-        setInputTextValue(textValue);
-    }, []);
 
     const onValueChange = useCallback(
         (newId) => {
@@ -219,17 +236,18 @@ const ResourceItemField = ({
         [items, onChange, multiple],
     );
 
-    const onOpenCreate = useCallback(() => {
-        setCreateOpen(true);
-    }, [setCreateOpen]);
+    const onOpenForm = useCallback(() => {
+        setFormOpen(true);
+    }, [setFormOpen]);
 
-    const onCloseCreate = useCallback(() => {
-        setCreateOpen(false);
-    }, [setCreateOpen]);
+    const onCloseForm = useCallback(() => {
+        setFormOpen(false);
+    }, [setFormOpen]);
 
-    const onCreateSuccess = useCallback(
+    const onFormSuccess = useCallback(
         (newValue) => {
             if (onChange === null) return;
+
             const finalNewValue =
                 resourceType !== null ? { type: resourceType, ...newValue } : newValue;
             if (multiple) {
@@ -239,35 +257,80 @@ const ResourceItemField = ({
             } else {
                 onChange(finalNewValue);
             }
-            setCreateOpen(false);
+            setFormOpen(false);
         },
-        [onChange, multiple, value, setCreateOpen, resourceType],
+        [onChange, multiple, value, setFormOpen, resourceType, paginated, initialPage],
     );
+
+    // If empty try to fetch
+    const onFocus = useCallback(() => {
+        if ((partialItems || []).length === 0) {
+            if (paginated) {
+                reloadPage();
+            } else {
+                reload();
+            }
+        }
+    }, [paginated, partialItems]);
 
     const onClickRemove = useCallback(() => {
         if (onChange !== null) {
             onChange(null);
         }
-    }, [onChange]);
+        // Clear the page and be good
+        if (paginated) {
+            setPage(defaultPage);
+            reset();
+        } else {
+            reset();
+        }
+    }, [onChange, paginated, defaultPage, reload, reloadPage, reset]);
+
+    const form = formOpen ? (
+        <ResourceForm
+            resource={resource}
+            type={finalType}
+            item={!multiple ? value : null}
+            onSuccess={onFormSuccess}
+        />
+    ) : null;
 
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
             {value !== null && !multiple ? (
-                <ResourceCard
-                    item={value}
-                    getItemLabel={initialGetItemLabel}
-                    getItemDescription={getItemDescription}
-                    getItemImage={getItemImage}
-                    itemLabelPath={itemLabelPath}
-                    itemDescriptionPath={itemDescriptionPath}
-                    itemImagePath={itemImagePath}
-                    itemLabelWithId={itemLabelWithId}
-                    disable={disabled}
-                    onClickRemove={onClickRemove}
-                />
+                <div className="row">
+                    <div className="col-10 flex-grow-1">
+                        <ResourceCard
+                            className="flex-grow-1"
+                            item={value}
+                            getItemLabel={initialGetItemLabel}
+                            getItemDescription={getItemDescription}
+                            getItemImage={getItemImage}
+                            itemLabelPath={itemLabelPath}
+                            itemDescriptionPath={itemDescriptionPath}
+                            itemImagePath={itemImagePath}
+                            itemLabelWithId={itemLabelWithId}
+                            disable={disabled}
+                            onClickRemove={onClickRemove}
+                        />
+                    </div>
+                    {canEdit && !multiple ? (
+                        <div className="col-auto">
+                            <Button
+                                theme="primary"
+                                icon={editButtonLabel === null ? 'pencil-square' : null}
+                                onClick={formOpen ? onCloseForm : onOpenForm}
+                                outline
+                                disabled={finalValue === null}
+                            >
+                                {editButtonLabel}
+                            </Button>
+                        </div>
+                    ) : null}
+                </div>
             ) : (
-                <div className={classNames(['row', 'align-items-center'])}>
-                    <div className="col-auto flex-grow-1">
+                <div className="row align-items-center">
+                    <div className="col-10 flex-grow-1">
                         <Select
                             className={classNames([
                                 'py-1',
@@ -296,52 +359,52 @@ const ResourceItemField = ({
                             }
                             onChange={onValueChange}
                             onInputChange={onInputChange}
+                            onFocus={onFocus}
+                            onMenuScrollToBottom={onScrollEnd}
                             multiple={multiple}
                         />
                     </div>
-
                     {canCreate ? (
                         <div className="col-auto">
                             <Button
                                 theme="primary"
                                 icon={createButtonLabel === null ? 'plus-lg' : null}
-                                onClick={createOpen ? onCloseCreate : onOpenCreate}
+                                onClick={formOpen ? onCloseForm : onOpenForm}
                                 outline
                             >
                                 {createButtonLabel}
                             </Button>
                         </div>
                     ) : null}
-
-                    {createOpen ? (
-                        createInPlace ? (
-                            <ResourceForm
-                                resource={resource}
-                                type={resourceType}
-                                onSuccess={onCreateSuccess}
-                            />
-                        ) : (
-                            <Dialog
-                                title={
-                                    <FormattedMessage
-                                        values={resourceValues}
-                                        defaultMessage="Create {a_singular}"
-                                        description="Page title"
-                                    />
-                                }
-                                size="lg"
-                                onClickClose={onCloseCreate}
-                            >
-                                <ResourceForm
-                                    resource={resource}
-                                    type={resourceType}
-                                    onSuccess={onCreateSuccess}
-                                />
-                            </Dialog>
-                        )
-                    ) : null}
                 </div>
             )}
+            {formOpen ? (
+                withoutModal ? (
+                    <div className="card mt-4 p-4">{form}</div>
+                ) : (
+                    <Dialog
+                        title={
+                            !multiple && value !== null ? (
+                                <FormattedMessage
+                                    values={resourceValues}
+                                    defaultMessage="Edit {a_singular}"
+                                    description="Page title"
+                                />
+                            ) : (
+                                <FormattedMessage
+                                    values={resourceValues}
+                                    defaultMessage="Create {a_singular}"
+                                    description="Page title"
+                                />
+                            )
+                        }
+                        size="lg"
+                        onClickClose={onCloseForm}
+                    >
+                        {form}
+                    </Dialog>
+                )
+            ) : null}
         </div>
     );
 };

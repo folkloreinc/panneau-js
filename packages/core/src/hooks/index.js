@@ -8,5 +8,6 @@ export { default as useMediaApi } from './useMediaApi';
 export { default as useMediasParser } from './useMediasParser';
 export * from './useObserver';
 export { default as useResourceUrlGenerator } from './useResourceUrlGenerator';
+export { default as useResourceQuery } from './useResourceQuery';
 export * from './useScreenSize';
 export { default as useWindowEvent } from './useWindowEvent';

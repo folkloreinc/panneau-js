@@ -4,10 +4,7 @@ import React, { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import {
-    useListsComponents, // usePanneauColorScheme,
-    usePanneauResource,
-} from '@panneau/core/contexts';
+import { useListsComponents, usePanneauResource } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Pagination from '@panneau/element-pagination';
@@ -22,7 +19,7 @@ const propTypes = {
     componentProps: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onQueryChange: PropTypes.func,
     onQueryReset: PropTypes.func,
-    onClickPage: PropTypes.func,
+    onPageChange: PropTypes.func,
     showFilters: PropTypes.bool,
     listProps: PropTypes.shape({}),
 };
@@ -35,7 +32,7 @@ const defaultProps = {
     componentProps: null,
     onQueryChange: null,
     onQueryReset: null,
-    onClickPage: null,
+    onPageChange: null,
     showFilters: true,
     listProps: null,
 };
@@ -46,7 +43,7 @@ const ResourceItemsList = ({
     baseUrl,
     onQueryChange,
     onQueryReset,
-    onClickPage,
+    onPageChange,
     paginated,
     showFilters,
     listProps: customListProps,
@@ -63,9 +60,6 @@ const ResourceItemsList = ({
         } = {},
     } = resource;
 
-    // const { background: theme = null } = usePanneauColorScheme();
-    const ListComponents = useListsComponents();
-
     const [page, queryWithoutPage] = useMemo(() => {
         const { page: currentPage = 1, ...rest } = query || {};
         return [currentPage, rest];
@@ -80,6 +74,7 @@ const ResourceItemsList = ({
     const { loaded = false, loading = false, lastPage = 0, total = 0 } = itemsProps || {};
     const finalEmpty = loaded && !loading && total === 0;
 
+    const ListComponents = useListsComponents();
     const ListComponent = getComponentFromName(listComponent || 'table', ListComponents);
 
     return (
@@ -99,7 +94,7 @@ const ResourceItemsList = ({
                     total={total}
                     url={baseUrl}
                     query={query}
-                    onClickPage={onClickPage}
+                    onClickPage={onPageChange}
                     className="mt-1 mb-1"
                 />
             ) : null}
@@ -131,7 +126,7 @@ const ResourceItemsList = ({
                     total={total}
                     url={baseUrl}
                     query={query}
-                    onClickPage={onClickPage}
+                    onPageChange={onPageChange}
                     className="mt-4 mb-1"
                 />
             ) : null}

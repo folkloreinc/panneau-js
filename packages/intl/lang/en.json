@@ -116,9 +116,6 @@
     "NI9440": {
         "defaultMessage": "Add file"
     },
-    "NdhsZI": {
-        "defaultMessage": "Find media"
-    },
     "Of2stw": {
         "defaultMessage": "T"
     },
@@ -241,6 +238,9 @@
     },
     "tPeIKO": {
         "defaultMessage": "Go back to login"
+    },
+    "une5WQ": {
+        "defaultMessage": "Find a file"
     },
     "v4Qtl9": {
         "defaultMessage": "Today"
