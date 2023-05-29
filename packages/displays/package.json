@@ -1,6 +1,6 @@
 {
     "name": "@panneau/displays",
-    "version": "2.0.75",
+    "version": "2.0.76",
     "description": "",
     "keywords": [
         "javascript"
@@ -65,7 +65,7 @@
         "@panneau/core": "^2.0.75",
         "@panneau/display-boolean": "^2.0.75",
         "@panneau/display-date": "^2.0.75",
-        "@panneau/display-image": "^2.0.75",
+        "@panneau/display-image": "^2.0.76",
         "@panneau/display-label": "^2.0.75",
         "@panneau/display-select": "^2.0.75",
         "@panneau/display-text": "^2.0.75",
