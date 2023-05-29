@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-avatar",
-    "version": "2.0.69",
+    "version": "2.0.71",
     "description": "Avatar element",
     "keywords": [
         "javascript"
@@ -45,10 +45,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^2.0.69",
-        "@panneau/element-button": "^2.0.69",
-        "@panneau/element-icon": "^2.0.69",
-        "@panneau/element-label": "^2.0.69",
+        "@panneau/core": "^2.0.71",
+        "@panneau/element-button": "^2.0.71",
+        "@panneau/element-icon": "^2.0.71",
+        "@panneau/element-label": "^2.0.71",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
