@@ -341,6 +341,7 @@ const ItemsField = ({
                                 'align-items-end': true,
                                 'justify-content-end': true,
                                 'w-100': true,
+                                'pb-2': true,
                                 'border-bottom-0': !withoutCard,
                             },
                         ])}

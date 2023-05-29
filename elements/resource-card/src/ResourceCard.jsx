@@ -37,7 +37,7 @@ const defaultProps = {
     getItemImage: getPathValue,
     itemLabelPath: 'label',
     itemDescriptionPath: null,
-    itemImagePath: 'image',
+    itemImagePath: null,
     itemLabelWithId: false,
     onClickEdit: null,
     onClickRemove: null,
@@ -79,6 +79,7 @@ const ResourceCard = ({
     const itemLabel = item !== null ? getItemLabel(item, itemLabelPath) : null;
     const itemDescription = item !== null ? getItemDescription(item, itemDescriptionPath) : null;
     const itemImage = item !== null ? getItemImage(item, itemImagePath) : null;
+
     return (
         <div
             className={classNames([
