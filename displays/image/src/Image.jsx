@@ -1,5 +1,7 @@
+import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React from 'react';
+
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -15,8 +17,14 @@ const defaultProps = {
 };
 
 const Image = ({ value, maxWidth, maxHeight }) => {
-    const { url, thumbnailUrl, description } = value || {};
-    const image = thumbnailUrl || url;
+    const {
+        url = null,
+        thumbnailUrl = null,
+        thumbnail_url: altThumbnailUrl = null,
+        description = null,
+    } = value || {};
+    const defaultValue = isString(value) ? value : null;
+    const image = altThumbnailUrl || thumbnailUrl || url || defaultValue;
     return (
         <img
             className={styles.container}

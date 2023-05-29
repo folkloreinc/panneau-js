@@ -126,7 +126,7 @@ const ResourceItemsList = ({
                     total={total}
                     url={baseUrl}
                     query={query}
-                    onPageChange={onPageChange}
+                    onClickPage={onPageChange}
                     className="mt-4 mb-1"
                 />
             ) : null}

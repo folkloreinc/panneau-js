@@ -121,11 +121,11 @@ export default {
         //     label: 'Media',
         //     component: 'upload',
         // },
-        // {
-        //     name: 'image',
-        //     label: 'Image',
-        //     component: 'image',
-        // },
+        {
+            name: 'image',
+            label: 'Image',
+            component: 'image',
+        },
         { name: 'blocks', label: 'Blocks', component: 'items' },
         {
             name: 'color',
@@ -176,6 +176,12 @@ export default {
             {
                 id: 'title',
                 sortable: true,
+            },
+            {
+                id: 'image',
+                type: 'image',
+                path: 'image',
+                component: 'image',
             },
             'slug',
             {

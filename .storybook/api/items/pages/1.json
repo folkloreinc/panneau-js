@@ -3,5 +3,9 @@
     "type": "page",
     "title": { "fr": "Une page", "en": "A page" },
     "description": "Une description",
-    "slug": null
+    "slug": null,
+    "image": {
+        "id": 1,
+        "thumbnailUrl": "/test"
+    }
 }
