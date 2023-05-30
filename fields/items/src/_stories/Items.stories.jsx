@@ -43,9 +43,15 @@ const itemField = {
 
 const Dummy = () => <div>Hello World!</div>;
 
+const items = [
+    { id: 1, title: 'Paul', description: '1' },
+    { id: 1, title: 'John', description: '2 3 4 5' },
+];
+
 const Container = (props) => {
     const { value: initialValue = null } = props || {};
     const [value, setValue] = useState(initialValue);
+
     return (
         <FieldsProvider>
             <IntlProvider>
@@ -62,19 +68,15 @@ export const Normal = () => (
         noItemLabel="Nothing in here"
         itemLabel="Thing"
         itemLabelPath="title"
+        value={items}
     />
 );
+
 export const Inline = () => (
     <Container itemFields={[{ name: 'title', component: 'text', label: 'Title' }]} inline />
 );
 
-export const WithoutCard = () => (
-    <Container
-        itemFields={itemFields}
-        withoutCard
-        value={[{ id: 1, title: 'LOL', description: 'chat' }]}
-    />
-);
+export const WithoutCard = () => <Container itemFields={itemFields} withoutCard />;
 export const WithoutCardWithoutSort = () => (
     <Container itemFields={itemFields} withoutCard withoutSort />
 );

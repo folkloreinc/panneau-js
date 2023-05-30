@@ -124,6 +124,7 @@ const ItemsField = ({
 }) => {
     const hasTypes = types !== null;
     const idMap = useRef((value || []).map(() => uuid()));
+
     const [collapsed, setCollapsed] = useState((value || []).map(() => true));
     const { component = null, ...fieldProps } = itemField || {};
     const FieldsComponent = useFieldComponent('fields');
@@ -192,22 +193,34 @@ const ItemsField = ({
     );
 
     const items = (value || []).map((it, index) => ({ id: idMap.current[index], it, index }));
+
     const itemsCount = items ? items.length : 0;
     const isAddItemDisabled =
         disabled || addItemDisabled || (maxItems !== null ? itemsCount >= maxItems : false);
 
     const sortList = useCallback(
         (newItems) => {
+            if (newItems !== null && newItems.length < 2) {
+                return;
+            }
+
             const orderChanged = newItems.reduce(
-                (changed, { index: newIndex }, prevIndex) => changed || prevIndex !== newIndex,
+                (changed, { index: newIndex }, idx) => changed || idx !== newIndex,
                 false,
             );
+
             if (orderChanged && onChange !== null) {
+                // Value
+                const finalItems = newItems.map(({ it }) => it);
+                onChange([...finalItems]);
+
+                // Ids
                 const newIdMap = newItems.map(({ index }) => idMap.current[index]);
                 idMap.current = newIdMap;
+
+                // Collapse state
                 setCollapsed((prevCollapsed) => newItems.map(({ index }) => prevCollapsed[index]));
-                // console.log('Change', newItems, newIdMap); // eslint-disable-line
-                onChange(newItems.map(({ it }) => it));
+                console.log('C-c-changes', newItems, newIdMap, finalItems); // eslint-disable-line
             }
         },
         [setCollapsed, onChange],
