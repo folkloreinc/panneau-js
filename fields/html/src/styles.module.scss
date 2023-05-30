@@ -1,3 +1,6 @@
 .container {
     --ck-border-radius: 0.375rem;
+    --ck-color-shadow-inner: var(--bs-primary-bg-subtle);
+    --ck-color-focus-border: var(--bs-primary-bg-subtle);
+    --ck-focus-ring: 2px solid var(--bs-primary-bg-subtle);
 }
