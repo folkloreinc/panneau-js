@@ -8,14 +8,14 @@
 
     .errors {
         margin: 2px 0;
-        color: var(--bs-color-red);
+        color: var(--bs-danger);
         font-size: 0.9rem;
     }
 
     &.hasErrors {
         .label,
         .help {
-            color: var(--bs-color-red);
+            color: var(--bs-danger);
         }
     }
 }

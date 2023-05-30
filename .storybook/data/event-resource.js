@@ -107,7 +107,7 @@ export default {
             type: 'image',
             component: 'image',
             withButton: true,
-            withResourceList: true,
+            withFind: true,
         },
         { name: 'blocks', label: 'Blocks', component: 'items', withoutFormGroup: true },
     ],

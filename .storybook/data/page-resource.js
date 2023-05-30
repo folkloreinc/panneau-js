@@ -126,7 +126,27 @@ export default {
             label: 'Image',
             component: 'image',
         },
-        { name: 'blocks', label: 'Blocks', component: 'items' },
+        {
+            name: 'blocks',
+            label: 'Blocks',
+            type: 'blocks',
+            component: 'items',
+            withoutFormGroup: true,
+        },
+        {
+            name: 'blocks_lean',
+            label: 'Blocks without card',
+            component: 'items',
+            withoutCard: true,
+            withoutFormGroup: true,
+        },
+        {
+            name: 'blocks_inline',
+            label: 'Blocks inline',
+            component: 'items',
+            inline: true,
+            withoutFormGroup: true,
+        },
         {
             name: 'color',
             label: 'Color',

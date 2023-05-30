@@ -58,7 +58,8 @@ module.exports = () => {
         if (query === null || Object.keys(query).length === 0) {
             return items;
         }
-        const { source, search = null, ...queryWithoutSource } = query;
+        // Types is exception for medias son u get results
+        const { source, search = null, types = null, ...queryWithoutSource } = query;
         return _.values(_.filter(items, _.matches(queryWithoutSource)));
     };
 

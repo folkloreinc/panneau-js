@@ -406,7 +406,10 @@ const UploadField = ({
                         onPageChange={onListPageChange}
                         onQueryChange={onListQueryChange}
                         onQueryReset={onListQueryReset}
-                        listProps={{ actions: ['select'], actionsProps: { onClickSelect } }}
+                        listProps={{
+                            actions: ['select'],
+                            actionsProps: { onClickSelect },
+                        }}
                     />
                 </Dialog>
             ) : null}
