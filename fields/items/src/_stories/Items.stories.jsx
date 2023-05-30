@@ -16,7 +16,13 @@ export default {
 
 const itemFields = [
     { name: 'title', component: 'text', label: 'Title' },
-    { name: 'description', component: 'text', label: 'Description' },
+    { name: 'description', component: 'html', label: 'Description' },
+];
+
+const items = [
+    { id: 1, title: 'Paul', description: 'PAUL' },
+    { id: 2, title: 'John', description: '<strong>JOHN</strong>' },
+    { id: 3, title: 'Ringo', description: 'RINGO' },
 ];
 
 const itemField = {
@@ -42,11 +48,6 @@ const itemField = {
 };
 
 const Dummy = () => <div>Hello World!</div>;
-
-const items = [
-    { id: 1, title: 'Paul', description: '1' },
-    { id: 1, title: 'John', description: '2 3 4 5' },
-];
 
 const Container = (props) => {
     const { value: initialValue = null } = props || {};
