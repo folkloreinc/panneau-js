@@ -347,6 +347,12 @@ msgctxt "XJ1dc3"
 msgid "New password"
 msgstr "New password"
 
+# Page title
+#: XLVfN6
+msgctxt "XLVfN6"
+msgid "Find {a_singular}"
+msgstr "Find {a_singular}"
+
 # Button label
 #: XW9IKQ
 msgctxt "XW9IKQ"

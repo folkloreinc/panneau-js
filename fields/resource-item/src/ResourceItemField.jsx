@@ -6,7 +6,7 @@ import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -399,7 +399,7 @@ const ResourceItemField = ({
                             )
                         }
                         size="lg"
-                        onClickClose={onCloseForm}
+                        onClose={onCloseForm}
                     >
                         {form}
                     </Dialog>

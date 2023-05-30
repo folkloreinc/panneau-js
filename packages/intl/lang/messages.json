@@ -223,6 +223,10 @@
     "defaultMessage": "New password",
     "description": "Field label"
   },
+  "XLVfN6": {
+    "defaultMessage": "Find {a_singular}",
+    "description": "Page title"
+  },
   "XW9IKQ": {
     "defaultMessage": "Update password",
     "description": "Button label"

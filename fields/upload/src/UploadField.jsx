@@ -398,7 +398,7 @@ const UploadField = ({
                 <Dialog
                     title={<Label>{searchButtonLabel}</Label>}
                     size="lg"
-                    onClickClose={closeResourceModal}
+                    onClose={closeResourceModal}
                 >
                     <ResourceItemsList
                         resource="medias"

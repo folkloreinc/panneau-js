@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/field-item",
+    "name": "@panneau/modal-resource-form",
     "version": "2.0.75",
-    "description": "A repeatable abstract field",
+    "description": "Resource form modal",
     "keywords": [
         "javascript"
     ],
@@ -22,14 +22,6 @@
         {
             "name": "Nicolas Roy-Bourdages",
             "email": "nrb@folklore.email"
-        },
-        {
-            "name": "Julien Carignan",
-            "email": "jc@folklore.email"
-        },
-        {
-            "name": "Théo Gjini",
-            "email": "tg@folklore.email"
         }
     ],
     "license": "ISC",
@@ -54,10 +46,10 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^2.0.75",
-        "@panneau/data": "^2.0.75",
-        "@panneau/element-button": "^2.0.75",
-        "@panneau/element-select": "^2.0.75",
-        "@panneau/element-resource-card": "^2.0.75",
+        "@panneau/intl": "^2.0.75",
+        "@panneau/modal-dialog": "^2.0.75",
+        "@panneau/form-resource": "^2.0.75",
+        "@panneau/themes": "^2.0.75",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

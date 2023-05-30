@@ -22,6 +22,8 @@ const propTypes = {
     onPageChange: PropTypes.func,
     showFilters: PropTypes.bool,
     listProps: PropTypes.shape({}),
+    theme: PropTypes.string,
+    className: PropTypes.string,
 };
 
 const defaultProps = {
@@ -35,6 +37,8 @@ const defaultProps = {
     onPageChange: null,
     showFilters: true,
     listProps: null,
+    theme: null,
+    className: null,
 };
 
 const ResourceItemsList = ({
@@ -47,6 +51,8 @@ const ResourceItemsList = ({
     paginated,
     showFilters,
     listProps: customListProps,
+    theme,
+    className,
 }) => {
     const resource = usePanneauResource(resourceId);
 
@@ -78,13 +84,14 @@ const ResourceItemsList = ({
     const ListComponent = getComponentFromName(listComponent || 'table', ListComponents);
 
     return (
-        <>
+        <div className={className}>
             {showFilters && filters !== null ? (
                 <Filters
                     filters={filters}
                     value={query}
                     onChange={onQueryChange}
                     onReset={onQueryReset}
+                    theme={theme}
                 />
             ) : null}
             {paginated && showPagination ? (
@@ -96,6 +103,7 @@ const ResourceItemsList = ({
                     query={query}
                     onClickPage={onPageChange}
                     className="mt-1 mb-1"
+                    theme={theme}
                 />
             ) : null}
             {ListComponent !== null ? (
@@ -104,6 +112,7 @@ const ResourceItemsList = ({
                     {...listProps}
                     resource={resource}
                     baseUrl={baseUrl}
+                    theme={theme}
                     query={query}
                     onQueryChange={onQueryChange}
                     onQueryReset={onQueryReset}
@@ -128,9 +137,10 @@ const ResourceItemsList = ({
                     query={query}
                     onClickPage={onPageChange}
                     className="mt-4 mb-1"
+                    theme={theme}
                 />
             ) : null}
-        </>
+        </div>
     );
 };
 

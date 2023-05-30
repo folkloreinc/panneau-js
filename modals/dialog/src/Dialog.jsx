@@ -19,7 +19,7 @@ const propTypes = {
     children: PropTypes.node,
     footer: PropTypes.node,
     buttons: PanneauPropTypes.buttons,
-    onClickClose: PropTypes.func,
+    onClose: PropTypes.func,
     className: PropTypes.string,
 };
 
@@ -30,20 +30,11 @@ const defaultProps = {
     children: null,
     footer: null,
     buttons: null,
-    onClickClose: null,
+    onClose: null,
     className: null,
 };
 
-const ModalDialog = ({
-    title,
-    size,
-    header,
-    children,
-    buttons,
-    footer,
-    onClickClose,
-    className,
-}) => (
+const ModalDialog = ({ title, size, header, children, buttons, footer, onClose, className }) => (
     <Modal>
         <div
             className={classNames([
@@ -66,7 +57,7 @@ const ModalDialog = ({
                             type="button"
                             className="btn-close close"
                             aria-label="Close"
-                            onClick={onClickClose}
+                            onClick={onClose}
                         />
                     </div>
                 )}

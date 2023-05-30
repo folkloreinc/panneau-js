@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
-import isEmpty from 'lodash/isEmpty';
+// import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useCallback, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -10,7 +10,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getPathValue, isMessage } from '@panneau/core/utils';
 import { useApi } from '@panneau/data';
-import Button from '@panneau/element-button';
+import ResourceCard from '@panneau/element-resource-card';
 import Select from '@panneau/element-select';
 
 const propTypes = {
@@ -197,9 +197,9 @@ const ItemField = ({
         setInputTextValue(textValue);
     }, []);
 
-    const itemLabel = value !== null ? getItemLabel(value, itemLabelPath) : null;
-    const itemDescription = value !== null ? getItemDescription(value, itemDescriptionPath) : null;
-    const itemImage = value !== null ? getItemImage(value, itemImagePath) : null;
+    // const itemLabel = value !== null ? getItemLabel(value, itemLabelPath) : null;
+    // const itemDescription = value !== null ? getItemDescription(value, itemDescriptionPath) : null;
+    // const itemImage = value !== null ? getItemImage(value, itemImagePath) : null;
 
     const timeoutRef = useRef(null);
     const loadOptions = useCallback(
@@ -236,6 +236,7 @@ const ItemField = ({
 
     const options = items.map((it) => parseItem(it));
     const finalValue = multiple && isArray(value) ? value.map((it) => parseItem(it)) : value;
+    // TODO: implement the create into react-select
     const isRow = canCreate === true;
 
     // const renderSectionTitle = useCallback(
@@ -252,44 +253,57 @@ const ItemField = ({
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
             {value !== null && !multiple ? (
-                <div
-                    className={classNames([
-                        'card',
-                        { [`bg-muted`]: disabled, [`text-muted`]: disabled },
-                    ])}
-                >
-                    <div className="card-body p-1 pl-2">
-                        <div className="d-flex align-items-center">
-                            {itemImage !== null ? (
-                                <img
-                                    src={itemImage}
-                                    alt={itemLabel}
-                                    className="flex-shrink-0 me-2"
-                                    width="20"
-                                />
-                            ) : null}
-                            <div className="flex-grow-1 ms-1">
-                                <h6 className="m-0">{itemLabel}</h6>
-                                {!isEmpty(itemDescription) ? (
-                                    <p className="m-0">
-                                        <small>{itemDescription}</small>
-                                    </p>
-                                ) : null}
-                            </div>
-                            <div className="ms-1">
-                                <Button
-                                    type="button"
-                                    size="sm"
-                                    theme="secondary"
-                                    icon="x-lg"
-                                    outline={disabled}
-                                    onClick={onClickRemove}
-                                    disabled={disabled}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                // <div
+                //     className={classNames([
+                //         'card',
+                //         { [`bg-muted`]: disabled, [`text-muted`]: disabled },
+                //     ])}
+                // >
+                //     <div className="card-body p-1 pl-2">
+                //         <div className="d-flex align-items-center">
+                //             {itemImage !== null ? (
+                //                 <img
+                //                     src={itemImage}
+                //                     alt={itemLabel}
+                //                     className="flex-shrink-0 me-2"
+                //                     width="20"
+                //                 />
+                //             ) : null}
+                //             <div className="flex-grow-1 ms-1">
+                //                 <h6 className="m-0">{itemLabel}</h6>
+                //                 {!isEmpty(itemDescription) ? (
+                //                     <p className="m-0">
+                //                         <small>{itemDescription}</small>
+                //                     </p>
+                //                 ) : null}
+                //             </div>
+                //             <div className="ms-1">
+                //                 <Button
+                //                     type="button"
+                //                     size="sm"
+                //                     theme="secondary"
+                //                     icon="x-lg"
+                //                     outline={disabled}
+                //                     onClick={onClickRemove}
+                //                     disabled={disabled}
+                //                 />
+                //             </div>
+                //         </div>
+                //     </div>
+                // </div>
+                <ResourceCard
+                    className="flex-grow-1"
+                    item={value}
+                    getItemLabel={initialGetItemLabel}
+                    getItemDescription={getItemDescription}
+                    getItemImage={getItemImage}
+                    itemLabelPath={itemLabelPath}
+                    itemDescriptionPath={itemDescriptionPath}
+                    itemImagePath={itemImagePath}
+                    itemLabelWithId={itemLabelWithId}
+                    disable={disabled}
+                    onClickRemove={onClickRemove}
+                />
             ) : (
                 <div className={classNames([{ row: isRow, 'align-items-center': isRow }])}>
                     <div className="col-auto flex-grow-1">
@@ -329,11 +343,6 @@ const ItemField = ({
                             multiple={multiple}
                         />
                     </div>
-                    {canCreate ? (
-                        <div className="col-auto">
-                            <Button theme="primary" icon="plus-lg" />
-                        </div>
-                    ) : null}
                 </div>
             )}
         </div>

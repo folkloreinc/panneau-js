@@ -10,7 +10,11 @@ import { FormattedMessage } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { ResourceProvider, useComponentsManager } from '@panneau/core/contexts';
+import {
+    ResourceProvider,
+    useComponentsManager,
+    usePanneauColorScheme,
+} from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Alert from '@panneau/element-alert';
 import Button from '@panneau/element-button';
@@ -31,6 +35,8 @@ const defaultProps = {
 };
 
 const ResourceIndexPage = ({ resource, defaultActions }) => {
+    const { theme = null } = usePanneauColorScheme();
+
     const { name, settings = {}, index = {} } = resource;
     const { canCreate = true, indexIsPaginated: paginated = false } = settings || {};
     const { actions = null } = index || {};
@@ -157,6 +163,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                         paginated={paginated}
                         onQueryChange={onQueryChange}
                         onQueryReset={onQueryReset}
+                        theme={theme}
                     />
                 </div>
             </MainLayout>
