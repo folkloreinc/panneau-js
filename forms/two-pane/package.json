@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-two-pane",
-    "version": "2.0.75",
+    "version": "2.0.77",
     "description": "Two-pane resource forms",
     "keywords": [
         "javascript"
@@ -57,7 +57,7 @@
         "@panneau/data": "^2.0.75",
         "@panneau/element-button": "^2.0.75",
         "@panneau/element-form": "^2.0.75",
-        "@panneau/field-fields": "^2.0.75",
+        "@panneau/field-fields": "^2.0.77",
         "@panneau/themes": "^2.0.75",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
