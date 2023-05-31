@@ -4,6 +4,7 @@ import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getPathValue } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 
@@ -23,6 +24,8 @@ const propTypes = {
     itemLabelWithId: PropTypes.bool,
     onClickEdit: PropTypes.func,
     onClickRemove: PropTypes.func,
+    editButtonLabel: PanneauPropTypes.message,
+    removeButtonLabel: PanneauPropTypes.message,
     disabled: PropTypes.bool,
     className: PropTypes.string,
     children: PropTypes.node,
@@ -41,6 +44,8 @@ const defaultProps = {
     itemLabelWithId: false,
     onClickEdit: null,
     onClickRemove: null,
+    editButtonLabel: null,
+    removeButtonLabel: null,
     disabled: false,
     className: null,
     children: null,
@@ -59,6 +64,8 @@ const ResourceCard = ({
     getItemImage,
     onClickEdit,
     onClickRemove,
+    editButtonLabel,
+    removeButtonLabel,
     disabled,
     children,
     header,
@@ -120,7 +127,9 @@ const ResourceCard = ({
                                 outline={disabled}
                                 onClick={onClickEdit}
                                 disabled={disabled}
-                            />
+                            >
+                                {editButtonLabel}
+                            </Button>
                         </div>
                     ) : null}
                     {onClickRemove !== null ? (
@@ -133,7 +142,9 @@ const ResourceCard = ({
                                 outline={disabled}
                                 onClick={onClickRemove}
                                 disabled={disabled}
-                            />
+                            >
+                                {removeButtonLabel}
+                            </Button>
                         </div>
                     ) : null}
                 </div>

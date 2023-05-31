@@ -26,6 +26,7 @@ export default {
             resource: 'pages',
             canCreate: true,
             canEdit: true,
+            canFind: true,
             paginated: false,
             itemLabelPath: 'title.fr',
             itemLabelWithId: true,

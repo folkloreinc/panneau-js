@@ -188,8 +188,9 @@ const ItemActions = ({
                                         return {
                                             id: 'select',
                                             label: iconsOnly ? null : selectLabel,
-                                            icon: iconsOnly ? <Icon name="check-circle" /> : null,
+                                            icon: iconsOnly ? <Icon name="check" bold /> : null,
                                             theme: 'primary',
+                                            outline: true,
                                             onClick: () => onClickSelect(item),
                                         };
                                     default:

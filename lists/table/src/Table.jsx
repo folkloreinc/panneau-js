@@ -88,6 +88,8 @@ const TableList = ({
     const actionColumn = (columnsWithFields || []).find((it) => it.id === 'actions') || null;
     const hasActionsColumn = actionColumn !== null;
 
+    // console.log(actionsProps);
+
     return (
         <div>
             {items !== null ? (

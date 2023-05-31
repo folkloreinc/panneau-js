@@ -197,10 +197,6 @@ const ItemField = ({
         setInputTextValue(textValue);
     }, []);
 
-    // const itemLabel = value !== null ? getItemLabel(value, itemLabelPath) : null;
-    // const itemDescription = value !== null ? getItemDescription(value, itemDescriptionPath) : null;
-    // const itemImage = value !== null ? getItemImage(value, itemImagePath) : null;
-
     const timeoutRef = useRef(null);
     const loadOptions = useCallback(
         (inputValue, callback) => {
@@ -253,44 +249,6 @@ const ItemField = ({
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
             {value !== null && !multiple ? (
-                // <div
-                //     className={classNames([
-                //         'card',
-                //         { [`bg-muted`]: disabled, [`text-muted`]: disabled },
-                //     ])}
-                // >
-                //     <div className="card-body p-1 pl-2">
-                //         <div className="d-flex align-items-center">
-                //             {itemImage !== null ? (
-                //                 <img
-                //                     src={itemImage}
-                //                     alt={itemLabel}
-                //                     className="flex-shrink-0 me-2"
-                //                     width="20"
-                //                 />
-                //             ) : null}
-                //             <div className="flex-grow-1 ms-1">
-                //                 <h6 className="m-0">{itemLabel}</h6>
-                //                 {!isEmpty(itemDescription) ? (
-                //                     <p className="m-0">
-                //                         <small>{itemDescription}</small>
-                //                     </p>
-                //                 ) : null}
-                //             </div>
-                //             <div className="ms-1">
-                //                 <Button
-                //                     type="button"
-                //                     size="sm"
-                //                     theme="secondary"
-                //                     icon="x-lg"
-                //                     outline={disabled}
-                //                     onClick={onClickRemove}
-                //                     disabled={disabled}
-                //                 />
-                //             </div>
-                //         </div>
-                //     </div>
-                // </div>
                 <ResourceCard
                     className="flex-grow-1"
                     item={value}
@@ -301,7 +259,7 @@ const ItemField = ({
                     itemDescriptionPath={itemDescriptionPath}
                     itemImagePath={itemImagePath}
                     itemLabelWithId={itemLabelWithId}
-                    disable={disabled}
+                    disabled={disabled}
                     onClickRemove={onClickRemove}
                 />
             ) : (

@@ -2,7 +2,6 @@
 
 /* eslint-disable no-shadow, react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
@@ -19,6 +18,8 @@ import Select from '@panneau/element-select';
 import ResourceForm from '@panneau/form-resource';
 import { useResourceValues } from '@panneau/intl';
 import Dialog from '@panneau/modal-dialog';
+import ResourceFormModal from '@panneau/modal-resource-form';
+import ResourceItemsModal from '@panneau/modal-resource-items';
 
 const propTypes = {
     name: PropTypes.string,
@@ -46,9 +47,11 @@ const propTypes = {
     placeholder: PropTypes.string,
     canCreate: PropTypes.bool,
     canEdit: PropTypes.bool,
+    canFind: PropTypes.bool,
     withoutModal: PropTypes.bool,
-    createButtonLabel: PanneauPropTypes.string,
+    createButtonLabel: PanneauPropTypes.message,
     editButtonLabel: PanneauPropTypes.message,
+    findButtonLabel: PanneauPropTypes.message,
     multiple: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
@@ -82,9 +85,11 @@ const defaultProps = {
     placeholder: null,
     canCreate: false,
     canEdit: false,
+    canFind: false,
     withoutModal: false,
     createButtonLabel: null,
     editButtonLabel: null,
+    findButtonLabel: null,
     multiple: false,
     disabled: false,
     className: null,
@@ -118,9 +123,11 @@ const ResourceItemField = ({
     placeholder,
     canCreate,
     canEdit,
+    canFind,
     withoutModal,
     createButtonLabel,
     editButtonLabel,
+    findButtonLabel,
     multiple,
     disabled,
     className,
@@ -132,9 +139,12 @@ const ResourceItemField = ({
     const resourceValues = useResourceValues(resource);
     const defaultPage = initialPage || (paginated ? 1 : null);
     const defaultCount = initialCount || (paginated ? 10 : null);
+    const hasValue = value !== null && !isEmpty(value);
+
     // const [initialValue] = useState(value);
 
-    const [formOpen, setFormOpen] = useState(initialCount);
+    const [formOpen, setFormOpen] = useState(false);
+    const [listOpen, setListOpen] = useState(false);
 
     // The text input search query
     const [inputTextValue, setInputTextValue] = useState('');
@@ -190,7 +200,7 @@ const ResourceItemField = ({
 
     const getItemLabel = useCallback(
         (it, path) => {
-            const id = get(it, 'id', null);
+            const { id = null } = it || {};
             if (itemLabelWithId) {
                 const label = initialGetItemLabel(it, path);
                 return label ? `${label} (#${id})` : `#${id}`;
@@ -199,6 +209,8 @@ const ResourceItemField = ({
         },
         [initialGetItemLabel, itemLabelWithId],
     );
+
+    // const getItemLabel = getItemLabelFunction(initialGetItemLabel, itemLabelWithId);
 
     const parseItem = useCallback(
         (it) => {
@@ -215,7 +227,7 @@ const ResourceItemField = ({
 
     const finalValue =
         multiple && isArray(value) ? value.map(({ id = null }) => id) : value?.id || null;
-    const { type: finalType = null } = !multiple && value !== null ? value : { type: resourceType };
+    const { type: finalType = null } = !multiple && hasValue ? value : { type: resourceType };
     const options = (items || []).map((it) => parseItem(it));
 
     const onValueChange = useCallback(
@@ -251,15 +263,31 @@ const ResourceItemField = ({
             const finalNewValue =
                 resourceType !== null ? { type: resourceType, ...newValue } : newValue;
             if (multiple) {
-                onChange(
-                    value !== null && isArray(value) ? [...value, finalNewValue] : [finalNewValue],
-                );
+                onChange(isArray(value) ? [...value, finalNewValue] : [finalNewValue]);
             } else {
                 onChange(finalNewValue);
             }
             setFormOpen(false);
         },
         [onChange, multiple, value, setFormOpen, resourceType, paginated, initialPage],
+    );
+
+    const onOpenList = useCallback(() => {
+        setListOpen(false); // TODO: fix this
+    }, [setListOpen]);
+
+    const onCloseList = useCallback(() => {
+        setListOpen(false);
+    }, [setListOpen]);
+
+    const onSelectListItem = useCallback(
+        (newValue) => {
+            if (onChange !== null) {
+                onChange(newValue);
+                setListOpen(false);
+            }
+        },
+        [onChange, setListOpen],
     );
 
     // If empty try to fetch
@@ -297,7 +325,7 @@ const ResourceItemField = ({
 
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
-            {value !== null && !multiple ? (
+            {hasValue && !multiple ? (
                 <div className="row">
                     <div className="col-10 flex-grow-1">
                         <ResourceCard
@@ -311,26 +339,17 @@ const ResourceItemField = ({
                             itemImagePath={itemImagePath}
                             itemLabelWithId={itemLabelWithId}
                             disable={disabled}
+                            onClickEdit={
+                                canEdit && !multiple ? (formOpen ? onCloseForm : onOpenForm) : null
+                            }
                             onClickRemove={onClickRemove}
+                            editButtonLabel={editButtonLabel}
                         />
                     </div>
-                    {canEdit && !multiple ? (
-                        <div className="col-auto">
-                            <Button
-                                theme="primary"
-                                icon={editButtonLabel === null ? 'pencil-square' : null}
-                                onClick={formOpen ? onCloseForm : onOpenForm}
-                                outline
-                                disabled={finalValue === null}
-                            >
-                                {editButtonLabel}
-                            </Button>
-                        </div>
-                    ) : null}
                 </div>
             ) : (
                 <div className="row align-items-center">
-                    <div className="col-10 flex-grow-1">
+                    <div className="col-8 flex-grow-1">
                         <Select
                             className={classNames([
                                 'py-1',
@@ -364,6 +383,18 @@ const ResourceItemField = ({
                             multiple={multiple}
                         />
                     </div>
+                    {canFind ? (
+                        <div className="col-auto">
+                            <Button
+                                theme="primary"
+                                icon={findButtonLabel === null ? 'search' : null}
+                                onClick={listOpen ? onCloseList : onOpenList}
+                                outline
+                            >
+                                {findButtonLabel}
+                            </Button>
+                        </div>
+                    ) : null}
                     {canCreate ? (
                         <div className="col-auto">
                             <Button
@@ -384,7 +415,7 @@ const ResourceItemField = ({
                 ) : (
                     <Dialog
                         title={
-                            !multiple && value !== null ? (
+                            hasValue && !multiple ? (
                                 <FormattedMessage
                                     values={resourceValues}
                                     defaultMessage="Edit {a_singular}"
@@ -404,6 +435,16 @@ const ResourceItemField = ({
                         {form}
                     </Dialog>
                 )
+            ) : null}
+            {listOpen ? (
+                <ResourceItemsModal
+                    resource={resourceId}
+                    onClose={onCloseList}
+                    listProps={{
+                        actions: ['select'],
+                        actionsProps: { onClickSelect: onSelectListItem },
+                    }}
+                />
             ) : null}
         </div>
     );

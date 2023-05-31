@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { useResourceQuery } from '@panneau/core/hooks';
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useResourceValues } from '@panneau/intl';
 import ResourceItemsList from '@panneau/list-resource-items';
@@ -35,16 +36,20 @@ const defaultProps = {
 const ModalResourceItems = ({
     resource,
     title,
-    query,
-    onPageChange,
-    onQueryChange,
-    onQueryReset,
+    query: initialQuery,
     onClose,
     listProps,
     className,
     ...props
 }) => {
     const resourceValues = useResourceValues(resource);
+    const finalQuery = useMemo(() => ({ ...initialQuery }), [initialQuery]);
+    const { query, onPageChange, onQueryChange, onQueryReset } = useResourceQuery(finalQuery);
+
+    // TODO: add explicit component ?
+
+    // console.log('listProps', listProps);
+
     return (
         <Dialog
             title={
