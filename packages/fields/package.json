@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "2.0.80",
+    "version": "2.0.81",
     "description": "",
     "keywords": [
         "javascript"
@@ -76,7 +76,7 @@
         "@panneau/field-localized": "^2.0.77",
         "@panneau/field-number": "^2.0.75",
         "@panneau/field-radios": "^2.0.75",
-        "@panneau/field-resource-item": "^2.0.80",
+        "@panneau/field-resource-item": "^2.0.81",
         "@panneau/field-select": "^2.0.75",
         "@panneau/field-text": "^2.0.75",
         "@panneau/field-toggle": "^2.0.75",
