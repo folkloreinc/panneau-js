@@ -61,7 +61,7 @@ const defaultProps = {
     getItemImage: getPathValue,
     itemLabelPath: 'label',
     itemDescriptionPath: null,
-    itemImagePath: 'image',
+    itemImagePath: 'image.thumbnail_url',
     itemLabelWithId: false,
     size: null,
     placeholder: null,
