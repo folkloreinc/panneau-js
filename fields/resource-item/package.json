@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-resource-item",
-    "version": "2.0.81",
+    "version": "2.0.82",
     "description": "An item mapping a resource",
     "keywords": [
         "javascript"
