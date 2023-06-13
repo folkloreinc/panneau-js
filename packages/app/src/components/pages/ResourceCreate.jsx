@@ -30,6 +30,8 @@ const ResourceCreatePage = ({ resource }) => {
         navigate(`${resourceRoute('index')}?created=true`);
     }, [navigate, resourceRoute]);
 
+    console.log('resource', resource, resourceRoute);
+
     return (
         <ResourceProvider resource={resource}>
             <MainLayout>

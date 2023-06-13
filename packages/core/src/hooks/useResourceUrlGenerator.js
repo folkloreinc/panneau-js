@@ -17,11 +17,15 @@ const useResourceUrlGenerator = (resourceId = null) => {
         const finalParams = resourceId !== null ? routeName : params;
         const finalResource = getResource(resources, routeResourceId) || resource;
         const { id = null } = finalResource || {};
-        // console.log('gen', finalRouteName, route(`resources.${finalRouteName}`, {
-        //     ...finalParams,
-        //     resource: id,
-        // }));
-        // console.log(finalRouteName, id, finalParams);
+        console.log(
+            'gen',
+            finalRouteName,
+            route(`resources.${finalRouteName}`, {
+                ...finalParams,
+                resource: id,
+            }),
+        );
+        console.log(finalRouteName, id, finalParams);
         return id !== null
             ? route(`resources.${finalRouteName}`, {
                   ...finalParams,

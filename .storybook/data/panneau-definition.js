@@ -1,4 +1,5 @@
 import eventResource from './event-resource';
+import jobListingResource from './job-listing-resource';
 import mediaResource from './media-resource';
 import pageResource from './page-resource';
 import personResource from './person-resource';
@@ -29,7 +30,7 @@ export default {
         },
     },
 
-    resources: [pageResource, eventResource, personResource, mediaResource],
+    resources: [pageResource, eventResource, personResource, jobListingResource, mediaResource],
 
     menus: {
         main: [
