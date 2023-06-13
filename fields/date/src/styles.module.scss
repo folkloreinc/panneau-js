@@ -1,34 +1,23 @@
 // stylelint-disable selector-pseudo-class-no-unknown
 
+/* stylelint-disable */
+
 .container {
     user-select: none;
 }
-
-// :global {
-
-    /* stylelint-disable */
-.react-datepicker-popper {
-    z-index: 5 !important;
-    //
-}
-
-.react-datepicker__triangle {
-    // display: none;
-    position: absolute !important;
-    transform: translate(50px, 0) !important;
-    // left: 50px !important;
-}
-
-.react-datepicker__navigation-icon {
-    &::before {
-        top: 12px !important;
-    }
-}
-
-// }
 
 :global(.react-datepicker-popper) {
     z-index: 4 !important;
 }
 
+:global(.react-datepicker__triangle) {
+    position: absolute !important;
+    transform: translate(50px, 0) !important;
+}
+
+:global(.react-datepicker__navigation-icon) {
+    &::before {
+        top: 12px !important;
+    }
+}
 /* stylelint-enable */

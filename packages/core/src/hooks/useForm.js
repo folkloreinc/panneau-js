@@ -168,7 +168,7 @@ const useForm = (opts = {}) => {
 
     const onSubmit = useCallback(
         (e) => {
-            console.log('form submit', e); //
+            // console.log('form submit', e); //
             e.preventDefault();
             // This one is very important with multiple forms
             // Nested forms (even in portals) will bubble the onSubmit event to the parent

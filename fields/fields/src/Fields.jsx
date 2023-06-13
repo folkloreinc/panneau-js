@@ -70,7 +70,7 @@ const Fields = ({
             name = null,
             horizontal = false,
             inline = false,
-            // TODO: test this
+            // TODO: test this one
             withoutFormGroup = false,
             siblingFields = [],
             defaultValue = null,
@@ -81,6 +81,7 @@ const Fields = ({
         } = field || {};
 
         const fieldDefinition = type !== null ? fieldsManager.getDefinition(type) : null;
+
         const {
             id,
             component: definitionComponent = null,
@@ -89,7 +90,7 @@ const Fields = ({
 
         const FieldComponent = getComponentFromName(component || definitionComponent, components);
 
-        let fieldValue = null;
+        let fieldValue; // To detect if it's truly empty and not null
         if (value !== null && name !== null) {
             fieldValue = value[name];
         } else if (name === null) {
