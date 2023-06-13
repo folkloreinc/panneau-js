@@ -169,9 +169,10 @@ const useForm = (opts = {}) => {
     const onSubmit = useCallback(
         (e) => {
             e.preventDefault();
+            console.log('hey ya');
             // This one is very important with multiple forms
             // Nested forms (even in portals) will bubble the onSubmit event to the parent
-            e.stopPropagation();
+            // e.stopPropagation();
             submit();
         },
         [submit, action],

@@ -54,6 +54,7 @@
         "@panneau/intl": "^2.0.79",
         "@panneau/modal-resource-form": "^2.0.79",
         "@panneau/modal-resource-items": "^2.0.79",
+        "@panneau/modal-dialog": "^2.0.79",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

@@ -18,7 +18,7 @@ import Select from '@panneau/element-select';
 import ResourceForm from '@panneau/form-resource';
 import { useResourceValues } from '@panneau/intl';
 import Dialog from '@panneau/modal-dialog';
-import ResourceFormModal from '@panneau/modal-resource-form';
+// import ResourceFormModal from '@panneau/modal-resource-form';
 import ResourceItemsModal from '@panneau/modal-resource-items';
 
 const propTypes = {

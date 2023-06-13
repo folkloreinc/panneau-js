@@ -22,9 +22,7 @@ const LoginForm = ({ className, onSuccess }) => {
     const { login } = useAuth();
     const postForm = useCallback((action, { email, password }) => login(email, password), [login]);
     const FormComponents = useFormsComponents();
-
     const FormComponent = getComponentFromName('login', FormComponents);
-
     return FormComponent !== null ? (
         <FormComponent
             action={url('auth.login')}
