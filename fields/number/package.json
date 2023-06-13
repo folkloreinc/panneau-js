@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-number",
-    "version": "2.0.84",
+    "version": "2.0.85",
     "description": "A number field",
     "keywords": [
         "javascript"
@@ -53,10 +53,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^2.0.84",
-        "@panneau/element-icon": "^2.0.84",
-        "@panneau/field-text": "^2.0.84",
-        "@panneau/themes": "^2.0.84",
+        "@panneau/core": "^2.0.85",
+        "@panneau/element-icon": "^2.0.85",
+        "@panneau/field-text": "^2.0.85",
+        "@panneau/themes": "^2.0.85",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2"
