@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import classNames from 'classnames';
+import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
@@ -45,15 +46,17 @@ const ColorPickerField = ({
     className,
     onChange,
 }) => {
+    const emptyValue = isEmpty(value);
+
     const [pickerOpened, setPickerOpened] = useState(false);
     const rgbaColor = useMemo(() => {
-        if (value !== null) {
+        if (!emptyValue) {
             const newColor = tinycolor(typeof value === 'object' ? value.color : value);
             newColor.setAlpha(typeof value === 'object' ? value.alpha : 1);
             return newColor;
         }
         return null;
-    }, [value]);
+    }, [emptyValue, value]);
 
     const hexColor = useMemo(
         () => (rgbaColor !== null ? rgbaColor.toHexString() : defaultValue),
@@ -136,15 +139,14 @@ const ColorPickerField = ({
     );
     useDocumentEvent('click', onDocumentClick, !native && pickerOpened);
 
-    const finalLabel =
-        value === null ? (
-            <span className={styles.emptyLabel}>
-                <FormattedMessage defaultMessage="No color" description="Empty label" />
-            </span>
-        ) : (
-            finalColor
-        );
-    const finalHexColor = value === null ? defaultValue : hexColor;
+    const finalLabel = emptyValue ? (
+        <span className={styles.emptyLabel}>
+            <FormattedMessage defaultMessage="No color" description="Empty label" />
+        </span>
+    ) : (
+        finalColor
+    );
+    const finalHexColor = emptyValue ? defaultValue : hexColor;
 
     return (
         <div
