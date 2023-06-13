@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
+import { FormattedMessage } from 'react-intl';
 import tinycolor from 'tinycolor2';
 
 import { useDocumentEvent } from '@panneau/core/hooks';
@@ -27,7 +28,7 @@ const propTypes = {
 
 const defaultProps = {
     value: null,
-    defaultValue: '#000000',
+    defaultValue: '#000000', // Only for react select
     native: false,
     withAlpha: false,
     disabled: false,
@@ -135,6 +136,16 @@ const ColorPickerField = ({
     );
     useDocumentEvent('click', onDocumentClick, !native && pickerOpened);
 
+    const finalLabel =
+        value === null ? (
+            <span className={styles.emptyLabel}>
+                <FormattedMessage defaultMessage="No color" description="Empty label" />
+            </span>
+        ) : (
+            finalColor
+        );
+    const finalHexColor = value === null ? defaultValue : hexColor;
+
     return (
         <div
             className={classNames([
@@ -152,7 +163,7 @@ const ColorPickerField = ({
                     type="color"
                     className={classNames(['flex-grow-0', 'form-control', 'form-control-color'])}
                     style={{ width: 40 }}
-                    value={hexColor}
+                    value={finalHexColor}
                     disabled={disabled}
                     onChange={onInputChange}
                     onClick={onInputClick}
@@ -170,7 +181,7 @@ const ColorPickerField = ({
                         style={{ minWidth: 100, cursor: 'pointer' }}
                         onClick={onInputClick}
                     >
-                        {finalColor}
+                        {finalLabel}
                     </button>
                 ) : (
                     <span
@@ -182,7 +193,7 @@ const ColorPickerField = ({
                         disabled={disabled}
                         style={{ minWidth: 100, cursor: 'pointer' }}
                     >
-                        {finalColor}
+                        {finalLabel}
                     </span>
                 )}
             </label>

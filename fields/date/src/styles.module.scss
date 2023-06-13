@@ -4,6 +4,10 @@
 
 .container {
     user-select: none;
+
+    .popper {
+        z-index: 4 !important;
+    }
 }
 
 :global(.react-datepicker-popper) {

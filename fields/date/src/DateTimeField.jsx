@@ -158,6 +158,7 @@ const DateTimeField = ({
                 timeFormat={timeFormat}
                 timeCaption={isMessage(timeCaption) ? formatMessage(timeCaption) : timeCaption}
                 timeIntervals={timeIntervals}
+                popperClassName={styles.popper}
             />
         </div>
     );

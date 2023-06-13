@@ -75,7 +75,7 @@ export default {
                     name: 'color',
                     label: 'Color',
                     component: 'color',
-                    defaultValue: { color: '#cc00cc', alpha: 1 },
+                    // defaultValue: { color: '#cc00cc', alpha: 1 },
                 },
                 {
                     name: 'date',
