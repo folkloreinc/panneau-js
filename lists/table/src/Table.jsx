@@ -81,17 +81,15 @@ const TableList = ({
 }) => {
     const displayComponents = useDisplaysComponents();
 
-    const columnsWithFields = useMemo(
-        () => getColumnsWithFields(resource, columns),
-        [resource, columns],
-    );
+    const columnList = useMemo(() => getColumnsWithFields(resource, columns), [resource, columns]);
 
     const hasIdColumn =
-        (columnsWithFields.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
-    const actionColumn = (columnsWithFields || []).find((it) => it.id === 'actions') || null;
+        (columnList.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
+    const actionColumn = (columnList || []).find((it) => it.id === 'actions') || null;
     const hasActionsColumn = actionColumn !== null && !withoutActionsColumn;
-
-    // console.log(actionsProps);
+    const columnsWithFields = withoutActionsColumn
+        ? (columnList || []).filter((it) => it.id !== 'actions')
+        : columnList;
 
     return (
         <div>
