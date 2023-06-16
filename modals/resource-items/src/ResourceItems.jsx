@@ -46,9 +46,7 @@ const ModalResourceItems = ({
     const finalQuery = useMemo(() => ({ ...initialQuery }), [initialQuery]);
     const { query, onPageChange, onQueryChange, onQueryReset } = useResourceQuery(finalQuery);
 
-    // TODO: add explicit component ?
-
-    // console.log('listProps', listProps);
+    // TODO: add default list props?
 
     return (
         <Dialog

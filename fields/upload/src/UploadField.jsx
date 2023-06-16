@@ -409,6 +409,7 @@ const UploadField = ({
                         listProps={{
                             actions: ['select'],
                             actionsProps: { onClickSelect },
+                            withoutActionsColumn: true,
                         }}
                     />
                 </Dialog>

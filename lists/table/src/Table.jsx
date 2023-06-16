@@ -36,6 +36,7 @@ const propTypes = {
     reloadPage: PropTypes.func,
     updateItem: PropTypes.func,
     actionsProps: PropTypes.shape({}),
+    withoutActionsColumn: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -55,6 +56,7 @@ const defaultProps = {
     reloadPage: null,
     updateItem: null,
     actionsProps: null,
+    withoutActionsColumn: false,
 };
 
 const TableList = ({
@@ -75,6 +77,7 @@ const TableList = ({
     reloadPage,
     updateItem,
     actionsProps,
+    withoutActionsColumn,
 }) => {
     const displayComponents = useDisplaysComponents();
 
@@ -86,7 +89,7 @@ const TableList = ({
     const hasIdColumn =
         (columnsWithFields.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
     const actionColumn = (columnsWithFields || []).find((it) => it.id === 'actions') || null;
-    const hasActionsColumn = actionColumn !== null;
+    const hasActionsColumn = actionColumn !== null && !withoutActionsColumn;
 
     // console.log(actionsProps);
 
