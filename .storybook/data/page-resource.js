@@ -284,6 +284,7 @@ export default {
     settings: {
         hideInNavbar: false,
         indexIsPaginated: true,
+        hideTypeNames: false,
     },
 
     columns: ['title', 'description', 'slug'],

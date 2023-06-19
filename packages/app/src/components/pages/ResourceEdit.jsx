@@ -5,6 +5,7 @@ import { useParams } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
+import { useResourceTypeName } from '@panneau/core/hooks';
 import { useResourceItem } from '@panneau/data';
 import { useResourceValues } from '@panneau/intl';
 
@@ -23,7 +24,7 @@ const ResourceEditPage = ({ resource }) => {
     const { item } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
     const [editItem, setEditItem] = useState(item);
-
+    const typeName = useResourceTypeName(resource, type);
     const onSuccess = useCallback((newItem) => setEditItem(newItem), []);
 
     useEffect(() => {
@@ -37,11 +38,16 @@ const ResourceEditPage = ({ resource }) => {
             <MainLayout>
                 <PageHeader
                     title={
-                        <FormattedMessage
-                            values={resourceValues}
-                            defaultMessage="Edit {a_singular}"
-                            description="Page title"
-                        />
+                        <>
+                            <FormattedMessage
+                                values={resourceValues}
+                                defaultMessage="Edit {a_singular}"
+                                description="Page title"
+                            />
+                            {typeName !== null ? (
+                                <span className="text-body-secondary"> ({typeName})</span>
+                            ) : null}
+                        </>
                     }
                     small
                 />

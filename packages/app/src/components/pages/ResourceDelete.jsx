@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
-import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import { useResourceTypeName, useResourceUrlGenerator } from '@panneau/core/hooks';
 import { useResourceItem } from '@panneau/data';
 import { useResourceValues } from '@panneau/intl';
 
@@ -24,7 +24,9 @@ const ResourceDeletePage = ({ resource }) => {
     const navigate = useNavigate();
     const resourceRoute = useResourceUrlGenerator(resource);
     const { item } = useResourceItem(resource, itemId);
+    const { type = null } = item || {};
     const resourceValues = useResourceValues(resource);
+    const typeName = useResourceTypeName(resource, type);
 
     const onSuccess = useCallback(
         () => navigate(`${resourceRoute('index')}?deleted=true`),
@@ -36,11 +38,16 @@ const ResourceDeletePage = ({ resource }) => {
             <MainLayout>
                 <PageHeader
                     title={
-                        <FormattedMessage
-                            values={resourceValues}
-                            defaultMessage="Delete {a_singular}"
-                            description="Page title"
-                        />
+                        <>
+                            <FormattedMessage
+                                values={resourceValues}
+                                defaultMessage="Delete {a_singular}"
+                                description="Page title"
+                            />
+                            {typeName !== null ? (
+                                <span className="text-body-secondary"> ({typeName})</span>
+                            ) : null}
+                        </>
                     }
                     small
                 />

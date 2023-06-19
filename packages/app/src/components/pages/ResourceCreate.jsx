@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
-import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import { useResourceTypeName, useResourceUrlGenerator } from '@panneau/core/hooks';
 import { useResourceValues } from '@panneau/intl';
 
 import ResourceForm from '../forms/ResourceForm';
@@ -25,19 +25,7 @@ const ResourceCreatePage = ({ resource }) => {
 
     const { type = null } = useMemo(() => queryString.parse(search), [search]);
     const resourceValues = useResourceValues(resource);
-
-    const typeName = useMemo(() => {
-        const { types = [], settings = {} } = resource || {};
-        const { hideTypeNames = false } = settings || {};
-        if (hideTypeNames) {
-            return null;
-        }
-        const { name = null } =
-            type !== null && types !== null && types.length > 1
-                ? (types || []).find(({ id = null }) => id === type) || {}
-                : {};
-        return name;
-    }, [type, resource]);
+    const typeName = useResourceTypeName(resource, type);
 
     const onSuccess = useCallback(() => {
         navigate(`${resourceRoute('index')}?created=true`);
