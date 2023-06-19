@@ -32,6 +32,8 @@ export const Audio = () => <Container types={['audio']} />;
 
 export const Image = () => <Container types={['image']} />;
 
+export const Images = () => <Container types={['image']} allowMultipleUploads />;
+
 export const Video = () => <Container types={['video']} />;
 
 export const PDF = () => <Container fileTypes={['.pdf']} />;

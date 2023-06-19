@@ -4,6 +4,7 @@ import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
+import slugify from 'slugify';
 import { v1 as uuid } from 'uuid';
 
 import useUppyCore from '../hooks/useUppyCore';
@@ -17,7 +18,11 @@ export const UppyContext = React.createContext(null);
 export const useUppy = ({
     onComplete = null,
     onFail = null,
-    getFileName = ({ extension = null }) => `${uuid()}${extension !== null ? `.${extension}` : ''}`,
+    getFileName = ({ filename, extension = null }) =>
+        `${(slugify(filename) || '').substring(0, 50)}${extension !== null ? `.${extension}` : ''}`,
+    getFileNameWithUUID = ({ extension = null }) =>
+        `${uuid()}${extension !== null ? `.${extension}` : ''}`,
+    withUUID = false,
     meta = null,
     allowMultipleUploads = false,
     maxNumberOfFiles = 1,
@@ -79,7 +84,12 @@ export const useUppy = ({
         const onUpload = ({ fileIDs: ids = [] }) => {
             ids.forEach((id) => {
                 const file = uppy.getFile(id);
-                const newName = getFileName(file);
+                let newName = null;
+                if (withUUID) {
+                    newName = getFileNameWithUUID(file);
+                } else {
+                    newName = getFileName(file);
+                }
                 if (newName !== null) {
                     uppy.setFileMeta(id, {
                         name: newName,

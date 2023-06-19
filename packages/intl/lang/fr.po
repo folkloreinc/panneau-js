@@ -91,6 +91,12 @@ msgctxt "6TuTuq"
 msgid "Choose an option"
 msgstr "Choisissez une option"
 
+# Empty label
+#: 6cSFtU
+msgctxt "6cSFtU"
+msgid "No color"
+msgstr ""
+
 # Error page title
 #: 6nwWPR
 msgctxt "6nwWPR"

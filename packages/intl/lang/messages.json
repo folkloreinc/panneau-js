@@ -51,6 +51,10 @@
     "defaultMessage": "Choose an option",
     "description": "Default label"
   },
+  "6cSFtU": {
+    "defaultMessage": "No color",
+    "description": "Empty label"
+  },
   "6nwWPR": {
     "defaultMessage": "Error 401",
     "description": "Error page title"

@@ -26,6 +26,19 @@ const ResourceCreatePage = ({ resource }) => {
     const { type = null } = useMemo(() => queryString.parse(search), [search]);
     const resourceValues = useResourceValues(resource);
 
+    const typeName = useMemo(() => {
+        const { types = [], settings = {} } = resource || {};
+        const { hideTypeNames = false } = settings || {};
+        if (hideTypeNames) {
+            return null;
+        }
+        const { name = null } =
+            type !== null && types !== null && types.length > 1
+                ? (types || []).find(({ id = null }) => id === type) || {}
+                : {};
+        return name;
+    }, [type, resource]);
+
     const onSuccess = useCallback(() => {
         navigate(`${resourceRoute('index')}?created=true`);
     }, [navigate, resourceRoute]);
@@ -35,11 +48,16 @@ const ResourceCreatePage = ({ resource }) => {
             <MainLayout>
                 <PageHeader
                     title={
-                        <FormattedMessage
-                            values={resourceValues}
-                            defaultMessage="Create {a_singular}"
-                            description="Page title"
-                        />
+                        <>
+                            <FormattedMessage
+                                values={resourceValues}
+                                defaultMessage="Create {a_singular}"
+                                description="Page title"
+                            />
+                            {typeName !== null ? (
+                                <span className="text-body-secondary"> ({typeName})</span>
+                            ) : null}
+                        </>
                     }
                     small
                 />

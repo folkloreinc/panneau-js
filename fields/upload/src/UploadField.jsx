@@ -49,6 +49,7 @@ const propTypes = {
     namePath: PropTypes.string,
     thumbnailPath: PropTypes.string,
     sizePath: PropTypes.string,
+    uppyProps: PropTypes.shape({ withUUID: PropTypes.bool }),
     width: PropTypes.number,
     height: PropTypes.number,
     disabled: PropTypes.bool,
@@ -76,6 +77,7 @@ const defaultProps = {
     namePath: null,
     thumbnailPath: null,
     sizePath: null,
+    uppyProps: null,
     width: null,
     height: 300,
     disabled: false,
@@ -96,6 +98,7 @@ const UploadField = ({
     namePath,
     thumbnailPath,
     sizePath,
+    uppyProps,
     width,
     height,
     disabled,
@@ -148,13 +151,19 @@ const UploadField = ({
         }
         return typesString.split('.').map((type) => `${type}/*`);
     }, [typesString, fileTypes]);
-    const uppy = useUppy({
-        allowedFileTypes,
-        allowMultipleUploads,
-        sources,
-        autoProceed: true,
-        onComplete,
-    });
+
+    const uppyFinalProps = useMemo(
+        () => ({
+            ...uppyProps,
+            allowedFileTypes,
+            allowMultipleUploads,
+            sources,
+            autoProceed: true,
+            onComplete,
+        }),
+        [uppyProps, allowedFileTypes, allowMultipleUploads, sources, onComplete],
+    );
+    const uppy = useUppy(uppyFinalProps);
 
     const [modalOpened, setModalOpened] = useState(false);
     const openModal = useCallback(() => {
