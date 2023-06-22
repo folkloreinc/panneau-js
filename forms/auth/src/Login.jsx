@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Link } from '@panneau/element-link';
+import Link from '@panneau/element-link';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Form from '@panneau/form';
