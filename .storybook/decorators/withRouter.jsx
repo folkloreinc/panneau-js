@@ -1,14 +1,21 @@
-import React from 'react';
-import { MemoryRouter } from 'react-router';
+import React, { useState } from 'react';
+import { Router } from 'wouter';
+import { useLocationProperty } from 'wouter/use-location';
 
 const withRouter = (Story, { parameters: { router = null } }) => {
     if (router === false) {
         return <Story />;
     }
+
+    const [memoryLocation, setMemoryLocation] = useState(null);
+    const useMemoryLocation = () => {
+        const location = useLocationProperty(() => memoryLocation || '/');
+        return [location, setMemoryLocation];
+    };
     return (
-        <MemoryRouter>
+        <Router hook={useMemoryLocation}>
             <Story />
-        </MemoryRouter>
+        </Router>
     );
 };
 

@@ -27,11 +27,11 @@ module.exports = (api) => {
                     require.resolve('babel-plugin-module-resolver'),
                     {
                         alias: {
-                            react: require.resolve('react'),
-                            'react-dom/server': require.resolve('react-dom/server'),
-                            'react-dom': require.resolve('react-dom'),
-                            'react-intl': require.resolve('react-intl'),
-                            'react-router': require.resolve('react-router'),
+                            // react: require.resolve('react'),
+                            // '@folklore/routes': require.resolve('@folklore/routes'),
+                            // 'react-dom/server': require.resolve('react-dom/server'),
+                            // 'react-dom': require.resolve('react-dom'),
+                            // 'react-intl': require.resolve('react-intl'),
                             ...getPackagesAliases({ withoutEndSign: true }),
                         },
                     },

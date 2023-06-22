@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation } from '@folklore/routes';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import {
@@ -58,8 +58,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
 
     const resourceValues = useResourceValues(resource);
     const componentsManager = useComponentsManager();
-    const { search } = useLocation();
-    const navigate = useNavigate();
+    const [{ search }, navigate] = useLocation();
     const query = useMemo(() => queryString.parse(search), [search]);
     const listQuery = useMemo(() => query, [query]); // TODO: omit routes
     const { created = false, deleted = false } = query || {};

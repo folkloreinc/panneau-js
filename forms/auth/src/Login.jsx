@@ -1,8 +1,9 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react/jsx-props-no-spreading */
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link } from '@panneau/element-link';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Form from '@panneau/form';
@@ -70,7 +71,7 @@ const Login = ({
         submitButtonLabel={submitButtonLabel}
         actions={
             withForgotPassword ? (
-                <Link className="py-2 px-4" to={forgotPasswordLink}>
+                <Link href={forgotPasswordLink} className="py-2 px-4">
                     {forgotPasswordLabel}
                 </Link>
             ) : null

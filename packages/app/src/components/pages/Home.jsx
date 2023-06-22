@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
 
 import { usePanneauResources, useUrlGenerator } from '@panneau/core/contexts';
+import Link from '@panneau/element-link';
 import { useResourceValues } from '@panneau/intl';
 
 import MainLayout from '../layouts/Main';
@@ -28,7 +28,7 @@ const HomePage = () => {
                         <Link
                             className="d-block my-2"
                             key={`resource-link-${resourceId}`}
-                            to={route('resources.index', {
+                            href={route('resources.index', {
                                 resource: resourceId,
                             })}
                         >

@@ -5,7 +5,7 @@ import Form from '@panneau/form';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
+import Link from '@panneau/element-link';
 
 const propTypes = {
     action: PropTypes.string,
@@ -65,7 +65,7 @@ const TwoFactorDisable = ({
             submitButtonLabel={submitButtonLabel}
             actions={
                 withCancelLink ? (
-                    <Link className="py-2 px-4" to={cancelLink}>
+                    <Link className="py-2 px-4" href={cancelLink}>
                         {cancelLabel}
                     </Link>
                 ) : null

@@ -1,7 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { useLocation } from '@folklore/routes';
 import isObject from 'lodash/isObject';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
-import { Navigate, Route, Routes, useLocation } from 'react-router';
+import { Redirect, Route, Switch, useRouter, useLocation as useWouterLocation } from 'wouter';
 
 import { useUser } from '@panneau/auth';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -29,7 +30,7 @@ const defaultProps = {
 
 const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     const routes = useRoutes();
-    const { pathname } = useLocation();
+    const [{ pathname }] = useLocation();
     const [{ statusCode, pathname: lastPathname }, setInitialRequest] = useState({
         statusCode: initialStatusCode,
         pathname,
@@ -104,35 +105,27 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     // If user is unauthenticated
     if (user === null) {
         return (
-            <Routes>
-                <Route
-                    path={routes['auth.login']}
-                    exact
-                    element={<LoginComponent {...loginPage} />}
-                />
-                <Route
-                    path="*"
-                    element={
-                        <Navigate
-                            to={`${route('auth.login')}?next=${encodeURIComponent(pathname)}`}
-                            replace
-                        />
-                    }
-                />
-            </Routes>
+            <Switch>
+                <Route path={routes['auth.login']}>
+                    <LoginComponent {...loginPage} />
+                </Route>
+                <Route>
+                    <Redirect
+                        to={`${route('auth.login')}?next=${encodeURIComponent(pathname)}`}
+                        replace
+                    />
+                </Route>
+            </Switch>
         );
     }
 
     // Normal routes
     return (
-        <Routes>
-            <Route path={routes.home} exact element={<HomeComponent {...homePage} />} />
+        <Switch>
             {user !== null ? (
-                <Route
-                    path={routes['auth.login']}
-                    exact
-                    element={<Navigate to={routes.home} replace />}
-                />
+                <Route path={routes['auth.login']}>
+                    <Redirect to={routes.home} replace />
+                </Route>
             ) : null}
             {resources.map((resource) => {
                 const { id: resourceId } = resource || {};
@@ -142,23 +135,25 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
                     </Fragment>
                 );
             })}
-            <Route path={routes.account} exact element={<AccountComponent {...accountPage} />} />
-            {customRoutes.map(
-                ({ path = null, route: pageRoute = null, component, exact = true, ...props }) => {
-                    const PageComponent = componentsManager.getComponent(component);
-                    const finalPath = path || routes[pageRoute];
-                    return PageComponent !== null ? (
-                        <Route
-                            key={`custom-route-${finalPath}`}
-                            path={path || routes[pageRoute]}
-                            exact={exact}
-                            element={<PageComponent {...props} />}
-                        />
-                    ) : null;
-                },
-            )}
-            <Route path="*" element={<ErrorComponent />} />
-        </Routes>
+            <Route path={routes.account}>
+                <AccountComponent {...accountPage} />
+            </Route>
+            {customRoutes.map(({ path = null, route: pageRoute = null, component, ...props }) => {
+                const PageComponent = componentsManager.getComponent(component);
+                const finalPath = path || routes[pageRoute];
+                return PageComponent !== null ? (
+                    <Route key={`custom-route-${finalPath}`} path={path || routes[pageRoute]}>
+                        <PageComponent {...props} />
+                    </Route>
+                ) : null;
+            })}
+            <Route path={routes.home}>
+                <HomeComponent {...homePage} />
+            </Route>
+            <Route>
+                <ErrorComponent />
+            </Route>
+        </Switch>
     );
 };
 PanneauRoutes.propTypes = propTypes;

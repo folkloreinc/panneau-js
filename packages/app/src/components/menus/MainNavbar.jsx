@@ -2,7 +2,7 @@
 import isArray from 'lodash/isArray';
 import React, { useMemo } from 'react';
 // import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import Link from '@panneau/element-link';
 
 import { useUser } from '@panneau/auth';
 import { usePanneau, usePanneauColorScheme, useUrlGenerator } from '@panneau/core/contexts';
@@ -88,7 +88,7 @@ const MainNavbar = (props) => {
     return (
         <Navbar theme={background} {...props}>
             {name !== null ? (
-                <Link to={route('home')} className="navbar-brand">
+                <Link href={route('home')} className="navbar-brand">
                     {name}
                 </Link>
             ) : null}

@@ -1,7 +1,7 @@
 // import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useParams } from 'react-router';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
@@ -14,13 +14,13 @@ import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
 
 const propTypes = {
+    itemId: PropTypes.string.isRequired,
     resource: PanneauPropTypes.resource.isRequired,
 };
 
 const defaultProps = {};
 
-const ResourceEditPage = ({ resource }) => {
-    const { id: itemId } = useParams();
+const ResourceEditPage = ({ itemId, resource }) => {
     const { item } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
     const [editItem, setEditItem] = useState(item);

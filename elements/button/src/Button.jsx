@@ -1,9 +1,10 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react/button-has-type, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'wouter';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Icon from '@panneau/element-icon';
@@ -217,8 +218,8 @@ const Button = ({
                 {content}
             </a>
         ) : (
-            <Link to={href} className={buttonClassNames} onClick={onClick} ref={refButton}>
-                {content}
+            <Link href={href} onClick={onClick} ref={refButton}>
+                <a className={buttonClassNames}>{content}</a>
             </Link>
         );
     }

@@ -1,10 +1,13 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Form from '@panneau/form';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Link from '@panneau/element-link';
+import Form from '@panneau/form';
 
 const propTypes = {
     action: PropTypes.string,
@@ -56,7 +59,7 @@ const ForgotPassword = ({
         submitButtonLabel={submitButtonLabel}
         actions={
             withLoginLink ? (
-                <Link className="py-2 px-4" to={loginLink}>
+                <Link href={loginLink} className="py-2 px-4">
                     {loginLabel}
                 </Link>
             ) : null

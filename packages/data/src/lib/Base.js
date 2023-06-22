@@ -1,6 +1,6 @@
 import { getCSRFHeaders, getJSON, postJSON } from '@folklore/fetch';
 import queryString from 'query-string';
-import { generatePath } from 'react-router';
+import { generatePath } from '@folklore/routes';
 
 class Base {
     constructor(opts = {}) {

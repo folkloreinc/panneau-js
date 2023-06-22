@@ -1,6 +1,6 @@
+import { useLocation } from '@folklore/routes';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
-import { useLocation } from 'react-router';
 
 import { usePanneauResources } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
@@ -19,7 +19,7 @@ const defaultProps = {
 };
 
 const ResourcesMenu = ({ className, itemClassName, linkClassName }) => {
-    const { pathname } = useLocation();
+    const [{ pathname }] = useLocation();
     const resources = usePanneauResources();
     const resourceRoute = useResourceUrlGenerator();
 

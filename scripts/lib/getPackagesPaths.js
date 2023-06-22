@@ -1,11 +1,11 @@
 const path = require('path');
 const globSync = require('glob').sync;
-const lerna = require('../../lerna.json');
+const lerna = require('../../package.json');
 
 const rootDir = path.join(__dirname, '../../');
 
 const getPackagesPaths = () =>
-    lerna.packages
+    lerna.workspaces
         .map((it) => it.replace(/\/\*/, '/'))
         .reduce(
             (paths, packagesPath) => [

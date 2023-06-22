@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { createPathToRegexpMatcher, useMemoryLocationHook } from '@folklore/routes';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
-import { MemoryRouter } from 'react-router';
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'wouter';
 
 import { AuthProvider } from '@panneau/auth';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -25,6 +25,8 @@ import ModalsProvider from '@panneau/modals';
 import Routes from './Routes';
 
 import '../styles/styles.scss';
+
+const pathToRegexpMatcher = createPathToRegexpMatcher();
 
 const propTypes = {
     definition: PanneauPropTypes.panneauDefinition.isRequired,
@@ -54,7 +56,7 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
         routes = {},
         settings: { memoryRouter: usesMemoryRouter = false } = {},
     } = definition;
-    const Router = memoryRouter || usesMemoryRouter ? MemoryRouter : BrowserRouter;
+    const isMemoryRouter = memoryRouter || usesMemoryRouter || false;
     const extraMessages = useMemo(() => {
         const { intl: { messages = null } = {}, resources = [] } = definition;
         return {
@@ -83,8 +85,10 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
         window.location.reload();
     }, [baseUrl]);
 
+    const memoryLocationHook = useMemoryLocationHook();
+
     return (
-        <Router>
+        <Router hook={isMemoryRouter ? memoryLocationHook : null} matcher={pathToRegexpMatcher}>
             <IntlProvider locale={locale} locales={locales} extraMessages={extraMessages}>
                 <PanneauProvider definition={definition}>
                     <UppyProvider {...uppy}>

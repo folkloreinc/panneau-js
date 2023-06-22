@@ -1,7 +1,8 @@
 // import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useNavigate, useParams } from 'react-router';
+import { useLocation } from '@folklore/routes';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
@@ -14,14 +15,14 @@ import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
 
 const propTypes = {
+    itemId: PropTypes.string.isRequired,
     resource: PanneauPropTypes.resource.isRequired,
 };
 
 const defaultProps = {};
 
-const ResourceDeletePage = ({ resource }) => {
-    const { id: itemId } = useParams();
-    const navigate = useNavigate();
+const ResourceDeletePage = ({ itemId, resource }) => {
+    const [, navigate] = useLocation();
     const resourceRoute = useResourceUrlGenerator(resource);
     const { item } = useResourceItem(resource, itemId);
     const { type = null } = item || {};

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router';
+import PropTypes from 'prop-types';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
@@ -11,13 +11,13 @@ import PageHeader from '../partials/PageHeader';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
+    itemId: PropTypes.string.isRequired,
 };
 
 const defaultProps = {};
 
-const ResourceShowPage = ({ resource }) => {
+const ResourceShowPage = ({ resource, itemId }) => {
     const { name } = resource;
-    const { id: itemId } = useParams();
     const { item } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
 

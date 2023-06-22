@@ -56,9 +56,9 @@ module.exports = {
             ...config.resolve,
             alias: {
                 ...config.resolve.alias,
-                'react-router': require.resolve('react-router'),
-                'react-router-dom': require.resolve('react-router-dom'),
-                'react-intl': require.resolve('react-intl'),
+                // '@folklore/routes': require.resolve('@folklore/routes'),
+                // 'wouter': require.resolve('wouter'),
+                // 'react-intl': require.resolve('react-intl'),
                 // '@uppy/core/dist/style.css': require.resolve('@uppy/core/dist/style.css'),
                 // '@uppy/core': require.resolve('@uppy/core'),
                 // '@uppy/react': require.resolve('@uppy/react'),

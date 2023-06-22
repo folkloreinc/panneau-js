@@ -4,7 +4,7 @@ import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router';
+import { useLocation } from '@folklore/routes';
 
 import { useApi } from '@panneau/data';
 import Select from '@panneau/element-select';
@@ -57,7 +57,7 @@ const SelectFilter = ({
         setOptions(initialOptions);
     }, [initialOptions, setOptions]);
 
-    const { search } = useLocation();
+    const [{ search }] = useLocation();
     const query = useMemo(() => queryString.parse(search), [search]);
 
     const finalParams = useMemo(() => {

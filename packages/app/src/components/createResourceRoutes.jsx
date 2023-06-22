@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { Route } from 'react-router';
+import { Route } from 'wouter';
 
 import { ResourceCreate, ResourceDelete, ResourceEdit, ResourceIndex, ResourceShow } from './pages';
 
@@ -47,59 +47,57 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
 
     return [
         <Route
-            key={`${resourceId}-index`}
-            path={route('resources.index', {
-                resource: resourceId,
-            })}
-            exact
-            element={<ResourceIndexComponent resource={resource} />}
-        />,
-        <Route
             key={`${resourceId}-create`}
             path={route('resources.create', {
                 resource: resourceId,
             })}
             exact
-            element={<ResourceCreateComponent resource={resource} />}
-        />,
+        >
+            {() => <ResourceCreateComponent resource={resource} />}
+        </Route>,
         <Route
             key={`${resourceId}-show`}
             path={route('resources.show', {
                 resource: resourceId,
                 id: ':id',
             })}
-            exact
-            element={<ResourceShowComponent resource={resource} />}
-        />,
+        >
+            {() => <ResourceShowComponent resource={resource} />}
+        </Route>,
         <Route
             key={`${resourceId}-edit`}
             path={route('resources.edit', {
                 resource: resourceId,
                 id: ':id',
             })}
-            exact
-            element={<ResourceEditComponent resource={resource} />}
-        />,
+        >
+            {() => <ResourceEditComponent resource={resource} />}
+        </Route>,
         <Route
             key={`${resourceId}-delete`}
             path={route('resources.delete', {
                 resource: resourceId,
                 id: ':id',
             })}
-            exact
-            element={<ResourceDeleteComponent resource={resource} />}
-        />,
-        ...extraRoutes.map(({ path, component, exact = true, ...pageProps }) => {
+        >
+            {() => <ResourceDeleteComponent resource={resource} />}
+        </Route>,
+        ...extraRoutes.map(({ path, component, ...pageProps }) => {
             const RouteComponent = componentsManager.getComponent(component);
             return RouteComponent !== null ? (
-                <Route
-                    key={`route-${path}`}
-                    path={path}
-                    exact={exact}
-                    element={<RouteComponent resource={resource} {...pageProps} />}
-                />
+                <Route key={`route-${path}`} path={path}>
+                    {() => <RouteComponent resource={resource} {...pageProps} />}
+                </Route>
             ) : null;
         }),
+        <Route
+            key={`${resourceId}-index`}
+            path={route('resources.index', {
+                resource: resourceId,
+            })}
+        >
+            {() => <ResourceIndexComponent resource={resource} />}
+        </Route>,
     ];
 };
 
