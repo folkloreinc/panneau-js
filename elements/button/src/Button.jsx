@@ -1,5 +1,4 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable react/button-has-type, react/jsx-props-no-spreading */
+/* eslint-disable jsx-a11y/anchor-is-valid, react/button-has-type, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';

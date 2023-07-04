@@ -6,6 +6,8 @@ const getPackagesAliases = require('../scripts/lib/getPackagesAliases');
 const { idInterpolationPattern } = require('../packages/intl/scripts/config');
 require('dotenv').config();
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // insecure
+
 // console.log(getPackagesPaths());
 
 module.exports = {
