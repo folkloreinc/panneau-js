@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-resource-card",
-    "version": "3.0.0",
+    "version": "3.0.2",
     "description": "Resource card element",
     "keywords": [
         "javascript"
@@ -46,7 +46,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.0",
-        "@panneau/element-button": "^3.0.0",
+        "@panneau/element-button": "^3.0.2",
         "@panneau/element-icon": "^3.0.0",
         "@panneau/element-label": "^3.0.0",
         "classnames": "^2.2.6",

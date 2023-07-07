@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-embed",
-    "version": "3.0.0",
+    "version": "3.0.2",
     "description": "An embed field",
     "keywords": [
         "javascript"
@@ -54,8 +54,8 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.0",
-        "@panneau/element-card": "^3.0.0",
-        "@panneau/field-url": "^3.0.0",
+        "@panneau/element-card": "^3.0.2",
+        "@panneau/field-url": "^3.0.2",
         "@panneau/themes": "^3.0.0",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",

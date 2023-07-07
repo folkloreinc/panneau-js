@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modals",
-    "version": "3.0.0",
+    "version": "3.0.2",
     "description": "",
     "keywords": [
         "javascript"
@@ -55,7 +55,7 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.0",
         "@panneau/element-portal": "^3.0.0",
-        "@panneau/modal-dialog": "^3.0.0",
+        "@panneau/modal-dialog": "^3.0.2",
         "@panneau/modal-upload": "^3.0.0",
         "@panneau/themes": "^3.0.0",
         "classnames": "^2.2.6",
