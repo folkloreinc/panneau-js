@@ -58,7 +58,7 @@ const Breadcrumbs = ({ items, theme, separator, withoutBar, noWrap, className })
                     {active ? <Label>{label}</Label> : null}
                     {!active && url ? (
                         <Link
-                            to={url}
+                            href={url}
                             onClick={onClick}
                             className={classNames({
                                 [`text-${theme}`]: theme !== null,

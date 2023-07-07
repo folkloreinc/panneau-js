@@ -83,7 +83,7 @@ const Navbar = ({
                             [brandClassName]: brandClassName !== null,
                         },
                     ])}
-                    to={brandLink}
+                    href={brandLink}
                 >
                     {brand}
                 </Link>
