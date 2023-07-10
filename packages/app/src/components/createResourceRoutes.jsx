@@ -62,7 +62,7 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
                 id: ':id',
             })}
         >
-            {() => <ResourceShowComponent resource={resource} />}
+            {({ id = null }) => <ResourceShowComponent itemId={id} resource={resource} />}
         </Route>,
         <Route
             key={`${resourceId}-edit`}
@@ -71,7 +71,7 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
                 id: ':id',
             })}
         >
-            {() => <ResourceEditComponent resource={resource} />}
+            {({ id = null }) => <ResourceEditComponent itemId={id} resource={resource} />}
         </Route>,
         <Route
             key={`${resourceId}-delete`}
@@ -80,7 +80,7 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
                 id: ':id',
             })}
         >
-            {() => <ResourceDeleteComponent resource={resource} />}
+            {({ id = null }) => <ResourceDeleteComponent itemId={id} resource={resource} />}
         </Route>,
         ...extraRoutes.map(({ path, component, ...pageProps }) => {
             const RouteComponent = componentsManager.getComponent(component);
