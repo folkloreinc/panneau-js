@@ -151,6 +151,10 @@ module.exports = () => {
             sort_direction: sortDirection = 'asc',
             paginate = true,
             paginated = true,
+            // Exceptions for storybook
+            id,
+            viewMode,
+            // The rest
             ...query
         } = req.query;
         const items = getResourceItems(resource);

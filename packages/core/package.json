@@ -69,7 +69,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@folklore/fetch": "^0.1.15",
+        "@folklore/fetch": "^0.1.16",
         "@folklore/forms": "^0.0.10",
         "@folklore/routes": "^0.2.6",
         "@folklore/services": "^0.1.24",
@@ -109,7 +109,7 @@
         "uuid": "^8.3.2",
         "webfontloader": "^1.6.28",
         "wolfy87-eventemitter": "^5.2.9",
-        "wouter": "^2.0.0"
+        "wouter": "^2.11.0"
     },
     "publishConfig": {
         "access": "public"
