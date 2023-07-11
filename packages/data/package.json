@@ -1,6 +1,6 @@
 {
     "name": "@panneau/data",
-    "version": "3.0.8",
+    "version": "3.0.9",
     "description": "",
     "keywords": [
         "javascript"
@@ -55,7 +55,7 @@
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.16",
         "@folklore/routes": "^0.2.6",
-        "@panneau/core": "^3.0.8",
+        "@panneau/core": "^3.0.9",
         "prop-types": "^15.7.2",
         "query-string": "^8.1.0",
         "wouter": "^2.11.0"
