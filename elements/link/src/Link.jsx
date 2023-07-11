@@ -54,8 +54,13 @@ const Link = ({
                 </a>
             </ReactLink>
         ) : (
-            <Button theme="primary" onClick={onClick}>
-                {' '}
+            <Button
+                className={classNames([className, { [styles.withoutStyle]: withoutStyle }])}
+                theme="primary"
+                outline
+                {...props}
+                onClick={onClick}
+            >
                 <Label>{children}</Label>
             </Button>
         );

@@ -115,9 +115,8 @@ export default {
             label: 'Organisateur images',
             type: 'array',
             component: 'images',
-            // TODO: make this happen
-            // withButton: true,
-            // withFind: true,
+            withButton: true,
+            withFind: true,
         },
         { name: 'blocks', label: 'Blocks', component: 'items', withoutFormGroup: true },
     ],

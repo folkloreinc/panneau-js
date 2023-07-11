@@ -45,6 +45,7 @@ const propTypes = {
     withFind: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.label,
     searchButtonLabel: PanneauPropTypes.label,
+    confirmButtonLabel: PanneauPropTypes.label,
     allowMultipleUploads: PropTypes.bool,
     maxNumberOfFiles: PropTypes.number,
     namePath: PropTypes.string,
@@ -74,6 +75,7 @@ const defaultProps = {
             description="Default upload add button label"
         />
     ),
+    confirmButtonLabel: <FormattedMessage defaultMessage="Confirm" description="Button label" />,
     allowMultipleUploads: false,
     maxNumberOfFiles: 1,
     namePath: null,
@@ -96,6 +98,7 @@ const UploadField = ({
     withFind,
     addButtonLabel,
     searchButtonLabel,
+    confirmButtonLabel,
     allowMultipleUploads,
     maxNumberOfFiles,
     namePath,
@@ -217,15 +220,41 @@ const UploadField = ({
         setResourceModalOpen(false);
     }, [resourceModalOpen, setResourceModalOpen]);
 
+    const [modalItems, setModalItems] = useState([]);
     const onClickSelect = useCallback(
         (newValue) => {
-            if (onChange !== null) {
+            if (allowMultipleUploads) {
+                if (newValue !== null) {
+                    const { id = null } = newValue || {};
+                    if (id !== null) {
+                        const previous = (modalItems || []).find(
+                            ({ id: itemId = null }) => id === itemId,
+                        );
+                        if (previous) {
+                            setModalItems(
+                                (modalItems || []).filter(({ id: itemId = null }) => id !== itemId),
+                            );
+                        } else {
+                            setModalItems([...modalItems, newValue]);
+                        }
+                    }
+                }
+            } else if (onChange !== null) {
                 onChange(newValue);
                 setResourceModalOpen(false);
             }
         },
-        [onChange, setResourceModalOpen],
+        [onChange, setResourceModalOpen, allowMultipleUploads, modalItems, setModalItems],
     );
+
+    console.log(modalItems);
+
+    const confirmResourceModal = useCallback(() => {
+        if (onChange !== null) {
+            onChange(modalItems);
+            setResourceModalOpen(false);
+        }
+    }, [onChange, setResourceModalOpen, allowMultipleUploads]);
 
     const initialQuery = useMemo(() => ({ types }), [types]);
     const {
@@ -438,6 +467,17 @@ const UploadField = ({
                             withoutActionsColumn: true,
                         }}
                     />
+                    {allowMultipleUploads ? (
+                        <Button
+                            type="button"
+                            theme="primary"
+                            onClick={confirmResourceModal}
+                            disabled={disabled}
+                            className="d-block ms-auto mt-2"
+                        >
+                            <Label>{confirmButtonLabel}</Label>
+                        </Button>
+                    ) : null}
                 </Dialog>
             ) : null}
         </div>
