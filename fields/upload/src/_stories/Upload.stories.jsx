@@ -65,6 +65,6 @@ export const Multiple = () => (
     </>
 );
 
-export const WithModal = () => <Container withButton />;
+export const WithModal = () => <Container withButton withFind />;
 
 export const WithButtonDisabled = () => <Container withButton disabled />;

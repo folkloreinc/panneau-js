@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { useLocation } from '@folklore/routes';
 import { faFileAudio, faFileImage, faFileVideo, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import classNames from 'classnames';
@@ -109,7 +108,7 @@ const UploadField = ({
     onChange,
     className,
 }) => {
-    const [{ pathname = null }] = useLocation();
+    // const [{ pathname = null }] = useLocation();
     // const { ref: containerRef, entry = null } = useResizeObserver();
     // const { contentRect } = entry || {};
     // const { width: containerWidth = null } = contentRect || {};
@@ -366,7 +365,7 @@ const UploadField = ({
                   })
                 : null}
 
-            {!hasMedia && withButton ? (
+            {(!hasMedia || allowMultipleUploads) && withButton ? (
                 <div className="row">
                     <div className="col-auto">
                         <Button
@@ -432,7 +431,7 @@ const UploadField = ({
                         onPageChange={onListPageChange}
                         onQueryChange={onListQueryChange}
                         onQueryReset={onListQueryReset}
-                        baseUrl={pathname}
+                        baseUrl={null}
                         listProps={{
                             actions: ['select'],
                             actionsProps: { onClickSelect },

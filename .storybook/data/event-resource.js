@@ -115,6 +115,7 @@ export default {
             label: 'Organisateur images',
             type: 'array',
             component: 'images',
+            // TODO: make this happen
             // withButton: true,
             // withFind: true,
         },

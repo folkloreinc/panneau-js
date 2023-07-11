@@ -83,8 +83,6 @@ const ResourceItemsList = ({
     const ListComponents = useListsComponents();
     const ListComponent = getComponentFromName(listComponent || 'table', ListComponents);
 
-    console.log('bu', baseUrl);
-
     return (
         <div className={className}>
             {showFilters && filters !== null ? (

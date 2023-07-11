@@ -5,6 +5,7 @@ import React from 'react';
 import { Link as ReactLink } from 'wouter';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 
 import styles from './styles.module.scss';
@@ -41,8 +42,24 @@ const Link = ({
     href,
     onClick,
     ...props
-}) =>
-    external ? (
+}) => {
+    const inner =
+        href !== null ? (
+            <ReactLink href={href} onClick={onClick}>
+                <a
+                    className={classNames([className, { [styles.withoutStyle]: withoutStyle }])}
+                    {...props}
+                >
+                    <Label>{children}</Label>
+                </a>
+            </ReactLink>
+        ) : (
+            <Button theme="primary" onClick={onClick}>
+                {' '}
+                <Label>{children}</Label>
+            </Button>
+        );
+    return external ? (
         <a
             className={classNames([className, { [styles.withoutStyle]: withoutStyle }])}
             target={target}
@@ -54,15 +71,9 @@ const Link = ({
             <Label>{children}</Label>
         </a>
     ) : (
-        <ReactLink href={href} onClick={onClick}>
-            <a
-                className={classNames([className, { [styles.withoutStyle]: withoutStyle }])}
-                {...props}
-            >
-                <Label>{children}</Label>
-            </a>
-        </ReactLink>
+        inner
     );
+};
 
 Link.propTypes = propTypes;
 Link.defaultProps = defaultProps;
