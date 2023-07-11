@@ -18,8 +18,10 @@ export const UppyContext = React.createContext(null);
 export const useUppy = ({
     onComplete = null,
     onFail = null,
-    getFileName = ({ name, extension = null }) =>
-        `${(slugify(name) || '').substring(0, 50)}${extension !== null ? `.${extension}` : ''}`,
+    getFileName = ({ name = '', extension = null }) =>
+        `${(slugify(name) || '').substring(0, 50)}${
+            extension !== null && (name || '').indexOf(extension) === -1 ? `.${extension}` : ''
+        }`,
     getFileNameWithUUID = ({ extension = null }) =>
         `${uuid()}${extension !== null ? `.${extension}` : ''}`,
     withUUID = false,
@@ -84,7 +86,7 @@ export const useUppy = ({
         const onUpload = ({ fileIDs: ids = [] }) => {
             ids.forEach((id) => {
                 const file = uppy.getFile(id);
-                console.log('file', file);
+                // console.log('file', file);
                 let newName = null;
                 if (withUUID) {
                     newName = getFileNameWithUUID(file);
@@ -206,7 +208,7 @@ export const UppyProvider = ({
         }
         return (opts = {}) => {
             const { sources: customSources = sources, ...uppyOpts } = opts || {};
-            console.log(uppyOpts);
+            // console.log(uppyOpts);
             const newUppy = new Uppy({
                 id,
                 locale: uppyLocale,
