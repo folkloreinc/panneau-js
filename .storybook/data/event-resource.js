@@ -110,6 +110,14 @@ export default {
             withButton: true,
             withFind: true,
         },
+        {
+            name: 'organizer_imagesss',
+            label: 'Organisateur images',
+            type: 'array',
+            component: 'images',
+            // withButton: true,
+            // withFind: true,
+        },
         { name: 'blocks', label: 'Blocks', component: 'items', withoutFormGroup: true },
     ],
 

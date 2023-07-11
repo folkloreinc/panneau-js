@@ -20,6 +20,7 @@ export {
     AudioField as Audio,
     VideoField as Video,
     ImageField as Image,
+    ImagesField as Images,
     DocumentField as Document,
     FontField as Font,
 } from '@panneau/field-upload';

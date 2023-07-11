@@ -86,8 +86,7 @@ export const useUppy = ({
         const onUpload = ({ fileIDs: ids = [] }) => {
             ids.forEach((id) => {
                 const file = uppy.getFile(id);
-                console.log('file', id, file);
-
+                // console.log('file', id, file);
                 let newName = null;
                 if (withUUID) {
                     newName = getFileNameWithUUID(file);
