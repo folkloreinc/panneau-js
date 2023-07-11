@@ -112,9 +112,23 @@ const UploadField = ({
     // const { contentRect } = entry || {};
     // const { width: containerWidth = null } = contentRect || {};
 
+    const mergeData = useCallback((newValue) => {
+        // Merge the response from our back-end
+        if (
+            isObject(newValue) &&
+            isObject(newValue.response) &&
+            newValue.response.status === 200 &&
+            newValue.response.body !== null
+        ) {
+            return { ...newValue, ...(newValue.response.body || null) };
+        }
+        return newValue;
+    }, []);
+
     const onComplete = useCallback(
         (response) => {
             console.log('upload complete', response); // eslint-disable-line
+
             let newValue = null;
             if (isArray(response)) {
                 if (allowMultipleUploads) {
@@ -128,14 +142,10 @@ const UploadField = ({
                     response.successful.length > 0 ? response.successful[0].response.body : null;
             }
 
-            // Merge the response from our back-end
-            if (
-                isObject(newValue) &&
-                isObject(newValue.response) &&
-                newValue.response.status === 200 &&
-                newValue.response.body !== null
-            ) {
-                newValue = { ...newValue, ...(newValue.response.body || null) };
+            if (isArray(newValue)) {
+                newValue = newValue.map((val) => mergeData(val));
+            } else {
+                newValue = mergeData(newValue);
             }
 
             console.log('new upload value', newValue); // eslint-disable-line
@@ -144,7 +154,7 @@ const UploadField = ({
                 onChange(newValue);
             }
         },
-        [onChange, allowMultipleUploads],
+        [onChange, allowMultipleUploads, mergeData],
     );
 
     const typesString = types.join('.');
