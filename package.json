@@ -121,7 +121,6 @@
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
         "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0",
         "react-intl": "^5.15.8||^6.0.0",
-        "wouter": "^2.11.0",
         "react-sortablejs": "^6.1.1",
         "rollup": "^2.42.4",
         "rollup-plugin-copy": "^3.4.0",
@@ -138,6 +137,10 @@
         "stylelint-config-property-sort-order-smacss": "^9.0.0",
         "stylelint-config-sass-guidelines": "^9.0.1",
         "uuid": "^8.3.2",
-        "webpack": "^5.76.3"
+        "webpack": "^5.76.3",
+        "wouter": "^2.11.0"
+    },
+    "dependencies": {
+        "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
     }
 }
