@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modals",
-    "version": "3.0.7",
+    "version": "3.0.8",
     "description": "",
     "keywords": [
         "javascript"
@@ -53,11 +53,11 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.7",
+        "@panneau/core": "^3.0.8",
         "@panneau/element-portal": "^3.0.0",
-        "@panneau/modal-dialog": "^3.0.7",
-        "@panneau/modal-upload": "^3.0.7",
-        "@panneau/themes": "^3.0.7",
+        "@panneau/modal-dialog": "^3.0.8",
+        "@panneau/modal-upload": "^3.0.8",
+        "@panneau/themes": "^3.0.8",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2"
     },
