@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-breadcrumbs",
-    "version": "3.0.9",
+    "version": "3.0.10",
     "description": "Breadcrumbs element",
     "keywords": [
         "javascript"
@@ -57,7 +57,7 @@
         "@panneau/core": "^3.0.9",
         "@panneau/element-button": "^3.0.9",
         "@panneau/element-label": "^3.0.9",
-        "@panneau/element-link": "^3.0.9",
+        "@panneau/element-link": "^3.0.10",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
