@@ -19,6 +19,7 @@ const propTypes = {
     onChange: PropTypes.func,
     onComplete: PropTypes.func,
     submitButtonLabel: PanneauPropTypes.label,
+    useFormProps: PropTypes.shape({}),
     className: PropTypes.string,
 };
 
@@ -31,6 +32,7 @@ const defaultProps = {
     onChange: null,
     onComplete: null,
     submitButtonLabel: null,
+    useFormProps: null,
     className: null,
 };
 
@@ -45,6 +47,7 @@ const Form = ({
     onChange: parentOnChange,
     onComplete,
     submitButtonLabel,
+    useFormProps,
     className,
     ...props
 }) => {
@@ -68,6 +71,7 @@ const Form = ({
         onComplete,
         value: providedValue,
         setValue: parentOnChange,
+        ...useFormProps,
     });
 
     return (

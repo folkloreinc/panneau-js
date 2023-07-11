@@ -57,6 +57,8 @@ const useForm = (opts = {}) => {
         initialValue = null,
         value: providedValue = null,
         setValue: setProvidedValue = null,
+        withoutDefault = true,
+        withoutPropagation = true,
         onComplete = null,
         locales = [],
     } = opts;
@@ -169,13 +171,17 @@ const useForm = (opts = {}) => {
     const onSubmit = useCallback(
         (e) => {
             // console.log('form submit', e); //
-            e.preventDefault();
+            if (withoutDefault) {
+                e.preventDefault();
+            }
+            if (withoutPropagation) {
+                e.stopPropagation();
+            }
             // This one is very important with multiple forms
             // Nested forms (even in portals) will bubble the onSubmit event to the parent
-            e.stopPropagation();
             submit();
         },
-        [submit, action],
+        [submit, action, withoutDefault, withoutPropagation],
     );
 
     let status = null;
