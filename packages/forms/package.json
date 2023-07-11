@@ -1,6 +1,6 @@
 {
     "name": "@panneau/forms",
-    "version": "3.0.10",
+    "version": "3.0.11",
     "description": "",
     "keywords": [
         "javascript"
@@ -63,7 +63,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.9",
-        "@panneau/form-auth": "^3.0.10",
+        "@panneau/form-auth": "^3.0.11",
         "@panneau/form-horizontal": "^3.0.9",
         "@panneau/form-inline": "^3.0.9",
         "@panneau/form-normal": "^3.0.9",

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-medias",
-    "version": "3.0.10",
+    "version": "3.0.11",
     "description": "Default media list",
     "keywords": [
         "javascript"
@@ -48,7 +48,7 @@
         "@panneau/core": "^3.0.9",
         "@panneau/element-button": "^3.0.9",
         "@panneau/element-buttons": "^3.0.9",
-        "@panneau/list-table": "^3.0.10",
+        "@panneau/list-table": "^3.0.11",
         "@panneau/themes": "^3.0.9",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
