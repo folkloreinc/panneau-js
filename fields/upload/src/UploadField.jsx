@@ -46,6 +46,7 @@ const propTypes = {
     addButtonLabel: PanneauPropTypes.label,
     searchButtonLabel: PanneauPropTypes.label,
     allowMultipleUploads: PropTypes.bool,
+    maxNumberOfFiles: PropTypes.number,
     namePath: PropTypes.string,
     thumbnailPath: PropTypes.string,
     sizePath: PropTypes.string,
@@ -74,6 +75,7 @@ const defaultProps = {
         />
     ),
     allowMultipleUploads: false,
+    maxNumberOfFiles: 1,
     namePath: null,
     thumbnailPath: null,
     sizePath: null,
@@ -95,6 +97,7 @@ const UploadField = ({
     addButtonLabel,
     searchButtonLabel,
     allowMultipleUploads,
+    maxNumberOfFiles,
     namePath,
     thumbnailPath,
     sizePath,
@@ -154,6 +157,8 @@ const UploadField = ({
 
     const uppyFinalProps = useMemo(
         () => ({
+            maxNumberOfFiles:
+                allowMultipleUploads && maxNumberOfFiles === 1 ? 50 : maxNumberOfFiles,
             ...uppyProps,
             allowedFileTypes,
             allowMultipleUploads,
@@ -161,7 +166,7 @@ const UploadField = ({
             autoProceed: true,
             onComplete,
         }),
-        [uppyProps, allowedFileTypes, allowMultipleUploads, sources, onComplete],
+        [uppyProps, allowedFileTypes, allowMultipleUploads, maxNumberOfFiles, sources, onComplete],
     );
     const uppy = useUppy(uppyFinalProps);
 

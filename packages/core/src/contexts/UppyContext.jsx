@@ -37,7 +37,7 @@ export const useUppy = ({
             buildUppy !== null
                 ? buildUppy({
                       meta,
-                      allowMultipleUploads,
+                      allowMultipleUploadBatches: allowMultipleUploads,
                       restrictions: { maxNumberOfFiles, allowedFileTypes },
                       autoProceed,
                       debug,
@@ -84,7 +84,7 @@ export const useUppy = ({
         const onUpload = ({ fileIDs: ids = [] }) => {
             ids.forEach((id) => {
                 const file = uppy.getFile(id);
-                console.log(file);
+                console.log('file', file);
                 let newName = null;
                 if (withUUID) {
                     newName = getFileNameWithUUID(file);
@@ -206,6 +206,7 @@ export const UppyProvider = ({
         }
         return (opts = {}) => {
             const { sources: customSources = sources, ...uppyOpts } = opts || {};
+            console.log(uppyOpts);
             const newUppy = new Uppy({
                 id,
                 locale: uppyLocale,
