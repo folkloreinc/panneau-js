@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modal-dialog",
-    "version": "3.0.9",
+    "version": "3.0.12",
     "description": "Default modal",
     "keywords": [
         "javascript"
@@ -57,7 +57,7 @@
         "@panneau/element-button": "^3.0.9",
         "@panneau/element-buttons": "^3.0.9",
         "@panneau/element-label": "^3.0.9",
-        "@panneau/element-modal": "^3.0.9",
+        "@panneau/element-modal": "^3.0.12",
         "@panneau/themes": "^3.0.9",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",

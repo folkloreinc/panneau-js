@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modal-resource-items",
-    "version": "3.0.11",
+    "version": "3.0.12",
     "description": "Resource items modal",
     "keywords": [
         "javascript"
@@ -46,9 +46,9 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.9",
-        "@panneau/intl": "^3.0.9",
-        "@panneau/list-resource-items": "^3.0.11",
-        "@panneau/modal-dialog": "^3.0.9",
+        "@panneau/intl": "^3.0.12",
+        "@panneau/list-resource-items": "^3.0.12",
+        "@panneau/modal-dialog": "^3.0.12",
         "@panneau/themes": "^3.0.9",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
