@@ -50,7 +50,7 @@ const Modals = ({ className }) => {
                 className={classNames([
                     styles.modals,
                     {
-                        [styles.hasModals]: modals.length > 0,
+                        [styles.hasModals]: modals !== null && modals.length > 0,
                     },
                 ])}
                 ref={containerRef}

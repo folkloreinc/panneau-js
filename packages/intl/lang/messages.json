@@ -187,6 +187,10 @@
     "defaultMessage": "Logout",
     "description": "Menu label"
   },
+  "TV3jir": {
+    "defaultMessage": "Loading",
+    "description": "Loading label"
+  },
   "U/ye2x": {
     "defaultMessage": "Cancel",
     "description": "Link label"
@@ -198,6 +202,10 @@
   "UUv8FR": {
     "defaultMessage": "Name",
     "description": "Field label"
+  },
+  "UaVu03": {
+    "defaultMessage": "Confirm",
+    "description": "Button label"
   },
   "UbmsLL": {
     "defaultMessage": "No item found.",

@@ -295,6 +295,12 @@ msgctxt "REIcPg"
 msgid "Logout"
 msgstr "Déconnexion"
 
+# Loading label
+#: TV3jir
+msgctxt "TV3jir"
+msgid "Loading"
+msgstr ""
+
 # Link label
 #: U/ye2x
 msgctxt "U/ye2x"
@@ -312,6 +318,12 @@ msgstr "Erreur 404"
 msgctxt "UUv8FR"
 msgid "Name"
 msgstr "Nom"
+
+# Button label
+#: UaVu03
+msgctxt "UaVu03"
+msgid "Confirm"
+msgstr ""
 
 # Label when there is no item in items field
 #: UbmsLL

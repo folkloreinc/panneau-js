@@ -140,6 +140,9 @@
     "REIcPg": {
         "defaultMessage": "Logout"
     },
+    "TV3jir": {
+        "defaultMessage": "Loading"
+    },
     "U/ye2x": {
         "defaultMessage": "Cancel"
     },
@@ -148,6 +151,9 @@
     },
     "UUv8FR": {
         "defaultMessage": "Name"
+    },
+    "UaVu03": {
+        "defaultMessage": "Confirm"
     },
     "UbmsLL": {
         "defaultMessage": "No item found."

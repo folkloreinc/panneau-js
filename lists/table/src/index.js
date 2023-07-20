@@ -1,3 +1,5 @@
-import Table from './Table';
+import ResourceTable from './ResourceTable';
 
-export default Table;
+export { default as SortLink } from './SortLink';
+
+export default ResourceTable;

@@ -59,7 +59,7 @@ const defaultProps = {
     withoutActionsColumn: false,
 };
 
-const TableList = ({
+const ResourceTableList = ({
     resource,
     items,
     actions,
@@ -273,7 +273,7 @@ const TableList = ({
     );
 };
 
-TableList.propTypes = propTypes;
-TableList.defaultProps = defaultProps;
+ResourceTableList.propTypes = propTypes;
+ResourceTableList.defaultProps = defaultProps;
 
-export default TableList;
+export default ResourceTableList;

@@ -2,6 +2,7 @@
 import classNames from 'classnames';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
 // import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useCallback, useRef, useState } from 'react';
@@ -24,6 +25,7 @@ const propTypes = {
     ),
     maxItemsCount: PropTypes.number,
     loadItems: PropTypes.func,
+    paginated: PropTypes.bool,
     requestUrl: PropTypes.string,
     requestOptions: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     requestQuery: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -52,6 +54,7 @@ const defaultProps = {
     items: null,
     maxItemsCount: null,
     loadItems: null,
+    paginated: false,
     requestUrl: null,
     requestOptions: null,
     requestQuery: null,
@@ -82,8 +85,9 @@ const ItemField = ({
     items: initialItems,
     maxItemsCount,
     loadItems,
+    paginated,
     requestUrl,
-    requestQuery,
+    requestQuery: initialRequestQuery,
     requestOptions,
     requestSearchParamName,
     getItemLabel: initialGetItemLabel,
@@ -105,6 +109,9 @@ const ItemField = ({
     const [initialValue] = useState(multiple ? value : null);
     const [inputTextValue, setInputTextValue] = useState('');
     const [items, setItems] = useState(initialItems || initialValue || []);
+    const [paginator, setPaginator] = useState(null);
+    const [requestQuery, setRequestQuery] = useState(initialRequestQuery || null);
+
     const lastRequest = useRef(null);
 
     const getItemLabel = useCallback(
@@ -152,7 +159,7 @@ const ItemField = ({
                 const currentRequest = api.requestGet(
                     requestUrl,
                     {
-                        paginated: false,
+                        paginated,
                         ...requestQuery,
                         ...(requestValue !== null
                             ? { [requestSearchParamName]: requestValue }
@@ -163,9 +170,17 @@ const ItemField = ({
                 lastRequest.current = currentRequest;
                 currentRequest.then((newItems) => {
                     if (currentRequest === lastRequest.current) {
+                        const {
+                            data = null,
+                            pagination: newPagination = null,
+                            meta = null,
+                        } = paginated ? newItems : { data: newItems };
                         const finalNewItems =
-                            maxItemsCount !== null ? newItems.slice(0, maxItemsCount) : newItems;
+                            maxItemsCount !== null ? data.slice(0, maxItemsCount) : data;
                         setItems(finalNewItems);
+                        if ((paginated && newPagination !== null) || meta !== null) {
+                            setPaginator(newPagination || meta || null);
+                        }
                         callback(newItems);
                     }
                 });
@@ -184,6 +199,8 @@ const ItemField = ({
             requestQuery,
             requestOptions,
             requestSearchParamName,
+            paginated,
+            setPaginator,
         ],
     );
 
@@ -193,9 +210,16 @@ const ItemField = ({
         }
     }, [onChange]);
 
-    const onInputChange = useCallback((textValue) => {
-        setInputTextValue(textValue);
-    }, []);
+    const onInputChange = useCallback(
+        (textValue) => {
+            const { page = null } = requestQuery || {};
+            if (paginated && page !== null) {
+                setRequestQuery({ ...requestQuery, page: 1 });
+            }
+            setInputTextValue(textValue);
+        },
+        [paginated, requestQuery, setRequestQuery, setInputTextValue],
+    );
 
     const timeoutRef = useRef(null);
     const loadOptions = useCallback(
@@ -234,6 +258,19 @@ const ItemField = ({
     const finalValue = multiple && isArray(value) ? value.map((it) => parseItem(it)) : value;
     // TODO: implement the create into react-select
     const isRow = canCreate === true;
+
+    const { page = null } = requestQuery || {};
+    const { lastPage = null, last_page: otherLastPage = null } = paginator || {};
+    const finalLastPage = lastPage || otherLastPage || null;
+
+    const onScrollEnd = useCallback(() => {
+        if (page !== null && page >= finalLastPage) {
+            return;
+        }
+        if (paginated) {
+            setRequestQuery((page || 1) + 1);
+        }
+    }, [paginated, page, setRequestQuery, finalLastPage]);
 
     // const renderSectionTitle = useCallback(
     //     (section) => <h6 className="dropdown-header">{section.title}</h6>,
@@ -298,6 +335,7 @@ const ItemField = ({
                             onChange={onValueChange}
                             onInputChange={onInputChange}
                             loadOptions={loadOptions}
+                            onMenuScrollToBottom={paginated ? onScrollEnd : null}
                             multiple={multiple}
                         />
                     </div>
