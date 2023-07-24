@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-item",
-    "version": "3.0.12",
+    "version": "3.0.13",
     "description": "A repeatable abstract field",
     "keywords": [
         "javascript"
@@ -55,8 +55,8 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.9",
         "@panneau/data": "^3.0.9",
-        "@panneau/element-button": "^3.0.9",
-        "@panneau/element-resource-card": "^3.0.9",
+        "@panneau/element-button": "^3.0.13",
+        "@panneau/element-resource-card": "^3.0.13",
         "@panneau/element-select": "^3.0.9",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
