@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import styles from './styles.module.scss';
-import 'bootstrap-icons/font/bootstrap-icons.scss';
+
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const propTypes = {
     name: PropTypes.string.isRequired,
