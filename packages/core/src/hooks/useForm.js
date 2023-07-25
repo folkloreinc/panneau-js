@@ -89,8 +89,9 @@ const useForm = (opts = {}) => {
         ? setProvidedGeneralError
         : setStateGeneralError;
 
-    const fieldsKey = [value, errors, locales].concat(fields);
+    const fieldsKey = [value, errors, requestState, locales].concat(fields);
     const onFieldChange = useCallback((fieldName, fieldValue) => {
+        const { loading = false, success = false, error = false } = requestState || {};
         const fieldErrors = errors !== null ? errors[fieldName] || null : null;
         if (fieldErrors !== null) {
             setErrors({
@@ -98,6 +99,15 @@ const useForm = (opts = {}) => {
                 [fieldName]: null,
             });
         }
+
+        if (!loading && (success !== false || error !== false)) {
+            setRequestState({
+                success: false,
+                loading: false,
+                error: false,
+            });
+        }
+
         setValue({
             ...value,
             [fieldName]: fieldValue,
@@ -108,6 +118,7 @@ const useForm = (opts = {}) => {
         () => getFieldsPropsFromFields(fields, { value, errors, onChange: onFieldChange }, locales),
         fieldsKey,
     );
+    // console.log('fk', fieldsKey);
 
     const csrfToken = useMemo(() => getCsrfToken(), []);
 

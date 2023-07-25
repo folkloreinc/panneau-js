@@ -132,7 +132,6 @@ const UploadField = ({
     const onComplete = useCallback(
         (response) => {
             console.log('upload complete', response); // eslint-disable-line
-
             let newValue = null;
             if (isArray(response)) {
                 if (allowMultipleUploads) {
@@ -161,7 +160,7 @@ const UploadField = ({
         [onChange, allowMultipleUploads, mergeData],
     );
 
-    const typesString = types.join('.');
+    const typesString = useMemo(() => types.join('.'), [types]);
     const allowedFileTypes = useMemo(() => {
         if (fileTypes !== null) {
             return fileTypes;
@@ -246,8 +245,6 @@ const UploadField = ({
         },
         [onChange, setResourceModalOpen, allowMultipleUploads, modalItems, setModalItems],
     );
-
-    console.log(modalItems);
 
     const confirmResourceModal = useCallback(() => {
         if (onChange !== null) {
