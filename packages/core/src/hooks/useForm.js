@@ -60,6 +60,7 @@ const useForm = (opts = {}) => {
         withoutDefault = true,
         withoutPropagation = true,
         onComplete = null,
+        onError = null,
         locales = [],
     } = opts;
 
@@ -118,8 +119,6 @@ const useForm = (opts = {}) => {
         () => getFieldsPropsFromFields(fields, { value, errors, onChange: onFieldChange }, locales),
         fieldsKey,
     );
-    // console.log('fk', fieldsKey);
-
     const csrfToken = useMemo(() => getCsrfToken(), []);
 
     const onSubmitError = (error) => {
@@ -128,11 +127,16 @@ const useForm = (opts = {}) => {
             loading: false,
             error: true,
         });
+
         if (error.name === 'ValidationError') {
             const { errors: validationErrors = null } = error.getResponseData();
             setErrors(validationErrors);
         } else {
             setGeneralError(error.message);
+        }
+
+        if (onError !== null) {
+            onError(error);
         }
     };
 

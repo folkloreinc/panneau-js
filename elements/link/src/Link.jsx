@@ -18,7 +18,7 @@ const propTypes = {
     rel: PropTypes.string,
     withoutStyle: PropTypes.bool,
     className: PropTypes.string,
-    onClick: PropTypes.string,
+    onClick: PropTypes.func,
 };
 
 const defaultProps = {
