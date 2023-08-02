@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-table",
-    "version": "3.0.14",
+    "version": "3.0.15",
     "description": "Table element",
     "keywords": [
         "javascript"
@@ -45,10 +45,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.14",
-        "@panneau/element-icon": "^3.0.14",
-        "@panneau/element-link": "^3.0.14",
-        "@panneau/element-loading": "^3.0.14",
+        "@panneau/core": "^3.0.15",
+        "@panneau/element-icon": "^3.0.15",
+        "@panneau/element-link": "^3.0.15",
+        "@panneau/element-loading": "^3.0.15",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
