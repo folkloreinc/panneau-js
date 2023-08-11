@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { UppyProvider } from '../../packages/core/src/contexts';
+import { UppyProvider } from '../../packages/uppy/src/UppyContext';
 
 const props = {
     // transport: 'transloadit',

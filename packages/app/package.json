@@ -36,7 +36,10 @@
     "main": "lib/index.js",
     "module": "es/index.js",
     "exports": {
-        ".": "./lib/index.js",
+        ".": {
+            "require": "./lib/index.js",
+            "import": "./es/index.js"
+        },
         "./scss/styles": "./scss/styles.scss",
         "./scss/styles.scss": "./scss/styles.scss",
         "./assets/css/styles.css": "./assets/css/styles.css"
@@ -92,6 +95,7 @@
         "@panneau/lists": "^3.0.15",
         "@panneau/modals": "^3.0.15",
         "@panneau/themes": "^3.0.15",
+        "@panneau/uppy": "^3.0.15",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "path-to-regexp": "^6.2.1",

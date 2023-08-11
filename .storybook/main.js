@@ -10,6 +10,12 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // insecure
 
 // console.log(getPackagesPaths());
 
+console.log(
+    getPackagesPaths().map((packagePath) =>
+        path.join(packagePath, './src/**/*.stories.@(jsx|mdx)'),
+    ),
+);
+
 module.exports = {
     stories: getPackagesPaths().map((packagePath) =>
         path.join(packagePath, './src/**/*.stories.@(jsx|mdx)'),
@@ -39,14 +45,14 @@ module.exports = {
         '@storybook/addon-viewport/register',
         // '@storybook/addon-docs',
         '@storybook/addon-actions',
-        {
-            name: '@storybook/addon-postcss',
-            options: {
-                postcssLoaderOptions: {
-                    implementation: require('postcss'),
-                },
-            },
-        },
+        // {
+        //     name: '@storybook/addon-postcss',
+        //     options: {
+        //         postcssLoaderOptions: {
+        //             implementation: require('postcss'),
+        //         },
+        //     },
+        // },
         // '@storybook/addon-mdx-gfm',
     ],
     // features: {
@@ -127,6 +133,7 @@ module.exports = {
         options: {},
     },
     docs: {
-        autodocs: true,
+        autodocs: false,
+        defaultName: 'Docs', // set to change the name of generated docs entries
     },
 };

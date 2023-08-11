@@ -36,7 +36,10 @@
     "main": "lib/index.js",
     "module": "es/index.js",
     "exports": {
-        ".": "./lib/index.js",
+        ".": {
+            "require": "./lib/index.js",
+            "import": "./es/index.js"
+        },
         "./scss/mixins": "./scss/_mixins.scss",
         "./scss/mixins.scss": "./scss/_mixins.scss",
         "./scss/placeholders": "./scss/_placeholders.scss",

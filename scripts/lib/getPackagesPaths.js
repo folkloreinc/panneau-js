@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const globSync = require('glob').sync;
 const lerna = require('../../package.json');
 
@@ -13,6 +14,7 @@ const getPackagesPaths = () =>
                 ...globSync(path.join(rootDir, packagesPath, './*')),
             ],
             [],
-        );
+        )
+        .filter((packagePath) => fs.existsSync(path.join(packagePath, './package.json')));
 
 module.exports = getPackagesPaths;

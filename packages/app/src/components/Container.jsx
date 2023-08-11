@@ -11,8 +11,10 @@ import {
     ModalProvider,
     PanneauProvider,
     RoutesProvider,
-    UppyProvider,
 } from '@panneau/core/contexts';
+import {
+    UppyProvider,
+} from '@panneau/uppy';
 import { ApiProvider } from '@panneau/data';
 import DisplaysProvider from '@panneau/displays';
 import FieldsProvider from '@panneau/fields';

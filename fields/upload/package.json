@@ -58,6 +58,7 @@
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^3.0.15",
+        "@panneau/uppy": "^3.0.15",
         "@panneau/element-button": "^3.0.15",
         "@panneau/element-card": "^3.0.15",
         "@panneau/element-label": "^3.0.15",

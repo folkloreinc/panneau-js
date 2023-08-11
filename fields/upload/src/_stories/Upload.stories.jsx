@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 
 import withUppy from '../../../../.storybook/decorators/withUppy';
-import { UppyProvider } from '../../../../packages/core/src/contexts/UppyContext';
+import { UppyProvider } from '../../../../packages/uppy/src/UppyContext';
 import UploadField from '../UploadField';
 
 export default {

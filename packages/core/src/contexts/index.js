@@ -13,4 +13,3 @@ export * from './PanneauContext';
 export * from './ResourceContext';
 export * from './RoutesContext';
 export * from './TrackingContext';
-export * from './UppyContext';

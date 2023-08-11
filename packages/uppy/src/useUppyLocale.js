@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import loadPackage from '../utils/loadPackage';
+import { loadPackage } from '@panneau/core/utils';
 
 /**
  * Locale loader

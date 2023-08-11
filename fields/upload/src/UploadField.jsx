@@ -13,7 +13,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useUppy } from '@panneau/core/contexts';
+import { useUppy } from '@panneau/uppy';
 import { useResourceQuery } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';

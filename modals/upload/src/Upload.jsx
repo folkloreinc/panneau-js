@@ -2,7 +2,7 @@ import { DashboardModal } from '@uppy/react';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect } from 'react';
 
-import { useUppy } from '@panneau/core/contexts';
+import { useUppy } from '@panneau/uppy';
 
 import './styles.scss';
 
