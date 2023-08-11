@@ -46,6 +46,9 @@ export const createConfig = ({
     return {
         input: input || `src/${file}`,
         output: outputConfig,
+        treeshake: {
+            moduleSideEffects: (id, external) => id.match(/\.(css|scss)$/) !== null,
+        },
         plugins: [
             ...prependPlugins,
             json(),
