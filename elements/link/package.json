@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-link",
-    "version": "3.0.17",
+    "version": "3.0.18",
     "description": "Link element",
     "keywords": [
         "javascript"
@@ -53,8 +53,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.17",
-        "@panneau/element-label": "^3.0.17",
+        "@panneau/core": "^3.0.18",
+        "@panneau/element-label": "^3.0.18",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0",
