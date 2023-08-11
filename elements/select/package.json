@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-select",
-    "version": "3.0.16",
+    "version": "3.0.17",
     "description": "A select element",
     "keywords": [
         "javascript"
@@ -53,8 +53,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.16",
-        "@panneau/themes": "^3.0.16",
+        "@panneau/core": "^3.0.17",
+        "@panneau/themes": "^3.0.17",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
