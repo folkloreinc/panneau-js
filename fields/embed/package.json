@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-embed",
-    "version": "3.0.18",
+    "version": "3.0.19",
     "description": "An embed field",
     "keywords": [
         "javascript"
@@ -53,10 +53,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.18",
-        "@panneau/element-card": "^3.0.18",
-        "@panneau/field-url": "^3.0.18",
-        "@panneau/themes": "^3.0.18",
+        "@panneau/core": "^3.0.19",
+        "@panneau/element-card": "^3.0.19",
+        "@panneau/field-url": "^3.0.19",
+        "@panneau/themes": "^3.0.19",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
