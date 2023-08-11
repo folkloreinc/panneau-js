@@ -80,10 +80,10 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.16",
-        "@folklore/forms": "^0.0.10",
+        "@folklore/forms": "^0.0.22",
         "@folklore/routes": "^0.2.6",
         "@folklore/services": "^0.1.24",
-        "@folklore/tracking": "^0.0.9",
+        "@folklore/tracking": "^0.0.16",
         "@fortawesome/fontawesome-svg-core": "^1.2.35",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
@@ -111,5 +111,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "ba6cb99bfbd1465d7eddcc2ab6901777375800fd"
+    "gitHead": "cbae07493a969f804c1adfcfed11feb965569f5b"
 }

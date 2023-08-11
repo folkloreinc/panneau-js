@@ -1,10 +1,7 @@
-import EventEmitter from 'wolfy87-eventemitter';
 import { flattenComponents, getComponentFromName } from '../utils';
 
-class ComponentsManager extends EventEmitter {
+class ComponentsManager {
     constructor(components = {}) {
-        super();
-
         this.components = flattenComponents(components);
     }
 
@@ -33,8 +30,6 @@ class ComponentsManager extends EventEmitter {
             ...this.components,
             ...newComponents,
         };
-
-        this.emit('change');
 
         return this;
     }
