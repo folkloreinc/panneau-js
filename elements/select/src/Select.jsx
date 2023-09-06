@@ -7,6 +7,8 @@ import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
+import CreatableSelect from 'react-select/creatable';
+import AsyncCreatableSelect from 'react-select/async-creatable';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getSelectOptions } from '@panneau/core/utils';
@@ -18,6 +20,7 @@ const propTypes = {
     disabled: PropTypes.bool,
     multiple: PropTypes.bool,
     searchable: PropTypes.bool,
+    creatable: PropTypes.bool,
     withoutReset: PropTypes.bool,
     noOptionsMessage: PanneauPropTypes.label,
     placeholder: PanneauPropTypes.label,
@@ -34,6 +37,7 @@ const defaultProps = {
     disabled: false,
     multiple: false,
     searchable: true,
+    creatable: false,
     withoutReset: false,
     noOptionsMessage: <FormattedMessage defaultMessage="No result" description="Default label" />,
     placeholder: <FormattedMessage defaultMessage="Choose an option" description="Default label" />,
@@ -50,6 +54,7 @@ const SelectElement = ({
     disabled,
     multiple,
     searchable,
+    creatable,
     withoutReset,
     noOptionsMessage,
     placeholder,
@@ -102,7 +107,14 @@ const SelectElement = ({
         [finalOptions],
     );
 
-    const SelectComponent = isAsync ? AsyncSelect : Select;
+    let SelectComponent = Select;
+    if (isAsync && creatable) {
+        SelectComponent = AsyncCreatableSelect;
+    } else if (isAsync) {
+        SelectComponent = AsyncSelect;
+    } else if (creatable) {
+        SelectComponent = CreatableSelect;
+    }
 
     return (
         <div className={classNames(['position-relative', className])}>
