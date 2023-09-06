@@ -13,12 +13,12 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useUppy } from '@panneau/uppy';
 import { useResourceQuery } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import ResourceItemsList from '@panneau/list-resource-items';
 import Dialog from '@panneau/modal-dialog';
+import { useUppy } from '@panneau/uppy';
 
 import styles from './styles.module.scss';
 
@@ -298,14 +298,16 @@ const UploadField = ({
                           (namePath !== null ? get(media || {}, namePath) : null) ||
                           filename ||
                           file;
+
                       const thumbnail =
                           (thumbnailPath !== null ? get(media || {}, thumbnailPath) : null) ||
                           thumbnailUrl ||
                           preview;
+
                       const size =
                           (sizePath !== null ? get(media || {}, sizePath) : null) || fileSize;
 
-                      const hasThumbnail = preview !== null || thumbnailUrl !== null;
+                      const hasThumbnail = preview !== null || thumbnail !== null;
 
                       return (
                           <div
