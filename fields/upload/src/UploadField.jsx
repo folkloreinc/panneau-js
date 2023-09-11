@@ -192,6 +192,13 @@ const UploadField = ({
         setModalOpened(false);
     }, [setModalOpened]);
 
+    const closeModalAndClear = useCallback(() => {
+        closeModal();
+        if (uppy !== null) {
+            uppy.cancelAll();
+        }
+    }, [uppy, closeModal]);
+
     const onClickRemove = useCallback(
         (idx) => {
             if (onChange !== null && isArray(value) && value.length > 1) {
@@ -465,7 +472,7 @@ const UploadField = ({
                         showProgressDetails
                         areInsidesReadyToBeVisible
                         proudlyDisplayPoweredByUppy={false}
-                        doneButtonHandler={closeModal}
+                        doneButtonHandler={closeModalAndClear}
                     />
                 </Dialog>
             ) : null}

@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
-import isObject from 'lodash/isObject';
+// import isObject from 'lodash/isObject';
 // import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useCallback, useRef, useState } from 'react';
@@ -39,12 +39,14 @@ const propTypes = {
     itemLabelWithId: PropTypes.bool,
     size: PropTypes.oneOf(['sm', 'lg']),
     placeholder: PropTypes.string,
-    canCreate: PropTypes.bool,
+    creatable: PropTypes.bool,
     multiple: PropTypes.bool,
     disabled: PropTypes.bool,
+    isRow: PropTypes.bool,
     className: PropTypes.string,
     inputClassName: PropTypes.string,
     onChange: PropTypes.func,
+    onCreate: PropTypes.func,
 };
 
 const defaultProps = {
@@ -68,12 +70,14 @@ const defaultProps = {
     itemLabelWithId: false,
     size: null,
     placeholder: null,
-    canCreate: false,
+    creatable: false,
     multiple: false,
     disabled: false,
+    isRow: false,
     className: null,
     inputClassName: null,
     onChange: null,
+    onCreate: null,
 };
 
 const ItemField = ({
@@ -97,12 +101,14 @@ const ItemField = ({
     itemDescriptionPath,
     itemImagePath,
     itemLabelWithId,
-    canCreate,
+    creatable,
     multiple,
     disabled,
+    isRow,
     className,
     inputClassName,
     onChange,
+    onCreate,
 }) => {
     const intl = useIntl();
     const api = useApi();
@@ -256,8 +262,6 @@ const ItemField = ({
 
     const options = items.map((it) => parseItem(it));
     const finalValue = multiple && isArray(value) ? value.map((it) => parseItem(it)) : value;
-    // TODO: implement the create into react-select
-    const isRow = canCreate === true;
 
     const { page = null } = requestQuery || {};
     const { lastPage = null, last_page: otherLastPage = null } = paginator || {};
@@ -320,6 +324,8 @@ const ItemField = ({
                             name={name}
                             value={finalValue}
                             options={options}
+                            creatable={creatable}
+                            onCreateOption={onCreate}
                             isClearable
                             isSearchable
                             placeholder={
