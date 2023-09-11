@@ -87,7 +87,7 @@
         "@fortawesome/fontawesome-svg-core": "^1.2.35",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
-        "bootstrap": "^5.3.0-alpha3",
+        "bootstrap": "^5.3.1",
         "change-case": "^4.1.2",
         "classnames": "^2.2.6",
         "css-mediaquery": "^0.1.2",
