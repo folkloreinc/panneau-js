@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-dropdown",
-    "version": "3.0.22",
+    "version": "3.0.23",
     "description": "Dropdown element",
     "keywords": [
         "javascript"
@@ -54,10 +54,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.22",
-        "@panneau/element-button": "^3.0.22",
-        "@panneau/element-label": "^3.0.22",
-        "@panneau/element-link": "^3.0.22",
+        "@panneau/core": "^3.0.23",
+        "@panneau/element-button": "^3.0.23",
+        "@panneau/element-label": "^3.0.23",
+        "@panneau/element-link": "^3.0.23",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
