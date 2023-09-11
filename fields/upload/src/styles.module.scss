@@ -5,4 +5,9 @@
     .dashboard {
         position: relative;
     }
+
+    .dashboardModal {
+        position: relative;
+        z-index: 10001;
+    }
 }

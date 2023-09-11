@@ -441,6 +441,7 @@ const UploadField = ({
             {!showResourceModal && !disabled && withButton && uppy !== null ? (
                 <DashboardModal
                     uppy={uppy}
+                    className={styles.dashboardModal}
                     plugins={sources}
                     open={modalOpened}
                     onRequestClose={closeModal}
