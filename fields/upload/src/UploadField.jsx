@@ -187,6 +187,7 @@ const UploadField = ({
     const openModal = useCallback(() => {
         setModalOpened(true);
     }, [setModalOpened]);
+
     const closeModal = useCallback(() => {
         setModalOpened(false);
     }, [setModalOpened]);
@@ -438,15 +439,35 @@ const UploadField = ({
                     />
                 </div>
             ) : null}
-            {!showResourceModal && !disabled && withButton && uppy !== null ? (
-                <DashboardModal
-                    uppy={uppy}
-                    className={styles.dashboardModal}
-                    plugins={sources}
-                    open={modalOpened}
-                    onRequestClose={closeModal}
-                    closeModalOnClickOutside
-                />
+            {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
+                // <DashboardModal
+                //     uppy={uppy}
+                //     className={styles.dashboardModal}
+                //     plugins={sources}
+                //     open={modalOpened}
+                //     isHidden={!modalOpened}
+                //     {...(width !== null ? { width } : null)}
+                //     {...(height !== null ? { height } : null)}
+                //     onRequestClose={closeModal}
+                //     proudlyDisplayPoweredByUppy={false}
+                //     closeModalOnClickOutside
+                // />
+                <Dialog size="lg" onClose={closeModal} title={addButtonLabel}>
+                    <Dashboard
+                        uppy={uppy}
+                        // {...(containerWidth !== null && height !== null
+                        //     ? { width: containerWidth }
+                        // : null)}
+                        {...(width !== null ? { width } : null)}
+                        {...(height !== null ? { height } : null)}
+                        plugins={sources}
+                        inline
+                        showProgressDetails
+                        areInsidesReadyToBeVisible
+                        proudlyDisplayPoweredByUppy={false}
+                        doneButtonHandler={closeModal}
+                    />
+                </Dialog>
             ) : null}
             {showResourceModal ? (
                 <Dialog

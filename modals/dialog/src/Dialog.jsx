@@ -48,23 +48,29 @@ const ModalDialog = ({ title, size, header, children, buttons, footer, onClose, 
             role="dialog"
         >
             <div className="modal-content">
-                {header || (
-                    <div className={classNames(['modal-header', styles.header])}>
-                        <h5 className="modal-title pe-2">
-                            {isMessage ? <Label>{title}</Label> : title}
-                        </h5>
-                        <Button
-                            type="button"
-                            className="btn-close close"
-                            aria-label="Close"
-                            onClick={onClose}
-                        />
+                {header !== null ? (
+                    header
+                ) : (
+                    <div className="modal-header">
+                        {title !== null ? (
+                            <h5 className="modal-title pe-2">
+                                {isMessage ? <Label>{title}</Label> : title}
+                            </h5>
+                        ) : null}
+                        {onClose !== null ? (
+                            <Button
+                                type="button"
+                                className="btn-close close"
+                                aria-label="Close"
+                                onClick={onClose}
+                            />
+                        ) : null}
                     </div>
                 )}
                 <div className={classNames(['modal-body', styles.body])}>{children}</div>
                 {footer !== null || buttons !== null ? (
                     <div className={classNames(['modal-footer', styles.footer])}>
-                        {footer}
+                        {footer !== null ? footer : null}
                         {buttons !== null ? (
                             <Buttons buttons={buttons} className={styles.buttons} />
                         ) : null}
