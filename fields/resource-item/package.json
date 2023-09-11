@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-resource-item",
-    "version": "3.0.23",
+    "version": "3.0.24",
     "description": "An item mapping a resource",
     "keywords": [
         "javascript"
@@ -52,9 +52,9 @@
         "@panneau/element-select": "^3.0.23",
         "@panneau/form-resource": "^3.0.23",
         "@panneau/intl": "^3.0.23",
-        "@panneau/modal-dialog": "^3.0.23",
-        "@panneau/modal-resource-form": "^3.0.23",
-        "@panneau/modal-resource-items": "^3.0.23",
+        "@panneau/modal-dialog": "^3.0.24",
+        "@panneau/modal-resource-form": "^3.0.24",
+        "@panneau/modal-resource-items": "^3.0.24",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
