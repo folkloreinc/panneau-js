@@ -338,7 +338,7 @@ const ItemField = ({
                             name={name}
                             value={finalValue}
                             options={options}
-                            creatable={creatable}
+                            creatable={creatable && onCreate !== null}
                             onCreateOption={onCreateOption}
                             isClearable
                             isSearchable
