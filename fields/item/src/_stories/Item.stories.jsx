@@ -67,9 +67,7 @@ export const DisabledWithValue = () => <Container items={items} value={items[0]}
 export const Creatable = () => (
     <Container
         creatable
-        onCreate={(newValue) => {
-            console.log(newValue);
-        }}
+        getNewItem={(title) => ({ title })}
         requestUrl="/pages/"
         requestQuery={null}
         itemLabelPath="title"

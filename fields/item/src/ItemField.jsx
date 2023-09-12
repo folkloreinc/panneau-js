@@ -5,7 +5,7 @@ import isArray from 'lodash/isArray';
 // import isObject from 'lodash/isObject';
 // import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -33,6 +33,7 @@ const propTypes = {
     getItemLabel: PropTypes.func,
     getItemDescription: PropTypes.func,
     getItemImage: PropTypes.func,
+    getNewItem: PropTypes.func,
     itemLabelPath: PropTypes.string,
     itemDescriptionPath: PropTypes.string,
     itemImagePath: PropTypes.string,
@@ -64,6 +65,7 @@ const defaultProps = {
     getItemLabel: getPathValue,
     getItemDescription: getPathValue,
     getItemImage: getPathValue,
+    getNewItem: null,
     itemLabelPath: 'label',
     itemDescriptionPath: null,
     itemImagePath: 'image.thumbnail_url',
@@ -97,6 +99,7 @@ const ItemField = ({
     getItemLabel: initialGetItemLabel,
     getItemDescription,
     getItemImage,
+    getNewItem,
     itemLabelPath,
     itemDescriptionPath,
     itemImagePath,
@@ -117,7 +120,7 @@ const ItemField = ({
     const [items, setItems] = useState(initialItems || initialValue || []);
     const [paginator, setPaginator] = useState(null);
     const [requestQuery, setRequestQuery] = useState(initialRequestQuery || null);
-
+    const [createdItems, setCreatedItems] = useState(null);
     const lastRequest = useRef(null);
 
     const getItemLabel = useCallback(
@@ -139,7 +142,7 @@ const ItemField = ({
             const finalLabel = description !== null ? `${label}: ${description}` : label;
 
             return {
-                value: it.id,
+                value: it.id || label,
                 label: finalLabel,
             };
         },
@@ -246,10 +249,20 @@ const ItemField = ({
         (newId) => {
             if (onChange === null) return;
             if (multiple) {
-                const newValue = items.filter(({ id = null }) => newId.indexOf(id) !== -1) || [];
+                const newValue =
+                    items.filter((it) => {
+                        const { id = null } = it || {};
+                        const value = id === null ? getItemLabel(it, itemLabelPath) : id;
+                        return newId.indexOf(value) !== -1;
+                    }) || [];
                 onChange(newValue);
             } else {
-                const newValue = items.filter(({ id = null }) => id === newId) || [];
+                const newValue =
+                    items.filter((it) => {
+                        const { id = null } = it || {};
+                        const value = id === null ? getItemLabel(it, itemLabelPath) : id;
+                        return newId === value;
+                    }) || [];
                 if (newValue !== null && newValue.length > 0) {
                     onChange(newValue[0]);
                 } else {
@@ -257,10 +270,16 @@ const ItemField = ({
                 }
             }
         },
-        [items, onChange, multiple],
+        [items, onChange, multiple, itemLabelPath, getItemLabel],
     );
 
-    const options = items.map((it) => parseItem(it));
+    const options = useMemo(
+        () => [...(items || []), ...(createdItems || [])].map((it) => parseItem(it)),
+        [items, createdItems, parseItem],
+    );
+
+    console.log('options', options);
+
     const finalValue = multiple && isArray(value) ? value.map((it) => parseItem(it)) : value;
 
     const { page = null } = requestQuery || {};
@@ -276,20 +295,19 @@ const ItemField = ({
         }
     }, [paginated, page, setRequestQuery, finalLastPage]);
 
-    // const onCreateOption = useCallback(
-    //     (newValue) => {
-    //         if (onCreate instanceof Promise) {
-    //             onCreate(newValue).then((newValue) => {
-    //                 loadOptions();
-    //                 return newValue;
-    //             });
-    //         } else {
-    //             onCreate(newValue);
-    //             loadOptions();
-    //         }
-    //     },
-    //     [onCreate, loadOptions],
-    // );
+    const onCreateOption = useCallback(
+        (newLabel) => {
+            const newItem = getNewItem !== null ? getNewItem(newLabel) : newLabel;
+            setCreatedItems([...(createdItems || []), newItem]);
+
+            if (multiple) {
+                onChange([...(value || []), newItem]);
+            } else {
+                onChange(newItem);
+            }
+        },
+        [onChange, createdItems, getNewItem, setCreatedItems],
+    );
 
     // const renderSectionTitle = useCallback(
     //     (section) => <h6 className="dropdown-header">{section.title}</h6>,
@@ -301,6 +319,8 @@ const ItemField = ({
     //         getOptions();
     //     }
     // }, [items, getOptions]);
+
+    // console.log(value);
 
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
@@ -340,7 +360,7 @@ const ItemField = ({
                             value={finalValue}
                             options={options}
                             creatable={creatable}
-                            onCreateOption={onCreate !== null ? onCreate : null}
+                            onCreateOption={creatable ? onCreate || onCreateOption : null}
                             isClearable
                             isSearchable
                             placeholder={
