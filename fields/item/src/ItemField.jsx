@@ -276,20 +276,20 @@ const ItemField = ({
         }
     }, [paginated, page, setRequestQuery, finalLastPage]);
 
-    const onCreateOption = useCallback(
-        (newValue) => {
-            if (onCreate instanceof Promise) {
-                onCreate(newValue).then((newValue) => {
-                    loadOptions();
-                    return newValue;
-                });
-            } else {
-                onCreate(newValue);
-                loadOptions();
-            }
-        },
-        [onCreate, loadOptions],
-    );
+    // const onCreateOption = useCallback(
+    //     (newValue) => {
+    //         if (onCreate instanceof Promise) {
+    //             onCreate(newValue).then((newValue) => {
+    //                 loadOptions();
+    //                 return newValue;
+    //             });
+    //         } else {
+    //             onCreate(newValue);
+    //             loadOptions();
+    //         }
+    //     },
+    //     [onCreate, loadOptions],
+    // );
 
     // const renderSectionTitle = useCallback(
     //     (section) => <h6 className="dropdown-header">{section.title}</h6>,
@@ -339,8 +339,8 @@ const ItemField = ({
                             name={name}
                             value={finalValue}
                             options={options}
-                            creatable={creatable && onCreate !== null}
-                            onCreateOption={onCreateOption}
+                            creatable={creatable}
+                            onCreateOption={onCreate !== null ? onCreate : null}
                             isClearable
                             isSearchable
                             placeholder={
