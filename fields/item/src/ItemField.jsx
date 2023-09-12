@@ -285,6 +285,7 @@ const ItemField = ({
                 });
             } else {
                 onCreate(newValue);
+                loadOptions();
             }
         },
         [onCreate, loadOptions],
