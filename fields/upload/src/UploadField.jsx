@@ -440,9 +440,9 @@ const UploadField = ({
                         {...(height !== null ? { height } : null)}
                         plugins={sources}
                         inline
+                        showProgressDetails
                         areInsidesReadyToBeVisible
                         proudlyDisplayPoweredByUppy={false}
-                        showProgressDetails
                     />
                 </div>
             ) : null}

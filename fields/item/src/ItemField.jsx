@@ -276,6 +276,20 @@ const ItemField = ({
         }
     }, [paginated, page, setRequestQuery, finalLastPage]);
 
+    const onCreateOption = useCallback(
+        (newValue) => {
+            if (onCreate instanceof Promise) {
+                onCreate(newValue).then((newValue) => {
+                    loadOptions();
+                    return newValue;
+                });
+            } else {
+                onCreate(newValue);
+            }
+        },
+        [onCreate, loadOptions],
+    );
+
     // const renderSectionTitle = useCallback(
     //     (section) => <h6 className="dropdown-header">{section.title}</h6>,
     //     [],
@@ -325,7 +339,7 @@ const ItemField = ({
                             value={finalValue}
                             options={options}
                             creatable={creatable}
-                            onCreateOption={onCreate}
+                            onCreateOption={onCreateOption}
                             isClearable
                             isSearchable
                             placeholder={

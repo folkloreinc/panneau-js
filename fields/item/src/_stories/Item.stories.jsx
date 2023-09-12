@@ -64,6 +64,14 @@ export const Disabled = () => <Container items={items} disabled />;
 
 export const DisabledWithValue = () => <Container items={items} value={items[0]} disabled />;
 
-export const CanCreate = () => (
-    <Container canCreate requestUrl="/pages/" requestQuery={null} itemLabelPath="title" />
+export const Creatable = () => (
+    <Container
+        creatable
+        onCreate={(newValue) => {
+            console.log(newValue);
+        }}
+        requestUrl="/pages/"
+        requestQuery={null}
+        itemLabelPath="title"
+    />
 );
