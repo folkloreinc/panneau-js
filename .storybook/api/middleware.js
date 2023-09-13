@@ -4,6 +4,7 @@ const express = require('express');
 const _ = require('lodash');
 const dayjs = require('dayjs');
 const { sync: globSync } = require('glob');
+const isString = require('lodash/isString');
 
 module.exports = () => {
     const router = express.Router();
@@ -58,8 +59,20 @@ module.exports = () => {
         if (query === null || Object.keys(query).length === 0) {
             return items;
         }
-        // Types is exception for medias son u get results
+
+        // Types is exception for medias so u get results
         const { source, search = null, types = null, ...queryWithoutSource } = query;
+
+        if (search !== null) {
+            return _.values(
+                _.filter(items, (it) =>
+                    it !== null && typeof it.title !== 'undefined' && isString(it.title)
+                        ? it.title.indexOf(search) !== -1
+                        : true,
+                ),
+            );
+        }
+
         return _.values(_.filter(items, _.matches(queryWithoutSource)));
     };
 

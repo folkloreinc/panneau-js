@@ -1,11 +1,9 @@
 /* eslint-disable no-shadow, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import get from 'lodash/get';
-import isArray from 'lodash/isArray';
-// import isObject from 'lodash/isObject';
-// import isEmpty from 'lodash/isEmpty';
+import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -33,10 +31,12 @@ const propTypes = {
     getItemLabel: PropTypes.func,
     getItemDescription: PropTypes.func,
     getItemImage: PropTypes.func,
+    getItemId: PropTypes.func,
     getNewItem: PropTypes.func,
     itemLabelPath: PropTypes.string,
     itemDescriptionPath: PropTypes.string,
     itemImagePath: PropTypes.string,
+    itemIdPath: PropTypes.string,
     itemLabelWithId: PropTypes.bool,
     size: PropTypes.oneOf(['sm', 'lg']),
     placeholder: PropTypes.string,
@@ -65,10 +65,12 @@ const defaultProps = {
     getItemLabel: getPathValue,
     getItemDescription: getPathValue,
     getItemImage: getPathValue,
+    getItemId: getPathValue,
     getNewItem: null,
     itemLabelPath: 'label',
     itemDescriptionPath: null,
     itemImagePath: 'image.thumbnail_url',
+    itemIdPath: 'id',
     itemLabelWithId: false,
     size: null,
     placeholder: null,
@@ -88,7 +90,7 @@ const ItemField = ({
     errors,
     size,
     placeholder,
-    items: initialItems,
+    items,
     maxItemsCount,
     loadItems,
     paginated,
@@ -99,10 +101,12 @@ const ItemField = ({
     getItemLabel: initialGetItemLabel,
     getItemDescription,
     getItemImage,
+    getItemId,
     getNewItem,
     itemLabelPath,
     itemDescriptionPath,
     itemImagePath,
+    itemIdPath,
     itemLabelWithId,
     creatable,
     multiple,
@@ -115,13 +119,14 @@ const ItemField = ({
 }) => {
     const intl = useIntl();
     const api = useApi();
-    const [initialValue] = useState(multiple ? value : null);
+    const [initialValue] = useState(value || null);
     const [inputTextValue, setInputTextValue] = useState('');
-    const [items, setItems] = useState(initialItems || initialValue || []);
-    const [paginator, setPaginator] = useState(null);
-    const [requestQuery, setRequestQuery] = useState(initialRequestQuery || null);
+
+    // const [paginator] = useState(null);
+    const [requestQuery] = useState(initialRequestQuery || null);
     const [createdItems, setCreatedItems] = useState(null);
-    const lastRequest = useRef(null);
+
+    const isAsync = loadItems !== null || requestUrl !== null;
 
     const getItemLabel = useCallback(
         (it, path) => {
@@ -135,37 +140,45 @@ const ItemField = ({
         [initialGetItemLabel, itemLabelWithId],
     );
 
-    const parseItem = useCallback(
+    const getOptionValue = useCallback(
         (it) => {
+            const { label: newLabel = null, __isNew__: isNew = false } = it || {};
+            if (isNew) {
+                return newLabel;
+            }
+            return isString(it) ? it : getItemId(it, itemIdPath);
+        },
+        [getItemId, itemIdPath],
+    );
+
+    const getOptionLabel = useCallback(
+        (it) => {
+            if (isString(it)) {
+                return it;
+            }
+            const { label: newLabel = null, __isNew__: isNew = false } = it || {};
+            if (isNew) {
+                return newLabel;
+            }
             const label = getItemLabel(it, itemLabelPath);
             const description = getItemDescription(it, itemDescriptionPath);
-            const finalLabel = description !== null ? `${label}: ${description}` : label;
-
-            return {
-                value: it.id || label,
-                label: finalLabel,
-            };
+            return description !== null ? `${label}: ${description}` : label;
         },
-        [getItemLabel, getItemDescription, itemLabelPath, itemDescriptionPath],
+        [getItemLabel, itemLabelPath, getItemDescription, itemDescriptionPath],
     );
 
     const getOptions = useCallback(
-        (request = null, callback = null) => {
+        (newItems) => [...(newItems || []), ...(createdItems || [])],
+        [initialValue, createdItems],
+    );
+
+    const fetchOptions = useCallback(
+        (requestValue) => {
             if (loadItems !== null) {
-                const currentRequest = loadItems(request);
-                lastRequest.current = currentRequest;
-                currentRequest.then((newItems) => {
-                    if (currentRequest === lastRequest.current) {
-                        setItems(newItems);
-                        callback(newItems);
-                    }
-                });
-            } else if (requestUrl !== null) {
-                const requestValue =
-                    request !== null
-                        ? request.value || inputTextValue || null
-                        : inputTextValue || null;
-                const currentRequest = api.requestGet(
+                return loadItems(requestValue).then((newItems) => getOptions(newItems));
+            }
+            return api
+                .requestGet(
                     requestUrl,
                     {
                         paginated,
@@ -174,34 +187,18 @@ const ItemField = ({
                             ? { [requestSearchParamName]: requestValue }
                             : null),
                     },
-                    requestOptions, // this is useless
-                );
-                lastRequest.current = currentRequest;
-                currentRequest.then((newItems) => {
-                    if (currentRequest === lastRequest.current) {
-                        const {
-                            data = null,
-                            pagination: newPagination = null,
-                            meta = null,
-                        } = paginated ? newItems : { data: newItems };
-                        const finalNewItems =
-                            maxItemsCount !== null ? data.slice(0, maxItemsCount) : data;
-                        setItems(finalNewItems);
-                        if ((paginated && newPagination !== null) || meta !== null) {
-                            setPaginator(newPagination || meta || null);
-                        }
-                        callback(newItems);
-                    }
+                    requestOptions,
+                )
+                .then((newItems) => {
+                    const { data = null } = paginated ? newItems : { data: newItems };
+                    const finalNewItems =
+                        maxItemsCount !== null ? data.slice(0, maxItemsCount) : data;
+                    return getOptions(finalNewItems);
                 });
-            } else if (initialItems !== null) {
-                setItems(initialItems);
-                callback(initialItems);
-            }
         },
         [
             api,
             loadItems,
-            initialItems,
             maxItemsCount,
             inputTextValue,
             requestUrl,
@@ -209,7 +206,7 @@ const ItemField = ({
             requestOptions,
             requestSearchParamName,
             paginated,
-            setPaginator,
+            getOptions,
         ],
     );
 
@@ -221,85 +218,45 @@ const ItemField = ({
 
     const onInputChange = useCallback(
         (textValue) => {
-            const { page = null } = requestQuery || {};
-            if (paginated && page !== null) {
-                setRequestQuery({ ...requestQuery, page: 1 });
-            }
             setInputTextValue(textValue);
         },
-        [paginated, requestQuery, setRequestQuery, setInputTextValue],
+        [paginated, requestQuery, setInputTextValue],
     );
 
-    const timeoutRef = useRef(null);
-    const loadOptions = useCallback(
-        (inputValue, callback) => {
-            if (timeoutRef.current !== null) {
-                clearTimeout(timeoutRef.current);
-            }
-            timeoutRef.current = setTimeout(() => {
-                getOptions(inputValue, (newItems) =>
-                    callback(newItems !== null ? newItems.map((i) => parseItem(i)) : []),
-                );
-            }, 300);
-        },
-        [getOptions],
-    );
+    // TODO: add a little debounce here
+    // const timeoutRef = useRef(null);
+    const loadOptions = useCallback((inputValue) => fetchOptions(inputValue), [fetchOptions]);
+
+    // const { page = null } = requestQuery || {};
+    // const { lastPage = null, last_page: otherLastPage = null } = paginator || {};
+    // const finalLastPage = lastPage || otherLastPage || null;
+
+    // const onScrollEnd = useCallback(() => {
+    //     if (page !== null && page >= finalLastPage) {
+    //         return null;
+    //     }
+    //     return null;
+    //     // if (paginated) {
+    //     //     setRequestQuery((page || 1) + 1);
+    //     // }
+    // }, [paginated, page, setRequestQuery, finalLastPage]);
 
     const onValueChange = useCallback(
-        (newId) => {
+        (newValue) => {
             if (onChange === null) return;
-            if (multiple) {
-                const newValue =
-                    items.filter((it) => {
-                        const { id = null } = it || {};
-                        const value = id === null ? getItemLabel(it, itemLabelPath) : id;
-                        return newId.indexOf(value) !== -1;
-                    }) || [];
-                onChange(newValue);
-            } else {
-                const newValue =
-                    items.filter((it) => {
-                        const { id = null } = it || {};
-                        const value = id === null ? getItemLabel(it, itemLabelPath) : id;
-                        return newId === value;
-                    }) || [];
-                if (newValue !== null && newValue.length > 0) {
-                    onChange(newValue[0]);
-                } else {
-                    onChange(null);
-                }
-            }
+            // console.log('onChange', newValue);
+            onChange(newValue);
+            setInputTextValue('');
         },
-        [items, onChange, multiple, itemLabelPath, getItemLabel],
+        [items, onChange, multiple, itemLabelPath, getItemLabel, setInputTextValue],
     );
-
-    const options = useMemo(
-        () => [...(items || []), ...(createdItems || [])].map((it) => parseItem(it)),
-        [items, createdItems, parseItem],
-    );
-
-    console.log('options', options);
-
-    const finalValue = multiple && isArray(value) ? value.map((it) => parseItem(it)) : value;
-
-    const { page = null } = requestQuery || {};
-    const { lastPage = null, last_page: otherLastPage = null } = paginator || {};
-    const finalLastPage = lastPage || otherLastPage || null;
-
-    const onScrollEnd = useCallback(() => {
-        if (page !== null && page >= finalLastPage) {
-            return;
-        }
-        if (paginated) {
-            setRequestQuery((page || 1) + 1);
-        }
-    }, [paginated, page, setRequestQuery, finalLastPage]);
 
     const onCreateOption = useCallback(
         (newLabel) => {
             const newItem = getNewItem !== null ? getNewItem(newLabel) : newLabel;
-            setCreatedItems([...(createdItems || []), newItem]);
+            // console.log('newLabel', newLabel, 'newItem', newItem);
 
+            setCreatedItems([...(createdItems || []), newItem]);
             if (multiple) {
                 onChange([...(value || []), newItem]);
             } else {
@@ -309,18 +266,12 @@ const ItemField = ({
         [onChange, createdItems, getNewItem, setCreatedItems],
     );
 
-    // const renderSectionTitle = useCallback(
-    //     (section) => <h6 className="dropdown-header">{section.title}</h6>,
-    //     [],
-    // );
+    const options = useMemo(
+        () => (!isAsync ? getOptions(items) : null),
+        [items, getOptions, isAsync],
+    );
 
-    // const onFieldFocus = useCallback(() => {
-    //     if (items.length === 0) {
-    //         getOptions();
-    //     }
-    // }, [items, getOptions]);
-
-    // console.log(value);
+    // console.log('value', value, 'options', options);
 
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
@@ -354,11 +305,10 @@ const ItemField = ({
                                 },
                             ])}
                             disabled={disabled}
-                            isAsync={requestUrl !== null}
-                            defaultOptions={requestUrl !== null}
+                            isAsync={isAsync}
+                            defaultOptions={isAsync} // Always uses loadOptions
                             name={name}
-                            value={finalValue}
-                            options={options}
+                            value={value}
                             creatable={creatable}
                             onCreateOption={creatable ? onCreate || onCreateOption : null}
                             isClearable
@@ -374,10 +324,17 @@ const ItemField = ({
                                 )
                             }
                             onChange={onValueChange}
+                            getOptionValue={getOptionValue}
+                            getOptionLabel={getOptionLabel}
+                            inputValue={inputTextValue}
                             onInputChange={onInputChange}
                             loadOptions={loadOptions}
-                            onMenuScrollToBottom={paginated ? onScrollEnd : null}
+                            // onMenuScrollToBottom={paginated ? onScrollEnd : null}
                             multiple={multiple}
+                            // getNewOptionData={(label, formattedLabel) => ({ label, isNew: true })}
+                            {...(!isAsync && options !== null && options.length > 0
+                                ? { options }
+                                : null)}
                         />
                     </div>
                 </div>

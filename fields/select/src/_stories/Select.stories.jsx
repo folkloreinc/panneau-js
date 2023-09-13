@@ -6,6 +6,9 @@ import SelectField from '../SelectField';
 export default {
     title: 'Fields/Select',
     component: SelectField,
+    parameters: {
+        intl: true,
+    },
 };
 
 const options = ['One', 'Two', 'Three'];

@@ -220,7 +220,7 @@ const ItemsField = ({
 
                 // Collapse state
                 setCollapsed((prevCollapsed) => newItems.map(({ index }) => prevCollapsed[index]));
-                console.log('C-c-changes', newItems, newIdMap, finalItems); // eslint-disable-line
+                // console.log('C-c-changes', newItems, newIdMap, finalItems); // eslint-disable-line
             }
         },
         [setCollapsed, onChange],

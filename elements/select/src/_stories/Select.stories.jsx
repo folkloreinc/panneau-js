@@ -1,10 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
+
 import Select from '../Select';
 
 export default {
     title: 'Elements/Select',
     component: Select,
+    parameters: {
+        intl: true,
+    },
 };
 
 const options = [
@@ -15,13 +19,19 @@ const options = [
     5,
 ];
 
+const itemOptions = [
+    { id: 1, title: 'One' },
+    { id: 2, title: 'Two' },
+    { id: 3, title: 'Three' },
+];
+
 const Container = (props) => {
     const [value, setValue] = useState(null);
     // console.log('select value', value);
     return <Select {...props} value={value} onChange={setValue} />;
 };
 
-export const Normal = () => <Container options={options} />;
+export const Normal = () => <Container options={options} placeholder="Placeholder..." />;
 
 export const WithoutReset = () => (
     <Container options={options} withoutReset placeholder="Without reset..." />
@@ -50,3 +60,20 @@ export const Stacked = () => {
         </>
     );
 };
+
+export const WithItems = () => (
+    <Container
+        options={itemOptions}
+        getOptionLabel={(opt) => opt.title}
+        getOptionValue={(opt) => opt.id}
+    />
+);
+
+export const WithItemsMultiple = () => (
+    <Container
+        options={itemOptions}
+        multiple
+        getOptionLabel={(opt) => opt.title}
+        getOptionValue={(opt) => opt.id}
+    />
+);

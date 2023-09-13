@@ -16,8 +16,8 @@ export default {
 };
 
 const items = [
-    { id: 1, name: 'title', label: 'Title' },
-    { id: 2, name: 'description', label: 'Description' },
+    { id: 1, name: 'title', title: 'Title' },
+    { id: 2, name: 'description', title: 'Description' },
 ];
 
 const Container = (props) => {
@@ -38,9 +38,13 @@ const Container = (props) => {
     );
 };
 
-export const Normal = () => <Container items={items} />;
+export const Normal = () => <Container items={items} itemLabelPath="title" />;
 
-export const Multiple = () => <Container items={items} multiple />;
+export const NormalWithValue = () => (
+    <Container items={items} value={items[1]} itemLabelPath="title" />
+);
+
+export const Multiple = () => <Container items={items} multiple itemLabelPath="title" />;
 
 export const WithRequestUrl = () => (
     <Container requestUrl="/events/" requestQuery={null} itemLabelPath="title" autoload />
@@ -51,7 +55,19 @@ export const WithValueAndRequestUrl = () => (
         requestUrl="/events/"
         requestQuery={null}
         itemLabelPath="title"
-        value={[{ id: '1', label: 'Title' }]}
+        value={{ id: '1', title: 'Title' }}
+    />
+);
+
+export const WithMultipleValuesAndRequestUrl = () => (
+    <Container
+        requestUrl="/events/"
+        requestQuery={null}
+        itemLabelPath="title"
+        value={[
+            { id: '1', title: '1 événement' },
+            { id: '2', title: '2 evt' },
+        ]}
         multiple
     />
 );
@@ -60,11 +76,17 @@ export const MultipleWithRequestUrl = () => (
     <Container requestUrl="/events/" requestQuery={null} itemLabelPath="title" multiple />
 );
 
-export const Disabled = () => <Container items={items} disabled />;
+export const Disabled = () => <Container items={items} itemLabelPath="title" disabled />;
 
-export const DisabledWithValue = () => <Container items={items} value={items[0]} disabled />;
+export const DisabledWithValue = () => (
+    <Container items={items} value={items[1]} itemLabelPath="title" disabled />
+);
 
 export const Creatable = () => (
+    <Container creatable getNewItem={(title) => ({ title })} items={items} itemLabelPath="title" />
+);
+
+export const CreatableWithRequestUrl = () => (
     <Container
         creatable
         getNewItem={(title) => ({ title })}

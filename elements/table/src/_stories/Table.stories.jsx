@@ -49,7 +49,7 @@ const Actions = ({ item: { name = 'LOL' } = {} }) => (
 
 export const Sortable = () => {
     const [query, setQuery] = useState({});
-    console.log('query', query);
+    // console.log('query', query);
     return (
         <DisplaysProvider>
             <TableElement
