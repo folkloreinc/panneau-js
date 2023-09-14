@@ -89,6 +89,17 @@ export const NormalWithRequired = () => (
     />
 );
 
+export const EmptyWithRequired = () => (
+    <Container
+        itemFields={itemFieldsWithRequired}
+        addItemLabel="Add something"
+        noItemLabel="Nothing in here"
+        itemLabel="Thing"
+        itemLabelPath="title"
+        value={null}
+    />
+);
+
 export const Inline = () => (
     <Container itemFields={[{ name: 'title', component: 'text', label: 'Title' }]} inline />
 );
