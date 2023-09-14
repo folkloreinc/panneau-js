@@ -156,7 +156,8 @@ const ItemsField = ({
         const finalCount = (value || []).length + emptyItems.length;
         if (finalCount > itemIds.length) {
             const diff = finalCount - itemIds.length;
-            const extraItems = new Array(diff).keys().map(() => uuid());
+            const itemsArray = [...new Array(diff)];
+            const extraItems = (itemsArray || []).keys().map(() => uuid());
             setItemIds([...itemIds, ...extraItems]);
         }
     }, [items.length, itemIds.length, setItemIds]);
