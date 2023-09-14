@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import isFunction from 'lodash/isFunction';
 import PropTypes from 'prop-types';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ReactSortable } from 'react-sortablejs';
 import { v4 as uuid } from 'uuid';
@@ -50,6 +50,7 @@ const propTypes = {
     withoutRemove: PropTypes.bool,
     withoutCard: PropTypes.bool,
     withoutListGroup: PropTypes.bool,
+    excludeEmptyRequiredItems: PropTypes.bool,
     addItemDisabled: PropTypes.bool,
     maxItems: PropTypes.number,
     inline: PropTypes.bool,
@@ -87,6 +88,7 @@ const defaultProps = {
     withoutSort: false,
     withoutRemove: false,
     withoutCard: false,
+    excludeEmptyRequiredItems: false,
     addItemDisabled: false,
     maxItems: null,
     inline: false,
@@ -117,13 +119,14 @@ const ItemsField = ({
     withoutSort,
     withoutRemove,
     withoutCard,
+    excludeEmptyRequiredItems,
     addItemDisabled,
     maxItems,
     inline,
     disabled,
 }) => {
     const hasTypes = types !== null;
-    const idMap = useRef((value || []).map(() => uuid()));
+    const [itemIds, setItemIds] = useState((value || []).map(() => uuid()));
 
     const [collapsed, setCollapsed] = useState((value || []).map(() => true));
     const { component = null, ...fieldProps } = itemField || {};
@@ -131,6 +134,64 @@ const ItemsField = ({
     const FieldComponent = useFieldComponent(component);
     const fieldsManager = useFieldsComponentsManager();
     const generalFieldProps = disabled === true ? { disabled } : null;
+
+    const [emptyItems, setEmptyItems] = useState([]);
+    const items = useMemo(() => {
+        const tempValue = (value || []).map((v) => v);
+        const valueCount = (value || []).length;
+        return itemIds
+            .map(
+                (id, index) =>
+                    emptyItems.find(({ id: emptyId = null }) => emptyId === id) || {
+                        id,
+                        it: tempValue.length > 0 ? tempValue.shift() : null,
+                        index,
+                        valueIndex: valueCount - tempValue.length - 1,
+                    },
+            )
+            .filter(({ it = null }) => it !== null);
+    }, [emptyItems, value, itemIds]);
+
+    useEffect(() => {
+        const finalCount = (value || []).length + emptyItems.length;
+        if (finalCount > itemIds.length) {
+            setItemIds([
+                ...itemIds,
+                ...Array(finalCount - itemIds.length)
+                    .keys()
+                    .map(() => uuid()),
+            ]);
+        }
+    }, [items.length, itemIds.length, setItemIds]);
+
+    const itemsCount = items ? items.length : 0;
+    const isAddItemDisabled =
+        disabled || addItemDisabled || (maxItems !== null ? itemsCount >= maxItems : false);
+
+    const isItemEmpty = useCallback(
+        (item) => {
+            const { fields: subItemFields = null } = itemField || {};
+            const { type: itemType = null } = item || {};
+
+            const currentType = (types || []).find(({ id: typeId }) => itemType === typeId) || null;
+            const { fields: typeItemFields = null } = currentType || {};
+
+            const finalFields = typeItemFields || itemFields || subItemFields;
+
+            const requiredFields = (finalFields || []).filter((it) => {
+                const { required = false } = it || {};
+                return required;
+            }, false);
+
+            if (requiredFields.length === 0) return false;
+
+            return requiredFields.reduce(
+                (acc, field) => acc || ((item || {})[field.name] || null) === null,
+                false,
+            );
+        },
+        [itemFields, itemField, types],
+    );
 
     const onClickAdd = useCallback(
         (newItemContent = null) => {
@@ -142,61 +203,113 @@ const ItemsField = ({
                 newValue = newValue !== null ? { ...newValue, id: newId } : { id: newId };
             }
 
-            const finalValue = [...(value || []), newValue];
-            idMap.current = [...idMap.current, newId];
-            setCollapsed((previousCollapsed) => [...previousCollapsed, false]);
+            setItemIds([...itemIds, newId]);
+            setCollapsed([...collapsed, false]);
 
+            if (excludeEmptyRequiredItems && isItemEmpty(newValue)) {
+                setEmptyItems([
+                    ...(emptyItems || []),
+                    { it: newValue, id: newId, index: itemsCount, empty: true },
+                ]);
+                return;
+            }
+
+            const finalValue = [...(value || []), newValue];
             if (onChange !== null) {
                 onChange(finalValue);
             }
         },
-        [value, onChange, setCollapsed, newItemValue, newItemValueWithUuid],
+        [
+            value,
+            onChange,
+            setCollapsed,
+            newItemValue,
+            newItemValueWithUuid,
+            excludeEmptyRequiredItems,
+            emptyItems,
+            itemsCount,
+            setEmptyItems,
+            setItemIds,
+            itemIds,
+            collapsed,
+            isItemEmpty,
+        ],
     );
 
     const onItemChange = useCallback(
-        (it, index, newValue) => {
-            const finalValue = value.map((prevItem, prevIndex) =>
-                prevIndex !== index ? prevItem : newValue,
-            );
+        (it, newValue) => {
+            if (excludeEmptyRequiredItems && isItemEmpty(newValue)) {
+                const emptyIndex = emptyItems.findIndex(({ id = null }) => it.id === id);
+
+                if (emptyIndex === -1) {
+                    // eslint-disable-next-line no-unused-vars
+                    const { valueIndex = null, ...otherProps } = it || {};
+                    setEmptyItems([...emptyItems, { ...otherProps, empty: true }]);
+
+                    if (onChange !== null) {
+                        onChange(
+                            (value || []).filter((val, prevIndex) => it.valueIndex !== prevIndex),
+                        );
+                    }
+                } else {
+                    setEmptyItems([
+                        ...(emptyItems || []).slice(0, emptyIndex),
+                        { ...it, it: newValue },
+                        ...(emptyItems || []).slice(emptyIndex + 1),
+                    ]);
+                }
+                return;
+            }
+
+            setEmptyItems((emptyItems || []).filter(({ id = null }) => it.id !== id));
+
+            const emptyIndex = emptyItems.findIndex(({ id = null }) => it.id === id);
+            const idIndex = itemIds.indexOf(it.id);
+            const finalValue =
+                emptyIndex !== -1
+                    ? [...value.slice(0, idIndex), newValue, ...value.slice(idIndex)]
+                    : value.map((prevItem, prevIndex) =>
+                          prevIndex !== it.valueIndex ? prevItem : newValue,
+                      );
+
             if (onChange !== null) {
                 onChange(finalValue);
             }
         },
-        [value, onChange],
+        [excludeEmptyRequiredItems, value, onChange, emptyItems, itemIds, isItemEmpty],
     );
 
     const onClickRemove = useCallback(
         (e, it, index) => {
             e.preventDefault();
             e.stopPropagation();
-            const newValue = [...value.slice(0, index), ...value.slice(index + 1)];
-            if (onChange !== null) {
-                onChange(newValue);
+            const { id: itemId = null, valueIndex = null } = it || {};
+
+            if (valueIndex !== null) {
+                const newValue = (value || []).filter((val, prevIndex) => valueIndex !== prevIndex);
+                if (onChange !== null) {
+                    onChange(newValue);
+                }
+            } else {
+                setEmptyItems([
+                    ...(emptyItems || []).filter(({ id: emptyId = null }) => itemId !== emptyId),
+                ]);
             }
-            setCollapsed((previousCollapsed) =>
-                previousCollapsed.filter((_, collapsedIndex) => collapsedIndex !== index),
-            );
-            idMap.current = idMap.current.filter((_, idIndex) => idIndex !== index);
+
+            setCollapsed([...collapsed.slice(0, index), ...collapsed.slice(index + 1)]);
+            setItemIds(itemIds.filter((id) => id !== itemId));
         },
-        [value, onChange, setCollapsed],
+        [value, onChange, setCollapsed, emptyItems, collapsed, itemIds, setItemIds],
     );
 
     const toggleCollapse = useCallback(
         (index) => {
-            setCollapsed((previousCollapsed) => {
-                const newCollapsed = [...previousCollapsed];
-                newCollapsed[index] = !newCollapsed[index];
-                return newCollapsed;
-            });
+            const newCollapsed = [...collapsed];
+            newCollapsed[index] = !newCollapsed[index];
+            setCollapsed(newCollapsed);
         },
-        [setCollapsed],
+        [collapsed, setCollapsed],
     );
-
-    const items = (value || []).map((it, index) => ({ id: idMap.current[index], it, index }));
-
-    const itemsCount = items ? items.length : 0;
-    const isAddItemDisabled =
-        disabled || addItemDisabled || (maxItems !== null ? itemsCount >= maxItems : false);
 
     const sortList = useCallback(
         (newItems) => {
@@ -204,26 +317,28 @@ const ItemsField = ({
                 return;
             }
 
-            const orderChanged = newItems.reduce(
-                (changed, { index: newIndex }, idx) => changed || idx !== newIndex,
-                false,
-            );
-
-            if (orderChanged && onChange !== null) {
-                // Value
-                const finalItems = newItems.map(({ it }) => it);
-                onChange([...finalItems]);
-
-                // Ids
-                const newIdMap = newItems.map(({ index }) => idMap.current[index]);
-                idMap.current = newIdMap;
-
-                // Collapse state
-                setCollapsed((prevCollapsed) => newItems.map(({ index }) => prevCollapsed[index]));
-                // console.log('C-c-changes', newItems, newIdMap, finalItems); // eslint-disable-line
+            const orderChanged =
+                newItems.map(({ id = null }) => id).join('-') !== itemIds.join('-');
+            if (!orderChanged) {
+                return;
             }
+
+            setItemIds(newItems.map(({ id }) => id));
+
+            // Empty
+            setEmptyItems(newItems.filter(({ empty = false }) => empty));
+
+            // Value
+            const finalItems = newItems.filter(({ empty = false }) => !empty).map(({ it }) => it);
+
+            if (onChange !== null) {
+                onChange(finalItems);
+            }
+
+            // Collapse state
+            setCollapsed(newItems.map(({ id }) => collapsed[itemIds.indexOf(id)]));
         },
-        [setCollapsed, onChange],
+        [setCollapsed, collapsed, onChange, itemIds, setItemIds],
     );
 
     // Dropdown
@@ -243,9 +358,10 @@ const ItemsField = ({
 
     // console.log('value, items', value, items); // eslint-disable-line
 
-    const itemElements = items.map(({ id, it }, index) => {
+    const itemElements = items.map((item, index) => {
+        const { id, it } = item || {};
+
         const { type: itemType = null } = it || {};
-        // console.log(id, it); // eslint-disable-line
 
         let itemChildren;
         // Assumes the type on an item is the type you want for the dropdown
@@ -279,7 +395,7 @@ const ItemsField = ({
                 <ItemComponent
                     {...generalFieldProps}
                     value={it}
-                    onChange={(newValue) => onItemChange(it, index, newValue)}
+                    onChange={(newValue) => onItemChange(item, newValue)}
                     {...(isFunction(itemProps) ? itemProps(it, index) : itemProps)}
                 />
             );
@@ -288,7 +404,7 @@ const ItemsField = ({
                 <FieldComponent
                     {...generalFieldProps}
                     value={it}
-                    onChange={(newValue) => onItemChange(it, index, newValue)}
+                    onChange={(newValue) => onItemChange(item, newValue)}
                     {...fieldProps}
                     {...(isFunction(itemProps) ? itemProps(it, index) : itemProps)}
                 />
@@ -298,7 +414,7 @@ const ItemsField = ({
                 <FieldsComponent
                     {...generalFieldProps}
                     value={it}
-                    onChange={(newValue) => onItemChange(it, index, newValue)}
+                    onChange={(newValue) => onItemChange(item, newValue)}
                     fields={itemFields}
                 />
             );
@@ -318,7 +434,7 @@ const ItemsField = ({
                     {...generalFieldProps}
                     {...typeProps}
                     value={it}
-                    onChange={(newValue) => onItemChange(it, index, newValue)}
+                    onChange={(newValue) => onItemChange(item, newValue)}
                     fields={typeFields || itemFields}
                 />
             );
@@ -373,7 +489,7 @@ const ItemsField = ({
                             <Button
                                 theme="secondary"
                                 size="sm"
-                                onClick={(e) => onClickRemove(e, it, index)}
+                                onClick={(e) => onClickRemove(e, item, index)}
                                 outline
                             >
                                 <FontAwesomeIcon icon={faTimes} />
@@ -421,7 +537,7 @@ const ItemsField = ({
                                 <Button
                                     theme="secondary"
                                     size="sm"
-                                    onClick={(e) => onClickRemove(e, it, index)}
+                                    onClick={(e) => onClickRemove(e, item, index)}
                                     outline
                                 >
                                     <FontAwesomeIcon icon={faTimes} />
@@ -445,7 +561,7 @@ const ItemsField = ({
                             ? renderItem(it, index, {
                                   ...(isFunction(itemProps) ? itemProps(it, index) : itemProps),
                                   children: itemChildren,
-                                  onChange: (newValue) => onItemChange(it, index, newValue),
+                                  onChange: (newValue) => onItemChange(item, newValue),
                               })
                             : itemChildren
                         : null}
@@ -467,7 +583,7 @@ const ItemsField = ({
                                 className="m-auto"
                                 theme="secondary"
                                 size="sm"
-                                onClick={(e) => onClickRemove(e, it, index)}
+                                onClick={(e) => onClickRemove(e, item, index)}
                                 outline
                             >
                                 <FontAwesomeIcon icon={faTimes} />

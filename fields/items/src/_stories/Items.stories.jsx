@@ -14,6 +14,11 @@ export default {
     },
 };
 
+const itemFieldsWithRequired = [
+    { name: 'title', component: 'text', label: 'Title', required: true },
+    { name: 'description', component: 'html', label: 'Description' },
+];
+
 const itemFields = [
     { name: 'title', component: 'text', label: 'Title' },
     { name: 'description', component: 'html', label: 'Description' },
@@ -65,6 +70,17 @@ const Container = (props) => {
 export const Normal = () => (
     <Container
         itemFields={itemFields}
+        addItemLabel="Add something"
+        noItemLabel="Nothing in here"
+        itemLabel="Thing"
+        itemLabelPath="title"
+        value={items}
+    />
+);
+
+export const NormalWithRequired = () => (
+    <Container
+        itemFields={itemFieldsWithRequired}
         addItemLabel="Add something"
         noItemLabel="Nothing in here"
         itemLabel="Thing"
