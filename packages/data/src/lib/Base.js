@@ -13,7 +13,7 @@ class Base {
         };
     }
 
-    requestGet(path, query = null) {
+    requestGet(path, query = null, opts = null) {
         const finalQuery =
             query !== null ? queryString.stringify(query, { arrayFormat: 'bracket' }) : null;
         return getJSON(
@@ -23,18 +23,20 @@ class Base {
             {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
+                ...opts,
             },
         ).catch((error) => this.onError(error));
     }
 
-    requestPost(path, data) {
+    requestPost(path, data, opts = null) {
         return postJSON(this.getFullUrl(path), data, {
             credentials: 'include',
             headers: getCSRFHeaders(),
+            ...opts,
         }).catch((error) => this.onError(error));
     }
 
-    requestPut(path, data) {
+    requestPut(path, data, opts = null) {
         return postJSON(
             this.getFullUrl(path),
             {
@@ -44,11 +46,12 @@ class Base {
             {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
+                ...opts,
             },
         ).catch((error) => this.onError(error));
     }
 
-    requestPatch(path, data) {
+    requestPatch(path, data, opts = null) {
         return postJSON(
             this.getFullUrl(path),
             {
@@ -58,6 +61,7 @@ class Base {
             {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
+                ...opts,
             },
         ).catch((error) => this.onError(error));
     }
