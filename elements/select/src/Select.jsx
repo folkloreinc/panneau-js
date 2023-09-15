@@ -2,9 +2,9 @@
 
 /* eslint-disable react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import { uniqBy } from 'lodash';
 import isEqual from 'lodash/isEqual';
 import isObject from 'lodash/isObject';
+import uniqBy from 'lodash/uniqBy';
 // import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -15,16 +15,6 @@ import AsyncCreatableSelect from 'react-select/async-creatable';
 import CreatableSelect from 'react-select/creatable';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-
-// import { getSelectOptions } from '@panneau/core/utils';
-
-// const defaultCreateMessage = defineMessage({
-//     defaultMessage: 'Create {label}',
-//     description: 'Default label',
-// });
-
-const isDefaultOption = (option) =>
-    option !== null && typeof option.value !== 'undefined' && typeof option.label !== 'undefined';
 
 const propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
@@ -182,6 +172,8 @@ const SelectElement = ({
     } else if (creatable) {
         SelectComponent = CreatableSelect;
     }
+
+    console.log(isAsync, finalLoadOptions);
 
     return (
         <div className={classNames(['position-relative', className])}>

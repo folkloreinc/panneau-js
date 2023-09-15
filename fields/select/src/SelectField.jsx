@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 
@@ -19,6 +18,8 @@ const propTypes = {
     maxOptionsCount: PropTypes.number,
     optionLabelPath: PropTypes.string,
     optionValuePath: PropTypes.string,
+    getOptionLabel: PropTypes.func,
+    getOptionValue: PropTypes.func,
     multiple: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
@@ -36,6 +37,8 @@ const defaultProps = {
     maxOptionsCount: null,
     optionLabelPath: null,
     optionValuePath: null,
+    getOptionLabel: null,
+    getOptionValue: null,
     multiple: false,
     className: null,
     onChange: null,
@@ -53,6 +56,8 @@ const SelectField = ({
     maxOptionsCount,
     optionLabelPath,
     optionValuePath,
+    getOptionLabel: customGetOptionLabel,
+    getOptionValue: customGetOptionValue,
     multiple,
     className,
     onChange,
@@ -60,30 +65,47 @@ const SelectField = ({
     ...props
 }) => {
     const api = useApi();
-    const isAsync = requestUrl !== null || customLoadOptions !== null;
+
+    const getOptionLabel = useMemo(
+        () =>
+            customGetOptionLabel ||
+            (optionLabelPath !== null ? (option) => getPathValue(option, optionLabelPath) : null),
+        [customGetOptionLabel, optionLabelPath],
+    );
+    const getOptionValue = useMemo(
+        () =>
+            customGetOptionValue ||
+            (optionValuePath !== null ? (option) => getPathValue(option, optionValuePath) : null),
+        [customGetOptionValue, optionValuePath],
+    );
+
     const [inputTextValue, setInputTextValue] = useState('');
-    const loadOptions = useCallback(
-        (requestValue) =>
-            api
-                .requestGet(
-                    requestUrl,
-                    {
-                        paginated,
-                        ...requestQuery,
-                        ...(requestValue !== null
-                            ? { [requestSearchParamName]: requestValue }
-                            : null),
-                    },
-                    requestOptions,
-                )
-                .then((newItems) => {
-                    const { data = null } = paginated ? newItems : { data: newItems };
-                    const finalNewItems =
-                        maxOptionsCount !== null ? data.slice(0, maxOptionsCount) : data;
-                    return prepareRequestOptions !== null
-                        ? prepareRequestOptions(finalNewItems)
-                        : finalNewItems;
-                }),
+
+    const loadOptions = useMemo(
+        () =>
+            requestUrl !== null
+                ? (requestValue) =>
+                      api
+                          .requestGet(
+                              requestUrl,
+                              {
+                                  paginated,
+                                  ...requestQuery,
+                                  ...(requestValue !== null && requestSearchParamName !== null
+                                      ? { [requestSearchParamName]: requestValue }
+                                      : null),
+                              },
+                              requestOptions,
+                          )
+                          .then((newItems) => {
+                              const { data = null } = paginated ? newItems : { data: newItems };
+                              const finalNewItems =
+                                  maxOptionsCount !== null ? data.slice(0, maxOptionsCount) : data;
+                              return prepareRequestOptions !== null
+                                  ? prepareRequestOptions(finalNewItems)
+                                  : finalNewItems;
+                          })
+                : null,
         [
             api,
             maxOptionsCount,
@@ -96,6 +118,8 @@ const SelectField = ({
             paginated,
         ],
     );
+
+    const finalLoadOptions = customLoadOptions || loadOptions;
 
     const onValueChange = useCallback(
         (newValue) => {
@@ -115,24 +139,15 @@ const SelectField = ({
                 customOnInputChange(textValue);
             }
         },
-        [paginated, requestQuery, setInputTextValue],
-    );
-
-    const getOptionLabel = useMemo(
-        () => (optionLabelPath !== null ? (option) => getPathValue(option, optionLabelPath) : null),
-        [optionLabelPath],
-    );
-    const getOptionValue = useMemo(
-        () => (optionValuePath !== null ? (option) => getPathValue(option, optionValuePath) : null),
-        [optionValuePath],
+        [setInputTextValue, customOnInputChange],
     );
 
     return (
         <Select
             className={className}
-            isAsync={isAsync}
-            loadOptions={isAsync ? customLoadOptions || loadOptions : null}
-            defaultOptions={isAsync}
+            isAsync={finalLoadOptions !== null}
+            defaultOptions={finalLoadOptions !== null}
+            loadOptions={finalLoadOptions}
             onChange={onValueChange}
             onInputChange={onInputChange}
             inputValue={inputTextValue}
