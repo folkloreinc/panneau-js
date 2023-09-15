@@ -173,8 +173,6 @@ const SelectElement = ({
         SelectComponent = CreatableSelect;
     }
 
-    console.log(isAsync, finalLoadOptions);
-
     return (
         <div className={classNames(['position-relative', className])}>
             <SelectComponent
