@@ -89,6 +89,7 @@ export const Creatable = () => (
 export const CreatableWithRequestUrl = () => (
     <Container
         creatable
+        multiple
         getNewItem={(title) => ({ title })}
         requestUrl="/pages/"
         requestQuery={null}

@@ -2,11 +2,12 @@
 
 /* eslint-disable react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
 import classNames from 'classnames';
+import { uniqBy } from 'lodash';
 import isEqual from 'lodash/isEqual';
 import isObject from 'lodash/isObject';
 // import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
@@ -22,6 +23,9 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 //     description: 'Default label',
 // });
 
+const isDefaultOption = (option) =>
+    option !== null && typeof option.value !== 'undefined' && typeof option.label !== 'undefined';
+
 const propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     options: PanneauPropTypes.selectOptions,
@@ -35,10 +39,12 @@ const propTypes = {
     createPrefix: PropTypes.string,
     placeholder: PanneauPropTypes.label,
     autoSize: PropTypes.bool,
+    loadOptions: PropTypes.func,
+    getOptionValue: PropTypes.func,
+    valueIsOption: PropTypes.func,
     className: PropTypes.string,
     selectClassName: PropTypes.string,
     onChange: PropTypes.func,
-    getOptionValue: PropTypes.func,
 };
 
 const defaultProps = {
@@ -54,10 +60,12 @@ const defaultProps = {
     createPrefix: 'Create',
     placeholder: <FormattedMessage defaultMessage="Choose an option" description="Default label" />,
     autoSize: false,
+    getOptionValue: null,
+    loadOptions: null,
+    valueIsOption: false,
     className: null,
     selectClassName: null,
     onChange: null,
-    getOptionValue: null,
 };
 
 const SelectElement = ({
@@ -73,85 +81,97 @@ const SelectElement = ({
     createPrefix,
     placeholder,
     autoSize,
+    getOptionValue,
+    loadOptions,
     className,
     selectClassName,
     onChange,
-    getOptionValue,
+    valueIsOption,
     ...props
 }) => {
-    // const intl = useIntl();
-    const finalOptions = useMemo(
-        () => (options || []).map((it) => (!isObject(it) ? { value: it, label: it } : it)),
+    const shouldConvertValue = !valueIsOption;
+    const safeOptions = useMemo(
+        () =>
+            options !== null
+                ? (options || []).map((it) => (!isObject(it) ? { value: it, label: it } : it))
+                : null,
         [options],
     );
+    const [allOptions, setAllOptions] = useState(safeOptions || []);
+    const addOptions = useCallback(
+        (newOptions) =>
+            setAllOptions(
+                uniqBy([...allOptions, ...newOptions], (option) =>
+                    getOptionValue !== null ? getOptionValue(option) : option.value,
+                ),
+            ),
+        [allOptions, getOptionValue],
+    );
+    const finalLoadOptions = useMemo(
+        () =>
+            loadOptions !== null && shouldConvertValue
+                ? (searchValue) =>
+                      loadOptions(searchValue).then((newOptions) => {
+                          addOptions(newOptions);
+                          return newOptions;
+                      })
+                : loadOptions,
+        [loadOptions, shouldConvertValue, addOptions],
+    );
+
+    useEffect(() => {
+        if (shouldConvertValue) {
+            addOptions(safeOptions);
+        }
+    }, [shouldConvertValue, safeOptions]);
 
     const onChangeOption = useCallback(
         (newValue) => {
-            if (onChange !== null) {
-                if (multiple) {
-                    onChange(
-                        newValue !== null
-                            ? newValue.map((option) =>
-                                  typeof option.value !== 'undefined' &&
-                                  typeof option.label !== 'undefined' &&
-                                  getOptionValue === null
-                                      ? option.value
-                                      : option,
-                              )
-                            : null,
-                    );
-                } else {
-                    onChange(
-                        newValue !== null &&
-                            typeof newValue.value !== 'undefined' &&
-                            typeof newValue.label !== 'undefined' &&
-                            getOptionValue === null
-                            ? newValue.value
-                            : newValue,
-                    );
-                }
+            if (shouldConvertValue) {
+                addOptions(multiple ? newValue : [newValue]);
+            }
+
+            if (onChange === null) {
+                return;
+            }
+
+            if (multiple && shouldConvertValue && newValue !== null) {
+                onChange(
+                    newValue.map((newValueItem) =>
+                        getOptionValue !== null ? getOptionValue(newValueItem) : newValueItem.value,
+                    ),
+                );
+            } else if (shouldConvertValue && newValue !== null) {
+                onChange(getOptionValue !== null ? getOptionValue(newValue) : newValue.value);
+            } else {
+                onChange(newValue);
             }
         },
-        [onChange, multiple],
+        [onChange, multiple, shouldConvertValue, getOptionValue, addOptions],
     );
 
     const finalValue = useMemo(() => {
-        const [firstOption = null] = finalOptions || [];
-        const isBuiltinOption =
-            firstOption !== null &&
-            typeof firstOption.value !== 'undefined' &&
-            typeof firstOption.label !== 'undefined' &&
-            getOptionValue === null;
-
-        if (!isBuiltinOption) {
+        if (!shouldConvertValue || value === null) {
             return value;
         }
-
-        if (multiple) {
-            return value !== null
-                ? value.map((val) =>
-                      finalOptions.find((opt) =>
-                          // eslint-disable-next-line no-nested-ternary
-                          opt.value !== null
-                              ? isObject(val) && val.value
-                                  ? isEqual(val.value, opt.value)
-                                  : isEqual(val, opt.value)
-                              : false,
-                      ),
-                  )
-                : [];
+        function findOption(val) {
+            return (
+                allOptions.find((opt) =>
+                    isEqual(val, getOptionValue !== null ? getOptionValue(opt) : opt.value),
+                ) || null
+            );
         }
-        return finalOptions.find((opt) => (opt.value !== null ? isEqual(value, opt.value) : false));
-    }, [value, finalOptions, multiple]);
+        return multiple ? value.map(findOption).filter((it) => it !== null) : findOption(value);
+    }, [value, allOptions, getOptionValue, multiple]);
 
     const minWidth = useMemo(
         () =>
-            finalOptions.reduce(
+            (safeOptions || []).reduce(
                 (width, { label = null }) =>
                     Math.max(width, (label !== null ? label.length : 0) * 8 + 100),
                 100,
             ),
-        [finalOptions],
+        [safeOptions],
     );
 
     let SelectComponent = Select;
@@ -173,6 +193,8 @@ const SelectElement = ({
                           formatCreateLabel: (newLabel) => `${createPrefix} ${newLabel}`,
                       }
                     : null)}
+                {...(safeOptions !== null ? { options: safeOptions } : null)}
+                {...(finalLoadOptions !== null ? { loadOptions: finalLoadOptions } : null)}
                 className={selectClassName !== null ? selectClassName : null}
                 // menuPortalTarget={document.body}
                 styles={{
@@ -183,7 +205,6 @@ const SelectElement = ({
                     // option: (base) => ({ ...base, color: '#343434' }),
                 }}
                 value={finalValue || null}
-                options={finalOptions}
                 isDisabled={disabled}
                 isMulti={multiple}
                 isClearable={!withoutReset}

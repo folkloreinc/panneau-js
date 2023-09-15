@@ -2,6 +2,7 @@
 import classNames from 'classnames';
 import get from 'lodash/get';
 import isString from 'lodash/isString';
+import set from 'lodash/set';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -10,7 +11,7 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getPathValue, isMessage } from '@panneau/core/utils';
 import { useApi } from '@panneau/data';
 import ResourceCard from '@panneau/element-resource-card';
-import Select from '@panneau/element-select';
+import Select from '@panneau/field-select';
 
 const propTypes = {
     name: PropTypes.string,
@@ -95,7 +96,7 @@ const ItemField = ({
     loadItems,
     paginated,
     requestUrl,
-    requestQuery: initialRequestQuery,
+    requestQuery,
     requestOptions,
     requestSearchParamName,
     getItemLabel: initialGetItemLabel,
@@ -118,35 +119,32 @@ const ItemField = ({
     onCreate,
 }) => {
     const intl = useIntl();
-    const api = useApi();
     const [initialValue] = useState(value || null);
-    const [inputTextValue, setInputTextValue] = useState('');
 
-    // const [paginator] = useState(null);
-    const [requestQuery] = useState(initialRequestQuery || null);
     const [createdItems, setCreatedItems] = useState(null);
-
-    const isAsync = loadItems !== null || requestUrl !== null;
 
     const getItemLabel = useCallback(
         (it, path) => {
-            const id = get(it, 'id', null);
+            const id = getItemId(it, itemIdPath);
             if (itemLabelWithId) {
                 const label = initialGetItemLabel(it, path);
                 return label ? `${label} (#${id})` : `#${id}`;
             }
             return path !== null ? initialGetItemLabel(it, path) : `#${id}`;
         },
-        [initialGetItemLabel, itemLabelWithId],
+        [initialGetItemLabel, itemLabelWithId, getItemId, itemIdPath],
     );
 
     const getOptionValue = useCallback(
         (it) => {
-            const { label: newLabel = null, __isNew__: isNew = false } = it || {};
-            if (isNew) {
-                return newLabel;
+            if (isString(it)) {
+                return it;
             }
-            return isString(it) ? it : getItemId(it, itemIdPath);
+            const { value: newValue, __isNew__: isNew = false} = it || {};
+            if (isNew) {
+                return newValue;
+            }
+            return getItemId(it, itemIdPath)
         },
         [getItemId, itemIdPath],
     );
@@ -156,7 +154,7 @@ const ItemField = ({
             if (isString(it)) {
                 return it;
             }
-            const { label: newLabel = null, __isNew__: isNew = false } = it || {};
+            const { label: newLabel, __isNew__: isNew = false} = it || {};
             if (isNew) {
                 return newLabel;
             }
@@ -172,42 +170,12 @@ const ItemField = ({
         [initialValue, createdItems],
     );
 
-    const fetchOptions = useCallback(
-        (requestValue) => {
-            if (loadItems !== null) {
-                return loadItems(requestValue).then((newItems) => getOptions(newItems));
-            }
-            return api
-                .requestGet(
-                    requestUrl,
-                    {
-                        paginated,
-                        ...requestQuery,
-                        ...(requestValue !== null
-                            ? { [requestSearchParamName]: requestValue }
-                            : null),
-                    },
-                    requestOptions,
-                )
-                .then((newItems) => {
-                    const { data = null } = paginated ? newItems : { data: newItems };
-                    const finalNewItems =
-                        maxItemsCount !== null ? data.slice(0, maxItemsCount) : data;
-                    return getOptions(finalNewItems);
-                });
-        },
-        [
-            api,
-            loadItems,
-            maxItemsCount,
-            inputTextValue,
-            requestUrl,
-            requestQuery,
-            requestOptions,
-            requestSearchParamName,
-            paginated,
-            getOptions,
-        ],
+    const loadOptions = useMemo(
+        () =>
+            loadItems !== null
+                ? (requestValue) => loadItems(requestValue).then((newItems) => getOptions(newItems))
+                : null,
+        [getOptions],
     );
 
     const onClickRemove = useCallback(() => {
@@ -216,62 +184,18 @@ const ItemField = ({
         }
     }, [onChange]);
 
-    const onInputChange = useCallback(
-        (textValue) => {
-            setInputTextValue(textValue);
-        },
-        [paginated, requestQuery, setInputTextValue],
-    );
-
-    // TODO: add a little debounce here
-    // const timeoutRef = useRef(null);
-    const loadOptions = useCallback((inputValue) => fetchOptions(inputValue), [fetchOptions]);
-
-    // const { page = null } = requestQuery || {};
-    // const { lastPage = null, last_page: otherLastPage = null } = paginator || {};
-    // const finalLastPage = lastPage || otherLastPage || null;
-
-    // const onScrollEnd = useCallback(() => {
-    //     if (page !== null && page >= finalLastPage) {
-    //         return null;
-    //     }
-    //     return null;
-    //     // if (paginated) {
-    //     //     setRequestQuery((page || 1) + 1);
-    //     // }
-    // }, [paginated, page, setRequestQuery, finalLastPage]);
-
-    const onValueChange = useCallback(
-        (newValue) => {
-            if (onChange === null) return;
-            // console.log('onChange', newValue);
-            onChange(newValue);
-            setInputTextValue('');
-        },
-        [items, onChange, multiple, itemLabelPath, getItemLabel, setInputTextValue],
-    );
-
     const onCreateOption = useCallback(
         (newLabel) => {
             const newItem = getNewItem !== null ? getNewItem(newLabel) : newLabel;
-            // console.log('newLabel', newLabel, 'newItem', newItem);
-
             setCreatedItems([...(createdItems || []), newItem]);
-            if (multiple) {
-                onChange([...(value || []), newItem]);
-            } else {
-                onChange(newItem);
+            if (onChange !== null) {
+                onChange(multiple ? [...(value || []), newItem] : newItem);
             }
         },
         [onChange, createdItems, getNewItem, setCreatedItems],
     );
 
-    const options = useMemo(
-        () => (!isAsync ? getOptions(items) : null),
-        [items, getOptions, isAsync],
-    );
-
-    // console.log('value', value, 'options', options);
+    const options = useMemo(() => (items !== null ? getOptions(items) : null), [items, getOptions]);
 
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
@@ -305,10 +229,14 @@ const ItemField = ({
                                 },
                             ])}
                             disabled={disabled}
-                            isAsync={isAsync}
-                            defaultOptions={isAsync} // Always uses loadOptions
                             name={name}
                             value={value}
+                            maxOptionsCount={maxItemsCount}
+                            paginated={paginated}
+                            requestUrl={requestUrl}
+                            requestQuery={requestQuery}
+                            requestOptions={requestOptions}
+                            requestSearchParamName={requestSearchParamName}
                             creatable={creatable}
                             onCreateOption={creatable ? onCreate || onCreateOption : null}
                             isClearable
@@ -323,18 +251,14 @@ const ItemField = ({
                                     />
                                 )
                             }
-                            onChange={onValueChange}
+                            onChange={onChange}
                             getOptionValue={getOptionValue}
                             getOptionLabel={getOptionLabel}
-                            inputValue={inputTextValue}
-                            onInputChange={onInputChange}
+                            prepareRequestOptions={getOptions}
                             loadOptions={loadOptions}
-                            // onMenuScrollToBottom={paginated ? onScrollEnd : null}
                             multiple={multiple}
-                            // getNewOptionData={(label, formattedLabel) => ({ label, isNew: true })}
-                            {...(!isAsync && options !== null && options.length > 0
-                                ? { options }
-                                : null)}
+                            valueIsOption
+                            {...(options !== null ? { options } : null)}
                         />
                     </div>
                 </div>

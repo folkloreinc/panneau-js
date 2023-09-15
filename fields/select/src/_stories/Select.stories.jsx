@@ -1,11 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 
+import withApi from '../../../../.storybook/decorators/withApiProvider';
+
 import SelectField from '../SelectField';
 
 export default {
     title: 'Fields/Select',
     component: SelectField,
+    decorators: [withApi],
     parameters: {
         intl: true,
     },
@@ -15,6 +18,7 @@ const options = ['One', 'Two', 'Three'];
 
 const Container = (props) => {
     const [value, setValue] = useState(null);
+    console.log(value);
     return <SelectField {...props} value={value} onChange={setValue} />;
 };
 
@@ -32,4 +36,14 @@ export const MultiSelect = () => (
 
 export const MultiDisabled = () => (
     <Container options={options} multiple placeholder="Multi select disabled..." disabled />
+);
+
+export const WithRequest = () => (
+    <Container
+        requestUrl="/events/"
+        optionLabelPath="title"
+        optionValuePath="id"
+        multiple
+        placeholder="With Request"
+    />
 );
