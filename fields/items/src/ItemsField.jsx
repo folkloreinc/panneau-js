@@ -152,14 +152,15 @@ const ItemsField = ({
             .filter(({ it = null }) => it !== null);
     }, [emptyItems, value, itemIds]);
 
+    const allItemsCount = (value || []).length + emptyItems.length;
+    const idsCount = itemIds.length;
     useEffect(() => {
-        const finalCount = (value || []).length + emptyItems.length;
-        if (finalCount > itemIds.length) {
-            const diff = finalCount - itemIds.length;
+        if (allItemsCount > idsCount) {
+            const diff = allItemsCount - idsCount;
             const extraItems = [...Array(diff).keys()].map(() => uuid());
             setItemIds([...itemIds, ...extraItems]);
         }
-    }, [items.length, itemIds.length, setItemIds]);
+    }, [allItemsCount, idsCount, setItemIds]);
 
     const itemsCount = items ? items.length : 0;
     const isAddItemDisabled =
