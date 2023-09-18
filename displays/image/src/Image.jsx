@@ -5,7 +5,7 @@ import React from 'react';
 import styles from './styles.module.scss';
 
 const propTypes = {
-    value: PropTypes.string,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     maxWidth: PropTypes.number,
     maxHeight: PropTypes.number,
 };

@@ -8,8 +8,8 @@ import Link from '@panneau/element-link';
 import styles from './styles.module.scss';
 
 const propTypes = {
-    label: PropTypes.string,
-    sublabel: PropTypes.string,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    sublabel: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     href: PropTypes.string,
     disabled: PropTypes.bool,
     onClick: PropTypes.func,
