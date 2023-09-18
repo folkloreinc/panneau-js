@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-select",
-    "version": "3.0.40",
+    "version": "3.0.42",
     "description": "Select filter",
     "keywords": [
         "javascript"
@@ -56,7 +56,7 @@
         "@folklore/routes": "^0.2.6",
         "@panneau/core": "^3.0.40",
         "@panneau/data": "^3.0.40",
-        "@panneau/element-select": "^3.0.40",
+        "@panneau/element-select": "^3.0.42",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

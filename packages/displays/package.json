@@ -1,6 +1,6 @@
 {
     "name": "@panneau/displays",
-    "version": "3.0.41",
+    "version": "3.0.42",
     "description": "",
     "keywords": [
         "javascript"
@@ -71,7 +71,7 @@
         "@panneau/display-image": "^3.0.40",
         "@panneau/display-label": "^3.0.40",
         "@panneau/display-select": "^3.0.40",
-        "@panneau/display-text": "^3.0.40",
+        "@panneau/display-text": "^3.0.42",
         "@panneau/display-text-localized": "^3.0.40",
         "prop-types": "^15.7.2"
     },
