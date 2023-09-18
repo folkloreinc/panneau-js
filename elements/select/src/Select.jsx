@@ -1,6 +1,4 @@
-/* eslint-disable formatjs/enforce-default-message */
-
-/* eslint-disable react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
+/* eslint-disable formatjs/enforce-default-message, react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import isObject from 'lodash/isObject';
@@ -17,12 +15,8 @@ import CreatableSelect from 'react-select/creatable';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 const propTypes = {
-    value: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-        PropTypes.arrayOf(PropTypes.string),
-        PropTypes.object,
-    ]),
+    // eslint-disable-next-line react/forbid-prop-types
+    value: PropTypes.any,
     options: PanneauPropTypes.selectOptions,
     isAsync: PropTypes.bool,
     disabled: PropTypes.bool,
