@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-date",
-    "version": "3.0.36",
+    "version": "3.0.40",
     "description": "Label date value in list",
     "keywords": [
         "javascript"
@@ -53,8 +53,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.36",
-        "@panneau/themes": "^3.0.36",
+        "@panneau/core": "^3.0.40",
+        "@panneau/themes": "^3.0.40",
         "date-fns": "^2.29.3",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
