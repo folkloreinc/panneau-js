@@ -13,14 +13,14 @@ export default {
 
 const options = [
     'one',
-    { value: 'two', label: 'Two' },
-    { value: 'three', label: 'Very long label that is very annoying indeed' },
-    { value: 'four', label: null },
+    { value: '2', label: 'Two' },
+    { value: '3', label: 'Very long label that is very annoying indeed' },
+    { value: '4', label: 'Blabla' },
     5,
 ];
 
 const itemOptions = [
-    { id: 1, title: 'One' },
+    { id: 1, title: 'One', something: '4' },
     { id: 2, title: 'Two' },
     { id: 3, title: 'Three' },
 ];

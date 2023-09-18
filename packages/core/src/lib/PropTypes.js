@@ -154,10 +154,12 @@ export const users = PropTypes.arrayOf(user);
 
 export const selectOption = PropTypes.oneOfType([
     PropTypes.string,
+    PropTypes.number,
     PropTypes.shape({
         value: PropTypes.any, // eslint-disable-line
         label,
     }),
+    PropTypes.object,
 ]);
 export const selectOptions = PropTypes.arrayOf(selectOption);
 
