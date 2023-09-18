@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
+// import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useListsComponents, usePanneauResource } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
@@ -11,7 +11,7 @@ import Pagination from '@panneau/element-pagination';
 import Filters from '@panneau/filter-filters';
 
 const propTypes = {
-    resource: PanneauPropTypes.resource.isRequired,
+    resource: PropTypes.string.isRequired,
     query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     paginated: PropTypes.bool,
     baseUrl: PropTypes.string,
