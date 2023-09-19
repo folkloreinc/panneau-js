@@ -37,14 +37,13 @@ export const useComponents = (namespace = null, defaultComponents = {}) => {
 };
 
 export const useComponent = (name, defaultComponent = null, namespace = null) => {
-    if (!isString(name)) {
-        return name || defaultComponent;
-    }
     const manager = useComponentsManager(namespace);
-    return useMemo(
-        () => manager.getComponent(name) || defaultComponent,
-        [manager, name, defaultComponent],
-    );
+    return useMemo(() => {
+        if (!isString(name)) {
+            return name || defaultComponent;
+        }
+        return manager.getComponent(name) || defaultComponent;
+    }, [manager, name, defaultComponent]);
 };
 
 /**
