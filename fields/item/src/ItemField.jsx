@@ -1,21 +1,18 @@
 /* eslint-disable no-shadow, react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import get from 'lodash/get';
 import isString from 'lodash/isString';
-import set from 'lodash/set';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getPathValue, isMessage } from '@panneau/core/utils';
-import { useApi } from '@panneau/data';
 import ResourceCard from '@panneau/element-resource-card';
 import Select from '@panneau/field-select';
 
 const propTypes = {
     name: PropTypes.string,
-    value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    value: PropTypes.oneOfType([PropTypes.object, PropTypes.array]), // eslint-disable-line react/forbid-prop-types
     errors: PanneauPropTypes.formErrors,
     items: PropTypes.arrayOf(
         PropTypes.shape({
@@ -140,11 +137,11 @@ const ItemField = ({
             if (isString(it)) {
                 return it;
             }
-            const { value: newValue, __isNew__: isNew = false} = it || {};
+            const { value: newValue, __isNew__: isNew = false } = it || {};
             if (isNew) {
                 return newValue;
             }
-            return getItemId(it, itemIdPath)
+            return getItemId(it, itemIdPath);
         },
         [getItemId, itemIdPath],
     );
@@ -154,7 +151,7 @@ const ItemField = ({
             if (isString(it)) {
                 return it;
             }
-            const { label: newLabel, __isNew__: isNew = false} = it || {};
+            const { label: newLabel, __isNew__: isNew = false } = it || {};
             if (isNew) {
                 return newLabel;
             }

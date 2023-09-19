@@ -1,6 +1,4 @@
-/* eslint-disable formatjs/enforce-default-message */
-
-/* eslint-disable react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
+/* eslint-disable formatjs/enforce-default-message, react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import isObject from 'lodash/isObject';
@@ -8,7 +6,7 @@ import uniqBy from 'lodash/uniqBy';
 // import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import AsyncCreatableSelect from 'react-select/async-creatable';
@@ -17,7 +15,8 @@ import CreatableSelect from 'react-select/creatable';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 const propTypes = {
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    // eslint-disable-next-line react/forbid-prop-types
+    value: PropTypes.any,
     options: PanneauPropTypes.selectOptions,
     isAsync: PropTypes.bool,
     disabled: PropTypes.bool,
@@ -31,7 +30,7 @@ const propTypes = {
     autoSize: PropTypes.bool,
     loadOptions: PropTypes.func,
     getOptionValue: PropTypes.func,
-    valueIsOption: PropTypes.func,
+    valueIsOption: PropTypes.bool,
     className: PropTypes.string,
     selectClassName: PropTypes.string,
     onChange: PropTypes.func,
@@ -83,7 +82,9 @@ const SelectElement = ({
     const safeOptions = useMemo(
         () =>
             options !== null
-                ? (options || []).map((it) => (!isObject(it) ? { value: it, label: it } : it))
+                ? (options || [])
+                      .map((it) => (!isObject(it) ? { value: it, label: it } : it))
+                      .filter((it) => it !== null)
                 : null,
         [options],
     );
@@ -117,7 +118,7 @@ const SelectElement = ({
 
     const onChangeOption = useCallback(
         (newValue) => {
-            if (shouldConvertValue) {
+            if (shouldConvertValue && newValue !== null) {
                 addOptions(multiple ? newValue : [newValue]);
             }
 

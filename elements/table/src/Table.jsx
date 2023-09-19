@@ -28,7 +28,7 @@ const propTypes = {
         PropTypes.shape({ defaultMessage: PropTypes.string }),
     ]),
     withoutId: PropTypes.bool,
-    actionsComponent: PropTypes.element,
+    actionsComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
     className: PropTypes.string,
     actionsClassName: PropTypes.string,
 };

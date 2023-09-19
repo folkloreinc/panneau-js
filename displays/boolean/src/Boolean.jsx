@@ -3,7 +3,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const propTypes = {
-    value: PropTypes.string,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
 };
 
 const defaultProps = {
@@ -11,7 +11,7 @@ const defaultProps = {
 };
 
 const Boolean = ({ value }) =>
-    value !== null && value === true ? (
+    value !== null && (value === true || value === 'true') ? (
         <span className="badge bg-success">
             <FormattedMessage defaultMessage="Yes" description="Boolean value" />
         </span>

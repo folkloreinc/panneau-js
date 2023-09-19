@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modal-resource-form",
-    "version": "3.0.36",
+    "version": "3.0.40",
     "description": "Resource form modal",
     "keywords": [
         "javascript"
@@ -45,11 +45,11 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.36",
-        "@panneau/form-resource": "^3.0.36",
-        "@panneau/intl": "^3.0.36",
-        "@panneau/modal-dialog": "^3.0.36",
-        "@panneau/themes": "^3.0.36",
+        "@panneau/core": "^3.0.40",
+        "@panneau/form-resource": "^3.0.40",
+        "@panneau/intl": "^3.0.40",
+        "@panneau/modal-dialog": "^3.0.40",
+        "@panneau/themes": "^3.0.40",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
