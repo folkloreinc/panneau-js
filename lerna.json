@@ -1,37 +1,25 @@
 {
-  "version": "3.0.44",
-  "packages": [
-    "displays/*",
-    "fields/*",
-    "forms/*",
-    "modals/*",
-    "elements/*",
-    "filters/*",
-    "lists/*",
-    "packages/*"
-  ],
-  "command": {
-    "publish": {
-      "allowBranch": [
-        "v0.4",
-        "v0.6",
-        "v1.0-react-router5",
-        "v2.0",
-        "v3.0"
-      ]
+    "version": "3.0.45",
+    "packages": [
+        "displays/*",
+        "fields/*",
+        "forms/*",
+        "modals/*",
+        "elements/*",
+        "filters/*",
+        "lists/*",
+        "packages/*"
+    ],
+    "command": {
+        "publish": {
+            "allowBranch": ["v0.4", "v0.6", "v1.0-react-router5", "v2.0", "v3.0"]
+        },
+        "bootstrap": {
+            "hoist": true,
+            "npmClientArgs": ["--no-package-lock", "--legacy-peer-deps"]
+        }
     },
     "bootstrap": {
-      "hoist": true,
-      "npmClientArgs": [
-        "--no-package-lock",
-        "--legacy-peer-deps"
-      ]
+        "npmClientArgs": ["--no-package-lock", "--legacy-peer-deps"]
     }
-  },
-  "bootstrap": {
-    "npmClientArgs": [
-      "--no-package-lock",
-      "--legacy-peer-deps"
-    ]
-  }
 }
