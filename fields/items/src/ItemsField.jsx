@@ -1,8 +1,4 @@
-/* eslint-disable no-nested-ternary */
-
-/* eslint-disable jsx-a11y/control-has-associated-label */
-
-/* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading, react/prop-types */
+/* eslint-disable jsx-a11y/control-has-associated-label, no-nested-ternary, react/no-array-index-key, react/jsx-props-no-spreading, react/prop-types */
 import { faCaretDown, faCaretRight, faGripLines, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
@@ -139,18 +135,18 @@ const ItemsField = ({
     const items = useMemo(() => {
         const tempValue = (value || []).map((v) => v);
         const valueCount = (value || []).length;
-        return itemIds
-            .map(
-                (id, index) =>
-                    emptyItems.find(({ id: emptyId = null }) => emptyId === id) || {
-                        id,
-                        it: tempValue.length > 0 ? tempValue.shift() : null,
-                        index,
-                        valueIndex: valueCount - tempValue.length - 1,
-                    },
-            )
-            .filter(({ it = null }) => it !== null);
+        return itemIds.map(
+            (id, index) =>
+                emptyItems.find(({ id: emptyId = null }) => emptyId === id) || {
+                    id,
+                    it: tempValue.length > 0 ? tempValue.shift() : null,
+                    index,
+                    valueIndex: valueCount - tempValue.length - 1,
+                },
+        );
     }, [emptyItems, value, itemIds]);
+
+    // console.log('values', value, 'items', items);
 
     const allItemsCount = (value || []).length + emptyItems.length;
     const idsCount = itemIds.length;
@@ -194,7 +190,7 @@ const ItemsField = ({
     const onClickAdd = useCallback(
         (newItemContent = null) => {
             const newId = uuid();
-            const defaultValue = isFunction(newItemValue) ? newItemValue() : newItemValue;
+            const defaultValue = isFunction(newItemValue) ? newItemValue() : newItemValue || null;
             let newValue =
                 newItemContent !== null ? { ...defaultValue, ...newItemContent } : defaultValue;
             if (newItemValueWithUuid) {
@@ -592,6 +588,8 @@ const ItemsField = ({
             </div>
         );
     });
+
+    // console.log('itemElements', itemElements);
 
     return (
         <div className={className}>

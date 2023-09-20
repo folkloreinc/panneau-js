@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import BlocksResource from '../../../../.storybook/data/blocks-resource';
 import FieldsProvider from '../../../../packages/fields';
 import IntlProvider from '../../../../packages/intl/src/IntlProvider';
+import { UppyProvider } from '../../../../packages/uppy/src/UppyContext';
 import ItemsField from '../ItemsField';
 
 export default {
@@ -66,6 +67,21 @@ const Container = (props) => {
         </FieldsProvider>
     );
 };
+
+export const EmptyImages = () => (
+    <UppyProvider>
+        <Container
+            itemField={{ component: 'image', components: { display: 'image' }, defaultValue: null }}
+            itemComponent={null}
+            newItemValue={null}
+            addItemLabel="Add something"
+            noItemLabel="Nothing in here"
+            itemLabel="Thing"
+            itemLabelPath="title"
+            // value={[]}
+        />
+    </UppyProvider>
+);
 
 export const Normal = () => (
     <Container
