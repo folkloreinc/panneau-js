@@ -36,7 +36,7 @@ const propTypes = {
             url: PropTypes.string,
         }),
     ]),
-    types: PropTypes.arrayOf(PropTypes.oneOf(['audio', 'image', 'video'])),
+    types: PropTypes.arrayOf(PropTypes.oneOf(['audio', 'image', 'video', 'document'])),
     fileTypes: PropTypes.arrayOf(PropTypes.string),
     sources: PropTypes.arrayOf(
         PropTypes.oneOf(['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive']),
@@ -268,8 +268,6 @@ const UploadField = ({
         onQueryChange: onListQueryChange,
         onQueryReset: onListQueryReset,
     } = useResourceQuery(initialQuery);
-
-    console.log('listQuery', listQuery);
 
     return (
         <div
