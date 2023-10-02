@@ -269,6 +269,8 @@ const UploadField = ({
         onQueryReset: onListQueryReset,
     } = useResourceQuery(initialQuery);
 
+    console.log('listQuery', listQuery);
+
     return (
         <div
             className={classNames([styles.container, { [className]: className !== null }])}

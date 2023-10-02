@@ -1,13 +1,13 @@
 /* eslint-disable formatjs/no-camel-case */
 
 /* eslint-disable react/jsx-props-no-spreading */
+import { useLocation } from '@folklore/routes';
 import classNames from 'classnames';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useLocation } from '@folklore/routes';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import {
@@ -59,7 +59,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
     const resourceValues = useResourceValues(resource);
     const componentsManager = useComponentsManager();
     const [{ search }, navigate] = useLocation();
-    const query = useMemo(() => queryString.parse(search), [search]);
+    const query = useMemo(() => queryString.parse(search, { arrayFormat: 'bracket' }), [search]);
     const listQuery = useMemo(() => query, [query]); // TODO: omit routes
     const { created = false, deleted = false } = query || {};
 

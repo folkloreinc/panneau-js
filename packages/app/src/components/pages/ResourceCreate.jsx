@@ -1,7 +1,7 @@
+import { useLocation } from '@folklore/routes';
 import queryString from 'query-string';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useLocation } from '@folklore/routes';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
@@ -22,7 +22,10 @@ const ResourceCreatePage = ({ resource }) => {
     const [{ search }, navigate] = useLocation();
     const resourceRoute = useResourceUrlGenerator(resource);
 
-    const { type = null } = useMemo(() => queryString.parse(search), [search]);
+    const { type = null } = useMemo(
+        () => queryString.parse(search, { arrayFormat: 'bracket' }),
+        [search],
+    );
     const resourceValues = useResourceValues(resource);
     const typeName = useResourceTypeName(resource, type);
 

@@ -28,6 +28,17 @@ export default {
         columns: ['id', 'type', 'name'],
         filters: [
             {
+                name: 'types',
+                placeholder: 'Sélectionner un type',
+                component: 'select',
+                multiple: true,
+                options: [
+                    { label: 'image 1', value: 'image' },
+                    { label: 'audio 2', value: 'audio' },
+                    { label: 'video 3', value: 'video' },
+                ],
+            },
+            {
                 name: 'search',
                 placeholder: 'Chercher',
                 component: 'search',
