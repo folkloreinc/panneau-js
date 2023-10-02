@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "3.0.49",
+    "version": "3.0.50",
     "description": "",
     "keywords": [
         "javascript"
@@ -69,8 +69,8 @@
         "@panneau/field-autocomplete": "^3.0.45",
         "@panneau/field-checkboxes": "^3.0.45",
         "@panneau/field-color": "^3.0.45",
-        "@panneau/field-date": "^3.0.45",
-        "@panneau/field-embed": "^3.0.45",
+        "@panneau/field-date": "^3.0.50",
+        "@panneau/field-embed": "^3.0.50",
         "@panneau/field-fields": "^3.0.45",
         "@panneau/field-html": "^3.0.45",
         "@panneau/field-input-group": "^3.0.45",
@@ -84,7 +84,7 @@
         "@panneau/field-text": "^3.0.45",
         "@panneau/field-toggle": "^3.0.45",
         "@panneau/field-toggles": "^3.0.45",
-        "@panneau/field-upload": "^3.0.49",
+        "@panneau/field-upload": "^3.0.50",
         "@panneau/field-url": "^3.0.45",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2"

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-cards",
-    "version": "3.0.45",
+    "version": "3.0.50",
     "description": "Cards list",
     "keywords": [
         "javascript"
@@ -59,7 +59,7 @@
         "@panneau/core": "^3.0.45",
         "@panneau/element-button": "^3.0.45",
         "@panneau/element-buttons": "^3.0.45",
-        "@panneau/element-card": "^3.0.45",
+        "@panneau/element-card": "^3.0.50",
         "@panneau/element-item-actions": "^3.0.45",
         "@panneau/element-label": "^3.0.45",
         "@panneau/element-loading": "^3.0.45",
