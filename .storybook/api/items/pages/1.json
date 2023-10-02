@@ -1,9 +1,12 @@
 {
     "id": "1",
     "type": "page",
-    "title": { "fr": "Une page", "en": "A page" },
+    "title": {
+        "fr": "Une page avec un titre 4591347550234568013465092348592380456723455552389456702374659802347659072348567340958723475602348675982347568349576023746582734690723904856723984756923874659082374",
+        "en": "A page"
+    },
     "description": "Une description",
-    "slug": null,
+    "slug": "image",
     "image": {
         "id": 1,
         "thumbnailUrl": "/test"

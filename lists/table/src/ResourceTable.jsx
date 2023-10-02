@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
@@ -190,7 +191,6 @@ const ResourceTableList = ({
                                                     key={`col-${id}-${colId}-${idx + 1}`}
                                                     className={classNames([
                                                         'col-auto',
-                                                        'text-break',
                                                         {
                                                             'text-end':
                                                                 idx ===
@@ -229,8 +229,11 @@ const ResourceTableList = ({
                                             <td
                                                 className={classNames([
                                                     'col-auto',
-                                                    'text-break',
                                                     {
+                                                        'text-break':
+                                                            displayValue !== null &&
+                                                            isString(displayValue) &&
+                                                            displayValue.length >= 40,
                                                         [columnClassName]: columnClassName !== null,
                                                     },
                                                 ])}
