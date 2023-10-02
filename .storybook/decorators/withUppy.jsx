@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
+
 import { UppyProvider } from '../../packages/uppy/src/UppyContext';
 
 const props = {
@@ -8,14 +9,14 @@ const props = {
     //     key: process.env.TRANSLOADIT_KEY || null,
     //     templateId: process.env.TRANSLOADIT_TEMPLATE_ID || null,
     // },
-    transport: 'tus',
-    tus: {
-        endpoint: 'http://localhost:58800/tus',
-    },
-    // transport: 'xhr',
-    // xhr: {
-    //     endpoint: 'http://localhost:58800/xhr',
+    // transport: 'tus',
+    // tus: {
+    //     endpoint: 'http://localhost:58800/tus',
     // },
+    transport: 'xhr',
+    xhr: {
+        endpoint: 'http://localhost:58800/xhr',
+    },
 };
 
 const withUppy = (Story) => (

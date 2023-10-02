@@ -7,11 +7,11 @@ import { useIntl } from 'react-intl';
 import slugify from 'slugify';
 import { v1 as uuid } from 'uuid';
 
+import getTransloaditMediasFromResponse from './getTransloaditMediasFromResponse';
 import useUppyCore from './useUppyCore';
 import useUppyLocale from './useUppyLocale';
 import useUppySources from './useUppySources';
 import useUppyTransport from './useUppyTransport';
-import getTransloaditMediasFromResponse from './getTransloaditMediasFromResponse';
 
 export const UppyContext = React.createContext(null);
 
@@ -19,7 +19,7 @@ export const useUppy = ({
     onComplete = null,
     onFail = null,
     getFileName = ({ name = '', extension = null }) =>
-        `${(slugify(name) || '').substring(0, 50)}${
+        `${(slugify(name) || '').substring(0, 185)}${
             extension !== null && (name || '').indexOf(extension) === -1 ? `.${extension}` : ''
         }`,
     getFileNameWithUUID = ({ extension = null }) =>
