@@ -33,6 +33,7 @@ const propTypes = {
         PropTypes.shape({ defaultMessage: PropTypes.string }),
     ]),
     withoutId: PropTypes.bool,
+    withFadedId: PropTypes.bool,
     reload: PropTypes.func,
     reloadPage: PropTypes.func,
     updateItem: PropTypes.func,
@@ -53,6 +54,7 @@ const defaultProps = {
     showEmptyLabel: false,
     emptyLabel: null,
     withoutId: false,
+    withFadedId: false,
     reload: null,
     reloadPage: null,
     updateItem: null,
@@ -74,6 +76,7 @@ const ResourceTableList = ({
     showEmptyLabel,
     emptyLabel,
     withoutId,
+    withFadedId,
     reload,
     reloadPage,
     updateItem,
@@ -107,7 +110,13 @@ const ResourceTableList = ({
                 >
                     <thead>
                         <tr>
-                            {!withoutId && !hasIdColumn ? <th scope="col">#</th> : null}
+                            {!withoutId && !hasIdColumn ? (
+                                <th scope="col">
+                                    <span className={classNames([{ 'opacity-50': withFadedId }])}>
+                                        #
+                                    </span>
+                                </th>
+                            ) : null}
                             {columnsWithFields.map(
                                 (
                                     {
@@ -168,7 +177,15 @@ const ResourceTableList = ({
                                     ])}
                                 >
                                     {!withoutId && !hasIdColumn ? (
-                                        <td className="col-auto">{id}</td>
+                                        <td className={classNames(['col-auto'])}>
+                                            <span
+                                                className={classNames([
+                                                    { 'opacity-50': withFadedId },
+                                                ])}
+                                            >
+                                                {id}
+                                            </span>
+                                        </td>
                                     ) : null}
                                     {columnsWithFields.map((column, idx) => {
                                         const {
