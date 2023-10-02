@@ -19,7 +19,7 @@ export const useUppy = ({
     onComplete = null,
     onFail = null,
     getFileName = ({ name = '', extension = null }) =>
-        `${(slugify(name) || '').substring(0, 185)}${
+        `${(slugify(name) || '').substring(0, 160)}${
             extension !== null && (name || '').indexOf(extension) === -1 ? `.${extension}` : ''
         }`,
     getFileNameWithUUID = ({ extension = null }) =>
