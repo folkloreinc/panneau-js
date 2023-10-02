@@ -190,6 +190,7 @@ const ResourceTableList = ({
                                                     key={`col-${id}-${colId}-${idx + 1}`}
                                                     className={classNames([
                                                         'col-auto',
+                                                        'text-break',
                                                         {
                                                             'text-end':
                                                                 idx ===
@@ -228,6 +229,7 @@ const ResourceTableList = ({
                                             <td
                                                 className={classNames([
                                                     'col-auto',
+                                                    'text-break',
                                                     {
                                                         [columnClassName]: columnClassName !== null,
                                                     },
