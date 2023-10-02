@@ -367,6 +367,7 @@ const UploadField = ({
                                           <h5
                                               className={classNames([
                                                   'card-title',
+                                                  'text-break',
                                                   'fs-6',
                                                   {
                                                       'mb-1': size !== null && size > 0,

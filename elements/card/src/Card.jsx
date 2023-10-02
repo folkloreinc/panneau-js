@@ -130,6 +130,7 @@ const Card = ({
                     <h5
                         className={classNames([
                             'card-title',
+                            'text-break',
                             {
                                 [titleClassName]: titleClassName !== null,
                             },
