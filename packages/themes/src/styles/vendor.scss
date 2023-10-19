@@ -43,7 +43,7 @@
     }
 
     .btn-primary {
-        --bs-btn-bg: #{mix(#c8d, #c8d, .5)};
+        --bs-btn-bg: #{mix(#c8d, #c8d, 0.5)};
         --bs-btn-border-color: #{rgba($white, .25)};
         --bs-btn-hover-bg: #{darken(mix($gray-600, $blue-400, .5), 5%)};
         --bs-btn-hover-border-color: #{rgba($white, .25)};
