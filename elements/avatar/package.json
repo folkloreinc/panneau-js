@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-avatar",
-    "version": "3.0.45",
+    "version": "3.0.54",
     "description": "Avatar element",
     "keywords": [
         "javascript"
@@ -46,8 +46,8 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.45",
-        "@panneau/element-button": "^3.0.45",
-        "@panneau/element-icon": "^3.0.45",
+        "@panneau/element-button": "^3.0.54",
+        "@panneau/element-icon": "^3.0.54",
         "@panneau/element-label": "^3.0.45",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",

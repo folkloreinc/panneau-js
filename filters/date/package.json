@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-date",
-    "version": "3.0.50",
+    "version": "3.0.54",
     "description": "Date filter",
     "keywords": [
         "javascript"
@@ -56,7 +56,7 @@
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^3.0.45",
-        "@panneau/field-date": "^3.0.50",
+        "@panneau/field-date": "^3.0.54",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
