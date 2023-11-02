@@ -1,11 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import {
-    ComponentsProvider,
-    FieldsProvider as BaseFieldsProvider,
-    FIELDS_NAMESPACE,
-} from '@panneau/core/contexts';
 import PropTypes from 'prop-types';
 import React from 'react';
+
+import {
+    FieldsProvider as BaseFieldsProvider,
+    ComponentsProvider,
+    FIELDS_NAMESPACE,
+} from '@panneau/core/contexts';
+
 import * as components from './components';
 import definitions from './definitions';
 

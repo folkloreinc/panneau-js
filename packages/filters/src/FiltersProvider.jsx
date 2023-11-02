@@ -7,15 +7,23 @@ import { ComponentsProvider, FILTERS_NAMESPACE } from '@panneau/core/contexts';
 import * as components from './components';
 
 const propTypes = {
+    components: PropTypes.object, // eslint-disable-line
     children: PropTypes.node,
 };
 
 const defaultProps = {
+    components: null,
     children: null,
 };
 
-const FiltersProvider = (props) => (
-    <ComponentsProvider namespace={FILTERS_NAMESPACE} components={components} {...props} />
+const FiltersProvider = ({ components: injectedComponents, children, ...props }) => (
+    <ComponentsProvider
+        namespace={FILTERS_NAMESPACE}
+        components={{ ...components, ...injectedComponents }}
+        {...props}
+    >
+        {children}
+    </ComponentsProvider>
 );
 
 FiltersProvider.propTypes = propTypes;

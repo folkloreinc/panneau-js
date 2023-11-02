@@ -4,18 +4,26 @@ import React from 'react';
 
 import { ComponentsProvider, MODALS_NAMESPACE } from '@panneau/core/contexts';
 
-import ModalsComponents from './modals';
+import * as components from './modals';
 
 const propTypes = {
+    components: PropTypes.object, // eslint-disable-line
     children: PropTypes.node,
 };
 
 const defaultProps = {
+    components: null,
     children: null,
 };
 
-const ModalsProvider = (props) => (
-    <ComponentsProvider namespace={MODALS_NAMESPACE} components={ModalsComponents} {...props} />
+const ModalsProvider = ({ components: injectedComponents, children, ...props }) => (
+    <ComponentsProvider
+        namespace={MODALS_NAMESPACE}
+        components={{ ...components, ...injectedComponents }}
+        {...props}
+    >
+        {children}
+    </ComponentsProvider>
 );
 
 ModalsProvider.propTypes = propTypes;

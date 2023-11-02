@@ -197,18 +197,20 @@ export const UppyProvider = ({
     const uppySources = useUppySources(sources);
     const uppyLocale = useUppyLocale(locale || intlLocale);
 
+    console.log('Init uppy', Uppy, uppyTransport, uppySources, uppyLocale);
+
     const buildUppy = useMemo(() => {
         if (
             Uppy === null ||
-            uppyLocale === null ||
             uppyTransport === null ||
-            uppySources === null
+            uppySources === null ||
+            uppyLocale === null
         ) {
             return null;
         }
         return (opts = {}) => {
             const { sources: customSources = sources, ...uppyOpts } = opts || {};
-            // console.log(uppyOpts);
+            console.log('Uppy opts buildUppy', opts);
             const newUppy = new Uppy({
                 id,
                 locale: uppyLocale,
