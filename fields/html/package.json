@@ -53,9 +53,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@ckeditor/ckeditor5-build-classic": "^37.1.0",
-        "@ckeditor/ckeditor5-build-inline": "^37.1.0",
-        "@ckeditor/ckeditor5-react": "^6.0.0",
+        "@ckeditor/ckeditor5-build-classic": "^40.0.0",
+        "@ckeditor/ckeditor5-build-inline": "^40.0.0",
+        "@ckeditor/ckeditor5-react": "^6.1.0",
         "@panneau/core": "^3.0.45",
         "@panneau/field-input-group": "^3.0.55",
         "@panneau/themes": "^3.0.55",

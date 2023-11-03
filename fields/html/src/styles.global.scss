@@ -1,4 +1,11 @@
+.ck {
+    .ck-powered-by-balloon {
+        display: none;
+        visibility: hidden;
 
-.quill {
-    border-radius: 0.25rem;
+        .ck-powered-by {
+            display: none;
+            visibility: hidden;
+        }
+    }
 }
