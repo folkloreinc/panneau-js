@@ -1,10 +1,8 @@
 import React from 'react';
 
-import { RoutesProvider } from '@panneau/core/contexts';
-
 import pageResource from '../../../../.storybook/data/page-resource';
 import { ResourceProvider } from '../../../../packages/core/contexts';
-// import DisplayProvider from '../../../../packages/displays';
+import DisplayProvider from '../../../../packages/displays';
 import Table from '../ResourceTable';
 
 export default {
@@ -15,19 +13,11 @@ export default {
     },
     decorators: [
         (Story) => (
-            <RoutesProvider
-                routes={{
-                    'resources.show': '/{resource}/{id}',
-                    'resources.edit': '/{resource}/{id}/edit',
-                    'resources.delete': '/{resource}/{id}/delete',
-                }}
-            >
-                <ResourceProvider resource={pageResource}>
-                    {/* <DisplayProvider> */}
+            <ResourceProvider resource={pageResource}>
+                <DisplayProvider>
                     <Story />
-                    {/* </DisplayProvider> */}
-                </ResourceProvider>
-            </RoutesProvider>
+                </DisplayProvider>
+            </ResourceProvider>
         ),
     ],
 };

@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -42,7 +43,7 @@ const defaultProps = {
 };
 
 const ResourceItemsList = ({
-    resource: resourceId,
+    resource: providedResource,
     query,
     baseUrl,
     onQueryChange,
@@ -54,7 +55,8 @@ const ResourceItemsList = ({
     theme,
     className,
 }) => {
-    const resource = usePanneauResource(resourceId);
+    const panneauResource = usePanneauResource(providedResource);
+    const resource = isObject(providedResource) ? providedResource : panneauResource;
 
     const {
         index: {

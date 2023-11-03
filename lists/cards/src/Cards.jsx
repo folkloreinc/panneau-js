@@ -56,7 +56,7 @@ const CardsList = ({
                                   <FormActions
                                       resource={resource}
                                       item={it}
-                                      // actions={[{ label: 'Edit', theme: 'primary' }]}
+                                      actions={[{ label: 'Edit', theme: 'primary' }]}
                                   />
                               </Card>
                           </div>

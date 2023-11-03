@@ -148,7 +148,7 @@ const ItemActions = ({
                                                 (!hasCustomShowUrl || withoutItemShowUrl)
                                                     ? urlGenerator('show', {
                                                           id,
-                                                      })
+                                                      }) || null
                                                     : showUrl || url,
                                             external: hasCustomShowUrl,
                                             theme: 'info',
@@ -165,7 +165,7 @@ const ItemActions = ({
                                                 urlGenerator !== null
                                                     ? urlGenerator('edit', {
                                                           id,
-                                                      })
+                                                      }) || null
                                                     : null,
                                             theme: 'primary',
                                             onClick: onClickEdit,
@@ -179,7 +179,7 @@ const ItemActions = ({
                                                 urlGenerator !== null
                                                     ? urlGenerator('delete', {
                                                           id,
-                                                      })
+                                                      }) || null
                                                     : null,
                                             theme: 'danger',
                                             onClick: onClickDelete,

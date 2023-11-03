@@ -4,12 +4,10 @@ import React, { useCallback, useEffect } from 'react';
 
 import { useUppy } from '@panneau/uppy';
 
-import './styles.scss';
-
-import '@uppy/core/dist/style.min.css';
-import '@uppy/dashboard/dist/style.min.css';
-
-// import '@uppy/webcam/dist/style.min.css';
+import '@uppy/core/dist/style.css';
+import '@uppy/dashboard/dist/style.css';
+import '@uppy/drag-drop/dist/style.css';
+import '@uppy/status-bar/dist/style.css';
 
 const propTypes = {
     opened: PropTypes.bool,

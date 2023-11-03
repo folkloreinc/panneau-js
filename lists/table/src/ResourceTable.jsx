@@ -190,7 +190,7 @@ const ResourceTableList = ({
                                     {columnsWithFields.map((column, idx) => {
                                         const {
                                             id: colId,
-                                            component,
+                                            component = null,
                                             field = null,
                                             path = null,
                                             columnClassName = null,
@@ -224,6 +224,8 @@ const ResourceTableList = ({
                                                         reload={reload}
                                                         reloadPage={reloadPage}
                                                         updateItem={updateItem}
+                                                        actions={actions}
+                                                        {...actionsProps}
                                                     />
                                                 </td>
                                             );

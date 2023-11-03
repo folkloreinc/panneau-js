@@ -16,6 +16,7 @@ const TextLocalized = ({ value, locale: parentLocale }) => {
     const { locale } = useIntl();
     return <>{value !== null ? value[parentLocale || locale] || null : null}</>;
 };
+
 TextLocalized.propTypes = propTypes;
 TextLocalized.defaultProps = defaultProps;
 

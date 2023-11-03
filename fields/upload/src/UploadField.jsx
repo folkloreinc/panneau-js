@@ -2,7 +2,8 @@
 import { faFileAudio, faFileImage, faFileVideo, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import classNames from 'classnames';
-import { Dashboard, DashboardModal } from '@uppy/react';
+import { Dashboard } from '@uppy/react';
+// DashboardModal
 import classNames from 'classnames';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
@@ -22,10 +23,10 @@ import { useUppy } from '@panneau/uppy';
 
 import styles from './styles.module.scss';
 
-import '@uppy/core/dist/style.min.css';
-import '@uppy/dashboard/dist/style.min.css';
-import '@uppy/drag-drop/dist/style.min.css';
-import '@uppy/status-bar/dist/style.min.css';
+import '@uppy/core/dist/style.css';
+import '@uppy/dashboard/dist/style.css';
+import '@uppy/drag-drop/dist/style.css';
+import '@uppy/status-bar/dist/style.css';
 
 const propTypes = {
     value: PropTypes.oneOfType([
@@ -111,11 +112,6 @@ const UploadField = ({
     onChange,
     className,
 }) => {
-    // const [{ pathname = null }] = useLocation();
-    // const { ref: containerRef, entry = null } = useResizeObserver();
-    // const { contentRect } = entry || {};
-    // const { width: containerWidth = null } = contentRect || {};
-
     const mergeData = useCallback((newValue) => {
         // Merge the response from our back-end
         if (
@@ -476,8 +472,8 @@ const UploadField = ({
                         plugins={sources}
                         inline
                         showProgressDetails
-                        areInsidesReadyToBeVisible
-                        isDashboardVisible
+                        // areInsidesReadyToBeVisible
+                        // isDashboardVisible
                         showAddFilesPanel
                         proudlyDisplayPoweredByUppy={false}
                         doneButtonHandler={closeModalAndClear}

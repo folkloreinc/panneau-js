@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 
 import withApi from '../../../../.storybook/decorators/withApiProvider';
-
 import SelectField from '../SelectField';
 
 export default {
@@ -18,7 +17,6 @@ const options = ['One', 'Two', 'Three'];
 
 const Container = (props) => {
     const [value, setValue] = useState(null);
-    console.log(value);
     return <SelectField {...props} value={value} onChange={setValue} />;
 };
 

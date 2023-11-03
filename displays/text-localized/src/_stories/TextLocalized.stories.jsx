@@ -1,4 +1,5 @@
 import React from 'react';
+
 import TextLocalized from '../TextLocalized';
 
 export default {

@@ -197,7 +197,7 @@ export const UppyProvider = ({
     const uppySources = useUppySources(sources);
     const uppyLocale = useUppyLocale(locale || intlLocale);
 
-    console.log('Init uppy', Uppy, uppyTransport, uppySources, uppyLocale);
+    // console.log('Init uppy', Uppy, uppyTransport, uppySources, uppyLocale);
 
     const buildUppy = useMemo(() => {
         if (
@@ -210,7 +210,7 @@ export const UppyProvider = ({
         }
         return (opts = {}) => {
             const { sources: customSources = sources, ...uppyOpts } = opts || {};
-            console.log('Uppy opts buildUppy', opts);
+            // console.log('Uppy opts buildUppy', opts);
             const newUppy = new Uppy({
                 id,
                 locale: uppyLocale,
