@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
+
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import get from 'lodash/get';

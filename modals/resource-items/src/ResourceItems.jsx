@@ -1,9 +1,9 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useResourceQuery } from '@panneau/core/hooks';
-// import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useResourceValues } from '@panneau/intl';
 import ResourceItemsList from '@panneau/list-resource-items';
 import Dialog from '@panneau/modal-dialog';
@@ -70,7 +70,6 @@ const ModalResourceItems = ({
                 onQueryChange={onQueryChange}
                 onQueryReset={onQueryReset}
                 listProps={listProps}
-                // eslint-disable-next-line react/jsx-props-no-spreading
                 {...props}
             />
         </Dialog>

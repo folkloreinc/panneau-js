@@ -34,52 +34,72 @@ const defaultProps = {
     className: null,
 };
 
-const ModalDialog = ({ title, size, header, children, buttons, footer, onClose, className }) => (
-    <Modal>
-        <div
-            className={classNames([
-                'modal-dialog',
-                styles.container,
-                {
-                    [`modal-${size}`]: size !== null,
-                    [className]: className,
-                },
-            ])}
-            role="dialog"
-        >
-            <div className="modal-content">
-                {header !== null ? (
-                    header
-                ) : (
-                    <div className="modal-header">
-                        {title !== null ? (
-                            <h5 className="modal-title pe-2">
-                                {isMessage ? <Label>{title}</Label> : title}
-                            </h5>
-                        ) : null}
-                        {onClose !== null ? (
-                            <Button
-                                type="button"
-                                className="btn-close close"
-                                aria-label="Close"
-                                onClick={onClose}
-                            />
-                        ) : null}
-                    </div>
-                )}
-                <div className={classNames(['modal-body', styles.body])}>{children}</div>
-                {footer !== null || buttons !== null ? (
-                    <div className={classNames(['modal-footer', styles.footer])}>
-                        {footer !== null ? footer : null}
-                        {buttons !== null ? (
-                            <Buttons buttons={buttons} className={styles.buttons} />
-                        ) : null}
-                    </div>
+const ModalDialog = ({ title, size, header, children, buttons, footer, onClose, className }) => {
+    const onCloseOutside = header === null && title === null && onClose !== null;
+
+    return (
+        <Modal>
+            <div
+                className={classNames([
+                    'modal-dialog',
+                    styles.container,
+
+                    {
+                        [`modal-${size}`]: size !== null,
+                        [styles.closeOutside]: onCloseOutside,
+                        [className]: className,
+                    },
+                ])}
+                role="dialog"
+            >
+                {onCloseOutside ? (
+                    <Button
+                        type="button"
+                        className={classNames([styles.closeOutsideButton, 'btn-close close'])}
+                        aria-label="Close"
+                        onClick={onClose}
+                    />
                 ) : null}
+                <div className="modal-content">
+                    {header !== null ? (
+                        header
+                    ) : (
+                        <div
+                            className={classNames([
+                                {
+                                    'modal-header': title !== null,
+                                },
+                            ])}
+                        >
+                            {title !== null ? (
+                                <h5 className="modal-title pe-2">
+                                    {isMessage ? <Label>{title}</Label> : title}
+                                </h5>
+                            ) : null}
+                            {title !== null && onClose !== null ? (
+                                <Button
+                                    type="button"
+                                    className="btn-close close"
+                                    aria-label="Close"
+                                    onClick={onClose}
+                                />
+                            ) : null}
+                        </div>
+                    )}
+                    <div className={classNames(['modal-body', styles.body])}>{children}</div>
+                    {footer !== null || buttons !== null ? (
+                        <div className={classNames(['modal-footer', styles.footer])}>
+                            {footer !== null ? footer : null}
+                            {buttons !== null ? (
+                                <Buttons buttons={buttons} className={styles.buttons} />
+                            ) : null}
+                        </div>
+                    ) : null}
+                </div>
             </div>
-        </div>
-    </Modal>
-);
+        </Modal>
+    );
+};
 
 ModalDialog.propTypes = propTypes;
 ModalDialog.defaultProps = defaultProps;

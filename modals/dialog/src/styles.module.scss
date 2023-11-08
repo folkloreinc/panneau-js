@@ -2,4 +2,14 @@
     display: block;
     margin: 0;
     opacity: 1;
+
+    &.closeOutside {
+        margin-top: 40px;
+    }
+
+    .closeOutsideButton {
+        position: absolute;
+        top: -30px;
+        right: 0;
+    }
 }
