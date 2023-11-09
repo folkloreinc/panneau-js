@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-autocomplete",
-    "version": "3.0.62",
+    "version": "3.0.64",
     "description": "An autocomplete field",
     "keywords": [
         "javascript"
