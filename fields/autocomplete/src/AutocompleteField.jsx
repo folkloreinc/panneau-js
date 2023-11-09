@@ -19,7 +19,13 @@ const propTypes = {
             value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         }),
     ),
-    value: PropTypes.string,
+    value: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+            label: PropTypes.string,
+            value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+        }),
+    ]),
     searchOptions: PropTypes.shape({
         isCaseSensitive: PropTypes.bool,
         includeScore: PropTypes.bool,
@@ -39,6 +45,7 @@ const propTypes = {
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
     onChange: PropTypes.func,
+    onTextChange: PropTypes.func,
     children: PropTypes.node,
 };
 
@@ -59,6 +66,7 @@ const defaultProps = {
     onFocus: null,
     onBlur: null,
     onChange: null,
+    onTextChange: null,
     children: null,
 };
 
@@ -76,6 +84,7 @@ const AutocompleteField = ({
     onFocus,
     onBlur,
     onChange,
+    onTextChange,
     children,
 }) => {
     const fuse = useRef(null);
@@ -156,14 +165,19 @@ const AutocompleteField = ({
 
     const onInputChange = useCallback(
         (val) => {
-            onChange(val);
+            if (onTextChange !== null) {
+                onTextChange(val);
+            } else if (onChange !== null) {
+                onChange(val);
+            }
+
             if (val) {
                 setOpen(true);
             } else {
                 setOpen(showEmpty);
             }
         },
-        [onChange, showEmpty],
+        [onChange, onTextChange, showEmpty],
     );
 
     const listClassNames = classNames([
@@ -233,7 +247,10 @@ const AutocompleteField = ({
             ])}
         >
             <TextField
-                className={classNames([styles.input, { [styles.open]: open }])}
+                className={classNames([
+                    styles.input,
+                    { [styles.open]: open, [styles.empty]: maxedList.length < 1 },
+                ])}
                 value={value}
                 placeholder={placeholder}
                 onChange={onInputChange}
