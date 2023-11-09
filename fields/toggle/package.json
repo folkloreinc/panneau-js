@@ -57,7 +57,7 @@
         "@panneau/themes": "^3.0.55",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
-        "rc-switch": "^4.0.0"
+        "rc-switch": "^4.1.0"
     },
     "publishConfig": {
         "access": "public"

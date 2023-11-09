@@ -6,6 +6,8 @@ import React, { useCallback } from 'react';
 
 import styles from './styles.module.scss';
 
+import 'rc-switch/assets/index.css';
+
 const propTypes = {
     name: PropTypes.string,
     value: PropTypes.bool,

@@ -1,5 +1,3 @@
-// stylelint-disable selector-pseudo-class-no-unknown
-
 .container {
     display: flex;
     align-items: center;
@@ -10,9 +8,5 @@
     &.vertical {
         flex-direction: column;
         align-items: flex-start;
-    }
-
-    :global {
-        @import '~rc-switch/assets/index';
     }
 }
