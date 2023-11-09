@@ -52,6 +52,7 @@ const propTypes = {
 const defaultProps = {
     items: [],
     value: null,
+    textValue: null,
     searchOptions: {
         // Search in `label` and in `value` items in an object array
         keys: ['label', 'value'],
@@ -73,6 +74,7 @@ const defaultProps = {
 const AutocompleteField = ({
     items: providedItems,
     value: providedValue,
+    textValue: providedTextValue,
     searchOptions,
     maxResults,
     disabled,
@@ -93,7 +95,10 @@ const AutocompleteField = ({
     const [showListIcon, setShowListIcon] = useState(false);
 
     const { label: partialValue = null } = isObject(providedValue) ? providedValue : {};
-    const value = isString(providedValue) ? providedValue : partialValue;
+    const value = isString(providedValue) ? providedValue : partialValue || null;
+
+    const [textValue, setTextValue] = useState(providedTextValue);
+
     const items = providedItems || [];
 
     useEffect(() => {
@@ -110,26 +115,21 @@ const AutocompleteField = ({
 
     const list = useMemo(
         () =>
-            value && fuse.current !== null
-                ? fuse.current.search(value)
+            textValue && fuse.current !== null
+                ? fuse.current.search(textValue)
                 : items.map((item) => ({
                       item,
                   })), // Wrapped to match fuse results
-        [value, items],
+        [textValue, items],
     );
 
     const maxedList = maxResults !== null && maxResults > 0 ? list.slice(0, maxResults) : list;
 
     const onClick = useCallback(
-        (e) => {
+        (e, newValue) => {
             e.preventDefault();
-            const val = e.target.dataset.value || null;
-            if (val !== null) {
-                const finalItem = list.find(({ item }) => item.value === val) || null;
-                const itemValue = finalItem !== null ? finalItem.item : null;
-                onChange(itemValue || val || null);
-                setOpen(false);
-            }
+            onChange(newValue);
+            setOpen(false);
         },
         [list, onChange],
     );
@@ -157,27 +157,26 @@ const AutocompleteField = ({
     const onClear = useCallback(
         (e) => {
             e.stopPropagation();
-            onChange(null);
+            setTextValue(null);
             setOpen(false);
         },
-        [onChange],
+        [setTextValue],
     );
 
     const onInputChange = useCallback(
         (val) => {
             if (onTextChange !== null) {
                 onTextChange(val);
-            } else if (onChange !== null) {
-                onChange(val);
+            } else if (setTextValue !== null) {
+                setTextValue(val);
             }
-
             if (val) {
                 setOpen(true);
             } else {
                 setOpen(showEmpty);
             }
         },
-        [onChange, onTextChange, showEmpty],
+        [setTextValue, setOpen, onTextChange, showEmpty],
     );
 
     const listClassNames = classNames([
@@ -187,8 +186,6 @@ const AutocompleteField = ({
         'rounded-top-0',
         {
             [styles.focused]: focused,
-            // 'border-primary-subtle': focused,
-            // 'focus-ring': open,
         },
     ]);
 
@@ -199,7 +196,7 @@ const AutocompleteField = ({
             <div className={listClassNames}>
                 <ul className="list-group list-group-flush">
                     {maxedList.map(({ item }) => {
-                        const { label = null, image = null } = item || {};
+                        const { label = null, image = null, value: itemValue = null } = item || {};
                         const { url: imageUrl, thumbnailUrl: imageThumbnailUrl } = image || {};
                         const finalImageUrl = imageThumbnailUrl || imageUrl || null;
                         return (
@@ -215,10 +212,10 @@ const AutocompleteField = ({
                                         'align-items-center',
                                         'border-0',
                                         styles.btn,
-                                        { 'color-primary': label === value },
+                                        { 'color-primary': itemValue === value },
                                     ])}
                                     data-value={item.value}
-                                    onClick={onClick}
+                                    onClick={(e) => onClick(e, item)}
                                 >
                                     {finalImageUrl !== null ? (
                                         <img
@@ -251,7 +248,7 @@ const AutocompleteField = ({
                     styles.input,
                     { [styles.open]: open, [styles.empty]: maxedList.length < 1 },
                 ])}
-                value={value}
+                value={textValue}
                 placeholder={placeholder}
                 onChange={onInputChange}
                 disabled={disabled}
