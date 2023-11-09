@@ -199,6 +199,7 @@ const AutocompleteField = ({
                                         'btn',
                                         'd-flex',
                                         'align-items-center',
+                                        'border-0',
                                         styles.btn,
                                         { 'color-primary': label === value },
                                     ])}
