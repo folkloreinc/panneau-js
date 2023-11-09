@@ -8,8 +8,8 @@ export default {
     component: AutocompleteField,
 };
 
-const items = [
-    { label: 'Bird', value: 'bird' },
+const defaultItems = [
+    { label: 'Bird', value: 'bird', image: { url: 'https://picsum.photos/200/300' } },
     { label: 'Cat', value: 'cat' },
     { label: 'Dog', value: 'dog' },
     { label: 'Fish', value: 'fish' },
@@ -17,8 +17,9 @@ const items = [
 ];
 
 const Container = (props) => {
-    const { value: defaultValue = null } = props || {};
+    const { value: defaultValue = null, items = null } = props || {};
     const [value, setValue] = useState(defaultValue);
+
     return (
         <AutocompleteField
             {...props}
@@ -30,6 +31,12 @@ const Container = (props) => {
     );
 };
 
-export const Normal = () => <Container />;
+export const Normal = () => <Container items={defaultItems} />;
 
-export const Disabled = () => <Container disabled value={items[0].label} />;
+export const Empty = () => <Container />;
+
+export const WithoutMatch = () => <Container items={defaultItems} withoutMatch />;
+
+export const Disabled = () => (
+    <Container disabled value={defaultItems[0].label} items={defaultItems} />
+);

@@ -1,6 +1,8 @@
 import classNames from 'classnames';
+import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import Button from '@panneau/element-button';
 import TextField from '@panneau/field-text';
@@ -31,6 +33,7 @@ const propTypes = {
     disabled: PropTypes.bool,
     showEmpty: PropTypes.bool,
     withoutClear: PropTypes.bool,
+    withoutMatch: PropTypes.bool,
     placeholder: PropTypes.string,
     className: PropTypes.string,
     onFocus: PropTypes.func,
@@ -51,6 +54,7 @@ const defaultProps = {
     showEmpty: true,
     placeholder: null,
     withoutClear: false,
+    withoutMatch: false,
     className: null,
     onFocus: null,
     onBlur: null,
@@ -59,14 +63,15 @@ const defaultProps = {
 };
 
 const AutocompleteField = ({
-    items,
-    value,
+    items: providedItems,
+    value: providedValue,
     searchOptions,
     maxResults,
     disabled,
     showEmpty,
     placeholder,
     withoutClear,
+    withoutMatch,
     className,
     onFocus,
     onBlur,
@@ -75,7 +80,12 @@ const AutocompleteField = ({
 }) => {
     const fuse = useRef(null);
     const [open, setOpen] = useState(false);
+    const [focused, setFocused] = useState(false);
     const [showListIcon, setShowListIcon] = useState(false);
+
+    const { label: partialValue = null } = isObject(providedValue) ? providedValue : {};
+    const value = isString(providedValue) ? providedValue : partialValue;
+    const items = providedItems || [];
 
     useEffect(() => {
         const options = {
@@ -86,41 +96,50 @@ const AutocompleteField = ({
             shouldSort: true,
             ...searchOptions,
         };
-        fuse.current = new Fuse(items, options);
-    }, [items, searchOptions]);
+        fuse.current = !withoutMatch ? new Fuse(items, options) : null;
+    }, [items, searchOptions, withoutMatch]);
 
-    const list =
-        value && fuse.current !== null
-            ? fuse.current.search(value)
-            : items.map((item) => ({
-                  item,
-              }));
+    const list = useMemo(
+        () =>
+            value && fuse.current !== null
+                ? fuse.current.search(value)
+                : items.map((item) => ({
+                      item,
+                  })), // Wrapped to match fuse results
+        [value, items],
+    );
 
-    const maxedList = maxResults > 0 ? list.slice(0, maxResults) : list;
+    const maxedList = maxResults !== null && maxResults > 0 ? list.slice(0, maxResults) : list;
 
     const onClick = useCallback(
         (e) => {
             e.preventDefault();
-            if (e.target.dataset.value) {
-                onChange(e.target.dataset.value);
+            const val = e.target.dataset.value || null;
+            if (val !== null) {
+                const finalItem = list.find(({ item }) => item.value === val) || null;
+                const itemValue = finalItem !== null ? finalItem.item : null;
+                onChange(itemValue || val || null);
                 setOpen(false);
             }
         },
-        [onChange],
+        [list, onChange],
     );
 
     const onFieldFocus = useCallback(() => {
         setShowListIcon(true);
+        setOpen(true);
+        setFocused(true);
         if (onFocus !== null) {
             onFocus();
         }
-    }, [onFocus, setShowListIcon]);
+    }, [onFocus, setOpen, setFocused, setShowListIcon]);
 
     const onFieldBlur = useCallback(() => {
+        setFocused(false);
         if (onBlur !== null) {
             onBlur();
         }
-    }, [onBlur, setShowListIcon]);
+    }, [onBlur, setOpen, setFocused, setShowListIcon]);
 
     const onToggleOpen = useCallback(() => {
         setOpen(!open);
@@ -147,27 +166,57 @@ const AutocompleteField = ({
         [onChange, showEmpty],
     );
 
+    const listClassNames = classNames([
+        styles.list,
+        'border',
+        'rounded',
+        'rounded-top-0',
+        {
+            [styles.focused]: focused,
+            // 'border-primary-subtle': focused,
+            // 'focus-ring': open,
+        },
+    ]);
+
     const listItems =
         children !== null ? (
-            <div className={styles.list}>{children}</div>
+            <div className={listClassNames}>{children}</div>
         ) : (
-            <div className={styles.list}>
-                <ul className="list-group">
-                    {maxedList.map(({ item }) => (
-                        <li
-                            className={classNames(['list-group-item', styles.item])}
-                            key={`auto-${item.label}`}
-                        >
-                            <button
-                                type="button"
-                                className={classNames(['btn', styles.btn])}
-                                data-value={item.label}
-                                onClick={onClick}
+            <div className={listClassNames}>
+                <ul className="list-group list-group-flush">
+                    {maxedList.map(({ item }) => {
+                        const { label = null, image = null } = item || {};
+                        const { url: imageUrl, thumbnailUrl: imageThumbnailUrl } = image || {};
+                        const finalImageUrl = imageThumbnailUrl || imageUrl || null;
+                        return (
+                            <li
+                                className={classNames(['list-group-item', styles.item])}
+                                key={`auto-${item.label}`}
                             >
-                                {item.label}
-                            </button>
-                        </li>
-                    ))}
+                                <button
+                                    type="button"
+                                    className={classNames([
+                                        'btn',
+                                        'd-flex',
+                                        'align-items-center',
+                                        styles.btn,
+                                        { 'color-primary': label === value },
+                                    ])}
+                                    data-value={item.value}
+                                    onClick={onClick}
+                                >
+                                    {finalImageUrl !== null ? (
+                                        <img
+                                            src={finalImageUrl}
+                                            className={classNames([styles.thumbnail, 'img-fluid'])}
+                                            alt={label}
+                                        />
+                                    ) : null}
+                                    {label}
+                                </button>
+                            </li>
+                        );
+                    })}
                 </ul>
             </div>
         );
@@ -183,7 +232,7 @@ const AutocompleteField = ({
             ])}
         >
             <TextField
-                className={styles.input}
+                className={classNames([styles.input, { [styles.open]: open }])}
                 value={value}
                 placeholder={placeholder}
                 onChange={onInputChange}

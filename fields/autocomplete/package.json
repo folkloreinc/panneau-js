@@ -57,6 +57,7 @@
         "@panneau/element-button": "^3.0.55",
         "@panneau/field-text": "^3.0.55",
         "@panneau/themes": "^3.0.55",
+        "lodash": "^4.17.21",
         "classnames": "^2.2.6",
         "fuse.js": "^6.4.3",
         "prop-types": "^15.7.2"

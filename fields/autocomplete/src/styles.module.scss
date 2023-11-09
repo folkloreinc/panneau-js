@@ -4,10 +4,14 @@
     .list {
         position: absolute;
         z-index: 1;
-        width: 300px;
+        width: 100%;
         max-height: 150px;
-        margin-top: 5px;
+        margin-top: 0;
         overflow-y: auto;
+
+        &.focused {
+            border: var(--bs-border-width) var(--bs-border-style) rgba(13, 110, 253, 0.25) !important;
+        }
     }
 
     .btn {
@@ -17,12 +21,37 @@
         }
     }
 
+    .thumbnail {
+        width: 25px;
+        height: 25px;
+        margin-right: 10px;
+
+        object-fit: cover;
+    }
+
     .item {
-        padding: 5px 10px;
+        padding: 0;
 
         button {
             width: 100%;
             text-align: left;
+
+            &:hover {
+                color: var(--bs-primary);
+            }
+        }
+    }
+
+    .input {
+        &.open {
+            border-bottom: var(--bs-border-color);
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        &:focus {
+            border-color: none;
+            box-shadow: none;
         }
     }
 
