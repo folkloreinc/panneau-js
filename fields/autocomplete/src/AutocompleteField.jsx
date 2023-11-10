@@ -129,9 +129,13 @@ const AutocompleteField = ({
         (e, newValue) => {
             e.preventDefault();
             onChange(newValue);
+            const { label } = newValue || {};
+            if (label !== null) {
+                setTextValue(label);
+            }
             setOpen(false);
         },
-        [list, onChange],
+        [list, onChange, setOpen, setTextValue],
     );
 
     const onFieldFocus = useCallback(() => {

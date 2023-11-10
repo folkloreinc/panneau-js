@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useModal } from '@panneau/core/contexts';

@@ -19,7 +19,6 @@ const defaultItems = [
 const Container = (props) => {
     const { value: defaultValue = null, items = null } = props || {};
     const [value, setValue] = useState(defaultValue);
-
     return (
         <AutocompleteField
             {...props}

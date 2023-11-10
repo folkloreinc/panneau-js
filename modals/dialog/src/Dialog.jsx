@@ -52,15 +52,21 @@ const ModalDialog = ({ title, size, header, children, buttons, footer, onClose, 
                 ])}
                 role="dialog"
             >
-                {onCloseOutside ? (
-                    <Button
-                        type="button"
-                        className={classNames([styles.closeOutsideButton, 'btn-close close'])}
-                        aria-label="Close"
-                        onClick={onClose}
-                    />
-                ) : null}
                 <div className="modal-content">
+                    {onCloseOutside ? (
+                        <Button
+                            type="button"
+                            className={classNames([
+                                styles.closeOutsideButton,
+                                'btn',
+                                'btn-close',
+                                'btn-close-white',
+                                'btn-light',
+                            ])}
+                            aria-label="Close"
+                            onClick={onClose}
+                        />
+                    ) : null}
                     {header !== null ? (
                         header
                     ) : (
@@ -79,7 +85,7 @@ const ModalDialog = ({ title, size, header, children, buttons, footer, onClose, 
                             {title !== null && onClose !== null ? (
                                 <Button
                                     type="button"
-                                    className="btn-close close"
+                                    className={classNames(['btn-close', 'close'])}
                                     aria-label="Close"
                                     onClick={onClose}
                                 />

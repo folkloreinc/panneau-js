@@ -20,3 +20,8 @@
 @import '~@panneau/element-link/assets/css/styles';
 @import '~@panneau/element-modal/assets/css/styles';
 @import '~@panneau/element-range/assets/css/styles';
+
+.modal-open {
+    padding-right: 0;
+    overflow: hidden;
+}
