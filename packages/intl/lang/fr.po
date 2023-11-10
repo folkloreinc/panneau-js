@@ -95,7 +95,7 @@ msgstr "Choisissez une option"
 #: 6cSFtU
 msgctxt "6cSFtU"
 msgid "No color"
-msgstr ""
+msgstr "Pas de couleur"
 
 # Error page title
 #: 6nwWPR
@@ -299,7 +299,7 @@ msgstr "Déconnexion"
 #: TV3jir
 msgctxt "TV3jir"
 msgid "Loading"
-msgstr ""
+msgstr "Chargement"
 
 # Link label
 #: U/ye2x
@@ -323,7 +323,7 @@ msgstr "Nom"
 #: UaVu03
 msgctxt "UaVu03"
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmer"
 
 # Label when there is no item in items field
 #: UbmsLL
@@ -371,7 +371,7 @@ msgstr "Nouveau mot de passe"
 #: XLVfN6
 msgctxt "XLVfN6"
 msgid "Find {a_singular}"
-msgstr ""
+msgstr "Trouver {a_singular}"
 
 # Button label
 #: XW9IKQ

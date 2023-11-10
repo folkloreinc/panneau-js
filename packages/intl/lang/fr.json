@@ -38,6 +38,9 @@
     "6TuTuq": {
         "defaultMessage": "Choisissez une option"
     },
+    "6cSFtU": {
+        "defaultMessage": "Pas de couleur"
+    },
     "6nwWPR": {
         "defaultMessage": "Erreur 401"
     },
@@ -137,6 +140,9 @@
     "REIcPg": {
         "defaultMessage": "Déconnexion"
     },
+    "TV3jir": {
+        "defaultMessage": "Chargement"
+    },
     "U/ye2x": {
         "defaultMessage": "Annuler"
     },
@@ -145,6 +151,9 @@
     },
     "UUv8FR": {
         "defaultMessage": "Nom"
+    },
+    "UaVu03": {
+        "defaultMessage": "Confirmer"
     },
     "UbmsLL": {
         "defaultMessage": "Aucun élément trouvé."
@@ -166,6 +175,9 @@
     },
     "XJ1dc3": {
         "defaultMessage": "Nouveau mot de passe"
+    },
+    "XLVfN6": {
+        "defaultMessage": "Trouver {a_singular}"
     },
     "XW9IKQ": {
         "defaultMessage": "Mettre à jour votre mot de passe"

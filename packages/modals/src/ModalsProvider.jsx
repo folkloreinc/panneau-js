@@ -4,7 +4,7 @@ import React from 'react';
 
 import { ComponentsProvider, MODALS_NAMESPACE } from '@panneau/core/contexts';
 
-import * as components from './modals';
+import * as components from './components';
 
 const propTypes = {
     components: PropTypes.object, // eslint-disable-line

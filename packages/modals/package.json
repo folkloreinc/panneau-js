@@ -35,13 +35,25 @@
     "license": "ISC",
     "main": "lib/index.js",
     "module": "es/index.js",
+    "exports": {
+        ".": {
+            "require": "./lib/index.js",
+            "import": "./es/index.js"
+        },
+        "./scss/styles": "./scss/styles.scss",
+        "./scss/styles.scss": "./scss/styles.scss",
+        "./assets/css/styles.css": "./assets/css/styles.css"
+    },
     "files": [
         "lib",
         "es",
-        "assets"
+        "assets",
+        "scss"
     ],
     "scripts": {
-        "prepare": "../../scripts/prepare-package.sh --scss"
+        "scss": "../../scripts/build-packages-styles.js --pattern='@panneau/modal-*' ./src/styles.scss.ejs ./scss/styles.scss",
+        "css": "../../scripts/build-sass.js ./scss/styles.scss ./assets/css/styles.css",
+        "prepare": "../../scripts/prepare-package.sh && npm run scss && npm run css"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",

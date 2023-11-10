@@ -126,7 +126,6 @@ const SelectField = ({
             if (onChange !== null) {
                 onChange(newValue);
             }
-
             setInputTextValue('');
         },
         [onChange, setInputTextValue],

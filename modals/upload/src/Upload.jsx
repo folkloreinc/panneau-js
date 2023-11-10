@@ -4,6 +4,8 @@ import React, { useCallback, useEffect } from 'react';
 
 import { useUppy } from '@panneau/uppy';
 
+import styles from './styles.module.scss';
+
 import '@uppy/core/dist/style.css';
 import '@uppy/dashboard/dist/style.css';
 import '@uppy/drag-drop/dist/style.css';
@@ -51,6 +53,7 @@ const UploadModal = ({ opened, sources, onUploaded, onRequestClose }) => {
             closeAfterFinish
             onRequestClose={onRequestClose}
             plugins={sources}
+            className={styles.container}
         />
     ) : null;
 };
