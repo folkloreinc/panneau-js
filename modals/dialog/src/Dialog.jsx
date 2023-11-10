@@ -35,10 +35,10 @@ const defaultProps = {
 };
 
 const ModalDialog = ({ title, size, header, children, buttons, footer, onClose, className }) => {
-    const onCloseOutside = header === null && title === null && onClose !== null;
+    const onCloseButtonOutsize = header === null && title === null && onClose !== null;
 
     return (
-        <Modal>
+        <Modal onClose={onClose}>
             <div
                 className={classNames([
                     'modal-dialog',
@@ -46,14 +46,14 @@ const ModalDialog = ({ title, size, header, children, buttons, footer, onClose, 
 
                     {
                         [`modal-${size}`]: size !== null,
-                        [styles.closeOutside]: onCloseOutside,
+                        [styles.closeOutside]: onCloseButtonOutsize,
                         [className]: className,
                     },
                 ])}
                 role="dialog"
             >
                 <div className="modal-content">
-                    {onCloseOutside ? (
+                    {onCloseButtonOutsize ? (
                         <Button
                             type="button"
                             className={classNames([
