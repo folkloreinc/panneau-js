@@ -38,7 +38,7 @@ const ModalDialog = ({ title, size, header, children, buttons, footer, onClose, 
     const onCloseButtonOutsize = header === null && title === null && onClose !== null;
 
     return (
-        <Modal onClose={onClose}>
+        <Modal>
             <div
                 className={classNames([
                     'modal-dialog',
