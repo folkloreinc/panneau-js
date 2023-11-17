@@ -59,6 +59,7 @@ const SearchFilter = ({ name, value, onChange, position, placeholder, className 
                         theme={active ? 'primary' : 'secondary'}
                         type="submit"
                         onClick={onSubmit}
+                        style={{ zIndex: 0 }}
                     >
                         <Icon name="search" bold />
                     </Button>
@@ -90,6 +91,7 @@ const SearchFilter = ({ name, value, onChange, position, placeholder, className 
                         theme={active ? 'primary' : 'secondary'}
                         type="submit"
                         onClick={onSubmit}
+                        style={{ zIndex: 0 }}
                     >
                         <Icon name="search" bold />
                     </Button>
