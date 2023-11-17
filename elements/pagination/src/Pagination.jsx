@@ -180,7 +180,9 @@ const Pagination = ({
                                     },
                                 ])}
                                 href={getUrl(page - 1)}
-                                onClick={onClickPage !== null ? (e) => onClickPage(page - 1, e) : null}
+                                onClick={
+                                    onClickPage !== null ? (e) => onClickPage(page - 1, e) : null
+                                }
                             >
                                 {previousLabel}
                             </Link>
@@ -225,6 +227,7 @@ const Pagination = ({
                                           ? (e) => onClickPage(pageNumber, e)
                                           : null
                                   }
+                                  style={{ zIndex: 0 }}
                               >
                                   {pageNumber}
                               </Link>
@@ -251,7 +254,9 @@ const Pagination = ({
                                     },
                                 ])}
                                 href={getUrl(page + 1)}
-                                onClick={onClickPage !== null ? (e) => onClickPage(page + 1, e) : null}
+                                onClick={
+                                    onClickPage !== null ? (e) => onClickPage(page + 1, e) : null
+                                }
                             >
                                 {nextLabel}
                             </Link>
