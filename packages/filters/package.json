@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filters",
-    "version": "3.0.72",
+    "version": "3.0.75",
     "description": "",
     "keywords": [
         "javascript"
@@ -68,8 +68,8 @@
         "@panneau/core": "^3.0.45",
         "@panneau/filter-button": "^3.0.55",
         "@panneau/filter-date": "^3.0.55",
-        "@panneau/filter-filters": "^3.0.55",
-        "@panneau/filter-label": "^3.0.55",
+        "@panneau/filter-filters": "^3.0.75",
+        "@panneau/filter-label": "^3.0.75",
         "@panneau/filter-radios": "^3.0.55",
         "@panneau/filter-search": "^3.0.72",
         "@panneau/filter-select": "^3.0.55",

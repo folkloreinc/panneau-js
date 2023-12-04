@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-items",
-    "version": "3.0.55",
+    "version": "3.0.75",
     "description": "A repeatable abstract field",
     "keywords": [
         "javascript"
@@ -58,7 +58,7 @@
         "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^3.0.45",
         "@panneau/element-button": "^3.0.55",
-        "@panneau/element-dropdown": "^3.0.55",
+        "@panneau/element-dropdown": "^3.0.75",
         "@panneau/element-label": "^3.0.45",
         "@panneau/themes": "^3.0.55",
         "classnames": "^2.2.6",
