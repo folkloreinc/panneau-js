@@ -125,17 +125,9 @@ const Pagination = ({
 
     const pages = strippedPages.length > 0 ? strippedPages : [1];
 
-    const element = !loading ? (
-        React.cloneElement(countLabel, {
-            values: { count: total },
-        })
-    ) : (
-        <div className="spinner-border" role="status">
-            <span className="visually-hidden">
-                <FormattedMessage defaultMessage="Loading..." description="Hidden label" />
-            </span>
-        </div>
-    );
+    const element = React.cloneElement(countLabel, {
+        values: { count: total },
+    });
 
     return (
         <nav
@@ -149,6 +141,21 @@ const Pagination = ({
                 },
             ])}
         >
+            {align === 'right' ? (
+                <div className="mx-3 text-muted">
+                    {loading ? (
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">
+                                <FormattedMessage
+                                    defaultMessage="Loading..."
+                                    description="Hidden label"
+                                />
+                            </span>
+                        </div>
+                    ) : null}
+                </div>
+            ) : null}
+
             {total !== null && total > 0 && withCount && align === 'right' ? (
                 <div className="mx-3 text-muted">{element}</div>
             ) : null}
@@ -275,8 +282,24 @@ const Pagination = ({
                     </li>
                 ) : null}
             </ul>
+
             {total !== null && total > 0 && withCount && align === 'left' ? (
                 <div className="mx-3 text-muted">{element}</div>
+            ) : null}
+
+            {align === 'left' ? (
+                <div className="mx-3 text-muted">
+                    {loading ? (
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">
+                                <FormattedMessage
+                                    defaultMessage="Loading..."
+                                    description="Hidden label"
+                                />
+                            </span>
+                        </div>
+                    ) : null}
+                </div>
             ) : null}
         </nav>
     );

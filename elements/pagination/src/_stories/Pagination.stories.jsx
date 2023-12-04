@@ -21,3 +21,9 @@ export const WithPrevNext = () => (
         Pagination!
     </PaginationElement>
 );
+
+export const LoadingLeft = () => (
+    <PaginationElement page={1} lastPage={3} withPreviousNext loading align="left">
+        Pagination!
+    </PaginationElement>
+);
