@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "3.0.75",
+    "version": "3.0.76",
     "description": "",
     "keywords": [
         "javascript"
@@ -78,7 +78,7 @@
         "@panneau/element-button": "^3.0.55",
         "@panneau/element-buttons": "^3.0.55",
         "@panneau/element-dropdown": "^3.0.75",
-        "@panneau/element-form": "^3.0.55",
+        "@panneau/element-form": "^3.0.76",
         "@panneau/element-form-group": "^3.0.55",
         "@panneau/element-form-row": "^3.0.55",
         "@panneau/element-icon": "^3.0.54",
@@ -91,11 +91,11 @@
         "@panneau/element-pagination": "^3.0.75",
         "@panneau/element-radios": "^3.0.55",
         "@panneau/element-range": "^3.0.45",
-        "@panneau/fields": "^3.0.75",
+        "@panneau/fields": "^3.0.76",
         "@panneau/filter-filters": "^3.0.75",
-        "@panneau/filters": "^3.0.75",
-        "@panneau/form-resource": "^3.0.67",
-        "@panneau/forms": "^3.0.75",
+        "@panneau/filters": "^3.0.76",
+        "@panneau/form-resource": "^3.0.76",
+        "@panneau/forms": "^3.0.76",
         "@panneau/intl": "^3.0.67",
         "@panneau/list-resource-items": "^3.0.75",
         "@panneau/lists": "^3.0.75",
