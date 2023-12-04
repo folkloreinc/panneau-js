@@ -26,6 +26,7 @@ const propTypes = {
     withoutActions: PropTypes.bool,
     withoutStatus: PropTypes.bool,
     withoutErrors: PropTypes.bool,
+    canSave: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
     buttonsClassName: PropTypes.string,
@@ -47,6 +48,7 @@ const defaultProps = {
     withoutActions: false,
     withoutStatus: false,
     withoutErrors: false,
+    canSave: true,
     disabled: false,
     className: null,
     buttonsClassName: null,
@@ -68,6 +70,7 @@ const Form = ({
     withoutActions,
     withoutStatus,
     withoutErrors,
+    canSave,
     disabled,
     className,
     buttonsClassName,
@@ -137,6 +140,8 @@ const Form = ({
                                         />
                                     )
                                 }
+                                disabled={!canSave}
+                                outline={!canSave}
                                 className={classNames({
                                     'ms-auto': actions === null,
                                 })}
