@@ -503,7 +503,7 @@ const UploadField = ({
                             actions: ['select'],
                             actionsProps: {
                                 onClickSelect,
-                                getShowPropsFromItem: (item) => {
+                                getSelectPropsFromItem: (item) => {
                                     const { id: itemId = null } = item || {};
                                     const found = (modalItems || []).find(
                                         ({ id: modalItemId = null } = {}) => modalItemId === itemId,

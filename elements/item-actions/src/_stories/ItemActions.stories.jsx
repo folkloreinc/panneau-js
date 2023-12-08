@@ -46,3 +46,13 @@ export const WithItems = () => (
         <ItemActions {...props} items={[{ id: 'My way', label: 'My button', theme: 'primary' }]} />
     </PanneauProvider>
 );
+
+export const WithActions = () => (
+    <PanneauProvider definition={panneauDefinition}>
+        <ItemActions
+            {...props}
+            actions={['select']}
+            getSelectPropsFromItem={() => ({ disabled: true })}
+        />
+    </PanneauProvider>
+);
