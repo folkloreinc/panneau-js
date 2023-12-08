@@ -49,6 +49,7 @@ const propTypes = {
     excludeEmptyRequiredItems: PropTypes.bool,
     addItemDisabled: PropTypes.bool,
     maxItems: PropTypes.number,
+    header: PropTypes.node,
     inline: PropTypes.bool,
     disabled: PropTypes.bool,
 };
@@ -87,6 +88,7 @@ const defaultProps = {
     excludeEmptyRequiredItems: false,
     addItemDisabled: false,
     maxItems: null,
+    header: null,
     inline: false,
     disabled: false,
 };
@@ -118,6 +120,7 @@ const ItemsField = ({
     excludeEmptyRequiredItems,
     addItemDisabled,
     maxItems,
+    header,
     inline,
     disabled,
 }) => {
@@ -594,7 +597,8 @@ const ItemsField = ({
     return (
         <div className={className}>
             <div className={classNames(['d-flex', 'align-items-center', 'pb-3', 'header'])}>
-                {label !== null ? <Label>{label}</Label> : null}
+                {header !== null ? header : null}
+                {label !== null && header == null ? <Label>{label}</Label> : null}
                 {hasTypes && types.length > 1 ? (
                     <div className="position-relative ms-auto">
                         <Button

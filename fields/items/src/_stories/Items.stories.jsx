@@ -146,6 +146,7 @@ export const WithMaxItems = () => <Container itemFields={itemFields} maxItems={2
 
 export const WithTypes = () => (
     <Container
+        header={<p>Custom header, dats cool</p>}
         types={[
             {
                 id: 'text',
