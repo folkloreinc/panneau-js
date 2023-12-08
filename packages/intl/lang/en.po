@@ -185,12 +185,6 @@ msgctxt "ESkxLX"
 msgid "Success!"
 msgstr "Success!"
 
-# Pagination button label
-#: EsoYzX
-msgctxt "EsoYzX"
-msgid "Previous"
-msgstr "Previous"
-
 # Button label
 #: FntHPK
 msgctxt "FntHPK"
@@ -352,12 +346,6 @@ msgstr "Confirm your password"
 msgctxt "WgIC2T"
 msgid "No results found"
 msgstr "No results found"
-
-# Pagination button label
-#: X5RJlB
-msgctxt "X5RJlB"
-msgid "Next"
-msgstr "Next"
 
 # Field label
 #: XJ1dc3

@@ -115,10 +115,6 @@
     "defaultMessage": "Success!",
     "description": "Form status"
   },
-  "EsoYzX": {
-    "defaultMessage": "Previous",
-    "description": "Pagination button label"
-  },
   "FntHPK": {
     "defaultMessage": "View {the_plural}",
     "description": "Button label"
@@ -226,10 +222,6 @@
   "WgIC2T": {
     "defaultMessage": "No results found",
     "description": "Table label"
-  },
-  "X5RJlB": {
-    "defaultMessage": "Next",
-    "description": "Pagination button label"
   },
   "XJ1dc3": {
     "defaultMessage": "New password",

@@ -501,7 +501,16 @@ const UploadField = ({
                         baseUrl={null}
                         listProps={{
                             actions: ['select'],
-                            actionsProps: { onClickSelect },
+                            actionsProps: {
+                                onClickSelect,
+                                getShowPropsFromItem: (item) => {
+                                    const { id: itemId = null } = item || {};
+                                    const found = (modalItems || []).find(
+                                        ({ id: modalItemId = null } = {}) => modalItemId === itemId,
+                                    );
+                                    return found ? { disabled: true, outline: true } : null;
+                                },
+                            },
                             withoutActionsColumn: true,
                         }}
                     />
