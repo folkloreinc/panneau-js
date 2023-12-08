@@ -508,7 +508,7 @@ const UploadField = ({
                                     const found = (modalItems || []).find(
                                         ({ id: modalItemId = null } = {}) => modalItemId === itemId,
                                     );
-                                    return found ? { disabled: true, outline: true } : null;
+                                    return { outline: !found };
                                 },
                             },
                             withoutActionsColumn: true,

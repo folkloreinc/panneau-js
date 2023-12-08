@@ -49,7 +49,7 @@ const propTypes = {
     excludeEmptyRequiredItems: PropTypes.bool,
     addItemDisabled: PropTypes.bool,
     maxItems: PropTypes.number,
-    header: PropTypes.node,
+    buttons: PropTypes.node,
     inline: PropTypes.bool,
     disabled: PropTypes.bool,
 };
@@ -88,7 +88,7 @@ const defaultProps = {
     excludeEmptyRequiredItems: false,
     addItemDisabled: false,
     maxItems: null,
-    header: null,
+    buttons: null,
     inline: false,
     disabled: false,
 };
@@ -120,7 +120,7 @@ const ItemsField = ({
     excludeEmptyRequiredItems,
     addItemDisabled,
     maxItems,
-    header,
+    buttons,
     inline,
     disabled,
 }) => {
@@ -596,67 +596,77 @@ const ItemsField = ({
 
     return (
         <div className={className}>
-            <div className={classNames(['d-flex', 'align-items-center', 'pb-3', 'header'])}>
-                {header !== null ? header : null}
-                {label !== null && header == null ? <Label>{label}</Label> : null}
-                {hasTypes && types.length > 1 ? (
-                    <div className="position-relative ms-auto">
+            <div
+                className={classNames([
+                    'd-flex',
+                    'align-items-center',
+                    'justify-content-between',
+                    'pb-3',
+                    'header',
+                ])}
+            >
+                {label !== null ? <Label>{label}</Label> : null}
+                <div className="d-flex align-items-center">
+                    {buttons !== null ? buttons : null}
+                    {hasTypes && types.length > 1 ? (
+                        <div className="position-relative">
+                            <Button
+                                theme="primary"
+                                outline
+                                className={classNames([
+                                    {
+                                        'dropdown-toggle': hasTypes,
+                                        [className]: className !== null,
+                                    },
+                                ])}
+                                onClick={onClickDropdown}
+                            >
+                                <Label>{addItemLabel}</Label>
+                            </Button>
+                            <Dropdown
+                                onClickOutside={onDropdownClickOutside}
+                                items={types.map(({ id = null, name: typeName = null }) => ({
+                                    id,
+                                    label: typeName || 'label',
+                                    type: 'button',
+                                    disabled: isAddItemDisabled,
+                                    onClick: () => {
+                                        onClickAdd({ type: id });
+                                        setDropdownOpened(false);
+                                    },
+                                }))}
+                                visible={dropdownOpened}
+                                align="end"
+                            />
+                        </div>
+                    ) : null}
+                    {hasTypes && types.length === 1 ? (
                         <Button
                             theme="primary"
                             outline
-                            className={classNames([
-                                {
-                                    'dropdown-toggle': hasTypes,
-                                    [className]: className !== null,
-                                },
-                            ])}
-                            onClick={onClickDropdown}
+                            disabled={isAddItemDisabled}
+                            onClick={() => {
+                                onClickAdd({
+                                    type: types[0].id || null,
+                                });
+                            }}
+                            className="ms-auto"
                         >
                             <Label>{addItemLabel}</Label>
                         </Button>
-                        <Dropdown
-                            onClickOutside={onDropdownClickOutside}
-                            items={types.map(({ id = null, name: typeName = null }) => ({
-                                id,
-                                label: typeName || 'label',
-                                type: 'button',
-                                disabled: isAddItemDisabled,
-                                onClick: () => {
-                                    onClickAdd({ type: id });
-                                    setDropdownOpened(false);
-                                },
-                            }))}
-                            visible={dropdownOpened}
-                            align="end"
-                        />
-                    </div>
-                ) : null}
-                {hasTypes && types.length === 1 ? (
-                    <Button
-                        theme="primary"
-                        outline
-                        disabled={isAddItemDisabled}
-                        onClick={() => {
-                            onClickAdd({
-                                type: types[0].id || null,
-                            });
-                        }}
-                        className="ms-auto"
-                    >
-                        <Label>{addItemLabel}</Label>
-                    </Button>
-                ) : null}
-                {!hasTypes || types.length === 0 ? (
-                    <Button
-                        theme="primary"
-                        outline
-                        disabled={isAddItemDisabled}
-                        onClick={() => onClickAdd()}
-                        className="ms-auto"
-                    >
-                        <Label>{addItemLabel}</Label>
-                    </Button>
-                ) : null}
+                    ) : null}
+                    {!hasTypes || types.length === 0 ? (
+                        <Button
+                            theme="primary"
+                            outline
+                            disabled={isAddItemDisabled}
+                            onClick={() => onClickAdd()}
+                            className="ms-auto"
+                        >
+                            <Label>{addItemLabel}</Label>
+                        </Button>
+                    ) : null}
+                </div>
             </div>
             {renderBefore !== null ? renderBefore() : null}
             <div className="d-flex flex-column mb-3">
