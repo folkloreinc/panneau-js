@@ -20,6 +20,7 @@ const propTypes = {
     footer: PropTypes.node,
     buttons: PanneauPropTypes.buttons,
     onClose: PropTypes.func,
+    withCloseOutside: PropTypes.bool,
     className: PropTypes.string,
 };
 
@@ -31,11 +32,23 @@ const defaultProps = {
     footer: null,
     buttons: null,
     onClose: null,
+    withCloseOutside: false,
     className: null,
 };
 
-const ModalDialog = ({ title, size, header, children, buttons, footer, onClose, className }) => {
-    const onCloseButtonOutsize = header === null && title === null && onClose !== null;
+const ModalDialog = ({
+    title,
+    size,
+    header,
+    children,
+    buttons,
+    footer,
+    onClose,
+    withCloseOutside,
+    className,
+}) => {
+    const onCloseButtonOutside =
+        (header === null && title === null && onClose !== null) || withCloseOutside;
 
     return (
         <Modal>
@@ -46,14 +59,14 @@ const ModalDialog = ({ title, size, header, children, buttons, footer, onClose, 
 
                     {
                         [`modal-${size}`]: size !== null,
-                        [styles.closeOutside]: onCloseButtonOutsize,
+                        [styles.closeOutside]: onCloseButtonOutside,
                         [className]: className,
                     },
                 ])}
                 role="dialog"
             >
                 <div className="modal-content">
-                    {onCloseButtonOutsize ? (
+                    {onCloseButtonOutside ? (
                         <Button
                             type="button"
                             className={classNames([

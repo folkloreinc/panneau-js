@@ -39,3 +39,12 @@ export const WithoutOnClose = () => (
         </Dialog>
     </ModalProvider>
 );
+
+export const WithCloseOutside = () => (
+    <ModalProvider>
+        <Modals />
+        <Dialog title="Hello" withCloseOutside>
+            <div>Modal content</div>
+        </Dialog>
+    </ModalProvider>
+);
