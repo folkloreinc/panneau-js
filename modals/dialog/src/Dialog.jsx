@@ -48,7 +48,8 @@ const ModalDialog = ({
     className,
 }) => {
     const onCloseButtonOutside =
-        (header === null && title === null && onClose !== null) || withCloseOutside;
+        (header === null && title === null && onClose !== null) ||
+        (withCloseOutside && onClose !== null);
 
     return (
         <Modal>
