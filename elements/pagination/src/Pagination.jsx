@@ -44,8 +44,8 @@ const defaultProps = {
     withCount: true,
     autohide: false,
     align: 'right',
-    previousLabel: <Icon name="arrow-left-short" bold />,
-    nextLabel: <Icon name="arrow-right-short" bold />,
+    previousLabel: <Icon name="arrow-left-short" />,
+    nextLabel: <Icon name="arrow-right-short" />,
     countLabel: (
         <FormattedMessage
             defaultMessage="{count, plural, =0 {No item.} =1 {# item} other {# items}}"
