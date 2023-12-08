@@ -2,8 +2,7 @@
 import { faFileAudio, faFileImage, faFileVideo, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import classNames from 'classnames';
-import { Dashboard } from '@uppy/react';
-// DashboardModal
+import { Dashboard, DashboardModal } from '@uppy/react';
 import classNames from 'classnames';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
@@ -444,42 +443,42 @@ const UploadField = ({
                 </div>
             ) : null}
             {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
-                // <DashboardModal
-                //     uppy={uppy}
-                //     className={styles.dashboardModal}
-                //     plugins={sources}
-                //     open={modalOpened}
-                //     isHidden={!modalOpened}
-                //     {...(width !== null ? { width } : null)}
-                //     {...(height !== null ? { height } : null)}
-                //     onRequestClose={closeModal}
-                //     proudlyDisplayPoweredByUppy={false}
-                //     closeModalOnClickOutside
-                //     areInsidesReadyToBeVisible
-                //     isDashboardVisible
-                //     showProgressDetailss
-                //     showAddFilesPanel
-                // />
-                // ) : //
-                <Dialog size="lg" onClose={closeModal} title={addButtonLabel}>
-                    <Dashboard
-                        uppy={uppy}
-                        // {...(containerWidth !== null && height !== null
-                        //     ? { width: containerWidth }
-                        // : null)}
-                        {...(width !== null ? { width } : null)}
-                        {...(height !== null ? { height } : null)}
-                        plugins={sources}
-                        inline
-                        showProgressDetails
-                        // areInsidesReadyToBeVisible
-                        // isDashboardVisible
-                        showAddFilesPanel
-                        proudlyDisplayPoweredByUppy={false}
-                        doneButtonHandler={closeModalAndClear}
-                    />
-                </Dialog>
-            ) : null}
+                <DashboardModal
+                    uppy={uppy}
+                    className={styles.dashboardModal}
+                    plugins={sources}
+                    open={modalOpened}
+                    isHidden={!modalOpened}
+                    {...(width !== null ? { width } : null)}
+                    {...(height !== null ? { height } : null)}
+                    onRequestClose={closeModal}
+                    proudlyDisplayPoweredByUppy={false}
+                    closeModalOnClickOutside
+                    areInsidesReadyToBeVisible
+                    isDashboardVisible
+                    showProgressDetails
+                    showAddFilesPanel
+                />
+            ) : // ) : //
+            // <Dialog size="lg" onClose={closeModal} title={addButtonLabel}>
+            //     <Dashboard
+            //         uppy={uppy}
+            //         // {...(containerWidth !== null && height !== null
+            //         //     ? { width: containerWidth }
+            //         // : null)}
+            //         {...(width !== null ? { width } : null)}
+            //         {...(height !== null ? { height } : null)}
+            //         plugins={sources}
+            //         inline
+            //         showProgressDetails
+            //         // areInsidesReadyToBeVisible
+            //         // isDashboardVisible
+            //         showAddFilesPanel
+            //         proudlyDisplayPoweredByUppy={false}
+            //         doneButtonHandler={closeModalAndClear}
+            //     />
+            // </Dialog>
+            null}
             {showResourceModal ? (
                 <Dialog
                     title={<Label>{searchButtonLabel}</Label>}
