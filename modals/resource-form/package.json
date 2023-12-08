@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modal-resource-form",
-    "version": "3.0.76",
+    "version": "3.0.77",
     "description": "Resource form modal",
     "keywords": [
         "javascript"
@@ -48,7 +48,7 @@
         "@panneau/core": "^3.0.45",
         "@panneau/form-resource": "^3.0.76",
         "@panneau/intl": "^3.0.67",
-        "@panneau/modal-dialog": "^3.0.74",
+        "@panneau/modal-dialog": "^3.0.77",
         "@panneau/themes": "^3.0.55",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
