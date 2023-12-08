@@ -247,6 +247,10 @@
     "defaultMessage": "Forgot your password?",
     "description": "Link label"
   },
+  "ZHvvZx": {
+    "defaultMessage": "{count} items selected",
+    "description": "Items label"
+  },
   "ZxgNge": {
     "defaultMessage": "Add an item",
     "description": "Button label in items field"
