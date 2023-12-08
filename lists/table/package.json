@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-table",
-    "version": "3.0.82",
+    "version": "3.0.83",
     "description": "Table list",
     "keywords": [
         "javascript"
@@ -61,7 +61,7 @@
         "@panneau/element-label": "^3.0.45",
         "@panneau/element-link": "^3.0.75",
         "@panneau/element-loading": "^3.0.45",
-        "@panneau/element-pagination": "^3.0.82",
+        "@panneau/element-pagination": "^3.0.83",
         "@panneau/element-table": "^3.0.75",
         "@panneau/themes": "^3.0.55",
         "classnames": "^2.2.6",
