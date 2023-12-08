@@ -126,7 +126,7 @@ const UploadField = ({
 
     const onComplete = useCallback(
         (response) => {
-            console.log('upload complete', response); // eslint-disable-line
+            // console.log('upload complete', response); // eslint-disable-line
             let newValue = null;
             if (isArray(response)) {
                 if (allowMultipleUploads) {
@@ -146,7 +146,7 @@ const UploadField = ({
                 newValue = mergeData(newValue);
             }
 
-            console.log('new upload value', newValue); // eslint-disable-line
+            // console.log('new upload value', newValue); // eslint-disable-line
 
             if (onChange !== null) {
                 onChange(newValue);
@@ -255,7 +255,7 @@ const UploadField = ({
     );
 
     const confirmResourceModal = useCallback(() => {
-        console.log('confirm', modalItems, onChange);
+        // console.log('confirm', modalItems, onChange);
         if (onChange !== null) {
             onChange(modalItems);
             setResourceModalOpen(false);
