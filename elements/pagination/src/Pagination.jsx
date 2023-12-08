@@ -7,6 +7,7 @@ import queryString from 'query-string';
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import Icon from '@panneau/element-icon';
 import Link from '@panneau/element-link';
 
 const propTypes = {
@@ -43,10 +44,8 @@ const defaultProps = {
     withCount: true,
     autohide: false,
     align: 'right',
-    previousLabel: (
-        <FormattedMessage defaultMessage="Previous" description="Pagination button label" />
-    ),
-    nextLabel: <FormattedMessage defaultMessage="Next" description="Pagination button label" />,
+    previousLabel: <Icon name="arrow-left-short" bold />,
+    nextLabel: <Icon name="arrow-right-short" bold />,
     countLabel: (
         <FormattedMessage
             defaultMessage="{count, plural, =0 {No item.} =1 {# item} other {# items}}"
@@ -168,7 +167,7 @@ const Pagination = ({
                     },
                 ])}
             >
-                {withPreviousNext ? (
+                {withPreviousNext && pages.length > 1 ? (
                     <li
                         className={classNames([
                             'page-item',
@@ -242,7 +241,7 @@ const Pagination = ({
                       ))
                     : null}
 
-                {withPreviousNext ? (
+                {withPreviousNext && pages.length > 1 ? (
                     <li
                         className={classNames([
                             'page-item',

@@ -39,6 +39,10 @@ const propTypes = {
     onClickEdit: PropTypes.func,
     onClickDelete: PropTypes.func,
     onClickSelect: PropTypes.func,
+    getShowPropsFromItem: PropTypes.func,
+    getEditPropsFromItem: PropTypes.func,
+    getDeletePropsFromItem: PropTypes.func,
+    getSelectPropsFromItem: PropTypes.func,
     withoutItemShowUrl: PropTypes.bool,
     className: PropTypes.string,
 };
@@ -61,6 +65,10 @@ const defaultProps = {
     onClickEdit: null,
     onClickDelete: null,
     onClickSelect: null,
+    getShowPropsFromItem: null,
+    getEditPropsFromItem: null,
+    getDeletePropsFromItem: null,
+    getSelectPropsFromItem: null,
     withoutItemShowUrl: false,
     className: null,
 };
@@ -84,6 +92,10 @@ const ItemActions = ({
     onClickEdit,
     onClickDelete,
     onClickSelect,
+    getShowPropsFromItem,
+    getEditPropsFromItem,
+    getDeletePropsFromItem,
+    getSelectPropsFromItem,
     withoutItemShowUrl,
     className,
 }) => {
@@ -154,8 +166,10 @@ const ItemActions = ({
                                             theme: 'info',
                                             target: '_blank',
                                             onClick: onClickShow,
+                                            ...(getShowPropsFromItem !== null
+                                                ? getShowPropsFromItem(item)
+                                                : null),
                                         };
-
                                     case 'edit':
                                         return {
                                             id: 'edit',
@@ -169,6 +183,9 @@ const ItemActions = ({
                                                     : null,
                                             theme: 'primary',
                                             onClick: onClickEdit,
+                                            ...(getEditPropsFromItem !== null
+                                                ? getEditPropsFromItem(item)
+                                                : null),
                                         };
                                     case 'delete':
                                         return {
@@ -183,6 +200,9 @@ const ItemActions = ({
                                                     : null,
                                             theme: 'danger',
                                             onClick: onClickDelete,
+                                            ...(getDeletePropsFromItem !== null
+                                                ? getDeletePropsFromItem(item)
+                                                : null),
                                         };
                                     case 'select':
                                         return {
@@ -191,7 +211,13 @@ const ItemActions = ({
                                             icon: iconsOnly ? <Icon name="check" bold /> : null,
                                             theme: 'primary',
                                             outline: true,
-                                            onClick: () => onClickSelect(item),
+                                            onClick:
+                                                onClickSelect !== null
+                                                    ? () => onClickSelect(item)
+                                                    : null,
+                                            ...(getSelectPropsFromItem !== null
+                                                ? getSelectPropsFromItem(item)
+                                                : null),
                                         };
                                     default:
                                         break;

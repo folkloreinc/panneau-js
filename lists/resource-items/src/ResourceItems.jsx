@@ -106,6 +106,7 @@ const ResourceItemsList = ({
                     onClickPage={onPageChange}
                     className="mt-1 mb-1"
                     theme={theme}
+                    withPreviousNext
                 />
             ) : null}
             {ListComponent !== null ? (
@@ -140,6 +141,7 @@ const ResourceItemsList = ({
                     onClickPage={onPageChange}
                     className="mt-4 mb-1"
                     theme={theme}
+                    withPreviousNext
                 />
             ) : null}
         </div>

@@ -232,7 +232,6 @@ const UploadField = ({
                 if (newValue !== null) {
                     const { id = null } = newValue || {};
                     if (id !== null) {
-                        console.log('add', newValue);
                         const previous = (modalItems || []).find(
                             ({ id: itemId = null } = {}) => id === itemId,
                         );
@@ -506,7 +505,6 @@ const UploadField = ({
                             withoutActionsColumn: true,
                         }}
                     />
-
                     {allowMultipleUploads ? (
                         <div className="d-flex">
                             {modalItems !== null && modalItems.length > 0 ? (
