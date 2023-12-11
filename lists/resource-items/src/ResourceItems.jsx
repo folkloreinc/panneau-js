@@ -104,7 +104,7 @@ const ResourceItemsList = ({
                     url={baseUrl}
                     query={query}
                     onClickPage={onPageChange}
-                    className="mt-1 mb-1"
+                    className="mt-1 mb-3"
                     theme={theme}
                     withPreviousNext
                 />
