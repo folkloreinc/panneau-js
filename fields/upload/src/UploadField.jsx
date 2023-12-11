@@ -524,32 +524,36 @@ const UploadField = ({
                         }}
                     />
                     {allowMultipleUploads ? (
-                        <div className="d-flex">
+                        <div className="d-flex mt-4 justify-content-between">
                             {modalItems !== null && modalItems.length > 0 ? (
                                 <span className="me-2">
                                     {modalItems.length} {countLabel}
                                 </span>
-                            ) : null}
-                            <Button
-                                type="button"
-                                theme="warning"
-                                onClick={closeResourceModal}
-                                disabled={disabled}
-                                className="d-block ms-auto mt-2 me-2"
-                            >
-                                <Label>{cancelButtonLabel}</Label>
-                            </Button>
-                            <Button
-                                type="button"
-                                theme="primary"
-                                onClick={confirmResourceModal}
-                                disabled={
-                                    disabled || (modalItems !== null && modalItems.length === 0)
-                                }
-                                className="d-block ms-auto mt-2"
-                            >
-                                <Label>{confirmButtonLabel}</Label>
-                            </Button>
+                            ) : (
+                                <span />
+                            )}
+                            <div>
+                                <Button
+                                    type="button"
+                                    theme="warning"
+                                    onClick={closeResourceModal}
+                                    disabled={disabled}
+                                    className="d-block me-2"
+                                >
+                                    <Label>{cancelButtonLabel}</Label>
+                                </Button>
+                                <Button
+                                    type="button"
+                                    theme="primary"
+                                    onClick={confirmResourceModal}
+                                    disabled={
+                                        disabled || (modalItems !== null && modalItems.length === 0)
+                                    }
+                                    className="d-block"
+                                >
+                                    <Label>{confirmButtonLabel}</Label>
+                                </Button>
+                            </div>
                         </div>
                     ) : null}
                 </Dialog>
