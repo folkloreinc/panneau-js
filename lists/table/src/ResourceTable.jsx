@@ -149,12 +149,12 @@ const ResourceTableList = ({
                                                 }
                                                 directions={sortDirections}
                                                 onQueryChange={onQueryChange}
-                                                className="text-nowarp"
+                                                className="text-nowrap"
                                             >
                                                 {label}
                                             </SortLink>
                                         ) : (
-                                            <span className="text-nowarp">{label}</span>
+                                            <span className="text-nowrap">{label}</span>
                                         )}
                                     </th>
                                 ),
