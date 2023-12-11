@@ -7,7 +7,7 @@ const getIntlMessagesNamespace = (id) => {
         name !== null
             ? name
                   .replace(
-                      /^@panneau\/(form|element|field|filter|list|index|modal)-(.*)$/,
+                      /^@panneau\/(form|element|field|filter|list|index|modal|display)-(.*)$/,
                       '$1s.$2',
                   )
                   .replace(/^@panneau\/(.*)$/, '$1')

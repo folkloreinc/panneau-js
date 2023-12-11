@@ -170,6 +170,9 @@
     "XJ1dc3": {
         "defaultMessage": "Nouveau mot de passe"
     },
+    "XLOebh": {
+        "defaultMessage": "items sélectionnés"
+    },
     "XLVfN6": {
         "defaultMessage": "Trouver {a_singular}"
     },
@@ -178,9 +181,6 @@
     },
     "ZBNqY2": {
         "defaultMessage": "Mot de passe oublié ?"
-    },
-    "ZHvvZx": {
-        "defaultMessage": "{count} items sélectionnés"
     },
     "ZxgNge": {
         "defaultMessage": "Ajouter un élement"

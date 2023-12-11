@@ -170,6 +170,9 @@
     "XJ1dc3": {
         "defaultMessage": "New password"
     },
+    "XLOebh": {
+        "defaultMessage": "items selected"
+    },
     "XLVfN6": {
         "defaultMessage": "Find {a_singular}"
     },
@@ -178,9 +181,6 @@
     },
     "ZBNqY2": {
         "defaultMessage": "Forgot your password?"
-    },
-    "ZHvvZx": {
-        "defaultMessage": "{count} items selected"
     },
     "ZxgNge": {
         "defaultMessage": "Add an item"

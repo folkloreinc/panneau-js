@@ -353,6 +353,12 @@ msgctxt "XJ1dc3"
 msgid "New password"
 msgstr "New password"
 
+# Items label
+#: XLOebh
+msgctxt "XLOebh"
+msgid "items selected"
+msgstr "items selected"
+
 # Page title
 #: XLVfN6
 msgctxt "XLVfN6"
@@ -370,12 +376,6 @@ msgstr "Update password"
 msgctxt "ZBNqY2"
 msgid "Forgot your password?"
 msgstr "Forgot your password?"
-
-# Items label
-#: ZHvvZx
-msgctxt "ZHvvZx"
-msgid "{count} items selected"
-msgstr "{count} items selected"
 
 # Button label in items field
 #: ZxgNge

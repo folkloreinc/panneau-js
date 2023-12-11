@@ -227,6 +227,10 @@
     "defaultMessage": "New password",
     "description": "Field label"
   },
+  "XLOebh": {
+    "defaultMessage": "items selected",
+    "description": "Items label"
+  },
   "XLVfN6": {
     "defaultMessage": "Find {a_singular}",
     "description": "Page title"
@@ -238,10 +242,6 @@
   "ZBNqY2": {
     "defaultMessage": "Forgot your password?",
     "description": "Link label"
-  },
-  "ZHvvZx": {
-    "defaultMessage": "{count} items selected",
-    "description": "Items label"
   },
   "ZxgNge": {
     "defaultMessage": "Add an item",

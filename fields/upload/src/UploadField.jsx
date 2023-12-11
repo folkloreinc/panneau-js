@@ -45,7 +45,9 @@ const propTypes = {
     withFind: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.label,
     findButtonLabel: PanneauPropTypes.label,
+    countLabel: PanneauPropTypes.label,
     confirmButtonLabel: PanneauPropTypes.label,
+    cancelButtonLabel: PanneauPropTypes.label,
     allowMultipleUploads: PropTypes.bool,
     maxNumberOfFiles: PropTypes.number,
     namePath: PropTypes.string,
@@ -75,7 +77,9 @@ const defaultProps = {
             description="Default upload add button label"
         />
     ),
+    countLabel: <FormattedMessage defaultMessage="items selected" description="Items label" />,
     confirmButtonLabel: <FormattedMessage defaultMessage="Confirm" description="Button label" />,
+    cancelButtonLabel: <FormattedMessage defaultMessage="Cancel" description="Button label" />,
     allowMultipleUploads: false,
     maxNumberOfFiles: 1,
     namePath: null,
@@ -98,7 +102,9 @@ const UploadField = ({
     withFind,
     addButtonLabel,
     findButtonLabel,
+    countLabel,
     confirmButtonLabel,
+    cancelButtonLabel,
     allowMultipleUploads,
     maxNumberOfFiles,
     namePath,
@@ -185,14 +191,17 @@ const UploadField = ({
 
     const closeModal = useCallback(() => {
         setModalOpened(false);
-    }, [setModalOpened]);
-
-    const closeModalAndClear = useCallback(() => {
-        closeModal();
         if (uppy !== null) {
             uppy.cancelAll();
         }
-    }, [uppy, closeModal]);
+    }, [uppy, setModalOpened]);
+
+    // const closeModalAndClear = useCallback(() => {
+    //     closeModal();
+    //     if (uppy !== null) {
+    //         uppy.cancelAll();
+    //     }
+    // }, [uppy, closeModal]);
 
     const onClickRemove = useCallback(
         (idx) => {
@@ -518,18 +527,25 @@ const UploadField = ({
                         <div className="d-flex">
                             {modalItems !== null && modalItems.length > 0 ? (
                                 <span className="me-2">
-                                    <FormattedMessage
-                                        defaultMessage="{count} items selected"
-                                        description="Items label"
-                                        value={{ count: modalItems.length }}
-                                    />
+                                    {modalItems.length} {countLabel}
                                 </span>
                             ) : null}
                             <Button
                                 type="button"
+                                theme="warning"
+                                onClick={closeResourceModal}
+                                disabled={disabled}
+                                className="d-block ms-auto mt-2 me-2"
+                            >
+                                <Label>{cancelButtonLabel}</Label>
+                            </Button>
+                            <Button
+                                type="button"
                                 theme="primary"
                                 onClick={confirmResourceModal}
-                                disabled={disabled}
+                                disabled={
+                                    disabled || (modalItems !== null && modalItems.length === 0)
+                                }
                                 className="d-block ms-auto mt-2"
                             >
                                 <Label>{confirmButtonLabel}</Label>
