@@ -532,7 +532,7 @@ const UploadField = ({
                             ) : (
                                 <span />
                             )}
-                            <div>
+                            <div className="d-flex">
                                 <Button
                                     type="button"
                                     theme="warning"
