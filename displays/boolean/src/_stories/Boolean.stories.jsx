@@ -14,3 +14,8 @@ export default {
 export const True = () => <Boolean value={true} />;
 
 export const False = () => <Boolean value={false} />;
+
+// eslint-disable-next-line react/jsx-boolean-value
+export const TrueWithIcon = () => <Boolean value={true} iconTrue="check" />;
+
+export const FalseWithLabel = () => <Boolean value={false} labelFalse="WRONG" />;
