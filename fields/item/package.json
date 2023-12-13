@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-item",
-    "version": "3.0.67",
+    "version": "3.0.94",
     "description": "A repeatable abstract field",
     "keywords": [
         "javascript"
@@ -56,7 +56,7 @@
         "@panneau/core": "^3.0.45",
         "@panneau/data": "^3.0.45",
         "@panneau/element-button": "^3.0.55",
-        "@panneau/element-resource-card": "^3.0.55",
+        "@panneau/element-resource-card": "^3.0.94",
         "@panneau/element-select": "^3.0.55",
         "@panneau/field-select": "^3.0.67",
         "classnames": "^2.2.6",
