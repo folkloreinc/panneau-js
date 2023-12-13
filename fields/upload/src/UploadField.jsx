@@ -12,11 +12,10 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useResourceQuery } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
+import { MediaCards } from '@panneau/element-media-card';
 import ResourceItemsList from '@panneau/list-resource-items';
 import Dialog from '@panneau/modal-dialog';
 import { useUppy } from '@panneau/uppy';
-
-import MediaPreviewCards from './MediaPreviewCards';
 
 import styles from './styles.module.scss';
 
@@ -218,6 +217,7 @@ const UploadField = ({
         }
         return value !== null ? [value] : null;
     }, [value]);
+
     const hasMedia = values !== null && values.length > 0;
 
     const [resourceModalOpen, setResourceModalOpen] = useState(false);
@@ -283,7 +283,7 @@ const UploadField = ({
             className={classNames([styles.container, { [className]: className !== null }])}
             // ref={containerRef}
         >
-            <MediaPreviewCards
+            <MediaCards
                 value={values}
                 namePath={namePath}
                 thumbnailPath={thumbnailPath}

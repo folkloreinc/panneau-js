@@ -59,7 +59,6 @@
         "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^3.0.45",
         "@panneau/element-button": "^3.0.55",
-        "@panneau/element-card": "^3.0.75",
         "@panneau/element-label": "^3.0.45",
         "@panneau/element-media-card": "^3.0.94",
         "@panneau/list-resource-items": "^3.0.91",

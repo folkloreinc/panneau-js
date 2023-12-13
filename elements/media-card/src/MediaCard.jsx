@@ -22,7 +22,9 @@ const propTypes = {
     namePath: PropTypes.string,
     thumbnailPath: PropTypes.string,
     sizePath: PropTypes.string,
+    maxWidth: PropTypes.number,
     disabled: PropTypes.bool,
+    withoutDescription: PropTypes.bool,
     onClickRemove: PropTypes.func,
     className: PropTypes.string,
 };
@@ -30,10 +32,12 @@ const propTypes = {
 const defaultProps = {
     value: null,
     index: null,
-    namePath: null,
-    thumbnailPath: null,
-    sizePath: null,
+    namePath: 'name',
+    thumbnailPath: 'thumbnail_url',
+    sizePath: 'metadata.size',
     disabled: false,
+    maxWidth: 500,
+    withoutDescription: false,
     onClickRemove: null,
     className: null,
 };
@@ -44,7 +48,9 @@ const MediaCard = ({
     namePath,
     thumbnailPath,
     sizePath,
+    maxWidth,
     disabled,
+    withoutDescription,
     onClickRemove,
     className,
 }) => {
@@ -96,7 +102,7 @@ const MediaCard = ({
                 className="card mb-1"
                 key={`media-${id}`}
                 style={{
-                    maxWidth: 500,
+                    maxWidth,
                 }}
             >
                 <div className="d-flex align-items-center">
@@ -106,14 +112,14 @@ const MediaCard = ({
                             style={
                                 hasThumbnail
                                     ? {
-                                          width: 100,
+                                          width: !withoutDescription ? 100 : '100%',
                                           backgroundImage:
                                               'linear-gradient(45deg, #eee 25%, transparent 25%), linear-gradient(-45deg, #eee 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eee 75%), linear-gradient(-45deg, transparent 75%, #eee 75%)',
                                           backgroundSize: '20px 20px',
                                           backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0',
                                       }
                                     : {
-                                          width: 100,
+                                          width: !withoutDescription ? 100 : '100%',
                                       }
                             }
                         >
@@ -126,32 +132,37 @@ const MediaCard = ({
                                     src={thumbnail}
                                     alt="thumbnail"
                                     style={{
-                                        maxHeight: 75,
+                                        maxHeight: !withoutDescription ? 75 : 150,
                                     }}
                                 />
                             ) : null}
                         </div>
                     ) : null}
-                    <div className="flex-grow-1">
-                        <div className="card-body">
-                            <h5
-                                className={classNames([
-                                    'card-title',
-                                    'text-break',
-                                    'fs-6',
-                                    {
-                                        'mb-1': size !== null && size > 0,
-                                        'mb-0': size === null || size <= 0,
-                                    },
-                                ])}
-                            >
-                                {name}
-                            </h5>
-                            {size !== null && size > 0 ? (
-                                <p className="card-text text-muted small">{prettyBytes(size)}</p>
-                            ) : null}
+                    {!withoutDescription ? (
+                        <div className="flex-grow-1">
+                            <div className="card-body">
+                                <h5
+                                    className={classNames([
+                                        'card-title',
+                                        'text-break',
+                                        'fs-6',
+                                        {
+                                            'mb-1': size !== null && size > 0,
+                                            'mb-0': size === null || size <= 0,
+                                        },
+                                    ])}
+                                >
+                                    {name}
+                                </h5>
+                                {size !== null && size > 0 ? (
+                                    <p className="card-text text-muted small">
+                                        {prettyBytes(size)}
+                                    </p>
+                                ) : null}
+                            </div>
                         </div>
-                    </div>
+                    ) : null}
+
                     {onClickRemove !== null ? (
                         <div className="p-2">
                             <Button

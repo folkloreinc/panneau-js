@@ -30,6 +30,8 @@ const value = [
 
 export const Normal = () => <MediaCardsElement value={value} />;
 
+export const WithoutDescription = () => <MediaCardsElement value={value} withoutDescription />;
+
 export const WithRemove = () => (
     <MediaCardsElement value={value} onClickRemove={() => console.log('hello')} />
 );
