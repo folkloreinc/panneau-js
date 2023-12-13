@@ -8,9 +8,6 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getPathValue } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 
-// import Icon from '@panneau/element-icon';
-// import Label from '@panneau/element-label';
-
 const propTypes = {
     item: PropTypes.shape({
         id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

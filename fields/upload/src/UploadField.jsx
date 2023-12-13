@@ -1,13 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { faFileAudio, faFileImage, faFileVideo, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import classNames from 'classnames';
 import { Dashboard, DashboardModal } from '@uppy/react';
 import classNames from 'classnames';
-import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
-import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -19,6 +15,8 @@ import Label from '@panneau/element-label';
 import ResourceItemsList from '@panneau/list-resource-items';
 import Dialog from '@panneau/modal-dialog';
 import { useUppy } from '@panneau/uppy';
+
+import MediaPreviewCards from './MediaPreviewCards';
 
 import styles from './styles.module.scss';
 
@@ -285,134 +283,14 @@ const UploadField = ({
             className={classNames([styles.container, { [className]: className !== null }])}
             // ref={containerRef}
         >
-            {values !== null
-                ? values.map((media, idx) => {
-                      const {
-                          id = null,
-                          filename = null,
-                          size: fileSize = 0,
-                          thumbnail_url: thumbnailUrl = null,
-                          preview = null,
-                          data = {},
-                          type,
-                      } = media;
-                      const { file = null } = data || {};
-
-                      let faIcon = null;
-                      switch (type) {
-                          case 'audio':
-                              faIcon = faFileAudio;
-                              break;
-                          case 'image':
-                              faIcon = faFileImage;
-                              break;
-                          case 'video':
-                              faIcon = faFileVideo;
-                              break;
-                          default:
-                              break;
-                      }
-
-                      const name =
-                          (namePath !== null ? get(media || {}, namePath) : null) ||
-                          filename ||
-                          file;
-
-                      const thumbnail =
-                          (thumbnailPath !== null ? get(media || {}, thumbnailPath) : null) ||
-                          thumbnailUrl ||
-                          preview;
-
-                      const size =
-                          (sizePath !== null ? get(media || {}, sizePath) : null) || fileSize;
-
-                      const hasThumbnail = preview !== null || thumbnail !== null;
-
-                      return (
-                          <div
-                              className="card mb-1"
-                              key={`media-${id}`}
-                              style={{
-                                  maxWidth: 500,
-                              }}
-                          >
-                              <div className="d-flex align-items-center">
-                                  {hasThumbnail || faIcon !== null ? (
-                                      <div
-                                          className="p-2 text-center"
-                                          style={
-                                              hasThumbnail
-                                                  ? {
-                                                        width: 100,
-                                                        backgroundImage:
-                                                            'linear-gradient(45deg, #eee 25%, transparent 25%), linear-gradient(-45deg, #eee 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eee 75%), linear-gradient(-45deg, transparent 75%, #eee 75%)',
-                                                        backgroundSize: '20px 20px',
-                                                        backgroundPosition:
-                                                            '0 0, 0 10px, 10px -10px, -10px 0',
-                                                    }
-                                                  : {
-                                                        width: 100,
-                                                    }
-                                          }
-                                      >
-                                          {!hasThumbnail && faIcon !== null ? (
-                                              <FontAwesomeIcon
-                                                  icon={faIcon}
-                                                  className="m-auto fs-3"
-                                              />
-                                          ) : null}
-                                          {hasThumbnail ? (
-                                              <img
-                                                  className="img-fluid"
-                                                  src={thumbnail}
-                                                  alt="thumbnail"
-                                                  style={{
-                                                      maxHeight: 75,
-                                                  }}
-                                              />
-                                          ) : null}
-                                      </div>
-                                  ) : null}
-                                  <div className="flex-grow-1">
-                                      <div className="card-body">
-                                          <h5
-                                              className={classNames([
-                                                  'card-title',
-                                                  'text-break',
-                                                  'fs-6',
-                                                  {
-                                                      'mb-1': size !== null && size > 0,
-                                                      'mb-0': size === null || size <= 0,
-                                                  },
-                                              ])}
-                                          >
-                                              {name}
-                                          </h5>
-                                          {size !== null && size > 0 ? (
-                                              <p className="card-text text-muted small">
-                                                  {prettyBytes(size)}
-                                              </p>
-                                          ) : null}
-                                      </div>
-                                  </div>
-                                  <div className="p-2">
-                                      <Button
-                                          type="button"
-                                          size="sm"
-                                          theme="secondary"
-                                          outline
-                                          onClick={() => onClickRemove(idx)}
-                                          disabled={disabled}
-                                      >
-                                          <FontAwesomeIcon icon={faTimes} />
-                                      </Button>
-                                  </div>
-                              </div>
-                          </div>
-                      );
-                  })
-                : null}
-
+            <MediaPreviewCards
+                value={values}
+                namePath={namePath}
+                thumbnailPath={thumbnailPath}
+                sizePath={sizePath}
+                disabled={disabled}
+                onClickRemove={onClickRemove}
+            />
             {(!hasMedia || allowMultipleUploads) && withButton ? (
                 <div className="row">
                     <div className="col-auto">

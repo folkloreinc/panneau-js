@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/field-upload",
-    "version": "3.0.91",
-    "description": "An Upload field",
+    "name": "@panneau/element-media-card",
+    "version": "3.0.75",
+    "description": "Media card element",
     "keywords": [
         "javascript"
     ],
@@ -22,14 +22,6 @@
         {
             "name": "Nicolas Roy-Bourdages",
             "email": "nrb@folklore.email"
-        },
-        {
-            "name": "Julien Carignan",
-            "email": "jc@folklore.email"
-        },
-        {
-            "name": "Théo Gjini",
-            "email": "tg@folklore.email"
         }
     ],
     "license": "ISC",
@@ -53,34 +45,20 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@folklore/routes": "^0.2.10",
         "@fortawesome/fontawesome-svg-core": "^1.2.35",
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^3.0.45",
         "@panneau/element-button": "^3.0.55",
-        "@panneau/element-card": "^3.0.75",
-        "@panneau/element-media-card": "^3.0.75",
-        "@panneau/element-label": "^3.0.45",
-        "@panneau/list-resource-items": "^3.0.91",
-        "@panneau/modal-dialog": "^3.0.77",
-        "@panneau/themes": "^3.0.55",
-        "@panneau/uppy": "^3.0.59",
-        "@uppy/core": "^3.5.0",
-        "@uppy/dashboard": "^3.5.2",
-        "@uppy/drag-drop": "^3.0.3",
-        "@uppy/file-input": "^3.0.3",
-        "@uppy/progress-bar": "^3.0.3",
-        "@uppy/react": "^3.1.3",
-        "@uppy/status-bar": "^3.2.4",
-        "@uppy/utils": "^5.5.0",
-        "classnames": "^2.2.6",
+        "@panneau/element-link": "^3.0.75",
         "lodash": "^4.17.21",
+        "pretty-bytes": "^5.4.1",
+        "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
     },
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "31bc316c60a8324ae4094a9303a310b204420ea9"
+    "gitHead": "cbae07493a969f804c1adfcfed11feb965569f5b"
 }

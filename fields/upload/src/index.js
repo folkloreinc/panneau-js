@@ -7,5 +7,7 @@ export { default as ImagesField } from './ImagesField';
 export { default as VideoField } from './VideoField';
 export { default as DocumentField } from './DocumentField';
 export { default as FontField } from './FontField';
+export { default as MediaPreviewCards } from './MediaPreviewCards';
+export { default as MediaPreviewCard } from './MediaPreviewCard';
 
 export default UploadField;
