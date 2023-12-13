@@ -2,6 +2,7 @@
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useLocation } from '@folklore/routes';
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -81,15 +82,23 @@ const SelectFilter = ({
                 api.requestGet(
                     url,
                     {
-                        paginate: false,
+                        paginated: false,
                         ...requestQuery,
                         ...finalParams,
                     },
                     requestOptions,
                 )
                     .then((newItems) => {
+                        const partialItems =
+                            newItems !== null &&
+                            !isArray(newItems) &&
+                            typeof newItems.data !== 'undefined'
+                                ? newItems.data || []
+                                : newItems;
                         const finalItems =
-                            maxItemsCount !== null ? newItems.slice(0, maxItemsCount) : newItems;
+                            maxItemsCount !== null
+                                ? partialItems.slice(0, maxItemsCount)
+                                : partialItems;
                         setOptions(
                             (finalItems || []).map((it) => ({
                                 label: get(it, itemLabelPath, null),
