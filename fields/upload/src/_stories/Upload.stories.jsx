@@ -49,6 +49,7 @@ export const WithValues = () => (
             { data: { file: '1200x301.png' }, size: 2000078, type: 'image' },
         ]}
         allowMultipleUploads
+        withClearButton
     />
 );
 

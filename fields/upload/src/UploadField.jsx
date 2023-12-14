@@ -40,8 +40,10 @@ const propTypes = {
     ),
     withButton: PropTypes.bool,
     withFind: PropTypes.bool,
+    withClearButton: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.label,
     findButtonLabel: PanneauPropTypes.label,
+    clearButtonLabel: PanneauPropTypes.label,
     countLabel: PanneauPropTypes.label,
     confirmButtonLabel: PanneauPropTypes.label,
     cancelButtonLabel: PanneauPropTypes.label,
@@ -55,6 +57,7 @@ const propTypes = {
     height: PropTypes.number,
     disabled: PropTypes.bool,
     onChange: PropTypes.func,
+    onClear: PropTypes.func,
     className: PropTypes.string,
 };
 
@@ -65,6 +68,7 @@ const defaultProps = {
     sources: ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'],
     withButton: false,
     withFind: false,
+    withClearButton: false,
     addButtonLabel: (
         <FormattedMessage defaultMessage="Add file" description="Default upload add button label" />
     ),
@@ -73,6 +77,9 @@ const defaultProps = {
             defaultMessage="Find a file"
             description="Default upload add button label"
         />
+    ),
+    clearButtonLabel: (
+        <FormattedMessage defaultMessage="Clear" description="Default upload add button label" />
     ),
     countLabel: <FormattedMessage defaultMessage="items selected" description="Items label" />,
     confirmButtonLabel: <FormattedMessage defaultMessage="Confirm" description="Button label" />,
@@ -87,6 +94,7 @@ const defaultProps = {
     height: 300,
     disabled: false,
     onChange: null,
+    onClear: null,
     className: null,
 };
 
@@ -97,8 +105,10 @@ const UploadField = ({
     sources,
     withButton,
     withFind,
+    withClearButton,
     addButtonLabel,
     findButtonLabel,
+    clearButtonLabel,
     countLabel,
     confirmButtonLabel,
     cancelButtonLabel,
@@ -112,6 +122,7 @@ const UploadField = ({
     height,
     disabled,
     onChange,
+    onClear,
     className,
 }) => {
     const mergeData = useCallback((newValue) => {
@@ -189,16 +200,18 @@ const UploadField = ({
     const closeModal = useCallback(() => {
         setModalOpened(false);
         if (uppy !== null) {
-            uppy.cancelAll();
+            uppy.cancelAll({ reason: 'user' });
         }
     }, [uppy, setModalOpened]);
 
-    // const closeModalAndClear = useCallback(() => {
-    //     closeModal();
-    //     if (uppy !== null) {
-    //         uppy.cancelAll();
-    //     }
-    // }, [uppy, closeModal]);
+    const onClickClear = useCallback(() => {
+        if (onClear !== null) {
+            onClear();
+        }
+        if (uppy !== null) {
+            uppy.cancelAll({ reason: 'user' });
+        }
+    }, [uppy, onClear]);
 
     const onClickRemove = useCallback(
         (idx) => {
@@ -283,14 +296,27 @@ const UploadField = ({
             className={classNames([styles.container, { [className]: className !== null }])}
             // ref={containerRef}
         >
-            <MediaCards
-                value={values}
-                namePath={namePath}
-                thumbnailPath={thumbnailPath}
-                sizePath={sizePath}
-                disabled={disabled}
-                onClickRemove={onClickRemove}
-            />
+            {hasMedia ? (
+                <MediaCards
+                    value={values}
+                    namePath={namePath}
+                    thumbnailPath={thumbnailPath}
+                    sizePath={sizePath}
+                    disabled={disabled}
+                    onClickRemove={onClickRemove}
+                />
+            ) : null}
+
+            {hasMedia && withClearButton ? (
+                <div className="row mt-2">
+                    <div className="col-auto">
+                        <Button type="button" theme="primary" onClick={onClickClear} outline>
+                            <Label>{clearButtonLabel}</Label>
+                        </Button>
+                    </div>
+                </div>
+            ) : null}
+
             {(!hasMedia || allowMultipleUploads) && withButton ? (
                 <div className="row">
                     <div className="col-auto">
@@ -376,7 +402,7 @@ const UploadField = ({
             {showResourceModal ? (
                 <Dialog
                     title={<Label>{findButtonLabel}</Label>}
-                    size="lg"
+                    size="xl"
                     onClose={closeResourceModal}
                 >
                     <ResourceItemsList
