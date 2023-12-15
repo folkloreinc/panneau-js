@@ -1,5 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { faFileAudio, faFileImage, faFileVideo, faTimes } from '@fortawesome/free-solid-svg-icons';
+import {
+    faFileAudio,
+    faFileImage,
+    faFilePdf,
+    faFileVideo,
+    faTimes,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import get from 'lodash/get';
@@ -83,6 +89,9 @@ const MediaCard = ({
                 break;
             case 'video':
                 faIcon = faFileVideo;
+                break;
+            case 'document':
+                faIcon = faFilePdf;
                 break;
             default:
                 break;
