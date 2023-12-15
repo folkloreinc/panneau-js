@@ -1,5 +1,5 @@
 {
-    "version": "3.0.98",
+    "version": "3.0.99",
     "packages": [
         "displays/*",
         "fields/*",
