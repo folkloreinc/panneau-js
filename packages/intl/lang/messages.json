@@ -306,6 +306,10 @@
     "defaultMessage": "Choose an item",
     "description": "Default placeholder"
   },
+  "odaCUe": {
+    "defaultMessage": "Clear",
+    "description": "Default upload add button label"
+  },
   "owrRHV": {
     "defaultMessage": "Error 500",
     "description": "Error page title"

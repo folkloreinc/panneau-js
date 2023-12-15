@@ -472,6 +472,12 @@ msgctxt "oc3YLT"
 msgid "Choose an item"
 msgstr "Choose an item"
 
+# Default upload add button label
+#: odaCUe
+msgctxt "odaCUe"
+msgid "Clear"
+msgstr "Clear"
+
 # Error page title
 #: owrRHV
 msgctxt "owrRHV"
