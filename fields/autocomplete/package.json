@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-autocomplete",
-    "version": "3.0.100",
+    "version": "3.0.101",
     "description": "An autocomplete field",
     "keywords": [
         "javascript"
@@ -53,10 +53,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.100",
-        "@panneau/element-button": "^3.0.100",
-        "@panneau/field-text": "^3.0.100",
-        "@panneau/themes": "^3.0.100",
+        "@panneau/core": "^3.0.101",
+        "@panneau/element-button": "^3.0.101",
+        "@panneau/field-text": "^3.0.101",
+        "@panneau/themes": "^3.0.101",
         "classnames": "^2.2.6",
         "fuse.js": "^6.4.3",
         "lodash": "^4.17.21",
