@@ -222,12 +222,12 @@ const ResourceTableList = ({
                                                 >
                                                     <FieldDisplayComponent
                                                         {...displayProps}
+                                                        {...(actions !== null ? { actions } : null)}
                                                         resource={resource}
                                                         item={it}
                                                         reload={reload}
                                                         reloadPage={reloadPage}
                                                         updateItem={updateItem}
-                                                        actions={actions}
                                                         {...actionsProps}
                                                     />
                                                 </td>
