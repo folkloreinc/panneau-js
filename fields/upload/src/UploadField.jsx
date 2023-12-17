@@ -289,7 +289,7 @@ const UploadField = ({
         onPageChange: onListPageChange,
         onQueryChange: onListQueryChange,
         onQueryReset: onListQueryReset,
-    } = useResourceQuery(initialQuery);
+    } = useResourceQuery(initialQuery, true, { forceInitialQuery: true });
 
     return (
         <div

@@ -12,6 +12,7 @@ const propTypes = {
     resource: PropTypes.string,
     title: PropTypes.string,
     query: PropTypes.shape(),
+    paginated: PropTypes.bool,
     onQueryChange: PropTypes.func,
     onQueryReset: PropTypes.func,
     onPageChange: PropTypes.func,
@@ -25,6 +26,7 @@ const defaultProps = {
     resource: null,
     title: null,
     query: null,
+    paginated: true,
     onQueryChange: PropTypes.func,
     onQueryReset: PropTypes.func,
     onPageChange: PropTypes.func,
@@ -37,6 +39,7 @@ const ModalResourceItems = ({
     resource,
     title,
     query: initialQuery,
+    paginated,
     onClose,
     listProps,
     className,
@@ -44,7 +47,10 @@ const ModalResourceItems = ({
 }) => {
     const resourceValues = useResourceValues(resource);
     const finalQuery = useMemo(() => ({ ...initialQuery }), [initialQuery]);
-    const { query, onPageChange, onQueryChange, onQueryReset } = useResourceQuery(finalQuery);
+    const { query, onPageChange, onQueryChange, onQueryReset } = useResourceQuery(
+        finalQuery,
+        paginated,
+    );
 
     // TODO: add default list props?
 

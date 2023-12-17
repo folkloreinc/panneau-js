@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-const useResourceQuery = (initialValues = null, paginated = true) => {
+const useResourceQuery = (
+    initialBaseQuery = null,
+    paginated = true,
+    { forceInitialQuery = false } = {},
+) => {
     const initialQuery = useMemo(
-        () => (paginated ? { page: 1, count: 10, ...initialValues } : initialValues || null),
-        [paginated, initialValues],
+        () => (paginated ? { page: 1, count: 10, ...initialBaseQuery } : initialBaseQuery || null),
+        [paginated, initialBaseQuery],
     );
     const [query, setQuery] = useState(initialQuery);
     useEffect(() => {
@@ -31,9 +35,14 @@ const useResourceQuery = (initialValues = null, paginated = true) => {
                               : currentQuery;
                       }, null)
                     : null;
-            setQuery(finalQuery);
+
+            if (forceInitialQuery) {
+                setQuery({ ...(initialBaseQuery || null), ...(finalQuery || null) });
+            } else {
+                setQuery(finalQuery);
+            }
         },
-        [query, setQuery],
+        [query, setQuery, initialBaseQuery, forceInitialQuery],
     );
 
     const onQueryReset = useCallback(() => {

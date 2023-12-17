@@ -42,7 +42,7 @@ export const Fonts = () => <Container fileTypes={['.ttf', '.otf']} />;
 
 export const WithValue = () => <Container value={[{ data: { file: '1200x300.png' } }]} />;
 
-export const WithValues = () => (
+export const WithValuesAndClear = () => (
     <Container
         value={[
             { data: { file: '1200x300.png' }, preview: 'https://picsum.photos/200/300' },
