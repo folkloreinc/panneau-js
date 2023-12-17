@@ -221,8 +221,8 @@ const ResourceTableList = ({
                                                     ])}
                                                 >
                                                     <FieldDisplayComponent
-                                                        {...displayProps}
                                                         {...(actions !== null ? { actions } : null)}
+                                                        {...displayProps}
                                                         resource={resource}
                                                         item={it}
                                                         reload={reload}
