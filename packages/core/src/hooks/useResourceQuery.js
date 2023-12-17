@@ -9,6 +9,7 @@ const useResourceQuery = (
         () => (paginated ? { page: 1, count: 10, ...initialBaseQuery } : initialBaseQuery || null),
         [paginated, initialBaseQuery],
     );
+
     const [query, setQuery] = useState(initialQuery);
     useEffect(() => {
         setQuery(initialQuery);
