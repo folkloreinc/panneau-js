@@ -362,7 +362,7 @@ const UploadField = ({
                     />
                 </div>
             ) : null}
-            {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
+            {!showResourceModal && !disabled && withButton && uppy !== null ? (
                 <DashboardModal
                     uppy={uppy}
                     className={styles.dashboardModal}
