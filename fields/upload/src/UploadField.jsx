@@ -367,10 +367,10 @@ const UploadField = ({
                     uppy={uppy}
                     className={styles.dashboardModal}
                     plugins={sources}
+                    // {...(width !== null ? { width } : null)}
+                    // {...(height !== null ? { height } : null)}
                     open={modalOpened}
                     isHidden={!modalOpened}
-                    {...(width !== null ? { width } : null)}
-                    {...(height !== null ? { height } : null)}
                     onRequestClose={closeModal}
                     proudlyDisplayPoweredByUppy={false}
                     closeModalOnClickOutside
