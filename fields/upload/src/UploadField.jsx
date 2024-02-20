@@ -291,6 +291,11 @@ const UploadField = ({
         onQueryReset: onListQueryReset,
     } = useResourceQuery(initialQuery, true, { forceInitialQuery: true });
 
+    // console.log(
+    //     'modalOpened',
+    //     !showResourceModal && !disabled && withButton && uppy !== null && modalOpened,
+    // );
+
     return (
         <div
             className={classNames([styles.container, { [className]: className !== null }])}
@@ -362,7 +367,8 @@ const UploadField = ({
                     />
                 </div>
             ) : null}
-            {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
+
+            {/* {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
                 <DashboardModal
                     uppy={uppy}
                     className={styles.dashboardModal}
@@ -376,26 +382,29 @@ const UploadField = ({
                     showProgressDetails
                     showAddFilesPanel
                 />
-            ) : // ) : //
-            // <Dialog size="lg" onClose={closeModal} title={addButtonLabel}>
-            //     <Dashboard
-            //         uppy={uppy}
-            //         // {...(containerWidth !== null && height !== null
-            //         //     ? { width: containerWidth }
-            //         // : null)}
-            //         {...(width !== null ? { width } : null)}
-            //         {...(height !== null ? { height } : null)}
-            //         plugins={sources}
-            //         inline
-            //         showProgressDetails
-            //         // areInsidesReadyToBeVisible
-            //         // isDashboardVisible
-            //         showAddFilesPanel
-            //         proudlyDisplayPoweredByUppy={false}
-            //         doneButtonHandler={closeModalAndClear}
-            //     />
-            // </Dialog>
-            null}
+            ) : null} */}
+
+            {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
+                <Dialog size="lg" onClose={closeModal} title={addButtonLabel}>
+                    <Dashboard
+                        uppy={uppy}
+                        // {...(containerWidth !== null && height !== null
+                        //     ? { width: containerWidth }
+                        // : null)}
+                        {...(width !== null ? { width } : null)}
+                        {...(height !== null ? { height } : null)}
+                        plugins={sources}
+                        inline
+                        showProgressDetails
+                        areInsidesReadyToBeVisible
+                        isDashboardVisible
+                        showAddFilesPanel
+                        proudlyDisplayPoweredByUppy={false}
+                        doneButtonHandler={closeModal}
+                    />
+                </Dialog>
+            ) : null}
+
             {showResourceModal ? (
                 <Dialog
                     title={<Label>{findButtonLabel}</Label>}
