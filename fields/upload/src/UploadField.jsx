@@ -362,20 +362,17 @@ const UploadField = ({
                     />
                 </div>
             ) : null}
-            {!showResourceModal && !disabled && withButton && uppy !== null ? (
+            {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
                 <DashboardModal
                     uppy={uppy}
                     className={styles.dashboardModal}
                     plugins={sources}
-                    // {...(width !== null ? { width } : null)}
-                    // {...(height !== null ? { height } : null)}
-                    open={modalOpened}
-                    isHidden={!modalOpened}
+                    open
                     onRequestClose={closeModal}
                     proudlyDisplayPoweredByUppy={false}
                     closeModalOnClickOutside
-                    areInsidesReadyToBeVisible
-                    isDashboardVisible
+                    // areInsidesReadyToBeVisible
+                    // isDashboardVisible
                     showProgressDetails
                     showAddFilesPanel
                 />
