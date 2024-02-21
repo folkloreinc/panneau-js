@@ -24,10 +24,10 @@ import styles from './styles.module.scss';
 // import '@uppy/dashboard/dist/style.css';
 // import '@uppy/drag-drop/dist/style.css';
 // import '@uppy/status-bar/dist/style.css';
-import '@uppy/core/dist/style.min.css';
-import '@uppy/dashboard/dist/style.min.css';
-import '@uppy/drag-drop/dist/style.min.css';
-import '@uppy/status-bar/dist/style.min.css';
+import '@uppy/core/dist/style.css';
+import '@uppy/dashboard/dist/style.css';
+import '@uppy/drag-drop/dist/style.css';
+import '@uppy/status-bar/dist/style.css';
 
 const propTypes = {
     value: PropTypes.oneOfType([
