@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -292,14 +292,21 @@ const UploadField = ({
         onQueryReset: onListQueryReset,
     } = useResourceQuery(initialQuery, true, { forceInitialQuery: true });
 
-    console.log(
-        'modalOpened',
-        !showResourceModal && !disabled && withButton && uppy !== null && modalOpened,
-    );
-
-    console.log('uppy', uppy);
+    // console.log(
+    //     'modalOpened',
+    //     !showResourceModal && !disabled && withButton && uppy !== null && modalOpened,
+    // );
+    // console.log('uppy', uppy);
 
     const containerRef = useRef(null);
+
+    // Keep this stable, uppy doesnt like
+    const [finalUppy, setFinalUppy] = useState(null);
+    useEffect(() => {
+        if (uppy !== null && finalUppy === null) {
+            setFinalUppy(uppy);
+        }
+    }, [uppy, finalUppy]);
 
     return (
         <div
@@ -357,10 +364,10 @@ const UploadField = ({
                 </div>
             ) : null}
 
-            {!showResourceModal && !disabled && !hasMedia && !withButton && uppy !== null ? (
+            {!showResourceModal && !disabled && !hasMedia && !withButton && finalUppy !== null ? (
                 <div className={styles.dashboard}>
                     <Dashboard
-                        uppy={uppy}
+                        uppy={finalUppy}
                         // {...(containerWidth !== null && height !== null
                         //     ? { width: containerWidth }
                         // : null)}
@@ -375,11 +382,11 @@ const UploadField = ({
                 </div>
             ) : null}
 
-            {/* older versions */}
+            {/* modal versions */}
 
-            {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
+            {!showResourceModal && !disabled && withButton && finalUppy !== null && modalOpened ? (
                 <DashboardModal
-                    uppy={uppy}
+                    uppy={finalUppy}
                     className={styles.dashboardModal}
                     plugins={sources}
                     open
@@ -393,59 +400,6 @@ const UploadField = ({
                     doneButtonHandler={closeModal}
                 />
             ) : null}
-
-            {/* {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
-                <Dialog size="lg" onClose={closeModal} title={addButtonLabel}>
-                    <Dashboard
-                        uppy={uppy}
-                        // {...(containerWidth !== null && height !== null
-                        //     ? { width: containerWidth }
-                        // : null)}
-                        {...(width !== null ? { width } : null)}
-                        {...(height !== null ? { height } : null)}
-                        plugins={sources}
-                        inline
-                        showProgressDetails
-                        areInsidesReadyToBeVisible
-                        isDashboardVisible
-                        showAddFilesPanel
-                        proudlyDisplayPoweredByUppy={false}
-                        doneButtonHandler={closeModal}
-                    />
-                </Dialog>
-            ) : null} */}
-
-            {/* { New versions } */}
-
-            {/* {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
-                <div className={styles.uppyDashboardContainer}>
-                    <Dashboard
-                        uppy={uppy}
-                        plugins={sources}
-                        inline
-                        width="100%"
-                        height="300px"
-                        showProgressDetails
-                        proudlyDisplayPoweredByUppy={false}
-                    />
-                </div>
-            ) : null} */}
-
-            {/* {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
-                <div className={styles.uppyDashboardContainer}>
-                    <UploadModal
-                        title={addButtonLabel}
-                        uppy={uppy}
-                        plugins={sources}
-                        inline
-                        width="100%"
-                        height="300px"
-                        showProgressDetails
-                        showAddFilesPanel
-                        proudlyDisplayPoweredByUppy={false}
-                    />
-                </div>
-            ) : null} */}
 
             {showResourceModal ? (
                 <Dialog

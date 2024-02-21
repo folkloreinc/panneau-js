@@ -255,7 +255,7 @@ const ResourceTableList = ({
                                                         'text-break':
                                                             displayValue !== null &&
                                                             isString(displayValue) &&
-                                                            displayValue.length >= 40,
+                                                            displayValue.length >= 30,
                                                         [columnClassName]: columnClassName !== null,
                                                     },
                                                 ])}
