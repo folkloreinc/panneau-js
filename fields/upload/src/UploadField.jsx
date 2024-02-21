@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // import classNames from 'classnames';
-import { Dashboard } from '@uppy/react';
+import { Dashboard, DashboardModal } from '@uppy/react';
 import classNames from 'classnames';
 import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
@@ -15,15 +15,11 @@ import Label from '@panneau/element-label';
 import { MediaCards } from '@panneau/element-media-card';
 import ResourceItemsList from '@panneau/list-resource-items';
 import Dialog from '@panneau/modal-dialog';
-import UploadModal from '@panneau/modal-upload';
+// import UploadModal from '@panneau/modal-upload';
 import { useUppy } from '@panneau/uppy';
 
 import styles from './styles.module.scss';
 
-// import '@uppy/core/dist/style.css';
-// import '@uppy/dashboard/dist/style.css';
-// import '@uppy/drag-drop/dist/style.css';
-// import '@uppy/status-bar/dist/style.css';
 import '@uppy/core/dist/style.css';
 import '@uppy/dashboard/dist/style.css';
 import '@uppy/drag-drop/dist/style.css';
@@ -380,7 +376,8 @@ const UploadField = ({
             ) : null}
 
             {/* older versions */}
-            {/* {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
+
+            {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
                 <DashboardModal
                     uppy={uppy}
                     className={styles.dashboardModal}
@@ -393,8 +390,9 @@ const UploadField = ({
                     isDashboardVisible
                     showProgressDetails
                     showAddFilesPanel
+                    doneButtonHandler={closeModal}
                 />
-            ) : null} */}
+            ) : null}
 
             {/* {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
                 <Dialog size="lg" onClose={closeModal} title={addButtonLabel}>
@@ -433,7 +431,7 @@ const UploadField = ({
                 </div>
             ) : null} */}
 
-            {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
+            {/* {!showResourceModal && !disabled && withButton && uppy !== null && modalOpened ? (
                 <div className={styles.uppyDashboardContainer}>
                     <UploadModal
                         title={addButtonLabel}
@@ -443,10 +441,11 @@ const UploadField = ({
                         width="100%"
                         height="300px"
                         showProgressDetails
+                        showAddFilesPanel
                         proudlyDisplayPoweredByUppy={false}
                     />
                 </div>
-            ) : null}
+            ) : null} */}
 
             {showResourceModal ? (
                 <Dialog
