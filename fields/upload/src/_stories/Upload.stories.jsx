@@ -1,6 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 
+import { ModalProvider } from '@panneau/core/contexts';
+import { Modals } from '@panneau/element-modal';
+
 import withUppy from '../../../../.storybook/decorators/withUppy';
 import { UppyProvider } from '../../../../packages/uppy/src/UppyContext';
 import UploadField from '../UploadField';
@@ -17,7 +20,14 @@ export default {
 // eslint-disable-next-line react/prop-types
 const Container = ({ value: initialValue = null, ...props }) => {
     const [value, setValue] = useState(initialValue);
-    return <UploadField {...props} value={value} onChange={setValue} />;
+    return (
+        <ModalProvider>
+            <div>
+                <UploadField {...props} value={value} onChange={setValue} />
+            </div>
+            <Modals />
+        </ModalProvider>
+    );
 };
 
 export const Normal = () => <Container />;

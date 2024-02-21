@@ -1,62 +1,51 @@
-import { DashboardModal } from '@uppy/react';
+/* eslint-disable react/jsx-props-no-spreading */
+import { Dashboard } from '@uppy/react';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 
-import { useUppy } from '@panneau/uppy';
+import Dialog from '@panneau/modal-dialog';
 
 import styles from './styles.module.scss';
 
-import '@uppy/core/dist/style.css';
-import '@uppy/dashboard/dist/style.css';
-import '@uppy/drag-drop/dist/style.css';
-import '@uppy/status-bar/dist/style.css';
+import '@uppy/core/dist/style.min.css';
+import '@uppy/dashboard/dist/style.min.css';
+import '@uppy/drag-drop/dist/style.min.css';
+import '@uppy/status-bar/dist/style.min.css';
 
 const propTypes = {
-    opened: PropTypes.bool,
-    sources: PropTypes.arrayOf(PropTypes.string),
-    onUploaded: PropTypes.func,
-    onRequestClose: PropTypes.func,
+    title: PropTypes.string,
+    uppy: PropTypes.shape({
+        reset: PropTypes.func,
+    }),
+    plugins: PropTypes.arrayOf(PropTypes.string),
+    onClose: PropTypes.func,
 };
 
 const defaultProps = {
-    opened: false,
-    sources: ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'],
-    onUploaded: null,
-    onRequestClose: null,
+    title: null,
+    uppy: null,
+    plugins: [],
+    onClose: null,
 };
 
-const UploadModal = ({ opened, sources, onUploaded, onRequestClose }) => {
-    const onUppyComplete = useCallback(
-        (response) => {
-            if (onUploaded !== null) {
-                onUploaded(response);
-            }
-        },
-        [onUploaded],
-    );
-
-    const uppy = useUppy({
-        onComplete: onUppyComplete,
-        sources,
-    });
-
-    useEffect(() => {
-        if (uppy !== null && !opened) {
-            uppy.reset();
-        }
-    }, [uppy, opened]);
-
-    return uppy !== null ? (
-        <DashboardModal
-            uppy={uppy}
-            open={opened}
-            closeAfterFinish
-            onRequestClose={onRequestClose}
-            plugins={sources}
-            className={styles.container}
-        />
-    ) : null;
-};
+const UploadModal = ({ title, uppy, plugins, onClose, ...props }) => (
+    <Dialog size="lg" onClose={onClose} title={title}>
+        {uppy !== null ? (
+            <Dashboard
+                inline
+                width="100%"
+                height="350px"
+                showAddFilesPanel
+                proudlyDisplayPoweredByUppy={false}
+                {...props}
+                className={styles.container}
+                uppy={uppy}
+                onRequestClose={onClose}
+                plugins={plugins}
+            />
+        ) : null}
+    </Dialog>
+);
 
 UploadModal.propTypes = propTypes;
 UploadModal.defaultProps = defaultProps;

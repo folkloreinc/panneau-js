@@ -1,4 +1,5 @@
 .container {
+    position: relative;
     width: 100%;
 
     .dashboard {
@@ -8,5 +9,9 @@
     .dashboardModal {
         // position: relative;
         // z-index: 10001;
+    }
+
+    .uppyDashboardContainer {
+        margin-top: 10px;
     }
 }
