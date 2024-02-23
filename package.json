@@ -38,6 +38,7 @@
         "@babel/preset-env": "^7.16.7",
         "@babel/preset-react": "^7.16.7",
         "@folklore/fetch": "^0.1.16",
+        "@folklore/routes": "^0.2.18",
         "@formatjs/cli-lib": "^6.0.3",
         "@nrwl/cli": "^15.9.4",
         "@rollup/plugin-alias": "^3.1.2",
@@ -137,8 +138,7 @@
         "stylelint-config-property-sort-order-smacss": "^9.0.0",
         "stylelint-config-sass-guidelines": "^9.0.1",
         "uuid": "^8.3.2",
-        "webpack": "^5.76.3",
-        "wouter": "^2.11.0"
+        "webpack": "^5.76.3"
     },
     "dependencies": {
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11"

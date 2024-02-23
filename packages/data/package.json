@@ -54,11 +54,10 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.16",
-        "@folklore/routes": "^0.2.6",
+        "@folklore/routes": "^0.2.18",
         "@panneau/core": "^3.0.101",
         "prop-types": "^15.7.2",
-        "query-string": "^8.1.0",
-        "wouter": "^2.11.0"
+        "query-string": "^8.1.0"
     },
     "publishConfig": {
         "access": "public"

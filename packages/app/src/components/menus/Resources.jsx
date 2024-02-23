@@ -1,4 +1,4 @@
-import { useLocation } from '@folklore/routes';
+import { useLocation } from 'wouter';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
@@ -19,7 +19,7 @@ const defaultProps = {
 };
 
 const ResourcesMenu = ({ className, itemClassName, linkClassName }) => {
-    const [{ pathname }] = useLocation();
+    const [pathname] = useLocation();
     const resources = usePanneauResources();
     const resourceRoute = useResourceUrlGenerator();
 

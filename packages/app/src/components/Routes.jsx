@@ -1,8 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { useLocation } from '@folklore/routes';
 import isObject from 'lodash/isObject';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
-import { Redirect, Route, Switch, useRouter, useLocation as useWouterLocation } from 'wouter';
+import { Redirect, Route, Switch, useLocation } from 'wouter';
 
 import { useUser } from '@panneau/auth';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -30,7 +29,7 @@ const defaultProps = {
 
 const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     const routes = useRoutes();
-    const [{ pathname }] = useLocation();
+    const [pathname] = useLocation();
     const [{ statusCode, pathname: lastPathname }, setInitialRequest] = useState({
         statusCode: initialStatusCode,
         pathname,

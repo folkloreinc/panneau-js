@@ -217,8 +217,8 @@ const Button = ({
                 {content}
             </a>
         ) : (
-            <Link href={href} onClick={onClick} ref={refButton}>
-                <a className={buttonClassNames}>{content}</a>
+            <Link href={href} onClick={onClick} className={buttonClassNames} ref={refButton}>
+                {content}
             </Link>
         );
     }

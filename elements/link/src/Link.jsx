@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Link as ReactLink } from 'wouter';
+import { Link as ReactLink, useLocation } from 'wouter';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Button from '@panneau/element-button';
@@ -45,13 +45,13 @@ const Link = ({
 }) => {
     const inner =
         href !== null ? (
-            <ReactLink href={href} onClick={onClick}>
-                <a
-                    className={classNames([className, { [styles.withoutStyle]: withoutStyle }])}
-                    {...props}
-                >
-                    <Label>{children}</Label>
-                </a>
+            <ReactLink
+                className={classNames([className, { [styles.withoutStyle]: withoutStyle }])}
+                {...props}
+                href={href}
+                onClick={onClick}
+            >
+                <Label>{children}</Label>
             </ReactLink>
         ) : (
             <Button

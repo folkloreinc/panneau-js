@@ -2,7 +2,7 @@
 import { RoutesContext, RoutesProvider, useRoutes, useUrlGenerator } from '@folklore/routes';
 import isString from 'lodash/isString';
 import { useCallback } from 'react';
-import { useLocation } from '@folklore/routes';
+import { useLocation } from 'wouter';
 
 export { RoutesContext, useRoutes, useUrlGenerator, RoutesProvider };
 

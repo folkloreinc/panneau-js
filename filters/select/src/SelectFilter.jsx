@@ -1,11 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useLocation } from '@folklore/routes';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearch } from 'wouter';
 
 import { useApi } from '@panneau/data';
 import Select from '@panneau/element-select';
@@ -58,7 +58,7 @@ const SelectFilter = ({
         setOptions(initialOptions);
     }, [initialOptions, setOptions]);
 
-    const [{ search }] = useLocation();
+    const search = useSearch();
     const query = useMemo(() => queryString.parse(search, { arrayFormat: 'bracket' }), [search]);
 
     const finalParams = useMemo(() => {

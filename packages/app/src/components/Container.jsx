@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { createPathToRegexpMatcher, useMemoryLocationHook } from '@folklore/routes';
+import { useMemoryRouter } from '@folklore/routes';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import { Router } from 'wouter';
@@ -12,9 +12,6 @@ import {
     PanneauProvider,
     RoutesProvider,
 } from '@panneau/core/contexts';
-import {
-    UppyProvider,
-} from '@panneau/uppy';
 import { ApiProvider } from '@panneau/data';
 import DisplaysProvider from '@panneau/displays';
 import FieldsProvider from '@panneau/fields';
@@ -23,12 +20,11 @@ import FormsProvider from '@panneau/forms';
 import { IntlProvider } from '@panneau/intl';
 import ListsProvider from '@panneau/lists';
 import ModalsProvider from '@panneau/modals';
+import { UppyProvider } from '@panneau/uppy';
 
 import Routes from './Routes';
 
 import '../styles/styles.scss';
-
-const pathToRegexpMatcher = createPathToRegexpMatcher();
 
 const propTypes = {
     definition: PanneauPropTypes.panneauDefinition.isRequired,
@@ -87,10 +83,13 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
         window.location.reload();
     }, [baseUrl]);
 
-    const memoryLocationHook = useMemoryLocationHook();
+    const { hook: memoryLocationHook, searchHook: memorySearchHook } = useMemoryRouter();
 
     return (
-        <Router hook={isMemoryRouter ? memoryLocationHook : null} matcher={pathToRegexpMatcher}>
+        <Router
+            hook={isMemoryRouter ? memoryLocationHook : null}
+            searchHook={isMemoryRouter ? memorySearchHook : null}
+        >
             <IntlProvider locale={locale} locales={locales} extraMessages={extraMessages}>
                 <PanneauProvider definition={definition}>
                     <UppyProvider {...uppy}>

@@ -1,19 +1,16 @@
+import { useMemoryRouter } from '@folklore/routes';
 import React, { useState } from 'react';
 import { Router } from 'wouter';
-import { useLocationProperty } from 'wouter/use-location';
 
 const withRouter = (Story, { parameters: { router = null } }) => {
     if (router === false) {
         return <Story />;
     }
 
-    const [memoryLocation, setMemoryLocation] = useState(null);
-    const useMemoryLocation = () => {
-        const location = useLocationProperty(() => memoryLocation || '/');
-        return [location, setMemoryLocation];
-    };
+    const { hook, searchHook } = useMemoryRouter();
+
     return (
-        <Router hook={useMemoryLocation}>
+        <Router hook={hook} searchHook={searchHook}>
             <Story />
         </Router>
     );
