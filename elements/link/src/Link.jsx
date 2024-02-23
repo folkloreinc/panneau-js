@@ -45,13 +45,13 @@ const Link = ({
 }) => {
     const inner =
         href !== null ? (
-            <ReactLink href={href} onClick={onClick}>
-                <a
-                    className={classNames([className, { [styles.withoutStyle]: withoutStyle }])}
-                    {...props}
-                >
-                    <Label>{children}</Label>
-                </a>
+            <ReactLink
+                href={href}
+                onClick={onClick}
+                className={classNames([className, { [styles.withoutStyle]: withoutStyle }])}
+                {...props}
+            >
+                <Label>{children}</Label>
             </ReactLink>
         ) : (
             <Button
