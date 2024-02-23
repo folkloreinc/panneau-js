@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-table",
-    "version": "3.0.113",
+    "version": "3.0.114",
     "description": "Table element",
     "keywords": [
         "javascript"
@@ -47,7 +47,7 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.113",
         "@panneau/element-icon": "^3.0.113",
-        "@panneau/element-link": "^3.0.113",
+        "@panneau/element-link": "^3.0.114",
         "@panneau/element-loading": "^3.0.113",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
