@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import styles from './styles.module.scss';
+import { useMediasApi } from './MediasApiContext';
 
 const propTypes = {
 
@@ -15,7 +16,7 @@ const defaultProps = {
 };
 
 function MediasBrowser({ className }) {
-    return <div className={classNames([styles.container, className])}>Médias</div>;
+    return <div className={classNames([styles.container, className])}>gfsdgsdfg</div>;
 };
 
 MediasBrowser.propTypes = propTypes;
