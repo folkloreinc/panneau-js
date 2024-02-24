@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-form-group",
-    "version": "3.0.115",
+    "version": "3.0.116",
     "description": "Form group element",
     "keywords": [
         "javascript"
@@ -57,8 +57,8 @@
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
         "@panneau/core": "^3.0.113",
-        "@panneau/element-button": "^3.0.115",
-        "@panneau/themes": "^3.0.113",
+        "@panneau/element-button": "^3.0.116",
+        "@panneau/themes": "^3.0.116",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"

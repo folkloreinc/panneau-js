@@ -3,6 +3,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
@@ -253,9 +254,10 @@ const ResourceTableList = ({
                                                     'col-auto',
                                                     {
                                                         'text-break':
-                                                            displayValue !== null &&
-                                                            isString(displayValue) &&
-                                                            displayValue.length >= 30,
+                                                            (displayValue !== null &&
+                                                                isString(displayValue) &&
+                                                                displayValue.length >= 30) ||
+                                                            isObject(displayValue),
                                                         [columnClassName]: columnClassName !== null,
                                                     },
                                                 ])}
