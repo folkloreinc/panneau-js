@@ -38,7 +38,7 @@
         "@babel/preset-env": "^7.16.7",
         "@babel/preset-react": "^7.16.7",
         "@folklore/fetch": "^0.1.16",
-        "@folklore/routes": "^0.2.18",
+        "@folklore/routes": "^0.2.26",
         "@formatjs/cli-lib": "^6.0.3",
         "@nrwl/cli": "^15.9.4",
         "@rollup/plugin-alias": "^3.1.2",

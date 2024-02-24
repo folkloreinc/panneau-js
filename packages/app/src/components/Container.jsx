@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { useMemoryRouter } from '@folklore/routes';
+import { createPathToRegexpParser, useMemoryRouter } from '@folklore/routes';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import { Router } from 'wouter';
@@ -25,6 +25,8 @@ import { UppyProvider } from '@panneau/uppy';
 import Routes from './Routes';
 
 import '../styles/styles.scss';
+
+const pathToRegexpParser = createPathToRegexpParser();
 
 const propTypes = {
     definition: PanneauPropTypes.panneauDefinition.isRequired,
@@ -89,6 +91,7 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
         <Router
             hook={isMemoryRouter ? memoryLocationHook : null}
             searchHook={isMemoryRouter ? memorySearchHook : null}
+            parser={pathToRegexpParser}
         >
             <IntlProvider locale={locale} locales={locales} extraMessages={extraMessages}>
                 <PanneauProvider definition={definition}>

@@ -109,10 +109,7 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
                     <LoginComponent {...loginPage} />
                 </Route>
                 <Route>
-                    <Redirect
-                        to={`${route('auth.login')}?next=${encodeURIComponent(pathname)}`}
-                        replace
-                    />
+                    <Redirect to={`${route('auth.login')}?next=${encodeURIComponent(pathname)}`} />
                 </Route>
             </Switch>
         );
