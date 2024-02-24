@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-item",
-    "version": "3.0.117",
+    "version": "3.0.118",
     "description": "A repeatable abstract field",
     "keywords": [
         "javascript"
@@ -53,12 +53,12 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.117",
-        "@panneau/data": "^3.0.117",
-        "@panneau/element-button": "^3.0.117",
-        "@panneau/element-resource-card": "^3.0.117",
-        "@panneau/element-select": "^3.0.117",
-        "@panneau/field-select": "^3.0.117",
+        "@panneau/core": "^3.0.118",
+        "@panneau/data": "^3.0.118",
+        "@panneau/element-button": "^3.0.118",
+        "@panneau/element-resource-card": "^3.0.118",
+        "@panneau/element-select": "^3.0.118",
+        "@panneau/field-select": "^3.0.118",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
