@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form",
-    "version": "3.0.119",
+    "version": "3.0.120",
     "description": "Basic form",
     "keywords": [
         "javascript"
@@ -48,7 +48,7 @@
         "@folklore/fetch": "^0.1.16",
         "@panneau/core": "^3.0.119",
         "@panneau/element-button": "^3.0.119",
-        "@panneau/element-form": "^3.0.119",
+        "@panneau/element-form": "^3.0.120",
         "@panneau/field-fields": "^3.0.119",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
