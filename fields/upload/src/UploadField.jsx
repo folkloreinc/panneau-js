@@ -59,6 +59,8 @@ const propTypes = {
     disabled: PropTypes.bool,
     onChange: PropTypes.func,
     onClear: PropTypes.func,
+    onClickAdd: PropTypes.func,
+    onClickFind: PropTypes.func,
     className: PropTypes.string,
 };
 
@@ -96,6 +98,8 @@ const defaultProps = {
     disabled: false,
     onChange: null,
     onClear: null,
+    onClickAdd: null,
+    onClickFind: null,
     className: null,
 };
 
@@ -124,6 +128,8 @@ const UploadField = ({
     disabled,
     onChange,
     onClear,
+    onClickAdd,
+    onClickFind,
     className,
 }) => {
     const mergeData = useCallback((newValue) => {
@@ -341,7 +347,7 @@ const UploadField = ({
                             id="trigger-uppy"
                             type="button"
                             theme="primary"
-                            onClick={openModal}
+                            onClick={onClickAdd || openModal}
                             disabled={disabled}
                             outline
                         >
@@ -353,7 +359,7 @@ const UploadField = ({
                             <Button
                                 type="button"
                                 theme="primary"
-                                onClick={toggleResourceModal}
+                                onClick={onClickFind || toggleResourceModal}
                                 disabled={disabled}
                                 outline
                             >
