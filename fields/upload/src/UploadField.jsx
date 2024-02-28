@@ -53,6 +53,7 @@ const propTypes = {
     namePath: PropTypes.string,
     thumbnailPath: PropTypes.string,
     sizePath: PropTypes.string,
+    linkPath: PropTypes.string,
     uppyProps: PropTypes.shape({ withUUID: PropTypes.bool }),
     width: PropTypes.number,
     height: PropTypes.number,
@@ -92,6 +93,7 @@ const defaultProps = {
     namePath: null,
     thumbnailPath: null,
     sizePath: null,
+    linkPath: null,
     uppyProps: null,
     width: null,
     height: 300,
@@ -122,6 +124,7 @@ const UploadField = ({
     namePath,
     thumbnailPath,
     sizePath,
+    linkPath,
     uppyProps,
     width,
     height,
@@ -325,6 +328,7 @@ const UploadField = ({
                     namePath={namePath}
                     thumbnailPath={thumbnailPath}
                     sizePath={sizePath}
+                    linkPath={linkPath}
                     disabled={disabled}
                     onClickRemove={onClickRemove}
                 />
