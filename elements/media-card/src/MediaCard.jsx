@@ -182,7 +182,6 @@ const MediaCard = ({
                                     ) : (
                                         name
                                     )}
-                                    {name}
                                 </h5>
                                 {size !== null && size > 0 ? (
                                     <p className="card-text text-muted small">
