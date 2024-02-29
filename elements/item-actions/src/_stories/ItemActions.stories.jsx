@@ -3,7 +3,7 @@ import React from 'react';
 
 import pageResource from '../../../../.storybook/data/page-resource';
 import panneauDefinition from '../../../../.storybook/data/panneau-definition';
-import { PanneauProvider } from '../../../../packages/core/contexts';
+import { PanneauProvider } from '../../../../packages/core/src/contexts';
 // import ApiProvider from '../../../../packages/data/src/contexts/ApiContext';
 import ItemActions from '../ItemActions';
 

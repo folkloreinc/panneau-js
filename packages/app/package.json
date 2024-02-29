@@ -51,7 +51,8 @@
         "scss"
     ],
     "scripts": {
-        "prepare": "../../scripts/prepare-package.sh --scss"
+        "prepublishOnly": "npm run build",
+"build": "../../scripts/prepare-package.sh --scss"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
@@ -105,7 +106,7 @@
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
-        "query-string": "^8.1.0",
+        "query-string": "^9.0.0",
         "react-intl": "^5.15.8||^6.0.0",
         "wouter": "^3.0.0"
     },

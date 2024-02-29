@@ -41,7 +41,8 @@
         "assets"
     ],
     "scripts": {
-        "prepare": "../../scripts/prepare-package.sh"
+        "prepublishOnly": "npm run build",
+"build": "../../scripts/prepare-package.sh"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
@@ -59,7 +60,7 @@
         "@panneau/element-link": "^3.0.119",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
-        "query-string": "^8.1.0",
+        "query-string": "^9.0.0",
         "react-intl": "^5.15.8||^6.0.0"
     },
     "publishConfig": {

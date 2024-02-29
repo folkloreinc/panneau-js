@@ -67,7 +67,8 @@
         "utils.js"
     ],
     "scripts": {
-        "prepare": "../../scripts/prepare-package.sh --scss"
+        "prepublishOnly": "npm run build",
+        "build": "../../scripts/prepare-package.sh --scss"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
@@ -88,7 +89,7 @@
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",
         "bootstrap": "^5.3.1",
-        "change-case": "^4.1.2",
+        "change-case": "^4.0.0",
         "classnames": "^2.2.6",
         "css-mediaquery": "^0.1.2",
         "dayjs": "^1.10.4",
@@ -100,7 +101,6 @@
         "react-helmet": "^6.1.0",
         "react-intl": "^5.15.8||^6.0.0",
         "react-is": "^17.0.2",
-        "react-use-gesture": "^9.0.0",
         "slugify": "^1.5.0",
         "snake-case": "^3.0.4",
         "tinycolor2": "^1.4.2",

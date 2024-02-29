@@ -84,14 +84,14 @@ export default Object.keys(files).reduce(
         ...configs,
         createConfig({
             file,
-            format: 'both',
+            format: 'es',
             ...files[file],
         }),
-        // createConfig({
-        //     file,
-        //     format: 'cjs',
-        //     ...files[file],
-        // }),
+        createConfig({
+            file,
+            format: 'cjs',
+            ...files[file],
+        }),
     ],
     [],
 );

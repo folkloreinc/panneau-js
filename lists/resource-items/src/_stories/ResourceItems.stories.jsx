@@ -2,7 +2,7 @@ import React from 'react';
 
 import pageResource from '../../../../.storybook/data/page-resource';
 import withApi from '../../../../.storybook/decorators/withApiProvider';
-import { PanneauProvider } from '../../../../packages/core/contexts';
+import { PanneauProvider } from '../../../../packages/core/src/contexts';
 import DisplaysProvider from '../../../../packages/displays/src';
 import ListsProvider from '../../../../packages/lists/src';
 import ResourceItems from '../ResourceItems';

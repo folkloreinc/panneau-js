@@ -5,7 +5,7 @@ import React, { useCallback, useState } from 'react';
 import panneauDefinition from '../../../../.storybook/data/panneau-definition';
 // import pageResource from '../../../../.storybook/data/page-resource';
 import withApi from '../../../../.storybook/decorators/withApiProvider';
-import { ModalProvider, PanneauProvider } from '../../../../packages/core/contexts';
+import { ModalProvider, PanneauProvider } from '../../../../packages/core/src/contexts';
 // import { ApiProvider } from '../../../../packages/data/src/contexts/ApiContext';
 import FieldsProvider from '../../../../packages/fields';
 // import IntlProvider from '../../../../packages/intl/src/IntlProvider';

@@ -3,11 +3,12 @@ import React, { useState } from 'react';
 import { Router } from 'wouter';
 
 const withRouter = (Story, { parameters: { router = null } }) => {
+
+    const { hook, searchHook } = useMemoryRouter();
+
     if (router === false) {
         return <Story />;
     }
-
-    const { hook, searchHook } = useMemoryRouter();
 
     return (
         <Router hook={hook} searchHook={searchHook}>

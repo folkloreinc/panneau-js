@@ -3,7 +3,7 @@ import React from 'react';
 import { RoutesProvider } from '@panneau/core/contexts';
 
 import pageResource from '../../../../.storybook/data/page-resource';
-import { ResourceProvider } from '../../../../packages/core/contexts';
+import { ResourceProvider } from '../../../../packages/core/src/contexts';
 import Cards from '../Cards';
 
 export default {

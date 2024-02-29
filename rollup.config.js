@@ -50,6 +50,14 @@ export const createConfig = ({
             moduleSideEffects: (id, external) => id.match(/\.(css|scss)$/) !== null,
         },
         plugins: [
+            isCjs &&
+                resolve({
+                    modulesOnly: true,
+                    resolveOnly: [
+                        '@folklore/routes',
+                        /(query-string|decode-uri-component|split-on-first|filter-obj|screenfull|camelcase|[a-z]+-case|wouter)/,
+                    ],
+                }),
             ...prependPlugins,
             json(),
             resolve({
@@ -137,4 +145,4 @@ export const createConfig = ({
     };
 };
 
-export default [createConfig({ format: 'both' }) /* , createConfig({ format: 'cjs' }) */];
+export default [createConfig({ format: 'es' }), createConfig({ format: 'cjs' })];

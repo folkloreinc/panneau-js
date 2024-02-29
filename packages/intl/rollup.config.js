@@ -38,10 +38,10 @@ const localesFiles = locales.reduce(
 
 export default [
     createConfig({
-        format: 'both',
+        format: 'es',
     }),
-    // createConfig({
-    //     format: 'cjs',
-    // }),
+    createConfig({
+        format: 'cjs',
+    }),
     ...localesFiles,
 ];
