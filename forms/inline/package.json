@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-inline",
-    "version": "3.0.120",
+    "version": "3.0.125",
     "description": "Inline form",
     "keywords": [
         "javascript"
@@ -42,7 +42,7 @@
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
-"build": "../../scripts/prepare-package.sh"
+        "build": "../../scripts/prepare-package.sh"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
@@ -54,10 +54,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.119",
-        "@panneau/element-button": "^3.0.119",
-        "@panneau/element-form": "^3.0.120",
-        "@panneau/field-fields": "^3.0.119",
+        "@panneau/core": "^3.0.125",
+        "@panneau/element-button": "^3.0.125",
+        "@panneau/element-form": "^3.0.125",
+        "@panneau/field-fields": "^3.0.125",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

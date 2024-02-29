@@ -1,6 +1,6 @@
 {
     "name": "@panneau/themes",
-    "version": "3.0.119",
+    "version": "3.0.125",
     "description": "",
     "keywords": [
         "javascript"
@@ -66,7 +66,7 @@
         "css:vendor": "../../scripts/build-sass.js ./src/styles/vendor.scss ./assets/css/vendor.css",
         "css": "npm run css:vendor && npm run css:styles",
         "prepublishOnly": "npm run build",
-"build": "../../scripts/prepare-package.sh --scss && npm run css"
+        "build": "../../scripts/prepare-package.sh --scss && npm run css"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
@@ -78,7 +78,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.119",
+        "@panneau/core": "^3.0.125",
         "bootstrap": "^5.3.1",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",

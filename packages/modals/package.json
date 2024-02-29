@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modals",
-    "version": "3.0.120",
+    "version": "3.0.125",
     "description": "",
     "keywords": [
         "javascript"
@@ -54,7 +54,7 @@
         "scss": "../../scripts/build-packages-styles.js --pattern='@panneau/modal-*' ./src/styles.scss.ejs ./scss/styles.scss",
         "css": "../../scripts/build-sass.js ./scss/styles.scss ./assets/css/styles.css",
         "prepublishOnly": "npm run build",
-"build": "../../scripts/prepare-package.sh && npm run scss && npm run css"
+        "build": "../../scripts/prepare-package.sh && npm run scss && npm run css"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
@@ -66,11 +66,11 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.119",
-        "@panneau/element-portal": "^3.0.120",
-        "@panneau/modal-dialog": "^3.0.119",
-        "@panneau/modal-upload": "^3.0.119",
-        "@panneau/themes": "^3.0.119",
+        "@panneau/core": "^3.0.125",
+        "@panneau/element-portal": "^3.0.125",
+        "@panneau/modal-dialog": "^3.0.125",
+        "@panneau/modal-upload": "^3.0.125",
+        "@panneau/themes": "^3.0.125",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2"
     },

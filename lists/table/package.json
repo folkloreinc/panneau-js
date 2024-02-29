@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-table",
-    "version": "3.0.119",
+    "version": "3.0.125",
     "description": "Table list",
     "keywords": [
         "javascript"
@@ -42,7 +42,7 @@
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
-"build": "../../scripts/prepare-package.sh"
+        "build": "../../scripts/prepare-package.sh"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
@@ -54,17 +54,17 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.119",
-        "@panneau/element-button": "^3.0.119",
-        "@panneau/element-buttons": "^3.0.119",
-        "@panneau/element-icon": "^3.0.119",
-        "@panneau/element-item-actions": "^3.0.119",
-        "@panneau/element-label": "^3.0.119",
-        "@panneau/element-link": "^3.0.119",
-        "@panneau/element-loading": "^3.0.119",
-        "@panneau/element-pagination": "^3.0.119",
-        "@panneau/element-table": "^3.0.119",
-        "@panneau/themes": "^3.0.119",
+        "@panneau/core": "^3.0.125",
+        "@panneau/element-button": "^3.0.125",
+        "@panneau/element-buttons": "^3.0.125",
+        "@panneau/element-icon": "^3.0.125",
+        "@panneau/element-item-actions": "^3.0.125",
+        "@panneau/element-label": "^3.0.125",
+        "@panneau/element-link": "^3.0.125",
+        "@panneau/element-loading": "^3.0.125",
+        "@panneau/element-pagination": "^3.0.125",
+        "@panneau/element-table": "^3.0.125",
+        "@panneau/themes": "^3.0.125",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

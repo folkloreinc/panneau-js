@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-accordion",
-    "version": "3.0.119",
+    "version": "3.0.125",
     "description": "Accordion element",
     "keywords": [
         "javascript"
@@ -42,7 +42,7 @@
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
-"build": "../../scripts/prepare-package.sh"
+        "build": "../../scripts/prepare-package.sh"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
@@ -54,8 +54,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.119",
-        "@panneau/element-label": "^3.0.119",
+        "@panneau/core": "^3.0.125",
+        "@panneau/element-label": "^3.0.125",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0",

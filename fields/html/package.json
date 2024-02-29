@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-html",
-    "version": "3.0.119",
+    "version": "3.0.125",
     "description": "A HTML field, using either Quill or CK Editor",
     "keywords": [
         "javascript"
@@ -42,7 +42,7 @@
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
-"build": "../../scripts/prepare-package.sh"
+        "build": "../../scripts/prepare-package.sh"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
@@ -57,9 +57,9 @@
         "@ckeditor/ckeditor5-build-classic": "^40.2.0",
         "@ckeditor/ckeditor5-build-inline": "^40.2.0",
         "@ckeditor/ckeditor5-react": "^6.2.0",
-        "@panneau/core": "^3.0.119",
-        "@panneau/field-input-group": "^3.0.119",
-        "@panneau/themes": "^3.0.119",
+        "@panneau/core": "^3.0.125",
+        "@panneau/field-input-group": "^3.0.125",
+        "@panneau/themes": "^3.0.125",
         "classnames": "^2.2.6",
         "prop-types": "^15.7.2"
     },

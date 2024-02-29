@@ -1,6 +1,6 @@
 {
     "name": "@panneau/intl",
-    "version": "3.0.119",
+    "version": "3.0.125",
     "description": "",
     "keywords": [
         "javascript"
@@ -53,7 +53,7 @@
     "scripts": {
         "intl": "./scripts/build-intl.sh",
         "prepublishOnly": "npm run build",
-"build": "rm -rf ./locale && npm run intl && ../../scripts/prepare-package.sh"
+        "build": "rm -rf ./locale && npm run intl && ../../scripts/prepare-package.sh"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
@@ -66,7 +66,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@formatjs/cli-lib": "^6.0.3",
-        "@panneau/core": "^3.0.119",
+        "@panneau/core": "^3.0.125",
         "commander": "^10.0.0",
         "fs-extra": "^10.0.0",
         "gettext-parser": "^4.0.4",

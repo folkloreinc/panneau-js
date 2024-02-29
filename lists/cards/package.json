@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-cards",
-    "version": "3.0.120",
+    "version": "3.0.125",
     "description": "Cards list",
     "keywords": [
         "javascript"
@@ -42,7 +42,7 @@
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
-"build": "../../scripts/prepare-package.sh"
+        "build": "../../scripts/prepare-package.sh"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
@@ -57,15 +57,15 @@
         "@fortawesome/fontawesome-svg-core": "^6.5.1",
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",
-        "@panneau/core": "^3.0.119",
-        "@panneau/element-button": "^3.0.119",
-        "@panneau/element-buttons": "^3.0.119",
-        "@panneau/element-card": "^3.0.120",
-        "@panneau/element-item-actions": "^3.0.119",
-        "@panneau/element-label": "^3.0.119",
-        "@panneau/element-loading": "^3.0.119",
-        "@panneau/element-pagination": "^3.0.119",
-        "@panneau/themes": "^3.0.119",
+        "@panneau/core": "^3.0.125",
+        "@panneau/element-button": "^3.0.125",
+        "@panneau/element-buttons": "^3.0.125",
+        "@panneau/element-card": "^3.0.125",
+        "@panneau/element-item-actions": "^3.0.125",
+        "@panneau/element-label": "^3.0.125",
+        "@panneau/element-loading": "^3.0.125",
+        "@panneau/element-pagination": "^3.0.125",
+        "@panneau/themes": "^3.0.125",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

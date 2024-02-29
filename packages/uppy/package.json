@@ -1,6 +1,6 @@
 {
     "name": "@panneau/uppy",
-    "version": "3.0.119",
+    "version": "3.0.125",
     "description": "",
     "keywords": [
         "javascript"
@@ -42,7 +42,7 @@
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
-"build": "../../scripts/prepare-package.sh"
+        "build": "../../scripts/prepare-package.sh"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
@@ -54,7 +54,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.119",
+        "@panneau/core": "^3.0.125",
         "@uppy/core": "^3.9.1",
         "@uppy/dashboard": "^3.7.3",
         "@uppy/dropbox": "^3.2.0",
