@@ -11,9 +11,15 @@ export default {
     },
 };
 
-const value = { data: { file: '1200x300.png' }, preview: 'https://picsum.photos/400/300' };
+const value = {
+    data: { file: '1200x300.png' },
+    preview: 'https://picsum.photos/400/300',
+    url: '/panneau/link',
+};
 
 export const Normal = () => <MediaCardElement value={value} />;
+
+export const Link = () => <MediaCardElement value={value} linkPath="url" />;
 
 export const Empty = () => <MediaCardElement value={null} />;
 

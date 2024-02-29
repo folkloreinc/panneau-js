@@ -28,6 +28,7 @@ const propTypes = {
     namePath: PropTypes.string,
     thumbnailPath: PropTypes.string,
     sizePath: PropTypes.string,
+    linkPath: PropTypes.string,
     maxWidth: PropTypes.number,
     disabled: PropTypes.bool,
     withoutDescription: PropTypes.bool,
@@ -41,6 +42,7 @@ const defaultProps = {
     namePath: 'name',
     thumbnailPath: 'thumbnail_url',
     sizePath: 'metadata.size',
+    linkPath: null,
     disabled: false,
     maxWidth: 500,
     withoutDescription: false,
@@ -54,6 +56,7 @@ const MediaCard = ({
     namePath,
     thumbnailPath,
     sizePath,
+    linkPath,
     maxWidth,
     disabled,
     withoutDescription,
@@ -99,11 +102,22 @@ const MediaCard = ({
         return faIcon;
     }, [type]);
 
-    const name = (namePath !== null ? get(value, namePath) : null) || filename || file;
-    const thumbnail =
-        (thumbnailPath !== null ? get(value, thumbnailPath) : null) || thumbnailUrl || preview;
-    const size = (sizePath !== null ? get(value, sizePath) : null) || fileSize;
-    const hasThumbnail = preview !== null || thumbnail !== null;
+    const { name, thumbnail, size, link, hasThumbnail } = useMemo(() => {
+        const finalName = (namePath !== null ? get(value, namePath) : null) || filename || file;
+        const finalThumbnail =
+            (thumbnailPath !== null ? get(value, thumbnailPath) : null) || thumbnailUrl || preview;
+        const finalSize = (sizePath !== null ? get(value, sizePath) : null) || fileSize;
+        const finalLink = (linkPath !== null ? get(value, linkPath) || null : null) || null;
+        const finalHasThumbnail = preview !== null || thumbnail !== null;
+
+        return {
+            name: finalName,
+            thumbnail: finalThumbnail,
+            size: finalSize,
+            link: finalLink,
+            hasThumbnail: finalHasThumbnail,
+        };
+    }, [value, namePath, thumbnailPath, sizePath, linkPath]);
 
     return (
         <div className={classNames([{ [className]: className !== null }])}>
@@ -161,7 +175,13 @@ const MediaCard = ({
                                         },
                                     ])}
                                 >
-                                    {name}
+                                    {link !== null ? (
+                                        <a href={link} target="_blank" rel="noopener noreferrer">
+                                            {name}
+                                        </a>
+                                    ) : (
+                                        name
+                                    )}
                                 </h5>
                                 {size !== null && size > 0 ? (
                                     <p className="card-text text-muted small">

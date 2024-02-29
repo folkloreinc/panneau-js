@@ -53,12 +53,15 @@ const propTypes = {
     namePath: PropTypes.string,
     thumbnailPath: PropTypes.string,
     sizePath: PropTypes.string,
+    linkPath: PropTypes.string,
     uppyProps: PropTypes.shape({ withUUID: PropTypes.bool }),
     width: PropTypes.number,
     height: PropTypes.number,
     disabled: PropTypes.bool,
     onChange: PropTypes.func,
     onClear: PropTypes.func,
+    onClickAdd: PropTypes.func,
+    onClickFind: PropTypes.func,
     className: PropTypes.string,
 };
 
@@ -90,12 +93,15 @@ const defaultProps = {
     namePath: null,
     thumbnailPath: null,
     sizePath: null,
+    linkPath: null,
     uppyProps: null,
     width: null,
     height: 300,
     disabled: false,
     onChange: null,
     onClear: null,
+    onClickAdd: null,
+    onClickFind: null,
     className: null,
 };
 
@@ -118,12 +124,15 @@ const UploadField = ({
     namePath,
     thumbnailPath,
     sizePath,
+    linkPath,
     uppyProps,
     width,
     height,
     disabled,
     onChange,
     onClear,
+    onClickAdd,
+    onClickFind,
     className,
 }) => {
     const mergeData = useCallback((newValue) => {
@@ -319,6 +328,7 @@ const UploadField = ({
                     namePath={namePath}
                     thumbnailPath={thumbnailPath}
                     sizePath={sizePath}
+                    linkPath={linkPath}
                     disabled={disabled}
                     onClickRemove={onClickRemove}
                 />
@@ -341,7 +351,7 @@ const UploadField = ({
                             id="trigger-uppy"
                             type="button"
                             theme="primary"
-                            onClick={openModal}
+                            onClick={onClickAdd || openModal}
                             disabled={disabled}
                             outline
                         >
@@ -353,7 +363,7 @@ const UploadField = ({
                             <Button
                                 type="button"
                                 theme="primary"
-                                onClick={toggleResourceModal}
+                                onClick={onClickFind || toggleResourceModal}
                                 disabled={disabled}
                                 outline
                             >
