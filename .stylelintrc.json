@@ -1,8 +1,7 @@
 {
     "extends": [
         "stylelint-config-sass-guidelines",
-        "stylelint-config-property-sort-order-smacss",
-        "stylelint-config-prettier"
+        "stylelint-config-property-sort-order-smacss"
     ],
     "rules": {
         "indentation": 4,
