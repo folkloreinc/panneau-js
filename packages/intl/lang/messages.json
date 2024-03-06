@@ -283,9 +283,6 @@
     "defaultMessage": "Go to home page",
     "description": "Button label"
   },
-  "iFsDVR": {
-    "defaultMessage": "Loading"
-  },
   "jbT/g6": {
     "defaultMessage": "M",
     "description": "Monday letter"
@@ -349,6 +346,10 @@
   "wa783M": {
     "defaultMessage": "Already have an account? Go to login",
     "description": "Link label"
+  },
+  "x27x2b": {
+    "defaultMessage": "Loading",
+    "description": "Loading message"
   },
   "y9zauY": {
     "defaultMessage": "An error occured and we could not delete this item successfully.",

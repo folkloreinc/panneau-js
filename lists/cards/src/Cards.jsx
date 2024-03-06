@@ -63,7 +63,7 @@ const CardsList = ({
                       );
                   })
                 : null}
-            {loading ? <Loading /> : null}
+            {loading ? <Loading withDelay /> : null}
         </div>
     );
 };

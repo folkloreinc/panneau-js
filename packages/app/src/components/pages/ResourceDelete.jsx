@@ -37,7 +37,7 @@ const ResourceDeletePage = ({ itemId, resource }) => {
 
     return (
         <ResourceProvider resource={resource}>
-            <MainLayout>
+            <MainLayout loading={loading}>
                 <PageHeader
                     title={
                         <>
@@ -65,7 +65,7 @@ const ResourceDeletePage = ({ itemId, resource }) => {
                                 />
                             ) : null}
                             {item === null && loading && !error ? (
-                                <Loading>
+                                <Loading withDelay>
                                     <FormattedMessage defaultMessage="Loading" description="Loading label" />
                                 </Loading>
                             ) : null}

@@ -36,7 +36,7 @@ const ResourceEditPage = ({ itemId, resource }) => {
 
     return (
         <ResourceProvider resource={resource}>
-            <MainLayout>
+            <MainLayout loading={loading}>
                 <PageHeader
                     title={
                         <>
@@ -64,7 +64,7 @@ const ResourceEditPage = ({ itemId, resource }) => {
                                 />
                             ) : null}
                             {editItem === null && loading && !error ? (
-                                <Loading>
+                                <Loading withDelay>
                                     <FormattedMessage defaultMessage="Loading" description="Loading label" />
                                 </Loading>
                             ) : null}

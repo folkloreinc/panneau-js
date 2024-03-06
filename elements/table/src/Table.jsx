@@ -219,7 +219,7 @@ function Table({
                     </tbody>
                 </table>
             ) : (
-                <Loading>
+                <Loading withDelay>
                     <FormattedMessage defaultMessage="Loading" description="Loading label" />
                 </Loading>
             )}

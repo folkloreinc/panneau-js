@@ -10,15 +10,18 @@ import MainNavbar from '../menus/MainNavbar';
 import styles from '../../styles/layouts/main.module.scss';
 
 const propTypes = {
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
+    loading: PropTypes.bool,
     fullscreen: PropTypes.bool,
 };
 
 const defaultProps = {
     fullscreen: false,
+    loading: false,
+    children: null,
 };
 
-const MainLayout = ({ children, fullscreen }) => {
+const MainLayout = ({ fullscreen, loading, children }) => {
     const { theme = null, background = null, text = null } = usePanneauColorScheme();
 
     return (
@@ -26,7 +29,7 @@ const MainLayout = ({ children, fullscreen }) => {
             className={classNames([styles.container, 'd-flex', 'flex-column', 'min-vh-100'])}
             data-bs-theme={theme !== null ? theme : null}
         >
-            <MainNavbar className={classNames(['border-bottom', 'sticky-top', 'px-3'])} />
+            <MainNavbar className={classNames(['border-bottom', 'sticky-top', 'px-3'])} theme={theme} loading={loading} />
             <div
                 className={classNames([
                     'flex-grow-1',

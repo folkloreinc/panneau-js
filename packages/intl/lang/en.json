@@ -212,9 +212,6 @@
     "hezcGl": {
         "defaultMessage": "Go to home page"
     },
-    "iFsDVR": {
-        "defaultMessage": "Loading"
-    },
     "jbT/g6": {
         "defaultMessage": "M"
     },
@@ -262,6 +259,9 @@
     },
     "wa783M": {
         "defaultMessage": "Already have an account? Go to login"
+    },
+    "x27x2b": {
+        "defaultMessage": "Loading"
     },
     "y9zauY": {
         "defaultMessage": "An error occured and we could not delete this item successfully."

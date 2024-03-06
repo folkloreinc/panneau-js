@@ -26,7 +26,7 @@ const ResourceShowPage = ({ resource, itemId }) => {
 
     return (
         <ResourceProvider resource={resource}>
-            <MainLayout>
+            <MainLayout loading={loading}>
                 <PageHeader title={`${name} #${itemId}`} small />
                 <div className="container-sm py-4">
                     <div className="row justify-content-center">
@@ -35,7 +35,7 @@ const ResourceShowPage = ({ resource, itemId }) => {
                                 <ResourceForm resource={resource} item={item} type={type} disabled />
                             ) : null}
                             {item === null && loading && !error ? (
-                                <Loading>
+                                <Loading withDelay>
                                     <FormattedMessage defaultMessage="Loading" description="Loading label" />
                                 </Loading>
                             ) : null}

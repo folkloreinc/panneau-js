@@ -437,11 +437,6 @@ msgctxt "hezcGl"
 msgid "Go to home page"
 msgstr "Go to home page"
 
-#: iFsDVR
-msgctxt "iFsDVR"
-msgid "Loading"
-msgstr "Loading"
-
 # Monday letter
 #: jbT/g6
 msgctxt "jbT/g6"
@@ -537,6 +532,12 @@ msgstr "This page doesn’t exist"
 msgctxt "wa783M"
 msgid "Already have an account? Go to login"
 msgstr "Already have an account? Go to login"
+
+# Loading message
+#: x27x2b
+msgctxt "x27x2b"
+msgid "Loading"
+msgstr "Loading"
 
 # Error message
 #: y9zauY
