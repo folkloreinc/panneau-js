@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-search",
-    "version": "3.0.126",
+    "version": "3.0.127",
     "description": "Search filter",
     "keywords": [
         "javascript"
@@ -56,7 +56,7 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.126",
         "@panneau/element-button": "^3.0.126",
-        "@panneau/element-form": "^3.0.126",
+        "@panneau/element-form": "^3.0.127",
         "@panneau/element-icon": "^3.0.126",
         "@panneau/field-text": "^3.0.126",
         "classnames": "^2.2.6",

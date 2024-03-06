@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-resource-items",
-    "version": "3.0.126",
+    "version": "3.0.127",
     "description": "Default resource list",
     "keywords": [
         "javascript"
@@ -53,7 +53,7 @@
         "@panneau/element-navbar": "^3.0.126",
         "@panneau/element-pagination": "^3.0.126",
         "@panneau/filter-filters": "^3.0.126",
-        "@panneau/list-table": "^3.0.126",
+        "@panneau/list-table": "^3.0.127",
         "@panneau/themes": "^3.0.126",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
