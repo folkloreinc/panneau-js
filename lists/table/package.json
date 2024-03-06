@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-table",
-    "version": "3.0.127",
+    "version": "3.0.128",
     "description": "Table list",
     "keywords": [
         "javascript"
@@ -61,9 +61,9 @@
         "@panneau/element-item-actions": "^3.0.126",
         "@panneau/element-label": "^3.0.126",
         "@panneau/element-link": "^3.0.126",
-        "@panneau/element-loading": "^3.0.127",
+        "@panneau/element-loading": "^3.0.128",
         "@panneau/element-pagination": "^3.0.126",
-        "@panneau/element-table": "^3.0.127",
+        "@panneau/element-table": "^3.0.128",
         "@panneau/themes": "^3.0.126",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
