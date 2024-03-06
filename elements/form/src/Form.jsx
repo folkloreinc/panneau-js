@@ -140,7 +140,7 @@ const Form = ({
                                         />
                                     )
                                 }
-                                disabled={!canSave}
+                                disabled={!canSave || (status === 'loading' && generalError === null)}
                                 outline={!canSave}
                                 className={classNames({
                                     'ms-auto': actions === null,

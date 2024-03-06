@@ -9,6 +9,7 @@ import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceTypeName, useResourceUrlGenerator } from '@panneau/core/hooks';
 import { useResourceItem } from '@panneau/data';
 import { useResourceValues } from '@panneau/intl';
+import Loading from '@panneau/element-loading';
 
 import ResourceForm from '../forms/ResourceForm';
 import MainLayout from '../layouts/Main';
@@ -24,7 +25,7 @@ const defaultProps = {};
 const ResourceDeletePage = ({ itemId, resource }) => {
     const [, navigate] = useLocation();
     const resourceRoute = useResourceUrlGenerator(resource);
-    const { item } = useResourceItem(resource, itemId);
+    const { item, loading, error } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
     const resourceValues = useResourceValues(resource);
     const typeName = useResourceTypeName(resource, type);
@@ -62,6 +63,11 @@ const ResourceDeletePage = ({ itemId, resource }) => {
                                     onSuccess={onSuccess}
                                     isDelete
                                 />
+                            ) : null}
+                            {item === null && loading && !error ? (
+                                <Loading>
+                                    <FormattedMessage defaultMessage="Loading" description="Loading label" />
+                                </Loading>
                             ) : null}
                         </div>
                     </div>

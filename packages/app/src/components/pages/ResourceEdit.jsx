@@ -12,6 +12,7 @@ import { useResourceValues } from '@panneau/intl';
 import ResourceForm from '../forms/ResourceForm';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
+import Loading from '@panneau/element-loading';
 
 const propTypes = {
     itemId: PropTypes.string.isRequired,
@@ -21,7 +22,7 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceEditPage = ({ itemId, resource }) => {
-    const { item } = useResourceItem(resource, itemId);
+    const { item, loading, error } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
     const [editItem, setEditItem] = useState(item);
     const typeName = useResourceTypeName(resource, type);
@@ -61,6 +62,11 @@ const ResourceEditPage = ({ itemId, resource }) => {
                                     type={type}
                                     onSuccess={onSuccess}
                                 />
+                            ) : null}
+                            {editItem === null && loading && !error ? (
+                                <Loading>
+                                    <FormattedMessage defaultMessage="Loading" description="Loading label" />
+                                </Loading>
                             ) : null}
                         </div>
                     </div>

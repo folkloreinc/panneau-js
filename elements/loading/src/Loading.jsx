@@ -7,21 +7,23 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 const propTypes = {
     theme: PropTypes.string,
+    withoutCard: PropTypes.bool,
     children: PanneauPropTypes.label,
     className: PropTypes.string,
 };
 
 const defaultProps = {
     theme: null,
+    withoutCard: false,
     children: null,
     className: null,
 };
 
-const Loading = ({ theme, children, className }) => (
+const Loading = ({ theme, withoutCard, children, className }) => (
     <div
         className={classNames([
-            'card',
             {
+                'card': !withoutCard,
                 [className]: className !== null,
             },
         ])}
