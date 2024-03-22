@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-text",
-    "version": "3.0.126",
+    "version": "3.0.130",
     "description": "A text field",
     "keywords": [
         "javascript"
@@ -54,9 +54,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.126",
-        "@panneau/field-input-group": "^3.0.126",
-        "@panneau/themes": "^3.0.126",
+        "@panneau/core": "^3.0.130",
+        "@panneau/field-input-group": "^3.0.130",
+        "@panneau/themes": "^3.0.130",
         "classnames": "^2.2.6",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

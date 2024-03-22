@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-date",
-    "version": "3.0.126",
+    "version": "3.0.130",
     "description": "A date field",
     "keywords": [
         "javascript"
@@ -57,9 +57,9 @@
         "@fortawesome/fontawesome-svg-core": "^6.5.1",
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",
-        "@panneau/core": "^3.0.126",
-        "@panneau/field-text": "^3.0.126",
-        "@panneau/themes": "^3.0.126",
+        "@panneau/core": "^3.0.130",
+        "@panneau/field-text": "^3.0.130",
+        "@panneau/themes": "^3.0.130",
         "classnames": "^2.2.6",
         "date-fns": "^3.3.1",
         "prop-types": "^15.7.2",
