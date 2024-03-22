@@ -104,9 +104,6 @@
     "ESkxLX": {
         "defaultMessage": "Réussi!"
     },
-    "F3S+Sb": {
-        "defaultMessage": "Une erreur s'est produite."
-    },
     "FntHPK": {
         "defaultMessage": "Voir {the_plural}"
     },
@@ -124,9 +121,6 @@
     },
     "KNeQ6y": {
         "defaultMessage": "Ajouté par"
-    },
-    "KZoCm7": {
-        "defaultMessage": "Êtes-vous sûr de vouloir supprimer les éléments suivants : {ids} ?"
     },
     "Ke35Pv": {
         "defaultMessage": "Modifier"
@@ -157,6 +151,9 @@
     },
     "PQX/ph": {
         "defaultMessage": "Créer mon compte"
+    },
+    "PTmocx": {
+        "defaultMessage": "Les éléments suivants seront supprimés {ids}. Voulez-vous continuer ?"
     },
     "Pih2UO": {
         "defaultMessage": "Erreur 403"
@@ -239,6 +236,9 @@
     "c3hu9o": {
         "defaultMessage": "Taille"
     },
+    "cutyQH": {
+        "defaultMessage": "Une erreur s'est produite."
+    },
     "d0g58T": {
         "defaultMessage": "Connexion"
     },
@@ -320,6 +320,9 @@
     "tPeIKO": {
         "defaultMessage": "Retour à la connexion"
     },
+    "ucieFX": {
+        "defaultMessage": "Les éléments suivants seront modifiés: {ids}."
+    },
     "une5WQ": {
         "defaultMessage": "Trouver un fichier"
     },
@@ -349,9 +352,6 @@
     },
     "yQRtgx": {
         "defaultMessage": "Audio"
-    },
-    "yfnQvw": {
-        "defaultMessage": "Les éléments suivants seront modifiés : {ids}"
     },
     "yhU8J6": {
         "defaultMessage": "Non"

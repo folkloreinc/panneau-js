@@ -221,12 +221,6 @@ msgctxt "ESkxLX"
 msgid "Success!"
 msgstr "Success!"
 
-# Modal message
-#: F3S+Sb
-msgctxt "F3S+Sb"
-msgid "An error occured."
-msgstr "An error occured."
-
 # Button label
 #: FntHPK
 msgctxt "FntHPK"
@@ -262,12 +256,6 @@ msgstr "Select"
 msgctxt "KNeQ6y"
 msgid "Added by"
 msgstr "Added by"
-
-# Modal message
-#: KZoCm7
-msgctxt "KZoCm7"
-msgid "Are you sure you want to delete the following items ({ids}) ?"
-msgstr "Are you sure you want to delete the following items ({ids}) ?"
 
 # Button label
 #: Ke35Pv
@@ -328,6 +316,16 @@ msgstr "Created at"
 msgctxt "PQX/ph"
 msgid "Create account"
 msgstr "Create account"
+
+# Modal message
+#: PTmocx
+msgctxt "PTmocx"
+msgid ""
+"The following items will be deleted: {ids}. Are you sure you want to "
+"continue?"
+msgstr ""
+"The following items will be deleted: {ids}. Are you sure you want to "
+"continue?"
 
 # Error page title
 #: Pih2UO
@@ -491,6 +489,12 @@ msgctxt "c3hu9o"
 msgid "Size"
 msgstr "Size"
 
+# Modal message
+#: cutyQH
+msgctxt "cutyQH"
+msgid "An error has occured."
+msgstr "An error has occured."
+
 # Menu label
 #: d0g58T
 msgctxt "d0g58T"
@@ -653,6 +657,12 @@ msgctxt "tPeIKO"
 msgid "Go back to login"
 msgstr "Go back to login"
 
+# Modal message
+#: ucieFX
+msgctxt "ucieFX"
+msgid "The following items will be modified: {ids}."
+msgstr "The following items will be modified: {ids}."
+
 # Default upload add button label
 #: une5WQ
 msgctxt "une5WQ"
@@ -712,12 +722,6 @@ msgstr "Image"
 msgctxt "yQRtgx"
 msgid "Audio"
 msgstr "Audio"
-
-# Modal message
-#: yfnQvw
-msgctxt "yfnQvw"
-msgid "The following items ({ids}) will be modified :"
-msgstr "The following items ({ids}) will be modified :"
 
 # Button label
 #: yhU8J6

@@ -104,9 +104,6 @@
     "ESkxLX": {
         "defaultMessage": "Success!"
     },
-    "F3S+Sb": {
-        "defaultMessage": "An error occured."
-    },
     "FntHPK": {
         "defaultMessage": "View {the_plural}"
     },
@@ -124,9 +121,6 @@
     },
     "KNeQ6y": {
         "defaultMessage": "Added by"
-    },
-    "KZoCm7": {
-        "defaultMessage": "Are you sure you want to delete the following items ({ids}) ?"
     },
     "Ke35Pv": {
         "defaultMessage": "Edit"
@@ -157,6 +151,9 @@
     },
     "PQX/ph": {
         "defaultMessage": "Create account"
+    },
+    "PTmocx": {
+        "defaultMessage": "The following items will be deleted: {ids}. Are you sure you want to continue?"
     },
     "Pih2UO": {
         "defaultMessage": "Error 403"
@@ -239,6 +236,9 @@
     "c3hu9o": {
         "defaultMessage": "Size"
     },
+    "cutyQH": {
+        "defaultMessage": "An error has occured."
+    },
     "d0g58T": {
         "defaultMessage": "Login"
     },
@@ -320,6 +320,9 @@
     "tPeIKO": {
         "defaultMessage": "Go back to login"
     },
+    "ucieFX": {
+        "defaultMessage": "The following items will be modified: {ids}."
+    },
     "une5WQ": {
         "defaultMessage": "Find a file"
     },
@@ -349,9 +352,6 @@
     },
     "yQRtgx": {
         "defaultMessage": "Audio"
-    },
-    "yfnQvw": {
-        "defaultMessage": "The following items ({ids}) will be modified :"
     },
     "yhU8J6": {
         "defaultMessage": "No"

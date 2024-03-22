@@ -139,10 +139,6 @@
     "defaultMessage": "Success!",
     "description": "Form status"
   },
-  "F3S+Sb": {
-    "defaultMessage": "An error occured.",
-    "description": "Modal message"
-  },
   "FntHPK": {
     "defaultMessage": "View {the_plural}",
     "description": "Button label"
@@ -166,10 +162,6 @@
   "KNeQ6y": {
     "defaultMessage": "Added by",
     "description": "Field name"
-  },
-  "KZoCm7": {
-    "defaultMessage": "Are you sure you want to delete the following items ({ids}) ?",
-    "description": "Modal message"
   },
   "Ke35Pv": {
     "defaultMessage": "Edit",
@@ -210,6 +202,10 @@
   "PQX/ph": {
     "defaultMessage": "Create account",
     "description": "Button label"
+  },
+  "PTmocx": {
+    "defaultMessage": "The following items will be deleted: {ids}. Are you sure you want to continue?",
+    "description": "Modal message"
   },
   "Pih2UO": {
     "defaultMessage": "Error 403",
@@ -319,6 +315,10 @@
     "defaultMessage": "Size",
     "description": "Field name"
   },
+  "cutyQH": {
+    "defaultMessage": "An error has occured.",
+    "description": "Modal message"
+  },
   "d0g58T": {
     "defaultMessage": "Login",
     "description": "Menu label"
@@ -427,6 +427,10 @@
     "defaultMessage": "Go back to login",
     "description": "Link label"
   },
+  "ucieFX": {
+    "defaultMessage": "The following items will be modified: {ids}.",
+    "description": "Modal message"
+  },
   "une5WQ": {
     "defaultMessage": "Find a file",
     "description": "Default upload add button label"
@@ -466,10 +470,6 @@
   "yQRtgx": {
     "defaultMessage": "Audio",
     "description": "Filter item label"
-  },
-  "yfnQvw": {
-    "defaultMessage": "The following items ({ids}) will be modified :",
-    "description": "Modal message"
   },
   "yhU8J6": {
     "defaultMessage": "No",
