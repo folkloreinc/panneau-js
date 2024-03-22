@@ -1,9 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import classNames from 'classnames';
 import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import Actions from '@panneau/action-actions';
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useListsComponents, usePanneauResource } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
@@ -22,6 +24,7 @@ const propTypes = {
     onQueryReset: PropTypes.func,
     onPageChange: PropTypes.func,
     showFilters: PropTypes.bool,
+    showActions: PropTypes.bool,
     listProps: PropTypes.shape({}),
     theme: PropTypes.string,
     className: PropTypes.string,
@@ -37,6 +40,7 @@ const defaultProps = {
     onQueryReset: null,
     onPageChange: null,
     showFilters: true,
+    showActions: true,
     listProps: null,
     theme: null,
     className: null,
@@ -51,6 +55,7 @@ const ResourceItemsList = ({
     onPageChange,
     paginated,
     showFilters,
+    showActions,
     listProps: customListProps,
     theme,
     className,
@@ -63,7 +68,8 @@ const ResourceItemsList = ({
             component: listComponent = null,
             showPagination = true,
             filters = null,
-            actions = null, // eslint-disable-line no-unused-vars
+            // actions = null,
+            batchActions = null,
             ...listProps
         } = {},
     } = resource;
@@ -79,15 +85,50 @@ const ResourceItemsList = ({
         paginated ? parseInt(page, 10) : null,
     );
 
-    const { loaded = false, loading = false, lastPage = 0, total = 0 } = itemsProps || {};
+    const {
+        items = [],
+        loaded = false,
+        loading = false,
+        lastPage = 0,
+        total = 0,
+        reloadPage = null,
+        reset = null,
+    } = itemsProps || {};
     const finalEmpty = loaded && !loading && total === 0;
 
     const ListComponents = useListsComponents();
     const ListComponent = getComponentFromName(listComponent || 'table', ListComponents);
 
+    const withFilters = showFilters && filters !== null;
+    const withActions = showActions && batchActions !== null && batchActions.length > 0;
+    const withMultipleActions =
+        withActions &&
+        batchActions.reduce((acc, it) => {
+            const { multiple = false } = it || {};
+            if (multiple) {
+                return true;
+            }
+            return acc;
+        }, false);
+
+    const [selectedItems, setSelectedItems] = useState(null);
+    const onSelectItems = useCallback(
+        (newItems) => {
+            setSelectedItems(newItems);
+        },
+        [setSelectedItems],
+    );
+
+    const onActionsChange = useCallback(() => {
+        if (reset !== null && reloadPage !== null) {
+            reset();
+            reloadPage(parseInt(page, 10));
+        }
+    }, [reloadPage, reset, page, setSelectedItems]);
+
     return (
         <div className={className}>
-            {showFilters && filters !== null ? (
+            {withFilters ? (
                 <Filters
                     filters={filters}
                     value={query}
@@ -96,23 +137,45 @@ const ResourceItemsList = ({
                     theme={theme}
                 />
             ) : null}
-            {paginated && showPagination ? (
-                <Pagination
-                    page={page}
-                    lastPage={lastPage}
-                    total={total}
-                    url={baseUrl}
-                    query={query}
-                    onClickPage={onPageChange}
-                    className="mt-1 mb-3"
-                    theme={theme}
-                    withPreviousNext
-                />
-            ) : null}
+            <div
+                className={classNames([
+                    'd-flex align-items-start',
+                    { 'justify-content-between': withActions, 'justify-content-end': !withActions },
+                ])}
+            >
+                {withActions ? (
+                    <Actions
+                        className="mb-2"
+                        actions={batchActions}
+                        value={selectedItems}
+                        onChange={onActionsChange}
+                        setSelectedItems={setSelectedItems}
+                        theme={theme}
+                    />
+                ) : null}
+                {paginated && showPagination ? (
+                    <Pagination
+                        page={page}
+                        lastPage={lastPage}
+                        total={total}
+                        url={baseUrl}
+                        query={query}
+                        onClickPage={onPageChange}
+                        className="mt-1 mb-3"
+                        theme={theme}
+                        withPreviousNext
+                    />
+                ) : null}
+            </div>
             {ListComponent !== null ? (
                 <ListComponent
                     {...itemsProps}
                     {...listProps}
+                    selectable={withActions}
+                    multiple={withMultipleActions}
+                    onSelectionChange={onSelectItems}
+                    selectedItems={selectedItems}
+                    selectedItemsCount={total}
                     resource={resource}
                     baseUrl={baseUrl}
                     theme={theme}

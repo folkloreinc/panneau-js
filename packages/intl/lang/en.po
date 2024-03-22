@@ -17,11 +17,23 @@ msgctxt "+6cCPF"
 msgid "Error 403"
 msgstr "Error 403"
 
+# Field name
+#: 002oWQ
+msgctxt "002oWQ"
+msgid "Duration"
+msgstr "Duration"
+
 # Saturday letter
 #: 0F5X3C
 msgctxt "0F5X3C"
 msgid "S"
 msgstr "S"
+
+# Checkbox label
+#: 0SEHSj
+msgctxt "0SEHSj"
+msgid "Select row"
+msgstr "Select row"
 
 # Hidden label
 #: 0xeItT
@@ -46,6 +58,12 @@ msgstr "Enter the code from your authenticator app to continue"
 msgctxt "2vB7U4"
 msgid "An error occured and we could not save this item successfully."
 msgstr "An error occured and we could not save this item successfully."
+
+# Button label
+#: 3ebjtX
+msgctxt "3ebjtX"
+msgid "Yes"
+msgstr "Yes"
 
 # Now date time message
 #: 3na7F8
@@ -113,6 +131,12 @@ msgctxt "7M0o0q"
 msgid "Item"
 msgstr "Item"
 
+# Modal title
+#: 7OEFyt
+msgctxt "7OEFyt"
+msgid "Delete"
+msgstr "Delete"
+
 # Error page description
 #: 82P2dS
 msgctxt "82P2dS"
@@ -130,6 +154,12 @@ msgstr "Access to this page is forbidden"
 msgctxt "8LSb8C"
 msgid "Current password"
 msgstr "Current password"
+
+# Filter label
+#: 9/t5wK
+msgctxt "9/t5wK"
+msgid "Type"
+msgstr "Type"
 
 # Boolean value
 #: 9XBwF1
@@ -161,6 +191,12 @@ msgctxt "Bhu3B2"
 msgid "Delete"
 msgstr "Delete"
 
+# Checkbox label
+#: Bv5ejF
+msgctxt "Bv5ejF"
+msgid "Select all"
+msgstr "Select all"
+
 # Avatar label
 #: CGvQxc
 msgctxt "CGvQxc"
@@ -184,6 +220,12 @@ msgstr "Confirm your new password"
 msgctxt "ESkxLX"
 msgid "Success!"
 msgstr "Success!"
+
+# Modal message
+#: F3S+Sb
+msgctxt "F3S+Sb"
+msgid "An error occured."
+msgstr "An error occured."
 
 # Button label
 #: FntHPK
@@ -215,6 +257,18 @@ msgctxt "JeVLdN"
 msgid "Select"
 msgstr "Select"
 
+# Field name
+#: KNeQ6y
+msgctxt "KNeQ6y"
+msgid "Added by"
+msgstr "Added by"
+
+# Modal message
+#: KZoCm7
+msgctxt "KZoCm7"
+msgid "Are you sure you want to delete the following items ({ids}) ?"
+msgstr "Are you sure you want to delete the following items ({ids}) ?"
+
 # Button label
 #: Ke35Pv
 msgctxt "Ke35Pv"
@@ -233,11 +287,23 @@ msgctxt "MHldGi"
 msgid "Duration:"
 msgstr "Duration:"
 
+# Checkbox label
+#: MhuqYZ
+msgctxt "MhuqYZ"
+msgid "No items selected"
+msgstr "No items selected"
+
 # Form status
 #: Mo0yQb
 msgctxt "Mo0yQb"
 msgid "Error"
 msgstr "Error"
+
+# Modal title
+#: Mohaye
+msgctxt "Mohaye"
+msgid "Edit item"
+msgstr "Edit item"
 
 # Default upload add button label
 #: NI9440
@@ -250,6 +316,12 @@ msgstr "Add file"
 msgctxt "Of2stw"
 msgid "T"
 msgstr "T"
+
+# Field name
+#: OzYWZz
+msgctxt "OzYWZz"
+msgid "Created at"
+msgstr "Created at"
 
 # Button label
 #: PQX/ph
@@ -286,6 +358,12 @@ msgstr "Save"
 msgctxt "REIcPg"
 msgid "Logout"
 msgstr "Logout"
+
+# Page title
+#: T/NPHK
+msgctxt "T/NPHK"
+msgid "Edit"
+msgstr "Edit"
 
 # Loading label
 #: TV3jir
@@ -341,6 +419,12 @@ msgctxt "VhJUeW"
 msgid "Confirm your password"
 msgstr "Confirm your password"
 
+# Field name
+#: WX83V9
+msgctxt "WX83V9"
+msgid "File name"
+msgstr "File name"
+
 # Table label
 #: WgIC2T
 msgctxt "WgIC2T"
@@ -371,6 +455,12 @@ msgctxt "XW9IKQ"
 msgid "Update password"
 msgstr "Update password"
 
+# Filter label
+#: XrzzDc
+msgctxt "XrzzDc"
+msgid "Search"
+msgstr "Search"
+
 # Link label
 #: ZBNqY2
 msgctxt "ZBNqY2"
@@ -395,6 +485,12 @@ msgctxt "bfP/d8"
 msgid "{The_singular} has been created."
 msgstr "{The_singular} has been created."
 
+# Field name
+#: c3hu9o
+msgctxt "c3hu9o"
+msgid "Size"
+msgstr "Size"
+
 # Menu label
 #: d0g58T
 msgctxt "d0g58T"
@@ -406,6 +502,12 @@ msgstr "Login"
 msgctxt "dkRdks"
 msgid "{The_singular} has been deleted."
 msgstr "{The_singular} has been deleted."
+
+# Field name
+#: eCe9ZY
+msgctxt "eCe9ZY"
+msgid "Dimensions"
+msgstr "Dimensions"
 
 # Error page meta title
 #: ejwBSw
@@ -437,6 +539,12 @@ msgctxt "hezcGl"
 msgid "Go to home page"
 msgstr "Go to home page"
 
+# Filter label
+#: hnLSrX
+msgctxt "hnLSrX"
+msgid "Tag"
+msgstr "Tag"
+
 # Monday letter
 #: jbT/g6
 msgctxt "jbT/g6"
@@ -449,11 +557,23 @@ msgctxt "l+ddDH"
 msgid "Create {a_singular}"
 msgstr "Create {a_singular}"
 
+# Field name
+#: lRvafH
+msgctxt "lRvafH"
+msgid "Status"
+msgstr "Status"
+
 # Link label
 #: li2Qqu
 msgctxt "li2Qqu"
 msgid "Skip setup"
 msgstr "Skip setup"
+
+# Checkbox label
+#: lsBBVh
+msgctxt "lsBBVh"
+msgid "{count, plural, =0 {no items} one {# item} other {# items}} selected"
+msgstr "{count, plural, =0 {no items} one {# item} other {# items}} selected"
 
 # Page title
 #: mCfzkJ
@@ -503,6 +623,30 @@ msgctxt "s4Xrs9"
 msgid "Time"
 msgstr "Time"
 
+# Modal title
+#: sOfogS
+msgctxt "sOfogS"
+msgid "Edit items"
+msgstr "Edit items"
+
+# Filter label
+#: skmuWU
+msgctxt "skmuWU"
+msgid "Author"
+msgstr "Author"
+
+# Checkbox label
+#: sl150Z
+msgctxt "sl150Z"
+msgid "Deselect all"
+msgstr "Deselect all"
+
+# Page title
+#: smqUAV
+msgctxt "smqUAV"
+msgid "Edit {name}"
+msgstr "Edit {name}"
+
 # Link label
 #: tPeIKO
 msgctxt "tPeIKO"
@@ -539,6 +683,12 @@ msgctxt "x27x2b"
 msgid "Loading"
 msgstr "Loading"
 
+# Filter item label
+#: xSERPA
+msgctxt "xSERPA"
+msgid "Video"
+msgstr "Video"
+
 # Error message
 #: y9zauY
 msgctxt "y9zauY"
@@ -550,6 +700,30 @@ msgstr "An error occured and we could not delete this item successfully."
 msgctxt "yALN2p"
 msgid "There was an error"
 msgstr "There was an error"
+
+# Filter item label
+#: yHAmDD
+msgctxt "yHAmDD"
+msgid "Image"
+msgstr "Image"
+
+# Filter item label
+#: yQRtgx
+msgctxt "yQRtgx"
+msgid "Audio"
+msgstr "Audio"
+
+# Modal message
+#: yfnQvw
+msgctxt "yfnQvw"
+msgid "The following items ({ids}) will be modified :"
+msgstr "The following items ({ids}) will be modified :"
+
+# Button label
+#: yhU8J6
+msgctxt "yhU8J6"
+msgid "No"
+msgstr "No"
 
 # Confirmation message
 #: yzfiXJ

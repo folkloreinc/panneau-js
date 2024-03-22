@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import { Router } from 'wouter';
 
+import ActionsProvider from '@panneau/actions';
 import { AuthProvider } from '@panneau/auth';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import {
@@ -55,7 +56,8 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
         intl: { locale = 'en', locales = [] } = {},
         routes = {},
         settings: { memoryRouter: usesMemoryRouter = false } = {},
-    } = definition;
+    } = definition || {};
+
     const isMemoryRouter = memoryRouter || usesMemoryRouter || false;
     const extraMessages = useMemo(() => {
         const { intl: { messages = null } = {}, resources = [] } = definition;
@@ -102,27 +104,29 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
                                     <ListsProvider>
                                         <DisplaysProvider>
                                             <FiltersProvider>
-                                                <ModalProvider>
-                                                    <ModalsProvider>
-                                                        <ApiProvider
-                                                            baseUrl={baseUrl}
-                                                            onUnauthorized={onUnauthorized}
-                                                        >
-                                                            <AuthProvider
-                                                                user={user}
-                                                                onLogout={onLogout}
+                                                <ActionsProvider>
+                                                    <ModalProvider>
+                                                        <ModalsProvider>
+                                                            <ApiProvider
+                                                                baseUrl={baseUrl}
+                                                                onUnauthorized={onUnauthorized}
                                                             >
-                                                                <ComponentsProvider
-                                                                    components={components}
+                                                                <AuthProvider
+                                                                    user={user}
+                                                                    onLogout={onLogout}
                                                                 >
-                                                                    <Routes
-                                                                        statusCode={statusCode}
-                                                                    />
-                                                                </ComponentsProvider>
-                                                            </AuthProvider>
-                                                        </ApiProvider>
-                                                    </ModalsProvider>
-                                                </ModalProvider>
+                                                                    <ComponentsProvider
+                                                                        components={components}
+                                                                    >
+                                                                        <Routes
+                                                                            statusCode={statusCode}
+                                                                        />
+                                                                    </ComponentsProvider>
+                                                                </AuthProvider>
+                                                            </ApiProvider>
+                                                        </ModalsProvider>
+                                                    </ModalProvider>
+                                                </ActionsProvider>
                                             </FiltersProvider>
                                         </DisplaysProvider>
                                     </ListsProvider>

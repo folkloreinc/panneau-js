@@ -32,4 +32,4 @@ export function MediasApiProvider({ api: providedApi, children }) {
 MediasApiProvider.propTypes = propTypes;
 MediasApiProvider.defaultProps = defaultProps;
 
-export default MediasApiContext;
+export default MediasApiProvider;

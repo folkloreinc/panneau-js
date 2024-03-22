@@ -1,6 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
+/* eslint-disable react/jsx-props-no-spreading */
+// import classNames from 'classnames';
+// import PropTypes from 'prop-types';
 import React from 'react';
 
 import { MediasApiProvider, apiPropTypes } from './MediasApiContext';

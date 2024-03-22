@@ -11,7 +11,7 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import Button from '@panneau/element-button';
 
@@ -32,8 +32,11 @@ const propTypes = {
     maxWidth: PropTypes.number,
     disabled: PropTypes.bool,
     withoutDescription: PropTypes.bool,
+    selected: PropTypes.bool,
+    onClick: PropTypes.func,
     onClickRemove: PropTypes.func,
     className: PropTypes.string,
+    cardClassName: PropTypes.string,
 };
 
 const defaultProps = {
@@ -46,8 +49,11 @@ const defaultProps = {
     disabled: false,
     maxWidth: 500,
     withoutDescription: false,
+    selected: false,
+    onClick: null,
     onClickRemove: null,
     className: null,
+    cardClassName: null,
 };
 
 const MediaCard = ({
@@ -60,13 +66,12 @@ const MediaCard = ({
     maxWidth,
     disabled,
     withoutDescription,
+    selected,
+    onClick,
     onClickRemove,
     className,
+    cardClassName,
 }) => {
-    if (initialValue === null) {
-        return null;
-    }
-
     const value = initialValue || {};
 
     const {
@@ -77,7 +82,7 @@ const MediaCard = ({
         preview = null,
         data = {},
         type,
-    } = value;
+    } = value || {};
 
     const { file = null } = data || {};
 
@@ -119,48 +124,77 @@ const MediaCard = ({
         };
     }, [value, namePath, thumbnailPath, sizePath, linkPath]);
 
+    const thumbnailElement =
+        hasThumbnail || mediaIcon !== null ? (
+            <div
+                className="p-2 d-flex align-items-center justify-content-center"
+                style={
+                    hasThumbnail
+                        ? {
+                              width: !withoutDescription ? 100 : '100%',
+                              height: !withoutDescription ? 100 : '100%',
+                              backgroundImage:
+                                  'linear-gradient(45deg, #eee 25%, transparent 25%), linear-gradient(-45deg, #eee 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eee 75%), linear-gradient(-45deg, transparent 75%, #eee 75%)',
+                              backgroundSize: '20px 20px',
+                              backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0',
+                          }
+                        : {
+                              width: !withoutDescription ? 100 : '100%',
+                              height: !withoutDescription ? 100 : '100%',
+                          }
+                }
+            >
+                {!hasThumbnail && mediaIcon !== null ? (
+                    <FontAwesomeIcon icon={mediaIcon} className="m-auto fs-3" />
+                ) : null}
+                {hasThumbnail ? (
+                    <img
+                        className="img-fluid"
+                        src={thumbnail}
+                        alt="thumbnail"
+                        style={{
+                            maxHeight: !withoutDescription ? 75 : 150,
+                        }}
+                    />
+                ) : null}
+            </div>
+        ) : null;
+
+    const onClickThumbnail = useCallback(() => {
+        if (onClick !== null) {
+            onClick(value);
+        }
+    }, [value, onClick]);
+
     return (
         <div className={classNames([{ [className]: className !== null }])}>
             <div
-                className="card mb-1"
+                className={classNames([
+                    'card',
+                    'mb-1',
+                    { [cardClassName]: cardClassName !== null },
+                ])}
                 key={`media-${id}`}
                 style={{
                     maxWidth,
                 }}
             >
-                <div className="d-flex align-items-center">
-                    {hasThumbnail || mediaIcon !== null ? (
-                        <div
-                            className="p-2 text-center"
-                            style={
-                                hasThumbnail
-                                    ? {
-                                          width: !withoutDescription ? 100 : '100%',
-                                          backgroundImage:
-                                              'linear-gradient(45deg, #eee 25%, transparent 25%), linear-gradient(-45deg, #eee 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eee 75%), linear-gradient(-45deg, transparent 75%, #eee 75%)',
-                                          backgroundSize: '20px 20px',
-                                          backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0',
-                                      }
-                                    : {
-                                          width: !withoutDescription ? 100 : '100%',
-                                      }
-                            }
+                <div className="d-flex align-items-center flex-grow-1">
+                    {onClick !== null ? (
+                        <button
+                            className="btn"
+                            type="button"
+                            onClick={onClickThumbnail}
+                            style={{
+                                border: selected ? '1px solid #ccc' : '1px solid transparent',
+                                backgroundColor: selected ? '#eee' : null,
+                            }}
                         >
-                            {!hasThumbnail && mediaIcon !== null ? (
-                                <FontAwesomeIcon icon={mediaIcon} className="m-auto fs-3" />
-                            ) : null}
-                            {hasThumbnail ? (
-                                <img
-                                    className="img-fluid"
-                                    src={thumbnail}
-                                    alt="thumbnail"
-                                    style={{
-                                        maxHeight: !withoutDescription ? 75 : 150,
-                                    }}
-                                />
-                            ) : null}
-                        </div>
-                    ) : null}
+                            {thumbnailElement || 'Thumbnail'}
+                        </button>
+                    ) : (
+                        thumbnailElement
+                    )}
                     {!withoutDescription ? (
                         <div className="flex-grow-1">
                             <div className="card-body">

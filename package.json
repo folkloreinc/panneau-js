@@ -4,6 +4,7 @@
     "private": true,
     "description": "",
     "workspaces": [
+        "./actions/*",
         "./displays/*",
         "./fields/*",
         "./forms/*",
@@ -37,7 +38,7 @@
         "@babel/plugin-transform-runtime": "^7.12.15",
         "@babel/preset-env": "^7.16.7",
         "@babel/preset-react": "^7.16.7",
-        "@folklore/fetch": "^0.1.16",
+        "@folklore/fetch": "^0.1.17",
         "@folklore/routes": "^0.2.26",
         "@formatjs/cli-lib": "^6.0.3",
         "@nrwl/cli": "^15.9.4",

@@ -24,6 +24,8 @@ const propTypes = {
     itemValuePath: PropTypes.string,
     itemLabelPath: PropTypes.string,
     maxItemsCount: PropTypes.number,
+    paginated: PropTypes.bool,
+    autoSize: PropTypes.bool,
     className: PropTypes.string,
 };
 
@@ -36,6 +38,8 @@ const defaultProps = {
     itemValuePath: null,
     itemLabelPath: null,
     maxItemsCount: null,
+    paginated: false,
+    autoSize: false,
     className: null,
 };
 
@@ -48,18 +52,30 @@ const SelectFilter = ({
     itemValuePath,
     itemLabelPath,
     maxItemsCount,
+    paginated,
+    autoSize,
     className,
     ...props
 }) => {
     const api = useApi();
     const [options, setOptions] = useState(initialOptions || []);
+    const [loading, setLoading] = useState(null);
+    const [endReached, setEndReached] = useState(null);
+    const [pagination, setPagination] = useState(null);
 
     useEffect(() => {
         setOptions(initialOptions);
     }, [initialOptions, setOptions]);
 
     const search = useSearch();
-    const query = useMemo(() => queryString.parse(search, { arrayFormat: 'bracket' }), [search]);
+    const [page, setPage] = useState(1);
+    const query = useMemo(
+        () => ({
+            ...(paginated ? { page } : null),
+            ...queryString.parse(search, { arrayFormat: 'bracket' }),
+        }),
+        [search, page, paginated],
+    );
 
     const finalParams = useMemo(() => {
         const currentQuery = query || {};
@@ -72,17 +88,24 @@ const SelectFilter = ({
                     [name]: currentQuery[name],
                 };
             }
+            if (paginated && (name === 'page' || name === 'count')) {
+                return {
+                    ...obj,
+                    [name]: currentQuery[name],
+                };
+            }
             return obj;
         }, {});
     }, [query, requestParams]);
 
     const fetchOptions = useCallback(
         (url) => {
-            if (url !== null && api !== null) {
+            if (!endReached && url !== null && api !== null) {
+                setLoading(true);
                 api.requestGet(
                     url,
                     {
-                        paginated: false,
+                        paginated,
                         ...requestQuery,
                         ...finalParams,
                     },
@@ -95,24 +118,48 @@ const SelectFilter = ({
                             typeof newItems.data !== 'undefined'
                                 ? newItems.data || []
                                 : newItems;
+                        const newPagination =
+                            newItems !== null &&
+                            !isArray(newItems) &&
+                            typeof newItems.pagination !== 'undefined'
+                                ? newItems.pagination || {}
+                                : null;
+
                         const finalItems =
                             maxItemsCount !== null
                                 ? partialItems.slice(0, maxItemsCount)
                                 : partialItems;
-                        setOptions(
-                            (finalItems || []).map((it) => ({
-                                label: get(it, itemLabelPath, null),
-                                value: get(it, itemValuePath, null),
-                            })),
-                        );
+
+                        if (paginated) {
+                            setOptions([
+                                ...options,
+                                ...(finalItems || []).map((it) => ({
+                                    label: get(it, itemLabelPath, null),
+                                    value: get(it, itemValuePath, null),
+                                })),
+                            ]);
+                            setPagination(newPagination);
+                        } else {
+                            setOptions(
+                                (finalItems || []).map((it) => ({
+                                    label: get(it, itemLabelPath, null),
+                                    value: get(it, itemValuePath, null),
+                                })),
+                            );
+                            setPagination(null);
+                        }
+                        setLoading(false);
                     })
                     .catch(() => {
                         setOptions(initialOptions);
+                        setPagination(null);
+                        setLoading(false);
                     });
             }
         },
         [
             api,
+            options,
             initialOptions,
             maxItemsCount,
             requestQuery,
@@ -120,6 +167,11 @@ const SelectFilter = ({
             finalParams,
             itemLabelPath,
             itemValuePath,
+            paginated,
+            setOptions,
+            setPagination,
+            setLoading,
+            endReached,
         ],
     );
 
@@ -127,7 +179,32 @@ const SelectFilter = ({
         fetchOptions(requestUrl);
     }, [requestUrl, finalParams]);
 
-    return <Select autoSize {...props} className={className} options={options} />;
+    useEffect(() => {
+        if (!paginated) {
+            setPagination(null);
+        }
+    }, [paginated]);
+
+    const onMenuScrollToBottom = useCallback(() => {
+        if (!loading && paginated && pagination !== null) {
+            const { page: paginationPage, last_page: lastPage } = pagination || {};
+            if (paginationPage < lastPage) {
+                setPage(paginationPage + 1);
+            } else {
+                setEndReached(true);
+            }
+        }
+    }, [loading, page, setPage, paginated, pagination, setEndReached]);
+
+    return (
+        <Select
+            autoSize={autoSize}
+            {...props}
+            className={className}
+            options={options}
+            onMenuScrollToBottom={paginated ? onMenuScrollToBottom : null}
+        />
+    );
 };
 
 SelectFilter.propTypes = propTypes;

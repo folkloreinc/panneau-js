@@ -13,6 +13,8 @@ import styles from './styles.module.scss';
 const propTypes = {
     items: PanneauPropTypes.buttons,
     size: PanneauPropTypes.buttonSize,
+    theme: PropTypes.string,
+    outline: PropTypes.bool,
     renderButton: PropTypes.func,
     onClickButton: PropTypes.func,
     className: PropTypes.string,
@@ -22,13 +24,24 @@ const propTypes = {
 const defaultProps = {
     items: [],
     size: null,
+    theme: null,
+    outline: false,
     renderButton: null,
     onClickButton: null,
     className: null,
     buttonClassName: null,
 };
 
-function Buttons({ items, size, renderButton, onClickButton, buttonClassName, className }) {
+function Buttons({
+    items,
+    size,
+    theme,
+    outline,
+    renderButton,
+    onClickButton,
+    buttonClassName,
+    className,
+}) {
     const componentsManager = useButtonsComponents();
 
     return (
@@ -55,6 +68,7 @@ function Buttons({ items, size, renderButton, onClickButton, buttonClassName, cl
                           component = null,
                           ...buttonProps
                       } = button || {};
+
                       const fixedProps = {
                           key: `button-${index}`,
                           className: classNames([
@@ -64,6 +78,8 @@ function Buttons({ items, size, renderButton, onClickButton, buttonClassName, cl
                                   [customClassName]: customClassName !== null,
                               },
                           ]),
+                          theme,
+                          outline,
                           onClick: (e) => {
                               if (onClick !== null) {
                                   onClick(e, button, index);

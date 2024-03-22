@@ -80,7 +80,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@folklore/fetch": "^0.1.16",
+        "@folklore/fetch": "^0.1.17",
         "@folklore/forms": "^0.0.22",
         "@folklore/routes": "^0.2.26",
         "@folklore/services": "^0.1.24",

@@ -1,7 +1,6 @@
-import Base from './Base';
-
-import AuthApi from './Auth';
 import AccountApi from './Account';
+import AuthApi from './Auth';
+import Base from './Base';
 import MediasApi from './Medias';
 import ResourcesApi from './Resources';
 
@@ -14,8 +13,10 @@ class Api extends Base {
         this.account = new AccountApi(this, {
             withCredentials: true,
         });
-        this.medias = new MediasApi(this);
+        this.medias = new MediasApi(opts);
         this.resources = new ResourcesApi(this);
+        // console.log('opts', opts);
+        // console.log('this', this);
     }
 }
 

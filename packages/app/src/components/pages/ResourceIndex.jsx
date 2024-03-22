@@ -39,21 +39,22 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
 
     const { name, settings = {}, index = {} } = resource;
     const { canCreate = true, indexIsPaginated: paginated = false } = settings || {};
-    const { actions = null } = index || {};
+    const { actions: indexActions = null } = index || {};
 
     const finalActions = useMemo(
         () =>
-            (actions || defaultActions.filter((it) => it !== 'create' || canCreate)).map((it) =>
-                it === 'create'
-                    ? {
-                          id: 'create',
-                          component: ResourceCreateButton,
-                          size: 'lg',
-                          theme: 'primary',
-                      }
-                    : it,
+            (indexActions || defaultActions.filter((it) => it !== 'create' || canCreate)).map(
+                (it) =>
+                    it === 'create'
+                        ? {
+                              id: 'create',
+                              component: ResourceCreateButton,
+                              size: 'lg',
+                              theme: 'primary',
+                          }
+                        : it,
             ),
-        [canCreate, actions],
+        [canCreate, indexActions],
     );
 
     const resourceValues = useResourceValues(resource);

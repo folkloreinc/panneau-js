@@ -9,6 +9,7 @@ export { default as useMediasParser } from './useMediasParser';
 export * from './useObserver';
 export { default as useResourceTypeName } from './useResourceTypeName';
 export { default as useResourceUrlGenerator } from './useResourceUrlGenerator';
-export { default as useResourceQuery } from './useResourceQuery';
+export { default as useQuery } from './useQuery';
 export * from './useScreenSize';
 export { default as useWindowEvent } from './useWindowEvent';
+export { default as useItemSelection } from './useItemSelection';

@@ -1,3 +1,5 @@
+import actions from './actions';
+
 export default {
     id: 'medias',
     name: 'Media',
@@ -18,7 +20,7 @@ export default {
 
     fields: [
         { name: 'type', label: 'Type', type: 'string', component: 'text', disabled: true },
-        { name: 'name', label: 'Name', type: 'text', component: 'text' },
+        { name: 'name', label: 'Name', type: 'text', component: 'text', selectable: true },
         { name: 'url', label: 'Url', type: 'text', component: 'url' },
         { name: 'thumbnail_url', label: 'Thumbnail Url', type: 'text', component: 'url' },
     ],
@@ -26,6 +28,7 @@ export default {
     index: {
         component: 'table',
         columns: ['id', 'type', 'name'],
+        batchActions: actions,
         filters: [
             {
                 name: 'types',
@@ -37,6 +40,15 @@ export default {
                     { label: 'audio 2', value: 'audio' },
                     { label: 'video 3', value: 'video' },
                 ],
+            },
+            {
+                name: 'medias',
+                placeholder: 'Sélectionner un media',
+                component: 'select',
+                multiple: true,
+                requestUrl: '/medias',
+                itemLabelPath: 'name',
+                paginated: true,
             },
             {
                 name: 'search',

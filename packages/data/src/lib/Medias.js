@@ -3,7 +3,7 @@ import Base from './Base';
 class MediasApi extends Base {
     constructor(opts = {}) {
         super({
-            ...opts,
+            baseUrl: opts.baseUrl ? opts.baseUrl : null,
             routes: {
                 index: 'medias',
                 tags: 'medias/tags',
@@ -14,6 +14,7 @@ class MediasApi extends Base {
                 ...(opts.routes || null),
             },
         });
+        // console.log('opts', opts);
     }
 
     find(id) {

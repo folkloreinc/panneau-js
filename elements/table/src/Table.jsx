@@ -1,13 +1,17 @@
-/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable jsx-a11y/control-has-associated-label, react/jsx-props-no-spreading  */
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
+import { useItemSelection } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
+import Icon from '@panneau/element-icon';
 import Loading from '@panneau/element-loading';
 
 import SortLink from './SortLink';
@@ -28,8 +32,15 @@ const propTypes = {
         PropTypes.shape({ defaultMessage: PropTypes.string }),
     ]),
     withoutId: PropTypes.bool,
-    actionsComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
+    withFadedId: PropTypes.bool,
+    selectable: PropTypes.bool,
+    multiple: PropTypes.bool,
+    onSelectionChange: PropTypes.func,
+    selectedItems: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
     className: PropTypes.string,
+    withCustomActionsColumn: PropTypes.bool,
+    actionsComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
+    actionsProps: PropTypes.shape({}),
     actionsClassName: PropTypes.string,
 };
 
@@ -45,8 +56,15 @@ const defaultProps = {
     showEmptyLabel: false,
     emptyLabel: null,
     withoutId: false,
-    actionsComponent: null,
+    withFadedId: true,
+    selectable: false,
+    multiple: false,
+    onSelectionChange: null,
+    selectedItems: null,
     className: null,
+    withCustomActionsColumn: false,
+    actionsComponent: null,
+    actionsProps: null,
     actionsClassName: null,
 };
 
@@ -62,15 +80,39 @@ function Table({
     showEmptyLabel,
     emptyLabel,
     withoutId,
+    withFadedId,
+    selectable,
+    multiple,
+    onSelectionChange,
+    selectedItems: initialSelectedItems,
     className,
+    withCustomActionsColumn,
     actionsComponent,
+    actionsProps,
     actionsClassName,
 }) {
     const displayComponents = useDisplaysComponents();
     const hasIdColumn =
         (columns.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
     const Actions = actionsComponent || null;
-    const hasActionsColumn = Actions !== null;
+    const withActionsColumn = withCustomActionsColumn && Actions !== null;
+    const withIdColumn = !withoutId && !hasIdColumn && !selectable;
+
+    const {
+        onSelectItem,
+        onDeselectItem,
+        onSelectPage,
+        onDeselectPage,
+        onClearAll,
+        pageSelected,
+        count: countSelected,
+        selectedItems,
+    } = useItemSelection({
+        items,
+        selectedItems: initialSelectedItems,
+        onSelectionChange,
+        multiple,
+    });
 
     return (
         <div>
@@ -86,8 +128,63 @@ function Table({
                     ])}
                 >
                     <thead>
+                        {selectable ? (
+                            <tr>
+                                <th colSpan="12">
+                                    <span className="text-small ms-1 text-nowrap fw-normal">
+                                        {countSelected > 0 ? (
+                                            <>
+                                                <span className="d-inline-block mb-1">
+                                                    <FormattedMessage
+                                                        defaultMessage="{count, plural, =0 {no items} one {# item} other {# items}} selected"
+                                                        description="Checkbox label"
+                                                        values={{ count: countSelected }}
+                                                    />
+                                                </span>
+                                                <button
+                                                    type="button"
+                                                    className="btn badge rounded-pill text-bg-primary ms-2"
+                                                    onClick={onClearAll}
+                                                >
+                                                    <Icon name="x" bold />
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <span className="d-inline-block mb-1">
+                                                <FormattedMessage
+                                                    defaultMessage="No items selected"
+                                                    description="Checkbox label"
+                                                />
+                                            </span>
+                                        )}
+                                    </span>
+                                </th>
+                            </tr>
+                        ) : null}
                         <tr>
-                            {!withoutId && !hasIdColumn ? <th scope="col">#</th> : null}
+                            {selectable && multiple ? (
+                                <th scope="col">
+                                    <input
+                                        id="checkAll"
+                                        type="checkbox"
+                                        className="form-check-input me-2"
+                                        autoComplete="off"
+                                        checked={pageSelected}
+                                        onChange={pageSelected ? onDeselectPage : onSelectPage}
+                                    />
+                                </th>
+                            ) : null}
+                            {selectable && !multiple ? (
+                                <th scope="col">
+                                    <span className="form-check-label pe-2 text-muted">
+                                        <FormattedMessage
+                                            defaultMessage="Select row"
+                                            description="Checkbox label"
+                                        />
+                                    </span>
+                                </th>
+                            ) : null}
+                            {withIdColumn ? <th scope="col">#</th> : null}
                             {columns.map(
                                 (
                                     {
@@ -106,6 +203,7 @@ function Table({
                                     <th scope="col" key={`col-${id}-${label}-${idx + 1}`}>
                                         {columnSortable ? (
                                             <SortLink
+                                                className="text-nowrap"
                                                 baseUrl={baseUrl}
                                                 query={query}
                                                 field={sortColumnName || field || path}
@@ -122,12 +220,12 @@ function Table({
                                                 {label}
                                             </SortLink>
                                         ) : (
-                                            label
+                                            <span className="text-nowrap">{label}</span>
                                         )}
                                     </th>
                                 ),
                             )}
-                            {hasActionsColumn ? <th scope="col">&nbsp;</th> : null}
+                            {withActionsColumn ? <th scope="col">&nbsp;</th> : null}
                         </tr>
                     </thead>
                     <tbody>
@@ -138,20 +236,67 @@ function Table({
                                 rowDisabled = false,
                             } = it || {};
 
+                            const checked = selectable
+                                ? ((selectedItems || []).find(
+                                      ({ id: itemId = null }) => id === itemId,
+                                  ) || null) !== null
+                                : false;
+
+                            const selectRow = checked
+                                ? () => onDeselectItem(it, rowIdx)
+                                : () => onSelectItem(it, rowIdx);
+
                             return (
                                 <tr
                                     key={`row-${id}-${rowIdx + 1}`}
                                     className={classNames([
                                         {
                                             'table-row': true,
-                                            'table-secondary': rowDisabled,
+                                            'table-secondary': rowDisabled || checked,
                                             [rowClassName]: rowClassName !== null,
                                         },
                                     ])}
+                                    {...(selectable
+                                        ? { onClick: selectRow, role: 'button' }
+                                        : null)}
                                 >
-                                    {!withoutId && !hasIdColumn ? (
-                                        <td className="col-auto">{id}</td>
+                                    {selectable ? (
+                                        <td className="col-auto text-nowrap">
+                                            <input
+                                                id={`check-${id}`}
+                                                type="checkbox"
+                                                className="form-check-input"
+                                                autoComplete="off"
+                                                checked={checked}
+                                                onChange={selectRow}
+                                            />
+                                            <span
+                                                className="form-check-label px-2 text-nowrap"
+                                                // htmlFor={`check-${id}`}
+                                            >
+                                                {!withoutId && !hasIdColumn ? (
+                                                    id
+                                                ) : (
+                                                    <FormattedMessage
+                                                        defaultMessage="Select row"
+                                                        description="Checkbox label"
+                                                    />
+                                                )}
+                                            </span>
+                                        </td>
                                     ) : null}
+                                    {withIdColumn ? (
+                                        <td className="col-auto">
+                                            <span
+                                                className={classNames([
+                                                    { 'opacity-50': withFadedId },
+                                                ])}
+                                            >
+                                                {id}
+                                            </span>
+                                        </td>
+                                    ) : null}
+
                                     {columns.map((column, idx) => {
                                         const {
                                             id: colId,
@@ -163,9 +308,11 @@ function Table({
                                         } = column || {};
 
                                         const FieldDisplayComponent = getComponentFromName(
-                                            component || 'text',
+                                            colId === 'actions' ? component : component || 'text',
                                             displayComponents,
-                                            'span',
+                                            colId === 'actions' && actionsComponent !== null
+                                                ? actionsComponent
+                                                : 'span',
                                         );
 
                                         let displayValue = null;
@@ -177,16 +324,27 @@ function Table({
 
                                         return (
                                             <td
+                                                key={`col-${id}-${colId}-${idx + 1}`}
                                                 className={classNames([
                                                     'col-auto',
                                                     {
+                                                        'text-break':
+                                                            (displayValue !== null &&
+                                                                isString(displayValue) &&
+                                                                displayValue.length >= 30) ||
+                                                            isObject(displayValue),
+                                                        'text-end':
+                                                            colId === 'actions' &&
+                                                            !withActionsColumn,
                                                         [columnClassName]: columnClassName !== null,
                                                     },
                                                 ])}
-                                                key={`col-${id}-${colId}-${idx + 1}`}
                                             >
                                                 {FieldDisplayComponent !== null ? (
                                                     <FieldDisplayComponent
+                                                        {...(colId === 'actions'
+                                                            ? actionsProps
+                                                            : null)}
                                                         {...displayProps}
                                                         field={field}
                                                         value={displayValue}
@@ -196,18 +354,19 @@ function Table({
                                             </td>
                                         );
                                     })}
-                                    {actionsComponent !== null ? (
+                                    {withActionsColumn ? (
                                         <td
                                             className={classNames([
                                                 'col-auto',
                                                 {
                                                     'table-row': true,
+                                                    'text-end': true,
                                                     [actionsClassName]: actionsClassName !== null,
                                                 },
                                             ])}
                                             key={`col-${id}-actions`}
                                         >
-                                            <Actions item={it} />
+                                            <Actions {...actionsProps} item={it} />
                                         </td>
                                     ) : null}
                                 </tr>

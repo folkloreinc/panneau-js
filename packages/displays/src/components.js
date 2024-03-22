@@ -6,3 +6,4 @@ export { default as Label } from '@panneau/display-label';
 export { default as Select } from '@panneau/display-select';
 export { default as Date } from '@panneau/display-date';
 export { default as Badges } from '@panneau/display-badges';
+export { default as Unit } from '@panneau/display-unit';

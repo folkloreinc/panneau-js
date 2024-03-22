@@ -1,0 +1,22 @@
+.container {
+    width: 100%;
+
+    .inner {
+        display: grid;
+        grid-gap: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        width: 100%;
+
+        &.small {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+
+        &.medium {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
+        &.large {
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        }
+    }
+}

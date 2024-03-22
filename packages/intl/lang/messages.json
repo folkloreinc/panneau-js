@@ -3,9 +3,17 @@
     "defaultMessage": "Error 403",
     "description": "Error page meta title"
   },
+  "002oWQ": {
+    "defaultMessage": "Duration",
+    "description": "Field name"
+  },
   "0F5X3C": {
     "defaultMessage": "S",
     "description": "Saturday letter"
+  },
+  "0SEHSj": {
+    "defaultMessage": "Select row",
+    "description": "Checkbox label"
   },
   "0xeItT": {
     "defaultMessage": "Loading...",
@@ -22,6 +30,10 @@
   "2vB7U4": {
     "defaultMessage": "An error occured and we could not save this item successfully.",
     "description": "Error message"
+  },
+  "3ebjtX": {
+    "defaultMessage": "Yes",
+    "description": "Button label"
   },
   "3na7F8": {
     "defaultMessage": "Now",
@@ -67,6 +79,10 @@
     "defaultMessage": "Item",
     "description": "Items field's item label"
   },
+  "7OEFyt": {
+    "defaultMessage": "Delete",
+    "description": "Modal title"
+  },
   "82P2dS": {
     "defaultMessage": "You are not authorized to access this page.",
     "description": "Error page description"
@@ -78,6 +94,10 @@
   "8LSb8C": {
     "defaultMessage": "Current password",
     "description": "Field label"
+  },
+  "9/t5wK": {
+    "defaultMessage": "Type",
+    "description": "Filter label"
   },
   "9XBwF1": {
     "defaultMessage": "Yes",
@@ -99,6 +119,10 @@
     "defaultMessage": "Delete",
     "description": "Button label"
   },
+  "Bv5ejF": {
+    "defaultMessage": "Select all",
+    "description": "Checkbox label"
+  },
   "CGvQxc": {
     "defaultMessage": "User",
     "description": "Avatar label"
@@ -114,6 +138,10 @@
   "ESkxLX": {
     "defaultMessage": "Success!",
     "description": "Form status"
+  },
+  "F3S+Sb": {
+    "defaultMessage": "An error occured.",
+    "description": "Modal message"
   },
   "FntHPK": {
     "defaultMessage": "View {the_plural}",
@@ -135,6 +163,14 @@
     "defaultMessage": "Select",
     "description": "Button label"
   },
+  "KNeQ6y": {
+    "defaultMessage": "Added by",
+    "description": "Field name"
+  },
+  "KZoCm7": {
+    "defaultMessage": "Are you sure you want to delete the following items ({ids}) ?",
+    "description": "Modal message"
+  },
   "Ke35Pv": {
     "defaultMessage": "Edit",
     "description": "Button label"
@@ -147,9 +183,17 @@
     "defaultMessage": "Duration:",
     "description": "Field description"
   },
+  "MhuqYZ": {
+    "defaultMessage": "No items selected",
+    "description": "Checkbox label"
+  },
   "Mo0yQb": {
     "defaultMessage": "Error",
     "description": "Form status"
+  },
+  "Mohaye": {
+    "defaultMessage": "Edit item",
+    "description": "Modal title"
   },
   "NI9440": {
     "defaultMessage": "Add file",
@@ -158,6 +202,10 @@
   "Of2stw": {
     "defaultMessage": "T",
     "description": "Tuesday letter"
+  },
+  "OzYWZz": {
+    "defaultMessage": "Created at",
+    "description": "Field name"
   },
   "PQX/ph": {
     "defaultMessage": "Create account",
@@ -182,6 +230,10 @@
   "REIcPg": {
     "defaultMessage": "Logout",
     "description": "Menu label"
+  },
+  "T/NPHK": {
+    "defaultMessage": "Edit",
+    "description": "Page title"
   },
   "TV3jir": {
     "defaultMessage": "Loading",
@@ -219,6 +271,10 @@
     "defaultMessage": "Confirm your password",
     "description": "Field label"
   },
+  "WX83V9": {
+    "defaultMessage": "File name",
+    "description": "Field name"
+  },
   "WgIC2T": {
     "defaultMessage": "No results found",
     "description": "Table label"
@@ -239,6 +295,10 @@
     "defaultMessage": "Update password",
     "description": "Button label"
   },
+  "XrzzDc": {
+    "defaultMessage": "Search",
+    "description": "Filter label"
+  },
   "ZBNqY2": {
     "defaultMessage": "Forgot your password?",
     "description": "Link label"
@@ -255,6 +315,10 @@
     "defaultMessage": "{The_singular} has been created.",
     "description": "Alert message"
   },
+  "c3hu9o": {
+    "defaultMessage": "Size",
+    "description": "Field name"
+  },
   "d0g58T": {
     "defaultMessage": "Login",
     "description": "Menu label"
@@ -262,6 +326,10 @@
   "dkRdks": {
     "defaultMessage": "{The_singular} has been deleted.",
     "description": "Alert message"
+  },
+  "eCe9ZY": {
+    "defaultMessage": "Dimensions",
+    "description": "Field name"
   },
   "ejwBSw": {
     "defaultMessage": "Error 500",
@@ -283,6 +351,10 @@
     "defaultMessage": "Go to home page",
     "description": "Button label"
   },
+  "hnLSrX": {
+    "defaultMessage": "Tag",
+    "description": "Filter label"
+  },
   "jbT/g6": {
     "defaultMessage": "M",
     "description": "Monday letter"
@@ -291,9 +363,17 @@
     "defaultMessage": "Create {a_singular}",
     "description": "Button label"
   },
+  "lRvafH": {
+    "defaultMessage": "Status",
+    "description": "Field name"
+  },
   "li2Qqu": {
     "defaultMessage": "Skip setup",
     "description": "Link label"
+  },
+  "lsBBVh": {
+    "defaultMessage": "{count, plural, =0 {no items} one {# item} other {# items}} selected",
+    "description": "Checkbox label"
   },
   "mCfzkJ": {
     "defaultMessage": "Edit {a_singular}",
@@ -327,6 +407,22 @@
     "defaultMessage": "Time",
     "description": "DateTimeField time caption"
   },
+  "sOfogS": {
+    "defaultMessage": "Edit items",
+    "description": "Modal title"
+  },
+  "skmuWU": {
+    "defaultMessage": "Author",
+    "description": "Filter label"
+  },
+  "sl150Z": {
+    "defaultMessage": "Deselect all",
+    "description": "Checkbox label"
+  },
+  "smqUAV": {
+    "defaultMessage": "Edit {name}",
+    "description": "Page title"
+  },
   "tPeIKO": {
     "defaultMessage": "Go back to login",
     "description": "Link label"
@@ -351,6 +447,10 @@
     "defaultMessage": "Loading",
     "description": "Loading message"
   },
+  "xSERPA": {
+    "defaultMessage": "Video",
+    "description": "Filter item label"
+  },
   "y9zauY": {
     "defaultMessage": "An error occured and we could not delete this item successfully.",
     "description": "Error message"
@@ -358,6 +458,22 @@
   "yALN2p": {
     "defaultMessage": "There was an error",
     "description": "Error page description"
+  },
+  "yHAmDD": {
+    "defaultMessage": "Image",
+    "description": "Filter item label"
+  },
+  "yQRtgx": {
+    "defaultMessage": "Audio",
+    "description": "Filter item label"
+  },
+  "yfnQvw": {
+    "defaultMessage": "The following items ({ids}) will be modified :",
+    "description": "Modal message"
+  },
+  "yhU8J6": {
+    "defaultMessage": "No",
+    "description": "Button label"
   },
   "yzfiXJ": {
     "defaultMessage": "Are you sure you want to delete {the_singular} #{id}?",

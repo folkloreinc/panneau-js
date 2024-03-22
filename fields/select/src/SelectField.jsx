@@ -98,7 +98,9 @@ const SelectField = ({
                               requestOptions,
                           )
                           .then((newItems) => {
-                              const { data = null } = paginated ? newItems : { data: newItems };
+                              const { data = null } = paginated
+                                  ? newItems || {}
+                                  : { data: newItems || [] };
                               const finalNewItems =
                                   maxOptionsCount !== null ? data.slice(0, maxOptionsCount) : data;
                               return prepareRequestOptions !== null

@@ -3,7 +3,7 @@
     "type": "image",
     "name": "120x63.png",
     "url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/120x63.png",
-    "thumbnail_url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/120x63.png",
+    "thumbnail_url": null,
     "metadata": {
         "filename": "120x63.png",
         "size": 158897,

@@ -161,6 +161,7 @@ export const selectOption = PropTypes.oneOfType([
     }),
     PropTypes.object,
 ]);
+
 export const selectOptions = PropTypes.arrayOf(selectOption);
 
 export const feedback = PropTypes.oneOf(['valid', 'invalid', 'loading', null]);
@@ -193,4 +194,17 @@ export const modal = PropTypes.shape({
 
 export const modals = PropTypes.arrayOf(modal);
 
-//
+export const filter = PropTypes.shape({
+    id: PropTypes.string,
+    component: PropTypes.string,
+});
+
+export const filters = PropTypes.arrayOf(filter);
+
+export const media = PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    thumbnail_url: PropTypes.string,
+});
+export const medias = PropTypes.arrayOf(media);

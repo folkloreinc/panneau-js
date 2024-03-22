@@ -13,6 +13,7 @@ const propTypes = {
     method: PropTypes.string,
     postForm: PropTypes.func,
     postOptions: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    postData: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     type: PropTypes.string,
     fields: PanneauPropTypes.fields.isRequired,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -28,6 +29,7 @@ const defaultProps = {
     method: null,
     postForm: null,
     postOptions: null,
+    postData: null,
     value: null,
     onChange: null,
     onComplete: null,
@@ -42,6 +44,7 @@ const Form = ({
     type,
     postForm,
     postOptions,
+    postData,
     fields: providedFields,
     value: providedValue,
     onChange: parentOnChange,
@@ -55,13 +58,13 @@ const Form = ({
 
     const defaultPostForm = useCallback(
         (act, data) =>
-            postJSON(act, data, {
+            postJSON(act, postData !== null ? { ...postData, ...data } : data, {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
                 ...(method !== null ? { method } : null),
                 ...(postOptions !== null ? postOptions : null),
             }),
-        [method, postOptions],
+        [method, postOptions, postData],
     );
 
     const { value, setValue, fields, onSubmit, status, generalError, errors } = useForm({

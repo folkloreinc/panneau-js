@@ -2,8 +2,14 @@
     "+6cCPF": {
         "defaultMessage": "Erreur 403"
     },
+    "002oWQ": {
+        "defaultMessage": "Durée"
+    },
     "0F5X3C": {
         "defaultMessage": "S"
+    },
+    "0SEHSj": {
+        "defaultMessage": "Sélectionner"
     },
     "0xeItT": {
         "defaultMessage": "Chargement..."
@@ -16,6 +22,9 @@
     },
     "2vB7U4": {
         "defaultMessage": "Une erreur s’est produite et nous n’avons pas pu enregistrer cet élément avec succès."
+    },
+    "3ebjtX": {
+        "defaultMessage": "Oui"
     },
     "3na7F8": {
         "defaultMessage": "Maintenant"
@@ -50,6 +59,9 @@
     "7M0o0q": {
         "defaultMessage": "Élément"
     },
+    "7OEFyt": {
+        "defaultMessage": "Supprimer"
+    },
     "82P2dS": {
         "defaultMessage": "Vous n’êtes pas autorisé à accéder à cette page."
     },
@@ -58,6 +70,9 @@
     },
     "8LSb8C": {
         "defaultMessage": "Mot de passe actuel"
+    },
+    "9/t5wK": {
+        "defaultMessage": "Type"
     },
     "9XBwF1": {
         "defaultMessage": "Oui"
@@ -74,6 +89,9 @@
     "Bhu3B2": {
         "defaultMessage": "Supprimer"
     },
+    "Bv5ejF": {
+        "defaultMessage": "Tout sélectionner"
+    },
     "CGvQxc": {
         "defaultMessage": "Utilisateur"
     },
@@ -85,6 +103,9 @@
     },
     "ESkxLX": {
         "defaultMessage": "Réussi!"
+    },
+    "F3S+Sb": {
+        "defaultMessage": "Une erreur s'est produite."
     },
     "FntHPK": {
         "defaultMessage": "Voir {the_plural}"
@@ -101,6 +122,12 @@
     "JeVLdN": {
         "defaultMessage": "Sélectionner"
     },
+    "KNeQ6y": {
+        "defaultMessage": "Ajouté par"
+    },
+    "KZoCm7": {
+        "defaultMessage": "Êtes-vous sûr de vouloir supprimer les éléments suivants : {ids} ?"
+    },
     "Ke35Pv": {
         "defaultMessage": "Modifier"
     },
@@ -110,14 +137,23 @@
     "MHldGi": {
         "defaultMessage": "Durée:"
     },
+    "MhuqYZ": {
+        "defaultMessage": "Aucun élément sélectionné"
+    },
     "Mo0yQb": {
         "defaultMessage": "Erreur"
+    },
+    "Mohaye": {
+        "defaultMessage": "Modifier l'élément"
     },
     "NI9440": {
         "defaultMessage": "Ajouter un fichier"
     },
     "Of2stw": {
         "defaultMessage": "J"
+    },
+    "OzYWZz": {
+        "defaultMessage": "Créé le"
     },
     "PQX/ph": {
         "defaultMessage": "Créer mon compte"
@@ -136,6 +172,9 @@
     },
     "REIcPg": {
         "defaultMessage": "Déconnexion"
+    },
+    "T/NPHK": {
+        "defaultMessage": "Modifier"
     },
     "TV3jir": {
         "defaultMessage": "Chargement"
@@ -164,6 +203,9 @@
     "VhJUeW": {
         "defaultMessage": "Confirmez votre mot de passe"
     },
+    "WX83V9": {
+        "defaultMessage": "Nom du fichier"
+    },
     "WgIC2T": {
         "defaultMessage": "Aucun résultat"
     },
@@ -179,6 +221,9 @@
     "XW9IKQ": {
         "defaultMessage": "Mettre à jour votre mot de passe"
     },
+    "XrzzDc": {
+        "defaultMessage": "Chercher"
+    },
     "ZBNqY2": {
         "defaultMessage": "Mot de passe oublié ?"
     },
@@ -191,11 +236,17 @@
     "bfP/d8": {
         "defaultMessage": "{The_singular} a été créé."
     },
+    "c3hu9o": {
+        "defaultMessage": "Taille"
+    },
     "d0g58T": {
         "defaultMessage": "Connexion"
     },
     "dkRdks": {
         "defaultMessage": "{The_singular} a été supprimé."
+    },
+    "eCe9ZY": {
+        "defaultMessage": "Dimensions"
     },
     "ejwBSw": {
         "defaultMessage": "Erreur 500"
@@ -212,14 +263,23 @@
     "hezcGl": {
         "defaultMessage": "Aller à la page d’accueil"
     },
+    "hnLSrX": {
+        "defaultMessage": "Tag"
+    },
     "jbT/g6": {
         "defaultMessage": "L"
     },
     "l+ddDH": {
         "defaultMessage": "Créer {a_singular}"
     },
+    "lRvafH": {
+        "defaultMessage": "État"
+    },
     "li2Qqu": {
         "defaultMessage": "Passer l'étape"
+    },
+    "lsBBVh": {
+        "defaultMessage": "{count, plural, =0 {aucun élément} one {# élément} other {# éléments}} sélectionné(s)"
     },
     "mCfzkJ": {
         "defaultMessage": "Modifier {a_singular}"
@@ -245,6 +305,18 @@
     "s4Xrs9": {
         "defaultMessage": "Heure"
     },
+    "sOfogS": {
+        "defaultMessage": "Modifier les éléments"
+    },
+    "skmuWU": {
+        "defaultMessage": "Auteur"
+    },
+    "sl150Z": {
+        "defaultMessage": "Tout désélectionner"
+    },
+    "smqUAV": {
+        "defaultMessage": "Modifier {nom}"
+    },
     "tPeIKO": {
         "defaultMessage": "Retour à la connexion"
     },
@@ -263,11 +335,26 @@
     "x27x2b": {
         "defaultMessage": "Chargement"
     },
+    "xSERPA": {
+        "defaultMessage": "Vidéo"
+    },
     "y9zauY": {
         "defaultMessage": "Une erreur s’est produite et nous n’avons pas pu supprimer cet élément avec succès."
     },
     "yALN2p": {
         "defaultMessage": "Il y a eu une erreur"
+    },
+    "yHAmDD": {
+        "defaultMessage": "Image"
+    },
+    "yQRtgx": {
+        "defaultMessage": "Audio"
+    },
+    "yfnQvw": {
+        "defaultMessage": "Les éléments suivants seront modifiés : {ids}"
+    },
+    "yhU8J6": {
+        "defaultMessage": "Non"
     },
     "yzfiXJ": {
         "defaultMessage": "Êtes-vous certain de vouloir supprimer {the_singular} #{id}?"

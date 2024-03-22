@@ -9,7 +9,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useResourceQuery } from '@panneau/core/hooks';
+import { useQuery } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import { MediaCards } from '@panneau/element-media-card';
@@ -299,7 +299,7 @@ const UploadField = ({
         onPageChange: onListPageChange,
         onQueryChange: onListQueryChange,
         onQueryReset: onListQueryReset,
-    } = useResourceQuery(initialQuery, true, { forceInitialQuery: true });
+    } = useQuery(initialQuery, true);
 
     // console.log(
     //     'modalOpened',

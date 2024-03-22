@@ -2,10 +2,18 @@
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import Button from '@panneau/element-button';
 import Icon from '@panneau/element-icon';
 import TextField from '@panneau/field-text';
+
+const messages = defineMessages({
+    search: {
+        defaultMessage: 'Search',
+        description: 'Filter label',
+    },
+});
 
 const propTypes = {
     name: PropTypes.string,
@@ -19,12 +27,13 @@ const propTypes = {
 const defaultProps = {
     name: 'q',
     value: null,
-    placeholder: 'Search...',
+    placeholder: null,
     position: null,
     className: null,
 };
 
 const SearchFilter = ({ name, value, onChange, position, placeholder, className }) => {
+    const intl = useIntl();
     const [searchValue, setSearchValue] = useState(value);
 
     const onSubmit = useCallback(
@@ -70,7 +79,7 @@ const SearchFilter = ({ name, value, onChange, position, placeholder, className 
                     value={searchValue}
                     theme="light"
                     onChange={setSearchValue}
-                    placeholder={placeholder}
+                    placeholder={placeholder || intl.formatMessage(messages.search)}
                 />
                 {canClear ? (
                     <Button

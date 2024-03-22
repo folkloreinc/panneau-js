@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useResourceQuery } from '@panneau/core/hooks';
+import { useQuery } from '@panneau/core/hooks';
 import { useResourceValues } from '@panneau/intl';
 import ResourceItemsList from '@panneau/list-resource-items';
 import Dialog from '@panneau/modal-dialog';
@@ -47,10 +47,7 @@ const ModalResourceItems = ({
 }) => {
     const resourceValues = useResourceValues(resource);
     const finalQuery = useMemo(() => ({ ...initialQuery }), [initialQuery]);
-    const { query, onPageChange, onQueryChange, onQueryReset } = useResourceQuery(
-        finalQuery,
-        paginated,
-    );
+    const { query, onPageChange, onQueryChange, onQueryReset } = useQuery(finalQuery, paginated);
 
     // TODO: add default list props?
 

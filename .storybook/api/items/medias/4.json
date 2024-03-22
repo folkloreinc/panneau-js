@@ -9,6 +9,7 @@
         "size": 100000,
         "mime": "video/mp4",
         "width": 1080,
-        "height": 1920
+        "height": 1920,
+        "duration": 2341
     }
 }

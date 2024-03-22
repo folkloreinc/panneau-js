@@ -17,11 +17,16 @@ export default {
     },
 };
 
-export const Normal = () => (
+// eslint-disable-next-line react/prop-types
+const Container = ({ children }) => (
     <ModalProvider>
         <Modals />
-        <ResourceProvider resource={pageResource}>
-            <ResourceItems resource="pages" />
-        </ResourceProvider>
+        <ResourceProvider resource={pageResource}>{children}</ResourceProvider>
     </ModalProvider>
+);
+
+export const Normal = () => (
+    <Container>
+        <ResourceItems resource={pageResource} />
+    </Container>
 );

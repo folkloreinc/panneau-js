@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFiltersComponents } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
@@ -11,12 +12,7 @@ import Icon from '@panneau/element-icon';
 import Navbar from '@panneau/element-navbar';
 
 const propTypes = {
-    filters: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string,
-            component: PropTypes.string.isRequired,
-        }),
-    ),
+    filters: PanneauPropTypes.filters,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onChange: PropTypes.func,
     onReset: PropTypes.func,
@@ -37,7 +33,7 @@ const defaultProps = {
     className: null,
 };
 
-const ResourceFilters = ({
+const Filters = ({
     filters,
     value,
     onChange,
@@ -126,7 +122,7 @@ const ResourceFilters = ({
     );
 };
 
-ResourceFilters.propTypes = propTypes;
-ResourceFilters.defaultProps = defaultProps;
+Filters.propTypes = propTypes;
+Filters.defaultProps = defaultProps;
 
-export default ResourceFilters;
+export default Filters;

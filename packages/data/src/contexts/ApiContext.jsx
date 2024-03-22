@@ -1,7 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { useUrlGenerator } from '@panneau/core/contexts';
 import PropTypes from 'prop-types';
 import React, { useContext, useMemo } from 'react';
+
+import { useUrlGenerator } from '@panneau/core/contexts';
+
 import Api from '../lib/Api';
 
 const ApiContext = React.createContext(null);

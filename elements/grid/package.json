@@ -1,0 +1,60 @@
+{
+    "name": "@panneau/element-grid",
+    "version": "3.0.126",
+    "description": "Grid element",
+    "keywords": [
+        "javascript"
+    ],
+    "homepage": "https://github.com/folkloreinc/panneau-js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git"
+    },
+    "author": {
+        "name": "Folklore",
+        "email": "info@folklore.email"
+    },
+    "contributors": [
+        {
+            "name": "David Mongeau-Petitpas",
+            "email": "dmp@folklore.email"
+        },
+        {
+            "name": "Nicolas Roy-Bourdages",
+            "email": "nrb@folklore.email"
+        }
+    ],
+    "license": "ISC",
+    "main": "lib/index.js",
+    "module": "es/index.js",
+    "files": [
+        "lib",
+        "es",
+        "assets"
+    ],
+    "scripts": {
+        "prepublishOnly": "npm run build",
+        "build": "../../scripts/prepare-package.sh"
+    },
+    "devDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.12.5",
+        "@panneau/core": "^3.0.126",
+        "@panneau/element-icon": "^3.0.126",
+        "classnames": "^2.2.6",
+        "prop-types": "^15.7.2",
+        "react-intl": "^5.15.8||^6.0.0",
+        "uuid": "^8.3.2"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "gitHead": "5efa71294bfa85494c90cf42700b0ebf830fa7a0"
+}

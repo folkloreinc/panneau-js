@@ -1,10 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-const useResourceQuery = (
-    initialBaseQuery = null,
-    paginated = true,
-    { forceInitialQuery = false } = {},
-) => {
+const useQuery = (initialBaseQuery = null, paginated = true) => {
     const initialQuery = useMemo(
         () => (paginated ? { page: 1, count: 10, ...initialBaseQuery } : initialBaseQuery || null),
         [paginated, initialBaseQuery],
@@ -36,14 +32,9 @@ const useResourceQuery = (
                               : currentQuery;
                       }, null)
                     : null;
-
-            if (forceInitialQuery) {
-                setQuery({ ...(initialBaseQuery || null), ...(finalQuery || null) });
-            } else {
-                setQuery(finalQuery);
-            }
+            setQuery({ ...(initialQuery || null), ...(finalQuery || null) });
         },
-        [query, setQuery, initialBaseQuery, forceInitialQuery],
+        [query, setQuery, initialQuery],
     );
 
     const onQueryReset = useCallback(() => {
@@ -58,4 +49,4 @@ const useResourceQuery = (
     };
 };
 
-export default useResourceQuery;
+export default useQuery;

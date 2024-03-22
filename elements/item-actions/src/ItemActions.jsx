@@ -228,7 +228,6 @@ const ItemActions = ({
                     })
                     .filter((action) => action !== null)
             }
-            outline
             className={className}
         />
     );

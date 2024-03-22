@@ -2,8 +2,14 @@
     "+6cCPF": {
         "defaultMessage": "Error 403"
     },
+    "002oWQ": {
+        "defaultMessage": "Duration"
+    },
     "0F5X3C": {
         "defaultMessage": "S"
+    },
+    "0SEHSj": {
+        "defaultMessage": "Select row"
     },
     "0xeItT": {
         "defaultMessage": "Loading..."
@@ -16,6 +22,9 @@
     },
     "2vB7U4": {
         "defaultMessage": "An error occured and we could not save this item successfully."
+    },
+    "3ebjtX": {
+        "defaultMessage": "Yes"
     },
     "3na7F8": {
         "defaultMessage": "Now"
@@ -50,6 +59,9 @@
     "7M0o0q": {
         "defaultMessage": "Item"
     },
+    "7OEFyt": {
+        "defaultMessage": "Delete"
+    },
     "82P2dS": {
         "defaultMessage": "You are not authorized to access this page."
     },
@@ -58,6 +70,9 @@
     },
     "8LSb8C": {
         "defaultMessage": "Current password"
+    },
+    "9/t5wK": {
+        "defaultMessage": "Type"
     },
     "9XBwF1": {
         "defaultMessage": "Yes"
@@ -74,6 +89,9 @@
     "Bhu3B2": {
         "defaultMessage": "Delete"
     },
+    "Bv5ejF": {
+        "defaultMessage": "Select all"
+    },
     "CGvQxc": {
         "defaultMessage": "User"
     },
@@ -85,6 +103,9 @@
     },
     "ESkxLX": {
         "defaultMessage": "Success!"
+    },
+    "F3S+Sb": {
+        "defaultMessage": "An error occured."
     },
     "FntHPK": {
         "defaultMessage": "View {the_plural}"
@@ -101,6 +122,12 @@
     "JeVLdN": {
         "defaultMessage": "Select"
     },
+    "KNeQ6y": {
+        "defaultMessage": "Added by"
+    },
+    "KZoCm7": {
+        "defaultMessage": "Are you sure you want to delete the following items ({ids}) ?"
+    },
     "Ke35Pv": {
         "defaultMessage": "Edit"
     },
@@ -110,14 +137,23 @@
     "MHldGi": {
         "defaultMessage": "Duration:"
     },
+    "MhuqYZ": {
+        "defaultMessage": "No items selected"
+    },
     "Mo0yQb": {
         "defaultMessage": "Error"
+    },
+    "Mohaye": {
+        "defaultMessage": "Edit item"
     },
     "NI9440": {
         "defaultMessage": "Add file"
     },
     "Of2stw": {
         "defaultMessage": "T"
+    },
+    "OzYWZz": {
+        "defaultMessage": "Created at"
     },
     "PQX/ph": {
         "defaultMessage": "Create account"
@@ -136,6 +172,9 @@
     },
     "REIcPg": {
         "defaultMessage": "Logout"
+    },
+    "T/NPHK": {
+        "defaultMessage": "Edit"
     },
     "TV3jir": {
         "defaultMessage": "Loading"
@@ -164,6 +203,9 @@
     "VhJUeW": {
         "defaultMessage": "Confirm your password"
     },
+    "WX83V9": {
+        "defaultMessage": "File name"
+    },
     "WgIC2T": {
         "defaultMessage": "No results found"
     },
@@ -179,6 +221,9 @@
     "XW9IKQ": {
         "defaultMessage": "Update password"
     },
+    "XrzzDc": {
+        "defaultMessage": "Search"
+    },
     "ZBNqY2": {
         "defaultMessage": "Forgot your password?"
     },
@@ -191,11 +236,17 @@
     "bfP/d8": {
         "defaultMessage": "{The_singular} has been created."
     },
+    "c3hu9o": {
+        "defaultMessage": "Size"
+    },
     "d0g58T": {
         "defaultMessage": "Login"
     },
     "dkRdks": {
         "defaultMessage": "{The_singular} has been deleted."
+    },
+    "eCe9ZY": {
+        "defaultMessage": "Dimensions"
     },
     "ejwBSw": {
         "defaultMessage": "Error 500"
@@ -212,14 +263,23 @@
     "hezcGl": {
         "defaultMessage": "Go to home page"
     },
+    "hnLSrX": {
+        "defaultMessage": "Tag"
+    },
     "jbT/g6": {
         "defaultMessage": "M"
     },
     "l+ddDH": {
         "defaultMessage": "Create {a_singular}"
     },
+    "lRvafH": {
+        "defaultMessage": "Status"
+    },
     "li2Qqu": {
         "defaultMessage": "Skip setup"
+    },
+    "lsBBVh": {
+        "defaultMessage": "{count, plural, =0 {no items} one {# item} other {# items}} selected"
     },
     "mCfzkJ": {
         "defaultMessage": "Edit {a_singular}"
@@ -245,6 +305,18 @@
     "s4Xrs9": {
         "defaultMessage": "Time"
     },
+    "sOfogS": {
+        "defaultMessage": "Edit items"
+    },
+    "skmuWU": {
+        "defaultMessage": "Author"
+    },
+    "sl150Z": {
+        "defaultMessage": "Deselect all"
+    },
+    "smqUAV": {
+        "defaultMessage": "Edit {name}"
+    },
     "tPeIKO": {
         "defaultMessage": "Go back to login"
     },
@@ -263,11 +335,26 @@
     "x27x2b": {
         "defaultMessage": "Loading"
     },
+    "xSERPA": {
+        "defaultMessage": "Video"
+    },
     "y9zauY": {
         "defaultMessage": "An error occured and we could not delete this item successfully."
     },
     "yALN2p": {
         "defaultMessage": "There was an error"
+    },
+    "yHAmDD": {
+        "defaultMessage": "Image"
+    },
+    "yQRtgx": {
+        "defaultMessage": "Audio"
+    },
+    "yfnQvw": {
+        "defaultMessage": "The following items ({ids}) will be modified :"
+    },
+    "yhU8J6": {
+        "defaultMessage": "No"
     },
     "yzfiXJ": {
         "defaultMessage": "Are you sure you want to delete {the_singular} #{id}?"

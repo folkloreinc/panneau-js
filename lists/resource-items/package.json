@@ -53,6 +53,7 @@
         "@panneau/element-navbar": "^3.0.126",
         "@panneau/element-pagination": "^3.0.126",
         "@panneau/filter-filters": "^3.0.126",
+        "@panneau/action-actions": "^3.0.126",
         "@panneau/list-table": "^3.0.128",
         "@panneau/themes": "^3.0.126",
         "classnames": "^2.2.6",

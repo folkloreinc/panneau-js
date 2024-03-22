@@ -25,6 +25,7 @@ const propTypes = {
     previousLabel: PropTypes.node,
     nextLabel: PropTypes.node,
     countLabel: PropTypes.node,
+    alwaysShowButtons: PropTypes.bool,
     className: PropTypes.string,
     paginationClassName: PropTypes.string,
     itemClassName: PropTypes.string,
@@ -52,6 +53,7 @@ const defaultProps = {
             description="Pagination count label"
         />
     ),
+    alwaysShowButtons: false,
     className: null,
     paginationClassName: null,
     itemClassName: null,
@@ -74,6 +76,7 @@ const Pagination = ({
     previousLabel,
     nextLabel,
     countLabel,
+    alwaysShowButtons,
     className,
     paginationClassName,
     itemClassName,
@@ -84,10 +87,6 @@ const Pagination = ({
     const lastPage = parseInt(parentLastPage, 10);
     const total = parseInt(parentTotal, 10);
     const maxPages = parseInt(parentMaxPages, 10);
-
-    if (autohide && lastPage < 2) {
-        return null;
-    }
 
     const getUrl = useCallback(
         (currentPage) =>
@@ -128,6 +127,10 @@ const Pagination = ({
         values: { count: total },
     });
 
+    if (autohide && lastPage < 2) {
+        return null;
+    }
+
     return (
         <nav
             className={classNames([
@@ -167,10 +170,11 @@ const Pagination = ({
                     },
                 ])}
             >
-                {withPreviousNext && pages.length > 1 ? (
+                {withPreviousNext && (pages.length > 1 || alwaysShowButtons) ? (
                     <li
                         className={classNames([
                             'page-item',
+                            // 'rounded',
                             {
                                 disabled: page <= 1,
                                 [itemClassName]: itemClassName !== null,
@@ -181,6 +185,8 @@ const Pagination = ({
                             <Link
                                 className={classNames([
                                     'page-link',
+                                    'rounded-0',
+                                    'rounded-start',
                                     {
                                         [linkClassName]: linkClassName !== null,
                                     },
@@ -196,6 +202,8 @@ const Pagination = ({
                             <span
                                 className={classNames([
                                     'page-link',
+                                    'rounded-0',
+                                    'rounded-start',
                                     {
                                         [linkClassName]: linkClassName !== null,
                                     },
@@ -223,6 +231,7 @@ const Pagination = ({
                               <Link
                                   className={classNames([
                                       'page-link',
+                                      'rounded-0',
                                       {
                                           [linkClassName]: linkClassName !== null,
                                       },
@@ -241,7 +250,7 @@ const Pagination = ({
                       ))
                     : null}
 
-                {withPreviousNext && pages.length > 1 ? (
+                {withPreviousNext && (pages.length > 1 || alwaysShowButtons) ? (
                     <li
                         className={classNames([
                             'page-item',
@@ -255,6 +264,8 @@ const Pagination = ({
                             <Link
                                 className={classNames([
                                     'page-link',
+                                    'rounded-0',
+                                    'rounded-end',
                                     {
                                         [linkClassName]: linkClassName !== null,
                                     },
@@ -270,6 +281,8 @@ const Pagination = ({
                             <span
                                 className={classNames([
                                     'page-link',
+                                    'rounded-0',
+                                    'rounded-end',
                                     {
                                         [linkClassName]: linkClassName !== null,
                                     },

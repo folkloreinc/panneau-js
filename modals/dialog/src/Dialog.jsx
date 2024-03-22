@@ -111,7 +111,7 @@ const ModalDialog = ({
                         <div className={classNames(['modal-footer', styles.footer])}>
                             {footer !== null ? footer : null}
                             {buttons !== null ? (
-                                <Buttons buttons={buttons} className={styles.buttons} />
+                                <Buttons items={buttons} className={styles.buttons} />
                             ) : null}
                         </div>
                     ) : null}

@@ -4,6 +4,7 @@ export { default as createUseEvent } from './createUseEvent';
 export { default as copyToClipboard } from './copyToClipboard';
 export { default as dashCase } from './dashCase';
 export { default as flattenComponents } from './flattenComponents';
+export { default as formatDuration } from './formatDuration';
 export { default as getColumnsWithFields } from './getColumnsWithFields';
 export { default as getComponent } from './getComponent';
 export { default as getComponentFromName } from './getComponentFromName';

@@ -1,9 +1,13 @@
 import { useCallback } from 'react';
 
 const useMediasRecent = (opts, key = 'media-gallery-recent-searches') => {
-    const createSearch = useCallback(
+    const addSearchValue = useCallback(
         (value) => {
-            if (window !== undefined && value) {
+            if (
+                typeof window !== 'undefined' &&
+                typeof window.localStorage !== 'undefined' &&
+                value
+            ) {
                 const recent = window.localStorage.getItem(key) || null;
                 const current = recent !== null ? JSON.parse(recent || '[]') : [];
                 const encoded = JSON.stringify([value, ...current]);
@@ -15,9 +19,9 @@ const useMediasRecent = (opts, key = 'media-gallery-recent-searches') => {
         [key],
     );
 
-    const getSearches = useCallback(
+    const getSearchValues = useCallback(
         (count = 5) => {
-            if (window !== undefined) {
+            if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
                 const recent = window.localStorage.getItem(key) || null;
                 const current = recent !== null ? JSON.parse(recent || '[]') : [];
                 return current.slice(0, count);
@@ -28,8 +32,8 @@ const useMediasRecent = (opts, key = 'media-gallery-recent-searches') => {
     );
 
     return {
-        createSearch,
-        getSearches,
+        addSearchValue,
+        getSearchValues,
     };
 };
 

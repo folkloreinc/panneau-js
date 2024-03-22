@@ -204,7 +204,7 @@ const Button = ({
         },
     ]);
 
-    if (href !== null) {
+    if (href !== null && !disabled) {
         return external || direct ? (
             <a
                 {...props}

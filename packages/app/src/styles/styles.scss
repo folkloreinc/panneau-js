@@ -1,6 +1,7 @@
 @import '~@panneau/themes/scss/vendor';
 @import '~@panneau/fields/scss/styles';
 @import '~@panneau/displays/scss/styles';
+@import '~@panneau/actions/scss/styles';
 @import '~@panneau/forms/scss/styles';
 @import '~@panneau/lists/scss/styles';
 @import '~@panneau/filters/scss/styles';
@@ -20,6 +21,7 @@
 @import '~@panneau/element-link/assets/css/styles';
 @import '~@panneau/element-modal/assets/css/styles';
 @import '~@panneau/element-range/assets/css/styles';
+@import '~@panneau/element-media-card/assets/css/styles';
 
 .modal-open {
     padding-right: 0;

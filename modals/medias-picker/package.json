@@ -1,0 +1,67 @@
+{
+    "name": "@panneau/modal-medias-picker",
+    "version": "3.0.126",
+    "description": "Medias picker modal",
+    "keywords": [
+        "javascript"
+    ],
+    "homepage": "https://github.com/folkloreinc/panneau-js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git"
+    },
+    "author": {
+        "name": "Folklore",
+        "email": "info@folklore.email"
+    },
+    "contributors": [
+        {
+            "name": "David Mongeau-Petitpas",
+            "email": "dmp@folklore.email"
+        },
+        {
+            "name": "Nicolas Roy-Bourdages",
+            "email": "nrb@folklore.email"
+        }
+    ],
+    "license": "ISC",
+    "main": "lib/index.js",
+    "module": "es/index.js",
+    "files": [
+        "lib",
+        "es",
+        "assets"
+    ],
+    "scripts": {
+        "prepublishOnly": "npm run build",
+        "build": "../../scripts/prepare-package.sh"
+    },
+    "devDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.12.5",
+        "@panneau/core": "^3.0.126",
+        "@panneau/modal-dialog": "^3.0.126",
+        "@panneau/medias": "^3.0.126",
+        "@uppy/core": "^3.9.1",
+        "@uppy/dashboard": "^3.7.3",
+        "@uppy/drag-drop": "^3.0.3",
+        "@uppy/file-input": "^3.0.4",
+        "@uppy/progress-bar": "^3.0.4",
+        "@uppy/react": "^3.2.1",
+        "@uppy/status-bar": "^3.2.7",
+        "@uppy/utils": "^5.7.2",
+        "lodash": "^4.17.21",
+        "prop-types": "^15.7.2"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "gitHead": "5efa71294bfa85494c90cf42700b0ebf830fa7a0"
+}
