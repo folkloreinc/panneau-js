@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -45,6 +46,7 @@ function ModalForm({
     submitButtonLabel,
     className,
     children,
+    ...props
 }) {
     return (
         <Dialog
@@ -66,6 +68,7 @@ function ModalForm({
         >
             {children}
             <Form
+                {...props}
                 fields={fields}
                 action={action}
                 type={type}

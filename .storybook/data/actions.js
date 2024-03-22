@@ -17,6 +17,7 @@ export default [
                 placeholder: 'cool',
             },
         ],
+        multiple: true,
     },
     {
         id: 'custom-edit',

@@ -18,6 +18,7 @@ const propTypes = {
     value: PropTypes.bool,
     icon: PropTypes.string,
     theme: PropTypes.string,
+    disabled: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     setSelectedItems: PropTypes.func,
     className: PropTypes.string,
@@ -32,6 +33,7 @@ const defaultProps = {
     icon: 'pencil',
     value: false,
     theme: 'primary',
+    disabled: false,
     setSelectedItems: null,
     className: null,
 };
@@ -45,6 +47,7 @@ const EditAction = ({
     icon,
     value,
     theme,
+    disabled,
     onChange,
     setSelectedItems,
     className,
@@ -74,9 +77,11 @@ const EditAction = ({
     }, [setShowModal]);
 
     const ids = useMemo(
-        () => (value || []).map(({ id = null } = {}) => id).filter((id) => id !== null)[value],
+        () => (value || []).map(({ id = null } = {}) => id).filter((id) => id !== null),
+        [value],
     );
     const idLabels = useMemo(() => (ids || []).map((id) => `#${id}`).join(', '), [ids]);
+
     const multipleValues = useMemo(() => value !== null && value.length > 1, [value]);
 
     return (
@@ -88,7 +93,14 @@ const EditAction = ({
                 },
             ])}
         >
-            <Button {...props} label={label} icon={icon} onClick={onOpen} theme={theme} />
+            <Button
+                {...props}
+                label={label}
+                icon={icon}
+                onClick={onOpen}
+                disabled={disabled}
+                theme={disabled ? 'secondary' : theme}
+            />
             {showModal ? (
                 <FormModal
                     title={
@@ -107,19 +119,19 @@ const EditAction = ({
                     }
                     onClose={onClose}
                     onComplete={onComplete}
-                    item={{ ids }}
+                    postData={{ ids }}
                     fields={fields}
                     action={endpoint}
                 >
-                    {description ? (
+                    {description || (
                         <p>
                             <FormattedMessage
-                                defaultMessage="The following items ({ids}) will be modified :"
+                                defaultMessage="The following items will be modified: {ids}."
                                 description="Modal message"
                                 values={{ ids: idLabels }}
                             />
                         </p>
-                    ) : null}
+                    )}
                 </FormModal>
             ) : null}
         </div>

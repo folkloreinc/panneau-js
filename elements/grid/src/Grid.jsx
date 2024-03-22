@@ -105,7 +105,7 @@ const Grid = ({
                             </button>
                         </div>
                     ) : (
-                        <span className="d-inline-block mb-1">
+                        <span className="d-inline-block text-muted mb-1">
                             <FormattedMessage
                                 defaultMessage="No items selected"
                                 description="Checkbox label"

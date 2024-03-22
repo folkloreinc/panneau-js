@@ -77,19 +77,17 @@ const useItemSelection = ({
 
     const pageSelected = useMemo(() => {
         const ids = (items || []).map(({ id = null } = {}) => id).filter((id) => id !== null);
-        // console.log('selectedItems', selectedItems);
         const currentPageItems = (selectedItems || []).filter((it) => {
             const { id = null } = it || {};
             return ids.indexOf(id) !== -1;
         });
-        // console.log('currentPageItems', currentPageItems);
-        return currentPageItems.length === (items || []).length;
+        return currentPageItems.length === (items || []).length && currentPageItems.length > 0;
     }, [selectedItems, items]);
 
-    // const allSelected = useMemo(
-    //     () => selectedItems !== null && selectedItems.length === selectedItemsCount,
-    //     [selectedItems, selectedItemsCount],
-    // );
+    const allSelected = useMemo(
+        () => selectedItems !== null && items !== null && selectedItems.length === items.length,
+        [selectedItems, items],
+    );
 
     const countSelected = useMemo(
         () => (selectedItems !== null && selectedItems.length > 0 ? selectedItems.length : null),
@@ -103,6 +101,7 @@ const useItemSelection = ({
         onDeselectPage,
         onClearAll,
         pageSelected,
+        allSelected,
         count: countSelected,
         selectedItems,
     };

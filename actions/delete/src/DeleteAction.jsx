@@ -18,6 +18,7 @@ const propTypes = {
     value: PropTypes.bool,
     icon: PropTypes.string,
     theme: PropTypes.string,
+    disabled: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     setSelectedItems: PropTypes.func,
     className: PropTypes.string,
@@ -31,6 +32,7 @@ const defaultProps = {
     icon: 'trash',
     value: false,
     theme: 'primary',
+    disabled: false,
     setSelectedItems: null,
     className: null,
 };
@@ -43,6 +45,7 @@ const DeleteAction = ({
     icon,
     value,
     theme,
+    disabled,
     onChange,
     setSelectedItems,
     className,
@@ -99,7 +102,14 @@ const DeleteAction = ({
                 },
             ])}
         >
-            <Button {...props} label={label} icon={icon} onClick={onOpen} theme={theme} />
+            <Button
+                {...props}
+                label={label}
+                icon={icon}
+                onClick={onOpen}
+                disabled={disabled}
+                theme={disabled ? 'secondary' : theme}
+            />
             {showModal ? (
                 <Confirm
                     title={
@@ -126,7 +136,7 @@ const DeleteAction = ({
                     ) : (
                         <p>
                             <FormattedMessage
-                                defaultMessage="Are you sure you want to delete the following items ({ids}) ?"
+                                defaultMessage="The following items will be deleted: {ids}. Are you sure you want to continue?"
                                 description="Modal message"
                                 values={{ ids: idLabels }}
                             />
@@ -134,7 +144,7 @@ const DeleteAction = ({
                     )}
                     {error !== null ? (
                         <FormattedMessage
-                            defaultMessage="An error occured."
+                            defaultMessage="An error has occured."
                             description="Modal message"
                         />
                     ) : null}

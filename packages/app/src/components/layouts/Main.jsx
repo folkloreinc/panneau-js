@@ -29,7 +29,11 @@ const MainLayout = ({ fullscreen, loading, children }) => {
             className={classNames([styles.container, 'd-flex', 'flex-column', 'min-vh-100'])}
             data-bs-theme={theme !== null ? theme : null}
         >
-            <MainNavbar className={classNames(['border-bottom', 'sticky-top', 'px-3'])} theme={theme} loading={loading} />
+            <MainNavbar
+                className={classNames(['border-bottom', 'sticky-top', 'px-3'])}
+                theme={theme}
+                loading={loading}
+            />
             <div
                 className={classNames([
                     'flex-grow-1',
@@ -42,7 +46,7 @@ const MainLayout = ({ fullscreen, loading, children }) => {
             >
                 {children}
             </div>
-            <Modals />
+            <Modals theme={theme} />
         </div>
     );
 };
