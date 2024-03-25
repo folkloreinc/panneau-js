@@ -18,6 +18,7 @@ const propTypes = {
     onReset: PropTypes.func,
     withContainer: PropTypes.bool,
     withReset: PropTypes.bool,
+    withGrid: PropTypes.bool,
     defaultValue: PropTypes.objectOf(PropTypes.object), // eslint-disable-line react/forbid-prop-types
     className: PropTypes.string,
 };
@@ -29,6 +30,7 @@ const defaultProps = {
     onReset: null,
     withContainer: false,
     withReset: true,
+    withGrid: false,
     defaultValue: { page: null },
     className: null,
 };
@@ -40,6 +42,7 @@ const Filters = ({
     onReset,
     withContainer,
     withReset,
+    withGrid,
     defaultValue,
     className,
 }) => {
@@ -88,36 +91,37 @@ const Filters = ({
                     'navbar-expand-md': withContainer,
                     [className]: className !== null,
                 },
-                'justify-content-start',
-                'align-items-start',
-                'flex-column',
-                'flex-md-row',
             ])}
             withoutCollapse
         >
-            {currentFilters.map(({ component, name, groupLabel, ...filterProps }, index) => {
-                const FilterComponent = getComponentFromName(component, FilterComponents, null);
-                const filterValue = value !== null && value[name] ? value[name] : null;
-                return FilterComponent !== null ? (
-                    <FormGroup
-                        key={`filter-${name}-${index + 1}`}
-                        label={groupLabel}
-                        className="mb-3 me-3"
-                    >
-                        <FilterComponent
-                            {...filterProps}
-                            value={filterValue}
-                            onChange={(newValue) => onFilterChange(name, newValue)}
-                            onClear={() => onFilterClear(name)}
-                        />
-                    </FormGroup>
-                ) : null;
-            })}
-            {withReset && hasActiveFilter && currentFilters.length > 0 ? (
-                <Button theme="primary" onClick={onFiltersReset}>
-                    <Icon name="arrow-counterclockwise" bold />
-                </Button>
-            ) : null}
+            <div className="row row-cols-3 w-100">
+                {currentFilters.map(({ component, name, groupLabel, ...filterProps }, index) => {
+                    const FilterComponent = getComponentFromName(component, FilterComponents, null);
+                    const filterValue = value !== null && value[name] ? value[name] : null;
+                    return FilterComponent !== null ? (
+                        <FormGroup
+                            key={`filter-${name}-${index + 1}`}
+                            label={groupLabel}
+                            className="position-relative col mb-3"
+                        >
+                            <FilterComponent
+                                {...filterProps}
+                                value={filterValue}
+                                onChange={(newValue) => onFilterChange(name, newValue)}
+                                onClear={() => onFilterClear(name)}
+                                className={component === 'select' ? 'mw-100' : null}
+                            />
+                        </FormGroup>
+                    ) : null;
+                })}
+                {withReset && hasActiveFilter && currentFilters.length > 0 ? (
+                    <div className="col mb-3">
+                        <Button theme="primary" onClick={onFiltersReset}>
+                            <Icon name="arrow-counterclockwise" bold />
+                        </Button>
+                    </div>
+                ) : null}
+            </div>
         </Navbar>
     );
 };

@@ -175,7 +175,7 @@ const SelectElement = ({
     }
 
     return (
-        <div className={classNames(['position-relative', className])}>
+        <div className={classNames(['position-relative', { [className]: className !== null }])}>
             <SelectComponent
                 {...props}
                 {...(getOptionValue !== null ? { getOptionValue } : null)}
@@ -189,9 +189,16 @@ const SelectElement = ({
                 className={selectClassName !== null ? selectClassName : null}
                 // menuPortalTarget={document.body}
                 styles={{
-                    container: () => ({ ...(autoSize ? { minWidth } : null), maxWidth: '100%' }),
+                    container: () => ({
+                        ...(autoSize ? { minWidth } : null),
+                        maxWidth: '100%',
+                    }),
                     menuPortal: (base) => ({ ...base, zIndex: 10 }),
-                    placeholder: (base) => ({ ...base, whiteSpace: 'nowrap' }),
+                    placeholder: (base) => ({
+                        ...base,
+                        whiteSpace: 'normal',
+                        ...(autoSize ? { whiteSpace: 'nowrap' } : null),
+                    }),
                     // TODO: fix dark or themed mode
                     // option: (base) => ({ ...base, color: '#343434' }),
                 }}

@@ -86,7 +86,7 @@ const ResourceItemsList = ({
     );
 
     const {
-        items = [],
+        // items = [],
         loaded = false,
         loading = false,
         lastPage = 0,
@@ -94,6 +94,7 @@ const ResourceItemsList = ({
         reloadPage = null,
         reset = null,
     } = itemsProps || {};
+
     const finalEmpty = loaded && !loading && total === 0;
 
     const ListComponents = useListsComponents();
@@ -139,7 +140,10 @@ const ResourceItemsList = ({
             ) : null}
             <div
                 className={classNames([
-                    'd-flex align-items-start',
+                    'd-flex',
+                    'flex-column',
+                    'flex-md-row',
+                    'align-items-start',
                     { 'justify-content-between': withActions, 'justify-content-end': !withActions },
                 ])}
             >

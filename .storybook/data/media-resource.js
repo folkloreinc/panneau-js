@@ -49,6 +49,7 @@ export default {
                 requestUrl: '/medias',
                 itemLabelPath: 'name',
                 paginated: true,
+                autoSize: false,
             },
             {
                 name: 'search',

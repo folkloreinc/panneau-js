@@ -14,8 +14,8 @@ const propTypes = {
 
 const defaultProps = {
     value: null,
-    maxWidth: 100,
-    maxHeight: 100,
+    maxWidth: 80,
+    maxHeight: 80,
     className: null,
 };
 

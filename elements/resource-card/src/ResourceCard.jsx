@@ -107,9 +107,9 @@ const ResourceCard = ({
                         />
                     ) : null}
                     <div className="flex-grow-1 ms-1">
-                        <h6 className="m-0">{itemLabel}</h6>
+                        <h6 className="m-0 text-break">{itemLabel}</h6>
                         {!isEmpty(itemDescription) ? (
-                            <p className="m-0">
+                            <p className="m-0 text-break">
                                 <small>{itemDescription}</small>
                             </p>
                         ) : null}
