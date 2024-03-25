@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-item",
-    "version": "3.0.133",
+    "version": "3.0.134",
     "description": "A repeatable abstract field",
     "keywords": [
         "javascript"
@@ -57,9 +57,9 @@
         "@panneau/core": "^3.0.133",
         "@panneau/data": "^3.0.133",
         "@panneau/element-button": "^3.0.133",
-        "@panneau/element-resource-card": "^3.0.133",
-        "@panneau/element-select": "^3.0.133",
-        "@panneau/field-select": "^3.0.133",
+        "@panneau/element-resource-card": "^3.0.134",
+        "@panneau/element-select": "^3.0.134",
+        "@panneau/field-select": "^3.0.134",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
