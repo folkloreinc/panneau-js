@@ -17,6 +17,9 @@
     "12Px0g": {
         "defaultMessage": "Envoyer le lien de réinitialisation du mot de passe"
     },
+    "1dqmFw": {
+        "defaultMessage": "Document"
+    },
     "22Ld5M": {
         "defaultMessage": "Entrez le code de votre application d'authentification pour continuer"
     },
@@ -79,6 +82,9 @@
     },
     "AeOZq+": {
         "defaultMessage": "Connexion"
+    },
+    "AwDQvD": {
+        "defaultMessage": "Image"
     },
     "B1h3gd": {
         "defaultMessage": "Entrez votre mot de passe pour continuer"
@@ -191,6 +197,9 @@
     "UbmsLL": {
         "defaultMessage": "Aucun élément trouvé."
     },
+    "UbxbKP": {
+        "defaultMessage": "Aperçu"
+    },
     "UpStcP": {
         "defaultMessage": "Nous n'avons pas pu trouver ce type d'élément"
     },
@@ -217,6 +226,9 @@
     },
     "XW9IKQ": {
         "defaultMessage": "Mettre à jour votre mot de passe"
+    },
+    "XnyI69": {
+        "defaultMessage": "Audio"
     },
     "XrzzDc": {
         "defaultMessage": "Chercher"
@@ -272,9 +284,6 @@
     "l+ddDH": {
         "defaultMessage": "Créer {a_singular}"
     },
-    "lRvafH": {
-        "defaultMessage": "État"
-    },
     "li2Qqu": {
         "defaultMessage": "Passer l'étape"
     },
@@ -283,6 +292,9 @@
     },
     "mCfzkJ": {
         "defaultMessage": "Modifier {a_singular}"
+    },
+    "mQiyAm": {
+        "defaultMessage": "Vidéo"
     },
     "oc3YLT": {
         "defaultMessage": "Choisissez un item"

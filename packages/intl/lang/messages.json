@@ -379,10 +379,6 @@
     "defaultMessage": "Create {a_singular}",
     "description": "Button label"
   },
-  "lRvafH": {
-    "defaultMessage": "Status",
-    "description": "Field name"
-  },
   "li2Qqu": {
     "defaultMessage": "Skip setup",
     "description": "Link label"

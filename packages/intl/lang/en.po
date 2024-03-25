@@ -585,12 +585,6 @@ msgctxt "l+ddDH"
 msgid "Create {a_singular}"
 msgstr "Create {a_singular}"
 
-# Field name
-#: lRvafH
-msgctxt "lRvafH"
-msgid "Status"
-msgstr "Status"
-
 # Link label
 #: li2Qqu
 msgctxt "li2Qqu"
