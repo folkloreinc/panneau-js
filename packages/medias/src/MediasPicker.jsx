@@ -36,7 +36,7 @@ function MediasPicker({ value, onChange, onConfirm, multiple, className, ...prop
     return (
         <div className={className}>
             <MediasBrowser
-                tableProps={{ selectable: true, multiple, onSelectionChange }}
+                tableProps={{ selectable: true, multipleSelection: multiple, onSelectionChange }}
                 {...props}
             />
             {multiple ? (

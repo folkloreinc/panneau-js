@@ -259,7 +259,8 @@ const UploadField = ({
     const onClickSelect = useCallback(
         (newValue) => {
             if (allowMultipleUploads) {
-                if (newValue !== null) {
+                console.log('newValue', newValue);
+                if (newValue !== null && !isArray(newValue)) {
                     const { id = null } = newValue || {};
                     if (id !== null) {
                         const previous = (modalItems || []).find(
@@ -275,6 +276,8 @@ const UploadField = ({
                             setModalItems([...(modalItems || []), newValue]);
                         }
                     }
+                } else if (newValue !== null && isArray(newValue)) {
+                    setModalItems(newValue);
                 }
             } else if (onChange !== null) {
                 onChange(newValue);
@@ -427,7 +430,7 @@ const UploadField = ({
                         showActions={false}
                         selectable
                         onSelectionChange={onClickSelect}
-                        multiple={allowMultipleUploads}
+                        multipleSelection={allowMultipleUploads}
                     />
                     {allowMultipleUploads ? (
                         <div className="d-flex mt-4 justify-content-between">

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 const useItemSelection = ({
     items = null,
     selectedItems: initialSelectedItems = null,
-    multiple = false,
+    multipleSelection = false,
     onSelectionChange = null,
 }) => {
     const initialItems =
@@ -16,13 +16,14 @@ const useItemSelection = ({
 
     const onSelectItem = useCallback(
         (item, index) => {
-            const newItems = selectedItems !== null && multiple ? [...selectedItems, item] : [item];
+            const newItems =
+                selectedItems !== null && multipleSelection ? [...selectedItems, item] : [item];
             setSelectedItems(newItems);
             if (onSelectionChange !== null) {
                 onSelectionChange(newItems, item, index);
             }
         },
-        [selectedItems, onSelectionChange, multiple],
+        [selectedItems, onSelectionChange, multipleSelection],
     );
 
     const onDeselectItem = useCallback(
@@ -31,10 +32,10 @@ const useItemSelection = ({
             const newItems = (selectedItems || []).filter(({ id }) => id !== itemId);
             setSelectedItems(newItems);
             if (onSelectionChange !== null) {
-                onSelectionChange(multiple ? newItems : null, item, index);
+                onSelectionChange(multipleSelection ? newItems : null, item, index);
             }
         },
-        [selectedItems, onSelectionChange, multiple],
+        [selectedItems, onSelectionChange, multipleSelection],
     );
 
     const onSelectPage = useCallback(() => {

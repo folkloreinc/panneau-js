@@ -25,7 +25,7 @@ const propTypes = {
     size: PropTypes.string,
     gap: PropTypes.string,
     selectable: PropTypes.bool,
-    multiple: PropTypes.bool,
+    multipleSelection: PropTypes.bool,
     onSelectionChange: PropTypes.func,
     selectedItems: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
     className: PropTypes.string,
@@ -38,7 +38,7 @@ const defaultProps = {
     size: null,
     gap: null,
     selectable: false,
-    multiple: false,
+    multipleSelection: false,
     onSelectionChange: null,
     selectedItems: null,
     className: null,
@@ -51,7 +51,7 @@ const Grid = ({
     size,
     gap,
     selectable,
-    multiple,
+    multipleSelection,
     onSelectionChange,
     selectedItems: initialSelectedItems,
     className,
@@ -69,7 +69,7 @@ const Grid = ({
         items,
         selectedItems: initialSelectedItems,
         onSelectionChange,
-        multiple,
+        multipleSelection,
     });
 
     const Component = component || null;

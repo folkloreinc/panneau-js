@@ -81,7 +81,6 @@ const UpdateFileField = ({ value, onChange, ...props }) => {
                         <FormattedMessage defaultMessage="Edit file" description="Button label" />
                     }
                     allowMultipleUploads={false}
-                    multiple={false}
                     linkPath="panneauUrl"
                     onChange={onUploadChange}
                     onClose={onUploadChange}

@@ -34,7 +34,7 @@ const propTypes = {
     withoutId: PropTypes.bool,
     withFadedId: PropTypes.bool,
     selectable: PropTypes.bool,
-    multiple: PropTypes.bool,
+    multipleSelection: PropTypes.bool,
     onSelectionChange: PropTypes.func,
     selectedItems: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
     className: PropTypes.string,
@@ -58,7 +58,7 @@ const defaultProps = {
     withoutId: false,
     withFadedId: true,
     selectable: false,
-    multiple: false,
+    multipleSelection: false,
     onSelectionChange: null,
     selectedItems: null,
     className: null,
@@ -82,7 +82,7 @@ function Table({
     withoutId,
     withFadedId,
     selectable,
-    multiple,
+    multipleSelection,
     onSelectionChange,
     selectedItems: initialSelectedItems,
     className,
@@ -111,7 +111,7 @@ function Table({
         items,
         selectedItems: initialSelectedItems,
         onSelectionChange,
-        multiple,
+        multipleSelection,
     });
 
     return (
@@ -162,7 +162,7 @@ function Table({
                             </tr>
                         ) : null}
                         <tr>
-                            {selectable && multiple ? (
+                            {selectable && multipleSelection ? (
                                 <th scope="col">
                                     <input
                                         id="checkAll"
@@ -174,7 +174,7 @@ function Table({
                                     />
                                 </th>
                             ) : null}
-                            {selectable && !multiple ? (
+                            {selectable && !multipleSelection ? (
                                 <th scope="col">
                                     <span className="form-check-label pe-2 text-muted">
                                         <FormattedMessage

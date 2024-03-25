@@ -27,6 +27,7 @@ const propTypes = {
     showActions: PropTypes.bool,
     selectable: PropTypes.bool,
     onSelectionChange: PropTypes.func,
+    multipleSelection: PropTypes.bool,
     listProps: PropTypes.shape({}),
     theme: PropTypes.string,
     className: PropTypes.string,
@@ -45,6 +46,7 @@ const defaultProps = {
     showActions: true,
     selectable: false,
     onSelectionChange: null,
+    multipleSelection: false,
     listProps: null,
     theme: null,
     className: null,
@@ -62,6 +64,7 @@ const ResourceItemsList = ({
     showActions,
     selectable,
     onSelectionChange,
+    multipleSelection,
     listProps: customListProps,
     theme,
     className,
@@ -187,7 +190,7 @@ const ResourceItemsList = ({
                     {...itemsProps}
                     {...listProps}
                     selectable={finalSelectable}
-                    multiple={withMultipleActions}
+                    multipleSelection={withMultipleActions || multipleSelection}
                     onSelectionChange={onSelectItems}
                     selectedItems={selectedItems}
                     selectedItemsCount={total}

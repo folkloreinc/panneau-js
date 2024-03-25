@@ -60,7 +60,7 @@ export const Selectable = () => (
 
 export const SelectableMultiple = () => (
     <DisplaysProvider>
-        <TableElement items={items} columns={columnsWithId} selectable multiple />
+        <TableElement items={items} columns={columnsWithId} selectable multipleSelection />
     </DisplaysProvider>
 );
 
