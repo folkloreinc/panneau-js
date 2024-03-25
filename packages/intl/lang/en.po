@@ -47,6 +47,12 @@ msgctxt "12Px0g"
 msgid "Send reset link"
 msgstr "Send reset link"
 
+# Media type
+#: 1dqmFw
+msgctxt "1dqmFw"
+msgid "Document"
+msgstr "Document"
+
 # Field label
 #: 22Ld5M
 msgctxt "22Ld5M"
@@ -172,6 +178,12 @@ msgstr "Yes"
 msgctxt "AeOZq+"
 msgid "Login"
 msgstr "Login"
+
+# Media type
+#: AwDQvD
+msgctxt "AwDQvD"
+msgid "Image"
+msgstr "Image"
 
 # Field label
 #: B1h3gd
@@ -399,6 +411,12 @@ msgctxt "UbmsLL"
 msgid "No item found."
 msgstr "No item found."
 
+# Field name
+#: UbxbKP
+msgctxt "UbxbKP"
+msgid "Preview"
+msgstr "Preview"
+
 # Error message
 #: UpStcP
 msgctxt "UpStcP"
@@ -452,6 +470,12 @@ msgstr "Find {a_singular}"
 msgctxt "XW9IKQ"
 msgid "Update password"
 msgstr "Update password"
+
+# Media type
+#: XnyI69
+msgctxt "XnyI69"
+msgid "Audio"
+msgstr "Audio"
 
 # Filter label
 #: XrzzDc
@@ -584,6 +608,12 @@ msgstr "{count, plural, =0 {no items} one {# item} other {# items}} selected"
 msgctxt "mCfzkJ"
 msgid "Edit {a_singular}"
 msgstr "Edit {a_singular}"
+
+# Media type
+#: mQiyAm
+msgctxt "mQiyAm"
+msgid "Video"
+msgstr "Video"
 
 # Default placeholder
 #: oc3YLT

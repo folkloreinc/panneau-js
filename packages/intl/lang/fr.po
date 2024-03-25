@@ -47,6 +47,12 @@ msgctxt "12Px0g"
 msgid "Send reset link"
 msgstr "Envoyer le lien de réinitialisation du mot de passe"
 
+# Media type
+#: 1dqmFw
+msgctxt "1dqmFw"
+msgid "Document"
+msgstr ""
+
 # Field label
 #: 22Ld5M
 msgctxt "22Ld5M"
@@ -174,6 +180,12 @@ msgstr "Oui"
 msgctxt "AeOZq+"
 msgid "Login"
 msgstr "Connexion"
+
+# Media type
+#: AwDQvD
+msgctxt "AwDQvD"
+msgid "Image"
+msgstr ""
 
 # Field label
 #: B1h3gd
@@ -399,6 +411,12 @@ msgctxt "UbmsLL"
 msgid "No item found."
 msgstr "Aucun élément trouvé."
 
+# Field name
+#: UbxbKP
+msgctxt "UbxbKP"
+msgid "Preview"
+msgstr ""
+
 # Error message
 #: UpStcP
 msgctxt "UpStcP"
@@ -452,6 +470,12 @@ msgstr "Trouver {a_singular}"
 msgctxt "XW9IKQ"
 msgid "Update password"
 msgstr "Mettre à jour votre mot de passe"
+
+# Media type
+#: XnyI69
+msgctxt "XnyI69"
+msgid "Audio"
+msgstr ""
 
 # Filter label
 #: XrzzDc
@@ -586,6 +610,12 @@ msgstr ""
 msgctxt "mCfzkJ"
 msgid "Edit {a_singular}"
 msgstr "Modifier {a_singular}"
+
+# Media type
+#: mQiyAm
+msgctxt "mQiyAm"
+msgid "Video"
+msgstr ""
 
 # Default placeholder
 #: oc3YLT

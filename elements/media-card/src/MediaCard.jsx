@@ -133,10 +133,8 @@ const MediaCard = ({
                         ? {
                               width: !withoutDescription ? 100 : '100%',
                               height: !withoutDescription ? 100 : '100%',
-                              backgroundImage:
-                                  'linear-gradient(45deg, #eee 25%, transparent 25%), linear-gradient(-45deg, #eee 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eee 75%), linear-gradient(-45deg, transparent 75%, #eee 75%)',
-                              backgroundSize: '20px 20px',
-                              backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0',
+                              background:
+                                  'repeating-conic-gradient(rgb(238, 238, 238) 0% 25%, transparent 0% 50%) 50% / 20px 20px',
                           }
                         : {
                               width: !withoutDescription ? 100 : '100%',

@@ -56,7 +56,7 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.131",
         "@panneau/themes": "^3.0.131",
-        "classnames": "^2.2.6",
+        "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "rc-switch": "^4.1.0"
     },

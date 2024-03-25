@@ -90,7 +90,7 @@
         "@fortawesome/react-fontawesome": "^0.2.0",
         "bootstrap": "^5.3.1",
         "change-case": "^4.0.0",
-        "classnames": "^2.2.6",
+        "classnames": "^2.5.1",
         "css-mediaquery": "^0.1.2",
         "dayjs": "^1.10.4",
         "debug": "^4.3.1",

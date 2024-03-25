@@ -3,18 +3,32 @@ import { FormattedMessage } from 'react-intl';
 
 export default [
     {
+        id: 'image',
+        label: <FormattedMessage defaultMessage="Preview" description="Field name" />,
+        component: 'image',
+        path: 'thumbnail_url',
+        sortable: false,
+    },
+    {
         id: 'name',
         label: <FormattedMessage defaultMessage="File name" description="Field name" />,
-        component: 'text',
+        component: 'text-description',
         path: 'name',
+        descriptionPath: 'type',
+        descriptionValues: {
+            image: <FormattedMessage defaultMessage="Image" description="Media type" />,
+            video: <FormattedMessage defaultMessage="Video" description="Media type" />,
+            audio: <FormattedMessage defaultMessage="Audio" description="Media type" />,
+            document: <FormattedMessage defaultMessage="Document" description="Media type" />,
+        },
         sortable: true,
-        selectable: true,
     },
     {
         id: 'created_at',
         label: <FormattedMessage defaultMessage="Created at" description="Field name" />,
-        component: 'text',
+        component: 'date',
         path: 'created_at',
+        format: 'yyyy-MM-dd hh:ss',
         sortable: true,
     },
     {
@@ -41,13 +55,14 @@ export default [
     {
         id: 'author',
         label: <FormattedMessage defaultMessage="Added by" description="Field name" />,
-        component: 'text',
-        path: 'metadata.author.name',
+        component: 'avatar',
+        path: 'metadata.author',
+        namePath: 'name',
     },
-    {
-        id: 'status',
-        label: <FormattedMessage defaultMessage="Status" description="Field name" />,
-        component: 'text',
-        path: 'metadata.status',
-    },
+    // {
+    //     id: 'status',
+    //     label: <FormattedMessage defaultMessage="Status" description="Field name" />,
+    //     component: 'text',
+    //     path: 'metadata.status',
+    // },
 ];

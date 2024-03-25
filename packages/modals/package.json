@@ -75,7 +75,7 @@
         "@panneau/modal-resource-items": "^3.0.132",
         "@panneau/modal-upload": "^3.0.131",
         "@panneau/themes": "^3.0.131",
-        "classnames": "^2.2.6",
+        "classnames": "^2.5.1",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {

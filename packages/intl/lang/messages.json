@@ -23,6 +23,10 @@
     "defaultMessage": "Send reset link",
     "description": "Button label"
   },
+  "1dqmFw": {
+    "defaultMessage": "Document",
+    "description": "Media type"
+  },
   "22Ld5M": {
     "defaultMessage": "Enter the code from your authenticator app to continue",
     "description": "Field label"
@@ -106,6 +110,10 @@
   "AeOZq+": {
     "defaultMessage": "Login",
     "description": "Page title"
+  },
+  "AwDQvD": {
+    "defaultMessage": "Image",
+    "description": "Media type"
   },
   "B1h3gd": {
     "defaultMessage": "Please enter your password to continue",
@@ -255,6 +263,10 @@
     "defaultMessage": "No item found.",
     "description": "Label when there is no item in items field"
   },
+  "UbxbKP": {
+    "defaultMessage": "Preview",
+    "description": "Field name"
+  },
   "UpStcP": {
     "defaultMessage": "Could not find type for this item",
     "description": "Error message"
@@ -290,6 +302,10 @@
   "XW9IKQ": {
     "defaultMessage": "Update password",
     "description": "Button label"
+  },
+  "XnyI69": {
+    "defaultMessage": "Audio",
+    "description": "Media type"
   },
   "XrzzDc": {
     "defaultMessage": "Search",
@@ -378,6 +394,10 @@
   "mCfzkJ": {
     "defaultMessage": "Edit {a_singular}",
     "description": "Page title"
+  },
+  "mQiyAm": {
+    "defaultMessage": "Video",
+    "description": "Media type"
   },
   "oc3YLT": {
     "defaultMessage": "Choose an item",

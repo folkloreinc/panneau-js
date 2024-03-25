@@ -17,6 +17,9 @@
     "12Px0g": {
         "defaultMessage": "Send reset link"
     },
+    "1dqmFw": {
+        "defaultMessage": "Document"
+    },
     "22Ld5M": {
         "defaultMessage": "Enter the code from your authenticator app to continue"
     },
@@ -79,6 +82,9 @@
     },
     "AeOZq+": {
         "defaultMessage": "Login"
+    },
+    "AwDQvD": {
+        "defaultMessage": "Image"
     },
     "B1h3gd": {
         "defaultMessage": "Please enter your password to continue"
@@ -191,6 +197,9 @@
     "UbmsLL": {
         "defaultMessage": "No item found."
     },
+    "UbxbKP": {
+        "defaultMessage": "Preview"
+    },
     "UpStcP": {
         "defaultMessage": "Could not find type for this item"
     },
@@ -217,6 +226,9 @@
     },
     "XW9IKQ": {
         "defaultMessage": "Update password"
+    },
+    "XnyI69": {
+        "defaultMessage": "Audio"
     },
     "XrzzDc": {
         "defaultMessage": "Search"
@@ -283,6 +295,9 @@
     },
     "mCfzkJ": {
         "defaultMessage": "Edit {a_singular}"
+    },
+    "mQiyAm": {
+        "defaultMessage": "Video"
     },
     "oc3YLT": {
         "defaultMessage": "Choose an item"

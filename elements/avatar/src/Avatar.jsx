@@ -24,6 +24,7 @@ const propTypes = {
     square: PropTypes.bool,
     size: PropTypes.string,
     inverted: PropTypes.bool,
+    blended: PropTypes.bool,
     children: PanneauPropTypes.label.isRequired,
     className: PropTypes.string,
 };
@@ -37,6 +38,7 @@ const defaultProps = {
     size: null,
     square: false,
     inverted: false,
+    blended: false,
     className: null,
 };
 
@@ -49,12 +51,15 @@ const Avatar = ({
     size,
     square,
     inverted,
+    blended,
     className,
     children,
 }) => {
     const { text: textTheme, background: backgroundTheme, border: borderTheme } = theme || {};
-    const withImage = image !== null && image.url !== null;
     const title = name || shortName || type;
+    const { url: imageUrl = null } = image || {};
+    const withImage = imageUrl !== null;
+
     return (
         <div
             className={classNames([
@@ -66,7 +71,8 @@ const Avatar = ({
                     [styles[size]]: size !== null,
                     [styles.square]: square,
                     [styles.inverted]: inverted,
-                    [styles.blend]: withImage,
+                    [styles.blend]: withImage && blended,
+                    [styles.hidden]: !withImage && shortName === null,
                     [className]: className !== null,
                 },
             ])}

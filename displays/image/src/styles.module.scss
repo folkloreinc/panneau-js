@@ -1,4 +1,7 @@
 .container {
-    border: 1px solid var(--bs-secondary-border-subtle);
-    border-radius: var(--bs-border-radius);
+    .inner {
+        border: 1px solid var(--bs-secondary-border-subtle);
+        background: repeating-conic-gradient(rgb(238, 238, 238) 0% 25%, transparent 0% 50%) 50% /
+            20px 20px;
+    }
 }

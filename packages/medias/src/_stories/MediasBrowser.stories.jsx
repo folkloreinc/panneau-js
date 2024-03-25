@@ -29,7 +29,6 @@ const items = [Media1, Media2, Media3];
 // eslint-disable-next-line react/prop-types
 const Container = ({ ...props } = {}) => {
     const api = useApi();
-
     return (
         <FieldsProvider>
             <DisplaysProvider>
@@ -66,5 +65,13 @@ export const Grid = () => (
 export const GridOnly = () => (
     <UppyProvider>
         <Container layout="grid" layouts={null} />
+    </UppyProvider>
+);
+
+export const Dark = () => (
+    <UppyProvider>
+        <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
+            <Container items={items} />
+        </div>
     </UppyProvider>
 );
