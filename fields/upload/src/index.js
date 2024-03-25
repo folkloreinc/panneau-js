@@ -7,5 +7,6 @@ export { default as ImagesField } from './ImagesField';
 export { default as VideoField } from './VideoField';
 export { default as DocumentField } from './DocumentField';
 export { default as FontField } from './FontField';
+export { default as UpdateFileField } from './UpdateFileField';
 
 export default UploadField;

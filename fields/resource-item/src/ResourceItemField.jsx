@@ -137,8 +137,14 @@ const ResourceItemField = ({
     const intl = useIntl();
     const resource = usePanneauResource(resourceId);
     const resourceValues = useResourceValues(resource);
-    const defaultPage = initialPage || (paginated ? 1 : null);
-    const defaultCount = initialCount || (paginated ? 10 : null);
+    const defaultPage = useMemo(
+        () => initialPage || (paginated ? 1 : null),
+        [initialPage, paginated],
+    );
+    const defaultCount = useMemo(
+        () => initialCount || (paginated ? 10 : null),
+        [initialCount, paginated],
+    );
     const hasValue = value !== null && !isEmpty(value);
 
     // const [initialValue] = useState(value);
@@ -146,17 +152,21 @@ const ResourceItemField = ({
     const [formOpen, setFormOpen] = useState(false);
     const [listOpen, setListOpen] = useState(false);
 
-    // The text input search query
-    const [inputTextValue, setInputTextValue] = useState('');
-    const onInputChange = useCallback((textValue) => {
-        setInputTextValue(textValue);
-    }, []);
-
     // TODO: list state controls?
     const [query, setQuery] = useState(initialQuery);
     const [page, setPage] = useState(defaultPage);
     const [count, setCount] = useState(defaultCount);
     const [resourceOptions, setOptions] = useState(initialOptions);
+
+    // The text input search query
+    const [inputTextValue, setInputTextValue] = useState('');
+    const onInputChange = useCallback(
+        (textValue) => {
+            setInputTextValue(textValue);
+            setPage(defaultPage);
+        },
+        [setInputTextValue, setPage, defaultPage],
+    );
 
     const queryResource = useMemo(() => ({ id: resourceId }), [resourceId]);
     const finalQuery = useMemo(

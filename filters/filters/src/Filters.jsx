@@ -18,7 +18,6 @@ const propTypes = {
     onReset: PropTypes.func,
     withContainer: PropTypes.bool,
     withReset: PropTypes.bool,
-    withGrid: PropTypes.bool,
     defaultValue: PropTypes.objectOf(PropTypes.object), // eslint-disable-line react/forbid-prop-types
     className: PropTypes.string,
 };
@@ -30,7 +29,6 @@ const defaultProps = {
     onReset: null,
     withContainer: false,
     withReset: true,
-    withGrid: false,
     defaultValue: { page: null },
     className: null,
 };
@@ -42,7 +40,6 @@ const Filters = ({
     onReset,
     withContainer,
     withReset,
-    withGrid,
     defaultValue,
     className,
 }) => {
@@ -94,7 +91,7 @@ const Filters = ({
             ])}
             withoutCollapse
         >
-            <div className="row row-cols-3 w-100">
+            <div className="row w-100">
                 {currentFilters.map(({ component, name, groupLabel, ...filterProps }, index) => {
                     const FilterComponent = getComponentFromName(component, FilterComponents, null);
                     const filterValue = value !== null && value[name] ? value[name] : null;
@@ -102,7 +99,7 @@ const Filters = ({
                         <FormGroup
                             key={`filter-${name}-${index + 1}`}
                             label={groupLabel}
-                            className="position-relative col mb-3"
+                            className="position-relative col-auto col-lg-4 col-xxl-3 mb-3"
                         >
                             <FilterComponent
                                 {...filterProps}
@@ -115,7 +112,7 @@ const Filters = ({
                     ) : null;
                 })}
                 {withReset && hasActiveFilter && currentFilters.length > 0 ? (
-                    <div className="col mb-3">
+                    <div className="col-auto col-lg-4 col-xxl-3 mb-3">
                         <Button theme="primary" onClick={onFiltersReset}>
                             <Icon name="arrow-counterclockwise" bold />
                         </Button>

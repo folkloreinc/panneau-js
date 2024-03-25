@@ -5,12 +5,6 @@ export default [
         component: 'search',
     },
     {
-        name: 'custom',
-        placeholder: 'Oui',
-        component: 'toggle',
-        label: '02351',
-    },
-    {
         name: 'trucs',
         placeholder: 'Sélectionner un truc',
         component: 'select',
@@ -20,5 +14,11 @@ export default [
             { label: 'Truc C', value: 'C' },
             { label: 'Truc D', value: 'D' },
         ],
+    },
+    {
+        name: 'custom',
+        placeholder: 'Oui',
+        component: 'toggle',
+        label: '02351',
     },
 ];
