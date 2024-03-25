@@ -525,6 +525,12 @@ msgctxt "d0g58T"
 msgid "Login"
 msgstr "Login"
 
+# Button label
+#: daHjZg
+msgctxt "daHjZg"
+msgid "Edit file"
+msgstr "Edit file"
+
 # Alert message
 #: dkRdks
 msgctxt "dkRdks"

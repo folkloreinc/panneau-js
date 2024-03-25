@@ -339,6 +339,10 @@
     "defaultMessage": "Login",
     "description": "Menu label"
   },
+  "daHjZg": {
+    "defaultMessage": "Edit file",
+    "description": "Button label"
+  },
   "dkRdks": {
     "defaultMessage": "{The_singular} has been deleted.",
     "description": "Alert message"
