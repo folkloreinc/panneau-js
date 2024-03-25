@@ -99,7 +99,7 @@ const Filters = ({
                         <FormGroup
                             key={`filter-${name}-${index + 1}`}
                             label={groupLabel}
-                            className="position-relative col-auto col-lg-4 col-xxl-3 mb-3"
+                            className="position-relative col-auto col-lg-4 col-xl-3 mb-3"
                         >
                             <FilterComponent
                                 {...filterProps}
@@ -112,7 +112,7 @@ const Filters = ({
                     ) : null;
                 })}
                 {withReset && hasActiveFilter && currentFilters.length > 0 ? (
-                    <div className="col-auto col-lg-4 col-xxl-3 mb-3">
+                    <div className="col-auto col-lg-4 col-xl-3 mb-3">
                         <Button theme="primary" onClick={onFiltersReset}>
                             <Icon name="arrow-counterclockwise" bold />
                         </Button>

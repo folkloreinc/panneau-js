@@ -25,6 +25,8 @@ const propTypes = {
     onPageChange: PropTypes.func,
     showFilters: PropTypes.bool,
     showActions: PropTypes.bool,
+    selectable: PropTypes.bool,
+    onSelectionChange: PropTypes.func,
     listProps: PropTypes.shape({}),
     theme: PropTypes.string,
     className: PropTypes.string,
@@ -41,6 +43,8 @@ const defaultProps = {
     onPageChange: null,
     showFilters: true,
     showActions: true,
+    selectable: false,
+    onSelectionChange: null,
     listProps: null,
     theme: null,
     className: null,
@@ -56,6 +60,8 @@ const ResourceItemsList = ({
     paginated,
     showFilters,
     showActions,
+    selectable,
+    onSelectionChange,
     listProps: customListProps,
     theme,
     className,
@@ -102,6 +108,8 @@ const ResourceItemsList = ({
 
     const withFilters = showFilters && filters !== null;
     const withActions = showActions && batchActions !== null && batchActions.length > 0;
+
+    const finalSelectable = selectable || withActions;
     const withMultipleActions =
         withActions &&
         batchActions.reduce((acc, it) => {
@@ -116,8 +124,11 @@ const ResourceItemsList = ({
     const onSelectItems = useCallback(
         (newItems) => {
             setSelectedItems(newItems);
+            if (onSelectionChange !== null) {
+                onSelectionChange(newItems);
+            }
         },
-        [setSelectedItems],
+        [setSelectedItems, onSelectionChange],
     );
 
     const onActionsChange = useCallback(() => {
@@ -175,7 +186,7 @@ const ResourceItemsList = ({
                 <ListComponent
                     {...itemsProps}
                     {...listProps}
-                    selectable={withActions}
+                    selectable={finalSelectable}
                     multiple={withMultipleActions}
                     onSelectionChange={onSelectItems}
                     selectedItems={selectedItems}

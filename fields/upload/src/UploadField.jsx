@@ -424,20 +424,10 @@ const UploadField = ({
                         onQueryChange={onListQueryChange}
                         onQueryReset={onListQueryReset}
                         baseUrl={null}
-                        listProps={{
-                            actions: ['select'],
-                            actionsProps: {
-                                onClickSelect,
-                                getSelectPropsFromItem: (item) => {
-                                    const { id: itemId = null } = item || {};
-                                    const found = (modalItems || []).find(
-                                        ({ id: modalItemId = null } = {}) => modalItemId === itemId,
-                                    );
-                                    return { outline: !found };
-                                },
-                            },
-                            withoutActionsColumn: true,
-                        }}
+                        showActions={false}
+                        selectable
+                        onSelectionChange={onClickSelect}
+                        multiple={allowMultipleUploads}
                     />
                     {allowMultipleUploads ? (
                         <div className="d-flex mt-4 justify-content-between">
