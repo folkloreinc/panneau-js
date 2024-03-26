@@ -279,7 +279,9 @@ const UploadField = ({
                     setModalItems(newValue);
                 }
             } else if (onChange !== null) {
-                onChange(newValue);
+                // Single value onchange
+                const [finalValue = null] = isArray(newValue) ? newValue : [newValue];
+                onChange(finalValue);
                 setResourceModalOpen(false);
             }
         },
@@ -287,8 +289,8 @@ const UploadField = ({
     );
 
     const confirmResourceModal = useCallback(() => {
-        // console.log('confirm', modalItems, onChange);
         if (onChange !== null) {
+            // Always multiple onchange
             onChange(modalItems);
             setResourceModalOpen(false);
             setModalItems(null);
