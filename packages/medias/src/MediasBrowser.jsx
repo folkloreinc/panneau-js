@@ -132,6 +132,7 @@ function MediasBrowser({
                             ...lay,
                             active: layout === lay.id,
                             onClick: () => onClickLayout(lay.id),
+                            className: 'px-3',
                         }))}
                     />
                 ) : null}

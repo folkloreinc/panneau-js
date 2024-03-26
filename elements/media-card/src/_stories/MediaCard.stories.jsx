@@ -26,3 +26,16 @@ export const Empty = () => <MediaCardElement value={null} />;
 export const WithRemove = () => (
     <MediaCardElement value={value} onClickRemove={() => console.log('hello')} />
 );
+
+export const WithoutDescription = () => (
+    <MediaCardElement value={value} withoutDescription linkPath="url" />
+);
+
+export const WithoutDescriptionAndRemove = () => (
+    <MediaCardElement
+        value={value}
+        withoutDescription
+        linkPath="url"
+        onClickRemove={() => console.log('hello')}
+    />
+);

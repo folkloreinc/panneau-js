@@ -12,17 +12,19 @@ const propTypes = {
     value: PropTypes.any,
     onChange: PropTypes.func.isRequired,
     onConfirm: PropTypes.func.isRequired,
+    onClose: PropTypes.func,
     multiple: PropTypes.bool,
     className: PropTypes.string,
 };
 
 const defaultProps = {
     value: null,
+    onClose: null,
     multiple: false,
     className: null,
 };
 
-function MediasPicker({ value, onChange, onConfirm, multiple, className, ...props }) {
+function MediasPicker({ value, onChange, onConfirm, onClose, multiple, className, ...props }) {
     const onSelectionChange = useCallback(
         (items) => {
             if (onChange !== null) {
@@ -40,15 +42,28 @@ function MediasPicker({ value, onChange, onConfirm, multiple, className, ...prop
                 {...props}
             />
             {multiple ? (
-                <Button
-                    className="mt-2"
-                    onClick={onConfirm}
-                    theme="info"
-                    disabled={disabled}
-                    outline={disabled}
-                >
-                    <FormattedMessage defaultMessage="Confirm" description="Button label" />
-                </Button>
+                <div className="d-flex w-100 align-items-end justify-content-end mt-3">
+                    {onClose !== null ? (
+                        <Button
+                            type="button"
+                            theme="secondary"
+                            onClick={onClose}
+                            className="d-block me-2"
+                        >
+                            <FormattedMessage defaultMessage="Cancel" description="Button label" />
+                        </Button>
+                    ) : null}
+                    <Button
+                        type="button"
+                        theme="primary"
+                        onClick={onConfirm}
+                        disabled={disabled}
+                        outline={disabled}
+                        className="d-block"
+                    >
+                        <FormattedMessage defaultMessage="Confirm" description="Button label" />
+                    </Button>
+                </div>
             ) : null}
         </div>
     );

@@ -37,7 +37,12 @@ const Container = (props) => {
                     <FiltersProvider>
                         <ModalProvider>
                             <Modals />
-                            <MediasPicker {...props} value={value} onChange={onChange} />
+                            <MediasPicker
+                                {...props}
+                                value={value}
+                                onChange={onChange}
+                                onClose={() => console.log('close')}
+                            />
                         </ModalProvider>
                     </FiltersProvider>
                 </FieldsProvider>

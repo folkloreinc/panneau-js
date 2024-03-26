@@ -73,7 +73,9 @@ function ModalForm({
                 action={action}
                 type={type}
                 item={item}
+                buttonSize="md"
                 onComplete={onComplete}
+                onCancel={onClose}
                 submitButtonLabel={submitButtonLabel}
             />
         </Dialog>

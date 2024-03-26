@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
@@ -10,6 +11,7 @@ const propTypes = {
     placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     maxWidth: PropTypes.number,
     maxHeight: PropTypes.number,
+    onClick: PropTypes.func,
     className: PropTypes.string,
 };
 
@@ -18,10 +20,11 @@ const defaultProps = {
     placeholder: null,
     maxWidth: 60,
     maxHeight: 60,
+    onClick: null,
     className: null,
 };
 
-const Image = ({ value, placeholder, maxWidth, maxHeight, className }) => {
+const Image = ({ value, placeholder, maxWidth, maxHeight, onClick, className }) => {
     const {
         url = null,
         thumbnailUrl = null,
@@ -36,6 +39,9 @@ const Image = ({ value, placeholder, maxWidth, maxHeight, className }) => {
         [altThumbnailUrl, thumbnailUrl, url, defaultValue],
     );
 
+    const Tag = onClick !== null ? 'button' : 'div';
+    const isButton = Tag === 'button';
+
     return (
         <div
             className={classNames([
@@ -45,15 +51,23 @@ const Image = ({ value, placeholder, maxWidth, maxHeight, className }) => {
                 },
             ])}
         >
-            <div
+            <Tag
                 className={classNames([
                     'd-flex align-items-center justify-content-center',
                     styles.inner,
+                    {
+                        'btn border-radius-0': isButton,
+                    },
                 ])}
                 style={{
                     width: maxWidth !== null ? parseInt(maxWidth, 10) : null,
                     height: maxHeight !== null ? parseInt(maxHeight, 10) : null,
                 }}
+                {...(isButton
+                    ? {
+                          type: 'button',
+                      }
+                    : null)}
             >
                 {image !== null ? (
                     <img
@@ -67,7 +81,7 @@ const Image = ({ value, placeholder, maxWidth, maxHeight, className }) => {
                 ) : (
                     placeholder
                 )}
-            </div>
+            </Tag>
         </div>
     );
 };

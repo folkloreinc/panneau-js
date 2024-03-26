@@ -207,7 +207,7 @@ export default {
             {
                 id: 'actions',
                 actions: [
-                    // 'show',
+                    'show',
                     {
                         id: 'export',
                         label: 'Export',
@@ -217,6 +217,7 @@ export default {
                     },
                     'edit',
                     'delete',
+                    'duplicate',
                 ],
             },
         ],

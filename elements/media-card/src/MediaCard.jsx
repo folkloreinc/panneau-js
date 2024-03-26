@@ -33,6 +33,7 @@ const propTypes = {
     disabled: PropTypes.bool,
     withoutDescription: PropTypes.bool,
     selected: PropTypes.bool,
+    external: PropTypes.bool,
     onClick: PropTypes.func,
     onClickRemove: PropTypes.func,
     className: PropTypes.string,
@@ -50,6 +51,7 @@ const defaultProps = {
     maxWidth: 500,
     withoutDescription: false,
     selected: false,
+    external: true,
     onClick: null,
     onClickRemove: null,
     className: null,
@@ -67,6 +69,7 @@ const MediaCard = ({
     disabled,
     withoutDescription,
     selected,
+    external,
     onClick,
     onClickRemove,
     className,
@@ -114,7 +117,6 @@ const MediaCard = ({
         const finalSize = (sizePath !== null ? get(value, sizePath) : null) || fileSize;
         const finalLink = (linkPath !== null ? get(value, linkPath) || null : null) || null;
         const finalHasThumbnail = preview !== null || thumbnail !== null;
-
         return {
             name: finalName,
             thumbnail: finalThumbnail,
@@ -178,18 +180,22 @@ const MediaCard = ({
                 }}
             >
                 <div className="d-flex align-items-center flex-grow-1">
-                    {onClick !== null ? (
-                        <button
-                            className="btn"
+                    {onClick !== null || link !== null ? (
+                        <Button
+                            className={classNames(['btn', { 'w-100': withoutDescription }])}
                             type="button"
+                            href={link}
+                            external={external}
+                            target={external ? '_blank' : null}
                             onClick={onClickThumbnail}
+                            withoutStyle
                             style={{
                                 border: selected ? '1px solid #ccc' : '1px solid transparent',
                                 backgroundColor: selected ? '#eee' : null,
                             }}
                         >
                             {thumbnailElement || 'Thumbnail'}
-                        </button>
+                        </Button>
                     ) : (
                         thumbnailElement
                     )}
@@ -208,7 +214,12 @@ const MediaCard = ({
                                     ])}
                                 >
                                     {link !== null ? (
-                                        <a href={link} target="_blank" rel="noopener noreferrer">
+                                        <a
+                                            href={link}
+                                            {...(external
+                                                ? { target: '_blank', rel: 'noopener noreferrer' }
+                                                : null)}
+                                        >
                                             {name}
                                         </a>
                                     ) : (

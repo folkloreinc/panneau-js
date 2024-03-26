@@ -103,7 +103,7 @@ const Filters = ({
                             null,
                         );
                         const filterValue = value !== null && value[name] ? value[name] : null;
-                        const classes =
+                        const defaultClassName =
                             component === 'select' || component === 'search'
                                 ? 'col-lg-4 col-xl-3'
                                 : null;
@@ -114,8 +114,8 @@ const Filters = ({
                                 className={classNames([
                                     'position-relative col-auto mb-3',
                                     {
-                                        [classes]: classes !== null,
                                         [groupClassName]: groupClassName !== null,
+                                        [defaultClassName]: defaultClassName !== null,
                                     },
                                 ])}
                             >

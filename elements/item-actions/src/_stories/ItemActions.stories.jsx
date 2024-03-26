@@ -25,7 +25,7 @@ const props = {
 
 export const Normal = () => (
     <PanneauProvider definition={panneauDefinition}>
-        <ItemActions {...props} />
+        <ItemActions {...props} actions={['show', 'edit', 'duplicate', 'delete']} />
     </PanneauProvider>
 );
 

@@ -443,7 +443,7 @@ const UploadField = ({
                             <div className="d-flex">
                                 <Button
                                     type="button"
-                                    theme="warning"
+                                    theme="secondary"
                                     onClick={closeResourceModal}
                                     disabled={disabled}
                                     className="d-block me-2"

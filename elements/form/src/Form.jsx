@@ -19,6 +19,7 @@ const propTypes = {
     actions: PropTypes.node,
     buttons: PanneauPropTypes.buttons,
     generalError: PropTypes.string,
+    buttonSize: PropTypes.string,
     submitButtonLabel: PanneauPropTypes.label,
     onSubmit: PropTypes.func,
     onCancel: PropTypes.func,
@@ -26,6 +27,7 @@ const propTypes = {
     withoutActions: PropTypes.bool,
     withoutStatus: PropTypes.bool,
     withoutErrors: PropTypes.bool,
+    withoutButtonGroup: PropTypes.bool,
     canSave: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
@@ -41,6 +43,7 @@ const defaultProps = {
     actions: null,
     buttons: null,
     generalError: null,
+    buttonSize: 'lg',
     submitButtonLabel: null,
     onSubmit: null,
     onCancel: null,
@@ -48,6 +51,7 @@ const defaultProps = {
     withoutActions: false,
     withoutStatus: false,
     withoutErrors: false,
+    withoutButtonGroup: false,
     canSave: true,
     disabled: false,
     className: null,
@@ -63,6 +67,8 @@ const Form = ({
     actions,
     buttons,
     generalError,
+    buttonSize,
+    withoutButtonGroup,
     submitButtonLabel,
     onSubmit,
     onCancel,
@@ -96,7 +102,14 @@ const Form = ({
             <div className="mt-4 d-flex align-items-center">
                 {!withoutStatus && status !== null ? <FormStatus status={status} /> : null}
                 {!withoutActions ? (
-                    <div className="ms-auto d-flex align-items-center">
+                    <div
+                        className={classNames([
+                            'ms-auto d-flex align-items-center',
+                            {
+                                'btn-group': !withoutButtonGroup,
+                            },
+                        ])}
+                    >
                         {actions}
                         {onCancel !== null || onCancelHref !== null ? (
                             <Button
@@ -104,11 +117,11 @@ const Form = ({
                                 onClick={onCancel}
                                 href={onCancelHref}
                                 theme="secondary"
-                                outline
+                                size={buttonSize}
                                 disabled={status === 'loading'}
                                 className={classNames([
-                                    'mr-2',
                                     {
+                                        'me-2': withoutButtonGroup,
                                         [cancelClassName]: cancelClassName !== null,
                                     },
                                 ])}
@@ -123,7 +136,7 @@ const Form = ({
                             <Buttons
                                 buttons={buttons}
                                 className={classNames({
-                                    // 'ml-auto': actions === null,
+                                    // 'me-auto': actions === null,
                                     [buttonsClassName]: buttonsClassName !== null,
                                 })}
                             />
@@ -131,7 +144,7 @@ const Form = ({
                             <Button
                                 type="submit"
                                 theme="primary"
-                                size="lg"
+                                size={buttonSize}
                                 label={
                                     submitButtonLabel || (
                                         <FormattedMessage
@@ -140,7 +153,9 @@ const Form = ({
                                         />
                                     )
                                 }
-                                disabled={!canSave || (status === 'loading' && generalError === null)}
+                                disabled={
+                                    !canSave || (status === 'loading' && generalError === null)
+                                }
                                 outline={!canSave}
                                 className={classNames({
                                     'ms-auto': actions === null,

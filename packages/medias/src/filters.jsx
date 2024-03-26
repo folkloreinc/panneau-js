@@ -21,6 +21,7 @@ export default [
                 value: 'audio',
             },
         ],
+        multiple: true,
     },
     {
         id: 'author',
@@ -28,6 +29,7 @@ export default [
         name: 'author',
         placeholder: <FormattedMessage defaultMessage="Author" description="Filter label" />,
         options: [],
+        multiple: true,
     },
     {
         id: 'tag',
@@ -35,6 +37,7 @@ export default [
         name: 'tag',
         placeholder: <FormattedMessage defaultMessage="Tag" description="Filter label" />,
         options: [],
+        multiple: true,
     },
     {
         id: 'search',

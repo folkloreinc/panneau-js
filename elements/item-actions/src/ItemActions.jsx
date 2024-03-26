@@ -31,18 +31,18 @@ const propTypes = {
     showUrl: PropTypes.string,
     editLabel: PropTypes.node,
     deleteLabel: PropTypes.node,
-    selectLabel: PropTypes.node,
+    duplicateLabel: PropTypes.node,
     reload: PropTypes.func,
     reloadPage: PropTypes.func,
     updateItem: PropTypes.func,
     onClickShow: PropTypes.func,
     onClickEdit: PropTypes.func,
     onClickDelete: PropTypes.func,
-    onClickSelect: PropTypes.func,
+    onClickDuplicate: PropTypes.func,
     getShowPropsFromItem: PropTypes.func,
     getEditPropsFromItem: PropTypes.func,
     getDeletePropsFromItem: PropTypes.func,
-    getSelectPropsFromItem: PropTypes.func,
+    getDuplicatePropsFromItem: PropTypes.func,
     withoutItemShowUrl: PropTypes.bool,
     className: PropTypes.string,
 };
@@ -57,18 +57,18 @@ const defaultProps = {
     showUrl: null,
     editLabel: <FormattedMessage defaultMessage="Edit" description="Button label" />,
     deleteLabel: <FormattedMessage defaultMessage="Delete" description="Button label" />,
-    selectLabel: <FormattedMessage defaultMessage="Select" description="Button label" />,
+    duplicateLabel: <FormattedMessage defaultMessage="Duplicate" description="Button label" />,
     reload: null,
     reloadPage: null,
     updateItem: null,
     onClickShow: null,
     onClickEdit: null,
     onClickDelete: null,
-    onClickSelect: null,
+    onClickDuplicate: null,
     getShowPropsFromItem: null,
     getEditPropsFromItem: null,
     getDeletePropsFromItem: null,
-    getSelectPropsFromItem: null,
+    getDuplicatePropsFromItem: null,
     withoutItemShowUrl: false,
     className: null,
 };
@@ -84,18 +84,18 @@ const ItemActions = ({
     showUrl,
     editLabel,
     deleteLabel,
-    selectLabel,
+    duplicateLabel,
     reload,
     reloadPage,
     updateItem,
     onClickShow,
     onClickEdit,
     onClickDelete,
-    onClickSelect,
+    onClickDuplicate,
     getShowPropsFromItem,
     getEditPropsFromItem,
     getDeletePropsFromItem,
-    getSelectPropsFromItem,
+    getDuplicatePropsFromItem,
     withoutItemShowUrl,
     className,
 }) => {
@@ -187,6 +187,23 @@ const ItemActions = ({
                                                 ? getEditPropsFromItem(item)
                                                 : null),
                                         };
+                                    case 'duplicate':
+                                        return {
+                                            id: 'duplicate',
+                                            label: iconsOnly ? null : duplicateLabel,
+                                            icon: iconsOnly ? <Icon name="copy" /> : null,
+                                            href:
+                                                urlGenerator !== null
+                                                    ? urlGenerator('duplicate', {
+                                                          id,
+                                                      }) || null
+                                                    : null,
+                                            theme: 'warning',
+                                            onClick: onClickDuplicate,
+                                            ...(getDuplicatePropsFromItem !== null
+                                                ? getDuplicatePropsFromItem(item)
+                                                : null),
+                                        };
                                     case 'delete':
                                         return {
                                             id: 'delete',
@@ -204,21 +221,7 @@ const ItemActions = ({
                                                 ? getDeletePropsFromItem(item)
                                                 : null),
                                         };
-                                    case 'select':
-                                        return {
-                                            id: 'select',
-                                            label: iconsOnly ? null : selectLabel,
-                                            icon: iconsOnly ? <Icon name="check" bold /> : null,
-                                            theme: 'primary',
-                                            outline: true,
-                                            onClick:
-                                                onClickSelect !== null
-                                                    ? () => onClickSelect(item)
-                                                    : null,
-                                            ...(getSelectPropsFromItem !== null
-                                                ? getSelectPropsFromItem(item)
-                                                : null),
-                                        };
+
                                     default:
                                         break;
                                 }
