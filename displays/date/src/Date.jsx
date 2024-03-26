@@ -9,6 +9,7 @@ import { loadPackage } from '@panneau/core/utils';
 
 const propTypes = {
     value: PropTypes.string,
+    placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     format: PropTypes.string,
     parseFormat: PropTypes.string,
     locale: PropTypes.string,
@@ -17,6 +18,7 @@ const propTypes = {
 
 const defaultProps = {
     value: null,
+    placeholder: null,
     format: 'yyyy-MM-dd',
     parseFormat: null,
     locale: null,
@@ -29,7 +31,7 @@ const defaultProps = {
     },
 };
 
-const DateDisplay = ({ value, format, parseFormat, locale, localeLoaders }) => {
+const DateDisplay = ({ value, placeholder, format, parseFormat, locale, localeLoaders }) => {
     const { locale: defaultLocale } = useIntl();
     const finalLocale = locale || defaultLocale;
     const [localePackage, setLocalePackage] = useState(null);
@@ -60,7 +62,7 @@ const DateDisplay = ({ value, format, parseFormat, locale, localeLoaders }) => {
         return newDate;
     }, [localePackage, value, format, parseFormat]);
 
-    return <div>{date}</div>;
+    return <div>{date || placeholder}</div>;
 };
 
 DateDisplay.propTypes = propTypes;

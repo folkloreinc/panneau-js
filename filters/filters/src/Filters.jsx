@@ -81,6 +81,9 @@ const Filters = ({
         [onChange, value, defaultValue],
     );
 
+    const withButton = withReset && hasActiveFilter && currentFilters.length > 0;
+    // const filtersCount = (currentFilters || []).length + (withButton ? 1 : 0);
+
     return (
         <Navbar
             className={classNames([
@@ -92,27 +95,43 @@ const Filters = ({
             withoutCollapse
         >
             <div className="row w-100">
-                {currentFilters.map(({ component, name, groupLabel, ...filterProps }, index) => {
-                    const FilterComponent = getComponentFromName(component, FilterComponents, null);
-                    const filterValue = value !== null && value[name] ? value[name] : null;
-                    return FilterComponent !== null ? (
-                        <FormGroup
-                            key={`filter-${name}-${index + 1}`}
-                            label={groupLabel}
-                            className="position-relative col-auto col-lg-4 col-xl-3 mb-3"
-                        >
-                            <FilterComponent
-                                {...filterProps}
-                                value={filterValue}
-                                onChange={(newValue) => onFilterChange(name, newValue)}
-                                onClear={() => onFilterClear(name)}
-                                className={component === 'select' ? 'mw-100' : null}
-                            />
-                        </FormGroup>
-                    ) : null;
-                })}
-                {withReset && hasActiveFilter && currentFilters.length > 0 ? (
-                    <div className="col-auto col-lg-4 col-xl-3 mb-3">
+                {currentFilters.map(
+                    ({ component, name, groupLabel, groupClassName, ...filterProps }, index) => {
+                        const FilterComponent = getComponentFromName(
+                            component,
+                            FilterComponents,
+                            null,
+                        );
+                        const filterValue = value !== null && value[name] ? value[name] : null;
+                        const classes =
+                            component === 'select' || component === 'search'
+                                ? 'col-lg-4 col-xl-3'
+                                : null;
+                        return FilterComponent !== null ? (
+                            <FormGroup
+                                key={`filter-${name}-${index + 1}`}
+                                label={groupLabel}
+                                className={classNames([
+                                    'position-relative col-auto mb-3',
+                                    {
+                                        [classes]: classes !== null,
+                                        [groupClassName]: groupClassName !== null,
+                                    },
+                                ])}
+                            >
+                                <FilterComponent
+                                    {...filterProps}
+                                    value={filterValue}
+                                    onChange={(newValue) => onFilterChange(name, newValue)}
+                                    onClear={() => onFilterClear(name)}
+                                    className={component === 'select' ? 'mw-100' : null}
+                                />
+                            </FormGroup>
+                        ) : null;
+                    },
+                )}
+                {withButton ? (
+                    <div className="col-auto mb-3">
                         <Button theme="primary" onClick={onFiltersReset}>
                             <Icon name="arrow-counterclockwise" bold />
                         </Button>

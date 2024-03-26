@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl';
 
 const propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     item: PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) }),
     descriptionPath: PropTypes.string,
     // eslint-disable-next-line react/forbid-prop-types
@@ -16,6 +17,7 @@ const propTypes = {
 
 const defaultProps = {
     value: null,
+    placeholder: null,
     item: null,
     descriptionPath: null,
     descriptionValues: null,
@@ -24,6 +26,7 @@ const defaultProps = {
 
 const TextDescription = ({
     value: initialValue,
+    placeholder,
     locale: parentLocale,
     item,
     descriptionPath,
@@ -50,13 +53,13 @@ const TextDescription = ({
 
     return label !== null ? (
         <div>
-            <p className="d-block m-0 p-0">{value}</p>
+            <p className="d-block m-0 p-0">{value || placeholder}</p>
             <p className="d-block m-0 p-0 text-secondary text-opacity-75 lh-sm">
                 <small>{label}</small>
             </p>
         </div>
     ) : (
-        <>{value}</>
+        <>{value || placeholder}</>
     );
 };
 

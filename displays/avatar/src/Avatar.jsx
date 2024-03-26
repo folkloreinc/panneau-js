@@ -11,23 +11,37 @@ import styles from './styles.module.scss';
 
 const propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     imagePath: PropTypes.string,
     namePath: PropTypes.string,
     size: PropTypes.number,
     withoutName: PropTypes.bool,
+    withoutImage: PropTypes.bool,
     className: PropTypes.string,
 };
 
 const defaultProps = {
     value: null,
+    placeholder: null,
     imagePath: 'image',
     namePath: 'name',
     size: null,
     withoutName: false,
+    withoutImage: false,
     className: null,
 };
 
-const Avatar = ({ value, imagePath, namePath, size, withoutName, className, ...props }) => {
+const Avatar = ({
+    value,
+    placeholder,
+    imagePath,
+    namePath,
+    size,
+    withoutName,
+    withoutImage,
+    className,
+    ...props
+}) => {
     const image = get(value, imagePath) || value || null;
     const name = get(value, namePath) || null;
 
@@ -37,6 +51,10 @@ const Avatar = ({ value, imagePath, namePath, size, withoutName, className, ...p
         () => altThumbnailUrl || thumbnailUrl || url || defaultValue,
         [altThumbnailUrl, thumbnailUrl, url, defaultValue],
     );
+
+    const showImage = imageUrl !== null && !withoutImage;
+    const showName = name !== null && !withoutName;
+    const empty = !showImage && !showName;
 
     return (
         <div
@@ -49,18 +67,15 @@ const Avatar = ({ value, imagePath, namePath, size, withoutName, className, ...p
             ])}
         >
             <div className="d-flex align-items-center">
-                <AvatarElement
-                    name={name}
-                    image={{ url: imageUrl }}
-                    size={size}
-                    {...props}
-                    // inverted={false}
-                />
-                {name !== null && !withoutName ? (
+                {showImage ? (
+                    <AvatarElement name={name} image={{ url: imageUrl }} size={size} {...props} />
+                ) : null}
+                {showName ? (
                     <span className={classNames(['ms-2', styles.name])}>
                         {size === 'small' ? <small>{name}</small> : name}
                     </span>
                 ) : null}
+                {empty ? placeholder : null}
             </div>
         </div>
     );

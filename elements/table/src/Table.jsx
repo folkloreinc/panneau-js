@@ -33,15 +33,16 @@ const propTypes = {
     ]),
     withoutId: PropTypes.bool,
     withFadedId: PropTypes.bool,
+    displayPlaceholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     selectable: PropTypes.bool,
     multipleSelection: PropTypes.bool,
     onSelectionChange: PropTypes.func,
     selectedItems: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
-    className: PropTypes.string,
     withCustomActionsColumn: PropTypes.bool,
     actionsComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
     actionsProps: PropTypes.shape({}),
     actionsClassName: PropTypes.string,
+    className: PropTypes.string,
 };
 
 const defaultProps = {
@@ -57,15 +58,16 @@ const defaultProps = {
     emptyLabel: null,
     withoutId: false,
     withFadedId: true,
+    displayPlaceholder: null,
     selectable: false,
     multipleSelection: false,
     onSelectionChange: null,
     selectedItems: null,
-    className: null,
     withCustomActionsColumn: false,
     actionsComponent: null,
     actionsProps: null,
     actionsClassName: null,
+    className: null,
 };
 
 function Table({
@@ -81,15 +83,16 @@ function Table({
     emptyLabel,
     withoutId,
     withFadedId,
+    displayPlaceholder,
     selectable,
     multipleSelection,
     onSelectionChange,
     selectedItems: initialSelectedItems,
-    className,
     withCustomActionsColumn,
     actionsComponent,
     actionsProps,
     actionsClassName,
+    className,
 }) {
     const displayComponents = useDisplaysComponents();
     const hasIdColumn =
@@ -242,9 +245,21 @@ function Table({
                                   ) || null) !== null
                                 : false;
 
-                            const selectRow = checked
-                                ? () => onDeselectItem(it, rowIdx)
-                                : () => onSelectItem(it, rowIdx);
+                            const selectRow = (e) => {
+                                if (typeof e.target !== 'undefined') {
+                                    if (
+                                        e.target.tagName.toLowerCase() !== 'button' &&
+                                        e.target.tagName.toLowerCase() !== 'a' &&
+                                        e.target.tagName.toLowerCase() !== 'i'
+                                    ) {
+                                        if (checked) {
+                                            onDeselectItem(it, rowIdx);
+                                        } else {
+                                            onSelectItem(it, rowIdx);
+                                        }
+                                    }
+                                }
+                            };
 
                             return (
                                 <tr
@@ -285,6 +300,7 @@ function Table({
                                             </span>
                                         </td>
                                     ) : null}
+
                                     {withIdColumn ? (
                                         <td className="col-auto">
                                             <span
@@ -348,9 +364,12 @@ function Table({
                                                         {...displayProps}
                                                         field={field}
                                                         value={displayValue}
+                                                        placeholder={displayPlaceholder}
                                                         item={it}
                                                     />
-                                                ) : null}
+                                                ) : (
+                                                    displayPlaceholder
+                                                )}
                                             </td>
                                         );
                                     })}

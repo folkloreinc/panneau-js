@@ -8,6 +8,7 @@ import Icon from '@panneau/element-icon';
 
 const propTypes = {
     value: PropTypes.string,
+    placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     itemLabelPath: PropTypes.string,
     itemClassName: PropTypes.string,
     itemClassNamePath: PropTypes.string,
@@ -15,13 +16,21 @@ const propTypes = {
 
 const defaultProps = {
     value: null,
+    placeholder: null,
     itemLabelPath: 'label',
     itemIconPath: null,
     itemClassName: 'bg-secondary',
     itemClassNamePath: null,
 };
 
-const Badges = ({ value, itemLabelPath, itemIconPath, itemClassName, itemClassNamePath }) => {
+const Badges = ({
+    value,
+    placeholder,
+    itemLabelPath,
+    itemIconPath,
+    itemClassName,
+    itemClassNamePath,
+}) => {
     const items = (isArray(value) ? value : [value]).filter((it) => it !== null) || [];
     return items.map((it) => {
         const label = get(it, itemLabelPath, null);
@@ -38,7 +47,9 @@ const Badges = ({ value, itemLabelPath, itemIconPath, itemClassName, itemClassNa
             >
                 {icon !== null ? <Icon name={icon} /> : label}
             </span>
-        ) : null;
+        ) : (
+            placeholder
+        );
     });
 };
 

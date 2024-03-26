@@ -7,6 +7,7 @@ import styles from './styles.module.scss';
 
 const propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     maxWidth: PropTypes.number,
     maxHeight: PropTypes.number,
     className: PropTypes.string,
@@ -14,12 +15,13 @@ const propTypes = {
 
 const defaultProps = {
     value: null,
-    maxWidth: 80,
-    maxHeight: 80,
+    placeholder: null,
+    maxWidth: 60,
+    maxHeight: 60,
     className: null,
 };
 
-const Image = ({ value, maxWidth, maxHeight, className }) => {
+const Image = ({ value, placeholder, maxWidth, maxHeight, className }) => {
     const {
         url = null,
         thumbnailUrl = null,
@@ -53,14 +55,18 @@ const Image = ({ value, maxWidth, maxHeight, className }) => {
                     height: maxHeight !== null ? parseInt(maxHeight, 10) : null,
                 }}
             >
-                <img
-                    className={classNames([
-                        'd-block mw-100 mh-100 object-fit-contain',
-                        styles.image,
-                    ])}
-                    src={image}
-                    alt={description || name}
-                />
+                {image !== null ? (
+                    <img
+                        className={classNames([
+                            'd-block mw-100 mh-100 object-fit-contain',
+                            styles.image,
+                        ])}
+                        src={image}
+                        alt={description || name}
+                    />
+                ) : (
+                    placeholder
+                )}
             </div>
         </div>
     );

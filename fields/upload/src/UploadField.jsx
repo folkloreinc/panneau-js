@@ -259,7 +259,6 @@ const UploadField = ({
     const onClickSelect = useCallback(
         (newValue) => {
             if (allowMultipleUploads) {
-                console.log('newValue', newValue);
                 if (newValue !== null && !isArray(newValue)) {
                     const { id = null } = newValue || {};
                     if (id !== null) {

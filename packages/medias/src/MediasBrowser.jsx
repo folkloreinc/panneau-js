@@ -156,7 +156,12 @@ function MediasBrowser({
                     componentProps={{ className: 'd-flex w-100', cardClassName: 'flex-grow-1' }}
                 />
             ) : (
-                <Table {...tableProps} columns={columns} items={items} />
+                <Table
+                    {...tableProps}
+                    columns={columns}
+                    items={items}
+                    displayPlaceholder={<span className="text-secondary text-opacity-75">—</span>}
+                />
             )}
             <div className={classNames(['d-flex', 'mt-3', 'mb-1', 'justify-content-end'])}>
                 <Pagination

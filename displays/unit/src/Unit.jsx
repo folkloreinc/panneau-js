@@ -6,18 +6,20 @@ import React, { useMemo } from 'react';
 import { formatDuration } from '@panneau/core/utils';
 
 const propTypes = {
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     format: PropTypes.string,
     suffix: PropTypes.string,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 const defaultProps = {
+    value: null,
+    placeholder: null,
     format: null,
     suffix: null,
-    value: null,
 };
 
-const Unit = ({ format, value, suffix }) => {
+const Unit = ({ value, placeholder, format, suffix }) => {
     const finalValue = useMemo(() => {
         if (value === null) {
             return null;
@@ -40,7 +42,7 @@ const Unit = ({ format, value, suffix }) => {
         }
         return value;
     }, [value]);
-    return <span className="text-nowrap">{finalValue}</span>;
+    return <span className="text-nowrap">{finalValue || placeholder}</span>;
 };
 
 Unit.propTypes = propTypes;
