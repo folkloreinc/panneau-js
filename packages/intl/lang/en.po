@@ -245,6 +245,12 @@ msgctxt "HOobY2"
 msgid "Error 401"
 msgstr "Error 401"
 
+# Button label
+#: HzCxmr
+msgctxt "HzCxmr"
+msgid "Duplicate"
+msgstr "Duplicate"
+
 # Menu label
 #: IuqEHB
 msgctxt "IuqEHB"
@@ -256,12 +262,6 @@ msgstr "Account"
 msgctxt "J6Mhku"
 msgid "F"
 msgstr "F"
-
-# Button label
-#: JeVLdN
-msgctxt "JeVLdN"
-msgid "Select"
-msgstr "Select"
 
 # Field name
 #: KNeQ6y
