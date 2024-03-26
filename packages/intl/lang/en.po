@@ -203,12 +203,6 @@ msgctxt "Bhu3B2"
 msgid "Delete"
 msgstr "Delete"
 
-# Checkbox label
-#: Bv5ejF
-msgctxt "Bv5ejF"
-msgid "Select all"
-msgstr "Select all"
-
 # Avatar label
 #: CGvQxc
 msgctxt "CGvQxc"
@@ -287,12 +281,6 @@ msgctxt "MHldGi"
 msgid "Duration:"
 msgstr "Duration:"
 
-# Checkbox label
-#: MhuqYZ
-msgctxt "MhuqYZ"
-msgid "No items selected"
-msgstr "No items selected"
-
 # Form status
 #: Mo0yQb
 msgctxt "Mo0yQb"
@@ -310,6 +298,12 @@ msgstr "Edit item"
 msgctxt "NI9440"
 msgid "Add file"
 msgstr "Add file"
+
+# Button label
+#: NeSNvW
+msgctxt "NeSNvW"
+msgid "clear"
+msgstr "clear"
 
 # Tuesday letter
 #: Of2stw
@@ -380,6 +374,12 @@ msgstr "Edit"
 msgctxt "TV3jir"
 msgid "Loading"
 msgstr "Loading"
+
+# Button label
+#: Tol+/U
+msgctxt "Tol+/U"
+msgid "Clear"
+msgstr "Clear"
 
 # Link label
 #: U/ye2x
@@ -482,6 +482,12 @@ msgstr "Audio"
 msgctxt "XrzzDc"
 msgid "Search"
 msgstr "Search"
+
+# Button label
+#: YTF0i6
+msgctxt "YTF0i6"
+msgid "select all"
+msgstr "select all"
 
 # Link label
 #: ZBNqY2
@@ -651,6 +657,12 @@ msgctxt "rSt+KL"
 msgid "No"
 msgstr "No"
 
+# Button label
+#: rvOVCV
+msgctxt "rvOVCV"
+msgid "Confirm selection"
+msgstr "Confirm selection"
+
 # DateTimeField time caption
 #: s4Xrs9
 msgctxt "s4Xrs9"
@@ -668,12 +680,6 @@ msgstr "Edit items"
 msgctxt "skmuWU"
 msgid "Author"
 msgstr "Author"
-
-# Checkbox label
-#: sl150Z
-msgctxt "sl150Z"
-msgid "Deselect all"
-msgstr "Deselect all"
 
 # Page title
 #: smqUAV

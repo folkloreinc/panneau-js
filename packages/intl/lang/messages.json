@@ -127,10 +127,6 @@
     "defaultMessage": "Delete",
     "description": "Button label"
   },
-  "Bv5ejF": {
-    "defaultMessage": "Select all",
-    "description": "Checkbox label"
-  },
   "CGvQxc": {
     "defaultMessage": "User",
     "description": "Avatar label"
@@ -183,10 +179,6 @@
     "defaultMessage": "Duration:",
     "description": "Field description"
   },
-  "MhuqYZ": {
-    "defaultMessage": "No items selected",
-    "description": "Checkbox label"
-  },
   "Mo0yQb": {
     "defaultMessage": "Error",
     "description": "Form status"
@@ -198,6 +190,10 @@
   "NI9440": {
     "defaultMessage": "Add file",
     "description": "Default upload add button label"
+  },
+  "NeSNvW": {
+    "defaultMessage": "clear",
+    "description": "Button label"
   },
   "Of2stw": {
     "defaultMessage": "T",
@@ -242,6 +238,10 @@
   "TV3jir": {
     "defaultMessage": "Loading",
     "description": "Loading label"
+  },
+  "Tol+/U": {
+    "defaultMessage": "Clear",
+    "description": "Button label"
   },
   "U/ye2x": {
     "defaultMessage": "Cancel",
@@ -310,6 +310,10 @@
   "XrzzDc": {
     "defaultMessage": "Search",
     "description": "Filter label"
+  },
+  "YTF0i6": {
+    "defaultMessage": "select all",
+    "description": "Button label"
   },
   "ZBNqY2": {
     "defaultMessage": "Forgot your password?",
@@ -423,6 +427,10 @@
     "defaultMessage": "No",
     "description": "Boolean value"
   },
+  "rvOVCV": {
+    "defaultMessage": "Confirm selection",
+    "description": "Button label"
+  },
   "s4Xrs9": {
     "defaultMessage": "Time",
     "description": "DateTimeField time caption"
@@ -434,10 +442,6 @@
   "skmuWU": {
     "defaultMessage": "Author",
     "description": "Filter label"
-  },
-  "sl150Z": {
-    "defaultMessage": "Deselect all",
-    "description": "Checkbox label"
   },
   "smqUAV": {
     "defaultMessage": "Edit {name}",

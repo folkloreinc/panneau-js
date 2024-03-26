@@ -205,12 +205,6 @@ msgctxt "Bhu3B2"
 msgid "Delete"
 msgstr "Supprimer"
 
-# Checkbox label
-#: Bv5ejF
-msgctxt "Bv5ejF"
-msgid "Select all"
-msgstr "Tout sélectionner"
-
 # Avatar label
 #: CGvQxc
 msgctxt "CGvQxc"
@@ -289,12 +283,6 @@ msgctxt "MHldGi"
 msgid "Duration:"
 msgstr "Durée:"
 
-# Checkbox label
-#: MhuqYZ
-msgctxt "MhuqYZ"
-msgid "No items selected"
-msgstr "Aucun élément sélectionné"
-
 # Form status
 #: Mo0yQb
 msgctxt "Mo0yQb"
@@ -312,6 +300,12 @@ msgstr "Modifier l'élément"
 msgctxt "NI9440"
 msgid "Add file"
 msgstr "Ajouter un fichier"
+
+# Button label
+#: NeSNvW
+msgctxt "NeSNvW"
+msgid "clear"
+msgstr "effacer"
 
 # Tuesday letter
 #: Of2stw
@@ -380,6 +374,12 @@ msgstr "Modifier"
 msgctxt "TV3jir"
 msgid "Loading"
 msgstr "Chargement"
+
+# Button label
+#: Tol+/U
+msgctxt "Tol+/U"
+msgid "Clear"
+msgstr "Effacer"
 
 # Link label
 #: U/ye2x
@@ -482,6 +482,12 @@ msgstr "Audio"
 msgctxt "XrzzDc"
 msgid "Search"
 msgstr "Chercher"
+
+# Button label
+#: YTF0i6
+msgctxt "YTF0i6"
+msgid "select all"
+msgstr "tout sélectionner"
 
 # Link label
 #: ZBNqY2
@@ -653,6 +659,12 @@ msgctxt "rSt+KL"
 msgid "No"
 msgstr "Non"
 
+# Button label
+#: rvOVCV
+msgctxt "rvOVCV"
+msgid "Confirm selection"
+msgstr "Confirmer la sélection"
+
 # DateTimeField time caption
 #: s4Xrs9
 msgctxt "s4Xrs9"
@@ -670,12 +682,6 @@ msgstr "Modifier les éléments"
 msgctxt "skmuWU"
 msgid "Author"
 msgstr "Auteur"
-
-# Checkbox label
-#: sl150Z
-msgctxt "sl150Z"
-msgid "Deselect all"
-msgstr "Tout désélectionner"
 
 # Page title
 #: smqUAV

@@ -95,9 +95,6 @@
     "Bhu3B2": {
         "defaultMessage": "Delete"
     },
-    "Bv5ejF": {
-        "defaultMessage": "Select all"
-    },
     "CGvQxc": {
         "defaultMessage": "User"
     },
@@ -137,9 +134,6 @@
     "MHldGi": {
         "defaultMessage": "Duration:"
     },
-    "MhuqYZ": {
-        "defaultMessage": "No items selected"
-    },
     "Mo0yQb": {
         "defaultMessage": "Error"
     },
@@ -148,6 +142,9 @@
     },
     "NI9440": {
         "defaultMessage": "Add file"
+    },
+    "NeSNvW": {
+        "defaultMessage": "clear"
     },
     "Of2stw": {
         "defaultMessage": "T"
@@ -181,6 +178,9 @@
     },
     "TV3jir": {
         "defaultMessage": "Loading"
+    },
+    "Tol+/U": {
+        "defaultMessage": "Clear"
     },
     "U/ye2x": {
         "defaultMessage": "Cancel"
@@ -232,6 +232,9 @@
     },
     "XrzzDc": {
         "defaultMessage": "Search"
+    },
+    "YTF0i6": {
+        "defaultMessage": "select all"
     },
     "ZBNqY2": {
         "defaultMessage": "Forgot your password?"
@@ -317,6 +320,9 @@
     "rSt+KL": {
         "defaultMessage": "No"
     },
+    "rvOVCV": {
+        "defaultMessage": "Confirm selection"
+    },
     "s4Xrs9": {
         "defaultMessage": "Time"
     },
@@ -325,9 +331,6 @@
     },
     "skmuWU": {
         "defaultMessage": "Author"
-    },
-    "sl150Z": {
-        "defaultMessage": "Deselect all"
     },
     "smqUAV": {
         "defaultMessage": "Edit {name}"
