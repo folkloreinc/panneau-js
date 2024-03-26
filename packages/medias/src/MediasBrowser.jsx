@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useQuery } from '@panneau/core/hooks';
@@ -31,6 +31,9 @@ const propTypes = {
     layouts: PropTypes.arrayOf(PropTypes.shape({})),
     theme: PropTypes.string,
     tableProps: PropTypes.bool,
+    onItemsChange: PropTypes.func,
+    selectedCount: PropTypes.number,
+    onClearSelected: PropTypes.func,
     className: PropTypes.string,
 };
 
@@ -41,7 +44,7 @@ const defaultProps = {
     // fields: null,
     query: null,
     baseUrl: null,
-    layout: null,
+    layout: 'table',
     layouts: [
         {
             id: 'table',
@@ -54,6 +57,9 @@ const defaultProps = {
     ],
     theme: null,
     tableProps: null,
+    onItemsChange: null,
+    selectedCount: null,
+    onClearSelected: null,
     className: null,
 };
 
@@ -68,6 +74,9 @@ function MediasBrowser({
     layouts,
     theme,
     tableProps,
+    onItemsChange,
+    selectedCount,
+    onClearSelected,
     className,
 }) {
     const baseQuery = useMemo(() => initialQuery, [initialQuery]);
@@ -97,6 +106,10 @@ function MediasBrowser({
         total,
     } = useMedias(query, page, count, { initialItems });
 
+    useEffect(() => {
+        onItemsChange(items);
+    }, [items, onItemsChange]);
+
     const [layout, setLayout] = useState(initialLayout || 'grid');
     const hasLayouts = useMemo(() => layouts !== null && layouts.length > 1, [layouts]);
     const onClickLayout = useCallback(
@@ -104,6 +117,23 @@ function MediasBrowser({
             setLayout(lay);
         },
         [setLayout],
+    );
+
+    const pagination = (
+        <Pagination
+            page={page}
+            lastPage={lastPage}
+            total={total}
+            url={baseUrl}
+            query={query}
+            onClickPage={onPageChange}
+            theme={theme}
+            loading={loading}
+            selectedCount={selectedCount}
+            onClearSelected={onClearSelected}
+            withPreviousNext
+            alwaysShowButtons
+        />
     );
 
     return (
@@ -136,18 +166,7 @@ function MediasBrowser({
                         }))}
                     />
                 ) : null}
-                <Pagination
-                    page={page}
-                    lastPage={lastPage}
-                    total={total}
-                    url={baseUrl}
-                    query={query}
-                    onClickPage={onPageChange}
-                    theme={theme}
-                    loading={loading}
-                    withPreviousNext
-                    alwaysShowButtons
-                />
+                {pagination}
             </div>
             {layout === 'grid' ? (
                 <Grid
@@ -165,18 +184,7 @@ function MediasBrowser({
                 />
             )}
             <div className={classNames(['d-flex', 'mt-3', 'mb-1', 'justify-content-end'])}>
-                <Pagination
-                    page={page}
-                    lastPage={lastPage}
-                    total={total}
-                    url={baseUrl}
-                    query={query}
-                    onClickPage={onPageChange}
-                    theme={theme}
-                    loading={loading}
-                    withPreviousNext
-                    alwaysShowButtons
-                />
+                {pagination}
             </div>
         </div>
     );

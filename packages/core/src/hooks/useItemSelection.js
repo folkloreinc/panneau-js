@@ -16,8 +16,16 @@ const useItemSelection = ({
 
     const onSelectItem = useCallback(
         (item, index) => {
-            const newItems =
-                selectedItems !== null && multipleSelection ? [...selectedItems, item] : [item];
+            const { id: itemId = null } = item || {};
+            const oldItem = (selectedItems || []).find(({ id }) => id === itemId) || null;
+
+            let newItems = [];
+            if (oldItem === null) {
+                newItems =
+                    selectedItems !== null && multipleSelection ? [...selectedItems, item] : [item];
+            } else {
+                newItems = (selectedItems || []).filter(({ id }) => id !== itemId);
+            }
             setSelectedItems(newItems);
             if (onSelectionChange !== null) {
                 onSelectionChange(newItems, item, index);
@@ -26,46 +34,36 @@ const useItemSelection = ({
         [selectedItems, onSelectionChange, multipleSelection],
     );
 
-    const onDeselectItem = useCallback(
-        (item, index) => {
-            const { id: itemId = null } = item || {};
-            const newItems = (selectedItems || []).filter(({ id }) => id !== itemId);
-            setSelectedItems(newItems);
+    const onSelectPage = useCallback(
+        (pageSelected = false) => {
+            let nextItems = [];
+            if (!pageSelected) {
+                nextItems = uniqBy(
+                    [...(items || []), ...(selectedItems || [])],
+                    ({ id = null } = {}) => id,
+                );
+            } else {
+                const ids = (items || [])
+                    .map(({ id = null } = {}) => id)
+                    .filter((id) => id !== null);
+                nextItems = uniqBy(
+                    (selectedItems || []).filter((it) => {
+                        const { id = null } = it || {};
+                        return ids.indexOf(id) === -1;
+                    }),
+                    ({ id = null } = {}) => id,
+                );
+            }
+
+            setSelectedItems(nextItems);
             if (onSelectionChange !== null) {
-                onSelectionChange(multipleSelection ? newItems : null, item, index);
+                onSelectionChange(nextItems);
             }
         },
-        [selectedItems, onSelectionChange, multipleSelection],
+        [items, selectedItems, setSelectedItems, onSelectionChange],
     );
 
-    const onSelectPage = useCallback(() => {
-        const nextItems = uniqBy(
-            [...(items || []), ...(selectedItems || [])],
-            ({ id = null } = {}) => id,
-        );
-        setSelectedItems(nextItems);
-        if (onSelectionChange !== null) {
-            onSelectionChange(nextItems);
-        }
-    }, [items, selectedItems, setSelectedItems, onSelectionChange]);
-
-    const onDeselectPage = useCallback(() => {
-        const ids = (items || []).map(({ id = null } = {}) => id).filter((id) => id !== null);
-        const nextItems = uniqBy(
-            (selectedItems || []).filter((it) => {
-                const { id = null } = it || {};
-                return ids.indexOf(id) === -1;
-            }),
-            ({ id = null } = {}) => id,
-        );
-
-        setSelectedItems(nextItems);
-        if (onSelectionChange !== null) {
-            onSelectionChange(nextItems);
-        }
-    }, [items, selectedItems, setSelectedItems, onSelectionChange]);
-
-    const onClearAll = useCallback(() => {
+    const onClearSelected = useCallback(() => {
         setSelectedItems([]);
         if (onSelectionChange !== null) {
             onSelectionChange([]);
@@ -90,21 +88,20 @@ const useItemSelection = ({
         [selectedItems, items],
     );
 
-    const countSelected = useMemo(
+    const selectedCount = useMemo(
         () => (selectedItems !== null && selectedItems.length > 0 ? selectedItems.length : null),
         [selectedItems],
     );
 
     return {
         onSelectItem,
-        onDeselectItem,
         onSelectPage,
-        onDeselectPage,
-        onClearAll,
+        onClearSelected,
         pageSelected,
         allSelected,
-        count: countSelected,
+        selectedCount,
         selectedItems,
+        setSelectedItems,
     };
 };
 

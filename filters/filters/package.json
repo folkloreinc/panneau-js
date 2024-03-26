@@ -53,7 +53,8 @@
         "@panneau/element-navbar": "^3.0.136",
         "@panneau/themes": "^3.0.136",
         "classnames": "^2.5.1",
-        "prop-types": "^15.7.2"
+        "prop-types": "^15.7.2",
+        "react-intl": "^5.15.8||^6.0.0"
     },
     "publishConfig": {
         "access": "public"

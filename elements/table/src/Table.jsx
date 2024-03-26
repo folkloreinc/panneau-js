@@ -9,9 +9,8 @@ import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
-import { useItemSelection } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
-import Icon from '@panneau/element-icon';
+// import Icon from '@panneau/element-icon';
 import Loading from '@panneau/element-loading';
 
 import SortLink from './SortLink';
@@ -36,8 +35,10 @@ const propTypes = {
     displayPlaceholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     selectable: PropTypes.bool,
     multipleSelection: PropTypes.bool,
-    onSelectionChange: PropTypes.func,
+    onSelectItem: PropTypes.func,
+    onSelectPage: PropTypes.func,
     selectedItems: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
+    pageSelected: false,
     withCustomActionsColumn: PropTypes.bool,
     actionsComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
     actionsProps: PropTypes.shape({}),
@@ -61,8 +62,10 @@ const defaultProps = {
     displayPlaceholder: null,
     selectable: false,
     multipleSelection: false,
-    onSelectionChange: null,
+    onSelectItem: null,
+    onSelectPage: null,
     selectedItems: null,
+    pageSelected: false,
     withCustomActionsColumn: false,
     actionsComponent: null,
     actionsProps: null,
@@ -86,8 +89,10 @@ function Table({
     displayPlaceholder,
     selectable,
     multipleSelection,
-    onSelectionChange,
-    selectedItems: initialSelectedItems,
+    onSelectItem,
+    onSelectPage,
+    selectedItems,
+    pageSelected,
     withCustomActionsColumn,
     actionsComponent,
     actionsProps,
@@ -100,22 +105,6 @@ function Table({
     const Actions = actionsComponent || null;
     const withActionsColumn = withCustomActionsColumn && Actions !== null;
     const withIdColumn = !withoutId && !hasIdColumn && !selectable;
-
-    const {
-        onSelectItem,
-        onDeselectItem,
-        onSelectPage,
-        onDeselectPage,
-        onClearAll,
-        pageSelected,
-        count: countSelected,
-        selectedItems,
-    } = useItemSelection({
-        items,
-        selectedItems: initialSelectedItems,
-        onSelectionChange,
-        multipleSelection,
-    });
 
     return (
         <div>
@@ -131,39 +120,6 @@ function Table({
                     ])}
                 >
                     <thead>
-                        {selectable ? (
-                            <tr>
-                                <th colSpan="12">
-                                    <span className="text-small ms-1 text-nowrap fw-normal">
-                                        {countSelected > 0 ? (
-                                            <>
-                                                <span className="d-inline-block mb-1">
-                                                    <FormattedMessage
-                                                        defaultMessage="{count, plural, =0 {no items} one {# item} other {# items}} selected"
-                                                        description="Checkbox label"
-                                                        values={{ count: countSelected }}
-                                                    />
-                                                </span>
-                                                <button
-                                                    type="button"
-                                                    className="btn badge rounded-pill text-bg-primary ms-2"
-                                                    onClick={onClearAll}
-                                                >
-                                                    <Icon name="x" bold />
-                                                </button>
-                                            </>
-                                        ) : (
-                                            <span className="d-inline-block text-muted mb-1">
-                                                <FormattedMessage
-                                                    defaultMessage="No items selected"
-                                                    description="Checkbox label"
-                                                />
-                                            </span>
-                                        )}
-                                    </span>
-                                </th>
-                            </tr>
-                        ) : null}
                         <tr>
                             {selectable && multipleSelection ? (
                                 <th scope="col">
@@ -173,18 +129,13 @@ function Table({
                                         className="form-check-input me-2"
                                         autoComplete="off"
                                         checked={pageSelected}
-                                        onChange={pageSelected ? onDeselectPage : onSelectPage}
+                                        onChange={() => onSelectPage(pageSelected)}
                                     />
                                 </th>
                             ) : null}
                             {selectable && !multipleSelection ? (
                                 <th scope="col">
-                                    <span className="form-check-label pe-2 text-muted">
-                                        <FormattedMessage
-                                            defaultMessage="Select row"
-                                            description="Checkbox label"
-                                        />
-                                    </span>
+                                    <span className="form-check-label pe-2 text-muted" />
                                 </th>
                             ) : null}
                             {withIdColumn ? <th scope="col">#</th> : null}
@@ -252,11 +203,7 @@ function Table({
                                         e.target.tagName.toLowerCase() !== 'a' &&
                                         e.target.tagName.toLowerCase() !== 'i'
                                     ) {
-                                        if (checked) {
-                                            onDeselectItem(it, rowIdx);
-                                        } else {
-                                            onSelectItem(it, rowIdx);
-                                        }
+                                        onSelectItem(it, rowIdx);
                                     }
                                 }
                             };

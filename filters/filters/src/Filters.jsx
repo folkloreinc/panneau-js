@@ -2,6 +2,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFiltersComponents } from '@panneau/core/contexts';
@@ -10,6 +11,8 @@ import Button from '@panneau/element-button';
 import FormGroup from '@panneau/element-form-group';
 import Icon from '@panneau/element-icon';
 import Navbar from '@panneau/element-navbar';
+
+import styles from './styles.module.scss';
 
 const propTypes = {
     filters: PanneauPropTypes.filters,
@@ -82,7 +85,6 @@ const Filters = ({
     );
 
     const withButton = withReset && hasActiveFilter && currentFilters.length > 0;
-    // const filtersCount = (currentFilters || []).length + (withButton ? 1 : 0);
 
     return (
         <Navbar
@@ -94,7 +96,7 @@ const Filters = ({
             ])}
             withoutCollapse
         >
-            <div className="row w-100">
+            <div className="row gx-3 w-100">
                 {currentFilters.map(
                     ({ component, name, groupLabel, groupClassName, ...filterProps }, index) => {
                         const FilterComponent = getComponentFromName(
@@ -103,10 +105,7 @@ const Filters = ({
                             null,
                         );
                         const filterValue = value !== null && value[name] ? value[name] : null;
-                        const defaultClassName =
-                            component === 'select' || component === 'search'
-                                ? 'col-lg-4 col-xl-3'
-                                : null;
+                        const withSize = component === 'select' || component === 'search';
                         return FilterComponent !== null ? (
                             <FormGroup
                                 key={`filter-${name}-${index + 1}`}
@@ -114,8 +113,8 @@ const Filters = ({
                                 className={classNames([
                                     'position-relative col-auto mb-3',
                                     {
+                                        [styles.select]: withSize,
                                         [groupClassName]: groupClassName !== null,
-                                        [defaultClassName]: defaultClassName !== null,
                                     },
                                 ])}
                             >
@@ -132,8 +131,9 @@ const Filters = ({
                 )}
                 {withButton ? (
                     <div className="col-auto mb-3">
-                        <Button theme="primary" onClick={onFiltersReset}>
-                            <Icon name="arrow-counterclockwise" bold />
+                        <Button theme="primary" size="md" onClick={onFiltersReset}>
+                            <FormattedMessage defaultMessage="Clear" description="Button label" />
+                            <Icon className="ms-2" name="x-circle" />
                         </Button>
                     </div>
                 ) : null}

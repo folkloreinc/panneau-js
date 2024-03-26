@@ -2,12 +2,13 @@
 import classNames from 'classnames';
 import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Actions from '@panneau/action-actions';
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useListsComponents, usePanneauResource } from '@panneau/core/contexts';
+import { useItemSelection } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Pagination from '@panneau/element-pagination';
@@ -95,7 +96,7 @@ const ResourceItemsList = ({
     );
 
     const {
-        // items = [],
+        items = [],
         loaded = false,
         loading = false,
         lastPage = 0,
@@ -122,24 +123,29 @@ const ResourceItemsList = ({
             }
             return acc;
         }, false);
+    const finalMultipleSelection = withMultipleActions || multipleSelection;
 
-    const [selectedItems, setSelectedItems] = useState(null);
-    const onSelectItems = useCallback(
-        (newItems) => {
-            setSelectedItems(newItems);
-            if (onSelectionChange !== null) {
-                onSelectionChange(newItems);
-            }
-        },
-        [setSelectedItems, onSelectionChange],
-    );
+    const {
+        onSelectItem,
+        onSelectPage,
+        onClearSelected,
+        pageSelected,
+        selectedCount,
+        selectedItems,
+        setSelectedItems,
+    } = useItemSelection({
+        items: items || [],
+        selectedItems: null,
+        onSelectionChange,
+        multipleSelection: finalMultipleSelection,
+    });
 
     const onActionsChange = useCallback(() => {
         if (reset !== null && reloadPage !== null) {
             reset();
             reloadPage(parseInt(page, 10));
         }
-    }, [reloadPage, reset, page, setSelectedItems]);
+    }, [reloadPage, reset, page]);
 
     return (
         <div className={className}>
@@ -182,6 +188,8 @@ const ResourceItemsList = ({
                         className="mt-1 mb-3"
                         theme={theme}
                         withPreviousNext
+                        selectedCount={selectedCount}
+                        onClearSelected={onClearSelected}
                     />
                 ) : null}
             </div>
@@ -191,8 +199,11 @@ const ResourceItemsList = ({
                     {...listProps}
                     selectable={finalSelectable}
                     multipleSelection={withMultipleActions || multipleSelection}
-                    onSelectionChange={onSelectItems}
                     selectedItems={selectedItems}
+                    onSelectItem={onSelectItem}
+                    onSelectPage={onSelectPage}
+                    pageSelected={pageSelected}
+                    selectedCount={selectedCount}
                     selectedItemsCount={total}
                     resource={resource}
                     baseUrl={baseUrl}
@@ -223,6 +234,8 @@ const ResourceItemsList = ({
                     className="mt-4 mb-1"
                     theme={theme}
                     withPreviousNext
+                    selectedCount={selectedCount}
+                    onClearSelected={onClearSelected}
                 />
             ) : null}
         </div>

@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
+
 /* eslint-disable react/jsx-indent */
 
 /* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
@@ -26,6 +28,9 @@ const propTypes = {
     nextLabel: PropTypes.node,
     countLabel: PropTypes.node,
     alwaysShowButtons: PropTypes.bool,
+    onSelectPage: PropTypes.func,
+    selectedCount: PropTypes.number,
+    onClearSelected: PropTypes.func,
     className: PropTypes.string,
     paginationClassName: PropTypes.string,
     itemClassName: PropTypes.string,
@@ -54,6 +59,9 @@ const defaultProps = {
         />
     ),
     alwaysShowButtons: false,
+    selectedCount: null,
+    onSelectPage: null,
+    onClearSelected: null,
     className: null,
     paginationClassName: null,
     itemClassName: null,
@@ -77,6 +85,9 @@ const Pagination = ({
     nextLabel,
     countLabel,
     alwaysShowButtons,
+    selectedCount,
+    onSelectPage,
+    onClearSelected,
     className,
     paginationClassName,
     itemClassName,
@@ -131,6 +142,43 @@ const Pagination = ({
         return null;
     }
 
+    const count = (
+        <>
+            {selectedCount > 0 ? (
+                <small className="text-small mx-2 text-nowrap text-muted fw-normal">
+                    <span className="d-inline-block mb-1">
+                        <FormattedMessage
+                            defaultMessage="{count, plural, =0 {no items} one {# item} other {# items}} selected"
+                            description="Checkbox label"
+                            values={{ count: selectedCount }}
+                        />
+                    </span>
+                </small>
+            ) : null}
+            {onSelectPage !== null ? (
+                <button
+                    type="button"
+                    className="btn badge rounded-pill text-bg-light mx-1"
+                    onClick={onSelectPage}
+                >
+                    <FormattedMessage defaultMessage="select all" description="Button label" />
+                    <Icon className="ps-1" name="x" bold />
+                </button>
+            ) : null}
+            {onClearSelected !== null && selectedCount > 0 ? (
+                <button
+                    type="button"
+                    className="btn badge rounded-pill text-bg-primary mx-2"
+                    onClick={onClearSelected}
+                >
+                    <FormattedMessage defaultMessage="clear" description="Button label" />
+                    <Icon className="ps-1" name="x" bold />
+                </button>
+            ) : null}
+            <span className="text-muted">{element}</span>
+        </>
+    );
+
     return (
         <nav
             className={classNames([
@@ -157,9 +205,8 @@ const Pagination = ({
                     ) : null}
                 </div>
             ) : null}
-
             {total !== null && total > 0 && withCount && align === 'right' ? (
-                <div className="mx-3 text-muted">{element}</div>
+                <div className="mx-3">{count}</div>
             ) : null}
             <ul
                 className={classNames([
@@ -296,7 +343,7 @@ const Pagination = ({
             </ul>
 
             {total !== null && total > 0 && withCount && align === 'left' ? (
-                <div className="mx-3 text-muted">{element}</div>
+                <div className="mx-3">{count}</div>
             ) : null}
 
             {align === 'left' ? (
