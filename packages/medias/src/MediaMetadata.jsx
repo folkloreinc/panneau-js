@@ -2,11 +2,9 @@
 import classNames from 'classnames';
 import { get } from 'lodash';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { useDisplaysComponentsManager } from '@panneau/core/contexts';
-
-import defaultMetadata from './metadata';
 
 const propTypes = {
     value: PropTypes.shape({
@@ -20,23 +18,42 @@ const propTypes = {
             items: PropTypes.arrayOf(PropTypes.shape({})), // displays
         }),
     ),
+    displays: PropTypes.arrayOf(
+        PropTypes.shape({
+            section: PropTypes.string,
+        }),
+    ),
     className: PropTypes.string,
 };
 
 const defaultProps = {
     value: null,
-    sections: defaultMetadata,
+    sections: null,
+    displays: null,
     className: null,
 };
 
-function MediaMetadata({ sections, value, className }) {
+function MediaMetadata({ sections, displays, value, className }) {
     const displayComponents = useDisplaysComponentsManager();
+
+    const finalSections = useMemo(() => {
+        const displaysWithoutSection = (displays || []).filter(
+            ({ section = null }) => section === null,
+        );
+        return (sections || [])
+            .map(({ id = null, title = null }) => ({
+                id,
+                title,
+                items: (displays || []).filter(({ section = null }) => section === id),
+            }))
+            .concat({ title: null, items: displaysWithoutSection });
+    }, [sections, displays]);
 
     return (
         <div className={classNames(['px-2', { [className]: className !== null }])}>
-            {(sections || []).map(({ title, items }, i) => (
+            {(finalSections || []).map(({ title = null, items = [] }, i) => (
                 <div className="mb-5" key={`section-${i + 1}`}>
-                    <h6 className="px-1">{title}</h6>
+                    {title !== null ? <h6 className="px-1">{title}</h6> : null}
                     <ul className="list-group list-group-flush">
                         {(items || []).map(({ label, path, component = null, ...props }, index) => {
                             const Component = displayComponents.getComponent(component || 'text');

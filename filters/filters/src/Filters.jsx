@@ -111,7 +111,7 @@ const Filters = ({
                                 key={`filter-${name}-${index + 1}`}
                                 label={groupLabel}
                                 className={classNames([
-                                    'position-relative col-auto mb-3',
+                                    'position-relative col-auto mb-2',
                                     {
                                         [styles.select]: withSize,
                                         [groupClassName]: groupClassName !== null,

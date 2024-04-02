@@ -38,7 +38,7 @@ function MediaFrame({ value, className }) {
                 <MediaPreview value={value} width="100%" />
             )}
             <div className={styles.playButton}>
-                {!showPlayer && (type === 'video' || type === 'embed') ? (
+                {!showPlayer && (type === 'video' || type === 'embed' || type === 'audio') ? (
                     <Button
                         className="rounded-circle"
                         theme="secondary"

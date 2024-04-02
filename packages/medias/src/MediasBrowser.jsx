@@ -18,14 +18,15 @@ import Filters from '@panneau/filter-filters';
 import { useMedias } from './hooks';
 
 import MediaForm from './MediaForm';
-import defaultColumns from './columns';
-import defaultFields from './fields';
-import defaultFilters from './filters';
+import defaultColumns from './defaults/columns';
+import defaultFields from './defaults/fields';
+import defaultFilters from './defaults/filters';
 
 import styles from './styles.module.scss';
 
 const propTypes = {
     items: PanneauPropTypes.medias,
+    buttons: PanneauPropTypes.buttons,
     filters: PanneauPropTypes.filters,
     columns: PanneauPropTypes.tableColumns,
     query: PropTypes.shape({}),
@@ -44,6 +45,7 @@ const propTypes = {
 
 const defaultProps = {
     items: null,
+    buttons: null,
     filters: defaultFilters,
     columns: defaultColumns,
     fields: defaultFields,
@@ -72,6 +74,7 @@ const defaultProps = {
 function MediasBrowser({
     items: initialItems,
     baseUrl,
+    buttons,
     filters,
     columns,
     // fields,
@@ -174,13 +177,16 @@ function MediasBrowser({
                 </>
             ) : (
                 <>
-                    <Filters
-                        value={query}
-                        filters={filters}
-                        onChange={onQueryChange}
-                        onReset={onQueryReset}
-                        theme={theme}
-                    />
+                    {buttons !== null ? <Buttons items={buttons} className="mb-2" /> : null}
+                    {filters !== null ? (
+                        <Filters
+                            value={query}
+                            filters={filters}
+                            onChange={onQueryChange}
+                            onReset={onQueryReset}
+                            theme={theme}
+                        />
+                    ) : null}
                     <div
                         className={classNames([
                             'd-flex',

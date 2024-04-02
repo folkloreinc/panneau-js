@@ -14,7 +14,9 @@ import useMediaDestroy from './hooks/useMediaDestroy';
 
 import MediaFrame from './MediaFrame';
 import MediaMetadata from './MediaMetadata';
-import defaultFields from './fields';
+import defaultFields from './defaults/fields';
+import defaultDisplays from './defaults/metadata-displays';
+import defaultSections from './defaults/metadata-sections';
 
 import styles from './styles.module.scss';
 
@@ -25,6 +27,12 @@ const propTypes = {
     fields: PropTypes.arrayOf(
         PropTypes.shape({
             name: PropTypes.string,
+        }),
+    ),
+    sections: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string,
+            title: PropTypes.string,
         }),
     ),
     displays: PropTypes.arrayOf(
@@ -42,7 +50,8 @@ const propTypes = {
 const defaultProps = {
     value: null,
     fields: defaultFields,
-    displays: null,
+    sections: defaultSections,
+    displays: defaultDisplays,
     onClose: null,
     onDelete: null,
     className: null,
@@ -51,6 +60,7 @@ const defaultProps = {
 function MediaForm({
     value: initialValue,
     fields: initialFields,
+    sections,
     displays,
     onChange,
     onConfirm,
@@ -93,6 +103,9 @@ function MediaForm({
         if (onClose !== null) {
             onClose();
         }
+        if (onDelete !== null) {
+            onDelete();
+        }
         setChanged(false);
     }, [destroy, setChanged]);
 
@@ -110,7 +123,7 @@ function MediaForm({
     });
 
     return (
-        <div className={classNames([className, { [className]: className != null }])}>
+        <div className={classNames(['text-body', { [className]: className !== null }])}>
             <div className="d-flex w-100 justify-content-between mb-2 pb-2 border-bottom">
                 <div>
                     <h4 className="d-inline">{name}</h4>
@@ -144,7 +157,12 @@ function MediaForm({
                             disabled={disabled}
                         />
                     </Form>
-                    <MediaMetadata className="mt-5" value={value} displays={displays} />
+                    <MediaMetadata
+                        className="mt-5"
+                        value={value}
+                        sections={sections}
+                        displays={displays}
+                    />
                 </div>
             </div>
         </div>

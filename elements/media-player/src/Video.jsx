@@ -11,7 +11,7 @@ const propTypes = {
     autoPlay: PropTypes.bool,
     loop: PropTypes.bool,
     initialMuted: PropTypes.bool,
-    video: PropTypes.shape({}),
+    media: PropTypes.shape({}),
     width: PropTypes.number,
     height: PropTypes.number,
     // eslint-disable-next-line react/forbid-prop-types
@@ -36,7 +36,7 @@ const defaultProps = {
     autoPlay: true,
     loop: true,
     initialMuted: true,
-    video: null,
+    media: null,
     width: null,
     height: null,
     apiRef: null,
@@ -60,7 +60,7 @@ const Video = ({
     autoPlay,
     loop,
     initialMuted,
-    video,
+    media,
     width,
     height,
     apiRef,
@@ -87,14 +87,14 @@ const Video = ({
         width: videoWidth,
         height: videoHeight,
         duration: videoDuration,
-    } = video || {};
+    } = media || {};
 
-    const lastVideoRef = useRef(video);
+    const lastVideoRef = useRef(media);
     if (lastVideoRef.current === null) {
-        lastVideoRef.current = video;
+        lastVideoRef.current = media;
     } else {
         // else if (video !== null && (lastVideoRef.current.type !== video.type || video.live || lastVideoRef.current.live)) {
-        lastVideoRef.current = video;
+        lastVideoRef.current = media;
     }
 
     const finalUrl = iframeUrl || url;
@@ -129,11 +129,11 @@ const Video = ({
         playing,
         buffering,
         loaded,
-        play = null,
-        pause = null,
-        // currentTime = 0,
-        // duration = 0,
-        seek = null,
+        // play = null,
+        // pause = null,
+        // // currentTime = 0,
+        // // duration = 0,
+        // seek = null,
     } = api;
 
     const loading = finalUrl !== null && (!loaded || buffering);
@@ -141,35 +141,35 @@ const Video = ({
 
     const el = useRef(null);
 
-    const onTogglePlay = useCallback(() => {
-        if (playing) {
-            if (pause !== null) {
-                pause();
-            }
-        } else if (play !== null) {
-            try {
-                play();
-            } catch (err) {
-                console.log('play blocked', err);
-            }
-        }
-    }, [playing, play, pause]);
+    // const onTogglePlay = useCallback(() => {
+    //     if (playing) {
+    //         if (pause !== null) {
+    //             pause();
+    //         }
+    //     } else if (play !== null) {
+    //         try {
+    //             play();
+    //         } catch (err) {
+    //             console.log('play blocked', err);
+    //         }
+    //     }
+    // }, [playing, play, pause]);
 
-    const onSeek = useCallback(
-        (e) => {
-            if (seek !== null) {
-                seek(e);
-            }
-            if (play !== null) {
-                try {
-                    play();
-                } catch (err) {
-                    console.log('play blocked', err);
-                }
-            }
-        },
-        [seek, play],
-    );
+    // const onSeek = useCallback(
+    //     (e) => {
+    //         if (seek !== null) {
+    //             seek(e);
+    //         }
+    //         if (play !== null) {
+    //             try {
+    //                 play();
+    //             } catch (err) {
+    //                 console.log('play blocked', err);
+    //             }
+    //         }
+    //     },
+    //     [seek, play],
+    // );
 
     // console.log(muted, playing, buffering, loaded);
 
@@ -191,7 +191,7 @@ const Video = ({
                 <div className={styles.inner}>
                     {videoProvider === 'youtube' || videoProvider === 'vimeo' ? (
                         <iframe
-                            key={video !== null ? `video-${finalUrl}` : 'video'}
+                            key={media !== null ? `video-${finalUrl}` : 'video'}
                             className={classNames([
                                 styles.iframe,
                                 { [iframeClassName]: iframeClassName !== null },
@@ -212,7 +212,7 @@ const Video = ({
                     ) : null}
                     {videoProvider === null ? (
                         <video
-                            key={video !== null ? `video-${url}` : 'video'}
+                            key={media !== null ? `video-${url}` : 'video'}
                             className={classNames([
                                 styles.video,
                                 { [videoClassName]: videoClassName !== null },

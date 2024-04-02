@@ -53,3 +53,11 @@ export const VerticalWithoutDescriptionAndRemove = () => (
         onClickRemove={() => console.log('hello')}
     />
 );
+
+export const VerticalButton = () => (
+    <MediaCard value={value} vertical onClick={() => console.log('hello')} />
+);
+
+export const VerticalButtonActive = () => (
+    <MediaCard value={value} vertical onClick={() => console.log('hello')} selected />
+);

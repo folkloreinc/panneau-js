@@ -147,7 +147,7 @@ const MediaCard = ({
                               width: !withoutDescription && !vertical ? thumbnailSize : '100%',
                               height: !withoutDescription && !vertical ? thumbnailSize : '100%',
                               background:
-                                  'repeating-conic-gradient(rgb(238, 238, 238) 0% 25%, transparent 0% 50%) 50% / 20px 20px',
+                                  'repeating-conic-gradient(var(--bs-secondary-bg) 0% 25%, transparent 0% 50%) 50% / 20px 20px',
                           }
                         : {
                               width: !withoutDescription && !vertical ? thumbnailSize : '100%',
@@ -200,6 +200,7 @@ const MediaCard = ({
                         <Button
                             className={classNames([
                                 'btn',
+                                // 'border',
                                 // 'flex-grow-1',
                                 { 'w-100': withoutDescription || vertical },
                             ])}
@@ -211,12 +212,14 @@ const MediaCard = ({
                             withoutStyle
                             style={{
                                 border: selected
-                                    ? '1px solid rgb(238, 238, 238)'
+                                    ? '1px solid var(--bs-primary-border-subtle)'
                                     : '1px solid transparent',
-                                backgroundColor: selected ? 'rgb(238, 238, 238)' : null,
-                                borderTopRightRadius: !vertical ? 0 : 'inherit',
+                                backgroundColor: selected ? 'var(--bs-focus-ring-color)' : null,
+                                borderRadius: 'var(--bs-border-radius)',
+                                borderTopRightRadius: !vertical ? 0 : 'var(--bs-border-radius)',
                                 borderBottomRightRadius: 0,
                                 borderBottomLeftRadius: !vertical ? 0 : 'inherit',
+                                overflow: 'hidden',
                             }}
                         >
                             {thumbnailElement || 'Thumbnail'}

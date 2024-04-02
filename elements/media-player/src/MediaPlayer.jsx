@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
 
+import Audio from './Audio';
 import Video from './Video';
 
 import styles from './styles.module.scss';
@@ -36,7 +37,8 @@ const MediaPlayer = ({ value: initialValue, width, height, className }) => {
             className={classNames([styles.container, { [className]: className !== null }])}
             style={{ width, height }}
         >
-            {type === 'video' ? <Video video={value} apiRef={apiRef} /> : null}
+            {type === 'video' ? <Video media={value} apiRef={apiRef} /> : null}
+            {type === 'audio' ? <Audio media={value} apiRef={apiRef} /> : null}
         </div>
     );
 };

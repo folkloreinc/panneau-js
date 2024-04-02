@@ -75,3 +75,18 @@
         width: 100%;
     }
 }
+
+.audioContainer {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background-size: contain;
+
+    .audio {
+        position: absolute;
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+    }
+}

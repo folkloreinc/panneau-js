@@ -76,3 +76,14 @@ export const Dark = () => (
         </div>
     </UppyProvider>
 );
+
+export const WithButtons = () => (
+    <UppyProvider>
+        <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
+            <Container
+                items={items}
+                buttons={[{ id: 'upload', label: 'Upload', theme: 'primary' }]}
+            />
+        </div>
+    </UppyProvider>
+);
