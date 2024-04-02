@@ -26,6 +26,9 @@
     "2vB7U4": {
         "defaultMessage": "An error occured and we could not save this item successfully."
     },
+    "3RT69u": {
+        "defaultMessage": "Informations"
+    },
     "3ebjtX": {
         "defaultMessage": "Yes"
     },
@@ -122,6 +125,9 @@
     "J6Mhku": {
         "defaultMessage": "F"
     },
+    "JuxiUN": {
+        "defaultMessage": "Format"
+    },
     "KNeQ6y": {
         "defaultMessage": "Added by"
     },
@@ -150,6 +156,9 @@
         "defaultMessage": "T"
     },
     "OzYWZz": {
+        "defaultMessage": "Created at"
+    },
+    "PN+75e": {
         "defaultMessage": "Created at"
     },
     "PQX/ph": {
@@ -242,6 +251,9 @@
     "ZxgNge": {
         "defaultMessage": "Add an item"
     },
+    "ac4218": {
+        "defaultMessage": "Back to files"
+    },
     "bPk79b": {
         "defaultMessage": "Show"
     },
@@ -263,6 +275,9 @@
     "dkRdks": {
         "defaultMessage": "{The_singular} has been deleted."
     },
+    "e0xuLo": {
+        "defaultMessage": "Link"
+    },
     "eCe9ZY": {
         "defaultMessage": "Dimensions"
     },
@@ -271,6 +286,9 @@
     },
     "fSfLk8": {
         "defaultMessage": "S"
+    },
+    "g2CRt5": {
+        "defaultMessage": "Size"
     },
     "g6qbbX": {
         "defaultMessage": "Log in"
@@ -320,6 +338,9 @@
     "rSt+KL": {
         "defaultMessage": "No"
     },
+    "rmJBin": {
+        "defaultMessage": "Dimensions"
+    },
     "rvOVCV": {
         "defaultMessage": "Confirm selection"
     },
@@ -350,11 +371,17 @@
     "wKPI1y": {
         "defaultMessage": "This page doesn’t exist"
     },
+    "wU++NJ": {
+        "defaultMessage": "Duration"
+    },
     "wa783M": {
         "defaultMessage": "Already have an account? Go to login"
     },
     "x27x2b": {
         "defaultMessage": "Loading"
+    },
+    "xKUOLG": {
+        "defaultMessage": "Technical details"
     },
     "xSERPA": {
         "defaultMessage": "Video"
@@ -365,11 +392,17 @@
     "yALN2p": {
         "defaultMessage": "There was an error"
     },
+    "yByaBh": {
+        "defaultMessage": "Added by"
+    },
     "yHAmDD": {
         "defaultMessage": "Image"
     },
     "yQRtgx": {
         "defaultMessage": "Audio"
+    },
+    "ygNvmz": {
+        "defaultMessage": "Description"
     },
     "yhU8J6": {
         "defaultMessage": "No"

@@ -6,7 +6,7 @@ import React, { useMemo } from 'react';
 import { formatDuration } from '@panneau/core/utils';
 
 const propTypes = {
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]),
     placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     format: PropTypes.string,
     suffix: PropTypes.string,

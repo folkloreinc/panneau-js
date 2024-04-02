@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
 import React from 'react';
 
-import MediaCardElement from '../MediaCard';
+import MediaCard from '../MediaCard';
 
 export default {
-    component: MediaCardElement,
+    component: MediaCard,
     title: 'Elements/MediaCard',
     parameters: {
         intl: true,
@@ -17,23 +17,37 @@ const value = {
     url: '/panneau/link',
 };
 
-export const Normal = () => <MediaCardElement value={value} />;
+export const Normal = () => <MediaCard value={value} />;
 
-export const Link = () => <MediaCardElement value={value} linkPath="url" />;
+export const Link = () => <MediaCard value={value} linkPath="url" />;
 
-export const Empty = () => <MediaCardElement value={null} />;
+export const Empty = () => <MediaCard value={null} />;
 
 export const WithRemove = () => (
-    <MediaCardElement value={value} onClickRemove={() => console.log('hello')} />
+    <MediaCard value={value} onClickRemove={() => console.log('hello')} />
 );
 
 export const WithoutDescription = () => (
-    <MediaCardElement value={value} withoutDescription linkPath="url" />
+    <MediaCard value={value} withoutDescription linkPath="url" />
 );
 
 export const WithoutDescriptionAndRemove = () => (
-    <MediaCardElement
+    <MediaCard
         value={value}
+        withoutDescription
+        linkPath="url"
+        onClickRemove={() => console.log('hello')}
+    />
+);
+
+export const Vertical = () => <MediaCard vertical value={value} />;
+
+export const VerticalMax = () => <MediaCard vertical value={value} maxWidth={160} />;
+
+export const VerticalWithoutDescriptionAndRemove = () => (
+    <MediaCard
+        value={value}
+        vertical
         withoutDescription
         linkPath="url"
         onClickRemove={() => console.log('hello')}

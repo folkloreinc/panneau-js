@@ -73,6 +73,7 @@
         "@panneau/display-date": "^3.0.140",
         "@panneau/display-image": "^3.0.140",
         "@panneau/display-label": "^3.0.140",
+        "@panneau/display-link": "^3.0.140",
         "@panneau/display-select": "^3.0.140",
         "@panneau/display-text": "^3.0.140",
         "@panneau/display-text-description": "^3.0.140",

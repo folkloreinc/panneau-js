@@ -53,6 +53,8 @@
         "@panneau/element-grid": "^3.0.140",
         "@panneau/element-icon": "^3.0.140",
         "@panneau/element-media-card": "^3.0.140",
+        "@panneau/element-media-player": "^3.0.140",
+        "@panneau/element-media-preview": "^3.0.140",
         "@panneau/element-pagination": "^3.0.140",
         "@panneau/element-table": "^3.0.140",
         "@panneau/filter-filters": "^3.0.140",

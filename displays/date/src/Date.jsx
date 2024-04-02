@@ -44,6 +44,9 @@ const DateDisplay = ({ value, placeholder, format, parseFormat, locale, localeLo
     }, [finalLocale, localeLoaders]);
 
     const date = useMemo(() => {
+        if (value === null) {
+            return null;
+        }
         let newDate = null;
         try {
             const parsed =

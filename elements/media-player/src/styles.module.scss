@@ -1,0 +1,77 @@
+.videoContainer {
+    position: relative;
+
+    &.isNative {
+        position: static;
+    }
+
+    .inner,
+    .overlay,
+    .video {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .overlay {
+        display: block;
+    }
+
+    iframe {
+        width: 100%;
+    }
+
+    .loading,
+    .playIcon,
+    .muteIcon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100px;
+        height: 100px;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .playIcon {
+        width: 10%;
+        height: 10%;
+    }
+
+    .muteIcon {
+        width: 20%;
+        height: 20%;
+    }
+
+    &.loading {
+        .loading {
+            opacity: 1;
+        }
+    }
+
+    &.paused {
+        .playIcon {
+            opacity: 1;
+        }
+    }
+
+    &.muted {
+        .muteIcon {
+            opacity: 1;
+        }
+    }
+
+    .controls {
+        position: absolute;
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+    }
+}

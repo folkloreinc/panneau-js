@@ -20,7 +20,7 @@ export default {
 
     fields: [
         { name: 'type', label: 'Type', type: 'string', component: 'text', disabled: true },
-        { name: 'name', label: 'Name', type: 'text', component: 'text', selectable: true },
+        { name: 'name', label: 'Name', type: 'text', component: 'text' },
         { name: 'url', label: 'Url', type: 'text', component: 'url' },
         { name: 'thumbnail_url', label: 'Thumbnail Url', type: 'text', component: 'url' },
     ],

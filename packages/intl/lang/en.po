@@ -65,6 +65,12 @@ msgctxt "2vB7U4"
 msgid "An error occured and we could not save this item successfully."
 msgstr "An error occured and we could not save this item successfully."
 
+# Field title
+#: 3RT69u
+msgctxt "3RT69u"
+msgid "Informations"
+msgstr "Informations"
+
 # Button label
 #: 3ebjtX
 msgctxt "3ebjtX"
@@ -257,6 +263,12 @@ msgctxt "J6Mhku"
 msgid "F"
 msgstr "F"
 
+# Field label
+#: JuxiUN
+msgctxt "JuxiUN"
+msgid "Format"
+msgstr "Format"
+
 # Field name
 #: KNeQ6y
 msgctxt "KNeQ6y"
@@ -314,6 +326,12 @@ msgstr "T"
 # Field name
 #: OzYWZz
 msgctxt "OzYWZz"
+msgid "Created at"
+msgstr "Created at"
+
+# Field label
+#: PN+75e
+msgctxt "PN+75e"
 msgid "Created at"
 msgstr "Created at"
 
@@ -502,6 +520,12 @@ msgid "Add an item"
 msgstr "Add an item"
 
 # Button label
+#: ac4218
+msgctxt "ac4218"
+msgid "Back to files"
+msgstr "Back to files"
+
+# Button label
 #: bPk79b
 msgctxt "bPk79b"
 msgid "Show"
@@ -543,6 +567,12 @@ msgctxt "dkRdks"
 msgid "{The_singular} has been deleted."
 msgstr "{The_singular} has been deleted."
 
+# Display label
+#: e0xuLo
+msgctxt "e0xuLo"
+msgid "Link"
+msgstr "Link"
+
 # Field name
 #: eCe9ZY
 msgctxt "eCe9ZY"
@@ -560,6 +590,12 @@ msgstr "Error 500"
 msgctxt "fSfLk8"
 msgid "S"
 msgstr "S"
+
+# Field label
+#: g2CRt5
+msgctxt "g2CRt5"
+msgid "Size"
+msgstr "Size"
 
 # Button label
 #: g6qbbX
@@ -657,6 +693,12 @@ msgctxt "rSt+KL"
 msgid "No"
 msgstr "No"
 
+# Field label
+#: rmJBin
+msgctxt "rmJBin"
+msgid "Dimensions"
+msgstr "Dimensions"
+
 # Button label
 #: rvOVCV
 msgctxt "rvOVCV"
@@ -717,6 +759,12 @@ msgctxt "wKPI1y"
 msgid "This page doesn’t exist"
 msgstr "This page doesn’t exist"
 
+# Field label
+#: wU++NJ
+msgctxt "wU++NJ"
+msgid "Duration"
+msgstr "Duration"
+
 # Link label
 #: wa783M
 msgctxt "wa783M"
@@ -728,6 +776,12 @@ msgstr "Already have an account? Go to login"
 msgctxt "x27x2b"
 msgid "Loading"
 msgstr "Loading"
+
+# Field title
+#: xKUOLG
+msgctxt "xKUOLG"
+msgid "Technical details"
+msgstr "Technical details"
 
 # Filter item label
 #: xSERPA
@@ -747,6 +801,12 @@ msgctxt "yALN2p"
 msgid "There was an error"
 msgstr "There was an error"
 
+# Field label
+#: yByaBh
+msgctxt "yByaBh"
+msgid "Added by"
+msgstr "Added by"
+
 # Filter item label
 #: yHAmDD
 msgctxt "yHAmDD"
@@ -758,6 +818,12 @@ msgstr "Image"
 msgctxt "yQRtgx"
 msgid "Audio"
 msgstr "Audio"
+
+# Field name
+#: ygNvmz
+msgctxt "ygNvmz"
+msgid "Description"
+msgstr "Description"
 
 # Button label
 #: yhU8J6

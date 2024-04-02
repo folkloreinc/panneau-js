@@ -145,6 +145,11 @@ module.exports = () => {
         res.end();
     });
 
+    router.post('/batch', (req, res) => {
+        res.json(['123']);
+        res.end();
+    });
+
     /**
      * Resource index
      */

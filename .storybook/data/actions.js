@@ -2,7 +2,7 @@ export default [
     {
         id: 'edit',
         component: 'edit',
-        endpoint: '/batch',
+        endpoint: '/api/batch',
         fields: [
             {
                 type: 'select',
@@ -22,7 +22,7 @@ export default [
     {
         id: 'custom-edit',
         component: 'edit',
-        endpoint: '/custom',
+        endpoint: '/api/custom',
         label: 'Custom',
         icon: 'circle',
         fields: [

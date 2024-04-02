@@ -2,6 +2,7 @@
 import React, { useCallback, useState } from 'react';
 
 import withApi from '../../../../.storybook/decorators/withApiProvider';
+import withIntl from '../../../../.storybook/decorators/withIntlProvider';
 import { useApi } from '../../../data/src/contexts/ApiContext';
 import DisplaysProvider from '../../../displays';
 import FieldsProvider from '../../../fields';
@@ -18,7 +19,7 @@ import Media3 from '../../../../.storybook/api/items/medias/3.json';
 export default {
     title: 'Medias/MediasBrowser',
     component: MediasBrowser,
-    decorators: [withApi],
+    decorators: [withApi, withIntl],
     parameters: {
         intl: true,
     },

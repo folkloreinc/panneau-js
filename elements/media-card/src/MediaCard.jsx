@@ -24,12 +24,14 @@ const propTypes = {
             url: PropTypes.string,
         }),
     ]),
+    vertical: PropTypes.bool,
     index: PropTypes.number,
     namePath: PropTypes.string,
     thumbnailPath: PropTypes.string,
     sizePath: PropTypes.string,
     linkPath: PropTypes.string,
     maxWidth: PropTypes.number,
+    thumbnailSize: PropTypes.number,
     disabled: PropTypes.bool,
     withoutDescription: PropTypes.bool,
     selected: PropTypes.bool,
@@ -38,17 +40,20 @@ const propTypes = {
     onClickRemove: PropTypes.func,
     className: PropTypes.string,
     cardClassName: PropTypes.string,
+    children: PropTypes.node,
 };
 
 const defaultProps = {
     value: null,
+    vertical: false,
     index: null,
     namePath: 'name',
     thumbnailPath: 'thumbnail_url',
     sizePath: 'metadata.size',
     linkPath: null,
     disabled: false,
-    maxWidth: 500,
+    maxWidth: null,
+    thumbnailSize: 100,
     withoutDescription: false,
     selected: false,
     external: true,
@@ -56,16 +61,19 @@ const defaultProps = {
     onClickRemove: null,
     className: null,
     cardClassName: null,
+    children: null,
 };
 
 const MediaCard = ({
     value: initialValue,
+    vertical,
     index,
     namePath,
     thumbnailPath,
     sizePath,
     linkPath,
     maxWidth,
+    thumbnailSize,
     disabled,
     withoutDescription,
     selected,
@@ -74,6 +82,7 @@ const MediaCard = ({
     onClickRemove,
     className,
     cardClassName,
+    children,
 }) => {
     const value = initialValue || {};
 
@@ -126,6 +135,8 @@ const MediaCard = ({
         };
     }, [value, namePath, thumbnailPath, sizePath, linkPath]);
 
+    const withButton = onClick !== null || link !== null;
+
     const thumbnailElement =
         hasThumbnail || mediaIcon !== null ? (
             <div
@@ -133,14 +144,14 @@ const MediaCard = ({
                 style={
                     hasThumbnail
                         ? {
-                              width: !withoutDescription ? 100 : '100%',
-                              height: !withoutDescription ? 100 : '100%',
+                              width: !withoutDescription && !vertical ? thumbnailSize : '100%',
+                              height: !withoutDescription && !vertical ? thumbnailSize : '100%',
                               background:
                                   'repeating-conic-gradient(rgb(238, 238, 238) 0% 25%, transparent 0% 50%) 50% / 20px 20px',
                           }
                         : {
-                              width: !withoutDescription ? 100 : '100%',
-                              height: !withoutDescription ? 100 : '100%',
+                              width: !withoutDescription && !vertical ? thumbnailSize : '100%',
+                              height: !withoutDescription && !vertical ? thumbnailSize : '100%',
                           }
                 }
             >
@@ -153,7 +164,7 @@ const MediaCard = ({
                         src={thumbnail}
                         alt="thumbnail"
                         style={{
-                            maxHeight: !withoutDescription ? 75 : 150,
+                            maxHeight: !withoutDescription ? thumbnailSize : thumbnailSize * 1.5,
                         }}
                     />
                 ) : null}
@@ -172,17 +183,26 @@ const MediaCard = ({
                 className={classNames([
                     'card',
                     'mb-1',
-                    { [cardClassName]: cardClassName !== null },
+                    { 'mw-100': maxWidth === null, [cardClassName]: cardClassName !== null },
                 ])}
                 key={`media-${id}`}
                 style={{
                     maxWidth,
                 }}
             >
-                <div className="d-flex align-items-center flex-grow-1">
-                    {onClick !== null || link !== null ? (
+                <div
+                    className={classNames([
+                        'd-flex align-items-center',
+                        { 'flex-column': vertical, 'flex-grow-1': !vertical },
+                    ])}
+                >
+                    {withButton ? (
                         <Button
-                            className={classNames(['btn', { 'w-100': withoutDescription }])}
+                            className={classNames([
+                                'btn',
+                                // 'flex-grow-1',
+                                { 'w-100': withoutDescription || vertical },
+                            ])}
                             type="button"
                             href={link}
                             external={external}
@@ -190,8 +210,13 @@ const MediaCard = ({
                             onClick={onClickThumbnail}
                             withoutStyle
                             style={{
-                                border: selected ? '1px solid #ccc' : '1px solid transparent',
-                                backgroundColor: selected ? '#eee' : null,
+                                border: selected
+                                    ? '1px solid rgb(238, 238, 238)'
+                                    : '1px solid transparent',
+                                backgroundColor: selected ? 'rgb(238, 238, 238)' : null,
+                                borderTopRightRadius: !vertical ? 0 : 'inherit',
+                                borderBottomRightRadius: 0,
+                                borderBottomLeftRadius: !vertical ? 0 : 'inherit',
                             }}
                         >
                             {thumbnailElement || 'Thumbnail'}
@@ -199,9 +224,10 @@ const MediaCard = ({
                     ) : (
                         thumbnailElement
                     )}
+
                     {!withoutDescription ? (
                         <div className="flex-grow-1">
-                            <div className="card-body">
+                            <div className={classNames(['card-body', { 'p-2': vertical }])}>
                                 <h5
                                     className={classNames([
                                         'card-title',
@@ -231,6 +257,7 @@ const MediaCard = ({
                                         {prettyBytes(size)}
                                     </p>
                                 ) : null}
+                                {children}
                             </div>
                         </div>
                     ) : null}

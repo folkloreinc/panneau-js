@@ -2,9 +2,11 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useQuery } from '@panneau/core/hooks';
+import Button from '@panneau/element-button';
 import Buttons from '@panneau/element-buttons';
 import Grid from '@panneau/element-grid';
 import Icon from '@panneau/element-icon';
@@ -15,7 +17,9 @@ import Filters from '@panneau/filter-filters';
 
 import { useMedias } from './hooks';
 
+import MediaForm from './MediaForm';
 import defaultColumns from './columns';
+import defaultFields from './fields';
 import defaultFilters from './filters';
 
 import styles from './styles.module.scss';
@@ -26,11 +30,12 @@ const propTypes = {
     columns: PanneauPropTypes.tableColumns,
     query: PropTypes.shape({}),
     baseUrl: PropTypes.string,
-    // fields: PanneauPropTypes.fields,
+    fields: PanneauPropTypes.fields,
     layout: PropTypes.string,
     layouts: PropTypes.arrayOf(PropTypes.shape({})),
     theme: PropTypes.string,
     tableProps: PropTypes.bool,
+    onSelectItem: PropTypes.func,
     onItemsChange: PropTypes.func,
     selectedCount: PropTypes.number,
     onClearSelected: PropTypes.func,
@@ -41,7 +46,7 @@ const defaultProps = {
     items: null,
     filters: defaultFilters,
     columns: defaultColumns,
-    // fields: null,
+    fields: defaultFields,
     query: null,
     baseUrl: null,
     layout: 'table',
@@ -57,6 +62,7 @@ const defaultProps = {
     ],
     theme: null,
     tableProps: null,
+    onSelectItem: null,
     onItemsChange: null,
     selectedCount: null,
     onClearSelected: null,
@@ -74,6 +80,7 @@ function MediasBrowser({
     layouts,
     theme,
     tableProps,
+    onSelectItem,
     onItemsChange,
     selectedCount,
     onClearSelected,
@@ -107,7 +114,9 @@ function MediasBrowser({
     } = useMedias(query, page, count, { initialItems });
 
     useEffect(() => {
-        onItemsChange(items);
+        if (onItemsChange !== null) {
+            onItemsChange(items);
+        }
     }, [items, onItemsChange]);
 
     const [layout, setLayout] = useState(initialLayout || 'grid');
@@ -118,6 +127,19 @@ function MediasBrowser({
         },
         [setLayout],
     );
+
+    const [media, setMedia] = useState(null);
+
+    const onOpenMedia = useCallback(
+        (currentMedia) => {
+            setMedia(currentMedia);
+        },
+        [setMedia],
+    );
+
+    const onCloseMedia = useCallback(() => {
+        setMedia(null);
+    }, [setMedia]);
 
     const pagination = (
         <Pagination
@@ -138,54 +160,87 @@ function MediasBrowser({
 
     return (
         <div className={classNames([styles.container, className])}>
-            <Filters
-                value={query}
-                filters={filters}
-                onChange={onQueryChange}
-                onReset={onQueryReset}
-                theme={theme}
-            />
-            <div
-                className={classNames([
-                    'd-flex',
-                    'mt-1',
-                    'mb-3',
-                    { 'justify-content-between': hasLayouts, 'justify-content-end': !hasLayouts },
-                ])}
-            >
-                {hasLayouts ? (
-                    <Buttons
-                        size="sm"
-                        theme="primary"
-                        outline
-                        items={(layouts || []).map((lay) => ({
-                            ...lay,
-                            active: layout === lay.id,
-                            onClick: () => onClickLayout(lay.id),
-                            className: 'px-3',
-                        }))}
-                    />
-                ) : null}
-                {pagination}
-            </div>
-            {layout === 'grid' ? (
-                <Grid
-                    {...tableProps}
-                    items={items || []}
-                    component={MediaCard}
-                    componentProps={{ className: 'd-flex w-100', cardClassName: 'flex-grow-1' }}
-                />
+            {media !== null ? (
+                <>
+                    <div className="mt-2 mb-4">
+                        <Button theme="primary" outline onClick={onCloseMedia} icon="arrow-left">
+                            <FormattedMessage
+                                defaultMessage="Back to files"
+                                description="Button label"
+                            />
+                        </Button>
+                    </div>
+                    <MediaForm value={media} onClose={onCloseMedia} />
+                </>
             ) : (
-                <Table
-                    {...tableProps}
-                    columns={columns}
-                    items={items}
-                    displayPlaceholder={<span className="text-secondary text-opacity-75">—</span>}
-                />
+                <>
+                    <Filters
+                        value={query}
+                        filters={filters}
+                        onChange={onQueryChange}
+                        onReset={onQueryReset}
+                        theme={theme}
+                    />
+                    <div
+                        className={classNames([
+                            'd-flex',
+                            'mt-1',
+                            'mb-3',
+                            {
+                                'justify-content-between': hasLayouts,
+                                'justify-content-end': !hasLayouts,
+                            },
+                        ])}
+                    >
+                        {hasLayouts ? (
+                            <Buttons
+                                size="sm"
+                                theme="primary"
+                                outline
+                                items={(layouts || []).map((lay) => ({
+                                    ...lay,
+                                    active: layout === lay.id,
+                                    onClick: () => onClickLayout(lay.id),
+                                    className: 'px-3',
+                                }))}
+                            />
+                        ) : null}
+                        {pagination}
+                    </div>
+                    {layout === 'grid' ? (
+                        <Grid
+                            {...tableProps}
+                            size="xsmall"
+                            items={items || []}
+                            component={MediaCard}
+                            componentProps={{
+                                className: 'd-flex w-100',
+                                cardClassName: 'flex-grow-1',
+                                vertical: true,
+                            }}
+                            onSelectItem={
+                                onSelectItem !== null ? onSelectItem : (it) => onOpenMedia(it)
+                            }
+                        />
+                    ) : null}
+                    {layout === 'table' ? (
+                        <Table
+                            {...tableProps}
+                            columns={columns}
+                            items={items}
+                            displayPlaceholder={
+                                <span className="text-secondary text-opacity-75">—</span>
+                            }
+                            onSelectItem={
+                                onSelectItem !== null ? onSelectItem : (it) => onOpenMedia(it)
+                            }
+                        />
+                    ) : null}
+                    <div className={classNames(['d-flex', 'mt-3', 'mb-1', 'justify-content-end'])}>
+                        {pagination}
+                    </div>
+                </>
             )}
-            <div className={classNames(['d-flex', 'mt-3', 'mb-1', 'justify-content-end'])}>
-                {pagination}
-            </div>
         </div>
     );
 }

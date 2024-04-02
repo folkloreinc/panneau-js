@@ -40,7 +40,7 @@ export const buttonTheme = PropTypes.oneOf([
     null,
 ]);
 
-export const buttonSize = PropTypes.oneOf(['lg', 'sm', null]);
+export const buttonSize = PropTypes.oneOf(['lg', 'md', 'sm', null]);
 
 export const buttonType = PropTypes.oneOf(['button', 'submit']);
 

@@ -96,7 +96,7 @@ const Filters = ({
             ])}
             withoutCollapse
         >
-            <div className="row gx-3 w-100">
+            <div className="row gx-2 w-100">
                 {currentFilters.map(
                     ({ component, name, groupLabel, groupClassName, ...filterProps }, index) => {
                         const FilterComponent = getComponentFromName(
@@ -131,7 +131,7 @@ const Filters = ({
                 )}
                 {withButton ? (
                     <div className="col-auto mb-3">
-                        <Button theme="primary" size="md" onClick={onFiltersReset}>
+                        <Button theme="primary" onClick={onFiltersReset}>
                             <FormattedMessage defaultMessage="Clear" description="Button label" />
                             <Icon className="ms-2" name="x-circle" />
                         </Button>

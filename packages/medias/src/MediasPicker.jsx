@@ -74,6 +74,7 @@ function MediasPicker({
                     selectedItems,
                     pageSelected,
                 }}
+                onSelectItem={onSelectItem}
                 onItemsChange={onItemsChange}
                 selectedCount={selectedCount}
                 onClearSelected={onClearSelected}

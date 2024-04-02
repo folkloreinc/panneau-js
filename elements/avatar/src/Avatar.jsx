@@ -1,18 +1,14 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-// import Button from '@panneau/element-button';
-// import Icon from '@panneau/element-icon';
 import { FormattedMessage } from 'react-intl';
-
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
 import styles from './styles.module.scss';
 
 const propTypes = {
     name: PropTypes.string,
     shortName: PropTypes.string,
-    type: PropTypes.string,
+    type: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     image: PropTypes.shape({
         url: PropTypes.string,
     }),
@@ -25,8 +21,8 @@ const propTypes = {
     size: PropTypes.string,
     inverted: PropTypes.bool,
     blended: PropTypes.bool,
-    children: PanneauPropTypes.label.isRequired,
     className: PropTypes.string,
+    children: PropTypes.node,
 };
 
 const defaultProps = {
@@ -40,6 +36,7 @@ const defaultProps = {
     inverted: false,
     blended: false,
     className: null,
+    children: null,
 };
 
 const Avatar = ({

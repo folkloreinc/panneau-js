@@ -13,7 +13,7 @@ import Select from '@panneau/element-select';
 const propTypes = {
     options: PropTypes.arrayOf(
         PropTypes.shape({
-            label: PropTypes.string,
+            label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
             value: PropTypes.any, // eslint-disable-line react/forbid-prop-types
         }),
     ),

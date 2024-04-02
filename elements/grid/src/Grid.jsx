@@ -74,7 +74,7 @@ const Grid = ({
                               <Component
                                   value={item}
                                   {...componentProps}
-                                  {...(selectable
+                                  {...(onSelectItem !== null
                                       ? {
                                             onClick: onSelectItem,
                                             selected,

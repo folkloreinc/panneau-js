@@ -1,8 +1,4 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
-
-/* eslint-disable react/jsx-indent */
-
-/* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
+/* eslint-disable jsx-a11y/control-has-associated-label, react/jsx-indent, react/no-array-index-key, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
@@ -143,9 +139,9 @@ const Pagination = ({
     }
 
     const count = (
-        <>
+        <div className="d-flex align-item-center">
             {selectedCount > 0 ? (
-                <small className="text-small mx-2 text-nowrap text-muted fw-normal">
+                <small className="text-small text-nowrap text-muted fw-normal">
                     <span className="d-inline-block mb-1">
                         <FormattedMessage
                             defaultMessage="{count, plural, =0 {no items} one {# item} other {# items}} selected"
@@ -158,7 +154,7 @@ const Pagination = ({
             {onSelectPage !== null ? (
                 <button
                     type="button"
-                    className="btn badge rounded-pill text-bg-light mx-1"
+                    className="btn badge rounded-pill text-bg-light mx-2"
                     onClick={onSelectPage}
                 >
                     <FormattedMessage defaultMessage="select all" description="Button label" />
@@ -176,7 +172,7 @@ const Pagination = ({
                 </button>
             ) : null}
             <span className="text-muted">{element}</span>
-        </>
+        </div>
     );
 
     return (

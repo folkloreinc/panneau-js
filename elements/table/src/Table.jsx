@@ -38,7 +38,7 @@ const propTypes = {
     onSelectItem: PropTypes.func,
     onSelectPage: PropTypes.func,
     selectedItems: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
-    pageSelected: false,
+    pageSelected: PropTypes.bool,
     withCustomActionsColumn: PropTypes.bool,
     actionsComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
     actionsProps: PropTypes.shape({}),
@@ -203,7 +203,9 @@ function Table({
                                         e.target.tagName.toLowerCase() !== 'a' &&
                                         e.target.tagName.toLowerCase() !== 'i'
                                     ) {
-                                        onSelectItem(it, rowIdx);
+                                        if (onSelectItem !== null) {
+                                            onSelectItem(it, rowIdx);
+                                        }
                                     }
                                 }
                             };
@@ -218,7 +220,7 @@ function Table({
                                             [rowClassName]: rowClassName !== null,
                                         },
                                     ])}
-                                    {...(selectable
+                                    {...(onSelectItem !== null
                                         ? { onClick: selectRow, role: 'button' }
                                         : null)}
                                 >

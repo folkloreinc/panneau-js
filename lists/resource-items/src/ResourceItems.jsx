@@ -144,6 +144,7 @@ const ResourceItemsList = ({
         if (reset !== null && reloadPage !== null) {
             reset();
             reloadPage(parseInt(page, 10));
+            console.log('refresh', reset, reloadPage, page);
         }
     }, [reloadPage, reset, page]);
 
