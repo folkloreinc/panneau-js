@@ -52,6 +52,7 @@
         "@panneau/element-buttons": "^3.0.142",
         "@panneau/element-grid": "^3.0.142",
         "@panneau/element-icon": "^3.0.142",
+        "@panneau/element-form": "^3.0.142",
         "@panneau/element-media-card": "^3.0.142",
         "@panneau/element-media-player": "^3.0.142",
         "@panneau/element-media-preview": "^3.0.142",
