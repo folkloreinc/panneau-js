@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-resource-items",
-    "version": "3.0.142",
+    "version": "3.0.143",
     "description": "Default resource list",
     "keywords": [
         "javascript"
@@ -53,7 +53,7 @@
         "@panneau/element-form-group": "^3.0.142",
         "@panneau/element-navbar": "^3.0.142",
         "@panneau/element-pagination": "^3.0.142",
-        "@panneau/filter-filters": "^3.0.142",
+        "@panneau/filter-filters": "^3.0.143",
         "@panneau/list-table": "^3.0.142",
         "@panneau/themes": "^3.0.142",
         "classnames": "^2.5.1",
