@@ -1,1 +1,1 @@
-export { paramCase as default } from 'change-case';
+export { kebabCase as default } from 'change-case';
