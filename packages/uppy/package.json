@@ -62,7 +62,7 @@
         "@uppy/google-drive": "^3.4.0",
         "@uppy/instagram": "^3.2.0",
         "@uppy/locales": "^3.5.2",
-        "@uppy/react": "^3.2.1",
+        "@uppy/react": "^3.3.0",
         "@uppy/transloadit": "^3.5.1",
         "@uppy/tus": "^3.5.2",
         "@uppy/webcam": "^3.3.6",

@@ -67,7 +67,7 @@
         "@uppy/drag-drop": "^3.0.3",
         "@uppy/file-input": "^3.0.4",
         "@uppy/progress-bar": "^3.0.4",
-        "@uppy/react": "^3.2.1",
+        "@uppy/react": "^3.3.0",
         "@uppy/status-bar": "^3.2.7",
         "@uppy/utils": "^5.7.2",
         "babel-loader": "^9.1.2",
