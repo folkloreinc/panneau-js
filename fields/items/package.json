@@ -68,7 +68,7 @@
         "react-intl": "^5.15.8||^6.0.0",
         "react-sortablejs": "^6.1.1",
         "sortablejs": "^1.15.0",
-        "uuid": "^8.3.2"
+        "uuid": "^9.0.1"
     },
     "publishConfig": {
         "access": "public"

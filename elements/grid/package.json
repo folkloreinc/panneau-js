@@ -51,7 +51,7 @@
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0",
-        "uuid": "^8.3.2"
+        "uuid": "^9.0.1"
     },
     "publishConfig": {
         "access": "public"
