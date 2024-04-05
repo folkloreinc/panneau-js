@@ -4,4 +4,6 @@ module.exports = (proxy) =>
     createProxyMiddleware({
         target: proxy,
         changeOrigin: true,
+        followRedirects: true,
+        secure: false,
     });

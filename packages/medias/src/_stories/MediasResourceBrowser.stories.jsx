@@ -1,7 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
+import React from 'react';
 
+import panneauDefinition from '../../../../.storybook/data/panneau-definition';
 import withApi from '../../../../.storybook/decorators/withApiProvider';
+import { PanneauProvider } from '../../../core/src/contexts';
 import DisplaysProvider from '../../../displays';
 import FieldsProvider from '../../../fields';
 import FiltersProvider from '../../../filters';
@@ -23,7 +25,9 @@ const Container = (props) => (
         <IntlProvider>
             <DisplaysProvider>
                 <FiltersProvider>
-                    <MediasResourceBrowser {...props} />
+                    <PanneauProvider definition={panneauDefinition}>
+                        <MediasResourceBrowser {...props} />
+                    </PanneauProvider>
                 </FiltersProvider>
             </DisplaysProvider>
         </IntlProvider>

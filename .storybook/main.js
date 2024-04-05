@@ -29,6 +29,8 @@ module.exports = {
                 },
                 cssLoaderOptions: {
                     modules: {
+                        auto: true,
+                        namedExport: false,
                         localIdentName: '[path][name]__[local]--[hash:base64:5]',
                     },
                 },

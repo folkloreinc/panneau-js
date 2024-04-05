@@ -3,7 +3,7 @@ import React from 'react';
 import pageResource from '../../../../.storybook/data/page-resource';
 import { ResourceProvider } from '../../../../packages/core/src/contexts';
 import DisplayProvider from '../../../../packages/displays';
-import Table from '../ResourceTable';
+import Table from '../TableList';
 
 export default {
     component: Table,
@@ -50,6 +50,7 @@ export const Selectable = () => (
         columns={['title', 'description']}
         sortable
         selectable
+        onSelectItem={() => {}}
     />
 );
 

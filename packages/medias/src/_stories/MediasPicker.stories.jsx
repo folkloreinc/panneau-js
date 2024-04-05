@@ -37,17 +37,17 @@ const Container = ({ ...props } = {}) => {
         [setValue],
     );
     return (
-        <FieldsProvider>
-            <DisplaysProvider>
-                <FiltersProvider>
-                    <IntlProvider>
+        <IntlProvider>
+            <FieldsProvider>
+                <DisplaysProvider>
+                    <FiltersProvider>
                         <MediasApiProvider api={api.medias}>
                             <MediasPicker {...props} value={value} onChange={onChange} />
                         </MediasApiProvider>
-                    </IntlProvider>
-                </FiltersProvider>
-            </DisplaysProvider>
-        </FieldsProvider>
+                    </FiltersProvider>
+                </DisplaysProvider>
+            </FieldsProvider>
+        </IntlProvider>
     );
 };
 

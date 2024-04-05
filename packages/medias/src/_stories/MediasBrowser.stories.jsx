@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 
 import withApi from '../../../../.storybook/decorators/withApiProvider';
 import withIntl from '../../../../.storybook/decorators/withIntlProvider';
@@ -31,17 +31,17 @@ const items = [Media1, Media2, Media3];
 const Container = ({ ...props } = {}) => {
     const api = useApi();
     return (
-        <FieldsProvider>
-            <DisplaysProvider>
-                <FiltersProvider>
-                    <IntlProvider>
+        <IntlProvider>
+            <FieldsProvider>
+                <DisplaysProvider>
+                    <FiltersProvider>
                         <MediasApiProvider api={api.medias}>
                             <MediasBrowser {...props} />
                         </MediasApiProvider>
-                    </IntlProvider>
-                </FiltersProvider>
-            </DisplaysProvider>
-        </FieldsProvider>
+                    </FiltersProvider>
+                </DisplaysProvider>
+            </FieldsProvider>
+        </IntlProvider>
     );
 };
 

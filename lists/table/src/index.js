@@ -1,3 +1,3 @@
-import ResourceTable from './ResourceTable';
+import TableList from './TableList';
 
-export default ResourceTable;
+export default TableList;

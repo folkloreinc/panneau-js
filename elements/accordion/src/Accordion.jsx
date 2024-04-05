@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 // import Label from '@panneau/element-label';
-import styles from './styles.module.scss';
+import * as styles from './styles.module.scss';
 
 const propTypes = {
     items: PropTypes.arrayOf(
@@ -29,6 +29,8 @@ const defaultProps = {
 const Accordion = ({ oneAtATime, title, items, className }) => {
     const accordionRefs = useRef([]);
     const accordionId = useMemo(() => uuid(), []);
+
+    console.log('styles', styles);
 
     const accordionItemsHeights = items.map((it, idx) =>
         accordionRefs.current[idx]
