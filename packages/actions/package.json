@@ -1,6 +1,6 @@
 {
     "name": "@panneau/actions",
-    "version": "3.0.146",
+    "version": "3.0.150",
     "description": "",
     "keywords": [
         "javascript"
@@ -58,9 +58,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/action-delete": "^3.0.146",
-        "@panneau/action-edit": "^3.0.146",
-        "@panneau/core": "^3.0.146",
+        "@panneau/action-delete": "^3.0.150",
+        "@panneau/action-edit": "^3.0.150",
+        "@panneau/core": "^3.0.150",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
