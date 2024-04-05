@@ -29,8 +29,6 @@ const Container = (props) => {
         }),
         [api],
     );
-
-    console.log('api', api);
     return (
         <IntlProvider>
             <MediasBrowserContainer api={mediasApi} {...props} />

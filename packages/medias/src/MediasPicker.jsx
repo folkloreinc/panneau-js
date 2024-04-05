@@ -17,6 +17,9 @@ const propTypes = {
     onClose: PropTypes.func,
     multiple: PropTypes.bool,
     withoutButtons: PropTypes.bool,
+    tableProps: PropTypes.shape({
+        theme: PropTypes.string,
+    }),
     className: PropTypes.string,
 };
 
@@ -26,6 +29,7 @@ const defaultProps = {
     onClose: null,
     multiple: false,
     withoutButtons: false,
+    tableProps: null,
     className: null,
 };
 
@@ -37,6 +41,7 @@ function MediasPicker({
     onClose,
     multiple,
     withoutButtons,
+    tableProps,
     className,
     ...props
 }) {
@@ -73,6 +78,7 @@ function MediasPicker({
                     onSelectPage,
                     selectedItems,
                     pageSelected,
+                    ...tableProps,
                 }}
                 onSelectItem={onSelectItem}
                 onItemsChange={onItemsChange}

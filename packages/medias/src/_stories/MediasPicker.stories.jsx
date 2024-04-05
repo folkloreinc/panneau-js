@@ -68,3 +68,9 @@ export const Multiple = () => (
         <Container layout="table" picker multiple />
     </UppyProvider>
 );
+
+export const Dark = () => (
+    <UppyProvider>
+        <Container layout="table" theme="dark" picker multiple />
+    </UppyProvider>
+);

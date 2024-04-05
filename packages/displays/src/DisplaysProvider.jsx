@@ -16,7 +16,7 @@ const defaultProps = {
     children: null,
 };
 
-const IndexesProvider = ({ components: injectedComponents, children, ...props }) => (
+const DisplaysProvider = ({ components: injectedComponents, children, ...props }) => (
     <ComponentsProvider
         namespace={DISPLAYS_NAMESPACE}
         components={{ ...components, ...injectedComponents }}
@@ -26,7 +26,7 @@ const IndexesProvider = ({ components: injectedComponents, children, ...props })
     </ComponentsProvider>
 );
 
-IndexesProvider.propTypes = propTypes;
-IndexesProvider.defaultProps = defaultProps;
+DisplaysProvider.propTypes = propTypes;
+DisplaysProvider.defaultProps = defaultProps;
 
-export default IndexesProvider;
+export default DisplaysProvider;

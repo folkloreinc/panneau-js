@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import withApi from '../../../../.storybook/decorators/withApiProvider';
 import withIntl from '../../../../.storybook/decorators/withIntlProvider';
@@ -77,9 +77,17 @@ export const Dark = () => (
     </UppyProvider>
 );
 
+export const Theme = () => (
+    <UppyProvider>
+        <div style={{ padding: 20, backgroundColor: '#000' }}>
+            <Container items={items} theme="dark" />
+        </div>
+    </UppyProvider>
+);
+
 export const WithButtons = () => (
     <UppyProvider>
-        <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
+        <div>
             <Container
                 items={items}
                 buttons={[{ id: 'upload', label: 'Upload', theme: 'primary' }]}

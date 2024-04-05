@@ -215,15 +215,16 @@ function MediasBrowser({
                     </div>
                     {layout === 'grid' ? (
                         <Grid
-                            {...tableProps}
                             size="xsmall"
-                            items={items || []}
+                            theme={theme}
                             component={MediaCard}
                             componentProps={{
                                 className: 'd-flex w-100',
                                 cardClassName: 'flex-grow-1',
                                 vertical: true,
                             }}
+                            {...tableProps}
+                            items={items || []}
                             onSelectItem={
                                 onSelectItem !== null ? onSelectItem : (it) => onOpenMedia(it)
                             }
@@ -231,12 +232,13 @@ function MediasBrowser({
                     ) : null}
                     {layout === 'table' ? (
                         <Table
-                            {...tableProps}
+                            theme={theme}
                             columns={columns}
-                            items={items}
                             displayPlaceholder={
                                 <span className="text-secondary text-opacity-75">—</span>
                             }
+                            {...tableProps}
+                            items={items}
                             onSelectItem={
                                 onSelectItem !== null ? onSelectItem : (it) => onOpenMedia(it)
                             }
