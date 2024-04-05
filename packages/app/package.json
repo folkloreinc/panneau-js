@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "3.0.148",
+    "version": "3.0.149",
     "description": "",
     "keywords": [
         "javascript"
@@ -72,7 +72,7 @@
         "@panneau/auth": "^3.0.146",
         "@panneau/core": "^3.0.146",
         "@panneau/data": "^3.0.146",
-        "@panneau/displays": "^3.0.146",
+        "@panneau/displays": "^3.0.149",
         "@panneau/element-accordion": "^3.0.148",
         "@panneau/element-alert": "^3.0.146",
         "@panneau/element-avatar": "^3.0.146",
