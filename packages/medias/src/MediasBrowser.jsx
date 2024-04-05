@@ -38,6 +38,7 @@ const propTypes = {
     tableProps: PropTypes.bool,
     onSelectItem: PropTypes.func,
     onItemsChange: PropTypes.func,
+    onLayoutChange: PropTypes.func,
     selectedCount: PropTypes.number,
     onClearSelected: PropTypes.func,
     className: PropTypes.string,
@@ -66,6 +67,7 @@ const defaultProps = {
     tableProps: null,
     onSelectItem: null,
     onItemsChange: null,
+    onLayoutChange: null,
     selectedCount: null,
     onClearSelected: null,
     className: null,
@@ -85,6 +87,7 @@ function MediasBrowser({
     tableProps,
     onSelectItem,
     onItemsChange,
+    onLayoutChange,
     selectedCount,
     onClearSelected,
     className,
@@ -125,8 +128,11 @@ function MediasBrowser({
     const [layout, setLayout] = useState(initialLayout || 'grid');
     const hasLayouts = useMemo(() => layouts !== null && layouts.length > 1, [layouts]);
     const onClickLayout = useCallback(
-        (lay) => {
-            setLayout(lay);
+        (newLayout) => {
+            setLayout(newLayout);
+            if (onLayoutChange !== null) {
+                onLayoutChange(newLayout);
+            }
         },
         [setLayout],
     );

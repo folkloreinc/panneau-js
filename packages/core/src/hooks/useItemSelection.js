@@ -28,7 +28,9 @@ const useItemSelection = ({
             }
             setSelectedItems(newItems);
             if (onSelectionChange !== null) {
-                onSelectionChange(newItems, item, index);
+                const [firstItem = null] = newItems || [];
+                const finalValue = multipleSelection ? newItems : firstItem;
+                onSelectionChange(finalValue, item, index);
             }
         },
         [selectedItems, onSelectionChange, multipleSelection],
@@ -66,9 +68,9 @@ const useItemSelection = ({
     const onClearSelected = useCallback(() => {
         setSelectedItems([]);
         if (onSelectionChange !== null) {
-            onSelectionChange([]);
+            onSelectionChange(multipleSelection ? [] : null);
         }
-    }, [setSelectedItems, onSelectionChange]);
+    }, [setSelectedItems, onSelectionChange, multipleSelection]);
 
     useEffect(() => {
         setSelectedItems(initialSelectedItems);
