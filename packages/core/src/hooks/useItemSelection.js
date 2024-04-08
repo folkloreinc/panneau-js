@@ -95,6 +95,8 @@ const useItemSelection = ({
         [selectedItems],
     );
 
+    console.log('selectedCount', selectedCount);
+
     return {
         onSelectItem,
         onSelectPage,
