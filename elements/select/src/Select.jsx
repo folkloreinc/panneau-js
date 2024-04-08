@@ -189,15 +189,24 @@ const SelectElement = ({
                 className={selectClassName !== null ? selectClassName : null}
                 // menuPortalTarget={document.body}
                 styles={{
-                    container: () => ({
+                    container: (base) => ({
+                        ...base,
                         ...(autoSize ? { minWidth } : null),
                         maxWidth: '100%',
+                        // ':focus': {
+                        //     ...base[':focus'],
+                        //     border: '2px solid black',
+                        // },
                     }),
                     menuPortal: (base) => ({ ...base, zIndex: 10 }),
                     placeholder: (base) => ({
                         ...base,
                         whiteSpace: 'normal',
                         ...(autoSize ? { whiteSpace: 'nowrap' } : null),
+                    }),
+                    singleValue: (base) => ({
+                        ...base,
+                        color: 'var(--bs-body-color)',
                     }),
                     multiValueRemove: (base) => ({
                         ...base,
