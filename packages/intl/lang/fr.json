@@ -26,6 +26,9 @@
     "2vB7U4": {
         "defaultMessage": "Une erreur s’est produite et nous n’avons pas pu enregistrer cet élément avec succès."
     },
+    "3RT69u": {
+        "defaultMessage": "Informations"
+    },
     "3ebjtX": {
         "defaultMessage": "Oui"
     },
@@ -70,6 +73,9 @@
     },
     "8HFiMs": {
         "defaultMessage": "L’accès à cette page est interdit"
+    },
+    "8INLfU": {
+        "defaultMessage": "Document"
     },
     "8LSb8C": {
         "defaultMessage": "Mot de passe actuel"
@@ -122,6 +128,9 @@
     "J6Mhku": {
         "defaultMessage": "V"
     },
+    "JuxiUN": {
+        "defaultMessage": "Format"
+    },
     "KNeQ6y": {
         "defaultMessage": "Ajouté par"
     },
@@ -150,6 +159,9 @@
         "defaultMessage": "J"
     },
     "OzYWZz": {
+        "defaultMessage": "Créé le"
+    },
+    "PN+75e": {
         "defaultMessage": "Créé le"
     },
     "PQX/ph": {
@@ -242,6 +254,9 @@
     "ZxgNge": {
         "defaultMessage": "Ajouter un élement"
     },
+    "ac4218": {
+        "defaultMessage": "Retour aux fichiers"
+    },
     "bPk79b": {
         "defaultMessage": "Afficher"
     },
@@ -263,6 +278,9 @@
     "dkRdks": {
         "defaultMessage": "{The_singular} a été supprimé."
     },
+    "e0xuLo": {
+        "defaultMessage": "Lien"
+    },
     "eCe9ZY": {
         "defaultMessage": "Dimensions"
     },
@@ -271,6 +289,9 @@
     },
     "fSfLk8": {
         "defaultMessage": "S"
+    },
+    "g2CRt5": {
+        "defaultMessage": "Poids"
     },
     "g6qbbX": {
         "defaultMessage": "Connexion"
@@ -320,6 +341,9 @@
     "rSt+KL": {
         "defaultMessage": "Non"
     },
+    "rmJBin": {
+        "defaultMessage": "Dimensions"
+    },
     "rvOVCV": {
         "defaultMessage": "Confirmer la sélection"
     },
@@ -350,11 +374,17 @@
     "wKPI1y": {
         "defaultMessage": "Cette page n’existe pas"
     },
+    "wU++NJ": {
+        "defaultMessage": "Durée"
+    },
     "wa783M": {
         "defaultMessage": "Vous avez un compte? Connectez-vous ici"
     },
     "x27x2b": {
         "defaultMessage": "Chargement"
+    },
+    "xKUOLG": {
+        "defaultMessage": "Détails techniques"
     },
     "xSERPA": {
         "defaultMessage": "Vidéo"
@@ -365,11 +395,17 @@
     "yALN2p": {
         "defaultMessage": "Il y a eu une erreur"
     },
+    "yByaBh": {
+        "defaultMessage": "Ajouté par"
+    },
     "yHAmDD": {
         "defaultMessage": "Image"
     },
     "yQRtgx": {
         "defaultMessage": "Audio"
+    },
+    "ygNvmz": {
+        "defaultMessage": "Description"
     },
     "yhU8J6": {
         "defaultMessage": "Non"

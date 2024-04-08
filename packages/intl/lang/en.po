@@ -161,6 +161,12 @@ msgctxt "8HFiMs"
 msgid "Access to this page is forbidden"
 msgstr "Access to this page is forbidden"
 
+# Filter item label
+#: 8INLfU
+msgctxt "8INLfU"
+msgid "Document"
+msgstr "Document"
+
 # Field label
 #: 8LSb8C
 msgctxt "8LSb8C"

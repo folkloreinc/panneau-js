@@ -102,7 +102,7 @@
         "express": "^4.17.1",
         "file-loader": "^6.2.0",
         "fs-extra": "^11.2.0",
-        "gettext-parser": "^8.0.0",
+        "gettext-parser": "^7.0.1",
         "glob": "^10.3.12",
         "http-proxy-middleware": "^3.0.0",
         "lerna": "^8.1.2",

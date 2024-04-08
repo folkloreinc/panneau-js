@@ -71,7 +71,7 @@ msgstr ""
 #: 3RT69u
 msgctxt "3RT69u"
 msgid "Informations"
-msgstr ""
+msgstr "Informations"
 
 # Button label
 #: 3ebjtX
@@ -162,6 +162,12 @@ msgstr "Vous n’êtes pas autorisé à accéder à cette page."
 msgctxt "8HFiMs"
 msgid "Access to this page is forbidden"
 msgstr "L’accès à cette page est interdit"
+
+# Filter item label
+#: 8INLfU
+msgctxt "8INLfU"
+msgid "Document"
+msgstr "Document"
 
 # Field label
 #: 8LSb8C
@@ -269,7 +275,7 @@ msgstr "V"
 #: JuxiUN
 msgctxt "JuxiUN"
 msgid "Format"
-msgstr ""
+msgstr "Format"
 
 # Field name
 #: KNeQ6y
@@ -335,7 +341,7 @@ msgstr "Créé le"
 #: PN+75e
 msgctxt "PN+75e"
 msgid "Created at"
-msgstr ""
+msgstr "Créé le"
 
 # Button label
 #: PQX/ph
@@ -523,7 +529,7 @@ msgstr "Ajouter un élement"
 #: ac4218
 msgctxt "ac4218"
 msgid "Back to files"
-msgstr ""
+msgstr "Retour aux fichiers"
 
 # Button label
 #: bPk79b
@@ -571,7 +577,7 @@ msgstr "{The_singular} a été supprimé."
 #: e0xuLo
 msgctxt "e0xuLo"
 msgid "Link"
-msgstr ""
+msgstr "Lien"
 
 # Field name
 #: eCe9ZY
@@ -595,7 +601,7 @@ msgstr "S"
 #: g2CRt5
 msgctxt "g2CRt5"
 msgid "Size"
-msgstr ""
+msgstr "Poids"
 
 # Button label
 #: g6qbbX
@@ -699,7 +705,7 @@ msgstr "Non"
 #: rmJBin
 msgctxt "rmJBin"
 msgid "Dimensions"
-msgstr ""
+msgstr "Dimensions"
 
 # Button label
 #: rvOVCV
@@ -765,7 +771,7 @@ msgstr "Cette page n’existe pas"
 #: wU++NJ
 msgctxt "wU++NJ"
 msgid "Duration"
-msgstr ""
+msgstr "Durée"
 
 # Link label
 #: wa783M
@@ -783,7 +789,7 @@ msgstr "Chargement"
 #: xKUOLG
 msgctxt "xKUOLG"
 msgid "Technical details"
-msgstr ""
+msgstr "Détails techniques"
 
 # Filter item label
 #: xSERPA
@@ -809,7 +815,7 @@ msgstr "Il y a eu une erreur"
 #: yByaBh
 msgctxt "yByaBh"
 msgid "Added by"
-msgstr ""
+msgstr "Ajouté par"
 
 # Filter item label
 #: yHAmDD
@@ -827,7 +833,7 @@ msgstr "Audio"
 #: ygNvmz
 msgctxt "ygNvmz"
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 # Button label
 #: yhU8J6
