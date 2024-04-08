@@ -34,7 +34,8 @@ export default [
         component: 'select',
         name: 'author',
         placeholder: <FormattedMessage defaultMessage="Author" description="Filter label" />,
-        options: [],
+        requestUrl: '/persons',
+        itemLabelPath: 'name',
         multiple: true,
     },
     {
@@ -42,7 +43,8 @@ export default [
         component: 'select',
         name: 'tag',
         placeholder: <FormattedMessage defaultMessage="Tag" description="Filter label" />,
-        options: [],
+        requestUrl: '/tags',
+        itemLabelPath: 'label',
         multiple: true,
     },
     {

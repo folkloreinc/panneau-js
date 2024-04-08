@@ -32,6 +32,7 @@ const Container = ({ ...props } = {}) => {
     const [value, setValue] = useState(null);
     const onChange = useCallback(
         (newValue) => {
+            console.log('newValue', newValue);
             setValue(newValue);
         },
         [setValue],
@@ -75,6 +76,12 @@ export const Dark = () => (
     </UppyProvider>
 );
 
+export const WithUpload = () => (
+    <UppyProvider>
+        <Container layout="table" picker multiple uploadButton={{ id: 1, icon: 'circle' }} />
+    </UppyProvider>
+);
+
 const fields = [];
 const columns = [];
 const filters = [];
@@ -83,7 +90,6 @@ export const Custom = () => (
     <UppyProvider>
         <Container
             layout="table"
-            theme="dark"
             picker
             multiple
             fields={fields}

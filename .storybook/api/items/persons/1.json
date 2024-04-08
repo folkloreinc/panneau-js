@@ -2,6 +2,7 @@
     "id": "1",
     "type": "person",
     "title": "Une personne #1 avec un long titre",
+    "name": "Bro 1",
     "email": "1@email.com",
     "url": "/url/chose/1"
 }

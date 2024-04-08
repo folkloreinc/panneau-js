@@ -15,6 +15,28 @@ import useUppyTransport from './useUppyTransport';
 
 export const UppyContext = React.createContext(null);
 
+export const useUppyConfig = () => {
+    const {
+        transport = null,
+        locale = null,
+        sources = null,
+        transloadit = null,
+        companion = null,
+        tus = null,
+        xhr = null,
+    } = useContext(UppyContext) || {};
+
+    return {
+        transport,
+        locale,
+        sources,
+        transloadit,
+        companion,
+        tus,
+        xhr,
+    };
+};
+
 export const useUppy = ({
     onComplete = null,
     onFail = null,

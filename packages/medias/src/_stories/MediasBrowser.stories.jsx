@@ -45,11 +45,7 @@ const Container = ({ ...props } = {}) => {
     );
 };
 
-export const Default = () => (
-    <UppyProvider>
-        <Container items={items} />
-    </UppyProvider>
-);
+export const Default = () => <Container items={items} />;
 
 export const Table = () => (
     <UppyProvider>
@@ -87,12 +83,7 @@ export const Theme = () => (
 
 export const WithButtons = () => (
     <UppyProvider>
-        <div>
-            <Container
-                items={items}
-                buttons={[{ id: 'upload', label: 'Upload', theme: 'primary' }]}
-            />
-        </div>
+        <Container items={items} buttons={[{ id: 'upload', label: 'Upload', theme: 'primary' }]} />
     </UppyProvider>
 );
 

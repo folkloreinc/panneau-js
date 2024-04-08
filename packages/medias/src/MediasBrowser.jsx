@@ -13,6 +13,7 @@ import Icon from '@panneau/element-icon';
 import MediaCard from '@panneau/element-media-card';
 import Pagination from '@panneau/element-pagination';
 import Table from '@panneau/element-table';
+import UploadField from '@panneau/field-upload';
 import Filters from '@panneau/filter-filters';
 
 import { useMedias } from './hooks';
@@ -28,10 +29,10 @@ import styles from './styles.module.scss';
 
 const propTypes = {
     items: PanneauPropTypes.medias,
+    uploadButton: PropTypes.func,
     buttons: PanneauPropTypes.buttons,
     filters: PanneauPropTypes.filters,
     columns: PanneauPropTypes.tableColumns,
-
     query: PropTypes.shape({}),
     baseUrl: PropTypes.string,
     fields: PanneauPropTypes.fields,
@@ -53,6 +54,7 @@ const propTypes = {
 
 const defaultProps = {
     items: null,
+    uploadButton: null,
     buttons: null,
     filters: defaultFilters,
     columns: defaultColumns,
@@ -87,6 +89,7 @@ const defaultProps = {
 function MediasBrowser({
     items: initialItems,
     baseUrl,
+    uploadButton,
     buttons,
     filters,
     columns,
@@ -132,6 +135,7 @@ function MediasBrowser({
         total,
     } = useMedias(query, page, count, { initialItems });
 
+    // For picker
     useEffect(() => {
         if (onItemsChange !== null) {
             onItemsChange(items);
@@ -162,6 +166,15 @@ function MediasBrowser({
     const onCloseMedia = useCallback(() => {
         setMedia(null);
     }, [setMedia]);
+
+    const onUploadMedia = useCallback(
+        (newMedia) => {
+            setMedia(null);
+            onSelectItem(newMedia || null);
+            onQueryReset();
+        },
+        [setMedia, onQueryReset, onSelectItem],
+    );
 
     const pagination = (
         <Pagination
@@ -202,6 +215,11 @@ function MediasBrowser({
                 </>
             ) : (
                 <>
+                    {uploadButton !== null ? (
+                        <div className="mt-2 mb-4">
+                            <UploadField onChange={onUploadMedia} withButton {...uploadButton} />
+                        </div>
+                    ) : null}
                     {buttons !== null ? <Buttons items={buttons} className="mb-2" /> : null}
                     {filters !== null ? (
                         <Filters
