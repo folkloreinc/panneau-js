@@ -99,6 +99,10 @@
     "defaultMessage": "Access to this page is forbidden",
     "description": "Error page description"
   },
+  "8INLfU": {
+    "defaultMessage": "Document",
+    "description": "Filter item label"
+  },
   "8LSb8C": {
     "defaultMessage": "Current password",
     "description": "Field label"
