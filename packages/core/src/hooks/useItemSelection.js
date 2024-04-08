@@ -77,12 +77,19 @@ const useItemSelection = ({
     }, [initialSelectedItems]);
 
     const pageSelected = useMemo(() => {
-        const ids = (items || []).map(({ id = null } = {}) => id).filter((id) => id !== null);
-        const currentPageItems = (selectedItems || []).filter((it) => {
-            const { id = null } = it || {};
-            return (ids || []).indexOf(id) !== -1;
-        });
-        return currentPageItems.length === (items || []).length && currentPageItems.length > 0;
+        if (items === null || selectedItems === null) {
+            return false;
+        }
+        const ids = (items || []).map(({ id = null } = {}) => id).filter((id) => id !== null) || [];
+        if (ids === null || ids.length === 0) {
+            return false;
+        }
+        const currentPageItems =
+            (selectedItems || []).filter((it) => {
+                const { id = null } = it || {};
+                return (ids || []).indexOf(id) !== -1;
+            }) || [];
+        return currentPageItems.length > 0 && currentPageItems.length === (items || []).length;
     }, [selectedItems, items]);
 
     const allSelected = useMemo(

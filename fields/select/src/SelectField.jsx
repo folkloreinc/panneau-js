@@ -1,10 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { getCSRFHeaders, getJSON } from '@folklore/fetch';
 import PropTypes from 'prop-types';
+import queryString from 'query-string';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import { getPathValue } from '@panneau/core/utils';
-import { useApi } from '@panneau/data';
 import Select from '@panneau/element-select';
 
 const propTypes = {
@@ -64,8 +65,6 @@ const SelectField = ({
     onInputChange: customOnInputChange,
     ...props
 }) => {
-    const api = useApi();
-
     const getOptionLabel = useMemo(
         () =>
             customGetOptionLabel ||
@@ -84,32 +83,41 @@ const SelectField = ({
     const loadOptions = useMemo(
         () =>
             requestUrl !== null
-                ? (requestValue) =>
-                      api
-                          .requestGet(
-                              requestUrl,
-                              {
-                                  paginated,
-                                  ...requestQuery,
-                                  ...(requestValue !== null && requestSearchParamName !== null
-                                      ? { [requestSearchParamName]: requestValue }
-                                      : null),
-                              },
-                              requestOptions,
-                          )
-                          .then((newItems) => {
-                              const { data = null } = paginated
-                                  ? newItems || {}
-                                  : { data: newItems || [] };
-                              const finalNewItems =
-                                  maxOptionsCount !== null ? data.slice(0, maxOptionsCount) : data;
-                              return prepareRequestOptions !== null
-                                  ? prepareRequestOptions(finalNewItems)
-                                  : finalNewItems;
-                          })
+                ? (requestValue) => {
+                      const queryData = {
+                          paginated,
+                          ...(paginated ? { page: 1 } : null),
+                          ...requestQuery,
+                          ...(requestValue !== null && requestSearchParamName !== null
+                              ? { [requestSearchParamName]: requestValue }
+                              : null),
+                      };
+                      const finalQuery =
+                          queryData !== null
+                              ? queryString.stringify(queryData, { arrayFormat: 'bracket' })
+                              : null;
+                      return getJSON(
+                          `${requestUrl}${
+                              finalQuery !== null && finalQuery.length > 0 ? `?${finalQuery}` : ''
+                          }`,
+                          {
+                              credentials: 'include',
+                              headers: getCSRFHeaders(),
+                              ...requestOptions,
+                          },
+                      ).then((newItems) => {
+                          const { data = null } = paginated
+                              ? newItems || {}
+                              : { data: newItems || [] };
+                          const finalNewItems =
+                              maxOptionsCount !== null ? data.slice(0, maxOptionsCount) : data;
+                          return prepareRequestOptions !== null
+                              ? prepareRequestOptions(finalNewItems)
+                              : finalNewItems;
+                      });
+                  }
                 : null,
         [
-            api,
             maxOptionsCount,
             inputTextValue,
             requestUrl,

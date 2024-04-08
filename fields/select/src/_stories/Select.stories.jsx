@@ -38,10 +38,23 @@ export const MultiDisabled = () => (
 
 export const WithRequest = () => (
     <Container
-        requestUrl="/events/"
+        requestUrl="/api/events"
         optionLabelPath="title"
         optionValuePath="id"
         multiple
         placeholder="With Request"
+        paginated={false}
+    />
+);
+
+export const WithRequestPaginated = () => (
+    <Container
+        requestUrl="/api/persons"
+        optionLabelPath="name"
+        optionValuePath="id"
+        multiple
+        placeholder="With Request"
+        paginated
+        requestQuery={{ count: 2 }}
     />
 );
