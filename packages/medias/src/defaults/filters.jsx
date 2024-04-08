@@ -20,6 +20,12 @@ export default [
                 label: <FormattedMessage defaultMessage="Audio" description="Filter item label" />,
                 value: 'audio',
             },
+            {
+                label: (
+                    <FormattedMessage defaultMessage="Document" description="Filter item label" />
+                ),
+                value: 'document',
+            },
         ],
         multiple: true,
     },

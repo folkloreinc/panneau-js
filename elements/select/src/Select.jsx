@@ -199,8 +199,42 @@ const SelectElement = ({
                         whiteSpace: 'normal',
                         ...(autoSize ? { whiteSpace: 'nowrap' } : null),
                     }),
-                    // TODO: fix dark or themed mode
-                    // option: (base) => ({ ...base, color: '#343434' }),
+                    multiValueRemove: (base) => ({
+                        ...base,
+                        color: 'var(--bs-dark)',
+                    }),
+                    control: (base, { isDisabled }) => ({
+                        ...base,
+                        color: 'var(--bs-body-color)',
+                        backgroundColor: 'var(--bs-body-bg)',
+                        cursor: isDisabled ? 'not-allowed' : 'pointer',
+                    }),
+                    indicators: (base) => ({
+                        ...base,
+                        color: 'var(--bs-body-bg)',
+                        backgroundColor: 'var(--bs-body-color)',
+                    }),
+                    menu: (base) => ({
+                        ...base,
+                        backgroundColor: 'var(--bs-body-color)',
+                    }),
+                    menuList: (base) => ({
+                        ...base,
+                        backgroundColor: 'var(--bs-body-bg)',
+                        border: '1px solid var(--bs-tertiary-color)',
+                        borderRadius: '4px',
+                    }),
+                    option: (base, { isDisabled }) => ({
+                        ...base,
+                        color: 'var(--bs-body-color)',
+                        backgroundColor: 'var(--bs-body-bg)',
+                        cursor: isDisabled ? 'not-allowed' : 'pointer',
+                        ':active': {
+                            ...base[':active'],
+                            color: 'var(--bs-primary)',
+                            cursor: 'pointer',
+                        },
+                    }),
                 }}
                 value={finalValue || null}
                 isDisabled={disabled}

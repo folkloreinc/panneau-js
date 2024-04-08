@@ -80,7 +80,7 @@ const useItemSelection = ({
         const ids = (items || []).map(({ id = null } = {}) => id).filter((id) => id !== null);
         const currentPageItems = (selectedItems || []).filter((it) => {
             const { id = null } = it || {};
-            return ids.indexOf(id) !== -1;
+            return (ids || []).indexOf(id) !== -1;
         });
         return currentPageItems.length === (items || []).length && currentPageItems.length > 0;
     }, [selectedItems, items]);

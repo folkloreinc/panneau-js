@@ -74,3 +74,21 @@ export const Dark = () => (
         <Container layout="table" theme="dark" picker multiple />
     </UppyProvider>
 );
+
+const fields = [];
+const columns = [];
+const filters = [];
+
+export const Custom = () => (
+    <UppyProvider>
+        <Container
+            layout="table"
+            theme="dark"
+            picker
+            multiple
+            fields={fields}
+            columns={columns}
+            filters={filters}
+        />
+    </UppyProvider>
+);

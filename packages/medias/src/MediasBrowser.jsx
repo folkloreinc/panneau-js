@@ -21,6 +21,8 @@ import MediaForm from './MediaForm';
 import defaultColumns from './defaults/columns';
 import defaultFields from './defaults/fields';
 import defaultFilters from './defaults/filters';
+import defaultDisplays from './defaults/metadata-displays';
+import defaultSections from './defaults/metadata-sections';
 
 import styles from './styles.module.scss';
 
@@ -29,9 +31,14 @@ const propTypes = {
     buttons: PanneauPropTypes.buttons,
     filters: PanneauPropTypes.filters,
     columns: PanneauPropTypes.tableColumns,
+
     query: PropTypes.shape({}),
     baseUrl: PropTypes.string,
     fields: PanneauPropTypes.fields,
+    metadatas: PropTypes.shape({
+        sections: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
+        displays: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
+    }),
     layout: PropTypes.string,
     layouts: PropTypes.arrayOf(PropTypes.shape({})),
     theme: PropTypes.string,
@@ -50,6 +57,10 @@ const defaultProps = {
     filters: defaultFilters,
     columns: defaultColumns,
     fields: defaultFields,
+    metadatas: {
+        sections: defaultSections,
+        displays: defaultDisplays,
+    },
     query: null,
     baseUrl: null,
     layout: 'table',
@@ -79,7 +90,8 @@ function MediasBrowser({
     buttons,
     filters,
     columns,
-    // fields,
+    fields,
+    metadatas,
     query: initialQuery,
     layout: initialLayout,
     layouts,
@@ -92,6 +104,7 @@ function MediasBrowser({
     onClearSelected,
     className,
 }) {
+    const { sections, displays } = metadatas || {};
     const baseQuery = useMemo(() => initialQuery, [initialQuery]);
     const { query: fullQuery, onPageChange, onQueryChange, onQueryReset } = useQuery(baseQuery);
 
@@ -179,7 +192,13 @@ function MediasBrowser({
                             />
                         </Button>
                     </div>
-                    <MediaForm value={media} onClose={onCloseMedia} />
+                    <MediaForm
+                        value={media}
+                        fields={fields}
+                        sections={sections}
+                        displays={displays}
+                        onClose={onCloseMedia}
+                    />
                 </>
             ) : (
                 <>

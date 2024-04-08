@@ -95,3 +95,23 @@ export const WithButtons = () => (
         </div>
     </UppyProvider>
 );
+
+const fields = [];
+const columns = [];
+const filters = [];
+const metadatas = { sections: [], displays: [] };
+
+export const Custom = () => (
+    <UppyProvider>
+        <Container
+            layout="table"
+            theme="dark"
+            picker
+            multiple
+            fields={fields}
+            columns={columns}
+            filters={filters}
+            metadatas={metadatas}
+        />
+    </UppyProvider>
+);

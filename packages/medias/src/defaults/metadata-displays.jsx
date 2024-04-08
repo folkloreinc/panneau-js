@@ -17,7 +17,6 @@ export default [
         format: 'yyyy-MM-dd hh:ss',
         section: 'info',
     },
-
     {
         id: 'format',
         label: <FormattedMessage defaultMessage="Format" description="Field label" />,
