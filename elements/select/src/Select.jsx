@@ -31,9 +31,10 @@ const propTypes = {
     loadOptions: PropTypes.func,
     getOptionValue: PropTypes.func,
     valueIsOption: PropTypes.bool,
+    styles: PropTypes.shape({}),
+    onChange: PropTypes.func,
     className: PropTypes.string,
     selectClassName: PropTypes.string,
-    onChange: PropTypes.func,
 };
 
 const defaultProps = {
@@ -52,9 +53,10 @@ const defaultProps = {
     getOptionValue: null,
     loadOptions: null,
     valueIsOption: false,
+    styles: null,
+    onChange: null,
     className: null,
     selectClassName: null,
-    onChange: null,
 };
 
 const SelectElement = ({
@@ -72,9 +74,10 @@ const SelectElement = ({
     autoSize,
     getOptionValue,
     loadOptions,
+    styles,
+    onChange,
     className,
     selectClassName,
-    onChange,
     valueIsOption,
     ...props
 }) => {
@@ -244,6 +247,7 @@ const SelectElement = ({
                             cursor: 'pointer',
                         },
                     }),
+                    ...(styles !== null ? styles : null),
                 }}
                 value={finalValue || null}
                 isDisabled={disabled}

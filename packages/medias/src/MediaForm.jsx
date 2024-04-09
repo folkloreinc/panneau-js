@@ -8,6 +8,7 @@ import { useFieldComponent } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Form from '@panneau/element-form';
+import FormStatus from '@panneau/element-form-status';
 
 import { useMediaUpdate } from './hooks';
 import useMediaDestroy from './hooks/useMediaDestroy';
@@ -41,7 +42,7 @@ const propTypes = {
         }),
     ),
     onChange: PropTypes.func.isRequired,
-    onConfirm: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired,
     onDelete: PropTypes.func,
     onClose: PropTypes.func,
     className: PropTypes.string,
@@ -63,7 +64,7 @@ function MediaForm({
     sections,
     displays,
     onChange,
-    onConfirm,
+    onSave,
     onDelete,
     onClose,
     className,
@@ -90,8 +91,8 @@ function MediaForm({
 
     const onMediaSaved = useCallback(
         (newValue) => {
-            if (onConfirm !== null) {
-                onConfirm(newValue);
+            if (onSave !== null) {
+                onSave(newValue);
             }
             setChanged(false);
         },
@@ -100,41 +101,55 @@ function MediaForm({
 
     const onDeleteMedia = useCallback(() => {
         // Destroy
-        if (onClose !== null) {
-            onClose();
-        }
-        if (onDelete !== null) {
-            onDelete();
-        }
-        setChanged(false);
-    }, [destroy, setChanged]);
+        const { id = null } = initialValue || {};
+        destroy(id, initialValue).then(() => {
+            if (onClose !== null) {
+                onClose();
+            }
+            if (onDelete !== null) {
+                onDelete();
+            }
+            setChanged(false);
+        });
+    }, [initialValue, destroy, destroying, setChanged]);
 
     const postForm = useCallback(
         (action, data) => (initialValue !== null ? update(initialValue.id, data) : new Promise()),
         [initialValue, update],
     );
 
-    const { value, setValue, fields, onSubmit, status, generalError, errors } = useForm({
+    const { value, setValue, fields, onSubmit, status, generalError } = useForm({
         fields: initialFields,
         postForm,
         onComplete: onMediaSaved,
         value: initialValue,
-        setValue: onChange,
+        setValue: onChangeMedia,
+        disabled: updating,
     });
 
     return (
         <div className={classNames(['text-body', { [className]: className !== null }])}>
-            <div className="d-flex w-100 justify-content-between mb-2 pb-2 border-bottom">
-                <div>
-                    <h4 className="d-inline">{name}</h4>
+            <div className="d-flex w-100 align-items-start justify-content-between mb-3 pb-2 border-bottom">
+                <div className="d-flex align-items-end mb-0">
+                    <h4 className="d-inline text-break mb-1">{name}</h4>
                     <span className="mx-2">{type}</span>
                 </div>
                 <div>
-                    <Button className="me-2" theme="danger" onClick={onDeleteMedia}>
+                    <Button
+                        className="me-2 mb-1"
+                        theme="danger"
+                        onClick={onDeleteMedia}
+                        disabled={destroying}
+                    >
                         <FormattedMessage defaultMessage="Delete" description="Button label" />
                     </Button>
-                    {onConfirm !== null ? (
-                        <Button theme="primary" onClick={onConfirm}>
+                    {onSave !== null ? (
+                        <Button
+                            className="mb-1"
+                            theme="primary"
+                            onClick={onSubmit}
+                            disabled={!changed || updating || destroying}
+                        >
                             <FormattedMessage defaultMessage="Save" description="Button label" />
                         </Button>
                     ) : null}
@@ -142,7 +157,7 @@ function MediaForm({
             </div>
             <div className="row">
                 <div className="col-md-6">
-                    <div className="position-relative w-100" style={{ height: 400 }}>
+                    <div className="position-relative w-100">
                         <div className={styles.mediaFrame}>
                             <MediaFrame value={value} />
                         </div>
@@ -163,6 +178,11 @@ function MediaForm({
                         sections={sections}
                         displays={displays}
                     />
+                    {generalError !== null && status !== null ? (
+                        <div className="mt-5">
+                            <FormStatus status={status} />
+                        </div>
+                    ) : null}
                 </div>
             </div>
         </div>

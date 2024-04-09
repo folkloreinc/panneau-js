@@ -27,9 +27,9 @@ export default {
 const items = [Media1, Media2, Media3];
 
 // eslint-disable-next-line react/prop-types
-const Container = ({ ...props } = {}) => {
+const Container = ({ value: initialValue = null, ...props } = {}) => {
     const api = useApi();
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState(initialValue);
     const onChange = useCallback(
         (newValue) => {
             console.log('newValue', newValue);
@@ -72,13 +72,50 @@ export const Multiple = () => (
 
 export const Dark = () => (
     <UppyProvider>
-        <Container layout="table" theme="dark" picker multiple />
+        <Container layout="table" theme="dark" picker />
     </UppyProvider>
 );
 
-export const WithUpload = () => (
+export const WithUploadMultiple = () => (
     <UppyProvider>
         <Container layout="table" picker multiple uploadButton={{ id: 1, icon: 'circle' }} />
+    </UppyProvider>
+);
+
+export const WithUploadTypes = () => (
+    <UppyProvider>
+        <Container
+            layout="table"
+            picker
+            multiple
+            uploadButton={{ id: 1, icon: 'circle' }}
+            types={['image', 'video']}
+        />
+    </UppyProvider>
+);
+
+export const WithValue = () => (
+    <UppyProvider>
+        <Container
+            layout="table"
+            picker
+            uploadButton={{ id: 1, icon: 'circle' }}
+            types={['image', 'video']}
+            value={Media2}
+        />
+    </UppyProvider>
+);
+
+export const WithValueMultiple = () => (
+    <UppyProvider>
+        <Container
+            layout="table"
+            picker
+            multiple
+            uploadButton={{ id: 1, icon: 'circle' }}
+            types={['image', 'video']}
+            value={[Media2, Media3]}
+        />
     </UppyProvider>
 );
 

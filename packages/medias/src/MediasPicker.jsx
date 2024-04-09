@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useItemSelection } from '@panneau/core/hooks';
@@ -10,8 +10,10 @@ import MediasBrowser from './MediasBrowser';
 
 const propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
+    items: PropTypes.arrayOf(PropTypes.shape({})),
     value: PropTypes.arrayOf(PropTypes.shape({})),
-    selectedItems: PropTypes.arrayOf(PropTypes.shape({})),
+    types: PropTypes.arrayOf(PropTypes.string),
+    uploadButton: PropTypes.shape({}),
     onChange: PropTypes.func.isRequired,
     onConfirm: PropTypes.func.isRequired,
     onClose: PropTypes.func,
@@ -24,8 +26,10 @@ const propTypes = {
 };
 
 const defaultProps = {
+    items: null,
     value: null,
-    selectedItems: null,
+    types: null,
+    uploadButton: null,
     onClose: null,
     multiple: false,
     withoutButtons: false,
@@ -34,8 +38,10 @@ const defaultProps = {
 };
 
 function MediasPicker({
-    value,
-    selectedItems: initialSelectedItems,
+    items: initialItems,
+    value: initialSelectedItems,
+    types,
+    uploadButton,
     onChange,
     onConfirm,
     onClose,
@@ -45,17 +51,18 @@ function MediasPicker({
     className,
     ...props
 }) {
-    const [items, setItems] = useState(value);
+    const [items, setItems] = useState(initialItems);
     const onItemsChange = useCallback(
         (pageItems) => {
             setItems(pageItems);
         },
         [setItems],
     );
-    const disabled = value === null || value.length < 1;
+    const disabled = initialItems === null || initialItems.length < 1;
 
     const {
         onSelectItem,
+        onSelectItems,
         onSelectPage,
         onClearSelected,
         pageSelected,
@@ -68,11 +75,22 @@ function MediasPicker({
         multipleSelection: multiple,
     });
 
+    const finalUploadButton = useMemo(
+        () => ({
+            ...(uploadButton || null),
+            ...(types !== null ? { types } : null),
+            allowMultipleUploads: multiple,
+            maxNumberOfFiles: multiple ? 10 : 0,
+            value: selectedItems,
+        }),
+        [uploadButton, selectedItems, multiple],
+    );
+
     return (
         <div className={className}>
             <MediasBrowser
                 tableProps={{
-                    selectable: true,
+                    selectable: multiple,
                     multipleSelection: multiple,
                     onSelectItem,
                     onSelectPage,
@@ -80,10 +98,14 @@ function MediasPicker({
                     pageSelected,
                     ...tableProps,
                 }}
+                items={items}
                 onSelectItem={onSelectItem}
+                onSelectItems={onSelectItems}
                 onItemsChange={onItemsChange}
                 selectedCount={selectedCount}
                 onClearSelected={onClearSelected}
+                uploadButton={finalUploadButton}
+                types={types}
                 {...props}
             />
             {multiple && !withoutButtons ? (

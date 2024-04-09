@@ -1,5 +1,6 @@
 .videoContainer {
     position: relative;
+    aspect-ratio: 1 / 1;
 
     &.isNative {
         position: static;

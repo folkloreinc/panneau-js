@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label, react/jsx-props-no-spreading  */
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
@@ -10,6 +11,7 @@ import { FormattedMessage } from 'react-intl';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
+import ItemActions from '@panneau/element-item-actions';
 // import Icon from '@panneau/element-icon';
 import Loading from '@panneau/element-loading';
 
@@ -37,7 +39,7 @@ const propTypes = {
     multipleSelection: PropTypes.bool,
     onSelectItem: PropTypes.func,
     onSelectPage: PropTypes.func,
-    selectedItems: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
+    selectedItems: PropTypes.oneOf([PanneauPropTypes.items, PanneauPropTypes.item]),
     pageSelected: PropTypes.bool,
     withCustomActionsColumn: PropTypes.bool,
     actionsComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
@@ -105,6 +107,12 @@ function Table({
     const Actions = actionsComponent || null;
     const withActionsColumn = withCustomActionsColumn && Actions !== null;
     const withIdColumn = !withoutId && !hasIdColumn && !selectable;
+    const partialSelectedItems =
+        selectedItems !== null && !isArray(selectedItems) ? [selectedItems] : null;
+    const finalSelectedItems =
+        selectedItems !== null && isArray(selectedItems)
+            ? selectedItems.filter((it) => it !== null)
+            : partialSelectedItems;
 
     return (
         <div>
@@ -191,8 +199,8 @@ function Table({
                             } = it || {};
 
                             const checked = selectable
-                                ? ((selectedItems || []).find(
-                                      ({ id: itemId = null }) => id === itemId,
+                                ? ((finalSelectedItems || []).find(
+                                      ({ id: itemId = null } = {}) => id === itemId,
                                   ) || null) !== null
                                 : false;
 

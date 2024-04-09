@@ -58,6 +58,14 @@ export default [
         component: 'avatar',
         path: 'metadata.author',
         namePath: 'name',
+        withoutName: true,
+    },
+    {
+        id: 'actions',
+        label: <FormattedMessage defaultMessage="Actions" description="Field name" />,
+        // component: 'button',
+        // label: 'Edit',
+        // url: '/edit/1',
     },
     // {
     //     id: 'status',

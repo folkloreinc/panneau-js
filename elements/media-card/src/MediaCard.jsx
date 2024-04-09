@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import {
+    faFile,
     faFileAudio,
     faFileImage,
     faFilePdf,
@@ -145,28 +146,38 @@ const MediaCard = ({
                     hasThumbnail
                         ? {
                               width: !withoutDescription && !vertical ? thumbnailSize : '100%',
-                              height: !withoutDescription && !vertical ? thumbnailSize : '100%',
+                              height: !withoutDescription ? thumbnailSize : '100%',
                               background:
                                   'repeating-conic-gradient(var(--bs-secondary-bg) 0% 25%, transparent 0% 50%) 50% / 20px 20px',
                           }
                         : {
                               width: !withoutDescription && !vertical ? thumbnailSize : '100%',
-                              height: !withoutDescription && !vertical ? thumbnailSize : '100%',
+                              height: !withoutDescription ? thumbnailSize : '100%',
                           }
                 }
             >
                 {!hasThumbnail && mediaIcon !== null ? (
                     <FontAwesomeIcon icon={mediaIcon} className="m-auto fs-3" />
                 ) : null}
-                {hasThumbnail ? (
+                {hasThumbnail && thumbnail !== null ? (
                     <img
-                        className="img-fluid"
+                        className="img-fluid mh-100 mw-100"
                         src={thumbnail}
-                        alt="thumbnail"
+                        alt={name}
                         style={{
                             maxHeight: !withoutDescription ? thumbnailSize : thumbnailSize * 1.5,
                         }}
                     />
+                ) : null}
+                {hasThumbnail && thumbnail === null ? (
+                    <div
+                        className="d-flex align-items-center justify-content-center mh-100 mw-100"
+                        style={{
+                            minHeight: !withoutDescription ? thumbnailSize : thumbnailSize * 1.5,
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faFile} className="m-auto fs-3" />
+                    </div>
                 ) : null}
             </div>
         ) : null;
@@ -176,6 +187,10 @@ const MediaCard = ({
             onClick(value);
         }
     }, [value, onClick]);
+
+    if (vertical) {
+        console.log('vertical', vertical, value);
+    }
 
     return (
         <div className={classNames([{ [className]: className !== null }])}>
@@ -193,7 +208,11 @@ const MediaCard = ({
                 <div
                     className={classNames([
                         'd-flex align-items-center',
-                        { 'flex-column': vertical, 'flex-grow-1': !vertical },
+                        {
+                            'flex-column': vertical,
+                            'text-center': vertical,
+                            'flex-grow-1': !vertical,
+                        },
                     ])}
                 >
                     {withButton ? (

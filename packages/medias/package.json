@@ -51,6 +51,7 @@
         "@panneau/element-button": "^3.0.154",
         "@panneau/element-buttons": "^3.0.154",
         "@panneau/element-form": "^3.0.154",
+        "@panneau/element-form-status": "^3.0.154",
         "@panneau/element-grid": "^3.0.154",
         "@panneau/element-icon": "^3.0.154",
         "@panneau/element-media-card": "^3.0.154",

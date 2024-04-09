@@ -2,17 +2,20 @@ import isArray from 'lodash/isArray';
 import uniqBy from 'lodash/uniqBy';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+function getItemsArray(items) {
+    return !isArray(items) && items !== null ? [items] : items;
+}
+
 const useItemSelection = ({
     items = null,
     selectedItems: initialSelectedItems = null,
     multipleSelection = false,
     onSelectionChange = null,
 }) => {
-    const initialItems =
-        !isArray(initialSelectedItems) && initialSelectedItems !== null
-            ? [initialSelectedItems]
-            : initialSelectedItems;
+    const initialItems = getItemsArray(initialSelectedItems);
     const [selectedItems, setSelectedItems] = useState(initialItems);
+
+    console.log('selectedItems', selectedItems);
 
     const onSelectItem = useCallback(
         (item, index) => {
@@ -31,6 +34,19 @@ const useItemSelection = ({
                 const [firstItem = null] = newItems || [];
                 const finalValue = multipleSelection ? newItems : firstItem;
                 onSelectionChange(finalValue, item, index);
+            }
+        },
+        [selectedItems, onSelectionChange, multipleSelection],
+    );
+
+    const onSelectItems = useCallback(
+        (newItems, index) => {
+            console.log('yosh', newItems);
+            setSelectedItems(newItems);
+            if (onSelectionChange !== null) {
+                const [firstItem = null] = newItems || [];
+                const finalValue = multipleSelection ? newItems : firstItem;
+                onSelectionChange(finalValue, null, index);
             }
         },
         [selectedItems, onSelectionChange, multipleSelection],
@@ -73,7 +89,7 @@ const useItemSelection = ({
     }, [setSelectedItems, onSelectionChange, multipleSelection]);
 
     useEffect(() => {
-        setSelectedItems(initialSelectedItems);
+        setSelectedItems(getItemsArray(initialSelectedItems));
     }, [initialSelectedItems]);
 
     const pageSelected = useMemo(() => {
@@ -104,6 +120,7 @@ const useItemSelection = ({
 
     return {
         onSelectItem,
+        onSelectItems,
         onSelectPage,
         onClearSelected,
         pageSelected,

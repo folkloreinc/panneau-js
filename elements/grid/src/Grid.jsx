@@ -1,8 +1,4 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
-
-/* eslint-disable react/jsx-indent */
-
-/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable jsx-a11y/control-has-associated-label, react/jsx-props-no-spreading, react/jsx-indent */
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';

@@ -29,7 +29,10 @@ import styles from './styles.module.scss';
 
 const propTypes = {
     items: PanneauPropTypes.medias,
-    uploadButton: PropTypes.func,
+    types: PropTypes.arrayOf(PropTypes.string),
+    uploadButton: PropTypes.shape({
+        value: PropTypes.oneOfType([PanneauPropTypes.medias, PanneauPropTypes.media]),
+    }),
     buttons: PanneauPropTypes.buttons,
     filters: PanneauPropTypes.filters,
     columns: PanneauPropTypes.tableColumns,
@@ -45,6 +48,7 @@ const propTypes = {
     theme: PropTypes.string,
     tableProps: PropTypes.bool,
     onSelectItem: PropTypes.func,
+    onSelectItems: PropTypes.func,
     onItemsChange: PropTypes.func,
     onLayoutChange: PropTypes.func,
     selectedCount: PropTypes.number,
@@ -54,6 +58,7 @@ const propTypes = {
 
 const defaultProps = {
     items: null,
+    types: null,
     uploadButton: null,
     buttons: null,
     filters: defaultFilters,
@@ -79,6 +84,7 @@ const defaultProps = {
     theme: null,
     tableProps: null,
     onSelectItem: null,
+    onSelectItems: null,
     onItemsChange: null,
     onLayoutChange: null,
     selectedCount: null,
@@ -88,6 +94,7 @@ const defaultProps = {
 
 function MediasBrowser({
     items: initialItems,
+    types,
     baseUrl,
     uploadButton,
     buttons,
@@ -101,6 +108,7 @@ function MediasBrowser({
     theme,
     tableProps,
     onSelectItem,
+    onSelectItems,
     onItemsChange,
     onLayoutChange,
     selectedCount,
@@ -108,7 +116,8 @@ function MediasBrowser({
     className,
 }) {
     const { sections, displays } = metadatas || {};
-    const baseQuery = useMemo(() => initialQuery, [initialQuery]);
+    const [baseItems] = useState(initialItems || null);
+    const baseQuery = useMemo(() => ({ ...initialQuery, types }), [initialQuery, types]);
     const { query: fullQuery, onPageChange, onQueryChange, onQueryReset } = useQuery(baseQuery);
 
     const {
@@ -128,12 +137,15 @@ function MediasBrowser({
         };
     }, [fullQuery]);
 
+    // eslint-disable-next-line no-unused-vars
+    const { types: queryTypes = null, ...queryWithoutTypes } = query || {};
+
     const {
         medias: items,
         loading,
         lastPage,
         total,
-    } = useMedias(query, page, count, { initialItems });
+    } = useMedias(query, page, count, { items: baseItems });
 
     // For picker
     useEffect(() => {
@@ -154,26 +166,26 @@ function MediasBrowser({
         [setLayout],
     );
 
-    const [media, setMedia] = useState(null);
+    const [currentMedia, setCurrentMedia] = useState(null);
 
     const onOpenMedia = useCallback(
-        (currentMedia) => {
-            setMedia(currentMedia);
+        (media) => {
+            setCurrentMedia(media);
         },
-        [setMedia],
+        [setCurrentMedia],
     );
 
     const onCloseMedia = useCallback(() => {
-        setMedia(null);
-    }, [setMedia]);
+        setCurrentMedia(null);
+    }, [setCurrentMedia]);
 
-    const onUploadMedia = useCallback(
-        (newMedia) => {
-            setMedia(null);
-            onSelectItem(newMedia || null);
+    const onChangeMedia = useCallback(
+        (media = null) => {
+            console.log('media', media);
+            onSelectItems(media);
             onQueryReset();
         },
-        [setMedia, onQueryReset, onSelectItem],
+        [setCurrentMedia, onQueryReset, onSelectItems],
     );
 
     const pagination = (
@@ -193,9 +205,19 @@ function MediasBrowser({
         />
     );
 
+    const finalFilters = useMemo(() => {
+        if (types !== null && filters !== null) {
+            return (filters || []).map((filter) => {
+                const { id = null } = filter || {};
+                return id === 'types' ? { ...filter, disabled: true } : filter;
+            });
+        }
+        return filters;
+    }, [filters, types]);
+
     return (
         <div className={classNames([styles.container, className])}>
-            {media !== null ? (
+            {currentMedia !== null ? (
                 <>
                     <div className="mt-2 mb-4">
                         <Button theme="primary" outline onClick={onCloseMedia} icon="arrow-left">
@@ -206,7 +228,7 @@ function MediasBrowser({
                         </Button>
                     </div>
                     <MediaForm
-                        value={media}
+                        value={currentMedia}
                         fields={fields}
                         sections={sections}
                         displays={displays}
@@ -217,14 +239,15 @@ function MediasBrowser({
                 <>
                     {uploadButton !== null ? (
                         <div className="mt-2 mb-4">
-                            <UploadField onChange={onUploadMedia} withButton {...uploadButton} />
+                            <UploadField onChange={onChangeMedia} withButton {...uploadButton} />
                         </div>
                     ) : null}
                     {buttons !== null ? <Buttons items={buttons} className="mb-2" /> : null}
                     {filters !== null ? (
                         <Filters
                             value={query}
-                            filters={filters}
+                            clearValue={types !== null ? queryWithoutTypes : null}
+                            filters={finalFilters}
                             onChange={onQueryChange}
                             onReset={onQueryReset}
                             theme={theme}

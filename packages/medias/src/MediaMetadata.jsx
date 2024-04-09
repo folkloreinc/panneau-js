@@ -33,54 +33,68 @@ const defaultProps = {
     className: null,
 };
 
-function MediaMetadata({ sections, displays, value, className }) {
+function MediaMetadata({ sections, displays, value: filtersValue, className }) {
     const displayComponents = useDisplaysComponentsManager();
 
     const finalSections = useMemo(() => {
-        const displaysWithoutSection = (displays || []).filter(
+        const displaysWithValue = (displays || [])
+            .map(({ path = null, ...props }) => ({
+                value: get(filtersValue, path, null),
+                ...props,
+            }))
+            .filter(({ value = null }) => value !== null);
+        const displaysWithoutSection = (displaysWithValue || []).filter(
             ({ section = null }) => section === null,
         );
         return (sections || [])
             .map(({ id = null, title = null }) => ({
                 id,
                 title,
-                items: (displays || []).filter(({ section = null }) => section === id),
+                items: (displaysWithValue || []).filter(({ section = null }) => section === id),
             }))
-            .concat({ title: null, items: displaysWithoutSection });
-    }, [sections, displays]);
+            .concat({ id: 'others', title: null, items: displaysWithoutSection })
+            .filter(({ items = null }) => items !== null && items.length > 0);
+    }, [sections, displays, filtersValue]);
 
     return (
         <div className={classNames(['px-2', { [className]: className !== null }])}>
-            {(finalSections || []).map(({ title = null, items = [] }, i) => (
-                <div className="mb-5" key={`section-${i + 1}`}>
+            {(finalSections || []).map(({ title = null, items = [] }, idx) => (
+                <div
+                    className={idx < finalSections.length - 1 ? 'mb-5' : null}
+                    key={`section-${idx + 1}`}
+                >
                     {title !== null ? <h6 className="px-1">{title}</h6> : null}
                     <ul className="list-group list-group-flush">
-                        {(items || []).map(({ label, path, component = null, ...props }, index) => {
-                            const Component = displayComponents.getComponent(component || 'text');
-                            const itemValue = get(value, path, null);
-                            return Component !== null && itemValue !== null ? (
-                                <li
-                                    className={classNames([
-                                        'row',
-                                        'd-flex',
-                                        'align-items-center',
-                                        'justify-content-between',
-                                        'p-1',
-                                        'border-secondary-1',
-                                        'border-1',
-                                        'border-bottom',
-                                        'text-small',
-                                        { 'border-top': index === 0 },
-                                    ])}
-                                    key={`item-${index + 1}`}
-                                >
-                                    <div className="col-auto">{label}</div>
-                                    <div className="col-auto align-right">
-                                        <Component {...props} value={itemValue} />
-                                    </div>
-                                </li>
-                            ) : null;
-                        })}
+                        {(items || []).map(
+                            ({ label, value, component = null, ...props }, index) => {
+                                const Component = displayComponents.getComponent(
+                                    component || 'text',
+                                );
+                                const itemValue = value || null;
+                                return Component !== null && itemValue !== null ? (
+                                    <li
+                                        key={`item-${index + 1}`}
+                                        className={classNames([
+                                            'row',
+                                            'd-flex',
+                                            'align-items-center',
+                                            'justify-content-between',
+                                            'p-1',
+                                            'border-secondary-1',
+                                            'border-1',
+                                            'border-bottom',
+                                            'text-small',
+                                            { 'border-top': index === 0 },
+                                        ])}
+                                    >
+                                        <div className="col-auto">{label}</div>
+                                        <div className="col-auto align-right">
+                                            <Component {...props} value={itemValue} />
+                                        </div>
+                                    </li>
+                                ) : null;
+                            },
+                        )}
                     </ul>
                 </div>
             ))}

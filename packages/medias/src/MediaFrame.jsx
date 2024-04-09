@@ -31,22 +31,31 @@ function MediaFrame({ value, className }) {
     }, [showPlayer, setShowPlayer]);
 
     return (
-        <div className={classNames([className, { [className]: className != null }])}>
+        <div
+            className={classNames([
+                className,
+                'position-relative',
+                { [className]: className != null },
+            ])}
+        >
             {showPlayer ? (
-                <MediaPlayer value={value} />
+                <MediaPlayer value={value} width="100%" />
             ) : (
-                <MediaPreview value={value} width="100%" />
+                <MediaPreview value={value} width="100%">
+                    <div className={styles.playButton}>
+                        {!showPlayer &&
+                        (type === 'video' || type === 'embed' || type === 'audio') ? (
+                            <Button
+                                className="rounded-circle"
+                                theme="secondary"
+                                onClick={onClick}
+                                icon="play-fill"
+                                size="lg"
+                            />
+                        ) : null}
+                    </div>
+                </MediaPreview>
             )}
-            <div className={styles.playButton}>
-                {!showPlayer && (type === 'video' || type === 'embed' || type === 'audio') ? (
-                    <Button
-                        className="rounded-circle"
-                        theme="secondary"
-                        onClick={onClick}
-                        icon="play-fill"
-                    />
-                ) : null}
-            </div>
         </div>
     );
 }

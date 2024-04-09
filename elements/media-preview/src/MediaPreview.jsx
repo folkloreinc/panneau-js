@@ -33,6 +33,7 @@ const propTypes = {
     external: PropTypes.bool,
     onClick: PropTypes.func,
     className: PropTypes.string,
+    children: PropTypes.node,
 };
 
 const defaultProps = {
@@ -46,6 +47,7 @@ const defaultProps = {
     external: false,
     onClick: null,
     className: null,
+    children: null,
 };
 
 const MediaPreview = ({
@@ -59,6 +61,7 @@ const MediaPreview = ({
     external,
     onClick,
     className,
+    children,
 }) => {
     const value = initialValue || {};
 
@@ -153,6 +156,7 @@ const MediaPreview = ({
             ) : (
                 thumbnailElement
             )}
+            {children}
         </div>
     );
 };

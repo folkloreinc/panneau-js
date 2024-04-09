@@ -42,7 +42,7 @@ const Container = ({ value: initialValue, ...props } = {}) => {
                             {...props}
                             value={value}
                             onChange={onChange}
-                            onConfirm={() => console.log('confirm')}
+                            onSave={() => console.log('save')}
                             onDelete={() => console.log('delete')}
                             onClose={() => console.log('close')}
                         />

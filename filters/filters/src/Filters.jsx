@@ -17,10 +17,12 @@ import styles from './styles.module.scss';
 const propTypes = {
     filters: PanneauPropTypes.filters,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    clearValue: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     onChange: PropTypes.func,
     onReset: PropTypes.func,
     withContainer: PropTypes.bool,
     withReset: PropTypes.bool,
+    withResetLabel: PropTypes.bool,
     defaultValue: PropTypes.objectOf(PropTypes.object), // eslint-disable-line react/forbid-prop-types
     className: PropTypes.string,
 };
@@ -28,10 +30,12 @@ const propTypes = {
 const defaultProps = {
     filters: [],
     value: null,
+    clearValue: null,
     onChange: null,
     onReset: null,
     withContainer: false,
     withReset: true,
+    withResetLabel: false,
     defaultValue: { page: null },
     className: null,
 };
@@ -39,10 +43,12 @@ const defaultProps = {
 const Filters = ({
     filters,
     value,
+    clearValue,
     onChange,
     onReset,
     withContainer,
     withReset,
+    withResetLabel,
     defaultValue,
     className,
 }) => {
@@ -59,7 +65,12 @@ const Filters = ({
     }, [onReset]);
 
     const hasActiveFilter = (currentFilters || []).reduce((isActive, item) => {
-        if (value !== null && value[item.name]) {
+        const activeValue = clearValue || value || null;
+        if (
+            activeValue !== null &&
+            typeof activeValue[item.name] !== 'undefined' &&
+            activeValue[item.name] !== null
+        ) {
             return true;
         }
         return isActive;
@@ -132,8 +143,15 @@ const Filters = ({
                 {withButton ? (
                     <div className="col-auto mb-3">
                         <Button theme="primary" onClick={onFiltersReset}>
-                            <FormattedMessage defaultMessage="Clear" description="Button label" />
-                            <Icon className="ms-2" name="x-circle" />
+                            {withResetLabel ? (
+                                <span className="me-2">
+                                    <FormattedMessage
+                                        defaultMessage="Clear"
+                                        description="Button label"
+                                    />
+                                </span>
+                            ) : null}
+                            <Icon name="x-circle" />
                         </Button>
                     </div>
                 ) : null}

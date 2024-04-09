@@ -3,9 +3,9 @@ import { FormattedMessage } from 'react-intl';
 
 export default [
     {
-        id: 'type',
+        id: 'types',
         component: 'select',
-        name: 'type',
+        name: 'types',
         placeholder: <FormattedMessage defaultMessage="Type" description="Filter label" />,
         options: [
             {
