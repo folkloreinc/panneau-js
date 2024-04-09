@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-color",
-    "version": "3.0.154",
+    "version": "3.0.156",
     "description": "A color field",
     "keywords": [
         "javascript"
@@ -54,8 +54,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.154",
-        "@panneau/themes": "^3.0.154",
+        "@panneau/core": "^3.0.156",
+        "@panneau/themes": "^3.0.156",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "react-color": "^2.19.3",

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-breadcrumbs",
-    "version": "3.0.154",
+    "version": "3.0.156",
     "description": "Breadcrumbs element",
     "keywords": [
         "javascript"
@@ -54,10 +54,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.154",
-        "@panneau/element-button": "^3.0.154",
-        "@panneau/element-label": "^3.0.154",
-        "@panneau/element-link": "^3.0.154",
+        "@panneau/core": "^3.0.156",
+        "@panneau/element-button": "^3.0.156",
+        "@panneau/element-label": "^3.0.156",
+        "@panneau/element-link": "^3.0.156",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
