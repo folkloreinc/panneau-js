@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-media-preview",
-    "version": "3.0.156",
+    "version": "3.0.158",
     "description": "Media preview element",
     "keywords": [
         "javascript"
@@ -49,8 +49,8 @@
         "@fortawesome/fontawesome-svg-core": "^6.5.1",
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",
-        "@panneau/core": "^3.0.156",
-        "@panneau/element-button": "^3.0.156",
+        "@panneau/core": "^3.0.158",
+        "@panneau/element-button": "^3.0.158",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
