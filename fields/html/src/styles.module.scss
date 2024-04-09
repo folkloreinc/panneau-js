@@ -1,7 +1,12 @@
 .container {
     --ck-border-radius: 0.375rem;
     --ck-inner-shadow: 0 0 0 transparent inset;
-    --ck-color-shadow-inner: var(--bs-primary-bg-subtle);
-    --ck-color-focus-border: var(--bs-primary-bg-subtle);
-    --ck-focus-ring: 1px solid var(--bs-primary-bg-subtle);
+    --ck-color-shadow-inner: var(--bs-border-color);
+    --ck-color-focus-border: var(--bs-border-color);
+    --ck-focus-ring: 1px solid var(--bs-primary-border-subtle);
+    --ck-color-text: var(--bs-dark);
+    --ck-color-base-background: var(--bs-body-bg);
+    --ck-color-base-border: var(--bs-border-color);
+    // --ck-color-toolbar-background: var(--bs-body-bg);
+    // --ck-color-text: var(--bs-body-color);
 }

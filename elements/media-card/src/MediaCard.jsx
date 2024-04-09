@@ -157,7 +157,7 @@ const MediaCard = ({
                 }
             >
                 {!hasThumbnail && mediaIcon !== null ? (
-                    <FontAwesomeIcon icon={mediaIcon} className="m-auto fs-3" />
+                    <FontAwesomeIcon icon={mediaIcon} className="m-auto fs-3 text-dark" />
                 ) : null}
                 {hasThumbnail && thumbnail !== null ? (
                     <img
@@ -176,7 +176,7 @@ const MediaCard = ({
                             minHeight: !withoutDescription ? thumbnailSize : thumbnailSize * 1.5,
                         }}
                     >
-                        <FontAwesomeIcon icon={faFile} className="m-auto fs-3" />
+                        <FontAwesomeIcon icon={faFile} className="m-auto fs-3 text-dark" />
                     </div>
                 ) : null}
             </div>

@@ -698,7 +698,7 @@ const ItemsField = ({
                         )}
                     </div>
                 ) : (
-                    <div className="card bg-light text-muted text-center">
+                    <div className="card text-muted text-center">
                         <div className="card-body">
                             <Label>{noItemLabel}</Label>
                         </div>

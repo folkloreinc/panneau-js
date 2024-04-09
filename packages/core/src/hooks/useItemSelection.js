@@ -2,8 +2,12 @@ import isArray from 'lodash/isArray';
 import uniqBy from 'lodash/uniqBy';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+function filterNullItems(items) {
+    return isArray(items) ? items.filter((it) => it !== null) : items;
+}
+
 function getItemsArray(items) {
-    return !isArray(items) && items !== null ? [items] : items;
+    return filterNullItems(!isArray(items) && items !== null ? [items] : items);
 }
 
 const useItemSelection = ({
@@ -14,8 +18,6 @@ const useItemSelection = ({
 }) => {
     const initialItems = getItemsArray(initialSelectedItems);
     const [selectedItems, setSelectedItems] = useState(initialItems);
-
-    console.log('selectedItems', selectedItems);
 
     const onSelectItem = useCallback(
         (item, index) => {
@@ -29,7 +31,7 @@ const useItemSelection = ({
             } else {
                 newItems = (selectedItems || []).filter(({ id }) => id !== itemId);
             }
-            setSelectedItems(newItems);
+            setSelectedItems(filterNullItems(newItems));
             if (onSelectionChange !== null) {
                 const [firstItem = null] = newItems || [];
                 const finalValue = multipleSelection ? newItems : firstItem;
@@ -41,11 +43,11 @@ const useItemSelection = ({
 
     const onSelectItems = useCallback(
         (newItems, index) => {
-            console.log('yosh', newItems);
-            setSelectedItems(newItems);
+            const finalNewItems = filterNullItems(newItems);
+            setSelectedItems(finalNewItems);
             if (onSelectionChange !== null) {
-                const [firstItem = null] = newItems || [];
-                const finalValue = multipleSelection ? newItems : firstItem;
+                const [firstItem = null] = finalNewItems || [];
+                const finalValue = multipleSelection ? finalNewItems : firstItem;
                 onSelectionChange(finalValue, null, index);
             }
         },
@@ -72,10 +74,10 @@ const useItemSelection = ({
                     ({ id = null } = {}) => id,
                 );
             }
-
-            setSelectedItems(nextItems);
+            const finalNextItems = filterNullItems(nextItems);
+            setSelectedItems(finalNextItems);
             if (onSelectionChange !== null) {
-                onSelectionChange(nextItems);
+                onSelectionChange(finalNextItems);
             }
         },
         [items, selectedItems, setSelectedItems, onSelectionChange],
