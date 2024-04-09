@@ -705,6 +705,12 @@ msgctxt "rmJBin"
 msgid "Dimensions"
 msgstr "Dimensions"
 
+# Field name
+#: rtwfuZ
+msgctxt "rtwfuZ"
+msgid "Actions"
+msgstr "Actions"
+
 # Button label
 #: rvOVCV
 msgctxt "rvOVCV"

@@ -459,6 +459,10 @@
     "defaultMessage": "Dimensions",
     "description": "Field label"
   },
+  "rtwfuZ": {
+    "defaultMessage": "Actions",
+    "description": "Field name"
+  },
   "rvOVCV": {
     "defaultMessage": "Confirm selection",
     "description": "Button label"
