@@ -7,6 +7,7 @@ import { Modals } from '@panneau/element-modal';
 import { MediasApiProvider } from '@panneau/medias';
 
 import withApiProvider from '../../../../.storybook/decorators/withApiProvider';
+import withUppy from '../../../../.storybook/decorators/withUppy';
 import DisplaysProvider from '../../../../packages/displays';
 import FieldsProvider from '../../../../packages/fields';
 import FiltersProvider from '../../../../packages/filters';
@@ -15,7 +16,7 @@ import MediasPicker from '../MediasPicker';
 export default {
     component: MediasPicker,
     title: 'Modals/MediasPicker',
-    decorators: [withApiProvider],
+    decorators: [withApiProvider, withUppy],
     parameters: {
         intl: true,
     },

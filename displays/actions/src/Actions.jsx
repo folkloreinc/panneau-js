@@ -28,7 +28,7 @@ const propTypes = {
 const defaultProps = {
     value: null,
     placeholder: null,
-    actions: null,
+    actions: ['show', 'edit', 'delete'],
     urlGenerator: null,
     actionsProps: null,
     size: 'sm',

@@ -130,8 +130,8 @@ function MediaForm({
     return (
         <div className={classNames(['text-body', { [className]: className !== null }])}>
             <div className="d-flex w-100 align-items-start justify-content-between mb-3 pb-2 border-bottom">
-                <div className="d-flex align-items-end mb-0">
-                    <h4 className="d-inline text-break mb-1">{name}</h4>
+                <div className="d-flex align-items-end justify-content-end mb-0">
+                    <h4 className="d-inline text-break mb-0">{name}</h4>
                     <span className="mx-2">{type}</span>
                 </div>
                 <div>

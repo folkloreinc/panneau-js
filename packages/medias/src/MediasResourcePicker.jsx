@@ -17,6 +17,7 @@ const defaultProps = {
 
 function MediasResourcePicker({ resource: resourceId, ...props }) {
     const resource = usePanneauResource(resourceId);
+    // console.log('resource', resource);
     const api = useApi();
     const mediasApi = useMemo(
         () => ({

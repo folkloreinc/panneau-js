@@ -139,10 +139,10 @@ const Pagination = ({
     }
 
     const count = (
-        <div className="d-flex align-item-center">
+        <div className="d-flex align-items-center justify-content-center">
             {selectedCount > 0 ? (
                 <small className="text-small text-nowrap text-muted fw-normal">
-                    <span className="d-inline-block mb-1">
+                    <span className="d-inline-block">
                         <FormattedMessage
                             defaultMessage="{count, plural, =0 {no items} one {# item} other {# items}} selected"
                             description="Checkbox label"

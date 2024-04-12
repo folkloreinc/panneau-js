@@ -5,6 +5,7 @@ const _ = require('lodash');
 const dayjs = require('dayjs');
 const { sync: globSync } = require('glob');
 const isString = require('lodash/isString');
+const isArray = require('lodash/isArray');
 
 module.exports = () => {
     const router = express.Router();
@@ -68,6 +69,16 @@ module.exports = () => {
                 _.filter(items, (it) =>
                     it !== null && typeof it.title !== 'undefined' && isString(it.title)
                         ? it.title.indexOf(search) !== -1
+                        : true,
+                ),
+            );
+        }
+
+        if (isArray(types) && types !== null) {
+            return _.values(
+                _.filter(items, (it) =>
+                    it !== null && typeof it.type !== 'undefined' && isString(it.type)
+                        ? types.indexOf(it.type) !== -1
                         : true,
                 ),
             );

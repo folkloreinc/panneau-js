@@ -75,6 +75,12 @@ function MediasPicker({
         multipleSelection: multiple,
     });
 
+    const onConfirmSelection = useCallback(() => {
+        if (onConfirm !== null) {
+            onConfirm(selectedItems);
+        }
+    }, [selectedItems, onConfirm]);
+
     const finalUploadButton = useMemo(
         () => ({
             ...(uploadButton || null),
@@ -96,8 +102,6 @@ function MediasPicker({
                     onSelectPage,
                     selectedItems,
                     pageSelected,
-                    // actionsComponent: ItemActions,
-                    // withCustomActionsColumn: true,
                     ...tableProps,
                 }}
                 items={items}
@@ -129,7 +133,7 @@ function MediasPicker({
                         <Button
                             type="button"
                             theme="primary"
-                            onClick={onConfirm}
+                            onClick={onConfirmSelection}
                             disabled={disabled}
                             outline={disabled}
                             className="d-block"

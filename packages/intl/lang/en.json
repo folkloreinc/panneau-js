@@ -80,6 +80,9 @@
     "8LSb8C": {
         "defaultMessage": "Current password"
     },
+    "8T+JE7": {
+        "defaultMessage": "Duplicate"
+    },
     "9/t5wK": {
         "defaultMessage": "Type"
     },
@@ -238,6 +241,9 @@
     },
     "XW9IKQ": {
         "defaultMessage": "Update password"
+    },
+    "XmY7D8": {
+        "defaultMessage": "The following items will be duplicated: {ids}. Are you sure you want to continue?"
     },
     "XnyI69": {
         "defaultMessage": "Audio"

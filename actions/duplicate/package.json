@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/field-upload",
+    "name": "@panneau/action-duplicate",
     "version": "3.0.159",
-    "description": "An Upload field",
+    "description": "Duplicate action",
     "keywords": [
         "javascript"
     ],
@@ -22,14 +22,6 @@
         {
             "name": "Nicolas Roy-Bourdages",
             "email": "nrb@folklore.email"
-        },
-        {
-            "name": "Julien Carignan",
-            "email": "jc@folklore.email"
-        },
-        {
-            "name": "Théo Gjini",
-            "email": "tg@folklore.email"
         }
     ],
     "license": "ISC",
@@ -54,29 +46,12 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@fortawesome/fontawesome-svg-core": "^6.5.1",
-        "@fortawesome/free-solid-svg-icons": "^6.5.1",
-        "@fortawesome/react-fontawesome": "^0.2.0",
+        "@folklore/fetch": "^0.1.17",
         "@panneau/core": "^3.0.159",
         "@panneau/element-button": "^3.0.159",
-        "@panneau/element-label": "^3.0.159",
-        "@panneau/element-media-card": "^3.0.159",
-        "@panneau/list-resource-items": "^3.0.159",
-        "@panneau/modal-dialog": "^3.0.159",
-        "@panneau/modal-upload": "^3.0.159",
-        "@panneau/modal-medias-picker": "^3.0.159",
+        "@panneau/modal-confirm": "^3.0.159",
         "@panneau/themes": "^3.0.159",
-        "@panneau/uppy": "^3.0.159",
-        "@uppy/core": "^3.9.1",
-        "@uppy/dashboard": "^3.7.3",
-        "@uppy/drag-drop": "^3.0.3",
-        "@uppy/file-input": "^3.0.4",
-        "@uppy/progress-bar": "^3.0.4",
-        "@uppy/react": "^3.3.0",
-        "@uppy/status-bar": "^3.2.7",
-        "@uppy/utils": "^5.7.2",
         "classnames": "^2.5.1",
-        "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
     },

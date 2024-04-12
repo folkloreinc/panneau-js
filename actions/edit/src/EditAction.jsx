@@ -31,7 +31,7 @@ const defaultProps = {
     endpoint: null,
     label: <FormattedMessage defaultMessage="Edit" description="Button label" />,
     icon: 'pencil',
-    value: false,
+    value: null,
     theme: 'primary',
     disabled: false,
     setSelectedItems: null,
@@ -87,7 +87,6 @@ const EditAction = ({
     return (
         <>
             <Button
-                {...props}
                 className={classNames([
                     styles.container,
                     {
@@ -99,6 +98,7 @@ const EditAction = ({
                 onClick={onOpen}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
+                {...props}
             />
             {showModal ? (
                 <FormModal

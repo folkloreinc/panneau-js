@@ -9,12 +9,10 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useQuery } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import { MediaCards } from '@panneau/element-media-card';
-import ResourceItemsList from '@panneau/list-resource-items';
-import Dialog from '@panneau/modal-dialog';
+import ModalPicker from '@panneau/modal-medias-picker';
 // import UploadModal from '@panneau/modal-upload';
 import { useUppy } from '@panneau/uppy';
 
@@ -45,9 +43,6 @@ const propTypes = {
     addButtonLabel: PanneauPropTypes.label,
     findButtonLabel: PanneauPropTypes.label,
     clearButtonLabel: PanneauPropTypes.label,
-    countLabel: PanneauPropTypes.label,
-    confirmButtonLabel: PanneauPropTypes.label,
-    cancelButtonLabel: PanneauPropTypes.label,
     allowMultipleUploads: PropTypes.bool,
     maxNumberOfFiles: PropTypes.number,
     namePath: PropTypes.string,
@@ -85,9 +80,6 @@ const defaultProps = {
     clearButtonLabel: (
         <FormattedMessage defaultMessage="Clear" description="Default upload add button label" />
     ),
-    countLabel: <FormattedMessage defaultMessage="items selected" description="Items label" />,
-    confirmButtonLabel: <FormattedMessage defaultMessage="Confirm" description="Button label" />,
-    cancelButtonLabel: <FormattedMessage defaultMessage="Cancel" description="Button label" />,
     allowMultipleUploads: false,
     maxNumberOfFiles: 1,
     namePath: 'name',
@@ -116,9 +108,6 @@ const UploadField = ({
     addButtonLabel,
     findButtonLabel,
     clearButtonLabel,
-    countLabel,
-    confirmButtonLabel,
-    cancelButtonLabel,
     allowMultipleUploads,
     maxNumberOfFiles,
     namePath,
@@ -256,7 +245,7 @@ const UploadField = ({
         setModalItems(null);
     }, [resourceModalOpen, setResourceModalOpen, setModalItems]);
 
-    const onClickSelect = useCallback(
+    const onChangeSelection = useCallback(
         (newValue) => {
             if (allowMultipleUploads) {
                 if (newValue !== null && !isArray(newValue)) {
@@ -288,28 +277,12 @@ const UploadField = ({
         [onChange, setResourceModalOpen, allowMultipleUploads, modalItems, setModalItems],
     );
 
-    const confirmResourceModal = useCallback(() => {
+    const onConfirmSelection = useCallback(() => {
         if (onChange !== null) {
-            // Always multiple onchange
             onChange(modalItems);
             setResourceModalOpen(false);
-            setModalItems(null);
         }
-    }, [onChange, setResourceModalOpen, modalItems, allowMultipleUploads, setModalItems]);
-
-    const initialQuery = useMemo(() => ({ types }), [types]);
-    const {
-        query: listQuery,
-        onPageChange: onListPageChange,
-        onQueryChange: onListQueryChange,
-        onQueryReset: onListQueryReset,
-    } = useQuery(initialQuery, true);
-
-    // console.log(
-    //     'modalOpened',
-    //     !showResourceModal && !disabled && withButton && uppy !== null && modalOpened,
-    // );
-    // console.log('uppy', uppy);
+    }, [onChange, modalItems, setResourceModalOpen, allowMultipleUploads]);
 
     const containerRef = useRef(null);
 
@@ -396,8 +369,6 @@ const UploadField = ({
                 </div>
             ) : null}
 
-            {/* modal versions */}
-
             {!showResourceModal && !disabled && withButton && finalUppy !== null && modalOpened ? (
                 <DashboardModal
                     uppy={finalUppy}
@@ -416,57 +387,15 @@ const UploadField = ({
             ) : null}
 
             {showResourceModal ? (
-                <Dialog
-                    title={<Label>{findButtonLabel}</Label>}
-                    size="xl"
+                <ModalPicker
+                    resource="medias"
+                    types={types}
+                    selectable
+                    onChange={onChangeSelection}
+                    onConfirm={onConfirmSelection}
                     onClose={closeResourceModal}
-                >
-                    <ResourceItemsList
-                        resource="medias"
-                        query={listQuery}
-                        onPageChange={onListPageChange}
-                        onQueryChange={onListQueryChange}
-                        onQueryReset={onListQueryReset}
-                        baseUrl={null}
-                        showActions={false}
-                        selectable
-                        onSelectionChange={onClickSelect}
-                        multipleSelection={allowMultipleUploads}
-                    />
-                    {allowMultipleUploads ? (
-                        <div className="d-flex mt-4 justify-content-between">
-                            {modalItems !== null && modalItems.length > 0 ? (
-                                <span className="me-2">
-                                    {modalItems.length} {countLabel}
-                                </span>
-                            ) : (
-                                <span />
-                            )}
-                            <div className="d-flex">
-                                <Button
-                                    type="button"
-                                    theme="secondary"
-                                    onClick={closeResourceModal}
-                                    disabled={disabled}
-                                    className="d-block me-2"
-                                >
-                                    <Label>{cancelButtonLabel}</Label>
-                                </Button>
-                                <Button
-                                    type="button"
-                                    theme="primary"
-                                    onClick={confirmResourceModal}
-                                    disabled={
-                                        disabled || (modalItems !== null && modalItems.length === 0)
-                                    }
-                                    className="d-block"
-                                >
-                                    <Label>{confirmButtonLabel}</Label>
-                                </Button>
-                            </div>
-                        </div>
-                    ) : null}
-                </Dialog>
+                    multiple={allowMultipleUploads}
+                />
             ) : null}
         </div>
     );

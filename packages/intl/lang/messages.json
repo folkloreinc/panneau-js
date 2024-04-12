@@ -107,6 +107,10 @@
     "defaultMessage": "Current password",
     "description": "Field label"
   },
+  "8T+JE7": {
+    "defaultMessage": "Duplicate",
+    "description": "Modal title"
+  },
   "9/t5wK": {
     "defaultMessage": "Type",
     "description": "Filter label"
@@ -318,6 +322,10 @@
   "XW9IKQ": {
     "defaultMessage": "Update password",
     "description": "Button label"
+  },
+  "XmY7D8": {
+    "defaultMessage": "The following items will be duplicated: {ids}. Are you sure you want to continue?",
+    "description": "Modal message"
   },
   "XnyI69": {
     "defaultMessage": "Audio",

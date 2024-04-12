@@ -20,6 +20,8 @@ const useActions = (
         getDuplicatePropsFromItem = null,
         showUrl = null,
         withoutItemShowUrl = null,
+        preferDeleteModal = true,
+        preferDuplicateModal = true,
     } = {},
 ) => {
     const { id, url = null } = item || {};
@@ -70,7 +72,7 @@ const useActions = (
                             label: iconsOnly ? null : duplicateLabel,
                             icon: iconsOnly ? 'copy' : null,
                             href:
-                                urlGenerator !== null
+                                urlGenerator !== null && !preferDuplicateModal
                                     ? urlGenerator('duplicate', {
                                           id,
                                       }) || null
@@ -88,7 +90,7 @@ const useActions = (
                             label: iconsOnly ? null : deleteLabel,
                             icon: iconsOnly ? 'trash3' : null,
                             href:
-                                urlGenerator !== null
+                                urlGenerator !== null && !preferDeleteModal
                                     ? urlGenerator('delete', {
                                           id,
                                       }) || null

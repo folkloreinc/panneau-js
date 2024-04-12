@@ -170,6 +170,7 @@ function MediasBrowser({
 
     const onOpenMedia = useCallback(
         (media) => {
+            console.log('open', media);
             setCurrentMedia(media);
         },
         [setCurrentMedia],
@@ -181,7 +182,6 @@ function MediasBrowser({
 
     const onChangeMedia = useCallback(
         (media = null) => {
-            console.log('media', media);
             onSelectItems(media);
             onQueryReset();
         },
@@ -308,6 +308,14 @@ function MediasBrowser({
                             onSelectItem={
                                 onSelectItem !== null ? onSelectItem : (it) => onOpenMedia(it)
                             }
+                            actionsProps={{
+                                getEditPropsFromItem: (it) => ({
+                                    href: null,
+                                    onClick: () => {
+                                        onOpenMedia(it);
+                                    },
+                                }),
+                            }}
                         />
                     ) : null}
                     <div className={classNames(['d-flex', 'mt-3', 'mb-1', 'justify-content-end'])}>

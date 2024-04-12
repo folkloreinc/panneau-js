@@ -141,7 +141,7 @@ const Filters = ({
                     },
                 )}
                 {withButton ? (
-                    <div className="col-auto mb-3">
+                    <div className="col-auto mb-1">
                         <Button theme="primary" onClick={onFiltersReset}>
                             {withResetLabel ? (
                                 <span className="me-2">

@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { MediasPicker } from '@panneau/medias';
+import { MediasPickerContainer, MediasResourcePicker } from '@panneau/medias';
 import Dialog from '@panneau/modal-dialog';
 
 const propTypes = {
+    resource: PropTypes.string,
     title: PropTypes.string,
     multiple: PropTypes.bool,
     onConfirm: PropTypes.func,
@@ -19,6 +20,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    resource: null,
     title: null,
     multiple: false,
     onConfirm: null,
@@ -29,6 +31,7 @@ const defaultProps = {
 };
 
 function MediasPickerModal({
+    resource,
     title,
     onClose,
     onChange,
@@ -87,14 +90,27 @@ function MediasPickerModal({
                 },
             ]}
         >
-            <MediasPicker
-                {...props}
-                onChange={onSelectionChange}
-                onConfirm={onSelectionConfirm}
-                onClose={onClose}
-                multiple={multiple}
-                withoutButtons
-            />
+            {resource !== null ? (
+                <MediasResourcePicker
+                    {...props}
+                    resource={resource}
+                    onChange={onSelectionChange}
+                    onConfirm={onSelectionConfirm}
+                    onClose={onClose}
+                    multiple={multiple}
+                    withoutButtons
+                />
+            ) : (
+                <MediasPickerContainer
+                    {...props}
+                    resource={resource}
+                    onChange={onSelectionChange}
+                    onConfirm={onSelectionConfirm}
+                    onClose={onClose}
+                    multiple={multiple}
+                    withoutButtons
+                />
+            )}
         </Dialog>
     );
 }

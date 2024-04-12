@@ -27,8 +27,8 @@ const propTypes = {
 const defaultProps = {
     title: null,
     description: null,
-    endpoint: '/batch',
-    label: <FormattedMessage defaultMessage="Delete" description="Button label" />,
+    endpoint: '/duplicate',
+    label: <FormattedMessage defaultMessage="Duplicate" description="Button label" />,
     icon: 'trash',
     value: null,
     theme: 'primary',
@@ -37,7 +37,7 @@ const defaultProps = {
     className: null,
 };
 
-const DeleteAction = ({
+const DuplicateAction = ({
     title,
     description,
     endpoint,
@@ -71,7 +71,7 @@ const DeleteAction = ({
             {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
-                _method: 'DELETE',
+                _method: 'POST',
             },
         )
             .then((response) => {
@@ -112,7 +112,10 @@ const DeleteAction = ({
                 <Confirm
                     title={
                         title || (
-                            <FormattedMessage defaultMessage="Delete" description="Modal title" />
+                            <FormattedMessage
+                                defaultMessage="Duplicate"
+                                description="Modal title"
+                            />
                         )
                     }
                     onConfirm={onConfirm}
@@ -121,7 +124,7 @@ const DeleteAction = ({
                         label: (
                             <FormattedMessage defaultMessage="Confirm" description="Button label" />
                         ),
-                        theme: 'danger',
+                        theme: 'warning',
                     }}
                     cancelButton={{
                         label: (
@@ -134,7 +137,7 @@ const DeleteAction = ({
                     ) : (
                         <p>
                             <FormattedMessage
-                                defaultMessage="The following items will be deleted: {ids}. Are you sure you want to continue?"
+                                defaultMessage="The following items will be duplicated: {ids}. Are you sure you want to continue?"
                                 description="Modal message"
                                 values={{ ids: idLabels }}
                             />
@@ -152,7 +155,7 @@ const DeleteAction = ({
     );
 };
 
-DeleteAction.propTypes = propTypes;
-DeleteAction.defaultProps = defaultProps;
+DuplicateAction.propTypes = propTypes;
+DuplicateAction.defaultProps = defaultProps;
 
-export default DeleteAction;
+export default DuplicateAction;
