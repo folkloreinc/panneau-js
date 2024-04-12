@@ -5,6 +5,7 @@ import React, { useMemo } from 'react';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useActionsComponentsManager } from '@panneau/core/contexts';
+import Button from '@panneau/element-button';
 
 const propTypes = {
     resource: PanneauPropTypes.resource,
@@ -13,9 +14,12 @@ const propTypes = {
         PropTypes.shape({
             id: PropTypes.string,
         }),
-    ), // eslint-disable-line react/forbid-prop-types
+    ),
     onChange: PropTypes.func,
     setSelectedItems: PropTypes.func,
+    defaultComponent: PropTypes.func,
+    isGroup: PropTypes.bool,
+    size: PropTypes.string,
     className: PropTypes.string,
 };
 
@@ -25,30 +29,45 @@ const defaultProps = {
     value: null,
     onChange: null,
     setSelectedItems: null,
+    defaultComponent: Button,
+    isGroup: false,
+    size: null,
     className: null,
 };
 
-const Actions = ({ resource, actions, value, onChange, setSelectedItems, className }) => {
+const Actions = ({
+    resource,
+    actions,
+    value,
+    onChange,
+    size,
+    setSelectedItems,
+    defaultComponent,
+    isGroup,
+    className,
+}) => {
     const actionsComponents = useActionsComponentsManager();
 
     const disabled = value === null || value.length === 0;
     const finalActions = useMemo(
         () =>
-            (actions || []).map(
-                (action) => {
-                    const { multiple = false } = action || {};
-                    const enabled = multiple
-                        ? value !== null && value.length > 0
-                        : value !== null && value.length === 1;
-                    const finalDisabled = disabled || !enabled;
-                    return {
-                        ...action,
-                        disabled: finalDisabled,
-                        outline: finalDisabled,
-                    };
-                },
-                [actions],
-            ),
+            (actions || [])
+                .filter((action) => action !== null)
+                .map(
+                    (action) => {
+                        const { multiple = false } = action || {};
+                        const enabled = multiple
+                            ? value !== null && value.length > 0
+                            : value !== null && value.length === 1;
+                        const finalDisabled = disabled || !enabled;
+                        return {
+                            ...action,
+                            disabled: finalDisabled,
+                            outline: finalDisabled,
+                        };
+                    },
+                    [actions],
+                ),
         [disabled, value, actions],
     );
 
@@ -56,26 +75,29 @@ const Actions = ({ resource, actions, value, onChange, setSelectedItems, classNa
         <div
             className={classNames([
                 {
+                    'd-flex': !isGroup,
+                    'btn-group': isGroup,
+                    [`btn-group-${size}`]: isGroup && size !== null,
                     [className]: className !== null,
                 },
             ])}
         >
-            <div className="d-flex mt-1">
-                {finalActions.map((action) => {
-                    const { component = null } = action || {};
-                    const Component = actionsComponents.getComponent(component);
-                    return Component !== null ? (
-                        <Component
-                            {...action}
-                            value={value}
-                            resource={resource}
-                            onChange={onChange}
-                            setSelectedItems={setSelectedItems}
-                            className="me-2"
-                        />
-                    ) : null;
-                })}
-            </div>
+            {finalActions.map((action) => {
+                const { component = null } = action || {};
+                const actionComponent = actionsComponents.getComponent(component) || null;
+                const Component = actionComponent || defaultComponent;
+                return Component !== null ? (
+                    <Component
+                        {...action}
+                        className={!isGroup ? 'me-2' : null}
+                        value={value}
+                        size={size}
+                        resource={resource}
+                        onChange={onChange}
+                        setSelectedItems={setSelectedItems}
+                    />
+                ) : null;
+            })}
         </div>
     );
 };

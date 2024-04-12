@@ -1,3 +1,4 @@
+export { default as Actions } from '@panneau/display-actions';
 export { default as Avatar } from '@panneau/display-avatar';
 export { default as Text } from '@panneau/display-text';
 export { default as TextLocalized } from '@panneau/display-text-localized';

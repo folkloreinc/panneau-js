@@ -161,11 +161,12 @@ const UrlField = ({
         );
 
     const partialAppend = preview ? (
+        // eslint-disable-next-line jsx-a11y/control-has-associated-label
         <a
             href={value !== null ? `${finalPrepend}${valueWithoutScheme}` : null}
             className="input-group-text"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
         >
             <Icon name="eye-fill" />
         </a>

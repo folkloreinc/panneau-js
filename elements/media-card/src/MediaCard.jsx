@@ -32,6 +32,7 @@ const propTypes = {
     sizePath: PropTypes.string,
     linkPath: PropTypes.string,
     maxWidth: PropTypes.number,
+    maxHeight: PropTypes.number,
     thumbnailSize: PropTypes.number,
     disabled: PropTypes.bool,
     withoutDescription: PropTypes.bool,
@@ -54,6 +55,7 @@ const defaultProps = {
     linkPath: null,
     disabled: false,
     maxWidth: null,
+    maxHeight: null,
     thumbnailSize: 100,
     withoutDescription: false,
     selected: false,
@@ -74,6 +76,7 @@ const MediaCard = ({
     sizePath,
     linkPath,
     maxWidth,
+    maxHeight,
     thumbnailSize,
     disabled,
     withoutDescription,
@@ -161,7 +164,10 @@ const MediaCard = ({
                 ) : null}
                 {hasThumbnail && thumbnail !== null ? (
                     <img
-                        className="img-fluid mh-100 mw-100"
+                        className={classNames([
+                            'img-fluid',
+                            { 'mw-100': maxWidth === null, 'mh-100': maxHeight === null },
+                        ])}
                         src={thumbnail}
                         alt={name}
                         style={{
@@ -188,10 +194,6 @@ const MediaCard = ({
         }
     }, [value, onClick]);
 
-    if (vertical) {
-        console.log('vertical', vertical, value);
-    }
-
     return (
         <div className={classNames([{ [className]: className !== null }])}>
             <div
@@ -203,6 +205,7 @@ const MediaCard = ({
                 key={`media-${id}`}
                 style={{
                     maxWidth,
+                    maxHeight,
                 }}
             >
                 <div

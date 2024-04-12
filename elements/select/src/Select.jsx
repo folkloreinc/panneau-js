@@ -229,11 +229,12 @@ const SelectElement = ({
                     menu: (base) => ({
                         ...base,
                         backgroundColor: 'var(--bs-body-color)',
+                        zIndex: 1001,
                     }),
                     menuList: (base) => ({
                         ...base,
                         backgroundColor: 'var(--bs-body-bg)',
-                        border: '1px solid var(--bs-tertiary-color)',
+                        border: '1px solid var(--bs-border-color)',
                         borderRadius: '4px',
                     }),
                     option: (base, { isDisabled }) => ({

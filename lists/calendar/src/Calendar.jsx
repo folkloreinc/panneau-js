@@ -17,8 +17,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedDate, useIntl } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-// import FormActions from '@panneau/element-item-actions';
-// import Loading from '@panneau/element-loading';
 import Button from '@panneau/element-button';
 import Icon from '@panneau/element-icon';
 

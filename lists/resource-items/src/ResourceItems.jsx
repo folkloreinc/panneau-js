@@ -8,14 +8,14 @@ import { FormattedMessage } from 'react-intl';
 import Actions from '@panneau/action-actions';
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useListsComponents, usePanneauResource } from '@panneau/core/contexts';
-import { useItemSelection } from '@panneau/core/hooks';
+import { useItemSelection, useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Pagination from '@panneau/element-pagination';
 import Filters from '@panneau/filter-filters';
 
 const propTypes = {
-    resource: PropTypes.string.isRequired,
+    resource: PropTypes.oneOfType([PropTypes.string.isRequired, PropTypes.shape({})]).isRequired,
     query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     paginated: PropTypes.bool,
     baseUrl: PropTypes.string,
@@ -72,17 +72,21 @@ const ResourceItemsList = ({
 }) => {
     const panneauResource = usePanneauResource(providedResource);
     const resource = isObject(providedResource) ? providedResource : panneauResource;
-
     const {
+        id: resourceId = null,
         index: {
             component: listComponent = null,
             showPagination = true,
             filters = null,
-            // actions = null,
+            actions = null,
             batchActions = null,
+            actionsProps = null,
             ...listProps
         } = {},
     } = resource;
+    const resourceUrlGenerator = useResourceUrlGenerator(
+        isObject(providedResource) ? resourceId : providedResource,
+    );
 
     const [page, queryWithoutPage] = useMemo(() => {
         const { page: currentPage = 1, ...rest } = query || {};
@@ -101,7 +105,9 @@ const ResourceItemsList = ({
         loading = false,
         lastPage = 0,
         total = 0,
+        reload = null,
         reloadPage = null,
+        updateItem = null,
         reset = null,
     } = itemsProps || {};
 
@@ -144,7 +150,7 @@ const ResourceItemsList = ({
         if (reset !== null && reloadPage !== null) {
             reset();
             reloadPage(parseInt(page, 10));
-            console.log('refresh', reset, reloadPage, page);
+            // console.log('refresh', reset, reloadPage, page);
         }
     }, [reloadPage, reset, page]);
 
@@ -170,7 +176,7 @@ const ResourceItemsList = ({
             >
                 {withActions ? (
                     <Actions
-                        className="mb-2"
+                        className="mt-1 mb-2"
                         actions={batchActions}
                         value={selectedItems}
                         onChange={onActionsChange}
@@ -198,6 +204,15 @@ const ResourceItemsList = ({
                 <ListComponent
                     {...itemsProps}
                     {...listProps}
+                    actionsProps={{
+                        resource,
+                        actions,
+                        reload,
+                        reloadPage,
+                        updateItem,
+                        urlGenerator: resourceUrlGenerator,
+                        ...actionsProps,
+                    }}
                     selectable={finalSelectable}
                     multipleSelection={withMultipleActions || multipleSelection}
                     selectedItems={selectedItems}

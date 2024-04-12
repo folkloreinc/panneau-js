@@ -32,7 +32,35 @@ export default {
 
     index: {
         component: 'cards',
-        columns: ['name', 'email', 'id'],
+        cardTitlePath: 'name',
+        // columns: ['name', 'email', 'id'],
+        columns: [
+            'id',
+            // 'name',
+            {
+                id: 'image',
+                type: 'image',
+                path: 'image',
+                component: 'image',
+            },
+            'email',
+            {
+                id: 'actions',
+                actions: [
+                    'show',
+                    {
+                        id: 'export',
+                        label: 'Export',
+                        href: 'https://google.com',
+                        external: true,
+                        theme: 'secondary',
+                    },
+                    'edit',
+                    'delete',
+                    'duplicate',
+                ],
+            },
+        ],
         filters: [
             {
                 name: 'search',

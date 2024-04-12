@@ -29,7 +29,6 @@ const defaultProps = {
 
 const ModalResourceForm = ({ resource, type, item, isCreate, onSuccess, onClose, className }) => {
     const resourceValues = useResourceValues(resource);
-
     return (
         <Dialog
             title={

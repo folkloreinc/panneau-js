@@ -85,16 +85,15 @@ const EditAction = ({
     const multipleValues = useMemo(() => value !== null && value.length > 1, [value]);
 
     return (
-        <div
-            className={classNames([
-                styles.container,
-                {
-                    [className]: className !== null,
-                },
-            ])}
-        >
+        <>
             <Button
                 {...props}
+                className={classNames([
+                    styles.container,
+                    {
+                        [className]: className !== null,
+                    },
+                ])}
                 label={label}
                 icon={icon}
                 onClick={onOpen}
@@ -134,7 +133,7 @@ const EditAction = ({
                     )}
                 </FormModal>
             ) : null}
-        </div>
+        </>
     );
 };
 

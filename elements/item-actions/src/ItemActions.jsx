@@ -1,13 +1,13 @@
 /* eslint-disable react/no-unstable-nested-components, react/jsx-props-no-spreading, react/jsx-indent */
 import isObject from 'lodash/isObject';
-import isString from 'lodash/isString';
+// import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useActionsComponentsManager } from '@panneau/core/contexts';
-import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import { useActions, useResourceUrlGenerator } from '@panneau/core/hooks';
 import Buttons from '@panneau/element-buttons';
 import Icon from '@panneau/element-icon';
 
@@ -100,137 +100,71 @@ const ItemActions = ({
     className,
 }) => {
     const urlGenerator = useResourceUrlGenerator(resource);
-    const { id, url = null } = item || {};
-    const hasCustomShowUrl = showUrl !== null || url !== null;
     const componentsManager = useActionsComponentsManager();
-
+    const actionItems = items || actions || [];
+    const finalActions = useActions(item, actionItems, urlGenerator, {
+        iconsOnly,
+        showLabel,
+        showUrl,
+        editLabel,
+        deleteLabel,
+        duplicateLabel,
+        onClickShow,
+        onClickEdit,
+        onClickDelete,
+        onClickDuplicate,
+        getShowPropsFromItem,
+        getEditPropsFromItem,
+        getDeletePropsFromItem,
+        getDuplicatePropsFromItem,
+        withoutItemShowUrl,
+    });
     return (
         <Buttons
             size={size}
-            items={
-                items ||
-                (actions || [])
-                    .map((action = null) => {
-                        if (action !== null) {
-                            if (isObject(action)) {
-                                const {
-                                    label = null,
-                                    icon = null,
-                                    itemLinkProp = null,
-                                    linkProps = null,
-                                    component = null,
-                                    ...otherProps
-                                } = action;
-                                const ActionComponent =
-                                    component !== null
-                                        ? componentsManager.getComponent(component)
-                                        : null;
-                                return {
-                                    renderButton:
-                                        ActionComponent !== null
-                                            ? (buttonProps, index, fixedProps) => (
-                                                  <ActionComponent
-                                                      resource={resource}
-                                                      item={item}
-                                                      {...fixedProps}
-                                                      {...buttonProps}
-                                                  />
-                                              )
-                                            : null,
-                                    ...otherProps,
-                                    ...(ActionComponent !== null
-                                        ? { reload, reloadPage, updateItem }
-                                        : null),
-                                    label: iconsOnly && icon !== null ? null : label,
-                                    icon: iconsOnly && icon !== null ? <Icon name={icon} /> : null,
-                                    ...(itemLinkProp !== null && item !== null && item[itemLinkProp]
-                                        ? { href: item[itemLinkProp], ...linkProps }
-                                        : null),
-                                };
-                            }
-                            if (isString(action)) {
-                                switch (action) {
-                                    case 'show':
-                                        return {
-                                            id: 'show',
-                                            label: iconsOnly ? null : showLabel,
-                                            icon: iconsOnly ? <Icon name="eye-fill" /> : null,
-                                            href:
-                                                urlGenerator !== null &&
-                                                (!hasCustomShowUrl || withoutItemShowUrl)
-                                                    ? urlGenerator('show', {
-                                                          id,
-                                                      }) || null
-                                                    : showUrl || url,
-                                            external: hasCustomShowUrl,
-                                            theme: 'info',
-                                            target: '_blank',
-                                            onClick: onClickShow,
-                                            ...(getShowPropsFromItem !== null
-                                                ? getShowPropsFromItem(item)
-                                                : null),
-                                        };
-                                    case 'edit':
-                                        return {
-                                            id: 'edit',
-                                            label: iconsOnly ? null : editLabel,
-                                            icon: iconsOnly ? <Icon name="pencil-square" /> : null,
-                                            href:
-                                                urlGenerator !== null
-                                                    ? urlGenerator('edit', {
-                                                          id,
-                                                      }) || null
-                                                    : null,
-                                            theme: 'primary',
-                                            onClick: onClickEdit,
-                                            ...(getEditPropsFromItem !== null
-                                                ? getEditPropsFromItem(item)
-                                                : null),
-                                        };
-                                    case 'duplicate':
-                                        return {
-                                            id: 'duplicate',
-                                            label: iconsOnly ? null : duplicateLabel,
-                                            icon: iconsOnly ? <Icon name="copy" /> : null,
-                                            href:
-                                                urlGenerator !== null
-                                                    ? urlGenerator('duplicate', {
-                                                          id,
-                                                      }) || null
-                                                    : null,
-                                            theme: 'warning',
-                                            onClick: onClickDuplicate,
-                                            ...(getDuplicatePropsFromItem !== null
-                                                ? getDuplicatePropsFromItem(item)
-                                                : null),
-                                        };
-                                    case 'delete':
-                                        return {
-                                            id: 'delete',
-                                            label: iconsOnly ? null : deleteLabel,
-                                            icon: iconsOnly ? <Icon name="trash3" /> : null,
-                                            href:
-                                                urlGenerator !== null
-                                                    ? urlGenerator('delete', {
-                                                          id,
-                                                      }) || null
-                                                    : null,
-                                            theme: 'danger',
-                                            onClick: onClickDelete,
-                                            ...(getDeletePropsFromItem !== null
-                                                ? getDeletePropsFromItem(item)
-                                                : null),
-                                        };
-
-                                    default:
-                                        break;
-                                }
-                            }
+            items={finalActions
+                .map((action = null) => {
+                    if (action !== null) {
+                        if (isObject(action)) {
+                            const {
+                                label = null,
+                                icon = null,
+                                itemLinkProp = null,
+                                linkProps = null,
+                                component = null,
+                                ...otherProps
+                            } = action;
+                            const ActionComponent =
+                                component !== null
+                                    ? componentsManager.getComponent(component)
+                                    : null;
+                            return {
+                                renderButton:
+                                    ActionComponent !== null
+                                        ? (buttonProps, index, fixedProps) => (
+                                              <ActionComponent
+                                                  resource={resource}
+                                                  item={item}
+                                                  {...fixedProps}
+                                                  {...buttonProps}
+                                              />
+                                          )
+                                        : null,
+                                ...otherProps,
+                                ...(ActionComponent !== null
+                                    ? { reload, reloadPage, updateItem }
+                                    : null),
+                                label: iconsOnly && icon !== null ? null : label,
+                                icon: iconsOnly && icon !== null ? <Icon name={icon} /> : null,
+                                ...(itemLinkProp !== null && item !== null && item[itemLinkProp]
+                                    ? { href: item[itemLinkProp], ...linkProps }
+                                    : null),
+                            };
                         }
-                        return null;
-                    })
-                    .filter((action) => action !== null)
-            }
+                    }
+                    return null;
+                })
+                .filter((action) => action !== null)}
             className={className}
         />
     );

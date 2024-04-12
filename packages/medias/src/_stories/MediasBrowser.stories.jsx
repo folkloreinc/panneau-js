@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 
 import withApi from '../../../../.storybook/decorators/withApiProvider';
 import withIntl from '../../../../.storybook/decorators/withIntlProvider';
+import ActionsProvider from '../../../actions';
 import { useApi } from '../../../data/src/contexts/ApiContext';
 import DisplaysProvider from '../../../displays';
 import FieldsProvider from '../../../fields';
@@ -35,9 +36,11 @@ const Container = ({ ...props } = {}) => {
             <FieldsProvider>
                 <DisplaysProvider>
                     <FiltersProvider>
-                        <MediasApiProvider api={api.medias}>
-                            <MediasBrowser {...props} />
-                        </MediasApiProvider>
+                        <ActionsProvider>
+                            <MediasApiProvider api={api.medias}>
+                                <MediasBrowser {...props} />
+                            </MediasApiProvider>
+                        </ActionsProvider>
                     </FiltersProvider>
                 </DisplaysProvider>
             </FieldsProvider>
@@ -45,7 +48,7 @@ const Container = ({ ...props } = {}) => {
     );
 };
 
-export const Default = () => <Container items={items} />;
+export const Default = () => <Container />;
 
 export const Table = () => (
     <UppyProvider>

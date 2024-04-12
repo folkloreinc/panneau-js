@@ -116,14 +116,14 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                     actions={
                         finalActions.length > 0 ? (
                             <div className="d-flex align-items-center">
-                                {finalActions.map(({ id, component = Button, ...actionProps }) => {
+                                {finalActions.map(({ id, component = Button, ...actionsProps }) => {
                                     const ActionComponent = isString(component)
                                         ? componentsManager.getComponent(component)
                                         : component;
                                     return ActionComponent !== null ? (
                                         <ActionComponent
                                             key={`action-${id}`}
-                                            {...actionProps}
+                                            {...actionsProps}
                                             {...(ActionComponent !== Button
                                                 ? {
                                                       resource,

@@ -1,9 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
-// import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getCSRFHeaders, getJSON } from '@folklore/fetch';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { getPathValue } from '@panneau/core/utils';
 import Select from '@panneau/element-select';
@@ -79,6 +78,7 @@ const SelectField = ({
     );
 
     const [inputTextValue, setInputTextValue] = useState('');
+    const inputRef = useRef(false);
 
     const loadOptions = useMemo(
         () =>
@@ -96,6 +96,7 @@ const SelectField = ({
                           queryData !== null
                               ? queryString.stringify(queryData, { arrayFormat: 'bracket' })
                               : null;
+
                       return getJSON(
                           `${requestUrl}${
                               finalQuery !== null && finalQuery.length > 0 ? `?${finalQuery}` : ''
@@ -105,21 +106,25 @@ const SelectField = ({
                               headers: getCSRFHeaders(),
                               ...requestOptions,
                           },
-                      ).then((newItems) => {
-                          const { data = null } = paginated
-                              ? newItems || {}
-                              : { data: newItems || [] };
-                          const finalNewItems =
-                              maxOptionsCount !== null ? data.slice(0, maxOptionsCount) : data;
-                          return prepareRequestOptions !== null
-                              ? prepareRequestOptions(finalNewItems)
-                              : finalNewItems;
-                      });
+                      )
+                          .then((newItems) => {
+                              const { data = null } = paginated
+                                  ? newItems || {}
+                                  : { data: newItems || [] };
+                              const finalNewItems =
+                                  maxOptionsCount !== null ? data.slice(0, maxOptionsCount) : data;
+                              inputRef.current = false;
+                              return prepareRequestOptions !== null
+                                  ? prepareRequestOptions(finalNewItems)
+                                  : finalNewItems;
+                          })
+                          .catch(() => {
+                              inputRef.current = false;
+                          });
                   }
                 : null,
         [
             maxOptionsCount,
-            inputTextValue,
             requestUrl,
             requestQuery,
             requestOptions,
@@ -129,7 +134,7 @@ const SelectField = ({
         ],
     );
 
-    const finalLoadOptions = customLoadOptions || loadOptions;
+    const finalLoadOptions = customLoadOptions || loadOptions || null;
 
     const onValueChange = useCallback(
         (newValue) => {

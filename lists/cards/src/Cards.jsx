@@ -1,13 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
-// import { defineMessages } from 'react-intl';
+import classNames from 'classnames';
+import get from 'lodash/get';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-// import { useDisplaysComponents } from '@panneau/core/contexts';
-// import { getColumnsWithFields, getComponentFromName } from '@panneau/core/utils';
+import { useDisplaysComponents } from '@panneau/core/contexts';
+import { getColumnsWithFields, getComponentFromName } from '@panneau/core/utils';
 import Card from '@panneau/element-card';
-import FormActions from '@panneau/element-item-actions';
 import Loading from '@panneau/element-loading';
 
 const propTypes = {
@@ -15,13 +15,26 @@ const propTypes = {
     items: PanneauPropTypes.items,
     loading: PropTypes.bool,
     columns: PanneauPropTypes.tableColumns,
-    // onQueryChange: PropTypes.func,
+    cardTitlePath: PropTypes.string,
+    displayPlaceholder: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    reload: PropTypes.func,
+    reloadPage: PropTypes.func,
+    updateItem: PropTypes.func,
+    actionsProps: PropTypes.shape({}),
+    withoutActionsColumn: PropTypes.bool,
 };
 
 const defaultProps = {
     items: [],
     loading: false,
     columns: null,
+    cardTitlePath: 'title',
+    displayPlaceholder: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    reload: null,
+    reloadPage: null,
+    updateItem: null,
+    actionsProps: null,
+    withoutActionsColumn: false,
 };
 
 const CardsList = ({
@@ -29,35 +42,131 @@ const CardsList = ({
     items,
     loading,
     columns,
-    // onQueryChange,
+    cardTitlePath,
+    reload,
+    reloadPage,
+    updateItem,
+    actionsProps,
+    displayPlaceholder,
+    withoutActionsColumn,
 }) => {
-    console.log(columns);
-    // const displayComponents = useDisplaysComponents();
+    const displayComponents = useDisplaysComponents();
+    const columnWithFields = useMemo(
+        () => getColumnsWithFields(resource, columns),
+        [resource, columns],
+    );
 
-    // const columnsWithFields = useMemo(
-    //     () => getColumnsWithFields(resource, columns),
-    //     [resource, columns],
-    // );
+    const finalActionsProps = useMemo(
+        () => ({
+            ...actionsProps,
+            reload,
+            reloadPage,
+            updateItem,
+        }),
+        [actionsProps, reload, reloadPage, updateItem],
+    );
 
-    // const hasIdColumn =
-    //     (columnsWithFields.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
-    // const actionColumn = (columnsWithFields || []).find((it) => it.id === 'actions') || null;
-    // const hasActionsColumn = actionColumn !== null;
+    const idColumn =
+        (columnWithFields.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
+    const { id: itemId } = idColumn || {};
+
+    const actionColumn = (columnWithFields || []).find((it) => it.id === 'actions') || null;
+    const { component: actionsComponent = null } = actionColumn || {};
+    const ActionsDisplayComponent = getComponentFromName(
+        actionsComponent || 'actions',
+        displayComponents,
+        'span',
+    );
+
+    const finalColumns = columnWithFields.filter(({ id }) => id !== 'id' && id !== 'actions');
 
     return (
-        // const columns = fields.filter(({ hidden_in_index: hiddenInIndex = false }) => !hiddenInIndex);
-        <div className="d-flex flex-wrap">
+        <div className="row g-2">
             {items !== null
                 ? items.map((it) => {
                       const { id = null } = it || {};
+                      const title = get(it, cardTitlePath);
                       return (
-                          <div className="w-50 p-2" key={`card-${id}`}>
-                              <Card header={<div className="d-flex" />}>
-                                  <FormActions
-                                      resource={resource}
-                                      item={it}
-                                      actions={[{ label: 'Edit', theme: 'primary' }]}
-                                  />
+                          <div className="col-12 col-md-6 col-lg-4 col-xl-3" key={`card-${id}`}>
+                              <Card
+                                  header={
+                                      title !== null ? (
+                                          <span>
+                                              {itemId} {title}
+                                          </span>
+                                      ) : (
+                                          itemId
+                                      )
+                                  }
+                                  footer={
+                                      !withoutActionsColumn &&
+                                      ActionsDisplayComponent !== null &&
+                                      actionColumn !== null ? (
+                                          <ActionsDisplayComponent
+                                              placeholder={displayPlaceholder}
+                                              {...finalActionsProps}
+                                              {...actionColumn}
+                                              item={it}
+                                          />
+                                      ) : null
+                                  }
+                              >
+                                  {finalColumns.map((column, idx) => {
+                                      const {
+                                          id: colId,
+                                          component,
+                                          field = null,
+                                          name = null,
+                                          path = null,
+                                          columnClassName = null,
+                                          ...displayProps
+                                      } = column || {};
+
+                                      const FieldDisplayComponent = getComponentFromName(
+                                          colId === 'actions'
+                                              ? component || 'actions'
+                                              : component || 'text',
+                                          displayComponents,
+                                          'span',
+                                      );
+
+                                      let displayValue = null;
+                                      if (path !== null) {
+                                          displayValue = get(it, path, null);
+                                      } else if (name !== null) {
+                                          displayValue = get(it, name, null);
+                                      } else if (field !== null) {
+                                          displayValue = get(it, field.name, null);
+                                      }
+
+                                      return (
+                                          <div
+                                              key={`col-${id}-${colId}-${idx + 1}`}
+                                              className={classNames([
+                                                  'card-text',
+                                                  'text-break',
+                                                  {
+                                                      [columnClassName]: columnClassName !== null,
+                                                  },
+                                              ])}
+                                          >
+                                              {FieldDisplayComponent !== null ? (
+                                                  <FieldDisplayComponent
+                                                      placeholder={displayPlaceholder}
+                                                      {...(colId === 'actions'
+                                                          ? finalActionsProps
+                                                          : null)}
+                                                      {...displayProps}
+                                                      field={field}
+                                                      value={displayValue}
+                                                      item={it}
+                                                  />
+                                              ) : (
+                                                  displayPlaceholder
+                                              )}
+                                          </div>
+                                      );
+                                  })}
                               </Card>
                           </div>
                       );

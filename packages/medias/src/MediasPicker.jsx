@@ -96,6 +96,8 @@ function MediasPicker({
                     onSelectPage,
                     selectedItems,
                     pageSelected,
+                    // actionsComponent: ItemActions,
+                    // withCustomActionsColumn: true,
                     ...tableProps,
                 }}
                 items={items}

@@ -67,6 +67,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.158",
+        "@panneau/display-actions": "^3.0.158",
         "@panneau/display-avatar": "^3.0.158",
         "@panneau/display-badges": "^3.0.158",
         "@panneau/display-boolean": "^3.0.158",

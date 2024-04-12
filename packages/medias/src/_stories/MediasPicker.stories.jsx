@@ -2,6 +2,7 @@
 import React, { useCallback, useState } from 'react';
 
 import withApi from '../../../../.storybook/decorators/withApiProvider';
+import ActionsProvider from '../../../actions';
 import { useApi } from '../../../data/src/contexts/ApiContext';
 import DisplaysProvider from '../../../displays';
 import FieldsProvider from '../../../fields';
@@ -42,9 +43,11 @@ const Container = ({ value: initialValue = null, ...props } = {}) => {
             <FieldsProvider>
                 <DisplaysProvider>
                     <FiltersProvider>
-                        <MediasApiProvider api={api.medias}>
-                            <MediasPicker {...props} value={value} onChange={onChange} />
-                        </MediasApiProvider>
+                        <ActionsProvider>
+                            <MediasApiProvider api={api.medias}>
+                                <MediasPicker {...props} value={value} onChange={onChange} />
+                            </MediasApiProvider>
+                        </ActionsProvider>
                     </FiltersProvider>
                 </DisplaysProvider>
             </FieldsProvider>

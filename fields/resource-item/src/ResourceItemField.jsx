@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -160,6 +160,7 @@ const ResourceItemField = ({
 
     // The text input search query
     const [inputTextValue, setInputTextValue] = useState('');
+    const [queryTextValue, setQueryTextValue] = useState('');
     const onInputChange = useCallback(
         (textValue) => {
             setInputTextValue(textValue);
@@ -168,14 +169,23 @@ const ResourceItemField = ({
         [setInputTextValue, setPage, defaultPage],
     );
 
+    useEffect(() => {
+        const id = setTimeout(() => {
+            setQueryTextValue(inputTextValue);
+        }, 500);
+        return () => {
+            clearTimeout(id);
+        };
+    }, [inputTextValue, setQueryTextValue]);
+
     const queryResource = useMemo(() => ({ id: resourceId }), [resourceId]);
     const finalQuery = useMemo(
         () => ({
             ...query,
-            ...(!isEmpty(inputTextValue) ? { [searchParamName]: inputTextValue } : null),
+            ...(!isEmpty(queryTextValue) ? { [searchParamName]: queryTextValue } : null),
             paginated,
         }),
-        [inputTextValue, paginated],
+        [queryTextValue, paginated],
     );
 
     const resourceItems = useResourceItems(

@@ -11,8 +11,6 @@ import { FormattedMessage } from 'react-intl';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
-import ItemActions from '@panneau/element-item-actions';
-// import Icon from '@panneau/element-icon';
 import Loading from '@panneau/element-loading';
 
 import SortLink from './SortLink';
@@ -281,7 +279,9 @@ function Table({
                                         } = column || {};
 
                                         const FieldDisplayComponent = getComponentFromName(
-                                            colId === 'actions' ? component : component || 'text',
+                                            colId === 'actions'
+                                                ? component || 'actions'
+                                                : component || 'text',
                                             displayComponents,
                                             colId === 'actions' && actionsComponent !== null
                                                 ? actionsComponent
@@ -315,10 +315,12 @@ function Table({
                                             >
                                                 {FieldDisplayComponent !== null ? (
                                                     <FieldDisplayComponent
-                                                        {...(colId === 'actions'
-                                                            ? actionsProps
-                                                            : null)}
                                                         {...displayProps}
+                                                        actionsProps={
+                                                            colId === 'actions'
+                                                                ? actionsProps
+                                                                : null
+                                                        }
                                                         field={field}
                                                         value={displayValue}
                                                         placeholder={displayPlaceholder}

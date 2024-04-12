@@ -5,13 +5,13 @@ import { v4 as uuid } from 'uuid';
 
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 // import Label from '@panneau/element-label';
-import * as styles from './styles.module.scss';
+import styles from './styles.module.scss';
 
 const propTypes = {
     items: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.string,
-            content: PropTypes.oneOf([PropTypes.string, PropTypes.node]),
+            content: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
         }),
     ),
     oneAtATime: PropTypes.bool,
@@ -29,8 +29,6 @@ const defaultProps = {
 const Accordion = ({ oneAtATime, title, items, className }) => {
     const accordionRefs = useRef([]);
     const accordionId = useMemo(() => uuid(), []);
-
-    console.log('styles', styles);
 
     const accordionItemsHeights = items.map((it, idx) =>
         accordionRefs.current[idx]
@@ -75,11 +73,12 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
             {items.length > 0
                 ? items.map((it, idx) => {
                       const itemOpened = isItemOpened(idx);
+                      const { label = null, content = null } = it || {};
                       return (
-                          <div className="accordion-item">
+                          <div className="accordion-item" key={`acc-${idx + 1}`}>
                               <h2
                                   className="accordion-header"
-                                  id={`${accordionId}-${it.label}-${idx + 1}`}
+                                  id={`${accordionId}-${label}-${idx + 1}`}
                               >
                                   <button
                                       className={`accordion-button ${
@@ -90,7 +89,7 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
                                       aria-expanded="true"
                                       aria-controls={`${accordionId}-collapse${idx}`}
                                   >
-                                      {it.label}
+                                      {label}
                                   </button>
                               </h2>
                               <div
@@ -99,7 +98,7 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
                                       'accordion-item collapse show',
                                       styles.accordeonItem,
                                   ])}
-                                  aria-labelledby={`${accordionId}-${it.label}-${idx + 1}`}
+                                  aria-labelledby={`${accordionId}-${label}-${idx + 1}`}
                                   data-bs-parent={`#${accordionId}`}
                                   style={{
                                       height: `${itemOpened ? accordionItemsHeights[idx] : '0'}`,
@@ -111,7 +110,7 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
                                           accordionRefs.current[idx] = ref;
                                       }}
                                   >
-                                      {it.content}
+                                      {content}
                                   </div>
                               </div>
                           </div>

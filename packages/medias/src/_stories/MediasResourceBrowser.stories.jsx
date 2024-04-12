@@ -3,6 +3,7 @@ import React from 'react';
 
 import panneauDefinition from '../../../../.storybook/data/panneau-definition';
 import withApi from '../../../../.storybook/decorators/withApiProvider';
+import ActionsProvider from '../../../actions';
 import { PanneauProvider } from '../../../core/src/contexts';
 import DisplaysProvider from '../../../displays';
 import FieldsProvider from '../../../fields';
@@ -25,9 +26,11 @@ const Container = (props) => (
         <IntlProvider>
             <DisplaysProvider>
                 <FiltersProvider>
-                    <PanneauProvider definition={panneauDefinition}>
-                        <MediasResourceBrowser {...props} />
-                    </PanneauProvider>
+                    <ActionsProvider>
+                        <PanneauProvider definition={panneauDefinition}>
+                            <MediasResourceBrowser {...props} />
+                        </PanneauProvider>
+                    </ActionsProvider>
                 </FiltersProvider>
             </DisplaysProvider>
         </IntlProvider>

@@ -94,16 +94,15 @@ const DeleteAction = ({
     }, [setShowModal]);
 
     return (
-        <div
-            className={classNames([
-                styles.container,
-                {
-                    [className]: className !== null,
-                },
-            ])}
-        >
+        <>
             <Button
                 {...props}
+                className={classNames([
+                    styles.container,
+                    {
+                        [className]: className !== null,
+                    },
+                ])}
                 label={label}
                 icon={icon}
                 onClick={onOpen}
@@ -150,7 +149,7 @@ const DeleteAction = ({
                     ) : null}
                 </Confirm>
             ) : null}
-        </div>
+        </>
     );
 };
 

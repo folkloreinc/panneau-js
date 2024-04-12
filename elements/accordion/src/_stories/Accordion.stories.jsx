@@ -1,7 +1,7 @@
 import React from 'react';
 
-import AccordionElement from '../Accordion';
 import TextField from '../../../../fields/text/src/TextField';
+import AccordionElement from '../Accordion';
 
 const accordeonItems = [
     {
