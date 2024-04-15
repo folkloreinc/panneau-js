@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-text-description",
-    "version": "3.0.159",
+    "version": "3.0.160",
     "description": "Text with description in list",
     "keywords": [
         "javascript"
@@ -46,8 +46,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.159",
-        "@panneau/themes": "^3.0.159",
+        "@panneau/core": "^3.0.160",
+        "@panneau/themes": "^3.0.160",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
