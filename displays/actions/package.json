@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-actions",
-    "version": "3.0.160",
+    "version": "3.0.161",
     "description": "Actions in list",
     "keywords": [
         "javascript"
@@ -46,9 +46,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/action-actions": "^3.0.160",
-        "@panneau/core": "^3.0.160",
-        "@panneau/themes": "^3.0.160",
+        "@panneau/action-actions": "^3.0.161",
+        "@panneau/core": "^3.0.161",
+        "@panneau/themes": "^3.0.161",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2"
     },
