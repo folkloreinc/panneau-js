@@ -65,8 +65,6 @@ const useActions = (
                             onClick: onClickEdit,
                             ...(getEditPropsFromItem !== null ? getEditPropsFromItem(item) : null),
                         };
-                    case 'duplicate':
-                        return null;
                     // case 'duplicate':
                     //     return {
                     //         id: 'duplicate',
@@ -91,6 +89,8 @@ const useActions = (
                     //             ? getDuplicatePropsFromItem(item)
                     //             : null),
                     //     };
+                    case 'duplicate':
+                        return null;
                     case 'delete':
                         return {
                             id: 'delete',

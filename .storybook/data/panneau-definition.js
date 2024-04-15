@@ -23,6 +23,7 @@ export default {
         'resources.update': '/:resource/:id', // the json call
         'resources.delete': '/:resource/:id/delete', // the page
         'resources.destroy': '/:resource/:id', // the json call
+
         // 'resources.duplicate': '/:resource/:id/duplicate', // the page
         // 'resources.clone': '/:resource/:id/clone', // the json call
 
