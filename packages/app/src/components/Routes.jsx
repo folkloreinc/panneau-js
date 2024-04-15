@@ -60,7 +60,7 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
         create: createPage = null,
         edit: editPage = null,
         delete: deletePage = null,
-        duplicate: duplicatePage = null,
+        // duplicate: duplicatePage = null,
         ...otherPages
     } = pages || {};
 
@@ -115,8 +115,6 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
             </Switch>
         );
     }
-
-    console.log(routes);
 
     // Normal routes
     return (
