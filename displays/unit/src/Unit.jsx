@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-no-useless-fragment */
+import isObject from 'lodash/isObject';
 import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
@@ -24,7 +25,7 @@ const Unit = ({ value, placeholder, format, suffix }) => {
         if (value === null) {
             return null;
         }
-        if (format === 'bytes') {
+        if (format === 'bytes' && !isObject(value)) {
             return prettyBytes(parseInt(value, 10));
         }
         if (format === 'dimensions') {

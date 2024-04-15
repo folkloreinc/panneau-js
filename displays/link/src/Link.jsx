@@ -1,4 +1,5 @@
 import get from 'lodash/get';
+import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -31,7 +32,9 @@ const Link = ({ item, label, labelPath, value, external, target, placeholder }) 
     const finalValue = itemLabel || label || placeholder || (
         <FormattedMessage defaultMessage="Link" description="Display label" />
     );
-    return external ? (
+    const isExternal = value !== null && isString(value) ? value.indexOf('http') === 0 : false;
+
+    return external || isExternal ? (
         <a href={value} target={target || '_blank'} rel="noopener noreferrer">
             {finalValue}
         </a>

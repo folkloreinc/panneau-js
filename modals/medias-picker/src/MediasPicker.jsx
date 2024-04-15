@@ -62,7 +62,7 @@ function MediasPickerModal({
     );
     return (
         <Dialog
-            size="lg"
+            size="xl"
             onClose={onClose}
             title={title}
             buttons={[

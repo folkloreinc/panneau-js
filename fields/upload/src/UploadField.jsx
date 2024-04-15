@@ -24,6 +24,7 @@ import '@uppy/drag-drop/dist/style.css';
 import '@uppy/status-bar/dist/style.css';
 
 const propTypes = {
+    resource: PropTypes.string,
     value: PropTypes.oneOfType([
         PropTypes.array,
         PropTypes.shape({
@@ -62,6 +63,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    resource: 'medias',
     value: null,
     types: ['audio', 'image', 'video'],
     fileTypes: null,
@@ -103,6 +105,7 @@ const defaultProps = {
 };
 
 const UploadField = ({
+    resource,
     value,
     types,
     fileTypes,
@@ -394,7 +397,7 @@ const UploadField = ({
 
             {showResourceModal ? (
                 <ModalPicker
-                    resource="medias"
+                    resource={resource}
                     types={types}
                     selectable
                     onChange={onChangeSelection}

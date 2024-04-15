@@ -17,7 +17,10 @@ const defaultProps = {
 
 function MediasResourcePicker({ resource: resourceId, ...props }) {
     const resource = usePanneauResource(resourceId);
-    // console.log('resource', resource);
+
+    const { index = null, fields = null } = resource || {};
+    const { filters = null, columns = null } = index || {};
+
     const api = useApi();
     const mediasApi = useMemo(
         () => ({
@@ -29,7 +32,15 @@ function MediasResourcePicker({ resource: resourceId, ...props }) {
         }),
         [api, resource],
     );
-    return <MediasPickerContainer api={mediasApi} {...props} />;
+    return (
+        <MediasPickerContainer
+            api={mediasApi}
+            {...(filters !== null ? { filters } : null)}
+            {...(fields !== null ? { fields } : null)}
+            {...(columns !== null ? { columns } : null)}
+            {...props}
+        />
+    );
 }
 
 MediasResourcePicker.propTypes = propTypes;

@@ -177,6 +177,11 @@ function MediasBrowser({
         [setCurrentMedia, onQueryReset, onSelectItems],
     );
 
+    const onSaveMedia = useCallback(() => {
+        setCurrentMedia(null);
+        onQueryReset();
+    }, [setCurrentMedia, onQueryReset]);
+
     const pagination = (
         <Pagination
             page={page}
@@ -216,7 +221,13 @@ function MediasBrowser({
                             />
                         </Button>
                     </div>
-                    <MediaForm value={currentMedia} fields={fields} onClose={onCloseMedia} />
+                    <MediaForm
+                        value={currentMedia}
+                        fields={fields}
+                        onChange={setCurrentMedia}
+                        onSave={onSaveMedia}
+                        onClose={onCloseMedia}
+                    />
                 </>
             ) : (
                 <>

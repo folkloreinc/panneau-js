@@ -27,8 +27,8 @@ const propTypes = {
             name: PropTypes.string,
         }),
     ),
-    onChange: PropTypes.func.isRequired,
-    onSave: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
+    onSave: PropTypes.func,
     onDelete: PropTypes.func,
     onClose: PropTypes.func,
     className: PropTypes.string,
@@ -38,8 +38,10 @@ const propTypes = {
 const defaultProps = {
     value: null,
     fields: defaultFields,
-    onClose: null,
+    onChange: null,
+    onSave: null,
     onDelete: null,
+    onClose: null,
     className: null,
     children: null,
 };
@@ -88,13 +90,13 @@ function MediaForm({
         // Destroy
         const { id = null } = initialValue || {};
         destroy(id, initialValue).then(() => {
-            if (onClose !== null) {
-                onClose();
-            }
             if (onDelete !== null) {
                 onDelete();
             }
             setChanged(false);
+            if (onClose !== null) {
+                onClose();
+            }
         });
     }, [initialValue, destroy, destroying, setChanged]);
 
@@ -114,14 +116,14 @@ function MediaForm({
 
     return (
         <div className={classNames(['text-body', { [className]: className !== null }])}>
-            <div className="d-flex w-100 align-items-start justify-content-between mb-3 pb-2 border-bottom">
-                <div className="d-flex align-items-end justify-content-end mb-0">
+            <nav className="navbar d-flex w-100 align-items-end justify-content-between border-bottom mb-3">
+                <div className="d-flex align-items-end justify-content-end mb-1">
                     <h4 className="d-inline text-break mb-0">{name}</h4>
                     <span className="mx-2">{type}</span>
                 </div>
                 <div>
                     <Button
-                        className="me-2 mb-1"
+                        className="me-2 mb-1 mt-1"
                         theme="danger"
                         onClick={onDeleteMedia}
                         disabled={destroying}
@@ -130,7 +132,7 @@ function MediaForm({
                     </Button>
                     {onSave !== null ? (
                         <Button
-                            className="mb-1"
+                            className="mb-1 mt-1"
                             theme="primary"
                             onClick={onSubmit}
                             disabled={!changed || updating || destroying}
@@ -139,7 +141,7 @@ function MediaForm({
                         </Button>
                     ) : null}
                 </div>
-            </div>
+            </nav>
             <div className="row">
                 <div className="col-md-6">
                     <div className="position-relative w-100">

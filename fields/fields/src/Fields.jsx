@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
+import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { Fragment, useCallback } from 'react';
 
@@ -14,7 +15,6 @@ const propTypes = {
     fields: PanneauPropTypes.fields,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     horizontal: PropTypes.bool,
-    // flat: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
@@ -25,7 +25,6 @@ const defaultProps = {
     fields: [],
     value: null,
     horizontal: false,
-    // flat: false,
     disabled: false,
     className: null,
     onChange: null,
@@ -43,8 +42,6 @@ const Fields = ({
     const fieldsManager = useFieldsManager();
     const contextComponents = useFieldsComponents();
     const components = providedComponents || contextComponents;
-
-    // console.log('components', components);
 
     const onFieldChange = useCallback(
         ({ name = null }, newFieldValue) => {
@@ -65,8 +62,6 @@ const Fields = ({
         [onChange, value],
     );
 
-    // console.log(fields);
-
     const content = (fields || []).map((field, index) => {
         const {
             type = null,
@@ -74,7 +69,6 @@ const Fields = ({
             name = null,
             horizontal = false,
             inline = false,
-            // TODO: test this one
             withoutFormGroup = false,
             siblingFields = [],
             defaultValue = null,
@@ -96,7 +90,7 @@ const Fields = ({
 
         let fieldValue; // To detect if it's truly empty and not null
         if (value !== null && name !== null) {
-            fieldValue = value[name];
+            fieldValue = get(value, name, null);
         } else if (name === null) {
             fieldValue = value;
         }
@@ -104,8 +98,6 @@ const Fields = ({
         if (defaultValue !== null && typeof fieldValue === 'undefined') {
             fieldValue = defaultValue;
         }
-
-        // console.log('FieldComponent', FieldComponent, field);
 
         const fieldElement =
             FieldComponent !== null ? (
@@ -115,6 +107,7 @@ const Fields = ({
                     {...fieldProps}
                     name={name}
                     value={fieldValue}
+                    item={value}
                     {...withoutFormGroup}
                     onChange={(newValue) => onFieldChange(field, newValue)}
                     className={fieldClassName}

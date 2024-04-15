@@ -6,8 +6,10 @@ import { useApi } from '@panneau/data';
 import { Modals } from '@panneau/element-modal';
 import { MediasApiProvider } from '@panneau/medias';
 
+import panneauDefinition from '../../../../.storybook/data/panneau-definition';
 import withApiProvider from '../../../../.storybook/decorators/withApiProvider';
 import withUppy from '../../../../.storybook/decorators/withUppy';
+import { PanneauProvider } from '../../../../packages/core/src/contexts';
 import DisplaysProvider from '../../../../packages/displays';
 import FieldsProvider from '../../../../packages/fields';
 import FiltersProvider from '../../../../packages/filters';
@@ -55,3 +57,9 @@ const Container = (props) => {
 export const Normal = () => <Container />;
 
 export const Multiple = () => <Container multiple />;
+
+export const MultipleWithResource = () => (
+    <PanneauProvider definition={panneauDefinition}>
+        <Container multiple resource="medias" />
+    </PanneauProvider>
+);

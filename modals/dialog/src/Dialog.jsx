@@ -57,7 +57,6 @@ const ModalDialog = ({
                 className={classNames([
                     'modal-dialog',
                     styles.container,
-
                     {
                         [`modal-${size}`]: size !== null,
                         [styles.closeOutside]: onCloseButtonOutside,
@@ -74,6 +73,7 @@ const ModalDialog = ({
                                 styles.closeOutsideButton,
                                 'btn',
                                 'btn-close',
+                                'bg-light',
                                 // 'btn-close-white',
                                 'btn-secondary',
                                 'p-2',

@@ -27,7 +27,6 @@ const itemOptions = [
 
 const Container = (props) => {
     const [value, setValue] = useState(null);
-    // console.log('select value', value);
     return <Select {...props} value={value} onChange={setValue} />;
 };
 

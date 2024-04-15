@@ -9,23 +9,21 @@ import styles from './styles.module.scss';
 
 const propTypes = {
     value: PropTypes.bool,
-    type: PropTypes.string,
+    display: PropTypes.string,
     className: PropTypes.string,
 };
 
 const defaultProps = {
     value: null,
-    type: null,
+    display: null,
     className: null,
 };
 
-const DisplayField = ({ type = null, value, className, ...props }) => {
+const DisplayField = ({ value = null, display = null, className, ...props }) => {
     const displays = useDisplaysComponentsManager();
-    const Component = displays.getComponent(type) || null;
+    const Component = displays.getComponent(display) || null;
 
-    console.log('props', props);
-
-    return Component !== null ? (
+    return value !== null && Component !== null ? (
         <Component
             className={classNames([
                 styles.container,
