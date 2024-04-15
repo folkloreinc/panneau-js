@@ -19,11 +19,10 @@ import Filters from '@panneau/filter-filters';
 import { useMedias } from './hooks';
 
 import MediaForm from './MediaForm';
+import { useMediasForm } from './MediasFormContext';
 import defaultColumns from './defaults/columns';
 import defaultFields from './defaults/fields';
 import defaultFilters from './defaults/filters';
-import defaultDisplays from './defaults/metadata-displays';
-import defaultSections from './defaults/metadata-sections';
 
 import styles from './styles.module.scss';
 
@@ -39,10 +38,6 @@ const propTypes = {
     query: PropTypes.shape({}),
     baseUrl: PropTypes.string,
     fields: PanneauPropTypes.fields,
-    metadatas: PropTypes.shape({
-        sections: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
-        displays: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
-    }),
     layout: PropTypes.string,
     layouts: PropTypes.arrayOf(PropTypes.shape({})),
     theme: PropTypes.string,
@@ -64,10 +59,6 @@ const defaultProps = {
     filters: defaultFilters,
     columns: defaultColumns,
     fields: defaultFields,
-    metadatas: {
-        sections: defaultSections,
-        displays: defaultDisplays,
-    },
     query: null,
     baseUrl: null,
     layout: 'table',
@@ -101,7 +92,6 @@ function MediasBrowser({
     filters,
     columns,
     fields,
-    metadatas,
     query: initialQuery,
     layout: initialLayout,
     layouts,
@@ -115,9 +105,8 @@ function MediasBrowser({
     onClearSelected,
     className,
 }) {
-    const { sections, displays } = metadatas || {};
     const [baseItems] = useState(initialItems || null);
-    const baseQuery = useMemo(() => ({ ...initialQuery, types }), [initialQuery, types]);
+    const baseQuery = useMemo(() => ({ count: 12, ...initialQuery, types }), [initialQuery, types]);
     const { query: fullQuery, onPageChange, onQueryChange, onQueryReset } = useQuery(baseQuery);
 
     const {
@@ -166,11 +155,11 @@ function MediasBrowser({
         [setLayout],
     );
 
-    const [currentMedia, setCurrentMedia] = useState(null);
+    // const [currentMedia, setCurrentMedia] = useState(null);
+    const { media: currentMedia, setMedia: setCurrentMedia } = useMediasForm();
 
     const onOpenMedia = useCallback(
         (media) => {
-            console.log('open', media);
             setCurrentMedia(media);
         },
         [setCurrentMedia],
@@ -227,31 +216,41 @@ function MediasBrowser({
                             />
                         </Button>
                     </div>
-                    <MediaForm
-                        value={currentMedia}
-                        fields={fields}
-                        sections={sections}
-                        displays={displays}
-                        onClose={onCloseMedia}
-                    />
+                    <MediaForm value={currentMedia} fields={fields} onClose={onCloseMedia} />
                 </>
             ) : (
                 <>
-                    {uploadButton !== null ? (
-                        <div className="mt-2 mb-4">
-                            <UploadField onChange={onChangeMedia} withButton {...uploadButton} />
-                        </div>
-                    ) : null}
                     {buttons !== null ? <Buttons items={buttons} className="mb-2" /> : null}
                     {filters !== null ? (
                         <Filters
+                            className="mt-0 pt-0"
                             value={query}
                             clearValue={types !== null ? queryWithoutTypes : null}
                             filters={finalFilters}
                             onChange={onQueryChange}
                             onReset={onQueryReset}
                             theme={theme}
-                        />
+                        >
+                            {uploadButton !== null ? (
+                                <UploadField
+                                    className="w-auto mb-2"
+                                    onChange={onChangeMedia}
+                                    withButton
+                                    withoutMedia
+                                    {...uploadButton}
+                                />
+                            ) : null}
+                        </Filters>
+                    ) : null}
+                    {filters === null && uploadButton !== null ? (
+                        <div className="mt-2 mb-2">
+                            <UploadField
+                                onChange={onChangeMedia}
+                                withButton
+                                withoutMedia
+                                {...uploadButton}
+                            />
+                        </div>
                     ) : null}
                     <div
                         className={classNames([
@@ -281,7 +280,7 @@ function MediasBrowser({
                     </div>
                     {layout === 'grid' ? (
                         <Grid
-                            size="xsmall"
+                            size="small"
                             theme={theme}
                             component={MediaCard}
                             componentProps={{

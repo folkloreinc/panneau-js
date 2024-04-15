@@ -82,19 +82,26 @@ const Actions = ({
                 },
             ])}
         >
-            {finalActions.map((action) => {
-                const { component = null } = action || {};
-                const actionComponent = actionsComponents.getComponent(component) || null;
+            {finalActions.map((action, idx) => {
+                const { id = null, component = null, ...otherProps } = action || {};
+                const actionComponent = actionsComponents.getComponent(component);
+                const hasActionComponent = actionComponent !== null;
                 const Component = actionComponent || defaultComponent;
                 return Component !== null ? (
                     <Component
-                        {...action}
+                        {...otherProps}
+                        id={id}
+                        key={`action-${id}-${idx + 1}`}
                         className={!isGroup ? 'me-2' : null}
                         value={value}
                         size={size}
                         resource={resource}
-                        onChange={onChange}
-                        setSelectedItems={setSelectedItems}
+                        {...(hasActionComponent
+                            ? {
+                                  onChange,
+                                  setSelectedItems,
+                              }
+                            : null)}
                     />
                 ) : null;
             })}

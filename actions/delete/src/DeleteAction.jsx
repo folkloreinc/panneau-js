@@ -27,7 +27,7 @@ const propTypes = {
 const defaultProps = {
     title: null,
     description: null,
-    endpoint: '/batch',
+    endpoint: '/delete',
     label: <FormattedMessage defaultMessage="Delete" description="Button label" />,
     icon: 'trash',
     value: null,
@@ -95,6 +95,7 @@ const DeleteAction = ({
     return (
         <>
             <Button
+                {...props}
                 className={classNames([
                     styles.container,
                     {
@@ -106,7 +107,6 @@ const DeleteAction = ({
                 onClick={onOpen}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
-                {...props}
             />
             {showModal ? (
                 <Confirm

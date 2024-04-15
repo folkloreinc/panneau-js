@@ -7,6 +7,7 @@ import { useItemSelection } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 
 import MediasBrowser from './MediasBrowser';
+import { useMediasForm } from './MediasFormContext';
 
 const propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
@@ -59,6 +60,7 @@ function MediasPicker({
         [setItems],
     );
     const disabled = initialItems === null || initialItems.length < 1;
+    const { media: currentMedia } = useMediasForm();
 
     const {
         onSelectItem,
@@ -114,7 +116,7 @@ function MediasPicker({
                 types={types}
                 {...props}
             />
-            {multiple && !withoutButtons ? (
+            {multiple && !withoutButtons && currentMedia === null ? (
                 <div className="d-flex w-100 align-items-end justify-content-end mt-3">
                     <div className="btn-group">
                         {onClose !== null ? (

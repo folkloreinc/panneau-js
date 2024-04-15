@@ -1,0 +1,15 @@
+{
+    "id": "222",
+    "type": "audio",
+    "name": "mood2.mp3",
+    "url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/mood.mp3",
+    "thumbnail_url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/waveform.png",
+    "metadata": {
+        "filename": "mood2.mp3",
+        "size": 158897,
+        "mime": "audio/mp3",
+        "width": 0,
+        "height": 0,
+        "duration": 12
+    }
+}

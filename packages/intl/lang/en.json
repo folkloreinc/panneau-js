@@ -101,6 +101,9 @@
     "BAKfhq": {
         "defaultMessage": "W"
     },
+    "BeKVq6": {
+        "defaultMessage": "Upload file"
+    },
     "Bhu3B2": {
         "defaultMessage": "Delete"
     },
@@ -119,6 +122,9 @@
     "FntHPK": {
         "defaultMessage": "View {the_plural}"
     },
+    "G7M4nI": {
+        "defaultMessage": "Duplicate {a_singular}"
+    },
     "HOobY2": {
         "defaultMessage": "Error 401"
     },
@@ -130,12 +136,6 @@
     },
     "J6Mhku": {
         "defaultMessage": "F"
-    },
-    "JuxiUN": {
-        "defaultMessage": "Format"
-    },
-    "KNeQ6y": {
-        "defaultMessage": "Added by"
     },
     "Ke35Pv": {
         "defaultMessage": "Edit"
@@ -151,9 +151,6 @@
     },
     "Mohaye": {
         "defaultMessage": "Edit item"
-    },
-    "NI9440": {
-        "defaultMessage": "Add file"
     },
     "NeSNvW": {
         "defaultMessage": "clear"
@@ -233,9 +230,6 @@
     "XJ1dc3": {
         "defaultMessage": "New password"
     },
-    "XLOebh": {
-        "defaultMessage": "items selected"
-    },
     "XLVfN6": {
         "defaultMessage": "Find {a_singular}"
     },
@@ -296,9 +290,6 @@
     "fSfLk8": {
         "defaultMessage": "S"
     },
-    "g2CRt5": {
-        "defaultMessage": "Size"
-    },
     "g6qbbX": {
         "defaultMessage": "Log in"
     },
@@ -307,9 +298,6 @@
     },
     "hezcGl": {
         "defaultMessage": "Go to home page"
-    },
-    "hnLSrX": {
-        "defaultMessage": "Tag"
     },
     "jbT/g6": {
         "defaultMessage": "M"
@@ -347,9 +335,6 @@
     "rSt+KL": {
         "defaultMessage": "No"
     },
-    "rmJBin": {
-        "defaultMessage": "Dimensions"
-    },
     "rtwfuZ": {
         "defaultMessage": "Actions"
     },
@@ -361,9 +346,6 @@
     },
     "sOfogS": {
         "defaultMessage": "Edit items"
-    },
-    "skmuWU": {
-        "defaultMessage": "Author"
     },
     "smqUAV": {
         "defaultMessage": "Edit {name}"
@@ -383,17 +365,11 @@
     "wKPI1y": {
         "defaultMessage": "This page doesn’t exist"
     },
-    "wU++NJ": {
-        "defaultMessage": "Duration"
-    },
     "wa783M": {
         "defaultMessage": "Already have an account? Go to login"
     },
     "x27x2b": {
         "defaultMessage": "Loading"
-    },
-    "xKUOLG": {
-        "defaultMessage": "Technical details"
     },
     "xSERPA": {
         "defaultMessage": "Video"

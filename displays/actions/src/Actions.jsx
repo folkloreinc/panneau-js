@@ -10,12 +10,15 @@ import { useActions } from '@panneau/core/hooks';
 import styles from './styles.module.scss';
 
 const propTypes = {
-    item: PropTypes.shape({
-        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    }).isRequired,
+    item: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        }),
+    ]).isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
-    actions: PanneauPropTypes.buttons,
+    actions: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.object, PropTypes.string])),
     urlGenerator: PropTypes.func,
     actionsProps: PropTypes.shape({}),
     size: PanneauPropTypes.buttonSize,

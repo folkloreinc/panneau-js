@@ -18,8 +18,8 @@ const propTypes = {
 const defaultProps = {
     value: null,
     placeholder: null,
-    maxWidth: 60,
-    maxHeight: 60,
+    maxWidth: 40,
+    maxHeight: 40,
     onClick: null,
     className: null,
 };

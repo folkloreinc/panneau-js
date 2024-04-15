@@ -79,6 +79,12 @@ const useActions = (
                                     : null,
                             theme: 'warning',
                             onClick: onClickDuplicate,
+                            endpoint:
+                                urlGenerator !== null && preferDeleteModal
+                                    ? urlGenerator('duplicate', {
+                                          id,
+                                      }) || null
+                                    : null,
                             ...(getDuplicatePropsFromItem !== null
                                 ? getDuplicatePropsFromItem(item)
                                 : null),
@@ -97,6 +103,12 @@ const useActions = (
                                     : null,
                             theme: 'danger',
                             onClick: onClickDelete,
+                            endpoint:
+                                urlGenerator !== null && preferDeleteModal
+                                    ? urlGenerator('destroy', {
+                                          id,
+                                      }) || null
+                                    : null,
                             ...(getDeletePropsFromItem !== null
                                 ? getDeletePropsFromItem(item)
                                 : null),

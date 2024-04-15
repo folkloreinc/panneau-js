@@ -40,6 +40,7 @@ const propTypes = {
     withButton: PropTypes.bool,
     withFind: PropTypes.bool,
     withClearButton: PropTypes.bool,
+    withoutMedia: PropTypes.bool,
     addButtonLabel: PanneauPropTypes.label,
     findButtonLabel: PanneauPropTypes.label,
     clearButtonLabel: PanneauPropTypes.label,
@@ -68,8 +69,12 @@ const defaultProps = {
     withButton: false,
     withFind: false,
     withClearButton: false,
+    withoutMedia: false,
     addButtonLabel: (
-        <FormattedMessage defaultMessage="Add file" description="Default upload add button label" />
+        <FormattedMessage
+            defaultMessage="Upload file"
+            description="Default upload add button label"
+        />
     ),
     findButtonLabel: (
         <FormattedMessage
@@ -105,6 +110,7 @@ const UploadField = ({
     withButton,
     withFind,
     withClearButton,
+    withoutMedia,
     addButtonLabel,
     findButtonLabel,
     clearButtonLabel,
@@ -299,7 +305,7 @@ const UploadField = ({
             className={classNames([styles.container, { [className]: className !== null }])}
             ref={containerRef}
         >
-            {hasMedia ? (
+            {!withoutMedia && hasMedia ? (
                 <MediaCards
                     value={values}
                     namePath={namePath}
@@ -311,7 +317,7 @@ const UploadField = ({
                 />
             ) : null}
 
-            {hasMedia && withClearButton ? (
+            {!withoutMedia && hasMedia && withClearButton ? (
                 <div className="row mt-2">
                     <div className="col-auto">
                         <Button type="button" theme="primary" onClick={onClickClear} outline>
@@ -321,7 +327,7 @@ const UploadField = ({
                 </div>
             ) : null}
 
-            {(!hasMedia || allowMultipleUploads) && withButton ? (
+            {withoutMedia || ((!hasMedia || allowMultipleUploads) && withButton) ? (
                 <div className="row">
                     <div className="col-auto">
                         <Button

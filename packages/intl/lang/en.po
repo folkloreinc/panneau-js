@@ -215,6 +215,12 @@ msgctxt "BAKfhq"
 msgid "W"
 msgstr "W"
 
+# Default upload add button label
+#: BeKVq6
+msgctxt "BeKVq6"
+msgid "Upload file"
+msgstr "Upload file"
+
 # Button label
 #: Bhu3B2
 msgctxt "Bhu3B2"
@@ -251,6 +257,12 @@ msgctxt "FntHPK"
 msgid "View {the_plural}"
 msgstr "View {the_plural}"
 
+# Page title
+#: G7M4nI
+msgctxt "G7M4nI"
+msgid "Duplicate {a_singular}"
+msgstr "Duplicate {a_singular}"
+
 # Error page meta title
 #: HOobY2
 msgctxt "HOobY2"
@@ -274,18 +286,6 @@ msgstr "Account"
 msgctxt "J6Mhku"
 msgid "F"
 msgstr "F"
-
-# Field label
-#: JuxiUN
-msgctxt "JuxiUN"
-msgid "Format"
-msgstr "Format"
-
-# Field name
-#: KNeQ6y
-msgctxt "KNeQ6y"
-msgid "Added by"
-msgstr "Added by"
 
 # Button label
 #: Ke35Pv
@@ -316,12 +316,6 @@ msgstr "Error"
 msgctxt "Mohaye"
 msgid "Edit item"
 msgstr "Edit item"
-
-# Default upload add button label
-#: NI9440
-msgctxt "NI9440"
-msgid "Add file"
-msgstr "Add file"
 
 # Button label
 #: NeSNvW
@@ -483,12 +477,6 @@ msgctxt "XJ1dc3"
 msgid "New password"
 msgstr "New password"
 
-# Items label
-#: XLOebh
-msgctxt "XLOebh"
-msgid "items selected"
-msgstr "items selected"
-
 # Page title
 #: XLVfN6
 msgctxt "XLVfN6"
@@ -613,12 +601,6 @@ msgctxt "fSfLk8"
 msgid "S"
 msgstr "S"
 
-# Field label
-#: g2CRt5
-msgctxt "g2CRt5"
-msgid "Size"
-msgstr "Size"
-
 # Button label
 #: g6qbbX
 msgctxt "g6qbbX"
@@ -636,12 +618,6 @@ msgstr "Disable two factor authentication"
 msgctxt "hezcGl"
 msgid "Go to home page"
 msgstr "Go to home page"
-
-# Filter label
-#: hnLSrX
-msgctxt "hnLSrX"
-msgid "Tag"
-msgstr "Tag"
 
 # Monday letter
 #: jbT/g6
@@ -715,12 +691,6 @@ msgctxt "rSt+KL"
 msgid "No"
 msgstr "No"
 
-# Field label
-#: rmJBin
-msgctxt "rmJBin"
-msgid "Dimensions"
-msgstr "Dimensions"
-
 # Field name
 #: rtwfuZ
 msgctxt "rtwfuZ"
@@ -744,12 +714,6 @@ msgstr "Time"
 msgctxt "sOfogS"
 msgid "Edit items"
 msgstr "Edit items"
-
-# Filter label
-#: skmuWU
-msgctxt "skmuWU"
-msgid "Author"
-msgstr "Author"
 
 # Page title
 #: smqUAV
@@ -787,12 +751,6 @@ msgctxt "wKPI1y"
 msgid "This page doesn’t exist"
 msgstr "This page doesn’t exist"
 
-# Field label
-#: wU++NJ
-msgctxt "wU++NJ"
-msgid "Duration"
-msgstr "Duration"
-
 # Link label
 #: wa783M
 msgctxt "wa783M"
@@ -804,12 +762,6 @@ msgstr "Already have an account? Go to login"
 msgctxt "x27x2b"
 msgid "Loading"
 msgstr "Loading"
-
-# Field title
-#: xKUOLG
-msgctxt "xKUOLG"
-msgid "Technical details"
-msgstr "Technical details"
 
 # Filter item label
 #: xSERPA

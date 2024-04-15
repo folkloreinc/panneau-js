@@ -90,6 +90,15 @@ export const WithButtons = () => (
     </UppyProvider>
 );
 
+export const WithUploadButton = () => (
+    <UppyProvider>
+        <Container
+            items={items}
+            uploadButton={[{ id: 'upload', label: 'Custom', theme: 'danger' }]}
+        />
+    </UppyProvider>
+);
+
 const fields = [];
 const columns = [];
 const filters = [];

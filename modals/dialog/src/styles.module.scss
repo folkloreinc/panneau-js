@@ -5,15 +5,16 @@
     cursor: auto;
 
     &.closeOutside {
-        margin-top: 40px;
+        margin-top: 20px;
     }
 
     .closeOutsideButton {
         position: absolute;
-        z-index: 10001;
+        z-index: 10002;
         top: 0;
-        right: -30px;
+        right: -40px;
+        left: auto;
         transform: translateZ(1px);
-        color: #FFF;
+        // color: var(--bs-body-color);
     }
 }

@@ -38,7 +38,7 @@ export const getColumnsWithFields = (resource, columns) => {
                                 )
                               : null),
                           ...otherProps,
-                          id: colId,
+                          id: colId || (isString(column) ? column : null) || null,
                       };
                   })
                   .filter((it) => it !== null)

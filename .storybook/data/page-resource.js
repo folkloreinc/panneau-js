@@ -216,8 +216,8 @@ export default {
                         theme: 'secondary',
                     },
                     'edit',
-                    'delete',
                     'duplicate',
+                    'delete',
                 ],
             },
         ],
@@ -270,6 +270,17 @@ export default {
             },
             {
                 name: 'trucs',
+                placeholder: 'Sélectionner un truc',
+                component: 'select',
+                options: [
+                    { label: 'Truc 1', value: 'truc' },
+                    { label: 'Truc 2', value: 'machin' },
+                    { label: 'Truc 3', value: 'paul' },
+                    { label: 'Truc 4!', value: 'john' },
+                ],
+            },
+            {
+                name: 'trucs 2',
                 placeholder: 'Sélectionner un truc',
                 component: 'select',
                 options: [

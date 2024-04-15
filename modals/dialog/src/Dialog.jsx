@@ -74,8 +74,9 @@ const ModalDialog = ({
                                 styles.closeOutsideButton,
                                 'btn',
                                 'btn-close',
-                                'btn-close-white',
-                                'btn-light',
+                                // 'btn-close-white',
+                                'btn-secondary',
+                                'p-2',
                             ])}
                             aria-label="Close"
                             onClick={onClose}

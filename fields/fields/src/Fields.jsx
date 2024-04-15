@@ -44,6 +44,8 @@ const Fields = ({
     const contextComponents = useFieldsComponents();
     const components = providedComponents || contextComponents;
 
+    // console.log('components', components);
+
     const onFieldChange = useCallback(
         ({ name = null }, newFieldValue) => {
             const newValue =
@@ -63,7 +65,9 @@ const Fields = ({
         [onChange, value],
     );
 
-    const content = fields.map((field, index) => {
+    // console.log(fields);
+
+    const content = (fields || []).map((field, index) => {
         const {
             type = null,
             component = null,
@@ -100,6 +104,8 @@ const Fields = ({
         if (defaultValue !== null && typeof fieldValue === 'undefined') {
             fieldValue = defaultValue;
         }
+
+        // console.log('FieldComponent', FieldComponent, field);
 
         const fieldElement =
             FieldComponent !== null ? (

@@ -25,6 +25,7 @@ const propTypes = {
     withResetLabel: PropTypes.bool,
     defaultValue: PropTypes.objectOf(PropTypes.object), // eslint-disable-line react/forbid-prop-types
     className: PropTypes.string,
+    children: PropTypes.node,
 };
 
 const defaultProps = {
@@ -38,6 +39,7 @@ const defaultProps = {
     withResetLabel: false,
     defaultValue: { page: null },
     className: null,
+    children: null,
 };
 
 const Filters = ({
@@ -51,6 +53,7 @@ const Filters = ({
     withResetLabel,
     defaultValue,
     className,
+    children,
 }) => {
     const FilterComponents = useFiltersComponents();
     const currentFilters = filters || [];
@@ -100,62 +103,60 @@ const Filters = ({
     return (
         <Navbar
             className={classNames([
+                'gap-2',
+                'align-items-center',
+                'justify-content-start',
                 {
                     'navbar-expand-md': withContainer,
+
                     [className]: className !== null,
                 },
             ])}
             withoutCollapse
         >
-            <div className="row gx-2 w-100">
-                {currentFilters.map(
-                    ({ component, name, groupLabel, groupClassName, ...filterProps }, index) => {
-                        const FilterComponent = getComponentFromName(
-                            component,
-                            FilterComponents,
-                            null,
-                        );
-                        const filterValue = value !== null && value[name] ? value[name] : null;
-                        const withSize = component === 'select' || component === 'search';
-                        return FilterComponent !== null ? (
-                            <FormGroup
-                                key={`filter-${name}-${index + 1}`}
-                                label={groupLabel}
-                                className={classNames([
-                                    'position-relative col-auto mb-2',
-                                    {
-                                        [styles.select]: withSize,
-                                        [groupClassName]: groupClassName !== null,
-                                    },
-                                ])}
-                            >
-                                <FilterComponent
-                                    {...filterProps}
-                                    value={filterValue}
-                                    onChange={(newValue) => onFilterChange(name, newValue)}
-                                    onClear={() => onFilterClear(name)}
-                                    className={component === 'select' ? 'mw-100' : null}
-                                />
-                            </FormGroup>
-                        ) : null;
-                    },
-                )}
-                {withButton ? (
-                    <div className="col-auto mb-1">
-                        <Button theme="primary" onClick={onFiltersReset}>
-                            {withResetLabel ? (
-                                <span className="me-2">
-                                    <FormattedMessage
-                                        defaultMessage="Clear"
-                                        description="Button label"
-                                    />
-                                </span>
-                            ) : null}
-                            <Icon name="x-circle" />
-                        </Button>
-                    </div>
-                ) : null}
-            </div>
+            {children}
+            {(currentFilters || []).map(
+                ({ component, name, groupLabel, groupClassName, ...filterProps }, index) => {
+                    const FilterComponent = getComponentFromName(component, FilterComponents, null);
+                    const filterValue = value !== null && value[name] ? value[name] : null;
+                    const withSize = component === 'select' || component === 'search';
+                    return FilterComponent !== null ? (
+                        <FormGroup
+                            key={`filter-${name}-${index + 1}`}
+                            label={groupLabel}
+                            className={classNames([
+                                'col-auto position-relative mb-2',
+                                {
+                                    [styles.select]: withSize,
+                                    [styles.last]:
+                                        currentFilters.length < 3 &&
+                                        index === currentFilters.length - 1 &&
+                                        name === 'search',
+                                    [groupClassName]: groupClassName !== null,
+                                },
+                            ])}
+                        >
+                            <FilterComponent
+                                {...filterProps}
+                                value={filterValue}
+                                onChange={(newValue) => onFilterChange(name, newValue)}
+                                onClear={() => onFilterClear(name)}
+                                className={component === 'select' ? 'mw-100' : null}
+                            />
+                        </FormGroup>
+                    ) : null;
+                },
+            )}
+            {withButton ? (
+                <Button className="mb-2" size="md" theme="primary" onClick={onFiltersReset}>
+                    {withResetLabel ? (
+                        <span className="me-2">
+                            <FormattedMessage defaultMessage="Clear" description="Button label" />
+                        </span>
+                    ) : null}
+                    <Icon name="x-circle" />
+                </Button>
+            ) : null}
         </Navbar>
     );
 };

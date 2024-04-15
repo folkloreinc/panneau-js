@@ -61,13 +61,14 @@ const Grid = ({
         >
             <div className={styles.inner}>
                 {Component !== null
-                    ? (items || []).map((item) => {
+                    ? (items || []).map((item, idx) => {
                           const { id: itemId = null } = item || {};
                           const selected =
                               ((selectedItems || []).find(({ id = null } = {}) => id === itemId) ||
                                   null) !== null;
                           return (
                               <Component
+                                  key={`item-${itemId}-${idx + 1}`}
                                   value={item}
                                   {...componentProps}
                                   {...(onSelectItem !== null

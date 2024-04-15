@@ -2,7 +2,14 @@
 import React from 'react';
 import { Route } from 'wouter';
 
-import { ResourceCreate, ResourceDelete, ResourceEdit, ResourceIndex, ResourceShow } from './pages';
+import {
+    ResourceCreate,
+    ResourceDelete,
+    ResourceDuplicate,
+    ResourceEdit,
+    ResourceIndex,
+    ResourceShow,
+} from './pages';
 
 const createResourceRoutes = (resource, { route, componentsManager, pages = {} }) => {
     const { id: resourceId, pages: resourcePages = {}, extraRoutes = [] } = resource;
@@ -14,6 +21,7 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
         create: createPage = null,
         edit: editPage = null,
         delete: deletePage = null,
+        duplicate: duplicatePage = null,
     } = pages || {};
 
     const {
@@ -22,6 +30,7 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
         create: resourceCreatePage = null,
         edit: resourceEditPage = null,
         delete: resourceDeletePage = null,
+        duplicate: resourceDuplicatePage = null,
     } = resourcePages || {};
 
     const ResourceIndexComponent =
@@ -44,6 +53,10 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
         componentsManager.getComponent(resourceDeletePage?.component) ||
         componentsManager.getComponent(deletePage?.component) ||
         ResourceDelete;
+    const ResourceDuplicateComponent =
+        componentsManager.getComponent(resourceDuplicatePage?.component) ||
+        componentsManager.getComponent(duplicatePage?.component) ||
+        ResourceDuplicate;
 
     return [
         <Route
@@ -81,6 +94,15 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
             })}
         >
             {({ id = null }) => <ResourceDeleteComponent itemId={id} resource={resource} />}
+        </Route>,
+        <Route
+            key={`${resourceId}-duplicate`}
+            path={route('resources.duplicate', {
+                resource: resourceId,
+                id: ':id',
+            })}
+        >
+            {({ id = null }) => <ResourceDuplicateComponent itemId={id} resource={resource} />}
         </Route>,
         ...extraRoutes.map(({ path, component, ...pageProps }) => {
             const RouteComponent = componentsManager.getComponent(component);

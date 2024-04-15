@@ -179,7 +179,7 @@ msgstr "Mot de passe actuel"
 #: 8T+JE7
 msgctxt "8T+JE7"
 msgid "Duplicate"
-msgstr ""
+msgstr "Dupliquer"
 
 # Filter label
 #: 9/t5wK
@@ -217,6 +217,12 @@ msgctxt "BAKfhq"
 msgid "W"
 msgstr "M"
 
+# Default upload add button label
+#: BeKVq6
+msgctxt "BeKVq6"
+msgid "Upload file"
+msgstr "Ajouter un fichier"
+
 # Button label
 #: Bhu3B2
 msgctxt "Bhu3B2"
@@ -253,6 +259,12 @@ msgctxt "FntHPK"
 msgid "View {the_plural}"
 msgstr "Voir {the_plural}"
 
+# Page title
+#: G7M4nI
+msgctxt "G7M4nI"
+msgid "Duplicate {a_singular}"
+msgstr "Dupliquer {a_singular}"
+
 # Error page meta title
 #: HOobY2
 msgctxt "HOobY2"
@@ -276,18 +288,6 @@ msgstr "Compte"
 msgctxt "J6Mhku"
 msgid "F"
 msgstr "V"
-
-# Field label
-#: JuxiUN
-msgctxt "JuxiUN"
-msgid "Format"
-msgstr "Format"
-
-# Field name
-#: KNeQ6y
-msgctxt "KNeQ6y"
-msgid "Added by"
-msgstr "Ajouté par"
 
 # Button label
 #: Ke35Pv
@@ -318,12 +318,6 @@ msgstr "Erreur"
 msgctxt "Mohaye"
 msgid "Edit item"
 msgstr "Modifier l'élément"
-
-# Default upload add button label
-#: NI9440
-msgctxt "NI9440"
-msgid "Add file"
-msgstr "Ajouter un fichier"
 
 # Button label
 #: NeSNvW
@@ -483,12 +477,6 @@ msgctxt "XJ1dc3"
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-# Items label
-#: XLOebh
-msgctxt "XLOebh"
-msgid "items selected"
-msgstr "items sélectionnés"
-
 # Page title
 #: XLVfN6
 msgctxt "XLVfN6"
@@ -507,7 +495,7 @@ msgctxt "XmY7D8"
 msgid ""
 "The following items will be duplicated: {ids}. Are you sure you want to "
 "continue?"
-msgstr ""
+msgstr "Les éléments suivants seront dupliqués: {ids}. Voulez-vous continuer?"
 
 # Media type
 #: XnyI69
@@ -611,12 +599,6 @@ msgctxt "fSfLk8"
 msgid "S"
 msgstr "S"
 
-# Field label
-#: g2CRt5
-msgctxt "g2CRt5"
-msgid "Size"
-msgstr "Poids"
-
 # Button label
 #: g6qbbX
 msgctxt "g6qbbX"
@@ -634,12 +616,6 @@ msgstr "Désactiver l'authentification à deux facteurs"
 msgctxt "hezcGl"
 msgid "Go to home page"
 msgstr "Aller à la page d’accueil"
-
-# Filter label
-#: hnLSrX
-msgctxt "hnLSrX"
-msgid "Tag"
-msgstr "Tag"
 
 # Monday letter
 #: jbT/g6
@@ -715,12 +691,6 @@ msgctxt "rSt+KL"
 msgid "No"
 msgstr "Non"
 
-# Field label
-#: rmJBin
-msgctxt "rmJBin"
-msgid "Dimensions"
-msgstr "Dimensions"
-
 # Field name
 #: rtwfuZ
 msgctxt "rtwfuZ"
@@ -744,12 +714,6 @@ msgstr "Heure"
 msgctxt "sOfogS"
 msgid "Edit items"
 msgstr "Modifier les éléments"
-
-# Filter label
-#: skmuWU
-msgctxt "skmuWU"
-msgid "Author"
-msgstr "Auteur"
 
 # Page title
 #: smqUAV
@@ -787,12 +751,6 @@ msgctxt "wKPI1y"
 msgid "This page doesn’t exist"
 msgstr "Cette page n’existe pas"
 
-# Field label
-#: wU++NJ
-msgctxt "wU++NJ"
-msgid "Duration"
-msgstr "Durée"
-
 # Link label
 #: wa783M
 msgctxt "wa783M"
@@ -804,12 +762,6 @@ msgstr "Vous avez un compte? Connectez-vous ici"
 msgctxt "x27x2b"
 msgid "Loading"
 msgstr "Chargement"
-
-# Field title
-#: xKUOLG
-msgctxt "xKUOLG"
-msgid "Technical details"
-msgstr "Détails techniques"
 
 # Filter item label
 #: xSERPA

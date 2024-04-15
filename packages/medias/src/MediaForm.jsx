@@ -14,10 +14,7 @@ import { useMediaUpdate } from './hooks';
 import useMediaDestroy from './hooks/useMediaDestroy';
 
 import MediaFrame from './MediaFrame';
-import MediaMetadata from './MediaMetadata';
 import defaultFields from './defaults/fields';
-import defaultDisplays from './defaults/metadata-displays';
-import defaultSections from './defaults/metadata-sections';
 
 import styles from './styles.module.scss';
 
@@ -30,44 +27,32 @@ const propTypes = {
             name: PropTypes.string,
         }),
     ),
-    sections: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string,
-            title: PropTypes.string,
-        }),
-    ),
-    displays: PropTypes.arrayOf(
-        PropTypes.shape({
-            name: PropTypes.string,
-        }),
-    ),
     onChange: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     onDelete: PropTypes.func,
     onClose: PropTypes.func,
     className: PropTypes.string,
+    children: PropTypes.node,
 };
 
 const defaultProps = {
     value: null,
     fields: defaultFields,
-    sections: defaultSections,
-    displays: defaultDisplays,
     onClose: null,
     onDelete: null,
     className: null,
+    children: null,
 };
 
 function MediaForm({
     value: initialValue,
     fields: initialFields,
-    sections,
-    displays,
     onChange,
     onSave,
     onDelete,
     onClose,
     className,
+    children,
 }) {
     const FieldsComponent = useFieldComponent('fields');
 
@@ -162,6 +147,7 @@ function MediaForm({
                             <MediaFrame value={value} />
                         </div>
                     </div>
+                    {children}
                 </div>
                 <div className="col-md-6">
                     <Form onChange={onChangeMedia} withoutActions>
@@ -172,12 +158,6 @@ function MediaForm({
                             disabled={disabled}
                         />
                     </Form>
-                    <MediaMetadata
-                        className="mt-5"
-                        value={value}
-                        sections={sections}
-                        displays={displays}
-                    />
                     {generalError !== null && status !== null ? (
                         <div className="mt-5">
                             <FormStatus status={status} />

@@ -3,6 +3,7 @@ export { default as ResourceDelete } from './ResourceDelete';
 export { default as ResourceEdit } from './ResourceEdit';
 export { default as ResourceIndex } from './ResourceIndex';
 export { default as ResourceShow } from './ResourceShow';
+export { default as ResourceDuplicate } from './ResourceDuplicate';
 
 export { default as Home } from './Home';
 export { default as Account } from './Account';

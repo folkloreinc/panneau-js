@@ -22,7 +22,7 @@ const propTypes = {
 
 const defaultProps = {};
 
-const ResourceDeletePage = ({ itemId, resource }) => {
+const ResourceDuplicatePage = ({ itemId, resource }) => {
     const [, navigate] = useLocation();
     const resourceRoute = useResourceUrlGenerator(resource);
     const { item, loading, error } = useResourceItem(resource, itemId);
@@ -31,7 +31,7 @@ const ResourceDeletePage = ({ itemId, resource }) => {
     const typeName = useResourceTypeName(resource, type);
 
     const onSuccess = useCallback(
-        () => navigate(`${resourceRoute('index')}?deleted=true`),
+        ({ id = null } = {}) => navigate(`${resourceRoute('edit', { id })}?duplicated=true`),
         [navigate, resourceRoute],
     );
 
@@ -43,7 +43,7 @@ const ResourceDeletePage = ({ itemId, resource }) => {
                         <>
                             <FormattedMessage
                                 values={resourceValues}
-                                defaultMessage="Delete {a_singular}"
+                                defaultMessage="Duplicate {a_singular}"
                                 description="Page title"
                             />
                             {typeName !== null ? (
@@ -61,7 +61,7 @@ const ResourceDeletePage = ({ itemId, resource }) => {
                                     resource={resource}
                                     item={item}
                                     onSuccess={onSuccess}
-                                    isDelete
+                                    isDuplicate
                                 />
                             ) : null}
                             {item === null && loading && !error ? (
@@ -79,7 +79,7 @@ const ResourceDeletePage = ({ itemId, resource }) => {
         </ResourceProvider>
     );
 };
-ResourceDeletePage.propTypes = propTypes;
-ResourceDeletePage.defaultProps = defaultProps;
+ResourceDuplicatePage.propTypes = propTypes;
+ResourceDuplicatePage.defaultProps = defaultProps;
 
-export default ResourceDeletePage;
+export default ResourceDuplicatePage;

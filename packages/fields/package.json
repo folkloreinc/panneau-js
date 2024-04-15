@@ -71,6 +71,7 @@
         "@panneau/field-checkboxes": "^3.0.159",
         "@panneau/field-color": "^3.0.159",
         "@panneau/field-date": "^3.0.159",
+        "@panneau/field-display": "^3.0.159",
         "@panneau/field-embed": "^3.0.159",
         "@panneau/field-fields": "^3.0.159",
         "@panneau/field-html": "^3.0.159",

@@ -95,6 +95,7 @@ const DuplicateAction = ({
     return (
         <>
             <Button
+                {...props}
                 className={classNames([
                     styles.container,
                     {
@@ -106,7 +107,6 @@ const DuplicateAction = ({
                 onClick={onOpen}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
-                {...props}
             />
             {showModal ? (
                 <Confirm

@@ -3,21 +3,26 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { MediasApiProvider, apiPropTypes } from './MediasApiContext';
+import { MediasFormProvider } from './MediasFormContext';
 import MediasPicker from './MediasPicker';
 
 const propTypes = {
     api: apiPropTypes,
+    media: PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) }),
     onChange: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
     api: null,
+    media: null,
 };
 
-function MediasPickerContainer({ api, onChange, ...props }) {
+function MediasPickerContainer({ api, media, onChange, ...props }) {
     return (
         <MediasApiProvider api={api}>
-            <MediasPicker {...props} onChange={onChange} />
+            <MediasFormProvider media={media}>
+                <MediasPicker {...props} onChange={onChange} />
+            </MediasFormProvider>
         </MediasApiProvider>
     );
 }

@@ -56,17 +56,12 @@ export default {
                         theme: 'secondary',
                     },
                     'edit',
-                    'delete',
                     'duplicate',
+                    'delete',
                 ],
             },
         ],
         filters: [
-            {
-                name: 'search',
-                placeholder: 'Chercher',
-                component: 'search',
-            },
             {
                 name: 'trucs',
                 placeholder: 'Sélectionner un truc',
@@ -77,6 +72,11 @@ export default {
                     { label: 'Truc YYY', value: 'YYY' },
                     { label: 'Truc WWW', value: 'WWW' },
                 ],
+            },
+            {
+                name: 'search',
+                placeholder: 'Chercher',
+                component: 'search',
             },
         ],
     },

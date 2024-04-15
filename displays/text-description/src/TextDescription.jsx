@@ -53,7 +53,7 @@ const TextDescription = ({
 
     return label !== null ? (
         <div>
-            <p className="d-block m-0 p-0">{value || placeholder}</p>
+            <p className="d-block m-0 p-0 lh-sm">{value || placeholder}</p>
             <p className="d-block m-0 p-0 text-secondary text-opacity-75 lh-sm">
                 <small>{label}</small>
             </p>

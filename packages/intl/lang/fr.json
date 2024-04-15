@@ -80,6 +80,9 @@
     "8LSb8C": {
         "defaultMessage": "Mot de passe actuel"
     },
+    "8T+JE7": {
+        "defaultMessage": "Dupliquer"
+    },
     "9/t5wK": {
         "defaultMessage": "Type"
     },
@@ -97,6 +100,9 @@
     },
     "BAKfhq": {
         "defaultMessage": "M"
+    },
+    "BeKVq6": {
+        "defaultMessage": "Ajouter un fichier"
     },
     "Bhu3B2": {
         "defaultMessage": "Supprimer"
@@ -116,6 +122,9 @@
     "FntHPK": {
         "defaultMessage": "Voir {the_plural}"
     },
+    "G7M4nI": {
+        "defaultMessage": "Dupliquer {a_singular}"
+    },
     "HOobY2": {
         "defaultMessage": "Erreur 401"
     },
@@ -127,12 +136,6 @@
     },
     "J6Mhku": {
         "defaultMessage": "V"
-    },
-    "JuxiUN": {
-        "defaultMessage": "Format"
-    },
-    "KNeQ6y": {
-        "defaultMessage": "Ajouté par"
     },
     "Ke35Pv": {
         "defaultMessage": "Modifier"
@@ -148,9 +151,6 @@
     },
     "Mohaye": {
         "defaultMessage": "Modifier l'élément"
-    },
-    "NI9440": {
-        "defaultMessage": "Ajouter un fichier"
     },
     "NeSNvW": {
         "defaultMessage": "effacer"
@@ -230,14 +230,14 @@
     "XJ1dc3": {
         "defaultMessage": "Nouveau mot de passe"
     },
-    "XLOebh": {
-        "defaultMessage": "items sélectionnés"
-    },
     "XLVfN6": {
         "defaultMessage": "Trouver {a_singular}"
     },
     "XW9IKQ": {
         "defaultMessage": "Mettre à jour votre mot de passe"
+    },
+    "XmY7D8": {
+        "defaultMessage": "Les éléments suivants seront dupliqués: {ids}. Voulez-vous continuer?"
     },
     "XnyI69": {
         "defaultMessage": "Audio"
@@ -290,9 +290,6 @@
     "fSfLk8": {
         "defaultMessage": "S"
     },
-    "g2CRt5": {
-        "defaultMessage": "Poids"
-    },
     "g6qbbX": {
         "defaultMessage": "Connexion"
     },
@@ -301,9 +298,6 @@
     },
     "hezcGl": {
         "defaultMessage": "Aller à la page d’accueil"
-    },
-    "hnLSrX": {
-        "defaultMessage": "Tag"
     },
     "jbT/g6": {
         "defaultMessage": "L"
@@ -341,9 +335,6 @@
     "rSt+KL": {
         "defaultMessage": "Non"
     },
-    "rmJBin": {
-        "defaultMessage": "Dimensions"
-    },
     "rtwfuZ": {
         "defaultMessage": "Actions"
     },
@@ -355,9 +346,6 @@
     },
     "sOfogS": {
         "defaultMessage": "Modifier les éléments"
-    },
-    "skmuWU": {
-        "defaultMessage": "Auteur"
     },
     "smqUAV": {
         "defaultMessage": "Modifier {nom}"
@@ -377,17 +365,11 @@
     "wKPI1y": {
         "defaultMessage": "Cette page n’existe pas"
     },
-    "wU++NJ": {
-        "defaultMessage": "Durée"
-    },
     "wa783M": {
         "defaultMessage": "Vous avez un compte? Connectez-vous ici"
     },
     "x27x2b": {
         "defaultMessage": "Chargement"
-    },
-    "xKUOLG": {
-        "defaultMessage": "Détails techniques"
     },
     "xSERPA": {
         "defaultMessage": "Vidéo"

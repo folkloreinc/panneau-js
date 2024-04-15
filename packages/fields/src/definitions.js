@@ -4,6 +4,7 @@ import { definition as Autocomplete } from '@panneau/field-autocomplete';
 import { definition as Checkboxes } from '@panneau/field-checkboxes';
 import { definition as Color } from '@panneau/field-color';
 import { definition as Date } from '@panneau/field-date';
+import { definition as Display } from '@panneau/field-display';
 import { definition as Embed } from '@panneau/field-embed';
 import { definition as Fields } from '@panneau/field-fields';
 import { definition as Html } from '@panneau/field-html';
@@ -26,6 +27,7 @@ export default [
     Checkboxes,
     Color,
     Date,
+    Display,
     Embed,
     Fields,
     Html,
