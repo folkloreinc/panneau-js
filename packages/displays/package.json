@@ -1,6 +1,6 @@
 {
     "name": "@panneau/displays",
-    "version": "3.0.162",
+    "version": "3.0.163",
     "description": "",
     "keywords": [
         "javascript"
@@ -74,12 +74,12 @@
         "@panneau/display-date": "^3.0.162",
         "@panneau/display-image": "^3.0.162",
         "@panneau/display-label": "^3.0.162",
-        "@panneau/display-link": "^3.0.162",
-        "@panneau/display-select": "^3.0.162",
+        "@panneau/display-link": "^3.0.163",
+        "@panneau/display-select": "^3.0.163",
         "@panneau/display-text": "^3.0.162",
         "@panneau/display-text-description": "^3.0.162",
         "@panneau/display-text-localized": "^3.0.162",
-        "@panneau/display-unit": "^3.0.162",
+        "@panneau/display-unit": "^3.0.163",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
