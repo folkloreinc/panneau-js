@@ -1,7 +1,8 @@
 // eslint-disable-next-line max-classes-per-file
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
-import { InlineEditor as InlineEditorBase } from '@ckeditor/ckeditor5-editor-inline';
+// Cant do that...
+// import { InlineEditor as InlineEditorBase } from '@ckeditor/ckeditor5-editor-inline';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Link } from '@ckeditor/ckeditor5-link';
@@ -17,7 +18,8 @@ export class Editor extends ClassicEditorBase {}
 Editor.builtinPlugins = [Essentials, Heading, Paragraph, Bold, Italic, Link, List];
 Editor.defaultConfig = {};
 
-export class InlineEditor extends InlineEditorBase {}
+// TODO: fix this
+export class InlineEditor extends ClassicEditorBase {}
 
 InlineEditor.builtinPlugins = [Essentials, Paragraph, Bold, Italic, Link];
 InlineEditor.defaultConfig = {};

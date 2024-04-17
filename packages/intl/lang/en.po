@@ -65,6 +65,12 @@ msgctxt "2vB7U4"
 msgid "An error occured and we could not save this item successfully."
 msgstr "An error occured and we could not save this item successfully."
 
+# Field title
+#: 3RT69u
+msgctxt "3RT69u"
+msgid "Informations"
+msgstr "Informations"
+
 # Button label
 #: 3ebjtX
 msgctxt "3ebjtX"
@@ -332,6 +338,12 @@ msgstr "T"
 # Field name
 #: OzYWZz
 msgctxt "OzYWZz"
+msgid "Created at"
+msgstr "Created at"
+
+# Field label
+#: PN+75e
+msgctxt "PN+75e"
 msgid "Created at"
 msgstr "Created at"
 
@@ -798,6 +810,12 @@ msgstr "An error occured and we could not delete this item successfully."
 msgctxt "yALN2p"
 msgid "There was an error"
 msgstr "There was an error"
+
+# Field label
+#: yByaBh
+msgctxt "yByaBh"
+msgid "Added by"
+msgstr "Added by"
 
 # Filter item label
 #: yHAmDD

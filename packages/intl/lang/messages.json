@@ -35,6 +35,10 @@
     "defaultMessage": "An error occured and we could not save this item successfully.",
     "description": "Error message"
   },
+  "3RT69u": {
+    "defaultMessage": "Informations",
+    "description": "Field title"
+  },
   "3ebjtX": {
     "defaultMessage": "Yes",
     "description": "Button label"
@@ -214,6 +218,10 @@
   "OzYWZz": {
     "defaultMessage": "Created at",
     "description": "Field name"
+  },
+  "PN+75e": {
+    "defaultMessage": "Created at",
+    "description": "Field label"
   },
   "PQX/ph": {
     "defaultMessage": "Create account",
@@ -518,6 +526,10 @@
   "yALN2p": {
     "defaultMessage": "There was an error",
     "description": "Error page description"
+  },
+  "yByaBh": {
+    "defaultMessage": "Added by",
+    "description": "Field label"
   },
   "yHAmDD": {
     "defaultMessage": "Image",

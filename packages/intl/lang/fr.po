@@ -67,6 +67,12 @@ msgstr ""
 "Une erreur s’est produite et nous n’avons pas pu enregistrer cet élément "
 "avec succès."
 
+# Field title
+#: 3RT69u
+msgctxt "3RT69u"
+msgid "Informations"
+msgstr ""
+
 # Button label
 #: 3ebjtX
 msgctxt "3ebjtX"
@@ -336,6 +342,12 @@ msgstr "J"
 msgctxt "OzYWZz"
 msgid "Created at"
 msgstr "Créé le"
+
+# Field label
+#: PN+75e
+msgctxt "PN+75e"
+msgid "Created at"
+msgstr ""
 
 # Button label
 #: PQX/ph
@@ -800,6 +812,12 @@ msgstr ""
 msgctxt "yALN2p"
 msgid "There was an error"
 msgstr "Il y a eu une erreur"
+
+# Field label
+#: yByaBh
+msgctxt "yByaBh"
+msgid "Added by"
+msgstr ""
 
 # Filter item label
 #: yHAmDD

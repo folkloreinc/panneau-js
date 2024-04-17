@@ -26,6 +26,9 @@
     "2vB7U4": {
         "defaultMessage": "An error occured and we could not save this item successfully."
     },
+    "3RT69u": {
+        "defaultMessage": "Informations"
+    },
     "3ebjtX": {
         "defaultMessage": "Yes"
     },
@@ -159,6 +162,9 @@
         "defaultMessage": "T"
     },
     "OzYWZz": {
+        "defaultMessage": "Created at"
+    },
+    "PN+75e": {
         "defaultMessage": "Created at"
     },
     "PQX/ph": {
@@ -388,6 +394,9 @@
     },
     "yALN2p": {
         "defaultMessage": "There was an error"
+    },
+    "yByaBh": {
+        "defaultMessage": "Added by"
     },
     "yHAmDD": {
         "defaultMessage": "Image"
