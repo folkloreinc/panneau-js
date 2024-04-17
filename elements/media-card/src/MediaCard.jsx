@@ -10,6 +10,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isString from 'lodash/isString';
 import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
@@ -124,10 +125,14 @@ const MediaCard = ({
     }, [type]);
 
     const { name, thumbnail, size, link, hasThumbnail } = useMemo(() => {
-        const finalName = (namePath !== null ? get(value, namePath) : null) || filename || file;
+        const finalName =
+            (namePath !== null ? get(value, namePath) : null) ||
+            filename ||
+            (isString(file) ? file : null) ||
+            null;
         const finalThumbnail =
             (thumbnailPath !== null ? get(value, thumbnailPath) : null) || thumbnailUrl || preview;
-        const finalSize = (sizePath !== null ? get(value, sizePath) : null) || fileSize;
+        const finalSize = (sizePath !== null ? get(value, sizePath) : null) || fileSize || null;
         const finalLink = (linkPath !== null ? get(value, linkPath) || null : null) || null;
         const finalHasThumbnail = preview !== null || finalThumbnail !== null;
         return {
@@ -137,7 +142,7 @@ const MediaCard = ({
             link: finalLink,
             hasThumbnail: finalHasThumbnail,
         };
-    }, [value, namePath, thumbnailPath, sizePath, linkPath]);
+    }, [value, namePath, thumbnailPath, sizePath, linkPath, thumbnailUrl, filename, file, preview]);
 
     const withButton = onClick !== null || link !== null;
 

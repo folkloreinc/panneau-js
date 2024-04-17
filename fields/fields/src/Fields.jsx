@@ -14,7 +14,6 @@ const propTypes = {
     fields: PanneauPropTypes.fields,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     horizontal: PropTypes.bool,
-    isList: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
@@ -25,7 +24,6 @@ const defaultProps = {
     fields: [],
     value: null,
     horizontal: false,
-    isList: false,
     disabled: false,
     className: null,
     onChange: null,
@@ -36,7 +34,6 @@ const Fields = ({
     fields,
     value,
     horizontal: fieldsHorizontal,
-    isList,
     disabled,
     onChange,
     className,
@@ -71,6 +68,7 @@ const Fields = ({
             name = null,
             horizontal = false,
             inline = false,
+            isList = false,
             withoutFormGroup = false,
             siblingFields = [],
             defaultValue = null,
@@ -125,6 +123,7 @@ const Fields = ({
                         {...fieldProps}
                         horizontal={horizontal}
                         inline={inline}
+                        isList={isList}
                         className={classNames(['mb-3', groupClassName])}
                         labelClassName={classNames([labelClassName])}
                     >
@@ -149,23 +148,9 @@ const Fields = ({
             ])}
         >
             {fieldsHorizontal ? (
-                <div
-                    className={classNames({
-                        'd-inline-flex flex-row': !isList,
-                        'list-group list-group-flush': isList,
-                    })}
-                >
-                    {content}
-                </div>
+                <div className={classNames(['d-inline-flex flex-row'])}>{content}</div>
             ) : (
-                <div
-                    className={classNames({
-                        // 'd-inline-flex flex-row': !isList,
-                        'list-group list-group-flush': isList,
-                    })}
-                >
-                    {content}
-                </div>
+                content
             )}
         </div>
     );

@@ -2,7 +2,7 @@
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import InputGroup from '@panneau/field-input-group';
 
@@ -82,9 +82,7 @@ const HtmlField = ({
     className,
 }) => {
     const CKEditorBuild = useCKEditorBuild() || null;
-
     const CKValue = value !== null ? value : '';
-    // console.log('build', CKEditorBuild);
 
     const finalClassName = inline
         ? classNames([

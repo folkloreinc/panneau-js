@@ -10,7 +10,6 @@ require('dotenv').config();
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // insecure
 
 // console.log(getPackagesPaths());
-
 // console.log(
 //     getPackagesPaths().map((packagePath) =>
 //         path.join(packagePath, './src/**/*.stories.@(jsx|mdx)'),

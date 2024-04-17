@@ -79,12 +79,12 @@ function MediaMetadata({ sections, displays, value: filtersValue, className }) {
                                             'd-flex',
                                             'align-items-center',
                                             'justify-content-between',
-                                            'p-1',
+                                            'p-0',
                                             'border-secondary-1',
-                                            'border-1',
+                                            'border-top',
                                             'border-bottom',
                                             'text-small',
-                                            { 'border-top': index === 0 },
+                                            // { 'border-top': index === 0 },
                                         ])}
                                     >
                                         <div className="col-auto">{label}</div>

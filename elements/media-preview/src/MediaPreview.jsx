@@ -8,6 +8,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 
@@ -99,18 +100,25 @@ const MediaPreview = ({
     }, [type]);
 
     const { name, thumbnail, link, hasThumbnail } = useMemo(() => {
-        const finalName = (namePath !== null ? get(value, namePath) : null) || filename || file;
+        const finalName =
+            (namePath !== null ? get(value, namePath) : null) ||
+            filename ||
+            (isString(file) ? file : null) ||
+            null;
         const finalThumbnail =
-            (thumbnailPath !== null ? get(value, thumbnailPath) : null) || thumbnailUrl || preview;
+            (thumbnailPath !== null ? get(value, thumbnailPath) : null) ||
+            thumbnailUrl ||
+            preview ||
+            null;
         const finalLink = (linkPath !== null ? get(value, linkPath) || null : null) || null;
-        const finalHasThumbnail = preview !== null || thumbnail !== null;
+        const finalHasThumbnail = preview !== null || finalThumbnail !== null;
         return {
             name: finalName,
             thumbnail: finalThumbnail,
             link: finalLink,
             hasThumbnail: finalHasThumbnail,
         };
-    }, [value, namePath, thumbnailPath, linkPath]);
+    }, [value, namePath, thumbnailPath, linkPath, thumbnailUrl, filename, file, preview]);
 
     const withButton = (onClick !== null || link !== null) && !disabled;
 

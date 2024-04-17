@@ -19,6 +19,7 @@ const propTypes = {
     horizontal: PropTypes.bool,
     floating: PropTypes.bool,
     inline: PropTypes.bool,
+    isList: PropTypes.bool,
     isListItem: PropTypes.bool,
     isCard: PropTypes.bool,
     isHeading: PropTypes.bool,
@@ -40,6 +41,7 @@ const defaultProps = {
     horizontal: false,
     floating: false,
     inline: false,
+    isList: false,
     isListItem: false,
     isCard: false,
     isCollapsible: false,
@@ -61,6 +63,7 @@ const FormGroup = ({
     horizontal,
     floating,
     inline,
+    isList,
     isListItem,
     isCard,
     isHeading,
@@ -84,15 +87,18 @@ const FormGroup = ({
         styles.label,
         {
             'form-label': !inline,
-            'col-form-label': inline || horizontal,
-            'px-2': horizontal,
+            'col-form-label': (inline || horizontal) && !isListItem,
+            'px-2': horizontal && !isListItem,
             // 'text-nowrap': horizontal, // ?
             // 'col-sm-3': horizontal,
             'card-header': isCard,
-            'fw-bold': isHeading,
+            'fw-bold': isHeading || isList,
+            'pt-2': isList,
+            'pb-2': isList,
             'd-flex': isCollapsible,
             'align-items-center': isCollapsible,
             'justify-content-between': isCollapsible,
+            'align-items-end': isListItem,
             'pe-1': isCollapsible,
             'rounded border-bottom border-light border-secondary': isCollapsible && collapsed,
             dropup: isCollapsible && !collapsed,
@@ -180,33 +186,51 @@ const FormGroup = ({
                     {
                         row: isColumn,
                         card: isCard,
-                        'g-3': isColumn,
+                        'g-0': isColumn,
                         'align-items-center': isColumn,
                         'form-floating': floating,
-                        'list-item': isListItem,
                     },
-                    {},
+                    isListItem
+                        ? [
+                              'row',
+                              'd-flex',
+                              'align-items-center',
+                              'justify-content-between',
+                              'p-0',
+                              'border-secondary-1',
+                              'border-1',
+                              'border-bottom',
+                              'text-small',
+                          ]
+                        : null,
+                    // {
+                    //     row: isListItem,
+                    //     'd-flex': isListItem,
+                    //     'align-items-center': isListItem,
+                    //     'justify-content-between': isListItem,
+                    //     'p-0': isListItem,
+                    //     'border-secondary-1': isListItem,
+                    //     'border-1': isListItem,
+                    //     'border-bottom': isListItem,
+                    //     'text-small': isListItem,
+                    // },
                 ])}
             >
                 {labelBefore && labelElement !== null ? (
-                    <div className={classNames([{ 'col-auto': isColumn, 'col-sm-3': horizontal }])}>
-                        {labelElement}
-                    </div>
+                    <div className={classNames([{ 'col-auto': isColumn }])}>{labelElement}</div>
                 ) : null}
 
                 <div
                     className={classNames({
-                        'col-auto': isColumn || !horizontal || labelElement === null,
-                        'col-sm-9': horizontal && labelElement !== null,
+                        'col-auto': !isList && (isColumn || !horizontal || labelElement === null),
+                        'list-group list-group-flush': isList,
                     })}
                 >
                     {innerChildren}
                 </div>
 
                 {labelAfter && labelElement !== null ? (
-                    <div className={classNames({ 'col-auto': isColumn, 'col-sm-3': horizontal })}>
-                        {labelElement}
-                    </div>
+                    <div className={classNames({ 'col-auto': isColumn })}>{labelElement}</div>
                 ) : null}
 
                 {horizontal ? (
