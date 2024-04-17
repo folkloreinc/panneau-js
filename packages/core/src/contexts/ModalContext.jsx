@@ -62,6 +62,8 @@ export const ModalProvider = ({ children, container: initialContainer }) => {
         }
     }, [modals, setModals]);
 
+    console.log('close');
+
     const value = useMemo(
         () => ({
             modals,
