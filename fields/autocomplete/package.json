@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-autocomplete",
-    "version": "3.0.164",
+    "version": "3.0.165",
     "description": "An autocomplete field",
     "keywords": [
         "javascript"
@@ -56,7 +56,7 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.164",
         "@panneau/element-button": "^3.0.164",
-        "@panneau/field-text": "^3.0.164",
+        "@panneau/field-text": "^3.0.165",
         "@panneau/themes": "^3.0.164",
         "classnames": "^2.5.1",
         "fuse.js": "^7.0.0",

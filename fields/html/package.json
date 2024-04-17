@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-html",
-    "version": "3.0.164",
+    "version": "3.0.165",
     "description": "A HTML field, using either Quill or CK Editor",
     "keywords": [
         "javascript"
@@ -55,8 +55,8 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@ckeditor/ckeditor5-react": "^6.2.0",
+        "@panneau/ckeditor": "^3.0.165",
         "@panneau/core": "^3.0.164",
-        "@panneau/ckeditor": "^3.0.164",
         "@panneau/field-input-group": "^3.0.164",
         "@panneau/themes": "^3.0.164",
         "classnames": "^2.5.1",
