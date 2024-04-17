@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-localized",
-    "version": "3.0.164",
+    "version": "3.0.166",
     "description": "A localized field",
     "keywords": [
         "javascript"
@@ -56,7 +56,7 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.164",
         "@panneau/element-buttons": "^3.0.164",
-        "@panneau/element-form-group": "^3.0.164",
+        "@panneau/element-form-group": "^3.0.166",
         "@panneau/element-label": "^3.0.164",
         "@panneau/field-input-group": "^3.0.164",
         "@panneau/themes": "^3.0.164",
