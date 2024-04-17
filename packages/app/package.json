@@ -82,7 +82,6 @@
         "@panneau/element-dropdown": "^3.0.162",
         "@panneau/element-form": "^3.0.162",
         "@panneau/element-form-group": "^3.0.162",
-        "@panneau/element-form-row": "^3.0.162",
         "@panneau/element-grid": "^3.0.163",
         "@panneau/element-icon": "^3.0.162",
         "@panneau/element-label": "^3.0.162",

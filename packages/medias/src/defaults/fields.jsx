@@ -14,32 +14,36 @@ export default [
         type: 'text',
         component: 'text',
     },
-    {
-        id: 'info',
-        component: 'fields',
-        title: <FormattedMessage defaultMessage="Informations" description="Field title" />,
-        fields: [
-            {
-                id: 'user',
-                label: <FormattedMessage defaultMessage="Added by" description="Field label" />,
-                component: 'display',
-                display: 'avatar',
-                name: 'user',
-            },
-            {
-                id: 'created_at',
-                label: <FormattedMessage defaultMessage="Created at" description="Field label" />,
-                component: 'display',
-                display: 'date',
-                name: 'created_at',
-                format: 'yyyy-MM-dd hh:ss',
-            },
-        ],
-    },
+    // {
+    //     id: 'info',
+    //     component: 'fields',
+    //     title: <FormattedMessage defaultMessage="Informations" description="Field title" />,
+    //     isList: true,
+    //     horizontal: true,
+    //     fields: [
+    //         {
+    //             id: 'user',
+    //             label: <FormattedMessage defaultMessage="Added by" description="Field label" />,
+    //             type: 'display',
+    //             display: 'avatar',
+    //             name: 'user',
+    //         },
+    //         {
+    //             id: 'created_at',
+    //             label: <FormattedMessage defaultMessage="Created at" description="Field label" />,
+    //             type: 'display',
+    //             display: 'date',
+    //             name: 'created_at',
+    //             format: 'yyyy-MM-dd hh:ss',
+    //         },
+    //     ],
+    // },
     {
         id: 'technical',
         component: 'fields',
         title: <FormattedMessage defaultMessage="Technical details" description="Field title" />,
+        isList: true,
+        horizontal: true,
         fields: [
             {
                 id: 'format',

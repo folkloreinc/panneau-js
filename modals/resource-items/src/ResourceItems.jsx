@@ -9,6 +9,7 @@ import ResourceItemsList from '@panneau/list-resource-items';
 import Dialog from '@panneau/modal-dialog';
 
 const propTypes = {
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     resource: PropTypes.string,
     title: PropTypes.string,
     query: PropTypes.shape(),
@@ -36,6 +37,7 @@ const defaultProps = {
 };
 
 const ModalResourceItems = ({
+    id,
     resource,
     title,
     query: initialQuery,
@@ -53,6 +55,7 @@ const ModalResourceItems = ({
 
     return (
         <Dialog
+            id={id}
             title={
                 title || (
                     <FormattedMessage

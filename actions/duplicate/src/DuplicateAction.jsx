@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { useModal } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Confirm from '@panneau/modal-confirm';
 
@@ -29,7 +30,7 @@ const defaultProps = {
     description: null,
     endpoint: '/duplicate',
     label: <FormattedMessage defaultMessage="Duplicate" description="Button label" />,
-    icon: 'trash',
+    icon: 'copy',
     value: null,
     theme: 'primary',
     disabled: false,
@@ -51,18 +52,29 @@ const DuplicateAction = ({
     className,
     ...props
 }) => {
-    const [showModal, setShowModal] = useState(false);
+    const { modals = null, register = null, unregister = null } = useModal();
+
     const [error, setError] = useState(null);
 
     const ids = useMemo(
         () => (value || []).map(({ id = null } = {}) => id).filter((id) => id !== null),
         [value],
     );
+    const idKeys = useMemo(() => (ids || []).map((id) => `${id}`).join('-'), [ids]);
     const idLabels = useMemo(() => (ids || []).map((id) => `#${id}`).join(', '), [ids]);
+    const modalKey = useMemo(() => `duplicate-${idKeys}`, [idKeys]);
+    const modal = useMemo(
+        () => (modals || []).find(({ id = null }) => id === `${modalKey}`) || null,
+        [modals, modalKey],
+    );
 
     const onOpen = useCallback(() => {
-        setShowModal(true);
-    }, [setShowModal]);
+        register(modalKey);
+    }, [modalKey, register]);
+
+    const onClose = useCallback(() => {
+        unregister(modalKey);
+    }, [modalKey, unregister]);
 
     const onConfirm = useCallback(() => {
         postJSON(
@@ -71,26 +83,22 @@ const DuplicateAction = ({
             {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
-                _method: 'POST',
+                _method: 'DELETE',
             },
         )
             .then((response) => {
-                setShowModal(false);
                 if (setSelectedItems !== null) {
                     setSelectedItems([]);
                 }
                 if (onChange !== null) {
                     onChange(response);
                 }
+                onClose();
             })
             .catch((err) => {
                 setError(err);
             });
-    }, [ids, endpoint, onChange, setShowModal, setError]);
-
-    const onClose = useCallback(() => {
-        setShowModal(false);
-    }, [setShowModal]);
+    }, [ids, endpoint, onChange, onClose, setError]);
 
     return (
         <>
@@ -108,8 +116,9 @@ const DuplicateAction = ({
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
             />
-            {showModal ? (
+            {modal !== null ? (
                 <Confirm
+                    id={modalKey}
                     title={
                         title || (
                             <FormattedMessage
@@ -124,7 +133,7 @@ const DuplicateAction = ({
                         label: (
                             <FormattedMessage defaultMessage="Confirm" description="Button label" />
                         ),
-                        theme: 'warning',
+                        theme: 'danger',
                     }}
                     cancelButton={{
                         label: (

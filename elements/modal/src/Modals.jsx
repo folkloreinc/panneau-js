@@ -5,6 +5,7 @@ import React, { useEffect, useRef } from 'react';
 
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useModal } from '@panneau/core/contexts';
+import { KEYCODES, useKeyboardKeys } from '@panneau/core/hooks';
 
 import styles from './styles.module.scss';
 
@@ -19,7 +20,7 @@ const defaultProps = {
 };
 
 const Modals = ({ theme, className }) => {
-    const { modals = null, setContainer = null } = useModal();
+    const { modals = null, setContainer = null, closeLastModal = null } = useModal();
 
     const containerRef = useRef(null);
 
@@ -38,6 +39,10 @@ const Modals = ({ theme, className }) => {
             }
         }
     }, [modals]);
+
+    useKeyboardKeys({
+        [KEYCODES.ESCAPE]: closeLastModal,
+    });
 
     return (
         <div

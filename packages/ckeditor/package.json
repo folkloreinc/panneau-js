@@ -1,0 +1,82 @@
+{
+    "name": "@panneau/ckeditor",
+    "version": "0.3.485",
+    "private": false,
+    "description": "",
+    "keywords": [
+        "javascript"
+    ],
+    "homepage": "https://github.com/folkloreinc/panneau-js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git"
+    },
+    "author": {
+        "name": "Folklore",
+        "email": "info@folklore.email"
+    },
+    "contributors": [
+        {
+            "name": "David Mongeau-Petitpas",
+            "email": "dmp@folklore.email"
+        },
+        {
+            "name": "Nicolas Roy-Bourdages",
+            "email": "nrb@folklore.email"
+        }
+    ],
+    "license": "ISC",
+    "main": "lib/index.js",
+    "module": "es/index.js",
+    "exports": {
+        ".": {
+            "require": "./lib/index.js",
+            "import": "./es/index.js"
+        },
+        "./build": "./dist/build.js"
+    },
+    "browser": {
+        ".": "./es/index.js",
+        "./build": "./dist/build.js"
+    },
+    "files": [
+        "dist",
+        "es",
+        "lib"
+    ],
+    "scripts": {
+        "clean": "rm -rf es && rm -rf lib && rm -rf dist",
+        "build:ckeditor": "../../node_modules/.bin/webpack --mode production --config webpack.config.js",
+        "prepublishOnly": "npm run build",
+        "build": "rm -rf dist && ../../scripts/prepare-package.sh && npm run build:ckeditor"
+    },
+    "devDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.13.10",
+        "@ckeditor/ckeditor5-basic-styles": "^41.3.1",
+        "@ckeditor/ckeditor5-build-inline": "^41.3.1",
+        "@ckeditor/ckeditor5-dev-translations": "39.6.3",
+        "@ckeditor/ckeditor5-dev-utils": "39.6.3",
+        "@ckeditor/ckeditor5-editor-classic": "^41.3.1",
+        "@ckeditor/ckeditor5-essentials": "^41.3.1",
+        "@ckeditor/ckeditor5-heading": "^41.3.1",
+        "@ckeditor/ckeditor5-link": "^41.3.1",
+        "@ckeditor/ckeditor5-list": "^41.3.1",
+        "@ckeditor/ckeditor5-paragraph": "^41.3.1",
+        "@ckeditor/ckeditor5-react": "^6.2.0",
+        "@ckeditor/ckeditor5-theme-lark": "^41.3.1",
+        "@folklore/fetch": "0.1.17"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "gitHead": "7b04f92d09acec2ea0142fd4724e1a8c336078a5"
+}

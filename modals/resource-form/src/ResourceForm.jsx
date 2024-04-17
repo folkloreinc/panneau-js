@@ -8,6 +8,7 @@ import { useResourceValues } from '@panneau/intl';
 import Dialog from '@panneau/modal-dialog';
 
 const propTypes = {
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     resource: PropTypes.string,
     type: PropTypes.string,
     item: PropTypes.shape({ id: PropTypes.string }),
@@ -27,10 +28,20 @@ const defaultProps = {
     className: null,
 };
 
-const ModalResourceForm = ({ resource, type, item, isCreate, onSuccess, onClose, className }) => {
+const ModalResourceForm = ({
+    id,
+    resource,
+    type,
+    item,
+    isCreate,
+    onSuccess,
+    onClose,
+    className,
+}) => {
     const resourceValues = useResourceValues(resource);
     return (
         <Dialog
+            id={id}
             title={
                 !isCreate !== null ? (
                     <FormattedMessage

@@ -8,13 +8,13 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFieldsComponents, useFieldsManager } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import FormGroup from '@panneau/element-form-group';
-import FormRow from '@panneau/element-form-row';
 
 const propTypes = {
     components: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     fields: PanneauPropTypes.fields,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     horizontal: PropTypes.bool,
+    isList: PropTypes.bool,
     disabled: PropTypes.bool,
     className: PropTypes.string,
     onChange: PropTypes.func,
@@ -25,6 +25,7 @@ const defaultProps = {
     fields: [],
     value: null,
     horizontal: false,
+    isList: false,
     disabled: false,
     className: null,
     onChange: null,
@@ -35,6 +36,7 @@ const Fields = ({
     fields,
     value,
     horizontal: fieldsHorizontal,
+    isList,
     disabled,
     onChange,
     className,
@@ -146,7 +148,25 @@ const Fields = ({
                 },
             ])}
         >
-            {fieldsHorizontal ? <FormRow>{content}</FormRow> : content}
+            {fieldsHorizontal ? (
+                <div
+                    className={classNames({
+                        'd-inline-flex flex-row': !isList,
+                        'list-group list-group-flush': isList,
+                    })}
+                >
+                    {content}
+                </div>
+            ) : (
+                <div
+                    className={classNames({
+                        // 'd-inline-flex flex-row': !isList,
+                        'list-group list-group-flush': isList,
+                    })}
+                >
+                    {content}
+                </div>
+            )}
         </div>
     );
 };

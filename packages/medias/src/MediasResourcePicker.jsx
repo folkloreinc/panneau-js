@@ -25,9 +25,11 @@ function MediasResourcePicker({ resource: resourceId, ...props }) {
     const mediasApi = useMemo(
         () => ({
             get: (...args) => api.resources.get(resource, ...args),
+            getTrashed: (...args) => api.resources.getTrashed(resource, ...args),
             find: (...args) => api.resources.find(resource, ...args),
             create: (...args) => api.resources.create(resource, ...args),
             update: (...args) => api.resources.update(resource, ...args),
+            trash: (...args) => api.resources.trash(resource, ...args),
             delete: (...args) => api.resources.delete(resource, ...args),
         }),
         [api, resource],

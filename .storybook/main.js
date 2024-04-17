@@ -73,6 +73,8 @@ module.exports = {
                 // '@uppy/core': require.resolve('@uppy/core'),
                 // '@uppy/react': require.resolve('@uppy/react'),
                 ...getPackagesAliases(),
+                '@panneau/ckeditor': path.join(__dirname, '../packages/ckeditor/dist/index'),
+                '@panneau/ckeditor/build': path.join(__dirname, '../packages/ckeditor/dist/index'),
             },
         },
         module: {

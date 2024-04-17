@@ -13,6 +13,7 @@ import '@uppy/drag-drop/dist/style.min.css';
 import '@uppy/status-bar/dist/style.min.css';
 
 const propTypes = {
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     title: PropTypes.string,
     uppy: PropTypes.shape({
         reset: PropTypes.func,
@@ -28,8 +29,8 @@ const defaultProps = {
     onClose: null,
 };
 
-const UploadModal = ({ title, uppy, plugins, onClose, ...props }) => (
-    <Dialog size="lg" onClose={onClose} title={title}>
+const UploadModal = ({ id, title, uppy, plugins, onClose, ...props }) => (
+    <Dialog id={id} size="lg" onClose={onClose} title={title}>
         {uppy !== null ? (
             <Dashboard
                 inline

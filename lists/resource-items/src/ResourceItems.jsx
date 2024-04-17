@@ -228,6 +228,7 @@ const ResourceItemsList = ({
                     onQueryChange={onQueryChange}
                     onQueryReset={onQueryReset}
                     showEmptyLabel={finalEmpty}
+                    loading={loading}
                     emptyLabel={
                         <p className="my-2">
                             <FormattedMessage

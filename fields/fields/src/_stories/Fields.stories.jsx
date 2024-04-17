@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 
 import fields from '../../../../.storybook/data/fields';
@@ -12,11 +13,12 @@ export default {
     },
 };
 
-const Container = () => {
-    const [value, setValue] = useState({});
+// eslint-disable-next-line react/prop-types
+const Container = ({ value: initialValue = {}, ...props }) => {
+    const [value, setValue] = useState(initialValue);
     return (
         <FieldsProvider>
-            <Fields fields={fields} value={value} onChange={setValue} />
+            <Fields fields={fields} value={value} onChange={setValue} {...props} />
         </FieldsProvider>
     );
 };
@@ -24,3 +26,5 @@ const Container = () => {
 export const Normal = () => <Container />;
 
 export const WithFlat = () => <Container />;
+
+export const Horizontal = () => <Container horizontal />;

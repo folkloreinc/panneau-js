@@ -21,7 +21,7 @@ const defaultProps = {
 
 const ModalPortal = ({ id, data, children }) => {
     const { container = null, register = null, unregister = null } = useModal();
-    const finalId = useMemo(() => (id ? `modal-${id}` : `modal-${new Date().getTime()}`), [id]);
+    const finalId = useMemo(() => (id !== null ? id : `modal-${new Date().getTime()}`), [id]);
 
     useEffect(() => {
         if (register !== null) {

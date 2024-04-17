@@ -13,6 +13,7 @@ import Modal from '@panneau/element-modal';
 import styles from './styles.module.scss';
 
 const propTypes = {
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     title: PanneauPropTypes.label,
     size: PropTypes.string,
     header: PropTypes.node,
@@ -37,6 +38,7 @@ const defaultProps = {
 };
 
 const ModalDialog = ({
+    id,
     title,
     size,
     header,
@@ -52,7 +54,7 @@ const ModalDialog = ({
         (withCloseOutside && onClose !== null);
 
     return (
-        <Modal>
+        <Modal id={id}>
             <div
                 className={classNames([
                     'modal-dialog',

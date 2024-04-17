@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import Dialog from '@panneau/modal-dialog';
 
 const propTypes = {
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     title: PropTypes.node,
     onConfirm: PropTypes.func,
     onClose: PropTypes.func,
@@ -29,6 +30,7 @@ const defaultProps = {
 };
 
 function ConfirmModal({
+    id,
     title,
     onConfirm,
     onClose,
@@ -39,6 +41,7 @@ function ConfirmModal({
 }) {
     return (
         <Dialog
+            id={id}
             title={title}
             size="lg"
             onClose={onClose}

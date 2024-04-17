@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { useModal } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Confirm from '@panneau/modal-confirm';
 
@@ -51,18 +52,29 @@ const DeleteAction = ({
     className,
     ...props
 }) => {
-    const [showModal, setShowModal] = useState(false);
+    const { modals = null, register = null, unregister = null } = useModal();
+
     const [error, setError] = useState(null);
 
     const ids = useMemo(
         () => (value || []).map(({ id = null } = {}) => id).filter((id) => id !== null),
         [value],
     );
+    const idKeys = useMemo(() => (ids || []).map((id) => `${id}`).join('-'), [ids]);
     const idLabels = useMemo(() => (ids || []).map((id) => `#${id}`).join(', '), [ids]);
+    const modalKey = useMemo(() => `delete-${idKeys}`, [idKeys]);
+    const modal = useMemo(
+        () => (modals || []).find(({ id = null }) => id === `${modalKey}`) || null,
+        [modals, modalKey],
+    );
 
     const onOpen = useCallback(() => {
-        setShowModal(true);
-    }, [setShowModal]);
+        register(modalKey);
+    }, [modalKey, register]);
+
+    const onClose = useCallback(() => {
+        unregister(modalKey);
+    }, [modalKey, unregister]);
 
     const onConfirm = useCallback(() => {
         postJSON(
@@ -75,22 +87,18 @@ const DeleteAction = ({
             },
         )
             .then((response) => {
-                setShowModal(false);
                 if (setSelectedItems !== null) {
                     setSelectedItems([]);
                 }
                 if (onChange !== null) {
                     onChange(response);
                 }
+                onClose();
             })
             .catch((err) => {
                 setError(err);
             });
-    }, [ids, endpoint, onChange, setShowModal, setError]);
-
-    const onClose = useCallback(() => {
-        setShowModal(false);
-    }, [setShowModal]);
+    }, [ids, endpoint, onChange, onClose, setError]);
 
     return (
         <>
@@ -108,8 +116,9 @@ const DeleteAction = ({
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
             />
-            {showModal ? (
+            {modal !== null ? (
                 <Confirm
+                    id={modalKey}
                     title={
                         title || (
                             <FormattedMessage defaultMessage="Delete" description="Modal title" />

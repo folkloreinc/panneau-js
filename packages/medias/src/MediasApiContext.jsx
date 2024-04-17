@@ -8,9 +8,11 @@ export const useMediasApi = () => useContext(MediasApiContext);
 
 export const apiPropTypes = PropTypes.shape({
     get: PropTypes.func.isRequired,
+    getTrashed: PropTypes.func.isRequired,
     create: PropTypes.func.isRequired,
     find: PropTypes.func.isRequired,
     update: PropTypes.func.isRequired,
+    trash: PropTypes.func.isRequired,
     delete: PropTypes.func.isRequired,
 });
 

@@ -16,7 +16,7 @@ export default {
 export const Normal = () => (
     <ModalProvider>
         <Modals />
-        <Dialog title="Hello" onClose={() => {}}>
+        <Dialog id="1" title="Hello" onClose={() => {}}>
             <div>Modal content</div>
         </Dialog>
     </ModalProvider>
@@ -25,7 +25,7 @@ export const Normal = () => (
 export const WithoutTitle = () => (
     <ModalProvider>
         <Modals />
-        <Dialog onClose={() => {}}>
+        <Dialog id="1" onClose={() => {}}>
             <div>Modal content</div>
         </Dialog>
     </ModalProvider>
@@ -34,7 +34,7 @@ export const WithoutTitle = () => (
 export const WithoutOnClose = () => (
     <ModalProvider>
         <Modals />
-        <Dialog title="Hello">
+        <Dialog id="1" title="Hello">
             <div>Modal content</div>
         </Dialog>
     </ModalProvider>
@@ -43,7 +43,7 @@ export const WithoutOnClose = () => (
 export const WithCloseOutside = () => (
     <ModalProvider>
         <Modals />
-        <Dialog title="Hello" withCloseOutside>
+        <Dialog id="1" title="Hello" withCloseOutside>
             <div>Modal content</div>
         </Dialog>
     </ModalProvider>

@@ -7,6 +7,7 @@ import Form from '@panneau/form';
 import Dialog from '@panneau/modal-dialog';
 
 const propTypes = {
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     title: PropTypes.node,
     name: PropTypes.string,
     fields: PropTypes.arrayOf(PropTypes.shape({})),
@@ -35,6 +36,7 @@ const defaultProps = {
 };
 
 function ModalForm({
+    id,
     title,
     name,
     fields,
@@ -50,6 +52,7 @@ function ModalForm({
 }) {
     return (
         <Dialog
+            id={id}
             title={
                 title ||
                 (name !== null ? (

@@ -8,8 +8,6 @@ import React, { useCallback, useState } from 'react';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Button from '@panneau/element-button';
 
-import Column from './Column';
-
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -21,6 +19,7 @@ const propTypes = {
     horizontal: PropTypes.bool,
     floating: PropTypes.bool,
     inline: PropTypes.bool,
+    isListItem: PropTypes.bool,
     isCard: PropTypes.bool,
     isHeading: PropTypes.bool,
     isCollapsible: PropTypes.bool,
@@ -41,6 +40,7 @@ const defaultProps = {
     horizontal: false,
     floating: false,
     inline: false,
+    isListItem: false,
     isCard: false,
     isCollapsible: false,
     initialCollapsed: true,
@@ -61,6 +61,7 @@ const FormGroup = ({
     horizontal,
     floating,
     inline,
+    isListItem,
     isCard,
     isHeading,
     isCollapsible,
@@ -71,7 +72,8 @@ const FormGroup = ({
     className,
     labelClassName,
 }) => {
-    const vertical = horizontal || inline;
+    const labelBefore = !labelAfter;
+    const isColumn = horizontal || inline;
     const [collapsed, setCollapsed] = useState(initialCollapsed);
 
     const toggleCollapsed = useCallback(() => {
@@ -83,9 +85,9 @@ const FormGroup = ({
         {
             'form-label': !inline,
             'col-form-label': inline || horizontal,
-            // 'col-sm-3': horizontal,
             'px-2': horizontal,
             // 'text-nowrap': horizontal, // ?
+            // 'col-sm-3': horizontal,
             'card-header': isCard,
             'fw-bold': isHeading,
             'd-flex': isCollapsible,
@@ -149,18 +151,6 @@ const FormGroup = ({
             </div>
         ) : null;
 
-    const finalElements = horizontal ? (
-        <div>
-            <Column wrap={horizontal}>{helpElement}</Column>
-            <Column wrap={horizontal}>{errorsElement}</Column>
-        </div>
-    ) : (
-        <>
-            <Column wrap={horizontal}>{helpElement}</Column>
-            <Column wrap={horizontal}>{errorsElement}</Column>
-        </>
-    );
-
     const innerChildren = (
         <div
             className={classNames([
@@ -188,24 +178,52 @@ const FormGroup = ({
             <div
                 className={classNames([
                     {
-                        row: vertical,
-                        'g-3': vertical,
-                        'align-items-center': vertical,
-                        'form-floating': floating,
+                        row: isColumn,
                         card: isCard,
+                        'g-3': isColumn,
+                        'align-items-center': isColumn,
+                        'form-floating': floating,
+                        'list-item': isListItem,
                     },
+                    {},
                 ])}
             >
-                <Column wrap={vertical} className={classNames({ 'col-sm-3': horizontal })}>
-                    {!labelAfter ? labelElement : null}
-                </Column>
-                <Column wrap={vertical} className={classNames({ 'col-sm-9': horizontal })}>
+                {labelBefore && labelElement !== null ? (
+                    <div className={classNames([{ 'col-auto': isColumn, 'col-sm-3': horizontal }])}>
+                        {labelElement}
+                    </div>
+                ) : null}
+
+                <div
+                    className={classNames({
+                        'col-auto': isColumn || !horizontal || labelElement === null,
+                        'col-sm-9': horizontal && labelElement !== null,
+                    })}
+                >
                     {innerChildren}
-                </Column>
-                <Column wrap={vertical} className={classNames({ 'col-sm-3': horizontal })}>
-                    {labelAfter ? labelElement : null}
-                </Column>
-                {finalElements}
+                </div>
+
+                {labelAfter && labelElement !== null ? (
+                    <div className={classNames({ 'col-auto': isColumn, 'col-sm-3': horizontal })}>
+                        {labelElement}
+                    </div>
+                ) : null}
+
+                {horizontal ? (
+                    <div>
+                        <div className={classNames({ 'col-auto': horizontal })}>{helpElement}</div>
+                        <div className={classNames({ 'col-auto': horizontal })}>
+                            {errorsElement}
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        <div className={classNames({ 'col-auto': horizontal })}>{helpElement}</div>
+                        <div className={classNames({ 'col-auto': horizontal })}>
+                            {errorsElement}
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );

@@ -35,10 +35,6 @@
     "defaultMessage": "An error occured and we could not save this item successfully.",
     "description": "Error message"
   },
-  "3RT69u": {
-    "defaultMessage": "Informations",
-    "description": "Field title"
-  },
   "3ebjtX": {
     "defaultMessage": "Yes",
     "description": "Button label"
@@ -183,6 +179,10 @@
     "defaultMessage": "F",
     "description": "Friday letter"
   },
+  "JuxiUN": {
+    "defaultMessage": "Format",
+    "description": "Field label"
+  },
   "Ke35Pv": {
     "defaultMessage": "Edit",
     "description": "Button label"
@@ -214,10 +214,6 @@
   "OzYWZz": {
     "defaultMessage": "Created at",
     "description": "Field name"
-  },
-  "PN+75e": {
-    "defaultMessage": "Created at",
-    "description": "Field label"
   },
   "PQX/ph": {
     "defaultMessage": "Create account",
@@ -387,6 +383,10 @@
     "defaultMessage": "S",
     "description": "Sunday letter"
   },
+  "g2CRt5": {
+    "defaultMessage": "Size",
+    "description": "Field label"
+  },
   "g6qbbX": {
     "defaultMessage": "Log in",
     "description": "Button label"
@@ -447,6 +447,10 @@
     "defaultMessage": "No",
     "description": "Boolean value"
   },
+  "rmJBin": {
+    "defaultMessage": "Dimensions",
+    "description": "Field label"
+  },
   "rtwfuZ": {
     "defaultMessage": "Actions",
     "description": "Field name"
@@ -487,6 +491,10 @@
     "defaultMessage": "This page doesn’t exist",
     "description": "Error page description"
   },
+  "wU++NJ": {
+    "defaultMessage": "Duration",
+    "description": "Field label"
+  },
   "wa783M": {
     "defaultMessage": "Already have an account? Go to login",
     "description": "Link label"
@@ -494,6 +502,10 @@
   "x27x2b": {
     "defaultMessage": "Loading",
     "description": "Loading message"
+  },
+  "xKUOLG": {
+    "defaultMessage": "Technical details",
+    "description": "Field title"
   },
   "xSERPA": {
     "defaultMessage": "Video",
@@ -507,10 +519,6 @@
     "defaultMessage": "There was an error",
     "description": "Error page description"
   },
-  "yByaBh": {
-    "defaultMessage": "Added by",
-    "description": "Field label"
-  },
   "yHAmDD": {
     "defaultMessage": "Image",
     "description": "Filter item label"
@@ -518,10 +526,6 @@
   "yQRtgx": {
     "defaultMessage": "Audio",
     "description": "Filter item label"
-  },
-  "ygNvmz": {
-    "defaultMessage": "Description",
-    "description": "Field name"
   },
   "yhU8J6": {
     "defaultMessage": "No",

@@ -434,6 +434,7 @@ const ResourceItemField = ({
                     <div className="card mt-4 p-4">{form}</div>
                 ) : (
                     <Dialog
+                        id={resourceId}
                         title={
                             hasValue && !multiple ? (
                                 <FormattedMessage

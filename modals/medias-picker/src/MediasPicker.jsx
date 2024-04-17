@@ -7,6 +7,7 @@ import { MediasPickerContainer, MediasResourcePicker } from '@panneau/medias';
 import Dialog from '@panneau/modal-dialog';
 
 const propTypes = {
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     resource: PropTypes.string,
     title: PropTypes.string,
     multiple: PropTypes.bool,
@@ -31,6 +32,7 @@ const defaultProps = {
 };
 
 function MediasPickerModal({
+    id,
     resource,
     title,
     onClose,
@@ -62,6 +64,7 @@ function MediasPickerModal({
     );
     return (
         <Dialog
+            id={id}
             size="xl"
             onClose={onClose}
             title={title}

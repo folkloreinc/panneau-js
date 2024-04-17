@@ -301,6 +301,7 @@ function MediasBrowser({
                             }}
                             {...tableProps}
                             items={items || []}
+                            loading={loading}
                             onSelectItem={
                                 onSelectItem !== null ? onSelectItem : (it) => onOpenMedia(it)
                             }
@@ -315,6 +316,7 @@ function MediasBrowser({
                             }
                             {...tableProps}
                             items={items}
+                            loading={loading}
                             onSelectItem={
                                 onSelectItem !== null ? onSelectItem : (it) => onOpenMedia(it)
                             }
