@@ -1,3 +1,1 @@
-import Editor from './build';
-
-export default Editor;
+export * from './build';

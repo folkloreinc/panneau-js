@@ -34,7 +34,7 @@ const packages = Object.keys(dependencies).filter((it) => {
     try {
         require.resolve(`${it}/assets/css/styles.css`);
     } catch (e) {
-        console.log(e);
+        // console.log(e);
         return false;
     }
     return true;
