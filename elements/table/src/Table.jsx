@@ -123,9 +123,6 @@ function Table({
         }
     }, [items, loading]);
 
-    // console.log('currentItems', currentItems, loading);
-    // console.log('items', items, loading);
-
     return (
         <div>
             {items !== null ? (

@@ -155,7 +155,9 @@ const SelectElement = ({
                 ) || null
             );
         }
-        return multiple ? value.map(findOption).filter((it) => it !== null) : findOption(value);
+        return multiple
+            ? (value || []).map(findOption).filter((it) => it !== null)
+            : findOption(value);
     }, [value, allOptions, getOptionValue, multiple]);
 
     const minWidth = useMemo(

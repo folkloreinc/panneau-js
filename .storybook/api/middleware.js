@@ -186,7 +186,6 @@ module.exports = () => {
             // The rest
             ...query
         } = req.query;
-        // console.log('query', query);
         const items = getResourceItems(resource);
         const filteredItems = sortItems(filterItems(items, query), sort, sortDirection);
 

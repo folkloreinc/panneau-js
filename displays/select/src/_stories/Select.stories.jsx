@@ -31,6 +31,6 @@ export const withOptions = () => (
             { label: 'Hello!', value: 'hello' },
             { label: 'Goodbye!', value: 'goodbye' },
         ]}
-        onChange={(value) => console.log(value)} // eslint-disable-line no-console
+        onChange={() => {}} // eslint-disable-line no-console
     />
 );

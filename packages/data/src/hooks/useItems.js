@@ -67,7 +67,6 @@ const useItems = ({
         }
         if (isPaginated) {
             const newPage = getPageFromResponse(response);
-            // console.log('new page', newPage);
 
             const newPages = (
                 reset
@@ -240,8 +239,6 @@ const useItems = ({
                   ({ page: pageNumber }) => parseInt(pageNumber, 10) === parseInt(page, 10),
               ) || null
             : null;
-
-    // console.log('yo state', state);
 
     return {
         items,

@@ -149,8 +149,6 @@ const ItemsField = ({
         );
     }, [emptyItems, value, itemIds]);
 
-    // console.log('values', value, 'items', items);
-
     const allItemsCount = (value || []).length + emptyItems.length;
     const idsCount = itemIds.length;
     useEffect(() => {
@@ -352,8 +350,6 @@ const ItemsField = ({
     const onDropdownClickOutside = useCallback(() => {
         setDropdownOpened(false);
     }, [setDropdownOpened]);
-
-    // console.log('value, items', value, items); // eslint-disable-line
 
     const itemElements = items.map((item, index) => {
         const { id, it } = item || {};
@@ -591,8 +587,6 @@ const ItemsField = ({
             </div>
         );
     });
-
-    // console.log('itemElements', itemElements);
 
     return (
         <div className={className}>

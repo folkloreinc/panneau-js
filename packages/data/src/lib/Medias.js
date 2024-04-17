@@ -14,7 +14,6 @@ class MediasApi extends Base {
                 ...(opts.routes || null),
             },
         });
-        // console.log('opts', opts);
     }
 
     find(id) {

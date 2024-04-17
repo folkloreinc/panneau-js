@@ -24,7 +24,7 @@ const { pattern } = program.opts();
 const packageJsonPath = path.join(process.cwd(), 'package.json');
 const { dependencies } = fsExtra.readJsonSync(packageJsonPath);
 
-console.log('dependencies', Object.keys(dependencies));
+// console.log('dependencies', Object.keys(dependencies));
 
 const patternRegExp = new RegExp(`^${pattern.replace('*', '.*')}$`, 'i');
 const packages = Object.keys(dependencies).filter((it) => {

@@ -15,8 +15,6 @@ class Api extends Base {
         });
         this.medias = new MediasApi(opts);
         this.resources = new ResourcesApi(this);
-        // console.log('opts', opts);
-        // console.log('this', this);
     }
 }
 
