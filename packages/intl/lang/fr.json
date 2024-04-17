@@ -134,6 +134,9 @@
     "J6Mhku": {
         "defaultMessage": "V"
     },
+    "JuxiUN": {
+        "defaultMessage": "Format"
+    },
     "Ke35Pv": {
         "defaultMessage": "Modifier"
     },
@@ -284,6 +287,9 @@
     "fSfLk8": {
         "defaultMessage": "S"
     },
+    "g2CRt5": {
+        "defaultMessage": "Poids"
+    },
     "g6qbbX": {
         "defaultMessage": "Connexion"
     },
@@ -329,6 +335,9 @@
     "rSt+KL": {
         "defaultMessage": "Non"
     },
+    "rmJBin": {
+        "defaultMessage": "Dimensions"
+    },
     "rtwfuZ": {
         "defaultMessage": "Actions"
     },
@@ -359,11 +368,17 @@
     "wKPI1y": {
         "defaultMessage": "Cette page n’existe pas"
     },
+    "wU++NJ": {
+        "defaultMessage": "Durée"
+    },
     "wa783M": {
         "defaultMessage": "Vous avez un compte? Connectez-vous ici"
     },
     "x27x2b": {
         "defaultMessage": "Chargement"
+    },
+    "xKUOLG": {
+        "defaultMessage": "Détails techniques"
     },
     "xSERPA": {
         "defaultMessage": "Vidéo"
@@ -379,6 +394,9 @@
     },
     "yQRtgx": {
         "defaultMessage": "Audio"
+    },
+    "ygNvmz": {
+        "defaultMessage": "Description"
     },
     "yhU8J6": {
         "defaultMessage": "Non"

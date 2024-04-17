@@ -527,6 +527,10 @@
     "defaultMessage": "Audio",
     "description": "Filter item label"
   },
+  "ygNvmz": {
+    "defaultMessage": "Description",
+    "description": "Field name"
+  },
   "yhU8J6": {
     "defaultMessage": "No",
     "description": "Button label"

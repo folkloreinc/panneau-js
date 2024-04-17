@@ -811,6 +811,12 @@ msgctxt "yQRtgx"
 msgid "Audio"
 msgstr "Audio"
 
+# Field name
+#: ygNvmz
+msgctxt "ygNvmz"
+msgid "Description"
+msgstr "Description"
+
 # Button label
 #: yhU8J6
 msgctxt "yhU8J6"

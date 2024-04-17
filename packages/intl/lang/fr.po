@@ -287,7 +287,7 @@ msgstr "V"
 #: JuxiUN
 msgctxt "JuxiUN"
 msgid "Format"
-msgstr ""
+msgstr "Format"
 
 # Button label
 #: Ke35Pv
@@ -597,7 +597,7 @@ msgstr "S"
 #: g2CRt5
 msgctxt "g2CRt5"
 msgid "Size"
-msgstr ""
+msgstr "Poids"
 
 # Button label
 #: g6qbbX
@@ -695,7 +695,7 @@ msgstr "Non"
 #: rmJBin
 msgctxt "rmJBin"
 msgid "Dimensions"
-msgstr ""
+msgstr "Dimensions"
 
 # Field name
 #: rtwfuZ
@@ -761,7 +761,7 @@ msgstr "Cette page n’existe pas"
 #: wU++NJ
 msgctxt "wU++NJ"
 msgid "Duration"
-msgstr ""
+msgstr "Durée"
 
 # Link label
 #: wa783M
@@ -779,7 +779,7 @@ msgstr "Chargement"
 #: xKUOLG
 msgctxt "xKUOLG"
 msgid "Technical details"
-msgstr ""
+msgstr "Détails techniques"
 
 # Filter item label
 #: xSERPA
@@ -812,6 +812,12 @@ msgstr "Image"
 msgctxt "yQRtgx"
 msgid "Audio"
 msgstr "Audio"
+
+# Field name
+#: ygNvmz
+msgctxt "ygNvmz"
+msgid "Description"
+msgstr "Description"
 
 # Button label
 #: yhU8J6
