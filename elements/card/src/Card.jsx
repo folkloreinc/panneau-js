@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { PropTypes as MicromagPropTypes } from '@panneau/core';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import Link from '@panneau/element-link';
@@ -19,13 +19,13 @@ const propTypes = {
     imageAlt: PropTypes.string,
     imageOverlay: PropTypes.bool,
     beforeBody: PropTypes.node,
-    title: MicromagPropTypes.label,
-    subtitle: MicromagPropTypes.label,
+    title: PanneauPropTypes.label,
+    subtitle: PanneauPropTypes.label,
     children: PropTypes.node,
     afterBody: PropTypes.node,
     links: PropTypes.arrayOf(
         PropTypes.shape({
-            label: MicromagPropTypes.label,
+            label: PanneauPropTypes.label,
             href: PropTypes.string,
         }),
     ),

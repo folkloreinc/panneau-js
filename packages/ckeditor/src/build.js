@@ -11,9 +11,11 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 // Keep all editors in the same file to avoid ckeditor duplicated modules in build
 
-class Editor extends ClassicEditorBase {}
+// class Editor extends ClassicEditorBase {}
 
-Editor.builtinPlugins = [Essentials, Heading, Paragraph, Bold, Italic, Link, List];
-Editor.defaultConfig = {};
+ClassicEditorBase.builtinPlugins = [Essentials, Heading, Paragraph, Bold, Italic, Link, List];
+ClassicEditorBase.defaultConfig = {};
 
-export default { Editor };
+// console.log('editor 2', Editor);
+
+export default ClassicEditorBase;

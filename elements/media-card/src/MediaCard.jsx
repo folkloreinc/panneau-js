@@ -129,7 +129,7 @@ const MediaCard = ({
             (thumbnailPath !== null ? get(value, thumbnailPath) : null) || thumbnailUrl || preview;
         const finalSize = (sizePath !== null ? get(value, sizePath) : null) || fileSize;
         const finalLink = (linkPath !== null ? get(value, linkPath) || null : null) || null;
-        const finalHasThumbnail = preview !== null || thumbnail !== null;
+        const finalHasThumbnail = preview !== null || finalThumbnail !== null;
         return {
             name: finalName,
             thumbnail: finalThumbnail,

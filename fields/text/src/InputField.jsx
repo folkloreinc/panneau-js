@@ -1,10 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
-import InputGroup from '@panneau/field-input-group';
 import classNames from 'classnames';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 import { v1 as uuid } from 'uuid';
+
+import InputGroup from '@panneau/field-input-group';
+
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -147,4 +149,4 @@ const InputField = ({
 InputField.propTypes = propTypes;
 InputField.defaultProps = defaultProps;
 
-export default React.forwardRef((props, ref) => <InputField inputRef={ref} {...props} />);
+export default InputField; // React.forwardRef((props, ref) => <InputField inputRef={ref} {...props} />);

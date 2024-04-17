@@ -1,5 +1,6 @@
 const path = require('path');
 const getPackagesAliases = require('./scripts/lib/getPackagesAliases');
+const { idInterpolationPattern } = require('./packages/intl/scripts/config');
 
 module.exports = (api) => {
     if (api.env('node')) {
@@ -61,20 +62,43 @@ module.exports = (api) => {
                     {
                         extensions: ['.png'],
                     },
-                ]
+                ],
             ],
         };
     }
     return {
-        presets: [api.env('development') && require.resolve('babel-preset-react-app/dev')].filter(
-            Boolean,
-        ),
+        presets: api.env('development')
+            ? [
+                  '@babel/preset-react',
+                  [
+                      require('@babel/preset-env'),
+                      {
+                          targets: {
+                              node: 'current',
+                          },
+                      },
+                  ],
+                  // require.resolve('@babel/plugin-proposal-numeric-separator'),
+              ].filter(Boolean)
+            : [],
         plugins: [
             require.resolve('@babel/plugin-proposal-export-namespace-from'),
             [
                 require.resolve('babel-plugin-static-fs'),
                 {
                     target: 'browser', // defaults to node
+                },
+            ],
+            require.resolve('@babel/plugin-proposal-numeric-separator'),
+            [require.resolve('@babel/plugin-proposal-private-property-in-object'), { loose: true }],
+            [require.resolve('@babel/plugin-proposal-class-properties'), { loose: true }],
+            [require.resolve('@babel/plugin-proposal-private-methods'), { loose: true }],
+            [
+                require.resolve('babel-plugin-react-intl'),
+                {
+                    ast: true,
+                    extractFromFormatMessageCall: true,
+                    idInterpolationPattern,
                 },
             ],
         ].filter(Boolean),
