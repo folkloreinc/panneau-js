@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modal-dialog",
-    "version": "3.0.163",
+    "version": "3.0.164",
     "description": "Default modal",
     "keywords": [
         "javascript"
@@ -54,12 +54,12 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.162",
-        "@panneau/element-button": "^3.0.162",
-        "@panneau/element-buttons": "^3.0.162",
-        "@panneau/element-label": "^3.0.162",
-        "@panneau/element-modal": "^3.0.162",
-        "@panneau/themes": "^3.0.162",
+        "@panneau/core": "^3.0.164",
+        "@panneau/element-button": "^3.0.164",
+        "@panneau/element-buttons": "^3.0.164",
+        "@panneau/element-label": "^3.0.164",
+        "@panneau/element-modal": "^3.0.164",
+        "@panneau/themes": "^3.0.164",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
