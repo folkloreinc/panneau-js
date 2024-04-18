@@ -116,8 +116,6 @@ const HtmlField = ({
         onBlur,
     };
 
-    // console.log('my build', CKEditorBuild);
-
     const ckElement =
         CKEditorBuild !== null ? (
             <div className={finalClassName}>

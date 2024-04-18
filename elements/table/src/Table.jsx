@@ -5,7 +5,7 @@ import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -17,7 +17,6 @@ import SortLink from './SortLink';
 
 const propTypes = {
     items: PanneauPropTypes.items,
-    loading: PropTypes.bool,
     columns: PanneauPropTypes.tableColumns,
     theme: PropTypes.string,
     baseUrl: PropTypes.string,
@@ -49,7 +48,6 @@ const propTypes = {
 
 const defaultProps = {
     items: [],
-    loading: false,
     columns: [],
     theme: null,
     baseUrl: null,
@@ -76,8 +74,7 @@ const defaultProps = {
 };
 
 function Table({
-    items: currentItems,
-    loading,
+    items,
     columns,
     theme,
     baseUrl,
@@ -114,14 +111,6 @@ function Table({
         selectedItems !== null && isArray(selectedItems)
             ? selectedItems.filter((it) => it !== null)
             : partialSelectedItems;
-
-    // Avoid table jumps
-    const [items, setItems] = useState(currentItems);
-    useEffect(() => {
-        if (!loading) {
-            setItems(items);
-        }
-    }, [items, loading]);
 
     return (
         <div>

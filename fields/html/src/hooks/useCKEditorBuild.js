@@ -11,7 +11,6 @@ const useCKEditorBuild = () => {
             };
         }
 
-        // console.log('hey editor', loaded, ref.current);
         import('@panneau/ckeditor/build')
             .then(({ default: Editor = null }) => {
                 // console.log('my ed', Editor);
