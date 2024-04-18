@@ -13,7 +13,6 @@ import Icon from '@panneau/element-icon';
 import MediaCard from '@panneau/element-media-card';
 import Pagination from '@panneau/element-pagination';
 import Table from '@panneau/element-table';
-// import UploadField from '@panneau/field-upload';
 import Filters from '@panneau/filter-filters';
 
 import { useMedias } from './hooks';
@@ -54,7 +53,6 @@ const propTypes = {
 const defaultProps = {
     items: null,
     types: null,
-    // uploadButton: null,
     buttons: null,
     filters: defaultFilters,
     columns: defaultColumns,
@@ -87,7 +85,6 @@ function MediasBrowser({
     items: initialItems,
     types,
     baseUrl,
-    // uploadButton,
     buttons,
     filters,
     columns,
