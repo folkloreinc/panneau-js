@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-resource-items",
-    "version": "3.0.170",
+    "version": "3.0.171",
     "description": "Default resource list",
     "keywords": [
         "javascript"
@@ -50,10 +50,10 @@
         "@panneau/core": "^3.0.169",
         "@panneau/data": "^3.0.169",
         "@panneau/element-button": "^3.0.169",
-        "@panneau/element-form-group": "^3.0.169",
+        "@panneau/element-form-group": "^3.0.171",
         "@panneau/element-navbar": "^3.0.169",
         "@panneau/element-pagination": "^3.0.169",
-        "@panneau/filter-filters": "^3.0.169",
+        "@panneau/filter-filters": "^3.0.171",
         "@panneau/list-table": "^3.0.170",
         "@panneau/themes": "^3.0.169",
         "classnames": "^2.5.1",

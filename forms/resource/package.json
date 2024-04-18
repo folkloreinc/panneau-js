@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-resource",
-    "version": "3.0.169",
+    "version": "3.0.171",
     "description": "Default resource forms",
     "keywords": [
         "javascript"
@@ -50,7 +50,7 @@
         "@panneau/data": "^3.0.169",
         "@panneau/element-button": "^3.0.169",
         "@panneau/element-form": "^3.0.169",
-        "@panneau/field-fields": "^3.0.169",
+        "@panneau/field-fields": "^3.0.171",
         "@panneau/intl": "^3.0.169",
         "@panneau/themes": "^3.0.169",
         "classnames": "^2.5.1",
