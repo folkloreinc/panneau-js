@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "3.0.169",
+    "version": "3.0.170",
     "description": "",
     "keywords": [
         "javascript"
@@ -74,19 +74,19 @@
         "@panneau/field-display": "^3.0.169",
         "@panneau/field-embed": "^3.0.169",
         "@panneau/field-fields": "^3.0.169",
-        "@panneau/field-html": "^3.0.169",
+        "@panneau/field-html": "^3.0.170",
         "@panneau/field-input-group": "^3.0.169",
         "@panneau/field-item": "^3.0.169",
         "@panneau/field-items": "^3.0.169",
         "@panneau/field-localized": "^3.0.169",
         "@panneau/field-number": "^3.0.169",
         "@panneau/field-radios": "^3.0.169",
-        "@panneau/field-resource-item": "^3.0.169",
+        "@panneau/field-resource-item": "^3.0.170",
         "@panneau/field-select": "^3.0.169",
         "@panneau/field-text": "^3.0.169",
         "@panneau/field-toggle": "^3.0.169",
         "@panneau/field-toggles": "^3.0.169",
-        "@panneau/field-upload": "^3.0.169",
+        "@panneau/field-upload": "^3.0.170",
         "@panneau/field-url": "^3.0.169",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2"
