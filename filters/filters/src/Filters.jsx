@@ -104,17 +104,15 @@ const Filters = ({
         <Navbar
             className={classNames([
                 'gap-2',
-                'align-items-center',
+                'align-items-start',
                 'justify-content-start',
                 {
                     'navbar-expand-md': withContainer,
-
                     [className]: className !== null,
                 },
             ])}
             withoutCollapse
         >
-            {children}
             {(currentFilters || []).map(
                 ({ component, name, groupLabel, groupClassName, ...filterProps }, index) => {
                     const FilterComponent = getComponentFromName(component, FilterComponents, null);
@@ -125,7 +123,7 @@ const Filters = ({
                             key={`filter-${name}-${index + 1}`}
                             label={groupLabel}
                             className={classNames([
-                                'col-auto position-relative mb-2',
+                                'nav-item',
                                 {
                                     [styles.select]: withSize,
                                     [styles.last]:
@@ -148,7 +146,7 @@ const Filters = ({
                 },
             )}
             {withButton ? (
-                <Button className="mb-2" size="md" theme="primary" onClick={onFiltersReset}>
+                <Button size="md" theme="primary" onClick={onFiltersReset}>
                     {withResetLabel ? (
                         <span className="me-2">
                             <FormattedMessage defaultMessage="Clear" description="Button label" />
@@ -157,6 +155,7 @@ const Filters = ({
                     <Icon name="x-circle" />
                 </Button>
             ) : null}
+            {children}
         </Navbar>
     );
 };

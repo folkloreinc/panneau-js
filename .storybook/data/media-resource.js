@@ -38,6 +38,11 @@ export default {
         batchActions: actions,
         filters: [
             {
+                name: 'search',
+                placeholder: 'Chercher',
+                component: 'search',
+            },
+            {
                 name: 'types',
                 placeholder: 'Sélectionner un type',
                 component: 'select',
@@ -57,11 +62,6 @@ export default {
                 itemLabelPath: 'name',
                 paginated: true,
                 autoSize: false,
-            },
-            {
-                name: 'search',
-                placeholder: 'Chercher',
-                component: 'search',
             },
         ],
     },

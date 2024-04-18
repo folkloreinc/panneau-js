@@ -13,7 +13,7 @@ import Icon from '@panneau/element-icon';
 import MediaCard from '@panneau/element-media-card';
 import Pagination from '@panneau/element-pagination';
 import Table from '@panneau/element-table';
-import UploadField from '@panneau/field-upload';
+// import UploadField from '@panneau/field-upload';
 import Filters from '@panneau/filter-filters';
 
 import { useMedias } from './hooks';
@@ -29,9 +29,9 @@ import styles from './styles.module.scss';
 const propTypes = {
     items: PanneauPropTypes.medias,
     types: PropTypes.arrayOf(PropTypes.string),
-    uploadButton: PropTypes.shape({
-        value: PropTypes.oneOfType([PanneauPropTypes.medias, PanneauPropTypes.media]),
-    }),
+    // uploadButton: PropTypes.shape({
+    //     value: PropTypes.oneOfType([PanneauPropTypes.medias, PanneauPropTypes.media]),
+    // }),
     buttons: PanneauPropTypes.buttons,
     filters: PanneauPropTypes.filters,
     columns: PanneauPropTypes.tableColumns,
@@ -54,7 +54,7 @@ const propTypes = {
 const defaultProps = {
     items: null,
     types: null,
-    uploadButton: null,
+    // uploadButton: null,
     buttons: null,
     filters: defaultFilters,
     columns: defaultColumns,
@@ -87,7 +87,7 @@ function MediasBrowser({
     items: initialItems,
     types,
     baseUrl,
-    uploadButton,
+    // uploadButton,
     buttons,
     filters,
     columns,
@@ -143,7 +143,7 @@ function MediasBrowser({
         }
     }, [items, onItemsChange]);
 
-    const [layout, setLayout] = useState(initialLayout || 'grid');
+    const [layout, setLayout] = useState(initialLayout || 'table');
     const hasLayouts = useMemo(() => layouts !== null && layouts.length > 1, [layouts]);
     const onClickLayout = useCallback(
         (newLayout) => {
@@ -169,6 +169,7 @@ function MediasBrowser({
         setCurrentMedia(null);
     }, [setCurrentMedia]);
 
+    // TODO: context for this?
     const onChangeMedia = useCallback(
         (media = null) => {
             onSelectItems(media);
@@ -231,7 +232,6 @@ function MediasBrowser({
                 </>
             ) : (
                 <>
-                    {buttons !== null ? <Buttons items={buttons} className="mb-2" /> : null}
                     {filters !== null ? (
                         <Filters
                             className="mt-0 pt-0"
@@ -242,25 +242,16 @@ function MediasBrowser({
                             onReset={onQueryReset}
                             theme={theme}
                         >
-                            {uploadButton !== null ? (
-                                <UploadField
-                                    className="w-auto mb-2"
-                                    onChange={onChangeMedia}
-                                    withButton
-                                    withoutMedia
-                                    {...uploadButton}
-                                />
+                            {buttons !== null ? (
+                                <Buttons items={buttons} className="ms-xl-auto" />
                             ) : null}
                         </Filters>
                     ) : null}
-                    {filters === null && uploadButton !== null ? (
+                    {filters === null && buttons !== null ? (
                         <div className="mt-2 mb-2">
-                            <UploadField
-                                onChange={onChangeMedia}
-                                withButton
-                                withoutMedia
-                                {...uploadButton}
-                            />
+                            {buttons !== null ? (
+                                <Buttons items={buttons} className="ms-xl-auto" />
+                            ) : null}
                         </div>
                     ) : null}
                     <div
@@ -298,6 +289,10 @@ function MediasBrowser({
                                 className: 'd-flex w-100',
                                 cardClassName: 'flex-grow-1',
                                 vertical: true,
+                                selectable: onSelectItem !== null,
+                                onClickDescription: (it) => {
+                                    onOpenMedia(it);
+                                },
                             }}
                             {...tableProps}
                             items={items || []}

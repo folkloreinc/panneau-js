@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 
 import withApi from '../../../../.storybook/decorators/withApiProvider';
 import withIntl from '../../../../.storybook/decorators/withIntlProvider';
@@ -13,10 +13,6 @@ import { UppyProvider } from '../../../uppy/src/UppyContext';
 import { MediasApiProvider } from '../MediasApiContext';
 import MediasBrowser from '../MediasBrowserContainer';
 
-import Media1 from '../../../../.storybook/api/items/medias/1.json';
-import Media2 from '../../../../.storybook/api/items/medias/2.json';
-import Media3 from '../../../../.storybook/api/items/medias/3.json';
-
 export default {
     title: 'Medias/MediasBrowser',
     component: MediasBrowser,
@@ -25,8 +21,6 @@ export default {
         intl: true,
     },
 };
-
-const items = [Media1, Media2, Media3];
 
 // eslint-disable-next-line react/prop-types
 const Container = ({ ...props } = {}) => {
@@ -71,7 +65,7 @@ export const GridOnly = () => (
 export const Dark = () => (
     <UppyProvider>
         <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
-            <Container items={items} />
+            <Container layout="grid" />
         </div>
     </UppyProvider>
 );
@@ -79,25 +73,25 @@ export const Dark = () => (
 export const Theme = () => (
     <UppyProvider>
         <div style={{ padding: 20, backgroundColor: '#000' }}>
-            <Container items={items} theme="dark" />
+            <Container theme="dark" layout="grid" />
         </div>
     </UppyProvider>
 );
 
 export const WithButtons = () => (
     <UppyProvider>
-        <Container items={items} buttons={[{ id: 'upload', label: 'Custom', theme: 'primary' }]} />
+        <Container buttons={[{ id: 'upload', label: 'Upload', theme: 'primary' }]} />
     </UppyProvider>
 );
 
-export const WithUploadButton = () => (
-    <UppyProvider>
-        <Container
-            items={items}
-            uploadButton={[{ id: 'upload', label: 'Custom', theme: 'danger' }]}
-        />
-    </UppyProvider>
-);
+// export const WithUploadButton = () => (
+//     <UppyProvider>
+//         <Container
+//
+//             uploadButton={[{ id: 'upload', label: 'Custom', theme: 'danger' }]}
+//         />
+//     </UppyProvider>
+// );
 
 const fields = [];
 const columns = [];

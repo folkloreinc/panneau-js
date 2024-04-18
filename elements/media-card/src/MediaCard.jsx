@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 
 import Button from '@panneau/element-button';
+import Icon from '@panneau/element-icon';
 
 const propTypes = {
     value: PropTypes.oneOfType([
@@ -37,10 +38,12 @@ const propTypes = {
     thumbnailSize: PropTypes.number,
     disabled: PropTypes.bool,
     withoutDescription: PropTypes.bool,
+    selectable: PropTypes.bool,
     selected: PropTypes.bool,
     external: PropTypes.bool,
     onClick: PropTypes.func,
     onClickRemove: PropTypes.func,
+    onClickDescription: PropTypes.func,
     className: PropTypes.string,
     cardClassName: PropTypes.string,
     children: PropTypes.node,
@@ -59,10 +62,12 @@ const defaultProps = {
     maxHeight: null,
     thumbnailSize: 100,
     withoutDescription: false,
+    selectable: false,
     selected: false,
     external: true,
     onClick: null,
     onClickRemove: null,
+    onClickDescription: null,
     className: null,
     cardClassName: null,
     children: null,
@@ -81,10 +86,12 @@ const MediaCard = ({
     thumbnailSize,
     disabled,
     withoutDescription,
+    selectable,
     selected,
     external,
     onClick,
     onClickRemove,
+    onClickDescription,
     className,
     cardClassName,
     children,
@@ -199,6 +206,48 @@ const MediaCard = ({
         }
     }, [value, onClick]);
 
+    const descriptionElement = (
+        <div className={classNames(['card-body', { 'p-2': vertical }])}>
+            <h5
+                className={classNames([
+                    'card-title',
+                    'text-break',
+                    'fs-6',
+                    {
+                        'mb-1': size !== null && size > 0,
+                        'mb-0': size === null || size <= 0,
+                    },
+                ])}
+            >
+                {link !== null ? (
+                    <a
+                        href={link}
+                        {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : null)}
+                    >
+                        {name}
+                    </a>
+                ) : (
+                    name
+                )}
+            </h5>
+            {size !== null && size > 0 ? (
+                <p className="card-text text-muted small">
+                    {prettyBytes(size)}
+                    {onClickDescription !== null && link === null ? (
+                        <Icon className="icon ms-1" name="pencil" />
+                    ) : null}
+                </p>
+            ) : null}
+            {children}
+        </div>
+    );
+
+    const onClickBody = useCallback(() => {
+        if (onClickDescription !== null) {
+            onClickDescription(value);
+        }
+    }, [value, onClick]);
+
     return (
         <div className={classNames([{ [className]: className !== null }])}>
             <div
@@ -215,7 +264,7 @@ const MediaCard = ({
             >
                 <div
                     className={classNames([
-                        'd-flex align-items-center',
+                        'd-flex align-items-center position-relative',
                         {
                             'flex-column': vertical,
                             'text-center': vertical,
@@ -227,8 +276,6 @@ const MediaCard = ({
                         <Button
                             className={classNames([
                                 'btn',
-                                // 'border',
-                                // 'flex-grow-1',
                                 { 'w-100': withoutDescription || vertical },
                             ])}
                             type="button"
@@ -250,46 +297,27 @@ const MediaCard = ({
                             }}
                         >
                             {thumbnailElement || 'Thumbnail'}
+                            {selectable ? (
+                                <input
+                                    className="position-absolute"
+                                    type="checkbox"
+                                    checked={selected}
+                                    style={{ top: 10, right: 10 }}
+                                />
+                            ) : null}
                         </Button>
                     ) : (
                         thumbnailElement
                     )}
 
-                    {!withoutDescription ? (
-                        <div className="flex-grow-1">
-                            <div className={classNames(['card-body', { 'p-2': vertical }])}>
-                                <h5
-                                    className={classNames([
-                                        'card-title',
-                                        'text-break',
-                                        'fs-6',
-                                        {
-                                            'mb-1': size !== null && size > 0,
-                                            'mb-0': size === null || size <= 0,
-                                        },
-                                    ])}
-                                >
-                                    {link !== null ? (
-                                        <a
-                                            href={link}
-                                            {...(external
-                                                ? { target: '_blank', rel: 'noopener noreferrer' }
-                                                : null)}
-                                        >
-                                            {name}
-                                        </a>
-                                    ) : (
-                                        name
-                                    )}
-                                </h5>
-                                {size !== null && size > 0 ? (
-                                    <p className="card-text text-muted small">
-                                        {prettyBytes(size)}
-                                    </p>
-                                ) : null}
-                                {children}
-                            </div>
-                        </div>
+                    {!withoutDescription && link === null && onClickDescription !== null ? (
+                        <Button className="flex-grow-1 w-100" onClick={onClickBody}>
+                            {descriptionElement}
+                        </Button>
+                    ) : null}
+
+                    {!withoutDescription && onClickDescription === null ? (
+                        <div className="flex-grow-1 w-100">{descriptionElement}</div>
                     ) : null}
 
                     {onClickRemove !== null ? (

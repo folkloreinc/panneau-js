@@ -86,13 +86,13 @@ const FormGroup = ({
     const labelClassNames = classNames([
         styles.label,
         {
-            'form-label': !inline,
+            'form-label': !inline && !isListItem,
             'col-form-label': (inline || horizontal) && !isListItem,
             'px-2': horizontal && !isListItem,
             // 'text-nowrap': horizontal, // ?
-            // 'col-sm-3': horizontal,
+            // 'col-sm-3': horizontal, // ?
             'card-header': isCard,
-            'fw-bold': isHeading || isList,
+            'fw-bold': isHeading,
             'pt-2': isList,
             'pb-2': isList,
             'd-flex': isCollapsible,
@@ -177,6 +177,7 @@ const FormGroup = ({
                 styles.container,
                 {
                     'border-top pt-3 mt-3': isHeading,
+                    'list-group-item': isListItem,
                     [className]: className !== null,
                 },
             ])}
@@ -190,30 +191,6 @@ const FormGroup = ({
                         'align-items-center': isColumn,
                         'form-floating': floating,
                     },
-                    isListItem
-                        ? [
-                              'row',
-                              'd-flex',
-                              'align-items-center',
-                              'justify-content-between',
-                              'p-0',
-                              'border-secondary-1',
-                              'border-1',
-                              'border-bottom',
-                              'text-small',
-                          ]
-                        : null,
-                    // {
-                    //     row: isListItem,
-                    //     'd-flex': isListItem,
-                    //     'align-items-center': isListItem,
-                    //     'justify-content-between': isListItem,
-                    //     'p-0': isListItem,
-                    //     'border-secondary-1': isListItem,
-                    //     'border-1': isListItem,
-                    //     'border-bottom': isListItem,
-                    //     'text-small': isListItem,
-                    // },
                 ])}
             >
                 {labelBefore && labelElement !== null ? (
@@ -223,7 +200,8 @@ const FormGroup = ({
                 <div
                     className={classNames({
                         'col-auto': !isList && (isColumn || !horizontal || labelElement === null),
-                        'list-group list-group-flush': isList,
+                        'ms-auto': isListItem && labelBefore,
+                        'me-auto': isListItem && labelAfter,
                     })}
                 >
                     {innerChildren}

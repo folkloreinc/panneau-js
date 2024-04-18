@@ -14,9 +14,11 @@ const propTypes = {
     fields: PanneauPropTypes.fields,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     horizontal: PropTypes.bool,
+    isList: PropTypes.bool,
     disabled: PropTypes.bool,
-    className: PropTypes.string,
+    hideWithoutValue: PropTypes.bool,
     onChange: PropTypes.func,
+    className: PropTypes.string,
 };
 
 const defaultProps = {
@@ -24,9 +26,11 @@ const defaultProps = {
     fields: [],
     value: null,
     horizontal: false,
+    isList: false,
     disabled: false,
-    className: null,
+    hideWithoutValue: false,
     onChange: null,
+    className: null,
 };
 
 const Fields = ({
@@ -34,6 +38,8 @@ const Fields = ({
     fields,
     value,
     horizontal: fieldsHorizontal,
+    isList,
+    hideWithoutValue,
     disabled,
     onChange,
     className,
@@ -68,8 +74,8 @@ const Fields = ({
             name = null,
             horizontal = false,
             inline = false,
-            isList = false,
             withoutFormGroup = false,
+            isListItem = false,
             siblingFields = [],
             defaultValue = null,
             className: fieldClassName = null,
@@ -95,6 +101,10 @@ const Fields = ({
             fieldValue = value;
         }
 
+        if (name !== null && fieldValue === null && hideWithoutValue) {
+            return null;
+        }
+
         if (defaultValue !== null && typeof fieldValue === 'undefined') {
             fieldValue = defaultValue;
         }
@@ -103,12 +113,12 @@ const Fields = ({
             FieldComponent !== null ? (
                 <FieldComponent
                     {...definitionProps}
-                    {...(disabled === true ? { disabled } : null)}
+                    disabled={disabled === true}
                     {...fieldProps}
                     name={name}
                     value={fieldValue}
                     item={value}
-                    {...withoutFormGroup}
+                    horizontal={horizontal}
                     onChange={(newValue) => onFieldChange(field, newValue)}
                     className={fieldClassName}
                 />
@@ -123,8 +133,8 @@ const Fields = ({
                         {...fieldProps}
                         horizontal={horizontal}
                         inline={inline}
-                        isList={isList}
-                        className={classNames(['mb-3', groupClassName])}
+                        isListItem={isListItem}
+                        className={classNames([{ 'mb-3': !isListItem }, groupClassName])}
                         labelClassName={classNames([labelClassName])}
                     >
                         {fieldElement}
@@ -143,12 +153,21 @@ const Fields = ({
         <div
             className={classNames([
                 {
+                    fields: true,
+                    'list-group': isList,
+                    'list-group-horizontal': fieldsHorizontal,
                     [className]: className !== null,
                 },
             ])}
         >
-            {fieldsHorizontal ? (
-                <div className={classNames(['d-inline-flex flex-row'])}>{content}</div>
+            {fieldsHorizontal && !isList ? (
+                <div
+                    className={classNames({
+                        'd-inline-flex flex-row': !isList,
+                    })}
+                >
+                    {content}
+                </div>
             ) : (
                 content
             )}

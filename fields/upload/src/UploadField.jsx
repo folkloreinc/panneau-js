@@ -201,6 +201,7 @@ const UploadField = ({
     const uppy = useUppy(uppyFinalProps);
 
     const [modalOpened, setModalOpened] = useState(false);
+
     const openModal = useCallback(() => {
         setModalOpened(!modalOpened);
     }, [modalOpened, setModalOpened]);
@@ -253,6 +254,12 @@ const UploadField = ({
         setResourceModalOpen(false);
         setModalItems(null);
     }, [resourceModalOpen, setResourceModalOpen, setModalItems]);
+
+    const openModalInResource = useCallback(() => {
+        setResourceModalOpen(false);
+        setModalItems(null);
+        setModalOpened(true);
+    }, [modalOpened, setModalOpened]);
 
     const onChangeSelection = useCallback(
         (newValue) => {
@@ -403,6 +410,14 @@ const UploadField = ({
                     onChange={onChangeSelection}
                     onConfirm={onConfirmSelection}
                     onClose={closeResourceModal}
+                    buttons={[
+                        {
+                            id: 'upload',
+                            label: addButtonLabel,
+                            theme: 'primary',
+                            onClick: openModalInResource,
+                        },
+                    ]}
                     multiple={allowMultipleUploads}
                 />
             ) : null}

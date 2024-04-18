@@ -64,7 +64,7 @@ function MediasPickerModal({
     );
     return (
         <Dialog
-            id={id}
+            id={id || 'picker'}
             size="xl"
             onClose={onClose}
             title={title}

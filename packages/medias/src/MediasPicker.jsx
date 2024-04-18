@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useItemSelection } from '@panneau/core/hooks';
@@ -14,7 +14,6 @@ const propTypes = {
     items: PropTypes.arrayOf(PropTypes.shape({})),
     value: PropTypes.arrayOf(PropTypes.shape({})),
     types: PropTypes.arrayOf(PropTypes.string),
-    uploadButton: PropTypes.shape({}),
     onChange: PropTypes.func.isRequired,
     onConfirm: PropTypes.func.isRequired,
     onClose: PropTypes.func,
@@ -30,7 +29,6 @@ const defaultProps = {
     items: null,
     value: null,
     types: null,
-    uploadButton: null,
     onClose: null,
     multiple: false,
     withoutButtons: false,
@@ -42,7 +40,6 @@ function MediasPicker({
     items: initialItems,
     value: initialSelectedItems,
     types,
-    uploadButton,
     onChange,
     onConfirm,
     onClose,
@@ -83,16 +80,16 @@ function MediasPicker({
         }
     }, [selectedItems, onConfirm]);
 
-    const finalUploadButton = useMemo(
-        () => ({
-            ...(uploadButton || null),
-            ...(types !== null ? { types } : null),
-            allowMultipleUploads: multiple,
-            maxNumberOfFiles: multiple ? 10 : 0,
-            value: selectedItems,
-        }),
-        [uploadButton, selectedItems, multiple],
-    );
+    // const finalUploadButton = useMemo(
+    //     () => ({
+    //         ...(uploadButton || null),
+    //         ...(types !== null ? { types } : null),
+    //         allowMultipleUploads: multiple,
+    //         maxNumberOfFiles: multiple ? 10 : 0,
+    //         value: selectedItems,
+    //     }),
+    //     [uploadButton, selectedItems, multiple],
+    // );
 
     return (
         <div className={className}>
@@ -112,7 +109,6 @@ function MediasPicker({
                 onItemsChange={onItemsChange}
                 selectedCount={selectedCount}
                 onClearSelected={onClearSelected}
-                uploadButton={finalUploadButton}
                 types={types}
                 {...props}
             />

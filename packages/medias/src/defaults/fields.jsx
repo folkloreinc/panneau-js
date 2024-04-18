@@ -19,6 +19,7 @@ export default [
         component: 'fields',
         label: <FormattedMessage defaultMessage="Informations" description="Field title" />,
         isList: true,
+        hideWithoutValue: true,
         fields: [
             {
                 id: 'user',
@@ -46,6 +47,7 @@ export default [
         component: 'fields',
         label: <FormattedMessage defaultMessage="Technical details" description="Field title" />,
         isList: true,
+        hideWithoutValue: true,
         fields: [
             {
                 id: 'format',

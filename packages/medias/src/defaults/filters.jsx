@@ -3,6 +3,11 @@ import { FormattedMessage } from 'react-intl';
 
 export default [
     {
+        id: 'search',
+        component: 'search',
+        name: 'search',
+    },
+    {
         id: 'types',
         component: 'select',
         name: 'types',
@@ -29,6 +34,7 @@ export default [
         ],
         multiple: true,
     },
+
     // {
     //     id: 'author',
     //     component: 'select',
@@ -47,9 +53,4 @@ export default [
     //     itemLabelPath: 'label',
     //     multiple: true,
     // },
-    {
-        id: 'search',
-        component: 'search',
-        name: 'search',
-    },
 ];
