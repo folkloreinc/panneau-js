@@ -1,9 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { InlineEditor as InlineEditorBase } from '@ckeditor/ckeditor5-editor-inline';
 import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
-// Can't do that...
-
+import { InlineEditor as InlineEditorBase } from '@ckeditor/ckeditor5-editor-inline';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Link } from '@ckeditor/ckeditor5-link';

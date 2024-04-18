@@ -65,7 +65,6 @@
         "@ckeditor/ckeditor5-dev-utils": "39.6.3",
         "@ckeditor/ckeditor5-editor-classic": "^41.3.1",
         "@ckeditor/ckeditor5-editor-inline": "^41.3.1",
-        "@ckeditor/ckeditor5-editor-balloon": "^41.3.1",
         "@ckeditor/ckeditor5-essentials": "^41.3.1",
         "@ckeditor/ckeditor5-heading": "^41.3.1",
         "@ckeditor/ckeditor5-link": "^41.3.1",
