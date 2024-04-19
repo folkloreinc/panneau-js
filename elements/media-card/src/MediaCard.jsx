@@ -163,7 +163,7 @@ const MediaCard = ({
                               width: !withoutDescription && !vertical ? thumbnailSize : '100%',
                               height: !withoutDescription ? thumbnailSize : '100%',
                               background:
-                                  'repeating-conic-gradient(var(--bs-secondary-bg) 0% 25%, transparent 0% 50%) 50% / 20px 20px',
+                                  'repeating-conic-gradient(var(--bs-secondary-bg) 0% 25%, var(--bs-body-bg) 0% 50%) 50% / 20px 20px',
                           }
                         : {
                               width: !withoutDescription && !vertical ? thumbnailSize : '100%',

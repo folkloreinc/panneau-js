@@ -89,7 +89,6 @@
         "@panneau/element-loading": "^3.0.169",
         "@panneau/element-media-card": "^3.0.171",
         "@panneau/element-media-player": "^3.0.169",
-        "@panneau/element-media-preview": "^3.0.169",
         "@panneau/element-menu": "^3.0.169",
         "@panneau/element-modal": "^3.0.169",
         "@panneau/element-navbar": "^3.0.169",

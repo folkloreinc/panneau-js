@@ -32,6 +32,7 @@ const MediaPlayer = ({ value: initialValue, width, height, className }) => {
     const value = initialValue || {};
     const { type } = value || {};
     const apiRef = useRef(null);
+
     return (
         <div
             className={classNames([

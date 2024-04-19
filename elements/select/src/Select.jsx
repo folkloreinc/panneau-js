@@ -220,7 +220,7 @@ const SelectElement = ({
                     control: (base, { isDisabled }) => ({
                         ...base,
                         color: 'var(--bs-body-color)',
-                        backgroundColor: 'var(--bs-body-bg)',
+                        backgroundColor: 'var(--bs-card-bg)',
                         cursor: isDisabled ? 'not-allowed' : 'pointer',
                     }),
                     indicators: (base) => ({
@@ -242,7 +242,7 @@ const SelectElement = ({
                     option: (base, { isDisabled }) => ({
                         ...base,
                         color: 'var(--bs-body-color)',
-                        backgroundColor: 'var(--bs-body-bg)',
+                        backgroundColor: 'var(--bs-card-bg)',
                         cursor: isDisabled ? 'not-allowed' : 'pointer',
                         ':active': {
                             ...base[':active'],

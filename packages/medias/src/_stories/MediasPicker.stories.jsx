@@ -26,7 +26,7 @@ export default {
     },
 };
 
-const items = [Media1, Media2, Media3];
+const items = { data: [Media1, Media2, Media3], pagination: { page: 1 } };
 
 // eslint-disable-next-line react/prop-types
 const Container = ({ value: initialValue = null, ...props } = {}) => {

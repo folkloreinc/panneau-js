@@ -80,7 +80,10 @@ export const Theme = () => (
 
 export const WithButtons = () => (
     <UppyProvider>
-        <Container buttons={[{ id: 'upload', label: 'Upload', theme: 'primary' }]} />
+        <Container
+            buttons={[{ id: 'upload', label: 'Upload', theme: 'primary' }]}
+            buttonsClassName="ms-auto"
+        />
     </UppyProvider>
 );
 

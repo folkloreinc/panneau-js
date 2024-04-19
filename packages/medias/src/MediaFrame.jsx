@@ -3,9 +3,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
-import Button from '@panneau/element-button';
+import ImageDisplay from '@panneau/display-image';
 import MediaPlayer from '@panneau/element-media-player';
-import MediaPreview from '@panneau/element-media-preview';
 
 import styles from './styles.module.scss';
 
@@ -33,28 +32,26 @@ function MediaFrame({ value, className }) {
     return (
         <div
             className={classNames([
-                className,
+                styles.mediaFrame,
                 'position-relative',
+                'd-flex',
+                'flex-grow-1',
+                'w-100',
+                'mw-100',
                 { [className]: className != null },
             ])}
         >
             {showPlayer ? (
                 <MediaPlayer value={value} width="100%" />
             ) : (
-                <MediaPreview value={value} width="100%">
-                    <div className={styles.playButton}>
-                        {!showPlayer &&
-                        (type === 'video' || type === 'embed' || type === 'audio') ? (
-                            <Button
-                                className="rounded-circle"
-                                theme="secondary"
-                                onClick={onClick}
-                                icon="play-fill"
-                                size="lg"
-                            />
-                        ) : null}
-                    </div>
-                </MediaPreview>
+                <ImageDisplay
+                    className="w-100"
+                    value={value}
+                    maxWidth="100%"
+                    maxHeight="100%"
+                    withoutZoom
+                    onClick={type === 'video' || type === 'audio' ? onClick : null}
+                />
             )}
         </div>
     );

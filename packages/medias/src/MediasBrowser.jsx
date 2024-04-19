@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
 import classNames from 'classnames';
+import uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -27,10 +28,8 @@ import styles from './styles.module.scss';
 
 const propTypes = {
     items: PanneauPropTypes.medias,
+    extraItems: PanneauPropTypes.medias,
     types: PropTypes.arrayOf(PropTypes.string),
-    // uploadButton: PropTypes.shape({
-    //     value: PropTypes.oneOfType([PanneauPropTypes.medias, PanneauPropTypes.media]),
-    // }),
     buttons: PanneauPropTypes.buttons,
     filters: PanneauPropTypes.filters,
     columns: PanneauPropTypes.tableColumns,
@@ -41,17 +40,17 @@ const propTypes = {
     layouts: PropTypes.arrayOf(PropTypes.shape({})),
     theme: PropTypes.string,
     tableProps: PropTypes.bool,
-    onSelectItem: PropTypes.func,
-    onSelectItems: PropTypes.func,
     onItemsChange: PropTypes.func,
     onLayoutChange: PropTypes.func,
     selectedCount: PropTypes.number,
     onClearSelected: PropTypes.func,
     className: PropTypes.string,
+    buttonsClassName: PropTypes.string,
 };
 
 const defaultProps = {
     items: null,
+    extraItems: null,
     types: null,
     buttons: null,
     filters: defaultFilters,
@@ -72,17 +71,17 @@ const defaultProps = {
     ],
     theme: null,
     tableProps: null,
-    onSelectItem: null,
-    onSelectItems: null,
     onItemsChange: null,
     onLayoutChange: null,
     selectedCount: null,
     onClearSelected: null,
     className: null,
+    buttonsClassName: null,
 };
 
 function MediasBrowser({
     items: initialItems,
+    extraItems,
     types,
     baseUrl,
     buttons,
@@ -94,13 +93,12 @@ function MediasBrowser({
     layouts,
     theme,
     tableProps,
-    onSelectItem,
-    onSelectItems,
     onItemsChange,
     onLayoutChange,
     selectedCount,
     onClearSelected,
     className,
+    buttonsClassName,
 }) {
     const [baseItems] = useState(initialItems || null);
     const baseQuery = useMemo(() => ({ count: 12, ...initialQuery, types }), [initialQuery, types]);
@@ -166,15 +164,6 @@ function MediasBrowser({
         setCurrentMedia(null);
     }, [setCurrentMedia]);
 
-    // TODO: context for this?
-    const onChangeMedia = useCallback(
-        (media = null) => {
-            onSelectItems(media);
-            onQueryReset();
-        },
-        [setCurrentMedia, onQueryReset, onSelectItems],
-    );
-
     const onSaveMedia = useCallback(() => {
         setCurrentMedia(null);
         onQueryReset();
@@ -207,12 +196,19 @@ function MediasBrowser({
         return filters;
     }, [filters, types]);
 
+    const finalItems = useMemo(() => {
+        if (page === 1 && extraItems !== null) {
+            return uniqBy([...extraItems, ...(items || [])], (it) => it?.id);
+        }
+        return items;
+    }, [items, page, extraItems]);
+
     return (
         <div className={classNames([styles.container, className])}>
             {currentMedia !== null ? (
                 <>
                     <div className="mt-2 mb-4">
-                        <Button theme="primary" outline onClick={onCloseMedia} icon="arrow-left">
+                        <Button theme="primary" onClick={onCloseMedia} icon="arrow-left">
                             <FormattedMessage
                                 defaultMessage="Back to files"
                                 description="Button label"
@@ -231,7 +227,6 @@ function MediasBrowser({
                 <>
                     {filters !== null ? (
                         <Filters
-                            className="mt-0 pt-0"
                             value={query}
                             clearValue={types !== null ? queryWithoutTypes : null}
                             filters={finalFilters}
@@ -240,14 +235,14 @@ function MediasBrowser({
                             theme={theme}
                         >
                             {buttons !== null ? (
-                                <Buttons items={buttons} className="ms-xl-auto" />
+                                <Buttons items={buttons} className={buttonsClassName} />
                             ) : null}
                         </Filters>
                     ) : null}
                     {filters === null && buttons !== null ? (
                         <div className="mt-2 mb-2">
                             {buttons !== null ? (
-                                <Buttons items={buttons} className="ms-xl-auto" />
+                                <Buttons items={buttons} className={buttonsClassName} />
                             ) : null}
                         </div>
                     ) : null}
@@ -286,17 +281,14 @@ function MediasBrowser({
                                 className: 'd-flex w-100',
                                 cardClassName: 'flex-grow-1',
                                 vertical: true,
-                                selectable: onSelectItem !== null,
                                 onClickDescription: (it) => {
                                     onOpenMedia(it);
                                 },
                             }}
+                            onSelectItem={(it) => onOpenMedia(it)}
                             {...tableProps}
-                            items={items || []}
+                            items={finalItems || []}
                             loading={loading}
-                            onSelectItem={
-                                onSelectItem !== null ? onSelectItem : (it) => onOpenMedia(it)
-                            }
                         />
                     ) : null}
                     {layout === 'table' ? (
@@ -306,12 +298,10 @@ function MediasBrowser({
                             displayPlaceholder={
                                 <span className="text-secondary text-opacity-75">—</span>
                             }
+                            onSelectItem={(it) => onOpenMedia(it)}
                             {...tableProps}
-                            items={items}
+                            items={finalItems}
                             loading={loading}
-                            onSelectItem={
-                                onSelectItem !== null ? onSelectItem : (it) => onOpenMedia(it)
-                            }
                             actionsProps={{
                                 getEditPropsFromItem: (it) => ({
                                     href: null,

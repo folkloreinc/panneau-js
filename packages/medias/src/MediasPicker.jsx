@@ -49,30 +49,32 @@ function MediasPicker({
     className,
     ...props
 }) {
-    const [items, setItems] = useState(initialItems);
+    // For selection only
+    const [currentItems, setItems] = useState(initialItems);
     const onItemsChange = useCallback(
         (pageItems) => {
             setItems(pageItems);
         },
         [setItems],
     );
-    const disabled = initialItems === null || initialItems.length < 1;
+
     const { media: currentMedia } = useMediasForm();
 
     const {
         onSelectItem,
-        onSelectItems,
         onSelectPage,
         onClearSelected,
         pageSelected,
         selectedCount,
         selectedItems,
     } = useItemSelection({
-        items,
+        currentItems,
         selectedItems: initialSelectedItems,
         onSelectionChange: onChange,
         multipleSelection: multiple,
     });
+
+    const disabled = currentItems === null || currentItems.length < 1;
 
     const onConfirmSelection = useCallback(() => {
         if (onConfirm !== null) {
@@ -80,22 +82,11 @@ function MediasPicker({
         }
     }, [selectedItems, onConfirm]);
 
-    // const finalUploadButton = useMemo(
-    //     () => ({
-    //         ...(uploadButton || null),
-    //         ...(types !== null ? { types } : null),
-    //         allowMultipleUploads: multiple,
-    //         maxNumberOfFiles: multiple ? 10 : 0,
-    //         value: selectedItems,
-    //     }),
-    //     [uploadButton, selectedItems, multiple],
-    // );
-
     return (
         <div className={className}>
             <MediasBrowser
                 tableProps={{
-                    selectable: multiple,
+                    selectable: true,
                     multipleSelection: multiple,
                     onSelectItem,
                     onSelectPage,
@@ -103,9 +94,7 @@ function MediasPicker({
                     pageSelected,
                     ...tableProps,
                 }}
-                items={items}
-                onSelectItem={onSelectItem}
-                onSelectItems={onSelectItems}
+                // items={initialItems} // TODO: fix useItems if using this
                 onItemsChange={onItemsChange}
                 selectedCount={selectedCount}
                 onClearSelected={onClearSelected}

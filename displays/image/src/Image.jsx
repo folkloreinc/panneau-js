@@ -1,8 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
+import isNumber from 'lodash/isNumber';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import styles from './styles.module.scss';
 
@@ -12,6 +13,7 @@ const propTypes = {
     maxWidth: PropTypes.number,
     maxHeight: PropTypes.number,
     onClick: PropTypes.func,
+    withoutZoom: PropTypes.bool,
     className: PropTypes.string,
 };
 
@@ -21,10 +23,11 @@ const defaultProps = {
     maxWidth: 40,
     maxHeight: 40,
     onClick: null,
+    withoutZoom: false,
     className: null,
 };
 
-const Image = ({ value, placeholder, maxWidth, maxHeight, onClick, className }) => {
+const Image = ({ value, placeholder, maxWidth, maxHeight, onClick, withoutZoom, className }) => {
     const {
         url = null,
         thumbnailUrl = null,
@@ -42,6 +45,29 @@ const Image = ({ value, placeholder, maxWidth, maxHeight, onClick, className }) 
     const Tag = onClick !== null ? 'button' : 'div';
     const isButton = Tag === 'button';
 
+    const [zooming, setZooming] = useState(false);
+    const [zoomed, setZoomed] = useState(false);
+
+    const onHoverIn = useCallback(() => {
+        setZooming(true);
+    }, [setZooming]);
+
+    const onHoverOut = useCallback(() => {
+        setZooming(false);
+    }, [setZooming]);
+
+    useEffect(() => {
+        if (!zooming) {
+            setZoomed(false);
+        }
+        const id = setTimeout(() => {
+            setZoomed(zooming);
+        }, 290);
+        return () => {
+            clearTimeout(id);
+        };
+    }, [zooming]);
+
     return (
         <div
             className={classNames([
@@ -50,22 +76,41 @@ const Image = ({ value, placeholder, maxWidth, maxHeight, onClick, className }) 
                     [className]: className !== null,
                 },
             ])}
+            {...(!withoutZoom && image !== null
+                ? {
+                      onMouseEnter: onHoverIn,
+                      onMouseLeave: onHoverOut,
+                  }
+                : null)}
         >
             <Tag
                 className={classNames([
-                    'd-flex align-items-center justify-content-center',
+                    'position-relative d-flex align-items-center justify-content-center',
                     styles.inner,
                     {
                         'btn border-radius-0': isButton,
                     },
                 ])}
                 style={{
-                    width: maxWidth !== null ? parseInt(maxWidth, 10) : null,
-                    height: maxHeight !== null ? parseInt(maxHeight, 10) : null,
+                    width:
+                        maxWidth !== null && isNumber(maxWidth) ? parseInt(maxWidth, 10) : maxWidth,
+                    height:
+                        maxHeight !== null && isNumber(maxHeight)
+                            ? parseInt(maxHeight, 10)
+                            : maxHeight,
+                    transition: 'transform 0.15s ease-out',
+                    ...(zoomed
+                        ? {
+                              position: 'absolute',
+                              transform: 'scale(3.4)',
+                              zIndex: 10,
+                          }
+                        : null),
                 }}
                 {...(isButton
                     ? {
                           type: 'button',
+                          onClick,
                       }
                     : null)}
             >

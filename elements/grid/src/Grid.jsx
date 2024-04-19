@@ -16,7 +16,7 @@ const propTypes = {
     componentProps: PropTypes.shape({}),
     size: PropTypes.string,
     gap: PropTypes.string,
-    // selectable: PropTypes.bool,
+    selectable: PropTypes.bool,
     multipleSelection: PropTypes.bool,
     onSelectItem: PropTypes.func,
     selectedItems: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
@@ -29,7 +29,7 @@ const defaultProps = {
     componentProps: null,
     size: null,
     gap: null,
-    // selectable: false,
+    selectable: false,
     multipleSelection: false,
     onSelectItem: null,
     selectedItems: null,
@@ -42,7 +42,7 @@ const Grid = ({
     componentProps,
     size,
     gap,
-    // selectable,
+    selectable,
     onSelectItem,
     selectedItems,
     className,
@@ -63,15 +63,19 @@ const Grid = ({
                 {Component !== null
                     ? (items || []).map((item, idx) => {
                           const { id: itemId = null } = item || {};
-                          const selected =
-                              ((selectedItems || []).find(({ id = null } = {}) => id === itemId) ||
-                                  null) !== null;
+                          const selected = selectable
+                              ? ((selectedItems || []).find(
+                                    ({ id = null } = {}) => id === itemId,
+                                ) || null) !== null
+                              : false;
                           return (
                               <Component
                                   key={`item-${itemId}-${idx + 1}`}
                                   value={item}
+                                  selectable={selectable}
+                                  selected={selectable && selected}
                                   {...componentProps}
-                                  {...(onSelectItem !== null
+                                  {...(selectable && onSelectItem !== null
                                       ? {
                                             onClick: onSelectItem,
                                             selected,

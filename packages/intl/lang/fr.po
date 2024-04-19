@@ -71,7 +71,7 @@ msgstr ""
 #: 3RT69u
 msgctxt "3RT69u"
 msgid "Informations"
-msgstr ""
+msgstr "Informations"
 
 # Button label
 #: 3ebjtX
@@ -347,7 +347,7 @@ msgstr "Créé le"
 #: PN+75e
 msgctxt "PN+75e"
 msgid "Created at"
-msgstr ""
+msgstr "Créé le"
 
 # Button label
 #: PQX/ph
@@ -817,7 +817,7 @@ msgstr "Il y a eu une erreur"
 #: yByaBh
 msgctxt "yByaBh"
 msgid "Added by"
-msgstr ""
+msgstr "Ajouté par"
 
 # Filter item label
 #: yHAmDD

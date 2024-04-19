@@ -26,6 +26,9 @@
     "2vB7U4": {
         "defaultMessage": "Une erreur s’est produite et nous n’avons pas pu enregistrer cet élément avec succès."
     },
+    "3RT69u": {
+        "defaultMessage": "Informations"
+    },
     "3ebjtX": {
         "defaultMessage": "Oui"
     },
@@ -159,6 +162,9 @@
         "defaultMessage": "J"
     },
     "OzYWZz": {
+        "defaultMessage": "Créé le"
+    },
+    "PN+75e": {
         "defaultMessage": "Créé le"
     },
     "PQX/ph": {
@@ -388,6 +394,9 @@
     },
     "yALN2p": {
         "defaultMessage": "Il y a eu une erreur"
+    },
+    "yByaBh": {
+        "defaultMessage": "Ajouté par"
     },
     "yHAmDD": {
         "defaultMessage": "Image"
