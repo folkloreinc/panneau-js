@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useItems } from '@panneau/data';
+import { useItemsStore } from '@panneau/data';
 
 import { useMediasApi } from '../MediasApiContext';
 
@@ -12,17 +12,18 @@ const useMedias = (query = null, page = null, count = null, opts = {}) => {
         [api, query, count],
     );
 
-    const { items, pageItems, ...request } = useItems({
+    const { items, ...props } = useItemsStore('medias', {
         getPage: page !== null ? getItems : null,
         getItems: page === null ? getItems : null,
         page,
+        count,
+        query,
         ...opts,
     });
 
     return {
-        medias: page !== null ? pageItems : items,
-        allMedias: items,
-        ...request,
+        items,
+        ...props,
     };
 };
 

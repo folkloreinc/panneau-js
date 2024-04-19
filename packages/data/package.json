@@ -56,6 +56,8 @@
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.17",
         "@folklore/routes": "^0.2.26",
+        "@tanstack/react-query": "^5.29.2",
+        "lodash": "^4.17.21",
         "@panneau/core": "^3.0.169",
         "prop-types": "^15.7.2",
         "query-string": "^9.0.0"

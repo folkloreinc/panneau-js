@@ -188,7 +188,12 @@ const ResourceItemField = ({
         [queryTextValue, paginated],
     );
 
-    const resourceItems = useResourceItems(
+    const {
+        items: pageItems = null,
+        // allItems: partialItems = null,
+        reload = null,
+        lastPage = null,
+    } = useResourceItems(
         queryResource,
         finalQuery,
         paginated ? page : null,
@@ -196,15 +201,7 @@ const ResourceItemField = ({
         resourceOptions,
     );
 
-    const {
-        allItems: partialItems = null,
-        reload = null,
-        reloadPage = null,
-        reset = null,
-        lastPage = null,
-    } = resourceItems || {};
-
-    const items = (partialItems || [])
+    const items = (pageItems || [])
         .concat(multiple && isArray(value) ? value : [value])
         .filter((it) => it !== null)
         .filter((v, i, a) => a.findIndex((v2) => v2.id === v.id) === i);
@@ -311,28 +308,29 @@ const ResourceItemField = ({
     );
 
     // If empty try to fetch
-    const onFocus = useCallback(() => {
-        if ((partialItems || []).length === 0) {
-            if (paginated) {
-                reloadPage();
-            } else {
-                reload();
-            }
-        }
-    }, [paginated, partialItems]);
+    // const onFocus = useCallback(() => {
+    //     if ((partialItems || []).length === 0) {
+    //         if (paginated) {
+    //             reloadPage();
+    //         } else {
+    //             reload();
+    //         }
+    //     }
+    // }, [paginated, partialItems]);
 
     const onClickRemove = useCallback(() => {
         if (onChange !== null) {
             onChange(null);
         }
+
         // Clear the page and be good
         if (paginated) {
             setPage(defaultPage);
-            reset();
+            reload();
         } else {
-            reset();
+            reload();
         }
-    }, [onChange, paginated, defaultPage, reload, reloadPage, reset]);
+    }, [onChange, paginated, defaultPage, reload]);
 
     const form = formOpen ? (
         <ResourceForm
@@ -398,7 +396,7 @@ const ResourceItemField = ({
                             }
                             onChange={onValueChange}
                             onInputChange={onInputChange}
-                            onFocus={onFocus}
+                            // onFocus={onFocus}
                             onMenuScrollToBottom={onScrollEnd}
                             multiple={multiple}
                         />

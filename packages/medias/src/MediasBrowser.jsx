@@ -44,6 +44,7 @@ const propTypes = {
     onLayoutChange: PropTypes.func,
     selectedCount: PropTypes.number,
     onClearSelected: PropTypes.func,
+    withStickySelection: PropTypes.bool,
     className: PropTypes.string,
     buttonsClassName: PropTypes.string,
 };
@@ -75,6 +76,7 @@ const defaultProps = {
     onLayoutChange: null,
     selectedCount: null,
     onClearSelected: null,
+    withStickySelection: false,
     className: null,
     buttonsClassName: null,
 };
@@ -97,6 +99,7 @@ function MediasBrowser({
     onLayoutChange,
     selectedCount,
     onClearSelected,
+    withStickySelection,
     className,
     buttonsClassName,
 }) {
@@ -125,10 +128,11 @@ function MediasBrowser({
     const { types: queryTypes = null, ...queryWithoutTypes } = query || {};
 
     const {
-        medias: items,
-        loading,
-        lastPage,
-        total,
+        items,
+        allItems,
+        loading = false,
+        updateItem = null,
+        pagination: { lastPage, total } = {},
     } = useMedias(query, page, count, { items: baseItems });
 
     // For picker
@@ -164,10 +168,13 @@ function MediasBrowser({
         setCurrentMedia(null);
     }, [setCurrentMedia]);
 
-    const onSaveMedia = useCallback(() => {
-        setCurrentMedia(null);
-        onQueryReset();
-    }, [setCurrentMedia, onQueryReset]);
+    const onSaveMedia = useCallback(
+        (item) => {
+            setCurrentMedia(null);
+            updateItem(item);
+        },
+        [setCurrentMedia, updateItem],
+    );
 
     const pagination = (
         <Pagination
@@ -197,11 +204,28 @@ function MediasBrowser({
     }, [filters, types]);
 
     const finalItems = useMemo(() => {
-        if (page === 1 && extraItems !== null) {
-            return uniqBy([...extraItems, ...(items || [])], (it) => it?.id);
+        if (withStickySelection && extraItems !== null) {
+            return uniqBy(
+                [
+                    ...(extraItems || [])
+                        .map((item) => {
+                            const { id: itemId = null } = item;
+                            return (
+                                (allItems || []).find(
+                                    ({ id: otherId = null } = {}) => otherId === itemId,
+                                ) ||
+                                item ||
+                                null
+                            );
+                        })
+                        .filter((it) => it !== null),
+                    ...(items || []),
+                ],
+                (it) => it?.id,
+            );
         }
         return items;
-    }, [items, page, extraItems]);
+    }, [items, page, allItems, withStickySelection, extraItems]);
 
     return (
         <div className={classNames([styles.container, className])}>

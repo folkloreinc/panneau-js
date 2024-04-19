@@ -33,7 +33,6 @@ const propTypes = {
     deleteLabel: PropTypes.node,
     duplicateLabel: PropTypes.node,
     reload: PropTypes.func,
-    reloadPage: PropTypes.func,
     updateItem: PropTypes.func,
     onClickShow: PropTypes.func,
     onClickEdit: PropTypes.func,
@@ -59,7 +58,6 @@ const defaultProps = {
     deleteLabel: <FormattedMessage defaultMessage="Delete" description="Button label" />,
     duplicateLabel: <FormattedMessage defaultMessage="Duplicate" description="Button label" />,
     reload: null,
-    reloadPage: null,
     updateItem: null,
     onClickShow: null,
     onClickEdit: null,
@@ -86,7 +84,6 @@ const ItemActions = ({
     deleteLabel,
     duplicateLabel,
     reload,
-    reloadPage,
     updateItem,
     onClickShow,
     onClickEdit,
@@ -151,9 +148,7 @@ const ItemActions = ({
                                           )
                                         : null,
                                 ...otherProps,
-                                ...(ActionComponent !== null
-                                    ? { reload, reloadPage, updateItem }
-                                    : null),
+                                ...(ActionComponent !== null ? { reload, updateItem } : null),
                                 label: iconsOnly && icon !== null ? null : label,
                                 icon: iconsOnly && icon !== null ? <Icon name={icon} /> : null,
                                 ...(itemLinkProp !== null && item !== null && item[itemLinkProp]

@@ -18,7 +18,6 @@ const propTypes = {
     cardTitlePath: PropTypes.string,
     displayPlaceholder: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     reload: PropTypes.func,
-    reloadPage: PropTypes.func,
     updateItem: PropTypes.func,
     actionsProps: PropTypes.shape({}),
     withoutActionsColumn: PropTypes.bool,
@@ -31,7 +30,6 @@ const defaultProps = {
     cardTitlePath: 'title',
     displayPlaceholder: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     reload: null,
-    reloadPage: null,
     updateItem: null,
     actionsProps: null,
     withoutActionsColumn: false,
@@ -44,7 +42,6 @@ const CardsList = ({
     columns,
     cardTitlePath,
     reload,
-    reloadPage,
     updateItem,
     actionsProps,
     displayPlaceholder,
@@ -60,10 +57,9 @@ const CardsList = ({
         () => ({
             ...actionsProps,
             reload,
-            reloadPage,
             updateItem,
         }),
-        [actionsProps, reload, reloadPage, updateItem],
+        [actionsProps, reload, updateItem],
     );
 
     const idColumn =

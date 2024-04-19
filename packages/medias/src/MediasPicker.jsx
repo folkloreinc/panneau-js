@@ -49,16 +49,18 @@ function MediasPicker({
     className,
     ...props
 }) {
-    // For selection only
-    const [currentItems, setItems] = useState(initialItems);
+    const { media: currentMedia } = useMediasForm();
+
+    // For selection
+    const [pageItems, setItems] = useState(initialItems);
+    const disabled = pageItems === null || pageItems.length < 1;
+
     const onItemsChange = useCallback(
-        (pageItems) => {
-            setItems(pageItems);
+        (newPageItems) => {
+            setItems(newPageItems);
         },
         [setItems],
     );
-
-    const { media: currentMedia } = useMediasForm();
 
     const {
         onSelectItem,
@@ -68,13 +70,11 @@ function MediasPicker({
         selectedCount,
         selectedItems,
     } = useItemSelection({
-        currentItems,
+        items: pageItems,
         selectedItems: initialSelectedItems,
         onSelectionChange: onChange,
         multipleSelection: multiple,
     });
-
-    const disabled = currentItems === null || currentItems.length < 1;
 
     const onConfirmSelection = useCallback(() => {
         if (onConfirm !== null) {
@@ -94,11 +94,16 @@ function MediasPicker({
                     pageSelected,
                     ...tableProps,
                 }}
-                // items={initialItems} // TODO: fix useItems if using this
+                items={initialItems} // TODO: fix useItems if actually using this
                 onItemsChange={onItemsChange}
                 selectedCount={selectedCount}
                 onClearSelected={onClearSelected}
                 types={types}
+                extraItems={
+                    !multiple && initialSelectedItems !== null
+                        ? [initialSelectedItems]
+                        : initialSelectedItems
+                }
                 {...props}
             />
             {multiple && !withoutButtons && currentMedia === null ? (

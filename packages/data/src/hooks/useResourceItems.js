@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react';
 
 import { useApi } from '../contexts/ApiContext';
-import useItems from './useItems';
+import useItemsStore from './useItemsStore';
 
 const useResourceItems = (resource, query = null, page = null, count = null, opts = null) => {
     const api = useApi();
@@ -27,18 +27,17 @@ const useResourceItems = (resource, query = null, page = null, count = null, opt
         [api, resource, query, count],
     );
 
-    const { items, pageItems, ...request } = useItems({
+    const { items, ...request } = useItemsStore(id, {
         getPage: page !== null ? getItems : null,
         getItems: page === null ? getItems : null,
+        query,
         page,
+        count,
         ...opts,
     });
 
-    const finalItems = page !== null ? pageItems : items;
-
     return {
-        items: resourceChanging ? null : finalItems,
-        allItems: items,
+        items: resourceChanging ? null : items,
         ...request,
     };
 };

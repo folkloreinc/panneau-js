@@ -77,7 +77,9 @@ export const Multiple = () => (
 
 export const Dark = () => (
     <UppyProvider>
-        <Container layout="table" theme="dark" picker />
+        <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
+            <Container layout="table" theme="dark" picker />
+        </div>
     </UppyProvider>
 );
 
@@ -99,14 +101,15 @@ export const WithUploadTypes = () => (
     </UppyProvider>
 );
 
-export const WithValue = () => (
+export const WithStickyValue = () => (
     <UppyProvider>
         <Container
             layout="table"
             picker
             uploadButton={{ id: 1, icon: 'circle' }}
-            types={['image', 'video']}
+            types={['image', 'video', 'audio']}
             value={Media2}
+            withStickySelection
         />
     </UppyProvider>
 );
@@ -118,7 +121,7 @@ export const WithValueMultiple = () => (
             picker
             multiple
             uploadButton={{ id: 1, icon: 'circle' }}
-            types={['image', 'video']}
+            types={['image', 'video', 'audio']}
             value={[Media2, Media3]}
         />
     </UppyProvider>

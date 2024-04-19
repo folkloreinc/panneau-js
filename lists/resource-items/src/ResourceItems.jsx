@@ -93,24 +93,16 @@ const ResourceItemsList = ({
         return [currentPage, rest];
     }, [query]);
 
-    const itemsProps = useResourceItems(
-        resource,
-        queryWithoutPage,
-        paginated ? parseInt(page, 10) : null,
-    );
-
     const {
         items = [],
         loaded = false,
         loading = false,
-        lastPage = 0,
-        total = 0,
-        reload = null,
-        reloadPage = null,
+        pagination = null,
         updateItem = null,
-        reset = null,
-    } = itemsProps || {};
+        reload = null,
+    } = useResourceItems(resource, queryWithoutPage, paginated ? parseInt(page, 10) : null);
 
+    const { lastPage = 0, total = 0 } = pagination || {};
     const finalEmpty = loaded && !loading && total === 0;
 
     const ListComponents = useListsComponents();
@@ -147,11 +139,10 @@ const ResourceItemsList = ({
     });
 
     const onActionsChange = useCallback(() => {
-        if (reset !== null && reloadPage !== null) {
-            reset();
-            reloadPage(parseInt(page, 10));
+        if (reload !== null) {
+            reload();
         }
-    }, [reloadPage, reset, page]);
+    }, [reload]);
 
     return (
         <div className={className}>
@@ -201,13 +192,11 @@ const ResourceItemsList = ({
             </div>
             {ListComponent !== null ? (
                 <ListComponent
-                    {...itemsProps}
                     {...listProps}
                     actionsProps={{
                         resource,
                         actions,
                         reload,
-                        reloadPage,
                         updateItem,
                         urlGenerator: resourceUrlGenerator,
                         ...actionsProps,
@@ -228,6 +217,7 @@ const ResourceItemsList = ({
                     onQueryReset={onQueryReset}
                     showEmptyLabel={finalEmpty}
                     loading={loading}
+                    loaded={loaded}
                     emptyLabel={
                         <p className="my-2">
                             <FormattedMessage

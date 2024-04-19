@@ -1,5 +1,7 @@
 export { default as useData } from './useData';
 export { default as useItems } from './useItems';
+export { default as useItemsLegacy } from './useItemsLegacy';
+export { default as useItemsStore } from './useItemsStore';
 export { default as useResourceDestroy } from './useResourceDestroy';
 export { default as useResourceItem } from './useResourceItem';
 export { default as useResourceItems } from './useResourceItems';

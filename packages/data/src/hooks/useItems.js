@@ -1,262 +1,196 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { getJSON } from '@folklore/fetch';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import isEmpty from 'lodash/isEmpty';
+import queryString from 'query-string';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 const useItems = ({
-    getPage = null,
-    getItems = null,
-    page = null,
-    count = 10,
-    items: providedItems = null,
-    pages: initialPages = null,
-    getPageFromResponse = ({
-        pagination: { page: currentPage, last_page: lastPage, total, per_page: perPage },
-        data: items,
-    }) => ({
-        page: parseInt(currentPage, 10),
-        lastPage: parseInt(lastPage, 10),
-        total: parseInt(total, 10),
-        count: parseInt(perPage, 10),
-        items,
-    }),
-    getItemsFromResponse = (data) => data,
-    onItemsLoaded = null,
-    onPageLoaded = null,
-    onLoaded = null,
-    onError = null,
+    store,
+    url,
+    paginated: initialPaginated = false,
+    query: initialQuery = null,
+    onQueryChange,
+    queryConfig = null,
+    keepData = true,
+    ...oldProps
 }) => {
-    const isPaginated = getPage !== null || initialPages !== null;
+    // Legacy
+    const {
+        getPage = null,
+        getItems = null,
+        page: oldPage = null,
+        count: oldCount = null,
+        items: providedItems = null,
+        pages: initialPages = null,
+        getPageFromResponse = ({
+            pagination: {
+                page: currentPage = null,
+                last_page: lastPage = null,
+                total = null,
+                per_page: perPage = null,
+            },
+            data: items = null,
+        } = {}) => ({
+            page: parseInt(currentPage, 10),
+            lastPage: parseInt(lastPage, 10),
+            total: parseInt(total, 10),
+            count: parseInt(perPage, 10),
+            items,
+        }),
+        getItemsFromResponse = (data) => data,
+        onItemsLoaded = null,
+        onPageLoaded = null,
+        onLoaded = null,
+        onError = null,
+    } = oldProps || {};
 
-    const lastState = useRef(null);
-    const initialState = useMemo(() => {
-        const finalInitialPages =
-            initialPages !== null ? initialPages.map((it) => getPageFromResponse(it)) : null;
-        return {
-            lastPage:
-                finalInitialPages !== null
-                    ? finalInitialPages.reduce(
-                          (currentLastPage, { lastPage: initialLastPage }) =>
-                              initialLastPage > currentLastPage ? initialLastPage : currentLastPage,
-                          -1,
-                      )
-                    : -1,
-            total:
-                finalInitialPages !== null
-                    ? finalInitialPages[0].total
-                    : (providedItems || []).length,
-            loaded: providedItems !== null,
-            loading: false,
-            pages: finalInitialPages !== null ? finalInitialPages : null,
-            items: null,
-        };
-    }, [initialPages, providedItems]);
-    const [state, setState] = useState(initialState);
-    const { lastPage, loaded, loading, items: stateItems, pages, total } = state;
-    const items =
-        providedItems ||
-        (isPaginated && pages !== null
-            ? pages.reduce((pagesItems, { items: pageItems }) => pagesItems.concat(pageItems), [])
-            : stateItems) ||
-        null;
-    const updateState = (update) => setState({ ...state, ...update });
-    const updateFromResponse = (response, error = null, reset = false) => {
-        if (error !== null) {
-            updateState({
-                loaded: false,
-                loading: false,
-            });
-            throw error;
-        }
-        if (isPaginated) {
-            const newPage = getPageFromResponse(response);
+    const paginated = useMemo(
+        () => getPage !== null || initialPages !== null || initialPaginated,
+        [getPage, initialPages, initialPaginated],
+    );
 
-            const newPages = (
-                reset
-                    ? [newPage]
-                    : [...(pages || []).filter((it) => it.page !== newPage.page), newPage]
-            ).sort((a, b) => {
-                if (a === b) {
-                    return 0;
-                }
-                return a > b ? 1 : -1;
-            });
-            updateState({
-                loaded: true,
-                loading: false,
-                lastPage: newPage.lastPage,
-                total: newPage.total,
-                pages: newPages,
-            });
-            return newPage;
+    const query = useMemo(() => {
+        // Backwards compatible
+        if (oldPage !== null || oldCount !== null) {
+            return { page: oldPage, count: oldCount, ...initialQuery };
         }
-        const newItems = [...getItemsFromResponse(response)];
-        updateState({
-            loaded: true,
-            loading: false,
-            items: newItems,
-            total: newItems.length,
-        });
-        return newItems;
-    };
+        return initialQuery;
+    }, [initialQuery]);
 
-    const getNextPage = () => {
-        const allPages =
-            lastPage !== -1
-                ? Array.call(null, ...Array(lastPage)).map((it, index) => index + 1)
-                : [];
-        const remainingPages = allPages.filter(
-            (pageNumber) => pages.findIndex((it) => it.page === pageNumber) === -1,
-        );
-        const firstItem = remainingPages.length > 0 ? remainingPages.shift() : null;
-        return firstItem !== null ? firstItem : null;
-    };
+    const { page = null, count = null, ...queryWithoutPageAndCount } = query || {};
+    const queryKey = useMemo(
+        () =>
+            paginated && getPage !== null
+                ? [store, page, count || 10, queryWithoutPageAndCount]
+                : [store, query],
+        [paginated, page, count, queryWithoutPageAndCount],
+    );
 
-    const loadItems = (requestPage) => {
-        updateState({
-            loading: true,
-        });
-        let canceled = false;
-        const request = isPaginated ? getPage(requestPage, count) : getItems();
-        const promise = request
-            .then((response) => (!canceled ? updateFromResponse(response) : Promise.reject()))
-            .catch((error) => (!canceled ? updateFromResponse(null, error) : Promise.reject()))
-            .then((response) => {
-                if (isPaginated && onPageLoaded !== null) {
-                    onPageLoaded(response);
-                } else if (!isPaginated && onItemsLoaded !== null) {
-                    onItemsLoaded(response);
-                }
-                if (onLoaded !== null) {
-                    onLoaded(response);
-                }
-                return response;
-            })
-            .catch((error) => {
-                if (!canceled && onError !== null) {
-                    onError(error);
-                }
-            });
-        promise.cancel = () => {
-            canceled = true;
-        };
-        return promise;
-    };
-
-    const loadPage = (pageToLoad) => {
-        if (loading) {
-            return Promise.reject();
-        }
-        if (pages.find((it) => it.page === pageToLoad) !== -1) {
-            return Promise.reject();
-        }
-        return loadItems(pageToLoad);
-    };
-
-    const loadNextPage = () => {
-        if (loading) {
-            return Promise.reject();
-        }
-        const nextPage = getNextPage();
-        return nextPage !== null ? loadItems(nextPage) : Promise.resolve();
-    };
-
-    const reloadPage = () => {
-        if (loading) {
-            return Promise.reject();
-        }
-        return loadItems(page);
-    };
-
-    const reload = () => {
-        if (loading) {
-            return Promise.reject();
-        }
-        return loadItems();
-    };
-
-    const reset = useCallback(() => {
-        setState({
-            loaded: false,
-            loading: false,
-            lastPage: -1,
-            total: 0,
-            pages: null,
-            items: null,
-        });
-    }, [page, setState]);
-
-    const updateItem = (newItem) => {
-        if (loading) {
-            return;
-        }
-        if (isPaginated) {
-            const currentPages = pages || [];
-            updateState({
-                pages: currentPages.map((pageData) => {
-                    const pageItems = pageData.items || [];
-                    if (pageItems.findIndex(({ id }) => id === newItem.id) !== -1) {
-                        return {
-                            ...pageData,
-                            items: pageItems.map((it) => (it.id === newItem.id ? newItem : it)),
-                        };
-                    }
-                    return pageData;
-                }),
-            });
-        } else {
-            const currentItems = items || [];
-            updateState({
-                items: currentItems.map((it) => (it.id === newItem.id ? newItem : it)),
-            });
-        }
-    };
-
-    useEffect(() => {
-        const hadState = lastState.current !== null;
-        lastState.current = initialState;
-        if (hadState) {
-            setState(initialState);
-        }
-    }, [initialState]);
-
-    useEffect(() => {
-        if ((getPage === null && getItems === null) || providedItems !== null) {
-            return () => {};
-        }
-        let loadPromise = null;
-        const pageToLoad = isPaginated && initialPages === null && page === null ? 1 : page;
-        if (!isPaginated || pageToLoad !== null) {
-            loadPromise = loadItems(pageToLoad);
-        }
-        return () => {
-            if (loadPromise !== null) {
-                loadPromise.cancel();
+    const {
+        data = null,
+        refetch: reload,
+        isLoading: loading,
+        isFetched: loaded,
+        status = null,
+        error = null,
+        ...otherProps
+    } = useQuery({
+        queryKey,
+        queryFn: ({ queryKey: key }) => {
+            if (paginated && getPage !== null) {
+                const [, p = null, c = null, q = null] = key;
+                return getPage(p, c, q);
             }
-        };
-    }, [getPage, getItems, page]);
+            if (!paginated && getItems !== null) {
+                const [, q = null] = key;
+                return getItems(q);
+            }
+            const [, q = null] = key;
+            return getJSON(
+                `${url}${
+                    !isEmpty(q) ? `?${queryString.stringify(q, { arrayFormat: 'bracket' })}` : ''
+                }`,
+            );
+        },
+        ...(keepData ? { placeholderData: keepPreviousData } : null),
+        ...(providedItems !== null ? { initialData: providedItems } : null),
+        ...queryConfig,
+    });
 
-    const currentPage =
-        isPaginated && pages !== null
-            ? pages.find(
-                  ({ page: pageNumber }) => parseInt(pageNumber, 10) === parseInt(page, 10),
-              ) || null
+    const { data: items = [], pagination = null } = data || {};
+    const { page: currentPage = null, last_page: lastPage = null, total = null } = pagination || {};
+
+    const loadNextPage = useCallback(() => {
+        if (onQueryChange !== null && paginated && page !== null && page < lastPage) {
+            onQueryChange({ ...query, page: page + 1 });
+        }
+    }, [paginated, pagination, page]);
+
+    const loadPage = useCallback(
+        (newPage) => {
+            if (onQueryChange !== null && newPage !== null) {
+                onQueryChange({ ...query, page: newPage });
+            }
+        },
+        [query, onQueryChange],
+    );
+
+    const pages = useRef(null);
+    useEffect(() => {
+        if (loaded && page !== null && data !== null) {
+            pages.current = {
+                ...pages.current,
+                [page]: data,
+            };
+        }
+    }, [loaded, page, data]);
+
+    const finalItems = useMemo(() => {
+        if (data === null) {
+            return data;
+        }
+        if (paginated) {
+            if (getPageFromResponse !== null) {
+                return items;
+            }
+            return items;
+        }
+        if (getItemsFromResponse !== null) {
+            return getItemsFromResponse(data);
+        }
+        return data;
+    }, [items, data, paginated, getPageFromResponse, getItemsFromResponse]);
+
+    // Pseudo-events for compatibility
+    useEffect(() => {
+        if (status === 'success') {
+            if (onPageLoaded !== null && paginated) {
+                onItemsLoaded(data);
+            }
+            if (onItemsLoaded !== null && !paginated) {
+                onItemsLoaded(data);
+            }
+            if (onLoaded !== null) {
+                onLoaded(data);
+            }
+        }
+        if (status === 'error' && onError !== null) {
+            onError(error);
+        }
+        if (status === 'pending') {
+            //
+        }
+    }, [status]);
+
+    const allItems =
+        pages.current !== null
+            ? Object.keys(pages.current).flatMap((k) => pages.current[k]?.data)
             : null;
 
     return {
-        items,
-        pages,
-        pageItems: currentPage !== null ? currentPage.items : null,
+        ...otherProps,
+        items: finalItems,
+        allItems,
+        pages: pages.current,
+        pageItems: paginated ? finalItems : null,
+        pagination: paginated ? { page: currentPage, lastPage, total } : null,
         total,
         lastPage,
         loaded,
         allLoaded:
-            (!isPaginated && loaded) ||
-            (lastPage !== -1 && isPaginated && pages.length === lastPage),
+            (paginated &&
+                pages.current !== null &&
+                Object.keys(pages.current).length === lastPage) ||
+            (!paginated && loaded), // very basic stuff, TODO
         loading,
         loadNextPage,
         loadPage,
-        reloadPage,
+        reloadPage: reload,
         reload,
-        reset,
-        updateItem,
+        reset: reload,
+        updateItem: null,
+        status,
+        error,
     };
 };
 
