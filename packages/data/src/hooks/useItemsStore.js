@@ -23,9 +23,11 @@ const useItemsStore = (
     const { page = initialPage, count = initialCount, ...queryWithoutPage } = query || {};
     const paginated = page !== null;
     const queryKey = useMemo(
-        () => (paginated ? [store, page, count || 12, queryWithoutPage] : [store, query]),
-        [paginated, store, page, count, query, queryWithoutPage],
+        () => (paginated ? [store, page || 1, count || 12, queryWithoutPage] : [store, query]),
+        [paginated, store, page, count, query, queryWithoutPage, getPage, getItems],
     );
+
+    // console.log('queryKey', queryKey, 'paginated', paginated);
 
     const {
         data = null,
@@ -63,17 +65,6 @@ const useItemsStore = (
         total = null,
     } = pagination || metadata || {};
 
-    // Keep a list of pages
-    const pages = useRef(null);
-    useEffect(() => {
-        if (loaded && page !== null && data !== null) {
-            pages.current = {
-                ...pages.current,
-                [page]: data,
-            };
-        }
-    }, [loaded, page, data]);
-
     const loadNextPage = useCallback(() => {
         if (onQueryChange !== null && paginated && page !== null && page < lastPage) {
             onQueryChange({ ...query, page: page + 1 });
@@ -94,20 +85,30 @@ const useItemsStore = (
     const updateItem = useCallback(
         (item) => {
             const { id: itemId = null } = item || {};
-            setUpdatedItems([...(items || []).filter(({ id = null } = {}) => id !== itemId), item]);
+            if (itemId !== null) {
+                setUpdatedItems([
+                    ...(items || []).filter(({ id = null } = {}) => id !== itemId),
+                    item,
+                ]);
+            }
         },
-        [updatedItems, setUpdatedItems],
+        [items, updatedItems, setUpdatedItems],
     );
     const replaceUpdatedItems = useCallback(
-        (currentItems) =>
-            (currentItems || []).map((item) => {
+        (currentItems) => {
+            if (currentItems === null || updatedItems === null || updatedItems.length === 0) {
+                return currentItems;
+            }
+            return (currentItems || []).map((item) => {
                 const { id: itemId = null } = item || {};
-                const updated = updatedItems.find(({ id = null } = {}) => id === itemId) || null;
+                const updated =
+                    (updatedItems || []).find(({ id = null } = {}) => id === itemId) || null;
                 if (updated !== null) {
                     return updated;
                 }
                 return item;
-            }, []),
+            }, []);
+        },
         [updatedItems],
     );
 
@@ -129,10 +130,18 @@ const useItemsStore = (
 
     const finalItems = replaceUpdatedItems(partialItems);
 
+    // Keep a list of pages, useEffect wont work here because delayed
+    const pages = useRef(null);
+    if (loaded && page !== null && data !== null) {
+        pages.current = {
+            ...pages.current,
+            [page]: data,
+        };
+    }
     const allItems =
         pages.current !== null
             ? replaceUpdatedItems(Object.keys(pages.current).flatMap((k) => pages.current[k]?.data))
-            : null;
+            : finalItems;
 
     return {
         ...otherProps,

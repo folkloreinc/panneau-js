@@ -28,7 +28,7 @@ class ResourcesApi {
         );
     }
 
-    get(resource, query = {}, page = 1, count = 10) {
+    get(resource, query = {}, page = 1, count = 12) {
         const finalQuery = {
             ...query,
         };

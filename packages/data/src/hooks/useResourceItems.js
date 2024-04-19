@@ -10,7 +10,7 @@ const useResourceItems = (resource, query = null, page = null, count = null, opt
     const lastResourceRef = useRef(id);
     const resourceChanging = lastResourceRef.current !== id;
 
-    const getItems = useCallback(
+    const getPage = useCallback(
         (requestedPage = null) =>
             api.resources
                 .get(resource, query, requestedPage, count)
@@ -27,8 +27,25 @@ const useResourceItems = (resource, query = null, page = null, count = null, opt
         [api, resource, query, count],
     );
 
+    const getItems = useCallback(
+        () =>
+            api.resources
+                .get(resource, query, null, null)
+                .then((response) => {
+                    const { id: resourceId } = resource || {};
+                    lastResourceRef.current = resourceId;
+                    return response;
+                })
+                .catch((err) => {
+                    const { id: resourceId } = resource || {};
+                    lastResourceRef.current = resourceId;
+                    throw err;
+                }),
+        [api, resource, query, count],
+    );
+
     const { items, ...request } = useItemsStore(id, {
-        getPage: page !== null ? getItems : null,
+        getPage: page !== null ? getPage : null,
         getItems: page === null ? getItems : null,
         query,
         page,

@@ -4,6 +4,7 @@
 import classNames from 'classnames';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
+import uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -142,7 +143,7 @@ const ResourceItemField = ({
         [initialPage, paginated],
     );
     const defaultCount = useMemo(
-        () => initialCount || (paginated ? 10 : null),
+        () => initialCount || (paginated ? 8 : null),
         [initialCount, paginated],
     );
     const hasValue = value !== null && !isEmpty(value);
@@ -189,10 +190,9 @@ const ResourceItemField = ({
     );
 
     const {
-        items: pageItems = null,
-        // allItems: partialItems = null,
+        allItems: partialItems = null,
         reload = null,
-        lastPage = null,
+        pagination = null,
     } = useResourceItems(
         queryResource,
         finalQuery,
@@ -201,10 +201,13 @@ const ResourceItemField = ({
         resourceOptions,
     );
 
-    const items = (pageItems || [])
-        .concat(multiple && isArray(value) ? value : [value])
-        .filter((it) => it !== null)
-        .filter((v, i, a) => a.findIndex((v2) => v2.id === v.id) === i);
+    const { lastPage = null } = pagination || {};
+    const items = uniqBy(
+        (partialItems || [])
+            .concat(multiple && isArray(value) ? value : [value])
+            .filter((it) => it !== null),
+        ({ id = null }) => id,
+    );
 
     const onScrollEnd = useCallback(() => {
         if (page !== null && page >= lastPage) {
@@ -226,8 +229,6 @@ const ResourceItemField = ({
         },
         [initialGetItemLabel, itemLabelWithId],
     );
-
-    // const getItemLabel = getItemLabelFunction(initialGetItemLabel, itemLabelWithId);
 
     const parseItem = useCallback(
         (it) => {
@@ -276,7 +277,6 @@ const ResourceItemField = ({
     const onFormSuccess = useCallback(
         (newValue) => {
             if (onChange === null) return;
-
             const finalNewValue =
                 resourceType !== null ? { type: resourceType, ...newValue } : newValue;
             if (multiple) {
@@ -310,13 +310,9 @@ const ResourceItemField = ({
     // If empty try to fetch
     // const onFocus = useCallback(() => {
     //     if ((partialItems || []).length === 0) {
-    //         if (paginated) {
-    //             reloadPage();
-    //         } else {
-    //             reload();
-    //         }
+    //         reloadall();
     //     }
-    // }, [paginated, partialItems]);
+    // }, [paginated, reloadall]);
 
     const onClickRemove = useCallback(() => {
         if (onChange !== null) {

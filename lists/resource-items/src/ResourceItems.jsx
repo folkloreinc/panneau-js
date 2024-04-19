@@ -6,7 +6,6 @@ import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Actions from '@panneau/action-actions';
-// import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useListsComponents, usePanneauResource } from '@panneau/core/contexts';
 import { useItemSelection, useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
@@ -193,6 +192,7 @@ const ResourceItemsList = ({
             {ListComponent !== null ? (
                 <ListComponent
                     {...listProps}
+                    items={items}
                     actionsProps={{
                         resource,
                         actions,

@@ -28,7 +28,7 @@ const defaultProps = {
     loading: false,
     columns: null,
     cardTitlePath: 'title',
-    displayPlaceholder: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    displayPlaceholder: null,
     reload: null,
     updateItem: null,
     actionsProps: null,
