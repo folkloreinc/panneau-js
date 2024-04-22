@@ -69,8 +69,10 @@ const useItems = ({
     const {
         data = null,
         refetch: reload,
-        isLoading: loading,
-        isFetched: loaded,
+        isLoading,
+        isFetching,
+        isRefetching,
+        isFetched,
         status = null,
         error = null,
         ...otherProps
@@ -117,13 +119,13 @@ const useItems = ({
 
     const pages = useRef(null);
     useEffect(() => {
-        if (loaded && page !== null && data !== null) {
+        if (isFetched && page !== null && data !== null) {
             pages.current = {
                 ...pages.current,
                 [page]: data,
             };
         }
-    }, [loaded, page, data]);
+    }, [isFetched, page, data]);
 
     const finalItems = useMemo(() => {
         if (data === null) {
@@ -167,6 +169,8 @@ const useItems = ({
             ? Object.keys(pages.current).flatMap((k) => pages.current[k]?.data)
             : null;
 
+    const finalLoading = isLoading || isFetching || isRefetching;
+
     return {
         ...otherProps,
         items: finalItems,
@@ -176,13 +180,13 @@ const useItems = ({
         pagination: paginated ? { page: currentPage, lastPage, total } : null,
         total,
         lastPage,
-        loaded,
+        loaded: isFetched,
         allLoaded:
             (paginated &&
                 pages.current !== null &&
                 Object.keys(pages.current).length === lastPage) ||
-            (!paginated && loaded), // very basic stuff, TODO
-        loading,
+            (!paginated && isFetched), // very basic stuff, TODO
+        loading: finalLoading,
         loadNextPage,
         loadPage,
         reloadPage: reload,

@@ -114,6 +114,7 @@ const useActions = (
                                           id,
                                       }) || null
                                     : null,
+                            withConfirmation: preferDeleteModal,
                             ...(getDeletePropsFromItem !== null
                                 ? getDeletePropsFromItem(item)
                                 : null),

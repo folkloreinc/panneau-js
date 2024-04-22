@@ -27,8 +27,6 @@ const useItemsStore = (
         [paginated, store, page, count, query, queryWithoutPage, getPage, getItems],
     );
 
-    // console.log('queryKey', queryKey, 'paginated', paginated);
-
     const {
         data = null,
         refetch: reload,
@@ -147,6 +145,8 @@ const useItemsStore = (
             : finalItems;
 
     const finalLoading = isLoading || isFetching || isRefetching;
+
+    console.log(isLoading, isFetching, isRefetching, otherProps);
 
     return {
         ...otherProps,

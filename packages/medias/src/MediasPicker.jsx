@@ -94,7 +94,7 @@ function MediasPicker({
                     pageSelected,
                     ...tableProps,
                 }}
-                items={initialItems} // TODO: fix useItems if actually using this
+                // items={initialItems} // TODO: fix useItems if actually using this
                 onItemsChange={onItemsChange}
                 selectedCount={selectedCount}
                 onClearSelected={onClearSelected}
