@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useItemsStore } from '@panneau/data';
 
@@ -7,9 +7,18 @@ import { useMediasApi } from '../MediasApiContext';
 const useMedias = (query = null, page = null, count = null, opts = {}) => {
     const api = useMediasApi();
 
+    const trashed = useMemo(() => {
+        const { trashed: trashedOpt } = opts || {};
+        return trashedOpt;
+    }, [opts]);
+    const finalQuery = useMemo(() => ({ ...query, trashed }), [query, trashed]);
+
     const getItems = useCallback(
-        (requestedPage = null) => api.get(query, requestedPage, count),
-        [api, query, count],
+        (requestedPage = null) =>
+            trashed
+                ? api.getTrashed(query, requestedPage, count)
+                : api.get(query, requestedPage, count),
+        [api, query, count, trashed],
     );
 
     const { items, ...props } = useItemsStore('medias', {
@@ -17,7 +26,7 @@ const useMedias = (query = null, page = null, count = null, opts = {}) => {
         getItems: page === null ? getItems : null,
         page,
         count,
-        query,
+        query: finalQuery,
         ...opts,
     });
 

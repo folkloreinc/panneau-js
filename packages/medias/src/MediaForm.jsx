@@ -10,8 +10,7 @@ import Button from '@panneau/element-button';
 import Form from '@panneau/element-form';
 import FormStatus from '@panneau/element-form-status';
 
-import { useMediaUpdate } from './hooks';
-import useMediaDestroy from './hooks/useMediaDestroy';
+import { useMediaDelete, useMediaTrash, useMediaUpdate } from './hooks';
 
 import MediaFrame from './MediaFrame';
 import defaultFields from './defaults/fields';
@@ -31,6 +30,7 @@ const propTypes = {
     onSave: PropTypes.func,
     onDelete: PropTypes.func,
     onClose: PropTypes.func,
+    withTrash: PropTypes.bool,
     className: PropTypes.string,
     children: PropTypes.node,
 };
@@ -42,6 +42,7 @@ const defaultProps = {
     onSave: null,
     onDelete: null,
     onClose: null,
+    withTrash: false,
     className: null,
     children: null,
 };
@@ -53,18 +54,20 @@ function MediaForm({
     onSave,
     onDelete,
     onClose,
+    withTrash,
     className,
     children,
 }) {
     const FieldsComponent = useFieldComponent('fields');
 
-    const { update, loading: updating } = useMediaUpdate();
-    const { destroy, loading: destroying } = useMediaDestroy();
+    const { update, updating } = useMediaUpdate();
+    const { mediaTrash, trashing } = useMediaTrash();
+    const { mediaDelete, deleting } = useMediaDelete();
 
     const [changed, setChanged] = useState(false);
-    const disabled = updating || destroying || initialValue === null;
+    const disabled = updating || deleting || trashing || initialValue === null;
 
-    const { name = null, type = null } = initialValue || {};
+    const { name = null, type = null, deletedAt = null } = initialValue || {};
 
     const onChangeMedia = useCallback(
         (newValue) => {
@@ -87,18 +90,30 @@ function MediaForm({
     );
 
     const onDeleteMedia = useCallback(() => {
-        // Destroy
         const { id = null } = initialValue || {};
-        destroy(id, initialValue).then(() => {
-            if (onDelete !== null) {
-                onDelete();
-            }
-            setChanged(false);
-            if (onClose !== null) {
-                onClose();
-            }
-        });
-    }, [initialValue, destroy, destroying, setChanged]);
+        if (withTrash && deletedAt !== null) {
+            mediaTrash(id, initialValue).then(() => {
+                if (onDelete !== null) {
+                    onDelete();
+                }
+                setChanged(false);
+                if (onClose !== null) {
+                    onClose();
+                }
+            });
+        } else {
+            // Destroy
+            mediaDelete(id, initialValue).then(() => {
+                if (onDelete !== null) {
+                    onDelete();
+                }
+                setChanged(false);
+                if (onClose !== null) {
+                    onClose();
+                }
+            });
+        }
+    }, [initialValue, mediaDelete, mediaTrash, deletedAt, setChanged, withTrash]);
 
     const postForm = useCallback(
         (action, data) => (initialValue !== null ? update(initialValue.id, data) : new Promise()),
@@ -125,17 +140,25 @@ function MediaForm({
                     <Button
                         className="me-2 mb-1 mt-1"
                         theme="danger"
+                        icon={withTrash && deletedAt !== null ? 'trash-fill' : 'trash'}
+                        iconPosition="right"
                         onClick={onDeleteMedia}
-                        disabled={destroying}
+                        disabled={deleting || trashing}
                     >
-                        <FormattedMessage defaultMessage="Delete" description="Button label" />
+                        {withTrash && deletedAt === null ? (
+                            <FormattedMessage defaultMessage="Trash" description="Button label" />
+                        ) : (
+                            <FormattedMessage defaultMessage="Delete" description="Button label" />
+                        )}
                     </Button>
                     {onSave !== null ? (
                         <Button
                             className="mb-1 mt-1"
                             theme="primary"
+                            icon={changed ? 'check-all' : 'check'}
+                            iconPosition="right"
                             onClick={onSubmit}
-                            disabled={!changed || updating || destroying}
+                            disabled={!changed || updating || deleting}
                         >
                             <FormattedMessage defaultMessage="Save" description="Button label" />
                         </Button>

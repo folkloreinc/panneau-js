@@ -170,6 +170,9 @@
     "PQX/ph": {
         "defaultMessage": "Create account"
     },
+    "PSlT7H": {
+        "defaultMessage": "Trash"
+    },
     "PTmocx": {
         "defaultMessage": "The following items will be deleted: {ids}. Are you sure you want to continue?"
     },
@@ -364,6 +367,9 @@
     },
     "ucieFX": {
         "defaultMessage": "The following items will be modified: {ids}."
+    },
+    "uds4wJ": {
+        "defaultMessage": "Deleted at"
     },
     "une5WQ": {
         "defaultMessage": "Find a file"

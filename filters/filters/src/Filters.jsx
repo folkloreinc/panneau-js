@@ -145,7 +145,7 @@ const Filters = ({
                     ) : null;
                 },
             )}
-            {withButton ? (
+            {withButton && (currentFilters || []).length > 1 ? (
                 <Button size="md" theme="primary" onClick={onFiltersReset}>
                     {withResetLabel ? (
                         <span className="me-2">

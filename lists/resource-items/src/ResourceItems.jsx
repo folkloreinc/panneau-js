@@ -143,6 +143,10 @@ const ResourceItemsList = ({
         }
     }, [reload]);
 
+    const clearSelectedItems = useCallback(() => {
+        setSelectedItems([]);
+    }, [setSelectedItems]);
+
     return (
         <div className={className}>
             {withFilters ? (
@@ -169,7 +173,8 @@ const ResourceItemsList = ({
                         actions={batchActions}
                         value={selectedItems}
                         onChange={onActionsChange}
-                        setSelectedItems={setSelectedItems}
+                        onConfirmed={clearSelectedItems}
+                        withConfirmation
                         theme={theme}
                     />
                 ) : null}

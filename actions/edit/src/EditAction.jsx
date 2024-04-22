@@ -19,8 +19,9 @@ const propTypes = {
     icon: PropTypes.string,
     theme: PropTypes.string,
     disabled: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
-    setSelectedItems: PropTypes.func,
+    onChange: PropTypes.func,
+    onConfirmed: PropTypes.func,
+    withConfirmation: PropTypes.bool,
     className: PropTypes.string,
 };
 
@@ -34,7 +35,9 @@ const defaultProps = {
     value: null,
     theme: 'primary',
     disabled: false,
-    setSelectedItems: null,
+    onChange: null,
+    onConfirmed: null,
+    withConfirmation: false,
     className: null,
 };
 
@@ -49,7 +52,8 @@ const EditAction = ({
     theme,
     disabled,
     onChange,
-    setSelectedItems,
+    onConfirmed,
+    withConfirmation,
     className,
     ...props
 }) => {
@@ -62,8 +66,8 @@ const EditAction = ({
     const onComplete = useCallback(
         (newValue) => {
             setShowModal(false);
-            if (setSelectedItems !== null) {
-                setSelectedItems([]);
+            if (onConfirmed !== null) {
+                onConfirmed(newValue);
             }
             if (onChange !== null) {
                 onChange(newValue);
@@ -95,7 +99,7 @@ const EditAction = ({
                 ])}
                 label={label}
                 icon={icon}
-                onClick={onOpen}
+                onClick={withConfirmation ? onOpen : null}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
                 {...props}

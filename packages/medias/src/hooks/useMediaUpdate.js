@@ -3,19 +3,19 @@ import { useCallback, useState } from 'react';
 import { useMediasApi } from '../MediasApiContext';
 
 const useMediaUpdate = () => {
-    const [loading, setLoading] = useState(false);
+    const [updating, setUpdating] = useState(false);
     const api = useMediasApi();
     const update = useCallback(
         (id, data) => {
-            setLoading(true);
+            setUpdating(true);
             return api.update(id, data).then((response) => {
-                setLoading(false);
+                setUpdating(false);
                 return response;
             });
         },
-        [api, setLoading],
+        [api, setUpdating],
     );
-    return { update, loading };
+    return { update, updating };
 };
 
 export default useMediaUpdate;

@@ -6,10 +6,12 @@ class MediasApi extends Base {
             baseUrl: opts.baseUrl ? opts.baseUrl : null,
             routes: {
                 index: 'medias',
+                trashed: 'medias/trash',
                 tags: 'medias/tags',
                 show: 'medias/:media',
                 store: 'medias',
                 update: 'medias/:media',
+                trash: 'medias/trash/:media',
                 delete: 'medias/:media',
                 ...(opts.routes || null),
             },
@@ -37,6 +39,19 @@ class MediasApi extends Base {
         return this.requestGet(this.route('index'), finalQuery);
     }
 
+    getTrashed(query = {}, page = 1, count = 10) {
+        const finalQuery = {
+            ...query,
+        };
+        if (page !== null) {
+            finalQuery.page = page;
+        }
+        if (count !== null) {
+            finalQuery.count = count;
+        }
+        return this.requestGet(this.route('trashed'), finalQuery);
+    }
+
     getTags(query = {}, count = 10) {
         const finalQuery = {
             ...query,
@@ -57,6 +72,14 @@ class MediasApi extends Base {
                 media: id,
             }),
             data,
+        );
+    }
+
+    trash(id) {
+        return this.requestDelete(
+            this.route('trash', {
+                media: id,
+            }),
         );
     }
 

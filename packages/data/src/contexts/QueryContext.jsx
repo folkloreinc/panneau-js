@@ -9,14 +9,18 @@ export const useQueryContext = () => useContext(QueryContext);
 
 const propTypes = {
     config: PropTypes.shape({}),
+    initialKey: PropTypes.arrayOf(PropTypes.string),
+    initialData: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.arrayOf(PropTypes.shape({}))]),
     children: PropTypes.node.isRequired,
 };
 
 const defaultProps = {
     config: null,
+    initialKey: null,
+    initialData: null,
 };
 
-export const QueryProvider = ({ config: initialConfig, children }) => {
+export const QueryProvider = ({ config: initialConfig, initialKey, initialData, children }) => {
     const queryClient = useMemo(() => {
         const client = new QueryClient({
             defaultOptions: {
@@ -26,15 +30,9 @@ export const QueryProvider = ({ config: initialConfig, children }) => {
             },
             ...initialConfig,
         });
-        // if (page !== null) {
-        //     const query =
-        //         window && !isEmpty(window.location.search)
-        //             ? queryString.parse(window.location.search, {
-        //                   arrayFormat: 'bracket',
-        //               })
-        //             : null;
-        //     client.setQueryData(['pages', page.url, query], page);
-        // }
+        if (initialKey !== null && initialData !== null) {
+            client.setQueryData(initialKey, initialData);
+        }
         return client;
     }, [initialConfig]);
 

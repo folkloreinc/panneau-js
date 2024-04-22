@@ -16,10 +16,11 @@ const propTypes = {
         }),
     ),
     onChange: PropTypes.func,
-    setSelectedItems: PropTypes.func,
+    onConfirmed: PropTypes.func,
     defaultComponent: PropTypes.func,
     isGroup: PropTypes.bool,
     size: PropTypes.string,
+    withConfirmation: PropTypes.bool,
     className: PropTypes.string,
 };
 
@@ -28,10 +29,11 @@ const defaultProps = {
     actions: [],
     value: null,
     onChange: null,
-    setSelectedItems: null,
+    onConfirmed: null,
     defaultComponent: Button,
     isGroup: false,
     size: null,
+    withConfirmation: false,
     className: null,
 };
 
@@ -41,9 +43,10 @@ const Actions = ({
     value,
     onChange,
     size,
-    setSelectedItems,
+    onConfirmed,
     defaultComponent,
     isGroup,
+    withConfirmation,
     className,
 }) => {
     const actionsComponents = useActionsComponentsManager();
@@ -89,19 +92,20 @@ const Actions = ({
                 const Component = actionComponent || defaultComponent;
                 return Component !== null ? (
                     <Component
-                        {...otherProps}
                         id={id}
                         key={`action-${id}-${idx + 1}`}
                         className={!isGroup ? 'me-2' : null}
                         value={value}
                         size={size}
                         resource={resource}
+                        withConfirmation={withConfirmation}
                         {...(hasActionComponent
                             ? {
                                   onChange,
-                                  setSelectedItems,
+                                  onConfirmed,
                               }
                             : null)}
+                        {...otherProps}
                     />
                 ) : null;
             })}

@@ -16,7 +16,7 @@ import Pagination from '@panneau/element-pagination';
 import Table from '@panneau/element-table';
 import Filters from '@panneau/filter-filters';
 
-import { useMedias } from './hooks';
+import { useMediaDelete, useMediaTrash, useMedias } from './hooks';
 
 import MediaForm from './MediaForm';
 import { useMediasForm } from './MediasFormContext';
@@ -44,9 +44,11 @@ const propTypes = {
     onLayoutChange: PropTypes.func,
     selectedCount: PropTypes.number,
     onClearSelected: PropTypes.func,
+    withTrash: PropTypes.bool,
     withStickySelection: PropTypes.bool,
     className: PropTypes.string,
     buttonsClassName: PropTypes.string,
+    formChildren: PropTypes.node,
 };
 
 const defaultProps = {
@@ -76,9 +78,11 @@ const defaultProps = {
     onLayoutChange: null,
     selectedCount: null,
     onClearSelected: null,
+    withTrash: false,
     withStickySelection: false,
     className: null,
     buttonsClassName: null,
+    formChildren: null,
 };
 
 function MediasBrowser({
@@ -99,9 +103,11 @@ function MediasBrowser({
     onLayoutChange,
     selectedCount,
     onClearSelected,
+    withTrash,
     withStickySelection,
     className,
     buttonsClassName,
+    formChildren,
 }) {
     const [baseItems] = useState(initialItems || null);
     const baseQuery = useMemo(() => ({ count: 12, ...initialQuery, types }), [initialQuery, types]);
@@ -125,7 +131,15 @@ function MediasBrowser({
     }, [fullQuery]);
 
     // eslint-disable-next-line no-unused-vars
-    const { types: queryTypes = null, ...queryWithoutTypes } = query || {};
+    const { types: queryTypes = null, trashed = null, ...queryWithoutTypes } = query || {};
+
+    const { mediaTrash, trashing } = useMediaTrash();
+    const { mediaDelete, deleting } = useMediaDelete();
+
+    const [showTrashed, setShowTrashed] = useState(false);
+    const onClickTrash = useCallback(() => {
+        setShowTrashed(!showTrashed);
+    }, [showTrashed, setShowTrashed]);
 
     const {
         items,
@@ -133,7 +147,7 @@ function MediasBrowser({
         loading = false,
         updateItem = null,
         pagination: { lastPage, total } = {},
-    } = useMedias(query, page, count, { items: baseItems });
+    } = useMedias(query, page, count, { items: baseItems, trashed: showTrashed });
 
     // For picker
     useEffect(() => {
@@ -194,14 +208,51 @@ function MediasBrowser({
     );
 
     const finalFilters = useMemo(() => {
-        if (types !== null && filters !== null) {
-            return (filters || []).map((filter) => {
+        const partialFilters = withTrash
+            ? (filters || []).concat([
+                  {
+                      name: 'trashed',
+                      component: 'button',
+                      theme: showTrashed ? 'danger' : 'secondary',
+                      outline: !showTrashed,
+                      activeTheme: 'danger',
+                      icon: showTrashed ? 'trash-fill' : 'trash',
+                      onClick: onClickTrash,
+                  },
+              ])
+            : filters;
+
+        if (types !== null && partialFilters !== null) {
+            return (partialFilters || []).map((filter) => {
                 const { id = null } = filter || {};
                 return id === 'types' ? { ...filter, disabled: true } : filter;
             });
         }
-        return filters;
-    }, [filters, types]);
+        return partialFilters;
+    }, [filters, types, withTrash, showTrashed, onClickTrash]);
+
+    const finalColumns = useMemo(
+        () =>
+            withTrash && showTrashed
+                ? (columns || []).map((column) => {
+                      const { id: columnId = null } = column || {};
+                      if (columnId === 'created_at') {
+                          return {
+                              ...column,
+                              path: 'deleted_at',
+                              label: (
+                                  <FormattedMessage
+                                      defaultMessage="Deleted at"
+                                      description="Column label"
+                                  />
+                              ),
+                          };
+                      }
+                      return column;
+                  })
+                : columns,
+        [columns, withTrash, showTrashed],
+    );
 
     const finalItems = useMemo(() => {
         if (withStickySelection && extraItems !== null) {
@@ -245,7 +296,10 @@ function MediasBrowser({
                         onChange={setCurrentMedia}
                         onSave={onSaveMedia}
                         onClose={onCloseMedia}
-                    />
+                        withTrash={withTrash}
+                    >
+                        {formChildren}
+                    </MediaForm>
                 </>
             ) : (
                 <>
@@ -265,9 +319,7 @@ function MediasBrowser({
                     ) : null}
                     {filters === null && buttons !== null ? (
                         <div className="mt-2 mb-2">
-                            {buttons !== null ? (
-                                <Buttons items={buttons} className={buttonsClassName} />
-                            ) : null}
+                            <Buttons items={buttons} className={buttonsClassName} />
                         </div>
                     ) : null}
                     <div
@@ -318,7 +370,7 @@ function MediasBrowser({
                     {layout === 'table' ? (
                         <Table
                             theme={theme}
-                            columns={columns}
+                            columns={finalColumns}
                             displayPlaceholder={
                                 <span className="text-secondary text-opacity-75">—</span>
                             }
@@ -327,6 +379,12 @@ function MediasBrowser({
                             items={finalItems}
                             loading={loading}
                             actionsProps={{
+                                getDeletePropsFromItem: ({ id = null } = {}) => ({
+                                    href: null,
+                                    onClick: () => (showTrashed ? mediaDelete(id) : mediaTrash(id)),
+                                    disabled: trashing || deleting,
+                                    icon: showTrashed ? 'trash-fill' : 'trash',
+                                }),
                                 getEditPropsFromItem: (it) => ({
                                     href: null,
                                     onClick: () => {

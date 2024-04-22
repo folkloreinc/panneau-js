@@ -227,6 +227,10 @@
     "defaultMessage": "Create account",
     "description": "Button label"
   },
+  "PSlT7H": {
+    "defaultMessage": "Trash",
+    "description": "Button label"
+  },
   "PTmocx": {
     "defaultMessage": "The following items will be deleted: {ids}. Are you sure you want to continue?",
     "description": "Modal message"
@@ -486,6 +490,10 @@
   "ucieFX": {
     "defaultMessage": "The following items will be modified: {ids}.",
     "description": "Modal message"
+  },
+  "uds4wJ": {
+    "defaultMessage": "Deleted at",
+    "description": "Column label"
   },
   "une5WQ": {
     "defaultMessage": "Find a file",

@@ -170,6 +170,9 @@
     "PQX/ph": {
         "defaultMessage": "Créer mon compte"
     },
+    "PSlT7H": {
+        "defaultMessage": "Jeter"
+    },
     "PTmocx": {
         "defaultMessage": "Les éléments suivants seront supprimés {ids}. Voulez-vous continuer ?"
     },
@@ -364,6 +367,9 @@
     },
     "ucieFX": {
         "defaultMessage": "Les éléments suivants seront modifiés: {ids}."
+    },
+    "uds4wJ": {
+        "defaultMessage": "Supprimé le"
     },
     "une5WQ": {
         "defaultMessage": "Trouver un fichier"

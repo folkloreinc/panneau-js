@@ -109,7 +109,7 @@ export const WithStickyValue = () => (
             uploadButton={{ id: 1, icon: 'circle' }}
             types={['image', 'video', 'audio']}
             value={Media2}
-            withStickySelection
+            withStickyValues
         />
     </UppyProvider>
 );

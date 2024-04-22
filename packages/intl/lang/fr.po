@@ -355,6 +355,12 @@ msgctxt "PQX/ph"
 msgid "Create account"
 msgstr "Créer mon compte"
 
+# Button label
+#: PSlT7H
+msgctxt "PSlT7H"
+msgid "Trash"
+msgstr "Jeter"
+
 # Modal message
 #: PTmocx
 msgctxt "PTmocx"
@@ -750,6 +756,12 @@ msgstr "Retour à la connexion"
 msgctxt "ucieFX"
 msgid "The following items will be modified: {ids}."
 msgstr "Les éléments suivants seront modifiés: {ids}."
+
+# Column label
+#: uds4wJ
+msgctxt "uds4wJ"
+msgid "Deleted at"
+msgstr "Supprimé le"
 
 # Default upload add button label
 #: une5WQ

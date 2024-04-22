@@ -187,18 +187,11 @@ const Pagination = ({
                 },
             ])}
         >
-            {align === 'right' ? (
-                <div className="mx-3 text-muted">
-                    {loading ? (
-                        <div className="spinner-border" role="status">
-                            <span className="visually-hidden">
-                                <FormattedMessage
-                                    defaultMessage="Loading..."
-                                    description="Hidden label"
-                                />
-                            </span>
-                        </div>
-                    ) : null}
+            {loading && align === 'right' ? (
+                <div className="spinner-border text-secondary spinner-border-sm" role="status">
+                    <span className="visually-hidden">
+                        <FormattedMessage defaultMessage="Loading..." description="Hidden label" />
+                    </span>
                 </div>
             ) : null}
             {total !== null && total > 0 && withCount && align === 'right' ? (
@@ -342,18 +335,11 @@ const Pagination = ({
                 <div className="mx-3">{count}</div>
             ) : null}
 
-            {align === 'left' ? (
-                <div className="mx-3 text-muted">
-                    {loading ? (
-                        <div className="spinner-border" role="status">
-                            <span className="visually-hidden">
-                                <FormattedMessage
-                                    defaultMessage="Loading..."
-                                    description="Hidden label"
-                                />
-                            </span>
-                        </div>
-                    ) : null}
+            {loading && align === 'left' ? (
+                <div className="spinner-border text-secondary spinner-border-sm" role="status">
+                    <span className="visually-hidden">
+                        <FormattedMessage defaultMessage="Loading..." description="Hidden label" />
+                    </span>
                 </div>
             ) : null}
         </nav>

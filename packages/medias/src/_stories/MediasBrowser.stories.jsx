@@ -9,6 +9,7 @@ import DisplaysProvider from '../../../displays';
 import FieldsProvider from '../../../fields';
 import FiltersProvider from '../../../filters';
 import IntlProvider from '../../../intl/src/IntlProvider';
+import ModalsProvider from '../../../modals';
 import { UppyProvider } from '../../../uppy/src/UppyContext';
 import { MediasApiProvider } from '../MediasApiContext';
 import MediasBrowser from '../MediasBrowserContainer';
@@ -27,17 +28,19 @@ const Container = ({ ...props } = {}) => {
     const api = useApi();
     return (
         <IntlProvider>
-            <FieldsProvider>
-                <DisplaysProvider>
-                    <FiltersProvider>
-                        <ActionsProvider>
-                            <MediasApiProvider api={api.medias}>
-                                <MediasBrowser {...props} />
-                            </MediasApiProvider>
-                        </ActionsProvider>
-                    </FiltersProvider>
-                </DisplaysProvider>
-            </FieldsProvider>
+            <ModalsProvider>
+                <FieldsProvider>
+                    <DisplaysProvider>
+                        <FiltersProvider>
+                            <ActionsProvider>
+                                <MediasApiProvider api={api.medias}>
+                                    <MediasBrowser {...props} />
+                                </MediasApiProvider>
+                            </ActionsProvider>
+                        </FiltersProvider>
+                    </DisplaysProvider>
+                </FieldsProvider>
+            </ModalsProvider>
         </IntlProvider>
     );
 };
@@ -81,6 +84,16 @@ export const Theme = () => (
 export const WithButtons = () => (
     <UppyProvider>
         <Container
+            buttons={[{ id: 'upload', label: 'Upload', theme: 'primary' }]}
+            buttonsClassName="ms-auto"
+        />
+    </UppyProvider>
+);
+
+export const WithButtonsAndTrash = () => (
+    <UppyProvider>
+        <Container
+            withTrash
             buttons={[{ id: 'upload', label: 'Upload', theme: 'primary' }]}
             buttonsClassName="ms-auto"
         />

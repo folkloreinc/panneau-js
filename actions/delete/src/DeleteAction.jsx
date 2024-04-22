@@ -15,13 +15,15 @@ const propTypes = {
     title: PropTypes.node,
     description: PropTypes.node,
     endpoint: PropTypes.string,
+    action: PropTypes.func, // Promise
     label: PropTypes.string,
     value: PropTypes.bool,
     icon: PropTypes.string,
     theme: PropTypes.string,
     disabled: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
-    setSelectedItems: PropTypes.func,
+    onChange: PropTypes.func,
+    onConfirmed: PropTypes.func,
+    withConfirmation: PropTypes.bool,
     className: PropTypes.string,
 };
 
@@ -29,12 +31,15 @@ const defaultProps = {
     title: null,
     description: null,
     endpoint: '/delete',
+    action: null,
     label: <FormattedMessage defaultMessage="Delete" description="Button label" />,
     icon: 'trash',
     value: null,
     theme: 'primary',
     disabled: false,
-    setSelectedItems: null,
+    onChange: null,
+    onConfirmed: null,
+    withConfirmation: false,
     className: null,
 };
 
@@ -42,13 +47,15 @@ const DeleteAction = ({
     title,
     description,
     endpoint,
+    action,
     label,
     icon,
     value,
     theme,
     disabled,
     onChange,
-    setSelectedItems,
+    onConfirmed,
+    withConfirmation,
     className,
     ...props
 }) => {
@@ -76,34 +83,40 @@ const DeleteAction = ({
         unregister(modalKey);
     }, [modalKey, unregister]);
 
-    const onConfirm = useCallback(() => {
-        postJSON(
-            endpoint,
-            { ids },
-            {
-                credentials: 'include',
-                headers: getCSRFHeaders(),
-                _method: 'DELETE',
-            },
-        )
-            .then((response) => {
-                if (setSelectedItems !== null) {
-                    setSelectedItems([]);
-                }
-                if (onChange !== null) {
-                    onChange(response);
-                }
-                onClose();
-            })
-            .catch((err) => {
-                setError(err);
-            });
-    }, [ids, endpoint, onChange, onClose, setError]);
+    const onConfirm = useCallback(
+        () =>
+            (action !== null
+                ? action(ids)
+                : postJSON(
+                      endpoint,
+                      { ids },
+                      {
+                          credentials: 'include',
+                          headers: getCSRFHeaders(),
+                          _method: 'DELETE',
+                      },
+                  )
+            )
+                .then((response) => {
+                    if (onConfirmed !== null) {
+                        onConfirmed(response);
+                    }
+                    if (onChange !== null) {
+                        onChange(response);
+                    }
+                    if (withConfirmation) {
+                        onClose();
+                    }
+                })
+                .catch((err) => {
+                    setError(err);
+                }),
+        [ids, endpoint, onChange, onClose, setError, withConfirmation],
+    );
 
     return (
         <>
             <Button
-                {...props}
                 className={classNames([
                     styles.container,
                     {
@@ -112,9 +125,10 @@ const DeleteAction = ({
                 ])}
                 label={label}
                 icon={icon}
-                onClick={onOpen}
+                onClick={withConfirmation ? onOpen : onConfirm}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
+                {...props}
             />
             {modal !== null ? (
                 <Confirm

@@ -1,5 +1,7 @@
 import isString from 'lodash/isString';
 
+// For backwards compatibility with the old actions element
+
 const useActions = (
     item = null,
     actions = [],
@@ -20,6 +22,7 @@ const useActions = (
         getDuplicatePropsFromItem = null,
         showUrl = null,
         withoutItemShowUrl = null,
+        preferEditModal = false,
         preferDeleteModal = true,
         preferDuplicateModal = true,
     } = {},
@@ -56,7 +59,7 @@ const useActions = (
                             label: iconsOnly ? null : editLabel,
                             icon: iconsOnly ? 'pencil-square' : null,
                             href:
-                                urlGenerator !== null
+                                urlGenerator !== null && !preferEditModal
                                     ? urlGenerator('edit', {
                                           id,
                                       }) || null
@@ -80,7 +83,7 @@ const useActions = (
                     //         theme: 'warning',
                     //         onClick: onClickDuplicate,
                     //         endpoint:
-                    //             urlGenerator !== null && preferDeleteModal
+                    //             urlGenerator !== null && preferDuplicateModal
                     //                 ? urlGenerator('duplicate', {
                     //                       id,
                     //                   }) || null
@@ -107,7 +110,7 @@ const useActions = (
                             onClick: onClickDelete,
                             endpoint:
                                 urlGenerator !== null && preferDeleteModal
-                                    ? urlGenerator('destroy', {
+                                    ? urlGenerator('delete', {
                                           id,
                                       }) || null
                                     : null,

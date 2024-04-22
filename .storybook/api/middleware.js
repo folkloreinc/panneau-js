@@ -207,6 +207,49 @@ module.exports = () => {
         res.end();
     });
 
+    router.get('/:resource/trash', (req, res) => {
+        const { resource } = req.params;
+        if (!resourceExists(resource)) {
+            res.sendStatus(404);
+            return;
+        }
+        // Test unauthorized request here
+        // res.status(401);
+        const defaultCount = 10;
+        const {
+            page = null,
+            count = null,
+            sort = 'id',
+            sort_direction: sortDirection = 'asc',
+            paginate = true,
+            paginated = true,
+            // Exceptions for storybook
+            id,
+            viewMode,
+            // The rest
+            ...query
+        } = req.query;
+        const items = getResourceItems(resource);
+        const filteredItems = sortItems(filterItems(items, query), sort, sortDirection);
+
+        if (page !== null) {
+            res.json(
+                getItemsPage(
+                    filteredItems,
+                    parseInt(page, 10),
+                    parseInt(count || defaultCount, 10),
+                ),
+            );
+        } else {
+            res.json(
+                count !== null && (paginate === false || paginated === false)
+                    ? filteredItems.slice(0, count - 1)
+                    : filteredItems,
+            );
+        }
+        res.end();
+    });
+
     /**
      * Resource by slug
      */
@@ -306,6 +349,16 @@ module.exports = () => {
     /**
      * Resource delete
      */
+
+    router.delete('/:resource/trash/:id', (req, res) => {
+        const { resource } = req.params;
+        if (!resourceExists(resource)) {
+            res.sendStatus(404);
+            return;
+        }
+        deleteResource(req, res);
+    });
+
     router.delete('/:resource/:id', (req, res) => {
         const { resource } = req.params;
         if (!resourceExists(resource)) {

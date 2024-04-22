@@ -2,7 +2,7 @@ import { getJSON } from '@folklore/fetch';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import isEmpty from 'lodash/isEmpty';
 import queryString from 'query-string';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 const useItemsStore = (
     store,
@@ -32,8 +32,10 @@ const useItemsStore = (
     const {
         data = null,
         refetch: reload,
-        isLoading: loading,
-        isFetched: loaded,
+        isLoading,
+        isFetching,
+        isRefetching,
+        isFetched,
         ...otherProps
     } = useQuery({
         queryKey,
@@ -132,24 +134,31 @@ const useItemsStore = (
 
     // Keep a list of pages, useEffect wont work here because delayed
     const pages = useRef(null);
-    if (loaded && page !== null && data !== null) {
+    if (isFetched && page !== null && data !== null) {
         pages.current = {
             ...pages.current,
             [page]: data,
         };
     }
+
     const allItems =
         pages.current !== null
             ? replaceUpdatedItems(Object.keys(pages.current).flatMap((k) => pages.current[k]?.data))
             : finalItems;
 
+    const finalLoading = isLoading || isFetching || isRefetching;
+
     return {
         ...otherProps,
+        isLoading,
+        isFetching,
+        isRefetching,
+        isFetched,
         items: finalItems,
         pages: pages.current,
         allItems,
-        loading,
-        loaded,
+        loading: finalLoading,
+        loaded: isFetched,
         reload,
         loadPage,
         loadNextPage,

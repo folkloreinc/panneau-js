@@ -2,20 +2,20 @@ import { useCallback, useState } from 'react';
 
 import { useMediasApi } from '../MediasApiContext';
 
-const useMediaDestroy = () => {
-    const [loading, setLoading] = useState(false);
+const useMediaDelete = () => {
+    const [deleting, setDeleting] = useState(false);
     const api = useMediasApi();
-    const destroy = useCallback(
+    const mediaDelete = useCallback(
         (id, data) => {
-            setLoading(true);
+            setDeleting(true);
             return api.delete(id, data).then((response) => {
-                setLoading(false);
+                setDeleting(false);
                 return response;
             });
         },
-        [api, setLoading],
+        [api, setDeleting],
     );
-    return { destroy, loading };
+    return { mediaDelete, deleting };
 };
 
-export default useMediaDestroy;
+export default useMediaDelete;

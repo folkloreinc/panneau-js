@@ -56,7 +56,7 @@ const ButtonFilter = ({
                 onChange(true);
             }
         }
-    }, [isActive, href, onChange]);
+    }, [isActive, href, name, onChange]);
 
     return (
         <div
@@ -68,13 +68,13 @@ const ButtonFilter = ({
             ])}
         >
             <Button
-                {...props}
                 href={href}
                 label={label}
                 name={name}
                 onClick={onClick}
                 outline={(!isActive || href !== null) && !disableOutline}
                 theme={isActive ? activeTheme : theme}
+                {...props}
             />
         </div>
     );

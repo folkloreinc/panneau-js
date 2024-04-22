@@ -404,6 +404,7 @@ const UploadField = ({
 
             {showResourceModal ? (
                 <ModalPicker
+                    value={value}
                     resource={resource}
                     types={types}
                     selectable
@@ -418,6 +419,7 @@ const UploadField = ({
                             onClick: openModalInResource,
                         },
                     ]}
+                    buttonsClassName="ms-xl-auto"
                     multiple={allowMultipleUploads}
                 />
             ) : null}
