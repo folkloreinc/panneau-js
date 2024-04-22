@@ -62,6 +62,13 @@ export const ModalProvider = ({ children, container: initialContainer }) => {
         }
     }, [modals, setModals]);
 
+    const getModalByKey = useCallback(
+        (key) => (modals || []).find((modal) => modal?.id === key) || null,
+        [modals],
+    );
+
+    const modalIsOpen = useCallback((key) => getModalByKey(key) !== null, [getModalByKey]);
+
     const value = useMemo(
         () => ({
             modals,
@@ -70,8 +77,19 @@ export const ModalProvider = ({ children, container: initialContainer }) => {
             register,
             unregister,
             closeLastModal,
+            getModalByKey,
+            modalIsOpen,
         }),
-        [modals, container, setContainer, register, unregister, closeLastModal],
+        [
+            modals,
+            container,
+            setContainer,
+            register,
+            unregister,
+            closeLastModal,
+            getModalByKey,
+            modalIsOpen,
+        ],
     );
 
     return <ModalContext.Provider value={value}>{children}</ModalContext.Provider>;

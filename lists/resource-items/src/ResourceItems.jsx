@@ -99,6 +99,7 @@ const ResourceItemsList = ({
         pagination = null,
         updateItem = null,
         reload = null,
+        pages = null,
     } = useResourceItems(resource, queryWithoutPage, paginated ? parseInt(page, 10) : null);
 
     const { lastPage = 0, total = 0 } = pagination || {};
@@ -188,6 +189,8 @@ const ResourceItemsList = ({
                         onClickPage={onPageChange}
                         className="mt-1 mb-3"
                         theme={theme}
+                        loading={loading && pages !== null}
+                        loaded={loaded}
                         withPreviousNext
                         selectedCount={selectedCount}
                         onClearSelected={onClearSelected}
@@ -244,6 +247,8 @@ const ResourceItemsList = ({
                     onClickPage={onPageChange}
                     className="mt-4 mb-1"
                     theme={theme}
+                    loading={loading && pages !== null}
+                    loaded={loaded}
                     withPreviousNext
                     selectedCount={selectedCount}
                     onClearSelected={onClearSelected}

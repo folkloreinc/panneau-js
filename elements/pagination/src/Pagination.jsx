@@ -188,7 +188,7 @@ const Pagination = ({
             ])}
         >
             {loading && align === 'right' ? (
-                <div className="spinner-border text-secondary spinner-border-sm" role="status">
+                <div className="spinner-border text-secondary spinner-border-sm mx-1" role="status">
                     <span className="visually-hidden">
                         <FormattedMessage defaultMessage="Loading..." description="Hidden label" />
                     </span>
@@ -336,7 +336,7 @@ const Pagination = ({
             ) : null}
 
             {loading && align === 'left' ? (
-                <div className="spinner-border text-secondary spinner-border-sm" role="status">
+                <div className="spinner-border text-secondary spinner-border-sm mx-1" role="status">
                     <span className="visually-hidden">
                         <FormattedMessage defaultMessage="Loading..." description="Hidden label" />
                     </span>

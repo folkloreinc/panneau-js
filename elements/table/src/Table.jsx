@@ -40,6 +40,7 @@ const propTypes = {
     selectedItems: PropTypes.oneOf([PanneauPropTypes.items, PanneauPropTypes.item]),
     pageSelected: PropTypes.bool,
     withCustomActionsColumn: PropTypes.bool,
+    withoutLoading: PropTypes.bool,
     actionsComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
     actionsProps: PropTypes.shape({}),
     actionsClassName: PropTypes.string,
@@ -67,6 +68,7 @@ const defaultProps = {
     selectedItems: null,
     pageSelected: false,
     withCustomActionsColumn: false,
+    withoutLoading: false,
     actionsComponent: null,
     actionsProps: null,
     actionsClassName: null,
@@ -94,6 +96,7 @@ function Table({
     selectedItems,
     pageSelected,
     withCustomActionsColumn,
+    withoutLoading,
     actionsComponent,
     actionsProps,
     actionsClassName,
@@ -355,11 +358,12 @@ function Table({
                         ) : null}
                     </tbody>
                 </table>
-            ) : (
+            ) : null}
+            {(items === null || items.length === 0) && !withoutLoading ? (
                 <Loading withDelay>
                     <FormattedMessage defaultMessage="Loading" description="Loading label" />
                 </Loading>
-            )}
+            ) : null}
         </div>
     );
 }

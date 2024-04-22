@@ -146,8 +146,6 @@ const useItemsStore = (
 
     const finalLoading = isLoading || isFetching || isRefetching;
 
-    console.log(isLoading, isFetching, isRefetching, otherProps);
-
     return {
         ...otherProps,
         isLoading,

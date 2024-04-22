@@ -23,7 +23,7 @@ const defaultProps = {
     children: null,
 };
 
-const Loading = ({ theme, delay, withDelay, withoutCard,  className, children }) => {
+const Loading = ({ theme, delay, withDelay, withoutCard, className, children }) => {
     const [visible, setVisible] = useState(!withDelay);
 
     useEffect(() => {
@@ -32,20 +32,25 @@ const Loading = ({ theme, delay, withDelay, withoutCard,  className, children })
         }, delay);
         return () => {
             clearTimeout(id);
-        }
+        };
     }, [setVisible]);
 
     return visible ? (
         <div
             className={classNames([
                 {
-                    'card': !withoutCard,
+                    card: !withoutCard,
                     [className]: className !== null,
                 },
             ])}
         >
             <div className="card-body d-flex align-items-center justify-content-center text-muted">
-                <div className={classNames(['spinner-border', { [`text-${theme}`]: theme !== null }])}>
+                <div
+                    className={classNames([
+                        'spinner-border',
+                        { [`text-${theme}`]: theme !== null },
+                    ])}
+                >
                     <span className="visually-hidden">
                         <FormattedMessage defaultMessage="Loading" description="Loading message" />
                     </span>

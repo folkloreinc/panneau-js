@@ -22,6 +22,8 @@ import Dialog from '@panneau/modal-dialog';
 // import ResourceFormModal from '@panneau/modal-resource-form';
 import ResourceItemsModal from '@panneau/modal-resource-items';
 
+// TODO: improve the modals (esc key) and switch to FormModal
+
 const propTypes = {
     name: PropTypes.string,
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types

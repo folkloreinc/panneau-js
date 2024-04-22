@@ -7,12 +7,12 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceTypeName } from '@panneau/core/hooks';
 import { useResourceItem } from '@panneau/data';
+import Loading from '@panneau/element-loading';
 import { useResourceValues } from '@panneau/intl';
 
 import ResourceForm from '../forms/ResourceForm';
 import MainLayout from '../layouts/Main';
 import PageHeader from '../partials/PageHeader';
-import Loading from '@panneau/element-loading';
 
 const propTypes = {
     itemId: PropTypes.string.isRequired,
@@ -65,7 +65,10 @@ const ResourceEditPage = ({ itemId, resource }) => {
                             ) : null}
                             {editItem === null && loading && !error ? (
                                 <Loading withDelay>
-                                    <FormattedMessage defaultMessage="Loading" description="Loading label" />
+                                    <FormattedMessage
+                                        defaultMessage="Loading"
+                                        description="Loading label"
+                                    />
                                 </Loading>
                             ) : null}
                         </div>

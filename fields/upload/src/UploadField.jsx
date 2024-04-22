@@ -9,6 +9,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useModal } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import { MediaCards } from '@panneau/element-media-card';
@@ -33,6 +34,7 @@ const propTypes = {
             url: PropTypes.string,
         }),
     ]),
+    name: PropTypes.string,
     types: PropTypes.arrayOf(PropTypes.oneOf(['audio', 'image', 'video', 'document'])),
     fileTypes: PropTypes.arrayOf(PropTypes.string),
     sources: PropTypes.arrayOf(
@@ -65,6 +67,7 @@ const propTypes = {
 const defaultProps = {
     resource: 'medias',
     value: null,
+    name: null,
     types: ['audio', 'image', 'video'],
     fileTypes: null,
     sources: ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'],
@@ -107,6 +110,7 @@ const defaultProps = {
 const UploadField = ({
     resource,
     value,
+    name,
     types,
     fileTypes,
     sources,
@@ -242,24 +246,31 @@ const UploadField = ({
 
     const hasMedia = values !== null && values.length > 0;
 
-    const [resourceModalOpen, setResourceModalOpen] = useState(false);
+    // Resource-modal-picker
+    const { register, unregister, modalIsOpen } = useModal();
+    const modalKey = `upload-field-${name}`;
+    const resourceModalOpen = modalIsOpen(modalKey);
     const showResourceModal = withFind && resourceModalOpen;
 
     const toggleResourceModal = useCallback(() => {
-        setResourceModalOpen(!resourceModalOpen);
-    }, [resourceModalOpen, setResourceModalOpen]);
+        if (resourceModalOpen) {
+            unregister(modalKey);
+        } else {
+            register(modalKey);
+        }
+    }, [resourceModalOpen, register, unregister, modalKey]);
 
     const [modalItems, setModalItems] = useState([]);
     const closeResourceModal = useCallback(() => {
-        setResourceModalOpen(false);
+        unregister(modalKey);
         setModalItems(null);
-    }, [resourceModalOpen, setResourceModalOpen, setModalItems]);
+    }, [resourceModalOpen, unregister, modalKey, setModalItems]);
 
     const openModalInResource = useCallback(() => {
-        setResourceModalOpen(false);
+        unregister(modalKey);
         setModalItems(null);
         setModalOpened(true);
-    }, [modalOpened, setModalOpened]);
+    }, [modalOpened, unregister, modalKey, setModalOpened]);
 
     const onChangeSelection = useCallback(
         (newValue) => {
@@ -287,18 +298,18 @@ const UploadField = ({
                 // Single value onchange
                 const [finalValue = null] = isArray(newValue) ? newValue : [newValue];
                 onChange(finalValue);
-                setResourceModalOpen(false);
+                unregister(modalKey);
             }
         },
-        [onChange, setResourceModalOpen, allowMultipleUploads, modalItems, setModalItems],
+        [onChange, unregister, modalKey, allowMultipleUploads, modalItems, setModalItems],
     );
 
     const onConfirmSelection = useCallback(() => {
         if (onChange !== null) {
             onChange(modalItems);
-            setResourceModalOpen(false);
+            unregister(modalKey);
         }
-    }, [onChange, modalItems, setResourceModalOpen, allowMultipleUploads]);
+    }, [onChange, modalItems, unregister, modalKey, allowMultipleUploads]);
 
     const containerRef = useRef(null);
 
@@ -404,6 +415,7 @@ const UploadField = ({
 
             {showResourceModal ? (
                 <ModalPicker
+                    id={modalKey}
                     value={value}
                     resource={resource}
                     types={types}

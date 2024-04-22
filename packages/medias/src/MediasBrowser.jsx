@@ -147,6 +147,7 @@ function MediasBrowser({
         loading = false,
         updateItem = null,
         pagination: { lastPage, total } = {},
+        pages = null,
     } = useMedias(query, page, count, { items: baseItems, trashed: showTrashed });
 
     // For picker
@@ -199,7 +200,7 @@ function MediasBrowser({
             query={query}
             onClickPage={onPageChange}
             theme={theme}
-            loading={loading}
+            loading={loading && pages !== null}
             selectedCount={selectedCount}
             onClearSelected={onClearSelected}
             withPreviousNext
@@ -381,7 +382,10 @@ function MediasBrowser({
                             actionsProps={{
                                 getDeletePropsFromItem: ({ id = null } = {}) => ({
                                     href: null,
-                                    onClick: () => (showTrashed ? mediaDelete(id) : mediaTrash(id)),
+                                    onClick: () =>
+                                        !showTrashed && withTrash
+                                            ? mediaTrash(id)
+                                            : mediaDelete(id),
                                     disabled: trashing || deleting,
                                     icon: showTrashed ? 'trash-fill' : 'trash',
                                 }),
