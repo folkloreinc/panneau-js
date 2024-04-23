@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "3.0.178",
+    "version": "3.0.179",
     "description": "",
     "keywords": [
         "javascript"
@@ -96,7 +96,7 @@
         "@panneau/element-radios": "^3.0.177",
         "@panneau/element-range": "^3.0.176",
         "@panneau/element-resource-card": "^3.0.177",
-        "@panneau/fields": "^3.0.178",
+        "@panneau/fields": "^3.0.179",
         "@panneau/filter-filters": "^3.0.177",
         "@panneau/filters": "^3.0.178",
         "@panneau/form-resource": "^3.0.178",
