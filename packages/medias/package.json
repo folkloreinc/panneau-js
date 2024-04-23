@@ -1,6 +1,6 @@
 {
     "name": "@panneau/medias",
-    "version": "3.0.177",
+    "version": "3.0.178",
     "description": "",
     "keywords": [
         "javascript"
@@ -47,7 +47,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.176",
-        "@panneau/data": "^3.0.176",
+        "@panneau/data": "^3.0.178",
         "@panneau/display-image": "^3.0.177",
         "@panneau/element-button": "^3.0.177",
         "@panneau/element-buttons": "^3.0.177",
