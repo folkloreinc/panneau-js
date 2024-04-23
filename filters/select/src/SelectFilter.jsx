@@ -60,11 +60,11 @@ const SelectFilter = ({
     const api = useApi();
     const [options, setOptions] = useState(initialOptions || []);
     const [loading, setLoading] = useState(null);
-    const [endReached, setEndReached] = useState(null);
+    const [endReached, setEndReached] = useState(false);
     const [pagination, setPagination] = useState(null);
 
     useEffect(() => {
-        setOptions(initialOptions);
+        setOptions(initialOptions || []);
     }, [initialOptions, setOptions]);
 
     const search = useSearch();
@@ -118,6 +118,12 @@ const SelectFilter = ({
                             typeof newItems.data !== 'undefined'
                                 ? newItems.data || []
                                 : newItems;
+                        const oldPagination =
+                            newItems !== null &&
+                            !isArray(newItems) &&
+                            typeof newItems.meta !== 'undefined'
+                                ? newItems.meta || {}
+                                : null;
                         const newPagination =
                             newItems !== null &&
                             !isArray(newItems) &&
@@ -132,13 +138,13 @@ const SelectFilter = ({
 
                         if (paginated) {
                             setOptions([
-                                ...options,
+                                ...(options || []),
                                 ...(finalItems || []).map((it) => ({
                                     label: get(it, itemLabelPath, null),
                                     value: get(it, itemValuePath, null),
                                 })),
                             ]);
-                            setPagination(newPagination);
+                            setPagination(newPagination || oldPagination);
                         } else {
                             setOptions(
                                 (finalItems || []).map((it) => ({

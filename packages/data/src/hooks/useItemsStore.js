@@ -58,12 +58,12 @@ const useItemsStore = (
         ...queryConfig,
     });
 
-    const { data: items = [], pagination = null, metadata = null } = data || {};
+    const { data: items = [], pagination = null, meta = null } = data || {};
     const {
         page: currentPage = null,
         last_page: lastPage = 0,
         total = null,
-    } = pagination || metadata || {};
+    } = pagination || meta || {};
 
     const loadNextPage = useCallback(() => {
         if (onQueryChange !== null && paginated && page !== null && page < lastPage) {
@@ -94,6 +94,7 @@ const useItemsStore = (
         },
         [items, updatedItems, setUpdatedItems],
     );
+
     const replaceUpdatedItems = useCallback(
         (currentItems) => {
             if (currentItems === null || updatedItems === null || updatedItems.length === 0) {

@@ -24,8 +24,6 @@ import defaultColumns from './defaults/columns';
 import defaultFields from './defaults/fields';
 import defaultFilters from './defaults/filters';
 
-import styles from './styles.module.scss';
-
 const propTypes = {
     items: PanneauPropTypes.medias,
     extraItems: PanneauPropTypes.medias,
@@ -280,7 +278,7 @@ function MediasBrowser({
     }, [items, page, allItems, withStickySelection, extraItems]);
 
     return (
-        <div className={classNames([styles.mediasBrowser, className])}>
+        <div className={className}>
             {currentMedia !== null ? (
                 <>
                     <div className="mt-2 mb-4">

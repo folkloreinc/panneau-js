@@ -8,9 +8,10 @@ const useMedias = (query = null, page = null, count = null, opts = {}) => {
     const api = useMediasApi();
 
     const trashed = useMemo(() => {
-        const { trashed: trashedOpt } = opts || {};
+        const { trashed: trashedOpt = false } = opts || {};
         return trashedOpt;
     }, [opts]);
+
     const finalQuery = useMemo(() => ({ ...query, trashed }), [query, trashed]);
 
     const getItems = useCallback(

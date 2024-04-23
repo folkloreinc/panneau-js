@@ -34,6 +34,7 @@ function MediasResourcePicker({ resource: resourceId, ...props }) {
         }),
         [api, resource],
     );
+
     return (
         <MediasPickerContainer
             api={mediasApi}

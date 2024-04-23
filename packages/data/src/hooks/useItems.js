@@ -99,8 +99,12 @@ const useItems = ({
         ...queryConfig,
     });
 
-    const { data: items = [], pagination = null } = data || {};
-    const { page: currentPage = null, last_page: lastPage = null, total = null } = pagination || {};
+    const { data: items = [], pagination = null, meta = null } = data || {};
+    const {
+        page: currentPage = null,
+        last_page: lastPage = null,
+        total = null,
+    } = pagination || meta || {};
 
     const loadNextPage = useCallback(() => {
         if (onQueryChange !== null && paginated && page !== null && page < lastPage) {
