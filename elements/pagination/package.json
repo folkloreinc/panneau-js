@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-pagination",
-    "version": "3.0.176",
+    "version": "3.0.177",
     "description": "Pagination element",
     "keywords": [
         "javascript"
@@ -57,7 +57,7 @@
         "@panneau/core": "^3.0.176",
         "@panneau/element-icon": "^3.0.176",
         "@panneau/element-label": "^3.0.176",
-        "@panneau/element-link": "^3.0.176",
+        "@panneau/element-link": "^3.0.177",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "query-string": "^9.0.0",
