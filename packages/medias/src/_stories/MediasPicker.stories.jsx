@@ -133,13 +133,15 @@ const filters = [];
 
 export const Custom = () => (
     <UppyProvider>
-        <Container
-            layout="table"
-            picker
-            multiple
-            fields={fields}
-            columns={columns}
-            filters={filters}
-        />
+        <div style={{ padding: 20, backgroundColor: '#0FF' }}>
+            <Container
+                layout="table"
+                picker
+                multiple
+                fields={fields}
+                columns={columns}
+                // filters={filters}
+            />
+        </div>
     </UppyProvider>
 );

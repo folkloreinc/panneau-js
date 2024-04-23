@@ -19,9 +19,27 @@ export default {
     },
 
     fields: [
-        { name: 'type', label: 'Type', type: 'string', component: 'text', disabled: true },
-        { name: 'name', label: 'Name', type: 'text', component: 'text' },
+        {
+            name: 'image',
+            label: 'Image',
+            component: 'image',
+        },
+        {
+            name: 'name',
+            label: 'Name',
+            type: 'string',
+            component: 'text-description',
+            descriptionPath: 'type',
+        },
         { name: 'url', label: 'Url', type: 'text', component: 'url', disabled: true },
+        {
+            name: 'thumbnail_url',
+            label: 'Thumbnail Url',
+            type: 'object',
+            component: 'image',
+            display: 'link',
+            labelPath: 'name',
+        },
         {
             name: 'thumbnail_url',
             label: 'Thumbnail Url',

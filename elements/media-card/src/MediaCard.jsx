@@ -103,6 +103,7 @@ const MediaCard = ({
         filename = null,
         size: fileSize = 0,
         thumbnail_url: thumbnailUrl = null,
+        thumbnailUrl: altThumbnailUrl = null,
         preview = null,
         data = {},
         type,
@@ -126,6 +127,7 @@ const MediaCard = ({
                 faIcon = faFilePdf;
                 break;
             default:
+                faIcon = faFile;
                 break;
         }
         return faIcon;
@@ -138,10 +140,13 @@ const MediaCard = ({
             (isString(file) ? file : null) ||
             null;
         const finalThumbnail =
-            (thumbnailPath !== null ? get(value, thumbnailPath) : null) || thumbnailUrl || preview;
+            (thumbnailPath !== null ? get(value, thumbnailPath) : null) ||
+            thumbnailUrl ||
+            altThumbnailUrl ||
+            preview;
         const finalSize = (sizePath !== null ? get(value, sizePath) : null) || fileSize || null;
         const finalLink = (linkPath !== null ? get(value, linkPath) || null : null) || null;
-        const finalHasThumbnail = preview !== null || finalThumbnail !== null;
+        const finalHasThumbnail = finalThumbnail !== null;
         return {
             name: finalName,
             thumbnail: finalThumbnail,
@@ -149,7 +154,18 @@ const MediaCard = ({
             link: finalLink,
             hasThumbnail: finalHasThumbnail,
         };
-    }, [value, namePath, thumbnailPath, sizePath, linkPath, thumbnailUrl, filename, file, preview]);
+    }, [
+        value,
+        namePath,
+        thumbnailPath,
+        sizePath,
+        linkPath,
+        thumbnailUrl,
+        altThumbnailUrl,
+        filename,
+        file,
+        preview,
+    ]);
 
     const withButton = onClick !== null || link !== null;
 
@@ -172,7 +188,7 @@ const MediaCard = ({
                 }
             >
                 {!hasThumbnail && mediaIcon !== null ? (
-                    <FontAwesomeIcon icon={mediaIcon} className="m-auto fs-3 text-dark" />
+                    <FontAwesomeIcon icon={mediaIcon} className="m-auto fs-3" />
                 ) : null}
                 {hasThumbnail && thumbnail !== null ? (
                     <img
@@ -194,7 +210,7 @@ const MediaCard = ({
                             minHeight: !withoutDescription ? thumbnailSize : thumbnailSize * 1.5,
                         }}
                     >
-                        <FontAwesomeIcon icon={faFile} className="m-auto fs-3 text-dark" />
+                        <FontAwesomeIcon icon={faFile} className="m-auto fs-3" />
                     </div>
                 ) : null}
             </div>

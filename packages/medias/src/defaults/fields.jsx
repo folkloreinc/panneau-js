@@ -27,7 +27,6 @@ export default [
                 type: 'display',
                 display: 'avatar',
                 name: 'user',
-                isListItem: true,
                 horizontal: true,
             },
             {
@@ -37,7 +36,6 @@ export default [
                 display: 'date',
                 name: 'created_at',
                 format: 'yyyy-MM-dd hh:ss',
-                isListItem: true,
                 horizontal: true,
             },
         ],
@@ -56,7 +54,6 @@ export default [
                 display: 'unit',
                 format: 'format',
                 name: 'format',
-                isListItem: true,
                 horizontal: true,
             },
             {
@@ -66,7 +63,6 @@ export default [
                 display: 'unit',
                 format: 'dimensions',
                 name: 'metadata',
-                isListItem: true,
                 horizontal: true,
             },
             {
@@ -76,7 +72,6 @@ export default [
                 display: 'unit',
                 format: 'bytes',
                 name: 'metadata.size',
-                isListItem: true,
                 horizontal: true,
             },
             {
@@ -86,7 +81,6 @@ export default [
                 display: 'unit',
                 format: 'duration',
                 name: 'metadata.duration',
-                isListItem: true,
                 horizontal: true,
             },
         ],

@@ -262,9 +262,6 @@ const Card = ({
         'card',
         {
             [`bg-${theme}`]: !imageOverlay && theme !== 'dark',
-            'bg-dark': imageOverlay || theme === 'dark',
-            'text-dark': theme === 'light',
-            'text-light': imageOverlay || theme === 'dark' || theme === 'primary',
             [className]: className !== null,
         },
     ]);

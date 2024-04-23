@@ -154,7 +154,7 @@ const Pagination = ({
             {onSelectPage !== null ? (
                 <button
                     type="button"
-                    className="btn badge rounded-pill text-bg-light mx-2"
+                    className="btn badge rounded-pill text-bg-primary mx-2"
                     onClick={onSelectPage}
                 >
                     <FormattedMessage defaultMessage="select all" description="Button label" />

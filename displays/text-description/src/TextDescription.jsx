@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-no-useless-fragment */
+import classNames from 'classnames';
 import get from 'lodash/get';
 import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
@@ -13,6 +14,8 @@ const propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     descriptionValues: PropTypes.object,
     locale: PropTypes.string,
+    selected: PropTypes.bool,
+    className: PropTypes.string,
 };
 
 const defaultProps = {
@@ -22,6 +25,8 @@ const defaultProps = {
     descriptionPath: null,
     descriptionValues: null,
     locale: null,
+    selected: false,
+    className: null,
 };
 
 const TextDescription = ({
@@ -31,6 +36,8 @@ const TextDescription = ({
     item,
     descriptionPath,
     descriptionValues,
+    selected,
+    className,
 }) => {
     const { locale } = useIntl();
 
@@ -52,9 +59,22 @@ const TextDescription = ({
     }, [initialValue, descriptionPath, descriptionValues, item, locale, parentLocale]);
 
     return label !== null ? (
-        <div>
+        <div
+            className={classNames([
+                {
+                    [className]: className !== null,
+                },
+            ])}
+        >
             <p className="d-block m-0 p-0 lh-sm">{value || placeholder}</p>
-            <p className="d-block m-0 p-0 text-secondary text-opacity-75 lh-sm">
+            <p
+                className={classNames([
+                    'd-block m-0 p-0 text-opacity-50 lh-sm',
+                    {
+                        'text-body': !selected,
+                    },
+                ])}
+            >
                 <small>{label}</small>
             </p>
         </div>

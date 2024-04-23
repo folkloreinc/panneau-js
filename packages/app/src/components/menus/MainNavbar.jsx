@@ -1,12 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import isArray from 'lodash/isArray';
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
-import Link from '@panneau/element-link';
 import classNames from 'classnames';
+import isArray from 'lodash/isArray';
+import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
 
 import { useUser } from '@panneau/auth';
 import { usePanneau, usePanneauColorScheme, useUrlGenerator } from '@panneau/core/contexts';
+import Link from '@panneau/element-link';
 import Menu from '@panneau/element-menu';
 import Navbar from '@panneau/element-navbar';
 
@@ -20,10 +20,10 @@ const propTypes = {
 
 const defaultProps = {
     loading: false,
-    theme: 'light'
+    theme: 'light',
 };
 
-const MainNavbar = ({ loading, theme, ...props}) => {
+const MainNavbar = ({ loading, theme, ...props }) => {
     const { name, menus = null } = usePanneau();
     const { main = null, guest = null } = menus || {};
     const { background } = usePanneauColorScheme();
@@ -92,11 +92,13 @@ const MainNavbar = ({ loading, theme, ...props}) => {
             );
     }, [main]);
 
+    // 'text-light': theme === 'dark', 'text-dark': theme !== 'dark',
+
     return (
         <Navbar theme={background} loading={loading} {...props}>
             {name !== null ? (
                 <Link href={route('home')} className="navbar-brand">
-                    <span className={classNames([{'text-light': theme === 'dark', 'text-dark': theme !== 'dark', 'text-opacity-75': loading} ])}>{name}</span>
+                    <span className={classNames([{ 'text-opacity-75': loading }])}>{name}</span>
                 </Link>
             ) : null}
             {items}

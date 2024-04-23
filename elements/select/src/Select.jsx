@@ -220,7 +220,7 @@ const SelectElement = ({
                     control: (base, { isDisabled }) => ({
                         ...base,
                         color: 'var(--bs-body-color)',
-                        backgroundColor: 'var(--bs-body-bg)',
+                        backgroundColor: 'var(--bs-input-color)',
                         cursor: isDisabled ? 'not-allowed' : 'pointer',
                     }),
                     indicators: (base) => ({

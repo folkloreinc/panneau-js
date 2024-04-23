@@ -21,6 +21,14 @@
     box-shadow: 0 0 0 1px rgba(13, 110, 253, 0.25);
 }
 
+body {
+    --bs-input-color: var(--bs-body-bg, #fff);
+}
+
+[data-bs-theme='dark'] {
+    --bs-input-color: var(--bs-body-bg, #000);
+}
+
 [data-bs-theme='blue'] {
     --bs-primary: #c8d;
     --bs-btn-bg: #c8d;

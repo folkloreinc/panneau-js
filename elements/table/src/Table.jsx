@@ -327,6 +327,7 @@ function Table({
                                                         field={field}
                                                         value={displayValue}
                                                         placeholder={displayPlaceholder}
+                                                        selected={checked}
                                                         item={it}
                                                     />
                                                 ) : (

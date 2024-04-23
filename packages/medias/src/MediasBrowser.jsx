@@ -280,7 +280,7 @@ function MediasBrowser({
     }, [items, page, allItems, withStickySelection, extraItems]);
 
     return (
-        <div className={classNames([styles.container, className])}>
+        <div className={classNames([styles.mediasBrowser, className])}>
             {currentMedia !== null ? (
                 <>
                     <div className="mt-2 mb-4">
