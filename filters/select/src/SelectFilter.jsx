@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { getCSRFHeaders, getJSON } from '@folklore/fetch';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
@@ -7,7 +8,7 @@ import queryString from 'query-string';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearch } from 'wouter';
 
-import { useApi } from '@panneau/data';
+// import { useApi } from '@panneau/data';
 import Select from '@panneau/element-select';
 
 const propTypes = {
@@ -30,7 +31,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-    options: [],
+    options: null,
     requestUrl: null,
     requestOptions: null,
     requestQuery: null,
@@ -57,14 +58,13 @@ const SelectFilter = ({
     className,
     ...props
 }) => {
-    const api = useApi();
-    const [options, setOptions] = useState(initialOptions || []);
+    const [options, setOptions] = useState(initialOptions || null);
     const [loading, setLoading] = useState(null);
     const [endReached, setEndReached] = useState(false);
     const [pagination, setPagination] = useState(null);
 
     useEffect(() => {
-        setOptions(initialOptions || []);
+        setOptions(initialOptions || null);
     }, [initialOptions, setOptions]);
 
     const search = useSearch();
@@ -100,16 +100,21 @@ const SelectFilter = ({
 
     const fetchOptions = useCallback(
         (url) => {
-            if (!endReached && url !== null && api !== null) {
+            if (!endReached && url !== null) {
                 setLoading(true);
-                api.requestGet(
-                    url,
+                const partialQuery = {
+                    paginated,
+                    ...requestQuery,
+                    ...finalParams,
+                };
+                const finalQuery = queryString.stringify(partialQuery, { arrayFormat: 'bracket' });
+                getJSON(
+                    `${url}${finalQuery !== null && finalQuery.length > 0 ? `?${finalQuery}` : ''}`,
                     {
-                        paginated,
-                        ...requestQuery,
-                        ...finalParams,
+                        credentials: 'include',
+                        headers: getCSRFHeaders(),
+                        ...requestOptions,
                     },
-                    requestOptions,
                 )
                     .then((newItems) => {
                         const partialItems =
@@ -118,18 +123,6 @@ const SelectFilter = ({
                             typeof newItems.data !== 'undefined'
                                 ? newItems.data || []
                                 : newItems;
-                        const oldPagination =
-                            newItems !== null &&
-                            !isArray(newItems) &&
-                            typeof newItems.meta !== 'undefined'
-                                ? newItems.meta || {}
-                                : null;
-                        const newPagination =
-                            newItems !== null &&
-                            !isArray(newItems) &&
-                            typeof newItems.pagination !== 'undefined'
-                                ? newItems.pagination || {}
-                                : null;
 
                         const finalItems =
                             maxItemsCount !== null
@@ -137,6 +130,18 @@ const SelectFilter = ({
                                 : partialItems;
 
                         if (paginated) {
+                            const oldPagination =
+                                newItems !== null &&
+                                !isArray(newItems) &&
+                                typeof newItems.meta !== 'undefined'
+                                    ? newItems.meta || {}
+                                    : null;
+                            const newPagination =
+                                newItems !== null &&
+                                !isArray(newItems) &&
+                                typeof newItems.pagination !== 'undefined'
+                                    ? newItems.pagination || {}
+                                    : null;
                             setOptions([
                                 ...(options || []),
                                 ...(finalItems || []).map((it) => ({
@@ -164,7 +169,6 @@ const SelectFilter = ({
             }
         },
         [
-            api,
             options,
             initialOptions,
             maxItemsCount,
@@ -207,7 +211,7 @@ const SelectFilter = ({
             autoSize={autoSize}
             {...props}
             className={className}
-            options={options}
+            options={options || []}
             onMenuScrollToBottom={paginated ? onMenuScrollToBottom : null}
         />
     );

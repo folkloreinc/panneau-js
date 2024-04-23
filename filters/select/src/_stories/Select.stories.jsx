@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React, { useState } from 'react';
+
 import withApi from '../../../../.storybook/decorators/withApiProvider';
 import FieldsProvider from '../../../../packages/fields';
 import SelectFilter from '../SelectFilter';
@@ -50,7 +51,7 @@ export const Fetching = () => (
                 label: 'Chose 1',
             },
         ]}
-        requestUrl="/pages"
+        requestUrl="/api/pages"
         itemLabelPath="title.en"
         itemValuePath="id"
     />
