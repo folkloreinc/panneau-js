@@ -167,8 +167,11 @@ function MediasBrowser({
         [setLayout],
     );
 
-    // const [currentMedia, setCurrentMedia] = useState(null);
-    const { media: currentMedia, setMedia: setCurrentMedia } = useMediasForm();
+    const {
+        media: currentMedia,
+        setMedia: setCurrentMedia,
+        fields: mediaFormFields = null,
+    } = useMediasForm();
 
     const onOpenMedia = useCallback(
         (media) => {
@@ -291,7 +294,7 @@ function MediasBrowser({
                     </div>
                     <MediaForm
                         value={currentMedia}
-                        fields={fields}
+                        fields={mediaFormFields || fields}
                         onChange={setCurrentMedia}
                         onSave={onSaveMedia}
                         onClose={onCloseMedia}

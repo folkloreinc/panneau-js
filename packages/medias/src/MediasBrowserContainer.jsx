@@ -9,17 +9,21 @@ import { MediasFormProvider } from './MediasFormContext';
 const propTypes = {
     api: apiPropTypes,
     media: PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) }),
+    fields: PropTypes.arrayOf(
+        PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) }),
+    ),
 };
 
 const defaultProps = {
     api: null,
     media: null,
+    fields: null,
 };
 
-function MediasBrowserContainer({ api, media, ...props }) {
+function MediasBrowserContainer({ api, media, fields, ...props }) {
     return (
         <MediasApiProvider api={api}>
-            <MediasFormProvider media={media}>
+            <MediasFormProvider media={media} fields={fields}>
                 <MediasBrowser {...props} />
             </MediasFormProvider>
         </MediasApiProvider>

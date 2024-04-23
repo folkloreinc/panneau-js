@@ -9,18 +9,22 @@ import MediasPicker from './MediasPicker';
 const propTypes = {
     api: apiPropTypes,
     media: PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) }),
+    fields: PropTypes.arrayOf(
+        PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) }),
+    ),
     onChange: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
     api: null,
     media: null,
+    fields: null,
 };
 
-function MediasPickerContainer({ api, media, onChange, ...props }) {
+function MediasPickerContainer({ api, media, fields, onChange, ...props }) {
     return (
         <MediasApiProvider api={api}>
-            <MediasFormProvider media={media}>
+            <MediasFormProvider media={media} fields={fields}>
                 <MediasPicker {...props} onChange={onChange} />
             </MediasFormProvider>
         </MediasApiProvider>

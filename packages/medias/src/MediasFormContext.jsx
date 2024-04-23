@@ -8,16 +8,23 @@ export const useMediasForm = () => useContext(MediasFormContext);
 
 const propTypes = {
     media: PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) }),
+    fields: PropTypes.arrayOf(
+        PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) }),
+    ),
     children: PropTypes.node.isRequired,
 };
 
 const defaultProps = {
     media: null,
+    fields: null,
 };
 
-export function MediasFormProvider({ media: providedMedia, children }) {
+export function MediasFormProvider({ media: providedMedia, fields: providedFields, children }) {
     const [media, setMedia] = useState(providedMedia);
-    const values = useMemo(() => ({ media, setMedia }), [media, setMedia]);
+    const values = useMemo(
+        () => ({ media, setMedia, fields: providedFields }),
+        [media, setMedia, providedFields],
+    );
     return <MediasFormContext.Provider value={values}>{children}</MediasFormContext.Provider>;
 }
 
