@@ -24,11 +24,9 @@ export function selectItem(item, selectedItems, onSelectionChange, multipleSelec
         newItems = selectedItemsArray.filter(({ id }) => id !== itemId);
     }
 
-    onSelectionChange(filterNullItems(newItems));
     if (onSelectionChange !== null) {
         const [firstItem = null] = newItems || [];
-        const finalValue = multipleSelection ? newItems : firstItem;
-        onSelectionChange(finalValue, item);
+        onSelectionChange(multipleSelection ? filterNullItems(newItems) : firstItem);
     }
 }
 

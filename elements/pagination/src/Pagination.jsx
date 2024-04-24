@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/control-has-associated-label, react/jsx-indent, react/no-array-index-key, react/jsx-props-no-spreading */
 import classNames from 'classnames';
+import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import React, { useCallback, useMemo } from 'react';
@@ -137,10 +138,16 @@ const Pagination = ({
         values: { count: total },
     });
 
-    const selectedCount = useMemo(
-        () => (selectedItems !== null && selectedItems.length > 0 ? selectedItems.length : null),
-        [selectedItems],
-    );
+    const selectedCount = useMemo(() => {
+        if (isArray(selectedItems)) {
+            return selectedItems.length;
+        }
+        return selectedItems !== null ? 1 : 0;
+    }, [selectedItems]);
+
+    const onClearSelection = useCallback(() => {
+        onSelectionChange(null);
+    }, [onSelectionChange]);
 
     if (autohide && lastPage < 2) {
         return null;
@@ -163,9 +170,7 @@ const Pagination = ({
                 <button
                     type="button"
                     className="btn badge rounded-pill text-bg-secondary mx-2"
-                    onClick={
-                        multipleSelection ? () => onSelectionChange([]) : onSelectionChange(null)
-                    }
+                    onClick={onClearSelection}
                 >
                     <FormattedMessage defaultMessage="clear" description="Button label" />
                     <Icon className="ps-1" name="x" bold />

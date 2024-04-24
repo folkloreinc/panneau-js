@@ -31,9 +31,6 @@ function MediasPicker({
     const onSelectionChange = useCallback(
         (newSelection) => {
             setSelectedItems(newSelection);
-            if (onChange !== null) {
-                onChange(selectedItems);
-            }
         },
         [setSelectedItems],
     );
@@ -43,7 +40,11 @@ function MediasPicker({
         setSelectedItems(initialSelectedItems);
     }, [initialSelectedItems, setSelectedItems]);
 
-    console.log('selectedItems', selectedItems);
+    useEffect(() => {
+        if (onChange !== null) {
+            onChange(selectedItems);
+        }
+    }, [selectedItems, onChange]);
 
     return (
         <div className={className}>

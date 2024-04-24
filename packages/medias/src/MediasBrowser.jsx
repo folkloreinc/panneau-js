@@ -39,7 +39,7 @@ const propTypes = {
     layouts: PropTypes.arrayOf(PropTypes.shape({})),
     theme: PropTypes.string,
     onUpload: PropTypes.func,
-    onItemsChange: PropTypes.func,
+    // onItemsChange: PropTypes.func,
     onLayoutChange: PropTypes.func,
     onMediaFormOpen: PropTypes.func,
     onMediaFormClose: PropTypes.func,
@@ -77,7 +77,7 @@ const defaultProps = {
     ],
     theme: null,
     onUpload: null,
-    onItemsChange: null,
+    // onItemsChange: null,
     onLayoutChange: null,
     onMediaFormOpen: null,
     onMediaFormClose: null,
@@ -106,7 +106,7 @@ function MediasBrowser({
     layouts,
     theme,
     onUpload,
-    onItemsChange,
+    // onItemsChange,
     onLayoutChange,
     onMediaFormOpen,
     onMediaFormClose,
@@ -164,11 +164,11 @@ function MediasBrowser({
     } = useMedias(query, page, count, { items: baseItems, trashed: showTrashed });
 
     // For picker
-    useEffect(() => {
-        if (onItemsChange !== null) {
-            onItemsChange(items);
-        }
-    }, [items, onItemsChange]);
+    // useEffect(() => {
+    //     if (onItemsChange !== null) {
+    //         onItemsChange(items);
+    //     }
+    // }, [items, onItemsChange]);
 
     const [layout, setLayout] = useState(initialLayout || 'table');
     const hasLayouts = useMemo(() => layouts !== null && layouts.length > 1, [layouts]);
@@ -231,7 +231,7 @@ function MediasBrowser({
                 reload();
             }
         },
-        [onUpload],
+        [onUpload, reload, onQueryReset, onSelectionChange],
     );
 
     const pagination = (

@@ -58,6 +58,8 @@ function MediasPickerModal({
         [setSelectedItems],
     );
 
+    console.log('selected2', selectedItems);
+
     const [mediaFormOpen, setMediaFormOpen] = useState(false);
     const onMediaFormOpen = useCallback(() => {
         setMediaFormOpen(true);
@@ -108,6 +110,7 @@ function MediasPickerModal({
             {resource !== null ? (
                 <MediasResourcePicker
                     {...props}
+                    value={selectedItems}
                     resource={resource}
                     onChange={onSelectionChange}
                     onClose={onClose}
@@ -118,7 +121,7 @@ function MediasPickerModal({
             ) : (
                 <MediasPickerContainer
                     {...props}
-                    resource={resource}
+                    value={selectedItems}
                     onChange={onSelectionChange}
                     onClose={onClose}
                     multiple={multiple}
