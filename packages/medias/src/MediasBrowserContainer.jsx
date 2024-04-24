@@ -2,9 +2,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { MediaProvider } from './MediaContext';
 import { MediasApiProvider, apiPropTypes } from './MediasApiContext';
 import MediasBrowser from './MediasBrowser';
-import { MediasFormProvider } from './MediasFormContext';
 
 const propTypes = {
     api: apiPropTypes,
@@ -23,9 +23,9 @@ const defaultProps = {
 function MediasBrowserContainer({ api, media, fields, ...props }) {
     return (
         <MediasApiProvider api={api}>
-            <MediasFormProvider media={media} fields={fields}>
+            <MediaProvider media={media} fields={fields}>
                 <MediasBrowser {...props} />
-            </MediasFormProvider>
+            </MediaProvider>
         </MediasApiProvider>
     );
 }

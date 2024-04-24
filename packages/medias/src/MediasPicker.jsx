@@ -1,13 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import isArray from 'lodash/isArray';
+// import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 
-import Button from '@panneau/element-button';
-
+// import { FormattedMessage } from 'react-intl';
+// import Button from '@panneau/element-button';
 import MediasBrowser from './MediasBrowser';
-import { useMediasForm } from './MediasFormContext';
+
+// import { useMediasForm } from './MediasFormContext';
 
 const propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
@@ -45,7 +45,7 @@ function MediasPicker({
     className,
     ...props
 }) {
-    const { media: currentMedia } = useMediasForm();
+    // const { media: currentMedia } = useMediasForm();
 
     const [selectedItems, setSelectedItems] = useState(initialSelectedItems || null);
     const onSelectionChange = useCallback(
@@ -64,13 +64,13 @@ function MediasPicker({
         }
     }, [selectedItems, parentOnSelectionChange]);
 
-    const onConfirmSelection = useCallback(() => {
-        if (onChange !== null) {
-            onChange(selectedItems || null);
-        }
-    }, [selectedItems, onChange]);
+    // const onConfirmSelection = useCallback(() => {
+    //     if (onChange !== null) {
+    //         onChange(selectedItems || null);
+    //     }
+    // }, [selectedItems, onChange]);
 
-    const empty = selectedItems === null || (isArray(selectedItems) && selectedItems.length === 0);
+    // const empty = selectedItems === null || (isArray(selectedItems) && selectedItems.length === 0);
 
     return (
         <div className={className}>
@@ -88,7 +88,7 @@ function MediasPicker({
                 // }
                 {...props}
             />
-            {!withoutButtons && currentMedia === null ? (
+            {/* {!withoutButtons && currentMedia === null ? (
                 <div className="d-flex w-100 align-items-end justify-content-end mt-3">
                     <div className="btn-group">
                         {onClose !== null ? (
@@ -124,7 +124,7 @@ function MediasPicker({
                         </Button>
                     </div>
                 </div>
-            ) : null}
+            ) : null} */}
         </div>
     );
 }

@@ -98,7 +98,6 @@ function MediasPickerModal({
                     onChange={onChange}
                     onClose={onClose}
                     multipleSelection={multiple}
-                    withoutButtons
                 />
             ) : (
                 <MediasPickerContainer
@@ -108,7 +107,6 @@ function MediasPickerModal({
                     onChange={onChange}
                     onClose={onClose}
                     multipleSelection={multiple}
-                    withoutButtons
                 />
             )}
         </Dialog>

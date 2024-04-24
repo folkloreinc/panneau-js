@@ -9,8 +9,8 @@ import FieldsProvider from '../../../fields';
 import FiltersProvider from '../../../filters';
 import IntlProvider from '../../../intl/src/IntlProvider';
 import { UppyProvider } from '../../../uppy/src/UppyContext';
+import { MediaProvider } from '../MediaContext';
 import { MediasApiProvider } from '../MediasApiContext';
-import { MediasFormProvider } from '../MediasFormContext';
 import MediasPicker from '../MediasPicker';
 
 import Media1 from '../../../../.storybook/api/items/medias/1.json';
@@ -45,9 +45,9 @@ const Container = ({ value: initialValue = null, ...props } = {}) => {
                     <FiltersProvider>
                         <ActionsProvider>
                             <MediasApiProvider api={api.medias}>
-                                <MediasFormProvider>
+                                <MediaProvider>
                                     <MediasPicker {...props} value={value} onChange={onChange} />
-                                </MediasFormProvider>
+                                </MediaProvider>
                             </MediasApiProvider>
                         </ActionsProvider>
                     </FiltersProvider>
