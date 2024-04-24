@@ -6,6 +6,7 @@ export default [
         id: 'search',
         component: 'search',
         name: 'search',
+        width: 220,
     },
     {
         id: 'types',

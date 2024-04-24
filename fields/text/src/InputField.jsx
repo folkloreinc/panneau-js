@@ -36,6 +36,7 @@ const propTypes = {
             current: PropTypes.any, // eslint-disable-line
         }),
     ]),
+    style: PropTypes.shape({}),
     className: PropTypes.string,
 };
 
@@ -61,6 +62,7 @@ const defaultProps = {
     max: null,
     dataList: null,
     inputRef: null,
+    style: null,
     className: null,
 };
 
@@ -86,6 +88,7 @@ const InputField = ({
     max,
     dataList,
     inputRef,
+    style,
     className,
 }) => {
     const dataListId = useMemo(() => (dataList !== null ? uuid() : null), [dataList]);
@@ -123,7 +126,11 @@ const InputField = ({
 
     const { horizontal, ...cleanProps } = elProps;
     const inputElement =
-        type !== 'textarea' ? <input {...cleanProps} /> : <textarea {...cleanProps} />;
+        type !== 'textarea' ? (
+            <input {...cleanProps} style={style} />
+        ) : (
+            <textarea style={style} {...cleanProps} />
+        );
     const withInputGroup = prepend !== null || append !== null;
 
     return (

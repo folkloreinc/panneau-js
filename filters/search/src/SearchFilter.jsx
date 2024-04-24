@@ -21,6 +21,7 @@ const propTypes = {
     onChange: PropTypes.func.isRequired,
     placeholder: PropTypes.string,
     position: PropTypes.string,
+    width: PropTypes.number,
     className: PropTypes.string,
 };
 
@@ -29,10 +30,11 @@ const defaultProps = {
     value: null,
     placeholder: null,
     position: null,
+    width: null,
     className: null,
 };
 
-const SearchFilter = ({ name, value, onChange, position, placeholder, className }) => {
+const SearchFilter = ({ name, value, onChange, placeholder, position, width, className }) => {
     const intl = useIntl();
     const [searchValue, setSearchValue] = useState(value);
 
@@ -80,6 +82,7 @@ const SearchFilter = ({ name, value, onChange, position, placeholder, className 
                     theme="light"
                     onChange={setSearchValue}
                     placeholder={placeholder || intl.formatMessage(messages.search)}
+                    style={{ width: width !== null ? width - 42 : null }}
                 />
                 {canClear ? (
                     <Button

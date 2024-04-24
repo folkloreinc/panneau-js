@@ -134,7 +134,7 @@ export const WithValueMultiple = () => (
 
 const fields = [];
 const columns = [];
-const filters = [];
+// const filters = [];
 
 export const Custom = () => (
     <UppyProvider>

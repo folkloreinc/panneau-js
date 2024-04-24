@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
 import classNames from 'classnames';
+import isArray from 'lodash/isArray';
 import uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -37,6 +38,7 @@ const propTypes = {
     layout: PropTypes.string,
     layouts: PropTypes.arrayOf(PropTypes.shape({})),
     theme: PropTypes.string,
+    onUpload: PropTypes.func,
     onItemsChange: PropTypes.func,
     onLayoutChange: PropTypes.func,
     selectable: PropTypes.bool,
@@ -55,7 +57,6 @@ const defaultProps = {
     items: null,
     extraItems: null,
     types: null,
-    buttons: null,
     filters: defaultFilters,
     columns: defaultColumns,
     fields: defaultFields,
@@ -73,6 +74,7 @@ const defaultProps = {
         },
     ],
     theme: null,
+    onUpload: null,
     onItemsChange: null,
     onLayoutChange: null,
     selectable: null,
@@ -99,6 +101,7 @@ function MediasBrowser({
     layout: initialLayout,
     layouts,
     theme,
+    onUpload,
     onItemsChange,
     onLayoutChange,
     selectable,
@@ -151,6 +154,7 @@ function MediasBrowser({
         updateItem = null,
         pagination: { lastPage, total } = {},
         pages = null,
+        reload,
     } = useMedias(query, page, count, { items: baseItems, trashed: showTrashed });
 
     // For picker
@@ -197,6 +201,25 @@ function MediasBrowser({
         [setCurrentMedia, updateItem],
     );
 
+    const onMediaUploaded = useCallback(
+        (medias) => {
+            const rawMedias = isArray(medias) ? medias : [medias];
+            if (onUpload !== null) {
+                onUpload(rawMedias).then((newMedias) => {
+                    if (onSelectionChange !== null) {
+                        onSelectionChange(newMedias);
+                        reload();
+                    }
+                });
+            }
+            if (onSelectionChange !== null) {
+                onSelectionChange(rawMedias);
+                reload();
+            }
+        },
+        [onUpload],
+    );
+
     const pagination = (
         <Pagination
             page={page}
@@ -230,7 +253,6 @@ function MediasBrowser({
                   },
               ])
             : filters;
-
         if (types !== null && partialFilters !== null) {
             return (partialFilters || []).map((filter) => {
                 const { id = null } = filter || {};
@@ -329,6 +351,7 @@ function MediasBrowser({
                                 withButton
                                 withoutMedia
                                 uppyConfig={uppyConfig}
+                                onChange={onMediaUploaded}
                             />
                         ) : null}
                     </div>
