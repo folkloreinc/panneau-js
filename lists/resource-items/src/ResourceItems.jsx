@@ -2,12 +2,12 @@
 import classNames from 'classnames';
 import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Actions from '@panneau/action-actions';
 import { useListsComponents, usePanneauResource } from '@panneau/core/contexts';
-import { useItemSelection, useResourceUrlGenerator } from '@panneau/core/hooks';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Pagination from '@panneau/element-pagination';
@@ -26,6 +26,7 @@ const propTypes = {
     showFilters: PropTypes.bool,
     showActions: PropTypes.bool,
     selectable: PropTypes.bool,
+    selectedItems: PropTypes.arrayOf(PropTypes.shape({})),
     onSelectionChange: PropTypes.func,
     multipleSelection: PropTypes.bool,
     listProps: PropTypes.shape({}),
@@ -45,6 +46,7 @@ const defaultProps = {
     showFilters: true,
     showActions: true,
     selectable: false,
+    selectedItems: null,
     onSelectionChange: null,
     multipleSelection: false,
     listProps: null,
@@ -63,7 +65,8 @@ const ResourceItemsList = ({
     showFilters,
     showActions,
     selectable,
-    onSelectionChange,
+    selectedItems: initialSelectedItems,
+    onSelectionChange: parentOnChangeSelection,
     multipleSelection,
     listProps: customListProps,
     theme,
@@ -123,20 +126,18 @@ const ResourceItemsList = ({
         }, false);
     const finalMultipleSelection = withMultipleActions || multipleSelection;
 
-    const {
-        onSelectItem,
-        onSelectPage,
-        onClearSelected,
-        pageSelected,
-        selectedCount,
-        selectedItems,
-        setSelectedItems,
-    } = useItemSelection({
-        items: items || [],
-        selectedItems: null,
-        onSelectionChange,
-        multipleSelection: finalMultipleSelection,
-    });
+    const [selectedItems, setSelectedItems] = useState(initialSelectedItems || null);
+    const onSelectionChange = useCallback(
+        (newSelection) => {
+            setSelectedItems(newSelection);
+        },
+        [setSelectedItems],
+    );
+    useEffect(() => {
+        if (parentOnChangeSelection !== null) {
+            parentOnChangeSelection(selectedItems);
+        }
+    }, [selectedItems, parentOnChangeSelection]);
 
     const onActionsChange = useCallback(() => {
         if (reload !== null) {
@@ -192,8 +193,10 @@ const ResourceItemsList = ({
                         loading={loading && pages !== null}
                         loaded={loaded}
                         withPreviousNext
-                        selectedCount={selectedCount}
-                        onClearSelected={onClearSelected}
+                        selectable={finalSelectable}
+                        selectedItems={selectedItems}
+                        onSelectionChange={onSelectionChange}
+                        multipleSelection={finalMultipleSelection}
                     />
                 ) : null}
             </div>
@@ -210,13 +213,9 @@ const ResourceItemsList = ({
                         ...actionsProps,
                     }}
                     selectable={finalSelectable}
-                    multipleSelection={withMultipleActions || multipleSelection}
                     selectedItems={selectedItems}
-                    onSelectItem={finalSelectable ? onSelectItem : null}
-                    onSelectPage={finalSelectable ? onSelectPage : null}
-                    pageSelected={pageSelected}
-                    selectedCount={selectedCount}
-                    selectedItemsCount={total}
+                    onSelectionChange={onSelectionChange}
+                    multipleSelection={finalMultipleSelection}
                     resource={resource}
                     baseUrl={baseUrl}
                     theme={theme}
@@ -250,8 +249,10 @@ const ResourceItemsList = ({
                     loading={loading && pages !== null}
                     loaded={loaded}
                     withPreviousNext
-                    selectedCount={selectedCount}
-                    onClearSelected={onClearSelected}
+                    selectable={finalSelectable}
+                    selectedItems={selectedItems}
+                    onSelectionChange={onSelectionChange}
+                    multipleSelection={finalMultipleSelection}
                 />
             ) : null}
         </div>

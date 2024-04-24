@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/field-upload",
+    "name": "@panneau/field-media",
     "version": "3.0.181",
-    "description": "An Upload field",
+    "description": "A media field with picker",
     "keywords": [
         "javascript"
     ],
@@ -22,14 +22,6 @@
         {
             "name": "Nicolas Roy-Bourdages",
             "email": "nrb@folklore.email"
-        },
-        {
-            "name": "Julien Carignan",
-            "email": "jc@folklore.email"
-        },
-        {
-            "name": "Théo Gjini",
-            "email": "tg@folklore.email"
         }
     ],
     "license": "ISC",
@@ -62,16 +54,8 @@
         "@panneau/element-label": "^3.0.176",
         "@panneau/element-media-card": "^3.0.177",
         "@panneau/list-resource-items": "^3.0.178",
+        "@panneau/modal-dialog": "^3.0.177",
         "@panneau/themes": "^3.0.177",
-        "@panneau/uppy": "^3.0.176",
-        "@uppy/core": "^3.9.1",
-        "@uppy/dashboard": "^3.7.3",
-        "@uppy/drag-drop": "^3.0.3",
-        "@uppy/file-input": "^3.0.4",
-        "@uppy/progress-bar": "^3.0.4",
-        "@uppy/react": "^3.3.0",
-        "@uppy/status-bar": "^3.2.7",
-        "@uppy/utils": "^5.7.2",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

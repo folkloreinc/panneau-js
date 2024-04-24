@@ -1,28 +1,20 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // import classNames from 'classnames';
-import { Dashboard, DashboardModal } from '@uppy/react';
 import classNames from 'classnames';
 import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-// import { useModal } from '@panneau/core/contexts';
+import { useModal } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import { MediaCards } from '@panneau/element-media-card';
-// import ModalPicker from '@panneau/modal-medias-picker';
-// import UploadModal from '@panneau/modal-upload';
-import { useUppy } from '@panneau/uppy';
+import ModalPicker from '@panneau/modal-medias-picker';
 
 import styles from './styles.module.scss';
-
-import '@uppy/core/dist/style.css';
-import '@uppy/dashboard/dist/style.css';
-import '@uppy/drag-drop/dist/style.css';
-import '@uppy/status-bar/dist/style.css';
 
 const propTypes = {
     resource: PropTypes.string,
@@ -54,11 +46,8 @@ const propTypes = {
     sizePath: PropTypes.string,
     linkPath: PropTypes.string,
     uppyProps: PropTypes.shape({ withUUID: PropTypes.bool }),
-    width: PropTypes.number,
-    height: PropTypes.number,
     disabled: PropTypes.bool,
     onChange: PropTypes.func,
-    onClear: PropTypes.func,
     onClickAdd: PropTypes.func,
     onClickFind: PropTypes.func,
     className: PropTypes.string,
@@ -128,11 +117,8 @@ const UploadField = ({
     sizePath,
     linkPath,
     uppyProps,
-    width,
-    height,
     disabled,
     onChange,
-    onClear,
     onClickAdd,
     onClickFind,
     className,
@@ -202,29 +188,12 @@ const UploadField = ({
         }),
         [uppyProps, allowedFileTypes, allowMultipleUploads, maxNumberOfFiles, sources, onComplete],
     );
-    const uppy = useUppy(uppyFinalProps);
 
     const [modalOpened, setModalOpened] = useState(false);
 
     const openModal = useCallback(() => {
         setModalOpened(!modalOpened);
     }, [modalOpened, setModalOpened]);
-
-    const closeModal = useCallback(() => {
-        setModalOpened(false);
-        if (uppy !== null) {
-            uppy.cancelAll({ reason: 'user' });
-        }
-    }, [uppy, setModalOpened]);
-
-    const onClickClear = useCallback(() => {
-        if (onClear !== null) {
-            onClear();
-        }
-        if (uppy !== null) {
-            uppy.cancelAll({ reason: 'user' });
-        }
-    }, [uppy, onClear]);
 
     const onClickRemove = useCallback(
         (idx) => {
@@ -247,79 +216,65 @@ const UploadField = ({
     const hasMedia = values !== null && values.length > 0;
 
     // Resource-modal-picker
-    // const { register, unregister, modalIsOpen } = useModal();
-    // const modalKey = `upload-field-${name}`;
-    // const resourceModalOpen = modalIsOpen(modalKey);
-    // const showResourceModal = withFind && resourceModalOpen;
+    const { register, unregister, modalIsOpen } = useModal();
+    const modalKey = `upload-field-${name}`;
+    const resourceModalOpen = modalIsOpen(modalKey);
+    const showResourceModal = withFind && resourceModalOpen;
 
-    // const toggleResourceModal = useCallback(() => {
-    //     if (resourceModalOpen) {
-    //         unregister(modalKey);
-    //     } else {
-    //         register(modalKey);
-    //     }
-    // }, [resourceModalOpen, register, unregister, modalKey]);
+    const toggleResourceModal = useCallback(() => {
+        if (resourceModalOpen) {
+            unregister(modalKey);
+        } else {
+            register(modalKey);
+        }
+    }, [resourceModalOpen, register, unregister, modalKey]);
 
-    // const [modalItems, setModalItems] = useState([]);
-    // const closeResourceModal = useCallback(() => {
-    //     unregister(modalKey);
-    //     setModalItems(null);
-    // }, [resourceModalOpen, unregister, modalKey, setModalItems]);
+    const [modalItems, setModalItems] = useState([]);
+    const closeResourceModal = useCallback(() => {
+        unregister(modalKey);
+        setModalItems(null);
+    }, [resourceModalOpen, unregister, modalKey, setModalItems]);
 
-    // const openModalInResource = useCallback(() => {
-    //     unregister(modalKey);
-    //     setModalItems(null);
-    //     setModalOpened(true);
-    // }, [modalOpened, unregister, modalKey, setModalOpened]);
+    const onChangeSelection = useCallback(
+        (newValue) => {
+            if (allowMultipleUploads) {
+                if (newValue !== null && !isArray(newValue)) {
+                    const { id = null } = newValue || {};
+                    if (id !== null) {
+                        const previous = (modalItems || []).find(
+                            ({ id: itemId = null } = {}) => id === itemId,
+                        );
+                        if (previous) {
+                            setModalItems(
+                                (modalItems || []).filter(
+                                    ({ id: itemId = null } = {}) => id !== itemId,
+                                ),
+                            );
+                        } else {
+                            setModalItems([...(modalItems || []), newValue]);
+                        }
+                    }
+                } else if (newValue !== null && isArray(newValue)) {
+                    setModalItems(newValue);
+                }
+            } else if (onChange !== null) {
+                // Single value onchange
+                const [finalValue = null] = isArray(newValue) ? newValue : [newValue];
+                onChange(finalValue);
+                unregister(modalKey);
+            }
+        },
+        [onChange, unregister, modalKey, allowMultipleUploads, modalItems, setModalItems],
+    );
 
-    // const onChangeSelection = useCallback(
-    //     (newValue) => {
-    //         if (allowMultipleUploads) {
-    //             if (newValue !== null && !isArray(newValue)) {
-    //                 const { id = null } = newValue || {};
-    //                 if (id !== null) {
-    //                     const previous = (modalItems || []).find(
-    //                         ({ id: itemId = null } = {}) => id === itemId,
-    //                     );
-    //                     if (previous) {
-    //                         setModalItems(
-    //                             (modalItems || []).filter(
-    //                                 ({ id: itemId = null } = {}) => id !== itemId,
-    //                             ),
-    //                         );
-    //                     } else {
-    //                         setModalItems([...(modalItems || []), newValue]);
-    //                     }
-    //                 }
-    //             } else if (newValue !== null && isArray(newValue)) {
-    //                 setModalItems(newValue);
-    //             }
-    //         } else if (onChange !== null) {
-    //             // Single value onchange
-    //             const [finalValue = null] = isArray(newValue) ? newValue : [newValue];
-    //             onChange(finalValue);
-    //             unregister(modalKey);
-    //         }
-    //     },
-    //     [onChange, unregister, modalKey, allowMultipleUploads, modalItems, setModalItems],
-    // );
-
-    // const onConfirmSelection = useCallback(() => {
-    //     if (onChange !== null) {
-    //         onChange(modalItems);
-    //         unregister(modalKey);
-    //     }
-    // }, [onChange, modalItems, unregister, modalKey, allowMultipleUploads]);
+    const onConfirmSelection = useCallback(() => {
+        if (onChange !== null) {
+            onChange(modalItems);
+            unregister(modalKey);
+        }
+    }, [onChange, modalItems, unregister, modalKey, allowMultipleUploads]);
 
     const containerRef = useRef(null);
-
-    // Keep this stable, uppy doesnt like
-    const [finalUppy, setFinalUppy] = useState(null);
-    useEffect(() => {
-        if (uppy !== null && finalUppy === null) {
-            setFinalUppy(uppy);
-        }
-    }, [uppy, finalUppy]);
 
     return (
         <div
@@ -362,7 +317,7 @@ const UploadField = ({
                             <Label>{addButtonLabel}</Label>
                         </Button>
                     </div>
-                    {/* {withFind ? (
+                    {withFind ? (
                         <div className="col-auto ps-0">
                             <Button
                                 type="button"
@@ -374,11 +329,11 @@ const UploadField = ({
                                 <Label>{findButtonLabel}</Label>
                             </Button>
                         </div>
-                    ) : null} */}
+                    ) : null}
                 </div>
             ) : null}
 
-            {!disabled && !hasMedia && !withButton && finalUppy !== null ? (
+            {/* {!showResourceModal && !disabled && !hasMedia && !withButton && finalUppy !== null ? (
                 <div className={styles.dashboard}>
                     <Dashboard
                         uppy={finalUppy}
@@ -394,9 +349,9 @@ const UploadField = ({
                         proudlyDisplayPoweredByUppy={false}
                     />
                 </div>
-            ) : null}
+            ) : null} */}
 
-            {!disabled && withButton && finalUppy !== null && modalOpened ? (
+            {/* {!showResourceModal && !disabled && withButton && finalUppy !== null && modalOpened ? (
                 <DashboardModal
                     uppy={finalUppy}
                     className={styles.dashboardModal}
@@ -411,9 +366,9 @@ const UploadField = ({
                     showAddFilesPanel
                     doneButtonHandler={closeModal}
                 />
-            ) : null}
+            ) : null} */}
 
-            {/* {showResourceModal ? (
+            {showResourceModal ? (
                 <ModalPicker
                     id={modalKey}
                     value={value}
@@ -423,18 +378,19 @@ const UploadField = ({
                     onChange={onChangeSelection}
                     onConfirm={onConfirmSelection}
                     onClose={closeResourceModal}
-                    buttons={[
-                        {
-                            id: 'upload',
-                            label: addButtonLabel,
-                            theme: 'primary',
-                            onClick: openModalInResource,
-                        },
-                    ]}
-                    buttonsClassName="ms-xl-auto"
+                    uppyConfig={uppyFinalProps}
+                    // buttons={[
+                    //     {
+                    //         id: 'upload',
+                    //         label: addButtonLabel,
+                    //         theme: 'primary',
+                    //         onClick: openModalInResource,
+                    //     },
+                    // ]}
+                    // buttonsClassName="ms-xl-auto"
                     multiple={allowMultipleUploads}
                 />
-            ) : null} */}
+            ) : null}
         </div>
     );
 };

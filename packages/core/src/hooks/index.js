@@ -4,7 +4,6 @@ export * from './useDates';
 export { default as useDocumentEvent } from './useDocumentEvent';
 export { default as useForm } from './useForm';
 export { default as useIsVisible } from './useIsVisible';
-export { default as useItemSelection } from './useItemSelection';
 export { default as useKeyboardKeys, KEYCODES } from './useKeyboardKeys';
 export { default as useLoadedFonts } from './useLoadedFonts';
 export { default as useMediaApi } from './useMediaApi';

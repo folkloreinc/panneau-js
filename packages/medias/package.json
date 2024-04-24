@@ -60,6 +60,7 @@
         "@panneau/element-pagination": "^3.0.177",
         "@panneau/element-table": "^3.0.177",
         "@panneau/filter-filters": "^3.0.177",
+        "@panneau/field-upload": "^3.0.176",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

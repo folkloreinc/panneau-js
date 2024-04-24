@@ -50,7 +50,9 @@ export const Selectable = () => (
         columns={['title', 'description']}
         sortable
         selectable
-        onSelectItem={() => {}}
+        onSelectionChange={() => {
+            console.log('hey');
+        }}
     />
 );
 

@@ -71,7 +71,7 @@ export const Items = () => (
 
 export const Multiple = () => (
     <UppyProvider>
-        <Container layout="table" picker multiple />
+        <Container layout="table" picker multipleSelection />
     </UppyProvider>
 );
 
@@ -85,7 +85,12 @@ export const Dark = () => (
 
 export const WithUploadMultiple = () => (
     <UppyProvider>
-        <Container layout="table" picker multiple uploadButton={{ id: 1, icon: 'circle' }} />
+        <Container
+            layout="table"
+            picker
+            multipleSelection
+            uploadButton={{ id: 1, icon: 'circle' }}
+        />
     </UppyProvider>
 );
 
@@ -94,7 +99,7 @@ export const WithUploadTypes = () => (
         <Container
             layout="table"
             picker
-            multiple
+            multipleSelection
             uploadButton={{ id: 1, icon: 'circle' }}
             types={['image', 'video']}
         />
@@ -119,7 +124,7 @@ export const WithValueMultiple = () => (
         <Container
             layout="table"
             picker
-            multiple
+            multipleSelection
             uploadButton={{ id: 1, icon: 'circle' }}
             types={['image', 'video', 'audio']}
             value={[Media2, Media3]}
@@ -137,7 +142,7 @@ export const Custom = () => (
             <Container
                 layout="table"
                 picker
-                multiple
+                multipleSelection
                 fields={fields}
                 columns={columns}
                 // filters={filters}

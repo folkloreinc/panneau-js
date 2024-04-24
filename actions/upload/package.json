@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/field-upload",
-    "version": "3.0.181",
-    "description": "An Upload field",
+    "name": "@panneau/action-upload",
+    "version": "3.0.178",
+    "description": "Upload action",
     "keywords": [
         "javascript"
     ],
@@ -22,14 +22,6 @@
         {
             "name": "Nicolas Roy-Bourdages",
             "email": "nrb@folklore.email"
-        },
-        {
-            "name": "Julien Carignan",
-            "email": "jc@folklore.email"
-        },
-        {
-            "name": "Théo Gjini",
-            "email": "tg@folklore.email"
         }
     ],
     "license": "ISC",
@@ -54,31 +46,15 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@fortawesome/fontawesome-svg-core": "^6.5.1",
-        "@fortawesome/free-solid-svg-icons": "^6.5.1",
-        "@fortawesome/react-fontawesome": "^0.2.0",
         "@panneau/core": "^3.0.176",
         "@panneau/element-button": "^3.0.177",
-        "@panneau/element-label": "^3.0.176",
-        "@panneau/element-media-card": "^3.0.177",
-        "@panneau/list-resource-items": "^3.0.178",
         "@panneau/themes": "^3.0.177",
-        "@panneau/uppy": "^3.0.176",
-        "@uppy/core": "^3.9.1",
-        "@uppy/dashboard": "^3.7.3",
-        "@uppy/drag-drop": "^3.0.3",
-        "@uppy/file-input": "^3.0.4",
-        "@uppy/progress-bar": "^3.0.4",
-        "@uppy/react": "^3.3.0",
-        "@uppy/status-bar": "^3.2.7",
-        "@uppy/utils": "^5.7.2",
         "classnames": "^2.5.1",
-        "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
     },
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "b63f38c5fca65e27f8e04eb158cda7bebd815df1"
+    "gitHead": "2309ef5bf62f83eeb176e2e2a8b52811d64faf00"
 }

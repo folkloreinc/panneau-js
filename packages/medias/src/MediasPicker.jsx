@@ -1,9 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useItemSelection } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 
 import MediasBrowser from './MediasBrowser';
@@ -13,39 +12,35 @@ const propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     items: PropTypes.arrayOf(PropTypes.shape({})),
     value: PropTypes.arrayOf(PropTypes.shape({})),
+    onSelectionChange: PropTypes.func,
+    multipleSelection: PropTypes.bool,
     types: PropTypes.arrayOf(PropTypes.string),
     onChange: PropTypes.func.isRequired,
-    onConfirm: PropTypes.func.isRequired,
     onClose: PropTypes.func,
-    multiple: PropTypes.bool,
     withoutButtons: PropTypes.bool,
-    tableProps: PropTypes.shape({
-        theme: PropTypes.string,
-    }),
     className: PropTypes.string,
 };
 
 const defaultProps = {
     items: null,
     value: null,
+    onSelectionChange: null,
+    multipleSelection: false,
     types: null,
     onClose: null,
-    multiple: false,
     withoutButtons: false,
-    tableProps: null,
     className: null,
 };
 
 function MediasPicker({
     items: initialItems,
     value: initialSelectedItems,
+    onSelectionChange: parentOnSelectionChange,
+    multipleSelection,
     types,
     onChange,
-    onConfirm,
     onClose,
-    multiple,
     withoutButtons,
-    tableProps,
     className,
     ...props
 }) {
@@ -62,51 +57,47 @@ function MediasPicker({
         [setItems],
     );
 
-    const {
-        onSelectItem,
-        onSelectPage,
-        onClearSelected,
-        pageSelected,
-        selectedCount,
-        selectedItems,
-    } = useItemSelection({
-        items: pageItems,
-        selectedItems: initialSelectedItems,
-        onSelectionChange: onChange,
-        multipleSelection: multiple,
-    });
+    const [selectedItems, setSelectedItems] = useState(initialSelectedItems || null);
+    const onSelectionChange = useCallback(
+        (newSelection) => {
+            setSelectedItems(newSelection);
+        },
+        [setSelectedItems],
+    );
+    // Sync from the top
+    useEffect(() => {
+        setSelectedItems(initialSelectedItems);
+    }, [initialSelectedItems, setSelectedItems]);
+    useEffect(() => {
+        if (parentOnSelectionChange !== null) {
+            parentOnSelectionChange(selectedItems);
+        }
+    }, [selectedItems, parentOnSelectionChange]);
 
     const onConfirmSelection = useCallback(() => {
-        if (onConfirm !== null) {
-            onConfirm(selectedItems);
+        if (onChange !== null) {
+            onChange(selectedItems);
         }
-    }, [selectedItems, onConfirm]);
+    }, [selectedItems, onChange]);
 
     return (
         <div className={className}>
             <MediasBrowser
-                tableProps={{
-                    selectable: true,
-                    multipleSelection: multiple,
-                    onSelectItem,
-                    onSelectPage,
-                    selectedItems,
-                    pageSelected,
-                    ...tableProps,
-                }}
-                // items={initialItems} // TODO: fix useItems if actually using this
+                items={initialItems} // TODO: fix useItems if actually using this
+                selectable
+                selectedItems={selectedItems}
+                onSelectionChange={onSelectionChange}
+                multipleSelection={multipleSelection}
                 onItemsChange={onItemsChange}
-                selectedCount={selectedCount}
-                onClearSelected={onClearSelected}
                 types={types}
-                extraItems={
-                    !multiple && initialSelectedItems !== null
-                        ? [initialSelectedItems]
-                        : initialSelectedItems
-                }
+                // extraItems={
+                //     !multiple && initialSelectedItems !== null
+                //         ? [initialSelectedItems]
+                //         : initialSelectedItems
+                // }
                 {...props}
             />
-            {multiple && !withoutButtons && currentMedia === null ? (
+            {!withoutButtons && currentMedia === null ? (
                 <div className="d-flex w-100 align-items-end justify-content-end mt-3">
                     <div className="btn-group">
                         {onClose !== null ? (

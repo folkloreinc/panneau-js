@@ -14,6 +14,7 @@ import Icon from '@panneau/element-icon';
 import MediaCard from '@panneau/element-media-card';
 import Pagination from '@panneau/element-pagination';
 import Table from '@panneau/element-table';
+import UploadField from '@panneau/field-upload';
 import Filters from '@panneau/filter-filters';
 
 import { useMediaDelete, useMediaTrash, useMedias } from './hooks';
@@ -28,7 +29,6 @@ const propTypes = {
     items: PanneauPropTypes.medias,
     extraItems: PanneauPropTypes.medias,
     types: PropTypes.arrayOf(PropTypes.string),
-    buttons: PanneauPropTypes.buttons,
     filters: PanneauPropTypes.filters,
     columns: PanneauPropTypes.tableColumns,
     query: PropTypes.shape({}),
@@ -37,15 +37,17 @@ const propTypes = {
     layout: PropTypes.string,
     layouts: PropTypes.arrayOf(PropTypes.shape({})),
     theme: PropTypes.string,
-    tableProps: PropTypes.bool,
     onItemsChange: PropTypes.func,
     onLayoutChange: PropTypes.func,
-    selectedCount: PropTypes.number,
-    onClearSelected: PropTypes.func,
+    selectable: PropTypes.bool,
+    selectedItems: PropTypes.arrayOf(PropTypes.shape({})),
+    onSelectionChange: PropTypes.func,
+    multipleSelection: PropTypes.bool,
+    uppyConfig: PropTypes.shape({}),
     withTrash: PropTypes.bool,
     withStickySelection: PropTypes.bool,
+    withoutUpload: PropTypes.bool,
     className: PropTypes.string,
-    buttonsClassName: PropTypes.string,
     formChildren: PropTypes.node,
 };
 
@@ -71,15 +73,17 @@ const defaultProps = {
         },
     ],
     theme: null,
-    tableProps: null,
     onItemsChange: null,
     onLayoutChange: null,
-    selectedCount: null,
-    onClearSelected: null,
+    selectable: null,
+    selectedItems: null,
+    onSelectionChange: null,
+    multipleSelection: false,
+    uppyConfig: null,
     withTrash: false,
     withStickySelection: false,
+    withoutUpload: false,
     className: null,
-    buttonsClassName: null,
     formChildren: null,
 };
 
@@ -88,7 +92,6 @@ function MediasBrowser({
     extraItems,
     types,
     baseUrl,
-    buttons,
     filters,
     columns,
     fields,
@@ -96,15 +99,17 @@ function MediasBrowser({
     layout: initialLayout,
     layouts,
     theme,
-    tableProps,
     onItemsChange,
     onLayoutChange,
-    selectedCount,
-    onClearSelected,
+    selectable,
+    selectedItems,
+    onSelectionChange,
+    multipleSelection,
+    uppyConfig,
     withTrash,
     withStickySelection,
+    withoutUpload,
     className,
-    buttonsClassName,
     formChildren,
 }) {
     const [baseItems] = useState(initialItems || null);
@@ -202,8 +207,10 @@ function MediasBrowser({
             onClickPage={onPageChange}
             theme={theme}
             loading={loading && pages !== null}
-            selectedCount={selectedCount}
-            onClearSelected={onClearSelected}
+            selectable={selectable}
+            selectedItems={selectedItems}
+            onSelectionChange={onSelectionChange}
+            multipleSelection={multipleSelection}
             withPreviousNext
             alwaysShowButtons
         />
@@ -284,7 +291,7 @@ function MediasBrowser({
         <div className={className}>
             {currentMedia !== null ? (
                 <>
-                    <div className="mt-2 mb-4">
+                    <div className="mt-2 mb-0">
                         <Button theme="primary" onClick={onCloseMedia} icon="arrow-left">
                             <FormattedMessage
                                 defaultMessage="Back to files"
@@ -305,25 +312,26 @@ function MediasBrowser({
                 </>
             ) : (
                 <>
-                    {filters !== null ? (
-                        <Filters
-                            value={query}
-                            clearValue={types !== null ? queryWithoutTypes : null}
-                            filters={finalFilters}
-                            onChange={onQueryChange}
-                            onReset={onQueryReset}
-                            theme={theme}
-                        >
-                            {buttons !== null ? (
-                                <Buttons items={buttons} className={buttonsClassName} />
-                            ) : null}
-                        </Filters>
-                    ) : null}
-                    {filters === null && buttons !== null ? (
-                        <div className="mt-2 mb-2">
-                            <Buttons items={buttons} className={buttonsClassName} />
-                        </div>
-                    ) : null}
+                    <div className={classNames(['d-flex', 'justify-content-between'])}>
+                        {filters !== null ? (
+                            <Filters
+                                value={query}
+                                clearValue={types !== null ? queryWithoutTypes : null}
+                                filters={finalFilters}
+                                onChange={onQueryChange}
+                                onReset={onQueryReset}
+                                theme={theme}
+                            />
+                        ) : null}
+                        {!withoutUpload ? (
+                            <UploadField
+                                className="ms-auto w-auto text-nowrap mt-2"
+                                withButton
+                                withoutMedia
+                                uppyConfig={uppyConfig}
+                            />
+                        ) : null}
+                    </div>
                     <div
                         className={classNames([
                             'd-flex',
@@ -338,7 +346,7 @@ function MediasBrowser({
                         {hasLayouts ? (
                             <Buttons
                                 size="sm"
-                                theme="primary"
+                                theme="secondary"
                                 outline
                                 items={(layouts || []).map((lay) => ({
                                     ...lay,
@@ -363,8 +371,10 @@ function MediasBrowser({
                                     onOpenMedia(it);
                                 },
                             }}
-                            onSelectItem={(it) => onOpenMedia(it)}
-                            {...tableProps}
+                            selectable={selectable}
+                            selectedItems={selectedItems}
+                            onSelectionChange={onSelectionChange}
+                            multipleSelection={multipleSelection}
                             items={finalItems || []}
                             loading={loading}
                         />
@@ -376,8 +386,10 @@ function MediasBrowser({
                             displayPlaceholder={
                                 <span className="text-secondary text-opacity-75">—</span>
                             }
-                            onSelectItem={(it) => onOpenMedia(it)}
-                            {...tableProps}
+                            selectable={selectable}
+                            selectedItems={selectedItems}
+                            onSelectionChange={onSelectionChange}
+                            multipleSelection={multipleSelection}
                             items={finalItems}
                             loading={loading}
                             actionsProps={{

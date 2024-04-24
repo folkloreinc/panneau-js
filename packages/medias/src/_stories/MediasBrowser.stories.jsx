@@ -3,6 +3,7 @@ import React from 'react';
 
 import withApi from '../../../../.storybook/decorators/withApiProvider';
 import withIntl from '../../../../.storybook/decorators/withIntlProvider';
+import withUppy from '../../../../.storybook/decorators/withUppy';
 import ActionsProvider from '../../../actions';
 import { useApi } from '../../../data/src/contexts/ApiContext';
 import DisplaysProvider from '../../../displays';
@@ -17,7 +18,7 @@ import MediasBrowser from '../MediasBrowserContainer';
 export default {
     title: 'Medias/MediasBrowser',
     component: MediasBrowser,
-    decorators: [withApi, withIntl],
+    decorators: [withApi, withIntl, withUppy],
     parameters: {
         intl: true,
     },
@@ -81,33 +82,17 @@ export const Theme = () => (
     </UppyProvider>
 );
 
-export const WithButtons = () => (
+export const WithTrash = () => (
     <UppyProvider>
-        <Container
-            buttons={[{ id: 'upload', label: 'Upload', theme: 'primary' }]}
-            buttonsClassName="ms-auto"
-        />
+        <Container withTrash />
     </UppyProvider>
 );
 
-export const WithButtonsAndTrash = () => (
+export const WithoutUpload = () => (
     <UppyProvider>
-        <Container
-            withTrash
-            buttons={[{ id: 'upload', label: 'Upload', theme: 'primary' }]}
-            buttonsClassName="ms-auto"
-        />
+        <Container withoutUpload />
     </UppyProvider>
 );
-
-// export const WithUploadButton = () => (
-//     <UppyProvider>
-//         <Container
-//
-//             uploadButton={[{ id: 'upload', label: 'Custom', theme: 'danger' }]}
-//         />
-//     </UppyProvider>
-// );
 
 const fields = [];
 const columns = [];
@@ -120,7 +105,7 @@ export const Custom = () => (
             layout="table"
             theme="dark"
             picker
-            multiple
+            multipleSelection
             fields={fields}
             columns={columns}
             filters={filters}

@@ -335,10 +335,6 @@
     "defaultMessage": "Search",
     "description": "Filter label"
   },
-  "YTF0i6": {
-    "defaultMessage": "select all",
-    "description": "Button label"
-  },
   "ZBNqY2": {
     "defaultMessage": "Forgot your password?",
     "description": "Link label"
@@ -458,6 +454,10 @@
   "rSt+KL": {
     "defaultMessage": "No",
     "description": "Boolean value"
+  },
+  "rklw2v": {
+    "defaultMessage": "Add a file",
+    "description": "Button label"
   },
   "rmJBin": {
     "defaultMessage": "Dimensions",

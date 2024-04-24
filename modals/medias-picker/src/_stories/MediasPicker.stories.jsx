@@ -58,6 +58,8 @@ export const Normal = () => <Container />;
 
 export const Multiple = () => <Container multiple />;
 
+export const MultipleCustom = () => <Container multiple />;
+
 export const MultipleWithResource = () => (
     <PanneauProvider definition={panneauDefinition}>
         <Container multiple resource="medias" />

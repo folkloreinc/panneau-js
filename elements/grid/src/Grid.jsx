@@ -1,7 +1,10 @@
 /* eslint-disable jsx-a11y/control-has-associated-label, react/jsx-props-no-spreading, react/jsx-indent */
 import classNames from 'classnames';
+import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
+
+import { selectItem } from '@panneau/core/utils';
 
 import styles from './styles.module.scss';
 
@@ -17,9 +20,9 @@ const propTypes = {
     size: PropTypes.string,
     gap: PropTypes.string,
     selectable: PropTypes.bool,
-    multipleSelection: PropTypes.bool,
-    onSelectItem: PropTypes.func,
     selectedItems: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
+    multipleSelection: PropTypes.bool,
+    onSelectionChange: PropTypes.func,
     className: PropTypes.string,
 };
 
@@ -30,9 +33,9 @@ const defaultProps = {
     size: null,
     gap: null,
     selectable: false,
-    multipleSelection: false,
-    onSelectItem: null,
     selectedItems: null,
+    multipleSelection: false,
+    onSelectionChange: null,
     className: null,
 };
 
@@ -43,11 +46,27 @@ const Grid = ({
     size,
     gap,
     selectable,
-    onSelectItem,
     selectedItems,
+    onSelectionChange,
+    multipleSelection,
     className,
 }) => {
     const Component = component || null;
+
+    const onSelectItem = useCallback(
+        (newItem = null) => {
+            selectItem(newItem, selectedItems, onSelectionChange, multipleSelection);
+        },
+        [items, selectedItems, onSelectionChange, multipleSelection],
+    );
+
+    // const onSelectPage = useCallback(
+    //     (pageSelected = false) => {
+    //         selectPage(pageSelected, items, selectedItems, onSelectionChange);
+    //     },
+    //     [items, selectedItems, onSelectionChange],
+    // );
+
     return (
         <div
             className={classNames([
@@ -63,11 +82,18 @@ const Grid = ({
                 {Component !== null
                     ? (items || []).map((item, idx) => {
                           const { id: itemId = null } = item || {};
-                          const selected = selectable
-                              ? ((selectedItems || []).find(
-                                    ({ id = null } = {}) => id === itemId,
-                                ) || null) !== null
-                              : false;
+                          let selected = false;
+                          if (multipleSelection) {
+                              selected = selectable
+                                  ? ((selectedItems || []).find(
+                                        ({ id = null } = {}) => id === itemId,
+                                    ) || null) !== null
+                                  : false;
+                          } else if (!isArray(selectedItems)) {
+                              const { id: selectedId } = selectedItems || {};
+                              selected = selectedId === itemId;
+                          }
+
                           return (
                               <Component
                                   key={`item-${itemId}-${idx + 1}`}
@@ -75,9 +101,9 @@ const Grid = ({
                                   selectable={selectable}
                                   selected={selectable && selected}
                                   {...componentProps}
-                                  {...(selectable && onSelectItem !== null
+                                  {...(selectable && onSelectionChange !== null
                                       ? {
-                                            onClick: onSelectItem,
+                                            onClick: () => onSelectItem(item),
                                             selected,
                                         }
                                       : null)}

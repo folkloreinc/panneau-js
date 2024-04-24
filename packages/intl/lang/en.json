@@ -251,9 +251,6 @@
     "XrzzDc": {
         "defaultMessage": "Search"
     },
-    "YTF0i6": {
-        "defaultMessage": "select all"
-    },
     "ZBNqY2": {
         "defaultMessage": "Forgot your password?"
     },
@@ -343,6 +340,9 @@
     },
     "rSt+KL": {
         "defaultMessage": "No"
+    },
+    "rklw2v": {
+        "defaultMessage": "Add a file"
     },
     "rmJBin": {
         "defaultMessage": "Dimensions"

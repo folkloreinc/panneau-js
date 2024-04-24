@@ -5,12 +5,12 @@ import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
-import { getComponentFromName } from '@panneau/core/utils';
+import { checkClickable, getComponentFromName, selectItem, selectPage } from '@panneau/core/utils';
 import Loading from '@panneau/element-loading';
 
 import SortLink from './SortLink';
@@ -34,11 +34,9 @@ const propTypes = {
     withFadedId: PropTypes.bool,
     displayPlaceholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     selectable: PropTypes.bool,
-    multipleSelection: PropTypes.bool,
-    onSelectItem: PropTypes.func,
-    onSelectPage: PropTypes.func,
     selectedItems: PropTypes.oneOf([PanneauPropTypes.items, PanneauPropTypes.item]),
-    pageSelected: PropTypes.bool,
+    onSelectionChange: PropTypes.func,
+    multipleSelection: PropTypes.bool,
     withCustomActionsColumn: PropTypes.bool,
     withoutLoading: PropTypes.bool,
     actionsComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
@@ -62,11 +60,9 @@ const defaultProps = {
     withFadedId: true,
     displayPlaceholder: null,
     selectable: false,
-    multipleSelection: false,
-    onSelectItem: null,
-    onSelectPage: null,
     selectedItems: null,
-    pageSelected: false,
+    onSelectionChange: null,
+    multipleSelection: false,
     withCustomActionsColumn: false,
     withoutLoading: false,
     actionsComponent: null,
@@ -90,11 +86,9 @@ function Table({
     withFadedId,
     displayPlaceholder,
     selectable,
-    multipleSelection,
-    onSelectItem,
-    onSelectPage,
     selectedItems,
-    pageSelected,
+    onSelectionChange,
+    multipleSelection,
     withCustomActionsColumn,
     withoutLoading,
     actionsComponent,
@@ -114,6 +108,42 @@ function Table({
         selectedItems !== null && isArray(selectedItems)
             ? selectedItems.filter((it) => it !== null)
             : partialSelectedItems;
+
+    const onSelectItem = useCallback(
+        (newItem = null) => {
+            selectItem(newItem, selectedItems, onSelectionChange, multipleSelection);
+        },
+        [items, selectedItems, onSelectionChange, multipleSelection],
+    );
+
+    const onSelectPage = useCallback(
+        (pageSelected = false) => {
+            selectPage(pageSelected, items, selectedItems, onSelectionChange);
+        },
+        [items, selectedItems, onSelectionChange],
+    );
+
+    const pageSelected = useMemo(() => {
+        if (
+            items === null ||
+            items.length === 0 ||
+            selectedItems === null ||
+            selectedItems.length === 0 ||
+            !multipleSelection
+        ) {
+            return false;
+        }
+        const ids = (items || []).map(({ id = null } = {}) => id).filter((id) => id !== null) || [];
+        if (ids === null || ids.length === 0) {
+            return false;
+        }
+        const currentPageItems =
+            (selectedItems || []).filter((it) => {
+                const { id = null } = it || {};
+                return (ids || []).indexOf(id) !== -1;
+            }) || [];
+        return currentPageItems.length > 0 && currentPageItems.length === (items || []).length;
+    }, [selectedItems, items]);
 
     return (
         <div>
@@ -205,17 +235,19 @@ function Table({
                                   ) || null) !== null
                                 : false;
 
+                            // TODO: fix this
                             const selectRow = (e) => {
-                                if (typeof e.target !== 'undefined') {
-                                    if (
-                                        e.target.tagName.toLowerCase() !== 'button' &&
-                                        e.target.tagName.toLowerCase() !== 'a' &&
-                                        e.target.tagName.toLowerCase() !== 'i'
-                                    ) {
-                                        if (onSelectItem !== null) {
-                                            onSelectItem(it, rowIdx);
-                                        }
-                                    }
+                                // if (onSelectItem !== null && checkClickable(e.target)) {
+                                //     onSelectItem(it);
+                                // }
+                                if (
+                                    onSelectItem !== null &&
+                                    e.target.tagName.toLowerCase() !== 'button' &&
+                                    e.target.tagName.toLowerCase() !== 'a' &&
+                                    e.target.tagName.toLowerCase() !== 'i'
+                                ) {
+                                    console.log('yo', it);
+                                    onSelectItem(it);
                                 }
                             };
 
@@ -229,7 +261,7 @@ function Table({
                                             [rowClassName]: rowClassName !== null,
                                         },
                                     ])}
-                                    {...(onSelectItem !== null
+                                    {...(onSelectionChange !== null
                                         ? { onClick: selectRow, role: 'button' }
                                         : null)}
                                 >

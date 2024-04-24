@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Icon from '@panneau/element-icon';
@@ -24,9 +24,10 @@ const propTypes = {
     nextLabel: PropTypes.node,
     countLabel: PropTypes.node,
     alwaysShowButtons: PropTypes.bool,
-    onSelectPage: PropTypes.func,
-    selectedCount: PropTypes.number,
-    onClearSelected: PropTypes.func,
+    selectable: PropTypes.bool,
+    selectedItems: PropTypes.arrayOf(PropTypes.shape({})),
+    onSelectionChange: PropTypes.func,
+    multipleSelection: PropTypes.bool,
     className: PropTypes.string,
     paginationClassName: PropTypes.string,
     itemClassName: PropTypes.string,
@@ -55,9 +56,10 @@ const defaultProps = {
         />
     ),
     alwaysShowButtons: false,
-    selectedCount: null,
-    onSelectPage: null,
-    onClearSelected: null,
+    selectable: false,
+    selectedItems: null,
+    onSelectionChange: null,
+    multipleSelection: false,
     className: null,
     paginationClassName: null,
     itemClassName: null,
@@ -81,9 +83,10 @@ const Pagination = ({
     nextLabel,
     countLabel,
     alwaysShowButtons,
-    selectedCount,
-    onSelectPage,
-    onClearSelected,
+    selectable,
+    selectedItems,
+    onSelectionChange,
+    multipleSelection,
     className,
     paginationClassName,
     itemClassName,
@@ -134,13 +137,18 @@ const Pagination = ({
         values: { count: total },
     });
 
+    const selectedCount = useMemo(
+        () => (selectedItems !== null && selectedItems.length > 0 ? selectedItems.length : null),
+        [selectedItems],
+    );
+
     if (autohide && lastPage < 2) {
         return null;
     }
 
     const count = (
         <div className="d-flex align-items-center justify-content-center">
-            {selectedCount > 0 ? (
+            {selectable && selectedCount > 0 ? (
                 <small className="text-small text-nowrap text-muted fw-normal">
                     <span className="d-inline-block">
                         <FormattedMessage
@@ -151,21 +159,13 @@ const Pagination = ({
                     </span>
                 </small>
             ) : null}
-            {onSelectPage !== null ? (
+            {selectable && onSelectionChange !== null && selectedCount > 0 ? (
                 <button
                     type="button"
-                    className="btn badge rounded-pill text-bg-primary mx-2"
-                    onClick={onSelectPage}
-                >
-                    <FormattedMessage defaultMessage="select all" description="Button label" />
-                    <Icon className="ps-1" name="x" bold />
-                </button>
-            ) : null}
-            {onClearSelected !== null && selectedCount > 0 ? (
-                <button
-                    type="button"
-                    className="btn badge rounded-pill text-bg-primary mx-2"
-                    onClick={onClearSelected}
+                    className="btn badge rounded-pill text-bg-secondary mx-2"
+                    onClick={
+                        multipleSelection ? () => onSelectionChange([]) : onSelectionChange(null)
+                    }
                 >
                     <FormattedMessage defaultMessage="clear" description="Button label" />
                     <Icon className="ps-1" name="x" bold />

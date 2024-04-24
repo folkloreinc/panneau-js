@@ -132,8 +132,11 @@ function MediaForm({
     return (
         <div className={classNames(['text-body', { [className]: className !== null }])}>
             <nav className="navbar d-flex w-100 align-items-end justify-content-between border-bottom mb-3">
-                <div className="d-flex align-items-end justify-content-end mb-1">
-                    <h4 className="d-inline text-break mb-0">{name}</h4>
+                <div
+                    className="d-flex align-items-end justify-content-start mb-1"
+                    style={{ maxWidth: '66%' }}
+                >
+                    <h4 className="d-inline text-truncate mb-0">{name}</h4>
                     <span className="mx-2">{type}</span>
                 </div>
                 <div>
@@ -155,7 +158,7 @@ function MediaForm({
                         <Button
                             className="mb-1 mt-1"
                             theme="primary"
-                            icon={changed ? 'check-all' : 'check'}
+                            icon={changed ? 'check' : 'check'}
                             iconPosition="right"
                             onClick={onSubmit}
                             disabled={!changed || updating || deleting}

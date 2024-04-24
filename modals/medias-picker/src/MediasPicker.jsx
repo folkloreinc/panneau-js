@@ -11,22 +11,18 @@ const propTypes = {
     resource: PropTypes.string,
     title: PropTypes.string,
     multiple: PropTypes.bool,
-    onConfirm: PropTypes.func,
-    onClose: PropTypes.func,
     onChange: PropTypes.func,
-    // eslint-disable-next-line react/forbid-prop-types
-    confirmButton: PropTypes.any,
-    // eslint-disable-next-line react/forbid-prop-types
-    cancelButton: PropTypes.any,
+    onClose: PropTypes.func,
+    confirmButton: PropTypes.shape({}),
+    cancelButton: PropTypes.shape({}),
 };
 
 const defaultProps = {
     resource: null,
     title: null,
     multiple: false,
-    onConfirm: null,
-    onClose: null,
     onChange: null,
+    onClose: null,
     confirmButton: null,
     cancelButton: null,
 };
@@ -35,33 +31,34 @@ function MediasPickerModal({
     id,
     resource,
     title,
-    onClose,
     onChange,
-    onConfirm,
+    onClose,
     confirmButton,
     cancelButton,
     multiple,
     ...props
 }) {
-    const [count, setCount] = useState(null);
-    const onSelectionConfirm = useCallback(() => {
-        if (onConfirm !== null) {
-            onConfirm();
-        }
-        if (onClose !== null) {
-            onClose();
-        }
-    }, [onConfirm, onClose]);
+    const [selectedItems, setSelectedItems] = useState(null);
 
-    const onSelectionChange = useCallback(
+    const onConfirm = useCallback(
         (items) => {
             if (onChange !== null) {
                 onChange(items);
             }
-            setCount(items !== null ? items.length : 0);
+            if (onClose !== null) {
+                onClose();
+            }
         },
-        [onChange, setCount],
+        [onChange, onClose],
     );
+
+    const onSelectionChange = useCallback(
+        (items) => {
+            setSelectedItems(items);
+        },
+        [setSelectedItems],
+    );
+
     return (
         <Dialog
             id={id || 'picker'}
@@ -88,7 +85,7 @@ function MediasPickerModal({
                     ),
                     theme: 'primary',
                     onClick: onConfirm,
-                    disabled: count === null || count < 1,
+                    disabled: selectedItems === null || (multiple && selectedItems.length === 0),
                     ...confirmButton,
                 },
             ]}
@@ -97,20 +94,20 @@ function MediasPickerModal({
                 <MediasResourcePicker
                     {...props}
                     resource={resource}
-                    onChange={onSelectionChange}
-                    onConfirm={onSelectionConfirm}
+                    onSelectionChange={onSelectionChange}
+                    onChange={onChange}
                     onClose={onClose}
-                    multiple={multiple}
+                    multipleSelection={multiple}
                     withoutButtons
                 />
             ) : (
                 <MediasPickerContainer
                     {...props}
                     resource={resource}
-                    onChange={onSelectionChange}
-                    onConfirm={onSelectionConfirm}
+                    onSelectionChange={onSelectionChange}
+                    onChange={onChange}
                     onClose={onClose}
-                    multiple={multiple}
+                    multipleSelection={multiple}
                     withoutButtons
                 />
             )}

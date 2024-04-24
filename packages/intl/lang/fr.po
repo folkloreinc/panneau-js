@@ -521,12 +521,6 @@ msgctxt "XrzzDc"
 msgid "Search"
 msgstr "Chercher"
 
-# Button label
-#: YTF0i6
-msgctxt "YTF0i6"
-msgid "select all"
-msgstr "tout sélectionner"
-
 # Link label
 #: ZBNqY2
 msgctxt "ZBNqY2"
@@ -708,6 +702,12 @@ msgstr "Aucun résultat"
 msgctxt "rSt+KL"
 msgid "No"
 msgstr "Non"
+
+# Button label
+#: rklw2v
+msgctxt "rklw2v"
+msgid "Add a file"
+msgstr ""
 
 # Field label
 #: rmJBin
