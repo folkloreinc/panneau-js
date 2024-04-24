@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-button",
-    "version": "3.0.182",
+    "version": "3.0.187",
     "description": "Button element",
     "keywords": [
         "javascript"
@@ -54,9 +54,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.182",
-        "@panneau/element-icon": "^3.0.182",
-        "@panneau/themes": "^3.0.182",
+        "@panneau/core": "^3.0.187",
+        "@panneau/element-icon": "^3.0.187",
+        "@panneau/themes": "^3.0.187",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

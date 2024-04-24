@@ -1,6 +1,6 @@
 {
     "name": "@panneau/action-duplicate",
-    "version": "3.0.184",
+    "version": "3.0.187",
     "description": "Duplicate action",
     "keywords": [
         "javascript"
@@ -47,10 +47,10 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.17",
-        "@panneau/core": "^3.0.182",
-        "@panneau/element-button": "^3.0.182",
-        "@panneau/modal-confirm": "^3.0.184",
-        "@panneau/themes": "^3.0.182",
+        "@panneau/core": "^3.0.187",
+        "@panneau/element-button": "^3.0.187",
+        "@panneau/modal-confirm": "^3.0.187",
+        "@panneau/themes": "^3.0.187",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
