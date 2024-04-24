@@ -246,7 +246,6 @@ function Table({
                                     e.target.tagName.toLowerCase() !== 'a' &&
                                     e.target.tagName.toLowerCase() !== 'i'
                                 ) {
-                                    console.log('yo', it);
                                     onSelectItem(it);
                                 }
                             };

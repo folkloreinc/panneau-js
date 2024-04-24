@@ -8,6 +8,7 @@ import Dialog from '@panneau/modal-dialog';
 
 const propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    value: PropTypes.shape({}),
     resource: PropTypes.string,
     title: PropTypes.string,
     multiple: PropTypes.bool,
@@ -19,6 +20,7 @@ const propTypes = {
 
 const defaultProps = {
     resource: null,
+    value: null,
     title: null,
     multiple: false,
     onChange: null,
@@ -29,6 +31,7 @@ const defaultProps = {
 
 function MediasPickerModal({
     id,
+    value,
     resource,
     title,
     onChange,
@@ -38,19 +41,15 @@ function MediasPickerModal({
     multiple,
     ...props
 }) {
-    const [selectedItems, setSelectedItems] = useState(null);
-
-    const onConfirm = useCallback(
-        (items) => {
-            if (onChange !== null) {
-                onChange(items);
-            }
-            if (onClose !== null) {
-                onClose();
-            }
-        },
-        [onChange, onClose],
-    );
+    const [selectedItems, setSelectedItems] = useState(value);
+    const onConfirm = useCallback(() => {
+        if (onChange !== null) {
+            onChange(selectedItems);
+        }
+        if (onClose !== null) {
+            onClose();
+        }
+    }, [onChange, onClose]);
 
     const onSelectionChange = useCallback(
         (items) => {
@@ -59,54 +58,72 @@ function MediasPickerModal({
         [setSelectedItems],
     );
 
+    const [mediaFormOpen, setMediaFormOpen] = useState(false);
+    const onMediaFormOpen = useCallback(() => {
+        setMediaFormOpen(true);
+    }, [setMediaFormOpen]);
+    const onMediaFormClose = useCallback(() => {
+        setMediaFormOpen(false);
+    }, [setMediaFormOpen]);
+
     return (
         <Dialog
             id={id || 'picker'}
             size="xl"
             onClose={onClose}
             title={title}
-            buttons={[
-                {
-                    id: 'cancel',
-                    name: 'cancel',
-                    label: <FormattedMessage defaultMessage="Cancel" description="Button label" />,
-                    theme: 'secondary',
-                    onClick: onClose,
-                    ...cancelButton,
-                },
-                {
-                    id: 'confirm',
-                    name: 'confirm',
-                    label: (
-                        <FormattedMessage
-                            defaultMessage="Confirm selection"
-                            description="Button label"
-                        />
-                    ),
-                    theme: 'primary',
-                    onClick: onConfirm,
-                    disabled: selectedItems === null || (multiple && selectedItems.length === 0),
-                    ...confirmButton,
-                },
-            ]}
+            buttons={
+                !mediaFormOpen
+                    ? [
+                          {
+                              id: 'cancel',
+                              name: 'cancel',
+                              label: (
+                                  <FormattedMessage
+                                      defaultMessage="Cancel"
+                                      description="Button label"
+                                  />
+                              ),
+                              theme: 'secondary',
+                              onClick: onClose,
+                              ...cancelButton,
+                          },
+                          {
+                              id: 'confirm',
+                              name: 'confirm',
+                              label: (
+                                  <FormattedMessage
+                                      defaultMessage="Confirm selection"
+                                      description="Button label"
+                                  />
+                              ),
+                              theme: 'primary',
+                              onClick: onConfirm,
+                              ...confirmButton,
+                          },
+                      ]
+                    : null
+            }
         >
             {resource !== null ? (
                 <MediasResourcePicker
                     {...props}
                     resource={resource}
-                    onSelectionChange={onSelectionChange}
-                    onChange={onChange}
+                    onChange={onSelectionChange}
                     onClose={onClose}
-                    multipleSelection={multiple}
+                    multiple={multiple}
+                    onMediaFormOpen={onMediaFormOpen}
+                    onMediaFormClose={onMediaFormClose}
                 />
             ) : (
                 <MediasPickerContainer
                     {...props}
                     resource={resource}
-                    onSelectionChange={onSelectionChange}
-                    onChange={onChange}
+                    onChange={onSelectionChange}
                     onClose={onClose}
-                    multipleSelection={multiple}
+                    multiple={multiple}
+                    onMediaFormOpen={onMediaFormOpen}
+                    onMediaFormClose={onMediaFormClose}
                 />
             )}
         </Dialog>

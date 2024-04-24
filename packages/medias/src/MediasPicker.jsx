@@ -1,76 +1,49 @@
 /* eslint-disable react/jsx-props-no-spreading */
-// import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 
-// import { FormattedMessage } from 'react-intl';
-// import Button from '@panneau/element-button';
 import MediasBrowser from './MediasBrowser';
 
-// import { useMediasForm } from './MediasFormContext';
-
 const propTypes = {
-    // eslint-disable-next-line react/forbid-prop-types
     items: PropTypes.arrayOf(PropTypes.shape({})),
     value: PropTypes.arrayOf(PropTypes.shape({})),
-    onSelectionChange: PropTypes.func,
-    multipleSelection: PropTypes.bool,
-    types: PropTypes.arrayOf(PropTypes.string),
+    multiple: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
-    onClose: PropTypes.func,
-    withoutButtons: PropTypes.bool,
     className: PropTypes.string,
 };
 
 const defaultProps = {
     items: null,
     value: null,
-    onSelectionChange: null,
-    multipleSelection: false,
-    types: null,
-    onClose: null,
-    withoutButtons: false,
+    multiple: false,
     className: null,
 };
 
 function MediasPicker({
     items: initialItems,
     value: initialSelectedItems,
-    onSelectionChange: parentOnSelectionChange,
-    multipleSelection,
-    types,
     onChange,
-    onClose,
-    withoutButtons,
+    multiple,
     className,
     ...props
 }) {
-    // const { media: currentMedia } = useMediasForm();
-
     const [selectedItems, setSelectedItems] = useState(initialSelectedItems || null);
     const onSelectionChange = useCallback(
         (newSelection) => {
             setSelectedItems(newSelection);
+            if (onChange !== null) {
+                onChange(selectedItems);
+            }
         },
         [setSelectedItems],
     );
+
     // Sync from the top
     useEffect(() => {
         setSelectedItems(initialSelectedItems);
     }, [initialSelectedItems, setSelectedItems]);
-    useEffect(() => {
-        if (parentOnSelectionChange !== null) {
-            parentOnSelectionChange(selectedItems);
-        }
-    }, [selectedItems, parentOnSelectionChange]);
 
-    // const onConfirmSelection = useCallback(() => {
-    //     if (onChange !== null) {
-    //         onChange(selectedItems || null);
-    //     }
-    // }, [selectedItems, onChange]);
-
-    // const empty = selectedItems === null || (isArray(selectedItems) && selectedItems.length === 0);
+    console.log('selectedItems', selectedItems);
 
     return (
         <div className={className}>
@@ -79,52 +52,9 @@ function MediasPicker({
                 selectable
                 selectedItems={selectedItems}
                 onSelectionChange={onSelectionChange}
-                multipleSelection={multipleSelection}
-                types={types}
-                // extraItems={
-                //     !multiple && initialSelectedItems !== null
-                //         ? [initialSelectedItems]
-                //         : initialSelectedItems
-                // }
+                multipleSelection={multiple}
                 {...props}
             />
-            {/* {!withoutButtons && currentMedia === null ? (
-                <div className="d-flex w-100 align-items-end justify-content-end mt-3">
-                    <div className="btn-group">
-                        {onClose !== null ? (
-                            <Button
-                                type="button"
-                                theme="secondary"
-                                onClick={onClose}
-                                className="d-block me-2"
-                            >
-                                <FormattedMessage
-                                    defaultMessage="Cancel"
-                                    description="Button label"
-                                />
-                            </Button>
-                        ) : null}
-                        <Button
-                            type="button"
-                            theme="primary"
-                            onClick={onConfirmSelection}
-                            className="d-block"
-                        >
-                            {empty ? (
-                                <FormattedMessage
-                                    defaultMessage="Clear selection"
-                                    description="Button label"
-                                />
-                            ) : (
-                                <FormattedMessage
-                                    defaultMessage="Confirm selection"
-                                    description="Button label"
-                                />
-                            )}
-                        </Button>
-                    </div>
-                </div>
-            ) : null} */}
         </div>
     );
 }

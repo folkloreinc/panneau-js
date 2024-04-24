@@ -95,7 +95,7 @@ const SearchFilter = ({ name, value, onChange, placeholder, position, width, cla
                             right: position !== 'left' ? `40px` : 0,
                         }}
                     >
-                        <Icon name="x-circle" opaque />
+                        <Icon name="x-circle" />
                     </Button>
                 ) : null}
                 {position !== 'left' ? (

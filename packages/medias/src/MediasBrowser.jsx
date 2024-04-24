@@ -41,6 +41,8 @@ const propTypes = {
     onUpload: PropTypes.func,
     onItemsChange: PropTypes.func,
     onLayoutChange: PropTypes.func,
+    onMediaFormOpen: PropTypes.func,
+    onMediaFormClose: PropTypes.func,
     selectable: PropTypes.bool,
     selectedItems: PropTypes.arrayOf(PropTypes.shape({})),
     onSelectionChange: PropTypes.func,
@@ -77,6 +79,8 @@ const defaultProps = {
     onUpload: null,
     onItemsChange: null,
     onLayoutChange: null,
+    onMediaFormOpen: null,
+    onMediaFormClose: null,
     selectable: null,
     selectedItems: null,
     onSelectionChange: null,
@@ -104,6 +108,8 @@ function MediasBrowser({
     onUpload,
     onItemsChange,
     onLayoutChange,
+    onMediaFormOpen,
+    onMediaFormClose,
     selectable,
     selectedItems,
     onSelectionChange,
@@ -178,6 +184,15 @@ function MediasBrowser({
 
     const { media: currentMedia, setMedia: setCurrentMedia } = useMedia();
 
+    useEffect(() => {
+        if (currentMedia !== null && onMediaFormOpen !== null) {
+            onMediaFormOpen();
+        }
+        if (currentMedia === null && onMediaFormClose !== null) {
+            onMediaFormClose();
+        }
+    }, [currentMedia]);
+
     const onOpenMedia = useCallback(
         (media) => {
             setCurrentMedia(media);
@@ -198,18 +213,21 @@ function MediasBrowser({
     );
 
     const onMediaUploaded = useCallback(
-        (medias) => {
+        (medias = null) => {
+            if (medias === null) return;
             const rawMedias = isArray(medias) ? medias : [medias];
             if (onUpload !== null) {
                 onUpload(rawMedias).then((newMedias) => {
                     if (onSelectionChange !== null) {
                         onSelectionChange(newMedias);
+                        onQueryReset();
                         reload();
                     }
                 });
             }
             if (onSelectionChange !== null) {
                 onSelectionChange(rawMedias);
+                onQueryReset();
                 reload();
             }
         },
@@ -319,7 +337,7 @@ function MediasBrowser({
                     </div>
                     <MediaForm
                         value={currentMedia}
-                        fields={mediaFormFields || fields}
+                        fields={fields}
                         onChange={setCurrentMedia}
                         onSave={onSaveMedia}
                         onClose={onCloseMedia}
