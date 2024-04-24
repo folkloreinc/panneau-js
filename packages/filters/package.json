@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filters",
-    "version": "3.0.180",
+    "version": "3.0.182",
     "description": "",
     "keywords": [
         "javascript"
@@ -66,15 +66,15 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.176",
-        "@panneau/filter-button": "^3.0.177",
-        "@panneau/filter-date": "^3.0.177",
-        "@panneau/filter-filters": "^3.0.177",
-        "@panneau/filter-label": "^3.0.177",
-        "@panneau/filter-radios": "^3.0.177",
-        "@panneau/filter-search": "^3.0.177",
-        "@panneau/filter-select": "^3.0.180",
-        "@panneau/filter-toggle": "^3.0.177",
+        "@panneau/core": "^3.0.182",
+        "@panneau/filter-button": "^3.0.182",
+        "@panneau/filter-date": "^3.0.182",
+        "@panneau/filter-filters": "^3.0.182",
+        "@panneau/filter-label": "^3.0.182",
+        "@panneau/filter-radios": "^3.0.182",
+        "@panneau/filter-search": "^3.0.182",
+        "@panneau/filter-select": "^3.0.182",
+        "@panneau/filter-toggle": "^3.0.182",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
