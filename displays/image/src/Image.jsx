@@ -13,7 +13,7 @@ const propTypes = {
     maxWidth: PropTypes.number,
     maxHeight: PropTypes.number,
     onClick: PropTypes.func,
-    withoutZoom: PropTypes.bool,
+    withZoom: PropTypes.bool,
     className: PropTypes.string,
 };
 
@@ -23,11 +23,11 @@ const defaultProps = {
     maxWidth: 40,
     maxHeight: 40,
     onClick: null,
-    withoutZoom: false,
+    withZoom: false,
     className: null,
 };
 
-const Image = ({ value, placeholder, maxWidth, maxHeight, onClick, withoutZoom, className }) => {
+const Image = ({ value, placeholder, maxWidth, maxHeight, onClick, withZoom, className }) => {
     const {
         url = null,
         thumbnailUrl = null,
@@ -76,7 +76,7 @@ const Image = ({ value, placeholder, maxWidth, maxHeight, onClick, withoutZoom, 
                     [className]: className !== null,
                 },
             ])}
-            {...(!withoutZoom && image !== null
+            {...(withZoom && image !== null
                 ? {
                       onMouseEnter: onHoverIn,
                       onMouseLeave: onHoverOut,

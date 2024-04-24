@@ -49,7 +49,6 @@ function MediaFrame({ value, className }) {
                     value={value}
                     maxWidth="100%"
                     maxHeight="100%"
-                    withoutZoom
                     onClick={type === 'video' || type === 'audio' ? onClick : null}
                 />
             )}
