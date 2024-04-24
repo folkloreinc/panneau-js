@@ -299,12 +299,6 @@ msgctxt "Ke35Pv"
 msgid "Edit"
 msgstr "Edit"
 
-# Button label
-#: Krgf6j
-msgctxt "Krgf6j"
-msgid "Clear selection"
-msgstr "Clear selection"
-
 # Field label
 #: LI0Gz4
 msgctxt "LI0Gz4"
