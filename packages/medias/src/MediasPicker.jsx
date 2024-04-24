@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -46,17 +47,6 @@ function MediasPicker({
 }) {
     const { media: currentMedia } = useMediasForm();
 
-    // For selection
-    const [pageItems, setItems] = useState(initialItems);
-    const disabled = pageItems === null || pageItems.length < 1;
-
-    const onItemsChange = useCallback(
-        (newPageItems) => {
-            setItems(newPageItems);
-        },
-        [setItems],
-    );
-
     const [selectedItems, setSelectedItems] = useState(initialSelectedItems || null);
     const onSelectionChange = useCallback(
         (newSelection) => {
@@ -76,9 +66,11 @@ function MediasPicker({
 
     const onConfirmSelection = useCallback(() => {
         if (onChange !== null) {
-            onChange(selectedItems);
+            onChange(selectedItems || null);
         }
     }, [selectedItems, onChange]);
+
+    const empty = selectedItems === null || (isArray(selectedItems) && selectedItems.length === 0);
 
     return (
         <div className={className}>
@@ -88,7 +80,6 @@ function MediasPicker({
                 selectedItems={selectedItems}
                 onSelectionChange={onSelectionChange}
                 multipleSelection={multipleSelection}
-                onItemsChange={onItemsChange}
                 types={types}
                 // extraItems={
                 //     !multiple && initialSelectedItems !== null
@@ -117,14 +108,19 @@ function MediasPicker({
                             type="button"
                             theme="primary"
                             onClick={onConfirmSelection}
-                            disabled={disabled}
-                            outline={disabled}
                             className="d-block"
                         >
-                            <FormattedMessage
-                                defaultMessage="Confirm selection"
-                                description="Button label"
-                            />
+                            {empty ? (
+                                <FormattedMessage
+                                    defaultMessage="Clear selection"
+                                    description="Button label"
+                                />
+                            ) : (
+                                <FormattedMessage
+                                    defaultMessage="Confirm selection"
+                                    description="Button label"
+                                />
+                            )}
                         </Button>
                     </div>
                 </div>

@@ -301,6 +301,12 @@ msgctxt "Ke35Pv"
 msgid "Edit"
 msgstr "Modifier"
 
+# Button label
+#: Krgf6j
+msgctxt "Krgf6j"
+msgid "Clear selection"
+msgstr "Effacer la sélection"
+
 # Field label
 #: LI0Gz4
 msgctxt "LI0Gz4"
@@ -707,7 +713,7 @@ msgstr "Non"
 #: rklw2v
 msgctxt "rklw2v"
 msgid "Add a file"
-msgstr ""
+msgstr "Ajouter un fichier"
 
 # Field label
 #: rmJBin
