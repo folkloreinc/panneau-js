@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-media",
-    "version": "3.0.187",
+    "version": "3.0.189",
     "description": "A media field with picker",
     "keywords": [
         "javascript"
@@ -53,7 +53,7 @@
         "@panneau/element-button": "^3.0.187",
         "@panneau/element-label": "^3.0.187",
         "@panneau/element-media-card": "^3.0.187",
-        "@panneau/list-resource-items": "^3.0.187",
+        "@panneau/list-resource-items": "^3.0.189",
         "@panneau/modal-dialog": "^3.0.187",
         "@panneau/themes": "^3.0.187",
         "classnames": "^2.5.1",
