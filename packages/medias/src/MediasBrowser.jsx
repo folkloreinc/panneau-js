@@ -215,31 +215,32 @@ function MediasBrowser({
     );
 
     const [uploadedMedias, setUploadedMedias] = useState(null);
+    const [uploadProcessing, setUploadProcessing] = useState(false);
 
     const onUploadComplete = useCallback(
         (medias = null) => {
             if (medias === null) return;
             const rawMedias = (isArray(medias) ? medias : [medias]).filter((it) => it !== null);
-
             if (onMediaUploaded !== null) {
-                console.log('rawMedias', rawMedias);
-
-                onMediaUploaded(rawMedias).then((newMedias) => {
-                    const uploadedNewMedias = (
-                        isArray(newMedias)
-                            ? [...(uploadedMedias || []), ...newMedias]
-                            : [...(uploadedMedias || []), newMedias]
-                    ).filter((it) => it !== null);
-                    setUploadedMedias(uploadedNewMedias);
-
-                    console.log('uploaded', uploadedNewMedias, onSelectionChange);
-
-                    if (onSelectionChange !== null) {
-                        onSelectionChange(newMedias);
-                        onQueryReset(); // think about this
-                        reload();
-                    }
-                });
+                setUploadProcessing(true);
+                onMediaUploaded(rawMedias)
+                    .then((newMedias) => {
+                        const uploadedNewMedias = (
+                            isArray(newMedias)
+                                ? [...(uploadedMedias || []), ...newMedias]
+                                : [...(uploadedMedias || []), newMedias]
+                        ).filter((it) => it !== null);
+                        setUploadedMedias(uploadedNewMedias);
+                        if (onSelectionChange !== null) {
+                            onSelectionChange(newMedias);
+                            onQueryReset(); // think about this
+                            reload();
+                        }
+                        setUploadProcessing(false);
+                    })
+                    .catch(() => {
+                        setUploadProcessing(false);
+                    });
             } else {
                 setUploadedMedias(rawMedias);
                 if (onSelectionChange !== null) {
@@ -256,6 +257,7 @@ function MediasBrowser({
             onSelectionChange,
             uploadedMedias,
             setUploadedMedias,
+            setUploadProcessing,
         ],
     );
 
@@ -319,7 +321,6 @@ function MediasBrowser({
                           };
                       }
                       if (columnId === 'actions') {
-                          // console.log('column', column);
                           const { actions = [] } = column || {};
                           return {
                               ...column,
@@ -339,9 +340,23 @@ function MediasBrowser({
     );
 
     const finalItems = useMemo(() => {
-        if (withStickySelection && extraItems !== null) {
+        if (
+            withStickySelection &&
+            (extraItems !== null || uploadedMedias !== null || uploadProcessing === true)
+        ) {
             return uniqBy(
                 [
+                    ...(uploadProcessing
+                        ? [
+                              {
+                                  id: '-',
+                                  loading: true,
+                                  rowDisabled: true,
+                                  actionsDisabled: true,
+                                  selectionDisabled: true,
+                              },
+                          ]
+                        : null),
                     ...(page === 1 ? uploadedMedias || [] : []),
                     ...(extraItems || [])
                         .map((item) => {
@@ -361,7 +376,7 @@ function MediasBrowser({
             );
         }
         return items;
-    }, [items, page, allItems, withStickySelection, extraItems]);
+    }, [items, page, allItems, withStickySelection, extraItems, uploadProcessing]);
 
     return (
         <div className={className}>
@@ -407,6 +422,8 @@ function MediasBrowser({
                                 withoutMedia
                                 uppyConfig={uppyConfig}
                                 onChange={onUploadComplete}
+                                disabled={uploadProcessing}
+                                loading={uploadProcessing}
                             />
                         ) : null}
                     </div>
@@ -451,7 +468,7 @@ function MediasBrowser({
                             }}
                             selectable={selectable}
                             selectedItems={selectedItems}
-                            onSelectionChange={onSelectionChange}
+                            onSelectionChange={uploadProcessing ? null : onSelectionChange}
                             multipleSelection={multipleSelection}
                             items={finalItems || []}
                             loading={loading}
@@ -466,7 +483,7 @@ function MediasBrowser({
                             }
                             selectable={selectable}
                             selectedItems={selectedItems}
-                            onSelectionChange={onSelectionChange}
+                            onSelectionChange={uploadProcessing ? null : onSelectionChange}
                             multipleSelection={multipleSelection}
                             items={finalItems}
                             loading={loading}

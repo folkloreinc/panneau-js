@@ -339,6 +339,12 @@ msgctxt "NeSNvW"
 msgid "clear"
 msgstr "clear"
 
+# Button label
+#: NozDYd
+msgctxt "NozDYd"
+msgid "Uploading"
+msgstr "Uploading"
+
 # Tuesday letter
 #: Of2stw
 msgctxt "Of2stw"

@@ -57,6 +57,7 @@ const propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
     disabled: PropTypes.bool,
+    loading: PropTypes.bool,
     onChange: PropTypes.func,
     onClear: PropTypes.func,
     onClickAdd: PropTypes.func,
@@ -100,6 +101,7 @@ const defaultProps = {
     width: null,
     height: 300,
     disabled: false,
+    loading: false,
     onChange: null,
     onClear: null,
     onClickAdd: null,
@@ -131,6 +133,7 @@ const UploadField = ({
     width,
     height,
     disabled,
+    loading: parentLoading,
     onChange,
     onClear,
     onClickAdd,
@@ -349,6 +352,8 @@ const UploadField = ({
         };
     }, [uppy, startLoading, endLoading]);
 
+    const finalLoading = loading || parentLoading;
+
     return (
         <div
             className={classNames([styles.container, { [className]: className !== null }])}
@@ -383,13 +388,13 @@ const UploadField = ({
                             id="trigger-uppy"
                             type="button"
                             theme="primary"
-                            icon={loading ? 'loading' : 'upload'}
+                            icon={finalLoading ? 'loading' : 'upload'}
                             iconPosition="right"
                             onClick={onClickAdd || openModal}
-                            disabled={loading || disabled}
+                            disabled={finalLoading || disabled}
                         >
                             <Label>
-                                {loading ? (
+                                {finalLoading ? (
                                     <FormattedMessage
                                         defaultMessage="Uploading"
                                         description="Button label"

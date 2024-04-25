@@ -89,10 +89,15 @@ const Grid = ({
             <div className={styles.inner}>
                 {Component !== null
                     ? (items || []).map((item, idx) => {
-                          const { id: itemId = null } = item || {};
+                          const {
+                              id: itemId = null,
+                              actionsDisabled = false,
+                              selectionDisabled = false,
+                          } = item || {};
+                          const itemSelectable = selectionDisabled ? false : selectable;
                           let selected = false;
                           if (multipleSelection) {
-                              selected = selectable
+                              selected = itemSelectable
                                   ? ((finalSelectedItems || []).find(
                                         ({ id = null } = {}) => id === itemId,
                                     ) || null) !== null
@@ -105,10 +110,11 @@ const Grid = ({
                               <Component
                                   key={`item-${itemId}-${idx + 1}`}
                                   value={item}
-                                  selectable={selectable}
-                                  selected={selectable && selected}
+                                  selectable={itemSelectable}
+                                  selected={itemSelectable && selected}
+                                  actionsDisabled={actionsDisabled}
                                   {...componentProps}
-                                  {...(selectable && onSelectionChange !== null
+                                  {...(itemSelectable && onSelectionChange !== null
                                       ? {
                                             onClick: () => onSelectItem(item),
                                             selected,

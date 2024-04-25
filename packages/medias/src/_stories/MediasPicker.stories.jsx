@@ -106,7 +106,7 @@ export const WithUploadTypes = () => (
     </UppyProvider>
 );
 
-export const WithStickyValue = () => (
+export const WithStickySelection = () => (
     <UppyProvider>
         <Container
             layout="table"
@@ -114,7 +114,7 @@ export const WithStickyValue = () => (
             uploadButton={{ id: 1, icon: 'circle' }}
             types={['image', 'video', 'audio']}
             value={Media2}
-            withStickyValues
+            withStickySelection
         />
     </UppyProvider>
 );

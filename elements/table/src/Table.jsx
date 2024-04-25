@@ -235,13 +235,17 @@ function Table({
                                 id = null,
                                 rowClassName = null,
                                 rowDisabled = false,
+                                actionsDisabled = false,
+                                selectionDisabled = false,
+                                loading: itemLoading = false,
                             } = it || {};
 
-                            const checked = selectable
-                                ? ((finalSelectedItems || []).find(
-                                      ({ id: itemId = null } = {}) => id === itemId,
-                                  ) || null) !== null
-                                : false;
+                            const checked =
+                                selectable && !selectionDisabled
+                                    ? ((finalSelectedItems || []).find(
+                                          ({ id: itemId = null } = {}) => id === itemId,
+                                      ) || null) !== null
+                                    : false;
 
                             // TODO: fix this
                             const selectRow = (e) => {
@@ -250,6 +254,7 @@ function Table({
                                 // }
                                 if (
                                     onSelectItem !== null &&
+                                    !selectionDisabled &&
                                     e.target.tagName.toLowerCase() !== 'button' &&
                                     e.target.tagName.toLowerCase() !== 'a' &&
                                     e.target.tagName.toLowerCase() !== 'i'
@@ -365,9 +370,20 @@ function Table({
                                                         }
                                                         field={field}
                                                         value={displayValue}
-                                                        placeholder={displayPlaceholder}
+                                                        placeholder={
+                                                            itemLoading ? (
+                                                                <div className="placeholder-glow">
+                                                                    <span className="placeholder placeholder-xs w-100" />
+                                                                </div>
+                                                            ) : (
+                                                                displayPlaceholder
+                                                            )
+                                                        }
                                                         selected={checked}
                                                         item={it}
+                                                        {...(colId === 'actions'
+                                                            ? { disabled: actionsDisabled }
+                                                            : null)}
                                                     />
                                                 ) : (
                                                     displayPlaceholder
@@ -387,7 +403,11 @@ function Table({
                                             ])}
                                             key={`col-${id}-actions`}
                                         >
-                                            <Actions {...actionsProps} item={it} />
+                                            <Actions
+                                                {...actionsProps}
+                                                item={it}
+                                                disabled={actionsDisabled}
+                                            />
                                         </td>
                                     ) : null}
                                 </tr>

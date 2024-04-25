@@ -20,6 +20,7 @@ const propTypes = {
     defaultComponent: PropTypes.func,
     isGroup: PropTypes.bool,
     size: PropTypes.string,
+    disabled: PropTypes.bool,
     withConfirmation: PropTypes.bool,
     className: PropTypes.string,
 };
@@ -33,6 +34,7 @@ const defaultProps = {
     defaultComponent: Button,
     isGroup: false,
     size: null,
+    disabled: false,
     withConfirmation: false,
     className: null,
 };
@@ -46,6 +48,7 @@ const Actions = ({
     onConfirmed,
     defaultComponent,
     isGroup,
+    disabled: parentDisabled,
     withConfirmation,
     className,
 }) => {
@@ -62,7 +65,7 @@ const Actions = ({
                         const enabled = multiple
                             ? value !== null && value.length > 0
                             : value !== null && value.length === 1;
-                        const finalDisabled = disabled || !enabled;
+                        const finalDisabled = parentDisabled || disabled || !enabled;
                         return {
                             ...action,
                             disabled: finalDisabled,
@@ -71,7 +74,7 @@ const Actions = ({
                     },
                     [actions],
                 ),
-        [disabled, value, actions],
+        [disabled, value, actions, parentDisabled],
     );
 
     return (

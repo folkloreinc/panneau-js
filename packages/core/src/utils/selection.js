@@ -27,7 +27,6 @@ export function selectItem(item, selectedItems, onSelectionChange, multipleSelec
     if (onSelectionChange !== null) {
         const [firstItem = null] = newItems || [];
         const value = multipleSelection ? filterNullItems(newItems) : firstItem;
-        console.log('value', value);
         onSelectionChange(value);
     }
 }

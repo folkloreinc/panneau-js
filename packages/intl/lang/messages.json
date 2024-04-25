@@ -215,6 +215,10 @@
     "defaultMessage": "clear",
     "description": "Button label"
   },
+  "NozDYd": {
+    "defaultMessage": "Uploading",
+    "description": "Button label"
+  },
   "Of2stw": {
     "defaultMessage": "T",
     "description": "Tuesday letter"
