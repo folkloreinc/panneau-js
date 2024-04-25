@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-boolean",
-    "version": "3.0.192",
+    "version": "3.0.193",
     "description": "Boolean value in list",
     "keywords": [
         "javascript"
@@ -54,10 +54,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.192",
-        "@panneau/element-icon": "^3.0.192",
-        "@panneau/element-label": "^3.0.192",
-        "@panneau/themes": "^3.0.192",
+        "@panneau/core": "^3.0.193",
+        "@panneau/element-icon": "^3.0.193",
+        "@panneau/element-label": "^3.0.193",
+        "@panneau/themes": "^3.0.193",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"

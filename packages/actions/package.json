@@ -1,6 +1,6 @@
 {
     "name": "@panneau/actions",
-    "version": "3.0.192",
+    "version": "3.0.193",
     "description": "",
     "keywords": [
         "javascript"
@@ -58,12 +58,12 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/action-delete": "^3.0.192",
-        "@panneau/action-duplicate": "^3.0.192",
-        "@panneau/action-edit": "^3.0.192",
-        "@panneau/action-restore": "^3.0.192",
-        "@panneau/action-upload": "^3.0.192",
-        "@panneau/core": "^3.0.192",
+        "@panneau/action-delete": "^3.0.193",
+        "@panneau/action-duplicate": "^3.0.193",
+        "@panneau/action-edit": "^3.0.193",
+        "@panneau/action-restore": "^3.0.193",
+        "@panneau/action-upload": "^3.0.193",
+        "@panneau/core": "^3.0.193",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
