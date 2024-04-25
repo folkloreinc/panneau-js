@@ -1,6 +1,6 @@
 {
     "name": "@panneau/action-restore",
-    "version": "3.0.190",
+    "version": "3.0.191",
     "description": "Restore action",
     "keywords": [
         "javascript"
@@ -47,10 +47,10 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.17",
-        "@panneau/core": "^3.0.190",
-        "@panneau/element-button": "^3.0.190",
-        "@panneau/modal-confirm": "^3.0.190",
-        "@panneau/themes": "^3.0.190",
+        "@panneau/core": "^3.0.191",
+        "@panneau/element-button": "^3.0.191",
+        "@panneau/modal-confirm": "^3.0.191",
+        "@panneau/themes": "^3.0.191",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
