@@ -11,20 +11,16 @@ const useActions = (
         showLabel = null,
         editLabel = null,
         deleteLabel = null,
-        duplicateLabel = null,
         onClickShow = null,
         onClickEdit = null,
         onClickDelete = null,
-        onClickDuplicate = null,
         getShowPropsFromItem = null,
         getEditPropsFromItem = null,
         getDeletePropsFromItem = null,
-        getDuplicatePropsFromItem = null,
         showUrl = null,
         withoutItemShowUrl = null,
         preferEditModal = false,
         preferDeleteModal = true,
-        preferDuplicateModal = true,
     } = {},
 ) => {
     const { id, url = null } = item || {};
@@ -93,7 +89,9 @@ const useActions = (
                     //             : null),
                     //     };
                     case 'duplicate':
-                        return null;
+                        return { id: 'duplicate', component: 'duplicate' };
+                    case 'restore':
+                        return { id: 'restore', component: 'restore' };
                     case 'delete':
                         return {
                             id: 'delete',

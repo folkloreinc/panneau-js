@@ -61,6 +61,8 @@
         "@panneau/action-delete": "^3.0.190",
         "@panneau/action-duplicate": "^3.0.190",
         "@panneau/action-edit": "^3.0.190",
+        "@panneau/action-upload": "^3.0.190",
+        "@panneau/action-restore": "^3.0.190",
         "@panneau/core": "^3.0.190",
         "prop-types": "^15.7.2"
     },

@@ -232,7 +232,7 @@ export const UppyProvider = ({
         }
         return (opts = {}) => {
             const { sources: customSources = sources, ...uppyOpts } = opts || {};
-            // console.log('Uppy opts buildUppy', opts);
+            console.log('Uppy opts buildUppy', opts);
             const newUppy = new Uppy({
                 id,
                 locale: uppyLocale,
@@ -251,7 +251,7 @@ export const UppyProvider = ({
             } else if (transport === 'tus') {
                 newUppy.use(uppyTransport, {
                     endpoint: '/tus',
-                    resume: true,
+                    // resume: true, obsolete
                     retryDelays: [0, 1000, 3000, 5000],
                     ...tus,
                 });
