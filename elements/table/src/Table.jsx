@@ -40,6 +40,7 @@ const propTypes = {
     multipleSelection: PropTypes.bool,
     withCustomActionsColumn: PropTypes.bool,
     withoutLoading: PropTypes.bool,
+    withoutEmpty: PropTypes.bool,
     actionsComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
     actionsProps: PropTypes.shape({}),
     actionsClassName: PropTypes.string,
@@ -67,6 +68,7 @@ const defaultProps = {
     multipleSelection: false,
     withCustomActionsColumn: false,
     withoutLoading: false,
+    withoutEmpty: false,
     actionsComponent: null,
     actionsProps: null,
     actionsClassName: null,
@@ -94,6 +96,7 @@ function Table({
     multipleSelection,
     withCustomActionsColumn,
     withoutLoading,
+    withoutEmpty,
     actionsComponent,
     actionsProps,
     actionsClassName,
@@ -394,7 +397,7 @@ function Table({
                     </tbody>
                 </table>
             ) : null}
-            {loaded && (items === null || items.length === 0) && !withoutLoading ? (
+            {!loaded && (items === null || items.length === 0) && !withoutLoading ? (
                 <Loading withDelay>
                     <FormattedMessage defaultMessage="Loading" description="Loading label" />
                 </Loading>

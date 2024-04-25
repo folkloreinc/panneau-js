@@ -38,7 +38,7 @@ const propTypes = {
     layout: PropTypes.string,
     layouts: PropTypes.arrayOf(PropTypes.shape({})),
     theme: PropTypes.string,
-    onUpload: PropTypes.func,
+    onMediaUploaded: PropTypes.func,
     onItemsChange: PropTypes.func,
     onLayoutChange: PropTypes.func,
     onMediaFormOpen: PropTypes.func,
@@ -76,7 +76,7 @@ const defaultProps = {
         },
     ],
     theme: null,
-    onUpload: null,
+    onMediaUploaded: null,
     onItemsChange: null,
     onLayoutChange: null,
     onMediaFormOpen: null,
@@ -105,7 +105,7 @@ function MediasBrowser({
     layout: initialLayout,
     layouts,
     theme,
-    onUpload,
+    onMediaUploaded,
     onItemsChange,
     onLayoutChange,
     onMediaFormOpen,
@@ -212,19 +212,24 @@ function MediasBrowser({
     );
 
     const [uploadedMedias, setUploadedMedias] = useState(null);
-    const onMediaUploaded = useCallback(
+
+    const onUploadComplete = useCallback(
         (medias = null) => {
             if (medias === null) return;
             const rawMedias = (isArray(medias) ? medias : [medias]).filter((it) => it !== null);
 
-            if (onUpload !== null) {
-                onUpload(rawMedias).then((newMedias) => {
+            if (onMediaUploaded !== null) {
+                console.log('rawMedias', rawMedias);
+
+                onMediaUploaded(rawMedias).then((newMedias) => {
                     const uploadedNewMedias = (
                         isArray(newMedias)
                             ? [...(uploadedMedias || []), ...newMedias]
                             : [...(uploadedMedias || []), newMedias]
                     ).filter((it) => it !== null);
                     setUploadedMedias(uploadedNewMedias);
+
+                    console.log('uploaded', uploadedNewMedias, onSelectionChange);
 
                     if (onSelectionChange !== null) {
                         onSelectionChange(newMedias);
@@ -241,7 +246,14 @@ function MediasBrowser({
                 }
             }
         },
-        [onUpload, reload, onQueryReset, onSelectionChange, uploadedMedias, setUploadedMedias],
+        [
+            onMediaUploaded,
+            reload,
+            onQueryReset,
+            onSelectionChange,
+            uploadedMedias,
+            setUploadedMedias,
+        ],
     );
 
     const pagination = (
@@ -301,6 +313,20 @@ function MediasBrowser({
                                       description="Column label"
                                   />
                               ),
+                          };
+                      }
+                      if (columnId === 'actions') {
+                          // console.log('column', column);
+                          const { actions = [] } = column || {};
+                          return {
+                              ...column,
+                              actions: (actions || []).reduce((acc, action) => {
+                                  if (action === 'delete') {
+                                      acc.push('restore');
+                                  }
+                                  acc.push(action);
+                                  return acc;
+                              }, []),
                           };
                       }
                       return column;
@@ -377,7 +403,7 @@ function MediasBrowser({
                                 withButton
                                 withoutMedia
                                 uppyConfig={uppyConfig}
-                                onChange={onMediaUploaded}
+                                onChange={onUploadComplete}
                             />
                         ) : null}
                     </div>

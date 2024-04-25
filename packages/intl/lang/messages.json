@@ -195,6 +195,10 @@
     "defaultMessage": "Email",
     "description": "Field label"
   },
+  "M49yWb": {
+    "defaultMessage": "The following items will be restored: {ids}. Are you sure you want to continue?",
+    "description": "Modal message"
+  },
   "MHldGi": {
     "defaultMessage": "Duration:",
     "description": "Field description"
@@ -359,6 +363,10 @@
     "defaultMessage": "Size",
     "description": "Field name"
   },
+  "c6nfry": {
+    "defaultMessage": "Restore",
+    "description": "Modal title"
+  },
   "cutyQH": {
     "defaultMessage": "An error has occured.",
     "description": "Modal message"
@@ -413,6 +421,10 @@
   },
   "l+ddDH": {
     "defaultMessage": "Create {a_singular}",
+    "description": "Button label"
+  },
+  "l2ZaNV": {
+    "defaultMessage": "Restore",
     "description": "Button label"
   },
   "li2Qqu": {

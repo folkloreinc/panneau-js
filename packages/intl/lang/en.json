@@ -146,6 +146,9 @@
     "LI0Gz4": {
         "defaultMessage": "Email"
     },
+    "M49yWb": {
+        "defaultMessage": "The following items will be restored: {ids}. Are you sure you want to continue?"
+    },
     "MHldGi": {
         "defaultMessage": "Duration:"
     },
@@ -269,6 +272,9 @@
     "c3hu9o": {
         "defaultMessage": "Size"
     },
+    "c6nfry": {
+        "defaultMessage": "Restore"
+    },
     "cutyQH": {
         "defaultMessage": "An error has occured."
     },
@@ -310,6 +316,9 @@
     },
     "l+ddDH": {
         "defaultMessage": "Create {a_singular}"
+    },
+    "l2ZaNV": {
+        "defaultMessage": "Restore"
     },
     "li2Qqu": {
         "defaultMessage": "Skip setup"

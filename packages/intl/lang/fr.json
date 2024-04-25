@@ -146,6 +146,9 @@
     "LI0Gz4": {
         "defaultMessage": "Courriel"
     },
+    "M49yWb": {
+        "defaultMessage": "Les éléments suivants seront retirés de la corbeille: {ids}. Voulez-vous continuer ?"
+    },
     "MHldGi": {
         "defaultMessage": "Durée:"
     },
@@ -174,7 +177,7 @@
         "defaultMessage": "Jeter"
     },
     "PTmocx": {
-        "defaultMessage": "Les éléments suivants seront supprimés {ids}. Voulez-vous continuer ?"
+        "defaultMessage": "Les éléments suivants seront supprimés: {ids}. Voulez-vous continuer ?"
     },
     "Pih2UO": {
         "defaultMessage": "Erreur 403"
@@ -269,6 +272,9 @@
     "c3hu9o": {
         "defaultMessage": "Taille"
     },
+    "c6nfry": {
+        "defaultMessage": "Restaurer"
+    },
     "cutyQH": {
         "defaultMessage": "Une erreur s'est produite."
     },
@@ -310,6 +316,9 @@
     },
     "l+ddDH": {
         "defaultMessage": "Créer {a_singular}"
+    },
+    "l2ZaNV": {
+        "defaultMessage": "Restaurer"
     },
     "li2Qqu": {
         "defaultMessage": "Passer l'étape"

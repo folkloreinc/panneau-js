@@ -305,6 +305,16 @@ msgctxt "LI0Gz4"
 msgid "Email"
 msgstr "Email"
 
+# Modal message
+#: M49yWb
+msgctxt "M49yWb"
+msgid ""
+"The following items will be restored: {ids}. Are you sure you want to "
+"continue?"
+msgstr ""
+"The following items will be restored: {ids}. Are you sure you want to "
+"continue?"
+
 # Field description
 #: MHldGi
 msgctxt "MHldGi"
@@ -559,6 +569,12 @@ msgctxt "c3hu9o"
 msgid "Size"
 msgstr "Size"
 
+# Modal title
+#: c6nfry
+msgctxt "c6nfry"
+msgid "Restore"
+msgstr "Restore"
+
 # Modal message
 #: cutyQH
 msgctxt "cutyQH"
@@ -642,6 +658,12 @@ msgstr "M"
 msgctxt "l+ddDH"
 msgid "Create {a_singular}"
 msgstr "Create {a_singular}"
+
+# Button label
+#: l2ZaNV
+msgctxt "l2ZaNV"
+msgid "Restore"
+msgstr "Restore"
 
 # Link label
 #: li2Qqu

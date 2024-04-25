@@ -1,16 +1,15 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-12-14 14:06-0400\n"
-"PO-Revision-Date: 2024-04-24 18:42-0400\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: fr\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Translate Toolkit 3.2.0\n"
 
 # Error page meta title
 #: +6cCPF
@@ -65,8 +64,8 @@ msgstr "Entrez le code de votre application d'authentification pour continuer"
 msgctxt "2vB7U4"
 msgid "An error occured and we could not save this item successfully."
 msgstr ""
-"Une erreur s’est produite et nous n’avons pas pu enregistrer cet élément avec "
-"succès."
+"Une erreur s’est produite et nous n’avons pas pu enregistrer cet élément "
+"avec succès."
 
 # Field title
 #: 3RT69u
@@ -308,6 +307,16 @@ msgctxt "LI0Gz4"
 msgid "Email"
 msgstr "Courriel"
 
+# Modal message
+#: M49yWb
+msgctxt "M49yWb"
+msgid ""
+"The following items will be restored: {ids}. Are you sure you want to "
+"continue?"
+msgstr ""
+"Les éléments suivants seront retirés de la corbeille: {ids}. Voulez-vous "
+"continuer ?"
+
 # Field description
 #: MHldGi
 msgctxt "MHldGi"
@@ -366,8 +375,9 @@ msgstr "Jeter"
 #: PTmocx
 msgctxt "PTmocx"
 msgid ""
-"The following items will be deleted: {ids}. Are you sure you want to continue?"
-msgstr "Les éléments suivants seront supprimés {ids}. Voulez-vous continuer ?"
+"The following items will be deleted: {ids}. Are you sure you want to "
+"continue?"
+msgstr "Les éléments suivants seront supprimés: {ids}. Voulez-vous continuer ?"
 
 # Error page title
 #: Pih2UO
@@ -557,6 +567,12 @@ msgctxt "c3hu9o"
 msgid "Size"
 msgstr "Taille"
 
+# Modal title
+#: c6nfry
+msgctxt "c6nfry"
+msgid "Restore"
+msgstr "Restaurer"
+
 # Modal message
 #: cutyQH
 msgctxt "cutyQH"
@@ -640,6 +656,12 @@ msgstr "L"
 msgctxt "l+ddDH"
 msgid "Create {a_singular}"
 msgstr "Créer {a_singular}"
+
+# Button label
+#: l2ZaNV
+msgctxt "l2ZaNV"
+msgid "Restore"
+msgstr "Restaurer"
 
 # Link label
 #: li2Qqu
@@ -875,9 +897,9 @@ msgid ""
 "have to use an authentication app such as Google Authenticator or Microsoft "
 "Authenticator in addition to your password to connect."
 msgstr ""
-"Voulez-vous activer l'authentification à deux facteurs ? Vous devrez utiliser "
-"une application de connexion telle que Google Authenticator ou Microsoft "
-"Authenticator en plus de votre mot de passe pour vous connecter."
+"Voulez-vous activer l'authentification à deux facteurs ? Vous devrez "
+"utiliser une application de connexion telle que Google Authenticator ou "
+"Microsoft Authenticator en plus de votre mot de passe pour vous connecter."
 
 # Button label
 #: zwks3g
