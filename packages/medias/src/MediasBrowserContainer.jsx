@@ -9,21 +9,17 @@ import MediasBrowser from './MediasBrowser';
 const propTypes = {
     api: apiPropTypes,
     media: PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) }),
-    fields: PropTypes.arrayOf(
-        PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) }),
-    ),
 };
 
 const defaultProps = {
     api: null,
-    media: null,
-    fields: null,
+    media: null
 };
 
-function MediasBrowserContainer({ api, media, fields, ...props }) {
+function MediasBrowserContainer({ api, media, ...props }) {
     return (
         <MediasApiProvider api={api}>
-            <MediaProvider media={media} fields={fields}>
+            <MediaProvider media={media}>
                 <MediasBrowser {...props} />
             </MediaProvider>
         </MediasApiProvider>
