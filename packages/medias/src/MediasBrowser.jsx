@@ -39,7 +39,7 @@ const propTypes = {
     layouts: PropTypes.arrayOf(PropTypes.shape({})),
     theme: PropTypes.string,
     onUpload: PropTypes.func,
-    // onItemsChange: PropTypes.func,
+    onItemsChange: PropTypes.func,
     onLayoutChange: PropTypes.func,
     onMediaFormOpen: PropTypes.func,
     onMediaFormClose: PropTypes.func,
@@ -77,11 +77,11 @@ const defaultProps = {
     ],
     theme: null,
     onUpload: null,
-    // onItemsChange: null,
+    onItemsChange: null,
     onLayoutChange: null,
     onMediaFormOpen: null,
     onMediaFormClose: null,
-    selectable: null,
+    selectable: false,
     selectedItems: null,
     onSelectionChange: null,
     multipleSelection: false,
@@ -106,7 +106,7 @@ function MediasBrowser({
     layouts,
     theme,
     onUpload,
-    // onItemsChange,
+    onItemsChange,
     onLayoutChange,
     onMediaFormOpen,
     onMediaFormClose,
@@ -163,12 +163,11 @@ function MediasBrowser({
         reload,
     } = useMedias(query, page, count, { items: baseItems, trashed: showTrashed });
 
-    // For picker
-    // useEffect(() => {
-    //     if (onItemsChange !== null) {
-    //         onItemsChange(items);
-    //     }
-    // }, [items, onItemsChange]);
+    useEffect(() => {
+        if (onItemsChange !== null) {
+            onItemsChange(items);
+        }
+    }, [items, onItemsChange]);
 
     const [layout, setLayout] = useState(initialLayout || 'table');
     const hasLayouts = useMemo(() => layouts !== null && layouts.length > 1, [layouts]);
@@ -212,26 +211,37 @@ function MediasBrowser({
         [setCurrentMedia, updateItem],
     );
 
+    const [uploadedMedias, setUploadedMedias] = useState(null);
     const onMediaUploaded = useCallback(
         (medias = null) => {
             if (medias === null) return;
-            const rawMedias = isArray(medias) ? medias : [medias];
+            const rawMedias = (isArray(medias) ? medias : [medias]).filter((it) => it !== null);
+
             if (onUpload !== null) {
                 onUpload(rawMedias).then((newMedias) => {
+                    const uploadedNewMedias = (
+                        isArray(newMedias)
+                            ? [...(uploadedMedias || []), ...newMedias]
+                            : [...(uploadedMedias || []), newMedias]
+                    ).filter((it) => it !== null);
+                    setUploadedMedias(uploadedNewMedias);
+
                     if (onSelectionChange !== null) {
                         onSelectionChange(newMedias);
-                        onQueryReset();
+                        onQueryReset(); // think about this
                         reload();
                     }
                 });
-            }
-            if (onSelectionChange !== null) {
-                onSelectionChange(rawMedias);
-                onQueryReset();
-                reload();
+            } else {
+                setUploadedMedias(rawMedias);
+                if (onSelectionChange !== null) {
+                    onSelectionChange(rawMedias);
+                    onQueryReset();
+                    reload();
+                }
             }
         },
-        [onUpload, reload, onQueryReset, onSelectionChange],
+        [onUpload, reload, onQueryReset, onSelectionChange, uploadedMedias, setUploadedMedias],
     );
 
     const pagination = (
@@ -303,6 +313,7 @@ function MediasBrowser({
         if (withStickySelection && extraItems !== null) {
             return uniqBy(
                 [
+                    ...(page === 1 ? uploadedMedias || [] : []),
                     ...(extraItems || [])
                         .map((item) => {
                             const { id: itemId = null } = item;
@@ -359,6 +370,7 @@ function MediasBrowser({
                                 theme={theme}
                             />
                         ) : null}
+                        {/* make this actions someday ? */}
                         {!withoutUpload ? (
                             <UploadField
                                 className="ms-auto w-auto text-nowrap mt-2"

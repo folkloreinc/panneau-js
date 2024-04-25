@@ -18,6 +18,7 @@ import SortLink from './SortLink';
 const propTypes = {
     items: PanneauPropTypes.items,
     columns: PanneauPropTypes.tableColumns,
+    loaded: PropTypes.bool,
     theme: PropTypes.string,
     baseUrl: PropTypes.string,
     query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -48,6 +49,7 @@ const propTypes = {
 const defaultProps = {
     items: [],
     columns: [],
+    loaded: false,
     theme: null,
     baseUrl: null,
     query: null,
@@ -74,6 +76,7 @@ const defaultProps = {
 function Table({
     items,
     columns,
+    loaded,
     theme,
     baseUrl,
     query,
@@ -391,7 +394,7 @@ function Table({
                     </tbody>
                 </table>
             ) : null}
-            {(items === null || items.length === 0) && !withoutLoading ? (
+            {loaded && (items === null || items.length === 0) && !withoutLoading ? (
                 <Loading withDelay>
                     <FormattedMessage defaultMessage="Loading" description="Loading label" />
                 </Loading>

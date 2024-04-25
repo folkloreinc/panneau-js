@@ -58,8 +58,6 @@ function MediasPickerModal({
         [setSelectedItems],
     );
 
-    console.log('selected2', selectedItems);
-
     const [mediaFormOpen, setMediaFormOpen] = useState(false);
     const onMediaFormOpen = useCallback(() => {
         setMediaFormOpen(true);
