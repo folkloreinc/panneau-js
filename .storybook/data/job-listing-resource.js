@@ -87,6 +87,13 @@ export default {
     ],
 
     index: {
+        batchActions: [
+            {
+                id: 'delete',
+                component: 'delete',
+                multiple: false,
+            },
+        ],
         columns: [
             {
                 id: 'description',

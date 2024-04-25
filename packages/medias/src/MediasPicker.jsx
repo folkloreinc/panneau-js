@@ -6,7 +6,7 @@ import MediasBrowser from './MediasBrowser';
 
 const propTypes = {
     items: PropTypes.arrayOf(PropTypes.shape({})),
-    value: PropTypes.arrayOf(PropTypes.shape({})),
+    value: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.arrayOf(PropTypes.shape({}))]),
     multiple: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     className: PropTypes.string,

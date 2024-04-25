@@ -44,7 +44,10 @@ const propTypes = {
     onMediaFormOpen: PropTypes.func,
     onMediaFormClose: PropTypes.func,
     selectable: PropTypes.bool,
-    selectedItems: PropTypes.arrayOf(PropTypes.shape({})),
+    selectedItems: PropTypes.oneOfType([
+        PropTypes.shape({}),
+        PropTypes.arrayOf(PropTypes.shape({})),
+    ]),
     onSelectionChange: PropTypes.func,
     multipleSelection: PropTypes.bool,
     uppyConfig: PropTypes.shape({}),
@@ -399,7 +402,7 @@ function MediasBrowser({
                         {/* make this actions someday ? */}
                         {!withoutUpload ? (
                             <UploadField
-                                className="ms-auto w-auto text-nowrap mt-2"
+                                className="ms-auto w-auto text-nowrap mt-2 mb-2 ps-2"
                                 withButton
                                 withoutMedia
                                 uppyConfig={uppyConfig}

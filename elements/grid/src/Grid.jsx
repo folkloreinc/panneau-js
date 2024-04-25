@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { selectItem } from '@panneau/core/utils';
 
@@ -60,6 +60,14 @@ const Grid = ({
         [items, selectedItems, onSelectionChange, multipleSelection],
     );
 
+    const finalSelectedItems = useMemo(() => {
+        const partialSelectedItems =
+            selectedItems !== null && !isArray(selectedItems) ? [selectedItems] : null;
+        return selectedItems !== null && isArray(selectedItems)
+            ? selectedItems.filter((it) => it !== null)
+            : partialSelectedItems;
+    }, [selectedItems]);
+
     // const onSelectPage = useCallback(
     //     (pageSelected = false) => {
     //         selectPage(pageSelected, items, selectedItems, onSelectionChange);
@@ -85,15 +93,14 @@ const Grid = ({
                           let selected = false;
                           if (multipleSelection) {
                               selected = selectable
-                                  ? ((selectedItems || []).find(
+                                  ? ((finalSelectedItems || []).find(
                                         ({ id = null } = {}) => id === itemId,
                                     ) || null) !== null
                                   : false;
-                          } else if (!isArray(selectedItems)) {
-                              const { id: selectedId } = selectedItems || {};
+                          } else if (!isArray(finalSelectedItems)) {
+                              const { id: selectedId } = finalSelectedItems || {};
                               selected = selectedId === itemId;
                           }
-
                           return (
                               <Component
                                   key={`item-${itemId}-${idx + 1}`}

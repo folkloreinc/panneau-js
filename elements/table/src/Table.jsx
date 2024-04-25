@@ -108,12 +108,14 @@ function Table({
     const Actions = actionsComponent || null;
     const withActionsColumn = withCustomActionsColumn && Actions !== null;
     const withIdColumn = !withoutId && !hasIdColumn && !selectable;
-    const partialSelectedItems =
-        selectedItems !== null && !isArray(selectedItems) ? [selectedItems] : null;
-    const finalSelectedItems =
-        selectedItems !== null && isArray(selectedItems)
+
+    const finalSelectedItems = useMemo(() => {
+        const partialSelectedItems =
+            selectedItems !== null && !isArray(selectedItems) ? [selectedItems] : null;
+        return selectedItems !== null && isArray(selectedItems)
             ? selectedItems.filter((it) => it !== null)
             : partialSelectedItems;
+    }, [selectedItems]);
 
     const onSelectItem = useCallback(
         (newItem = null) => {

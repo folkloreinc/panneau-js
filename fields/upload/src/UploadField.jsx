@@ -321,6 +321,34 @@ const UploadField = ({
         }
     }, [uppy, finalUppy]);
 
+    // Uppy state
+    const [loading, setLoading] = useState(false);
+    const startLoading = useCallback(() => {
+        setLoading(true);
+    }, []);
+    const endLoading = useCallback(() => {
+        setLoading(false);
+    }, []);
+
+    useEffect(() => {
+        if (uppy !== null) {
+            uppy.on('upload', startLoading);
+            uppy.on('complete', endLoading);
+            uppy.on('upload-error', endLoading);
+            uppy.on('error', endLoading);
+            uppy.on('cancell-all', endLoading);
+        }
+        return () => {
+            if (uppy !== null) {
+                uppy.off('upload', startLoading);
+                uppy.off('complete', endLoading);
+                uppy.off('upload-error', endLoading);
+                uppy.off('error', endLoading);
+                uppy.off('cancell-all', endLoading);
+            }
+        };
+    }, [uppy, startLoading, endLoading]);
+
     return (
         <div
             className={classNames([styles.container, { [className]: className !== null }])}
@@ -341,7 +369,7 @@ const UploadField = ({
             {!withoutMedia && hasMedia && withClearButton ? (
                 <div className="row mt-2">
                     <div className="col-auto">
-                        <Button type="button" theme="primary" onClick={onClickClear} outline>
+                        <Button type="button" theme="primary" onClick={onClickClear}>
                             <Label>{clearButtonLabel}</Label>
                         </Button>
                     </div>
@@ -355,11 +383,21 @@ const UploadField = ({
                             id="trigger-uppy"
                             type="button"
                             theme="primary"
+                            icon={loading ? 'loading' : 'upload'}
+                            iconPosition="right"
                             onClick={onClickAdd || openModal}
-                            disabled={disabled}
-                            outline
+                            disabled={loading || disabled}
                         >
-                            <Label>{addButtonLabel}</Label>
+                            <Label>
+                                {loading ? (
+                                    <FormattedMessage
+                                        defaultMessage="Uploading"
+                                        description="Button label"
+                                    />
+                                ) : (
+                                    addButtonLabel
+                                )}
+                            </Label>
                         </Button>
                     </div>
                     {/* {withFind ? (
