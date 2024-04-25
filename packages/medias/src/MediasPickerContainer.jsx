@@ -15,7 +15,6 @@ const propTypes = {
 const defaultProps = {
     api: null,
     media: null,
-    onChange: null
 };
 
 function MediasPickerContainer({ api, media, onChange, ...props }) {
