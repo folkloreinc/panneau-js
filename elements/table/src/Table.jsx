@@ -234,7 +234,6 @@ function Table({
                             const {
                                 id = null,
                                 rowClassName = null,
-                                rowDisabled = false,
                                 actionsDisabled = false,
                                 selectionDisabled = false,
                                 loading: itemLoading = false,
@@ -269,7 +268,7 @@ function Table({
                                     className={classNames([
                                         {
                                             'table-row': true,
-                                            'table-secondary': rowDisabled || checked,
+                                            'table-secondary': checked,
                                             [rowClassName]: rowClassName !== null,
                                         },
                                     ])}

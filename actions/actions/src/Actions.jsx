@@ -89,7 +89,12 @@ const Actions = ({
             ])}
         >
             {finalActions.map((action, idx) => {
-                const { id = null, component = null, ...otherProps } = action || {};
+                const {
+                    id = null,
+                    component = null,
+                    withConfirmation: actionConfirmation = false,
+                    ...otherProps
+                } = action || {};
                 const actionComponent = actionsComponents.getComponent(component);
                 const hasActionComponent = actionComponent !== null;
                 const Component = actionComponent || defaultComponent;
@@ -101,7 +106,7 @@ const Actions = ({
                         value={value}
                         size={size}
                         resource={resource}
-                        withConfirmation={withConfirmation}
+                        withConfirmation={actionConfirmation || withConfirmation}
                         {...(hasActionComponent
                             ? {
                                   onChange,

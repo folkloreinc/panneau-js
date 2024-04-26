@@ -20,7 +20,7 @@ const useActions = (
         showUrl = null,
         withoutItemShowUrl = null,
         preferEditModal = false,
-        preferDeleteModal = true,
+        preferDeleteModal = false,
     } = {},
 ) => {
     const { id, url = null } = item || {};

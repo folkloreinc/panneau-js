@@ -33,7 +33,9 @@ const ActionsContainer = ({ value: initialValue, ...props }) => {
 
 export const Normal = () => <ActionsContainer />;
 
-export const WithItems = () => <ActionsContainer value={[{ id: '1', name: 'OK' }]} />;
+export const WithItems = () => (
+    <ActionsContainer value={[{ id: '1', name: 'OK' }]} withConfirmation />
+);
 
 export const WithMultipleItems = () => (
     <ActionsContainer
@@ -41,5 +43,6 @@ export const WithMultipleItems = () => (
             { id: '1', name: 'OK' },
             { id: '2', name: 'KO' },
         ]}
+        withConfirmation
     />
 );

@@ -37,6 +37,7 @@ const propTypes = {
     maxHeight: PropTypes.number,
     thumbnailSize: PropTypes.number,
     disabled: PropTypes.bool,
+    actionsDisabled: PropTypes.bool,
     withoutDescription: PropTypes.bool,
     selectable: PropTypes.bool,
     selected: PropTypes.bool,
@@ -58,6 +59,7 @@ const defaultProps = {
     sizePath: 'metadata.size',
     linkPath: null,
     disabled: false,
+    actionsDisabled: false,
     maxWidth: null,
     maxHeight: null,
     thumbnailSize: 100,
@@ -85,6 +87,7 @@ const MediaCard = ({
     maxHeight,
     thumbnailSize,
     disabled,
+    actionsDisabled,
     withoutDescription,
     selectable,
     selected,
@@ -326,13 +329,16 @@ const MediaCard = ({
                         thumbnailElement
                     )}
 
-                    {!withoutDescription && link === null && onClickDescription !== null ? (
+                    {!withoutDescription &&
+                    link === null &&
+                    onClickDescription !== null &&
+                    !actionsDisabled ? (
                         <Button className="flex-grow-1 w-100" onClick={onClickBody}>
                             {descriptionElement}
                         </Button>
                     ) : null}
 
-                    {!withoutDescription && onClickDescription === null ? (
+                    {!withoutDescription && (onClickDescription === null || actionsDisabled) ? (
                         <div className="flex-grow-1 w-100">{descriptionElement}</div>
                     ) : null}
 

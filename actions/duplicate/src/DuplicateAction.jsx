@@ -1,18 +1,19 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import classNames from 'classnames';
-import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useModal } from '@panneau/core/contexts';
+import { useActionProps } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Confirm from '@panneau/modal-confirm';
 
 import styles from './styles.module.scss';
 
 const propTypes = {
+    id: PropTypes.string.isRequired,
     title: PropTypes.node,
     description: PropTypes.node,
     endpoint: PropTypes.string,
@@ -24,6 +25,7 @@ const propTypes = {
     disabled: PropTypes.bool,
     onChange: PropTypes.func,
     onConfirmed: PropTypes.func,
+    valueLabelPath: PropTypes.string,
     withConfirmation: PropTypes.bool,
     className: PropTypes.string,
 };
@@ -40,11 +42,13 @@ const defaultProps = {
     disabled: false,
     onChange: null,
     onConfirmed: null,
+    valueLabelPath: null,
     withConfirmation: false,
     className: null,
 };
 
 const DuplicateAction = ({
+    id,
     title,
     description,
     endpoint,
@@ -56,6 +60,7 @@ const DuplicateAction = ({
     disabled,
     onChange,
     onConfirmed,
+    valueLabelPath,
     withConfirmation,
     className,
     ...props
@@ -64,21 +69,10 @@ const DuplicateAction = ({
 
     const [error, setError] = useState(null);
 
-    const ids = useMemo(() => {
-        if (value == null) {
-            return null;
-        }
-        if (isArray(value)) {
-            return value.map(({ id = null } = {}) => id).filter((id) => id !== null);
-        }
-        return value !== null ? [value?.id] : null;
-    }, [value]);
+    const { ids, idLabels, modalKey } = useActionProps(id, value, valueLabelPath);
 
-    const idKeys = useMemo(() => (ids || []).map((id) => `${id}`).join('-'), [ids]);
-    const idLabels = useMemo(() => (ids || []).map((id) => `#${id}`).join(', '), [ids]);
-    const modalKey = useMemo(() => `duplicate-${idKeys}`, [idKeys]);
     const modal = useMemo(
-        () => (modals || []).find(({ id = null }) => id === `${modalKey}`) || null,
+        () => (modals || []).find(({ id: modalId = null }) => modalId === `${modalKey}`) || null,
         [modals, modalKey],
     );
 
@@ -117,6 +111,8 @@ const DuplicateAction = ({
                 }),
         [ids, endpoint, action, onChange, onClose, setError],
     );
+
+    console.log('yoo', label);
 
     return (
         <>

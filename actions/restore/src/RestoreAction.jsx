@@ -1,18 +1,19 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import classNames from 'classnames';
-import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useModal } from '@panneau/core/contexts';
+import { useActionProps } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Confirm from '@panneau/modal-confirm';
 
 import styles from './styles.module.scss';
 
 const propTypes = {
+    id: PropTypes.string.isRequired,
     title: PropTypes.node,
     description: PropTypes.node,
     endpoint: PropTypes.string,
@@ -22,8 +23,8 @@ const propTypes = {
     icon: PropTypes.string,
     theme: PropTypes.string,
     disabled: PropTypes.bool,
-    onChange: PropTypes.func,
     onConfirmed: PropTypes.func,
+    valueLabelPath: PropTypes.string,
     withConfirmation: PropTypes.bool,
     className: PropTypes.string,
 };
@@ -38,13 +39,14 @@ const defaultProps = {
     value: null,
     theme: 'primary',
     disabled: false,
-    onChange: null,
     onConfirmed: null,
+    valueLabelPath: null,
     withConfirmation: false,
     className: null,
 };
 
 const RestoreAction = ({
+    id,
     title,
     description,
     endpoint,
@@ -54,8 +56,8 @@ const RestoreAction = ({
     value,
     theme,
     disabled,
-    onChange,
     onConfirmed,
+    valueLabelPath,
     withConfirmation,
     className,
     ...props
@@ -64,21 +66,10 @@ const RestoreAction = ({
 
     const [error, setError] = useState(null);
 
-    const ids = useMemo(() => {
-        if (value == null) {
-            return null;
-        }
-        if (isArray(value)) {
-            return value.map(({ id = null } = {}) => id).filter((id) => id !== null);
-        }
-        return value !== null ? [value?.id] : null;
-    }, [value]);
+    const { ids, idLabels, modalKey } = useActionProps(id, value, valueLabelPath);
 
-    const idKeys = useMemo(() => (ids || []).map((id) => `${id}`).join('-'), [ids]);
-    const idLabels = useMemo(() => (ids || []).map((id) => `#${id}`).join(', '), [ids]);
-    const modalKey = useMemo(() => `restore-${idKeys}`, [idKeys]);
     const modal = useMemo(
-        () => (modals || []).find(({ id = null }) => id === `${modalKey}`) || null,
+        () => (modals || []).find(({ id: modalId }) => modalId === `${modalKey}`) || null,
         [modals, modalKey],
     );
 
@@ -108,9 +99,6 @@ const RestoreAction = ({
                     if (onConfirmed !== null) {
                         onConfirmed(response);
                     }
-                    if (onChange !== null) {
-                        onChange(response);
-                    }
                     if (withConfirmation) {
                         onClose();
                     }
@@ -118,7 +106,7 @@ const RestoreAction = ({
                 .catch((err) => {
                     setError(err);
                 }),
-        [ids, endpoint, onChange, onClose, setError, withConfirmation],
+        [ids, endpoint, onClose, setError, withConfirmation],
     );
 
     return (

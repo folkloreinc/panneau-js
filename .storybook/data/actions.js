@@ -40,4 +40,5 @@ export default [
         component: 'delete',
         multiple: false,
     },
+    // 'duplicate',
 ];

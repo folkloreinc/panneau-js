@@ -1,3 +1,4 @@
+export { default as useActionProps } from './useActionProps';
 export { default as useActions } from './useActions';
 export { default as useAnimationFrame } from './useAnimationFrame';
 export * from './useDates';

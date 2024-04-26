@@ -1,16 +1,18 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { useModal } from '@panneau/core/contexts';
+import { useActionProps } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import FormModal from '@panneau/modal-form';
 
 import styles from './styles.module.scss';
 
 const propTypes = {
+    id: PropTypes.string.isRequired,
     title: PropTypes.node,
     description: PropTypes.node,
     fields: PropTypes.arrayOf(PropTypes.shape({})),
@@ -22,6 +24,7 @@ const propTypes = {
     disabled: PropTypes.bool,
     onChange: PropTypes.func,
     onConfirmed: PropTypes.func,
+    valueLabelPath: PropTypes.string,
     withConfirmation: PropTypes.bool,
     className: PropTypes.string,
 };
@@ -38,11 +41,13 @@ const defaultProps = {
     disabled: false,
     onChange: null,
     onConfirmed: null,
+    valueLabelPath: null,
     withConfirmation: false,
     className: null,
 };
 
 const EditAction = ({
+    id,
     title,
     description,
     fields,
@@ -54,19 +59,33 @@ const EditAction = ({
     disabled,
     onChange,
     onConfirmed,
+    valueLabelPath,
     withConfirmation,
     className,
     ...props
 }) => {
-    const [showModal, setShowModal] = useState(false);
+    const { modals = null, register = null, unregister = null } = useModal();
+
+    const [error, setError] = useState(null);
+
+    const { ids, idLabels, modalKey } = useActionProps(id, value, valueLabelPath);
+
+    const modal = useMemo(
+        () => (modals || []).find(({ id: modalId = null }) => modalId === `${modalKey}`) || null,
+        [modals, modalKey],
+    );
 
     const onOpen = useCallback(() => {
-        setShowModal(true);
-    }, [setShowModal]);
+        register(modalKey);
+    }, [modalKey, register]);
+
+    const onClose = useCallback(() => {
+        unregister(modalKey);
+    }, [modalKey, unregister]);
 
     const onComplete = useCallback(
         (newValue) => {
-            setShowModal(false);
+            unregister(modalKey);
             if (onConfirmed !== null) {
                 onConfirmed(newValue);
             }
@@ -74,24 +93,12 @@ const EditAction = ({
                 onChange(newValue);
             }
         },
-        [onChange, setShowModal],
+        [onChange, unregister, modalKey],
     );
 
-    const onClose = useCallback(() => {
-        setShowModal(false);
-    }, [setShowModal]);
-
-    const ids = useMemo(() => {
-        if (value == null) {
-            return null;
-        }
-        if (isArray(value)) {
-            return value.map(({ id = null } = {}) => id).filter((id) => id !== null);
-        }
-        return value !== null ? [value?.id] : null;
-    }, [value]);
-
-    const idLabels = useMemo(() => (ids || []).map((id) => `#${id}`).join(', '), [ids]);
+    const onError = useCallback(() => {
+        setError(true);
+    }, [setError]);
 
     const multipleValues = useMemo(() => value !== null && value.length > 1, [value]);
 
@@ -111,8 +118,9 @@ const EditAction = ({
                 theme={disabled ? 'secondary' : theme}
                 {...props}
             />
-            {showModal ? (
+            {modal !== null ? (
                 <FormModal
+                    id={modalKey}
                     title={
                         title ||
                         (multipleValues ? (
@@ -129,6 +137,7 @@ const EditAction = ({
                     }
                     onClose={onClose}
                     onComplete={onComplete}
+                    onError={onError}
                     postData={{ ids }}
                     fields={fields}
                     action={endpoint}
@@ -142,6 +151,12 @@ const EditAction = ({
                             />
                         </p>
                     )}
+                    {error !== null ? (
+                        <FormattedMessage
+                            defaultMessage="An error has occured."
+                            description="Modal message"
+                        />
+                    ) : null}
                 </FormModal>
             ) : null}
         </>

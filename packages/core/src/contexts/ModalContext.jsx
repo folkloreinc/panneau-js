@@ -52,11 +52,10 @@ export const ModalProvider = ({ children, container: initialContainer }) => {
     );
 
     const closeLastModal = useCallback(() => {
-        const { current: currentModals = [] } = modalsRef;
-        const lastModal = currentModals.pop() || null;
+        const lastModal = modals.pop() || null;
         if (lastModal !== null) {
             const { id: lastModalId = null } = lastModal || {};
-            const newModals = currentModals.filter(({ id: modalId }) => modalId !== lastModalId);
+            const newModals = modals.filter(({ id: modalId }) => modalId !== lastModalId);
             setModals(newModals);
             modalsRef.current = newModals;
         }

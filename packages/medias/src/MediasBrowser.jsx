@@ -215,7 +215,7 @@ function MediasBrowser({
     );
 
     const [uploadedMedias, setUploadedMedias] = useState(null);
-    const [uploadProcessing, setUploadProcessing] = useState(false);
+    const [uploadProcessing, setUploadProcessing] = useState(true);
 
     const onUploadComplete = useCallback(
         (medias = null) => {
@@ -351,12 +351,11 @@ function MediasBrowser({
                               {
                                   id: '-',
                                   loading: true,
-                                  rowDisabled: true,
                                   actionsDisabled: true,
                                   selectionDisabled: true,
                               },
                           ]
-                        : null),
+                        : []),
                     ...(page === 1 ? uploadedMedias || [] : []),
                     ...(extraItems || [])
                         .map((item) => {

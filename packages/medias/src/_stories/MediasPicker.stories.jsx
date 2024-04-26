@@ -78,7 +78,7 @@ export const Multiple = () => (
 export const Dark = () => (
     <UppyProvider>
         <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
-            <Container layout="table" theme="dark" picker />
+            <Container layout="table" theme="dark" picker withStickySelection />
         </div>
     </UppyProvider>
 );

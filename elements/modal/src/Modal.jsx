@@ -32,7 +32,6 @@ const Modal = ({ id, children, position, title }) => {
         }),
         [title],
     );
-
     return (
         <ModalPortal id={finalId} data={data}>
             <div
