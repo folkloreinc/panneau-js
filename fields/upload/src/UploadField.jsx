@@ -48,6 +48,7 @@ const propTypes = {
     findButtonLabel: PanneauPropTypes.label,
     clearButtonLabel: PanneauPropTypes.label,
     allowMultipleUploads: PropTypes.bool,
+    closeAfterFinish: PropTypes.bool,
     maxNumberOfFiles: PropTypes.number,
     namePath: PropTypes.string,
     thumbnailPath: PropTypes.string,
@@ -92,6 +93,7 @@ const defaultProps = {
         <FormattedMessage defaultMessage="Clear" description="Default upload add button label" />
     ),
     allowMultipleUploads: false,
+    closeAfterFinish: true,
     maxNumberOfFiles: 1,
     namePath: 'name',
     thumbnailPath: 'thumbnail_url',
@@ -124,6 +126,7 @@ const UploadField = ({
     findButtonLabel,
     clearButtonLabel,
     allowMultipleUploads,
+    closeAfterFinish,
     maxNumberOfFiles,
     namePath,
     thumbnailPath,
@@ -435,6 +438,7 @@ const UploadField = ({
                         showProgressDetails
                         areInsidesReadyToBeVisible
                         proudlyDisplayPoweredByUppy={false}
+                        closeAfterFinish={closeAfterFinish}
                     />
                 </div>
             ) : null}
