@@ -215,7 +215,7 @@ function MediasBrowser({
     );
 
     const [uploadedMedias, setUploadedMedias] = useState(null);
-    const [uploadProcessing, setUploadProcessing] = useState(true);
+    const [uploadProcessing, setUploadProcessing] = useState(false);
 
     const onUploadComplete = useCallback(
         (medias = null) => {
