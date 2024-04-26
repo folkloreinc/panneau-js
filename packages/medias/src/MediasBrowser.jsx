@@ -217,6 +217,31 @@ function MediasBrowser({
     const [uploadedMedias, setUploadedMedias] = useState(null);
     const [uploadProcessing, setUploadProcessing] = useState(false);
 
+    const onUploadedMediaChanged = useCallback(
+        (newMedias) => {
+            const uploadedNewMedias = (
+                isArray(newMedias)
+                    ? [...newMedias, ...(uploadedMedias || [])]
+                    : [newMedias, ...(uploadedMedias || [])]
+            ).filter((it) => it !== null);
+            setUploadedMedias(uploadedNewMedias);
+            if (onSelectionChange !== null) {
+                const [firstMedia = null] = newMedias || [];
+                onSelectionChange(multipleSelection && isArray(newMedias) ? newMedias : firstMedia);
+                onQueryReset();
+                reload();
+            }
+        },
+        [
+            onSelectionChange,
+            setUploadedMedias,
+            uploadedMedias,
+            onQueryReset,
+            reload,
+            multipleSelection,
+        ],
+    );
+
     const onUploadComplete = useCallback(
         (medias = null) => {
             if (medias === null) return;
@@ -225,40 +250,17 @@ function MediasBrowser({
                 setUploadProcessing(true);
                 onMediaUploaded(rawMedias)
                     .then((newMedias) => {
-                        const uploadedNewMedias = (
-                            isArray(newMedias)
-                                ? [...(uploadedMedias || []), ...newMedias]
-                                : [...(uploadedMedias || []), newMedias]
-                        ).filter((it) => it !== null);
-                        setUploadedMedias(uploadedNewMedias);
-                        if (onSelectionChange !== null) {
-                            onSelectionChange(newMedias);
-                            onQueryReset(); // think about this
-                            reload();
-                        }
+                        onUploadedMediaChanged(newMedias);
                         setUploadProcessing(false);
                     })
                     .catch(() => {
                         setUploadProcessing(false);
                     });
             } else {
-                setUploadedMedias(rawMedias);
-                if (onSelectionChange !== null) {
-                    onSelectionChange(rawMedias);
-                    onQueryReset();
-                    reload();
-                }
+                onUploadedMediaChanged(rawMedias);
             }
         },
-        [
-            onMediaUploaded,
-            reload,
-            onQueryReset,
-            onSelectionChange,
-            uploadedMedias,
-            setUploadedMedias,
-            setUploadProcessing,
-        ],
+        [onMediaUploaded, setUploadedMedias, setUploadProcessing, onUploadedMediaChanged],
     );
 
     const pagination = (
