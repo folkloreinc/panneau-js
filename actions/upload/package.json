@@ -1,6 +1,6 @@
 {
     "name": "@panneau/action-upload",
-    "version": "3.0.197",
+    "version": "3.0.198",
     "description": "Upload action",
     "keywords": [
         "javascript"
@@ -48,7 +48,7 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.194",
         "@panneau/element-button": "^3.0.194",
-        "@panneau/field-upload": "^3.0.197",
+        "@panneau/field-upload": "^3.0.198",
         "@panneau/themes": "^3.0.194",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
