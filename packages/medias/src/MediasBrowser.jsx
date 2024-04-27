@@ -421,7 +421,9 @@ function MediasBrowser({
                                 className="ms-auto w-auto text-nowrap mt-2 mb-2 ps-2"
                                 withButton
                                 withoutMedia
-                                uppyConfig={uppyConfig}
+                                uppyProps={uppyConfig}
+                                types={types}
+                                allowMultipleUploads={multipleSelection}
                                 onChange={onUploadComplete}
                                 disabled={uploadProcessing}
                                 loading={uploadProcessing}

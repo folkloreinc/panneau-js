@@ -58,6 +58,7 @@ const propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
     disabled: PropTypes.bool,
+    uploadDisabled: PropTypes.bool,
     loading: PropTypes.bool,
     onChange: PropTypes.func,
     onClear: PropTypes.func,
@@ -103,6 +104,7 @@ const defaultProps = {
     width: null,
     height: 300,
     disabled: false,
+    uploadDisabled: false,
     loading: false,
     onChange: null,
     onClear: null,
@@ -136,6 +138,7 @@ const UploadField = ({
     width,
     height,
     disabled,
+    uploadDisabled,
     loading: parentLoading,
     onChange,
     onClear,
@@ -199,10 +202,10 @@ const UploadField = ({
         () => ({
             maxNumberOfFiles:
                 allowMultipleUploads && maxNumberOfFiles === 1 ? 50 : maxNumberOfFiles,
-            ...uppyProps,
             allowedFileTypes,
-            allowMultipleUploads,
             sources,
+            ...uppyProps,
+            allowMultipleUploads,
             autoProceed: true,
             onComplete,
         }),
@@ -424,7 +427,7 @@ const UploadField = ({
                 </div>
             ) : null}
 
-            {!disabled && !hasMedia && !withButton && finalUppy !== null ? (
+            {!uploadDisabled && !hasMedia && !withButton && finalUppy !== null ? (
                 <div className={styles.dashboard}>
                     <Dashboard
                         uppy={finalUppy}
@@ -443,7 +446,7 @@ const UploadField = ({
                 </div>
             ) : null}
 
-            {!disabled && withButton && finalUppy !== null && modalOpened ? (
+            {!uploadDisabled && withButton && finalUppy !== null && modalOpened ? (
                 <DashboardModal
                     uppy={finalUppy}
                     className={styles.dashboardModal}
@@ -457,6 +460,7 @@ const UploadField = ({
                     showProgressDetails
                     showAddFilesPanel
                     doneButtonHandler={closeModal}
+                    closeAfterFinish={closeAfterFinish}
                 />
             ) : null}
 
