@@ -160,6 +160,7 @@ function MediasBrowser({
         items,
         allItems,
         loading = false,
+        loaded = false,
         updateItem = null,
         pagination: { lastPage, total } = {},
         pages = null,
@@ -476,6 +477,7 @@ function MediasBrowser({
                             multipleSelection={multipleSelection}
                             items={finalItems || []}
                             loading={loading}
+                            loaded={loaded}
                         />
                     ) : null}
                     {layout === 'table' ? (
@@ -491,6 +493,7 @@ function MediasBrowser({
                             multipleSelection={multipleSelection}
                             items={finalItems}
                             loading={loading}
+                            loaded={loaded}
                             actionsProps={{
                                 getDeletePropsFromItem: ({ id = null } = {}) => ({
                                     href: null,

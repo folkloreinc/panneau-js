@@ -110,11 +110,10 @@ function Table({
     const withIdColumn = !withoutId && !hasIdColumn && !selectable;
 
     const finalSelectedItems = useMemo(() => {
-        const partialSelectedItems =
-            selectedItems !== null && !isArray(selectedItems) ? [selectedItems] : null;
-        return selectedItems !== null && isArray(selectedItems)
-            ? selectedItems.filter((it) => it !== null)
-            : partialSelectedItems;
+        if (selectedItems === null) {
+            return null;
+        }
+        return isArray(selectedItems) ? selectedItems : [selectedItems];
     }, [selectedItems]);
 
     const onSelectItem = useCallback(

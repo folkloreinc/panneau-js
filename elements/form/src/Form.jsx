@@ -153,6 +153,8 @@ const Form = ({
                                         />
                                     )
                                 }
+                                // icon={status === 'loading' ? 'loading' : 'check'}
+                                // iconPosition="right"
                                 disabled={
                                     !canSave || (status === 'loading' && generalError === null)
                                 }

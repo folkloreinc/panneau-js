@@ -94,14 +94,14 @@ export const WithUploadMultiple = () => (
     </UppyProvider>
 );
 
-export const WithUploadTypes = () => (
+export const WithVideoType = () => (
     <UppyProvider>
         <Container
             layout="table"
             picker
             multipleSelection
             uploadButton={{ id: 1, icon: 'circle' }}
-            types={['image', 'video']}
+            types={['video']}
         />
     </UppyProvider>
 );

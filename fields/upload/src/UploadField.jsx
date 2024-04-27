@@ -190,7 +190,10 @@ const UploadField = ({
         [onChange, allowMultipleUploads, mergeData],
     );
 
-    const typesString = useMemo(() => types.join('.'), [types]);
+    const typesString = useMemo(
+        () => (types !== null ? types.join('.') : ['audio', 'image', 'video'].join('.')),
+        [types],
+    );
     const allowedFileTypes = useMemo(() => {
         if (fileTypes !== null) {
             return fileTypes;

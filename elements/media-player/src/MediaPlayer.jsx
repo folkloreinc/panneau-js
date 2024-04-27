@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
@@ -28,11 +29,10 @@ const defaultProps = {
     className: null,
 };
 
-const MediaPlayer = ({ value: initialValue, width, height, className }) => {
+const MediaPlayer = ({ value: initialValue, width, height, className, ...props }) => {
     const value = initialValue || {};
     const { type } = value || {};
     const apiRef = useRef(null);
-
     return (
         <div
             className={classNames([
@@ -43,8 +43,8 @@ const MediaPlayer = ({ value: initialValue, width, height, className }) => {
             ])}
             style={{ width, height }}
         >
-            {type === 'video' ? <Video media={value} apiRef={apiRef} /> : null}
-            {type === 'audio' ? <Audio media={value} apiRef={apiRef} /> : null}
+            {type === 'video' ? <Video media={value} apiRef={apiRef} {...props} /> : null}
+            {type === 'audio' ? <Audio media={value} apiRef={apiRef} {...props} /> : null}
         </div>
     );
 };

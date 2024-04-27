@@ -13,16 +13,18 @@ const propTypes = {
         id: PropTypes.string,
         type: PropTypes.string,
     }),
+    showPlayer: PropTypes.bool,
     className: PropTypes.string,
 };
 
 const defaultProps = {
     value: null,
+    showPlayer: true,
     className: null,
 };
 
-function MediaFrame({ value, className }) {
-    const [showPlayer, setShowPlayer] = useState(false);
+function MediaFrame({ value, showPlayer: initialShowPlayer, className }) {
+    const [showPlayer, setShowPlayer] = useState(initialShowPlayer);
     const { type = null } = value || {};
 
     const onClick = useCallback(() => {
@@ -41,8 +43,8 @@ function MediaFrame({ value, className }) {
                 { [className]: className != null },
             ])}
         >
-            {showPlayer ? (
-                <MediaPlayer value={value} width="100%" />
+            {showPlayer && type !== 'image' ? (
+                <MediaPlayer value={value} autoPlay={false} width="100%" />
             ) : (
                 <ImageDisplay
                     className="w-100"

@@ -61,11 +61,10 @@ const Grid = ({
     );
 
     const finalSelectedItems = useMemo(() => {
-        const partialSelectedItems =
-            selectedItems !== null && !isArray(selectedItems) ? [selectedItems] : null;
-        return selectedItems !== null && isArray(selectedItems)
-            ? selectedItems.filter((it) => it !== null)
-            : partialSelectedItems;
+        if (selectedItems === null) {
+            return null;
+        }
+        return isArray(selectedItems) ? selectedItems : [selectedItems];
     }, [selectedItems]);
 
     // const onSelectPage = useCallback(
@@ -95,17 +94,11 @@ const Grid = ({
                               selectionDisabled = false,
                           } = item || {};
                           const itemSelectable = selectionDisabled ? false : selectable;
-                          let selected = false;
-                          if (multipleSelection) {
-                              selected = itemSelectable
-                                  ? ((finalSelectedItems || []).find(
-                                        ({ id = null } = {}) => id === itemId,
-                                    ) || null) !== null
-                                  : false;
-                          } else if (!isArray(finalSelectedItems)) {
-                              const { id: selectedId } = finalSelectedItems || {};
-                              selected = selectedId === itemId;
-                          }
+                          const selected = itemSelectable
+                              ? ((finalSelectedItems || []).find(
+                                    ({ id = null } = {}) => id === itemId,
+                                ) || null) !== null
+                              : false;
                           return (
                               <Component
                                   key={`item-${itemId}-${idx + 1}`}
