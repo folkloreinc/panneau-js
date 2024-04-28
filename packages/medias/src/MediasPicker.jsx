@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import MediasBrowser from './MediasBrowser';
 
@@ -27,6 +28,15 @@ function MediasPicker({
     className,
     ...props
 }) {
+    // Keep the previous selection on top of first page
+    const extraItems = useMemo(() => {
+        if (initialSelectedItems === null) {
+            return null;
+        }
+        return isArray(initialSelectedItems) ? initialSelectedItems : [initialSelectedItems];
+    }, []);
+
+    // Mostly for testing
     const [selectedItems, setSelectedItems] = useState(initialSelectedItems || null);
     const onSelectionChange = useCallback(
         (newSelection) => {
@@ -54,6 +64,7 @@ function MediasPicker({
                 selectedItems={selectedItems}
                 onSelectionChange={onSelectionChange}
                 multipleSelection={multiple}
+                extraItems={extraItems}
                 {...props}
             />
         </div>

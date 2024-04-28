@@ -347,10 +347,7 @@ function MediasBrowser({
     const finalItems = useMemo(() => {
         if (
             withStickySelection &&
-            (extraItems !== null ||
-                selectedItems !== null ||
-                uploadedMedias !== null ||
-                uploadProcessing === true)
+            (extraItems !== null || uploadedMedias !== null || uploadProcessing === true)
         ) {
             return uniqBy(
                 [
@@ -366,7 +363,7 @@ function MediasBrowser({
                         : []),
                     ...(page === 1 ? uploadedMedias || [] : []),
                     ...(page === 1
-                        ? (selectedItems || [])
+                        ? (extraItems || [])
                               .map((item) => {
                                   const { id: itemId = null } = item;
                                   return (
@@ -379,18 +376,7 @@ function MediasBrowser({
                               })
                               .filter((it) => it !== null) || []
                         : []),
-                    ...(extraItems || [])
-                        .map((item) => {
-                            const { id: itemId = null } = item;
-                            return (
-                                (allItems || []).find(
-                                    ({ id: otherId = null } = {}) => otherId === itemId,
-                                ) ||
-                                item ||
-                                null
-                            );
-                        })
-                        .filter((it) => it !== null),
+
                     ...(items || []),
                 ],
                 (it) => it?.id,
