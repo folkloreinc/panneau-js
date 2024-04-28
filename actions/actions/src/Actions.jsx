@@ -106,11 +106,11 @@ const Actions = ({
                         value={value}
                         size={size}
                         resource={resource}
-                        withConfirmation={actionConfirmation || withConfirmation}
                         {...(hasActionComponent
                             ? {
                                   onChange,
                                   onConfirmed,
+                                  withConfirmation: actionConfirmation || withConfirmation,
                               }
                             : null)}
                         {...otherProps}
