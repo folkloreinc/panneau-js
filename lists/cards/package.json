@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-cards",
-    "version": "3.0.194",
+    "version": "3.0.200",
     "description": "Cards list",
     "keywords": [
         "javascript"
@@ -61,9 +61,9 @@
         "@panneau/element-button": "^3.0.194",
         "@panneau/element-buttons": "^3.0.194",
         "@panneau/element-card": "^3.0.194",
+        "@panneau/element-empty": "^3.0.200",
         "@panneau/element-label": "^3.0.194",
         "@panneau/element-loading": "^3.0.194",
-        "@panneau/element-empty": "^3.0.194",
         "@panneau/element-pagination": "^3.0.194",
         "@panneau/themes": "^3.0.194",
         "classnames": "^2.5.1",
