@@ -2,7 +2,7 @@ import { getJSON } from '@folklore/fetch';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import isEmpty from 'lodash/isEmpty';
 import queryString from 'query-string';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const useItems = ({
     store,
@@ -95,7 +95,7 @@ const useItems = ({
             );
         },
         ...(keepData ? { placeholderData: keepPreviousData } : null),
-        ...(providedItems !== null ? { initialData: providedItems } : null),
+        // ...(providedItems !== null ? { initialData: providedItems } : null),
         ...queryConfig,
     });
 
@@ -121,23 +121,46 @@ const useItems = ({
         [query, onQueryChange],
     );
 
-    const pages = useRef(null);
-    useEffect(() => {
-        if (isFetched && page !== null && data !== null) {
-            pages.current = {
-                ...pages.current,
-                [page]: data,
-            };
-        }
-    }, [isFetched, page, data]);
+    // Keep a list of updated items
+    const [updatedItems, setUpdatedItems] = useState([]);
+    const updateItem = useCallback(
+        (item) => {
+            const { id: itemId = null } = item || {};
+            if (itemId !== null) {
+                setUpdatedItems([
+                    ...(updatedItems || []).filter(({ id = null } = {}) => id !== itemId),
+                    item,
+                ]);
+            }
+        },
+        [updatedItems, setUpdatedItems],
+    );
 
-    const finalItems = useMemo(() => {
+    const replaceUpdatedItems = useCallback(
+        (currentItems) => {
+            if (currentItems === null || updatedItems === null || updatedItems.length === 0) {
+                return currentItems;
+            }
+            return (currentItems || []).map((item) => {
+                const { id: itemId = null } = item || {};
+                const updated =
+                    (updatedItems || []).find(({ id = null } = {}) => id === itemId) || null;
+                if (updated !== null) {
+                    return updated;
+                }
+                return item;
+            }, []);
+        },
+        [updatedItems],
+    );
+
+    const partialItems = useMemo(() => {
         if (data === null) {
             return data;
         }
         if (paginated) {
             if (getPageFromResponse !== null) {
-                return items;
+                return getPageFromResponse(items);
             }
             return items;
         }
@@ -145,7 +168,9 @@ const useItems = ({
             return getItemsFromResponse(data);
         }
         return data;
-    }, [items, data, paginated, getPageFromResponse, getItemsFromResponse]);
+    }, [items, data, paginated, getPageFromResponse, getItemsFromResponse, updatedItems]);
+
+    const finalItems = replaceUpdatedItems(partialItems);
 
     // Pseudo-events for compatibility
     useEffect(() => {
@@ -168,9 +193,18 @@ const useItems = ({
         }
     }, [status]);
 
+    // Keep a list of pages, useEffect wont work here because delayed
+    const pages = useRef(null);
+    if (isFetched && page !== null && data !== null) {
+        pages.current = {
+            ...pages.current,
+            [page]: data,
+        };
+    }
+
     const allItems =
         pages.current !== null
-            ? Object.keys(pages.current).flatMap((k) => pages.current[k]?.data)
+            ? replaceUpdatedItems(Object.keys(pages.current).flatMap((k) => pages.current[k]?.data))
             : null;
 
     const finalLoading = isLoading || isFetching || isRefetching;
@@ -196,7 +230,7 @@ const useItems = ({
         reloadPage: reload,
         reload,
         reset: reload,
-        updateItem: null,
+        updateItem,
         status,
         error,
     };

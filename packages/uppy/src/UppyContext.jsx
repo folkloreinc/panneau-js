@@ -232,7 +232,7 @@ export const UppyProvider = ({
         }
         return (opts = {}) => {
             const { sources: customSources = sources, ...uppyOpts } = opts || {};
-            console.log('Uppy opts buildUppy', opts);
+            // console.log('Uppy opts buildUppy', opts);
             const newUppy = new Uppy({
                 id,
                 locale: uppyLocale,

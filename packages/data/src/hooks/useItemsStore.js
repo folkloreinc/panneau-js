@@ -87,12 +87,12 @@ const useItemsStore = (
             const { id: itemId = null } = item || {};
             if (itemId !== null) {
                 setUpdatedItems([
-                    ...(items || []).filter(({ id = null } = {}) => id !== itemId),
+                    ...(updatedItems || []).filter(({ id = null } = {}) => id !== itemId),
                     item,
                 ]);
             }
         },
-        [items, updatedItems, setUpdatedItems],
+        [updatedItems, setUpdatedItems],
     );
 
     const replaceUpdatedItems = useCallback(
