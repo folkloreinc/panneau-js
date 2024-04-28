@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-resource-items",
-    "version": "3.0.202",
+    "version": "3.0.203",
     "description": "Default resource list",
     "keywords": [
         "javascript"
@@ -48,7 +48,7 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/action-actions": "^3.0.202",
         "@panneau/core": "^3.0.194",
-        "@panneau/data": "^3.0.194",
+        "@panneau/data": "^3.0.203",
         "@panneau/element-button": "^3.0.194",
         "@panneau/element-form-group": "^3.0.194",
         "@panneau/element-navbar": "^3.0.194",
