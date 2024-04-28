@@ -161,6 +161,9 @@
     "NeSNvW": {
         "defaultMessage": "effacer"
     },
+    "NozDYd": {
+        "defaultMessage": "Chargement"
+    },
     "Of2stw": {
         "defaultMessage": "J"
     },
@@ -281,6 +284,9 @@
     "d0g58T": {
         "defaultMessage": "Connexion"
     },
+    "dRB0/1": {
+        "defaultMessage": "Vide"
+    },
     "daHjZg": {
         "defaultMessage": "Modifier le fichier"
     },
@@ -316,9 +322,6 @@
     },
     "l+ddDH": {
         "defaultMessage": "Créer {a_singular}"
-    },
-    "l2ZaNV": {
-        "defaultMessage": "Restaurer"
     },
     "li2Qqu": {
         "defaultMessage": "Passer l'étape"
@@ -373,6 +376,9 @@
     },
     "tPeIKO": {
         "defaultMessage": "Retour à la connexion"
+    },
+    "uN/FYD": {
+        "defaultMessage": "Aucun résultat"
     },
     "ucieFX": {
         "defaultMessage": "Les éléments suivants seront modifiés: {ids}."

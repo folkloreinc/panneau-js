@@ -327,13 +327,15 @@ function MediasBrowser({
                           const { actions = [] } = column || {};
                           return {
                               ...column,
-                              actions: (actions || []).reduce((acc, action) => {
-                                  if (action === 'delete') {
-                                      acc.push('restore');
-                                  }
-                                  acc.push(action);
-                                  return acc;
-                              }, []),
+                              actions: (actions || [])
+                                  .reduce((acc, action) => {
+                                      if (action === 'delete') {
+                                          acc.push('restore');
+                                      }
+                                      acc.push(action);
+                                      return acc;
+                                  }, [])
+                                  .filter((it) => it !== 'edit'),
                           };
                       }
                       return column;

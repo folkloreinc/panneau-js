@@ -379,6 +379,10 @@
     "defaultMessage": "Login",
     "description": "Menu label"
   },
+  "dRB0/1": {
+    "defaultMessage": "Empty",
+    "description": "Empty message"
+  },
   "daHjZg": {
     "defaultMessage": "Edit file",
     "description": "Button label"
@@ -425,10 +429,6 @@
   },
   "l+ddDH": {
     "defaultMessage": "Create {a_singular}",
-    "description": "Button label"
-  },
-  "l2ZaNV": {
-    "defaultMessage": "Restore",
     "description": "Button label"
   },
   "li2Qqu": {
@@ -502,6 +502,10 @@
   "tPeIKO": {
     "defaultMessage": "Go back to login",
     "description": "Link label"
+  },
+  "uN/FYD": {
+    "defaultMessage": "No results found",
+    "description": "Empty label"
   },
   "ucieFX": {
     "defaultMessage": "The following items will be modified: {ids}.",

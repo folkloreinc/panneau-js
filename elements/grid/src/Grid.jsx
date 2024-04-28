@@ -3,8 +3,11 @@ import classNames from 'classnames';
 import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import { selectItem } from '@panneau/core/utils';
+import Empty from '@panneau/element-empty';
+import Loading from '@panneau/element-loading';
 
 import styles from './styles.module.scss';
 
@@ -19,6 +22,8 @@ const propTypes = {
     componentProps: PropTypes.shape({}),
     size: PropTypes.string,
     gap: PropTypes.string,
+    loading: PropTypes.bool,
+    loaded: PropTypes.bool,
     selectable: PropTypes.bool,
     selectedItems: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
     multipleSelection: PropTypes.bool,
@@ -32,6 +37,8 @@ const defaultProps = {
     componentProps: null,
     size: null,
     gap: null,
+    loading: false,
+    loaded: false,
     selectable: false,
     selectedItems: null,
     multipleSelection: false,
@@ -45,6 +52,8 @@ const Grid = ({
     componentProps,
     size,
     gap,
+    loading,
+    loaded,
     selectable,
     selectedItems,
     onSelectionChange,
@@ -118,6 +127,16 @@ const Grid = ({
                       })
                     : null}
             </div>
+            {loading && !loaded && (items === null || items.length === 0) ? (
+                <Loading withDelay>
+                    <FormattedMessage defaultMessage="Loading" description="Loading label" />
+                </Loading>
+            ) : null}
+            {!loading && loaded && (items === null || items.length === 0) ? (
+                <Empty withDelay>
+                    <FormattedMessage defaultMessage="No results found" description="Empty label" />
+                </Empty>
+            ) : null}
         </div>
     );
 };

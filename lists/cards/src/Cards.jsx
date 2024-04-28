@@ -8,12 +8,14 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
 import { getColumnsWithFields, getComponentFromName } from '@panneau/core/utils';
 import Card from '@panneau/element-card';
+import Empty from '@panneau/element-empty';
 import Loading from '@panneau/element-loading';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
     items: PanneauPropTypes.items,
     loading: PropTypes.bool,
+    loaded: PropTypes.bool,
     columns: PanneauPropTypes.tableColumns,
     cardTitlePath: PropTypes.string,
     displayPlaceholder: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
@@ -26,6 +28,7 @@ const propTypes = {
 const defaultProps = {
     items: [],
     loading: false,
+    loaded: false,
     columns: null,
     cardTitlePath: 'title',
     displayPlaceholder: null,
@@ -39,6 +42,7 @@ const CardsList = ({
     resource,
     items,
     loading,
+    loaded,
     columns,
     cardTitlePath,
     reload,
@@ -168,7 +172,12 @@ const CardsList = ({
                       );
                   })
                 : null}
-            {loading ? <Loading withDelay /> : null}
+            {loading && !loaded && (items === null || items.length === 0) ? (
+                <Loading withDelay />
+            ) : null}
+            {!loading && loaded && (items === null || items.length === 0) ? (
+                <Empty withDelay />
+            ) : null}
         </div>
     );
 };

@@ -11,6 +11,7 @@ import { FormattedMessage } from 'react-intl';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
 import { checkClickable, getComponentFromName, selectItem, selectPage } from '@panneau/core/utils';
+import Empty from '@panneau/element-empty';
 import Loading from '@panneau/element-loading';
 
 import SortLink from './SortLink';
@@ -18,6 +19,7 @@ import SortLink from './SortLink';
 const propTypes = {
     items: PanneauPropTypes.items,
     columns: PanneauPropTypes.tableColumns,
+    loading: PropTypes.bool,
     loaded: PropTypes.bool,
     theme: PropTypes.string,
     baseUrl: PropTypes.string,
@@ -25,7 +27,6 @@ const propTypes = {
     sortColumnParameter: PropTypes.string,
     sortDirectionParameter: PropTypes.string,
     onQueryChange: PropTypes.func,
-    showEmptyLabel: PropTypes.bool,
     emptyLabel: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.node,
@@ -50,6 +51,7 @@ const propTypes = {
 const defaultProps = {
     items: [],
     columns: [],
+    loading: false,
     loaded: false,
     theme: null,
     baseUrl: null,
@@ -57,7 +59,6 @@ const defaultProps = {
     sortColumnParameter: 'order',
     sortDirectionParameter: 'order_direction',
     onQueryChange: null,
-    showEmptyLabel: false,
     emptyLabel: null,
     withoutId: false,
     withFadedId: true,
@@ -78,6 +79,7 @@ const defaultProps = {
 function Table({
     items,
     columns,
+    loading,
     loaded,
     theme,
     baseUrl,
@@ -85,7 +87,6 @@ function Table({
     sortColumnParameter,
     sortDirectionParameter,
     onQueryChange,
-    showEmptyLabel,
     emptyLabel,
     withoutId,
     withFadedId,
@@ -411,16 +412,18 @@ function Table({
                                 </tr>
                             );
                         })}
-                        {showEmptyLabel && emptyLabel !== null ? (
-                            <tr key="empty">{emptyLabel}</tr>
-                        ) : null}
                     </tbody>
                 </table>
             ) : null}
-            {!loaded && (items === null || items.length === 0) && !withoutLoading ? (
-                <Loading withDelay>
+            {loading && !loaded && (items === null || items.length === 0) && !withoutLoading ? (
+                <Loading className="mt-2" withDelay>
                     <FormattedMessage defaultMessage="Loading" description="Loading label" />
                 </Loading>
+            ) : null}
+            {!loading && loaded && (items === null || items.length === 0) && !withoutEmpty ? (
+                <Empty className="mt-2" withDelay>
+                    <FormattedMessage defaultMessage="No results found" description="Empty label" />
+                </Empty>
             ) : null}
         </div>
     );

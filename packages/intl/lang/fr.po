@@ -345,7 +345,7 @@ msgstr "effacer"
 #: NozDYd
 msgctxt "NozDYd"
 msgid "Uploading"
-msgstr ""
+msgstr "Chargement"
 
 # Tuesday letter
 #: Of2stw
@@ -591,6 +591,12 @@ msgctxt "d0g58T"
 msgid "Login"
 msgstr "Connexion"
 
+# Empty message
+#: dRB0/1
+msgctxt "dRB0/1"
+msgid "Empty"
+msgstr "Vide"
+
 # Button label
 #: daHjZg
 msgctxt "daHjZg"
@@ -662,12 +668,6 @@ msgstr "L"
 msgctxt "l+ddDH"
 msgid "Create {a_singular}"
 msgstr "Créer {a_singular}"
-
-# Button label
-#: l2ZaNV
-msgctxt "l2ZaNV"
-msgid "Restore"
-msgstr "Restaurer"
 
 # Link label
 #: li2Qqu
@@ -778,6 +778,12 @@ msgstr "Modifier {nom}"
 msgctxt "tPeIKO"
 msgid "Go back to login"
 msgstr "Retour à la connexion"
+
+# Empty label
+#: uN/FYD
+msgctxt "uN/FYD"
+msgid "No results found"
+msgstr "Aucun résultat"
 
 # Modal message
 #: ucieFX

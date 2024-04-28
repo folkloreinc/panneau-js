@@ -114,7 +114,7 @@ const DeleteAction = ({
         [ids, endpoint, onChange, onClose, setError, withConfirmation],
     );
 
-    console.log('withConfirmation', withConfirmation, modalKey);
+    // console.log('withConfirmation', withConfirmation, modalKey);
 
     return (
         <>

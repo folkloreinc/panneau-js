@@ -106,7 +106,6 @@ const ResourceItemsList = ({
     } = useResourceItems(resource, queryWithoutPage, paginated ? parseInt(page, 10) : null);
 
     const { lastPage = 0, total = 0 } = pagination || {};
-    const finalEmpty = loaded && !loading && total === 0;
 
     const ListComponents = useListsComponents();
     const ListComponent = getComponentFromName(listComponent || 'table', ListComponents);
@@ -222,7 +221,6 @@ const ResourceItemsList = ({
                     query={query}
                     onQueryChange={onQueryChange}
                     onQueryReset={onQueryReset}
-                    showEmptyLabel={finalEmpty}
                     loading={loading}
                     loaded={loaded}
                     emptyLabel={

@@ -284,6 +284,9 @@
     "d0g58T": {
         "defaultMessage": "Login"
     },
+    "dRB0/1": {
+        "defaultMessage": "Empty"
+    },
     "daHjZg": {
         "defaultMessage": "Edit file"
     },
@@ -319,9 +322,6 @@
     },
     "l+ddDH": {
         "defaultMessage": "Create {a_singular}"
-    },
-    "l2ZaNV": {
-        "defaultMessage": "Restore"
     },
     "li2Qqu": {
         "defaultMessage": "Skip setup"
@@ -376,6 +376,9 @@
     },
     "tPeIKO": {
         "defaultMessage": "Go back to login"
+    },
+    "uN/FYD": {
+        "defaultMessage": "No results found"
     },
     "ucieFX": {
         "defaultMessage": "The following items will be modified: {ids}."

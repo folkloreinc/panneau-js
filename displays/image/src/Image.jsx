@@ -14,6 +14,7 @@ const propTypes = {
     maxHeight: PropTypes.number,
     onClick: PropTypes.func,
     withZoom: PropTypes.bool,
+    // withModal: PropTypes.bool, // TODO
     className: PropTypes.string,
 };
 
@@ -24,10 +25,20 @@ const defaultProps = {
     maxHeight: 40,
     onClick: null,
     withZoom: false,
+    // withModal: false,
     className: null,
 };
 
-const Image = ({ value, placeholder, maxWidth, maxHeight, onClick, withZoom, className }) => {
+const Image = ({
+    value,
+    placeholder,
+    maxWidth,
+    maxHeight,
+    onClick,
+    withZoom,
+    // withModal,
+    className,
+}) => {
     const {
         url = null,
         thumbnailUrl = null,

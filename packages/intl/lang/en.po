@@ -593,6 +593,12 @@ msgctxt "d0g58T"
 msgid "Login"
 msgstr "Login"
 
+# Empty message
+#: dRB0/1
+msgctxt "dRB0/1"
+msgid "Empty"
+msgstr "Empty"
+
 # Button label
 #: daHjZg
 msgctxt "daHjZg"
@@ -664,12 +670,6 @@ msgstr "M"
 msgctxt "l+ddDH"
 msgid "Create {a_singular}"
 msgstr "Create {a_singular}"
-
-# Button label
-#: l2ZaNV
-msgctxt "l2ZaNV"
-msgid "Restore"
-msgstr "Restore"
 
 # Link label
 #: li2Qqu
@@ -778,6 +778,12 @@ msgstr "Edit {name}"
 msgctxt "tPeIKO"
 msgid "Go back to login"
 msgstr "Go back to login"
+
+# Empty label
+#: uN/FYD
+msgctxt "uN/FYD"
+msgid "No results found"
+msgstr "No results found"
 
 # Modal message
 #: ucieFX
