@@ -23,4 +23,4 @@ export class InlineEditor extends InlineEditorBase {}
 InlineEditor.builtinPlugins = [Essentials, Paragraph, Bold, Italic, Link];
 InlineEditor.defaultConfig = {};
 
-export default Editor;
+export default { Editor, InlineEditor };
