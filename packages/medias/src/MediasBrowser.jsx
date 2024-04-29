@@ -20,7 +20,7 @@ import Filters from '@panneau/filter-filters';
 
 import { useMediaDelete, useMediaTrash, useMedias } from './hooks';
 
-import { useMedia } from './MediaContext';
+import { useCurrentMedia } from './MediaContext';
 import MediaForm from './MediaForm';
 import defaultColumns from './defaults/columns';
 import defaultFields from './defaults/fields';
@@ -185,7 +185,7 @@ function MediasBrowser({
         [setLayout],
     );
 
-    const { media: currentMedia, setMedia: setCurrentMedia } = useMedia();
+    const { currentMedia, setCurrentMedia } = useCurrentMedia();
 
     useEffect(() => {
         if (currentMedia !== null && onMediaFormOpen !== null) {
