@@ -4,6 +4,8 @@ import isEmpty from 'lodash/isEmpty';
 import queryString from 'query-string';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
+// The new, better version
+
 const useItemsStore = (
     store,
     {

@@ -17,7 +17,10 @@ const defaultProps = {
 
 export function MediaProvider({ media: providedMedia, children }) {
     const [currentMedia, setCurrentMedia] = useState(providedMedia);
-    const values = useMemo(() => ({ currentMedia, setCurrentMedia }), [currentMedia, setCurrentMedia]);
+    const values = useMemo(
+        () => ({ currentMedia, setCurrentMedia }),
+        [currentMedia, setCurrentMedia],
+    );
     return <MediaContext.Provider value={values}>{children}</MediaContext.Provider>;
 }
 

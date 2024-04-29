@@ -4,6 +4,8 @@ import isEmpty from 'lodash/isEmpty';
 import queryString from 'query-string';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+// For backwards compatibility
+
 const useItems = ({
     store,
     url,
@@ -14,7 +16,7 @@ const useItems = ({
     keepData = true,
     ...oldProps
 }) => {
-    // Legacy
+    // Legacy compatibility
     const {
         getPage = null,
         getItems = null,

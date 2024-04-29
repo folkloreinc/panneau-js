@@ -5,5 +5,3 @@ export { default as useMediaCreate } from './useMediaCreate';
 export { default as useMediaUpdate } from './useMediaUpdate';
 export { default as useMediaDelete } from './useMediaDelete';
 export { default as useMediaTrash } from './useMediaTrash';
-export { useCurrentMedia } from '../MediaContext';
-

@@ -117,7 +117,6 @@ const Fields = ({
                     {...fieldProps}
                     name={name}
                     value={fieldValue}
-                    item={value}
                     horizontal={horizontal}
                     onChange={(newValue) => onFieldChange(field, newValue)}
                     className={fieldClassName}

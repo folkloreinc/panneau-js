@@ -62,21 +62,20 @@ const UploadAction = ({
 }) => {
     // const { ids, idLabels, modalKey } = useActionProps(value);
     console.log('upload action...');
-    return (
-        <UploadField
-            className={classNames([
-                styles.container,
-                {
-                    [className]: className !== null,
-                },
-            ])}
-            label={label}
-            icon={icon}
-            disabled={disabled}
-            theme={disabled ? 'secondary' : theme}
-            {...props}
-        />
-    );
+    return 'Upload';
+    // <UploadField
+    //     className={classNames([
+    //         styles.container,
+    //         {
+    //             [className]: className !== null,
+    //         },
+    //     ])}
+    //     label={label}
+    //     icon={icon}
+    //     disabled={disabled}
+    //     theme={disabled ? 'secondary' : theme}
+    //     {...props}
+    // />
 };
 
 UploadAction.propTypes = propTypes;
