@@ -15,8 +15,9 @@ export default {
 
 const options = ['One', 'Two', 'Three'];
 
-const Container = (props) => {
-    const [value, setValue] = useState(null);
+// eslint-disable-next-line react/prop-types
+const Container = ({ value: initialValue, ...props }) => {
+    const [value, setValue] = useState(initialValue);
     return <SelectField {...props} value={value} onChange={setValue} />;
 };
 
@@ -34,6 +35,19 @@ export const MultiSelect = () => (
 
 export const MultiDisabled = () => (
     <Container options={options} multiple placeholder="Multi select disabled..." disabled />
+);
+
+export const WithRequestAndValueMultiple = () => (
+    <Container
+        value={[{ id: '1', type: 'event', title: '1 évévnement' }]}
+        valueIsOption
+        requestUrl="/api/events"
+        optionLabelPath="title"
+        optionValuePath="id"
+        multiple
+        placeholder="With Request and initial value"
+        paginated={false}
+    />
 );
 
 export const WithRequest = () => (

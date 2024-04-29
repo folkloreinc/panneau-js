@@ -8,6 +8,7 @@ import { getPathValue } from '@panneau/core/utils';
 import Select from '@panneau/element-select';
 
 const propTypes = {
+    value: PropTypes.any,
     paginated: PropTypes.bool,
     loadOptions: PropTypes.func,
     requestUrl: PropTypes.string,
@@ -27,6 +28,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    value: null,
     paginated: false,
     loadOptions: null,
     requestUrl: null,
@@ -46,6 +48,7 @@ const defaultProps = {
 };
 
 const SelectField = ({
+    value,
     paginated,
     loadOptions: customLoadOptions,
     requestUrl,
@@ -159,6 +162,7 @@ const SelectField = ({
     return (
         <Select
             className={className}
+            value={value}
             isAsync={finalLoadOptions !== null}
             defaultOptions={finalLoadOptions !== null}
             loadOptions={finalLoadOptions}

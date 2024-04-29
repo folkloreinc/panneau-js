@@ -30,6 +30,7 @@ const propTypes = {
     autoSize: PropTypes.bool,
     loadOptions: PropTypes.func,
     getOptionValue: PropTypes.func,
+    getOptionLabel: PropTypes.func,
     valueIsOption: PropTypes.bool,
     styles: PropTypes.shape({}),
     onChange: PropTypes.func,
@@ -51,6 +52,7 @@ const defaultProps = {
     placeholder: <FormattedMessage defaultMessage="Choose an option" description="Default label" />,
     autoSize: false,
     getOptionValue: null,
+    getOptionLabel: null,
     loadOptions: null,
     valueIsOption: false,
     styles: null,
@@ -73,6 +75,7 @@ const SelectElement = ({
     placeholder,
     autoSize,
     getOptionValue,
+    getOptionLabel,
     loadOptions,
     styles,
     onChange,
@@ -184,6 +187,7 @@ const SelectElement = ({
             <SelectComponent
                 {...props}
                 {...(getOptionValue !== null ? { getOptionValue } : null)}
+                {...(getOptionLabel !== null ? { getOptionLabel } : null)}
                 {...(creatable
                     ? {
                           formatCreateLabel: (newLabel) => `${createPrefix} ${newLabel}`,

@@ -22,7 +22,7 @@ const useItems = ({
         getItems = null,
         page: oldPage = null,
         count: oldCount = null,
-        items: providedItems = null,
+        items: providedItems = null, // TODO
         pages: initialPages = null,
         getPageFromResponse = ({
             pagination: {
