@@ -16,6 +16,7 @@ import MediasPicker from '../MediasPicker';
 import Media1 from '../../../../.storybook/api/items/medias/1.json';
 import Media2 from '../../../../.storybook/api/items/medias/2.json';
 import Media3 from '../../../../.storybook/api/items/medias/3.json';
+import Media11 from '../../../../.storybook/api/items/medias/11.json';
 
 export default {
     title: 'Medias/MediasPicker',
@@ -106,14 +107,26 @@ export const WithVideoType = () => (
     </UppyProvider>
 );
 
+export const WithStickySelectionAndTypes = () => (
+    <UppyProvider>
+        <Container
+            layout="table"
+            picker
+            uploadButton={{ id: 1, icon: 'circle' }}
+            types={['video', 'audio']}
+            value={Media11}
+            withStickySelection
+        />
+    </UppyProvider>
+);
+
 export const WithStickySelection = () => (
     <UppyProvider>
         <Container
             layout="table"
             picker
             uploadButton={{ id: 1, icon: 'circle' }}
-            types={['image', 'video', 'audio']}
-            value={Media2}
+            value={Media11}
             withStickySelection
         />
     </UppyProvider>

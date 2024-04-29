@@ -21,6 +21,7 @@ const propTypes = {
     columns: PanneauPropTypes.tableColumns,
     loading: PropTypes.bool,
     loaded: PropTypes.bool,
+    empty: PropTypes.bool,
     theme: PropTypes.string,
     baseUrl: PropTypes.string,
     query: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -53,6 +54,7 @@ const defaultProps = {
     columns: [],
     loading: false,
     loaded: false,
+    empty: false,
     theme: null,
     baseUrl: null,
     query: null,
@@ -81,6 +83,7 @@ function Table({
     columns,
     loading,
     loaded,
+    empty,
     theme,
     baseUrl,
     query,
@@ -420,9 +423,15 @@ function Table({
                     <FormattedMessage defaultMessage="Loading" description="Loading label" />
                 </Loading>
             ) : null}
-            {!loading && loaded && (items === null || items.length === 0) && !withoutEmpty ? (
+            {(empty || (!loading && loaded && (items === null || items.length === 0))) &&
+            !withoutEmpty ? (
                 <Empty className="mt-2" withDelay>
-                    <FormattedMessage defaultMessage="No results found" description="Empty label" />
+                    {emptyLabel || (
+                        <FormattedMessage
+                            defaultMessage="No results found"
+                            description="Empty label"
+                        />
+                    )}
                 </Empty>
             ) : null}
         </div>

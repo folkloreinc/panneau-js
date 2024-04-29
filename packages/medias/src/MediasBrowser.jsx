@@ -125,7 +125,10 @@ function MediasBrowser({
     formChildren,
 }) {
     const [baseItems] = useState(initialItems || null);
-    const baseQuery = useMemo(() => ({ count: 12, ...initialQuery, types }), [initialQuery, types]);
+    const baseQuery = useMemo(
+        () => ({ count: 12, ...initialQuery, ...(types !== null ? { types } : null) }),
+        [initialQuery, types],
+    );
     const { query: fullQuery, onPageChange, onQueryChange, onQueryReset } = useQuery(baseQuery);
 
     const {
@@ -344,6 +347,11 @@ function MediasBrowser({
         [columns, withTrash, showTrashed],
     );
 
+    const hasQueryItem = useMemo(() => {
+        const showOnTopQuery = types === null ? query : queryWithoutTypes;
+        return showOnTopQuery !== null && !trashed ? Object.keys(showOnTopQuery).length > 0 : false;
+    }, [types, query, queryWithoutTypes, trashed]);
+
     const finalItems = useMemo(() => {
         if (
             withStickySelection &&
@@ -361,8 +369,8 @@ function MediasBrowser({
                               },
                           ]
                         : []),
-                    ...(page === 1 ? uploadedMedias || [] : []),
-                    ...(page === 1
+                    ...(page === 1 && !hasQueryItem ? uploadedMedias || [] : []),
+                    ...(page === 1 && !hasQueryItem
                         ? (extraItems || [])
                               .map((item) => {
                                   const { id: itemId = null } = item;
@@ -383,7 +391,12 @@ function MediasBrowser({
             );
         }
         return items;
-    }, [items, page, allItems, withStickySelection, extraItems, uploadProcessing]);
+    }, [items, page, allItems, withStickySelection, extraItems, uploadProcessing, hasQueryItem]);
+
+    // const emptyWithSticky = useMemo(
+    //     () => (items || []).length === 0 && (finalItems || []).length > 0,
+    //     [items, finalItems],
+    // );
 
     return (
         <div className={className}>
@@ -483,6 +496,7 @@ function MediasBrowser({
                             items={finalItems || []}
                             loading={loading}
                             loaded={loaded}
+                            // empty={emptyWithSticky}
                         />
                     ) : null}
                     {layout === 'table' ? (
@@ -499,6 +513,7 @@ function MediasBrowser({
                             items={finalItems}
                             loading={loading}
                             loaded={loaded}
+                            // empty={emptyWithSticky}
                             actionsProps={{
                                 getDeletePropsFromItem: ({ id = null } = {}) => ({
                                     href: null,

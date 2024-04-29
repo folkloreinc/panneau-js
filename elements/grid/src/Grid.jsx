@@ -24,6 +24,8 @@ const propTypes = {
     gap: PropTypes.string,
     loading: PropTypes.bool,
     loaded: PropTypes.bool,
+    empty: PropTypes.bool,
+    emptyLabel: PropTypes.node,
     selectable: PropTypes.bool,
     selectedItems: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
     multipleSelection: PropTypes.bool,
@@ -39,6 +41,8 @@ const defaultProps = {
     gap: null,
     loading: false,
     loaded: false,
+    empty: null,
+    emptyLabel: null,
     selectable: false,
     selectedItems: null,
     multipleSelection: false,
@@ -54,6 +58,8 @@ const Grid = ({
     gap,
     loading,
     loaded,
+    empty,
+    emptyLabel,
     selectable,
     selectedItems,
     onSelectionChange,
@@ -132,9 +138,14 @@ const Grid = ({
                     <FormattedMessage defaultMessage="Loading" description="Loading label" />
                 </Loading>
             ) : null}
-            {!loading && loaded && (items === null || items.length === 0) ? (
+            {empty || (!loading && loaded && (items === null || items.length === 0)) ? (
                 <Empty withDelay>
-                    <FormattedMessage defaultMessage="No results found" description="Empty label" />
+                    {emptyLabel || (
+                        <FormattedMessage
+                            defaultMessage="No results found"
+                            description="Empty label"
+                        />
+                    )}
                 </Empty>
             ) : null}
         </div>
