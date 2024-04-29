@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-select",
-    "version": "3.0.194",
+    "version": "3.0.209",
     "description": "A select field",
     "keywords": [
         "javascript"
@@ -56,7 +56,7 @@
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.17",
         "@panneau/core": "^3.0.194",
-        "@panneau/element-select": "^3.0.194",
+        "@panneau/element-select": "^3.0.209",
         "@panneau/themes": "^3.0.194",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
