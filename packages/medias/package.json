@@ -1,6 +1,6 @@
 {
     "name": "@panneau/medias",
-    "version": "3.0.207",
+    "version": "3.0.208",
     "description": "",
     "keywords": [
         "javascript"
@@ -47,7 +47,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.194",
-        "@panneau/data": "^3.0.203",
+        "@panneau/data": "^3.0.208",
         "@panneau/display-image": "^3.0.201",
         "@panneau/element-button": "^3.0.194",
         "@panneau/element-buttons": "^3.0.194",
@@ -59,8 +59,8 @@
         "@panneau/element-media-player": "^3.0.199",
         "@panneau/element-pagination": "^3.0.194",
         "@panneau/element-table": "^3.0.200",
-        "@panneau/field-upload": "^3.0.203",
-        "@panneau/filter-filters": "^3.0.194",
+        "@panneau/field-upload": "^3.0.208",
+        "@panneau/filter-filters": "^3.0.208",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
