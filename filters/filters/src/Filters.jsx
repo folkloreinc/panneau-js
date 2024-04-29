@@ -146,7 +146,7 @@ const Filters = ({
                 },
             )}
             {withButton && (currentFilters || []).length > 1 ? (
-                <Button size="md" theme="secondary" onClick={onFiltersReset}>
+                <Button size="md" theme="secondary" outline onClick={onFiltersReset}>
                     {withResetLabel ? (
                         <span className="me-2">
                             <FormattedMessage defaultMessage="Clear" description="Button label" />
