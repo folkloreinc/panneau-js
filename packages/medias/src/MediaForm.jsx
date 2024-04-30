@@ -30,6 +30,7 @@ const propTypes = {
     onSave: PropTypes.func,
     onDelete: PropTypes.func,
     onClose: PropTypes.func,
+    withDelete: PropTypes.bool,
     withTrash: PropTypes.bool,
     className: PropTypes.string,
     children: PropTypes.node,
@@ -42,6 +43,7 @@ const defaultProps = {
     onSave: null,
     onDelete: null,
     onClose: null,
+    withDelete: false,
     withTrash: false,
     className: null,
     children: null,
@@ -54,6 +56,7 @@ function MediaForm({
     onSave,
     onDelete,
     onClose,
+    withDelete,
     withTrash,
     className,
     children,
@@ -145,20 +148,28 @@ function MediaForm({
                     <span className="mx-2">{type}</span>
                 </div>
                 <div>
-                    <Button
-                        className="me-2 mb-1 mt-1"
-                        theme="danger"
-                        icon={withTrash && deletedAt !== null ? 'trash-fill' : 'trash'}
-                        iconPosition="right"
-                        onClick={onDeleteMedia}
-                        disabled={deleting || trashing}
-                    >
-                        {withTrash && deletedAt === null ? (
-                            <FormattedMessage defaultMessage="Trash" description="Button label" />
-                        ) : (
-                            <FormattedMessage defaultMessage="Delete" description="Button label" />
-                        )}
-                    </Button>
+                    {withDelete ? (
+                        <Button
+                            className="me-2 mb-1 mt-1"
+                            theme="danger"
+                            icon={withTrash && deletedAt !== null ? 'trash-fill' : 'trash'}
+                            iconPosition="right"
+                            onClick={onDeleteMedia}
+                            disabled={deleting || trashing}
+                        >
+                            {withTrash && deletedAt === null ? (
+                                <FormattedMessage
+                                    defaultMessage="Trash"
+                                    description="Button label"
+                                />
+                            ) : (
+                                <FormattedMessage
+                                    defaultMessage="Delete"
+                                    description="Button label"
+                                />
+                            )}
+                        </Button>
+                    ) : null}
                     {onSave !== null ? (
                         <Button
                             className="mb-1 mt-1"

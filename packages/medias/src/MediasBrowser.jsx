@@ -50,6 +50,7 @@ const propTypes = {
     onSelectionChange: PropTypes.func,
     multipleSelection: PropTypes.bool,
     uppyConfig: PropTypes.shape({}),
+    withDelete: PropTypes.bool,
     withTrash: PropTypes.bool,
     withStickySelection: PropTypes.bool,
     withoutUpload: PropTypes.bool,
@@ -88,6 +89,7 @@ const defaultProps = {
     onSelectionChange: null,
     multipleSelection: false,
     uppyConfig: null,
+    withDelete: false,
     withTrash: false,
     withStickySelection: false,
     withoutUpload: false,
@@ -117,6 +119,7 @@ function MediasBrowser({
     onSelectionChange,
     multipleSelection,
     uppyConfig,
+    withDelete,
     withTrash,
     withStickySelection,
     withoutUpload,
@@ -456,6 +459,7 @@ function MediasBrowser({
                     onSave={onSaveMedia}
                     onClose={onCloseMedia}
                     onDelete={onDeleteMedia}
+                    withDelete={withDelete}
                     withTrash={withTrash}
                 >
                     {formChildren}
