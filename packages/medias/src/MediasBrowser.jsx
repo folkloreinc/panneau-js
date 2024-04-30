@@ -8,7 +8,6 @@ import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useQuery } from '@panneau/core/hooks';
-import Button from '@panneau/element-button';
 import Buttons from '@panneau/element-buttons';
 import Grid from '@panneau/element-grid';
 import Icon from '@panneau/element-icon';
@@ -286,6 +285,8 @@ function MediasBrowser({
         />
     );
 
+    const hidePagination = loaded && !loading && (items || []).length === 0;
+
     const finalFilters = useMemo(() => {
         const partialFilters = withTrash
             ? (filters || []).concat([
@@ -333,7 +334,11 @@ function MediasBrowser({
                               actions: (actions || [])
                                   .reduce((acc, action) => {
                                       if (action === 'delete') {
-                                          acc.push('restore');
+                                          acc.push({
+                                              id: 'restore',
+                                              component: 'restore',
+                                              withConfirmation: true,
+                                          });
                                       }
                                       acc.push(action);
                                       return acc;
@@ -401,26 +406,16 @@ function MediasBrowser({
     return (
         <div className={className}>
             {currentMedia !== null ? (
-                <>
-                    <div className="mt-2 mb-0">
-                        <Button theme="primary" onClick={onCloseMedia} icon="arrow-left">
-                            <FormattedMessage
-                                defaultMessage="Back to files"
-                                description="Button label"
-                            />
-                        </Button>
-                    </div>
-                    <MediaForm
-                        value={currentMedia}
-                        fields={fields}
-                        onChange={setCurrentMedia}
-                        onSave={onSaveMedia}
-                        onClose={onCloseMedia}
-                        withTrash={withTrash}
-                    >
-                        {formChildren}
-                    </MediaForm>
-                </>
+                <MediaForm
+                    value={currentMedia}
+                    fields={fields}
+                    onChange={setCurrentMedia}
+                    onSave={onSaveMedia}
+                    onClose={onCloseMedia}
+                    withTrash={withTrash}
+                >
+                    {formChildren}
+                </MediaForm>
             ) : (
                 <>
                     <div className={classNames(['d-flex', 'justify-content-between'])}>
@@ -470,11 +465,11 @@ function MediasBrowser({
                                     ...lay,
                                     active: layout === lay.id,
                                     onClick: () => onClickLayout(lay.id),
-                                    className: 'px-3',
+                                    className: 'px-3 py-2',
                                 }))}
                             />
                         ) : null}
-                        {pagination}
+                        {!hidePagination ? pagination : <div />}
                     </div>
                     {layout === 'grid' ? (
                         <Grid
@@ -517,15 +512,21 @@ function MediasBrowser({
                             actionsProps={{
                                 getDeletePropsFromItem: ({ id = null } = {}) => ({
                                     href: null,
-                                    onClick: () =>
-                                        !showTrashed && withTrash
-                                            ? mediaTrash(id)
-                                            : mediaDelete(id),
+                                    withConfirmation: true,
                                     disabled: trashing || deleting,
                                     icon: showTrashed ? 'trash-fill' : 'trash',
+                                    ...(withTrash
+                                        ? {
+                                              onClick: () =>
+                                                  !showTrashed && withTrash
+                                                      ? mediaTrash(id)
+                                                      : mediaDelete(id),
+                                          }
+                                        : null),
                                 }),
                                 getEditPropsFromItem: (it) => ({
                                     href: null,
+
                                     onClick: () => {
                                         onOpenMedia(it);
                                     },
@@ -533,9 +534,18 @@ function MediasBrowser({
                             }}
                         />
                     ) : null}
-                    <div className={classNames(['d-flex', 'mt-3', 'mb-1', 'justify-content-end'])}>
-                        {pagination}
-                    </div>
+                    {!hidePagination ? (
+                        <div
+                            className={classNames([
+                                'd-flex',
+                                'mt-3',
+                                'mb-1',
+                                'justify-content-end',
+                            ])}
+                        >
+                            {pagination}
+                        </div>
+                    ) : null}
                 </>
             )}
         </div>

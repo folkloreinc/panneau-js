@@ -272,6 +272,7 @@ function Table({
                                         {
                                             'table-row': true,
                                             'table-secondary': checked,
+                                            // 'table-light': checked,
                                             [rowClassName]: rowClassName !== null,
                                         },
                                     ])}

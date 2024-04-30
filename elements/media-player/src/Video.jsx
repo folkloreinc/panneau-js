@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/media-has-caption, react/jsx-props-no-spreading, no-param-reassign */
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import useVideo from './hooks/useVideo';
 
@@ -97,7 +97,12 @@ const Video = ({
         lastVideoRef.current = media;
     }
 
-    const finalUrl = iframeUrl || url;
+    const { files = null } = lastVideoRef.current || {};
+    const { h264 = null, webm = null } = files || {};
+    const { url: h264Url = null } = h264 || {};
+    const { url: webmUrl = null } = webm || {};
+
+    const finalUrl = h264Url || webmUrl || iframeUrl || url;
 
     const { ref, ...api } = useVideo(finalUrl, {
         autoplay: autoPlay,
@@ -217,7 +222,7 @@ const Video = ({
                                 styles.video,
                                 { [videoClassName]: videoClassName !== null },
                             ])}
-                            src={lastVideoRef.current !== null ? lastVideoRef.current.url : null}
+                            src={finalUrl}
                             type="video/mp4"
                             playsInline={playsInline}
                             ref={ref}

@@ -23,6 +23,7 @@ const propTypes = {
     icon: PropTypes.string,
     theme: PropTypes.string,
     disabled: PropTypes.bool,
+    onClick: PropTypes.func,
     onChange: PropTypes.func,
     onConfirmed: PropTypes.func,
     valueLabelPath: PropTypes.string,
@@ -40,6 +41,7 @@ const defaultProps = {
     value: null,
     theme: 'primary',
     disabled: false,
+    onClick: null,
     onChange: null,
     onConfirmed: null,
     valueLabelPath: null,
@@ -58,6 +60,7 @@ const DeleteAction = ({
     value,
     theme,
     disabled,
+    onClick,
     onChange,
     onConfirmed,
     valueLabelPath,
@@ -114,8 +117,6 @@ const DeleteAction = ({
         [ids, endpoint, onChange, onClose, setError, withConfirmation],
     );
 
-    // console.log('withConfirmation', withConfirmation, modalKey);
-
     return (
         <>
             <Button
@@ -127,7 +128,7 @@ const DeleteAction = ({
                 ])}
                 label={label}
                 icon={icon}
-                onClick={withConfirmation ? onOpen : onConfirm}
+                onClick={withConfirmation ? onOpen : onClick || onConfirm}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
                 {...props}

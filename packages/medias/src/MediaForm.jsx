@@ -136,6 +136,11 @@ function MediaForm({
                     className="d-flex align-items-end justify-content-start mb-1"
                     style={{ maxWidth: '66%' }}
                 >
+                    <div className="me-3 mb-0">
+                        <Button theme="secondary" outline onClick={onClose} icon="arrow-left">
+                            <FormattedMessage defaultMessage="Back" description="Button label" />
+                        </Button>
+                    </div>
                     <h4 className="d-inline text-truncate mb-0">{name}</h4>
                     <span className="mx-2">{type}</span>
                 </div>

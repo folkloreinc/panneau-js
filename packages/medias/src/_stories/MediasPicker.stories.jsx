@@ -1,6 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useCallback, useState } from 'react';
 
+import { ModalProvider } from '@panneau/core/contexts';
+import { Modals } from '@panneau/element-modal';
+
 import withApi from '../../../../.storybook/decorators/withApiProvider';
 import ActionsProvider from '../../../actions';
 import { useApi } from '../../../data/src/contexts/ApiContext';
@@ -44,13 +47,20 @@ const Container = ({ value: initialValue = null, ...props } = {}) => {
             <FieldsProvider>
                 <DisplaysProvider>
                     <FiltersProvider>
-                        <ActionsProvider>
-                            <MediasApiProvider api={api.medias}>
-                                <MediaProvider>
-                                    <MediasPicker {...props} value={value} onChange={onChange} />
-                                </MediaProvider>
-                            </MediasApiProvider>
-                        </ActionsProvider>
+                        <ModalProvider>
+                            <ActionsProvider>
+                                <MediasApiProvider api={api.medias}>
+                                    <MediaProvider>
+                                        <MediasPicker
+                                            {...props}
+                                            value={value}
+                                            onChange={onChange}
+                                        />
+                                        <Modals />
+                                    </MediaProvider>
+                                </MediasApiProvider>
+                            </ActionsProvider>
+                        </ModalProvider>
                     </FiltersProvider>
                 </DisplaysProvider>
             </FieldsProvider>

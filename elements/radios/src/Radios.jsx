@@ -56,7 +56,7 @@ const Radios = ({
             data-toggle="buttons"
             style={{ zIndex: 0 }}
         >
-            {finalOptions.map(({ value: optionValue, label }, index) => {
+            {finalOptions.map(({ value: optionValue = null, label = null }, index) => {
                 // eslint-disable-next-line eqeqeq
                 const isCurrent = optionValue == value; // Loose to handle numeric values from parseQuery
                 return (

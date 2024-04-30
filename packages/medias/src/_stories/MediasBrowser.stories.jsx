@@ -1,6 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 
+import { ModalProvider } from '@panneau/core/contexts';
+import { Modals } from '@panneau/element-modal';
+
 import withApi from '../../../../.storybook/decorators/withApiProvider';
 import withIntl from '../../../../.storybook/decorators/withIntlProvider';
 import withUppy from '../../../../.storybook/decorators/withUppy';
@@ -10,7 +13,7 @@ import DisplaysProvider from '../../../displays';
 import FieldsProvider from '../../../fields';
 import FiltersProvider from '../../../filters';
 import IntlProvider from '../../../intl/src/IntlProvider';
-import ModalsProvider from '../../../modals';
+// import ModalsProvider from '../../../modals';
 import { UppyProvider } from '../../../uppy/src/UppyContext';
 import { MediasApiProvider } from '../MediasApiContext';
 import MediasBrowser from '../MediasBrowserContainer';
@@ -29,19 +32,20 @@ const Container = ({ ...props } = {}) => {
     const api = useApi();
     return (
         <IntlProvider>
-            <ModalsProvider>
+            <ModalProvider>
                 <FieldsProvider>
                     <DisplaysProvider>
                         <FiltersProvider>
                             <ActionsProvider>
                                 <MediasApiProvider api={api.medias}>
                                     <MediasBrowser {...props} />
+                                    <Modals />
                                 </MediasApiProvider>
                             </ActionsProvider>
                         </FiltersProvider>
                     </DisplaysProvider>
                 </FieldsProvider>
-            </ModalsProvider>
+            </ModalProvider>
         </IntlProvider>
     );
 };
