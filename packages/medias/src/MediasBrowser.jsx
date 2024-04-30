@@ -226,9 +226,38 @@ function MediasBrowser({
     const onTrashMedia = useCallback(
         (id) =>
             !showTrashed && withTrash
-                ? mediaTrash(id).then(reload).catch(reload)
-                : mediaDelete(id).then(reload).catch(reload),
-        [showTrashed, withTrash, mediaTrash, mediaDelete, reload],
+                ? mediaTrash(id)
+                      .then(() => {
+                          if (!multipleSelection) {
+                              const { id: selectedId = null } = selectedItems || {};
+                              if (selectedId !== null && selectedId === id) {
+                                  onSelectionChange(null);
+                              }
+                          }
+                          // Todo remove from mult selection
+                      })
+                      .then(reload)
+                : mediaDelete(id)
+                      .then(() => {
+                          if (!multipleSelection) {
+                              const { id: selectedId = null } = selectedItems || {};
+                              if (selectedId !== null && selectedId === id) {
+                                  onSelectionChange(null);
+                              }
+                          }
+                          // Todo remove from selection
+                      })
+                      .then(reload),
+        [
+            showTrashed,
+            withTrash,
+            mediaTrash,
+            mediaDelete,
+            reload,
+            selectedItems,
+            multipleSelection,
+            onSelectionChange,
+        ],
     );
 
     const [uploadedMedias, setUploadedMedias] = useState(null);
@@ -531,14 +560,10 @@ function MediasBrowser({
                             actionsProps={{
                                 getDeletePropsFromItem: ({ id = null } = {}) => ({
                                     href: null,
-                                    withConfirmation: !withTrash,
+                                    withConfirmation: false,
                                     disabled: trashing || deleting,
                                     icon: showTrashed ? 'trash-fill' : 'trash',
-                                    ...(withTrash
-                                        ? {
-                                              onClick: () => onTrashMedia(id),
-                                          }
-                                        : null),
+                                    onClick: () => onTrashMedia(id),
                                 }),
                                 getEditPropsFromItem: (it) => ({
                                     href: null,
