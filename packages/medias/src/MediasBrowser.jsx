@@ -223,6 +223,14 @@ function MediasBrowser({
         }
     }, [reload]);
 
+    const onTrashMedia = useCallback(
+        (id) =>
+            !showTrashed && withTrash
+                ? mediaTrash(id).then(reload).catch(reload)
+                : mediaDelete(id).then(reload).catch(reload),
+        [showTrashed, withTrash, mediaTrash, mediaDelete, reload],
+    );
+
     const [uploadedMedias, setUploadedMedias] = useState(null);
     const [uploadProcessing, setUploadProcessing] = useState(false);
 
@@ -523,21 +531,17 @@ function MediasBrowser({
                             actionsProps={{
                                 getDeletePropsFromItem: ({ id = null } = {}) => ({
                                     href: null,
-                                    withConfirmation: true,
+                                    withConfirmation: !withTrash,
                                     disabled: trashing || deleting,
                                     icon: showTrashed ? 'trash-fill' : 'trash',
                                     ...(withTrash
                                         ? {
-                                              onClick: () =>
-                                                  !showTrashed && withTrash
-                                                      ? mediaTrash(id)
-                                                      : mediaDelete(id),
+                                              onClick: () => onTrashMedia(id),
                                           }
                                         : null),
                                 }),
                                 getEditPropsFromItem: (it) => ({
                                     href: null,
-
                                     onClick: () => {
                                         onOpenMedia(it);
                                     },
