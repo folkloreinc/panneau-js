@@ -113,7 +113,7 @@ function MediaForm({
                 }
             });
         }
-    }, [initialValue, mediaDelete, mediaTrash, deletedAt, setChanged, withTrash]);
+    }, [initialValue, mediaDelete, mediaTrash, deletedAt, setChanged, onDelete, withTrash]);
 
     const postForm = useCallback(
         (action, data) => (initialValue !== null ? update(initialValue.id, data) : new Promise()),

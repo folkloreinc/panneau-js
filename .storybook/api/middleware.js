@@ -178,6 +178,8 @@ module.exports = () => {
             count = null,
             sort = 'id',
             sort_direction: sortDirection = 'asc',
+            order = null,
+            order_direction: orderDirection = null,
             paginate = true,
             paginated = true,
             // Exceptions for storybook
@@ -187,7 +189,11 @@ module.exports = () => {
             ...query
         } = req.query;
         const items = getResourceItems(resource);
-        const filteredItems = sortItems(filterItems(items, query), sort, sortDirection);
+        const filteredItems = sortItems(
+            filterItems(items, query),
+            order || sort,
+            orderDirection || sortDirection,
+        );
 
         if (page !== null) {
             res.json(

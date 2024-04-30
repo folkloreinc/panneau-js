@@ -40,6 +40,12 @@ export const MultiSelect = () => (
     <Container options={options} multiple placeholder="Multi select..." />
 );
 
+export const MultiSelectDark = () => (
+    <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
+        <Container options={options} multiple placeholder="Multi select..." />
+    </div>
+);
+
 export const Searchable = () => (
     <Container options={options} multiple searchable placeholder="Multi select searchable..." />
 );

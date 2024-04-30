@@ -271,11 +271,17 @@ function Table({
                                     className={classNames([
                                         {
                                             'table-row': true,
-                                            'table-secondary': checked,
+                                            // 'table-secondary': checked,
+                                            // 'table-dark': checked,
+                                            // 'border-bottom-primary': checked,
                                             // 'table-light': checked,
                                             [rowClassName]: rowClassName !== null,
                                         },
                                     ])}
+                                    style={{
+                                        // color: 'blue',
+                                        borderColor: checked ? 'var(--bs-primary)' : null,
+                                    }}
                                     {...(onSelectionChange !== null
                                         ? { onClick: selectRow, role: 'button' }
                                         : null)}

@@ -37,6 +37,21 @@ const columnsWithId = [
     { id: 'name', label: 'Name', path: 'name', sortable: true },
 ];
 
+const Container = ({ value: initialValue, ...props }) => {
+    const [selectedItems, onSelectionChange] = useState(initialValue);
+
+    return (
+        <TableElement
+            items={items}
+            columns={columns}
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...props}
+            selectedItems={selectedItems}
+            onSelectionChange={onSelectionChange}
+        />
+    );
+};
+
 const Actions = () => (
     <div>
         <p className="d-inline">????</p>
@@ -54,13 +69,13 @@ export const Normal = () => (
 
 export const Selectable = () => (
     <DisplaysProvider>
-        <TableElement items={items} columns={columnsWithId} selectable />
+        <Container items={items} columns={columnsWithId} selectable />
     </DisplaysProvider>
 );
 
 export const SelectableMultiple = () => (
     <DisplaysProvider>
-        <TableElement items={items} columns={columnsWithId} selectable multipleSelection />
+        <Container items={items} columns={columnsWithId} selectable multipleSelection />
     </DisplaysProvider>
 );
 

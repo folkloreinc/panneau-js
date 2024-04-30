@@ -217,6 +217,12 @@ function MediasBrowser({
         [setCurrentMedia, updateItem],
     );
 
+    const onDeleteMedia = useCallback(() => {
+        if (reload !== null) {
+            reload();
+        }
+    }, [reload]);
+
     const [uploadedMedias, setUploadedMedias] = useState(null);
     const [uploadProcessing, setUploadProcessing] = useState(false);
 
@@ -412,6 +418,7 @@ function MediasBrowser({
                     onChange={setCurrentMedia}
                     onSave={onSaveMedia}
                     onClose={onCloseMedia}
+                    onDelete={onDeleteMedia}
                     withTrash={withTrash}
                 >
                     {formChildren}
@@ -488,6 +495,8 @@ function MediasBrowser({
                             selectedItems={selectedItems}
                             onSelectionChange={uploadProcessing ? null : onSelectionChange}
                             multipleSelection={multipleSelection}
+                            query={query} // For sort
+                            onQueryChange={onQueryChange}
                             items={finalItems || []}
                             loading={loading}
                             loaded={loaded}
@@ -505,6 +514,8 @@ function MediasBrowser({
                             selectedItems={selectedItems}
                             onSelectionChange={uploadProcessing ? null : onSelectionChange}
                             multipleSelection={multipleSelection}
+                            query={query} // For sort
+                            onQueryChange={onQueryChange}
                             items={finalItems}
                             loading={loading}
                             loaded={loaded}

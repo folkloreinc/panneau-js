@@ -221,6 +221,11 @@ const SelectElement = ({
                         ...base,
                         color: 'var(--bs-dark)',
                     }),
+                    input: (base, { isDisabled }) => ({
+                        ...base,
+                        color: 'var(--bs-body-color)',
+                        cursor: isDisabled ? 'not-allowed' : 'pointer',
+                    }),
                     control: (base, { isDisabled }) => ({
                         ...base,
                         color: 'var(--bs-body-color)',
