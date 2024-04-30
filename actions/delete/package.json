@@ -1,6 +1,6 @@
 {
     "name": "@panneau/action-delete",
-    "version": "3.0.200",
+    "version": "3.0.210",
     "description": "Delete action",
     "keywords": [
         "javascript"

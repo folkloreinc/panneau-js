@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-radios",
-    "version": "3.0.194",
+    "version": "3.0.210",
     "description": "Radio buttons filter",
     "keywords": [
         "javascript"
@@ -57,7 +57,7 @@
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",
         "@panneau/core": "^3.0.194",
-        "@panneau/element-radios": "^3.0.194",
+        "@panneau/element-radios": "^3.0.210",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
