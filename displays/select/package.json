@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-select",
-    "version": "3.0.209",
+    "version": "3.0.211",
     "description": "Select item value in list",
     "keywords": [
         "javascript"
@@ -55,7 +55,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.194",
-        "@panneau/element-select": "^3.0.209",
+        "@panneau/element-select": "^3.0.211",
         "@panneau/themes": "^3.0.194",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

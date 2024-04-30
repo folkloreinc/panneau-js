@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-avatar",
-    "version": "3.0.194",
+    "version": "3.0.211",
     "description": "Avatar value in list",
     "keywords": [
         "javascript"
@@ -47,7 +47,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.194",
-        "@panneau/element-avatar": "^3.0.194",
+        "@panneau/element-avatar": "^3.0.211",
         "@panneau/themes": "^3.0.194",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
