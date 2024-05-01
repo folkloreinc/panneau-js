@@ -80,6 +80,9 @@
     "8LSb8C": {
         "defaultMessage": "Current password"
     },
+    "8NyYTH": {
+        "defaultMessage": "Back"
+    },
     "8T+JE7": {
         "defaultMessage": "Duplicate"
     },
@@ -262,9 +265,6 @@
     },
     "ZxgNge": {
         "defaultMessage": "Add an item"
-    },
-    "ac4218": {
-        "defaultMessage": "Back to files"
     },
     "bPk79b": {
         "defaultMessage": "Show"

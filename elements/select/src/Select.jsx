@@ -17,6 +17,8 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 const propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     value: PropTypes.any,
+    // eslint-disable-next-line react/forbid-prop-types
+    clearValue: PropTypes.any,
     options: PanneauPropTypes.selectOptions,
     isAsync: PropTypes.bool,
     disabled: PropTypes.bool,
@@ -40,6 +42,7 @@ const propTypes = {
 
 const defaultProps = {
     value: null,
+    clearValue: null,
     options: [],
     isAsync: false,
     disabled: false,
@@ -63,6 +66,7 @@ const defaultProps = {
 
 const SelectElement = ({
     value,
+    clearValue,
     options,
     isAsync,
     disabled,
@@ -265,6 +269,7 @@ const SelectElement = ({
                 isDisabled={disabled}
                 isMulti={multiple}
                 isClearable={!withoutReset}
+                clearValue={clearValue}
                 isSearchable={searchable}
                 noOptionsMessage={() => noOptionsMessage}
                 placeholder={placeholder}

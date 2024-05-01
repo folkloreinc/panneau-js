@@ -96,7 +96,7 @@ const defaultProps = {
     className: null,
 };
 
-const UploadField = ({
+const MediaField = ({
     resource,
     value,
     name,
@@ -395,7 +395,7 @@ const UploadField = ({
     );
 };
 
-UploadField.propTypes = propTypes;
-UploadField.defaultProps = defaultProps;
+MediaField.propTypes = propTypes;
+MediaField.defaultProps = defaultProps;
 
-export default UploadField;
+export default MediaField;

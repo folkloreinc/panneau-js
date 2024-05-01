@@ -489,6 +489,7 @@ function MediasBrowser({
                                 onChange={onUploadComplete}
                                 disabled={uploadProcessing}
                                 loading={uploadProcessing}
+                                outline={false}
                                 closeAfterFinish
                             />
                         ) : null}

@@ -64,13 +64,13 @@ const SearchFilter = ({ name, value, onChange, placeholder, position, width, cla
 
     return (
         <form className={className} onSubmit={onSubmit}>
-            <div className="input-group">
+            <div className="input-group ">
                 {position === 'left' ? (
                     <Button
                         theme={active ? 'primary' : 'secondary'}
                         type="submit"
                         onClick={onSubmit}
-                        style={{ zIndex: 0 }}
+                        style={{ zIndex: 0, border: '1px solid hsl(0, 0%, 80%)' }}
                     >
                         <Icon name="search" bold />
                     </Button>
@@ -82,7 +82,10 @@ const SearchFilter = ({ name, value, onChange, placeholder, position, width, cla
                     theme="light"
                     onChange={setSearchValue}
                     placeholder={placeholder || intl.formatMessage(messages.search)}
-                    style={{ width: width !== null ? width - 42 : null }}
+                    style={{
+                        width: width !== null ? width - 42 : null,
+                        border: '1px solid hsl(0, 0%, 80%)',
+                    }}
                 />
                 {canClear ? (
                     <Button
@@ -103,7 +106,7 @@ const SearchFilter = ({ name, value, onChange, placeholder, position, width, cla
                         theme={active ? 'primary' : 'secondary'}
                         type="submit"
                         onClick={onSubmit}
-                        style={{ zIndex: 0 }}
+                        style={{ zIndex: 0, border: '1px solid hsl(0, 0%, 80%)' }}
                     >
                         <Icon name="search" bold />
                     </Button>

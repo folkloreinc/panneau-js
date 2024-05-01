@@ -103,8 +103,8 @@ const HtmlField = ({
 
     const onCkEditorChange = useCallback(
         (event, editor) => {
-            const data = editor.getData();
-            if (onChange !== null) {
+            const data = editor !== null ? editor.getData() : null;
+            if (editor !== null && onChange !== null) {
                 onChange(data === '' ? null : data);
             }
         },

@@ -21,6 +21,7 @@ const propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     listProps: PropTypes.object,
     className: PropTypes.string,
+    children: PropTypes.node,
 };
 
 const defaultProps = {
@@ -34,6 +35,7 @@ const defaultProps = {
     onClose: null,
     listProps: null,
     className: null,
+    children: null,
 };
 
 const ModalResourceItems = ({
@@ -45,13 +47,14 @@ const ModalResourceItems = ({
     onClose,
     listProps,
     className,
+    children,
     ...props
 }) => {
     const resourceValues = useResourceValues(resource);
     const finalQuery = useMemo(() => ({ ...initialQuery }), [initialQuery]);
     const { query, onPageChange, onQueryChange, onQueryReset } = useQuery(finalQuery, paginated);
 
-    // TODO: add default list props?
+    // TODO: add default list props and stuff?
 
     return (
         <Dialog
@@ -78,6 +81,7 @@ const ModalResourceItems = ({
                 listProps={listProps}
                 {...props}
             />
+            {children}
         </Dialog>
     );
 };

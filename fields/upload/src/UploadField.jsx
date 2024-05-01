@@ -9,10 +9,12 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import { useQuery } from '@panneau/core/hooks';
 // import { useModal } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import { MediaCards } from '@panneau/element-media-card';
+import ModalResourceItems from '@panneau/modal-resource-items';
 // import ModalPicker from '@panneau/modal-medias-picker';
 // import UploadModal from '@panneau/modal-upload';
 import { useUppy } from '@panneau/uppy';
@@ -59,6 +61,7 @@ const propTypes = {
     height: PropTypes.number,
     disabled: PropTypes.bool,
     uploadDisabled: PropTypes.bool,
+    outline: PropTypes.bool,
     loading: PropTypes.bool,
     onChange: PropTypes.func,
     onClear: PropTypes.func,
@@ -105,6 +108,7 @@ const defaultProps = {
     height: 300,
     disabled: false,
     uploadDisabled: false,
+    outline: true,
     loading: false,
     onChange: null,
     onClear: null,
@@ -139,6 +143,7 @@ const UploadField = ({
     height,
     disabled,
     uploadDisabled,
+    outline,
     loading: parentLoading,
     onChange,
     onClear,
@@ -256,72 +261,75 @@ const UploadField = ({
         return value !== null ? [value] : null;
     }, [value]);
 
+    // Resource-modal-picker
     const hasMedia = values !== null && values.length > 0;
 
-    // Resource-modal-picker
-    // const { register, unregister, modalIsOpen } = useModal();
-    // const modalKey = `upload-field-${name}`;
-    // const resourceModalOpen = modalIsOpen(modalKey);
-    // const showResourceModal = withFind && resourceModalOpen;
+    const [resourceModalOpen, setResourceModalOpen] = useState(false);
+    const showResourceModal = resource !== null && withFind && resourceModalOpen;
 
-    // const toggleResourceModal = useCallback(() => {
-    //     if (resourceModalOpen) {
-    //         unregister(modalKey);
-    //     } else {
-    //         register(modalKey);
-    //     }
-    // }, [resourceModalOpen, register, unregister, modalKey]);
+    const openResourceModal = useCallback(() => {
+        setResourceModalOpen(true);
+    }, [resourceModalOpen, setResourceModalOpen]);
 
-    // const [modalItems, setModalItems] = useState([]);
-    // const closeResourceModal = useCallback(() => {
-    //     unregister(modalKey);
-    //     setModalItems(null);
-    // }, [resourceModalOpen, unregister, modalKey, setModalItems]);
+    const [modalItems, setModalItems] = useState([]);
+    const closeResourceModal = useCallback(() => {
+        setResourceModalOpen(false);
+        setModalItems(null);
+    }, [resourceModalOpen, setResourceModalOpen, setModalItems]);
 
-    // const openModalInResource = useCallback(() => {
-    //     unregister(modalKey);
-    //     setModalItems(null);
-    //     setModalOpened(true);
-    // }, [modalOpened, unregister, modalKey, setModalOpened]);
+    const finalOnClickFind = useCallback(() => {
+        if (onClickFind !== null) {
+            onClickFind();
+        } else {
+            openResourceModal();
+        }
+    }, [onClickFind, openResourceModal]);
 
-    // const onChangeSelection = useCallback(
-    //     (newValue) => {
-    //         if (allowMultipleUploads) {
-    //             if (newValue !== null && !isArray(newValue)) {
-    //                 const { id = null } = newValue || {};
-    //                 if (id !== null) {
-    //                     const previous = (modalItems || []).find(
-    //                         ({ id: itemId = null } = {}) => id === itemId,
-    //                     );
-    //                     if (previous) {
-    //                         setModalItems(
-    //                             (modalItems || []).filter(
-    //                                 ({ id: itemId = null } = {}) => id !== itemId,
-    //                             ),
-    //                         );
-    //                     } else {
-    //                         setModalItems([...(modalItems || []), newValue]);
-    //                     }
-    //                 }
-    //             } else if (newValue !== null && isArray(newValue)) {
-    //                 setModalItems(newValue);
-    //             }
-    //         } else if (onChange !== null) {
-    //             // Single value onchange
-    //             const [finalValue = null] = isArray(newValue) ? newValue : [newValue];
-    //             onChange(finalValue);
-    //             unregister(modalKey);
-    //         }
-    //     },
-    //     [onChange, unregister, modalKey, allowMultipleUploads, modalItems, setModalItems],
-    // );
+    const onSelectionChange = useCallback(
+        (newValue) => {
+            if (allowMultipleUploads) {
+                if (newValue !== null && !isArray(newValue)) {
+                    const { id = null } = newValue || {};
+                    if (id !== null) {
+                        const previous = (modalItems || []).find(
+                            ({ id: itemId = null } = {}) => id === itemId,
+                        );
+                        if (previous) {
+                            setModalItems(
+                                (modalItems || []).filter(
+                                    ({ id: itemId = null } = {}) => id !== itemId,
+                                ),
+                            );
+                        } else {
+                            setModalItems([...(modalItems || []), newValue]);
+                        }
+                    }
+                } else if (newValue !== null && isArray(newValue)) {
+                    setModalItems(newValue);
+                }
+            } else {
+                setModalItems(newValue);
+            }
+        },
+        [onChange, setResourceModalOpen, allowMultipleUploads, modalItems, setModalItems],
+    );
 
-    // const onConfirmSelection = useCallback(() => {
-    //     if (onChange !== null) {
-    //         onChange(modalItems);
-    //         unregister(modalKey);
-    //     }
-    // }, [onChange, modalItems, unregister, modalKey, allowMultipleUploads]);
+    const confirmResourceModal = useCallback(() => {
+        if (onChange !== null) {
+            // Always multiple onchange
+            onChange(modalItems);
+            setResourceModalOpen(false);
+            setModalItems(null);
+        }
+    }, [onChange, setResourceModalOpen, modalItems, allowMultipleUploads, setModalItems]);
+
+    const initialQuery = useMemo(() => ({ types }), [types]);
+    const {
+        query: listQuery,
+        onPageChange: onListPageChange,
+        onQueryChange: onListQueryChange,
+        onQueryReset: onListQueryReset,
+    } = useQuery(initialQuery, true);
 
     const containerRef = useRef(null);
 
@@ -401,6 +409,7 @@ const UploadField = ({
                             iconPosition="right"
                             onClick={onClickAdd || openModal}
                             disabled={finalLoading || disabled}
+                            outline={outline}
                         >
                             <Label>
                                 {finalLoading ? (
@@ -414,19 +423,19 @@ const UploadField = ({
                             </Label>
                         </Button>
                     </div>
-                    {/* {withFind ? (
+                    {withFind ? (
                         <div className="col-auto ps-0">
                             <Button
                                 type="button"
                                 theme="primary"
-                                onClick={onClickFind || toggleResourceModal}
+                                onClick={finalOnClickFind}
                                 disabled={disabled}
-                                outline
+                                outline={outline}
                             >
                                 <Label>{findButtonLabel}</Label>
                             </Button>
                         </div>
-                    ) : null} */}
+                    ) : null}
                 </div>
             ) : null}
 
@@ -444,12 +453,15 @@ const UploadField = ({
                         showProgressDetails
                         areInsidesReadyToBeVisible
                         proudlyDisplayPoweredByUppy={false}
-                        closeAfterFinish={closeAfterFinish}
                     />
                 </div>
             ) : null}
 
-            {!uploadDisabled && withButton && finalUppy !== null && modalOpened ? (
+            {!showResourceModal &&
+            !uploadDisabled &&
+            withButton &&
+            finalUppy !== null &&
+            modalOpened ? (
                 <DashboardModal
                     uppy={finalUppy}
                     className={styles.dashboardModal}
@@ -467,28 +479,59 @@ const UploadField = ({
                 />
             ) : null}
 
-            {/* {showResourceModal ? (
-                <ModalPicker
-                    id={modalKey}
-                    value={value}
+            {showResourceModal ? (
+                <ModalResourceItems
+                    id={`upload-${name}`}
                     resource={resource}
-                    types={types}
+                    query={listQuery}
+                    onPageChange={onListPageChange}
+                    onQueryChange={onListQueryChange}
+                    onQueryReset={onListQueryReset}
+                    baseUrl={null}
+                    showActions={false}
                     selectable
-                    onChange={onChangeSelection}
-                    onConfirm={onConfirmSelection}
+                    selectedItems={modalItems}
+                    onSelectionChange={onSelectionChange}
+                    multipleSelection={allowMultipleUploads}
                     onClose={closeResourceModal}
-                    buttons={[
-                        {
-                            id: 'upload',
-                            label: addButtonLabel,
-                            theme: 'primary',
-                            onClick: openModalInResource,
-                        },
-                    ]}
-                    buttonsClassName="ms-xl-auto"
-                    multiple={allowMultipleUploads}
-                />
-            ) : null} */}
+                >
+                    <div className="d-flex mt-4 justify-content-between">
+                        {modalItems !== null && modalItems.length > 0 ? (
+                            <span className="me-2">{modalItems.length} items</span>
+                        ) : (
+                            <span />
+                        )}
+                        <div className="d-flex">
+                            <Button
+                                type="button"
+                                theme="secondary"
+                                onClick={closeResourceModal}
+                                disabled={disabled}
+                                className="d-block me-2"
+                            >
+                                <FormattedMessage
+                                    defaultMessage="Cancel"
+                                    description="Button label"
+                                />
+                            </Button>
+                            <Button
+                                type="button"
+                                theme="primary"
+                                onClick={confirmResourceModal}
+                                disabled={
+                                    disabled || (modalItems !== null && modalItems.length === 0)
+                                }
+                                className="d-block"
+                            >
+                                <FormattedMessage
+                                    defaultMessage="Confirm selection"
+                                    description="Button label"
+                                />
+                            </Button>
+                        </div>
+                    </div>
+                </ModalResourceItems>
+            ) : null}
         </div>
     );
 };

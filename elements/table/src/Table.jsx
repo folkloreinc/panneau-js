@@ -10,7 +10,8 @@ import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
-import { checkClickable, getComponentFromName, selectItem, selectPage } from '@panneau/core/utils';
+import { getComponentFromName, selectItem, selectPage } from '@panneau/core/utils';
+// checkClickable
 import Empty from '@panneau/element-empty';
 import Loading from '@panneau/element-loading';
 

@@ -26,6 +26,7 @@ const propTypes = {
     itemLabelPath: PropTypes.string,
     maxItemsCount: PropTypes.number,
     paginated: PropTypes.bool,
+    clearValue: PropTypes.any, // eslint-disable-line react/forbid-prop-types
     autoSize: PropTypes.bool,
     className: PropTypes.string,
 };
@@ -40,6 +41,7 @@ const defaultProps = {
     itemLabelPath: null,
     maxItemsCount: null,
     paginated: false,
+    clearValue: null,
     autoSize: false,
     className: null,
 };
@@ -54,6 +56,7 @@ const SelectFilter = ({
     itemLabelPath,
     maxItemsCount,
     paginated,
+    clearValue,
     autoSize,
     className,
     ...props
@@ -210,6 +213,7 @@ const SelectFilter = ({
         <Select
             autoSize={autoSize}
             {...props}
+            clearValue={clearValue}
             className={className}
             options={options || []}
             onMenuScrollToBottom={paginated ? onMenuScrollToBottom : null}

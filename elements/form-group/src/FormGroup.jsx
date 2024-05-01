@@ -92,6 +92,7 @@ const FormGroup = ({
             // 'text-nowrap': horizontal, // ?
             // 'col-sm-3': horizontal, // ?
             'card-header': isCard,
+            'w-100': isCard,
             'fw-bold': isHeading,
             'pt-2': isList,
             'pb-2': isList,

@@ -12,15 +12,14 @@ const useCKEditorBuild = () => {
             };
         }
         import('@panneau/ckeditor/build')
-            .then(({ default: Editor = null }) => {
-                // console.log('my ed', Editor);
+            .then(({ Editor = null }) => {
                 if (!canceled) {
                     ref.current = Editor;
                     setLoaded(true);
                 }
             })
+            // eslint-disable-next-line no-console
             .catch((e) => console.log('err loading editor', e));
-
         return () => {
             canceled = true;
         };

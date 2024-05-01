@@ -173,6 +173,12 @@ msgctxt "8LSb8C"
 msgid "Current password"
 msgstr "Current password"
 
+# Button label
+#: 8NyYTH
+msgctxt "8NyYTH"
+msgid "Back"
+msgstr "Back"
+
 # Modal title
 #: 8T+JE7
 msgctxt "8T+JE7"
@@ -550,12 +556,6 @@ msgstr "Forgot your password?"
 msgctxt "ZxgNge"
 msgid "Add an item"
 msgstr "Add an item"
-
-# Button label
-#: ac4218
-msgctxt "ac4218"
-msgid "Back to files"
-msgstr "Back to files"
 
 # Button label
 #: bPk79b

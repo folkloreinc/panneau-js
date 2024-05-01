@@ -3,6 +3,7 @@
 /* stylelint-disable */
 
 .container {
+    position: relative;
     user-select: none;
 
     .popper {
@@ -11,17 +12,18 @@
 }
 
 :global(.react-datepicker-popper) {
+    transform: translate(100%, -140px) !important;
     z-index: 4 !important;
 }
 
 :global(.react-datepicker__triangle) {
-    position: absolute !important;
-    transform: translate(50px, 0) !important;
+    // position: absolute !important;
+    // transform: translate(50px, 0) !important;
 }
 
 :global(.react-datepicker__navigation-icon) {
     &::before {
-        top: 12px !important;
+        // top: 12px !important;
     }
 }
 /* stylelint-enable */

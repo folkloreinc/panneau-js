@@ -107,6 +107,10 @@
     "defaultMessage": "Current password",
     "description": "Field label"
   },
+  "8NyYTH": {
+    "defaultMessage": "Back",
+    "description": "Button label"
+  },
   "8T+JE7": {
     "defaultMessage": "Duplicate",
     "description": "Modal title"
@@ -350,10 +354,6 @@
   "ZxgNge": {
     "defaultMessage": "Add an item",
     "description": "Button label in items field"
-  },
-  "ac4218": {
-    "defaultMessage": "Back to files",
-    "description": "Button label"
   },
   "bPk79b": {
     "defaultMessage": "Show",
