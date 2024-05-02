@@ -1,6 +1,6 @@
 {
     "name": "@panneau/displays",
-    "version": "3.0.216",
+    "version": "3.0.217",
     "description": "",
     "keywords": [
         "javascript"
@@ -67,10 +67,10 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.215",
-        "@panneau/display-actions": "^3.0.216",
-        "@panneau/display-avatar": "^3.0.216",
-        "@panneau/display-badges": "^3.0.216",
-        "@panneau/display-boolean": "^3.0.216",
+        "@panneau/display-actions": "^3.0.217",
+        "@panneau/display-avatar": "^3.0.217",
+        "@panneau/display-badges": "^3.0.217",
+        "@panneau/display-boolean": "^3.0.217",
         "@panneau/display-date": "^3.0.215",
         "@panneau/display-image": "^3.0.215",
         "@panneau/display-label": "^3.0.215",
