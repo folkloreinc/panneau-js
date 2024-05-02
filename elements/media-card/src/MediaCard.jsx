@@ -101,6 +101,8 @@ const MediaCard = ({
 }) => {
     const value = initialValue || {};
 
+    console.log('test');
+
     const {
         id = null,
         filename = null,
