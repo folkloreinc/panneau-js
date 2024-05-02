@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-empty",
-    "version": "3.0.222",
+    "version": "3.0.223",
     "description": "Empty element",
     "keywords": [
         "javascript"
@@ -46,8 +46,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.222",
-        "@panneau/element-button": "^3.0.222",
+        "@panneau/core": "^3.0.223",
+        "@panneau/element-button": "^3.0.223",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
