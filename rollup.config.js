@@ -30,6 +30,7 @@ export const createConfig = ({
         format: 'cjs',
         banner,
         exports: 'named',
+        inlineDynamicImports: true,
     };
     const outputEs = {
         file: output || `es/${file}`,
