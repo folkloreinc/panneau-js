@@ -55,6 +55,7 @@ export const createConfig = ({
                     modulesOnly: true,
                     resolveOnly: [
                         '@folklore/routes',
+                        /^@uppy/,
                         /(query-string|pretty-bytes|decode-uri-component|split-on-first|filter-obj|screenfull|camelcase|[a-z]+-case|wouter)/,
                     ],
                 }),
