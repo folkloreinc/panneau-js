@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-grid",
-    "version": "3.0.215",
+    "version": "3.0.216",
     "description": "Grid element",
     "keywords": [
         "javascript"
@@ -47,8 +47,8 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.215",
-        "@panneau/element-empty": "^3.0.215",
-        "@panneau/element-icon": "^3.0.215",
+        "@panneau/element-empty": "^3.0.216",
+        "@panneau/element-icon": "^3.0.216",
         "@panneau/element-loading": "^3.0.215",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",

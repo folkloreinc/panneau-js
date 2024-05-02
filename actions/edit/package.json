@@ -1,6 +1,6 @@
 {
     "name": "@panneau/action-edit",
-    "version": "3.0.215",
+    "version": "3.0.216",
     "description": "Edit action",
     "keywords": [
         "javascript"
@@ -47,8 +47,8 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.215",
-        "@panneau/element-button": "^3.0.215",
-        "@panneau/modal-form": "^3.0.215",
+        "@panneau/element-button": "^3.0.216",
+        "@panneau/modal-form": "^3.0.216",
         "@panneau/themes": "^3.0.215",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
