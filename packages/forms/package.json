@@ -1,6 +1,6 @@
 {
     "name": "@panneau/forms",
-    "version": "3.0.217",
+    "version": "3.0.219",
     "description": "",
     "keywords": [
         "javascript"
@@ -66,12 +66,12 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.215",
-        "@panneau/form-auth": "^3.0.217",
-        "@panneau/form-horizontal": "^3.0.217",
-        "@panneau/form-inline": "^3.0.217",
-        "@panneau/form-normal": "^3.0.217",
-        "@panneau/form-two-pane": "^3.0.217",
+        "@panneau/core": "^3.0.219",
+        "@panneau/form-auth": "^3.0.219",
+        "@panneau/form-horizontal": "^3.0.219",
+        "@panneau/form-inline": "^3.0.219",
+        "@panneau/form-normal": "^3.0.219",
+        "@panneau/form-two-pane": "^3.0.219",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {

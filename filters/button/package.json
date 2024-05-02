@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-button",
-    "version": "3.0.217",
+    "version": "3.0.219",
     "description": "Button filter",
     "keywords": [
         "javascript"
@@ -54,9 +54,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.215",
-        "@panneau/element-button": "^3.0.217",
-        "@panneau/themes": "^3.0.215",
+        "@panneau/core": "^3.0.219",
+        "@panneau/element-button": "^3.0.219",
+        "@panneau/themes": "^3.0.219",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2"
     },
