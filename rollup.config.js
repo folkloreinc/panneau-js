@@ -57,7 +57,7 @@ export const createConfig = ({
                     resolveOnly: [
                         '@folklore/routes',
                         /^@uppy/,
-                        /(query-string|pretty-bytes|decode-uri-component|split-on-first|filter-obj|screenfull|camelcas|nanoid|[a-z]+-case|wouter)/,
+                        /(query-string|pretty-bytes|decode-uri-component|split-on-first|filter-obj|screenfull|camelcas|nanoid|p-retry|[a-z]+-case|wouter)/,
                     ],
                 }),
             ...prependPlugins,
