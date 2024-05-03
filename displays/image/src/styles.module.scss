@@ -3,8 +3,8 @@
         --color-bg-darker: color-mix(in srgb, var(--bs-body-bg), #000 20%);
         border: 1px solid var(--bs-secondary-border-subtle);
         background: repeating-conic-gradient(
-                var(--color-bg-darker, #ccc) 0% 25%,
-                var(--bs-body-bg) 0% 50%
+                color-mix(in srgb, var(--bs-body-bg), #000 15%) 0% 25%,
+                color-mix(in srgb, var(--bs-body-bg), #fff 15%) 0% 50%
             )
             50% / 20px 20px;
     }

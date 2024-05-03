@@ -2,13 +2,12 @@
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useModal } from '@panneau/core/contexts';
+import { useModalsComponentsManager } from '@panneau/core/contexts';
 import { useActionProps } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
-import Confirm from '@panneau/modal-confirm';
 
 import styles from './styles.module.scss';
 
@@ -26,6 +25,7 @@ const propTypes = {
     onChange: PropTypes.func,
     onConfirmed: PropTypes.func,
     valueLabelPath: PropTypes.string,
+    modalComponent: PropTypes.string,
     withConfirmation: PropTypes.bool,
     className: PropTypes.string,
 };
@@ -43,6 +43,7 @@ const defaultProps = {
     onChange: null,
     onConfirmed: null,
     valueLabelPath: null,
+    modalComponent: 'confirm',
     withConfirmation: false,
     className: null,
 };
@@ -61,28 +62,26 @@ const DuplicateAction = ({
     onChange,
     onConfirmed,
     valueLabelPath,
+    modalComponent,
     withConfirmation,
     className,
     ...props
 }) => {
-    const { modals = null, register = null, unregister = null } = useModal();
+    const ModalComponents = useModalsComponentsManager();
+    const ModalComponent = ModalComponents.getComponent(modalComponent);
 
+    const [modalOpen, setModalOpen] = useState(false);
     const [error, setError] = useState(null);
 
     const { ids, idLabels, modalKey } = useActionProps(id, value, valueLabelPath);
 
-    const modal = useMemo(
-        () => (modals || []).find(({ id: modalId = null }) => modalId === `${modalKey}`) || null,
-        [modals, modalKey],
-    );
-
     const onOpen = useCallback(() => {
-        register(modalKey);
-    }, [modalKey, register]);
+        setModalOpen(true);
+    }, [setModalOpen]);
 
     const onClose = useCallback(() => {
-        unregister(modalKey);
-    }, [modalKey, unregister]);
+        setModalOpen(false);
+    }, [setModalOpen]);
 
     const onConfirm = useCallback(
         () =>
@@ -112,8 +111,6 @@ const DuplicateAction = ({
         [ids, endpoint, action, onChange, onClose, setError],
     );
 
-    console.log('yoo', label);
-
     return (
         <>
             <Button
@@ -130,8 +127,8 @@ const DuplicateAction = ({
                 theme={disabled ? 'secondary' : theme}
                 {...props}
             />
-            {modal !== null ? (
-                <Confirm
+            {modalOpen ? (
+                <ModalComponent
                     id={modalKey}
                     title={
                         title || (
@@ -172,7 +169,7 @@ const DuplicateAction = ({
                             description="Modal message"
                         />
                     ) : null}
-                </Confirm>
+                </ModalComponent>
             ) : null}
         </>
     );

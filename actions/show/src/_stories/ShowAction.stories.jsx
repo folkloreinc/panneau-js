@@ -6,24 +6,24 @@ import { Modals } from '@panneau/element-modal';
 
 import FieldsProvider from '../../../../packages/fields';
 import ModalsProvider from '../../../../packages/modals/src/ModalsProvider';
-import DuplicateAction from '../DuplicateAction';
+import ShowAction from '../ShowAction';
 
 export default {
-    component: DuplicateAction,
-    title: 'Actions/DuplicateAction',
+    component: ShowAction,
+    title: 'Actions/ShowAction',
     parameters: {
         intl: true,
     },
 };
 
 const FieldContainer = (props) => {
-    const [value, setValue] = useState([{ id: '12', name: 'Paul' }]);
+    const [value, setValue] = useState([{ id: '12' }]);
     return (
         <FieldsProvider>
             <ModalsProvider>
                 <ModalProvider>
                     <Modals />
-                    <DuplicateAction value={value} {...props} />
+                    <ShowAction value={value} {...props} />
                 </ModalProvider>
             </ModalsProvider>
         </FieldsProvider>

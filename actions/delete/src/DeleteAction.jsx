@@ -1,13 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useModal } from '@panneau/core/contexts';
+import { useModalsComponentsManager } from '@panneau/core/contexts';
 import { useActionProps } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
-import Confirm from '@panneau/modal-confirm';
+
+// import Confirm from '@panneau/modal-confirm';
 
 const propTypes = {
     id: PropTypes.string.isRequired,
@@ -24,6 +25,7 @@ const propTypes = {
     onChange: PropTypes.func,
     onConfirmed: PropTypes.func,
     valueLabelPath: PropTypes.string,
+    modalComponent: PropTypes.string,
     withConfirmation: PropTypes.bool,
     className: PropTypes.string,
 };
@@ -41,6 +43,7 @@ const defaultProps = {
     onClick: null,
     onChange: null,
     onConfirmed: null,
+    modalComponent: 'confirm',
     valueLabelPath: null,
     withConfirmation: false,
     className: null,
@@ -60,28 +63,28 @@ const DeleteAction = ({
     onClick,
     onChange,
     onConfirmed,
+    modalComponent,
     valueLabelPath,
     withConfirmation,
     className,
     ...props
 }) => {
-    const { modals = null, register = null, unregister = null } = useModal();
+    const ModalComponents = useModalsComponentsManager();
+    const ModalComponent = ModalComponents.getComponent(modalComponent);
+
+    const [modalOpen, setModalOpen] = useState(false);
+
     const [error, setError] = useState(null);
 
     const { ids, idLabels, modalKey } = useActionProps(id, value, valueLabelPath);
 
-    const modal = useMemo(
-        () => (modals || []).find(({ id: modalId }) => modalId === `${modalKey}`) || null,
-        [modals, modalKey],
-    );
-
     const onOpen = useCallback(() => {
-        register(modalKey);
-    }, [modalKey, register]);
+        setModalOpen(true);
+    }, [setModalOpen]);
 
     const onClose = useCallback(() => {
-        unregister(modalKey);
-    }, [modalKey, unregister]);
+        setModalOpen(false);
+    }, [setModalOpen]);
 
     const onConfirm = useCallback(
         () =>
@@ -125,8 +128,8 @@ const DeleteAction = ({
                 theme={disabled ? 'secondary' : theme}
                 {...props}
             />
-            {modal !== null ? (
-                <Confirm
+            {modalOpen ? (
+                <ModalComponent
                     id={modalKey}
                     title={
                         title || (
@@ -164,7 +167,7 @@ const DeleteAction = ({
                             description="Modal message"
                         />
                     ) : null}
-                </Confirm>
+                </ModalComponent>
             ) : null}
         </>
     );

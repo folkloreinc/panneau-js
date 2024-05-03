@@ -35,39 +35,43 @@ export const ModalProvider = ({ children, container: initialContainer }) => {
             setModals(newModals);
             modalsRef.current = newModals;
         },
-        [modals, setModals],
+        [setModals],
     );
 
     const unregister = useCallback(
-        (id = null) => {
+        (id = null, data = null) => {
             const { current: currentModals = [] } = modalsRef;
             const foundIndex = currentModals.findIndex(({ id: modalId }) => modalId === id);
             if (foundIndex !== -1) {
+                const { onClose = null } = data || {};
+                if (onClose !== null) {
+                    onClose();
+                }
                 const newModals = currentModals.filter(({ id: modalId }) => modalId !== id);
                 setModals(newModals);
                 modalsRef.current = newModals;
             }
         },
-        [modals, setModals],
+        [setModals],
     );
 
     const closeLastModal = useCallback(() => {
         const lastModal = modals.pop() || null;
-
         if (lastModal !== null) {
-            const { id: lastModalId = null } = lastModal || {};
+            const { id: lastModalId = null, onClose = null } = lastModal || {};
+            if (onClose !== null) {
+                onClose();
+            }
             const newModals = modals.filter(({ id: modalId }) => modalId !== lastModalId);
             setModals(newModals);
             modalsRef.current = newModals;
         }
     }, [modals, setModals]);
 
-    const getModalByKey = useCallback(
-        (key) => (modals || []).find((modal) => modal?.id === key) || null,
+    const getModalById = useCallback(
+        (modalId) => (modals || []).find((modal) => modal?.id === modalId) || null,
         [modals],
     );
-
-    const modalIsOpen = useCallback((key) => getModalByKey(key) !== null, [getModalByKey]);
 
     const value = useMemo(
         () => ({
@@ -77,19 +81,9 @@ export const ModalProvider = ({ children, container: initialContainer }) => {
             register,
             unregister,
             closeLastModal,
-            getModalByKey,
-            modalIsOpen,
+            getModalById,
         }),
-        [
-            modals,
-            container,
-            setContainer,
-            register,
-            unregister,
-            closeLastModal,
-            getModalByKey,
-            modalIsOpen,
-        ],
+        [modals, container, setContainer, register, unregister, closeLastModal, getModalById],
     );
 
     return <ModalContext.Provider value={value}>{children}</ModalContext.Provider>;

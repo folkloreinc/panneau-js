@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/action-delete",
+    "name": "@panneau/action-show",
     "version": "3.0.226",
-    "description": "Delete action",
+    "description": "Restore action",
     "keywords": [
         "javascript"
     ],
@@ -28,7 +28,9 @@
     "type": "module",
     "module": "es/index.js",
     "exports": {
-        ".": "./es/index.js"
+        ".": "./es/index.js",
+        "./assets/css/styles": "./assets/css/styles.css",
+        "./assets/css/styles.css": "./assets/css/styles.css"
     },
     "files": [
         "lib",

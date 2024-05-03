@@ -182,7 +182,7 @@ const MediaCard = ({
                               width: !withoutDescription && !vertical ? thumbnailSize : '100%',
                               height: !withoutDescription ? thumbnailSize : '100%',
                               background:
-                                  'repeating-conic-gradient(color-mix(in srgb, var(--bs-body-bg), #000 20%) 0% 25%, var(--bs-body-bg) 0% 50%) 50% / 20px 20px',
+                                  'repeating-conic-gradient(color-mix(in srgb, var(--bs-body-bg), #000 15%) 0% 25%, color-mix(in srgb, var(--bs-body-bg), #FFF 15%) 0% 50%) 50% / 20px 20px',
                           }
                         : {
                               width: !withoutDescription && !vertical ? thumbnailSize : '100%',
@@ -295,6 +295,7 @@ const MediaCard = ({
                         <Button
                             className={classNames([
                                 'btn',
+                                'pe-3',
                                 { 'w-100': withoutDescription || vertical },
                             ])}
                             type="button"

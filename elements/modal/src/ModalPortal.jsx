@@ -29,10 +29,10 @@ const ModalPortal = ({ id, data, children }) => {
         }
         return () => {
             if (unregister !== null) {
-                unregister(finalId);
+                unregister(finalId, data);
             }
         };
-    }, [finalId, data]);
+    }, [finalId, data, register, unregister]);
 
     return container !== null ? ReactDOM.createPortal(children, container) : null;
 };

@@ -6,6 +6,7 @@ import { Modals } from '@panneau/element-modal';
 
 import actions from '../../../../.storybook/data/actions';
 import FiltersProvider from '../../../../packages/actions';
+import ModalsProvider from '../../../../packages/modals/src/ModalsProvider';
 import Actions from '../Actions';
 
 export default {
@@ -23,10 +24,12 @@ const ActionsContainer = ({ value: initialValue, ...props }) => {
     }, []);
     return (
         <FiltersProvider>
-            <ModalProvider>
-                <Modals />
-                <Actions {...props} actions={actions} value={value} onChange={onChange} />
-            </ModalProvider>
+            <ModalsProvider>
+                <ModalProvider>
+                    <Modals />
+                    <Actions {...props} actions={actions} value={value} onChange={onChange} />
+                </ModalProvider>
+            </ModalsProvider>
         </FiltersProvider>
     );
 };

@@ -5,6 +5,7 @@ import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
 
 import FieldsProvider from '../../../../packages/fields';
+import ModalsProvider from '../../../../packages/modals/src/ModalsProvider';
 import UploadAction from '../UploadAction';
 
 export default {
@@ -19,10 +20,12 @@ const FieldContainer = (props) => {
     const [value, setValue] = useState(null);
     return (
         <FieldsProvider>
-            <ModalProvider>
-                <Modals />
-                <UploadAction {...props} name="button" value={value} onChange={setValue} />
-            </ModalProvider>
+            <ModalsProvider>
+                <ModalProvider>
+                    <Modals />
+                    <UploadAction {...props} name="button" value={value} onChange={setValue} />
+                </ModalProvider>
+            </ModalsProvider>
         </FieldsProvider>
     );
 };

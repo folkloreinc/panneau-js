@@ -5,6 +5,7 @@ import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
 
 import FieldsProvider from '../../../../packages/fields';
+import ModalsProvider from '../../../../packages/modals/src/ModalsProvider';
 import RestoreAction from '../RestoreAction';
 
 export default {
@@ -19,12 +20,14 @@ const FieldContainer = (props) => {
     const [value, setValue] = useState([{ id: '12' }]);
     return (
         <FieldsProvider>
-            <ModalProvider>
-                <Modals />
-                <RestoreAction value={value} />
-            </ModalProvider>
+            <ModalsProvider>
+                <ModalProvider>
+                    <Modals />
+                    <RestoreAction value={value} {...props} />
+                </ModalProvider>
+            </ModalsProvider>
         </FieldsProvider>
     );
 };
 
-export const Normal = () => <FieldContainer label="Hello" />;
+export const Normal = () => <FieldContainer label="Hello" withConfirmation />;

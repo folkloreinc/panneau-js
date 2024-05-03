@@ -35,7 +35,7 @@ const useActions = (
                             id: 'show',
                             component: 'show',
                             label: iconsOnly ? null : showLabel,
-                            icon: iconsOnly ? 'eye-fill' : null,
+                            icon: iconsOnly ? 'eye' : null,
                             href:
                                 urlGenerator !== null && (!hasCustomShowUrl || withoutItemShowUrl)
                                     ? urlGenerator('show', {

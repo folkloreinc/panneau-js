@@ -61,3 +61,9 @@ export const VerticalButton = () => (
 export const VerticalButtonActive = () => (
     <MediaCard value={value} vertical onClick={() => console.log('hello')} selected />
 );
+
+export const Dark = () => (
+    <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
+        <MediaCard value={value} />
+    </div>
+);

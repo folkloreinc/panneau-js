@@ -4,10 +4,9 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useModal } from '@panneau/core/contexts';
+import { useModalsComponentsManager } from '@panneau/core/contexts';
 import { useActionProps } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
-import FormModal from '@panneau/modal-form';
 
 import styles from './styles.module.scss';
 
@@ -25,6 +24,7 @@ const propTypes = {
     onChange: PropTypes.func,
     onConfirmed: PropTypes.func,
     valueLabelPath: PropTypes.string,
+    modalComponent: PropTypes.string,
     withConfirmation: PropTypes.bool,
     className: PropTypes.string,
 };
@@ -42,6 +42,7 @@ const defaultProps = {
     onChange: null,
     onConfirmed: null,
     valueLabelPath: null,
+    modalComponent: 'form',
     withConfirmation: false,
     className: null,
 };
@@ -60,32 +61,30 @@ const EditAction = ({
     onChange,
     onConfirmed,
     valueLabelPath,
+    modalComponent,
     withConfirmation,
     className,
     ...props
 }) => {
-    const { modals = null, register = null, unregister = null } = useModal();
+    const ModalComponents = useModalsComponentsManager();
+    const ModalComponent = ModalComponents.getComponent(modalComponent);
 
+    const [modalOpen, setModalOpen] = useState(false);
     const [error, setError] = useState(null);
 
     const { ids, idLabels, modalKey } = useActionProps(id, value, valueLabelPath);
 
-    const modal = useMemo(
-        () => (modals || []).find(({ id: modalId = null }) => modalId === `${modalKey}`) || null,
-        [modals, modalKey],
-    );
-
     const onOpen = useCallback(() => {
-        register(modalKey);
-    }, [modalKey, register]);
+        setModalOpen(true);
+    }, [setModalOpen]);
 
     const onClose = useCallback(() => {
-        unregister(modalKey);
-    }, [modalKey, unregister]);
+        setModalOpen(false);
+    }, [setModalOpen]);
 
     const onComplete = useCallback(
         (newValue) => {
-            unregister(modalKey);
+            setModalOpen(false);
             if (onConfirmed !== null) {
                 onConfirmed(newValue);
             }
@@ -93,7 +92,7 @@ const EditAction = ({
                 onChange(newValue);
             }
         },
-        [onChange, unregister, modalKey],
+        [onChange, setModalOpen, modalKey],
     );
 
     const onError = useCallback(() => {
@@ -118,8 +117,8 @@ const EditAction = ({
                 theme={disabled ? 'secondary' : theme}
                 {...props}
             />
-            {modal !== null ? (
-                <FormModal
+            {modalOpen ? (
+                <ModalComponent
                     id={modalKey}
                     title={
                         title ||
@@ -157,7 +156,7 @@ const EditAction = ({
                             description="Modal message"
                         />
                     ) : null}
-                </FormModal>
+                </ModalComponent>
             ) : null}
         </>
     );

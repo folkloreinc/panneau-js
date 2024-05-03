@@ -8,7 +8,6 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useModal } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import { MediaCards } from '@panneau/element-media-card';
@@ -90,7 +89,6 @@ const defaultProps = {
     height: 300,
     disabled: false,
     onChange: null,
-    onClear: null,
     onClickAdd: null,
     onClickFind: null,
     className: null,
@@ -216,24 +214,23 @@ const MediaField = ({
     const hasMedia = values !== null && values.length > 0;
 
     // Resource-modal-picker
-    const { register, unregister, modalIsOpen } = useModal();
     const modalKey = `upload-field-${name}`;
-    const resourceModalOpen = modalIsOpen(modalKey);
+    const [resourceModalOpen, setResourceModalOpen] = useState(false);
     const showResourceModal = withFind && resourceModalOpen;
 
     const toggleResourceModal = useCallback(() => {
         if (resourceModalOpen) {
-            unregister(modalKey);
+            setResourceModalOpen(false);
         } else {
-            register(modalKey);
+            setResourceModalOpen(true);
         }
-    }, [resourceModalOpen, register, unregister, modalKey]);
+    }, [resourceModalOpen, setResourceModalOpen, modalKey]);
 
     const [modalItems, setModalItems] = useState([]);
     const closeResourceModal = useCallback(() => {
-        unregister(modalKey);
+        setResourceModalOpen(false);
         setModalItems(null);
-    }, [resourceModalOpen, unregister, modalKey, setModalItems]);
+    }, [resourceModalOpen, setResourceModalOpen, modalKey, setModalItems]);
 
     const onChangeSelection = useCallback(
         (newValue) => {
@@ -261,18 +258,18 @@ const MediaField = ({
                 // Single value onchange
                 const [finalValue = null] = isArray(newValue) ? newValue : [newValue];
                 onChange(finalValue);
-                unregister(modalKey);
+                setResourceModalOpen(false);
             }
         },
-        [onChange, unregister, modalKey, allowMultipleUploads, modalItems, setModalItems],
+        [onChange, setResourceModalOpen, modalKey, allowMultipleUploads, modalItems, setModalItems],
     );
 
     const onConfirmSelection = useCallback(() => {
         if (onChange !== null) {
             onChange(modalItems);
-            unregister(modalKey);
+            setResourceModalOpen(false);
         }
-    }, [onChange, modalItems, unregister, modalKey, allowMultipleUploads]);
+    }, [onChange, modalItems, setResourceModalOpen, modalKey, allowMultipleUploads]);
 
     const containerRef = useRef(null);
 
@@ -296,7 +293,12 @@ const MediaField = ({
             {!withoutMedia && hasMedia && withClearButton ? (
                 <div className="row mt-2">
                     <div className="col-auto">
-                        <Button type="button" theme="primary" onClick={onClickClear} outline>
+                        <Button
+                            type="button"
+                            theme="primary"
+                            onClick={() => onChange(null)}
+                            outline
+                        >
                             <Label>{clearButtonLabel}</Label>
                         </Button>
                     </div>

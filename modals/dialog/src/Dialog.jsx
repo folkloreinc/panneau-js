@@ -54,7 +54,7 @@ const ModalDialog = ({
         (withCloseOutside && onClose !== null);
 
     return (
-        <Modal id={id}>
+        <Modal id={id} onClose={onClose}>
             <div
                 className={classNames([
                     'modal-dialog',

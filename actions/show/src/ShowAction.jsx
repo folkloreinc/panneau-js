@@ -32,12 +32,12 @@ const propTypes = {
 const defaultProps = {
     title: null,
     description: null,
-    endpoint: '/restore',
+    endpoint: '/show',
     action: null,
     label: null,
-    icon: 'box-arrow-left',
+    icon: 'eye',
     value: null,
-    theme: 'warning',
+    theme: 'infor',
     disabled: false,
     onConfirmed: null,
     valueLabelPath: null,
@@ -46,7 +46,7 @@ const defaultProps = {
     className: null,
 };
 
-const RestoreAction = ({
+const ShowAction = ({
     id,
     title,
     description,
@@ -169,7 +169,7 @@ const RestoreAction = ({
     );
 };
 
-RestoreAction.propTypes = propTypes;
-RestoreAction.defaultProps = defaultProps;
+ShowAction.propTypes = propTypes;
+ShowAction.defaultProps = defaultProps;
 
-export default RestoreAction;
+export default ShowAction;

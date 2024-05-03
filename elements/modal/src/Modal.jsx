@@ -13,6 +13,7 @@ const propTypes = {
     id: PropTypes.string,
     title: PropTypes.string,
     position: PropTypes.oneOf(['center', 'top']),
+    onClose: PropTypes.func,
     children: PropTypes.node,
 };
 
@@ -20,17 +21,19 @@ const defaultProps = {
     id: null,
     title: null,
     position: 'center',
+    onClose: null,
     children: null,
 };
 
-const Modal = ({ id, children, position, title }) => {
+const Modal = ({ id, onClose, children, position, title }) => {
     const name = getDisplayName(children);
     const finalId = useMemo(() => id || name || 'Modal', [id, name]);
     const data = useMemo(
         () => ({
             title,
+            onClose,
         }),
-        [title],
+        [title, onClose],
     );
     return (
         <ModalPortal id={finalId} data={data}>
