@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-upload",
-    "version": "3.0.224",
+    "version": "3.0.225",
     "description": "An Upload field",
     "keywords": [
         "javascript"
@@ -64,7 +64,7 @@
         "@panneau/element-button": "^3.0.224",
         "@panneau/element-label": "^3.0.224",
         "@panneau/element-media-card": "^3.0.224",
-        "@panneau/modal-resource-items": "^3.0.224",
+        "@panneau/modal-resource-items": "^3.0.225",
         "@panneau/themes": "^3.0.224",
         "@panneau/uppy": "^3.0.224",
         "@uppy/core": "^3.9.1",
