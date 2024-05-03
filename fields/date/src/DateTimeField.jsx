@@ -4,10 +4,11 @@ import format from 'date-fns/format';
 import formatISO from 'date-fns/formatISO';
 import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
+import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 // import classNames from 'classnames';
-import * as ReactDatepicker from 'react-datepicker';
+import DatePicker, { registerLocale } from 'react-datepicker';
 import { defineMessage, useIntl } from 'react-intl';
 
 import { isMessage, loadPackage } from '@panneau/core/utils';
@@ -20,7 +21,8 @@ import './styles/datepicker.global.scss';
 import 'react-datepicker/dist/react-datepicker.css';
 
 // This package has fucked exports, no default
-const { default: DatePicker, registerLocale } = ReactDatepicker;
+const FinalDatePicker =
+    isObject(DatePicker) && DatePicker.default ? DatePicker.default : DatePicker;
 
 const propTypes = {
     name: PropTypes.string,
@@ -82,7 +84,6 @@ const DateTimeField = ({
     className,
 }) => {
     const { locale, formatMessage } = useIntl();
-
     // The internal value of this field must be a Date object
     const parseDate = useCallback(
         (date) => {
@@ -148,11 +149,11 @@ const DateTimeField = ({
         />
     );
 
-    console.log('ok', TextField, DatePicker);
+    console.log('ok', TextField, DatePicker, FinalDatePicker);
 
     return (
         <div className={styles.container}>
-            <DatePicker
+            <FinalDatePicker
                 selected={dateValue}
                 onChange={onDateChange}
                 showTimeSelect={!withoutTime}
