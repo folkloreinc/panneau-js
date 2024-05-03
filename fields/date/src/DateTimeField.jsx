@@ -93,6 +93,7 @@ const DateTimeField = ({
         },
         [fnsFormat],
     );
+
     const formatDate = useCallback(
         (date) => {
             if (fnsFormat !== null) {
@@ -143,6 +144,9 @@ const DateTimeField = ({
             nativeOnChange
         />
     );
+
+    console.log('ok', TextField, DatePicker);
+
     return (
         <div className={styles.container}>
             <DatePicker

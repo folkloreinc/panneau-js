@@ -55,3 +55,10 @@ export const TimeWithFormat = () => {
         <TimeField value={value} format="H:m" onChange={setValue} placeholder="Select time..." />
     );
 };
+
+export const WithDateString = () => {
+    const [value, setValue] = useState('2024-01-30T17:48:10.000000Z');
+    return (
+        <DateTimeField value={value} onChange={setValue} placeholder="Select date and time..." />
+    );
+};
