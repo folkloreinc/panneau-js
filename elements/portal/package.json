@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-portal",
-    "version": "3.0.223",
+    "version": "3.0.224",
     "description": "Portal element",
     "keywords": [
         "javascript"
@@ -37,7 +37,8 @@
     "module": "es/index.js",
     "exports": {
         ".": "./es/index.js"
-    },"files": [
+    },
+    "files": [
         "lib",
         "es",
         "assets"

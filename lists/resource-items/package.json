@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-resource-items",
-    "version": "3.0.223",
+    "version": "3.0.224",
     "description": "Default resource list",
     "keywords": [
         "javascript"
@@ -29,7 +29,8 @@
     "module": "es/index.js",
     "exports": {
         ".": "./es/index.js"
-    },"files": [
+    },
+    "files": [
         "lib",
         "es",
         "assets"
@@ -48,16 +49,16 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/action-actions": "^3.0.223",
-        "@panneau/core": "^3.0.223",
-        "@panneau/data": "^3.0.223",
-        "@panneau/element-button": "^3.0.223",
-        "@panneau/element-form-group": "^3.0.223",
-        "@panneau/element-navbar": "^3.0.223",
-        "@panneau/element-pagination": "^3.0.223",
-        "@panneau/filter-filters": "^3.0.223",
-        "@panneau/list-table": "^3.0.223",
-        "@panneau/themes": "^3.0.223",
+        "@panneau/action-actions": "^3.0.224",
+        "@panneau/core": "^3.0.224",
+        "@panneau/data": "^3.0.224",
+        "@panneau/element-button": "^3.0.224",
+        "@panneau/element-form-group": "^3.0.224",
+        "@panneau/element-navbar": "^3.0.224",
+        "@panneau/element-pagination": "^3.0.224",
+        "@panneau/filter-filters": "^3.0.224",
+        "@panneau/list-table": "^3.0.224",
+        "@panneau/themes": "^3.0.224",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/core",
-    "version": "3.0.223",
+    "version": "3.0.224",
     "description": "",
     "keywords": [
         "javascript"
@@ -36,12 +36,6 @@
     "type": "module",
     "module": "es/index.js",
     "exports": {
-        ".": "./es/index.js"
-    },"sideEffects": [
-        "./lib/hooks.js",
-        "./es/hooks.js"
-    ],
-    "exports": {
         ".": {
             "import": "./es/index.js"
         },
@@ -58,6 +52,10 @@
             "import": "./es/utils.js"
         }
     },
+    "sideEffects": [
+        "./lib/hooks.js",
+        "./es/hooks.js"
+    ],
     "files": [
         "lib",
         "es",
