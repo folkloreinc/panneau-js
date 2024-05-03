@@ -2,7 +2,7 @@
 const { program } = require('commander');
 const fsExtra = require('fs-extra');
 
-const POFile = require('./lib/POFile');
+const POFile = require('./lib/POFile.cjs');
 
 let srcPath;
 let destPath;
