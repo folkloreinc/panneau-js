@@ -75,6 +75,12 @@ module.exports = {
             ...config.module,
             rules: [
                 {
+                    test: /\.m?js$/,
+                    resolve: {
+                        fullySpecified: false,
+                    },
+                },
+                {
                     oneOf: [
                         {
                             test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
