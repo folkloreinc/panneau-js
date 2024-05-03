@@ -50,7 +50,6 @@ export const createConfig = ({
         treeshake: {
             moduleSideEffects: (id, external) => id.match(/\.(css|scss)$/) !== null,
         },
-        external: [/^@uppy/, /^lodash/],
         plugins: [
             isCjs &&
                 resolve({

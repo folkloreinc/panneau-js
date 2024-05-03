@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { loadPackage } from '@panneau/core/utils';
 
@@ -12,7 +12,7 @@ const defaultPackagesMap = {
 };
 const useUppyLocale = (locale, { packagesMap = defaultPackagesMap } = {}) => {
     const [{ package: loadedPackage }, setLoadedPackage] = useState({
-        package: packagesCache[locale] || null
+        package: packagesCache[locale] || null,
     });
     const packageLoader = packagesMap[locale] || null;
     useEffect(() => {
@@ -23,16 +23,14 @@ const useUppyLocale = (locale, { packagesMap = defaultPackagesMap } = {}) => {
             };
         }
 
-        packageLoader().then(
-            ({ default: dep }) => {
-                // packagesCache[locale] = dep;
-                if (!canceled) {
-                    setLoadedPackage({
-                        package: dep,
-                    });
-                }
-            },
-        );
+        packageLoader().then(({ default: dep }) => {
+            // packagesCache[locale] = dep;
+            if (!canceled) {
+                setLoadedPackage({
+                    package: dep,
+                });
+            }
+        });
         return () => {
             canceled = true;
         };
