@@ -63,7 +63,7 @@ export default [
     {
         id: 'actions',
         label: <FormattedMessage defaultMessage="Actions" description="Field name" />,
-        actions: ['edit'],
+        actions: ['edit', 'delete'],
         // component: ItemActions,
         // label: 'Edit',
         // url: '/edit/1',
