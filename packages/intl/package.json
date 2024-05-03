@@ -47,7 +47,7 @@
         "assets"
     ],
     "scripts": {
-        "intl": "./scripts/build-intl.sh",
+        "intl": "../../scripts/build-intl.js '../../!(node_modules)/!(intl)/src/**/*.+(js|jsx)'",
         "prepublishOnly": "npm run build",
         "build": "rm -rf ./locale && npm run intl && ../../scripts/prepare-package.sh"
     },
