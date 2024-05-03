@@ -33,15 +33,16 @@
         }
     ],
     "license": "ISC",
-    "main": "lib/index.js",
+    "type": "module",
     "module": "es/index.js",
-    "sideEffects": [
+    "exports": {
+        ".": "./es/index.js"
+    },"sideEffects": [
         "./lib/hooks.js",
         "./es/hooks.js"
     ],
     "exports": {
         ".": {
-            "require": "./lib/index.js",
             "import": "./es/index.js"
         },
         "./contexts": {

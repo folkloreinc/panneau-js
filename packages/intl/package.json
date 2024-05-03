@@ -33,15 +33,10 @@
         }
     ],
     "license": "ISC",
-    "main": "lib/index.js",
     "module": "es/index.js",
     "exports": {
-        ".": {
-            "require": "./lib/index.js",
-            "import": "./es/index.js"
-        },
-        "./locale": "./locale",
-        "./locale/*": "./locale/*.cjs.js"
+        ".": "./es/index.js",
+        "./locale": "./locale"
     },
     "files": [
         "locale",

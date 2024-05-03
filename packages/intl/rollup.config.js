@@ -18,7 +18,7 @@ const localesFiles = locales.reduce(
                 }),
             ],
         }),
-        createConfig({
+        /*createConfig({
             input: 'src/lang.js',
             output: `locale/${locale}.cjs.js`,
             format: 'cjs',
@@ -31,7 +31,7 @@ const localesFiles = locales.reduce(
                     preventAssignment: false,
                 }),
             ],
-        }),
+        }),*/
     ],
     [],
 );
@@ -40,8 +40,8 @@ export default [
     createConfig({
         format: 'es',
     }),
-    createConfig({
+    /*createConfig({
         format: 'cjs',
-    }),
+    }),*/
     ...localesFiles,
 ];
