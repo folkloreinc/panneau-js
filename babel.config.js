@@ -1,6 +1,5 @@
 const path = require('path');
 const getPackagesAliases = require('./scripts/lib/getPackagesAliases');
-const { idInterpolationPattern } = require('./packages/intl/scripts/config');
 
 module.exports = (api) => {
     if (api.env('node')) {
@@ -98,7 +97,7 @@ module.exports = (api) => {
                 {
                     ast: true,
                     extractFromFormatMessageCall: true,
-                    idInterpolationPattern,
+                    idInterpolationPattern: '[sha512:contenthash:base64:6]',
                 },
             ],
         ].filter(Boolean),

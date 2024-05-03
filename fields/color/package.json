@@ -36,7 +36,9 @@
     "type": "module",
     "module": "es/index.js",
     "exports": {
-        ".": "./es/index.js"
+        ".": "./es/index.js",
+        "./assets/css/styles": "./assets/css/styles.css",
+        "./assets/css/styles.css": "./assets/css/styles.css"
     },
     "files": [
         "lib",

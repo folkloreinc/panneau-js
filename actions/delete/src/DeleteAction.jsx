@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -9,8 +8,6 @@ import { useModal } from '@panneau/core/contexts';
 import { useActionProps } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Confirm from '@panneau/modal-confirm';
-
-import styles from './styles.module.scss';
 
 const propTypes = {
     id: PropTypes.string.isRequired,
@@ -120,12 +117,7 @@ const DeleteAction = ({
     return (
         <>
             <Button
-                className={classNames([
-                    styles.container,
-                    {
-                        [className]: className !== null,
-                    },
-                ])}
+                className={className}
                 label={label}
                 icon={icon}
                 onClick={withConfirmation ? onOpen : onClick || onConfirm}
