@@ -50,6 +50,7 @@ export const createConfig = ({
         treeshake: {
             moduleSideEffects: (id, external) => id.match(/\.(css|scss)$/) !== null,
         },
+        external: [/^@uppy/, /^lodash/],
         plugins: [
             isCjs &&
                 resolve({
@@ -57,7 +58,7 @@ export const createConfig = ({
                     resolveOnly: [
                         '@folklore/routes',
                         /^@uppy/,
-                        /(lodash|query-string|pretty-bytes|decode-uri-component|split-on-first|filter-obj|screenfull|camelcas|nanoid|p-retry|[a-z]+-case|wouter)/,
+                        /(query-string|pretty-bytes|decode-uri-component|split-on-first|filter-obj|screenfull|camelcas|nanoid|p-retry|[a-z]+-case|wouter)/,
                     ],
                 }),
             ...prependPlugins,

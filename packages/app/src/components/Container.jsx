@@ -89,8 +89,6 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
 
     const { hook: memoryLocationHook, searchHook: memorySearchHook } = useMemoryRouter();
 
-    console.log('hello');
-
     return (
         <Router
             hook={isMemoryRouter ? memoryLocationHook : null}
