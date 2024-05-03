@@ -179,7 +179,7 @@ msgstr "Mot de passe actuel"
 #: 8NyYTH
 msgctxt "8NyYTH"
 msgid "Back"
-msgstr ""
+msgstr "Retour"
 
 # Modal title
 #: 8T+JE7
@@ -222,6 +222,12 @@ msgstr "Entrez votre mot de passe pour continuer"
 msgctxt "BAKfhq"
 msgid "W"
 msgstr "M"
+
+# Modal title
+#: BIYKx5
+msgctxt "BIYKx5"
+msgid "Preview"
+msgstr "Prévisualisation"
 
 # Default upload add button label
 #: BeKVq6

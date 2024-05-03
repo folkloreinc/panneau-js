@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
@@ -22,7 +21,7 @@ const propTypes = {
     icon: PropTypes.string,
     theme: PropTypes.string,
     disabled: PropTypes.bool,
-    onConfirmed: PropTypes.func,
+    onClick: PropTypes.func,
     valueLabelPath: PropTypes.string,
     modalComponent: PropTypes.string,
     withConfirmation: PropTypes.bool,
@@ -39,9 +38,9 @@ const defaultProps = {
     value: null,
     theme: 'infor',
     disabled: false,
-    onConfirmed: null,
+    onClick: null,
     valueLabelPath: null,
-    modalComponent: 'confirm',
+    modalComponent: 'dialog',
     withConfirmation: false,
     className: null,
 };
@@ -57,7 +56,7 @@ const ShowAction = ({
     value,
     theme,
     disabled,
-    onConfirmed,
+    onClick,
     valueLabelPath,
     modalComponent,
     withConfirmation,
@@ -68,9 +67,8 @@ const ShowAction = ({
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
     const [modalOpen, setModalOpen] = useState(false);
-    const [error, setError] = useState(null);
 
-    const { ids, idLabels, modalKey } = useActionProps(id, value, valueLabelPath);
+    const { modalKey } = useActionProps(id, value, valueLabelPath);
 
     const onOpen = useCallback(() => {
         setModalOpen(true);
@@ -79,34 +77,6 @@ const ShowAction = ({
     const onClose = useCallback(() => {
         setModalOpen(false);
     }, [setModalOpen]);
-
-    const onConfirm = useCallback(
-        () =>
-            (action !== null
-                ? action(ids)
-                : postJSON(
-                      endpoint,
-                      { ids },
-                      {
-                          credentials: 'include',
-                          headers: getCSRFHeaders(),
-                          _method: 'DELETE',
-                      },
-                  )
-            )
-                .then((response) => {
-                    if (onConfirmed !== null) {
-                        onConfirmed(response);
-                    }
-                    if (withConfirmation) {
-                        onClose();
-                    }
-                })
-                .catch((err) => {
-                    setError(err);
-                }),
-        [ids, endpoint, onClose, setError, withConfirmation],
-    );
 
     return (
         <>
@@ -119,7 +89,7 @@ const ShowAction = ({
                 ])}
                 label={label}
                 icon={icon}
-                onClick={withConfirmation ? onOpen : onConfirm}
+                onClick={withConfirmation ? onOpen : onClick}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
                 {...props}
@@ -129,10 +99,9 @@ const ShowAction = ({
                     id={modalKey}
                     title={
                         title || (
-                            <FormattedMessage defaultMessage="Restore" description="Modal title" />
+                            <FormattedMessage defaultMessage="Preview" description="Modal title" />
                         )
                     }
-                    onConfirm={onConfirm}
                     onClose={onClose}
                     confirmButton={{
                         label: (
@@ -146,23 +115,7 @@ const ShowAction = ({
                         ),
                     }}
                 >
-                    {description !== null ? (
-                        description
-                    ) : (
-                        <p>
-                            <FormattedMessage
-                                defaultMessage="The following items will be restored: {ids}. Are you sure you want to continue?"
-                                description="Modal message"
-                                values={{ ids: idLabels }}
-                            />
-                        </p>
-                    )}
-                    {error !== null ? (
-                        <FormattedMessage
-                            defaultMessage="An error has occured."
-                            description="Modal message"
-                        />
-                    ) : null}
+                    Show Something
                 </ModalComponent>
             ) : null}
         </>

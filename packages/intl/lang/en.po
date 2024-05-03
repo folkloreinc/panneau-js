@@ -221,6 +221,12 @@ msgctxt "BAKfhq"
 msgid "W"
 msgstr "W"
 
+# Modal title
+#: BIYKx5
+msgctxt "BIYKx5"
+msgid "Preview"
+msgstr "Preview"
+
 # Default upload add button label
 #: BeKVq6
 msgctxt "BeKVq6"

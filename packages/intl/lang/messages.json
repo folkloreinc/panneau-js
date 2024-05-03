@@ -139,6 +139,10 @@
     "defaultMessage": "W",
     "description": "Wednesday letter"
   },
+  "BIYKx5": {
+    "defaultMessage": "Preview",
+    "description": "Modal title"
+  },
   "BeKVq6": {
     "defaultMessage": "Upload file",
     "description": "Default upload add button label"
