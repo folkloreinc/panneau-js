@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "3.0.230",
+    "version": "3.0.231",
     "description": "",
     "keywords": [
         "javascript"
@@ -67,7 +67,7 @@
         "@fortawesome/fontawesome-svg-core": "^6.5.1",
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",
-        "@panneau/actions": "^3.0.228",
+        "@panneau/actions": "^3.0.231",
         "@panneau/auth": "^3.0.228",
         "@panneau/core": "^3.0.228",
         "@panneau/data": "^3.0.228",
@@ -95,7 +95,7 @@
         "@panneau/element-radios": "^3.0.228",
         "@panneau/element-range": "^3.0.228",
         "@panneau/element-resource-card": "^3.0.228",
-        "@panneau/fields": "^3.0.228",
+        "@panneau/fields": "^3.0.231",
         "@panneau/filter-filters": "^3.0.228",
         "@panneau/filters": "^3.0.228",
         "@panneau/form-resource": "^3.0.228",
@@ -103,9 +103,9 @@
         "@panneau/intl": "^3.0.228",
         "@panneau/list-resource-items": "^3.0.228",
         "@panneau/lists": "^3.0.228",
-        "@panneau/modals": "^3.0.228",
+        "@panneau/modals": "^3.0.231",
         "@panneau/themes": "^3.0.228",
-        "@panneau/uppy": "^3.0.228",
+        "@panneau/uppy": "^3.0.231",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
