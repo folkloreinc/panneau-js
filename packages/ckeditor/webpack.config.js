@@ -1,27 +1,26 @@
 'use strict';
 
-import path from 'path';
-import { CKEditorTranslationsPlugin } from '@ckeditor/ckeditor5-dev-translations';
-import devUtils from '@ckeditor/ckeditor5-dev-utils';
+const path = require('path');
+const { CKEditorTranslationsPlugin } = require('@ckeditor/ckeditor5-dev-translations');
+const { styles } = require('@ckeditor/ckeditor5-dev-utils');
 
-const { styles } = devUtils;
-
-export default {
+module.exports = {
     entry: {
         build: './src/build.js',
     },
 
     output: {
-        path: path.resolve(process.cwd(), 'dist'),
-        filename: '[name].cjs',
+        path: path.resolve(__dirname, 'dist'),
+        filename: '[name].js',
+        // library: 'PanneauEditor',
         libraryTarget: 'umd',
         libraryExport: 'default',
     },
 
     resolve: {
         modules: [
-            path.join(process.cwd(), 'node_modules'),
-            path.join(process.cwd(), '../../node_modules'),
+            path.join(__dirname, 'node_modules'),
+            path.join(__dirname, '../../node_modules'),
             'node_modules',
         ],
     },
@@ -60,7 +59,7 @@ export default {
                         options: {
                             postcssOptions: styles.getPostCssConfig({
                                 themeImporter: {
-                                    themePath: '@ckeditor/ckeditor5-theme-lark',
+                                    themePath: require.resolve('@ckeditor/ckeditor5-theme-lark'),
                                 },
                                 minify: true,
                             }),
