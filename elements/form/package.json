@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-form",
-    "version": "3.0.226",
+    "version": "3.0.228",
     "description": "Form element",
     "keywords": [
         "javascript"
@@ -57,11 +57,11 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.224",
-        "@panneau/element-button": "^3.0.226",
-        "@panneau/element-buttons": "^3.0.226",
-        "@panneau/element-form-status": "^3.0.224",
-        "@panneau/themes": "^3.0.224",
+        "@panneau/core": "^3.0.228",
+        "@panneau/element-button": "^3.0.228",
+        "@panneau/element-buttons": "^3.0.228",
+        "@panneau/element-form-status": "^3.0.228",
+        "@panneau/themes": "^3.0.228",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
