@@ -7,7 +7,7 @@ import parseISO from 'date-fns/parseISO';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 // import classNames from 'classnames';
-import DatePicker, { registerLocale } from 'react-datepicker';
+import * as ReactDatepicker from 'react-datepicker';
 import { defineMessage, useIntl } from 'react-intl';
 
 import { isMessage, loadPackage } from '@panneau/core/utils';
@@ -18,6 +18,9 @@ import './styles/datepicker.global.scss';
 
 // We import this one but customized - needs to be improved with bootstrap themes
 import 'react-datepicker/dist/react-datepicker.css';
+
+// This package has fucked exports, no default
+const { default: DatePicker, registerLocale } = ReactDatepicker;
 
 const propTypes = {
     name: PropTypes.string,
