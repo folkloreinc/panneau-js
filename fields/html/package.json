@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-html",
-    "version": "3.0.225",
+    "version": "3.0.226",
     "description": "A HTML field, using either Quill or CK Editor",
     "keywords": [
         "javascript"
@@ -63,7 +63,7 @@
         "@ckeditor/ckeditor5-react": "^6.2.0",
         "@panneau/ckeditor": "^3.0.225",
         "@panneau/core": "^3.0.224",
-        "@panneau/field-input-group": "^3.0.224",
+        "@panneau/field-input-group": "^3.0.226",
         "@panneau/themes": "^3.0.224",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2"
