@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-date",
-    "version": "3.0.233",
+    "version": "3.0.234",
     "description": "A date field",
     "keywords": [
         "javascript"
@@ -67,10 +67,10 @@
         "@panneau/themes": "^3.0.228",
         "classnames": "^2.5.1",
         "date-fns": "^3.3.1",
+        "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
         "react-datepicker": "^6.9.0",
-        "react-intl": "^5.15.8||^6.0.0",
-        "lodash": "^4.17.21"
+        "react-intl": "^5.15.8||^6.0.0"
     },
     "publishConfig": {
         "access": "public"
