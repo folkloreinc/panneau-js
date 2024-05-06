@@ -36,7 +36,7 @@ const MediaCards = ({ value, className, cardClassName, ...props }) => {
     }, [value]);
 
     return (
-        <div className={classNames([styles.container, { [className]: className !== null }])}>
+        <div className={classNames([styles.mediaCards, { [className]: className !== null }])}>
             {values.map((media, idx) => (
                 <MediaCard
                     key={`media-card-${idx + 1}-${media !== null ? media?.id : null}`}

@@ -149,8 +149,6 @@ const DateTimeField = ({
         />
     );
 
-    console.log('ok', TextField, DatePicker, FinalDatePicker);
-
     return (
         <div className={styles.container}>
             <FinalDatePicker

@@ -428,6 +428,8 @@ const UploadField = ({
                             <Button
                                 type="button"
                                 theme="primary"
+                                icon="search"
+                                iconPosition="right"
                                 onClick={finalOnClickFind}
                                 disabled={disabled}
                                 outline={outline}

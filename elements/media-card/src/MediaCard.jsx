@@ -268,7 +268,7 @@ const MediaCard = ({
     }, [value, onClick]);
 
     return (
-        <div className={classNames([{ [className]: className !== null }])}>
+        <div className={classNames(['w-100', 'mb-1', { [className]: className !== null }])}>
             <div
                 className={classNames([
                     'card',
@@ -295,7 +295,7 @@ const MediaCard = ({
                         <Button
                             className={classNames([
                                 'btn',
-                                'pe-3',
+                                'p-0',
                                 { 'w-100': withoutDescription || vertical },
                             ])}
                             type="button"
@@ -303,7 +303,7 @@ const MediaCard = ({
                             external={external}
                             target={external ? '_blank' : null}
                             onClick={onClickThumbnail}
-                            withoutStyle
+                            // withoutStyle
                             style={{
                                 border: selected
                                     ? '1px solid var(--bs-primary-border-subtle)'
@@ -314,6 +314,10 @@ const MediaCard = ({
                                 borderBottomRightRadius: 0,
                                 borderBottomLeftRadius: !vertical ? 0 : 'inherit',
                                 overflow: 'hidden',
+                                minWidth:
+                                    !vertical && thumbnailElement !== null
+                                        ? thumbnailSize + 10
+                                        : null,
                             }}
                         >
                             {thumbnailElement || 'Thumbnail'}

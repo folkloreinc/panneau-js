@@ -39,13 +39,7 @@ const Container = ({ value: initialValue = null, ...props }) => {
                             <ActionsProvider>
                                 <DisplaysProvider>
                                     <ModalProvider>
-                                        <div>
-                                            <UploadField
-                                                {...props}
-                                                value={value}
-                                                onChange={setValue}
-                                            />
-                                        </div>
+                                        <UploadField {...props} value={value} onChange={setValue} />
                                         <Modals />
                                     </ModalProvider>
                                 </DisplaysProvider>
