@@ -1,12 +1,12 @@
 'use strict';
 
-import { CKEditorTranslationsPlugin } from '@ckeditor/ckeditor5-dev-translations';
-import devUtils from '@ckeditor/ckeditor5-dev-utils';
-import path from 'path';
+const { CKEditorTranslationsPlugin } = require('@ckeditor/ckeditor5-dev-translations');
+const devUtils = require('@ckeditor/ckeditor5-dev-utils');
+const path = require('path');
 
 const { styles } = devUtils;
 
-export default {
+module.exports = {
     entry: {
         build: './src/build.js',
     },
@@ -42,14 +42,7 @@ export default {
                 use: ['raw-loader'],
             },
             {
-                test: /\.m?js$/,
-                resolve: {
-                    fullySpecified: false,
-                },
-            },
-            {
                 test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
-
                 use: [
                     {
                         loader: 'style-loader',
@@ -66,7 +59,7 @@ export default {
                         options: {
                             postcssOptions: styles.getPostCssConfig({
                                 themeImporter: {
-                                    themePath: '@ckeditor/ckeditor5-theme-lark',
+                                    themePath: require.resolve('@ckeditor/ckeditor5-theme-lark'),
                                 },
                                 minify: true,
                             }),
@@ -74,11 +67,17 @@ export default {
                     },
                 ],
             },
+            // {
+            //     test: /\.m?js$/,
+            //     resolve: {
+            //         fullySpecified: false,
+            //     },
+            // },
         ],
     },
 
     // Useful for debugging.
-    devtool: 'source-map',
+    // devtool: 'source-map',
 
     // By default webpack logs warnings if the bundle is bigger than 200kb.
     performance: { hints: false },
