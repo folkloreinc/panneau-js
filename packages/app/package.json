@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "3.0.235",
+    "version": "3.0.237",
     "description": "",
     "keywords": [
         "javascript"
@@ -67,7 +67,7 @@
         "@fortawesome/fontawesome-svg-core": "^6.5.1",
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",
-        "@panneau/actions": "^3.0.231",
+        "@panneau/actions": "^3.0.237",
         "@panneau/auth": "^3.0.228",
         "@panneau/core": "^3.0.228",
         "@panneau/data": "^3.0.228",
@@ -86,7 +86,7 @@
         "@panneau/element-label": "^3.0.228",
         "@panneau/element-link": "^3.0.228",
         "@panneau/element-loading": "^3.0.228",
-        "@panneau/element-media-card": "^3.0.228",
+        "@panneau/element-media-card": "^3.0.237",
         "@panneau/element-media-player": "^3.0.228",
         "@panneau/element-menu": "^3.0.228",
         "@panneau/element-modal": "^3.0.228",
@@ -95,9 +95,9 @@
         "@panneau/element-radios": "^3.0.228",
         "@panneau/element-range": "^3.0.228",
         "@panneau/element-resource-card": "^3.0.228",
-        "@panneau/fields": "^3.0.235",
+        "@panneau/fields": "^3.0.237",
         "@panneau/filter-filters": "^3.0.228",
-        "@panneau/filters": "^3.0.234",
+        "@panneau/filters": "^3.0.237",
         "@panneau/form-resource": "^3.0.228",
         "@panneau/forms": "^3.0.228",
         "@panneau/intl": "^3.0.228",
