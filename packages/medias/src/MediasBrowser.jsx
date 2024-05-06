@@ -157,9 +157,6 @@ function MediasBrowser({
     const { mediaDelete, deleting } = useMediaDelete();
 
     const [showTrashed, setShowTrashed] = useState(false);
-    const onClickTrash = useCallback(() => {
-        setShowTrashed(!showTrashed);
-    }, [showTrashed, setShowTrashed]);
 
     const {
         items,
@@ -171,6 +168,11 @@ function MediasBrowser({
         pages = null,
         reload,
     } = useMedias(query, page, count, { items: baseItems, trashed: showTrashed });
+
+    const onClickTrash = useCallback(() => {
+        setShowTrashed(!showTrashed);
+        reload(); // dirty fix to bypass global query caching
+    }, [showTrashed, setShowTrashed]);
 
     useEffect(() => {
         if (onItemsChange !== null) {
