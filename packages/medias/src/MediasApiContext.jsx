@@ -13,6 +13,7 @@ export const apiPropTypes = PropTypes.shape({
     find: PropTypes.func.isRequired,
     update: PropTypes.func.isRequired,
     trash: PropTypes.func.isRequired,
+    restore: PropTypes.func.isRequired,
     delete: PropTypes.func.isRequired,
 });
 
