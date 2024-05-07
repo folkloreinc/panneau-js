@@ -362,6 +362,7 @@ module.exports = () => {
             res.sendStatus(404);
             return;
         }
+        // TODO implement trashed state
         deleteResource(req, res);
     });
 
@@ -370,6 +371,8 @@ module.exports = () => {
         if (!resourceExists(resource)) {
             res.sendStatus(404);
         }
+        // TODO implement trashed state
+        res.sendStatus(200);
     });
 
     router.delete('/:resource/:id', (req, res) => {
