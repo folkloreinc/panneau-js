@@ -74,6 +74,7 @@ const ResourceItemsList = ({
 }) => {
     const panneauResource = usePanneauResource(providedResource);
     const resource = isObject(providedResource) ? providedResource : panneauResource;
+
     const {
         id: resourceId = null,
         index: {

@@ -1,8 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { usePanneauResource } from '@panneau/core/contexts';
 import { useQuery } from '@panneau/core/hooks';
 import { useResourceValues } from '@panneau/intl';
 import ResourceItemsList from '@panneau/list-resource-items';
@@ -14,6 +16,7 @@ const propTypes = {
     title: PropTypes.string,
     query: PropTypes.shape(),
     paginated: PropTypes.bool,
+    size: PropTypes.string,
     onQueryChange: PropTypes.func,
     onQueryReset: PropTypes.func,
     onPageChange: PropTypes.func,
@@ -29,6 +32,7 @@ const defaultProps = {
     title: null,
     query: null,
     paginated: true,
+    size: 'xl',
     onQueryChange: PropTypes.func,
     onQueryReset: PropTypes.func,
     onPageChange: PropTypes.func,
@@ -40,16 +44,20 @@ const defaultProps = {
 
 const ModalResourceItems = ({
     id,
-    resource,
+    resource: providedResource,
     title,
     query: initialQuery,
     paginated,
+    size,
     onClose,
     listProps,
     className,
     children,
     ...props
 }) => {
+    const panneauResource = usePanneauResource(providedResource);
+    const resource = isObject(providedResource) ? providedResource : panneauResource;
+
     const resourceValues = useResourceValues(resource);
     const finalQuery = useMemo(() => ({ ...initialQuery }), [initialQuery]);
     const { query, onPageChange, onQueryChange, onQueryReset } = useQuery(finalQuery, paginated);
@@ -68,7 +76,7 @@ const ModalResourceItems = ({
                     />
                 )
             }
-            size="lg"
+            size={size}
             onClose={onClose}
             className={className}
         >
