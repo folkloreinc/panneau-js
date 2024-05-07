@@ -17,6 +17,7 @@ import IntlProvider from '../../../intl/src/IntlProvider';
 import { UppyProvider } from '../../../uppy/src/UppyContext';
 import { MediasApiProvider } from '../MediasApiContext';
 import MediasBrowser from '../MediasBrowserContainer';
+import ModalsProvider from '../../../modals/src/ModalsProvider';
 
 export default {
     title: 'Medias/MediasBrowser',
@@ -33,18 +34,20 @@ const Container = ({ ...props } = {}) => {
     return (
         <IntlProvider>
             <ModalProvider>
-                <FieldsProvider>
-                    <DisplaysProvider>
-                        <FiltersProvider>
-                            <ActionsProvider>
-                                <MediasApiProvider api={api.medias}>
-                                    <MediasBrowser {...props} />
-                                    <Modals />
-                                </MediasApiProvider>
-                            </ActionsProvider>
-                        </FiltersProvider>
-                    </DisplaysProvider>
-                </FieldsProvider>
+                <ModalsProvider>
+                    <FieldsProvider>
+                        <DisplaysProvider>
+                            <FiltersProvider>
+                                <ActionsProvider>
+                                    <MediasApiProvider api={api.medias}>
+                                        <MediasBrowser {...props} />
+                                        <Modals />
+                                    </MediasApiProvider>
+                                </ActionsProvider>
+                            </FiltersProvider>
+                        </DisplaysProvider>
+                    </FieldsProvider>
+                </ModalsProvider>
             </ModalProvider>
         </IntlProvider>
     );
