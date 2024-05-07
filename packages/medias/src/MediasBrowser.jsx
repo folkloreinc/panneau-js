@@ -24,6 +24,7 @@ import MediaForm from './MediaForm';
 import defaultColumns from './defaults/columns';
 import defaultFields from './defaults/fields';
 import defaultFilters from './defaults/filters';
+import useMediaRestore from './hooks/useMediaRestore';
 
 const propTypes = {
     items: PanneauPropTypes.medias,
@@ -155,6 +156,7 @@ function MediasBrowser({
 
     const { mediaTrash, trashing } = useMediaTrash();
     const { mediaDelete, deleting } = useMediaDelete();
+    const { mediaRestore } = useMediaRestore();
 
     const [showTrashed, setShowTrashed] = useState(false);
 
@@ -386,6 +388,7 @@ function MediasBrowser({
                                               id: 'restore',
                                               component: 'restore',
                                               withConfirmation: true,
+                                              action: (ids) => mediaRestore(ids[0])
                                           });
                                       }
                                       acc.push(action);
@@ -567,7 +570,7 @@ function MediasBrowser({
                             actionsProps={{
                                 getDeletePropsFromItem: ({ id = null } = {}) => ({
                                     href: null,
-                                    withConfirmation: false,
+                                    withConfirmation: true,
                                     disabled: trashing || deleting,
                                     icon: showTrashed ? 'trash-fill' : 'trash',
                                     onClick: () => onTrashMedia(id),

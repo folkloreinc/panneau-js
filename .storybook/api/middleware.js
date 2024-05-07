@@ -365,6 +365,13 @@ module.exports = () => {
         deleteResource(req, res);
     });
 
+    router.post('/:resource/restore/:id', (req, res) => {
+        const { resource } = req.params;
+        if (!resourceExists(resource)) {
+            res.sendStatus(404);
+        }
+    });
+
     router.delete('/:resource/:id', (req, res) => {
         const { resource } = req.params;
         if (!resourceExists(resource)) {

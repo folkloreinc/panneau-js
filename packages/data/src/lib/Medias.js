@@ -12,6 +12,7 @@ class MediasApi extends Base {
                 store: 'medias',
                 update: 'medias/:media',
                 trash: 'medias/trash/:media',
+                restore: 'medias/restore/:media',
                 delete: 'medias/:media',
                 ...(opts.routes || null),
             },
@@ -81,6 +82,14 @@ class MediasApi extends Base {
                 media: id,
             }),
         );
+    }
+
+    restore(id) {
+        return this.requestPost(
+            this.route('restore', {
+                media: id
+            })
+        )
     }
 
     delete(id) {
