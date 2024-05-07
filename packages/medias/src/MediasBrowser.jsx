@@ -573,7 +573,7 @@ function MediasBrowser({
                                     withConfirmation: true,
                                     disabled: trashing || deleting,
                                     icon: showTrashed ? 'trash-fill' : 'trash',
-                                    onClick: () => onTrashMedia(id),
+                                    action: (ids) => onTrashMedia(ids[0]),
                                 }),
                                 getEditPropsFromItem: (it) => ({
                                     href: null,
