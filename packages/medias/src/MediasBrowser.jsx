@@ -388,7 +388,7 @@ function MediasBrowser({
                                               id: 'restore',
                                               component: 'restore',
                                               withConfirmation: true,
-                                              action: (ids) => mediaRestore(ids[0])
+                                              action: (ids) => mediaRestore(ids[0]).then(reload)
                                           });
                                       }
                                       acc.push(action);
