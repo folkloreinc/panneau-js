@@ -207,12 +207,19 @@ export default {
             {
                 id: 'actions',
                 actions: [
-                    'show',
+                    // 'show',
                     {
                         id: 'export',
                         label: 'Export',
                         href: 'https://google.com',
                         external: true,
+                        theme: 'secondary',
+                    },
+                    {
+                        id: 'show',
+                        icon: 'check-square',
+                        itemLinkProp: 'url',
+                        external: false,
                         theme: 'secondary',
                     },
                     'edit',

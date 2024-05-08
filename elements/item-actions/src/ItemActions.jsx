@@ -11,6 +11,8 @@ import { useActions, useResourceUrlGenerator } from '@panneau/core/hooks';
 import Buttons from '@panneau/element-buttons';
 import Icon from '@panneau/element-icon';
 
+// TODO: this one is unused now?
+
 const propTypes = {
     resource: PanneauPropTypes.resource,
     size: PanneauPropTypes.buttonSize,
@@ -94,6 +96,7 @@ const ItemActions = ({
     getDeletePropsFromItem,
     getDuplicatePropsFromItem,
     withoutItemShowUrl,
+    itemLinkProp,
     className,
 }) => {
     const urlGenerator = useResourceUrlGenerator(resource);
@@ -115,6 +118,7 @@ const ItemActions = ({
         getDeletePropsFromItem,
         getDuplicatePropsFromItem,
         withoutItemShowUrl,
+        itemLinkProp,
     });
     return (
         <Buttons
@@ -126,7 +130,6 @@ const ItemActions = ({
                             const {
                                 label = null,
                                 icon = null,
-                                itemLinkProp = null,
                                 linkProps = null,
                                 component = null,
                                 ...otherProps

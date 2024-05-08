@@ -199,6 +199,12 @@ msgctxt "9XBwF1"
 msgid "Yes"
 msgstr "Oui"
 
+# Empty label
+#: AJiMQk
+msgctxt "AJiMQk"
+msgid "No results"
+msgstr "Pas de résultats"
+
 # Page title
 #: AeOZq+
 msgctxt "AeOZq+"

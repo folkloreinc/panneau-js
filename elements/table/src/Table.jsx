@@ -427,18 +427,15 @@ function Table({
                 </table>
             ) : null}
             {loading && !loaded && (items === null || items.length === 0) && !withoutLoading ? (
-                <Loading className="mt-2" withDelay>
+                <Loading className="mt-3" withDelay>
                     <FormattedMessage defaultMessage="Loading" description="Loading label" />
                 </Loading>
             ) : null}
             {(empty || (!loading && loaded && (items === null || items.length === 0))) &&
             !withoutEmpty ? (
-                <Empty className="mt-2" withDelay>
+                <Empty className="mt-3" withDelay>
                     {emptyLabel || (
-                        <FormattedMessage
-                            defaultMessage="No results found"
-                            description="Empty label"
-                        />
+                        <FormattedMessage defaultMessage="No results" description="Empty label" />
                     )}
                 </Empty>
             ) : null}

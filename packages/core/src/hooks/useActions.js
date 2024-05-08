@@ -1,3 +1,4 @@
+import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
 
 // For backwards compatibility with the old actions element
@@ -122,6 +123,19 @@ const useActions = (
                         break;
                 }
             }
+
+            if (isObject(action)) {
+                const { itemLinkProp = null } = action || {};
+                return {
+                    ...action,
+                    ...(itemLinkProp !== null &&
+                    isObject(item) &&
+                    typeof item[itemLinkProp] !== 'undefined'
+                        ? { href: item[itemLinkProp] }
+                        : null),
+                };
+            }
+
             return action;
         })
         .filter((action) => action !== null);

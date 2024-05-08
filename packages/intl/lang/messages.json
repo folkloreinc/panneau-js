@@ -123,6 +123,10 @@
     "defaultMessage": "Yes",
     "description": "Boolean value"
   },
+  "AJiMQk": {
+    "defaultMessage": "No results",
+    "description": "Empty label"
+  },
   "AeOZq+": {
     "defaultMessage": "Login",
     "description": "Page title"

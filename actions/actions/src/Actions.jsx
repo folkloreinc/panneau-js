@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
@@ -93,13 +92,13 @@ const Actions = ({
                 const {
                     id = null,
                     component = null,
-                    itemLinkProp = null,
                     withConfirmation: actionConfirmation = false,
                     ...otherProps
                 } = action || {};
                 const actionComponent = actionsComponents.getComponent(component);
                 const hasActionComponent = actionComponent !== null;
                 const Component = actionComponent || defaultComponent;
+
                 return Component !== null ? (
                     <Component
                         id={id}
@@ -114,11 +113,6 @@ const Actions = ({
                                   onConfirmed,
                                   withConfirmation: actionConfirmation || withConfirmation,
                               }
-                            : null)}
-                        {...(itemLinkProp !== null &&
-                        isObject(value) &&
-                        typeof value[itemLinkProp] !== 'undefined'
-                            ? { href: value[itemLinkProp] }
                             : null)}
                         {...otherProps}
                     />
