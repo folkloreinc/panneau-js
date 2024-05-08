@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-resource-items",
-    "version": "3.0.239",
+    "version": "3.0.242",
     "description": "Default resource list",
     "keywords": [
         "javascript"
@@ -49,7 +49,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/action-actions": "^3.0.228",
+        "@panneau/action-actions": "^3.0.242",
         "@panneau/core": "^3.0.228",
         "@panneau/data": "^3.0.239",
         "@panneau/element-button": "^3.0.228",
