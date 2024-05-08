@@ -92,6 +92,7 @@ const Actions = ({
                 const {
                     id = null,
                     component = null,
+                    itemLinkProp = null,
                     withConfirmation: actionConfirmation = false,
                     ...otherProps
                 } = action || {};
@@ -112,6 +113,9 @@ const Actions = ({
                                   onConfirmed,
                                   withConfirmation: actionConfirmation || withConfirmation,
                               }
+                            : null)}
+                        {...(itemLinkProp !== null && value !== null && value[itemLinkProp]
+                            ? { href: value[itemLinkProp] }
                             : null)}
                         {...otherProps}
                     />
