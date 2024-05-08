@@ -55,6 +55,7 @@
         "@panneau/themes": "^3.0.228",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
+        "lodash": "^4.17.21",
         "react-intl": "^5.15.8||^6.0.0"
     },
     "publishConfig": {

@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
+import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
@@ -114,7 +115,9 @@ const Actions = ({
                                   withConfirmation: actionConfirmation || withConfirmation,
                               }
                             : null)}
-                        {...(itemLinkProp !== null && value !== null && value[itemLinkProp]
+                        {...(itemLinkProp !== null &&
+                        isObject(value) &&
+                        typeof value[itemLinkProp] !== 'undefined'
                             ? { href: value[itemLinkProp] }
                             : null)}
                         {...otherProps}
