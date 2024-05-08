@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-progress",
-    "version": "3.0.228",
+    "version": "3.0.244",
     "description": "Progress bar element",
     "keywords": [
         "javascript"
@@ -57,7 +57,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.228",
+        "@panneau/core": "^3.0.244",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
