@@ -1,6 +1,6 @@
 {
     "name": "@panneau/displays",
-    "version": "3.0.242",
+    "version": "3.0.243",
     "description": "",
     "keywords": [
         "javascript"
@@ -66,7 +66,7 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.228",
-        "@panneau/display-actions": "^3.0.242",
+        "@panneau/display-actions": "^3.0.243",
         "@panneau/display-avatar": "^3.0.228",
         "@panneau/display-badges": "^3.0.228",
         "@panneau/display-boolean": "^3.0.228",
