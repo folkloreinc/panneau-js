@@ -61,11 +61,11 @@ const Actions = ({
                 .filter((action) => action !== null)
                 .map(
                     (action) => {
-                        const { multiple = false } = action || {};
+                        const { multiple = false, global = false } = action || {};
                         const enabled = multiple
                             ? value !== null && value.length > 0
                             : value !== null && value.length === 1;
-                        const finalDisabled = parentDisabled || disabled || !enabled;
+                        const finalDisabled = !global && (parentDisabled || disabled || !enabled);
                         return {
                             ...action,
                             disabled: finalDisabled,
@@ -104,6 +104,7 @@ const Actions = ({
                         id={id}
                         key={`action-${id}-${idx + 1}`}
                         className={!isGroup ? 'me-2' : null}
+                        iconPosition="right"
                         value={value}
                         size={size}
                         resource={resource}

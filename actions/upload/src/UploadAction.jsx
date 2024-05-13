@@ -1,84 +1,84 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import UploadField from '@panneau/field-upload';
+import { useFieldsComponentsManager } from '@panneau/core/contexts';
 
-import styles from './styles.module.scss';
-
-// TODO: fix this
+// TODO: figure out what happens when an item / multiple items are selected
 
 const propTypes = {
-    id: PropTypes.string.isRequired,
-    title: PropTypes.node,
-    description: PropTypes.node,
-    fields: PropTypes.arrayOf(PropTypes.shape({})),
+    // eslint-disable-next-line react/no-unused-prop-types
+    id: PropTypes.string,
     endpoint: PropTypes.string,
+    action: PropTypes.func, // Promise
     label: PropTypes.string,
-    value: PropTypes.bool,
+    value: PropTypes.shape({}),
     icon: PropTypes.string,
     theme: PropTypes.string,
     disabled: PropTypes.bool,
-    onChange: PropTypes.func,
+    fieldComponent: PropTypes.string,
     onConfirmed: PropTypes.func,
-    withConfirmation: PropTypes.bool,
     className: PropTypes.string,
 };
 
 const defaultProps = {
-    title: null,
-    description: null,
-    fields: null,
-    endpoint: null,
-    label: <FormattedMessage defaultMessage="Add a file" description="Button label" />,
-    icon: 'upload',
+    id: null,
+    endpoint: '/import',
+    action: null,
+    label: null,
     value: null,
+    icon: 'upload',
     theme: 'primary',
     disabled: false,
-    onChange: null,
+    fieldComponent: 'upload',
     onConfirmed: null,
-    withConfirmation: false,
     className: null,
 };
 
-const UploadAction = ({
-    id,
-    title,
-    description,
-    fields,
+const ImportAction = ({
     endpoint,
+    action,
     label,
-    icon,
     value,
+    icon,
     theme,
     disabled,
-    onChange,
     onConfirmed,
-    withConfirmation,
+    fieldComponent,
     className,
     ...props
 }) => {
-    // const { ids, idLabels, modalKey } = useActionProps(value);
-    console.log('upload action...');
-    return 'Upload';
-    // <UploadField
-    //     className={classNames([
-    //         styles.container,
-    //         {
-    //             [className]: className !== null,
-    //         },
-    //     ])}
-    //     label={label}
-    //     icon={icon}
-    //     disabled={disabled}
-    //     theme={disabled ? 'secondary' : theme}
-    //     {...props}
-    // />
+    const FieldComponents = useFieldsComponentsManager();
+    const FieldComponent = FieldComponents.getComponent(fieldComponent);
+
+    const onComplete = useCallback(
+        (data) => {
+            if (onConfirmed !== null) {
+                onConfirmed(data);
+            }
+        },
+        [onConfirmed],
+    );
+
+    return (
+        <FieldComponent
+            withButton
+            outline={false}
+            theme={theme}
+            addButtonIcon={icon}
+            addButtonLabel={
+                label || <FormattedMessage defaultMessage="Add file" description="Button label" />
+            }
+            onChange={onComplete}
+            disabled={disabled}
+            className={className}
+            {...props}
+        />
+    );
 };
 
-UploadAction.propTypes = propTypes;
-UploadAction.defaultProps = defaultProps;
+ImportAction.propTypes = propTypes;
+ImportAction.defaultProps = defaultProps;
 
-export default UploadAction;
+export default ImportAction;

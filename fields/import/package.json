@@ -1,7 +1,7 @@
 {
-    "name": "@panneau/actions",
+    "name": "@panneau/field-import",
     "version": "3.0.244",
-    "description": "",
+    "description": "An import csv field",
     "keywords": [
         "javascript"
     ],
@@ -28,24 +28,18 @@
     "type": "module",
     "module": "es/index.js",
     "exports": {
-        ".": {
-            "import": "./es/index.js"
-        },
-        "./scss/styles": "./scss/styles.scss",
-        "./scss/styles.scss": "./scss/styles.scss",
+        ".": "./es/index.js",
+        "./assets/css/styles": "./assets/css/styles.css",
         "./assets/css/styles.css": "./assets/css/styles.css"
     },
     "files": [
         "lib",
         "es",
-        "assets",
-        "scss"
+        "assets"
     ],
     "scripts": {
-        "scss": "../../scripts/build-packages-styles.js --pattern='@panneau/filter-*' ./src/styles.scss.ejs ./scss/styles.scss",
-        "css": "../../scripts/build-sass.js ./scss/styles.scss ./assets/css/styles.css",
         "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh && npm run scss && npm run css"
+        "build": "../../scripts/prepare-package.sh --scss"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
@@ -57,15 +51,14 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/action-delete": "^3.0.244",
-        "@panneau/action-duplicate": "^3.0.244",
-        "@panneau/action-edit": "^3.0.244",
-        "@panneau/action-import": "^3.0.244",
-        "@panneau/action-restore": "^3.0.244",
-        "@panneau/action-show": "^3.0.244",
-        "@panneau/action-upload": "^3.0.244",
         "@panneau/core": "^3.0.244",
-        "prop-types": "^15.7.2"
+        "@panneau/themes": "^3.0.244",
+        "@panneau/element-button": "^3.0.244",
+        "@panneau/element-label": "^3.0.244",
+        "csv-import-react": "^1.0.11",
+        "classnames": "^2.5.1",
+        "prop-types": "^15.7.2",
+        "react-intl": "^5.15.8||^6.0.0"
     },
     "publishConfig": {
         "access": "public"

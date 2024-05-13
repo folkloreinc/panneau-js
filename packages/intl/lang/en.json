@@ -305,6 +305,9 @@
     "eCe9ZY": {
         "defaultMessage": "Dimensions"
     },
+    "eL+nIp": {
+        "defaultMessage": "Add file"
+    },
     "ejwBSw": {
         "defaultMessage": "Error 500"
     },
@@ -358,9 +361,6 @@
     },
     "rSt+KL": {
         "defaultMessage": "No"
-    },
-    "rklw2v": {
-        "defaultMessage": "Add a file"
     },
     "rmJBin": {
         "defaultMessage": "Dimensions"
@@ -439,6 +439,9 @@
     },
     "yzfiXJ": {
         "defaultMessage": "Are you sure you want to delete {the_singular} #{id}?"
+    },
+    "z2775Q": {
+        "defaultMessage": "Import"
     },
     "zN5N/Q": {
         "defaultMessage": "Delete {a_singular}"

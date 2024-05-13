@@ -40,5 +40,29 @@ export default [
         component: 'delete',
         multiple: false,
     },
+    {
+        id: 'import',
+        component: 'import',
+        template: {
+            columns: [
+                { name: 'id', key: 'id', description: 'ID of the user', data_type: 'number' },
+                {
+                    name: 'column_string',
+                    data_type: 'string',
+                    key: 'name',
+                    required: true,
+                    description: 'Name of the user',
+                    suggested_mappings: ['First', 'Name', 'Fullname'],
+                },
+            ],
+        },
+        global: true,
+    },
+    {
+        id: 'upload',
+        component: 'upload',
+        global: true,
+    },
+
     // 'duplicate',
 ];

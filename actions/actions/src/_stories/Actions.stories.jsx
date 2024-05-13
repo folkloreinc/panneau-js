@@ -5,6 +5,8 @@ import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
 
 import actions from '../../../../.storybook/data/actions';
+import withApi from '../../../../.storybook/decorators/withApiProvider';
+import withUppy from '../../../../.storybook/decorators/withUppy';
 import FiltersProvider from '../../../../packages/actions';
 import ModalsProvider from '../../../../packages/modals/src/ModalsProvider';
 import Actions from '../Actions';
@@ -12,6 +14,7 @@ import Actions from '../Actions';
 export default {
     component: Actions,
     title: 'Actions/Actions',
+    decorators: [withUppy, withApi],
     parameters: {
         intl: true,
     },
@@ -45,6 +48,7 @@ export const WithMultipleItems = () => (
         value={[
             { id: '1', name: 'OK' },
             { id: '2', name: 'KO' },
+            { id: 3, name: 'WHAT' },
         ]}
         withConfirmation
     />

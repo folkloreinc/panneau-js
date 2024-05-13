@@ -8,6 +8,7 @@ import { definition as Display } from '@panneau/field-display';
 import { definition as Embed } from '@panneau/field-embed';
 import { definition as Fields } from '@panneau/field-fields';
 import { definition as Html } from '@panneau/field-html';
+import { definition as Import } from '@panneau/field-import';
 import { definition as InputGroup } from '@panneau/field-input-group';
 import { definition as Item } from '@panneau/field-item';
 import { definition as Items } from '@panneau/field-items';
@@ -31,13 +32,14 @@ export default [
     Embed,
     Fields,
     Html,
+    Import,
     InputGroup,
-    ResourceItem,
     Item,
     Items,
     Localized,
     Number,
     Radios,
+    ResourceItem,
     Select,
     Text,
     Toggle,

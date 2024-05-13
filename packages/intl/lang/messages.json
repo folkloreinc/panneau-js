@@ -407,6 +407,10 @@
     "defaultMessage": "Dimensions",
     "description": "Field name"
   },
+  "eL+nIp": {
+    "defaultMessage": "Add file",
+    "description": "Button label"
+  },
   "ejwBSw": {
     "defaultMessage": "Error 500",
     "description": "Error page meta title"
@@ -478,10 +482,6 @@
   "rSt+KL": {
     "defaultMessage": "No",
     "description": "Boolean value"
-  },
-  "rklw2v": {
-    "defaultMessage": "Add a file",
-    "description": "Button label"
   },
   "rmJBin": {
     "defaultMessage": "Dimensions",
@@ -586,6 +586,10 @@
   "yzfiXJ": {
     "defaultMessage": "Are you sure you want to delete {the_singular} #{id}?",
     "description": "Confirmation message"
+  },
+  "z2775Q": {
+    "defaultMessage": "Import",
+    "description": "Button label"
   },
   "zN5N/Q": {
     "defaultMessage": "Delete {a_singular}",

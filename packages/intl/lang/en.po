@@ -635,6 +635,12 @@ msgctxt "eCe9ZY"
 msgid "Dimensions"
 msgstr "Dimensions"
 
+# Button label
+#: eL+nIp
+msgctxt "eL+nIp"
+msgid "Add file"
+msgstr "Add file"
+
 # Error page meta title
 #: ejwBSw
 msgctxt "ejwBSw"
@@ -742,12 +748,6 @@ msgstr "No result"
 msgctxt "rSt+KL"
 msgid "No"
 msgstr "No"
-
-# Button label
-#: rklw2v
-msgctxt "rklw2v"
-msgid "Add a file"
-msgstr "Add a file"
 
 # Field label
 #: rmJBin
@@ -904,6 +904,12 @@ msgstr "No"
 msgctxt "yzfiXJ"
 msgid "Are you sure you want to delete {the_singular} #{id}?"
 msgstr "Are you sure you want to delete {the_singular} #{id}?"
+
+# Button label
+#: z2775Q
+msgctxt "z2775Q"
+msgid "Import"
+msgstr "Import"
 
 # Page title
 #: zN5N/Q
