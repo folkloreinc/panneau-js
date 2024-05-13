@@ -13,11 +13,11 @@ import DisplaysProvider from '../../../displays';
 import FieldsProvider from '../../../fields';
 import FiltersProvider from '../../../filters';
 import IntlProvider from '../../../intl/src/IntlProvider';
+import ModalsProvider from '../../../modals/src/ModalsProvider';
 // import ModalsProvider from '../../../modals';
 import { UppyProvider } from '../../../uppy/src/UppyContext';
 import { MediasApiProvider } from '../MediasApiContext';
 import MediasBrowser from '../MediasBrowserContainer';
-import ModalsProvider from '../../../modals/src/ModalsProvider';
 
 export default {
     title: 'Medias/MediasBrowser',
@@ -98,6 +98,12 @@ export const WithTrash = () => (
 export const WithoutUpload = () => (
     <UppyProvider>
         <Container withoutUpload />
+    </UppyProvider>
+);
+
+export const Permissions = () => (
+    <UppyProvider>
+        <Container permissions={{ edit: false, delete: false, create: false }} />
     </UppyProvider>
 );
 

@@ -18,18 +18,23 @@ import UploadField from '@panneau/field-upload';
 import Filters from '@panneau/filter-filters';
 
 import { useMediaDelete, useMediaTrash, useMedias } from './hooks';
+import useMediaRestore from './hooks/useMediaRestore';
 
 import { useCurrentMedia } from './MediaContext';
 import MediaForm from './MediaForm';
 import defaultColumns from './defaults/columns';
 import defaultFields from './defaults/fields';
 import defaultFilters from './defaults/filters';
-import useMediaRestore from './hooks/useMediaRestore';
 
 const propTypes = {
     items: PanneauPropTypes.medias,
     extraItems: PanneauPropTypes.medias,
     types: PropTypes.arrayOf(PropTypes.string),
+    permissions: PropTypes.shape({
+        create: PropTypes.bool,
+        edit: PropTypes.bool,
+        delete: PropTypes.bool,
+    }),
     filters: PanneauPropTypes.filters,
     columns: PanneauPropTypes.tableColumns,
     query: PropTypes.shape({}),
@@ -63,6 +68,7 @@ const defaultProps = {
     items: null,
     extraItems: null,
     types: null,
+    permissions: null,
     filters: defaultFilters,
     columns: defaultColumns,
     fields: defaultFields,
@@ -102,6 +108,7 @@ function MediasBrowser({
     items: initialItems,
     extraItems,
     types,
+    permissions,
     baseUrl,
     filters,
     columns,
@@ -150,6 +157,14 @@ function MediasBrowser({
             query: params,
         };
     }, [fullQuery]);
+
+    const {
+        create: canCreate = true,
+        edit: canEdit = true,
+        delete: canDelete = true,
+    } = permissions || {};
+
+    const canUpload = canCreate && !withoutUpload;
 
     // eslint-disable-next-line no-unused-vars
     const { types: queryTypes = null, trashed = null, ...queryWithoutTypes } = query || {};
@@ -360,7 +375,7 @@ function MediasBrowser({
         return partialFilters;
     }, [filters, types, withTrash, showTrashed, onClickTrash]);
 
-    const finalColumns = useMemo(
+    const partialColumns = useMemo(
         () =>
             withTrash && showTrashed
                 ? (columns || []).map((column) => {
@@ -388,7 +403,7 @@ function MediasBrowser({
                                               id: 'restore',
                                               component: 'restore',
                                               withConfirmation: true,
-                                              action: (ids) => mediaRestore(ids[0]).then(reload)
+                                              action: (ids) => mediaRestore(ids[0]).then(reload),
                                           });
                                       }
                                       acc.push(action);
@@ -401,6 +416,30 @@ function MediasBrowser({
                   })
                 : columns,
         [columns, withTrash, showTrashed],
+    );
+
+    const finalColumns = useMemo(
+        () =>
+            (partialColumns || [])
+                .map((column) => {
+                    const { id: columnId = null } = column || {};
+                    if (columnId === 'actions') {
+                        const { actions = [] } = column || {};
+                        const availableActions = actions
+                            .filter((act) => act !== 'delete' || canDelete)
+                            .filter((act) => act !== 'edit' || canEdit);
+                        if (availableActions.length === 0) {
+                            return null;
+                        }
+                        return {
+                            ...column,
+                            actions: availableActions,
+                        };
+                    }
+                    return column;
+                })
+                .filter((act) => act !== null),
+        [partialColumns, canEdit, canDelete],
     );
 
     const hasQueryItem = useMemo(() => {
@@ -483,7 +522,7 @@ function MediasBrowser({
                             />
                         ) : null}
                         {/* make this actions someday ? */}
-                        {!withoutUpload ? (
+                        {canUpload ? (
                             <UploadField
                                 className="ms-auto w-auto text-nowrap mt-2 mb-2 ps-2"
                                 withButton
