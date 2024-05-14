@@ -28,6 +28,7 @@ const propTypes = {
     withoutReset: PropTypes.bool,
     noOptionsMessage: PanneauPropTypes.label,
     createPrefix: PropTypes.string,
+    onCreateOption: PropTypes.func,
     placeholder: PanneauPropTypes.label,
     autoSize: PropTypes.bool,
     loadOptions: PropTypes.func,
@@ -52,6 +53,7 @@ const defaultProps = {
     withoutReset: false,
     noOptionsMessage: <FormattedMessage defaultMessage="No result" description="Default label" />,
     createPrefix: 'Create',
+    onCreateOption: null,
     placeholder: <FormattedMessage defaultMessage="Choose an option" description="Default label" />,
     autoSize: false,
     getOptionValue: null,
@@ -76,6 +78,7 @@ const SelectElement = ({
     withoutReset,
     noOptionsMessage,
     createPrefix,
+    onCreateOption,
     placeholder,
     autoSize,
     getOptionValue,
@@ -186,6 +189,8 @@ const SelectElement = ({
         SelectComponent = CreatableSelect;
     }
 
+    // console.log('select', isAsync, creatable, SelectComponent, onCreateOption);
+
     return (
         <div className={classNames(['position-relative', { [className]: className !== null }])}>
             <SelectComponent
@@ -194,7 +199,9 @@ const SelectElement = ({
                 {...(getOptionLabel !== null ? { getOptionLabel } : null)}
                 {...(creatable
                     ? {
-                          formatCreateLabel: (newLabel) => `${createPrefix} ${newLabel}`,
+                          onCreateOption,
+                          formatCreateLabel: (newLabel) =>
+                              `${createPrefix || 'Create'} ${newLabel}`,
                       }
                     : null)}
                 {...(safeOptions !== null ? { options: safeOptions } : null)}
@@ -230,11 +237,21 @@ const SelectElement = ({
                         color: 'var(--bs-body-color)',
                         cursor: isDisabled ? 'not-allowed' : 'pointer',
                     }),
-                    control: (base, { isDisabled }) => ({
+                    control: (base, { isDisabled, isFocused }) => ({
                         ...base,
                         color: 'var(--bs-body-color)',
                         backgroundColor: 'var(--bs-input-color)',
                         cursor: isDisabled ? 'not-allowed' : 'pointer',
+                        borderColor: isFocused
+                            ? 'rgba(var(--bs-primary-rgb), 0.25)'
+                            : 'hsl(0, 0%, 80%)',
+                        boxShadow: isFocused
+                            ? '0 0 0 1px rgba(var(--bs-primary-rgb), 0.25)'
+                            : 'none',
+                        '&:hover': {
+                            borderColor: 'rgba(var(--bs-primary-rgb), 0.25)',
+                            boxShadow: '0 0 0 1px rgba(var(--bs-primary-rgb, 0.25)',
+                        },
                     }),
                     indicators: (base) => ({
                         ...base,
@@ -262,6 +279,10 @@ const SelectElement = ({
                             color: 'var(--bs-primary)',
                             cursor: 'pointer',
                         },
+                    }),
+                    dropdownIndicator: (base) => ({
+                        ...base,
+                        color: 'inherit',
                     }),
                     ...(styles !== null ? styles : null),
                 }}

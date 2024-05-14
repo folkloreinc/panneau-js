@@ -8,7 +8,7 @@ import { getPathValue } from '@panneau/core/utils';
 import Select from '@panneau/element-select';
 
 const propTypes = {
-    value: PropTypes.any,
+    value: PropTypes.any, // eslint-disable-line react/forbid-prop-types
     paginated: PropTypes.bool,
     loadOptions: PropTypes.func,
     requestUrl: PropTypes.string,

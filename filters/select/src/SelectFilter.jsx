@@ -12,6 +12,7 @@ import { useSearch } from 'wouter';
 import Select from '@panneau/element-select';
 
 const propTypes = {
+    onChange: PropTypes.func.isRequired,
     options: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
@@ -47,6 +48,7 @@ const defaultProps = {
 };
 
 const SelectFilter = ({
+    onChange,
     options: initialOptions,
     requestUrl,
     requestOptions,
@@ -209,10 +211,21 @@ const SelectFilter = ({
         }
     }, [loading, page, setPage, paginated, pagination, setEndReached]);
 
+    const finalOnChange = useCallback(
+        (val) => {
+            const newValue = isArray(val) && val.length === 0 ? null : val;
+            if (onChange !== null) {
+                onChange(newValue);
+            }
+        },
+        [onChange],
+    );
+
     return (
         <Select
             autoSize={autoSize}
             {...props}
+            onChange={finalOnChange}
             clearValue={clearValue}
             className={className}
             options={options || []}
