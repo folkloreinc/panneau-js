@@ -155,6 +155,12 @@ export const WithValueMultiple = () => (
     </UppyProvider>
 );
 
+export const WithTrash = () => (
+    <UppyProvider>
+        <Container layout="grid" picker withTrash />
+    </UppyProvider>
+);
+
 const fields = [];
 const columns = [];
 // const filters = [];

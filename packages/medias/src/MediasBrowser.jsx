@@ -577,7 +577,7 @@ function MediasBrowser({
                                     onOpenMedia(it);
                                 },
                             }}
-                            selectable={selectable}
+                            selectable={selectable && !showTrashed}
                             selectedItems={selectedItems}
                             onSelectionChange={uploadProcessing ? null : onSelectionChange}
                             multipleSelection={multipleSelection}
@@ -596,7 +596,7 @@ function MediasBrowser({
                             displayPlaceholder={
                                 <span className="text-secondary text-opacity-75">—</span>
                             }
-                            selectable={selectable}
+                            selectable={selectable && !showTrashed}
                             selectedItems={selectedItems}
                             onSelectionChange={uploadProcessing ? null : onSelectionChange}
                             multipleSelection={multipleSelection}
