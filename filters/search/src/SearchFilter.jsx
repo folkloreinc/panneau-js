@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
+import { KEYCODES, useKeyboardKeys } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Icon from '@panneau/element-icon';
 import TextField from '@panneau/field-text';
@@ -22,6 +23,7 @@ const propTypes = {
     placeholder: PropTypes.string,
     position: PropTypes.string,
     width: PropTypes.number,
+    delay: PropTypes.number,
     className: PropTypes.string,
 };
 
@@ -31,12 +33,29 @@ const defaultProps = {
     placeholder: null,
     position: null,
     width: null,
+    delay: 500,
     className: null,
 };
 
-const SearchFilter = ({ name, value, onChange, placeholder, position, width, className }) => {
+const SearchFilter = ({
+    name,
+    value,
+    onChange,
+    placeholder,
+    position,
+    width,
+    delay,
+    className,
+}) => {
     const intl = useIntl();
     const [searchValue, setSearchValue] = useState(value);
+
+    const onValueChange = useCallback(
+        (newValue) => {
+            setSearchValue(newValue !== '' ? newValue : null);
+        },
+        [setSearchValue],
+    );
 
     const onSubmit = useCallback(
         (e) => {
@@ -51,16 +70,34 @@ const SearchFilter = ({ name, value, onChange, placeholder, position, width, cla
     const onReset = useCallback(() => {
         if (onChange !== null) {
             setSearchValue(null);
-            onChange(null);
+            if (delay === null) {
+                onChange(null);
+            }
         }
-    }, [onChange, setSearchValue]);
+    }, [onChange, delay, setSearchValue]);
 
     useEffect(() => {
-        setSearchValue(value);
-    }, [value, setSearchValue]);
+        let timeout = null;
+        if (delay !== null) {
+            timeout = setTimeout(() => {
+                onChange(searchValue);
+            }, delay);
+        }
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [searchValue, onChange, delay]);
+
+    useEffect(() => {
+        onValueChange(value);
+    }, [value, onValueChange]);
 
     const active = !isEmpty(value);
     const canClear = !isEmpty(searchValue);
+
+    useKeyboardKeys({
+        [KEYCODES.ESCAPE]: onReset,
+    });
 
     return (
         <form className={className} onSubmit={onSubmit}>
@@ -70,7 +107,7 @@ const SearchFilter = ({ name, value, onChange, placeholder, position, width, cla
                         theme={active ? 'primary' : 'secondary'}
                         type="submit"
                         onClick={onSubmit}
-                        style={{ zIndex: 0, border: '1px solid hsl(0, 0%, 80%)' }}
+                        style={{ zIndex: 0 }}
                     >
                         <Icon name="search" bold />
                     </Button>
@@ -80,11 +117,10 @@ const SearchFilter = ({ name, value, onChange, placeholder, position, width, cla
                     name={name}
                     value={searchValue}
                     theme="light"
-                    onChange={setSearchValue}
+                    onChange={onValueChange}
                     placeholder={placeholder || intl.formatMessage(messages.search)}
                     style={{
                         width: width !== null ? width - 42 : null,
-                        border: '1px solid hsl(0, 0%, 80%)',
                     }}
                 />
                 {canClear ? (
@@ -106,7 +142,7 @@ const SearchFilter = ({ name, value, onChange, placeholder, position, width, cla
                         theme={active ? 'primary' : 'secondary'}
                         type="submit"
                         onClick={onSubmit}
-                        style={{ zIndex: 0, border: '1px solid hsl(0, 0%, 80%)' }}
+                        style={{ zIndex: 0 }}
                     >
                         <Icon name="search" bold />
                     </Button>

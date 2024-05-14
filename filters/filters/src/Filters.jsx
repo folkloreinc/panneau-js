@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
+import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -69,12 +70,11 @@ const Filters = ({
 
     const hasActiveFilter = (currentFilters || []).reduce((isActive, item) => {
         const activeValue = clearValue || value || null;
-        if (
-            activeValue !== null &&
-            typeof activeValue[item.name] !== 'undefined' &&
-            activeValue[item.name] !== null
-        ) {
-            return true;
+        if (activeValue !== null && typeof activeValue[item.name] !== 'undefined') {
+            if (isArray(activeValue[item.name])) {
+                return activeValue[item.name].length > 0;
+            }
+            return activeValue[item.name] !== null;
         }
         return isActive;
     }, false);
