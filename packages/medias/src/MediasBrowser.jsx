@@ -465,8 +465,8 @@ function MediasBrowser({
                           ]
                         : []),
                     ...(page === 1 && !hasQueryItem ? uploadedMedias || [] : []),
-                    ...(page === 1 && !hasQueryItem
-                        ? ((extraItems || []) && !showTrashed)
+                    ...(page === 1 && !hasQueryItem && !showTrashed
+                        ? (extraItems || [])
                               .map((item) => {
                                   const { id: itemId = null } = item;
                                   return (
