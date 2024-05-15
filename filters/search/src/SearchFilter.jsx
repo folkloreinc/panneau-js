@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { KEYCODES, useKeyboardKeys } from '@panneau/core/hooks';
@@ -49,10 +49,20 @@ const SearchFilter = ({
 }) => {
     const intl = useIntl();
     const [searchValue, setSearchValue] = useState(value);
+    const hasChanged = useRef(null);
+
+    const onInputChange = useCallback(
+        (newValue) => {
+            setSearchValue(newValue !== '' ? newValue : null);
+            hasChanged.current = true;
+        },
+        [setSearchValue],
+    );
 
     const onValueChange = useCallback(
         (newValue) => {
             setSearchValue(newValue !== '' ? newValue : null);
+            hasChanged.current = false;
         },
         [setSearchValue],
     );
@@ -60,6 +70,7 @@ const SearchFilter = ({
     const onSubmit = useCallback(
         (e) => {
             e.preventDefault();
+            hasChanged.current = false;
             if (onChange !== null) {
                 onChange(searchValue);
             }
@@ -68,26 +79,27 @@ const SearchFilter = ({
     );
 
     const onReset = useCallback(() => {
+        setSearchValue(null);
+        hasChanged.current = false;
         if (onChange !== null) {
-            setSearchValue(null);
-            if (delay === null) {
-                onChange(null);
-            }
+            onChange(null);
         }
     }, [onChange, delay, setSearchValue]);
 
     useEffect(() => {
         let timeout = null;
-        if (delay !== null) {
+        if (hasChanged.current && delay !== null) {
             timeout = setTimeout(() => {
                 onChange(searchValue);
+                hasChanged.current = false;
             }, delay);
         }
         return () => {
             clearTimeout(timeout);
         };
-    }, [searchValue, onChange, delay]);
+    }, [searchValue, onChange, delay, hasChanged]);
 
+    // Keep in sync
     useEffect(() => {
         onValueChange(value);
     }, [value, onValueChange]);
@@ -117,7 +129,7 @@ const SearchFilter = ({
                     name={name}
                     value={searchValue}
                     theme="light"
-                    onChange={onValueChange}
+                    onChange={onInputChange}
                     placeholder={placeholder || intl.formatMessage(messages.search)}
                     style={{
                         width: width !== null ? width - 42 : null,

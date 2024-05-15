@@ -87,6 +87,7 @@ const ResourceItemsList = ({
             ...listProps
         } = {},
     } = resource;
+
     const resourceUrlGenerator = useResourceUrlGenerator(
         isObject(providedResource) ? resourceId : providedResource,
     );

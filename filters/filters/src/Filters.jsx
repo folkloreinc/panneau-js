@@ -81,6 +81,8 @@ const Filters = ({
 
     const onFilterChange = useCallback(
         (name, newFilterValue) => {
+            // console.log('change', name, newFilterValue);
+            // console.log('value', value);
             if (name !== null && onChange !== null) {
                 onChange({ ...value, [name]: newFilterValue, ...defaultValue });
             }
