@@ -529,7 +529,7 @@ function MediasBrowser({
                                 withoutMedia
                                 uppyProps={uppyConfig}
                                 types={types}
-                                allowMultipleUploads={multipleSelection}
+                                allowMultipleUploads
                                 onChange={onUploadComplete}
                                 disabled={uploadProcessing}
                                 loading={uploadProcessing}
