@@ -191,7 +191,9 @@ function MediasBrowser({
     }, [showTrashed, setShowTrashed]);
 
     // dirty fix to bypass global query caching
-    useEffect(() => reload(), [showTrashed]);
+    useEffect(() => {
+        reload()
+    }, [showTrashed]);
 
     useEffect(() => {
         if (onItemsChange !== null) {
