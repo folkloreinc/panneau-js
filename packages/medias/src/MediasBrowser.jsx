@@ -466,7 +466,7 @@ function MediasBrowser({
                         : []),
                     ...(page === 1 && !hasQueryItem ? uploadedMedias || [] : []),
                     ...(page === 1 && !hasQueryItem
-                        ? (extraItems || [])
+                        ? ((extraItems || []) && !showTrashed)
                               .map((item) => {
                                   const { id: itemId = null } = item;
                                   return (
@@ -486,7 +486,7 @@ function MediasBrowser({
             );
         }
         return items;
-    }, [items, page, allItems, withStickySelection, extraItems, uploadProcessing, hasQueryItem]);
+    }, [items, page, allItems, withStickySelection, extraItems, uploadProcessing, hasQueryItem, showTrashed]);
 
     // const emptyWithSticky = useMemo(
     //     () => (items || []).length === 0 && (finalItems || []).length > 0,
