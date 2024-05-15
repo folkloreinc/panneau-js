@@ -188,8 +188,10 @@ function MediasBrowser({
 
     const onClickTrash = useCallback(() => {
         setShowTrashed(!showTrashed);
-        reload(); // dirty fix to bypass global query caching
     }, [showTrashed, setShowTrashed]);
+
+    // dirty fix to bypass global query caching
+    useEffect(() => reload(), [showTrashed]);
 
     useEffect(() => {
         if (onItemsChange !== null) {
@@ -607,7 +609,7 @@ function MediasBrowser({
                             loaded={loaded}
                             // empty={emptyWithSticky}
                             actionsProps={{
-                                getDeletePropsFromItem: ({ id = null } = {}) => ({
+                                getDeletePropsFromItem: () => ({
                                     href: null,
                                     withConfirmation: true,
                                     disabled: trashing || deleting,
