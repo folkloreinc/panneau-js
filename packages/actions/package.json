@@ -1,6 +1,6 @@
 {
     "name": "@panneau/actions",
-    "version": "3.0.248",
+    "version": "3.0.250",
     "description": "",
     "keywords": [
         "javascript"
@@ -63,7 +63,7 @@
         "@panneau/action-import": "^3.0.245",
         "@panneau/action-restore": "^3.0.244",
         "@panneau/action-show": "^3.0.244",
-        "@panneau/action-upload": "^3.0.248",
+        "@panneau/action-upload": "^3.0.250",
         "@panneau/core": "^3.0.244",
         "prop-types": "^15.7.2"
     },
