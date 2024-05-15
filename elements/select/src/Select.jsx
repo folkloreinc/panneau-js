@@ -234,7 +234,8 @@ const SelectElement = ({
                         ...(
                             isDisabled ? {
                                 visibility: 'hidden',
-                                width: '0'
+                                width: '0',
+                                paddingLeft: '0',
                             } : {}
                         ),
                     }),
