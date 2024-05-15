@@ -228,9 +228,15 @@ const SelectElement = ({
                         ...base,
                         color: 'var(--bs-body-color)',
                     }),
-                    multiValueRemove: (base) => ({
+                    multiValueRemove: (base, { isDisabled }) => ({
                         ...base,
                         color: 'var(--bs-dark)',
+                        ...(
+                            isDisabled ? {
+                                visibility: 'hidden',
+                                width: '0'
+                            } : {}
+                        ),
                     }),
                     input: (base, { isDisabled }) => ({
                         ...base,
