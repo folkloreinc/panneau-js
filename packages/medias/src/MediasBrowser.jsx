@@ -301,7 +301,9 @@ function MediasBrowser({
                 const [firstMedia = null] = newMedias || [];
                 onSelectionChange(multipleSelection && isArray(newMedias) ? newMedias : firstMedia);
                 onQueryReset();
-                reload();
+                reload().then(() => {
+                    setUploadedMedias(null);
+                });
             }
         },
         [
