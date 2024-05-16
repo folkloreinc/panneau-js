@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modal-upload",
-    "version": "3.0.244",
+    "version": "3.0.256",
     "description": "File upload modal",
     "keywords": [
         "javascript"
@@ -59,9 +59,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.244",
-        "@panneau/modal-dialog": "^3.0.244",
-        "@panneau/uppy": "^3.0.244",
+        "@panneau/core": "^3.0.256",
+        "@panneau/modal-dialog": "^3.0.256",
+        "@panneau/uppy": "^3.0.256",
         "@uppy/core": "^3.9.1",
         "@uppy/dashboard": "^3.7.3",
         "@uppy/drag-drop": "^3.0.3",

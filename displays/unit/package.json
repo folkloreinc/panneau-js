@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-unit",
-    "version": "3.0.244",
+    "version": "3.0.256",
     "description": "Unit display",
     "keywords": [
         "javascript"
@@ -49,8 +49,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.244",
-        "@panneau/themes": "^3.0.244",
+        "@panneau/core": "^3.0.256",
+        "@panneau/themes": "^3.0.256",
         "lodash": "^4.17.21",
         "pretty-bytes": "^6.1.1",
         "prop-types": "^15.7.2",
