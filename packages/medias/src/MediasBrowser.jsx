@@ -192,7 +192,7 @@ function MediasBrowser({
 
     // dirty fix to bypass global query caching
     useEffect(() => {
-        reload()
+        reload();
     }, [showTrashed]);
 
     useEffect(() => {
