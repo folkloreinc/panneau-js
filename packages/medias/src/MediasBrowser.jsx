@@ -321,6 +321,7 @@ function MediasBrowser({
             }
 
             if (medias === null) return;
+
             const rawMedias = (isArray(medias) ? medias : [medias]).filter((it) => it !== null);
             if (onMediaUploaded !== null) {
                 setUploadProcessing(true);
@@ -370,6 +371,7 @@ function MediasBrowser({
                       outline: !showTrashed,
                       activeTheme: 'danger',
                       icon: showTrashed ? 'trash-fill' : 'trash',
+                      disabled: uploadProcessing,
                       onClick: onClickTrash,
                   },
               ])
@@ -381,7 +383,7 @@ function MediasBrowser({
             });
         }
         return partialFilters;
-    }, [filters, types, withTrash, showTrashed, onClickTrash]);
+    }, [filters, types, withTrash, showTrashed, uploadProcessing, onClickTrash]);
 
     const partialColumns = useMemo(
         () =>
