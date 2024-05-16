@@ -316,6 +316,10 @@ function MediasBrowser({
 
     const onUploadComplete = useCallback(
         (medias = null) => {
+            if (showTrashed) {
+                setShowTrashed(false);
+            }
+
             if (medias === null) return;
             const rawMedias = (isArray(medias) ? medias : [medias]).filter((it) => it !== null);
             if (onMediaUploaded !== null) {
