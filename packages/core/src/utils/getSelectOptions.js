@@ -1,5 +1,6 @@
 import capitalize from 'lodash/capitalize';
 import isObject from 'lodash/isObject';
+import { isValidElement } from 'react';
 
 const getSelectOptions = (options) =>
     options.map((it) => {
@@ -9,7 +10,8 @@ const getSelectOptions = (options) =>
                 return { value, label: capitalize(`${value}`) };
             }
             return {
-                value, label: `${label}`,
+                value,
+                label: isValidElement(label) ? label : `${label}`,
             };
         }
         return { value: it, label: capitalize(`${it}`) };
