@@ -249,6 +249,7 @@ function MediasBrowser({
     const onReplaceMedia = useCallback(
         (item) => {
             setCurrentMedia(item);
+            reload();
         },
         [setCurrentMedia]
     );
