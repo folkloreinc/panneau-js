@@ -127,6 +127,7 @@ function MediaForm({
     }, [initialValue, mediaDelete, mediaTrash, deletedAt, setChanged, onDelete, withTrash]);
 
     const onUploadComplete = useCallback((data) => {
+        console.log('MediaForm::onUploadComplete', data);
         const { id = null } = initialValue || {};
         mediaReplace(id, data).then(onReplace)
     }, [initialValue, onReplace]);
