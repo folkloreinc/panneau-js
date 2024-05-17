@@ -172,7 +172,7 @@ function MediaForm({
                             className="w-auto text-nowrap"
                             withButton
                             withoutMedia
-                            types={type}
+                            types={[type]}
                             outline={false}
                             closeAfterFinish
                             addButtonLabel={
