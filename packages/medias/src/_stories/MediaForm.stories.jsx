@@ -62,6 +62,12 @@ export const Image = () => (
     </UppyProvider>
 );
 
+export const ImageWithReplace = () => (
+    <UppyProvider>
+        <Container value={Media1} withReplace />
+    </UppyProvider>
+);
+
 export const Video = () => (
     <UppyProvider>
         <Container value={Media3} />

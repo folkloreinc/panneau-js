@@ -44,6 +44,7 @@ const propTypes = {
     layouts: PropTypes.arrayOf(PropTypes.shape({})),
     theme: PropTypes.string,
     onMediaUploaded: PropTypes.func,
+    onMediaReplacementUploaded: PropTypes.func,
     onItemsChange: PropTypes.func,
     onLayoutChange: PropTypes.func,
     onMediaFormOpen: PropTypes.func,
@@ -58,6 +59,7 @@ const propTypes = {
     uppyConfig: PropTypes.shape({}),
     withDelete: PropTypes.bool,
     withTrash: PropTypes.bool,
+    withReplace: PropTypes.bool,
     withStickySelection: PropTypes.bool,
     withoutUpload: PropTypes.bool,
     className: PropTypes.string,
@@ -87,6 +89,7 @@ const defaultProps = {
     ],
     theme: null,
     onMediaUploaded: null,
+    onMediaReplacementUploaded: null,
     onItemsChange: null,
     onLayoutChange: null,
     onMediaFormOpen: null,
@@ -98,6 +101,7 @@ const defaultProps = {
     uppyConfig: null,
     withDelete: false,
     withTrash: false,
+    withReplace: false,
     withStickySelection: false,
     withoutUpload: false,
     className: null,
@@ -118,6 +122,7 @@ function MediasBrowser({
     layouts,
     theme,
     onMediaUploaded,
+    onMediaReplacementUploaded,
     onItemsChange,
     onLayoutChange,
     onMediaFormOpen,
@@ -129,6 +134,7 @@ function MediasBrowser({
     uppyConfig,
     withDelete,
     withTrash,
+    withReplace,
     withStickySelection,
     withoutUpload,
     className,
@@ -513,10 +519,12 @@ function MediasBrowser({
                     fields={fields}
                     onChange={setCurrentMedia}
                     onSave={onSaveMedia}
+                    onReplaceUploadComplete={onMediaReplacementUploaded}
                     onClose={onCloseMedia}
                     onDelete={onDeleteMedia}
                     withDelete={withDelete}
                     withTrash={withTrash}
+                    withReplace={withReplace}
                 >
                     {formChildren}
                 </MediaForm>

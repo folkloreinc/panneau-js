@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useFieldComponent } from '@panneau/core/contexts';
@@ -16,6 +16,8 @@ import MediaFrame from './MediaFrame';
 import defaultFields from './defaults/fields';
 
 import styles from './styles.module.scss';
+import useMediaReplace from './hooks/useMediaReplace';
+import UploadField from '../../../fields/upload/src/UploadField';
 
 const propTypes = {
     value: PropTypes.shape({
@@ -28,10 +30,12 @@ const propTypes = {
     ),
     onChange: PropTypes.func,
     onSave: PropTypes.func,
+    onReplaceUploadComplete: PropTypes.func,
     onDelete: PropTypes.func,
     onClose: PropTypes.func,
     withDelete: PropTypes.bool,
     withTrash: PropTypes.bool,
+    withReplace: PropTypes.bool,
     className: PropTypes.string,
     children: PropTypes.node,
 };
@@ -41,10 +45,12 @@ const defaultProps = {
     fields: defaultFields,
     onChange: null,
     onSave: null,
+    onReplaceUploadComplete: null,
     onDelete: null,
     onClose: null,
     withDelete: false,
     withTrash: false,
+    withReplace: false,
     className: null,
     children: null,
 };
@@ -54,10 +60,12 @@ function MediaForm({
     fields: initialFields,
     onChange,
     onSave,
+    onReplaceUploadComplete,
     onDelete,
     onClose,
     withDelete,
     withTrash,
+    withReplace,
     className,
     children,
 }) {
@@ -66,6 +74,7 @@ function MediaForm({
     const { update, updating } = useMediaUpdate();
     const { mediaTrash, trashing } = useMediaTrash();
     const { mediaDelete, deleting } = useMediaDelete();
+    const [uploadProcessing, setUploadProcessing] = useState(false);
 
     const [changed, setChanged] = useState(false);
     const disabled = updating || deleting || trashing || initialValue === null;
@@ -118,6 +127,16 @@ function MediaForm({
         }
     }, [initialValue, mediaDelete, mediaTrash, deletedAt, setChanged, onDelete, withTrash]);
 
+    const onUploadComplete = useCallback((data) => {
+        const { id = null } = initialValue || {};
+        if (onReplaceUploadComplete) {
+            setUploadProcessing(true);
+            onReplaceUploadComplete(id, data)
+                .then(() => setUploadProcessing(false))
+                .catch(() => setUploadProcessing(false));
+        }
+    }, [initialValue]);
+
     const postForm = useCallback(
         (action, data) => (initialValue !== null ? update(initialValue.id, data) : new Promise()),
         [initialValue, update],
@@ -147,7 +166,21 @@ function MediaForm({
                     <h4 className="d-inline text-truncate mb-0">{name}</h4>
                     <span className="mx-2">{type}</span>
                 </div>
-                <div>
+                <div className={classNames('d-flex', 'justify-content-between', 'align-items-center', 'gap-1')}>
+                    {withReplace ? (
+                        <UploadField
+                            className="w-auto text-nowrap"
+                            withButton
+                            withoutMedia
+                            types={type}
+                            outline={false}
+                            closeAfterFinish
+                            addButtonLabel={
+                                <FormattedMessage defaultMessage="Replace" description="Media form action" />
+                            }
+                            onUploadComplete={onUploadComplete}
+                        />
+                    ) : null}
                     {withDelete ? (
                         <Button
                             className="me-2 mb-1 mt-1"
@@ -155,7 +188,7 @@ function MediaForm({
                             icon={withTrash && deletedAt !== null ? 'trash-fill' : 'trash'}
                             iconPosition="right"
                             onClick={onDeleteMedia}
-                            disabled={deleting || trashing}
+                            disabled={deleting || trashing || updating || uploadProcessing}
                         >
                             {withTrash && deletedAt === null ? (
                                 <FormattedMessage
@@ -177,7 +210,7 @@ function MediaForm({
                             icon={changed ? 'check' : 'check'}
                             iconPosition="right"
                             onClick={onSubmit}
-                            disabled={!changed || updating || deleting}
+                            disabled={!changed || updating || deleting || trashing}
                         >
                             <FormattedMessage defaultMessage="Save" description="Button label" />
                         </Button>
