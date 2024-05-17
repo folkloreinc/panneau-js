@@ -11,7 +11,7 @@ import Form from '@panneau/element-form';
 import FormStatus from '@panneau/element-form-status';
 import UploadField from '@panneau/field-upload';
 
-import { useMediaDelete, useMediaTrash, useMediaUpdate } from './hooks';
+import { useMediaDelete, useMediaReplace, useMediaTrash, useMediaUpdate } from './hooks';
 
 import MediaFrame from './MediaFrame';
 import defaultFields from './defaults/fields';
@@ -29,7 +29,7 @@ const propTypes = {
     ),
     onChange: PropTypes.func,
     onSave: PropTypes.func,
-    onReplaceUploadComplete: PropTypes.func,
+    onReplace: PropTypes.func,
     onDelete: PropTypes.func,
     onClose: PropTypes.func,
     withDelete: PropTypes.bool,
@@ -44,7 +44,7 @@ const defaultProps = {
     fields: defaultFields,
     onChange: null,
     onSave: null,
-    onReplaceUploadComplete: null,
+    onReplace: null,
     onDelete: null,
     onClose: null,
     withDelete: false,
@@ -59,7 +59,7 @@ function MediaForm({
     fields: initialFields,
     onChange,
     onSave,
-    onReplaceUploadComplete,
+    onReplace,
     onDelete,
     onClose,
     withDelete,
@@ -73,7 +73,7 @@ function MediaForm({
     const { update, updating } = useMediaUpdate();
     const { mediaTrash, trashing } = useMediaTrash();
     const { mediaDelete, deleting } = useMediaDelete();
-    const [uploadProcessing, setUploadProcessing] = useState(false);
+    const { mediaReplace, replacing } = useMediaReplace();
 
     const [changed, setChanged] = useState(false);
     const disabled = updating || deleting || trashing || initialValue === null;
@@ -128,13 +128,8 @@ function MediaForm({
 
     const onUploadComplete = useCallback((data) => {
         const { id = null } = initialValue || {};
-        if (onReplaceUploadComplete) {
-            setUploadProcessing(true);
-            onReplaceUploadComplete(id, data)
-                .then(() => setUploadProcessing(false))
-                .catch(() => setUploadProcessing(false));
-        }
-    }, [initialValue]);
+        mediaReplace(id, data).then(onReplace)
+    }, [initialValue, onReplace]);
 
     const postForm = useCallback(
         (action, data) => (initialValue !== null ? update(initialValue.id, data) : new Promise()),
@@ -187,7 +182,7 @@ function MediaForm({
                             icon={withTrash && deletedAt !== null ? 'trash-fill' : 'trash'}
                             iconPosition="right"
                             onClick={onDeleteMedia}
-                            disabled={deleting || trashing || updating || uploadProcessing}
+                            disabled={deleting || trashing || updating || replacing}
                         >
                             {withTrash && deletedAt === null ? (
                                 <FormattedMessage

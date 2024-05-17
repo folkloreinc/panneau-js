@@ -44,7 +44,6 @@ const propTypes = {
     layouts: PropTypes.arrayOf(PropTypes.shape({})),
     theme: PropTypes.string,
     onMediaUploaded: PropTypes.func,
-    onMediaReplacementUploaded: PropTypes.func,
     onItemsChange: PropTypes.func,
     onLayoutChange: PropTypes.func,
     onMediaFormOpen: PropTypes.func,
@@ -89,7 +88,6 @@ const defaultProps = {
     ],
     theme: null,
     onMediaUploaded: null,
-    onMediaReplacementUploaded: null,
     onItemsChange: null,
     onLayoutChange: null,
     onMediaFormOpen: null,
@@ -122,7 +120,6 @@ function MediasBrowser({
     layouts,
     theme,
     onMediaUploaded,
-    onMediaReplacementUploaded,
     onItemsChange,
     onLayoutChange,
     onMediaFormOpen,
@@ -519,7 +516,6 @@ function MediasBrowser({
                     fields={fields}
                     onChange={setCurrentMedia}
                     onSave={onSaveMedia}
-                    onReplaceUploadComplete={onMediaReplacementUploaded}
                     onClose={onCloseMedia}
                     onDelete={onDeleteMedia}
                     withDelete={withDelete}
