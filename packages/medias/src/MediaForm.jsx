@@ -169,6 +169,7 @@ function MediaForm({
                             types={[type]}
                             outline={false}
                             closeAfterFinish
+                            disabled={deleting || trashing || updating || replacing}
                             addButtonLabel={
                                 <FormattedMessage defaultMessage="Replace" description="Media form action" />
                             }
