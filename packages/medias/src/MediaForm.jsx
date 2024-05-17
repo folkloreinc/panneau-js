@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useFieldComponent } from '@panneau/core/contexts';
@@ -9,6 +9,7 @@ import { useForm } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Form from '@panneau/element-form';
 import FormStatus from '@panneau/element-form-status';
+import UploadField from '@panneau/field-upload';
 
 import { useMediaDelete, useMediaTrash, useMediaUpdate } from './hooks';
 
@@ -16,8 +17,6 @@ import MediaFrame from './MediaFrame';
 import defaultFields from './defaults/fields';
 
 import styles from './styles.module.scss';
-import useMediaReplace from './hooks/useMediaReplace';
-import UploadField from '../../../fields/upload/src/UploadField';
 
 const propTypes = {
     value: PropTypes.shape({
