@@ -179,6 +179,10 @@
     "defaultMessage": "Duplicate {a_singular}",
     "description": "Page title"
   },
+  "GxOBVL": {
+    "defaultMessage": "Replace",
+    "description": "Media form action"
+  },
   "HOobY2": {
     "defaultMessage": "Error 401",
     "description": "Error page meta title"

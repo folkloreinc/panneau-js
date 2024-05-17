@@ -283,6 +283,12 @@ msgctxt "G7M4nI"
 msgid "Duplicate {a_singular}"
 msgstr "Dupliquer {a_singular}"
 
+# Media form action
+#: GxOBVL
+msgctxt "GxOBVL"
+msgid "Replace"
+msgstr "Remplacer"
+
 # Error page meta title
 #: HOobY2
 msgctxt "HOobY2"
