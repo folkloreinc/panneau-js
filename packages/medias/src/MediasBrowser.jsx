@@ -246,6 +246,13 @@ function MediasBrowser({
         [setCurrentMedia, updateItem],
     );
 
+    const onReplaceMedia = useCallback(
+        (item) => {
+            setCurrentMedia(item);
+        },
+        [setCurrentMedia]
+    );
+
     const onDeleteMedia = useCallback(() => {
         if (reload !== null) {
             reload();
@@ -516,6 +523,7 @@ function MediasBrowser({
                     fields={fields}
                     onChange={setCurrentMedia}
                     onSave={onSaveMedia}
+                    onReplace={onReplaceMedia}
                     onClose={onCloseMedia}
                     onDelete={onDeleteMedia}
                     withDelete={withDelete}
