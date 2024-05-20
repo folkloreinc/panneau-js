@@ -187,16 +187,11 @@ function MediasBrowser({
         pagination: { lastPage, total } = {},
         pages = null,
         reload,
-    } = useMedias(query, page, count, { items: baseItems, trashed: showTrashed });
+    } = useMedias(query, page, count, { items: baseItems, trashed: showTrashed, queryConfig: { staleTime: 0 } });
 
     const onClickTrash = useCallback(() => {
         setShowTrashed(!showTrashed);
     }, [showTrashed, setShowTrashed]);
-
-    // dirty fix to bypass global query caching
-    useEffect(() => {
-        reload();
-    }, [showTrashed]);
 
     useEffect(() => {
         if (onItemsChange !== null) {
