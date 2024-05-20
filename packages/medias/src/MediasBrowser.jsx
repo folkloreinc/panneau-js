@@ -193,6 +193,11 @@ function MediasBrowser({
         setShowTrashed(!showTrashed);
     }, [showTrashed, setShowTrashed]);
 
+    // dirty fix to bypass global query caching
+    useEffect(() => {
+        reload();
+    }, [showTrashed]);
+
     useEffect(() => {
         if (onItemsChange !== null) {
             onItemsChange(items);
@@ -392,11 +397,6 @@ function MediasBrowser({
         }
         return partialFilters;
     }, [filters, types, withTrash, showTrashed, uploadProcessing, onClickTrash]);
-
-    // dirty fix to bypass global query caching
-    useEffect(() => {
-        reload();
-    }, [finalFilters, showTrashed]);
 
     const partialColumns = useMemo(
         () =>
