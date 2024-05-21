@@ -19,14 +19,14 @@ export default [
     //     name: 'tags',
     //     label: <FormattedMessage defaultMessage="Tags" description="Field name" />,
     //     type: 'array',
-    //     component: 'select',
+    //     component: 'item',
     //     requestUrl: '/api/tags',
-    //     optionLabelPath: 'label',
-    //     optionValuePath: 'id', // Uses taggable so change the logic here
+    //     itemLabelPath: 'label',
+    //     itemValuePath: 'id', // Uses taggable so change the logic here
     //     valueIsOption: true,
     //     multiple: true,
     //     paginated: false,
-    //     creatable: true, // TODO
+    //     creatable: true,
     // },
     {
         id: 'info',
