@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "3.0.271",
+    "version": "3.0.272",
     "description": "",
     "keywords": [
         "javascript"
@@ -70,7 +70,7 @@
         "@panneau/field-checkboxes": "^3.0.271",
         "@panneau/field-color": "^3.0.271",
         "@panneau/field-date": "^3.0.271",
-        "@panneau/field-display": "^3.0.271",
+        "@panneau/field-display": "^3.0.272",
         "@panneau/field-embed": "^3.0.271",
         "@panneau/field-fields": "^3.0.271",
         "@panneau/field-html": "^3.0.271",

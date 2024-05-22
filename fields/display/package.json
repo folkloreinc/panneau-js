@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-display",
-    "version": "3.0.271",
+    "version": "3.0.272",
     "description": "A field rendering a display",
     "keywords": [
         "javascript"
