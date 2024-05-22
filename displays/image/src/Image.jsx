@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import isNumber from 'lodash/isNumber';
-import isString from 'lodash/isString';
+import isNumber from 'lodash-es/isNumber';
+import isString from 'lodash-es/isString';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 

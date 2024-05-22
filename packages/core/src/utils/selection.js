@@ -1,5 +1,5 @@
-import isArray from 'lodash/isArray';
-import uniqBy from 'lodash/uniqBy';
+import isArray from 'lodash-es/isArray';
+import uniqBy from 'lodash-es/uniqBy';
 
 function filterNullItems(items) {
     return isArray(items) ? items.filter((it) => it !== null) : items;

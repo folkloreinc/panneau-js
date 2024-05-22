@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components, react/jsx-props-no-spreading, react/jsx-indent */
-import isObject from 'lodash/isObject';
-// import isString from 'lodash/isString';
+import isObject from 'lodash-es/isObject';
+// import isString from 'lodash-es/isString';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';

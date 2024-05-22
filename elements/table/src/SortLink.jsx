@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import isObject from 'lodash/isObject';
-import omit from 'lodash/omit';
+import isObject from 'lodash-es/isObject';
+import omit from 'lodash-es/omit';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import React, { useCallback, useMemo } from 'react';

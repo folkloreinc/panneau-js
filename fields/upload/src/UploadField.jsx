@@ -2,8 +2,8 @@
 // import classNames from 'classnames';
 import { Dashboard, DashboardModal } from '@uppy/react';
 import classNames from 'classnames';
-import isArray from 'lodash/isArray';
-import isObject from 'lodash/isObject';
+import isArray from 'lodash-es/isArray';
+import isObject from 'lodash-es/isObject';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';

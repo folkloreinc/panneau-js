@@ -2,7 +2,7 @@
 
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import isString from 'lodash/isString';
+import isString from 'lodash-es/isString';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import React, { useCallback, useMemo } from 'react';

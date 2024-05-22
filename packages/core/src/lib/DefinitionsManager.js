@@ -1,5 +1,5 @@
-import isArray from 'lodash/isArray';
-import uniqBy from 'lodash/uniqBy';
+import isArray from 'lodash-es/isArray';
+import uniqBy from 'lodash-es/uniqBy';
 
 class DefinitionsManager {
     constructor(definitions = []) {

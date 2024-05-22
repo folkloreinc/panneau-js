@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import classNames from 'classnames';
-import get from 'lodash/get';
-import isObject from 'lodash/isObject';
+import get from 'lodash-es/get';
+import isObject from 'lodash-es/isObject';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';

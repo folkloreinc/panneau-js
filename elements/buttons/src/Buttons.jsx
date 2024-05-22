@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import isArray from 'lodash/isArray';
+import isArray from 'lodash-es/isArray';
 import PropTypes from 'prop-types';
 import React from 'react';
 

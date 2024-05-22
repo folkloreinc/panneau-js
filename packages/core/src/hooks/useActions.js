@@ -1,5 +1,5 @@
-import isObject from 'lodash/isObject';
-import isString from 'lodash/isString';
+import isObject from 'lodash-es/isObject';
+import isString from 'lodash-es/isString';
 
 // For backwards compatibility with the old actions element
 

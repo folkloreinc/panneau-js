@@ -1,6 +1,6 @@
-import isObject from 'lodash/isObject';
-import isArray from 'lodash/isArray';
-import uniq from 'lodash/uniq';
+import isArray from 'lodash-es/isArray';
+import isObject from 'lodash-es/isObject';
+import uniq from 'lodash-es/uniq';
 
 class FontsParser {
     constructor({ fieldsManager, screensManager }) {
@@ -16,31 +16,35 @@ class FontsParser {
 
         // Extract fonts from screen
         const { theme = null, components = [] } = story || {};
-        const fonts = uniq(components.reduce((currentFonts, screen) => {
-            const { type } = screen;
-            const { fields = [] } = this.screensManager.getDefinition(type) || {};
-            const fieldsPattern = this.getFieldsPattern(fields);
-            const newFonts = FontsParser.extractFontsWithPaths(screen, fieldsPattern);
-            return newFonts.length > 0 ? [...currentFonts, ...newFonts] : currentFonts;
-        }, []), 'name');
+        const fonts = uniq(
+            components.reduce((currentFonts, screen) => {
+                const { type } = screen;
+                const { fields = [] } = this.screensManager.getDefinition(type) || {};
+                const fieldsPattern = this.getFieldsPattern(fields);
+                const newFonts = FontsParser.extractFontsWithPaths(screen, fieldsPattern);
+                return newFonts.length > 0 ? [...currentFonts, ...newFonts] : currentFonts;
+            }, []),
+            'name',
+        );
 
         // Extract fonts from theme
         if (theme !== null) {
             const { fonts: themeFonts = [], ...newTheme } = this.parse(theme);
-            return fonts.length > 0 || themeFonts.length > 0 ? {
-                ...story,
-                theme: newTheme,
-                fonts: uniq([
-                    ...themeFonts,
-                    ...fonts,
-                ], 'name'),
-            } : story;
+            return fonts.length > 0 || themeFonts.length > 0
+                ? {
+                      ...story,
+                      theme: newTheme,
+                      fonts: uniq([...themeFonts, ...fonts], 'name'),
+                  }
+                : story;
         }
 
-        return fonts.length > 0 ? {
-            ...story,
-            fonts,
-        } : story;
+        return fonts.length > 0
+            ? {
+                  ...story,
+                  fonts,
+              }
+            : story;
     }
 
     getFieldsPattern(fields, namePrefix = null) {

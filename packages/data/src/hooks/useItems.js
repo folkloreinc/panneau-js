@@ -1,6 +1,6 @@
 import { getJSON } from '@folklore/fetch';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import isEmpty from 'lodash/isEmpty';
+import isEmpty from 'lodash-es/isEmpty';
 import queryString from 'query-string';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 

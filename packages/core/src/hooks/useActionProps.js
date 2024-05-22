@@ -1,5 +1,5 @@
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
+import get from 'lodash-es/get';
+import isArray from 'lodash-es/isArray';
 import { useMemo } from 'react';
 
 const useActionProps = (action, value, labelPath = null) => {

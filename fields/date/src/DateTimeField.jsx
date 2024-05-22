@@ -4,7 +4,7 @@ import format from 'date-fns/format';
 import formatISO from 'date-fns/formatISO';
 import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
-import isObject from 'lodash/isObject';
+import isObject from 'lodash-es/isObject';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 // import classNames from 'classnames';

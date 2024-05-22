@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import isObject from 'lodash/isObject';
+import isObject from 'lodash-es/isObject';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';

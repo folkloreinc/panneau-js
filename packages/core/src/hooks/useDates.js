@@ -1,7 +1,7 @@
+import dayjs from 'dayjs';
+import isString from 'lodash-es/isString';
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
-import isString from 'lodash/isString';
-import dayjs from 'dayjs';
 
 export const useFormattedDate = ({ format = null, showToday = true } = {}) => {
     const intl = useIntl();

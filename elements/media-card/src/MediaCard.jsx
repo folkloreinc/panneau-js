@@ -9,8 +9,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
-import get from 'lodash/get';
-import isString from 'lodash/isString';
+import get from 'lodash-es/get';
+import isString from 'lodash-es/isString';
 import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';

@@ -55,7 +55,7 @@
         "@vimeo/player": "^2.22.0",
         "classnames": "^2.5.1",
         "debug": "^4.3.4",
-        "lodash": "^4.17.21",
+        "lodash-es": "^4.17.21",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
     },

@@ -60,7 +60,7 @@
         "@uppy/react": "^3.3.0",
         "@uppy/status-bar": "^3.2.7",
         "@uppy/utils": "^5.7.2",
-        "lodash": "^4.17.21",
+        "lodash-es": "^4.17.21",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
     },

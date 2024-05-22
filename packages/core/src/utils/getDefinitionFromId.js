@@ -1,5 +1,5 @@
 import { pascalCase } from 'change-case';
-import isArray from 'lodash/isArray';
+import isArray from 'lodash-es/isArray';
 
 const getDefinitionFromId = (id = null, items = [], defaultObject = null) => {
     if (items === null || id === null || (isArray(items) && items.length === 0)) {

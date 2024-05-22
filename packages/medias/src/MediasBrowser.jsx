@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
 import classNames from 'classnames';
-import isArray from 'lodash/isArray';
-import uniqBy from 'lodash/uniqBy';
+import isArray from 'lodash-es/isArray';
+import uniqBy from 'lodash-es/uniqBy';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -187,7 +187,11 @@ function MediasBrowser({
         pagination: { lastPage, total } = {},
         pages = null,
         reload,
-    } = useMedias(query, page, count, { items: baseItems, trashed: showTrashed, queryConfig: { staleTime: 0 } });
+    } = useMedias(query, page, count, {
+        items: baseItems,
+        trashed: showTrashed,
+        queryConfig: { staleTime: 0 },
+    });
 
     const onClickTrash = useCallback(() => {
         setShowTrashed(!showTrashed);
@@ -246,7 +250,7 @@ function MediasBrowser({
             setCurrentMedia(item);
             reload();
         },
-        [setCurrentMedia]
+        [setCurrentMedia],
     );
 
     const onDeleteMedia = useCallback(() => {
@@ -504,7 +508,16 @@ function MediasBrowser({
             );
         }
         return items;
-    }, [items, page, allItems, withStickySelection, extraItems, uploadProcessing, hasQueryItem, showTrashed]);
+    }, [
+        items,
+        page,
+        allItems,
+        withStickySelection,
+        extraItems,
+        uploadProcessing,
+        hasQueryItem,
+        showTrashed,
+    ]);
 
     // const emptyWithSticky = useMemo(
     //     () => (items || []).length === 0 && (finalItems || []).length > 0,

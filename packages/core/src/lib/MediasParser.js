@@ -1,5 +1,5 @@
-import isObject from 'lodash/isObject';
-import isArray from 'lodash/isArray';
+import isArray from 'lodash-es/isArray';
+import isObject from 'lodash-es/isObject';
 
 class MediasParser {
     constructor({ fieldsManager, screensManager }) {

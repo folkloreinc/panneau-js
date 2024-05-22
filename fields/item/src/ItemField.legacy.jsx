@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow, react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import get from 'lodash/get';
-import isEmpty from 'lodash/isEmpty';
+import get from 'lodash-es/get';
+import isEmpty from 'lodash-es/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useCallback, useRef, useState } from 'react';
 import Autosuggest from 'react-autosuggest';
