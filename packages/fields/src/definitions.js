@@ -1,4 +1,4 @@
-import isArray from 'lodash-es/isArray';
+import isArray from 'lodash/isArray';
 
 import { definition as Autocomplete } from '@panneau/field-autocomplete';
 import { definition as Checkboxes } from '@panneau/field-checkboxes';

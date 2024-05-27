@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid, react/button-has-type, react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import isString from 'lodash-es/isString';
+import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'wouter';

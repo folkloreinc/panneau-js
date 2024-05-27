@@ -1,5 +1,5 @@
-import capitalize from 'lodash-es/capitalize';
-import isObject from 'lodash-es/isObject';
+import capitalize from 'lodash/capitalize';
+import isObject from 'lodash/isObject';
 import { isValidElement } from 'react';
 
 const getSelectOptions = (options) =>

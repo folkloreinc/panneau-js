@@ -1,4 +1,4 @@
-import isObject from 'lodash-es/isObject';
+import isObject from 'lodash/isObject';
 import React, { useEffect, useState } from 'react';
 
 import IntlProvider from '../../packages/intl/src/IntlProvider';

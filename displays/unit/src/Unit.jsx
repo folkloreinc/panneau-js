@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-import isObject from 'lodash-es/isObject';
+import isObject from 'lodash/isObject';
 import prettyBytes from 'pretty-bytes';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';

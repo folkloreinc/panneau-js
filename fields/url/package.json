@@ -63,7 +63,7 @@
         "@panneau/field-text": "^3.0.271",
         "@panneau/themes": "^3.0.271",
         "classnames": "^2.5.1",
-        "lodash-es": "^4.17.21",
+        "lodash": "^4.17.21",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {

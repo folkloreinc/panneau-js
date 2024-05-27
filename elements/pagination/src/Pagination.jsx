@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/control-has-associated-label, react/jsx-indent, react/no-array-index-key, react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import isArray from 'lodash-es/isArray';
+import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import React, { useCallback, useMemo } from 'react';

@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { RoutesContext, RoutesProvider, useRoutes, useUrlGenerator } from '@folklore/routes';
-import isString from 'lodash-es/isString';
+import isString from 'lodash/isString';
 import { useCallback } from 'react';
 import { useLocation } from 'wouter';
 

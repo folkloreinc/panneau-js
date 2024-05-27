@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getCSRFHeaders, getJSON } from '@folklore/fetch';
-import get from 'lodash-es/get';
-import isArray from 'lodash-es/isArray';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';

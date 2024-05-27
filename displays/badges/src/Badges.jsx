@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import get from 'lodash-es/get';
-import isArray from 'lodash-es/isArray';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import PropTypes from 'prop-types';
 import React from 'react';
 

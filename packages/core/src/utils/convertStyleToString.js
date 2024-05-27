@@ -1,4 +1,4 @@
-import isNumber from 'lodash-es/isNumber';
+import isNumber from 'lodash/isNumber';
 import { snakeCase } from 'snake-case';
 
 const convertStyleToString = (style) =>

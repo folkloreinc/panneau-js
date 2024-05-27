@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import isEmpty from 'lodash-es/isEmpty';
+import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';

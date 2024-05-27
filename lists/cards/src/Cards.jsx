@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import get from 'lodash-es/get';
+import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 

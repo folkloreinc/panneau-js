@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import isObject from 'lodash-es/isObject';
+import isObject from 'lodash/isObject';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'wouter';
 

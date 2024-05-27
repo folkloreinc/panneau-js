@@ -8,7 +8,6 @@ import InputGroup from '@panneau/field-input-group';
 
 import useCKEditorBuild from './hooks/useCKEditorBuild';
 
-import './styles.global.scss';
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -58,6 +57,18 @@ const defaultProps = {
         },
         link: {
             addTargetToExternalLinks: true,
+            // TODO: test this
+            // decorators: {
+            //     openInSamePage: {
+            //         mode: 'manual',
+            //         label: 'Open in same page',
+            //         attributes: {
+            //             target: '_self',
+            //             rel: 'noopener noreferrer',
+            //         },
+            //     },
+            // },
+            // allowedProtocols: [ 'https?', 'tel', 'sms', 'mailto' ],
         },
         // mediaEmbed: {
         //     previewsInData: true,

@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { getJSON } from '@folklore/fetch';
-import isObject from 'lodash-es/isObject';
-import uniqBy from 'lodash-es/uniqBy';
+import isObject from 'lodash/isObject';
+import uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 

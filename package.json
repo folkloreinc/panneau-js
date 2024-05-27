@@ -108,7 +108,7 @@
         "glob": "^10.3.12",
         "http-proxy-middleware": "^3.0.0",
         "lerna": "^8.1.2",
-        "lodash-es": "^4.17.21",
+        "lodash": "^4.17.21",
         "mkdirp": "^3.0.1",
         "node-sass-tilde-importer": "^1.0.2",
         "nx": "^18.2.2",

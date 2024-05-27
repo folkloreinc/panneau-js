@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // import classNames from 'classnames';
 import classNames from 'classnames';
-import isArray from 'lodash-es/isArray';
-import isObject from 'lodash-es/isObject';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';

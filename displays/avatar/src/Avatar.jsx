@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import { get } from 'lodash-es';
-import isString from 'lodash-es/isString';
+import { get } from 'lodash';
+import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 

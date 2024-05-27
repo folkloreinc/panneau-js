@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import get from 'lodash-es/get';
-import isEmpty from 'lodash-es/isEmpty';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 

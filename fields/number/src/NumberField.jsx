@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import isNaN from 'lodash-es/isNaN';
-import isNumber from 'lodash-es/isNumber';
+import isNaN from 'lodash/isNaN';
+import isNumber from 'lodash/isNumber';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 

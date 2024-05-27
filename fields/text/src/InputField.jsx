@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
 import classNames from 'classnames';
-import isEmpty from 'lodash-es/isEmpty';
+import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 import { v1 as uuid } from 'uuid';

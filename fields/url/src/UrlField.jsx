@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import isEmpty from 'lodash-es/isEmpty';
-import isString from 'lodash-es/isString';
+import isEmpty from 'lodash/isEmpty';
+import isString from 'lodash/isString';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 

@@ -67,7 +67,7 @@
         "fs-extra": "^11.2.0",
         "gettext-parser": "^7.0.1",
         "glob": "^10.3.12",
-        "lodash-es": "^4.17.21",
+        "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
     },
