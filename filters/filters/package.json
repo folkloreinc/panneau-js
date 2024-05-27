@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-filters",
-    "version": "3.0.271",
+    "version": "3.0.273",
     "description": "Multi-filters component",
     "keywords": [
         "javascript"
@@ -51,12 +51,12 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.271",
-        "@panneau/element-button": "^3.0.271",
-        "@panneau/element-form-group": "^3.0.271",
-        "@panneau/element-icon": "^3.0.271",
-        "@panneau/element-navbar": "^3.0.271",
-        "@panneau/themes": "^3.0.271",
+        "@panneau/core": "^3.0.273",
+        "@panneau/element-button": "^3.0.273",
+        "@panneau/element-form-group": "^3.0.273",
+        "@panneau/element-icon": "^3.0.273",
+        "@panneau/element-navbar": "^3.0.273",
+        "@panneau/themes": "^3.0.273",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "prop-types": "^15.7.2",
