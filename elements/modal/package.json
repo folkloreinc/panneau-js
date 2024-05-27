@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-modal",
-    "version": "3.0.273",
+    "version": "3.0.274",
     "description": "Modal element",
     "keywords": [
         "javascript"
@@ -51,10 +51,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.273",
-        "@panneau/element-button": "^3.0.273",
-        "@panneau/element-icon": "^3.0.273",
-        "@panneau/element-label": "^3.0.273",
+        "@panneau/core": "^3.0.274",
+        "@panneau/element-button": "^3.0.274",
+        "@panneau/element-icon": "^3.0.274",
+        "@panneau/element-label": "^3.0.274",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"

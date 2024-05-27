@@ -1,6 +1,6 @@
 {
     "name": "@panneau/action-import",
-    "version": "3.0.273",
+    "version": "3.0.274",
     "description": "Import action",
     "keywords": [
         "javascript"
@@ -52,9 +52,9 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.17",
-        "@panneau/core": "^3.0.273",
-        "@panneau/element-button": "^3.0.273",
-        "@panneau/themes": "^3.0.273",
+        "@panneau/core": "^3.0.274",
+        "@panneau/element-button": "^3.0.274",
+        "@panneau/themes": "^3.0.274",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"

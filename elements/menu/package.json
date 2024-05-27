@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-menu",
-    "version": "3.0.273",
+    "version": "3.0.274",
     "description": "Menu element",
     "keywords": [
         "javascript"
@@ -57,10 +57,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.273",
-        "@panneau/element-dropdown": "^3.0.273",
-        "@panneau/element-label": "^3.0.273",
-        "@panneau/element-link": "^3.0.273",
+        "@panneau/core": "^3.0.274",
+        "@panneau/element-dropdown": "^3.0.274",
+        "@panneau/element-label": "^3.0.274",
+        "@panneau/element-link": "^3.0.274",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8||^6.0.0"
