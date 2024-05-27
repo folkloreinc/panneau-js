@@ -2,7 +2,7 @@
 import { faCaretDown, faCaretRight, faGripLines, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
-import isFunction from 'lodash/isFunction';
+import isFunction from 'lodash-es/isFunction';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';

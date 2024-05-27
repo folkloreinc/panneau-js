@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import isString from 'lodash/isString';
-import uniqBy from 'lodash/uniqBy';
+import isString from 'lodash-es/isString';
+import uniqBy from 'lodash-es/uniqBy';
 import PropTypes from 'prop-types';
 import React, { useContext, useMemo } from 'react';
 

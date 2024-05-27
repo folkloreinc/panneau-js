@@ -95,7 +95,7 @@
         "debug": "^4.3.4",
         "flat": "^6.0.1",
         "hoist-non-react-statics": "^3.3.2",
-        "lodash": "^4.17.21",
+        "lodash-es": "^4.17.21",
         "prop-types": "^15.7.2",
         "react-helmet": "^6.1.0",
         "react-intl": "^5.15.8||^6.0.0",

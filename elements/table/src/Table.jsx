@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/control-has-associated-label, react/jsx-props-no-spreading  */
 import classNames from 'classnames';
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
-import isObject from 'lodash/isObject';
-import isString from 'lodash/isString';
+import get from 'lodash-es/get';
+import isArray from 'lodash-es/isArray';
+import isObject from 'lodash-es/isObject';
+import isString from 'lodash-es/isString';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';

@@ -1,8 +1,8 @@
 import { getCSRFHeaders, getCsrfToken, postJSON } from '@folklore/fetch';
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
-import isObject from 'lodash/isObject';
-import isString from 'lodash/isString';
+import get from 'lodash-es/get';
+import isArray from 'lodash-es/isArray';
+import isObject from 'lodash-es/isObject';
+import isString from 'lodash-es/isString';
 import { useCallback, useMemo, useState } from 'react';
 
 // prettier-ignore

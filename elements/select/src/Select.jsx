@@ -1,9 +1,9 @@
 /* eslint-disable formatjs/enforce-default-message, react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import isEqual from 'lodash/isEqual';
-import isObject from 'lodash/isObject';
-import uniqBy from 'lodash/uniqBy';
-// import isString from 'lodash/isString';
+import isEqual from 'lodash-es/isEqual';
+import isObject from 'lodash-es/isObject';
+import uniqBy from 'lodash-es/uniqBy';
+// import isString from 'lodash-es/isString';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
