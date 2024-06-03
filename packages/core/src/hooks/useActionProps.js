@@ -27,12 +27,14 @@ const useActionProps = (action, value, labelPath = null) => {
 
     const idLabels = useMemo(
         () =>
-            (values || [])
-                .map(
-                    (it) =>
-                        `#${get(it, 'id', '')}${labelPath !== null ? ` ${get(it, labelPath, '')}` : ''}`,
-                )
-                .join(', '),
+            isArray(values)
+                ? values
+                      .map(
+                          (it) =>
+                              `#${get(it, 'id', '')}${labelPath !== null ? ` ${get(it, labelPath, '')}` : ''}`,
+                      )
+                      .join(', ')
+                : get(value, 'id', 'no-value'),
         [ids],
     );
 
