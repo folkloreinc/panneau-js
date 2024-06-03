@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-item-actions",
-    "version": "3.0.274",
+    "version": "3.0.276",
     "description": "Form actions element",
     "keywords": [
         "javascript"
@@ -57,11 +57,11 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.274",
-        "@panneau/element-buttons": "^3.0.274",
-        "@panneau/element-icon": "^3.0.274",
-        "@panneau/element-label": "^3.0.274",
-        "@panneau/themes": "^3.0.274",
+        "@panneau/core": "^3.0.276",
+        "@panneau/element-buttons": "^3.0.276",
+        "@panneau/element-icon": "^3.0.276",
+        "@panneau/element-label": "^3.0.276",
+        "@panneau/themes": "^3.0.276",
         "classnames": "^2.5.1",
         "lodash-es": "^4.17.21",
         "prop-types": "^15.7.2",
