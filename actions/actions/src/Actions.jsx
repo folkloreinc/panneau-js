@@ -92,21 +92,25 @@ const Actions = ({
                 const {
                     id = null,
                     component = null,
+                    multiple = false,
                     withConfirmation: actionConfirmation = false,
                     ...otherProps
                 } = action || {};
+
                 const actionComponent = actionsComponents.getComponent(component);
                 const hasActionComponent = actionComponent !== null;
                 const Component = actionComponent || defaultComponent;
-
+                const [firstValue = null] = value || [];
+                const finalValue = !multiple && firstValue !== null ? firstValue : value;
                 return Component !== null ? (
                     <Component
                         id={id}
                         key={`action-${id}-${idx + 1}`}
                         className={!isGroup ? 'me-2' : null}
                         iconPosition="right"
-                        value={value}
+                        value={finalValue}
                         size={size}
+                        multiple={multiple}
                         resource={resource}
                         {...(hasActionComponent
                             ? {
