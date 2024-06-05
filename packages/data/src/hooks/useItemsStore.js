@@ -58,6 +58,7 @@ const useItemsStore = (
         ...(keepData ? { placeholderData: keepPreviousData } : null),
         // ...(providedItems !== null ? { initialData: providedItems } : null), TODO: beware of this one
         ...queryConfig,
+        refetchOnMount: 'always',
     });
 
     const { data: items = [], pagination = null, meta = null } = data || {};

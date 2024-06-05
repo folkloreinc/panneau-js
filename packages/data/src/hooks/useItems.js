@@ -99,6 +99,7 @@ const useItems = ({
         ...(keepData ? { placeholderData: keepPreviousData } : null),
         // ...(providedItems !== null ? { initialData: providedItems } : null),
         ...queryConfig,
+        refetchOnMount: 'always',
     });
 
     const { data: items = [], pagination = null, meta = null } = data || {};

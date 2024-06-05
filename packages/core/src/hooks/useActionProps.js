@@ -30,11 +30,11 @@ const useActionProps = (action, value, labelPath = null) => {
             isArray(values)
                 ? values
                       .map(
-                          (it) =>
+                          (it = null) =>
                               `#${get(it, 'id', '')}${labelPath !== null ? ` ${get(it, labelPath, '')}` : ''}`,
                       )
                       .join(', ')
-                : get(value, 'id', 'no-value'),
+                : get(values, 'id', 'no-value'),
         [ids],
     );
 
