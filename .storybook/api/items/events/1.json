@@ -8,6 +8,11 @@
             "id": 1,
             "type": "lol",
             "name": "Paul"
+        },
+        {
+            "id": 2,
+            "type": "no",
+            "name": "Joe"
         }
     ]
 }

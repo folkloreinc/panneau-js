@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import Icon from '@panneau/element-icon';
 
@@ -31,7 +31,10 @@ const Badges = ({
     itemClassName,
     itemClassNamePath,
 }) => {
-    const items = (isArray(value) ? value : [value]).filter((it) => it !== null) || [];
+    const items = useMemo(
+        () => (isArray(value) ? value : [value]).filter((it) => it !== null) || [],
+        [value],
+    );
     return items.map((it) => {
         const label = get(it, itemLabelPath, null);
         const icon = get(it, itemIconPath, null);

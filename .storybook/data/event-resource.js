@@ -132,6 +132,13 @@ export default {
             'organizer',
             'email',
             {
+                id: 'blocks',
+                label: 'Hehe',
+                component: 'badges',
+                path: 'blocks',
+                itemLabelPath: 'name',
+            },
+            {
                 id: 'actions',
                 actions: [
                     'show',
