@@ -2,7 +2,9 @@
     position: relative;
 
     &.withoutModal {
-        max-height: 60vh;
+        > div {
+            height: 80vh;
+        }
     }
 
     &.disabled {

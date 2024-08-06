@@ -26,6 +26,7 @@ const propTypes = {
             value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         }),
     ]),
+    textValue: PropTypes.string,
     searchOptions: PropTypes.shape({
         isCaseSensitive: PropTypes.bool,
         includeScore: PropTypes.bool,

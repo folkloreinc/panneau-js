@@ -11,8 +11,8 @@ import Label from '@panneau/element-label';
 import styles from './styles.module.scss';
 
 const propTypes = {
-    value: PropTypes.bool,
-    name: PropTypes.string,
+    // value: PropTypes.bool,
+    // name: PropTypes.string,
     format: PropTypes.string,
     template: PropTypes.shape({
         columns: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })),
@@ -24,14 +24,22 @@ const propTypes = {
     disabled: PropTypes.bool,
     theme: PropTypes.string,
     outline: PropTypes.bool,
+    dark: PropTypes.bool,
+    primaryColor: PropTypes.string,
+    customStyles: PropTypes.shape({
+        'color-background': PropTypes.string,
+        'color-background-modal': PropTypes.string,
+    }),
+    showDownloadTemplateButton: PropTypes.bool,
+    skipHeaderRowSelection: PropTypes.bool,
     onChange: PropTypes.func,
     onClose: PropTypes.func,
     className: PropTypes.string,
 };
 
 const defaultProps = {
-    value: null,
-    name: null,
+    // value: null,
+    // name: null,
     format: 'csv',
     template: null,
     isModal: false,
@@ -41,14 +49,20 @@ const defaultProps = {
     disabled: false,
     theme: 'primary',
     outline: false,
+    dark: false,
+    primaryColor: null,
+    customStyles: null,
+    showDownloadTemplateButton: true,
+    skipHeaderRowSelection: false,
     onChange: null,
     onClose: null,
     className: null,
 };
 
 const ImportField = ({
-    value,
-    name,
+    // value,
+    // name,
+    format,
     isModal,
     icon,
     iconPosition,
@@ -57,10 +71,14 @@ const ImportField = ({
     disabled,
     theme,
     outline,
+    dark,
+    primaryColor,
+    customStyles,
+    showDownloadTemplateButton,
+    skipHeaderRowSelection,
     onChange,
     onClose,
     className,
-    ...props
 }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -112,20 +130,22 @@ const ImportField = ({
                     </Label>
                 </Button>
             ) : null}
-            <CSVImporter
-                isModal={isModal}
-                modalIsOpen={isOpen}
-                modalOnCloseTriggered={finalOnClose}
-                modalCloseOnOutsideClick
-                darkMode={theme === 'dark'}
-                onComplete={onComplete}
-                // primaryColor
-                // customStyles
-                // showDownloadTemplateButton
-                // skipHeaderRowSelection
-                template={template}
-                {...props}
-            />
+            {format === 'csv' ? (
+                <CSVImporter
+                    className={styles.importer}
+                    template={template}
+                    isModal={isModal}
+                    modalIsOpen={isOpen}
+                    modalOnCloseTriggered={finalOnClose}
+                    modalCloseOnOutsideClick
+                    darkMode={theme === 'dark' || dark}
+                    primaryColor={primaryColor}
+                    customStyles={customStyles}
+                    onComplete={onComplete}
+                    showDownloadTemplateButton={showDownloadTemplateButton}
+                    skipHeaderRowSelection={skipHeaderRowSelection}
+                />
+            ) : null}
         </div>
     );
 };
