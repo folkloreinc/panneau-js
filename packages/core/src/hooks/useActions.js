@@ -28,6 +28,16 @@ const useActions = (
     const { id, url = null } = item || {};
     const hasCustomShowUrl = showUrl !== null || url !== null;
 
+    console.log(
+        urlGenerator,
+        hasDuplicateRoute,
+        urlGenerator !== null && hasDuplicateRoute
+            ? urlGenerator('duplicate', {
+                  id,
+              })
+            : null,
+    );
+
     return (actions || [])
         .map((action) => {
             if (isString(action)) {
