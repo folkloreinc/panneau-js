@@ -22,6 +22,7 @@ const useActions = (
         withoutItemShowUrl = null,
         preferEditModal = false,
         preferDeleteModal = false,
+        hasDuplicateRoute = false,
     } = {},
 ) => {
     const { id, url = null } = item || {};
@@ -90,9 +91,19 @@ const useActions = (
                     //             : null),
                     //     };
                     case 'duplicate':
-                        return { id: 'duplicate', component: 'duplicate' };
+                        return {
+                            id: 'duplicate',
+                            component: 'duplicate',
+                            label: null,
+                            href:
+                                urlGenerator !== null && hasDuplicateRoute
+                                    ? urlGenerator('duplicate', {
+                                          id,
+                                      }) || null
+                                    : null,
+                        };
                     case 'restore':
-                        return { id: 'restore', component: 'restore' };
+                        return { id: 'restore', component: 'restore', label: null };
                     case 'delete':
                         return {
                             id: 'delete',
