@@ -95,15 +95,15 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
         >
             {({ id = null }) => <ResourceDeleteComponent itemId={id} resource={resource} />}
         </Route>,
-        // <Route
-        //     key={`${resourceId}-duplicate`}
-        //     path={route('resources.duplicate', {
-        //         resource: resourceId,
-        //         id: ':id',
-        //     })}
-        // >
-        //     {({ id = null }) => <ResourceDuplicateComponent itemId={id} resource={resource} />}
-        // </Route>,
+        <Route
+            key={`${resourceId}-duplicate`}
+            path={route('resources.duplicate', {
+                resource: resourceId,
+                id: ':id',
+            })}
+        >
+            {({ id = null }) => <ResourceDuplicateComponent itemId={id} resource={resource} />}
+        </Route>,
         ...extraRoutes.map(({ path, component, ...pageProps }) => {
             const RouteComponent = componentsManager.getComponent(component);
             return RouteComponent !== null ? (

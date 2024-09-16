@@ -192,6 +192,9 @@ export default {
     },
 
     index: {
+        actionsProps: {
+            hasDuplicateRoute: true,
+        },
         columns: [
             {
                 id: 'title',
@@ -309,9 +312,6 @@ export default {
     columns: ['title', 'description', 'slug'],
 
     routes: {
-        // 'resources.show': '/show',
-        // 'resources.edit': '/edit',
-        // 'resources.delete': '/delete',
         'resources.whatever': '/whatever-something-something',
     },
 };

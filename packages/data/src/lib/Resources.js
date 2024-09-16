@@ -72,6 +72,12 @@ class ResourcesApi {
             },
         );
     }
+
+    clone(resource, data) {
+        return this.api.requestPost(this.resourceRoute(resource, 'clone'), data, {
+            withCredentials: true,
+        });
+    }
 }
 
 export default ResourcesApi;

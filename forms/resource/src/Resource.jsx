@@ -9,6 +9,7 @@ import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceDestroy, useResourceStore, useResourceUpdate } from '@panneau/data';
 
 import DeleteForm from './Delete';
+import DuplicateForm from './Duplicate';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
@@ -17,6 +18,7 @@ const propTypes = {
     component: PropTypes.string,
     onSuccess: PropTypes.func,
     isDelete: PropTypes.bool,
+    isDuplicate: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -25,9 +27,19 @@ const defaultProps = {
     component: null,
     onSuccess: null,
     isDelete: false,
+    isDuplicate: false,
 };
 
-const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ...props }) => {
+const ResourceForm = ({
+    component,
+    resource,
+    onSuccess,
+    item,
+    type,
+    isDelete,
+    isDuplicate,
+    ...props
+}) => {
     const locales = useLocales();
 
     const FormComponents = useFormsComponents();
@@ -96,17 +108,23 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
     );
 
     // Form action
-    const modifyAction = isCreate
+    let action = isCreate
         ? resourceRoute('store')
         : resourceRoute('update', {
               id: item.id,
           });
 
-    const action = isDelete
+    action = isDelete
         ? resourceRoute('destroy', {
               id: item.id,
           })
-        : modifyAction;
+        : action;
+
+    action = isDuplicate
+        ? resourceRoute('clone', {
+              id: item.id,
+          })
+        : action;
 
     const { fields, onSubmit, status, generalError, errors } = useForm({
         action,
@@ -118,16 +136,23 @@ const ResourceForm = ({ component, resource, onSuccess, item, type, isDelete, ..
         locales,
     });
 
-    const defaultFormName = isDelete
-        ? component || formComponent || null
-        : component || formComponent || defaultComponent || 'normal';
+    const defaultFormName =
+        isDelete || isDuplicate
+            ? component || formComponent || null
+            : component || formComponent || defaultComponent || 'normal';
+
+    let finalComponent = component;
+
+    if (isDelete) {
+        finalComponent = DeleteForm;
+    }
+
+    if (isDuplicate) {
+        finalComponent = DuplicateForm;
+    }
 
     // Form component
-    const FormComponent = getComponentFromName(
-        defaultFormName,
-        FormComponents,
-        isDelete ? DeleteForm : component,
-    );
+    const FormComponent = getComponentFromName(defaultFormName, FormComponents, finalComponent);
 
     // Listen to item value change - this is important
     useEffect(() => {

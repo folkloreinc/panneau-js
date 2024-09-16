@@ -60,7 +60,7 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
         create: createPage = null,
         edit: editPage = null,
         delete: deletePage = null,
-        // duplicate: duplicatePage = null,
+        duplicate: duplicatePage = null,
         ...otherPages
     } = pages || {};
 

@@ -29,13 +29,14 @@ const useActions = (
     const hasCustomShowUrl = showUrl !== null || url !== null;
 
     console.log(
+        'moshi',
         urlGenerator,
         hasDuplicateRoute,
         urlGenerator !== null && hasDuplicateRoute
             ? urlGenerator('duplicate', {
                   id,
               })
-            : null,
+            : 'no',
     );
 
     return (actions || [])
