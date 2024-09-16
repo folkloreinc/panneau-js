@@ -569,6 +569,12 @@ msgctxt "ZBNqY2"
 msgid "Forgot your password?"
 msgstr "Forgot your password?"
 
+# Confirmation message
+#: ZhnMCD
+msgctxt "ZhnMCD"
+msgid "Are you sure you want to duplicate {the_singular} #{id}?"
+msgstr "Are you sure you want to duplicate {the_singular} #{id}?"
+
 # Button label in items field
 #: ZxgNge
 msgctxt "ZxgNge"

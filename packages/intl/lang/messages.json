@@ -363,6 +363,10 @@
     "defaultMessage": "Forgot your password?",
     "description": "Link label"
   },
+  "ZhnMCD": {
+    "defaultMessage": "Are you sure you want to duplicate {the_singular} #{id}?",
+    "description": "Confirmation message"
+  },
   "ZxgNge": {
     "defaultMessage": "Add an item",
     "description": "Button label in items field"

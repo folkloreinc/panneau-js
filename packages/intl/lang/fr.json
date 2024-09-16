@@ -272,6 +272,9 @@
     "ZBNqY2": {
         "defaultMessage": "Mot de passe oublié ?"
     },
+    "ZhnMCD": {
+        "defaultMessage": "Êtes-vous certain de vouloir dupliquer {the_singular} #{id}?"
+    },
     "ZxgNge": {
         "defaultMessage": "Ajouter un élement"
     },

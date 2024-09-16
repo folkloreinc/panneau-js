@@ -272,6 +272,9 @@
     "ZBNqY2": {
         "defaultMessage": "Forgot your password?"
     },
+    "ZhnMCD": {
+        "defaultMessage": "Are you sure you want to duplicate {the_singular} #{id}?"
+    },
     "ZxgNge": {
         "defaultMessage": "Add an item"
     },
