@@ -89,6 +89,7 @@ export const routes = PropTypes.shape({
     'resources.destroy': PropTypes.string.isRequired,
     'resources.duplicate': PropTypes.string.isRequired,
     'resources.clone': PropTypes.string.isRequired,
+    'resources.restore': PropTypes.string.isRequired,
 });
 
 export const intl = PropTypes.shape({

@@ -2,14 +2,14 @@ import { useCallback, useState } from 'react';
 
 import { useApi } from '../contexts/ApiContext';
 
-const useResourceClone = (resource, id = null) => {
+const useResourceRestore = (resource, id = null) => {
     const [loading, setLoading] = useState(false);
     const api = useApi();
-    const clone = useCallback(
+    const restore = useCallback(
         (providedId) => {
             setLoading(true);
             return api.resources
-                .clone(resource, providedId || id)
+                .restore(resource, providedId || id)
                 .then((response) => {
                     setLoading(false);
                     return response;
@@ -21,7 +21,7 @@ const useResourceClone = (resource, id = null) => {
         },
         [api, resource, id, setLoading],
     );
-    return { clone, loading };
+    return { restore, loading };
 };
 
-export default useResourceClone;
+export default useResourceRestore;
