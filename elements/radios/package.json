@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-radios",
-    "version": "3.0.286",
+    "version": "3.0.288",
     "description": "Radio buttons",
     "keywords": [
         "javascript"
@@ -57,8 +57,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.286",
-        "@panneau/themes": "^3.0.286",
+        "@panneau/core": "^3.0.288",
+        "@panneau/themes": "^3.0.288",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2"
     },
