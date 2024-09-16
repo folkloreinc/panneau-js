@@ -38,7 +38,7 @@ const defaultProps = {
     label: <FormattedMessage defaultMessage="Duplicate" description="Button label" />,
     icon: 'copy',
     value: null,
-    theme: 'primary',
+    theme: 'secondary',
     disabled: false,
     onChange: null,
     onConfirmed: null,

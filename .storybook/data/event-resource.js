@@ -143,6 +143,7 @@ export default {
                 actions: [
                     'show',
                     'edit',
+                    'duplicate',
                     'delete',
                     {
                         id: 'export',
