@@ -73,16 +73,28 @@ class ResourcesApi {
         );
     }
 
-    clone(resource, data) {
-        return this.api.requestPost(this.resourceRoute(resource, 'clone'), data, {
-            withCredentials: true,
-        });
+    clone(resource, id, data = null) {
+        return this.api.requestPost(
+            this.resourceRoute(resource, 'clone', {
+                id,
+            }),
+            data,
+            {
+                withCredentials: true,
+            },
+        );
     }
 
-    restore(resource, data) {
-        return this.api.requestPost(this.resourceRoute(resource, 'restore'), data, {
-            withCredentials: true,
-        });
+    restore(resource, id, data = null) {
+        return this.api.requestPost(
+            this.resourceRoute(resource, 'restore', {
+                id,
+            }),
+            data,
+            {
+                withCredentials: true,
+            },
+        );
     }
 }
 

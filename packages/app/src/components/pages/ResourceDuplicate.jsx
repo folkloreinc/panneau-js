@@ -35,8 +35,6 @@ const ResourceDuplicatePage = ({ itemId, resource }) => {
         [navigate, resourceRoute],
     );
 
-    console.log('wtgg');
-
     return (
         <ResourceProvider resource={resource}>
             <MainLayout loading={loading}>
