@@ -6,7 +6,12 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { FormProvider, useFormsComponents, useLocales } from '@panneau/core/contexts';
 import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
-import { useResourceDestroy, useResourceStore, useResourceUpdate } from '@panneau/data';
+import {
+    useResourceClone,
+    useResourceDestroy,
+    useResourceStore,
+    useResourceUpdate,
+} from '@panneau/data';
 
 import DeleteForm from './Delete';
 import DuplicateForm from './Duplicate';
@@ -41,12 +46,13 @@ const ResourceForm = ({
     ...props
 }) => {
     const locales = useLocales();
-
     const FormComponents = useFormsComponents();
+    const { id: itemId = null } = item || {};
+
     const { fields: resourceFields = [], types: resourceTypes = [], forms } = resource;
     const resourceType = type !== null ? resourceTypes.find((it) => it.id === type) || null : null;
     const { fields: resourceTypeFields = null } = resourceType || {};
-    const isCreate = item === null || !item.id;
+    const isCreate = item === null || !itemId;
 
     // Pick fields from resource root or form
     const {
@@ -71,14 +77,25 @@ const ResourceForm = ({
     // Form routes
     const resourceRoute = useResourceUrlGenerator(resource);
     const { store } = useResourceStore(resource);
-    const { update } = useResourceUpdate(resource, item != null ? item.id : null);
-    const { destroy } = useResourceDestroy(resource, item != null ? item.id : null);
+    const { update } = useResourceUpdate(resource, item !== null ? itemId : null);
+    const { destroy } = useResourceDestroy(resource, item !== null ? itemId : null);
+    const { clone } = useResourceClone(resource, item !== null ? itemId : null);
 
     // Post actions
-    const postAction = isCreate ? store : update;
     const postForm = useCallback(
-        (action, data) => (isDelete ? destroy() : postAction(data)),
-        [postAction, isDelete, destroy, store, update],
+        (action, data) => {
+            if (isDelete) {
+                return destroy();
+            }
+            if (isDuplicate) {
+                return clone();
+            }
+            if (isCreate) {
+                return store(data);
+            }
+            return update(data);
+        },
+        [itemId, isCreate, isDelete, isDuplicate, destroy, clone, store, update],
     );
 
     // Form state
@@ -111,18 +128,18 @@ const ResourceForm = ({
     let action = isCreate
         ? resourceRoute('store')
         : resourceRoute('update', {
-              id: item.id,
+              id: itemId,
           });
 
     action = isDelete
         ? resourceRoute('destroy', {
-              id: item.id,
+              id: itemId,
           })
         : action;
 
     action = isDuplicate
         ? resourceRoute('clone', {
-              id: item.id,
+              id: itemId,
           })
         : action;
 
