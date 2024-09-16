@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-checkboxes",
-    "version": "3.0.282",
+    "version": "3.0.283",
     "description": "A checkboxes field",
     "keywords": [
         "javascript"
@@ -59,8 +59,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^3.0.282",
-        "@panneau/themes": "^3.0.282",
+        "@panneau/core": "^3.0.283",
+        "@panneau/themes": "^3.0.283",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2"
     },
