@@ -76,10 +76,17 @@ const ResourceForm = ({
 
     // Form routes
     const resourceRoute = useResourceUrlGenerator(resource);
-    const { store } = useResourceStore(resource);
-    const { update } = useResourceUpdate(resource, item !== null ? itemId : null);
-    const { destroy } = useResourceDestroy(resource, item !== null ? itemId : null);
-    const { clone } = useResourceClone(resource, item !== null ? itemId : null);
+    const { store, loading: storing } = useResourceStore(resource);
+    const { update, loading: updating } = useResourceUpdate(
+        resource,
+        item !== null ? itemId : null,
+    );
+    const { destroy, loading: destroying } = useResourceDestroy(
+        resource,
+        item !== null ? itemId : null,
+    );
+    const { clone, loading: cloning } = useResourceClone(resource, item !== null ? itemId : null);
+    const loading = storing || updating || destroying || cloning;
 
     // Post actions
     const postForm = useCallback(
@@ -191,6 +198,7 @@ const ResourceForm = ({
                 isCreate={isCreate}
                 value={value}
                 onChange={setValue}
+                loading={loading}
             />
         </FormProvider>
     );

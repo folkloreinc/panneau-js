@@ -21,6 +21,7 @@ const propTypes = {
     status: PanneauPropTypes.formStatus,
     generalError: PropTypes.string,
     errors: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
+    loading: PropTypes.bool,
     className: PropTypes.string,
 };
 
@@ -32,6 +33,7 @@ const defaultProps = {
     onSubmit: null,
     generalError: null,
     errors: null,
+    loading: false,
     className: null,
 };
 
@@ -44,6 +46,7 @@ const DeleteForm = ({
     onSubmit,
     errors,
     generalError,
+    loading,
     className,
     ...props
 }) => {
@@ -64,6 +67,7 @@ const DeleteForm = ({
             onSubmit={onSubmit}
             withoutActions
             withoutErrors
+            disabled={loading}
             {...props}
         >
             <div
@@ -97,7 +101,7 @@ const DeleteForm = ({
                             <FormattedMessage defaultMessage="Cancel" description="Button label" />
                         </Button>
                     ) : null}
-                    <Button type="submit" className="ms-auto" theme="danger">
+                    <Button type="submit" className="ms-auto" theme="danger" disabled={loading}>
                         <FormattedMessage defaultMessage="Delete" description="Button label" />
                     </Button>
                 </div>

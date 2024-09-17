@@ -21,6 +21,7 @@ const propTypes = {
     status: PanneauPropTypes.formStatus,
     generalError: PropTypes.string,
     errors: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
+    loading: PropTypes.bool,
     className: PropTypes.string,
 };
 
@@ -32,6 +33,7 @@ const defaultProps = {
     onSubmit: null,
     generalError: null,
     errors: null,
+    loading: false,
     className: null,
 };
 
@@ -44,12 +46,12 @@ const DuplicateForm = ({
     onSubmit,
     errors,
     generalError,
+    loading,
     className,
     ...props
 }) => {
     const { id = null } = value || {};
     const resourceValues = useResourceValues(resource, { id });
-
     return (
         <Form
             className={classNames([
@@ -63,6 +65,7 @@ const DuplicateForm = ({
             onSubmit={onSubmit}
             withoutActions
             withoutErrors
+            disabled={loading}
             {...props}
         >
             <div
@@ -94,7 +97,7 @@ const DuplicateForm = ({
                             <FormattedMessage defaultMessage="Cancel" description="Button label" />
                         </Button>
                     ) : null}
-                    <Button type="submit" className="ms-auto" theme="warning">
+                    <Button type="submit" className="ms-auto" theme="warning" disabled={loading}>
                         <FormattedMessage defaultMessage="Duplicate" description="Button label" />
                     </Button>
                 </div>

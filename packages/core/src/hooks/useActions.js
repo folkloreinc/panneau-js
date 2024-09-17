@@ -27,18 +27,6 @@ const useActions = (
 ) => {
     const { id, url = null } = item || {};
     const hasCustomShowUrl = showUrl !== null || url !== null;
-
-    console.log(
-        'moshi',
-        urlGenerator,
-        hasDuplicateRoute,
-        urlGenerator !== null && hasDuplicateRoute
-            ? urlGenerator('duplicate', {
-                  id,
-              })
-            : 'no',
-    );
-
     return (actions || [])
         .map((action) => {
             if (isString(action)) {
