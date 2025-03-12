@@ -22,6 +22,7 @@ const propTypes = {
     theme: PropTypes.string,
     disabled: PropTypes.bool,
     onClick: PropTypes.func,
+    onConfirmed: PropTypes.func,
     valueLabelPath: PropTypes.string,
     modalComponent: PropTypes.string,
     withConfirmation: PropTypes.bool,
@@ -39,6 +40,7 @@ const defaultProps = {
     theme: 'infor',
     disabled: false,
     onClick: null,
+    onConfirmed: null,
     valueLabelPath: null,
     modalComponent: 'dialog',
     withConfirmation: false,
@@ -57,6 +59,7 @@ const ShowAction = ({
     theme,
     disabled,
     onClick,
+    onConfirmed,
     valueLabelPath,
     modalComponent,
     withConfirmation,
@@ -67,7 +70,6 @@ const ShowAction = ({
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
     const [modalOpen, setModalOpen] = useState(false);
-
     const { modalKey } = useActionProps(id, value, valueLabelPath);
 
     const onOpen = useCallback(() => {
