@@ -116,24 +116,43 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                     actions={
                         finalActions.length > 0 ? (
                             <div className="d-flex align-items-center">
-                                {finalActions.map(({ id, component = Button, ...actionsProps }) => {
-                                    const ActionComponent = isString(component)
-                                        ? componentsManager.getComponent(component)
-                                        : component;
-                                    return ActionComponent !== null ? (
-                                        <ActionComponent
-                                            key={`action-${id}`}
-                                            {...actionsProps}
-                                            {...(ActionComponent !== Button
-                                                ? {
-                                                      resource,
-                                                      query,
-                                                      onQueryChange,
-                                                  }
-                                                : {})}
-                                        />
-                                    ) : null;
-                                })}
+                                {finalActions.map(
+                                    ({
+                                        id,
+                                        component = Button,
+                                        withQuery = false,
+                                        href = null,
+                                        ...actionsProps
+                                    }) => {
+                                        const ActionComponent = isString(component)
+                                            ? componentsManager.getComponent(component)
+                                            : component;
+                                        const isButton = ActionComponent === Button;
+                                        let finalHref = href;
+                                        if (isButton && withQuery && href !== null) {
+                                            finalHref = `${finalHref}${finalHref.indexOf('?') !== -1 ? '&' : '?'}${queryString.stringify(
+                                                query,
+                                                {
+                                                    arrayFormat: 'bracket',
+                                                },
+                                            )}`;
+                                        }
+                                        return ActionComponent !== null ? (
+                                            <ActionComponent
+                                                key={`action-${id}`}
+                                                href={finalHref}
+                                                {...actionsProps}
+                                                {...(!isButton
+                                                    ? {
+                                                          resource,
+                                                          query,
+                                                          onQueryChange,
+                                                      }
+                                                    : {})}
+                                            />
+                                        ) : null;
+                                    },
+                                )}
                             </div>
                         ) : null
                     }
