@@ -17,6 +17,8 @@ const propTypes = {
     disabled: PropTypes.bool,
     readOnly: PropTypes.bool,
     nativeOnChange: PropTypes.bool,
+    pattern: PropTypes.string,
+    title: PropTypes.string,
     type: PropTypes.oneOf(['text', 'email', 'tel', 'password', 'textarea', 'number']),
     placeholder: PropTypes.string,
     onChange: PropTypes.func,
@@ -48,6 +50,8 @@ const defaultProps = {
     disabled: false,
     readOnly: false,
     nativeOnChange: false,
+    pattern: null,
+    title: null,
     type: null,
     placeholder: null,
     onChange: null,
@@ -74,6 +78,8 @@ const InputField = ({
     disabled,
     readOnly,
     nativeOnChange,
+    pattern,
+    title,
     type,
     placeholder,
     onChange,
@@ -118,6 +124,8 @@ const InputField = ({
         disabled,
         readOnly,
         list: dataListId,
+        pattern,
+        title,
         onChange: nativeOnChange
             ? onChange
             : ({ target: { value: newValue = '' } }) =>
