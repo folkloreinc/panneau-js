@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-resource-items",
-    "version": "3.0.292",
+    "version": "3.0.293",
     "description": "Default resource list",
     "keywords": [
         "javascript"
@@ -49,16 +49,16 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/action-actions": "^3.0.292",
+        "@panneau/action-actions": "^3.0.293",
         "@panneau/core": "^3.0.292",
         "@panneau/data": "^3.0.292",
-        "@panneau/element-button": "^3.0.292",
-        "@panneau/element-form-group": "^3.0.292",
-        "@panneau/element-navbar": "^3.0.292",
-        "@panneau/element-pagination": "^3.0.292",
-        "@panneau/filter-filters": "^3.0.292",
-        "@panneau/list-table": "^3.0.292",
-        "@panneau/themes": "^3.0.292",
+        "@panneau/element-button": "^3.0.293",
+        "@panneau/element-form-group": "^3.0.293",
+        "@panneau/element-navbar": "^3.0.293",
+        "@panneau/element-pagination": "^3.0.293",
+        "@panneau/filter-filters": "^3.0.293",
+        "@panneau/list-table": "^3.0.293",
+        "@panneau/themes": "^3.0.293",
         "classnames": "^2.5.1",
         "lodash-es": "^4.17.21",
         "prop-types": "^15.7.2",
