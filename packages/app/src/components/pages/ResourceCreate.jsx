@@ -37,28 +37,29 @@ const ResourceCreatePage = ({ resource }) => {
     return (
         <ResourceProvider resource={resource}>
             <MainLayout>
-                <PageHeader
-                    title={
-                        <>
-                            <FormattedMessage
-                                values={resourceValues}
-                                defaultMessage="Create {a_singular}"
-                                description="Page title"
-                            />
-                            {typeName !== null ? (
-                                <span className="text-body-secondary"> ({typeName})</span>
-                            ) : null}
-                        </>
+                <ResourceForm
+                    resource={resource}
+                    type={type}
+                    onSuccess={onSuccess}
+                    withContainer
+                    header={
+                        <PageHeader
+                            title={
+                                <>
+                                    <FormattedMessage
+                                        values={resourceValues}
+                                        defaultMessage="Create {a_singular}"
+                                        description="Page title"
+                                    />
+                                    {typeName !== null ? (
+                                        <span className="text-body-secondary"> ({typeName})</span>
+                                    ) : null}
+                                </>
+                            }
+                            small
+                        />
                     }
-                    small
                 />
-                <div className="container-sm py-4">
-                    <div className="row justify-content-center">
-                        <div className="col-12 col-md-8 col-lg-7">
-                            <ResourceForm resource={resource} type={type} onSuccess={onSuccess} />
-                        </div>
-                    </div>
-                </div>
             </MainLayout>
         </ResourceProvider>
     );

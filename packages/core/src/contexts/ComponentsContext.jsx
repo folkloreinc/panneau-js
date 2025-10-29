@@ -14,6 +14,7 @@ export const DISPLAYS_NAMESPACE = 'displays';
 export const ACTIONS_NAMESPACE = 'actions';
 export const BUTTONS_NAMESPACE = 'buttons';
 export const PAGES_NAMESPACE = 'pages';
+export const PREVIEWS_NAMESPACE = 'previews';
 export const APP_NAMESPACE = 'app';
 
 export const ComponentsContext = React.createContext(null);
@@ -144,6 +145,17 @@ export const usePagesComponents = (defaultComponents = {}) =>
 
 export const usePageComponent = (name, defaultComponent = null) =>
     useComponent(name, defaultComponent, PAGES_NAMESPACE);
+
+/**
+ * Previews hooks
+ */
+export const usePreviewsComponentsManager = () => useComponentsManager(PREVIEWS_NAMESPACE);
+
+export const usePreviewsComponents = (defaultComponents = {}) =>
+    useComponents(PREVIEWS_NAMESPACE, defaultComponents);
+
+export const usePreviewComponent = (name, defaultComponent = null) =>
+    useComponent(name, defaultComponent, PREVIEWS_NAMESPACE);
 
 /**
  * App hooks

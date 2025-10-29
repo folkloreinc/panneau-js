@@ -4,13 +4,16 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import { useFieldComponent } from '@panneau/core/contexts';
+import { useFieldComponent, usePreviewComponent } from '@panneau/core/contexts';
 import Form from '@panneau/element-form';
 
 import styles from './styles.module.scss';
 
 const propTypes = {
     fields: PropTypes.objectOf(PropTypes.shape({})).isRequired,
+    resource: PropTypes.shape({
+        id: PropTypes.string,
+    }),
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     setValue: PropTypes.func,
     onChange: PropTypes.func.isRequired,
@@ -32,6 +35,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    resource: null,
     status: null,
     value: null,
     setValue: null,
@@ -43,6 +47,7 @@ const defaultProps = {
 };
 
 const TwoPaneForm = ({
+    resource,
     fields,
     status,
     value,
@@ -53,19 +58,24 @@ const TwoPaneForm = ({
     className,
     ...props
 }) => {
+    const { id = null } = resource || {};
     const FieldsComponent = useFieldComponent('fields');
+    const PreviewComponent = usePreviewComponent(id);
     const onChange = setValue || null;
+
     return (
-        <div className="d-flex">
+        <div className="container-fluid row gx-4">
             <Form
                 className={classNames([
                     styles.container,
                     'form',
-                    'w-50',
+                    'col-12',
+                    'col-lg-6',
                     {
                         [className]: className !== null,
                     },
                 ])}
+                resource={resource}
                 status={status}
                 buttons={buttons}
                 onSubmit={onSubmit}
@@ -73,7 +83,13 @@ const TwoPaneForm = ({
             >
                 <FieldsComponent fields={fields} value={value} onChange={onChange} />
             </Form>
-            <div className="w-50">{children}</div>
+            <div className="col-12 col-lg-6">
+                {PreviewComponent !== null ? (
+                    <PreviewComponent resource={resource} value={value} />
+                ) : (
+                    children
+                )}
+            </div>
         </div>
     );
 };

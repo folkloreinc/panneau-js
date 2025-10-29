@@ -6,7 +6,7 @@ $datepicker__selected-color: #0d6efd !default;
 $datepicker__text-color: #000 !default;
 $datepicker__header-color: #000 !default;
 $datepicker__navigation-disabled-color: lighten(
-    $datepicker__muted-color,
+    #ccc,
     10%
 ) !default;
 

@@ -11,6 +11,7 @@ import {
     ComponentsProvider,
     ModalProvider,
     PanneauProvider,
+    PreviewsProvider,
     RoutesProvider,
 } from '@panneau/core/contexts';
 import { ApiProvider, QueryProvider } from '@panneau/data';

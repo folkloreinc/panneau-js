@@ -37,43 +37,40 @@ const ResourceEditPage = ({ itemId, resource }) => {
     return (
         <ResourceProvider resource={resource}>
             <MainLayout loading={loading}>
-                <PageHeader
-                    title={
-                        <>
-                            <FormattedMessage
-                                values={resourceValues}
-                                defaultMessage="Edit {a_singular}"
-                                description="Page title"
+                {editItem !== null ? (
+                    <ResourceForm
+                        resource={resource}
+                        item={editItem}
+                        type={type}
+                        onSuccess={onSuccess}
+                        withContainer
+                        header={
+                            <PageHeader
+                                title={
+                                    <>
+                                        <FormattedMessage
+                                            values={resourceValues}
+                                            defaultMessage="Edit {a_singular}"
+                                            description="Page title"
+                                        />
+                                        {typeName !== null ? (
+                                            <span className="text-body-secondary">
+                                                {' '}
+                                                ({typeName})
+                                            </span>
+                                        ) : null}
+                                    </>
+                                }
+                                small
                             />
-                            {typeName !== null ? (
-                                <span className="text-body-secondary"> ({typeName})</span>
-                            ) : null}
-                        </>
-                    }
-                    small
-                />
-                <div className="container-sm py-4">
-                    <div className="row justify-content-center">
-                        <div className="col-12 col-md-8 col-lg-7">
-                            {editItem !== null ? (
-                                <ResourceForm
-                                    resource={resource}
-                                    item={editItem}
-                                    type={type}
-                                    onSuccess={onSuccess}
-                                />
-                            ) : null}
-                            {editItem === null && loading && !error ? (
-                                <Loading withDelay>
-                                    <FormattedMessage
-                                        defaultMessage="Loading"
-                                        description="Loading label"
-                                    />
-                                </Loading>
-                            ) : null}
-                        </div>
-                    </div>
-                </div>
+                        }
+                    />
+                ) : null}
+                {editItem === null && loading && !error ? (
+                    <Loading withDelay>
+                        <FormattedMessage defaultMessage="Loading" description="Loading label" />
+                    </Loading>
+                ) : null}
             </MainLayout>
         </ResourceProvider>
     );

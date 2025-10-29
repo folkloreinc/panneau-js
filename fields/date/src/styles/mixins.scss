@@ -1,3 +1,5 @@
+@use  "variables.scss";
+
 %navigation-chevron {
     content: "";
     display: block;
@@ -7,11 +9,11 @@
     height: 9px;
     border-width: 3px 3px 0 0;
     border-style: solid;
-    border-color: $datepicker__muted-color;
+    border-color: variables.$datepicker__muted-color;
 
     &--disabled,
     &--disabled:hover {
-        border-color: $datepicker__navigation-disabled-color;
+        border-color: variables.$datepicker__navigation-disabled-color;
         cursor: default;
     }
 }
@@ -19,23 +21,23 @@
 %triangle-arrow {
     position: absolute;
     width: 0;
-    margin-left: -$datepicker__triangle-size * 0.5;
+    margin-left: -(variables.$datepicker__triangle-size) * 0.5;
 
     &::before,
     &::after {
         content: "";
         position: absolute;
         z-index: -1;
-        left: -$datepicker__triangle-size;
+        left: -(variables.$datepicker__triangle-size);
         box-sizing: content-box;
         width: 1px;
         height: 0;
-        border: $datepicker__triangle-size solid transparent;
-        border-width: $datepicker__triangle-size;
+        border: variables.$datepicker__triangle-size solid transparent;
+        border-width: variables.$datepicker__triangle-size;
     }
 
     &::before {
-        border-bottom-color: $datepicker__border-color;
+        border-bottom-color: variables.$datepicker__border-color;
     }
 }
 
@@ -43,12 +45,12 @@
     @extend %triangle-arrow;
 
     top: 0;
-    margin-top: -$datepicker__triangle-size;
+    margin-top: -(variables.$datepicker__triangle-size);
 
     &::before,
     &::after {
         border-top: none;
-        border-bottom-color: $datepicker__background-color;
+        border-bottom-color: variables.$datepicker__background-color;
     }
 
     &::after {
@@ -57,7 +59,7 @@
 
     &::before {
         top: -1px;
-        border-bottom-color: $datepicker__border-color;
+        border-bottom-color: variables.$datepicker__border-color;
     }
 }
 
@@ -65,7 +67,7 @@
     @extend %triangle-arrow;
 
     bottom: 0;
-    margin-bottom: -$datepicker__triangle-size;
+    margin-bottom: -(variables.$datepicker__triangle-size);
 
     &::before,
     &::after {
@@ -79,6 +81,6 @@
 
     &::before {
         bottom: -1px;
-        border-top-color: $datepicker__border-color;
+        border-top-color: variables.$datepicker__border-color;
     }
 }

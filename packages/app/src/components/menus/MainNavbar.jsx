@@ -16,24 +16,31 @@ import ResourcesMenu from './Resources';
 const propTypes = {
     loading: PropTypes.bool,
     theme: PropTypes.string,
+    vertical: PropTypes.bool,
+    position: PropTypes.string,
 };
 
 const defaultProps = {
     loading: false,
     theme: 'light',
+    vertical: false,
+    position: 'top',
 };
 
-const MainNavbar = ({ loading, theme, ...props }) => {
+const MainNavbar = ({ loading, theme, vertical, position, ...props }) => {
     const { name, menus = null } = usePanneau();
     const { main = null, guest = null } = menus || {};
     const { background } = usePanneauColorScheme();
     const route = useUrlGenerator();
     const user = useUser();
 
+    const navClassNames = vertical ? 'navbar-nav d-flex flex-column' : 'navbar-nav';
+
     const items = useMemo(() => {
         const menuItems = (user !== null ? main : guest) || [];
         const hasResources = menuItems.indexOf('resources') !== -1;
         const hasAccount = menuItems.indexOf('account') !== -1;
+
         return [
             !hasResources && user !== null ? 'resources' : null,
             ...menuItems,
@@ -47,7 +54,7 @@ const MainNavbar = ({ loading, theme, ...props }) => {
                         ...currentItems,
                         <ResourcesMenu
                             key={`menu-item-resource-${index + 1}`}
-                            className="navbar-nav"
+                            className={navClassNames}
                             itemClassName="nav-item"
                             linkClassName="nav-link"
                         />,
@@ -58,7 +65,7 @@ const MainNavbar = ({ loading, theme, ...props }) => {
                         ...currentItems,
                         <AccountMenu
                             key={`menu-item-account-${index + 1}`}
-                            className="navbar-nav"
+                            className={navClassNames}
                             itemClassName="nav-item"
                             linkClassName="nav-link"
                         />,
@@ -82,7 +89,7 @@ const MainNavbar = ({ loading, theme, ...props }) => {
                     <Menu
                         items={it}
                         key={`submenu-item-${index + 1}`}
-                        className="navbar-nav"
+                        className={navClassNames}
                         itemClassName="nav-item"
                         linkClassName="nav-link"
                     />
@@ -90,15 +97,17 @@ const MainNavbar = ({ loading, theme, ...props }) => {
                     it
                 ),
             );
-    }, [main]);
-
-    // 'text-light': theme === 'dark', 'text-dark': theme !== 'dark',
+    }, [main, navClassNames]);
 
     return (
-        <Navbar theme={background} loading={loading} {...props}>
+        <Navbar theme={background} loading={loading} vertical={vertical} {...props}>
             {name !== null ? (
                 <Link href={route('home')} className="navbar-brand">
-                    <span className={classNames([{ 'text-opacity-75': loading }])}>{name}</span>
+                    <span
+                        className={classNames([{ 'text-opacity-75': loading, 'ms-2': vertical }])}
+                    >
+                        {name}
+                    </span>
                 </Link>
             ) : null}
             {items}

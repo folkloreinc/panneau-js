@@ -13,6 +13,8 @@
 
 body {
     --bs-input-color: var(--bs-body-bg, #fff);
+    --sidebar-background: var(--bs-body-bg, #fff);
+    --sidebar-border: 1px solid #ccc;
 }
 
 [data-bs-theme='dark'] {

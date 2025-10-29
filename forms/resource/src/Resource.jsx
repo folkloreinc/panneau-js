@@ -21,28 +21,34 @@ const propTypes = {
     item: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     type: PropTypes.string,
     component: PropTypes.string,
+    header: PropTypes.node,
     onSuccess: PropTypes.func,
     isDelete: PropTypes.bool,
     isDuplicate: PropTypes.bool,
+    withContainer: PropTypes.bool,
 };
 
 const defaultProps = {
     item: null,
     type: null,
     component: null,
+    header: null,
     onSuccess: null,
     isDelete: false,
     isDuplicate: false,
+    withContainer: false,
 };
 
 const ResourceForm = ({
     component,
+    header,
     resource,
     onSuccess,
     item,
     type,
     isDelete,
     isDuplicate,
+    withContainer,
     ...props
 }) => {
     const locales = useLocales();
@@ -61,11 +67,23 @@ const ResourceForm = ({
         edit: editForm = null,
         delete: deleteForm = null,
     } = forms || {};
-    const { fields: defaultFields = null, component: defaultComponent } = defaultForm || {};
+
+    const {
+        fields: defaultFields = null,
+        component: defaultComponent,
+        withoutHeader: defaultFormWithoutHeader = false,
+        withoutContainer: defaultFormWithoutContainer = false,
+    } = defaultForm || {};
+
     const createOrEditSource = isCreate ? createForm || {} : editForm || {};
-    const { fields: formFields = null, component: formComponent = null } = isDelete
-        ? deleteForm || {}
-        : createOrEditSource || {};
+
+    const {
+        fields: formFields = null,
+        component: formComponent = null,
+        withoutHeader: formWithoutHeader = false,
+        withoutContainer: formWithoutContainer = false,
+    } = isDelete ? deleteForm || {} : createOrEditSource || {};
+
     const finalFields = useMemo(
         () =>
             (formFields || defaultFields || resourceTypeFields || resourceFields).filter(
@@ -165,6 +183,18 @@ const ResourceForm = ({
             ? component || formComponent || null
             : component || formComponent || defaultComponent || 'normal';
 
+    const finalWithContainer =
+        withContainer &&
+        defaultFormName !== 'two-pane' &&
+        !defaultFormWithoutContainer &&
+        !formWithoutContainer;
+
+    const finalWithHeader =
+        header !== null &&
+        defaultFormName !== 'two-pane' &&
+        !defaultFormWithoutHeader &&
+        !formWithoutHeader;
+
     let finalComponent = component;
 
     if (isDelete) {
@@ -183,23 +213,36 @@ const ResourceForm = ({
         setValue(getInitialValue());
     }, [getInitialValue, setValue]);
 
+    const element = (
+        <FormComponent
+            {...props}
+            status={status}
+            resource={resource}
+            item={item}
+            fields={fields}
+            generalError={generalError}
+            errors={errors}
+            action={action}
+            onSubmit={onSubmit}
+            isCreate={isCreate}
+            value={value}
+            onChange={setValue}
+            loading={loading}
+        />
+    );
+
     return (
         <FormProvider value={value} setValue={setValue}>
-            <FormComponent
-                {...props}
-                status={status}
-                resource={resource}
-                item={item}
-                fields={fields}
-                generalError={generalError}
-                errors={errors}
-                action={action}
-                onSubmit={onSubmit}
-                isCreate={isCreate}
-                value={value}
-                onChange={setValue}
-                loading={loading}
-            />
+            {finalWithHeader ? header : <div className="w-100 mb-3" />}
+            {finalWithContainer ? (
+                <div className="container-sm py-4">
+                    <div className="row justify-content-center">
+                        <div className="col-12 col-md-8 col-lg-7">{element}</div>
+                    </div>
+                </div>
+            ) : (
+                element
+            )}
         </FormProvider>
     );
 };

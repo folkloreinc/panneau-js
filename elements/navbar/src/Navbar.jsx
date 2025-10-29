@@ -15,6 +15,7 @@ const propTypes = {
     compact: PropTypes.bool,
     noWrap: PropTypes.bool,
     withoutCollapse: PropTypes.bool,
+    vertical: PropTypes.bool,
     children: PropTypes.node,
     className: PropTypes.string,
     collapseClassName: PropTypes.string,
@@ -31,6 +32,7 @@ const defaultProps = {
     compact: false,
     noWrap: false,
     withoutCollapse: false,
+    vertical: false,
     children: null,
     className: null,
     collapseClassName: null,
@@ -47,6 +49,7 @@ const Navbar = ({
     compact,
     noWrap,
     withoutCollapse,
+    vertical,
     children,
     className,
     collapseClassName,
@@ -70,6 +73,7 @@ const Navbar = ({
                     'py-2': compact,
                     'px-2': compact,
                     'flex-nowrap': noWrap,
+                    'flex-column align-items-stretch': vertical,
                     [className]: className !== null,
                 },
             ])}
@@ -133,6 +137,10 @@ const Navbar = ({
                         'collapse',
                         {
                             show: menuVisible,
+                            'd-flex': !menuVisible && vertical,
+                            'flex-column': !menuVisible && vertical,
+                            'align-items-stretch': !menuVisible && vertical,
+                            'ps-2': !menuVisible && vertical,
                             [collapseClassName]: collapseClassName !== null,
                         },
                     ])}

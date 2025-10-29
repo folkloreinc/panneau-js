@@ -33,6 +33,12 @@ export default {
         },
     },
 
+    forms: {
+        default: {
+            component: 'two-pane',
+        },
+    },
+
     fields: [
         {
             name: 'test-select-x',

@@ -3,7 +3,7 @@ import { getCSRFHeaders } from '@folklore/fetch';
 import React from 'react';
 
 import panneauDefinition from '../../../../.storybook/data/panneau-definition';
-import { PAGES_NAMESPACE } from '../../../core/src/contexts';
+import { PAGES_NAMESPACE, PREVIEWS_NAMESPACE } from '../../../core/src/contexts';
 import PanneauContainer from '../components/Container';
 
 export default {
@@ -83,6 +83,8 @@ export const DarkMode = () => (
     />
 );
 
+const CustomPreviewPage = () => <div className="text-primary bg-info">PAGE PREVIEW</div>;
+
 export const BlueModeWithComps = () => (
     <PanneauContainer
         definition={{ ...panneauDefinition, theme: { colorScheme: 'blue' } }}
@@ -94,6 +96,9 @@ export const BlueModeWithComps = () => (
                 EventCreate: CustomEventPage,
                 EventEdit: CustomEventPage,
                 EventDelete: CustomEventPage,
+            },
+            [PREVIEWS_NAMESPACE]: {
+                pages: CustomPreviewPage,
             },
         }}
         memoryRouter

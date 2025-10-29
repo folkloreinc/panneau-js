@@ -22,17 +22,43 @@ const defaultProps = {
 };
 
 const MainLayout = ({ fullscreen, loading, children }) => {
-    const { theme = null, background = null, text = null } = usePanneauColorScheme();
+    const {
+        theme = null,
+        sidebarPosition = null,
+        background = null,
+        text = null,
+    } = usePanneauColorScheme();
+
+    const vertical = sidebarPosition === 'left' || sidebarPosition === 'right';
 
     return (
         <div
-            className={classNames([styles.container, 'd-flex', 'flex-column', 'min-vh-100'])}
+            className={classNames([
+                styles.container,
+                'd-flex',
+                'min-vh-100',
+                { 'flex-column': !vertical },
+            ])}
             data-bs-theme={theme !== null ? theme : null}
         >
             <MainNavbar
-                className={classNames(['border-bottom', 'sticky-top', 'px-3'])}
+                className={classNames([
+                    {
+                        'border-bottom': !vertical,
+                        'sticky-top': !vertical,
+                        'px-3': !vertical,
+                        'pe-3': vertical && sidebarPosition === 'left',
+                        'ps-3': vertical && sidebarPosition === 'right',
+                        'me-2': vertical && sidebarPosition === 'left',
+                        'ms-2': vertical && sidebarPosition === 'right',
+                        [styles.navbar]: true,
+                        [styles[sidebarPosition]]: sidebarPosition !== null,
+                        [styles.verticalNav]: vertical,
+                    },
+                ])}
                 theme={theme}
                 loading={loading}
+                vertical={vertical}
             />
             <div
                 className={classNames([

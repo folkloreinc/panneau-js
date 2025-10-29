@@ -211,3 +211,9 @@ export const media = PropTypes.shape({
     thumbnail_url: PropTypes.string,
 });
 export const medias = PropTypes.arrayOf(media);
+
+export const preview = PropTypes.shape({
+    id: PropTypes.string,
+});
+
+export const previews = PropTypes.arrayOf(preview);
