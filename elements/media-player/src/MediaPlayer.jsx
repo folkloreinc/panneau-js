@@ -6,7 +6,7 @@ import React, { useRef } from 'react';
 import Audio from './Audio';
 import Video from './Video';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     value: PropTypes.oneOfType([

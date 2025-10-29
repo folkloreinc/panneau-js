@@ -5,7 +5,7 @@ import React from 'react';
 
 import Link from '@panneau/element-link';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),

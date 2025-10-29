@@ -6,7 +6,7 @@ import React, { useCallback } from 'react';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import ToggleField from '@panneau/field-toggle';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     name: PropTypes.string,

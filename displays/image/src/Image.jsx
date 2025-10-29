@@ -5,7 +5,7 @@ import isString from 'lodash-es/isString';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),

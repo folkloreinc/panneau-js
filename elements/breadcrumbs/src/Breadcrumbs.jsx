@@ -8,7 +8,7 @@ import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import Link from '@panneau/element-link';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     items: PanneauPropTypes.breadcrumbs,

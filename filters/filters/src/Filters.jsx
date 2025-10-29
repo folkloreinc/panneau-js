@@ -13,7 +13,7 @@ import FormGroup from '@panneau/element-form-group';
 import Icon from '@panneau/element-icon';
 import Navbar from '@panneau/element-navbar';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     filters: PanneauPropTypes.filters,

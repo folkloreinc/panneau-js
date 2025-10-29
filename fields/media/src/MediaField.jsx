@@ -13,7 +13,7 @@ import Label from '@panneau/element-label';
 import { MediaCards } from '@panneau/element-media-card';
 import ModalPicker from '@panneau/modal-medias-picker';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     resource: PropTypes.string,

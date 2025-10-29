@@ -1,11 +1,10 @@
-import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
 
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 // import { isMessage } from '@panneau/core/utils';
-
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     title: PropTypes.string,

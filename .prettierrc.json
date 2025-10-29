@@ -10,7 +10,8 @@
         "^@panneau/(.*)$",
         "^[./](.*)?/(utils|hooks|lib)",
         "^[./].*(?<!(\\.[a-z]+))$",
-        "\\.scss$",
+
+        "\\.css$",
         "\\.[a-z]+$"
     ],
     "importOrderSeparation": true,

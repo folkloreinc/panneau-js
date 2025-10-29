@@ -6,7 +6,7 @@ import React, { useCallback, useState } from 'react';
 import ImageDisplay from '@panneau/display-image';
 import MediaPlayer from '@panneau/element-media-player';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     value: PropTypes.shape({

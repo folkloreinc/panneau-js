@@ -3,8 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import styles from './styles.module.scss';
-
+import styles from './styles.module.css';
 import 'bootstrap-icons/font/bootstrap-icons.min.css';
 
 const propTypes = {

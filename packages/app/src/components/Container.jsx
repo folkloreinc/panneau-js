@@ -11,7 +11,6 @@ import {
     ComponentsProvider,
     ModalProvider,
     PanneauProvider,
-    PreviewsProvider,
     RoutesProvider,
 } from '@panneau/core/contexts';
 import { ApiProvider, QueryProvider } from '@panneau/data';
@@ -26,7 +25,7 @@ import { UppyProvider } from '@panneau/uppy';
 
 import Routes from './Routes';
 
-import '../styles/styles.scss';
+import '../styles/styles.css';
 
 const pathToRegexpParser = createPathToRegexpParser();
 

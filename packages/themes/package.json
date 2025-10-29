@@ -51,7 +51,9 @@
         "./scss/styles.scss": "./scss/styles.scss",
         "./scss/vendor": "./scss/vendor.scss",
         "./scss/vendor.scss": "./scss/vendor.scss",
+        "./assets/css/styles": "./assets/css/styles.css",
         "./assets/css/styles.css": "./assets/css/styles.css",
+        "./assets/css/vendor": "./assets/css/vendor.css",
         "./assets/css/vendor.css": "./assets/css/vendor.css"
     },
     "files": [

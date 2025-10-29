@@ -6,7 +6,7 @@ import React, { useMemo } from 'react';
 
 import MediaCard from './MediaCard';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     value: PropTypes.oneOfType([

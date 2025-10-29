@@ -19,8 +19,7 @@ import ModalResourceItems from '@panneau/modal-resource-items';
 // import UploadModal from '@panneau/modal-upload';
 import { useUppy } from '@panneau/uppy';
 
-import styles from './styles.module.scss';
-
+import styles from './styles.module.css';
 import '@uppy/core/dist/style.css';
 import '@uppy/dashboard/dist/style.css';
 import '@uppy/drag-drop/dist/style.css';

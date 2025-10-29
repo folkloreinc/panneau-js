@@ -6,7 +6,7 @@ import React, { useMemo } from 'react';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getSelectOptions } from '@panneau/core/utils';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     name: PropTypes.string,

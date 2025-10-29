@@ -1,4 +1,3 @@
-// stylelint-disable selector-pseudo-class-no-unknown
 /* stylelint-disable */
 
 .container {
@@ -16,12 +15,12 @@
 }
 
 :global(.react-datepicker__triangle) {
-    //
+    /* */
 }
 
 :global(.react-datepicker__navigation-icon) {
     &::before {
-        //
+       /* */
     }
 }
 

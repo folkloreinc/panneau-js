@@ -5,7 +5,7 @@ import React, { useRef } from 'react';
 
 import useVideo from './hooks/useVideo';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     autoPlay: PropTypes.bool,

@@ -7,7 +7,7 @@ import { v1 as uuid } from 'uuid';
 
 import InputGroup from '@panneau/field-input-group';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     feedback: PropTypes.oneOf(['valid', 'invalid', 'loading']),

@@ -8,7 +8,7 @@ import { Link } from 'wouter';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Icon from '@panneau/element-icon';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     type: PropTypes.string,

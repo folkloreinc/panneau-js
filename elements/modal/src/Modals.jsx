@@ -7,7 +7,7 @@ import React, { useEffect, useRef } from 'react';
 import { useModal } from '@panneau/core/contexts';
 import { KEYCODES, useKeyboardKeys } from '@panneau/core/hooks';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     theme: PropTypes.string,

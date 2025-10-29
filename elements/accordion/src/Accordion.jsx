@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 // import Label from '@panneau/element-label';
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     items: PropTypes.arrayOf(

@@ -6,7 +6,7 @@ import { usePanneauColorScheme } from '@panneau/core/contexts';
 
 import MainNavbar from '../menus/MainNavbar';
 
-import styles from '../../styles/layouts/guest.module.scss';
+import styles from '../../styles/layouts/guest.module.css';
 
 const propTypes = {
     children: PropTypes.node.isRequired,

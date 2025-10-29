@@ -7,7 +7,7 @@ import { getDisplayName } from '@panneau/core/utils';
 
 import ModalPortal from './ModalPortal';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     id: PropTypes.string,

@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import Switch from 'rc-switch';
 import React, { useCallback } from 'react';
 
-import styles from './styles.module.scss';
-
+import styles from './styles.module.css';
 import 'rc-switch/assets/index.css';
 
 const propTypes = {

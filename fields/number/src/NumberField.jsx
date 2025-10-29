@@ -8,7 +8,7 @@ import React, { useCallback, useState } from 'react';
 import Icon from '@panneau/element-icon';
 import TextField from '@panneau/field-text';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

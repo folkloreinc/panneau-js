@@ -9,7 +9,7 @@ import tinycolor from 'tinycolor2';
 
 import { useDocumentEvent } from '@panneau/core/hooks';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     value: PropTypes.oneOfType([

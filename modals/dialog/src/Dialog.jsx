@@ -10,7 +10,7 @@ import Buttons from '@panneau/element-buttons';
 import Label from '@panneau/element-label';
 import Modal from '@panneau/element-modal';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,

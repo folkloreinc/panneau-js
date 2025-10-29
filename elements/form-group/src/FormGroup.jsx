@@ -8,7 +8,7 @@ import React, { useCallback, useState } from 'react';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Button from '@panneau/element-button';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     name: PropTypes.string,

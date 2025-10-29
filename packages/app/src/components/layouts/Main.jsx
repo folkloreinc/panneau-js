@@ -7,7 +7,7 @@ import { Modals } from '@panneau/element-modal';
 
 import MainNavbar from '../menus/MainNavbar';
 
-import styles from '../../styles/layouts/main.module.scss';
+import styles from '../../styles/layouts/main.module.css';
 
 const propTypes = {
     children: PropTypes.node,
@@ -28,7 +28,6 @@ const MainLayout = ({ fullscreen, loading, children }) => {
         background = null,
         text = null,
     } = usePanneauColorScheme();
-
     const vertical = sidebarPosition === 'left' || sidebarPosition === 'right';
 
     return (
@@ -44,6 +43,7 @@ const MainLayout = ({ fullscreen, loading, children }) => {
             <MainNavbar
                 className={classNames([
                     {
+                        'shadow-sm': !vertical,
                         'border-bottom': !vertical,
                         'sticky-top': !vertical,
                         'px-3': !vertical,

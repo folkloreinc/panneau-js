@@ -7,7 +7,7 @@ import React, { useMemo } from 'react';
 
 import AvatarElement from '@panneau/element-avatar';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),

@@ -37,7 +37,7 @@ module.exports = {
                 },
             },
         },
-        '@storybook/addon-viewport/register',
+        // '@storybook/addon-viewport/register',
         // '@storybook/addon-docs',
         '@storybook/addon-actions',
         // {

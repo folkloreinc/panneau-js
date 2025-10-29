@@ -20,7 +20,7 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Icon from '@panneau/element-icon';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     mode: PropTypes.string,

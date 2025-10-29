@@ -16,7 +16,7 @@ import { useMediaDelete, useMediaReplace, useMediaTrash, useMediaUpdate } from '
 import MediaFrame from './MediaFrame';
 import defaultFields from './defaults/fields';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     value: PropTypes.shape({
@@ -126,10 +126,13 @@ function MediaForm({
         }
     }, [initialValue, mediaDelete, mediaTrash, deletedAt, setChanged, onDelete, withTrash]);
 
-    const onUploadComplete = useCallback((data) => {
-        const { id = null } = initialValue || {};
-        mediaReplace(id, data).then(onReplace);
-    }, [initialValue, onReplace]);
+    const onUploadComplete = useCallback(
+        (data) => {
+            const { id = null } = initialValue || {};
+            mediaReplace(id, data).then(onReplace);
+        },
+        [initialValue, onReplace],
+    );
 
     const postForm = useCallback(
         (action, data) => (initialValue !== null ? update(initialValue.id, data) : new Promise()),
@@ -160,7 +163,14 @@ function MediaForm({
                     <h4 className="d-inline text-truncate mb-0">{name}</h4>
                     <span className="mx-2">{type}</span>
                 </div>
-                <div className={classNames('d-flex', 'justify-content-between', 'align-items-center', 'gap-1')}>
+                <div
+                    className={classNames(
+                        'd-flex',
+                        'justify-content-between',
+                        'align-items-center',
+                        'gap-1',
+                    )}
+                >
                     {withReplace ? (
                         <UploadField
                             className="w-auto text-nowrap"
@@ -171,7 +181,10 @@ function MediaForm({
                             closeAfterFinish
                             disabled={deleting || trashing || updating || replacing}
                             addButtonLabel={
-                                <FormattedMessage defaultMessage="Replace" description="Media form action" />
+                                <FormattedMessage
+                                    defaultMessage="Replace"
+                                    description="Media form action"
+                                />
                             }
                             onChange={onUploadComplete}
                         />

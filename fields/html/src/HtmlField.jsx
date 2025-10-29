@@ -8,7 +8,7 @@ import InputGroup from '@panneau/field-input-group';
 
 import useCKEditorBuild from './hooks/useCKEditorBuild';
 
-import styles from './styles.module.scss';
+import styles from './styles.module.css';
 
 const propTypes = {
     feedback: PropTypes.oneOf(['valid', 'invalid', 'loading']),
