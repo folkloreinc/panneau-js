@@ -5,8 +5,6 @@ import React from 'react';
 
 import Dialog from '@panneau/modal-dialog';
 
-import styles from './styles.module.scss';
-
 import '@uppy/core/dist/style.min.css';
 import '@uppy/dashboard/dist/style.min.css';
 import '@uppy/drag-drop/dist/style.min.css';
@@ -39,7 +37,6 @@ const UploadModal = ({ id, title, uppy, plugins, onClose, ...props }) => (
                 showAddFilesPanel
                 proudlyDisplayPoweredByUppy={false}
                 {...props}
-                className={styles.container}
                 uppy={uppy}
                 onRequestClose={onClose}
                 plugins={plugins}

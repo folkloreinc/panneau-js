@@ -36,7 +36,7 @@ const defaultProps = {
     className: null,
 };
 
-const ImportAction = ({
+const UploadAction = ({
     endpoint,
     action,
     label,
@@ -78,7 +78,7 @@ const ImportAction = ({
     );
 };
 
-ImportAction.propTypes = propTypes;
-ImportAction.defaultProps = defaultProps;
+UploadAction.propTypes = propTypes;
+UploadAction.defaultProps = defaultProps;
 
-export default ImportAction;
+export default UploadAction;

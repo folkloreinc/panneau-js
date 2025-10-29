@@ -7,8 +7,6 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useFieldComponent, usePreviewComponent } from '@panneau/core/contexts';
 import Form from '@panneau/element-form';
 
-import styles from './styles.module.scss';
-
 const propTypes = {
     fields: PropTypes.objectOf(PropTypes.shape({})).isRequired,
     resource: PropTypes.shape({
@@ -67,7 +65,6 @@ const TwoPaneForm = ({
         <div className="container-fluid row gx-4">
             <Form
                 className={classNames([
-                    styles.container,
                     'form',
                     'col-12',
                     'col-lg-6',

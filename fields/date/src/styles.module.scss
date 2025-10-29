@@ -1,5 +1,4 @@
 // stylelint-disable selector-pseudo-class-no-unknown
-
 /* stylelint-disable */
 
 .container {
@@ -17,13 +16,13 @@
 }
 
 :global(.react-datepicker__triangle) {
-    // position: absolute !important;
-    // transform: translate(50px, 0) !important;
+    //
 }
 
 :global(.react-datepicker__navigation-icon) {
     &::before {
-        // top: 12px !important;
+        //
     }
 }
+
 /* stylelint-enable */

@@ -5,8 +5,6 @@ import React, { useCallback, useMemo } from 'react';
 
 import Button from '@panneau/element-button';
 
-import styles from './styles.module.scss';
-
 const propTypes = {
     label: PropTypes.string,
     name: PropTypes.string,
@@ -61,7 +59,6 @@ const ButtonFilter = ({
     return (
         <div
             className={classNames([
-                styles.container,
                 {
                     [className]: className !== null,
                 },

@@ -5,8 +5,6 @@ import React from 'react';
 
 import { useDisplaysComponentsManager } from '@panneau/core/contexts';
 
-import styles from './styles.module.scss';
-
 const propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     value: PropTypes.any,
@@ -27,7 +25,6 @@ const DisplayField = ({ value = null, display = null, className, ...props }) => 
     return value !== null && Component !== null ? (
         <Component
             className={classNames([
-                styles.container,
                 {
                     [className]: className !== null,
                 },

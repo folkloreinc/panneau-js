@@ -8,8 +8,6 @@ import { useModalsComponentsManager } from '@panneau/core/contexts';
 import { useActionProps } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 
-import styles from './styles.module.scss';
-
 const propTypes = {
     id: PropTypes.string.isRequired,
     title: PropTypes.node,
@@ -84,7 +82,6 @@ const ShowAction = ({
         <>
             <Button
                 className={classNames([
-                    styles.container,
                     {
                         [className]: className !== null,
                     },

@@ -6,7 +6,7 @@
         &::-webkit-inner-spin-button {
             appearance: none;
         }
-        -moz-appearance: textfield; // stylelint-disable-line
+        appearance: textfield;
         padding-right: 20px;
     }
 
@@ -15,17 +15,13 @@
         position: absolute;
         top: 0;
         right: 0;
+        align-items: center;
+        justify-content: center;
         width: 30px;
         height: 100%;
         pointer-events: none;
-        align-items: center;
-        justify-content: center;
     }
 
-    // .arrowIcon {
-    //     margin: auto;
-    //     font-size: 10px;
-    // }
 
     .dataListItems {
         position: absolute;

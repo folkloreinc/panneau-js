@@ -8,8 +8,6 @@ import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useButtonsComponents } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 
-import styles from './styles.module.scss';
-
 const propTypes = {
     items: PanneauPropTypes.buttons,
     size: PanneauPropTypes.buttonSize,
@@ -51,7 +49,6 @@ function Buttons({
                 {
                     [`btn-group-${size}`]: size !== null,
                 },
-                styles.container,
                 {
                     [className]: className !== null,
                 },
@@ -72,7 +69,6 @@ function Buttons({
                       const fixedProps = {
                           key: `button-${index}`,
                           className: classNames([
-                              styles.button,
                               {
                                   [buttonClassName]: buttonClassName !== null,
                                   [customClassName]: customClassName !== null,

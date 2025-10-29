@@ -7,8 +7,6 @@ import Actions from '@panneau/action-actions';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useActions } from '@panneau/core/hooks';
 
-import styles from './styles.module.scss';
-
 const propTypes = {
     item: PropTypes.oneOfType([
         PropTypes.string,
@@ -60,7 +58,6 @@ const ActionsDisplay = ({
     return (
         <div
             className={classNames([
-                styles.container,
                 {
                     [className]: className !== null,
                 },
