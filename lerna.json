@@ -1,5 +1,5 @@
 {
-    "version": "3.0.301",
+    "version": "3.0.302",
     "packages": [
         "actions/*",
         "displays/*",
