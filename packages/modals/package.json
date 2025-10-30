@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modals",
-    "version": "3.0.301",
+    "version": "3.0.303",
     "description": "",
     "keywords": [
         "javascript"
@@ -71,7 +71,7 @@
         "@panneau/modal-confirm": "^3.0.300",
         "@panneau/modal-dialog": "^3.0.300",
         "@panneau/modal-form": "^3.0.300",
-        "@panneau/modal-resource-form": "^3.0.300",
+        "@panneau/modal-resource-form": "^3.0.303",
         "@panneau/modal-resource-items": "^3.0.300",
         "@panneau/modal-upload": "^3.0.300",
         "@panneau/themes": "^3.0.300",
