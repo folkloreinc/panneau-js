@@ -11,16 +11,17 @@ import { useResourceValues } from '@panneau/intl';
 
 const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
+    size: PropTypes.oneOf(['sm', 'md', 'lg']),
     className: PropTypes.string,
 };
 
 const defaultProps = {
+    size: 'lg',
     className: null,
 };
 
-const ResourceCreateButtom = ({ resource, className }) => {
+const ResourceCreateButton = ({ resource, size, className }) => {
     const { types = null } = resource;
-    // const intl = useIntl();
     const resourceRoute = useResourceUrlGenerator(resource);
     const resourceValues = useResourceValues(resource);
 
@@ -57,7 +58,7 @@ const ResourceCreateButtom = ({ resource, className }) => {
                       }`
                     : '#'
             }
-            size="lg"
+            size={size}
             theme="primary"
             className={classNames([
                 {
@@ -100,7 +101,7 @@ const ResourceCreateButtom = ({ resource, className }) => {
         button
     );
 };
-ResourceCreateButtom.propTypes = propTypes;
-ResourceCreateButtom.defaultProps = defaultProps;
+ResourceCreateButton.propTypes = propTypes;
+ResourceCreateButton.defaultProps = defaultProps;
 
-export default ResourceCreateButtom;
+export default ResourceCreateButton;

@@ -49,7 +49,7 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
                         ? {
                               id: 'create',
                               component: ResourceCreateButton,
-                              size: 'lg',
+                              size: 'md',
                               theme: 'primary',
                           }
                         : it,

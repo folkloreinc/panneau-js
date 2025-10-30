@@ -31,7 +31,7 @@ const PageHeader = ({ title, actions, small, className, children }) => {
     const inner = (
         <div className="d-flex align-items-center flex-wrap">
             {title !== null ? (
-                <h1 className={classNames(['mb-0', { h2: small }])}>
+                <h1 className={classNames(['mb-0', 'h2'])}>
                     <Label>{title}</Label>
                 </h1>
             ) : null}

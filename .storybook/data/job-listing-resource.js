@@ -1,5 +1,6 @@
 export default {
     id: 'jobListings',
+
     name: 'Job listings',
 
     types: null,
@@ -91,7 +92,7 @@ export default {
             {
                 id: 'delete',
                 component: 'delete',
-                multiple: false,
+                multiple: true,
             },
         ],
         columns: [
