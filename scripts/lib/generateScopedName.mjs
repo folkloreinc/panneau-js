@@ -1,5 +1,5 @@
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 import slugify from 'slugify';
 
 const { name: packageName } = require(path.join(process.cwd(), 'package.json'));
@@ -8,7 +8,7 @@ const hasStylesPath = fs.existsSync(stylesPath);
 const namespace = slugify(packageName.replace(/[@/]/gi, ' '));
 
 const generateScopedName = (localName, filePath) => {
-    if (!filePath.match(/\.module\.scss$/)) {
+    if (!filePath.match(/\.module\.css$/)) {
         return localName;
     }
     const relativePath = hasStylesPath ? path.relative(stylesPath, filePath) : null;
