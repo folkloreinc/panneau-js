@@ -11,7 +11,7 @@
 
 :global {
     .ck{
-        .ck-powered-by-balloon {
+        .ck-powered-by-balloon, .ck-balloon-panel {
             display: none;
             visibility: hidden;
 

@@ -127,7 +127,13 @@ const HtmlField = ({
         onBlur,
     };
 
-    console.log('HtmlField render', CKEditorBuild);
+    const finalCkConfig = {
+        ...ckConfig,
+        licenseKey:
+            (ckConfig != null && typeof ckConfig.licenseKey !== 'undefined'
+                ? ckConfig.licenseKey
+                : null) || 'GPL',
+    };
 
     const ckElement =
         CKEditorBuild !== null ? (
@@ -135,7 +141,7 @@ const HtmlField = ({
                 <CKEditor
                     editor={CKEditorBuild}
                     data={CKValue}
-                    config={ckConfig}
+                    config={finalCkConfig}
                     onChange={onCkEditorChange}
                     {...commonProps}
                     {...ckOptions}
