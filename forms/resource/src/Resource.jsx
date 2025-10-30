@@ -25,6 +25,7 @@ const propTypes = {
     onSuccess: PropTypes.func,
     isDelete: PropTypes.bool,
     isDuplicate: PropTypes.bool,
+    isModal: PropTypes.bool,
     withContainer: PropTypes.bool,
 };
 
@@ -36,6 +37,7 @@ const defaultProps = {
     onSuccess: null,
     isDelete: false,
     isDuplicate: false,
+    isModal: false,
     withContainer: false,
 };
 
@@ -48,6 +50,7 @@ const ResourceForm = ({
     type,
     isDelete,
     isDuplicate,
+    isModal,
     withContainer,
     ...props
 }) => {
@@ -66,6 +69,7 @@ const ResourceForm = ({
         create: createForm = null,
         edit: editForm = null,
         delete: deleteForm = null,
+        modal: modalForm = null,
     } = forms || {};
 
     const {
@@ -75,14 +79,23 @@ const ResourceForm = ({
         withoutContainer: defaultFormWithoutContainer = false,
     } = defaultForm || {};
 
-    const createOrEditSource = isCreate ? createForm || {} : editForm || {};
+    let currentForm = editForm || null;
+    if (isModal) {
+        currentForm = modalForm || null;
+    } else if (isDelete) {
+        currentForm = deleteForm || null;
+    } else if (isCreate) {
+        currentForm = createForm || null;
+    }
 
     const {
         fields: formFields = null,
         component: formComponent = null,
         withoutHeader: formWithoutHeader = false,
         withoutContainer: formWithoutContainer = false,
-    } = isDelete ? deleteForm || {} : createOrEditSource || {};
+    } = currentForm || {};
+
+    console.log('formComponent', formComponent, isModal, currentForm);
 
     const finalFields = useMemo(
         () =>

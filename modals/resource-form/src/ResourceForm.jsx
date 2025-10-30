@@ -61,7 +61,13 @@ const ModalResourceForm = ({
             onClose={onClose}
             className={className}
         >
-            <ResourceForm resource={resource} type={type} item={item} onSuccess={onSuccess} />
+            <ResourceForm
+                resource={resource}
+                type={type}
+                item={item}
+                onSuccess={onSuccess}
+                isModal
+            />
         </Dialog>
     );
 };

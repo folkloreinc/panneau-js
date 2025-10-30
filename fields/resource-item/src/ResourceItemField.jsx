@@ -336,6 +336,7 @@ const ResourceItemField = ({
             type={finalType}
             item={!multiple ? value : null}
             onSuccess={onFormSuccess}
+            isModal
         />
     ) : null;
 

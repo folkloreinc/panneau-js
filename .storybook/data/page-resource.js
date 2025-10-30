@@ -37,6 +37,9 @@ export default {
         default: {
             component: 'two-pane',
         },
+        modal: {
+            component: 'normal',
+        },
     },
 
     fields: [
