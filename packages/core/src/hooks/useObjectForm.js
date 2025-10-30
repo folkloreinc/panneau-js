@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import useBaseForm from './useForm';
 
 const useObjectForm = ({ fields: providedFields = [], injectInFields = false, ...opts } = {}) => {

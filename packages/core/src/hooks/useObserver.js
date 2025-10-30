@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const buildThresholdArray = () => [0, 1.0];
 
@@ -182,4 +182,8 @@ const resizeObserverInitialEntry = {
     borderBoxSize: null,
 };
 export const useResizeObserver = ({ disabled = false } = {}) =>
-    useObserver(typeof window !== 'undefined' ? ResizeObserver : null, { disabled }, resizeObserverInitialEntry);
+    useObserver(
+        typeof window !== 'undefined' ? ResizeObserver : null,
+        { disabled },
+        resizeObserverInitialEntry,
+    );

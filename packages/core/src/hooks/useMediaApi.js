@@ -24,11 +24,9 @@ const useMediaApi = ({
     const [ready, setReady] = useState(false);
     const [initialPlay, setInitialPlay] = useState(true);
     const progressStepsReached = useRef({});
-
     const paused = !playing;
 
     // Exposed methods
-
     const play = useCallback(() => {
         const { current: media } = ref;
         if (media !== null) {
@@ -91,7 +89,6 @@ const useMediaApi = ({
     }, [muted]);
 
     // Media events callbacks
-
     const onCustomPlay = useCallback(() => {
         if (onPlay !== null) {
             onPlay({ initial: initialPlay });
@@ -104,7 +101,7 @@ const useMediaApi = ({
     }, [initialPlay, setPlaying, onPlay]);
 
     const onCustomPause = useCallback(() => {
-        const { current: media } = ref; 
+        const { current: media } = ref;
         setPlaying(false);
 
         if (onPause !== null) {
@@ -113,7 +110,7 @@ const useMediaApi = ({
     }, [setPlaying, onPause]);
 
     const onCustomEnded = useCallback(() => {
-        const { current: media } = ref; 
+        const { current: media } = ref;
         media.currentTime = 0;
         if (onEnded !== null) {
             onEnded();
@@ -202,7 +199,7 @@ const useMediaApi = ({
             media.addEventListener('canplaythrough', onCustomCanPlayThrough);
         }
 
-        return () => {            
+        return () => {
             if (media !== null) {
                 media.removeEventListener('timeupdate', onCustomTimeUpdate);
                 media.removeEventListener('durationchange', onCustomDurationChange);

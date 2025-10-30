@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from 'react';
 
-import { useFieldsManager } from '../contexts';
 import { MediasParser } from '../lib';
+
+import { useFieldsManager } from '../contexts';
 
 const useMediasParser = () => {
     // const screensManager = useScreensManager();

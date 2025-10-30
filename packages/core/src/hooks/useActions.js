@@ -65,30 +65,6 @@ const useActions = (
                             onClick: onClickEdit,
                             ...(getEditPropsFromItem !== null ? getEditPropsFromItem(item) : null),
                         };
-                    // case 'duplicate':
-                    //     return {
-                    //         id: 'duplicate',
-                    //         component: 'duplicate',
-                    //         label: iconsOnly ? null : duplicateLabel,
-                    //         icon: iconsOnly ? 'copy' : null,
-                    //         href:
-                    //             urlGenerator !== null && !preferDuplicateModal
-                    //                 ? urlGenerator('duplicate', {
-                    //                       id,
-                    //                   }) || null
-                    //                 : null,
-                    //         theme: 'warning',
-                    //         onClick: onClickDuplicate,
-                    //         endpoint:
-                    //             urlGenerator !== null && preferDuplicateModal
-                    //                 ? urlGenerator('duplicate', {
-                    //                       id,
-                    //                   }) || null
-                    //                 : null,
-                    //         ...(getDuplicatePropsFromItem !== null
-                    //             ? getDuplicatePropsFromItem(item)
-                    //             : null),
-                    //     };
                     case 'duplicate':
                         return {
                             id: 'duplicate',

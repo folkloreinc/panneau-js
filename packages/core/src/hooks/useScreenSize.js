@@ -1,5 +1,5 @@
-import { useMemo, useState, useEffect } from 'react';
 import { match as matchMediaQuery } from 'css-mediaquery';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useResizeObserver } from './useObserver';
 
@@ -72,7 +72,7 @@ export const useScreenSizeFromElement = ({ width = null, height = null, ...opts 
     if (finalHeight % 2 === 1) {
         finalHeight -= 1;
     }
-            
+
     const screenSize = useScreenSize({
         width: finalWidth,
         height: finalHeight,
