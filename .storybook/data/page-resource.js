@@ -201,6 +201,7 @@ export default {
     },
 
     index: {
+        striped: true,
         actionsProps: {
             hasDuplicateRoute: true,
         },

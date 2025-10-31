@@ -34,6 +34,8 @@ const propTypes = {
         PropTypes.node,
         PropTypes.shape({ defaultMessage: PropTypes.string }),
     ]),
+    striped: PropTypes.bool,
+    stripedColumns: PropTypes.bool,
     withoutId: PropTypes.bool,
     withFadedId: PropTypes.bool,
     displayPlaceholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
@@ -63,6 +65,8 @@ const defaultProps = {
     sortDirectionParameter: 'order_direction',
     onQueryChange: null,
     emptyLabel: null,
+    striped: false,
+    stripedColumns: false,
     withoutId: false,
     withFadedId: true,
     displayPlaceholder: null,
@@ -92,6 +96,8 @@ function Table({
     sortDirectionParameter,
     onQueryChange,
     emptyLabel,
+    striped,
+    stripedColumns,
     withoutId,
     withFadedId,
     displayPlaceholder,
@@ -167,7 +173,12 @@ function Table({
                         'table-hover',
                         'align-middle',
                         'mb-0',
-                        { [`table-${theme}`]: theme !== null, [className]: className !== null },
+                        {
+                            [`table-${theme}`]: theme !== null,
+                            'table-striped': striped,
+                            'table-striped-columns': stripedColumns,
+                            [className]: className !== null,
+                        },
                     ])}
                 >
                     <thead>

@@ -13,7 +13,6 @@ const propTypes = {
         id: PropTypes.string,
     }),
     value: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    setValue: PropTypes.func,
     onChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     status: PanneauPropTypes.formStatus,
@@ -36,7 +35,6 @@ const defaultProps = {
     resource: null,
     status: null,
     value: null,
-    setValue: null,
     generalError: null,
     errors: null,
     buttons: null,
@@ -49,7 +47,7 @@ const TwoPaneForm = ({
     fields,
     status,
     value,
-    setValue,
+    onChange,
     onSubmit,
     buttons,
     children,
@@ -59,8 +57,6 @@ const TwoPaneForm = ({
     const { id = null } = resource || {};
     const FieldsComponent = useFieldComponent('fields');
     const PreviewComponent = usePreviewComponent(id);
-    const onChange = setValue || null;
-
     return (
         <div className="container-fluid row gx-4">
             <Form

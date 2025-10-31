@@ -95,8 +95,6 @@ const ResourceForm = ({
         withoutContainer: formWithoutContainer = false,
     } = currentForm || {};
 
-    console.log('formComponent', formComponent, isModal, currentForm);
-
     const finalFields = useMemo(
         () =>
             (formFields || defaultFields || resourceTypeFields || resourceFields).filter(
