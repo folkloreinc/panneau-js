@@ -10,8 +10,8 @@
 }
 
 :global {
-    .ck{
-        .ck-powered-by-balloon, .ck-balloon-panel {
+    .ck {
+        .ck-powered-by-balloon {
             display: none;
             visibility: hidden;
 

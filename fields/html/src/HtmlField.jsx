@@ -6,7 +6,7 @@ import React, { useCallback } from 'react';
 
 import InputGroup from '@panneau/field-input-group';
 
-import useCKEditorBuild from './hooks/useCKEditorBuild';
+import useCKEditorBuilds from './hooks/useCKEditorBuilds';
 
 import styles from './styles.module.css';
 
@@ -92,8 +92,9 @@ const HtmlField = ({
     ckOptions,
     className,
 }) => {
-    const CKEditorBuild = useCKEditorBuild() || null;
+    const { Editor = null, InlineEditor = null } = useCKEditorBuilds() || {};
     const CKValue = value !== null ? value : '';
+    const EditorBuild = inline ? InlineEditor : Editor;
 
     const finalClassName = inline
         ? classNames([
@@ -136,10 +137,10 @@ const HtmlField = ({
     };
 
     const ckElement =
-        CKEditorBuild !== null ? (
+        EditorBuild !== null ? (
             <div className={finalClassName}>
                 <CKEditor
-                    editor={CKEditorBuild}
+                    editor={EditorBuild}
                     data={CKValue}
                     config={finalCkConfig}
                     onChange={onCkEditorChange}

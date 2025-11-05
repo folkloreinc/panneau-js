@@ -22,6 +22,8 @@ const Container = (props) => {
 
 export const Normal = () => <Container />;
 
+export const Inline = () => <Container inline />;
+
 export const Disabled = () => <Container disabled />;
 
 export const WithMediaEmbed = () => (
