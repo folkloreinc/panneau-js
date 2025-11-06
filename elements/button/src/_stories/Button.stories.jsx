@@ -10,6 +10,8 @@ export default {
     },
 };
 
+export const WithIcon = () => <ButtonElement label="Hello" theme="primary" outline />;
+
 export const Outline = () => <ButtonElement label="Hello" theme="primary" outline />;
 
 export const SmallDanger = () => <ButtonElement label="Hello" theme="danger" size="sm" />;

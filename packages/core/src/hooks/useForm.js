@@ -12,20 +12,34 @@ const getFieldsPropsFromFields = (fields, {
     (allFields, field) => {
         const {
             name = isString(field) ? field : null,
+            fields: fieldFields = null,
             component = null,
         } = isObject(field) ? field : {};
 
         const fieldErrors = errors !== null ? errors[name] || [] : [];
-        const localizedErrors = component === 'localized' ? (locales || []).reduce((previousErrors, locale) => {
+        const finalErrors = component === 'localized' ? (locales || []).reduce((previousErrors, locale) => {
             const items = errors !== null ? get(errors, `${name}.${locale}`, []) || [] : [];
             const finalItems = isArray(items) ? items : [items];
             const finalPrevious = isArray(previousErrors) ? previousErrors : [];
-
             return [
                 ...finalPrevious,
                 ...finalItems,
             ];
         }, fieldErrors) : fieldErrors;
+
+        let subfieldErrors = errors;
+        if (errors !== null && name !== null) {
+            subfieldErrors = Object.keys(errors).reduce((acc, key) => {
+                if (key === name) {
+                    acc[key] = errors[key];
+                }
+                if (key.startsWith(`${name}.`) || key.startsWith(`${name}[`)) {
+                    const finalKey = key.substring(name.length + 1);
+                    acc[finalKey] = errors[key];
+                }
+                return acc;
+            }, {});
+        }
 
         return [
             ...allFields,
@@ -34,8 +48,19 @@ const getFieldsPropsFromFields = (fields, {
                 name,
                 component,
                 value: value !== null ? value[name] || null : null,
-                errors: localizedErrors.length > 0 ? localizedErrors : null,
+                errors: finalErrors.length > 0 ? finalErrors : null,
                 onChange: fieldValue => onChange(name, fieldValue),
+                fields: fieldFields !== null ? getFieldsPropsFromFields(
+                    fieldFields,
+                    {
+                        value: value !== null && name !== null && isObject(value[name])
+                            ? value[name]
+                            : null,
+                        errors: subfieldErrors,
+                        onChange
+                    },
+                    locales,
+                ) : null,
                 ...props,
             },
         ];
@@ -119,6 +144,7 @@ const useForm = (opts = {}) => {
         () => getFieldsPropsFromFields(fields, { value, errors, onChange: onFieldChange }, locales),
         fieldsKey,
     );
+
     const csrfToken = useMemo(() => getCsrfToken(), []);
 
     const onSubmitError = (error) => {

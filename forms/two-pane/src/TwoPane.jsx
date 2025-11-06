@@ -49,6 +49,7 @@ const TwoPaneForm = ({
     value,
     onChange,
     onSubmit,
+    errors,
     buttons,
     children,
     className,
@@ -72,9 +73,15 @@ const TwoPaneForm = ({
                 status={status}
                 buttons={buttons}
                 onSubmit={onSubmit}
+                errors={errors}
                 {...props}
             >
-                <FieldsComponent fields={fields} value={value} onChange={onChange} />
+                <FieldsComponent
+                    fields={fields}
+                    value={value}
+                    onChange={onChange}
+                    errors={errors}
+                />
             </Form>
             <div className="col-12 col-lg-6">
                 {PreviewComponent !== null ? (

@@ -310,13 +310,29 @@ module.exports = () => {
             return;
         }
         const { _method, ...item } = req.body;
+
         // console.log('update item', item);
+
         const newItem = {
             ...currentItem,
             ...item,
             updated_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         };
-        // console.log('update', newItem);
+
+        // DECOMMENT TO Simulate validation error
+        // res.status(422).json({
+        //     message: 'Validation failed: fields are required.',
+        //     errors: {
+        //         title: ['Title is required.'],
+        //         'title.fr': ['Title.fr is required.'],
+        //         'title.en': ['Title.en is required.'],
+        //         description: ['Description is required.', 'Description should be a string.'],
+        //         'colors.test-select-color-number': ['Colors.test... is required'],
+        //         'colors.date': ['Colors.date is required'],
+        //     },
+        // });
+        // res.end();
+
         updateResourceItem(resource, newItem);
         res.json(newItem);
         res.end();
