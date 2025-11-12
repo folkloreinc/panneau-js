@@ -35,6 +35,7 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
+    "style": "./assets/css/styles.css",
     "exports": {
         ".": {
             "import": "./es/index.js"
