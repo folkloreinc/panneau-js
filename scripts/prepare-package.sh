@@ -55,15 +55,15 @@ copy_css() {
     rm -f lib/styles.css
 }
 
-# copy_scss() {
-#     echo "Copying scss..."
-#     mkdir -p ./scss/
-#     find ./src -type f -name "*.scss" ! -name "*.module.scss" ! -name "*.global.scss" -exec cp {} ./scss/ \;
-# }
+copy_scss() {
+    echo "Copying scss..."
+    mkdir -p ./scss/
+    find ./src -type f -name "*.scss" ! -name "*.module.scss" ! -name "*.global.scss" -exec cp {} ./scss/ \;
+}
 
 # Build
 export NODE_ENV=production
 clean
 build_rollup
 if [ -f ./es/styles.css ]; then copy_css; fi
-# if [ "$scss" = true ]; then copy_scss; fi
+if [ "$scss" = true ]; then copy_scss; fi

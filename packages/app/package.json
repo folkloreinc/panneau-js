@@ -39,10 +39,12 @@
         ".": {
             "import": "./es/index.js"
         },
-        "./scss/styles": "./scss/styles.scss",
-        "./scss/styles.scss": "./scss/styles.scss",
+        "./scss/packages": "./scss/packages.scss",
+        "./scss/packages.scss": "./scss/packages.scss",
         "./assets/css/styles": "./assets/css/styles.css",
-        "./assets/css/styles.css": "./assets/css/styles.css"
+        "./assets/css/styles.css": "./assets/css/styles.css",
+        "./assets/css/packages": "./assets/css/packages.css",
+        "./assets/css/packages.css": "./assets/css/packages.css"
     },
     "files": [
         "lib",
@@ -51,8 +53,9 @@
         "scss"
     ],
     "scripts": {
-        "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh --scss"
+        "prepublishOnly": "npm run build && npm run css:packages",
+        "build": "../../scripts/prepare-package.sh --scss",
+        "css:packages": "../../scripts/build-sass.js ./src/styles/packages.scss ./assets/css/packages.css"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",

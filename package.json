@@ -120,6 +120,7 @@
         "postcss-normalize": "^10.0.0",
         "postcss-preset-env": "^9.5.5",
         "postcss-scss": "^4.0.3",
+        "postcss-import": "16.1.1",
         "prettier": "^3.2.5",
         "prop-types": "^15.7.2",
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
