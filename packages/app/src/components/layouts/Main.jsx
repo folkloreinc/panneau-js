@@ -7,8 +7,6 @@ import { Modals } from '@panneau/element-modal';
 
 import MainNavbar from '../menus/MainNavbar';
 
-import styles from '../../styles/layouts/main.module.css';
-
 const propTypes = {
     children: PropTypes.node,
     loading: PropTypes.bool,
@@ -28,16 +26,12 @@ const MainLayout = ({ fullscreen, loading, children }) => {
         background = null,
         text = null,
     } = usePanneauColorScheme();
+
     const vertical = sidebarPosition === 'left' || sidebarPosition === 'right';
 
     return (
         <div
-            className={classNames([
-                styles.container,
-                'd-flex',
-                'min-vh-100',
-                { 'flex-column': !vertical },
-            ])}
+            className={classNames(['d-flex', 'min-vh-100', { 'flex-column': !vertical }])}
             data-bs-theme={theme !== null ? theme : null}
         >
             <MainNavbar
@@ -51,9 +45,9 @@ const MainLayout = ({ fullscreen, loading, children }) => {
                         'ps-3': vertical && sidebarPosition === 'right',
                         'me-2': vertical && sidebarPosition === 'left',
                         'ms-2': vertical && sidebarPosition === 'right',
-                        [styles.navbar]: true,
-                        [styles[sidebarPosition]]: sidebarPosition !== null,
-                        [styles.verticalNav]: vertical,
+                        // [styles.navbar]: true,
+                        // [styles[sidebarPosition]]: sidebarPosition !== null,
+                        // [styles.verticalNav]: vertical,
                     },
                 ])}
                 theme={theme}

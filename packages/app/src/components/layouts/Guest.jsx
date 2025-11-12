@@ -6,8 +6,6 @@ import { usePanneauColorScheme } from '@panneau/core/contexts';
 
 import MainNavbar from '../menus/MainNavbar';
 
-import styles from '../../styles/layouts/guest.module.css';
-
 const propTypes = {
     children: PropTypes.node.isRequired,
     fullscreen: PropTypes.bool,
@@ -22,7 +20,6 @@ const GuestLayout = ({ fullscreen, children }) => {
     return (
         <div
             className={classNames([
-                styles.container,
                 {
                     'd-flex flex-column min-vh-100': fullscreen,
                 },
