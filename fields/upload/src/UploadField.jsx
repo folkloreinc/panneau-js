@@ -1,6 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // import classNames from 'classnames';
-import { Dashboard, DashboardModal } from '@uppy/react';
+import { UppyContextProvider } from '@uppy/react';
+import Dashboard from '@uppy/react/dashboard';
+import DashboardModal from '@uppy/react/dashboard-modal';
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
@@ -20,10 +22,10 @@ import ModalResourceItems from '@panneau/modal-resource-items';
 import { useUppy } from '@panneau/uppy';
 
 import styles from './styles.module.css';
-import '@uppy/core/dist/style.css';
-import '@uppy/dashboard/dist/style.css';
-import '@uppy/drag-drop/dist/style.css';
-import '@uppy/status-bar/dist/style.css';
+import '@uppy/core/css/style.css';
+import '@uppy/dashboard/css/style.css';
+
+// import '@uppy/react/css/style.css';
 
 const propTypes = {
     resource: PropTypes.string,
@@ -332,7 +334,7 @@ const UploadField = ({
 
     const containerRef = useRef(null);
 
-    // Keep this stable, uppy doesnt like
+    // Keep this stable, uppy doesnt like changes
     const [finalUppy, setFinalUppy] = useState(null);
     useEffect(() => {
         if (uppy !== null && finalUppy === null) {
@@ -440,44 +442,48 @@ const UploadField = ({
                 </div>
             ) : null}
 
-            {!uploadDisabled && !hasMedia && !withButton && finalUppy !== null ? (
-                <div className={styles.dashboard}>
-                    <Dashboard
-                        uppy={finalUppy}
-                        // {...(containerWidth !== null && height !== null
-                        //     ? { width: containerWidth }
-                        // : null)}
-                        {...(width !== null ? { width } : null)}
-                        {...(height !== null ? { height } : null)}
-                        plugins={sources}
-                        inline
-                        showProgressDetails
-                        areInsidesReadyToBeVisible
-                        proudlyDisplayPoweredByUppy={false}
-                    />
-                </div>
-            ) : null}
+            {finalUppy !== null ? (
+                <UppyContextProvider uppy={finalUppy}>
+                    {!uploadDisabled && !hasMedia && !withButton && finalUppy !== null ? (
+                        <div className={styles.dashboard}>
+                            <Dashboard
+                                uppy={finalUppy}
+                                // {...(containerWidth !== null && height !== null
+                                //     ? { width: containerWidth }
+                                // : null)}
+                                {...(width !== null ? { width } : null)}
+                                {...(height !== null ? { height } : null)}
+                                plugins={sources}
+                                inline
+                                showProgressDetails
+                                areInsidesReadyToBeVisible
+                                proudlyDisplayPoweredByUppy={false}
+                            />
+                        </div>
+                    ) : null}
 
-            {!showResourceModal &&
-            !uploadDisabled &&
-            withButton &&
-            finalUppy !== null &&
-            modalOpened ? (
-                <DashboardModal
-                    uppy={finalUppy}
-                    className={styles.dashboardModal}
-                    plugins={sources}
-                    open
-                    onRequestClose={closeModal}
-                    proudlyDisplayPoweredByUppy={false}
-                    closeModalOnClickOutside
-                    areInsidesReadyToBeVisible
-                    isDashboardVisible
-                    showProgressDetails
-                    showAddFilesPanel
-                    doneButtonHandler={closeModal}
-                    closeAfterFinish={closeAfterFinish}
-                />
+                    {!showResourceModal &&
+                    !uploadDisabled &&
+                    withButton &&
+                    finalUppy !== null &&
+                    modalOpened ? (
+                        <DashboardModal
+                            uppy={finalUppy}
+                            className={styles.dashboardModal}
+                            plugins={sources}
+                            open
+                            onRequestClose={closeModal}
+                            proudlyDisplayPoweredByUppy={false}
+                            closeModalOnClickOutside
+                            areInsidesReadyToBeVisible
+                            isDashboardVisible
+                            showProgressDetails
+                            showAddFilesPanel
+                            doneButtonHandler={closeModal}
+                            closeAfterFinish={closeAfterFinish}
+                        />
+                    ) : null}
+                </UppyContextProvider>
             ) : null}
 
             {showResourceModal ? (

@@ -1,14 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Dashboard } from '@uppy/react';
+import Dashboard from '@uppy/react/dashboard';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import Dialog from '@panneau/modal-dialog';
 
-import '@uppy/core/dist/style.min.css';
-import '@uppy/dashboard/dist/style.min.css';
-import '@uppy/drag-drop/dist/style.min.css';
-import '@uppy/status-bar/dist/style.min.css';
+import '@uppy/core/css/style.css';
+import '@uppy/dashboard/css/style.css';
+
+// import '@uppy/react/css/style.css';
 
 const propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,

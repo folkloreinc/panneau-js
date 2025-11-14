@@ -6,6 +6,8 @@ import panneauDefinition from '../../../../.storybook/data/panneau-definition';
 import { PAGES_NAMESPACE, PREVIEWS_NAMESPACE } from '../../../core/src/contexts';
 import PanneauContainer from '../components/Container';
 
+import tenkDefinition from '../../../../.storybook/data/tenk-definition.json';
+
 export default {
     component: <p>YO</p>,
     title: 'App/Interface',
@@ -100,6 +102,18 @@ export const BlueModeWithComps = () => (
             [PREVIEWS_NAMESPACE]: {
                 pages: CustomPreviewPage,
             },
+        }}
+        memoryRouter
+        user={user}
+        {...props}
+    />
+);
+
+export const Tenk = () => (
+    <PanneauContainer
+        definition={{
+            ...tenkDefinition,
+            intl: englishIntl,
         }}
         memoryRouter
         user={user}

@@ -45,13 +45,14 @@ export const Normal = () => (
 // TODO: figure out how to mock this
 export const Fetching = () => (
     <FieldContainer
-        options={[
-            {
-                value: 'chose1',
-                label: 'Chose 1',
-            },
-        ]}
+        // options={[
+        //     {
+        //         value: 'chose1',
+        //         label: 'Chose 1',
+        //     },
+        // ]}
         requestUrl="/api/pages"
+        itemSearchParam="search"
         itemLabelPath="title.en"
         itemValuePath="id"
     />
@@ -59,8 +60,8 @@ export const Fetching = () => (
 
 export const WithParams = () => (
     <FieldContainer
-        requestUrl="/pages"
-        itemLabelPath="title.en"
+        requestUrl="/api/pages"
+        itemLabelPath="title.fr"
         itemValuePath="id"
         requestParams={['edition_id']}
     />

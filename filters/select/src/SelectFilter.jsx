@@ -23,10 +23,12 @@ const propTypes = {
     requestOptions: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     requestQuery: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     requestParams: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    itemSearchParam: PropTypes.string,
     itemValuePath: PropTypes.string,
     itemLabelPath: PropTypes.string,
     maxItemsCount: PropTypes.number,
     paginated: PropTypes.bool,
+    searchable: PropTypes.bool,
     clearValue: PropTypes.any, // eslint-disable-line react/forbid-prop-types
     autoSize: PropTypes.bool,
     className: PropTypes.string,
@@ -38,10 +40,12 @@ const defaultProps = {
     requestOptions: null,
     requestQuery: null,
     requestParams: null,
+    itemSearchParam: null,
     itemValuePath: null,
     itemLabelPath: null,
     maxItemsCount: null,
     paginated: false,
+    searchable: true,
     clearValue: null,
     autoSize: false,
     className: null,
@@ -54,10 +58,12 @@ const SelectFilter = ({
     requestOptions,
     requestQuery,
     requestParams,
+    itemSearchParam,
     itemValuePath,
     itemLabelPath,
     maxItemsCount,
     paginated,
+    searchable,
     clearValue,
     autoSize,
     className,
@@ -104,16 +110,17 @@ const SelectFilter = ({
     }, [query, requestParams]);
 
     const fetchOptions = useCallback(
-        (url) => {
+        (url, extraParams = null) => {
             if (!endReached && url !== null) {
                 setLoading(true);
                 const partialQuery = {
                     paginated,
                     ...requestQuery,
                     ...finalParams,
+                    ...extraParams,
                 };
                 const finalQuery = queryString.stringify(partialQuery, { arrayFormat: 'bracket' });
-                getJSON(
+                return getJSON(
                     `${url}${finalQuery !== null && finalQuery.length > 0 ? `?${finalQuery}` : ''}`,
                     {
                         credentials: 'include',
@@ -128,12 +135,12 @@ const SelectFilter = ({
                             typeof newItems.data !== 'undefined'
                                 ? newItems.data || []
                                 : newItems;
-
                         const finalItems =
                             maxItemsCount !== null
                                 ? partialItems.slice(0, maxItemsCount)
                                 : partialItems;
 
+                        let result = null;
                         if (paginated) {
                             const oldPagination =
                                 newItems !== null &&
@@ -147,31 +154,35 @@ const SelectFilter = ({
                                 typeof newItems.pagination !== 'undefined'
                                     ? newItems.pagination || {}
                                     : null;
-                            setOptions([
+                            result = [
                                 ...(options || []),
                                 ...(finalItems || []).map((it) => ({
                                     label: get(it, itemLabelPath, null),
                                     value: get(it, itemValuePath, null),
                                 })),
-                            ]);
+                            ];
+                            setOptions(result);
                             setPagination(newPagination || oldPagination);
                         } else {
-                            setOptions(
-                                (finalItems || []).map((it) => ({
-                                    label: get(it, itemLabelPath, null),
-                                    value: get(it, itemValuePath, null),
-                                })),
-                            );
+                            result = (finalItems || []).map((it) => ({
+                                label: get(it, itemLabelPath, null),
+                                value: get(it, itemValuePath, null),
+                            }));
+                            setOptions(result);
                             setPagination(null);
                         }
                         setLoading(false);
+
+                        return result;
                     })
                     .catch(() => {
                         setOptions(initialOptions);
                         setPagination(null);
                         setLoading(false);
+                        return null;
                     });
             }
+            return null;
         },
         [
             options,
@@ -221,10 +232,32 @@ const SelectFilter = ({
         [onChange],
     );
 
+    // For direct search
+    const hasSearch = useMemo(
+        () => searchable && requestUrl !== null && itemSearchParam !== null,
+        [searchable, requestUrl, itemSearchParam],
+    );
+
+    const loadOptions = useCallback(
+        (searchValue) => {
+            const searchParams =
+                hasSearch && searchValue.length > 2
+                    ? { [itemSearchParam]: encodeURIComponent(searchValue) }
+                    : null;
+            return fetchOptions(requestUrl, searchParams);
+        },
+        [fetchOptions, hasSearch, finalParams],
+    );
+
     return (
         <Select
             autoSize={autoSize}
+            isAsync={hasSearch}
+            loadOptions={hasSearch ? loadOptions : null}
+            defaultOptions={hasSearch}
+            cacheOptions={hasSearch}
             {...props}
+            searchable={searchable}
             onChange={finalOnChange}
             clearValue={clearValue}
             className={className}

@@ -62,7 +62,7 @@ module.exports = {
                 // '@folklore/routes': require.resolve('@folklore/routes'),
                 // 'wouter': require.resolve('wouter'),
                 // 'react-intl': require.resolve('react-intl'),
-                // '@uppy/core/dist/style.css': require.resolve('@uppy/core/dist/style.css'),
+                // '@uppy/core/css/style.css': require.resolve('@uppy/core/css/style.css'),
                 // '@uppy/core': require.resolve('@uppy/core'),
                 // '@uppy/react': require.resolve('@uppy/react'),
                 ...getPackagesAliases(),

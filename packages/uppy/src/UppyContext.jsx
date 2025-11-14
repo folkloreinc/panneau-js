@@ -128,14 +128,14 @@ export const useUppy = ({
         };
     }, [uppy]);
 
-    useEffect(
-        () => () => {
-            if (uppy !== null) {
-                uppy.close();
-            }
-        },
-        [uppy],
-    );
+    // useEffect(
+    //     () => () => {
+    //         if (uppy !== null) {
+    //             uppy.close();
+    //         }
+    //     },
+    //     [uppy],
+    // );
 
     return uppy;
 };
@@ -289,7 +289,6 @@ export const UppyProvider = ({
         uppyLocale,
         uppyTransport,
         uppySources,
-
         transport,
         sources,
         transloadit,

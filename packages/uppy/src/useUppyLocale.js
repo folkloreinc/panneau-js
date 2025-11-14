@@ -10,6 +10,7 @@ const defaultPackagesMap = {
     fr: () => loadPackage('@uppy/locales/lib/fr_FR', () => import('@uppy/locales/lib/fr_FR')),
     en: () => loadPackage('@uppy/locales/lib/en_US', () => import('@uppy/locales/lib/en_US')),
 };
+
 const useUppyLocale = (locale, { packagesMap = defaultPackagesMap } = {}) => {
     const [{ package: loadedPackage }, setLoadedPackage] = useState({
         package: packagesCache[locale] || null,

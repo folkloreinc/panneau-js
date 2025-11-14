@@ -131,6 +131,8 @@ const SelectElement = ({
 
     const onChangeOption = useCallback(
         (newValue) => {
+            console.log('oc', newValue);
+
             if (shouldConvertValue && newValue !== null) {
                 addOptions(multiple ? newValue : [newValue]);
             }
@@ -188,8 +190,6 @@ const SelectElement = ({
     } else if (creatable) {
         SelectComponent = CreatableSelect;
     }
-
-    // console.log('select', isAsync, creatable, SelectComponent, onCreateOption);
 
     return (
         <div className={classNames(['position-relative', { [className]: className !== null }])}>

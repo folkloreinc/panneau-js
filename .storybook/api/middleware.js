@@ -66,11 +66,20 @@ module.exports = () => {
 
         if (search !== null) {
             return _.values(
-                _.filter(items, (it) =>
-                    it !== null && typeof it.title !== 'undefined' && isString(it.title)
-                        ? it.title.indexOf(search) !== -1
-                        : true,
-                ),
+                _.filter(items, (it) => {
+                    if (it !== null && typeof it.title !== 'undefined' && isString(it.title)) {
+                        return it.title.indexOf(search) !== -1;
+                    }
+                    if (
+                        it !== null &&
+                        typeof it.title !== 'undefined' &&
+                        typeof it.title.fr !== 'undefined' &&
+                        isString(it.title.fr)
+                    ) {
+                        return it.title.fr.indexOf(search) !== -1;
+                    }
+                    return true;
+                }),
             );
         }
 
