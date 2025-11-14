@@ -40,6 +40,7 @@ const propTypes = {
     placeholder: PropTypes.string,
     creatable: PropTypes.bool,
     multiple: PropTypes.bool,
+    autoSize: PropTypes.bool,
     disabled: PropTypes.bool,
     isRow: PropTypes.bool,
     className: PropTypes.string,
@@ -74,6 +75,7 @@ const defaultProps = {
     placeholder: null,
     creatable: false,
     multiple: false,
+    autoSize: false,
     disabled: false,
     isRow: false,
     className: null,
@@ -108,6 +110,7 @@ const ItemField = ({
     itemLabelWithId,
     creatable,
     multiple,
+    autoSize,
     disabled,
     isRow,
     className,
@@ -239,14 +242,15 @@ const ItemField = ({
                             isClearable
                             isSearchable
                             placeholder={
-                                isMessage(placeholder) ? (
-                                    intl.formatMessage(placeholder)
-                                ) : (
-                                    <FormattedMessage
-                                        defaultMessage="Choose an item"
-                                        description="Default placeholder"
-                                    />
-                                )
+                                isMessage(placeholder)
+                                    ? intl.formatMessage(placeholder)
+                                    : placeholder || (
+                                          // eslint-disable-next-line react/jsx-indent
+                                          <FormattedMessage
+                                              defaultMessage="Choose an item"
+                                              description="Default placeholder"
+                                          />
+                                      )
                             }
                             onChange={onChange}
                             getOptionValue={getOptionValue}
@@ -254,6 +258,7 @@ const ItemField = ({
                             prepareRequestOptions={getOptions}
                             loadOptions={loadOptions}
                             multiple={multiple}
+                            autoSize={autoSize}
                             valueIsOption
                             {...(options !== null ? { options } : null)}
                         />
