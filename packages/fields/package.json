@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "3.0.311",
+    "version": "3.0.312",
     "description": "",
     "keywords": [
         "javascript"
@@ -77,7 +77,7 @@
         "@panneau/field-html": "^3.0.308",
         "@panneau/field-import": "^3.0.308",
         "@panneau/field-input-group": "^3.0.308",
-        "@panneau/field-item": "^3.0.311",
+        "@panneau/field-item": "^3.0.312",
         "@panneau/field-items": "^3.0.308",
         "@panneau/field-localized": "^3.0.308",
         "@panneau/field-number": "^3.0.308",
