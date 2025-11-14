@@ -141,6 +141,7 @@ const SelectFilter = ({
                                 : partialItems;
 
                         let result = null;
+
                         if (paginated) {
                             const oldPagination =
                                 newItems !== null &&
@@ -154,20 +155,15 @@ const SelectFilter = ({
                                 typeof newItems.pagination !== 'undefined'
                                     ? newItems.pagination || {}
                                     : null;
-                            result = [
-                                ...(options || []),
-                                ...(finalItems || []).map((it) => ({
-                                    label: get(it, itemLabelPath, null),
-                                    value: get(it, itemValuePath, null),
-                                })),
-                            ];
+                            result = [...(options || []), ...(finalItems || [])];
+                            // .map((it) => ({
+                            //     label: get(it, itemLabelPath, null),
+                            //     value: get(it, itemValuePath, null),
+                            // })),
                             setOptions(result);
                             setPagination(newPagination || oldPagination);
                         } else {
-                            result = (finalItems || []).map((it) => ({
-                                label: get(it, itemLabelPath, null),
-                                value: get(it, itemValuePath, null),
-                            }));
+                            result = finalItems || [];
                             setOptions(result);
                             setPagination(null);
                         }
@@ -246,12 +242,34 @@ const SelectFilter = ({
                     : null;
             return fetchOptions(requestUrl, searchParams);
         },
-        [fetchOptions, hasSearch, finalParams],
+        [fetchOptions, hasSearch, finalParams, setPagination, setEndReached],
+    );
+
+    const getOptionValue = useCallback(
+        (option) => {
+            if (itemValuePath !== null) {
+                return get(option, itemValuePath, null);
+            }
+            return option.value;
+        },
+        [itemValuePath],
+    );
+
+    const getOptionLabel = useCallback(
+        (option) => {
+            if (itemLabelPath !== null) {
+                return get(option, itemLabelPath, null);
+            }
+            return option.label;
+        },
+        [itemLabelPath],
     );
 
     return (
         <Select
             autoSize={autoSize}
+            getOptionValue={getOptionValue}
+            getOptionLabel={getOptionLabel}
             isAsync={hasSearch}
             loadOptions={hasSearch ? loadOptions : null}
             defaultOptions={hasSearch}

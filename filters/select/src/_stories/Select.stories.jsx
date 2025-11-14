@@ -42,7 +42,7 @@ export const Normal = () => (
     />
 );
 
-// TODO: figure out how to mock this
+// TODO: figure out how to mock this...
 export const Fetching = () => (
     <FieldContainer
         // options={[
@@ -56,6 +56,10 @@ export const Fetching = () => (
         itemLabelPath="title.en"
         itemValuePath="id"
     />
+);
+
+export const Paginated = () => (
+    <FieldContainer requestUrl="/api/pages" itemLabelPath="title.fr" itemValuePath="id" paginated />
 );
 
 export const WithParams = () => (

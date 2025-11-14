@@ -131,8 +131,6 @@ const SelectElement = ({
 
     const onChangeOption = useCallback(
         (newValue) => {
-            console.log('oc', newValue);
-
             if (shouldConvertValue && newValue !== null) {
                 addOptions(multiple ? newValue : [newValue]);
             }
