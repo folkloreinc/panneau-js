@@ -1,6 +1,6 @@
 {
     "name": "@panneau/uppy",
-    "version": "3.0.307",
+    "version": "3.0.310",
     "description": "",
     "keywords": [
         "javascript"
@@ -60,12 +60,12 @@
         "@panneau/core": "^3.0.307",
         "@uppy/core": "^5.1.1",
         "@uppy/dashboard": "^5.0.4",
-        "@uppy/react": "^5.1.1",
         "@uppy/dropbox": "^5.0.1",
         "@uppy/facebook": "^5.0.1",
         "@uppy/google-drive": "^5.0.1",
         "@uppy/instagram": "^5.0.1",
         "@uppy/locales": "^5.0.1",
+        "@uppy/react": "^5.1.1",
         "@uppy/transloadit": "^5.2.0",
         "@uppy/tus": "^5.0.2",
         "@uppy/webcam": "^5.0.2",
