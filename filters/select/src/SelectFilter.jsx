@@ -265,15 +265,17 @@ const SelectFilter = ({
         [itemLabelPath],
     );
 
+    const finalHasSearch = hasSearch && loadOptions !== null;
+
     return (
         <Select
             autoSize={autoSize}
             getOptionValue={getOptionValue}
             getOptionLabel={getOptionLabel}
-            isAsync={hasSearch}
-            loadOptions={hasSearch ? loadOptions : null}
-            defaultOptions={hasSearch}
-            cacheOptions={hasSearch}
+            isAsync={finalHasSearch}
+            loadOptions={finalHasSearch ? loadOptions : null}
+            defaultOptions={finalHasSearch}
+            cacheOptions={finalHasSearch}
             {...props}
             searchable={searchable}
             onChange={finalOnChange}
