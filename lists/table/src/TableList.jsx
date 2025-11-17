@@ -19,11 +19,12 @@ const propTypes = {
 
 const DEFAULT_ITEMS = [];
 const DEFAULT_COLUMNS = [];
+const DEFAULT_ACTIONS = ['show', 'edit', 'delete'];
 
 const TableList = ({
     resource,
     items = DEFAULT_ITEMS,
-    actions = ['show', 'edit', 'delete'],
+    actions = DEFAULT_ACTIONS,
     columns = DEFAULT_COLUMNS,
     withoutId = false,
     withoutActionsColumn = false,

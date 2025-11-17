@@ -32,7 +32,7 @@ const propTypes = {
 const ResourceForm = ({
     component = null,
     header = null,
-    resource,
+    resource = null,
     onSuccess = null,
     item = null,
     type = null,
