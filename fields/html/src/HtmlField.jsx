@@ -25,17 +25,17 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    feedback: null,
-    errors: null,
-    value: null,
-    placeholder: null,
-    inline: false,
-    disabled: false,
-    onChange: null,
-    onFocus: null,
-    onBlur: null,
-    ckConfig: {
+const HtmlField = ({
+    feedback = null,
+    errors = null,
+    value = null,
+    // placeholder,
+    inline = false,
+    disabled = false,
+    onChange = null,
+    onFocus = null,
+    onBlur = null,
+    ckConfig = {
         toolbar: [
             'heading',
             '|',
@@ -74,23 +74,8 @@ const defaultProps = {
         //     previewsInData: true,
         // },
     },
-    ckOptions: null,
-    className: null,
-};
-
-const HtmlField = ({
-    feedback,
-    errors,
-    value,
-    // placeholder,
-    inline,
-    disabled,
-    onChange,
-    onFocus,
-    onBlur,
-    ckConfig,
-    ckOptions,
-    className,
+    ckOptions = null,
+    className = null
 }) => {
     const { Editor = null, InlineEditor = null } = useCKEditorBuilds() || {};
     const CKValue = value !== null ? value : '';
@@ -155,6 +140,5 @@ const HtmlField = ({
 };
 
 HtmlField.propTypes = propTypes;
-HtmlField.defaultProps = defaultProps;
 
 export default HtmlField;

@@ -31,28 +31,17 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    resource: null,
-    status: null,
-    value: null,
-    generalError: null,
-    errors: null,
-    buttons: null,
-    children: null,
-    className: null,
-};
-
 const TwoPaneForm = ({
-    resource,
+    resource = null,
     fields,
-    status,
-    value,
+    status = null,
+    value = null,
     onChange,
     onSubmit,
-    errors,
-    buttons,
-    children,
-    className,
+    errors = null,
+    buttons = null,
+    children = null,
+    className = null,
     ...props
 }) => {
     const { id = null } = resource || {};
@@ -95,6 +84,5 @@ const TwoPaneForm = ({
 };
 
 TwoPaneForm.propTypes = propTypes;
-TwoPaneForm.defaultProps = defaultProps;
 
 export default TwoPaneForm;

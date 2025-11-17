@@ -21,35 +21,21 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    title: null,
-    name: null,
-    fields: null,
-    action: null,
-    type: 'normal',
-    item: null,
-    onComplete: null,
-    onClose: null,
-    submitButtonLabel: null,
-    className: null,
-    children: null,
-};
-
 function ModalForm({
     id,
-    title,
-    name,
-    fields,
-    action,
-    type,
-    item,
-    onComplete,
-    onClose,
-    submitButtonLabel,
-    className,
-    children,
+    title = null,
+    name = null,
+    fields = null,
+    action = null,
+    type = 'normal',
+    item = null,
+    onComplete = null,
+    onClose = null,
+    submitButtonLabel = null,
+    className = null,
+    children = null,
     ...props
-}) {
+})  {
     return (
         <Dialog
             id={id}
@@ -86,6 +72,5 @@ function ModalForm({
 }
 
 ModalForm.propTypes = propTypes;
-ModalForm.defaultProps = defaultProps;
 
 export default ModalForm;

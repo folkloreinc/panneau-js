@@ -27,25 +27,15 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    name: 'q',
-    value: null,
-    placeholder: null,
-    position: null,
-    width: null,
-    delay: 500,
-    className: null,
-};
-
 const SearchFilter = ({
-    name,
-    value,
+    name = 'q',
+    value = null,
     onChange,
-    placeholder,
-    position,
-    width,
-    delay,
-    className,
+    placeholder = null,
+    position = null,
+    width = null,
+    delay = 500,
+    className = null
 }) => {
     const intl = useIntl();
     const [searchValue, setSearchValue] = useState(value);
@@ -165,6 +155,5 @@ const SearchFilter = ({
 };
 
 SearchFilter.propTypes = propTypes;
-SearchFilter.defaultProps = defaultProps;
 
 export default SearchFilter;

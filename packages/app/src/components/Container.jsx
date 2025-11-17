@@ -29,6 +29,9 @@ import '../styles/styles.css';
 
 const pathToRegexpParser = createPathToRegexpParser();
 
+const DEFAULT_ROUTES = {};
+const DEFAULT_LOCALES = [];
+
 const propTypes = {
     definition: PanneauPropTypes.panneauDefinition.isRequired,
     components: PropTypes.oneOfType([
@@ -42,19 +45,18 @@ const propTypes = {
     statusCode: PanneauPropTypes.statusCode,
 };
 
-const defaultProps = {
-    components: null,
-    user: null,
-    memoryRouter: false,
-    baseUrl: null,
-    uppy: null,
-    statusCode: null,
-};
-
-const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, statusCode }) => {
+const Container = ({
+    definition = null,
+    components = null,
+    user = null,
+    memoryRouter = false,
+    baseUrl = null,
+    uppy = null,
+    statusCode = null,
+}) => {
     const {
-        intl: { locale = 'en', locales = [] } = {},
-        routes = {},
+        intl: { locale = 'en', locales = DEFAULT_LOCALES } = {},
+        routes = DEFAULT_ROUTES,
         settings: { memoryRouter: usesMemoryRouter = false } = {},
     } = definition || {};
 
@@ -145,6 +147,5 @@ const Container = ({ definition, components, user, memoryRouter, baseUrl, uppy, 
 };
 
 Container.propTypes = propTypes;
-Container.defaultProps = defaultProps;
 
 export default Container;

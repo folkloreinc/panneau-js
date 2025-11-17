@@ -29,35 +29,24 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    filters: [],
-    value: null,
-    clearValue: null,
-    onChange: null,
-    onReset: null,
-    withContainer: false,
-    withReset: true,
-    withResetLabel: false,
-    defaultValue: { page: null },
-    className: null,
-    children: null,
-};
+const DEFAULT_FILTERS = [];
 
 const Filters = ({
-    filters,
-    value,
-    clearValue,
-    onChange,
-    onReset,
-    withContainer,
-    withReset,
-    withResetLabel,
-    defaultValue,
-    className,
-    children,
+    filters = DEFAULT_FILTERS,
+    value = null,
+    clearValue = null,
+    onChange = null,
+    onReset = null,
+    withContainer = false,
+    withReset = true,
+    withResetLabel = false,
+    defaultValue: initialDefaultValue = null,
+    className = null,
+    children = null,
 }) => {
     const FilterComponents = useFiltersComponents();
     const currentFilters = filters || [];
+    const defaultValue = initialDefaultValue || { page: null };
 
     const onFiltersReset = useCallback(() => {
         if (onReset !== null) {
@@ -81,8 +70,6 @@ const Filters = ({
 
     const onFilterChange = useCallback(
         (name, newFilterValue) => {
-            // console.log('change', name, newFilterValue);
-            // console.log('value', value);
             if (name !== null && onChange !== null) {
                 onChange({ ...value, [name]: newFilterValue, ...defaultValue });
             }
@@ -163,6 +150,5 @@ const Filters = ({
 };
 
 Filters.propTypes = propTypes;
-Filters.defaultProps = defaultProps;
 
 export default Filters;

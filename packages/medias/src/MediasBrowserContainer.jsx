@@ -11,12 +11,11 @@ const propTypes = {
     media: PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) }),
 };
 
-const defaultProps = {
-    api: null,
-    media: null
-};
-
-function MediasBrowserContainer({ api, media, ...props }) {
+function MediasBrowserContainer({
+    api = null,
+    media = null,
+    ...props
+})  {
     return (
         <MediasApiProvider api={api}>
             <MediaProvider media={media}>
@@ -27,6 +26,5 @@ function MediasBrowserContainer({ api, media, ...props }) {
 }
 
 MediasBrowserContainer.propTypes = propTypes;
-MediasBrowserContainer.defaultProps = defaultProps;
 
 export default MediasBrowserContainer;

@@ -18,26 +18,15 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    placeholder: null,
-    item: null,
-    descriptionPath: null,
-    descriptionValues: null,
-    locale: null,
-    selected: false,
-    className: null,
-};
-
 const TextDescription = ({
-    value: initialValue,
-    placeholder,
-    locale: parentLocale,
-    item,
-    descriptionPath,
-    descriptionValues,
-    selected,
-    className,
+    value: initialValue = null,
+    placeholder = null,
+    locale: parentLocale = null,
+    item = null,
+    descriptionPath = null,
+    descriptionValues = null,
+    selected = false,
+    className = null
 }) => {
     const { locale } = useIntl();
 
@@ -84,6 +73,5 @@ const TextDescription = ({
 };
 
 TextDescription.propTypes = propTypes;
-TextDescription.defaultProps = defaultProps;
 
 export default TextDescription;

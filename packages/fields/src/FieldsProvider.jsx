@@ -17,15 +17,13 @@ const propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const defaultProps = {
-    definitions: [],
-    components: {},
-};
+const DEFAULT_DEFINITIONS = [];
+const DEFAULT_COMPONENTS = {};
 
 const FieldsProvider = ({
-    definitions: injectedDefinitions,
-    components: injectedComponents,
-    children,
+    definitions: injectedDefinitions = DEFAULT_DEFINITIONS,
+    components: injectedComponents = DEFAULT_COMPONENTS,
+    children
 }) => (
     <BaseFieldsProvider fields={[...definitions, ...injectedDefinitions]}>
         <ComponentsProvider
@@ -38,6 +36,5 @@ const FieldsProvider = ({
 );
 
 FieldsProvider.propTypes = propTypes;
-FieldsProvider.defaultProps = defaultProps;
 
 export default FieldsProvider;

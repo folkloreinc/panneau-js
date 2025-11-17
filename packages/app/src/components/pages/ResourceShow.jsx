@@ -16,9 +16,10 @@ const propTypes = {
     itemId: PropTypes.string.isRequired,
 };
 
-const defaultProps = {};
-
-const ResourceShowPage = ({ resource, itemId }) => {
+const ResourceShowPage = ({
+    resource,
+    itemId
+}) => {
     const { name } = resource;
     const { item, loading, error } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
@@ -47,6 +48,5 @@ const ResourceShowPage = ({ resource, itemId }) => {
 };
 
 ResourceShowPage.propTypes = propTypes;
-ResourceShowPage.defaultProps = defaultProps;
 
 export default ResourceShowPage;

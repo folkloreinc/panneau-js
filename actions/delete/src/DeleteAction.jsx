@@ -30,45 +30,29 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    title: null,
-    description: null,
-    endpoint: '/delete',
-    action: null,
-    label: <FormattedMessage defaultMessage="Delete" description="Button label" />,
-    icon: 'trash',
-    value: null,
-    theme: 'primary',
-    disabled: false,
-    onClick: null,
-    onChange: null,
-    onConfirmed: null,
-    modalComponent: 'confirm',
-    valueLabelPath: null,
-    withConfirmation: false,
-    className: null,
-};
-
 const DeleteAction = ({
     id,
-    title,
-    description,
-    endpoint,
-    action,
-    label,
-    icon,
-    value,
-    theme,
-    disabled,
-    onClick,
-    onChange,
-    onConfirmed,
-    modalComponent,
-    valueLabelPath,
-    withConfirmation,
-    className,
+    title = null,
+    description = null,
+    endpoint = '/delete',
+    action = null,
+    label: initialLabel = null,
+    icon = 'trash',
+    value = null,
+    theme = 'primary',
+    disabled = false,
+    onClick = null,
+    onChange = null,
+    onConfirmed = null,
+    modalComponent = 'confirm',
+    valueLabelPath = null,
+    withConfirmation = false,
+    className = null,
     ...props
 }) => {
+    const label = initialLabel || (
+        <FormattedMessage defaultMessage="Delete" description="Button label" />
+    );
     const ModalComponents = useModalsComponentsManager();
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
@@ -174,6 +158,5 @@ const DeleteAction = ({
 };
 
 DeleteAction.propTypes = propTypes;
-DeleteAction.defaultProps = defaultProps;
 
 export default DeleteAction;

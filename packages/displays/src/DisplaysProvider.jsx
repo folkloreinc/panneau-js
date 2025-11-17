@@ -11,12 +11,11 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    components: null,
-    children: null,
-};
-
-const DisplaysProvider = ({ components: injectedComponents, children, ...props }) => (
+const DisplaysProvider = ({
+    components: injectedComponents = null,
+    children = null,
+    ...props
+}) => (
     <ComponentsProvider
         namespace={DISPLAYS_NAMESPACE}
         components={{ ...components, ...injectedComponents }}
@@ -27,6 +26,5 @@ const DisplaysProvider = ({ components: injectedComponents, children, ...props }
 );
 
 DisplaysProvider.propTypes = propTypes;
-DisplaysProvider.defaultProps = defaultProps;
 
 export default DisplaysProvider;

@@ -14,11 +14,10 @@ const propTypes = {
     variables: PanneauPropTypes.trackingVariables,
 };
 
-const defaultProps = {
-    variables: null,
-};
-
-export const TrackingProvider = ({ variables, children }) => {
+export const TrackingProvider = ({
+    variables = null,
+    children
+}) => {
     const contextTracking = useTracking() || null;
     const tracking = useMemo(() => {
         if (contextTracking !== null) {
@@ -34,4 +33,3 @@ export const TrackingProvider = ({ variables, children }) => {
 };
 
 TrackingProvider.propTypes = propTypes;
-TrackingProvider.defaultProps = defaultProps;

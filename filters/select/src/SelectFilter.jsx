@@ -34,39 +34,22 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    options: null,
-    requestUrl: null,
-    requestOptions: null,
-    requestQuery: null,
-    requestParams: null,
-    itemSearchParam: null,
-    itemValuePath: null,
-    itemLabelPath: null,
-    maxItemsCount: null,
-    paginated: false,
-    searchable: true,
-    clearValue: null,
-    autoSize: false,
-    className: null,
-};
-
 const SelectFilter = ({
     onChange,
-    options: initialOptions,
-    requestUrl,
-    requestOptions,
-    requestQuery,
-    requestParams,
-    itemSearchParam,
-    itemValuePath,
-    itemLabelPath,
-    maxItemsCount,
-    paginated,
-    searchable,
-    clearValue,
-    autoSize,
-    className,
+    options: initialOptions = null,
+    requestUrl = null,
+    requestOptions = null,
+    requestQuery = null,
+    requestParams = null,
+    itemSearchParam = null,
+    itemValuePath = null,
+    itemLabelPath = null,
+    maxItemsCount = null,
+    paginated = false,
+    searchable = true,
+    clearValue = null,
+    autoSize = false,
+    className = null,
     ...props
 }) => {
     const [options, setOptions] = useState(initialOptions || null);
@@ -288,6 +271,5 @@ const SelectFilter = ({
 };
 
 SelectFilter.propTypes = propTypes;
-SelectFilter.defaultProps = defaultProps;
 
 export default SelectFilter;

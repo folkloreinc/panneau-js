@@ -19,9 +19,10 @@ const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
 };
 
-const defaultProps = {};
-
-const ResourceEditPage = ({ itemId, resource }) => {
+const ResourceEditPage = ({
+    itemId,
+    resource
+}) => {
     const { item, loading, error } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
     const [editItem, setEditItem] = useState(item);
@@ -76,6 +77,5 @@ const ResourceEditPage = ({ itemId, resource }) => {
     );
 };
 ResourceEditPage.propTypes = propTypes;
-ResourceEditPage.defaultProps = defaultProps;
 
 export default ResourceEditPage;

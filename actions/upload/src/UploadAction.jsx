@@ -22,31 +22,17 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    id: null,
-    endpoint: '/import',
-    action: null,
-    label: null,
-    value: null,
-    icon: 'upload',
-    theme: 'primary',
-    disabled: false,
-    fieldComponent: 'upload',
-    onConfirmed: null,
-    className: null,
-};
-
 const UploadAction = ({
-    endpoint,
-    action,
-    label,
-    value,
-    icon,
-    theme,
-    disabled,
-    onConfirmed,
-    fieldComponent,
-    className,
+    endpoint = '/import',
+    action = null,
+    label = null,
+    value = null,
+    icon = 'upload',
+    theme = 'primary',
+    disabled = false,
+    onConfirmed = null,
+    fieldComponent = 'upload',
+    className = null,
     ...props
 }) => {
     const FieldComponents = useFieldsComponentsManager();
@@ -79,6 +65,5 @@ const UploadAction = ({
 };
 
 UploadAction.propTypes = propTypes;
-UploadAction.defaultProps = defaultProps;
 
 export default UploadAction;

@@ -14,14 +14,13 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    title: null,
-    value: 50,
-    max: 100,
-    className: null,
-};
-
-const Range = ({ title, value, onChange, max, className }) => {
+const Range = ({
+    title = null,
+    value = 50,
+    onChange,
+    max = 100,
+    className = null
+}) => {
     const onValueChange = useCallback(
         (e) => {
             onChange(e.target.value);
@@ -56,6 +55,5 @@ const Range = ({ title, value, onChange, max, className }) => {
 };
 
 Range.propTypes = propTypes;
-Range.defaultProps = defaultProps;
 
 export default Range;

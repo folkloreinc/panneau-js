@@ -14,14 +14,13 @@ const propTypes = {
     description: PropTypes.string,
 };
 
-const defaultProps = {
-    resource: null,
-    values: null,
-    defaultMessage: null,
-    description: null,
-};
-
-const ResourceMessage = ({ resource, values, id, defaultMessage, description }) => {
+const ResourceMessage = ({
+    resource = null,
+    values = null,
+    id,
+    defaultMessage = null,
+    description = null
+}) => {
     const contextResource = useResource();
     const { messages } = useIntl();
     const {
@@ -47,6 +46,5 @@ const ResourceMessage = ({ resource, values, id, defaultMessage, description }) 
     );
 };
 ResourceMessage.propTypes = propTypes;
-ResourceMessage.defaultProps = defaultProps;
 
 export default ResourceMessage;

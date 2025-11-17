@@ -25,29 +25,17 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    action: null,
-    previous: null,
-    status: null,
-    value: null,
-    onSubmit: null,
-    generalError: null,
-    errors: null,
-    loading: false,
-    className: null,
-};
-
 const DuplicateForm = ({
-    resource,
-    action,
-    previous,
-    status,
-    value,
-    onSubmit,
-    errors,
-    generalError,
-    loading,
-    className,
+    resource = null,
+    action = null,
+    previous = null,
+    status = null,
+    value = null,
+    onSubmit = null,
+    errors = null,
+    generalError = null,
+    loading = false,
+    className = null,
     ...props
 }) => {
     const { id = null } = value || {};
@@ -107,6 +95,5 @@ const DuplicateForm = ({
 };
 
 DuplicateForm.propTypes = propTypes;
-DuplicateForm.defaultProps = defaultProps;
 
 export default DuplicateForm;

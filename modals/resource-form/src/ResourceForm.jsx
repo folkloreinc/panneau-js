@@ -18,25 +18,15 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    resource: null,
-    type: null,
-    item: null,
-    isCreate: null,
-    onSuccess: null,
-    onClose: null,
-    className: null,
-};
-
 const ModalResourceForm = ({
     id,
-    resource,
-    type,
-    item,
-    isCreate,
-    onSuccess,
-    onClose,
-    className,
+    resource = null,
+    type = null,
+    item = null,
+    isCreate = null,
+    onSuccess = null,
+    onClose = null,
+    className = null
 }) => {
     const resourceValues = useResourceValues(resource);
     return (
@@ -73,6 +63,5 @@ const ModalResourceForm = ({
 };
 
 ModalResourceForm.propTypes = propTypes;
-ModalResourceForm.defaultProps = defaultProps;
 
 export default ModalResourceForm;

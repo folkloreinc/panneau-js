@@ -23,38 +23,21 @@ const propTypes = {
     breadCrumbsClassName: PropTypes.string,
 };
 
-const defaultProps = {
-    brand: null,
-    brandLink: null,
-    breadcrumbs: null,
-    theme: null,
-    size: 'md',
-    compact: false,
-    noWrap: false,
-    withoutCollapse: false,
-    vertical: false,
-    children: null,
-    className: null,
-    collapseClassName: null,
-    brandClassName: null,
-    breadCrumbsClassName: null,
-};
-
 const Navbar = ({
-    brand,
-    brandLink,
-    breadcrumbs,
-    theme,
-    size,
-    compact,
-    noWrap,
-    withoutCollapse,
-    vertical,
-    children,
-    className,
-    collapseClassName,
-    brandClassName,
-    breadCrumbsClassName,
+    brand = null,
+    brandLink = null,
+    breadcrumbs = null,
+    theme = null,
+    size = 'md',
+    compact = false,
+    noWrap = false,
+    withoutCollapse = false,
+    vertical = false,
+    children = null,
+    className = null,
+    collapseClassName = null,
+    brandClassName = null,
+    breadCrumbsClassName = null
 }) => {
     const [menuVisible, setMenuVisible] = useState(false);
     const onClickMenu = useCallback(
@@ -155,6 +138,5 @@ const Navbar = ({
 };
 
 Navbar.propTypes = propTypes;
-Navbar.defaultProps = defaultProps;
 
 export default Navbar;

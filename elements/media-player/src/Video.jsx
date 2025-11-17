@@ -32,52 +32,28 @@ const propTypes = {
     videoClassName: PropTypes.string,
 };
 
-const defaultProps = {
-    autoPlay: true,
-    loop: true,
-    initialMuted: true,
-    media: null,
-    width: null,
-    height: null,
-    apiRef: null,
-    withoutControls: false,
-    onPlay: null,
-    onPause: null,
-    onEnd: null,
-    onMetadataChange: null,
-    onVolumeChange: null,
-    onBufferStart: null,
-    onBufferEnded: null,
-    onTimeUpdate: null,
-    onLoaded: null,
-    playsInline: null,
-    className: null,
-    iframeClassName: null,
-    videoClassName: null,
-};
-
 const Video = ({
-    autoPlay,
-    loop,
-    initialMuted,
-    media,
-    width,
-    height,
-    apiRef,
-    withoutControls,
-    onPlay,
-    onPause,
-    onEnd,
-    onMetadataChange,
-    onVolumeChange,
-    onBufferStart,
-    onBufferEnded,
-    onTimeUpdate,
-    onLoaded,
-    playsInline,
-    className,
-    iframeClassName,
-    videoClassName,
+    autoPlay = true,
+    loop = true,
+    initialMuted = true,
+    media = null,
+    width = null,
+    height = null,
+    apiRef = null,
+    withoutControls = false,
+    onPlay = null,
+    onPause = null,
+    onEnd = null,
+    onMetadataChange = null,
+    onVolumeChange = null,
+    onBufferStart = null,
+    onBufferEnded = null,
+    onTimeUpdate = null,
+    onLoaded = null,
+    playsInline = null,
+    className = null,
+    iframeClassName = null,
+    videoClassName = null
 }) => {
     const {
         url = null,
@@ -238,6 +214,5 @@ const Video = ({
 };
 
 Video.propTypes = propTypes;
-Video.defaultProps = defaultProps;
 
 export default React.forwardRef((props, ref) => <Video apiRef={ref} {...props} />);

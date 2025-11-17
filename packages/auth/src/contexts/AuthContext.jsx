@@ -42,13 +42,12 @@ const propTypes = {
     checkOnMount: PropTypes.bool,
 };
 
-const defaultProps = {
-    user: null,
-    onLogout: null,
-    checkOnMount: false,
-};
-
-export const AuthProvider = ({ user: initialUser, checkOnMount, onLogout, children }) => {
+export const AuthProvider = ({
+    user: initialUser = null,
+    checkOnMount = false,
+    onLogout = null,
+    children
+}) => {
     // const route = useUrlGenerator();
     const [user, setUser] = useState(initialUser);
     const { login: authLogin } = useAuthLogin();
@@ -127,6 +126,5 @@ export const AuthProvider = ({ user: initialUser, checkOnMount, onLogout, childr
 };
 
 AuthProvider.propTypes = propTypes;
-AuthProvider.defaultProps = defaultProps;
 
 export default AuthContext;

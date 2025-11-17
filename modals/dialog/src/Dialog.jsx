@@ -25,29 +25,17 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    title: null,
-    size: null,
-    header: null,
-    children: null,
-    footer: null,
-    buttons: null,
-    onClose: null,
-    withCloseOutside: false,
-    className: null,
-};
-
 const ModalDialog = ({
     id,
-    title,
-    size,
-    header,
-    children,
-    buttons,
-    footer,
-    onClose,
-    withCloseOutside,
-    className,
+    title = null,
+    size = null,
+    header = null,
+    children = null,
+    buttons = null,
+    footer = null,
+    onClose = null,
+    withCloseOutside = false,
+    className = null
 }) => {
     const onCloseButtonOutside =
         (header === null && title === null && onClose !== null) ||
@@ -125,6 +113,5 @@ const ModalDialog = ({
 };
 
 ModalDialog.propTypes = propTypes;
-ModalDialog.defaultProps = defaultProps;
 
 export default ModalDialog;

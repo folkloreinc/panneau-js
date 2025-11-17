@@ -14,13 +14,12 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    theme: 'success',
-    onClose: null,
-    className: null,
-};
-
-const Alert = ({ theme, children, onClose, className }) => (
+const Alert = ({
+    theme = 'success',
+    children,
+    onClose = null,
+    className = null
+}) => (
     <div
         className={classNames([
             'alert',
@@ -47,6 +46,5 @@ const Alert = ({ theme, children, onClose, className }) => (
     </div>
 );
 Alert.propTypes = propTypes;
-Alert.defaultProps = defaultProps;
 
 export default Alert;

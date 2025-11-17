@@ -42,60 +42,32 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    feedback: null,
-    value: null,
-    errors: null,
-    required: false,
-    disabled: false,
-    readOnly: false,
-    nativeOnChange: false,
-    pattern: null,
-    title: null,
-    type: null,
-    placeholder: null,
-    onChange: null,
-    onFocus: null,
-    onBlur: null,
-    align: null,
-    size: null,
-    maxLength: null,
-    prepend: null,
-    append: null,
-    min: null,
-    max: null,
-    dataList: null,
-    inputRef: null,
-    style: null,
-    className: null,
-};
-
 const InputField = ({
-    feedback,
-    value,
-    errors,
-    required,
-    disabled,
-    readOnly,
-    nativeOnChange,
-    pattern,
-    title,
-    type,
-    placeholder,
-    onChange,
-    onFocus,
-    onBlur,
-    align,
-    size,
-    maxLength,
-    prepend,
-    append,
-    min,
-    max,
-    dataList,
-    inputRef,
-    style,
-    className,
+    feedback = null,
+    value = null,
+    errors = null,
+    required = false,
+    disabled = false,
+    readOnly = false,
+    nativeOnChange = false,
+    pattern = null,
+    title = null,
+    type = null,
+    placeholder = null,
+    onChange = null,
+    onFocus = null,
+    onBlur = null,
+    align = null,
+    size = null,
+    maxLength = null,
+    prepend = null,
+    append = null,
+    min = null,
+    max = null,
+    dataList = null,
+    inputRef = null,
+    style = null,
+    className = null
 }) => {
     const dataListId = useMemo(() => (dataList !== null ? uuid() : null), [dataList]);
 
@@ -162,6 +134,5 @@ const InputField = ({
 };
 
 InputField.propTypes = propTypes;
-InputField.defaultProps = defaultProps;
 
 export default InputField; // React.forwardRef((props, ref) => <InputField inputRef={ref} {...props} />);

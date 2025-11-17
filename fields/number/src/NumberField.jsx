@@ -22,18 +22,6 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const defaultProps = {
-    value: null,
-    step: 1,
-    floatStep: 0.1,
-    float: false,
-    dataList: null,
-    autoComplete: false,
-    disabled: false,
-    className: null,
-    onChange: null,
-};
-
 function isNumeric(str) {
     if (typeof str !== 'string') return false; // we only process strings!
     return (
@@ -43,15 +31,15 @@ function isNumeric(str) {
 }
 
 const NumberField = ({
-    value,
-    step,
-    floatStep,
-    float,
-    dataList,
-    autoComplete,
-    disabled,
-    className,
-    onChange,
+    value = null,
+    step = 1,
+    floatStep = 0.1,
+    float = false,
+    dataList = null,
+    autoComplete = false,
+    disabled = false,
+    className = null,
+    onChange = null,
     ...props
 }) => {
     const parseValue = useCallback(
@@ -157,6 +145,5 @@ const NumberField = ({
 };
 
 NumberField.propTypes = propTypes;
-NumberField.defaultProps = defaultProps;
 
 export default NumberField;

@@ -18,13 +18,13 @@ const propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const defaultProps = {};
-
-export const DefinitionProvider = ({ definition, children }) => (
+export const DefinitionProvider = ({
+    definition,
+    children
+}) => (
     <DefinitionContext.Provider value={definition}>{children}</DefinitionContext.Provider>
 );
 
 DefinitionProvider.propTypes = propTypes;
-DefinitionProvider.defaultProps = defaultProps;
 
 export default DefinitionContext;

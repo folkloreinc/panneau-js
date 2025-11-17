@@ -71,87 +71,59 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    resource: 'medias',
-    value: null,
-    name: null,
-    types: ['audio', 'image', 'video'],
-    fileTypes: null,
-    sources: ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'],
-    withButton: false,
-    withFind: false,
-    withClearButton: false,
-    withoutMedia: false,
-    addButtonLabel: (
+const DEFAULT_TYPES = ['audio', 'image', 'video'];
+const DEFAULT_SOURCES = ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'];
+
+const UploadField = ({
+    resource = 'medias',
+    value = null,
+    name = null,
+    types = DEFAULT_TYPES,
+    fileTypes = null,
+    sources = DEFAULT_SOURCES,
+    withButton = false,
+    withFind = false,
+    withClearButton = false,
+    withoutMedia = false,
+    addButtonLabel: initialAddButtonLabel = null,
+    findButtonLabel: initialFindButtonLabel = null,
+    clearButtonLabel: initialCleanButtonLabel = null,
+    allowMultipleUploads = false,
+    closeAfterFinish = true,
+    maxNumberOfFiles = 1,
+    namePath = 'name',
+    thumbnailPath = 'thumbnail_url',
+    sizePath = 'metadata.size',
+    linkPath = null,
+    uppyProps = null,
+    width = null,
+    height = 300,
+    disabled = false,
+    uploadDisabled = false,
+    outline = true,
+    loading: parentLoading = false,
+    onChange = null,
+    onClear = null,
+    onClickAdd = null,
+    onClickFind = null,
+    className = null,
+}) => {
+    const addButtonLabel = initialAddButtonLabel || (
         <FormattedMessage
             defaultMessage="Upload file"
             description="Default upload add button label"
         />
-    ),
-    findButtonLabel: (
+    );
+    const findButtonLabel = initialFindButtonLabel || (
         <FormattedMessage
             defaultMessage="Find a file"
             description="Default upload add button label"
         />
-    ),
-    clearButtonLabel: (
+    );
+    const clearButtonLabel = initialCleanButtonLabel || (
         <FormattedMessage defaultMessage="Clear" description="Default upload add button label" />
-    ),
-    allowMultipleUploads: false,
-    closeAfterFinish: true,
-    maxNumberOfFiles: 1,
-    namePath: 'name',
-    thumbnailPath: 'thumbnail_url',
-    sizePath: 'metadata.size',
-    linkPath: null,
-    uppyProps: null,
-    width: null,
-    height: 300,
-    disabled: false,
-    uploadDisabled: false,
-    outline: true,
-    loading: false,
-    onChange: null,
-    onClear: null,
-    onClickAdd: null,
-    onClickFind: null,
-    className: null,
-};
+    );
 
-const UploadField = ({
-    resource,
-    value,
-    name,
-    types,
-    fileTypes,
-    sources,
-    withButton,
-    withFind,
-    withClearButton,
-    withoutMedia,
-    addButtonLabel,
-    findButtonLabel,
-    clearButtonLabel,
-    allowMultipleUploads,
-    closeAfterFinish,
-    maxNumberOfFiles,
-    namePath,
-    thumbnailPath,
-    sizePath,
-    linkPath,
-    uppyProps,
-    width,
-    height,
-    disabled,
-    uploadDisabled,
-    outline,
-    loading: parentLoading,
-    onChange,
-    onClear,
-    onClickAdd,
-    onClickFind,
-    className,
-}) => {
     const mergeData = useCallback((newValue) => {
         // Merge the response from our back-end
         if (
@@ -544,6 +516,5 @@ const UploadField = ({
 };
 
 UploadField.propTypes = propTypes;
-UploadField.defaultProps = defaultProps;
 
 export default UploadField;

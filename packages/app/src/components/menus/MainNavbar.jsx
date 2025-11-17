@@ -20,14 +20,13 @@ const propTypes = {
     position: PropTypes.string,
 };
 
-const defaultProps = {
-    loading: false,
-    theme: 'light',
-    vertical: false,
-    position: 'top',
-};
-
-const MainNavbar = ({ loading, theme, vertical, position, ...props }) => {
+const MainNavbar = ({
+    loading = false,
+    theme = 'light',
+    vertical = false,
+    position = 'top',
+    ...props
+}) => {
     const { name, menus = null } = usePanneau();
     const { main = null, guest = null } = menus || {};
     const { background } = usePanneauColorScheme();
@@ -115,6 +114,5 @@ const MainNavbar = ({ loading, theme, vertical, position, ...props }) => {
     );
 };
 MainNavbar.propTypes = propTypes;
-MainNavbar.defaultProps = defaultProps;
 
 export default MainNavbar;

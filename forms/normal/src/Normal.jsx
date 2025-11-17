@@ -29,28 +29,16 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    status: null,
-    value: null,
-    onSubmit: null,
-    generalError: null,
-    errors: null,
-    buttons: null,
-    disabled: false,
-    children: null,
-    className: null,
-};
-
 const NormalForm = ({
-    fields,
-    status,
-    value,
+    fields = null,
+    status = null,
+    value = null,
     onChange,
-    onSubmit,
-    buttons,
-    disabled,
-    children,
-    className,
+    onSubmit = null,
+    buttons = null,
+    disabled = false,
+    children = null,
+    className = null,
     ...props
 }) => {
     const FieldsComponent = useFieldComponent('fields');
@@ -84,6 +72,5 @@ const NormalForm = ({
 };
 
 NormalForm.propTypes = propTypes;
-NormalForm.defaultProps = defaultProps;
 
 export default NormalForm;

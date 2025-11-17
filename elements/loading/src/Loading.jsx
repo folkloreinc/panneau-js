@@ -14,16 +14,14 @@ const propTypes = {
     children: PanneauPropTypes.label,
 };
 
-const defaultProps = {
-    theme: null,
-    delay: 300,
-    withDelay: false,
-    withoutCard: false,
-    className: null,
-    children: null,
-};
-
-const Loading = ({ theme, delay, withDelay, withoutCard, className, children }) => {
+const Loading = ({
+    theme = null,
+    delay = 300,
+    withDelay = false,
+    withoutCard = false,
+    className = null,
+    children = null
+}) => {
     const [visible, setVisible] = useState(!withDelay);
 
     useEffect(() => {
@@ -66,6 +64,5 @@ const Loading = ({ theme, delay, withDelay, withoutCard, className, children }) 
 };
 
 Loading.propTypes = propTypes;
-Loading.defaultProps = defaultProps;
 
 export default Loading;

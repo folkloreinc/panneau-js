@@ -11,11 +11,10 @@ const propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const defaultProps = {
-    media: null,
-};
-
-export function MediaProvider({ media: providedMedia, children }) {
+export function MediaProvider({
+    media: providedMedia = null,
+    children
+})  {
     const [currentMedia, setCurrentMedia] = useState(providedMedia);
     const values = useMemo(
         () => ({ currentMedia, setCurrentMedia }),
@@ -25,6 +24,5 @@ export function MediaProvider({ media: providedMedia, children }) {
 }
 
 MediaProvider.propTypes = propTypes;
-MediaProvider.defaultProps = defaultProps;
 
 export default MediaProvider;

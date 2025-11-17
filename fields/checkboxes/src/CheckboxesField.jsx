@@ -17,16 +17,16 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const defaultProps = {
-    name: null,
-    value: null,
-    options: [],
-    disabled: false,
-    className: null,
-    onChange: null,
-};
+const DEFAULT_OPTIONS = [];
 
-const Checkboxes = ({ name, value, options, disabled, className, onChange }) => {
+const Checkboxes = ({
+    name = null,
+    value = null,
+    options = DEFAULT_OPTIONS,
+    disabled = false,
+    className = null,
+    onChange = null
+}) => {
     const finalOptions = useMemo(() => getSelectOptions(options), [options]);
     return (
         <div
@@ -77,6 +77,5 @@ const Checkboxes = ({ name, value, options, disabled, className, onChange }) => 
 };
 
 Checkboxes.propTypes = propTypes;
-Checkboxes.defaultProps = defaultProps;
 
 export default Checkboxes;

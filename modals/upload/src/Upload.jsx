@@ -20,14 +20,16 @@ const propTypes = {
     onClose: PropTypes.func,
 };
 
-const defaultProps = {
-    title: null,
-    uppy: null,
-    plugins: [],
-    onClose: null,
-};
+const DEFAULT_PLUGINS = [];
 
-const UploadModal = ({ id, title, uppy, plugins, onClose, ...props }) => (
+const UploadModal = ({
+    id,
+    title = null,
+    uppy = null,
+    plugins = DEFAULT_PLUGINS,
+    onClose = null,
+    ...props
+}) => (
     <Dialog id={id} size="lg" onClose={onClose} title={title}>
         {uppy !== null ? (
             <Dashboard
@@ -46,6 +48,5 @@ const UploadModal = ({ id, title, uppy, plugins, onClose, ...props }) => (
 );
 
 UploadModal.propTypes = propTypes;
-UploadModal.defaultProps = defaultProps;
 
 export default UploadModal;

@@ -11,12 +11,11 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    components: null,
-    children: null,
-};
-
-const ActionsProviders = ({ components: injectedComponents, children, ...props }) => (
+const ActionsProviders = ({
+    components: injectedComponents = null,
+    children = null,
+    ...props
+}) => (
     <ComponentsProvider
         namespace={ACTIONS_NAMESPACE}
         components={{ ...components, ...injectedComponents }}
@@ -27,6 +26,5 @@ const ActionsProviders = ({ components: injectedComponents, children, ...props }
 );
 
 ActionsProviders.propTypes = propTypes;
-ActionsProviders.defaultProps = defaultProps;
 
 export default ActionsProviders;

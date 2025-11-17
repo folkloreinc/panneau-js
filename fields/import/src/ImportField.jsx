@@ -37,48 +37,26 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    // value: null,
-    // name: null,
-    format: 'csv',
-    template: null,
-    isModal: false,
-    icon: 'database',
-    iconPosition: null,
-    label: null,
-    disabled: false,
-    theme: 'primary',
-    outline: false,
-    dark: false,
-    primaryColor: null,
-    customStyles: null,
-    showDownloadTemplateButton: true,
-    skipHeaderRowSelection: false,
-    onChange: null,
-    onClose: null,
-    className: null,
-};
-
 const ImportField = ({
-    // value,
-    // name,
-    format,
-    isModal,
-    icon,
-    iconPosition,
-    label,
-    template,
-    disabled,
-    theme,
-    outline,
-    dark,
-    primaryColor,
-    customStyles,
-    showDownloadTemplateButton,
-    skipHeaderRowSelection,
-    onChange,
-    onClose,
-    className,
+    // value = null,
+    // name = null,
+    format = 'csv',
+    isModal = false,
+    icon = 'database',
+    iconPosition = null,
+    label = null,
+    template = null,
+    disabled = false,
+    theme = 'primary',
+    outline = false,
+    dark = false,
+    primaryColor = null,
+    customStyles = null,
+    showDownloadTemplateButton = true,
+    skipHeaderRowSelection = false,
+    onChange = null,
+    onClose = null,
+    className = null
 }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -151,6 +129,5 @@ const ImportField = ({
 };
 
 ImportField.propTypes = propTypes;
-ImportField.defaultProps = defaultProps;
 
 export default ImportField;

@@ -34,43 +34,26 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    query: null,
-    paginated: true,
-    component: null,
-    baseUrl: null,
-    componentProps: null,
-    onQueryChange: null,
-    onQueryReset: null,
-    onPageChange: null,
-    showFilters: true,
-    showActions: true,
-    selectable: false,
-    selectedItems: null,
-    onSelectionChange: null,
-    multipleSelection: false,
-    listProps: null,
-    theme: null,
-    className: null,
-};
+const DEFAULT_INDEX = {};
+const DEFAULT_ITEMS = [];
 
 const ResourceItemsList = ({
     resource: providedResource,
-    query,
-    baseUrl,
-    onQueryChange,
-    onQueryReset,
-    onPageChange,
-    paginated,
-    showFilters,
-    showActions,
-    selectable,
-    selectedItems: initialSelectedItems,
-    onSelectionChange: parentOnChangeSelection,
-    multipleSelection,
-    listProps: customListProps,
-    theme,
-    className,
+    query = null,
+    baseUrl = null,
+    onQueryChange = null,
+    onQueryReset = null,
+    onPageChange = null,
+    paginated = true,
+    showFilters = true,
+    showActions = true,
+    selectable = false,
+    selectedItems: initialSelectedItems = null,
+    onSelectionChange: parentOnChangeSelection = null,
+    multipleSelection = false,
+    listProps: customListProps = null,
+    theme = null,
+    className = null
 }) => {
     const panneauResource = usePanneauResource(providedResource);
     const resource = isObject(providedResource) ? providedResource : panneauResource;
@@ -85,7 +68,7 @@ const ResourceItemsList = ({
             batchActions = null,
             actionsProps = null,
             ...listProps
-        } = {},
+        } = DEFAULT_INDEX,
     } = resource;
 
     const resourceUrlGenerator = useResourceUrlGenerator(
@@ -98,7 +81,7 @@ const ResourceItemsList = ({
     }, [query]);
 
     const {
-        items = [],
+        items = DEFAULT_ITEMS,
         loaded = false,
         loading = false,
         pagination = null,
@@ -260,6 +243,5 @@ const ResourceItemsList = ({
 };
 
 ResourceItemsList.propTypes = propTypes;
-ResourceItemsList.defaultProps = defaultProps;
 
 export default ResourceItemsList;

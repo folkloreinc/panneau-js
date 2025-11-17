@@ -18,29 +18,18 @@ const propTypes = {
     cancelButton: PropTypes.shape({}),
 };
 
-const defaultProps = {
-    resource: null,
-    value: null,
-    title: null,
-    multiple: false,
-    onChange: null,
-    onClose: null,
-    confirmButton: null,
-    cancelButton: null,
-};
-
 function MediasPickerModal({
     id,
-    value,
-    resource,
-    title,
-    onChange,
-    onClose,
-    confirmButton,
-    cancelButton,
-    multiple,
+    value = null,
+    resource = null,
+    title = null,
+    onChange = null,
+    onClose = null,
+    confirmButton = null,
+    cancelButton = null,
+    multiple = false,
     ...props
-}) {
+})  {
     const [selectedItems, setSelectedItems] = useState(value);
     const onConfirm = useCallback(() => {
         if (onChange !== null) {
@@ -132,6 +121,5 @@ function MediasPickerModal({
 }
 
 MediasPickerModal.propTypes = propTypes;
-MediasPickerModal.defaultProps = defaultProps;
 
 export default MediasPickerModal;

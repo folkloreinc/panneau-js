@@ -171,27 +171,18 @@ const propTypes = {
     ]),
 };
 
-const defaultProps = {
-    id: 'uppy',
-    transport: null,
-    locale: null,
-    sources: null,
-    transloadit: null,
-    companion: null,
-    tus: null,
-    xhr: null,
-};
+const DEFAULT_UPPY_SOURCES = ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'];
 
 export const UppyProvider = ({
-    id,
+    id = 'uppy',
     children,
-    transport: providedTransport,
-    locale: providedLocale,
-    sources: providedSources,
-    transloadit: providedTransloadit,
-    companion: providedCompanion,
-    tus: providedTus,
-    xhr: providedXhr,
+    transport: providedTransport = null,
+    locale: providedLocale = null,
+    sources: providedSources = null,
+    transloadit: providedTransloadit = null,
+    companion: providedCompanion = null,
+    tus: providedTus = null,
+    xhr: providedXhr = null
 }) => {
     const { locale: intlLocale } = useIntl();
 
@@ -208,7 +199,7 @@ export const UppyProvider = ({
     const transport = providedTransport || contextTransport || 'xhr';
     const locale = providedLocale || contextLocale || intlLocale;
     const sources = providedSources ||
-        contextSources || ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'];
+        contextSources || DEFAULT_UPPY_SOURCES;
     const transloadit = providedTransloadit || contextTransloadit;
     const companion = providedCompanion || contextCompanion;
     const tus = providedTus || contextTus;
@@ -334,4 +325,3 @@ export const UppyProvider = ({
 };
 
 UppyProvider.propTypes = propTypes;
-UppyProvider.defaultProps = defaultProps;

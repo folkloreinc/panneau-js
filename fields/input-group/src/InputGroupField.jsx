@@ -13,15 +13,13 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    prepend: null,
-    children: null,
-    append: null,
-    size: null,
-    className: null,
-};
-
-const InputGroupField = ({ prepend, children, append, size, className }) => (
+const InputGroupField = ({
+    prepend = null,
+    children = null,
+    append = null,
+    size = null,
+    className = null
+}) => (
     <div
         className={classNames([
             'input-group',
@@ -41,6 +39,5 @@ const InputGroupField = ({ prepend, children, append, size, className }) => (
 );
 
 InputGroupField.propTypes = propTypes;
-InputGroupField.defaultProps = defaultProps;
 
 export default InputGroupField;

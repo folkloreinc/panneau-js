@@ -16,16 +16,15 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    label: null,
-    sublabel: null,
-    href: null,
-    disabled: false,
-    onClick: null,
-    className: null,
-};
-
-const LabelFilter = ({ label, sublabel, href, disabled, onClick, className, ...props }) => {
+const LabelFilter = ({
+    label = null,
+    sublabel = null,
+    href = null,
+    disabled = false,
+    onClick = null,
+    className = null,
+    ...props
+}) => {
     const inner = (
         <>
             {label !== null ? <span className={styles.label}>{label}</span> : null}
@@ -64,6 +63,5 @@ const LabelFilter = ({ label, sublabel, href, disabled, onClick, className, ...p
 };
 
 LabelFilter.propTypes = propTypes;
-LabelFilter.defaultProps = defaultProps;
 
 export default LabelFilter;

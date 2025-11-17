@@ -52,67 +52,39 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    items: [],
-    columns: [],
-    loading: false,
-    loaded: false,
-    empty: false,
-    theme: null,
-    baseUrl: null,
-    query: null,
-    sortColumnParameter: 'order',
-    sortDirectionParameter: 'order_direction',
-    onQueryChange: null,
-    emptyLabel: null,
-    striped: false,
-    stripedColumns: false,
-    withoutId: false,
-    withFadedId: true,
-    displayPlaceholder: null,
-    selectable: false,
-    selectedItems: null,
-    onSelectionChange: null,
-    multipleSelection: false,
-    withCustomActionsColumn: false,
-    withoutLoading: false,
-    withoutEmpty: false,
-    actionsComponent: null,
-    actionsProps: null,
-    actionsClassName: null,
-    className: null,
-};
+const DEFAULT_ITEMS = [];
+const DEFAULT_COLUMNS = [];
 
 function Table({
-    items,
-    columns,
-    loading,
-    loaded,
-    empty,
-    theme,
-    baseUrl,
-    query,
-    sortColumnParameter,
-    sortDirectionParameter,
-    onQueryChange,
-    emptyLabel,
-    striped,
-    stripedColumns,
-    withoutId,
-    withFadedId,
-    displayPlaceholder,
-    selectable,
-    selectedItems,
-    onSelectionChange,
-    multipleSelection,
-    withCustomActionsColumn,
-    withoutLoading,
-    withoutEmpty,
-    actionsComponent,
-    actionsProps,
-    actionsClassName,
-    className,
-}) {
+    items = DEFAULT_ITEMS,
+    columns = DEFAULT_COLUMNS,
+    loading = false,
+    loaded = false,
+    empty = false,
+    theme = null,
+    baseUrl = null,
+    query = null,
+    sortColumnParameter = 'order',
+    sortDirectionParameter = 'order_direction',
+    onQueryChange = null,
+    emptyLabel = null,
+    striped = false,
+    stripedColumns = false,
+    withoutId = false,
+    withFadedId = true,
+    displayPlaceholder = null,
+    selectable = false,
+    selectedItems = null,
+    onSelectionChange = null,
+    multipleSelection = false,
+    withCustomActionsColumn = false,
+    withoutLoading = false,
+    withoutEmpty = false,
+    actionsComponent = null,
+    actionsProps = null,
+    actionsClassName = null,
+    className = null
+})  {
     const displayComponents = useDisplaysComponents();
     const hasIdColumn =
         (columns.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
@@ -455,6 +427,5 @@ function Table({
 }
 
 Table.propTypes = propTypes;
-Table.defaultProps = defaultProps;
 
 export default Table;

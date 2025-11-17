@@ -17,21 +17,16 @@ const propTypes = {
     withoutActionsColumn: PropTypes.bool,
 };
 
-const defaultProps = {
-    items: [],
-    actions: ['show', 'edit', 'delete'],
-    columns: [],
-    withoutId: false,
-    withoutActionsColumn: false,
-};
+const DEFAULT_ITEMS = [];
+const DEFAULT_COLUMNS = [];
 
 const TableList = ({
     resource,
-    items,
-    actions,
-    columns,
-    withoutId,
-    withoutActionsColumn,
+    items = DEFAULT_ITEMS,
+    actions = ['show', 'edit', 'delete'],
+    columns = DEFAULT_COLUMNS,
+    withoutId = false,
+    withoutActionsColumn = false,
     ...props
 }) => {
     const columnList = useMemo(() => getColumnsWithFields(resource, columns), [resource, columns]);
@@ -55,6 +50,5 @@ const TableList = ({
 };
 
 TableList.propTypes = propTypes;
-TableList.defaultProps = defaultProps;
 
 export default TableList;

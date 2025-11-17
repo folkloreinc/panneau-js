@@ -18,18 +18,16 @@ const propTypes = {
     children: PanneauPropTypes.label,
 };
 
-const defaultProps = {
-    theme: null,
-    message: null,
-    button: null,
-    delay: 300,
-    withDelay: false,
-    withoutCard: false,
-    className: null,
-    children: null,
-};
-
-const Empty = ({ theme, message, button, delay, withDelay, withoutCard, className, children }) => {
+const Empty = ({
+    theme = null,
+    message = null,
+    button = null,
+    delay = 300,
+    withDelay = false,
+    withoutCard = false,
+    className = null,
+    children = null
+}) => {
     const [visible, setVisible] = useState(!withDelay);
 
     useEffect(() => {
@@ -73,6 +71,5 @@ const Empty = ({ theme, message, button, delay, withDelay, withoutCard, classNam
 };
 
 Empty.propTypes = propTypes;
-Empty.defaultProps = defaultProps;
 
 export default Empty;

@@ -13,13 +13,14 @@ const propTypes = {
     container: PropTypes.object, // eslint-disable-line
 };
 
-const defaultProps = {
-    container: null,
-};
+const DEFAULT_MODALS = [];
 
-export const ModalProvider = ({ children, container: initialContainer }) => {
+export const ModalProvider = ({
+    children,
+    container: initialContainer = null
+}) => {
     const [container, setContainer] = useState(initialContainer);
-    const [modals, setModals] = useState([]);
+    const [modals, setModals] = useState(DEFAULT_MODALS);
     const modalsRef = useRef(modals);
 
     const register = useCallback(
@@ -90,4 +91,3 @@ export const ModalProvider = ({ children, container: initialContainer }) => {
 };
 
 ModalProvider.propTypes = propTypes;
-ModalProvider.defaultProps = defaultProps;

@@ -12,15 +12,13 @@ const propTypes = {
     iconFalse: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    labelTrue: null,
-    labelFalse: null,
-    iconTrue: null,
-    iconFalse: null,
-};
-
-const Boolean = ({ value, iconTrue, iconFalse, labelTrue, labelFalse }) =>
+const Boolean = ({
+    value = null,
+    iconTrue = null,
+    iconFalse = null,
+    labelTrue = null,
+    labelFalse = null
+}) =>
     value !== null && (value === true || value === 'true') ? (
         <span className="badge bg-success">
             {iconTrue !== null ? (
@@ -39,6 +37,5 @@ const Boolean = ({ value, iconTrue, iconFalse, labelTrue, labelFalse }) =>
         </span>
     );
 Boolean.propTypes = propTypes;
-Boolean.defaultProps = defaultProps;
 
 export default Boolean;

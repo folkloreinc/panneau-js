@@ -11,12 +11,11 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    components: null,
-    children: null,
-};
-
-const ModalsProvider = ({ components: injectedComponents, children, ...props }) => (
+const ModalsProvider = ({
+    components: injectedComponents = null,
+    children = null,
+    ...props
+}) => (
     <ComponentsProvider
         namespace={MODALS_NAMESPACE}
         components={{ ...components, ...injectedComponents }}
@@ -27,6 +26,5 @@ const ModalsProvider = ({ components: injectedComponents, children, ...props }) 
 );
 
 ModalsProvider.propTypes = propTypes;
-ModalsProvider.defaultProps = defaultProps;
 
 export default ModalsProvider;

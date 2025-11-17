@@ -27,39 +27,22 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    title: null,
-    description: null,
-    endpoint: '/restore',
-    action: null,
-    label: null,
-    icon: 'box-arrow-left',
-    value: null,
-    theme: 'warning',
-    disabled: false,
-    onConfirmed: null,
-    valueLabelPath: null,
-    modalComponent: 'confirm',
-    withConfirmation: false,
-    className: null,
-};
-
 const RestoreAction = ({
     id,
-    title,
-    description,
-    endpoint,
-    action,
-    label,
-    icon,
-    value,
-    theme,
-    disabled,
-    onConfirmed,
-    valueLabelPath,
-    modalComponent,
-    withConfirmation,
-    className,
+    title = null,
+    description = null,
+    endpoint = '/restore',
+    action = null,
+    label = null,
+    icon = 'box-arrow-left',
+    value = null,
+    theme = 'warning',
+    disabled = false,
+    onConfirmed = null,
+    valueLabelPath = null,
+    modalComponent = 'confirm',
+    withConfirmation = false,
+    className = null,
     ...props
 }) => {
     const ModalComponents = useModalsComponentsManager();
@@ -167,6 +150,5 @@ const RestoreAction = ({
 };
 
 RestoreAction.propTypes = propTypes;
-RestoreAction.defaultProps = defaultProps;
 
 export default RestoreAction;

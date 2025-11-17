@@ -30,11 +30,9 @@ const propTypes = {
     defaultActions: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.object])), // eslint-disable-line react/forbid-prop-types
 };
 
-const defaultProps = {
-    defaultActions: ['create'],
-};
+const DEFAULT_ACTIONS = ['create'];
 
-const ResourceIndexPage = ({ resource, defaultActions }) => {
+const ResourceIndexPage = ({ resource, defaultActions = DEFAULT_ACTIONS }) => {
     const { theme = null } = usePanneauColorScheme();
 
     const { name, settings = {}, index = {} } = resource;
@@ -192,6 +190,5 @@ const ResourceIndexPage = ({ resource, defaultActions }) => {
 };
 
 ResourceIndexPage.propTypes = propTypes;
-ResourceIndexPage.defaultProps = defaultProps;
 
 export default ResourceIndexPage;

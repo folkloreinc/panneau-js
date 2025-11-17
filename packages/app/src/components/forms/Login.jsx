@@ -12,12 +12,10 @@ const propTypes = {
     onSuccess: PropTypes.func,
 };
 
-const defaultProps = {
-    className: null,
-    onSuccess: null,
-};
-
-const LoginForm = ({ className, onSuccess }) => {
+const LoginForm = ({
+    className = null,
+    onSuccess = null
+}) => {
     const url = useUrlGenerator();
     const { login } = useAuth();
     const postForm = useCallback((action, { email, password }) => login(email, password), [login]);
@@ -37,6 +35,5 @@ const LoginForm = ({ className, onSuccess }) => {
 };
 
 LoginForm.propTypes = propTypes;
-LoginForm.defaultProps = defaultProps;
 
 export default LoginForm;

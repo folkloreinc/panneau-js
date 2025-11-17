@@ -48,67 +48,53 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    resource: null,
-    items: null,
-    actions: ['edit', 'delete'],
-    size: 'sm',
-    iconsOnly: true,
-    showLabel: <FormattedMessage defaultMessage="Show" description="Button label" />,
-    showUrl: null,
-    editLabel: <FormattedMessage defaultMessage="Edit" description="Button label" />,
-    deleteLabel: <FormattedMessage defaultMessage="Delete" description="Button label" />,
-    duplicateLabel: <FormattedMessage defaultMessage="Duplicate" description="Button label" />,
-    reload: null,
-    updateItem: null,
-    onClickShow: null,
-    onClickEdit: null,
-    onClickDelete: null,
-    onClickDuplicate: null,
-    getShowPropsFromItem: null,
-    getEditPropsFromItem: null,
-    getDeletePropsFromItem: null,
-    getDuplicatePropsFromItem: null,
-    withoutItemShowUrl: false,
-    className: null,
-};
+const DEFAULT_ACTIONS = ['show', 'edit', 'delete'];
 
 const ItemActions = ({
-    resource,
-    size,
+    resource = null,
+    size = 'sm',
     item,
-    items,
-    actions,
-    iconsOnly,
-    showLabel,
-    showUrl,
-    editLabel,
-    deleteLabel,
-    duplicateLabel,
-    reload,
-    updateItem,
-    onClickShow,
-    onClickEdit,
-    onClickDelete,
-    onClickDuplicate,
-    getShowPropsFromItem,
-    getEditPropsFromItem,
-    getDeletePropsFromItem,
-    getDuplicatePropsFromItem,
-    withoutItemShowUrl,
+    items = null,
+    actions = DEFAULT_ACTIONS,
+    iconsOnly = true,
+    showLabel = null,
+    showUrl = null,
+    editLabel = null,
+    deleteLabel = null,
+    duplicateLabel = null,
+    reload = null,
+    updateItem = null,
+    onClickShow = null,
+    onClickEdit = null,
+    onClickDelete = null,
+    onClickDuplicate = null,
+    getShowPropsFromItem = null,
+    getEditPropsFromItem = null,
+    getDeletePropsFromItem = null,
+    getDuplicatePropsFromItem = null,
+    withoutItemShowUrl = false,
     itemLinkProp,
-    className,
+    className = null,
 }) => {
     const urlGenerator = useResourceUrlGenerator(resource);
     const componentsManager = useActionsComponentsManager();
     const actionItems = items || actions || [];
+
     const finalActions = useActions(item, actionItems, urlGenerator, {
         iconsOnly,
-        showLabel,
+        showLabel: showLabel || (
+            <FormattedMessage defaultMessage="Show" description="Button label" />
+        ),
         showUrl,
-        editLabel,
-        deleteLabel,
-        duplicateLabel,
+        editLabel: editLabel || (
+            <FormattedMessage defaultMessage="Edit" description="Button label" />
+        ),
+        deleteLabel: deleteLabel || (
+            <FormattedMessage defaultMessage="Delete" description="Button label" />
+        ),
+        duplicateLabel: duplicateLabel || (
+            <FormattedMessage defaultMessage="Duplicate" description="Button label" />
+        ),
         onClickShow,
         onClickEdit,
         onClickDelete,
@@ -120,6 +106,7 @@ const ItemActions = ({
         withoutItemShowUrl,
         itemLinkProp,
     });
+
     return (
         <Buttons
             size={size}
@@ -169,6 +156,5 @@ const ItemActions = ({
 };
 
 ItemActions.propTypes = propTypes;
-ItemActions.defaultProps = defaultProps;
 
 export default ItemActions;

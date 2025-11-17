@@ -35,32 +35,20 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const defaultProps = {
-    name: null,
-    value: null,
-    schemes: ['https://', 'http://'],
-    url: null,
-    disabled: null,
-    prepend: null,
-    append: null,
-    preview: false,
-    copy: false,
-    className: null,
-    onChange: null,
-};
+const DEFAULT_SCHEMES = ['https://', 'http://'];
 
 const UrlField = ({
-    name,
-    value,
-    schemes,
-    url,
-    disabled,
-    prepend,
-    append,
-    preview,
-    copy,
-    className,
-    onChange,
+    name = null,
+    value = null,
+    schemes = DEFAULT_SCHEMES,
+    url = null,
+    disabled = null,
+    prepend = null,
+    append = null,
+    preview = false,
+    copy = false,
+    className = null,
+    onChange = null,
     ...props
 }) => {
     const empty = isEmpty(value);
@@ -199,6 +187,5 @@ const UrlField = ({
 };
 
 UrlField.propTypes = propTypes;
-UrlField.defaultProps = defaultProps;
 
 export default UrlField;

@@ -11,11 +11,10 @@ const propTypes = {
     fullscreen: PropTypes.bool,
 };
 
-const defaultProps = {
-    fullscreen: false,
-};
-
-const GuestLayout = ({ fullscreen, children }) => {
+const GuestLayout = ({
+    fullscreen = false,
+    children
+}) => {
     const { theme = null, background = null, text = null } = usePanneauColorScheme();
     return (
         <div
@@ -47,6 +46,5 @@ const GuestLayout = ({ fullscreen, children }) => {
 };
 
 GuestLayout.propTypes = propTypes;
-GuestLayout.defaultProps = defaultProps;
 
 export default GuestLayout;

@@ -11,12 +11,11 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    components: null,
-    children: null,
-};
-
-const FiltersProvider = ({ components: injectedComponents, children, ...props }) => (
+const FiltersProvider = ({
+    components: injectedComponents = null,
+    children = null,
+    ...props
+}) => (
     <ComponentsProvider
         namespace={FILTERS_NAMESPACE}
         components={{ ...components, ...injectedComponents }}
@@ -27,6 +26,5 @@ const FiltersProvider = ({ components: injectedComponents, children, ...props })
 );
 
 FiltersProvider.propTypes = propTypes;
-FiltersProvider.defaultProps = defaultProps;
 
 export default FiltersProvider;

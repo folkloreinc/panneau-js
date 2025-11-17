@@ -22,17 +22,15 @@ const propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const defaultProps = {
-    api: null,
-};
-
-export function MediasApiProvider({ api: providedApi, children }) {
+export function MediasApiProvider({
+    api: providedApi = null,
+    children
+})  {
     const previousApi = useMediasApi();
     const api = useMemo(() => providedApi || previousApi, [providedApi, previousApi]);
     return <MediasApiContext.Provider value={api}>{children}</MediasApiContext.Provider>;
 }
 
 MediasApiProvider.propTypes = propTypes;
-MediasApiProvider.defaultProps = defaultProps;
 
 export default MediasApiProvider;

@@ -27,24 +27,14 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const defaultProps = {
-    value: null,
-    defaultValue: '#000000', // Only for react select
-    native: false,
-    withAlpha: false,
-    disabled: false,
-    className: null,
-    onChange: null,
-};
-
 const ColorPickerField = ({
-    value,
-    defaultValue,
-    native,
-    withAlpha,
-    disabled,
-    className,
-    onChange,
+    value = null,
+    defaultValue = '#000000',
+    native = false,
+    withAlpha = false,
+    disabled = false,
+    className = null,
+    onChange = null,
 }) => {
     const emptyValue = isEmpty(value);
 
@@ -227,6 +217,5 @@ const ColorPickerField = ({
 };
 
 ColorPickerField.propTypes = propTypes;
-ColorPickerField.defaultProps = defaultProps;
 
 export default ColorPickerField;

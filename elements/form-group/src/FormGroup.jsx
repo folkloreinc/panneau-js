@@ -32,48 +32,26 @@ const propTypes = {
     labelClassName: PropTypes.string,
 };
 
-const defaultProps = {
-    name: null,
-    label: null,
-    errors: null,
-    helpText: null,
-    children: null,
-    horizontal: false,
-    floating: false,
-    inline: false,
-    isList: false,
-    isListItem: false,
-    isCard: false,
-    isCollapsible: false,
-    initialCollapsed: true,
-    isHeading: false,
-    withoutLabel: false,
-    withoutErrors: false,
-    labelAfter: false,
-    className: null,
-    labelClassName: null,
-};
-
 const FormGroup = ({
-    name,
-    label,
-    helpText,
-    children,
-    errors,
-    horizontal,
-    floating,
-    inline,
-    isList,
-    isListItem,
-    isCard,
-    isHeading,
-    isCollapsible,
-    initialCollapsed,
-    withoutLabel,
-    withoutErrors,
-    labelAfter,
-    className,
-    labelClassName,
+    name = null,
+    label = null,
+    helpText = null,
+    children = null,
+    errors = null,
+    horizontal = false,
+    floating = false,
+    inline = false,
+    isList = false,
+    isListItem = false,
+    isCard = false,
+    isHeading = false,
+    isCollapsible = false,
+    initialCollapsed = true,
+    withoutLabel = false,
+    withoutErrors = false,
+    labelAfter = false,
+    className = null,
+    labelClassName = null
 }) => {
     const labelBefore = !labelAfter;
     const isColumn = horizontal || inline;
@@ -232,7 +210,6 @@ const FormGroup = ({
     );
 };
 
-FormGroup.defaultProps = defaultProps;
 FormGroup.propTypes = propTypes;
 
 export default FormGroup;

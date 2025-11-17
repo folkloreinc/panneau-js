@@ -11,11 +11,9 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    className: null,
-};
-
-const Progress = ({ className }) => (
+const Progress = ({
+    className = null
+}) => (
     <div
         className={classNames([
             'progress',
@@ -51,6 +49,5 @@ const Progress = ({ className }) => (
     </div>
 );
 Progress.propTypes = propTypes;
-Progress.defaultProps = defaultProps;
 
 export default Progress;

@@ -11,12 +11,11 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    components: null,
-    children: null,
-};
-
-const ListsProvider = ({ components: injectedComponents, children, ...props }) => (
+const ListsProvider = ({
+    components: injectedComponents = null,
+    children = null,
+    ...props
+}) => (
     <ComponentsProvider
         namespace={LISTS_NAMESPACE}
         components={{ ...components, ...injectedComponents }}
@@ -27,6 +26,5 @@ const ListsProvider = ({ components: injectedComponents, children, ...props }) =
 );
 
 ListsProvider.propTypes = propTypes;
-ListsProvider.defaultProps = defaultProps;
 
 export default ListsProvider;

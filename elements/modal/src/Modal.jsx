@@ -17,15 +17,13 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    id: null,
-    title: null,
-    position: 'center',
-    onClose: null,
-    children: null,
-};
-
-const Modal = ({ id, onClose, children, position, title }) => {
+const Modal = ({
+    id = null,
+    onClose = null,
+    children = null,
+    position = 'center',
+    title = null
+}) => {
     const name = getDisplayName(children);
     const finalId = useMemo(() => id || name || 'Modal', [id, name]);
     const data = useMemo(
@@ -57,6 +55,5 @@ const Modal = ({ id, onClose, children, position, title }) => {
 };
 
 Modal.propTypes = propTypes;
-Modal.defaultProps = defaultProps;
 
 export default Modal;

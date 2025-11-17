@@ -7,14 +7,11 @@ const propTypes = {
     placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
 };
 
-const defaultProps = {
-    value: null,
-    placeholder: null,
-};
-
-const Text = ({ value = null, placeholder = null }) => <>{value || placeholder}</>;
+const Text = ({
+    value = null,
+    placeholder = null
+}) => <>{value || placeholder}</>;
 
 Text.propTypes = propTypes;
-Text.defaultProps = defaultProps;
 
 export default Text;

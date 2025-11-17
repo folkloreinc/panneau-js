@@ -25,33 +25,22 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    name: null,
-    shortName: null,
-    type: <FormattedMessage defaultMessage="User" description="Avatar label" />,
-    image: null,
-    theme: null,
-    size: null,
-    square: false,
-    inverted: false,
-    blended: false,
-    className: null,
-    children: null,
-};
-
 const Avatar = ({
-    name,
-    shortName,
-    type,
-    image,
-    theme,
-    size,
-    square,
-    inverted,
-    blended,
-    className,
-    children,
+    name = null,
+    shortName = null,
+    type: initialTenk = null,
+    image = null,
+    theme = null,
+    size = null,
+    square = false,
+    inverted = false,
+    blended = false,
+    className = null,
+    children = null,
 }) => {
+    const type = initialTenk || (
+        <FormattedMessage defaultMessage="User" description="Avatar label" />
+    );
     const { text: textTheme, background: backgroundTheme, border: borderTheme } = theme || {};
     const title = name || shortName || type;
     const { url: imageUrl = null } = image || {};
@@ -89,6 +78,5 @@ const Avatar = ({
     );
 };
 Avatar.propTypes = propTypes;
-Avatar.defaultProps = defaultProps;
 
 export default Avatar;

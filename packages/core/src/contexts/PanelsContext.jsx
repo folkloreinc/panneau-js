@@ -34,11 +34,10 @@ const propTypes = {
     container: PropTypes.object, // eslint-disable-line
 };
 
-const defaultProps = {
-    container: null,
-};
-
-export const PanelsProvider = ({ children, container: initialContainer }) => {
+export const PanelsProvider = ({
+    children,
+    container: initialContainer = null
+}) => {
     const [container, setContainer] = useState(initialContainer);
     const [panels, setPanels] = useState([]);
     const panelsRef = useRef(panels);
@@ -79,4 +78,3 @@ export const PanelsProvider = ({ children, container: initialContainer }) => {
 };
 
 PanelsProvider.propTypes = propTypes;
-PanelsProvider.defaultProps = defaultProps;

@@ -25,32 +25,20 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    resource: null,
-    actions: [],
-    value: null,
-    onChange: null,
-    onConfirmed: null,
-    defaultComponent: Button,
-    isGroup: false,
-    size: null,
-    disabled: false,
-    withConfirmation: false,
-    className: null,
-};
+const DEFAULT_ACTIONS = [];
 
 const Actions = ({
-    resource,
-    actions,
-    value,
-    onChange,
-    size,
-    onConfirmed,
-    defaultComponent,
-    isGroup,
-    disabled: parentDisabled,
-    withConfirmation,
-    className,
+    resource = null,
+    actions = DEFAULT_ACTIONS,
+    value = null,
+    onChange = null,
+    size = null,
+    onConfirmed = null,
+    defaultComponent = Button,
+    isGroup = false,
+    disabled: parentDisabled = false,
+    withConfirmation = false,
+    className = null
 }) => {
     const actionsComponents = useActionsComponentsManager();
 
@@ -128,6 +116,5 @@ const Actions = ({
 };
 
 Actions.propTypes = propTypes;
-Actions.defaultProps = defaultProps;
 
 export default Actions;

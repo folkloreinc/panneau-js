@@ -13,14 +13,12 @@ const propTypes = {
     linkClassName: PropTypes.string,
 };
 
-const defaultProps = {
-    withAccountForm: false,
-    className: null,
-    itemClassName: null,
-    linkClassName: null,
-};
-
-const AccountMenu = ({ withAccountForm, className, itemClassName, linkClassName }) => {
+const AccountMenu = ({
+    withAccountForm = false,
+    className = null,
+    itemClassName = null,
+    linkClassName = null
+}) => {
     const route = useUrlGenerator();
     const user = useUser();
     const logout = useLogout();
@@ -91,6 +89,5 @@ const AccountMenu = ({ withAccountForm, className, itemClassName, linkClassName 
     ) : null;
 };
 AccountMenu.propTypes = propTypes;
-AccountMenu.defaultProps = defaultProps;
 
 export default AccountMenu;

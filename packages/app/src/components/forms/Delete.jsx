@@ -24,29 +24,18 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    action: null,
-    previous: null,
-    status: null,
-    value: null,
-    onSubmit: null,
-    generalError: null,
-    errors: null,
-    className: null,
-};
-
 // TODO: remove this? unused
 
 const DeleteForm = ({
     resource,
-    action,
-    previous,
-    status,
-    value,
-    onSubmit,
-    errors,
-    generalError,
-    className,
+    action = null,
+    previous = null,
+    status = null,
+    value = null,
+    onSubmit = null,
+    errors = null,
+    generalError = null,
+    className = null,
     ...props
 }) => {
     const { id = null } = value || {};
@@ -109,6 +98,5 @@ const DeleteForm = ({
 };
 
 DeleteForm.propTypes = propTypes;
-DeleteForm.defaultProps = defaultProps;
 
 export default DeleteForm;

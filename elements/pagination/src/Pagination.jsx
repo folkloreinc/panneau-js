@@ -36,68 +36,45 @@ const propTypes = {
     onClickPage: PropTypes.func,
 };
 
-const defaultProps = {
-    page: 1,
-    lastPage: 1,
-    total: null,
-    url: null,
-    query: null,
-    maxPages: 8,
-    loading: false,
-    withPreviousNext: false,
-    withCount: true,
-    autohide: false,
-    align: 'right',
-    previousLabel: <Icon name="arrow-left-short" />,
-    nextLabel: <Icon name="arrow-right-short" />,
-    countLabel: (
-        <FormattedMessage
-            defaultMessage="{count, plural, =0 {No item.} =1 {# item} other {# items}}"
-            description="Pagination count label"
-        />
-    ),
-    alwaysShowButtons: false,
-    selectable: false,
-    selectedItems: null,
-    onSelectionChange: null,
-    multipleSelection: false,
-    className: null,
-    paginationClassName: null,
-    itemClassName: null,
-    linkClassName: null,
-    onClickPage: null,
-};
-
 const Pagination = ({
-    page: parentPage,
-    lastPage: parentLastPage,
-    total: parentTotal,
-    url,
-    query,
-    maxPages: parentMaxPages,
-    loading,
-    withPreviousNext,
-    withCount,
-    autohide,
-    align,
-    previousLabel,
-    nextLabel,
-    countLabel,
-    alwaysShowButtons,
-    selectable,
-    selectedItems,
-    onSelectionChange,
-    multipleSelection,
-    className,
-    paginationClassName,
-    itemClassName,
-    linkClassName,
-    onClickPage,
+    page: parentPage = 1,
+    lastPage: parentLastPage = 1,
+    total: parentTotal = null,
+    url = null,
+    query = null,
+    maxPages: parentMaxPages = 8,
+    loading = false,
+    withPreviousNext = false,
+    withCount = true,
+    autohide = false,
+    align = 'right',
+    previousLabel: initialPreviousLabel = null,
+    nextLabel: initialNextLabel = null,
+    countLabel: initialCountLabel = null,
+    alwaysShowButtons = false,
+    selectable = false,
+    selectedItems = null,
+    onSelectionChange = null,
+    multipleSelection = false,
+    className = null,
+    paginationClassName = null,
+    itemClassName = null,
+    linkClassName = null,
+    onClickPage = null,
 }) => {
     const page = parseInt(parentPage, 10);
     const lastPage = parseInt(parentLastPage, 10);
     const total = parseInt(parentTotal, 10);
     const maxPages = parseInt(parentMaxPages, 10);
+
+    const previousLabel = initialPreviousLabel || <Icon name="arrow-left-short" />;
+    const nextLabel = initialNextLabel || <Icon name="arrow-right-short" />;
+    const countLabel = initialCountLabel || (
+        <FormattedMessage
+            defaultMessage="{count, plural, =0 {No item.} =1 {# item} other {# items}}"
+            description="Pagination count label"
+        />
+    );
 
     const getUrl = useCallback(
         (currentPage) =>
@@ -352,6 +329,5 @@ const Pagination = ({
 };
 
 Pagination.propTypes = propTypes;
-Pagination.defaultProps = defaultProps;
 
 export default Pagination;

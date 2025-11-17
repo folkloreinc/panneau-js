@@ -14,13 +14,12 @@ const propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const defaultProps = {
-    config: null,
-    initialKey: null,
-    initialData: null,
-};
-
-export const QueryProvider = ({ config: initialConfig, initialKey, initialData, children }) => {
+export const QueryProvider = ({
+    config: initialConfig = null,
+    initialKey = null,
+    initialData = null,
+    children
+}) => {
     const queryClient = useMemo(() => {
         const client = new QueryClient({
             defaultOptions: {
@@ -40,6 +39,5 @@ export const QueryProvider = ({ config: initialConfig, initialKey, initialData, 
 };
 
 QueryProvider.propTypes = propTypes;
-QueryProvider.defaultProps = defaultProps;
 
 export default QueryContext;

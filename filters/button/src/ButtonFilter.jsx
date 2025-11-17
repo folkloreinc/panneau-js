@@ -17,27 +17,16 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    label: null,
-    name: 'button',
-    value: false,
-    href: null,
-    theme: 'primary',
-    activeTheme: 'primary',
-    disableOutline: false,
-    className: null,
-};
-
 const ButtonFilter = ({
-    name,
-    label,
-    value,
-    href,
-    theme,
-    activeTheme,
-    disableOutline,
+    name = 'button',
+    label = null,
+    value = false,
+    href = null,
+    theme = 'primary',
+    activeTheme = 'primary',
+    disableOutline = false,
     onChange,
-    className,
+    className = null,
     ...props
 }) => {
     const isActive = useMemo(
@@ -78,6 +67,5 @@ const ButtonFilter = ({
 };
 
 ButtonFilter.propTypes = propTypes;
-ButtonFilter.defaultProps = defaultProps;
 
 export default ButtonFilter;

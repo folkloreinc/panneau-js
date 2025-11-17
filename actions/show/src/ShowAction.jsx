@@ -27,41 +27,23 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    title: null,
-    description: null,
-    endpoint: '/show',
-    action: null,
-    label: null,
-    icon: 'eye',
-    value: null,
-    theme: 'infor',
-    disabled: false,
-    onClick: null,
-    onConfirmed: null,
-    valueLabelPath: null,
-    modalComponent: 'dialog',
-    withConfirmation: false,
-    className: null,
-};
-
 const ShowAction = ({
     id,
-    title,
-    description,
-    endpoint,
-    action,
-    label,
-    icon,
-    value,
-    theme,
-    disabled,
-    onClick,
-    onConfirmed,
-    valueLabelPath,
-    modalComponent,
-    withConfirmation,
-    className,
+    title = null,
+    description = null,
+    endpoint = '/show',
+    action = null,
+    label = null,
+    icon = 'eye',
+    value = null,
+    theme = 'infor',
+    disabled = false,
+    onClick = null,
+    onConfirmed = null,
+    valueLabelPath = null,
+    modalComponent = 'dialog',
+    withConfirmation = false,
+    className = null,
     ...props
 }) => {
     const ModalComponents = useModalsComponentsManager();
@@ -122,6 +104,5 @@ const ShowAction = ({
 };
 
 ShowAction.propTypes = propTypes;
-ShowAction.defaultProps = defaultProps;
 
 export default ShowAction;

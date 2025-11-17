@@ -50,54 +50,31 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    value: null,
-    vertical: false,
-    index: null,
-    namePath: 'name',
-    thumbnailPath: 'thumbnail_url',
-    sizePath: 'metadata.size',
-    linkPath: null,
-    disabled: false,
-    actionsDisabled: false,
-    maxWidth: null,
-    maxHeight: null,
-    thumbnailSize: 100,
-    withoutDescription: false,
-    selectable: false,
-    selected: false,
-    external: true,
-    onClick: null,
-    onClickRemove: null,
-    onClickDescription: null,
-    className: null,
-    cardClassName: null,
-    children: null,
-};
+const DEFAULT_DATA = {};
 
 const MediaCard = ({
-    value: initialValue,
-    vertical,
-    index,
-    namePath,
-    thumbnailPath,
-    sizePath,
-    linkPath,
-    maxWidth,
-    maxHeight,
-    thumbnailSize,
-    disabled,
-    actionsDisabled,
-    withoutDescription,
-    selectable,
-    selected,
-    external,
-    onClick,
-    onClickRemove,
-    onClickDescription,
-    className,
-    cardClassName,
-    children,
+    value: initialValue = null,
+    vertical = false,
+    index = null,
+    namePath = 'name',
+    thumbnailPath = 'thumbnail_url',
+    sizePath = 'metadata.size',
+    linkPath = null,
+    maxWidth = null,
+    maxHeight = null,
+    thumbnailSize = 100,
+    disabled = false,
+    actionsDisabled = false,
+    withoutDescription = false,
+    selectable = false,
+    selected = false,
+    external = true,
+    onClick = null,
+    onClickRemove = null,
+    onClickDescription = null,
+    className = null,
+    cardClassName = null,
+    children = null
 }) => {
     const value = initialValue || {};
 
@@ -108,7 +85,7 @@ const MediaCard = ({
         thumbnail_url: thumbnailUrl = null,
         thumbnailUrl: altThumbnailUrl = null,
         preview = null,
-        data = {},
+        data = DEFAULT_DATA,
         type,
     } = value || {};
 
@@ -368,6 +345,5 @@ const MediaCard = ({
 };
 
 MediaCard.propTypes = propTypes;
-MediaCard.defaultProps = defaultProps;
 
 export default MediaCard;

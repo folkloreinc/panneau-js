@@ -1,9 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Form from '@panneau/element-form';
 import { useFieldComponent } from '@panneau/core/contexts';
+import Form from '@panneau/element-form';
 
 const propTypes = {
     fields: PanneauPropTypes.fields.isRequired,
@@ -25,17 +26,15 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    status: null,
-    value: null,
-    onSubmit: null,
-    generalError: null,
-    errors: null,
-    buttons: null,
-    className: null,
-};
-
-const InlineForm = ({ fields, status, value, onChange, className, onSubmit, ...props }) => {
+const InlineForm = ({
+    fields = null,
+    status = null,
+    value = null,
+    onChange,
+    className = null,
+    onSubmit = null,
+    ...props
+}) => {
     const FieldsComponent = useFieldComponent('fields');
     return (
         <Form onSubmit={onSubmit} className={className} status={status} {...props}>
@@ -49,6 +48,5 @@ const InlineForm = ({ fields, status, value, onChange, className, onSubmit, ...p
 };
 
 InlineForm.propTypes = propTypes;
-InlineForm.defaultProps = defaultProps;
 
 export default InlineForm;

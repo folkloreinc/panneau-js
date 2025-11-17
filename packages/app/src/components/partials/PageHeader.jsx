@@ -14,15 +14,13 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    title: null,
-    actions: null,
-    small: false,
-    className: null,
-    children: null,
-};
-
-const PageHeader = ({ title, actions, small, className, children }) => {
+const PageHeader = ({
+    title = null,
+    actions = null,
+    small = false,
+    className = null,
+    children = null
+}) => {
     // TODO: fix page header components
     // const { components } = usePanneau();
     // console.log('page-header', components); // eslint-disable-line
@@ -65,6 +63,5 @@ const PageHeader = ({ title, actions, small, className, children }) => {
     );
 };
 PageHeader.propTypes = propTypes;
-PageHeader.defaultProps = defaultProps;
 
 export default PageHeader;

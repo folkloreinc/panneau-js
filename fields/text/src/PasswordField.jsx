@@ -4,11 +4,8 @@ import InputField from './InputField';
 
 const propTypes = {};
 
-const defaultProps = {};
-
 const PasswordField = (props) => <InputField {...props} type="password" />;
 
 PasswordField.propTypes = propTypes;
-PasswordField.defaultProps = defaultProps;
 
 export default PasswordField;

@@ -27,32 +27,17 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    resource: null,
-    title: null,
-    query: null,
-    paginated: true,
-    size: 'xl',
-    onQueryChange: PropTypes.func,
-    onQueryReset: PropTypes.func,
-    onPageChange: PropTypes.func,
-    onClose: null,
-    listProps: null,
-    className: null,
-    children: null,
-};
-
 const ModalResourceItems = ({
     id,
-    resource: providedResource,
-    title,
-    query: initialQuery,
-    paginated,
-    size,
-    onClose,
-    listProps,
-    className,
-    children,
+    resource: providedResource = null,
+    title = null,
+    query: initialQuery = null,
+    paginated = true,
+    size = 'xl',
+    onClose = null,
+    listProps = null,
+    className = null,
+    children = null,
     ...props
 }) => {
     const panneauResource = usePanneauResource(providedResource);
@@ -95,6 +80,5 @@ const ModalResourceItems = ({
 };
 
 ModalResourceItems.propTypes = propTypes;
-ModalResourceItems.defaultProps = defaultProps;
 
 export default ModalResourceItems;

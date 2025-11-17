@@ -11,11 +11,10 @@ const propTypes = {
     resource: PropTypes.string,
 };
 
-const defaultProps = {
-    resource: 'medias',
-};
-
-function MediasResourcePicker({ resource: resourceId, ...props }) {
+function MediasResourcePicker({
+    resource: resourceId = 'medias',
+    ...props
+})  {
     const resource = usePanneauResource(resourceId);
 
     const { index = null, fields = null } = resource || {};
@@ -47,6 +46,5 @@ function MediasResourcePicker({ resource: resourceId, ...props }) {
 }
 
 MediasResourcePicker.propTypes = propTypes;
-MediasResourcePicker.defaultProps = defaultProps;
 
 export default MediasResourcePicker;

@@ -20,28 +20,15 @@ const propTypes = {
     loginLabel: PanneauPropTypes.label,
 };
 
-const defaultProps = {
-    action: '/forgot-password',
-    fields: null,
-    size: 'lg',
-    emailLabel: <FormattedMessage defaultMessage="Email" description="Field label" />,
-    submitButtonLabel: (
-        <FormattedMessage defaultMessage="Send reset link" description="Button label" />
-    ),
-    withLoginLink: true,
-    loginLink: '/login',
-    loginLabel: <FormattedMessage defaultMessage="Go back to login" description="Link label" />,
-};
-
 const ForgotPassword = ({
-    action,
-    fields,
-    emailLabel,
-    submitButtonLabel,
-    size,
-    withLoginLink,
-    loginLink,
-    loginLabel,
+    action = '/forgot-password',
+    fields = null,
+    emailLabel = null,
+    submitButtonLabel = null,
+    size = 'lg',
+    withLoginLink = true,
+    loginLink = '/login',
+    loginLabel = null,
     ...props
 }) => (
     <Form
@@ -52,15 +39,26 @@ const ForgotPassword = ({
                     name: 'email',
                     type: 'email',
                     size,
-                    label: emailLabel,
+                    label: emailLabel || (
+                        <FormattedMessage defaultMessage="Email" description="Field label" />
+                    ),
                 },
             ]
         }
-        submitButtonLabel={submitButtonLabel}
+        submitButtonLabel={
+            submitButtonLabel || (
+                <FormattedMessage defaultMessage="Send reset link" description="Button label" />
+            )
+        }
         actions={
             withLoginLink ? (
                 <Link href={loginLink} className="py-2 px-4">
-                    {loginLabel}
+                    {loginLabel || (
+                        <FormattedMessage
+                            defaultMessage="Go back to login"
+                            description="Link label"
+                        />
+                    )}
                 </Link>
             ) : null
         }
@@ -69,6 +67,5 @@ const ForgotPassword = ({
 );
 
 ForgotPassword.propTypes = propTypes;
-ForgotPassword.defaultProps = defaultProps;
 
 export default ForgotPassword;

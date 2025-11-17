@@ -1,9 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Form from '@panneau/form';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Form from '@panneau/form';
 
 const propTypes = {
     action: PropTypes.string,
@@ -13,20 +14,14 @@ const propTypes = {
     submitButtonLabel: PanneauPropTypes.label,
 };
 
-const defaultProps = {
-    action: '/user/confirm-password',
-    fields: null,
-    size: 'lg',
-    passwordLabel: (
-        <FormattedMessage
-            defaultMessage="Please enter your password to continue"
-            description="Field label"
-        />
-    ),
-    submitButtonLabel: <FormattedMessage defaultMessage="Continue" description="Button label" />,
-};
-
-const ConfirmPassword = ({ action, fields, size, passwordLabel, submitButtonLabel, ...props }) => (
+const ConfirmPassword = ({
+    action = '/user/confirm-password',
+    fields = null,
+    size = 'lg',
+    passwordLabel = null,
+    submitButtonLabel = null,
+    ...props
+}) => (
     <Form
         action={action}
         fields={
@@ -35,16 +30,24 @@ const ConfirmPassword = ({ action, fields, size, passwordLabel, submitButtonLabe
                     name: 'password',
                     type: 'password',
                     size,
-                    label: passwordLabel,
+                    label: passwordLabel || (
+                        <FormattedMessage
+                            defaultMessage="Please enter your password to continue"
+                            description="Field label"
+                        />
+                    ),
                 },
             ]
         }
-        submitButtonLabel={submitButtonLabel}
+        submitButtonLabel={
+            submitButtonLabel || (
+                <FormattedMessage defaultMessage="Continue" description="Button label" />
+            )
+        }
         {...props}
     />
 );
 
 ConfirmPassword.propTypes = propTypes;
-ConfirmPassword.defaultProps = defaultProps;
 
 export default ConfirmPassword;

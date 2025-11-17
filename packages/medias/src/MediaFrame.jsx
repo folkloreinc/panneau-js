@@ -17,13 +17,11 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    showPlayer: true,
-    className: null,
-};
-
-function MediaFrame({ value, showPlayer: initialShowPlayer, className }) {
+function MediaFrame({
+    value = null,
+    showPlayer: initialShowPlayer = true,
+    className = null
+})  {
     const [showPlayer, setShowPlayer] = useState(initialShowPlayer);
     const { type = null } = value || {};
 
@@ -59,6 +57,5 @@ function MediaFrame({ value, showPlayer: initialShowPlayer, className }) {
 }
 
 MediaFrame.propTypes = propTypes;
-MediaFrame.defaultProps = defaultProps;
 
 export default MediaFrame;

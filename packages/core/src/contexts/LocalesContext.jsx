@@ -24,16 +24,16 @@ const propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const defaultProps = {
-    locales: [],
-};
+const DEFAULT_LOCALES = [];
 
-export const LocalesProvider = ({ locales, children }) => {
+export const LocalesProvider = ({
+    locales = DEFAULT_LOCALES,
+    children
+}) => {
     const value = useMemo(() => ({ locales }), [locales]);
     return <LocalesContext.Provider value={value}>{children}</LocalesContext.Provider>;
 };
 
 LocalesProvider.propTypes = propTypes;
-LocalesProvider.defaultProps = defaultProps;
 
 export default LocalesContext;

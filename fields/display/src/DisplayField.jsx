@@ -12,13 +12,12 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    display: null,
-    className: null,
-};
-
-const DisplayField = ({ value = null, display = null, className, ...props }) => {
+const DisplayField = ({
+    value = null,
+    display = null,
+    className = null,
+    ...props
+}) => {
     const displays = useDisplaysComponentsManager();
     const Component = displays.getComponent(display) || null;
 
@@ -36,6 +35,5 @@ const DisplayField = ({ value = null, display = null, className, ...props }) => 
 };
 
 DisplayField.propTypes = propTypes;
-DisplayField.defaultProps = defaultProps;
 
 export default DisplayField;

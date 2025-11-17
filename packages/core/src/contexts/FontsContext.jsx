@@ -76,12 +76,13 @@ const propTypes = {
     customFonts: PanneauPropTypes.fonts,
 };
 
-const defaultProps = {
-    systemFonts: ['Arial', 'Courier', 'Georgia', 'Times New Roman', 'Verdana'],
-    customFonts: null,
-};
+const DEFAULT_SYSTEM_FONTS = ['Arial', 'Courier', 'Georgia', 'Times New Roman', 'Verdana'];
 
-export const FontsProvider = ({ systemFonts, customFonts, children }) => {
+export const FontsProvider = ({
+    systemFonts = DEFAULT_SYSTEM_FONTS,
+    customFonts = null,
+    children
+}) => {
     const {
         systemFonts: previousSystemFonts = null,
         googleFonts: previousGoogleFonts = null,
@@ -118,4 +119,3 @@ export const FontsProvider = ({ systemFonts, customFonts, children }) => {
 };
 
 FontsProvider.propTypes = propTypes;
-FontsProvider.defaultProps = defaultProps;

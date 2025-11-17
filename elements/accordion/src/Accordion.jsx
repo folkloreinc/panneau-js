@@ -19,14 +19,14 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    items: [],
-    oneAtATime: false,
-    title: null,
-    className: null,
-};
+const DEFAULT_ITEMS = [];
 
-const Accordion = ({ oneAtATime, title, items, className }) => {
+const Accordion = ({
+    oneAtATime = false,
+    title = null,
+    items = DEFAULT_ITEMS,
+    className = null
+}) => {
     const accordionRefs = useRef([]);
     const accordionId = useMemo(() => uuid(), []);
 
@@ -122,6 +122,5 @@ const Accordion = ({ oneAtATime, title, items, className }) => {
 };
 
 Accordion.propTypes = propTypes;
-Accordion.defaultProps = defaultProps;
 
 export default Accordion;

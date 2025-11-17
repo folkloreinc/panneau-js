@@ -13,13 +13,11 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    id: null,
-    data: null,
-    children: null,
-};
-
-const ModalPortal = ({ id, data, children }) => {
+const ModalPortal = ({
+    id = null,
+    data = null,
+    children = null
+}) => {
     const { container = null, register = null, unregister = null } = useModal();
     const finalId = useMemo(() => (id !== null ? id : `modal-${new Date().getTime()}`), [id]);
 
@@ -38,6 +36,5 @@ const ModalPortal = ({ id, data, children }) => {
 };
 
 ModalPortal.propTypes = propTypes;
-ModalPortal.defaultProps = defaultProps;
 
 export default ModalPortal;

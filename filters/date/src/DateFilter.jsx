@@ -14,15 +14,17 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    name: 'radios',
-    value: null,
-    options: [],
-    placeholder: null,
-    className: null,
-};
+const DEFAULT_OPTIONS = [];
 
-const DateFilter = ({ name, value, options, placeholder, onChange, className, ...props }) => (
+const DateFilter = ({
+    name = 'radios',
+    value = null,
+    options = DEFAULT_OPTIONS,
+    placeholder = null,
+    onChange,
+    className = null,
+    ...props
+}) => (
     <div className={className}>
         <Date
             {...props}
@@ -36,6 +38,5 @@ const DateFilter = ({ name, value, options, placeholder, onChange, className, ..
 );
 
 DateFilter.propTypes = propTypes;
-DateFilter.defaultProps = defaultProps;
 
 export default DateFilter;

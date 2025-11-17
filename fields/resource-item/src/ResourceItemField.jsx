@@ -62,80 +62,38 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const defaultProps = {
-    name: null,
-    value: null,
-    errors: null,
-
-    resource: null,
-    resourceType: null,
-    paginated: true,
-
-    query: null,
-    page: null,
-    count: null,
-    options: null,
-    searchParamName: 'search',
-
-    getItemLabel: getPathValue,
-    getItemDescription: getPathValue,
-    getItemImage: getPathValue,
-    itemLabelPath: 'label',
-    itemDescriptionPath: null,
-    itemImagePath: 'image.thumbnail_url',
-    itemLabelWithId: false,
-
-    placeholder: null,
-    canCreate: false,
-    canEdit: false,
-    canFind: false,
-    withoutModal: false,
-    createButtonLabel: null,
-    editButtonLabel: null,
-    findButtonLabel: null,
-    multiple: false,
-    disabled: false,
-    className: null,
-    inputClassName: null,
-    onChange: null,
-};
-
 const ResourceItemField = ({
-    name,
-    value,
-    errors,
-
-    resource: resourceId,
-    resourceType,
-    paginated,
-
-    query: initialQuery,
-    page: initialPage,
-    count: initialCount,
-    options: initialOptions,
-    searchParamName,
-
-    getItemLabel: initialGetItemLabel,
-    getItemDescription,
-    getItemImage,
-    itemLabelPath,
-    itemDescriptionPath,
-    itemImagePath,
-    itemLabelWithId,
-
-    placeholder,
-    canCreate,
-    canEdit,
-    canFind,
-    withoutModal,
-    createButtonLabel,
-    editButtonLabel,
-    findButtonLabel,
-    multiple,
-    disabled,
-    className,
-    inputClassName,
-    onChange,
+    name = null,
+    value = null,
+    errors = null,
+    resource: resourceId = null,
+    resourceType = null,
+    paginated = true,
+    query: initialQuery = null,
+    page: initialPage = null,
+    count: initialCount = null,
+    options: initialOptions = null,
+    searchParamName = 'search',
+    getItemLabel: initialGetItemLabel = getPathValue,
+    getItemDescription = getPathValue,
+    getItemImage = getPathValue,
+    itemLabelPath = 'label',
+    itemDescriptionPath = null,
+    itemImagePath = 'image.thumbnail_url',
+    itemLabelWithId = false,
+    placeholder = null,
+    canCreate = false,
+    canEdit = false,
+    canFind = false,
+    withoutModal = false,
+    createButtonLabel = null,
+    editButtonLabel = null,
+    findButtonLabel = null,
+    multiple = false,
+    disabled = false,
+    className = null,
+    inputClassName = null,
+    onChange = null
 }) => {
     const intl = useIntl();
     const resource = usePanneauResource(resourceId);
@@ -469,6 +427,5 @@ const ResourceItemField = ({
 };
 
 ResourceItemField.propTypes = propTypes;
-ResourceItemField.defaultProps = defaultProps;
 
 export default ResourceItemField;

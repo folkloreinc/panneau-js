@@ -22,30 +22,17 @@ const propTypes = {
     onClick: PropTypes.func,
 };
 
-const defaultProps = {
-    baseUrl: '',
-    query: null,
-    field: null,
-    children: null,
-    parameterName: 'order',
-    directionParameterName: 'order_direction',
-    directions: ['asc', 'desc', null],
-    keepsPage: false,
-    onQueryChange: null,
-    onClick: null,
-};
-
 const SortLink = ({
-    baseUrl,
-    query,
-    field,
-    parameterName,
-    directionParameterName,
-    directions,
-    keepsPage,
-    children,
-    onQueryChange,
-    onClick: customOnClick,
+    baseUrl = '',
+    query = null,
+    field = null,
+    parameterName = 'order',
+    directionParameterName = 'order_direction',
+    directions = ['asc', 'desc', null],
+    keepsPage = false,
+    children = null,
+    onQueryChange = null,
+    onClick: customOnClick = null,
     ...props
 }) => {
     const { name: columnName } = isObject(field) ? field : { name: field };
@@ -121,6 +108,5 @@ const SortLink = ({
 };
 
 SortLink.propTypes = propTypes;
-SortLink.defaultProps = defaultProps;
 
 export default SortLink;

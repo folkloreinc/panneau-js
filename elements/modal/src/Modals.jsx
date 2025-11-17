@@ -14,12 +14,10 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    theme: null,
-    className: null,
-};
-
-const Modals = ({ theme, className }) => {
+const Modals = ({
+    theme = null,
+    className = null
+}) => {
     const { modals = null, setContainer = null, closeLastModal = null } = useModal();
 
     const containerRef = useRef(null);
@@ -69,6 +67,5 @@ const Modals = ({ theme, className }) => {
 };
 
 Modals.propTypes = propTypes;
-Modals.defaultProps = defaultProps;
 
 export default Modals;

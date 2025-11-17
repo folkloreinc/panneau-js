@@ -10,8 +10,10 @@ const PanneauContext = React.createContext(null);
 
 export const usePanneau = () => useContext(PanneauContext);
 
+const DEFAULT_RESOURCES = [];
+
 export const usePanneauResources = () => {
-    const { resources = [] } = usePanneau() || {};
+    const { resources = DEFAULT_RESOURCES } = usePanneau() || {};
     return resources;
 };
 
@@ -44,8 +46,10 @@ export const usePanneauColorScheme = () => {
     };
 };
 
+const DEFAULT_COMPONENTS = {};
+
 export const usePanneauComponents = () => {
-    const { components = {} } = usePanneau() || {};
+    const { components = DEFAULT_COMPONENTS } = usePanneau() || {};
     return components;
 };
 
@@ -82,13 +86,13 @@ const propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const defaultProps = {};
-
-export const PanneauProvider = ({ definition, children }) => (
+export const PanneauProvider = ({
+    definition,
+    children
+}) => (
     <PanneauContext.Provider value={definition}>{children}</PanneauContext.Provider>
 );
 
 PanneauProvider.propTypes = propTypes;
-PanneauProvider.defaultProps = defaultProps;
 
 export default PanneauContext;

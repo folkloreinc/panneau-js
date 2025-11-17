@@ -14,11 +14,11 @@ import { defineMessage, useIntl } from 'react-intl';
 import { isMessage, loadPackage } from '@panneau/core/utils';
 import TextField from '@panneau/field-text';
 
-import './styles/datepicker.global.scss';
-
 import styles from './styles.module.css';
 // We import this one but customized - needs to be improved with bootstrap themes
 import 'react-datepicker/dist/react-datepicker.css';
+
+import './styles/datepicker.global.scss';
 
 // This package has fucked exports, no default
 const FinalDatePicker =
@@ -43,47 +43,32 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const defaultProps = {
-    name: null,
-    value: null,
-    errors: null,
-    size: null,
-    required: false,
-    disabled: false,
-    placeholder: null,
-    format: null,
-    withoutDate: false,
-    withoutTime: false,
-    dateFormat: 'yyyy-MM-dd HH:mm:ss',
-    timeFormat: 'HH:mm',
-    timeCaption: defineMessage({
-        defaultMessage: 'Time',
-        description: 'DateTimeField time caption',
-    }),
-    timeIntervals: 15,
-    className: null,
-    onChange: null,
-};
-
 const DateTimeField = ({
-    name,
-    value,
-    errors,
-    size,
-    required,
-    disabled,
-    placeholder,
-    format: fnsFormat,
-    withoutDate,
-    withoutTime,
-    dateFormat,
-    timeFormat,
-    timeCaption,
-    timeIntervals,
-    onChange,
-    className,
+    name = null,
+    value = null,
+    errors = null,
+    size = null,
+    required = false,
+    disabled = false,
+    placeholder = null,
+    format: fnsFormat = null,
+    withoutDate = false,
+    withoutTime = false,
+    dateFormat = 'yyyy-MM-dd HH:mm:ss',
+    timeFormat = 'HH:mm',
+    timeCaption: initialTimeCaption = null,
+    timeIntervals = 15,
+    onChange = null,
+    className = null,
 }) => {
     const { locale, formatMessage } = useIntl();
+    const timeCaption =
+        initialTimeCaption ||
+        defineMessage({
+            defaultMessage: 'Time',
+            description: 'DateTimeField time caption',
+        });
+
     // The internal value of this field must be a Date object
     const parseDate = useCallback(
         (date) => {
@@ -171,6 +156,5 @@ const DateTimeField = ({
 };
 
 DateTimeField.propTypes = propTypes;
-DateTimeField.defaultProps = defaultProps;
 
 export default DateTimeField;

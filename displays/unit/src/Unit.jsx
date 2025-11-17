@@ -13,14 +13,12 @@ const propTypes = {
     suffix: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    placeholder: null,
-    format: null,
-    suffix: null,
-};
-
-const Unit = ({ value, placeholder, format, suffix }) => {
+const Unit = ({
+    value = null,
+    placeholder = null,
+    format = null,
+    suffix = null
+}) => {
     const finalValue = useMemo(() => {
         if (value === null) {
             return null;
@@ -47,6 +45,5 @@ const Unit = ({ value, placeholder, format, suffix }) => {
 };
 
 Unit.propTypes = propTypes;
-Unit.defaultProps = defaultProps;
 
 export default Unit;

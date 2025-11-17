@@ -30,44 +30,24 @@ const propTypes = {
     footer: PropTypes.node,
 };
 
-const defaultProps = {
-    item: null,
-    getItemLabel: getPathValue,
-    getItemDescription: getPathValue,
-    getItemImage: getPathValue,
-    itemLabelPath: 'label',
-    itemDescriptionPath: null,
-    itemImagePath: null,
-    itemLabelWithId: false,
-    onClickEdit: null,
-    onClickRemove: null,
-    editButtonLabel: null,
-    removeButtonLabel: null,
-    disabled: false,
-    className: null,
-    children: null,
-    header: null,
-    footer: null,
-};
-
 const ResourceCard = ({
-    item,
-    itemLabelPath,
-    itemDescriptionPath,
-    itemImagePath,
-    itemLabelWithId,
-    getItemLabel: initialGetItemLabel,
-    getItemDescription,
-    getItemImage,
-    onClickEdit,
-    onClickRemove,
-    editButtonLabel,
-    removeButtonLabel,
-    disabled,
-    children,
-    header,
-    footer,
-    className,
+    item = null,
+    itemLabelPath = 'label',
+    itemDescriptionPath = null,
+    itemImagePath = null,
+    itemLabelWithId = false,
+    getItemLabel: initialGetItemLabel = getPathValue,
+    getItemDescription = getPathValue,
+    getItemImage = getPathValue,
+    onClickEdit = null,
+    onClickRemove = null,
+    editButtonLabel = null,
+    removeButtonLabel = null,
+    disabled = false,
+    children = null,
+    header = null,
+    footer = null,
+    className = null
 }) => {
     const getItemLabel = useCallback(
         (it, path) => {
@@ -153,6 +133,5 @@ const ResourceCard = ({
 };
 
 ResourceCard.propTypes = propTypes;
-ResourceCard.defaultProps = defaultProps;
 
 export default ResourceCard;

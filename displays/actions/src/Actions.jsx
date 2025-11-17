@@ -26,31 +26,20 @@ const propTypes = {
     buttonsClassName: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    placeholder: null,
-    actions: ['show', 'edit', 'delete'],
-    urlGenerator: null,
-    actionsProps: null,
-    size: 'sm',
-    theme: null,
-    outline: null,
-    className: null,
-    buttonsClassName: null,
-};
+const DEFAULT_ACTIONS = ['show', 'edit', 'delete'];
 
 const ActionsDisplay = ({
     item,
-    value,
-    placeholder,
-    actions,
-    urlGenerator: parentUrlGenerator,
-    actionsProps,
-    size,
-    theme,
-    outline,
-    className,
-    buttonsClassName,
+    value = null,
+    placeholder = null,
+    actions = DEFAULT_ACTIONS,
+    urlGenerator: parentUrlGenerator = null,
+    actionsProps = null,
+    size = 'sm',
+    theme = null,
+    outline = null,
+    className = null,
+    buttonsClassName = null,
     ...props
 }) => {
     const { urlGenerator, ...otherProps } = actionsProps || {};
@@ -79,6 +68,5 @@ const ActionsDisplay = ({
 };
 
 ActionsDisplay.propTypes = propTypes;
-ActionsDisplay.defaultProps = defaultProps;
 
 export default ActionsDisplay;

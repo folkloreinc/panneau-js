@@ -21,13 +21,12 @@ const propTypes = {
     cardClassName: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    className: null,
-    cardClassName: null,
-};
-
-const ResourceCards = ({ value, className, cardClassName, ...props }) => {
+const ResourceCards = ({
+    value = null,
+    className = null,
+    cardClassName = null,
+    ...props
+}) => {
     const values = useMemo(() => {
         if (isArray(value)) {
             return value.filter((v) => v !== null);
@@ -53,6 +52,5 @@ const ResourceCards = ({ value, className, cardClassName, ...props }) => {
 };
 
 ResourceCards.propTypes = propTypes;
-ResourceCards.defaultProps = defaultProps;
 
 export default ResourceCards;

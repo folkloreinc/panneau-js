@@ -13,13 +13,13 @@ const propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const defaultProps = {};
-
-export const ResourceProvider = ({ resource, children }) => (
+export const ResourceProvider = ({
+    resource,
+    children
+}) => (
     <ResourceContext.Provider value={resource}>{children}</ResourceContext.Provider>
 );
 
 ResourceProvider.propTypes = propTypes;
-ResourceProvider.defaultProps = defaultProps;
 
 export default ResourceContext;

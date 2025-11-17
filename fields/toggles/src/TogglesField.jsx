@@ -17,16 +17,16 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const defaultProps = {
-    name: null,
-    value: null,
-    toggles: [],
-    disabled: false,
-    className: null,
-    onChange: null,
-};
+const DEFAULT_TOGGLES = [];
 
-const TogglesField = ({ name, value, toggles, disabled, onChange, className }) => {
+const TogglesField = ({
+    name = null,
+    value = null,
+    toggles = DEFAULT_TOGGLES,
+    disabled = false,
+    onChange = null,
+    className = null
+}) => {
     const onToggleChange = useCallback(
         (key, newToggleValue) => {
             const newValue = {
@@ -70,6 +70,5 @@ const TogglesField = ({ name, value, toggles, disabled, onChange, className }) =
     );
 };
 TogglesField.propTypes = propTypes;
-TogglesField.defaultProps = defaultProps;
 
 export default TogglesField;

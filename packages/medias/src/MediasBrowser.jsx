@@ -26,6 +26,18 @@ import defaultColumns from './defaults/columns';
 import defaultFields from './defaults/fields';
 import defaultFilters from './defaults/filters';
 
+const DEFAULT_LAYOUTS = [
+    {
+        id: 'table',
+        label: <Icon name="table" />,
+    },
+    {
+        id: 'grid',
+        label: <Icon name="grid" />,
+    },
+];
+const DEFAULT_UPPY_CONFIG = {};
+
 const propTypes = {
     items: PanneauPropTypes.medias,
     extraItems: PanneauPropTypes.medias,
@@ -65,78 +77,37 @@ const propTypes = {
     formChildren: PropTypes.node,
 };
 
-const defaultProps = {
-    items: null,
-    extraItems: null,
-    types: null,
-    permissions: null,
-    filters: defaultFilters,
-    columns: defaultColumns,
-    fields: defaultFields,
-    query: null,
-    baseUrl: null,
-    layout: 'table',
-    layouts: [
-        {
-            id: 'table',
-            label: <Icon name="table" />,
-        },
-        {
-            id: 'grid',
-            label: <Icon name="grid" />,
-        },
-    ],
-    theme: null,
-    onMediaUploaded: null,
-    onItemsChange: null,
-    onLayoutChange: null,
-    onMediaFormOpen: null,
-    onMediaFormClose: null,
-    selectable: false,
-    selectedItems: null,
-    onSelectionChange: null,
-    multipleSelection: false,
-    uppyConfig: null,
-    withDelete: false,
-    withTrash: false,
-    withReplace: false,
-    withStickySelection: false,
-    withoutUpload: false,
-    className: null,
-    formChildren: null,
-};
-
 function MediasBrowser({
-    items: initialItems,
-    extraItems,
-    types,
-    permissions,
-    baseUrl,
-    filters,
-    columns,
-    fields,
-    query: initialQuery,
-    layout: initialLayout,
-    layouts,
-    theme,
-    onMediaUploaded,
-    onItemsChange,
-    onLayoutChange,
-    onMediaFormOpen,
-    onMediaFormClose,
-    selectable,
-    selectedItems,
-    onSelectionChange,
-    multipleSelection,
-    uppyConfig,
-    withDelete,
-    withTrash,
-    withReplace,
-    withStickySelection,
-    withoutUpload,
-    className,
-    formChildren,
-}) {
+    items: initialItems = null,
+    extraItems = null,
+    types = null,
+    permissions = null,
+    baseUrl = null,
+    filters = defaultFilters,
+    columns = defaultColumns,
+    fields = defaultFields,
+    query: initialQuery = null,
+    layout: initialLayout = 'table',
+    layouts = DEFAULT_LAYOUTS,
+    theme = null,
+    onMediaUploaded = null,
+    onItemsChange = null,
+    onLayoutChange = null,
+    onMediaFormOpen = null,
+    onMediaFormClose = null,
+    selectable = false,
+    selectedItems = null,
+    onSelectionChange = null,
+    multipleSelection = false,
+    uppyConfig = DEFAULT_UPPY_CONFIG,
+    withDelete = false,
+    withTrash = false,
+    withReplace = false,
+    withStickySelection = false,
+    withoutUpload = false,
+    className = null,
+    formChildren = null
+})  {
     const [baseItems] = useState(initialItems || null);
     const baseQuery = useMemo(
         () => ({ count: 12, ...initialQuery, ...(types !== null ? { types } : null) }),
@@ -675,6 +646,5 @@ function MediasBrowser({
 }
 
 MediasBrowser.propTypes = propTypes;
-MediasBrowser.defaultProps = defaultProps;
 
 export default MediasBrowser;

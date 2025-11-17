@@ -15,16 +15,14 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const defaultProps = {
-    value: null,
-    name: null,
-    queryValue: null,
-    disabled: false,
-    className: null,
-    onChange: null,
-};
-
-const ToggleField = ({ value, queryValue, name, disabled, className, onChange }) => {
+const ToggleField = ({
+    value = null,
+    queryValue = null,
+    name = null,
+    disabled = false,
+    className = null,
+    onChange = null
+}) => {
     const isTrue = useMemo(
         () =>
             queryValue !== null
@@ -63,6 +61,5 @@ const ToggleField = ({ value, queryValue, name, disabled, className, onChange })
 };
 
 ToggleField.propTypes = propTypes;
-ToggleField.defaultProps = defaultProps;
 
 export default ToggleField;

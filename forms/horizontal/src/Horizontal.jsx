@@ -1,9 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Form from '@panneau/element-form';
 import { useFieldComponent } from '@panneau/core/contexts';
+import Form from '@panneau/element-form';
+
 // import Button from '@panneau/element-button';
 
 const propTypes = {
@@ -26,17 +28,15 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    status: null,
-    value: null,
-    onSubmit: null,
-    generalError: null,
-    errors: null,
-    buttons: null,
-    className: null,
-};
-
-const HorizontalForm = ({ fields, status, value, onChange, className, onSubmit, ...props }) => {
+const HorizontalForm = ({
+    fields = null,
+    status = null,
+    value = null,
+    onChange,
+    className = null,
+    onSubmit = null,
+    ...props
+}) => {
     const FieldsComponent = useFieldComponent('fields');
     return (
         <Form onSubmit={onSubmit} className={className} status={status} {...props}>
@@ -50,6 +50,5 @@ const HorizontalForm = ({ fields, status, value, onChange, className, onSubmit, 
 };
 
 HorizontalForm.propTypes = propTypes;
-HorizontalForm.defaultProps = defaultProps;
 
 export default HorizontalForm;

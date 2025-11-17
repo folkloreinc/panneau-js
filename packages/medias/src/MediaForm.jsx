@@ -39,35 +39,20 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    value: null,
-    fields: defaultFields,
-    onChange: null,
-    onSave: null,
-    onReplace: null,
-    onDelete: null,
-    onClose: null,
-    withDelete: false,
-    withTrash: false,
-    withReplace: false,
-    className: null,
-    children: null,
-};
-
 function MediaForm({
-    value: initialValue,
-    fields: initialFields,
-    onChange,
-    onSave,
-    onReplace,
-    onDelete,
-    onClose,
-    withDelete,
-    withTrash,
-    withReplace,
-    className,
-    children,
-}) {
+    value: initialValue = null,
+    fields: initialFields = defaultFields,
+    onChange = null,
+    onSave = null,
+    onReplace = null,
+    onDelete = null,
+    onClose = null,
+    withDelete = false,
+    withTrash = false,
+    withReplace = false,
+    className = null,
+    children = null
+})  {
     const FieldsComponent = useFieldComponent('fields');
 
     const { update, updating } = useMediaUpdate();
@@ -255,6 +240,5 @@ function MediaForm({
 }
 
 MediaForm.propTypes = propTypes;
-MediaForm.defaultProps = defaultProps;
 
 export default MediaForm;

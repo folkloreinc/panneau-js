@@ -41,54 +41,31 @@ const propTypes = {
     selectClassName: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    clearValue: null,
-    options: [],
-    isAsync: false,
-    disabled: false,
-    multiple: false,
-    searchable: true,
-    creatable: false,
-    withoutReset: false,
-    noOptionsMessage: <FormattedMessage defaultMessage="No result" description="Default label" />,
-    createPrefix: 'Create',
-    onCreateOption: null,
-    placeholder: <FormattedMessage defaultMessage="Choose an option" description="Default label" />,
-    autoSize: false,
-    getOptionValue: null,
-    getOptionLabel: null,
-    loadOptions: null,
-    valueIsOption: false,
-    styles: null,
-    onChange: null,
-    className: null,
-    selectClassName: null,
-};
+const DEFAULT_OPTIONS = [];
 
 const SelectElement = ({
-    value,
-    clearValue,
-    options,
-    isAsync,
-    disabled,
-    multiple,
-    searchable,
-    creatable,
-    withoutReset,
-    noOptionsMessage,
-    createPrefix,
-    onCreateOption,
-    placeholder,
-    autoSize,
-    getOptionValue,
-    getOptionLabel,
-    loadOptions,
-    styles,
-    onChange,
-    className,
-    selectClassName,
-    valueIsOption,
+    value = null,
+    clearValue = null,
+    options = DEFAULT_OPTIONS,
+    isAsync = false,
+    disabled = false,
+    multiple = false,
+    searchable = true,
+    creatable = false,
+    withoutReset = false,
+    noOptionsMessage = <FormattedMessage defaultMessage="No result" description="Default label" />,
+    createPrefix = 'Create',
+    onCreateOption = null,
+    placeholder = <FormattedMessage defaultMessage="Choose an option" description="Default label" />,
+    autoSize = false,
+    getOptionValue = null,
+    getOptionLabel = null,
+    loadOptions = null,
+    styles = null,
+    onChange = null,
+    className = null,
+    selectClassName = null,
+    valueIsOption = false,
     ...props
 }) => {
     const shouldConvertValue = !valueIsOption;
@@ -306,6 +283,5 @@ const SelectElement = ({
 };
 
 SelectElement.propTypes = propTypes;
-SelectElement.defaultProps = defaultProps;
 
 export default SelectElement;

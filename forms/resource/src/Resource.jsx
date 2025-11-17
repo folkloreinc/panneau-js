@@ -29,29 +29,17 @@ const propTypes = {
     withContainer: PropTypes.bool,
 };
 
-const defaultProps = {
-    item: null,
-    type: null,
-    component: null,
-    header: null,
-    onSuccess: null,
-    isDelete: false,
-    isDuplicate: false,
-    isModal: false,
-    withContainer: false,
-};
-
 const ResourceForm = ({
-    component,
-    header,
+    component = null,
+    header = null,
     resource,
-    onSuccess,
-    item,
-    type,
-    isDelete,
-    isDuplicate,
-    isModal,
-    withContainer,
+    onSuccess = null,
+    item = null,
+    type = null,
+    isDelete = false,
+    isDuplicate = false,
+    isModal = false,
+    withContainer = false,
     ...props
 }) => {
     const locales = useLocales();
@@ -259,6 +247,5 @@ const ResourceForm = ({
 };
 
 ResourceForm.propTypes = propTypes;
-ResourceForm.defaultProps = defaultProps;
 
 export default ResourceForm;

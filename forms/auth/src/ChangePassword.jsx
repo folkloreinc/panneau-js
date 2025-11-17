@@ -1,9 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Form from '@panneau/form';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Form from '@panneau/form';
 
 const propTypes = {
     action: PropTypes.string,
@@ -15,30 +16,14 @@ const propTypes = {
     submitButtonLabel: PanneauPropTypes.label,
 };
 
-const defaultProps = {
-    action: '/user/password',
-    fields: null,
-    size: 'lg',
-    currentPasswordLabel: (
-        <FormattedMessage defaultMessage="Current password" description="Field label" />
-    ),
-    passwordLabel: <FormattedMessage defaultMessage="New password" description="Field label" />,
-    passwordConfirmationLabel: (
-        <FormattedMessage defaultMessage="Confirm your new password" description="Field label" />
-    ),
-    submitButtonLabel: (
-        <FormattedMessage defaultMessage="Update password" description="Button label" />
-    ),
-};
-
 const ChangePassword = ({
-    action,
-    fields,
-    size,
-    currentPasswordLabel,
-    passwordLabel,
-    passwordConfirmationLabel,
-    submitButtonLabel,
+    action = '/user/password',
+    fields = null,
+    size = 'lg',
+    currentPasswordLabel = null,
+    passwordLabel = null,
+    passwordConfirmationLabel = null,
+    submitButtonLabel = null,
     ...props
 }) => (
     <Form
@@ -50,28 +35,43 @@ const ChangePassword = ({
                     name: 'current_password',
                     type: 'password',
                     size,
-                    label: currentPasswordLabel,
+                    label: currentPasswordLabel || (
+                        <FormattedMessage
+                            defaultMessage="Current password"
+                            description="Field label"
+                        />
+                    ),
                 },
                 {
                     name: 'password',
                     type: 'password',
                     size,
-                    label: passwordLabel,
+                    label: passwordLabel || (
+                        <FormattedMessage defaultMessage="New password" description="Field label" />
+                    ),
                 },
                 {
                     name: 'password_confirmation',
                     type: 'password',
                     size,
-                    label: passwordConfirmationLabel,
+                    label: passwordConfirmationLabel || (
+                        <FormattedMessage
+                            defaultMessage="Confirm your new password"
+                            description="Field label"
+                        />
+                    ),
                 },
             ]
         }
-        submitButtonLabel={submitButtonLabel}
+        submitButtonLabel={
+            submitButtonLabel || (
+                <FormattedMessage defaultMessage="Update password" description="Button label" />
+            )
+        }
         {...props}
     />
 );
 
 ChangePassword.propTypes = propTypes;
-ChangePassword.defaultProps = defaultProps;
 
 export default ChangePassword;

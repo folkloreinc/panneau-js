@@ -11,19 +11,16 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    api: null,
-    apiBaseUrl: undefined,
-    children: null,
-};
-
-const DataProvider = ({ api, apiBaseUrl, children }) => (
+const DataProvider = ({
+    api = null,
+    apiBaseUrl = undefined,
+    children = null
+}) => (
     <ApiProvider api={api} baseUrl={apiBaseUrl}>
         {children}
     </ApiProvider>
 );
 
 DataProvider.propTypes = propTypes;
-DataProvider.defaultProps = defaultProps;
 
 export default DataProvider;

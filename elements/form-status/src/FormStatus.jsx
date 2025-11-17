@@ -1,11 +1,12 @@
 import { faCheckCircle, faSpinner, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Label from '@panneau/element-label';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Label from '@panneau/element-label';
 
 const propTypes = {
     status: PanneauPropTypes.formStatus,
@@ -15,22 +16,24 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    status: null,
-    successLabel: <FormattedMessage defaultMessage="Success!" description="Form status" />,
-    errorLabel: <FormattedMessage defaultMessage="Error" description="Form status" />,
-    loadingLabel: <FormattedMessage defaultMessage="Loading..." description="Form status" />,
-    className: null,
-};
-
-const FormStatus = ({ status, successLabel, errorLabel, loadingLabel, className }) => {
+const FormStatus = ({
+    status = null,
+    successLabel = null,
+    errorLabel = null,
+    loadingLabel = null,
+    className = null,
+}) => {
     let label = null;
     if (status === 'success') {
-        label = successLabel;
+        label = successLabel || (
+            <FormattedMessage defaultMessage="Success!" description="Form status" />
+        );
     } else if (status === 'error') {
-        label = errorLabel;
+        label = errorLabel || <FormattedMessage defaultMessage="Error" description="Form status" />;
     } else if (status === 'loading') {
-        label = loadingLabel;
+        label = loadingLabel || (
+            <FormattedMessage defaultMessage="Loading..." description="Form status" />
+        );
     }
 
     let icon = null;
@@ -71,6 +74,5 @@ const FormStatus = ({ status, successLabel, errorLabel, loadingLabel, className 
     );
 };
 FormStatus.propTypes = propTypes;
-FormStatus.defaultProps = defaultProps;
 
 export default FormStatus;

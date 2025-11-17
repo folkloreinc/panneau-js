@@ -54,75 +54,36 @@ const propTypes = {
     disabled: PropTypes.bool,
 };
 
-const defaultProps = {
-    label: null,
-    value: null,
-    types: null,
-    newItemValue: () => ({}),
-    newItemValueWithUuid: false,
-    noItemLabel: (
-        <FormattedMessage
-            defaultMessage="No item found."
-            description="Label when there is no item in items field"
-        />
-    ),
-    itemLabelPath: null,
-    addItemLabel: (
-        <FormattedMessage defaultMessage="Add an item" description="Button label in items field" />
-    ),
-    itemLabel: <FormattedMessage defaultMessage="Item" description="Items field's item label" />,
-    itemComponent: null,
-    itemProps: null,
-    itemFields: null,
-    itemField: null,
-    className: null,
-    onChange: null,
-    renderBefore: null,
-    renderItem: null,
-    renderItemLabel: null,
-    withoutListGroup: false,
-    withoutCollapse: false,
-    withoutSort: false,
-    withoutRemove: false,
-    withoutCard: false,
-    excludeEmptyRequiredItems: false,
-    addItemDisabled: false,
-    maxItems: null,
-    buttons: null,
-    inline: false,
-    disabled: false,
-};
-
 const ItemsField = ({
-    label,
-    value,
-    types,
-    newItemValue,
-    newItemValueWithUuid,
-    noItemLabel,
-    addItemLabel,
-    itemLabel,
-    itemLabelPath,
-    itemComponent: ItemComponent,
-    itemProps,
-    itemFields,
-    itemField,
-    className,
-    onChange,
-    renderBefore,
-    renderItem,
-    renderItemLabel,
-    withoutListGroup,
-    withoutCollapse,
-    withoutSort,
-    withoutRemove,
-    withoutCard,
-    excludeEmptyRequiredItems,
-    addItemDisabled,
-    maxItems,
-    buttons,
-    inline,
-    disabled,
+    label = null,
+    value = null,
+    types = null,
+    newItemValue = () => ({}),
+    newItemValueWithUuid = false,
+    noItemLabel: initialNoItemLabel = null,
+    addItemLabel: initialAddItemLabel = null,
+    itemLabel: initialItemLabel = null,
+    itemLabelPath = null,
+    itemComponent: ItemComponent = null,
+    itemProps = null,
+    itemFields = null,
+    itemField = null,
+    className = null,
+    onChange = null,
+    renderBefore = null,
+    renderItem = null,
+    renderItemLabel = null,
+    withoutListGroup = false,
+    withoutCollapse = false,
+    withoutSort = false,
+    withoutRemove = false,
+    withoutCard = false,
+    excludeEmptyRequiredItems = false,
+    addItemDisabled = false,
+    maxItems = null,
+    buttons = null,
+    inline = false,
+    disabled = false,
 }) => {
     const hasTypes = types !== null;
     const [itemIds, setItemIds] = useState((value || []).map(() => uuid()));
@@ -133,6 +94,21 @@ const ItemsField = ({
     const FieldComponent = useFieldComponent(component);
     const fieldsManager = useFieldsComponentsManager();
     const generalFieldProps = disabled === true ? { disabled } : null;
+
+    const addItemLabel = initialAddItemLabel || (
+        <FormattedMessage defaultMessage="Add an item" description="Button label in items field" />
+    );
+
+    const itemLabel = initialItemLabel || (
+        <FormattedMessage defaultMessage="Item" description="Items field's item label" />
+    );
+
+    const noItemLabel = initialNoItemLabel || (
+        <FormattedMessage
+            defaultMessage="No item found."
+            description="Label when there is no item in items field"
+        />
+    );
 
     const [emptyItems, setEmptyItems] = useState([]);
     const items = useMemo(() => {
@@ -704,6 +680,5 @@ const ItemsField = ({
 };
 
 ItemsField.propTypes = propTypes;
-ItemsField.defaultProps = defaultProps;
 
 export default ItemsField;

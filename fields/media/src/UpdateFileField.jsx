@@ -19,14 +19,11 @@ const propTypes = {
     fileTypes: PropTypes.arrayOf(PropTypes.string),
 };
 
-const defaultProps = {
-    value: null,
-    onChange: null,
-    types: null,
-    fileTypes: null,
-};
-
-const UpdateFileField = ({ value, onChange, ...props }) => {
+const UpdateFileField = ({
+    value = null,
+    onChange = null,
+    ...props
+}) => {
     const [newValue, setNewValue] = useState(null);
     const [visibleFile, setVisibleFile] = useState(null);
     const { id: previousId, type = null } = value || {};
@@ -95,6 +92,5 @@ const UpdateFileField = ({ value, onChange, ...props }) => {
 };
 
 UpdateFileField.propTypes = propTypes;
-UpdateFileField.defaultProps = defaultProps;
 
 export default UpdateFileField;

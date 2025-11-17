@@ -33,38 +33,23 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    items: [],
-    component: null,
-    componentProps: null,
-    size: null,
-    gap: null,
-    loading: false,
-    loaded: false,
-    empty: null,
-    emptyLabel: null,
-    selectable: false,
-    selectedItems: null,
-    multipleSelection: false,
-    onSelectionChange: null,
-    className: null,
-};
+const DEFAULT_ITEMS = [];
 
 const Grid = ({
-    items,
-    component,
-    componentProps,
-    size,
-    gap,
-    loading,
-    loaded,
-    empty,
-    emptyLabel,
-    selectable,
-    selectedItems,
-    onSelectionChange,
-    multipleSelection,
-    className,
+    items = DEFAULT_ITEMS,
+    component = null,
+    componentProps = null,
+    size = null,
+    gap = null,
+    loading = false,
+    loaded = false,
+    empty = null,
+    emptyLabel = null,
+    selectable = false,
+    selectedItems = null,
+    onSelectionChange = null,
+    multipleSelection = false,
+    className = null
 }) => {
     const Component = component || null;
 
@@ -153,6 +138,5 @@ const Grid = ({
 };
 
 Grid.propTypes = propTypes;
-Grid.defaultProps = defaultProps;
 
 export default Grid;

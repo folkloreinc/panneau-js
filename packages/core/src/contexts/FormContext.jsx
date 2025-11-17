@@ -22,9 +22,11 @@ const propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const defaultProps = {};
-
-export const FormProvider = ({ value, setValue, children }) => {
+export const FormProvider = ({
+    value,
+    setValue,
+    children
+}) => {
     const values = useMemo(
         () => ({
             value,
@@ -36,6 +38,5 @@ export const FormProvider = ({ value, setValue, children }) => {
 };
 
 FormProvider.propTypes = propTypes;
-FormProvider.defaultProps = defaultProps;
 
 export default FormContext;

@@ -20,26 +20,15 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    placeholder: null,
-    imagePath: 'image',
-    namePath: 'name',
-    size: null,
-    withoutName: false,
-    withoutImage: false,
-    className: null,
-};
-
 const Avatar = ({
-    value,
-    placeholder,
-    imagePath,
-    namePath,
-    size,
-    withoutName,
-    withoutImage,
-    className,
+    value = null,
+    placeholder = null,
+    imagePath = 'image',
+    namePath = 'name',
+    size = null,
+    withoutName = false,
+    withoutImage = false,
+    className = null,
     ...props
 }) => {
     const image = get(value, imagePath) || value || null;
@@ -82,6 +71,5 @@ const Avatar = ({
 };
 
 Avatar.propTypes = propTypes;
-Avatar.defaultProps = defaultProps;
 
 export default Avatar;

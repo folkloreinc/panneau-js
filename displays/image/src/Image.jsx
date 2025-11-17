@@ -18,26 +18,15 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    placeholder: null,
-    maxWidth: 40,
-    maxHeight: 40,
-    onClick: null,
-    withZoom: false,
-    // withModal: false,
-    className: null,
-};
-
 const Image = ({
-    value,
-    placeholder,
-    maxWidth,
-    maxHeight,
-    onClick,
-    withZoom,
-    // withModal,
-    className,
+    value = null,
+    placeholder = null,
+    maxWidth = 40,
+    maxHeight = 40,
+    onClick = null,
+    withZoom = false,
+    // withModal = false,
+    className = null
 }) => {
     const {
         url = null,
@@ -143,6 +132,5 @@ const Image = ({
 };
 
 Image.propTypes = propTypes;
-Image.defaultProps = defaultProps;
 
 export default Image;

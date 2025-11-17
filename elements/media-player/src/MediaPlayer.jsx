@@ -22,14 +22,13 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    width: null,
-    height: null,
-    className: null,
-};
-
-const MediaPlayer = ({ value: initialValue, width, height, className, ...props }) => {
+const MediaPlayer = ({
+    value: initialValue = null,
+    width = null,
+    height = null,
+    className = null,
+    ...props
+}) => {
     const value = initialValue || {};
     const { type } = value || {};
     const apiRef = useRef(null);
@@ -50,6 +49,5 @@ const MediaPlayer = ({ value: initialValue, width, height, className, ...props }
 };
 
 MediaPlayer.propTypes = propTypes;
-MediaPlayer.defaultProps = defaultProps;
 
 export default MediaPlayer;

@@ -1,9 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Form from '@panneau/form';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Form from '@panneau/form';
 
 const propTypes = {
     action: PropTypes.string,
@@ -15,28 +16,14 @@ const propTypes = {
     submitButtonLabel: PanneauPropTypes.label,
 };
 
-const defaultProps = {
-    action: '/reset-password',
-    fields: null,
-    size: 'lg',
-    emailLabel: <FormattedMessage defaultMessage="Email" description="Field label" />,
-    passwordLabel: <FormattedMessage defaultMessage="Password" description="Field label" />,
-    passwordConfirmationLabel: (
-        <FormattedMessage defaultMessage="Confirm your password" description="Field label" />
-    ),
-    submitButtonLabel: (
-        <FormattedMessage defaultMessage="Save new password" description="Button label" />
-    ),
-};
-
 const ResetPassword = ({
-    action,
-    fields,
-    size,
-    emailLabel,
-    passwordLabel,
-    passwordConfirmationLabel,
-    submitButtonLabel,
+    action = '/reset-password',
+    fields = null,
+    size = 'lg',
+    emailLabel = null,
+    passwordLabel = null,
+    passwordConfirmationLabel = null,
+    submitButtonLabel = null,
     ...props
 }) => (
     <Form
@@ -47,29 +34,41 @@ const ResetPassword = ({
                     name: 'email',
                     type: 'email',
                     size,
-                    label: emailLabel,
+                    label: emailLabel || (
+                        <FormattedMessage defaultMessage="Email" description="Field label" />
+                    ),
                     readOnly: true,
                 },
                 {
                     name: 'password',
                     type: 'password',
                     size,
-                    label: passwordLabel,
+                    label: passwordLabel || (
+                        <FormattedMessage defaultMessage="Password" description="Field label" />
+                    ),
                 },
                 {
                     name: 'password_confirmation',
                     type: 'password',
                     size,
-                    label: passwordConfirmationLabel,
+                    label: passwordConfirmationLabel || (
+                        <FormattedMessage
+                            defaultMessage="Confirm your password"
+                            description="Field label"
+                        />
+                    ),
                 },
             ]
         }
-        submitButtonLabel={submitButtonLabel}
+        submitButtonLabel={
+            submitButtonLabel || (
+                <FormattedMessage defaultMessage="Save new password" description="Button label" />
+            )
+        }
         {...props}
     />
 );
 
 ResetPassword.propTypes = propTypes;
-ResetPassword.defaultProps = defaultProps;
 
 export default ResetPassword;

@@ -25,31 +25,20 @@ const propTypes = {
     withoutActionsColumn: PropTypes.bool,
 };
 
-const defaultProps = {
-    items: [],
-    loading: false,
-    loaded: false,
-    columns: null,
-    cardTitlePath: 'title',
-    displayPlaceholder: null,
-    reload: null,
-    updateItem: null,
-    actionsProps: null,
-    withoutActionsColumn: false,
-};
+const DEFAULT_ITEMS = [];
 
 const CardsList = ({
     resource,
-    items,
-    loading,
-    loaded,
-    columns,
-    cardTitlePath,
-    reload,
-    updateItem,
-    actionsProps,
-    displayPlaceholder,
-    withoutActionsColumn,
+    items = DEFAULT_ITEMS,
+    loading = false,
+    loaded = false,
+    columns = null,
+    cardTitlePath = 'title',
+    reload = null,
+    updateItem = null,
+    actionsProps = null,
+    displayPlaceholder = null,
+    withoutActionsColumn = false
 }) => {
     const displayComponents = useDisplaysComponents();
     const columnWithFields = useMemo(
@@ -182,6 +171,5 @@ const CardsList = ({
     );
 };
 CardsList.propTypes = propTypes;
-CardsList.defaultProps = defaultProps;
 
 export default CardsList;

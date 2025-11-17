@@ -30,12 +30,11 @@ const propTypes = {
     libraries: PropTypes.arrayOf(PropTypes.string),
 };
 
-const defaultProps = {
-    locale: 'fr',
-    libraries: null,
-};
-
-export const GoogleMapsClientProvider = ({ children, locale, libraries }) => {
+export const GoogleMapsClientProvider = ({
+    children,
+    locale = 'fr',
+    libraries = null
+}) => {
     const { apiKey } = useGoogleKeys();
     const exisitingClient = useGoogleMapsClient();
     const [client, setClient] = useState(exisitingClient);
@@ -56,4 +55,3 @@ export const GoogleMapsClientProvider = ({ children, locale, libraries }) => {
 };
 
 GoogleMapsClientProvider.propTypes = propTypes;
-GoogleMapsClientProvider.defaultProps = defaultProps;

@@ -13,13 +13,13 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    bold: false,
-    opaque: false,
-    className: null,
-};
-
-const Icon = ({ name, bold, opaque, className, ...props }) =>
+const Icon = ({
+    name,
+    bold = false,
+    opaque = false,
+    className = null,
+    ...props
+}) =>
     name === 'loading' ? (
         <>
             <span className="spinner-border spinner-border-sm" aria-hidden="true" />
@@ -39,6 +39,5 @@ const Icon = ({ name, bold, opaque, className, ...props }) =>
     );
 
 Icon.propTypes = propTypes;
-Icon.defaultProps = defaultProps;
 
 export default Icon;

@@ -13,21 +13,14 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    items: null,
-    value: null,
-    multiple: false,
-    className: null,
-};
-
 function MediasPicker({
-    items: initialItems,
-    value: initialSelectedItems,
+    items: initialItems = null,
+    value: initialSelectedItems = null,
     onChange,
-    multiple,
-    className,
+    multiple = false,
+    className = null,
     ...props
-}) {
+})  {
     // Keep the previous selection on top of first page
     const extraItems = useMemo(() => {
         if (initialSelectedItems === null) {
@@ -72,6 +65,5 @@ function MediasPicker({
 }
 
 MediasPicker.propTypes = propTypes;
-MediasPicker.defaultProps = defaultProps;
 
 export default MediasPicker;

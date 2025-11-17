@@ -19,26 +19,16 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    title: null,
-    onConfirm: null,
-    onClose: null,
-    confirmButton: null,
-    cancelButton: null,
-    className: null,
-    children: null,
-};
-
 function ConfirmModal({
     id,
-    title,
-    onConfirm,
-    onClose,
-    confirmButton,
-    cancelButton,
-    className,
-    children,
-}) {
+    title = null,
+    onConfirm = null,
+    onClose = null,
+    confirmButton = null,
+    cancelButton = null,
+    className = null,
+    children = null
+})  {
     return (
         <Dialog
             id={id}
@@ -71,6 +61,5 @@ function ConfirmModal({
 }
 
 ConfirmModal.propTypes = propTypes;
-ConfirmModal.defaultProps = defaultProps;
 
 export default ConfirmModal;

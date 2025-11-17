@@ -17,13 +17,12 @@ const propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const defaultProps = {
-    api: null,
-    onUnauthorized: null,
-    baseUrl: undefined,
-};
-
-export const ApiProvider = ({ api: initialApi, baseUrl, onUnauthorized, children }) => {
+export const ApiProvider = ({
+    api: initialApi = null,
+    baseUrl = undefined,
+    onUnauthorized = null,
+    children
+}) => {
     const generateUrl = useUrlGenerator();
     const previousApi = useApi();
     const api = useMemo(
@@ -41,6 +40,5 @@ export const ApiProvider = ({ api: initialApi, baseUrl, onUnauthorized, children
 };
 
 ApiProvider.propTypes = propTypes;
-ApiProvider.defaultProps = defaultProps;
 
 export default ApiContext;

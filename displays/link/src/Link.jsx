@@ -17,17 +17,15 @@ const propTypes = {
     placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
 };
 
-const defaultProps = {
-    item: null,
-    value: null,
-    label: null,
-    labelPath: null,
-    external: false,
-    target: null,
-    placeholder: null,
-};
-
-const Link = ({ item, label, labelPath, value, external, target, placeholder }) => {
+const Link = ({
+    item = null,
+    label = null,
+    labelPath = null,
+    value = null,
+    external = false,
+    target = null,
+    placeholder = null
+}) => {
     const itemLabel = get(item, labelPath);
     const finalValue = itemLabel || label || placeholder || (
         <FormattedMessage defaultMessage="Link" description="Display label" />
@@ -44,6 +42,5 @@ const Link = ({ item, label, labelPath, value, external, target, placeholder }) 
 };
 
 Link.propTypes = propTypes;
-Link.defaultProps = defaultProps;
 
 export default Link;

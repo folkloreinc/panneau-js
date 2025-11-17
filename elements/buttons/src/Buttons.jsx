@@ -19,27 +19,18 @@ const propTypes = {
     buttonClassName: PropTypes.string,
 };
 
-const defaultProps = {
-    items: [],
-    size: null,
-    theme: null,
-    outline: false,
-    renderButton: null,
-    onClickButton: null,
-    className: null,
-    buttonClassName: null,
-};
+const DEFAULT_ITEMS = [];
 
 function Buttons({
-    items,
-    size,
-    theme,
-    outline,
-    renderButton,
-    onClickButton,
-    buttonClassName,
-    className,
-}) {
+    items = DEFAULT_ITEMS,
+    size = null,
+    theme = null,
+    outline = false,
+    renderButton = null,
+    onClickButton = null,
+    buttonClassName = null,
+    className = null
+})  {
     const componentsManager = useButtonsComponents();
 
     return (
@@ -105,6 +96,5 @@ function Buttons({
 }
 
 Buttons.propTypes = propTypes;
-Buttons.defaultProps = defaultProps;
 
 export default Buttons;

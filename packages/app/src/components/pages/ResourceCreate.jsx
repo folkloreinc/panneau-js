@@ -16,9 +16,9 @@ const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
 };
 
-const defaultProps = {};
-
-const ResourceCreatePage = ({ resource }) => {
+const ResourceCreatePage = ({
+    resource
+}) => {
     const [, navigate] = useLocation();
     const search = useSearch();
     const resourceRoute = useResourceUrlGenerator(resource);
@@ -65,6 +65,5 @@ const ResourceCreatePage = ({ resource }) => {
     );
 };
 ResourceCreatePage.propTypes = propTypes;
-ResourceCreatePage.defaultProps = defaultProps;
 
 export default ResourceCreatePage;

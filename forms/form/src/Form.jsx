@@ -24,34 +24,20 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    type: 'normal',
-    method: null,
-    postForm: null,
-    postOptions: null,
-    postData: null,
-    value: null,
-    onChange: null,
-    onComplete: null,
-    submitButtonLabel: null,
-    useFormProps: null,
-    className: null,
-};
-
 const Form = ({
-    action,
-    method,
-    type,
-    postForm,
-    postOptions,
-    postData,
+    action = null,
+    method = null,
+    type = 'normal',
+    postForm = null,
+    postOptions = null,
+    postData = null,
     fields: providedFields,
-    value: providedValue,
-    onChange: parentOnChange,
-    onComplete,
-    submitButtonLabel,
-    useFormProps,
-    className,
+    value: providedValue = null,
+    onChange: parentOnChange = null,
+    onComplete = null,
+    submitButtonLabel = null,
+    useFormProps = null,
+    className = null,
     ...props
 }) => {
     const FormComponent = useFormComponent(type);
@@ -100,6 +86,5 @@ const Form = ({
 };
 
 Form.propTypes = propTypes;
-Form.defaultProps = defaultProps;
 
 export default Form;

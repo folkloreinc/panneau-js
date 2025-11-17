@@ -35,52 +35,28 @@ const propTypes = {
     cancelClassName: PropTypes.string,
 };
 
-const defaultProps = {
-    action: null,
-    method: 'POST',
-    status: null,
-    children: null,
-    actions: null,
-    buttons: null,
-    generalError: null,
-    buttonSize: 'lg',
-    submitButtonLabel: null,
-    onSubmit: null,
-    onCancel: null,
-    onCancelHref: null,
-    withoutActions: false,
-    withoutStatus: false,
-    withoutErrors: false,
-    withoutButtonGroup: false,
-    canSave: true,
-    disabled: false,
-    className: null,
-    buttonsClassName: null,
-    cancelClassName: null,
-};
-
 const Form = ({
-    action,
-    method,
-    status,
-    children,
-    actions,
-    buttons,
-    generalError,
-    buttonSize,
-    withoutButtonGroup,
-    submitButtonLabel,
-    onSubmit,
-    onCancel,
-    onCancelHref,
-    withoutActions,
-    withoutStatus,
-    withoutErrors,
-    canSave,
-    disabled,
-    className,
-    buttonsClassName,
-    cancelClassName,
+    action = null,
+    method = 'POST',
+    status = null,
+    children = null,
+    actions = null,
+    buttons = null,
+    generalError = null,
+    buttonSize = 'lg',
+    withoutButtonGroup = false,
+    submitButtonLabel = null,
+    onSubmit = null,
+    onCancel = null,
+    onCancelHref = null,
+    withoutActions = false,
+    withoutStatus = false,
+    withoutErrors = false,
+    canSave = true,
+    disabled = false,
+    className = null,
+    buttonsClassName = null,
+    cancelClassName = null
 }) => (
     <form
         action={action}
@@ -172,6 +148,5 @@ const Form = ({
 );
 
 Form.propTypes = propTypes;
-Form.defaultProps = defaultProps;
 
 export default Form;

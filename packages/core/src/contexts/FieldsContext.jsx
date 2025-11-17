@@ -28,12 +28,11 @@ const propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const defaultProps = {
-    fields: null,
-    manager: null,
-};
-
-export const FieldsProvider = ({ fields, manager, children }) => {
+export const FieldsProvider = ({
+    fields = null,
+    manager = null,
+    children
+}) => {
     const previousManager = useFieldsManager() || null;
 
     const finalManager = useMemo(() => {
@@ -71,4 +70,3 @@ export const FieldsProvider = ({ fields, manager, children }) => {
 };
 
 FieldsProvider.propTypes = propTypes;
-FieldsProvider.defaultProps = defaultProps;

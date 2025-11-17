@@ -9,8 +9,6 @@ import GuestLayout from '../layouts/Guest';
 
 const propTypes = {};
 
-const defaultProps = {};
-
 const LoginPage = () => {
     const route = useUrlGenerator();
     // Sadly necessary to update cookies and routes correctly from the backend,
@@ -35,6 +33,5 @@ const LoginPage = () => {
 };
 
 LoginPage.propTypes = propTypes;
-LoginPage.defaultProps = defaultProps;
 
 export default LoginPage;

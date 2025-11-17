@@ -13,13 +13,11 @@ const propTypes = {
     fullscreen: PropTypes.bool,
 };
 
-const defaultProps = {
-    fullscreen: false,
-    loading: false,
-    children: null,
-};
-
-const MainLayout = ({ fullscreen, loading, children }) => {
+const MainLayout = ({
+    fullscreen = false,
+    loading = false,
+    children = null
+}) => {
     const {
         theme = null,
         sidebarPosition = null,
@@ -71,6 +69,5 @@ const MainLayout = ({ fullscreen, loading, children }) => {
     );
 };
 MainLayout.propTypes = propTypes;
-MainLayout.defaultProps = defaultProps;
 
 export default MainLayout;

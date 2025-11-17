@@ -23,11 +23,9 @@ const propTypes = {
     statusCode: PanneauPropTypes.statusCode,
 };
 
-const defaultProps = {
-    statusCode: null,
-};
-
-const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
+const PanneauRoutes = ({
+    statusCode: initialStatusCode = null
+}) => {
     const routes = useRoutes();
     const [pathname] = useLocation();
     const [{ statusCode, pathname: lastPathname }, setInitialRequest] = useState({
@@ -154,6 +152,5 @@ const PanneauRoutes = ({ statusCode: initialStatusCode }) => {
     );
 };
 PanneauRoutes.propTypes = propTypes;
-PanneauRoutes.defaultProps = defaultProps;
 
 export default PanneauRoutes;

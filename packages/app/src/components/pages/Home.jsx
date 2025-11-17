@@ -10,8 +10,6 @@ import MainLayout from '../layouts/Main';
 
 const propTypes = {};
 
-const defaultProps = {};
-
 const HomePage = () => {
     const route = useUrlGenerator();
     const resources = usePanneauResources();
@@ -45,6 +43,5 @@ const HomePage = () => {
     );
 };
 HomePage.propTypes = propTypes;
-HomePage.defaultProps = defaultProps;
 
 export default HomePage;

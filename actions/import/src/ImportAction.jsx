@@ -26,35 +26,19 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    id: null,
-    title: null,
-    endpoint: '/import',
-    action: null,
-    label: null,
-    icon: 'database',
-    template: null,
-    theme: 'primary',
-    disabled: false,
-    outline: false,
-    fieldComponent: 'import',
-    onConfirmed: null,
-    className: null,
-};
-
 const ImportAction = ({
-    title,
-    endpoint,
-    action,
-    label,
-    icon,
-    template,
-    theme,
-    disabled,
-    outline,
-    onConfirmed,
-    fieldComponent,
-    className,
+    title = null,
+    endpoint = '/import',
+    action = null,
+    label = null,
+    icon = 'database',
+    template = null,
+    theme = 'primary',
+    disabled = false,
+    outline = false,
+    onConfirmed = null,
+    fieldComponent = 'import',
+    className = null,
     ...props
 }) => {
     const FieldComponents = useFieldsComponentsManager();
@@ -105,6 +89,5 @@ const ImportAction = ({
 };
 
 ImportAction.propTypes = propTypes;
-ImportAction.defaultProps = defaultProps;
 
 export default ImportAction;

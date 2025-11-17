@@ -11,12 +11,11 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    components: null,
-    children: null,
-};
-
-const FormsProvider = ({ components: injectedComponents, children, ...props }) => (
+const FormsProvider = ({
+    components: injectedComponents = null,
+    children = null,
+    ...props
+}) => (
     <ComponentsProvider
         namespace={FORMS_NAMESPACE}
         components={{ ...components, ...injectedComponents }}
@@ -27,6 +26,5 @@ const FormsProvider = ({ components: injectedComponents, children, ...props }) =
 );
 
 FormsProvider.propTypes = propTypes;
-FormsProvider.defaultProps = defaultProps;
 
 export default FormsProvider;

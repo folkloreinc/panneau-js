@@ -17,13 +17,12 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const defaultProps = {
-    value: null,
-    options: null,
-    onChange: null,
-};
-
-const Select = ({ field, value, options: providedOptions, onChange }) => {
+const Select = ({
+    field,
+    value = null,
+    options: providedOptions = null,
+    onChange = null
+}) => {
     const { options = null } = field || {};
     const finalOptions = providedOptions || options || null;
     const option =
@@ -39,6 +38,5 @@ const Select = ({ field, value, options: providedOptions, onChange }) => {
 };
 
 Select.propTypes = propTypes;
-Select.defaultProps = defaultProps;
 
 export default Select;

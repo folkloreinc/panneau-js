@@ -42,35 +42,22 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    mode: 'monthly',
-    component: null,
-    items: [],
-    itemDateField: 'date',
-    filter: null,
-    value: null,
-    multiple: false,
-    onDateChange: null,
-    onPeriodChange: null,
-    initialDate: null,
-    loading: false,
-    className: null,
-};
+const DEFAULT_ITEMS = [];
 
 const CalendarList = ({
-    mode,
+    mode = 'monthly',
     resource,
-    component,
-    items,
-    itemDateField,
-    loading,
-    value,
-    multiple,
-    onDateChange,
-    onPeriodChange,
-    initialDate,
-    className,
-    // onQueryChange,
+    component = null,
+    items = DEFAULT_ITEMS,
+    itemDateField = 'date',
+    loading = false,
+    value = null,
+    multiple = false,
+    onDateChange = null,
+    onPeriodChange = null,
+    initialDate = null,
+    className = null,
+    // onQueryChange
 }) => {
     const intl = useIntl();
     const [monthIdx, setMonthIdx] = useState(0);
@@ -323,6 +310,5 @@ const CalendarList = ({
 };
 
 CalendarList.propTypes = propTypes;
-CalendarList.defaultProps = defaultProps;
 
 export default CalendarList;

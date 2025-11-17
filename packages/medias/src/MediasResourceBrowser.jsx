@@ -11,11 +11,10 @@ const propTypes = {
     resource: PropTypes.string,
 };
 
-const defaultProps = {
-    resource: 'medias',
-};
-
-function MediasResourceBrowser({ resource: resourceId, ...props }) {
+function MediasResourceBrowser({
+    resource: resourceId = 'medias',
+    ...props
+})  {
     const resource = usePanneauResource(resourceId);
     const api = useApi();
     const mediasApi = useMemo(
@@ -34,6 +33,5 @@ function MediasResourceBrowser({ resource: resourceId, ...props }) {
 }
 
 MediasResourceBrowser.propTypes = propTypes;
-MediasResourceBrowser.defaultProps = defaultProps;
 
 export default MediasResourceBrowser;

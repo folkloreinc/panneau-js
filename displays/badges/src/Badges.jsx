@@ -14,22 +14,13 @@ const propTypes = {
     itemClassNamePath: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    placeholder: null,
-    itemLabelPath: 'label',
-    itemIconPath: null,
-    itemClassName: 'bg-secondary',
-    itemClassNamePath: null,
-};
-
 const Badges = ({
-    value,
-    placeholder,
-    itemLabelPath,
-    itemIconPath,
-    itemClassName,
-    itemClassNamePath,
+    value = null,
+    placeholder = null,
+    itemLabelPath = 'label',
+    itemIconPath = null,
+    itemClassName = 'bg-secondary',
+    itemClassNamePath = null
 }) => {
     const items = useMemo(
         () => (isArray(value) ? value : [value]).filter((it) => it !== null) || [],
@@ -57,6 +48,5 @@ const Badges = ({
 };
 
 Badges.propTypes = propTypes;
-Badges.defaultProps = defaultProps;
 
 export default Badges;

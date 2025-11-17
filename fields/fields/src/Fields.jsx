@@ -21,28 +21,18 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    components: null,
-    fields: [],
-    value: null,
-    horizontal: false,
-    isList: false,
-    disabled: false,
-    hideWithoutValue: false,
-    onChange: null,
-    className: null,
-};
+const DEFAULT_FIELDS = [];
 
 const Fields = ({
-    components: providedComponents,
-    fields,
-    value,
-    horizontal: fieldsHorizontal,
-    isList,
-    hideWithoutValue,
-    disabled,
-    onChange,
-    className,
+    components: providedComponents = null,
+    fields = DEFAULT_FIELDS,
+    value = null,
+    horizontal: fieldsHorizontal = false,
+    isList = false,
+    hideWithoutValue = false,
+    disabled = false,
+    onChange = null,
+    className = null
 }) => {
     const fieldsManager = useFieldsManager();
     const contextComponents = useFieldsComponents();
@@ -76,7 +66,7 @@ const Fields = ({
             inline = false,
             withoutFormGroup = false,
             isListItem = isList,
-            siblingFields = [],
+            siblingFields = DEFAULT_FIELDS,
             defaultValue = null,
             className: fieldClassName = null,
             groupClassName = null,
@@ -175,6 +165,5 @@ const Fields = ({
 };
 
 Fields.propTypes = propTypes;
-Fields.defaultProps = defaultProps;
 
 export default Fields;

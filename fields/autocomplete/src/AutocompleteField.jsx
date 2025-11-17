@@ -49,45 +49,29 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    items: [],
-    value: null,
-    textValue: null,
-    searchOptions: {
-        // Search in `label` and in `value` items in an object array
-        keys: ['label', 'value'],
-    },
-    maxResults: 10,
-    disabled: false,
-    showEmpty: true,
-    placeholder: null,
-    withoutClear: false,
-    withoutMatch: false,
-    className: null,
-    onFocus: null,
-    onBlur: null,
-    onChange: null,
-    onTextChange: null,
-    children: null,
+const DEFAULT_ITEMS = [];
+const DEFAULT_SEARCH_OPTIONS = {
+    // Search in `label` and in `value` items in an object array
+    keys: ['label', 'value'],
 };
 
 const AutocompleteField = ({
-    items: providedItems,
-    value: providedValue,
-    textValue: providedTextValue,
-    searchOptions,
-    maxResults,
-    disabled,
-    showEmpty,
-    placeholder,
-    withoutClear,
-    withoutMatch,
-    className,
-    onFocus,
-    onBlur,
-    onChange,
-    onTextChange,
-    children,
+    items: providedItems = DEFAULT_ITEMS,
+    value: providedValue = null,
+    textValue: providedTextValue = null,
+    searchOptions = DEFAULT_SEARCH_OPTIONS,
+    maxResults = 10,
+    disabled = false,
+    showEmpty = true,
+    placeholder = null,
+    withoutClear = false,
+    withoutMatch = false,
+    className = null,
+    onFocus = null,
+    onBlur = null,
+    onChange = null,
+    onTextChange = null,
+    children = null
 }) => {
     const fuse = useRef(null);
     const [open, setOpen] = useState(false);
@@ -275,6 +259,5 @@ const AutocompleteField = ({
 };
 
 AutocompleteField.propTypes = propTypes;
-AutocompleteField.defaultProps = defaultProps;
 
 export default AutocompleteField;

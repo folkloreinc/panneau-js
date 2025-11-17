@@ -9,18 +9,15 @@ const propTypes = {
     locale: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    placeholder: null,
-    locale: null,
-};
-
-const TextLocalized = ({ value, placeholder, locale: parentLocale }) => {
+const TextLocalized = ({
+    value = null,
+    placeholder = null,
+    locale: parentLocale = null
+}) => {
     const { locale } = useIntl();
     return <>{value !== null ? value[parentLocale || locale] || placeholder : placeholder}</>;
 };
 
 TextLocalized.propTypes = propTypes;
-TextLocalized.defaultProps = defaultProps;
 
 export default TextLocalized;

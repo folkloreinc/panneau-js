@@ -13,14 +13,16 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    name: 'radios',
-    value: null,
-    options: [],
-    className: null,
-};
+const DEFAULT_OPTIONS = [];
 
-const RadiosFilter = ({ name, value, options, onChange, className, ...props }) => (
+const RadiosFilter = ({
+    name = 'radios',
+    value = null,
+    options = DEFAULT_OPTIONS,
+    onChange,
+    className = null,
+    ...props
+}) => (
     <div className={className}>
         <Radios
             {...props}
@@ -34,6 +36,5 @@ const RadiosFilter = ({ name, value, options, onChange, className, ...props }) =
 );
 
 RadiosFilter.propTypes = propTypes;
-RadiosFilter.defaultProps = defaultProps;
 
 export default RadiosFilter;

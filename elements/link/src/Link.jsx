@@ -21,26 +21,15 @@ const propTypes = {
     onClick: PropTypes.func,
 };
 
-const defaultProps = {
-    href: '',
-    external: false,
-    target: '_blank',
-    rel: 'noopener noreferrer',
-    children: null,
-    withoutStyle: false,
-    className: null,
-    onClick: null,
-};
-
 const Link = ({
-    external,
-    children,
-    target,
-    rel,
-    className,
-    withoutStyle,
-    href,
-    onClick,
+    external = false,
+    children = null,
+    target = '_blank',
+    rel = 'noopener noreferrer',
+    className = null,
+    withoutStyle = false,
+    href = '',
+    onClick = null,
     ...props
 }) => {
     const inner =
@@ -81,6 +70,5 @@ const Link = ({
 };
 
 Link.propTypes = propTypes;
-Link.defaultProps = defaultProps;
 
 export default Link;

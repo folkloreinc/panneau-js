@@ -27,44 +27,24 @@ const propTypes = {
     onInputChange: PropTypes.func,
 };
 
-const defaultProps = {
-    value: null,
-    paginated: false,
-    loadOptions: null,
-    requestUrl: null,
-    requestOptions: null,
-    requestQuery: null,
-    requestSearchParamName: 'search',
-    prepareRequestOptions: null,
-    maxOptionsCount: null,
-    optionLabelPath: null,
-    optionValuePath: null,
-    getOptionLabel: null,
-    getOptionValue: null,
-    multiple: false,
-    className: null,
-    onChange: null,
-    onInputChange: null,
-};
-
 const SelectField = ({
-    value,
-    paginated,
-    loadOptions: customLoadOptions,
-    requestUrl,
-    requestQuery,
-    requestOptions,
-    requestSearchParamName,
-    prepareRequestOptions,
-    maxOptionsCount,
-    optionLabelPath,
-    optionValuePath,
-    getOptionLabel: customGetOptionLabel,
-    getOptionValue: customGetOptionValue,
-    multiple,
-    className,
-    onChange,
-    onInputChange: customOnInputChange,
+    value = null,
+    paginated = false,
+    loadOptions: customLoadOptions = null,
+    requestUrl = null,
+    requestQuery = null,
+    requestOptions = null,
+    requestSearchParamName = 'search',
+    prepareRequestOptions = null,
+    maxOptionsCount = null,
+    optionLabelPath = null,
+    optionValuePath = null,
+    getOptionLabel: customGetOptionLabel = null,
+    getOptionValue: customGetOptionValue = null,
+    multiple = false,
+    className = null,
+    onChange = null,
+    onInputChange: customOnInputChange = null,
     ...props
 }) => {
     const getOptionLabel = useMemo(
@@ -178,6 +158,5 @@ const SelectField = ({
 };
 
 SelectField.propTypes = propTypes;
-SelectField.defaultProps = defaultProps;
 
 export default SelectField;

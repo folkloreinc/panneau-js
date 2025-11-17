@@ -7,17 +7,16 @@ const propTypes = {
     placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
 };
 
-const defaultProps = {
-    labels: {},
-    value: null,
-    placeholder: null,
-};
+const DEFAULT_LABELS = {};
 
-const Label = ({ labels, value, placeholder }) => (
+const Label = ({
+    labels = DEFAULT_LABELS,
+    value = null,
+    placeholder = null
+}) => (
     <div>{labels[value] || value || placeholder}</div>
 );
 
 Label.propTypes = propTypes;
-Label.defaultProps = defaultProps;
 
 export default Label;

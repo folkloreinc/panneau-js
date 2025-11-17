@@ -7,15 +7,12 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const defaultProps = {
-    container: null,
-    children: null,
-};
-
-const PortalElement = ({ children, container }) =>
+const PortalElement = ({
+    children = null,
+    container = null
+}) =>
     container !== null ? ReactDOM.createPortal(children, container) : null;
 
 PortalElement.propTypes = propTypes;
-PortalElement.defaultProps = defaultProps;
 
 export default PortalElement;

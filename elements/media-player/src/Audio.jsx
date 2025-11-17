@@ -18,28 +18,16 @@ const propTypes = {
     audioClassName: PropTypes.string,
 };
 
-const defaultProps = {
-    autoPlay: false,
-    muted: false,
-    loop: true,
-    media: null,
-    width: null,
-    height: null,
-    withoutControls: false,
-    className: null,
-    audioClassName: null,
-};
-
 const Audio = ({
-    autoPlay,
-    muted,
-    loop,
-    media,
-    width,
-    height,
-    withoutControls,
-    className,
-    audioClassName,
+    autoPlay = false,
+    muted = false,
+    loop = true,
+    media = null,
+    width = null,
+    height = null,
+    withoutControls = false,
+    className = null,
+    audioClassName = null
 }) => {
     const {
         url = null,
@@ -86,6 +74,5 @@ const Audio = ({
 };
 
 Audio.propTypes = propTypes;
-Audio.defaultProps = defaultProps;
 
 export default React.forwardRef((props, ref) => <Audio apiRef={ref} {...props} />);

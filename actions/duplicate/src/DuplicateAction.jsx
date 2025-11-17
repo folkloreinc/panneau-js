@@ -28,43 +28,28 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    title: null,
-    description: null,
-    endpoint: '/duplicate',
-    action: null,
-    label: <FormattedMessage defaultMessage="Duplicate" description="Button label" />,
-    icon: 'copy',
-    value: null,
-    theme: 'secondary',
-    disabled: false,
-    onChange: null,
-    onConfirmed: null,
-    valueLabelPath: null,
-    modalComponent: 'confirm',
-    withConfirmation: false,
-    className: null,
-};
-
 const DuplicateAction = ({
     id,
-    title,
-    description,
-    endpoint,
-    action,
-    label,
-    icon,
-    value,
-    theme,
-    disabled,
-    onChange,
-    onConfirmed,
-    valueLabelPath,
-    modalComponent,
-    withConfirmation,
-    className,
+    title = null,
+    description = null,
+    endpoint = '/duplicate',
+    action = null,
+    label: initialLabel = null,
+    icon = 'copy',
+    value = null,
+    theme = 'secondary',
+    disabled = false,
+    onChange = null,
+    onConfirmed = null,
+    valueLabelPath = null,
+    modalComponent = 'confirm',
+    withConfirmation = false,
+    className = null,
     ...props
 }) => {
+    const label = initialLabel || (
+        <FormattedMessage defaultMessage="Duplicate" description="Button label" />
+    );
     const ModalComponents = useModalsComponentsManager();
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
@@ -173,6 +158,5 @@ const DuplicateAction = ({
 };
 
 DuplicateAction.propTypes = propTypes;
-DuplicateAction.defaultProps = defaultProps;
 
 export default DuplicateAction;

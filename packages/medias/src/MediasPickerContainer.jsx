@@ -12,12 +12,12 @@ const propTypes = {
     onChange: PropTypes.func.isRequired,
 };
 
-const defaultProps = {
-    api: null,
-    media: null,
-};
-
-function MediasPickerContainer({ api, media, onChange, ...props }) {
+function MediasPickerContainer({
+    api = null,
+    media = null,
+    onChange,
+    ...props
+})  {
     return (
         <MediasApiProvider api={api}>
             <MediaProvider media={media}>
@@ -28,6 +28,5 @@ function MediasPickerContainer({ api, media, onChange, ...props }) {
 }
 
 MediasPickerContainer.propTypes = propTypes;
-MediasPickerContainer.defaultProps = defaultProps;
 
 export default MediasPickerContainer;

@@ -16,22 +16,22 @@ const propTypes = {
     localeLoaders: PropTypes.objectOf(PropTypes.func),
 };
 
-const defaultProps = {
-    value: null,
-    placeholder: null,
-    format: 'yyyy-MM-dd',
-    parseFormat: null,
-    locale: null,
-    localeLoaders: {
-        fr: () => loadPackage('date-fns/locale/fr-CA', () => import('date-fns/locale/fr-CA')),
-        de: () => loadPackage('date-fns/locale/de', () => import('date-fns/locale/de')),
-        ja: () => loadPackage('date-fns/locale/ja', () => import('date-fns/locale/ja')),
-        es: () => loadPackage('date-fns/locale/es', () => import('date-fns/locale/es')),
-        en: () => loadPackage('date-fns/locale/en-US', () => import('date-fns/locale/en-US')),
-    },
+const DEFAULT_LOADERS = {
+    fr: () => loadPackage('date-fns/locale/fr-CA', () => import('date-fns/locale/fr-CA')),
+    de: () => loadPackage('date-fns/locale/de', () => import('date-fns/locale/de')),
+    ja: () => loadPackage('date-fns/locale/ja', () => import('date-fns/locale/ja')),
+    es: () => loadPackage('date-fns/locale/es', () => import('date-fns/locale/es')),
+    en: () => loadPackage('date-fns/locale/en-US', () => import('date-fns/locale/en-US')),
 };
 
-const DateDisplay = ({ value, placeholder, format, parseFormat, locale, localeLoaders }) => {
+const DateDisplay = ({
+    value = null,
+    placeholder = null,
+    format = 'yyyy-MM-dd',
+    parseFormat = null,
+    locale = null,
+    localeLoaders = DEFAULT_LOADERS,
+}) => {
     const { locale: defaultLocale } = useIntl();
     const finalLocale = locale || defaultLocale;
     const [localePackage, setLocalePackage] = useState(null);
@@ -69,6 +69,5 @@ const DateDisplay = ({ value, placeholder, format, parseFormat, locale, localeLo
 };
 
 DateDisplay.propTypes = propTypes;
-DateDisplay.defaultProps = defaultProps;
 
 export default DateDisplay;

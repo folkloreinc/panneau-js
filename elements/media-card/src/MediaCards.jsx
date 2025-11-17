@@ -21,13 +21,12 @@ const propTypes = {
     cardClassName: PropTypes.string,
 };
 
-const defaultProps = {
-    value: null,
-    className: null,
-    cardClassName: null,
-};
-
-const MediaCards = ({ value, className, cardClassName, ...props }) => {
+const MediaCards = ({
+    value = null,
+    className = null,
+    cardClassName = null,
+    ...props
+}) => {
     const values = useMemo(() => {
         if (isArray(value)) {
             return value;
@@ -54,6 +53,5 @@ const MediaCards = ({ value, className, cardClassName, ...props }) => {
 };
 
 MediaCards.propTypes = propTypes;
-MediaCards.defaultProps = defaultProps;
 
 export default MediaCards;

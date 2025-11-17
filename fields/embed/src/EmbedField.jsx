@@ -30,22 +30,15 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const defaultProps = {
-    value: null,
-    schemes: ['http://', 'https://', 'ftp://'],
-    url: null,
-    disabled: null,
-    className: null,
-    onChange: null,
-};
+const DEFAULT_SCHEMES = ['http://', 'https://', 'ftp://'];
 
 const EmbedField = ({
-    value,
-    schemes,
-    url: prefixUrl,
-    disabled,
-    className,
-    onChange,
+    value = null,
+    schemes = DEFAULT_SCHEMES,
+    url: prefixUrl = null,
+    disabled = null,
+    className = null,
+    onChange = null,
     ...props
 }) => {
     const { url = null, metadata = null } = isObject(value) ? value : { url: value };
@@ -118,6 +111,5 @@ const EmbedField = ({
 };
 
 EmbedField.propTypes = propTypes;
-EmbedField.defaultProps = defaultProps;
 
 export default EmbedField;

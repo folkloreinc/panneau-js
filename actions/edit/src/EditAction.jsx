@@ -27,43 +27,28 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    title: null,
-    description: null,
-    fields: null,
-    endpoint: null,
-    label: <FormattedMessage defaultMessage="Edit" description="Button label" />,
-    icon: 'pencil',
-    value: null,
-    theme: 'primary',
-    disabled: false,
-    onChange: null,
-    onConfirmed: null,
-    valueLabelPath: null,
-    modalComponent: 'form',
-    withConfirmation: false,
-    className: null,
-};
-
 const EditAction = ({
     id,
-    title,
-    description,
-    fields,
-    endpoint,
-    label,
-    icon,
-    value,
-    theme,
-    disabled,
-    onChange,
-    onConfirmed,
-    valueLabelPath,
-    modalComponent,
-    withConfirmation,
-    className,
+    title = null,
+    description = null,
+    fields = null,
+    endpoint = null,
+    label: initialLabel = null,
+    icon = 'pencil',
+    value = null,
+    theme = 'primary',
+    disabled = false,
+    onChange = null,
+    onConfirmed = null,
+    valueLabelPath = null,
+    modalComponent = 'form',
+    withConfirmation = false,
+    className = null,
     ...props
 }) => {
+    const label = initialLabel || (
+        <FormattedMessage defaultMessage="Edit" description="Button label" />
+    );
     const ModalComponents = useModalsComponentsManager();
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
@@ -160,6 +145,5 @@ const EditAction = ({
 };
 
 EditAction.propTypes = propTypes;
-EditAction.defaultProps = defaultProps;
 
 export default EditAction;

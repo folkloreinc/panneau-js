@@ -12,13 +12,11 @@ const propTypes = {
     linkClassName: PropTypes.string,
 };
 
-const defaultProps = {
-    className: null,
-    itemClassName: null,
-    linkClassName: null,
-};
-
-const ResourcesMenu = ({ className, itemClassName, linkClassName }) => {
+const ResourcesMenu = ({
+    className = null,
+    itemClassName = null,
+    linkClassName = null
+}) => {
     const [pathname] = useLocation();
     const resources = usePanneauResources();
     const resourceRoute = useResourceUrlGenerator();
@@ -49,6 +47,5 @@ const ResourcesMenu = ({ className, itemClassName, linkClassName }) => {
     );
 };
 ResourcesMenu.propTypes = propTypes;
-ResourcesMenu.defaultProps = defaultProps;
 
 export default ResourcesMenu;

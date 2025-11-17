@@ -66,11 +66,9 @@ const propTypes = {
     statusCode: PanneauPropTypes.statusCode,
 };
 
-const defaultProps = {
-    statusCode: null,
-};
-
-const ErrorPage = ({ statusCode }) => (
+const ErrorPage = ({
+    statusCode = null
+}) => (
     <GuestLayout fullscreen>
         <div className="container-sm py-4">
             <div className="row justify-content-center">
@@ -87,6 +85,5 @@ const ErrorPage = ({ statusCode }) => (
     </GuestLayout>
 );
 ErrorPage.propTypes = propTypes;
-ErrorPage.defaultProps = defaultProps;
 
 export default ErrorPage;

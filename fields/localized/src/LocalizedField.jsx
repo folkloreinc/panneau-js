@@ -30,38 +30,23 @@ const propTypes = {
     onCurrentLocaleChange: PropTypes.func,
 };
 
-const defaultProps = {
-    name: null,
-    value: null,
-    errors: null,
-    label: null,
-    helpText: null,
-    component: null,
-    locales: null,
-    properties: {},
-    fieldComponent: null,
-    fieldProps: null,
-    disabled: false,
-    className: null,
-    onChange: null,
-    onCurrentLocaleChange: null,
-};
+const DEFAULT_PROPERTIES = {};
 
 const LocalizedField = ({
-    name,
-    value,
-    errors,
-    label,
-    helpText,
-    properties,
-    locales: parentLocales,
-    fieldComponent: providedFieldComponent,
-    component: componentName,
-    fieldProps,
-    onChange,
-    onCurrentLocaleChange,
-    disabled,
-    className,
+    name = null,
+    value = null,
+    errors = null,
+    label = null,
+    helpText = null,
+    properties = DEFAULT_PROPERTIES,
+    locales: parentLocales = null,
+    fieldComponent: providedFieldComponent = null,
+    component: componentName = null,
+    fieldProps = null,
+    onChange = null,
+    onCurrentLocaleChange = null,
+    disabled = false,
+    className = null
 }) => {
     const contextLocales = useLocales();
     const locales = parentLocales || contextLocales;
@@ -159,6 +144,5 @@ const LocalizedField = ({
 };
 
 LocalizedField.propTypes = propTypes;
-LocalizedField.defaultProps = defaultProps;
 
 export default LocalizedField;

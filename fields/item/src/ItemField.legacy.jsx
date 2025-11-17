@@ -42,56 +42,30 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const defaultProps = {
-    name: null,
-    value: null,
-    errors: null,
-    items: null,
-    maxItemsCount: 5,
-    loadItems: null,
-    requestUrl: null,
-    requestOptions: null,
-    requestQuery: null,
-    requestSearchParamName: 'search',
-    getItemLabel: getPathValue,
-    getItemDescription: getPathValue,
-    getItemImage: getPathValue,
-    itemLabelPath: 'label',
-    itemDescriptionPath: null,
-    itemImagePath: 'image',
-    itemLabelWithId: false,
-    size: null,
-    placeholder: null,
-    disabled: false,
-    className: null,
-    inputClassName: null,
-    onChange: null,
-};
-
 const ItemField = ({
-    name,
-    value,
-    errors,
-    size,
-    placeholder,
-    items: initialItems,
-    maxItemsCount,
-    loadItems,
-    requestUrl,
-    requestQuery,
-    requestOptions,
-    requestSearchParamName,
-    getItemLabel: initialGetItemLabel,
-    getItemDescription,
-    getItemImage,
-    itemLabelPath,
-    itemDescriptionPath,
-    itemImagePath,
-    itemLabelWithId,
-    disabled,
-    className,
-    inputClassName,
-    onChange,
+    name = null,
+    value = null,
+    errors = null,
+    size = null,
+    placeholder = null,
+    items: initialItems = null,
+    maxItemsCount = 5,
+    loadItems = null,
+    requestUrl = null,
+    requestQuery = null,
+    requestOptions = null,
+    requestSearchParamName = 'search',
+    getItemLabel: initialGetItemLabel = getPathValue,
+    getItemDescription = getPathValue,
+    getItemImage = getPathValue,
+    itemLabelPath = 'label',
+    itemDescriptionPath = null,
+    itemImagePath = 'image',
+    itemLabelWithId = false,
+    disabled = false,
+    className = null,
+    inputClassName = null,
+    onChange = null
 }) => {
     const intl = useIntl();
     const api = useApi();
@@ -329,6 +303,5 @@ const ItemField = ({
 };
 
 ItemField.propTypes = propTypes;
-ItemField.defaultProps = defaultProps;
 
 export default ItemField;

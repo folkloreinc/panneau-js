@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import Form from '@panneau/form';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
+
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Link from '@panneau/element-link';
+import Form from '@panneau/form';
 
 const propTypes = {
     action: PropTypes.string,
@@ -18,36 +19,15 @@ const propTypes = {
     cancelLabel: PanneauPropTypes.label,
 };
 
-const defaultProps = {
-    action: '/user/two-factor-authentication',
-    fields: null,
-    size: 'lg',
-    explainationLabel: (
-        <FormattedMessage
-            defaultMessage="Do you really wish to disable two factor authentication on your account?"
-            description="Explaination label"
-        />
-    ),
-    submitButtonLabel: (
-        <FormattedMessage
-            defaultMessage="Disable two factor authentication"
-            description="Button label"
-        />
-    ),
-    withCancelLink: true,
-    cancelLink: '/home',
-    cancelLabel: <FormattedMessage defaultMessage="Cancel" description="Link label" />,
-};
-
 const TwoFactorDisable = ({
-    action,
-    fields,
-    explainationLabel,
-    submitButtonLabel,
-    size,
-    withCancelLink,
-    cancelLink,
-    cancelLabel,
+    action = '/user/two-factor-authentication',
+    fields = null,
+    explainationLabel = null,
+    submitButtonLabel = null,
+    size = 'lg',
+    withCancelLink = true,
+    cancelLink = '/home',
+    cancelLabel = null,
     ...props
 }) => {
     const defaultPostForm = useCallback(
@@ -62,23 +42,38 @@ const TwoFactorDisable = ({
     return (
         <Form
             action={action}
-            submitButtonLabel={submitButtonLabel}
+            submitButtonLabel={
+                submitButtonLabel || (
+                    <FormattedMessage
+                        defaultMessage="Disable two factor authentication"
+                        description="Button label"
+                    />
+                )
+            }
             actions={
                 withCancelLink ? (
                     <Link className="py-2 px-4" href={cancelLink}>
-                        {cancelLabel}
+                        {cancelLabel || (
+                            <FormattedMessage defaultMessage="Cancel" description="Link label" />
+                        )}
                     </Link>
                 ) : null
             }
             postForm={defaultPostForm}
             {...props}
         >
-            <p>{explainationLabel}</p>
+            <p>
+                {explainationLabel || (
+                    <FormattedMessage
+                        defaultMessage="Do you really wish to disable two factor authentication on your account?"
+                        description="Explaination label"
+                    />
+                )}
+            </p>
         </Form>
     );
 };
 
 TwoFactorDisable.propTypes = propTypes;
-TwoFactorDisable.defaultProps = defaultProps;
 
 export default TwoFactorDisable;

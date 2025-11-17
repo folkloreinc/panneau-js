@@ -19,16 +19,16 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const defaultProps = {
-    items: [],
-    theme: null,
-    separator: null,
-    withoutBar: false,
-    noWrap: false,
-    className: null,
-};
+const DEFAULT_ITEMS = [];
 
-const Breadcrumbs = ({ items, theme, separator, withoutBar, noWrap, className }) => (
+const Breadcrumbs = ({
+    items = DEFAULT_ITEMS,
+    theme = null,
+    separator = null,
+    withoutBar = false,
+    noWrap = false,
+    className = null
+}) => (
     <nav className={className}>
         <ol
             className={classNames([
@@ -84,6 +84,5 @@ const Breadcrumbs = ({ items, theme, separator, withoutBar, noWrap, className })
 );
 
 Breadcrumbs.propTypes = propTypes;
-Breadcrumbs.defaultProps = defaultProps;
 
 export default Breadcrumbs;
