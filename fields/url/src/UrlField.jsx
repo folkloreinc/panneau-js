@@ -10,16 +10,18 @@ import Button from '@panneau/element-button';
 import Icon from '@panneau/element-icon';
 import TextField from '@panneau/field-text';
 
-const getScheme = (url, schemesPattern) => {
+function getScheme(url, schemesPattern) {
     const match = url !== null && isString(url) ? url.match(schemesPattern) : null;
     return match !== null && match[1].length !== url.length ? match[1].toLowerCase() : null;
-};
+}
 
-const removeScheme = (url, schemesPattern) =>
-    url !== null && isString(url) ? url.replace(schemesPattern, '') : null;
+function removeScheme(url, schemesPattern) {
+    return url !== null && isString(url) ? url.replace(schemesPattern, '') : null;
+}
 
-const withScheme = (url, prefix, schemesPattern) =>
-    url !== null && isString(url) && !url.match(schemesPattern) ? `${prefix}${url}` : url;
+function withScheme(url, prefix, schemesPattern) {
+    return url !== null && isString(url) && !url.match(schemesPattern) ? `${prefix}${url}` : url;
+}
 
 const propTypes = {
     name: PropTypes.string,
@@ -37,7 +39,7 @@ const propTypes = {
 
 const DEFAULT_SCHEMES = ['https://', 'http://'];
 
-const UrlField = ({
+function UrlField({
     name = null,
     value = null,
     schemes = DEFAULT_SCHEMES,
@@ -50,7 +52,7 @@ const UrlField = ({
     className = null,
     onChange = null,
     ...props
-}) => {
+}) {
     const empty = isEmpty(value);
 
     const [open, setOpen] = useState(false);
@@ -184,7 +186,7 @@ const UrlField = ({
             type="text"
         />
     );
-};
+}
 
 UrlField.propTypes = propTypes;
 

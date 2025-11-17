@@ -21,12 +21,12 @@ const propTypes = {
 
 const DEFAULT_ITEMS = [];
 
-const Accordion = ({
+function Accordion({
     oneAtATime = false,
     title = null,
     items = DEFAULT_ITEMS,
     className = null
-}) => {
+}) {
     const accordionRefs = useRef([]);
     const accordionId = useMemo(() => uuid(), []);
 
@@ -119,7 +119,7 @@ const Accordion = ({
                 : null}
         </div>
     );
-};
+}
 
 Accordion.propTypes = propTypes;
 

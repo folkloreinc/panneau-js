@@ -32,7 +32,7 @@ const propTypes = {
 
 const DEFAULT_PROPERTIES = {};
 
-const LocalizedField = ({
+function LocalizedField({
     name = null,
     value = null,
     errors = null,
@@ -47,7 +47,7 @@ const LocalizedField = ({
     onCurrentLocaleChange = null,
     disabled = false,
     className = null
-}) => {
+}) {
     const contextLocales = useLocales();
     const locales = parentLocales || contextLocales;
     const Components = useFieldsComponents();
@@ -141,7 +141,7 @@ const LocalizedField = ({
                 })}
         </FormGroup>
     );
-};
+}
 
 LocalizedField.propTypes = propTypes;
 

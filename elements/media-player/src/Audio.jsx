@@ -18,7 +18,7 @@ const propTypes = {
     audioClassName: PropTypes.string,
 };
 
-const Audio = ({
+function Audio({
     autoPlay = false,
     muted = false,
     loop = true,
@@ -28,7 +28,7 @@ const Audio = ({
     withoutControls = false,
     className = null,
     audioClassName = null
-}) => {
+}) {
     const {
         url = null,
         thumbnail_url: thumbnail = null,
@@ -71,7 +71,7 @@ const Audio = ({
             ) : null}
         </div>
     );
-};
+}
 
 Audio.propTypes = propTypes;
 

@@ -7,10 +7,12 @@ const propTypes = {
     placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
 };
 
-const Text = ({
+function Text({
     value = null,
     placeholder = null
-}) => <>{value || placeholder}</>;
+}) {
+    return <>{value || placeholder}</>;
+}
 
 Text.propTypes = propTypes;
 

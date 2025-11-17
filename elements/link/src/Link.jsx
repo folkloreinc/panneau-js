@@ -21,7 +21,7 @@ const propTypes = {
     onClick: PropTypes.func,
 };
 
-const Link = ({
+function Link({
     external = false,
     children = null,
     target = '_blank',
@@ -31,7 +31,7 @@ const Link = ({
     href = '',
     onClick = null,
     ...props
-}) => {
+}) {
     const inner =
         href !== null ? (
             <ReactLink
@@ -67,7 +67,7 @@ const Link = ({
     ) : (
         inner
     );
-};
+}
 
 Link.propTypes = propTypes;
 

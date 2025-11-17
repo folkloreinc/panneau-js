@@ -14,10 +14,10 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const Modals = ({
+function Modals({
     theme = null,
     className = null
-}) => {
+}) {
     const { modals = null, setContainer = null, closeLastModal = null } = useModal();
 
     const containerRef = useRef(null);
@@ -64,7 +64,7 @@ const Modals = ({
             />
         </div>
     );
-};
+}
 
 Modals.propTypes = propTypes;
 

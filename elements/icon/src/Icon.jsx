@@ -13,14 +13,14 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const Icon = ({
+function Icon({
     name,
     bold = false,
     opaque = false,
     className = null,
     ...props
-}) =>
-    name === 'loading' ? (
+}) {
+    return name === 'loading' ? (
         <>
             <span className="spinner-border spinner-border-sm" aria-hidden="true" />
             <span className="visually-hidden" role="status">
@@ -37,6 +37,7 @@ const Icon = ({
             {...props}
         />
     );
+}
 
 Icon.propTypes = propTypes;
 

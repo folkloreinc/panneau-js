@@ -50,7 +50,7 @@ const propTypes = {
 
 const DEFAULT_ACTIONS = ['show', 'edit', 'delete'];
 
-const ItemActions = ({
+function ItemActions({
     resource = null,
     size = 'sm',
     item,
@@ -75,7 +75,7 @@ const ItemActions = ({
     withoutItemShowUrl = false,
     itemLinkProp,
     className = null,
-}) => {
+}) {
     const urlGenerator = useResourceUrlGenerator(resource);
     const componentsManager = useActionsComponentsManager();
     const actionItems = items || actions || [];
@@ -153,7 +153,7 @@ const ItemActions = ({
             className={className}
         />
     );
-};
+}
 
 ItemActions.propTypes = propTypes;
 

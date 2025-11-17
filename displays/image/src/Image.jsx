@@ -18,7 +18,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const Image = ({
+function Image({
     value = null,
     placeholder = null,
     maxWidth = 40,
@@ -27,7 +27,7 @@ const Image = ({
     withZoom = false,
     // withModal = false,
     className = null
-}) => {
+}) {
     const {
         url = null,
         thumbnailUrl = null,
@@ -129,7 +129,7 @@ const Image = ({
             </Tag>
         </div>
     );
-};
+}
 
 Image.propTypes = propTypes;
 

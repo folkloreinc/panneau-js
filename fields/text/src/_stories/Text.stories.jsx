@@ -11,10 +11,10 @@ export default {
     },
 };
 
-const Container = (props) => {
+function Container(props) {
     const [value, setValue] = useState(null);
     return <InputField {...props} value={value} onChange={setValue} />;
-};
+}
 
 export const Normal = () => <Container placeholder="Text" />;
 

@@ -27,7 +27,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const EditAction = ({
+function EditAction({
     id,
     title = null,
     description = null,
@@ -45,7 +45,7 @@ const EditAction = ({
     withConfirmation = false,
     className = null,
     ...props
-}) => {
+}) {
     const label = initialLabel || (
         <FormattedMessage defaultMessage="Edit" description="Button label" />
     );
@@ -142,7 +142,7 @@ const EditAction = ({
             ) : null}
         </>
     );
-};
+}
 
 EditAction.propTypes = propTypes;
 

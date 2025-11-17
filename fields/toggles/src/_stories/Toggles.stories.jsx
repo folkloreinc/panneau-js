@@ -14,10 +14,10 @@ const values = [
     { key: '3', label: 'Three' },
 ];
 
-const Container = (props) => {
+function Container(props) {
     const [value, setValue] = useState(null);
     return <TogglesField {...props} value={value} onChange={setValue} />;
-};
+}
 
 export const Normal = () => <Container toggles={values} />;
 

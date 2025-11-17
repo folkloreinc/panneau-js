@@ -9,13 +9,15 @@ const propTypes = {
 
 const DEFAULT_LABELS = {};
 
-const Label = ({
+function Label({
     labels = DEFAULT_LABELS,
     value = null,
     placeholder = null
-}) => (
-    <div>{labels[value] || value || placeholder}</div>
-);
+}) {
+    return (
+        <div>{labels[value] || value || placeholder}</div>
+    );
+}
 
 Label.propTypes = propTypes;
 

@@ -27,7 +27,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const ShowAction = ({
+function ShowAction({
     id,
     title = null,
     description = null,
@@ -45,7 +45,7 @@ const ShowAction = ({
     withConfirmation = false,
     className = null,
     ...props
-}) => {
+}) {
     const ModalComponents = useModalsComponentsManager();
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
@@ -101,7 +101,7 @@ const ShowAction = ({
             ) : null}
         </>
     );
-};
+}
 
 ShowAction.propTypes = propTypes;
 

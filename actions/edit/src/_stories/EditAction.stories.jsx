@@ -16,7 +16,7 @@ export default {
     },
 };
 
-const FieldContainer = ({ value: initialValue, ...props }) => {
+function FieldContainer({ value: initialValue, ...props }) {
     const [value, setValue] = useState(initialValue);
     return (
         <FieldsProvider>
@@ -41,6 +41,8 @@ const FieldContainer = ({ value: initialValue, ...props }) => {
             </ModalsProvider>
         </FieldsProvider>
     );
-};
+}
 
-export const Normal = () => <FieldContainer label="Edit mee" withConfirmation />;
+export function Normal() {
+    return <FieldContainer label="Edit mee" withConfirmation />;
+}

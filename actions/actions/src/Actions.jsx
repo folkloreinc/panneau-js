@@ -27,7 +27,7 @@ const propTypes = {
 
 const DEFAULT_ACTIONS = [];
 
-const Actions = ({
+function Actions({
     resource = null,
     actions = DEFAULT_ACTIONS,
     value = null,
@@ -39,7 +39,7 @@ const Actions = ({
     disabled: parentDisabled = false,
     withConfirmation = false,
     className = null
-}) => {
+}) {
     const actionsComponents = useActionsComponentsManager();
 
     const disabled = value === null || value.length === 0;
@@ -113,7 +113,7 @@ const Actions = ({
             })}
         </div>
     );
-};
+}
 
 Actions.propTypes = propTypes;
 

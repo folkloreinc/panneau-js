@@ -26,7 +26,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const ImportAction = ({
+function ImportAction({
     title = null,
     endpoint = '/import',
     action = null,
@@ -40,7 +40,7 @@ const ImportAction = ({
     fieldComponent = 'import',
     className = null,
     ...props
-}) => {
+}) {
     const FieldComponents = useFieldsComponentsManager();
     const FieldComponent = FieldComponents.getComponent(fieldComponent);
 
@@ -86,7 +86,7 @@ const ImportAction = ({
             {error !== null ? <p className="text-danger">{error}</p> : null}
         </>
     );
-};
+}
 
 ImportAction.propTypes = propTypes;
 

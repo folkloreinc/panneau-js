@@ -26,7 +26,7 @@ export default {
 };
 
 // eslint-disable-next-line react/prop-types
-const Container = ({ value: initialValue = null, ...props }) => {
+function Container({ value: initialValue = null, ...props }) {
     const [value, setValue] = useState(initialValue);
 
     return (
@@ -55,7 +55,7 @@ const Container = ({ value: initialValue = null, ...props }) => {
             </ListsProvider>
         </PanneauProvider>
     );
-};
+}
 
 export const Normal = () => <Container />;
 

@@ -27,7 +27,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const RestoreAction = ({
+function RestoreAction({
     id,
     title = null,
     description = null,
@@ -44,7 +44,7 @@ const RestoreAction = ({
     withConfirmation = false,
     className = null,
     ...props
-}) => {
+}) {
     const ModalComponents = useModalsComponentsManager();
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
@@ -147,7 +147,7 @@ const RestoreAction = ({
             ) : null}
         </>
     );
-};
+}
 
 RestoreAction.propTypes = propTypes;
 

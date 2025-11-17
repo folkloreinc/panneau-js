@@ -32,7 +32,7 @@ const template = {
     ],
 };
 
-const FieldContainer = (props) => {
+function FieldContainer(props) {
     const [value, setValue] = useState([{ id: '12' }]);
     return (
         <FieldsProvider>
@@ -44,6 +44,8 @@ const FieldContainer = (props) => {
             </ModalsProvider>
         </FieldsProvider>
     );
-};
+}
 
-export const Normal = () => <FieldContainer label="Welcome to csv" withConfirmation />;
+export function Normal() {
+    return <FieldContainer label="Welcome to csv" withConfirmation />;
+}

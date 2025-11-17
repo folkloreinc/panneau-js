@@ -20,7 +20,7 @@ const propTypes = {
 
 const DEFAULT_OPTIONS = [];
 
-const Radios = ({
+function Radios({
     name = null,
     value = null,
     options = DEFAULT_OPTIONS,
@@ -30,7 +30,7 @@ const Radios = ({
     className = null,
     buttonClassName = null,
     onChange = null
-}) => {
+}) {
     const finalOptions = useMemo(() => getSelectOptions(options), [options]);
 
     return (
@@ -87,7 +87,7 @@ const Radios = ({
             })}
         </div>
     );
-};
+}
 
 Radios.propTypes = propTypes;
 

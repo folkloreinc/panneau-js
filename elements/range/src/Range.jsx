@@ -14,13 +14,13 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const Range = ({
+function Range({
     title = null,
     value = 50,
     onChange,
     max = 100,
     className = null
-}) => {
+}) {
     const onValueChange = useCallback(
         (e) => {
             onChange(e.target.value);
@@ -52,7 +52,7 @@ const Range = ({
             />
         </div>
     );
-};
+}
 
 Range.propTypes = propTypes;
 

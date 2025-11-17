@@ -19,14 +19,14 @@ const propTypes = {
 
 const DEFAULT_OPTIONS = [];
 
-const Checkboxes = ({
+function Checkboxes({
     name = null,
     value = null,
     options = DEFAULT_OPTIONS,
     disabled = false,
     className = null,
     onChange = null
-}) => {
+}) {
     const finalOptions = useMemo(() => getSelectOptions(options), [options]);
     return (
         <div
@@ -74,7 +74,7 @@ const Checkboxes = ({
             ))}
         </div>
     );
-};
+}
 
 Checkboxes.propTypes = propTypes;
 

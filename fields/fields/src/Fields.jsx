@@ -23,7 +23,7 @@ const propTypes = {
 
 const DEFAULT_FIELDS = [];
 
-const Fields = ({
+function Fields({
     components: providedComponents = null,
     fields = DEFAULT_FIELDS,
     value = null,
@@ -33,7 +33,7 @@ const Fields = ({
     disabled = false,
     onChange = null,
     className = null
-}) => {
+}) {
     const fieldsManager = useFieldsManager();
     const contextComponents = useFieldsComponents();
     const components = providedComponents || contextComponents;
@@ -162,7 +162,7 @@ const Fields = ({
             )}
         </div>
     );
-};
+}
 
 Fields.propTypes = propTypes;
 

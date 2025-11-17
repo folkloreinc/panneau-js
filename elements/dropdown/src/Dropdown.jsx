@@ -24,7 +24,7 @@ const propTypes = {
 
 const DEFAULT_ITEMS = [];
 
-const Dropdown = ({
+function Dropdown({
     items = DEFAULT_ITEMS,
     children = null,
     visible = false,
@@ -33,7 +33,7 @@ const Dropdown = ({
     itemClassName = null,
     onClickItem = null,
     onClickOutside = null
-}) => {
+}) {
     const refContainer = useRef(null);
     const onDocumentClick = useCallback(
         (e) => {
@@ -122,7 +122,7 @@ const Dropdown = ({
                   })}
         </div>
     );
-};
+}
 
 Dropdown.propTypes = propTypes;
 

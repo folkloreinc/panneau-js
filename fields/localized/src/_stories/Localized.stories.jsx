@@ -24,7 +24,7 @@ const defaultValue = defaultLocales.reduce(
     {},
 );
 
-const Container = (props = null) => {
+function Container(props = null) {
     const { component = null, locales: containerLocales = null } = props || {};
     const finalLocales = containerLocales || defaultLocales;
     const [value, setValue] = useState(defaultValue);
@@ -50,7 +50,7 @@ const Container = (props = null) => {
     );
 };
 
-const ContainerCustom = (props = null) => {
+function ContainerCustom(props = null) {
     const [value, setValue] = useState(defaultValue);
     const onChange = (newValue) => {
         setValue(newValue);

@@ -37,7 +37,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const ImportField = ({
+function ImportField({
     // value = null,
     // name = null,
     format = 'csv',
@@ -57,7 +57,7 @@ const ImportField = ({
     onChange = null,
     onClose = null,
     className = null
-}) => {
+}) {
     const [isOpen, setIsOpen] = useState(false);
 
     const openModal = useCallback(() => {
@@ -126,7 +126,7 @@ const ImportField = ({
             ) : null}
         </div>
     );
-};
+}
 
 ImportField.propTypes = propTypes;
 

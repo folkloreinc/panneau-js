@@ -28,7 +28,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const DuplicateAction = ({
+function DuplicateAction({
     id,
     title = null,
     description = null,
@@ -46,7 +46,7 @@ const DuplicateAction = ({
     withConfirmation = false,
     className = null,
     ...props
-}) => {
+}) {
     const label = initialLabel || (
         <FormattedMessage defaultMessage="Duplicate" description="Button label" />
     );
@@ -155,7 +155,7 @@ const DuplicateAction = ({
             ) : null}
         </>
     );
-};
+}
 
 DuplicateAction.propTypes = propTypes;
 

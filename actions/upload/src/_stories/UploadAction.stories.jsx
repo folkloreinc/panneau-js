@@ -19,7 +19,7 @@ export default {
     },
 };
 
-const FieldContainer = (props) => {
+function FieldContainer(props) {
     const [value, setValue] = useState(null);
     return (
         <FieldsProvider>
@@ -31,6 +31,8 @@ const FieldContainer = (props) => {
             </ModalsProvider>
         </FieldsProvider>
     );
-};
+}
 
-export const Normal = () => <FieldContainer label="Upload me" />;
+export function Normal() {
+    return <FieldContainer label="Upload me" />;
+}

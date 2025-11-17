@@ -62,7 +62,7 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const ResourceItemField = ({
+function ResourceItemField({
     name = null,
     value = null,
     errors = null,
@@ -94,7 +94,7 @@ const ResourceItemField = ({
     className = null,
     inputClassName = null,
     onChange = null
-}) => {
+}) {
     const intl = useIntl();
     const resource = usePanneauResource(resourceId);
     const resourceValues = useResourceValues(resource);
@@ -424,7 +424,7 @@ const ResourceItemField = ({
             ) : null}
         </div>
     );
-};
+}
 
 ResourceItemField.propTypes = propTypes;
 

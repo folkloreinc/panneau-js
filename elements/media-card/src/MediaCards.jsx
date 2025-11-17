@@ -21,12 +21,12 @@ const propTypes = {
     cardClassName: PropTypes.string,
 };
 
-const MediaCards = ({
+function MediaCards({
     value = null,
     className = null,
     cardClassName = null,
     ...props
-}) => {
+}) {
     const values = useMemo(() => {
         if (isArray(value)) {
             return value;
@@ -50,7 +50,7 @@ const MediaCards = ({
             ))}
         </div>
     );
-};
+}
 
 MediaCards.propTypes = propTypes;
 

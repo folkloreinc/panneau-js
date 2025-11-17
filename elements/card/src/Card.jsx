@@ -46,7 +46,7 @@ const propTypes = {
     onCloseIcon: PropTypes.node,
 };
 
-const Card = ({
+function Card({
     href = null,
     header = null,
     image = null,
@@ -73,7 +73,7 @@ const Card = ({
     onClickFooter = null,
     onClose = null,
     onCloseIcon = null
-}) => {
+}) {
     const linksElements = (links || []).map(
         ({ label, className: linkClassName = null, ...linkProps }, index) => (
             <Link

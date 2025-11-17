@@ -4,7 +4,9 @@ import InputField from './InputField';
 
 const propTypes = {};
 
-const TextareaField = (props) => <InputField {...props} type="textarea" />;
+function TextareaField(props) {
+    return <InputField {...props} type="textarea" />;
+}
 
 TextareaField.propTypes = propTypes;
 

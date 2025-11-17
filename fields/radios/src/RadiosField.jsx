@@ -18,7 +18,7 @@ const propTypes = {
 
 const DEFAULT_OPTIONS = [];
 
-const RadiosField = ({
+function RadiosField({
     name = null,
     value = null,
     options = DEFAULT_OPTIONS,
@@ -28,19 +28,21 @@ const RadiosField = ({
     className = null,
     buttonClassName = null,
     onChange = null
-}) => (
-    <Radios
-        name={name}
-        value={value}
-        options={options}
-        withBackground={withBackground}
-        className={className}
-        buttonClassName={buttonClassName}
-        onChange={onChange}
-        disabled={disabled}
-        uncheckable={uncheckable}
-    />
-);
+}) {
+    return (
+        <Radios
+            name={name}
+            value={value}
+            options={options}
+            withBackground={withBackground}
+            className={className}
+            buttonClassName={buttonClassName}
+            onChange={onChange}
+            disabled={disabled}
+            uncheckable={uncheckable}
+        />
+    );
+}
 
 RadiosField.propTypes = propTypes;
 

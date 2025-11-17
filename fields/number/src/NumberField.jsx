@@ -30,7 +30,7 @@ function isNumeric(str) {
     );
 }
 
-const NumberField = ({
+function NumberField({
     value = null,
     step = 1,
     floatStep = 0.1,
@@ -41,7 +41,7 @@ const NumberField = ({
     className = null,
     onChange = null,
     ...props
-}) => {
+}) {
     const parseValue = useCallback(
         (newValue) => {
             if (newValue !== null) {
@@ -142,7 +142,7 @@ const NumberField = ({
             ) : null}
         </div>
     );
-};
+}
 
 NumberField.propTypes = propTypes;
 

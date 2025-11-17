@@ -36,7 +36,7 @@ const propTypes = {
     onClickPage: PropTypes.func,
 };
 
-const Pagination = ({
+function Pagination({
     page: parentPage = 1,
     lastPage: parentLastPage = 1,
     total: parentTotal = null,
@@ -61,7 +61,7 @@ const Pagination = ({
     itemClassName = null,
     linkClassName = null,
     onClickPage = null,
-}) => {
+}) {
     const page = parseInt(parentPage, 10);
     const lastPage = parseInt(parentLastPage, 10);
     const total = parseInt(parentTotal, 10);
@@ -326,7 +326,7 @@ const Pagination = ({
             ) : null}
         </nav>
     );
-};
+}
 
 Pagination.propTypes = propTypes;
 

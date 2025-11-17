@@ -55,7 +55,7 @@ const propTypes = {
 const DEFAULT_TYPES = ['audio', 'image', 'video'];
 const DEFAULT_SOURCES = ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'];
 
-const MediaField = ({
+function MediaField({
     resource = 'medias',
     value = null,
     name = null,
@@ -81,7 +81,7 @@ const MediaField = ({
     onClickAdd = null,
     onClickFind = null,
     className = null,
-}) => {
+}) {
     const addButtonLabel = initialAddButtonLabel || (
         <FormattedMessage
             defaultMessage="Upload file"
@@ -372,7 +372,7 @@ const MediaField = ({
             ) : null}
         </div>
     );
-};
+}
 
 MediaField.propTypes = propTypes;
 

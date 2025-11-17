@@ -27,7 +27,7 @@ const propTypes = {
     onInputChange: PropTypes.func,
 };
 
-const SelectField = ({
+function SelectField({
     value = null,
     paginated = false,
     loadOptions: customLoadOptions = null,
@@ -46,7 +46,7 @@ const SelectField = ({
     onChange = null,
     onInputChange: customOnInputChange = null,
     ...props
-}) => {
+}) {
     const getOptionLabel = useMemo(
         () =>
             customGetOptionLabel ||
@@ -155,7 +155,7 @@ const SelectField = ({
             {...props}
         />
     );
-};
+}
 
 SelectField.propTypes = propTypes;
 

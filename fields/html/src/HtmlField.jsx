@@ -25,7 +25,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const HtmlField = ({
+function HtmlField({
     feedback = null,
     errors = null,
     value = null,
@@ -76,7 +76,7 @@ const HtmlField = ({
     },
     ckOptions = null,
     className = null
-}) => {
+}) {
     const { Editor = null, InlineEditor = null } = useCKEditorBuilds() || {};
     const CKValue = value !== null ? value : '';
     const EditorBuild = inline ? InlineEditor : Editor;
@@ -137,7 +137,7 @@ const HtmlField = ({
         ) : null;
 
     return inline ? <InputGroup>{ckElement}</InputGroup> : ckElement;
-};
+}
 
 HtmlField.propTypes = propTypes;
 

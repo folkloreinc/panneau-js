@@ -17,7 +17,7 @@ const propTypes = {
     placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
 };
 
-const Link = ({
+function Link({
     item = null,
     label = null,
     labelPath = null,
@@ -25,7 +25,7 @@ const Link = ({
     external = false,
     target = null,
     placeholder = null
-}) => {
+}) {
     const itemLabel = get(item, labelPath);
     const finalValue = itemLabel || label || placeholder || (
         <FormattedMessage defaultMessage="Link" description="Display label" />
@@ -39,7 +39,7 @@ const Link = ({
     ) : (
         <WouterLink href={value}>{finalValue}</WouterLink>
     );
-};
+}
 
 Link.propTypes = propTypes;
 

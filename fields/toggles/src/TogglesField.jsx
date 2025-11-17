@@ -19,14 +19,14 @@ const propTypes = {
 
 const DEFAULT_TOGGLES = [];
 
-const TogglesField = ({
+function TogglesField({
     name = null,
     value = null,
     toggles = DEFAULT_TOGGLES,
     disabled = false,
     onChange = null,
     className = null
-}) => {
+}) {
     const onToggleChange = useCallback(
         (key, newToggleValue) => {
             const newValue = {
@@ -68,7 +68,7 @@ const TogglesField = ({
             </ul>
         </div>
     );
-};
+}
 TogglesField.propTypes = propTypes;
 
 export default TogglesField;

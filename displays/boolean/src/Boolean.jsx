@@ -12,14 +12,14 @@ const propTypes = {
     iconFalse: PropTypes.string,
 };
 
-const Boolean = ({
+function Boolean({
     value = null,
     iconTrue = null,
     iconFalse = null,
     labelTrue = null,
     labelFalse = null
-}) =>
-    value !== null && (value === true || value === 'true') ? (
+}) {
+    return value !== null && (value === true || value === 'true') ? (
         <span className="badge bg-success">
             {iconTrue !== null ? (
                 <Icon name={iconTrue} />
@@ -36,6 +36,7 @@ const Boolean = ({
             )}
         </span>
     );
+}
 Boolean.propTypes = propTypes;
 
 export default Boolean;

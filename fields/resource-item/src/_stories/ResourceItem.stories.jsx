@@ -20,7 +20,7 @@ export default {
     },
 };
 
-const Container = (props) => {
+function Container(props) {
     const { value: defaultValue = null } = props || {};
     const [value, setValue] = useState(defaultValue);
     const onChange = useCallback(

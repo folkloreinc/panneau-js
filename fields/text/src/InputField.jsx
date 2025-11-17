@@ -42,7 +42,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const InputField = ({
+function InputField({
     feedback = null,
     value = null,
     errors = null,
@@ -68,7 +68,7 @@ const InputField = ({
     inputRef = null,
     style = null,
     className = null
-}) => {
+}) {
     const dataListId = useMemo(() => (dataList !== null ? uuid() : null), [dataList]);
 
     const elProps = {
@@ -131,7 +131,7 @@ const InputField = ({
             ) : null}
         </>
     );
-};
+}
 
 InputField.propTypes = propTypes;
 

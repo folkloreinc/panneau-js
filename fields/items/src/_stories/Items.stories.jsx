@@ -53,9 +53,11 @@ const itemField = {
     },
 };
 
-const Dummy = () => <div>Hello World!</div>;
+function Dummy() {
+    return <div>Hello World!</div>;
+}
 
-const Container = (props) => {
+function Container(props) {
     const { value: initialValue = null } = props || {};
     const [value, setValue] = useState(initialValue);
 
@@ -66,7 +68,7 @@ const Container = (props) => {
             </IntlProvider>
         </FieldsProvider>
     );
-};
+}
 
 export const EmptyImages = () => (
     <UppyProvider>

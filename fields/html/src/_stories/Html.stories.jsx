@@ -8,7 +8,7 @@ export default {
     component: HtmlField,
 };
 
-const Container = (props) => {
+function Container(props) {
     const [value, setValue] = useState(null);
     return (
         <>
@@ -18,7 +18,7 @@ const Container = (props) => {
             <HtmlField {...props} value={value} onChange={setValue} />
         </>
     );
-};
+}
 
 export const Normal = () => <Container />;
 

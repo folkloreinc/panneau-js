@@ -55,7 +55,7 @@ const DEFAULT_SEARCH_OPTIONS = {
     keys: ['label', 'value'],
 };
 
-const AutocompleteField = ({
+function AutocompleteField({
     items: providedItems = DEFAULT_ITEMS,
     value: providedValue = null,
     textValue: providedTextValue = null,
@@ -72,7 +72,7 @@ const AutocompleteField = ({
     onChange = null,
     onTextChange = null,
     children = null
-}) => {
+}) {
     const fuse = useRef(null);
     const [open, setOpen] = useState(false);
     const [focused, setFocused] = useState(false);
@@ -256,7 +256,7 @@ const AutocompleteField = ({
             ) : null}
         </div>
     );
-};
+}
 
 AutocompleteField.propTypes = propTypes;
 

@@ -15,14 +15,14 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const ToggleField = ({
+function ToggleField({
     value = null,
     queryValue = null,
     name = null,
     disabled = false,
     className = null,
     onChange = null
-}) => {
+}) {
     const isTrue = useMemo(
         () =>
             queryValue !== null
@@ -58,7 +58,7 @@ const ToggleField = ({
             <Switch name={name} checked={isTrue} onChange={finalOnChange} disabled={disabled} />
         </div>
     );
-};
+}
 
 ToggleField.propTypes = propTypes;
 

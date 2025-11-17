@@ -12,10 +12,10 @@ export default {
 };
 
 // eslint-disable-next-line react/prop-types
-const Container = ({ value: initialValue, ...props }) => {
+function Container({ value: initialValue, ...props }) {
     const [value, setValue] = useState(initialValue);
     return <UrlField {...props} value={value} onChange={setValue} />;
-};
+}
 
 export const Normal = () => <Container />;
 

@@ -32,7 +32,7 @@ const propTypes = {
 
 const DEFAULT_SCHEMES = ['http://', 'https://', 'ftp://'];
 
-const EmbedField = ({
+function EmbedField({
     value = null,
     schemes = DEFAULT_SCHEMES,
     url: prefixUrl = null,
@@ -40,7 +40,7 @@ const EmbedField = ({
     className = null,
     onChange = null,
     ...props
-}) => {
+}) {
     const { url = null, metadata = null } = isObject(value) ? value : { url: value };
     const urlValue = url || null;
     const {
@@ -108,7 +108,7 @@ const EmbedField = ({
             disabled={disabled}
         />
     );
-};
+}
 
 EmbedField.propTypes = propTypes;
 

@@ -52,7 +52,7 @@ const propTypes = {
 
 const DEFAULT_DATA = {};
 
-const MediaCard = ({
+function MediaCard({
     value: initialValue = null,
     vertical = false,
     index = null,
@@ -75,7 +75,7 @@ const MediaCard = ({
     className = null,
     cardClassName = null,
     children = null
-}) => {
+}) {
     const value = initialValue || {};
 
     const {
@@ -342,7 +342,7 @@ const MediaCard = ({
             </div>
         </div>
     );
-};
+}
 
 MediaCard.propTypes = propTypes;
 

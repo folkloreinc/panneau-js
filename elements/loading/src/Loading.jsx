@@ -14,14 +14,14 @@ const propTypes = {
     children: PanneauPropTypes.label,
 };
 
-const Loading = ({
+function Loading({
     theme = null,
     delay = 300,
     withDelay = false,
     withoutCard = false,
     className = null,
     children = null
-}) => {
+}) {
     const [visible, setVisible] = useState(!withDelay);
 
     useEffect(() => {
@@ -61,7 +61,7 @@ const Loading = ({
             </div>
         </div>
     ) : null;
-};
+}
 
 Loading.propTypes = propTypes;
 

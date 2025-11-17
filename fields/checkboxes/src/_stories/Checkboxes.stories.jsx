@@ -8,11 +8,11 @@ export default {
     component: CheckboxesField,
 };
 
-const Container = (props) => {
+function Container(props) {
     const { value: defaultValue = null } = props || {};
     const [value, setValue] = useState(defaultValue);
     return <CheckboxesField {...props} value={value} onChange={setValue} />;
-};
+}
 
 export const Normal = () => <Container options={['One', 'Two', 'Three']} />;
 

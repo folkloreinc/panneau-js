@@ -18,7 +18,7 @@ const propTypes = {
     children: PanneauPropTypes.label,
 };
 
-const Empty = ({
+function Empty({
     theme = null,
     message = null,
     button = null,
@@ -27,7 +27,7 @@ const Empty = ({
     withoutCard = false,
     className = null,
     children = null
-}) => {
+}) {
     const [visible, setVisible] = useState(!withDelay);
 
     useEffect(() => {
@@ -68,7 +68,7 @@ const Empty = ({
             ) : null}
         </div>
     ) : null;
-};
+}
 
 Empty.propTypes = propTypes;
 

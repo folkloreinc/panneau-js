@@ -16,13 +16,13 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const FormStatus = ({
+function FormStatus({
     status = null,
     successLabel = null,
     errorLabel = null,
     loadingLabel = null,
     className = null,
-}) => {
+}) {
     let label = null;
     if (status === 'success') {
         label = successLabel || (
@@ -72,7 +72,7 @@ const FormStatus = ({
             <Label>{label}</Label>
         </div>
     );
-};
+}
 FormStatus.propTypes = propTypes;
 
 export default FormStatus;

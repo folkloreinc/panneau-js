@@ -17,12 +17,12 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const Select = ({
+function Select({
     field,
     value = null,
     options: providedOptions = null,
     onChange = null
-}) => {
+}) {
     const { options = null } = field || {};
     const finalOptions = providedOptions || options || null;
     const option =
@@ -35,7 +35,7 @@ const Select = ({
     ) : (
         <div>{finalLabel}</div>
     );
-};
+}
 
 Select.propTypes = propTypes;
 

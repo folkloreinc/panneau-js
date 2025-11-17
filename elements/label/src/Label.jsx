@@ -14,14 +14,14 @@ const propTypes = {
 
 const DEFAULT_VALUES = {};
 
-const Label = ({
+function Label({
     children,
     isHtml = false,
     values = DEFAULT_VALUES
-}) => {
+}) {
     const Message = isHtml ? FormattedMessage : FormattedMessage;
     return isMessage(children) ? <Message values={values} {...children} /> : children;
-};
+}
 
 Label.propTypes = propTypes;
 

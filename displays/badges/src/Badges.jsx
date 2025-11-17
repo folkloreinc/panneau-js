@@ -14,14 +14,14 @@ const propTypes = {
     itemClassNamePath: PropTypes.string,
 };
 
-const Badges = ({
+function Badges({
     value = null,
     placeholder = null,
     itemLabelPath = 'label',
     itemIconPath = null,
     itemClassName = 'bg-secondary',
     itemClassNamePath = null
-}) => {
+}) {
     const items = useMemo(
         () => (isArray(value) ? value : [value]).filter((it) => it !== null) || [],
         [value],
@@ -45,7 +45,7 @@ const Badges = ({
             placeholder
         );
     });
-};
+}
 
 Badges.propTypes = propTypes;
 

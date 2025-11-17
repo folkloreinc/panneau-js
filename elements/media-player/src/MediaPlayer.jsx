@@ -22,13 +22,13 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const MediaPlayer = ({
+function MediaPlayer({
     value: initialValue = null,
     width = null,
     height = null,
     className = null,
     ...props
-}) => {
+}) {
     const value = initialValue || {};
     const { type } = value || {};
     const apiRef = useRef(null);
@@ -46,7 +46,7 @@ const MediaPlayer = ({
             {type === 'audio' ? <Audio media={value} apiRef={apiRef} {...props} /> : null}
         </div>
     );
-};
+}
 
 MediaPlayer.propTypes = propTypes;
 

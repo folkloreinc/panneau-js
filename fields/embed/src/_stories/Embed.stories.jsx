@@ -12,12 +12,12 @@ export default {
 };
 
 // eslint-disable-next-line react/prop-types
-const Container = ({ value: initialValue, ...props }) => {
+function Container({ value: initialValue, ...props }) {
     const [value, setValue] = useState(initialValue);
     return (
         <EmbedField {...props} value={value} onChange={setValue} onClose={() => setValue(null)} />
     );
-};
+}
 
 export const Normal = () => (
     <Container value="https://www.youtube.com/watch?v=Xw5AiRVqfqk&t=1058s" />

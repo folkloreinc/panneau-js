@@ -21,14 +21,15 @@ const propTypes = {
 
 const DEFAULT_ITEMS = [];
 
-const Breadcrumbs = ({
+function Breadcrumbs({
     items = DEFAULT_ITEMS,
     theme = null,
     separator = null,
     withoutBar = false,
     noWrap = false,
     className = null
-}) => (
+}) {
+    return (
     <nav className={className}>
         <ol
             className={classNames([
@@ -81,7 +82,8 @@ const Breadcrumbs = ({
             ))}
         </ol>
     </nav>
-);
+    );
+}
 
 Breadcrumbs.propTypes = propTypes;
 

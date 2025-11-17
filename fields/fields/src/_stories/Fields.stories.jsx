@@ -14,14 +14,14 @@ export default {
 };
 
 // eslint-disable-next-line react/prop-types
-const Container = ({ value: initialValue = {}, ...props }) => {
+function Container({ value: initialValue = {}, ...props }) {
     const [value, setValue] = useState(initialValue);
     return (
         <FieldsProvider>
             <Fields fields={fields} value={value} onChange={setValue} {...props} />
         </FieldsProvider>
     );
-};
+}
 
 export const Normal = () => <Container />;
 

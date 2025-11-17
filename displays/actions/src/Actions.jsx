@@ -28,7 +28,7 @@ const propTypes = {
 
 const DEFAULT_ACTIONS = ['show', 'edit', 'delete'];
 
-const ActionsDisplay = ({
+function ActionsDisplay({
     item,
     value = null,
     placeholder = null,
@@ -41,7 +41,7 @@ const ActionsDisplay = ({
     className = null,
     buttonsClassName = null,
     ...props
-}) => {
+}) {
     const { urlGenerator, ...otherProps } = actionsProps || {};
     const finalActions = useActions(item, actions, parentUrlGenerator || urlGenerator, otherProps);
     return (
@@ -65,7 +65,7 @@ const ActionsDisplay = ({
             />
         </div>
     );
-};
+}
 
 ActionsDisplay.propTypes = propTypes;
 

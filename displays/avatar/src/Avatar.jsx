@@ -20,7 +20,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const Avatar = ({
+function Avatar({
     value = null,
     placeholder = null,
     imagePath = 'image',
@@ -30,7 +30,7 @@ const Avatar = ({
     withoutImage = false,
     className = null,
     ...props
-}) => {
+}) {
     const image = get(value, imagePath) || value || null;
     const name = get(value, namePath) || null;
 
@@ -68,7 +68,7 @@ const Avatar = ({
             </div>
         </div>
     );
-};
+}
 
 Avatar.propTypes = propTypes;
 

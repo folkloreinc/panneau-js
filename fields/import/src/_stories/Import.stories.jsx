@@ -28,10 +28,10 @@ const template = {
 };
 
 // eslint-disable-next-line react/prop-types
-const Container = ({ value: initialValue = null, ...props }) => {
+function Container({ value: initialValue = null, ...props }) {
     const [value, setValue] = useState(initialValue);
     return <ImportField template={template} {...props} value={value} onChange={setValue} />;
-};
+}
 
 export const Normal = () => <Container />;
 

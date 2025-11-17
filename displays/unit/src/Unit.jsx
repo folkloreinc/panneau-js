@@ -13,12 +13,12 @@ const propTypes = {
     suffix: PropTypes.string,
 };
 
-const Unit = ({
+function Unit({
     value = null,
     placeholder = null,
     format = null,
     suffix = null
-}) => {
+}) {
     const finalValue = useMemo(() => {
         if (value === null) {
             return null;
@@ -42,7 +42,7 @@ const Unit = ({
         return value;
     }, [value]);
     return <span className="text-nowrap">{finalValue || placeholder}</span>;
-};
+}
 
 Unit.propTypes = propTypes;
 

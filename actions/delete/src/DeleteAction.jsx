@@ -30,7 +30,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const DeleteAction = ({
+function DeleteAction({
     id,
     title = null,
     description = null,
@@ -49,7 +49,7 @@ const DeleteAction = ({
     withConfirmation = false,
     className = null,
     ...props
-}) => {
+}) {
     const label = initialLabel || (
         <FormattedMessage defaultMessage="Delete" description="Button label" />
     );
@@ -155,7 +155,7 @@ const DeleteAction = ({
             ) : null}
         </>
     );
-};
+}
 
 DeleteAction.propTypes = propTypes;
 

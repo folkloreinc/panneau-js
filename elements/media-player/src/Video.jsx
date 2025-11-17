@@ -32,7 +32,7 @@ const propTypes = {
     videoClassName: PropTypes.string,
 };
 
-const Video = ({
+function Video({
     autoPlay = true,
     loop = true,
     initialMuted = true,
@@ -54,7 +54,7 @@ const Video = ({
     className = null,
     iframeClassName = null,
     videoClassName = null
-}) => {
+}) {
     const {
         url = null,
         iframeUrl = null,
@@ -211,7 +211,7 @@ const Video = ({
             ) : null}
         </div>
     );
-};
+}
 
 Video.propTypes = propTypes;
 

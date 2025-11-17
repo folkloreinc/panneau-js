@@ -14,12 +14,13 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const Alert = ({
+function Alert({
     theme = 'success',
     children,
     onClose = null,
     className = null
-}) => (
+}) {
+    return (
     <div
         className={classNames([
             'alert',
@@ -44,7 +45,8 @@ const Alert = ({
             <Icon name="x-lg" bold className="d-block" />
         </Button>
     </div>
-);
+    );
+}
 Alert.propTypes = propTypes;
 
 export default Alert;

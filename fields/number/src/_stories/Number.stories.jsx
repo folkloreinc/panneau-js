@@ -8,10 +8,10 @@ export default {
     component: NumberField,
 };
 
-const Container = (props) => {
+function Container(props) {
     const [value, setValue] = useState(null);
     return <NumberField {...props} value={value} onChange={setValue} />;
-};
+}
 
 export const Normal = () => <Container placeholder="Integers" />;
 

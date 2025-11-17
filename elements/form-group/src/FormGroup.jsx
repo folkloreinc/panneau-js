@@ -32,7 +32,7 @@ const propTypes = {
     labelClassName: PropTypes.string,
 };
 
-const FormGroup = ({
+function FormGroup({
     name = null,
     label = null,
     helpText = null,
@@ -52,7 +52,7 @@ const FormGroup = ({
     labelAfter = false,
     className = null,
     labelClassName = null
-}) => {
+}) {
     const labelBefore = !labelAfter;
     const isColumn = horizontal || inline;
     const [collapsed, setCollapsed] = useState(initialCollapsed);
@@ -208,7 +208,7 @@ const FormGroup = ({
             </div>
         </div>
     );
-};
+}
 
 FormGroup.propTypes = propTypes;
 

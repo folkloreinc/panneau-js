@@ -18,7 +18,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const TextDescription = ({
+function TextDescription({
     value: initialValue = null,
     placeholder = null,
     locale: parentLocale = null,
@@ -27,7 +27,7 @@ const TextDescription = ({
     descriptionValues = null,
     selected = false,
     className = null
-}) => {
+}) {
     const { locale } = useIntl();
 
     const { value, label } = useMemo(() => {
@@ -70,7 +70,7 @@ const TextDescription = ({
     ) : (
         <>{value || placeholder}</>
     );
-};
+}
 
 TextDescription.propTypes = propTypes;
 

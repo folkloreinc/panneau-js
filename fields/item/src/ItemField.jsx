@@ -49,7 +49,7 @@ const propTypes = {
     onCreate: PropTypes.func,
 };
 
-const ItemField = ({
+function ItemField({
     name = null,
     value = null,
     errors = null,
@@ -82,7 +82,7 @@ const ItemField = ({
     inputClassName = null,
     onChange = null,
     onCreate = null
-}) => {
+}) {
     const intl = useIntl();
     const [initialValue] = useState(value || null);
 
@@ -232,7 +232,7 @@ const ItemField = ({
             )}
         </div>
     );
-};
+}
 
 ItemField.propTypes = propTypes;
 

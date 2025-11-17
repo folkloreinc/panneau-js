@@ -27,7 +27,7 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const ColorPickerField = ({
+function ColorPickerField({
     value = null,
     defaultValue = '#000000',
     native = false,
@@ -35,7 +35,7 @@ const ColorPickerField = ({
     disabled = false,
     className = null,
     onChange = null,
-}) => {
+}) {
     const emptyValue = isEmpty(value);
 
     const [pickerOpened, setPickerOpened] = useState(false);
@@ -214,7 +214,7 @@ const ColorPickerField = ({
             ) : null}
         </div>
     );
-};
+}
 
 ColorPickerField.propTypes = propTypes;
 

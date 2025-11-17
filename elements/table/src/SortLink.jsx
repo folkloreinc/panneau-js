@@ -22,7 +22,7 @@ const propTypes = {
     onClick: PropTypes.func,
 };
 
-const SortLink = ({
+function SortLink({
     baseUrl = '',
     query = null,
     field = null,
@@ -34,7 +34,7 @@ const SortLink = ({
     onQueryChange = null,
     onClick: customOnClick = null,
     ...props
-}) => {
+}) {
     const { name: columnName } = isObject(field) ? field : { name: field };
     const { [parameterName]: currentSortValue = null } = query || {};
     const [currentSort, fallbackCurrentDirection = null] = (currentSortValue || '').split(',');
@@ -105,7 +105,7 @@ const SortLink = ({
             ) : null}
         </Link>
     );
-};
+}
 
 SortLink.propTypes = propTypes;
 

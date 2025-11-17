@@ -20,7 +20,7 @@ export default {
     },
 };
 
-const ActionsContainer = ({ value: initialValue, ...props }) => {
+function ActionsContainer({ value: initialValue, ...props }) {
     const [value, setValue] = useState(initialValue);
     const onChange = useCallback((newValue) => {
         setValue(newValue);
@@ -35,21 +35,27 @@ const ActionsContainer = ({ value: initialValue, ...props }) => {
             </ModalsProvider>
         </FiltersProvider>
     );
-};
+}
 
-export const Normal = () => <ActionsContainer />;
+export function Normal() {
+    return <ActionsContainer />;
+}
 
-export const WithItems = () => (
-    <ActionsContainer value={[{ id: '1', name: 'OK' }]} withConfirmation />
-);
+export function WithItems() {
+    return (
+        <ActionsContainer value={[{ id: '1', name: 'OK' }]} withConfirmation />
+    );
+}
 
-export const WithMultipleItems = () => (
-    <ActionsContainer
-        value={[
-            { id: '1', name: 'OK' },
-            { id: '2', name: 'KO' },
-            { id: 3, name: 'WHAT' },
-        ]}
-        withConfirmation
-    />
-);
+export function WithMultipleItems() {
+    return (
+        <ActionsContainer
+            value={[
+                { id: '1', name: 'OK' },
+                { id: '2', name: 'KO' },
+                { id: 3, name: 'WHAT' },
+            ]}
+            withConfirmation
+        />
+    );
+}

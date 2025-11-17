@@ -11,40 +11,50 @@ export default {
     },
 };
 
-const Field = () => (
-    <FormGroup label="Field form group label">
-        <TextField placeholder="My text field" />
-    </FormGroup>
-);
+function Field() {
+    return (
+        <FormGroup label="Field form group label">
+            <TextField placeholder="My text field" />
+        </FormGroup>
+    );
+}
 
-export const Normal = () => (
-    <FormGroup label="Form group label">
-        <Field />
-    </FormGroup>
-);
-
-export const IsCard = () => (
-    <FormGroup label="Form group label" isCard>
-        <Field />
-    </FormGroup>
-);
-
-export const IsHeading = () => (
-    <>
+export function Normal() {
+    return (
         <FormGroup label="Form group label">
             <Field />
         </FormGroup>
-        <FormGroup label="Form group label" isHeading>
+    );
+}
+
+export function IsCard() {
+    return (
+        <FormGroup label="Form group label" isCard>
             <Field />
         </FormGroup>
-    </>
-);
+    );
+}
 
-export const IsCollapsible = () => (
-    <FormGroup label="Form group label" isCollapsible>
-        <Field />
-    </FormGroup>
-);
+export function IsHeading() {
+    return (
+        <>
+            <FormGroup label="Form group label">
+                <Field />
+            </FormGroup>
+            <FormGroup label="Form group label" isHeading>
+                <Field />
+            </FormGroup>
+        </>
+    );
+}
+
+export function IsCollapsible() {
+    return (
+        <FormGroup label="Form group label" isCollapsible>
+            <Field />
+        </FormGroup>
+    );
+}
 
 export const IsCollapsibleCard = () => (
     <FormGroup label="Form group label" isCollapsible isCard>

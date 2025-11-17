@@ -11,9 +11,10 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const Progress = ({
+function Progress({
     className = null
-}) => (
+}) {
+    return (
     <div
         className={classNames([
             'progress',
@@ -47,7 +48,8 @@ const Progress = ({
             aria-valuemax="100"
         />
     </div>
-);
+    );
+}
 Progress.propTypes = propTypes;
 
 export default Progress;

@@ -4,7 +4,9 @@ import InputField from './InputField';
 
 const propTypes = {};
 
-const TextField = (props) => <InputField {...props} type="text" />;
+function TextField(props) {
+    return <InputField {...props} type="text" />;
+}
 
 TextField.propTypes = propTypes;
 

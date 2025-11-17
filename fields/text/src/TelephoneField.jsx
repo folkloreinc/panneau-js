@@ -4,7 +4,9 @@ import InputField from './InputField';
 
 const propTypes = {};
 
-const TelephoneField = (props) => <InputField {...props} type="tel" />;
+function TelephoneField(props) {
+    return <InputField {...props} type="tel" />;
+}
 
 TelephoneField.propTypes = propTypes;
 

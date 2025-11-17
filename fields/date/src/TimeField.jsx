@@ -7,12 +7,14 @@ const propTypes = {
     dateFormat: PropTypes.string,
 };
 
-const TimeField = ({
+function TimeField({
     dateFormat = 'HH:mm',
     ...props
-}) => (
-    <DateTimeField {...props} withoutDate dateFormat={dateFormat} />
-);
+}) {
+    return (
+        <DateTimeField {...props} withoutDate dateFormat={dateFormat} />
+    );
+}
 
 TimeField.propTypes = propTypes;
 

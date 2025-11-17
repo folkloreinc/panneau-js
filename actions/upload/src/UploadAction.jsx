@@ -22,7 +22,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const UploadAction = ({
+function UploadAction({
     endpoint = '/import',
     action = null,
     label = null,
@@ -34,7 +34,7 @@ const UploadAction = ({
     fieldComponent = 'upload',
     className = null,
     ...props
-}) => {
+}) {
     const FieldComponents = useFieldsComponentsManager();
     const FieldComponent = FieldComponents.getComponent(fieldComponent);
 
@@ -62,7 +62,7 @@ const UploadAction = ({
             {...props}
         />
     );
-};
+}
 
 UploadAction.propTypes = propTypes;
 

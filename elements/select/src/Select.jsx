@@ -43,7 +43,7 @@ const propTypes = {
 
 const DEFAULT_OPTIONS = [];
 
-const SelectElement = ({
+function SelectElement({
     value = null,
     clearValue = null,
     options = DEFAULT_OPTIONS,
@@ -67,7 +67,7 @@ const SelectElement = ({
     selectClassName = null,
     valueIsOption = false,
     ...props
-}) => {
+}) {
     const shouldConvertValue = !valueIsOption;
     const safeOptions = useMemo(
         () =>
@@ -280,7 +280,7 @@ const SelectElement = ({
             />
         </div>
     );
-};
+}
 
 SelectElement.propTypes = propTypes;
 

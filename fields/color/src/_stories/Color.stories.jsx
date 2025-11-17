@@ -8,11 +8,11 @@ export default {
     component: ColorField,
 };
 
-const Container = (props) => {
+function Container(props) {
     const { value: defaultValue = '#F00' } = props || {};
     const [value, setValue] = useState(defaultValue);
     return <ColorField {...props} value={value} onChange={setValue} />;
-};
+}
 
 export const Normal = () => <Container />;
 

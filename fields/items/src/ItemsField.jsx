@@ -54,7 +54,7 @@ const propTypes = {
     disabled: PropTypes.bool,
 };
 
-const ItemsField = ({
+function ItemsField({
     label = null,
     value = null,
     types = null,
@@ -84,7 +84,7 @@ const ItemsField = ({
     buttons = null,
     inline = false,
     disabled = false,
-}) => {
+}) {
     const hasTypes = types !== null;
     const [itemIds, setItemIds] = useState((value || []).map(() => uuid()));
 
@@ -677,7 +677,7 @@ const ItemsField = ({
             </div>
         </div>
     );
-};
+}
 
 ItemsField.propTypes = propTypes;
 

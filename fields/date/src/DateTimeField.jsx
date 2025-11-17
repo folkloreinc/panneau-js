@@ -43,7 +43,7 @@ const propTypes = {
     onChange: PropTypes.func,
 };
 
-const DateTimeField = ({
+function DateTimeField({
     name = null,
     value = null,
     errors = null,
@@ -60,7 +60,7 @@ const DateTimeField = ({
     timeIntervals = 15,
     onChange = null,
     className = null,
-}) => {
+}) {
     const { locale, formatMessage } = useIntl();
     const timeCaption =
         initialTimeCaption ||
@@ -153,7 +153,7 @@ const DateTimeField = ({
             />
         </div>
     );
-};
+}
 
 DateTimeField.propTypes = propTypes;
 

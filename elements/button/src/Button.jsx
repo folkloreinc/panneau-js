@@ -44,7 +44,7 @@ const propTypes = {
     ]),
 };
 
-const Button = ({
+function Button({
     type = 'button',
     theme = null,
     size = null,
@@ -72,7 +72,7 @@ const Button = ({
     labelClassName = null,
     refButton = null,
     ...props
-}) => {
+}) {
     const finalLabel = label || children;
     const text = finalLabel !== null ? finalLabel : null;
     const hasChildren = label !== null && children !== null;
@@ -206,7 +206,7 @@ const Button = ({
             {content}
         </button>
     );
-};
+}
 
 Button.propTypes = propTypes;
 

@@ -8,10 +8,10 @@ export default {
     component: ToggleField,
 };
 
-const Container = (props = null) => {
+function Container(props = null) {
     const [value, setValue] = useState(null);
     return <ToggleField {...props} value={value} onChange={setValue} />;
-};
+}
 
 export const Normal = () => <Container />;
 

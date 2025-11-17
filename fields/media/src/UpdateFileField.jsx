@@ -19,11 +19,11 @@ const propTypes = {
     fileTypes: PropTypes.arrayOf(PropTypes.string),
 };
 
-const UpdateFileField = ({
+function UpdateFileField({
     value = null,
     onChange = null,
     ...props
-}) => {
+}) {
     const [newValue, setNewValue] = useState(null);
     const [visibleFile, setVisibleFile] = useState(null);
     const { id: previousId, type = null } = value || {};
@@ -89,7 +89,7 @@ const UpdateFileField = ({
             </div>
         </>
     );
-};
+}
 
 UpdateFileField.propTypes = propTypes;
 

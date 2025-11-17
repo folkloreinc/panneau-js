@@ -12,12 +12,12 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const DisplayField = ({
+function DisplayField({
     value = null,
     display = null,
     className = null,
     ...props
-}) => {
+}) {
     const displays = useDisplaysComponentsManager();
     const Component = displays.getComponent(display) || null;
 
@@ -32,7 +32,7 @@ const DisplayField = ({
             value={value}
         />
     ) : null;
-};
+}
 
 DisplayField.propTypes = propTypes;
 

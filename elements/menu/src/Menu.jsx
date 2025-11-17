@@ -30,7 +30,7 @@ const propTypes = {
 
 const DEFAULT_ITEMS = [];
 
-const Menu = ({
+function Menu({
     items = DEFAULT_ITEMS,
     tagName = 'ul',
     itemTagName = 'li',
@@ -48,7 +48,7 @@ const Menu = ({
     dropdownItemClassName = null,
     dropdownLinkClassName = null,
     dropdownAlign = null
-}) => {
+}) {
     const [dropdownsVisible, setDropdownsVisible] = useState(items.map(() => false));
     const ListComponent = linkAsItem ? 'div' : tagName;
     return (
@@ -189,7 +189,7 @@ const Menu = ({
                   })}
         </ListComponent>
     );
-};
+}
 
 Menu.propTypes = propTypes;
 

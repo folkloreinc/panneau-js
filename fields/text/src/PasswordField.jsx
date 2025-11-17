@@ -4,7 +4,9 @@ import InputField from './InputField';
 
 const propTypes = {};
 
-const PasswordField = (props) => <InputField {...props} type="password" />;
+function PasswordField(props) {
+    return <InputField {...props} type="password" />;
+}
 
 PasswordField.propTypes = propTypes;
 

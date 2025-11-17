@@ -16,7 +16,7 @@ const defaultItems = [
     { label: 'Snail', value: 'snail' },
 ];
 
-const Container = (props) => {
+function Container(props) {
     const { value: defaultValue = null, items = null } = props || {};
     const [value, setValue] = useState(defaultValue);
     return (
@@ -28,7 +28,7 @@ const Container = (props) => {
             placeholder="Autocomplete..."
         />
     );
-};
+}
 
 export const Normal = () => <Container items={defaultItems} />;
 

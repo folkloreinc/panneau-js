@@ -25,38 +25,52 @@ const itemOptions = [
     { id: 3, title: 'Three' },
 ];
 
-const Container = (props) => {
+function Container(props) {
     const [value, setValue] = useState(null);
     return <Select {...props} value={value} onChange={setValue} />;
-};
+}
 
-export const Normal = () => <Container options={options} placeholder="Placeholder..." />;
+export function Normal() {
+    return <Container options={options} placeholder="Placeholder..." />;
+}
 
-export const WithoutReset = () => (
-    <Container options={options} withoutReset placeholder="Without reset..." />
-);
+export function WithoutReset() {
+    return (
+        <Container options={options} withoutReset placeholder="Without reset..." />
+    );
+}
 
-export const MultiSelect = () => (
-    <Container options={options} multiple placeholder="Multi select..." />
-);
-
-export const MultiSelectDark = () => (
-    <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
+export function MultiSelect() {
+    return (
         <Container options={options} multiple placeholder="Multi select..." />
-    </div>
-);
+    );
+}
 
-export const Searchable = () => (
-    <Container options={options} multiple searchable placeholder="Multi select searchable..." />
-);
+export function MultiSelectDark() {
+    return (
+        <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
+            <Container options={options} multiple placeholder="Multi select..." />
+        </div>
+    );
+}
 
-export const Size = () => <Container className="w-25" options={options} placeholder="With size" />;
+export function Searchable() {
+    return (
+        <Container options={options} multiple searchable placeholder="Multi select searchable..." />
+    );
+}
 
-export const AutoSize = () => (
-    <Container autoSize options={options} placeholder="With min width..." />
-);
+export function Size() {
+    return <Container className="w-25" options={options} placeholder="With size" />;
+}
 
-export const Stacked = () => {
+export function AutoSize() {
+    return (
+        <Container autoSize options={options} placeholder="With min width..." />
+    );
+}
+
+export function Stacked() {
     const [value, setValue] = useState(null);
     return (
         <>
@@ -64,21 +78,25 @@ export const Stacked = () => {
             <Select options={options} value={value} onChange={setValue} />
         </>
     );
-};
+}
 
-export const WithItems = () => (
-    <Container
-        options={itemOptions}
-        getOptionLabel={(opt) => opt.title}
-        getOptionValue={(opt) => opt.id}
-    />
-);
+export function WithItems() {
+    return (
+        <Container
+            options={itemOptions}
+            getOptionLabel={(opt) => opt.title}
+            getOptionValue={(opt) => opt.id}
+        />
+    );
+}
 
-export const WithItemsMultiple = () => (
-    <Container
-        options={itemOptions}
-        multiple
-        getOptionLabel={(opt) => opt.title}
-        getOptionValue={(opt) => opt.id}
-    />
-);
+export function WithItemsMultiple() {
+    return (
+        <Container
+            options={itemOptions}
+            multiple
+            getOptionLabel={(opt) => opt.title}
+            getOptionValue={(opt) => opt.id}
+        />
+    );
+}

@@ -24,14 +24,14 @@ const DEFAULT_LOADERS = {
     en: () => loadPackage('date-fns/locale/en-US', () => import('date-fns/locale/en-US')),
 };
 
-const DateDisplay = ({
+function DateDisplay({
     value = null,
     placeholder = null,
     format = 'yyyy-MM-dd',
     parseFormat = null,
     locale = null,
     localeLoaders = DEFAULT_LOADERS,
-}) => {
+}) {
     const { locale: defaultLocale } = useIntl();
     const finalLocale = locale || defaultLocale;
     const [localePackage, setLocalePackage] = useState(null);
@@ -66,7 +66,7 @@ const DateDisplay = ({
     }, [localePackage, value, format, parseFormat]);
 
     return <div>{date || placeholder}</div>;
-};
+}
 
 DateDisplay.propTypes = propTypes;
 

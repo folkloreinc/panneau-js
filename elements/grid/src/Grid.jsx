@@ -35,7 +35,7 @@ const propTypes = {
 
 const DEFAULT_ITEMS = [];
 
-const Grid = ({
+function Grid({
     items = DEFAULT_ITEMS,
     component = null,
     componentProps = null,
@@ -50,7 +50,7 @@ const Grid = ({
     onSelectionChange = null,
     multipleSelection = false,
     className = null
-}) => {
+}) {
     const Component = component || null;
 
     const onSelectItem = useCallback(
@@ -135,7 +135,7 @@ const Grid = ({
             ) : null}
         </div>
     );
-};
+}
 
 Grid.propTypes = propTypes;
 

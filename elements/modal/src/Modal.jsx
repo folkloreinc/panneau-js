@@ -17,13 +17,13 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const Modal = ({
+function Modal({
     id = null,
     onClose = null,
     children = null,
     position = 'center',
     title = null
-}) => {
+}) {
     const name = getDisplayName(children);
     const finalId = useMemo(() => id || name || 'Modal', [id, name]);
     const data = useMemo(
@@ -52,7 +52,7 @@ const Modal = ({
             </div>
         </ModalPortal>
     );
-};
+}
 
 Modal.propTypes = propTypes;
 

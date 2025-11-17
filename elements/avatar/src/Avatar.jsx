@@ -25,7 +25,7 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const Avatar = ({
+function Avatar({
     name = null,
     shortName = null,
     type: initialTenk = null,
@@ -37,7 +37,7 @@ const Avatar = ({
     blended = false,
     className = null,
     children = null,
-}) => {
+}) {
     const type = initialTenk || (
         <FormattedMessage defaultMessage="User" description="Avatar label" />
     );
@@ -76,7 +76,7 @@ const Avatar = ({
             {children}
         </div>
     );
-};
+}
 Avatar.propTypes = propTypes;
 
 export default Avatar;
