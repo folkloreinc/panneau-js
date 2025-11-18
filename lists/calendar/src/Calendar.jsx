@@ -44,7 +44,7 @@ const propTypes = {
 
 const DEFAULT_ITEMS = [];
 
-const CalendarList = ({
+function CalendarList({
     mode = 'monthly',
     resource,
     component = null,
@@ -58,7 +58,7 @@ const CalendarList = ({
     initialDate = null,
     className = null,
     // onQueryChange
-}) => {
+}) {
     const intl = useIntl();
     const [monthIdx, setMonthIdx] = useState(0);
     const [weekIdx, setWeekIdx] = useState(0);
@@ -307,7 +307,7 @@ const CalendarList = ({
             </div>
         </div>
     );
-};
+}
 
 CalendarList.propTypes = propTypes;
 

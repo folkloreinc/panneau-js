@@ -25,7 +25,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const DeleteForm = ({
+function DeleteForm({
     resource = null,
     action = null,
     previous = null,
@@ -37,7 +37,7 @@ const DeleteForm = ({
     loading = false,
     className = null,
     ...props
-}) => {
+}) {
     const { id = null } = value || {};
     const resourceValues = useResourceValues(resource, { id });
     // const { text, background } = usePanneauColorScheme();
@@ -96,7 +96,7 @@ const DeleteForm = ({
             </div>
         </Form>
     );
-};
+}
 
 DeleteForm.propTypes = propTypes;
 

@@ -11,19 +11,21 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const ModalsProvider = ({
+function ModalsProvider({
     components: injectedComponents = null,
     children = null,
     ...props
-}) => (
-    <ComponentsProvider
-        namespace={MODALS_NAMESPACE}
-        components={{ ...components, ...injectedComponents }}
-        {...props}
-    >
-        {children}
-    </ComponentsProvider>
-);
+}) {
+    return (
+        <ComponentsProvider
+            namespace={MODALS_NAMESPACE}
+            components={{ ...components, ...injectedComponents }}
+            {...props}
+        >
+            {children}
+        </ComponentsProvider>
+    );
+}
 
 ModalsProvider.propTypes = propTypes;
 

@@ -15,11 +15,11 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const ResourceCreateButton = ({
+function ResourceCreateButton({
     resource,
     size = 'lg',
     className = null
-}) => {
+}) {
     const { types = null } = resource;
     const resourceRoute = useResourceUrlGenerator(resource);
     const resourceValues = useResourceValues(resource);
@@ -99,7 +99,7 @@ const ResourceCreateButton = ({
     ) : (
         button
     );
-};
+}
 ResourceCreateButton.propTypes = propTypes;
 
 export default ResourceCreateButton;

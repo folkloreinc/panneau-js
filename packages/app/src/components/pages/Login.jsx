@@ -9,7 +9,7 @@ import GuestLayout from '../layouts/Guest';
 
 const propTypes = {};
 
-const LoginPage = () => {
+function LoginPage() {
     const route = useUrlGenerator();
     // Sadly necessary to update cookies and routes correctly from the backend,
     // make it post directly instead of api call
@@ -30,7 +30,7 @@ const LoginPage = () => {
             </div>
         </GuestLayout>
     );
-};
+}
 
 LoginPage.propTypes = propTypes;
 

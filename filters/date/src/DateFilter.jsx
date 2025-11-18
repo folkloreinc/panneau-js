@@ -16,7 +16,7 @@ const propTypes = {
 
 const DEFAULT_OPTIONS = [];
 
-const DateFilter = ({
+function DateFilter({
     name = 'radios',
     value = null,
     options = DEFAULT_OPTIONS,
@@ -24,18 +24,20 @@ const DateFilter = ({
     onChange,
     className = null,
     ...props
-}) => (
-    <div className={className}>
-        <Date
-            {...props}
-            name={name}
-            value={value}
-            options={options}
-            placeholder={placeholder}
-            onChange={onChange}
-        />
-    </div>
-);
+}) {
+    return (
+        <div className={className}>
+            <Date
+                {...props}
+                name={name}
+                value={value}
+                options={options}
+                placeholder={placeholder}
+                onChange={onChange}
+            />
+        </div>
+    );
+}
 
 DateFilter.propTypes = propTypes;
 

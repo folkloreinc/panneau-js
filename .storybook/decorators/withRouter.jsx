@@ -2,7 +2,7 @@ import { useMemoryRouter } from '@folklore/routes';
 import React from 'react';
 import { Router } from 'wouter';
 
-const withRouter = (Story, { parameters: { router = null } }) => {
+function withRouter(Story, { parameters: { router = null } }) {
     const { hook, searchHook } = useMemoryRouter();
 
     if (router === false) {
@@ -14,6 +14,6 @@ const withRouter = (Story, { parameters: { router = null } }) => {
             <Story />
         </Router>
     );
-};
+}
 
 export default withRouter;

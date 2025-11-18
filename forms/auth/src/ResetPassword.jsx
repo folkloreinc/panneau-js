@@ -16,7 +16,7 @@ const propTypes = {
     submitButtonLabel: PanneauPropTypes.label,
 };
 
-const ResetPassword = ({
+function ResetPassword({
     action = '/reset-password',
     fields = null,
     size = 'lg',
@@ -25,49 +25,51 @@ const ResetPassword = ({
     passwordConfirmationLabel = null,
     submitButtonLabel = null,
     ...props
-}) => (
-    <Form
-        action={action}
-        fields={
-            fields || [
-                {
-                    name: 'email',
-                    type: 'email',
-                    size,
-                    label: emailLabel || (
-                        <FormattedMessage defaultMessage="Email" description="Field label" />
-                    ),
-                    readOnly: true,
-                },
-                {
-                    name: 'password',
-                    type: 'password',
-                    size,
-                    label: passwordLabel || (
-                        <FormattedMessage defaultMessage="Password" description="Field label" />
-                    ),
-                },
-                {
-                    name: 'password_confirmation',
-                    type: 'password',
-                    size,
-                    label: passwordConfirmationLabel || (
-                        <FormattedMessage
-                            defaultMessage="Confirm your password"
-                            description="Field label"
-                        />
-                    ),
-                },
-            ]
-        }
-        submitButtonLabel={
-            submitButtonLabel || (
-                <FormattedMessage defaultMessage="Save new password" description="Button label" />
-            )
-        }
-        {...props}
-    />
-);
+}) {
+    return (
+        <Form
+            action={action}
+            fields={
+                fields || [
+                    {
+                        name: 'email',
+                        type: 'email',
+                        size,
+                        label: emailLabel || (
+                            <FormattedMessage defaultMessage="Email" description="Field label" />
+                        ),
+                        readOnly: true,
+                    },
+                    {
+                        name: 'password',
+                        type: 'password',
+                        size,
+                        label: passwordLabel || (
+                            <FormattedMessage defaultMessage="Password" description="Field label" />
+                        ),
+                    },
+                    {
+                        name: 'password_confirmation',
+                        type: 'password',
+                        size,
+                        label: passwordConfirmationLabel || (
+                            <FormattedMessage
+                                defaultMessage="Confirm your password"
+                                description="Field label"
+                            />
+                        ),
+                    },
+                ]
+            }
+            submitButtonLabel={
+                submitButtonLabel || (
+                    <FormattedMessage defaultMessage="Save new password" description="Button label" />
+                )
+            }
+            {...props}
+        />
+    );
+}
 
 ResetPassword.propTypes = propTypes;
 

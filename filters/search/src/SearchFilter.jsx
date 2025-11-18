@@ -27,7 +27,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const SearchFilter = ({
+function SearchFilter({
     name = 'q',
     value = null,
     onChange,
@@ -36,7 +36,7 @@ const SearchFilter = ({
     width = null,
     delay = 500,
     className = null
-}) => {
+}) {
     const intl = useIntl();
     const [searchValue, setSearchValue] = useState(value);
     const hasChanged = useRef(null);
@@ -152,7 +152,7 @@ const SearchFilter = ({
             </div>
         </form>
     );
-};
+}
 
 SearchFilter.propTypes = propTypes;
 

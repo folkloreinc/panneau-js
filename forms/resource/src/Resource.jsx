@@ -29,7 +29,7 @@ const propTypes = {
     withContainer: PropTypes.bool,
 };
 
-const ResourceForm = ({
+function ResourceForm({
     component = null,
     header = null,
     resource = null,
@@ -41,7 +41,7 @@ const ResourceForm = ({
     isModal = false,
     withContainer = false,
     ...props
-}) => {
+}) {
     const locales = useLocales();
     const FormComponents = useFormsComponents();
     const { id: itemId = null } = item || {};
@@ -244,7 +244,7 @@ const ResourceForm = ({
             )}
         </FormProvider>
     );
-};
+}
 
 ResourceForm.propTypes = propTypes;
 

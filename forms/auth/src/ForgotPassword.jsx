@@ -20,7 +20,7 @@ const propTypes = {
     loginLabel: PanneauPropTypes.label,
 };
 
-const ForgotPassword = ({
+function ForgotPassword({
     action = '/forgot-password',
     fields = null,
     emailLabel = null,
@@ -30,41 +30,43 @@ const ForgotPassword = ({
     loginLink = '/login',
     loginLabel = null,
     ...props
-}) => (
-    <Form
-        action={action}
-        fields={
-            fields || [
-                {
-                    name: 'email',
-                    type: 'email',
-                    size,
-                    label: emailLabel || (
-                        <FormattedMessage defaultMessage="Email" description="Field label" />
-                    ),
-                },
-            ]
-        }
-        submitButtonLabel={
-            submitButtonLabel || (
-                <FormattedMessage defaultMessage="Send reset link" description="Button label" />
-            )
-        }
-        actions={
-            withLoginLink ? (
-                <Link href={loginLink} className="py-2 px-4">
-                    {loginLabel || (
-                        <FormattedMessage
-                            defaultMessage="Go back to login"
-                            description="Link label"
-                        />
-                    )}
-                </Link>
-            ) : null
-        }
-        {...props}
-    />
-);
+}) {
+    return (
+        <Form
+            action={action}
+            fields={
+                fields || [
+                    {
+                        name: 'email',
+                        type: 'email',
+                        size,
+                        label: emailLabel || (
+                            <FormattedMessage defaultMessage="Email" description="Field label" />
+                        ),
+                    },
+                ]
+            }
+            submitButtonLabel={
+                submitButtonLabel || (
+                    <FormattedMessage defaultMessage="Send reset link" description="Button label" />
+                )
+            }
+            actions={
+                withLoginLink ? (
+                    <Link href={loginLink} className="py-2 px-4">
+                        {loginLabel || (
+                            <FormattedMessage
+                                defaultMessage="Go back to login"
+                                description="Link label"
+                            />
+                        )}
+                    </Link>
+                ) : null
+            }
+            {...props}
+        />
+    );
+}
 
 ForgotPassword.propTypes = propTypes;
 

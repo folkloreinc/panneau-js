@@ -11,19 +11,21 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const FiltersProvider = ({
+function FiltersProvider({
     components: injectedComponents = null,
     children = null,
     ...props
-}) => (
-    <ComponentsProvider
-        namespace={FILTERS_NAMESPACE}
-        components={{ ...components, ...injectedComponents }}
-        {...props}
-    >
-        {children}
-    </ComponentsProvider>
-);
+}) {
+    return (
+        <ComponentsProvider
+            namespace={FILTERS_NAMESPACE}
+            components={{ ...components, ...injectedComponents }}
+            {...props}
+        >
+            {children}
+        </ComponentsProvider>
+    );
+}
 
 FiltersProvider.propTypes = propTypes;
 

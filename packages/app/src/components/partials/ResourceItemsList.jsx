@@ -11,10 +11,10 @@ const propTypes = {
 };
 
 // Kept for backward compatibility with exports
-const ResourceItemsList = ({ resource, ...props }) => {
+function ResourceItemsList({ resource, ...props }) {
     const { id: finalResource = null } = isObject(resource) ? resource : { id: resource };
     return <ResourceList resource={finalResource} {...props} />;
-};
+}
 
 ResourceItemsList.propTypes = propTypes;
 

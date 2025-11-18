@@ -19,7 +19,7 @@ const propTypes = {
     cancelLabel: PanneauPropTypes.label,
 };
 
-const TwoFactorDisable = ({
+function TwoFactorDisable({
     action = '/user/two-factor-authentication',
     fields = null,
     explainationLabel = null,
@@ -29,7 +29,7 @@ const TwoFactorDisable = ({
     cancelLink = '/home',
     cancelLabel = null,
     ...props
-}) => {
+}) {
     const defaultPostForm = useCallback(
         (act, data) =>
             postJSON(act, data, {
@@ -72,7 +72,7 @@ const TwoFactorDisable = ({
             </p>
         </Form>
     );
-};
+}
 
 TwoFactorDisable.propTypes = propTypes;
 

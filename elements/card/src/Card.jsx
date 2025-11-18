@@ -258,7 +258,7 @@ function Card({
     }
 
     return <div className={cardClassName}>{cardInner}</div>;
-};
+}
 
 Card.propTypes = propTypes;
 

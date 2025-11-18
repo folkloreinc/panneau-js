@@ -27,7 +27,7 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const ModalResourceItems = ({
+function ModalResourceItems({
     id,
     resource: providedResource = null,
     title = null,
@@ -39,7 +39,7 @@ const ModalResourceItems = ({
     className = null,
     children = null,
     ...props
-}) => {
+}) {
     const panneauResource = usePanneauResource(providedResource);
     const resource = isObject(providedResource) ? providedResource : panneauResource;
 
@@ -77,7 +77,7 @@ const ModalResourceItems = ({
             {children}
         </Dialog>
     );
-};
+}
 
 ModalResourceItems.propTypes = propTypes;
 

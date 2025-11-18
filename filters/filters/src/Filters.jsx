@@ -31,7 +31,7 @@ const propTypes = {
 
 const DEFAULT_FILTERS = [];
 
-const Filters = ({
+function Filters({
     filters = DEFAULT_FILTERS,
     value = null,
     clearValue = null,
@@ -43,7 +43,7 @@ const Filters = ({
     defaultValue: initialDefaultValue = null,
     className = null,
     children = null,
-}) => {
+}) {
     const FilterComponents = useFiltersComponents();
     const currentFilters = filters || [];
     const defaultValue = initialDefaultValue || { page: null };
@@ -147,7 +147,7 @@ const Filters = ({
             {children}
         </Navbar>
     );
-};
+}
 
 Filters.propTypes = propTypes;
 

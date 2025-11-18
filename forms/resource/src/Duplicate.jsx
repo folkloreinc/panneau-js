@@ -25,7 +25,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const DuplicateForm = ({
+function DuplicateForm({
     resource = null,
     action = null,
     previous = null,
@@ -37,7 +37,7 @@ const DuplicateForm = ({
     loading = false,
     className = null,
     ...props
-}) => {
+}) {
     const { id = null } = value || {};
     const resourceValues = useResourceValues(resource, { id });
     return (
@@ -92,7 +92,7 @@ const DuplicateForm = ({
             </div>
         </Form>
     );
-};
+}
 
 DuplicateForm.propTypes = propTypes;
 

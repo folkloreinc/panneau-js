@@ -25,7 +25,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const ModalDialog = ({
+function ModalDialog({
     id,
     title = null,
     size = null,
@@ -36,7 +36,7 @@ const ModalDialog = ({
     onClose = null,
     withCloseOutside = false,
     className = null
-}) => {
+}) {
     const onCloseButtonOutside =
         (header === null && title === null && onClose !== null) ||
         (withCloseOutside && onClose !== null);
@@ -110,7 +110,7 @@ const ModalDialog = ({
             </div>
         </Modal>
     );
-};
+}
 
 ModalDialog.propTypes = propTypes;
 

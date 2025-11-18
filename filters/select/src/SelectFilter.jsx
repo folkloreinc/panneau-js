@@ -34,7 +34,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const SelectFilter = ({
+function SelectFilter({
     onChange,
     options: initialOptions = null,
     requestUrl = null,
@@ -51,7 +51,7 @@ const SelectFilter = ({
     autoSize = false,
     className = null,
     ...props
-}) => {
+}) {
     const [options, setOptions] = useState(initialOptions || null);
     const [loading, setLoading] = useState(null);
     const [endReached, setEndReached] = useState(false);
@@ -268,7 +268,7 @@ const SelectFilter = ({
             onMenuScrollToBottom={paginated ? onMenuScrollToBottom : null}
         />
     );
-};
+}
 
 SelectFilter.propTypes = propTypes;
 

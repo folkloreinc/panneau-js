@@ -15,13 +15,13 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const IntlProvider = ({
+function IntlProvider({
     intlManager = defaultManager,
     locale = null,
     locales = null,
     children = null,
     extraMessages = null
-}) => {
+}) {
     const previousLocales = useLocales();
     const { locale: previousLocale = null, messages: previousMessages = null } =
         useContext(IntlContext) || {};
@@ -43,7 +43,7 @@ const IntlProvider = ({
             <LocalesProvider locales={locales || previousLocales}>{children}</LocalesProvider>
         </BaseIntlProvider>
     );
-};
+}
 
 IntlProvider.propTypes = propTypes;
 

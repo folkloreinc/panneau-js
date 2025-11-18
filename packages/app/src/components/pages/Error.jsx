@@ -66,24 +66,26 @@ const propTypes = {
     statusCode: PanneauPropTypes.statusCode,
 };
 
-const ErrorPage = ({
+function ErrorPage({
     statusCode = null
-}) => (
-    <GuestLayout fullscreen>
-        <div className="container-sm py-4">
-            <div className="row justify-content-center">
-                <div className="col-12 col-sm-8 col-md-6">
-                    <h1>
-                        <Label>{messages[`title${statusCode || 404}`]}</Label>
-                    </h1>
-                    <p>
-                        <Label>{messages[`description${statusCode || 404}`]}</Label>
-                    </p>
+}) {
+    return (
+        <GuestLayout fullscreen>
+            <div className="container-sm py-4">
+                <div className="row justify-content-center">
+                    <div className="col-12 col-sm-8 col-md-6">
+                        <h1>
+                            <Label>{messages[`title${statusCode || 404}`]}</Label>
+                        </h1>
+                        <p>
+                            <Label>{messages[`description${statusCode || 404}`]}</Label>
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </GuestLayout>
-);
+        </GuestLayout>
+    );
+}
 ErrorPage.propTypes = propTypes;
 
 export default ErrorPage;

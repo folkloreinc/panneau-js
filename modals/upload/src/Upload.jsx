@@ -22,30 +22,32 @@ const propTypes = {
 
 const DEFAULT_PLUGINS = [];
 
-const UploadModal = ({
+function UploadModal({
     id,
     title = null,
     uppy = null,
     plugins = DEFAULT_PLUGINS,
     onClose = null,
     ...props
-}) => (
-    <Dialog id={id} size="lg" onClose={onClose} title={title}>
-        {uppy !== null ? (
-            <Dashboard
-                inline
-                width="100%"
-                height="350px"
-                showAddFilesPanel
-                proudlyDisplayPoweredByUppy={false}
-                {...props}
-                uppy={uppy}
-                onRequestClose={onClose}
-                plugins={plugins}
-            />
-        ) : null}
-    </Dialog>
-);
+}) {
+    return (
+        <Dialog id={id} size="lg" onClose={onClose} title={title}>
+            {uppy !== null ? (
+                <Dashboard
+                    inline
+                    width="100%"
+                    height="350px"
+                    showAddFilesPanel
+                    proudlyDisplayPoweredByUppy={false}
+                    {...props}
+                    uppy={uppy}
+                    onRequestClose={onClose}
+                    plugins={plugins}
+                />
+            ) : null}
+        </Dialog>
+    );
+}
 
 UploadModal.propTypes = propTypes;
 

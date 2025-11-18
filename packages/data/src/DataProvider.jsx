@@ -11,15 +11,17 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const DataProvider = ({
+function DataProvider({
     api = null,
     apiBaseUrl = undefined,
     children = null
-}) => (
-    <ApiProvider api={api} baseUrl={apiBaseUrl}>
-        {children}
-    </ApiProvider>
-);
+}) {
+    return (
+        <ApiProvider api={api} baseUrl={apiBaseUrl}>
+            {children}
+        </ApiProvider>
+    );
+}
 
 DataProvider.propTypes = propTypes;
 

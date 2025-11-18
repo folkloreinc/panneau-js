@@ -5,6 +5,8 @@ import React from 'react';
 import ResourceForm from '@panneau/form-resource';
 
 // Kept for backward compatibility with exports
-const ResourceFormWrapper = (props) => <ResourceForm {...props} />;
+function ResourceFormWrapper(props) {
+    return <ResourceForm {...props} />;
+}
 
 export default ResourceFormWrapper;

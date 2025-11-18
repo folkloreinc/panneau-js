@@ -20,10 +20,10 @@ const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
 };
 
-const ResourceDuplicatePage = ({
+function ResourceDuplicatePage({
     itemId,
     resource
-}) => {
+}) {
     const [, navigate] = useLocation();
     const resourceRoute = useResourceUrlGenerator(resource);
     const { item, loading, error } = useResourceItem(resource, itemId);
@@ -76,7 +76,7 @@ const ResourceDuplicatePage = ({
             </MainLayout>
         </ResourceProvider>
     );
-};
+}
 ResourceDuplicatePage.propTypes = propTypes;
 
 export default ResourceDuplicatePage;

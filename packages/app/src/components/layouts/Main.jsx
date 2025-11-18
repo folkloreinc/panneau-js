@@ -13,11 +13,11 @@ const propTypes = {
     fullscreen: PropTypes.bool,
 };
 
-const MainLayout = ({
+function MainLayout({
     fullscreen = false,
     loading = false,
     children = null
-}) => {
+}) {
     const {
         theme = null,
         sidebarPosition = null,
@@ -67,7 +67,7 @@ const MainLayout = ({
             <Modals theme={theme} />
         </div>
     );
-};
+}
 MainLayout.propTypes = propTypes;
 
 export default MainLayout;

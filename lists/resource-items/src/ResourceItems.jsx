@@ -37,7 +37,7 @@ const propTypes = {
 const DEFAULT_INDEX = {};
 const DEFAULT_ITEMS = [];
 
-const ResourceItemsList = ({
+function ResourceItemsList({
     resource: providedResource,
     query = null,
     baseUrl = null,
@@ -54,7 +54,7 @@ const ResourceItemsList = ({
     listProps: customListProps = null,
     theme = null,
     className = null
-}) => {
+}) {
     const panneauResource = usePanneauResource(providedResource);
     const resource = isObject(providedResource) ? providedResource : panneauResource;
 
@@ -240,7 +240,7 @@ const ResourceItemsList = ({
             ) : null}
         </div>
     );
-};
+}
 
 ResourceItemsList.propTypes = propTypes;
 

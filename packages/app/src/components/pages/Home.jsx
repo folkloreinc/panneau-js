@@ -10,7 +10,7 @@ import MainLayout from '../layouts/Main';
 
 const propTypes = {};
 
-const HomePage = () => {
+function HomePage() {
     const route = useUrlGenerator();
     const resources = usePanneauResources();
     const visibleResources = resources.filter(
@@ -41,7 +41,7 @@ const HomePage = () => {
             </div>
         </MainLayout>
     );
-};
+}
 HomePage.propTypes = propTypes;
 
 export default HomePage;

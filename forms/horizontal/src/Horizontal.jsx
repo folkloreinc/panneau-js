@@ -28,7 +28,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const HorizontalForm = ({
+function HorizontalForm({
     fields = null,
     status = null,
     value = null,
@@ -36,7 +36,7 @@ const HorizontalForm = ({
     className = null,
     onSubmit = null,
     ...props
-}) => {
+}) {
     const FieldsComponent = useFieldComponent('fields');
     return (
         <Form onSubmit={onSubmit} className={className} status={status} {...props}>
@@ -47,7 +47,7 @@ const HorizontalForm = ({
             />
         </Form>
     );
-};
+}
 
 HorizontalForm.propTypes = propTypes;
 

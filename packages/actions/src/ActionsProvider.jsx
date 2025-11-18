@@ -11,19 +11,21 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const ActionsProviders = ({
+function ActionsProviders({
     components: injectedComponents = null,
     children = null,
     ...props
-}) => (
-    <ComponentsProvider
-        namespace={ACTIONS_NAMESPACE}
-        components={{ ...components, ...injectedComponents }}
-        {...props}
-    >
-        {children}
-    </ComponentsProvider>
-);
+}) {
+    return (
+        <ComponentsProvider
+            namespace={ACTIONS_NAMESPACE}
+            components={{ ...components, ...injectedComponents }}
+            {...props}
+        >
+            {children}
+        </ComponentsProvider>
+    );
+}
 
 ActionsProviders.propTypes = propTypes;
 

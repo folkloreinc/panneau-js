@@ -26,7 +26,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const InlineForm = ({
+function InlineForm({
     fields = null,
     status = null,
     value = null,
@@ -34,7 +34,7 @@ const InlineForm = ({
     className = null,
     onSubmit = null,
     ...props
-}) => {
+}) {
     const FieldsComponent = useFieldComponent('fields');
     return (
         <Form onSubmit={onSubmit} className={className} status={status} {...props}>
@@ -45,7 +45,7 @@ const InlineForm = ({
             />
         </Form>
     );
-};
+}
 
 InlineForm.propTypes = propTypes;
 

@@ -19,10 +19,12 @@ const props = {
     },
 };
 
-const withUppy = (Story) => (
-    <UppyProvider {...props} id="test">
-        <Story />
-    </UppyProvider>
-);
+function withUppy(Story) {
+    return (
+        <UppyProvider {...props} id="test">
+            <Story />
+        </UppyProvider>
+    );
+}
 
 export default withUppy;

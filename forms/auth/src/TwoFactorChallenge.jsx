@@ -14,39 +14,41 @@ const propTypes = {
     submitButtonLabel: PanneauPropTypes.label,
 };
 
-const TwoFactorChallenge = ({
+function TwoFactorChallenge({
     action = '/two-factor-challenge',
     fields = null,
     size = 'lg',
     codeLabel = null,
     submitButtonLabel = null,
     ...props
-}) => (
-    <Form
-        action={action}
-        fields={
-            fields || [
-                {
-                    name: 'code',
-                    type: 'text',
-                    size,
-                    label: codeLabel || (
-                        <FormattedMessage
-                            defaultMessage="Enter the code from your authenticator app to continue"
-                            description="Field label"
-                        />
-                    ),
-                },
-            ]
-        }
-        submitButtonLabel={
-            submitButtonLabel || (
-                <FormattedMessage defaultMessage="Continue" description="Button label" />
-            )
-        }
-        {...props}
-    />
-);
+}) {
+    return (
+        <Form
+            action={action}
+            fields={
+                fields || [
+                    {
+                        name: 'code',
+                        type: 'text',
+                        size,
+                        label: codeLabel || (
+                            <FormattedMessage
+                                defaultMessage="Enter the code from your authenticator app to continue"
+                                description="Field label"
+                            />
+                        ),
+                    },
+                ]
+            }
+            submitButtonLabel={
+                submitButtonLabel || (
+                    <FormattedMessage defaultMessage="Continue" description="Button label" />
+                )
+            }
+            {...props}
+        />
+    );
+}
 
 TwoFactorChallenge.propTypes = propTypes;
 

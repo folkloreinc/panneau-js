@@ -15,25 +15,27 @@ const propTypes = {
 
 const DEFAULT_OPTIONS = [];
 
-const RadiosFilter = ({
+function RadiosFilter({
     name = 'radios',
     value = null,
     options = DEFAULT_OPTIONS,
     onChange,
     className = null,
     ...props
-}) => (
-    <div className={className}>
-        <Radios
-            {...props}
-            name={name}
-            value={value}
-            options={options}
-            onChange={onChange}
-            uncheckable
-        />
-    </div>
-);
+}) {
+    return (
+        <div className={className}>
+            <Radios
+                {...props}
+                name={name}
+                value={value}
+                options={options}
+                onChange={onChange}
+                uncheckable
+            />
+        </div>
+    );
+}
 
 RadiosFilter.propTypes = propTypes;
 

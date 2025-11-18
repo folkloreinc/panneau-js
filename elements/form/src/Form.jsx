@@ -35,7 +35,7 @@ const propTypes = {
     cancelClassName: PropTypes.string,
 };
 
-const Form = ({
+function Form({
     action = null,
     method = 'POST',
     status = null,
@@ -57,7 +57,8 @@ const Form = ({
     className = null,
     buttonsClassName = null,
     cancelClassName = null
-}) => (
+}) {
+    return (
     <form
         action={action}
         method={method}
@@ -145,7 +146,8 @@ const Form = ({
             </div>
         ) : null}
     </form>
-);
+    );
+}
 
 Form.propTypes = propTypes;
 

@@ -32,7 +32,7 @@ const propTypes = {
 
 const DEFAULT_ACTIONS = ['create'];
 
-const ResourceIndexPage = ({ resource, defaultActions = DEFAULT_ACTIONS }) => {
+function ResourceIndexPage({ resource, defaultActions = DEFAULT_ACTIONS }) {
     const { theme = null } = usePanneauColorScheme();
 
     const { name, settings = {}, index = {} } = resource;
@@ -187,7 +187,7 @@ const ResourceIndexPage = ({ resource, defaultActions = DEFAULT_ACTIONS }) => {
             </MainLayout>
         </ResourceProvider>
     );
-};
+}
 
 ResourceIndexPage.propTypes = propTypes;
 

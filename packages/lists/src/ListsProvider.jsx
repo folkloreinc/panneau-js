@@ -11,19 +11,21 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const ListsProvider = ({
+function ListsProvider({
     components: injectedComponents = null,
     children = null,
     ...props
-}) => (
-    <ComponentsProvider
-        namespace={LISTS_NAMESPACE}
-        components={{ ...components, ...injectedComponents }}
-        {...props}
-    >
-        {children}
-    </ComponentsProvider>
-);
+}) {
+    return (
+        <ComponentsProvider
+            namespace={LISTS_NAMESPACE}
+            components={{ ...components, ...injectedComponents }}
+            {...props}
+        >
+            {children}
+        </ComponentsProvider>
+    );
+}
 
 ListsProvider.propTypes = propTypes;
 

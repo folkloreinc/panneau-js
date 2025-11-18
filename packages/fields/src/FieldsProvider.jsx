@@ -20,20 +20,22 @@ const propTypes = {
 const DEFAULT_DEFINITIONS = [];
 const DEFAULT_COMPONENTS = {};
 
-const FieldsProvider = ({
+function FieldsProvider({
     definitions: injectedDefinitions = DEFAULT_DEFINITIONS,
     components: injectedComponents = DEFAULT_COMPONENTS,
     children
-}) => (
-    <BaseFieldsProvider fields={[...definitions, ...injectedDefinitions]}>
-        <ComponentsProvider
-            namespace={FIELDS_NAMESPACE}
-            components={{ ...components, ...injectedComponents }}
-        >
-            {children}
-        </ComponentsProvider>
-    </BaseFieldsProvider>
-);
+}) {
+    return (
+        <BaseFieldsProvider fields={[...definitions, ...injectedDefinitions]}>
+            <ComponentsProvider
+                namespace={FIELDS_NAMESPACE}
+                components={{ ...components, ...injectedComponents }}
+            >
+                {children}
+            </ComponentsProvider>
+        </BaseFieldsProvider>
+    );
+}
 
 FieldsProvider.propTypes = propTypes;
 

@@ -14,13 +14,13 @@ const propTypes = {
     description: PropTypes.string,
 };
 
-const ResourceMessage = ({
+function ResourceMessage({
     resource = null,
     values = null,
     id,
     defaultMessage = null,
     description = null
-}) => {
+}) {
     const contextResource = useResource();
     const { messages } = useIntl();
     const {
@@ -44,7 +44,7 @@ const ResourceMessage = ({
             {...message}
         />
     );
-};
+}
 ResourceMessage.propTypes = propTypes;
 
 export default ResourceMessage;

@@ -14,39 +14,41 @@ const propTypes = {
     submitButtonLabel: PanneauPropTypes.label,
 };
 
-const ConfirmPassword = ({
+function ConfirmPassword({
     action = '/user/confirm-password',
     fields = null,
     size = 'lg',
     passwordLabel = null,
     submitButtonLabel = null,
     ...props
-}) => (
-    <Form
-        action={action}
-        fields={
-            fields || [
-                {
-                    name: 'password',
-                    type: 'password',
-                    size,
-                    label: passwordLabel || (
-                        <FormattedMessage
-                            defaultMessage="Please enter your password to continue"
-                            description="Field label"
-                        />
-                    ),
-                },
-            ]
-        }
-        submitButtonLabel={
-            submitButtonLabel || (
-                <FormattedMessage defaultMessage="Continue" description="Button label" />
-            )
-        }
-        {...props}
-    />
-);
+}) {
+    return (
+        <Form
+            action={action}
+            fields={
+                fields || [
+                    {
+                        name: 'password',
+                        type: 'password',
+                        size,
+                        label: passwordLabel || (
+                            <FormattedMessage
+                                defaultMessage="Please enter your password to continue"
+                                description="Field label"
+                            />
+                        ),
+                    },
+                ]
+            }
+            submitButtonLabel={
+                submitButtonLabel || (
+                    <FormattedMessage defaultMessage="Continue" description="Button label" />
+                )
+            }
+            {...props}
+        />
+    );
+}
 
 ConfirmPassword.propTypes = propTypes;
 

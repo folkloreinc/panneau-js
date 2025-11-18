@@ -13,12 +13,12 @@ const propTypes = {
     linkClassName: PropTypes.string,
 };
 
-const AccountMenu = ({
+function AccountMenu({
     withAccountForm = false,
     className = null,
     itemClassName = null,
     linkClassName = null
-}) => {
+}) {
     const route = useUrlGenerator();
     const user = useUser();
     const logout = useLogout();
@@ -87,7 +87,7 @@ const AccountMenu = ({
             dropdownAlign="end"
         />
     ) : null;
-};
+}
 AccountMenu.propTypes = propTypes;
 
 export default AccountMenu;

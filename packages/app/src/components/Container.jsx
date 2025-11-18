@@ -45,7 +45,7 @@ const propTypes = {
     statusCode: PanneauPropTypes.statusCode,
 };
 
-const Container = ({
+function Container({
     definition = null,
     components = null,
     user = null,
@@ -53,7 +53,7 @@ const Container = ({
     baseUrl = null,
     uppy = null,
     statusCode = null,
-}) => {
+}) {
     const {
         intl: { locale = 'en', locales = DEFAULT_LOCALES } = {},
         routes = DEFAULT_ROUTES,
@@ -144,7 +144,7 @@ const Container = ({
             </IntlProvider>
         </Router>
     );
-};
+}
 
 Container.propTypes = propTypes;
 

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 import IntlProvider from '../../packages/intl/src/IntlProvider';
 
-const withIntlProvider = (Story, { parameters: { intl = null } }) => {
+function withIntlProvider(Story, { parameters: { intl = null } }) {
     const enabled = isObject(intl) || intl === true;
     const { locale = 'en', messages = {} } = isObject(intl) ? intl : {};
     const [localeLoaded, setLocaleLoaded] = useState(true);
@@ -30,6 +30,6 @@ const withIntlProvider = (Story, { parameters: { intl = null } }) => {
             <Story />
         </IntlProvider>
     ) : null;
-};
+}
 
 export default withIntlProvider;

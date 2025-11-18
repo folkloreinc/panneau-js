@@ -16,10 +16,10 @@ const propTypes = {
     itemId: PropTypes.string.isRequired,
 };
 
-const ResourceShowPage = ({
+function ResourceShowPage({
     resource,
     itemId
-}) => {
+}) {
     const { name } = resource;
     const { item, loading, error } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
@@ -45,7 +45,7 @@ const ResourceShowPage = ({
             </MainLayout>
         </ResourceProvider>
     );
-};
+}
 
 ResourceShowPage.propTypes = propTypes;
 

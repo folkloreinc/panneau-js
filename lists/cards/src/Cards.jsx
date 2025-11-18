@@ -27,7 +27,7 @@ const propTypes = {
 
 const DEFAULT_ITEMS = [];
 
-const CardsList = ({
+function CardsList({
     resource,
     items = DEFAULT_ITEMS,
     loading = false,
@@ -39,7 +39,7 @@ const CardsList = ({
     actionsProps = null,
     displayPlaceholder = null,
     withoutActionsColumn = false
-}) => {
+}) {
     const displayComponents = useDisplaysComponents();
     const columnWithFields = useMemo(
         () => getColumnsWithFields(resource, columns),
@@ -169,7 +169,7 @@ const CardsList = ({
             ) : null}
         </div>
     );
-};
+}
 CardsList.propTypes = propTypes;
 
 export default CardsList;

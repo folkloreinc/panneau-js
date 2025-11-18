@@ -11,7 +11,7 @@ import {
     ResourceShow,
 } from './pages';
 
-const createResourceRoutes = (resource, { route, componentsManager, pages = {} }) => {
+function createResourceRoutes(resource, { route, componentsManager, pages = {} }) {
     const { id: resourceId, pages: resourcePages = {}, extraRoutes = [] } = resource;
 
     // Load custom pages from resource
@@ -121,6 +121,6 @@ const createResourceRoutes = (resource, { route, componentsManager, pages = {} }
             {() => <ResourceIndexComponent resource={resource} />}
         </Route>,
     ];
-};
+}
 
 export default createResourceRoutes;

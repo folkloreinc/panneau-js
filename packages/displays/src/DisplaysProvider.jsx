@@ -11,19 +11,21 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const DisplaysProvider = ({
+function DisplaysProvider({
     components: injectedComponents = null,
     children = null,
     ...props
-}) => (
-    <ComponentsProvider
-        namespace={DISPLAYS_NAMESPACE}
-        components={{ ...components, ...injectedComponents }}
-        {...props}
-    >
-        {children}
-    </ComponentsProvider>
-);
+}) {
+    return (
+        <ComponentsProvider
+            namespace={DISPLAYS_NAMESPACE}
+            components={{ ...components, ...injectedComponents }}
+            {...props}
+        >
+            {children}
+        </ComponentsProvider>
+    );
+}
 
 DisplaysProvider.propTypes = propTypes;
 

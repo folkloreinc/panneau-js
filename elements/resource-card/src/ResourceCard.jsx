@@ -30,7 +30,7 @@ const propTypes = {
     footer: PropTypes.node,
 };
 
-const ResourceCard = ({
+function ResourceCard({
     item = null,
     itemLabelPath = 'label',
     itemDescriptionPath = null,
@@ -48,7 +48,7 @@ const ResourceCard = ({
     header = null,
     footer = null,
     className = null
-}) => {
+}) {
     const getItemLabel = useCallback(
         (it, path) => {
             const id = get(it, 'id', null);
@@ -130,7 +130,7 @@ const ResourceCard = ({
             {footer !== null ? <div className="card-footer p-1 ps-2">{footer}</div> : null}
         </div>
     );
-};
+}
 
 ResourceCard.propTypes = propTypes;
 

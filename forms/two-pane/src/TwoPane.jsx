@@ -31,7 +31,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const TwoPaneForm = ({
+function TwoPaneForm({
     resource = null,
     fields,
     status = null,
@@ -43,7 +43,7 @@ const TwoPaneForm = ({
     children = null,
     className = null,
     ...props
-}) => {
+}) {
     const { id = null } = resource || {};
     const FieldsComponent = useFieldComponent('fields');
     const PreviewComponent = usePreviewComponent(id);
@@ -81,7 +81,7 @@ const TwoPaneForm = ({
             </div>
         </div>
     );
-};
+}
 
 TwoPaneForm.propTypes = propTypes;
 

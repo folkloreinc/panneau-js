@@ -12,10 +12,10 @@ const propTypes = {
     onSuccess: PropTypes.func,
 };
 
-const LoginForm = ({
+function LoginForm({
     className = null,
     onSuccess = null
-}) => {
+}) {
     const url = useUrlGenerator();
     const { login } = useAuth();
     const postForm = useCallback((action, { email, password }) => login(email, password), [login]);
@@ -32,7 +32,7 @@ const LoginForm = ({
             }
         />
     ) : null;
-};
+}
 
 LoginForm.propTypes = propTypes;
 

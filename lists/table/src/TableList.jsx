@@ -21,7 +21,7 @@ const DEFAULT_ITEMS = [];
 const DEFAULT_COLUMNS = [];
 const DEFAULT_ACTIONS = ['show', 'edit', 'delete'];
 
-const TableList = ({
+function TableList({
     resource,
     items = DEFAULT_ITEMS,
     actions = DEFAULT_ACTIONS,
@@ -29,7 +29,7 @@ const TableList = ({
     withoutId = false,
     withoutActionsColumn = false,
     ...props
-}) => {
+}) {
     const columnList = useMemo(() => getColumnsWithFields(resource, columns), [resource, columns]);
     const hasIdColumn =
         (columnList.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
@@ -48,7 +48,7 @@ const TableList = ({
             {...props}
         />
     ) : null;
-};
+}
 
 TableList.propTypes = propTypes;
 

@@ -24,7 +24,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const Form = ({
+function Form({
     action = null,
     method = null,
     type = 'normal',
@@ -39,7 +39,7 @@ const Form = ({
     useFormProps = null,
     className = null,
     ...props
-}) => {
+}) {
     const FormComponent = useFormComponent(type);
 
     const defaultPostForm = useCallback(
@@ -83,7 +83,7 @@ const Form = ({
             }
         />
     );
-};
+}
 
 Form.propTypes = propTypes;
 

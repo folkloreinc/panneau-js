@@ -18,7 +18,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const ModalResourceForm = ({
+function ModalResourceForm({
     id,
     resource = null,
     type = null,
@@ -27,7 +27,7 @@ const ModalResourceForm = ({
     onSuccess = null,
     onClose = null,
     className = null
-}) => {
+}) {
     const resourceValues = useResourceValues(resource);
     return (
         <Dialog
@@ -60,7 +60,7 @@ const ModalResourceForm = ({
             />
         </Dialog>
     );
-};
+}
 
 ModalResourceForm.propTypes = propTypes;
 

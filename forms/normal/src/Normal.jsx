@@ -29,7 +29,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const NormalForm = ({
+function NormalForm({
     fields = null,
     status = null,
     value = null,
@@ -40,7 +40,7 @@ const NormalForm = ({
     children = null,
     className = null,
     ...props
-}) => {
+}) {
     const FieldsComponent = useFieldComponent('fields');
 
     return (
@@ -69,7 +69,7 @@ const NormalForm = ({
             )}
         </Form>
     );
-};
+}
 
 NormalForm.propTypes = propTypes;
 

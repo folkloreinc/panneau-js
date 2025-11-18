@@ -17,7 +17,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const ButtonFilter = ({
+function ButtonFilter({
     name = 'button',
     label = null,
     value = false,
@@ -28,7 +28,7 @@ const ButtonFilter = ({
     onChange,
     className = null,
     ...props
-}) => {
+}) {
     const isActive = useMemo(
         () =>
             value !== null && (value === true || value === 'true' || value === 1 || value === '1'),
@@ -64,7 +64,7 @@ const ButtonFilter = ({
             />
         </div>
     );
-};
+}
 
 ButtonFilter.propTypes = propTypes;
 

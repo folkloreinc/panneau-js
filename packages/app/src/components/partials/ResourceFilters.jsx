@@ -5,6 +5,8 @@ import React from 'react';
 import Filters from '@panneau/filter-filters';
 
 // Kept for backward compatibility with exports
-const ResourceFilters = (props) => <Filters {...props} />;
+function ResourceFilters(props) {
+    return <Filters {...props} />;
+}
 
 export default ResourceFilters;

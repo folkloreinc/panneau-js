@@ -20,10 +20,10 @@ const propTypes = {
     resource: PanneauPropTypes.resource.isRequired,
 };
 
-const ResourceDeletePage = ({
+function ResourceDeletePage({
     itemId,
     resource
-}) => {
+}) {
     const [, navigate] = useLocation();
     const resourceRoute = useResourceUrlGenerator(resource);
     const { item, loading, error } = useResourceItem(resource, itemId);
@@ -76,7 +76,7 @@ const ResourceDeletePage = ({
             </MainLayout>
         </ResourceProvider>
     );
-};
+}
 ResourceDeletePage.propTypes = propTypes;
 
 export default ResourceDeletePage;

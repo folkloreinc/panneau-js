@@ -17,7 +17,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const ToggleFilter = ({
+function ToggleFilter({
     name = 'toggle',
     value = false,
     label = null,
@@ -26,7 +26,7 @@ const ToggleFilter = ({
     onClear,
     className = null,
     ...props
-}) => {
+}) {
     const isTrue =
         value !== null && (value === true || value === 'true' || value === 1 || value === '1');
 
@@ -55,7 +55,7 @@ const ToggleFilter = ({
             <Switch {...props} name={name} checked={isTrue} onChange={onToggleChange} />
         </div>
     );
-};
+}
 
 ToggleFilter.propTypes = propTypes;
 

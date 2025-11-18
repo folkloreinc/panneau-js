@@ -20,13 +20,13 @@ const propTypes = {
     position: PropTypes.string,
 };
 
-const MainNavbar = ({
+function MainNavbar({
     loading = false,
     theme = 'light',
     vertical = false,
     position = 'top',
     ...props
-}) => {
+}) {
     const { name, menus = null } = usePanneau();
     const { main = null, guest = null } = menus || {};
     const { background } = usePanneauColorScheme();
@@ -112,7 +112,7 @@ const MainNavbar = ({
             {items}
         </Navbar>
     );
-};
+}
 MainNavbar.propTypes = propTypes;
 
 export default MainNavbar;

@@ -21,12 +21,12 @@ const propTypes = {
     cardClassName: PropTypes.string,
 };
 
-const ResourceCards = ({
+function ResourceCards({
     value = null,
     className = null,
     cardClassName = null,
     ...props
-}) => {
+}) {
     const values = useMemo(() => {
         if (isArray(value)) {
             return value.filter((v) => v !== null);
@@ -49,7 +49,7 @@ const ResourceCards = ({
             ))}
         </div>
     );
-};
+}
 
 ResourceCards.propTypes = propTypes;
 

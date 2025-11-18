@@ -23,7 +23,7 @@ const propTypes = {
     breadCrumbsClassName: PropTypes.string,
 };
 
-const Navbar = ({
+function Navbar({
     brand = null,
     brandLink = null,
     breadcrumbs = null,
@@ -38,7 +38,7 @@ const Navbar = ({
     collapseClassName = null,
     brandClassName = null,
     breadCrumbsClassName = null
-}) => {
+}) {
     const [menuVisible, setMenuVisible] = useState(false);
     const onClickMenu = useCallback(
         () => setMenuVisible(!menuVisible),
@@ -135,7 +135,7 @@ const Navbar = ({
             )}
         </nav>
     );
-};
+}
 
 Navbar.propTypes = propTypes;
 

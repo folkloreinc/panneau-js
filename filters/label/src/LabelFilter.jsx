@@ -16,7 +16,7 @@ const propTypes = {
     className: PropTypes.string,
 };
 
-const LabelFilter = ({
+function LabelFilter({
     label = null,
     sublabel = null,
     href = null,
@@ -24,7 +24,7 @@ const LabelFilter = ({
     onClick = null,
     className = null,
     ...props
-}) => {
+}) {
     const inner = (
         <>
             {label !== null ? <span className={styles.label}>{label}</span> : null}
@@ -60,7 +60,7 @@ const LabelFilter = ({
             {href === null && onClick === null ? inner : null}
         </div>
     );
-};
+}
 
 LabelFilter.propTypes = propTypes;
 

@@ -5,11 +5,13 @@ import MainLayout from '../layouts/Main';
 
 const propTypes = {};
 
-const AccountPage = () => (
-    <MainLayout>
-        <div className="container-sm py-4">Account page</div>
-    </MainLayout>
-);
+function AccountPage() {
+    return (
+        <MainLayout>
+            <div className="container-sm py-4">Account page</div>
+        </MainLayout>
+    );
+}
 AccountPage.propTypes = propTypes;
 
 export default AccountPage;

@@ -7,11 +7,12 @@ const propTypes = {
     children: PropTypes.node,
 };
 
-const PortalElement = ({
+function PortalElement({
     children = null,
     container = null
-}) =>
-    container !== null ? ReactDOM.createPortal(children, container) : null;
+}) {
+    return container !== null ? ReactDOM.createPortal(children, container) : null;
+}
 
 PortalElement.propTypes = propTypes;
 

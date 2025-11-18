@@ -12,11 +12,11 @@ const propTypes = {
     linkClassName: PropTypes.string,
 };
 
-const ResourcesMenu = ({
+function ResourcesMenu({
     className = null,
     itemClassName = null,
     linkClassName = null
-}) => {
+}) {
     const [pathname] = useLocation();
     const resources = usePanneauResources();
     const resourceRoute = useResourceUrlGenerator();
@@ -45,7 +45,7 @@ const ResourcesMenu = ({
             linkClassName={linkClassName}
         />
     );
-};
+}
 ResourcesMenu.propTypes = propTypes;
 
 export default ResourcesMenu;

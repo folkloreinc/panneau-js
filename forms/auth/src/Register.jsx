@@ -23,7 +23,7 @@ const propTypes = {
     loginLabel: PanneauPropTypes.label,
 };
 
-const Register = ({
+function Register({
     action = '/register',
     fields = null,
     size = 'lg',
@@ -36,68 +36,70 @@ const Register = ({
     loginLink = '/login',
     loginLabel = null,
     ...props
-}) => (
-    <Form
-        action={action}
-        fields={
-            fields || [
-                {
-                    name: 'name',
-                    type: 'text',
-                    size,
-                    label: nameLabel || (
-                        <FormattedMessage defaultMessage="Name" description="Field label" />
-                    ),
-                },
-                {
-                    name: 'email',
-                    type: 'email',
-                    size,
-                    label: emailLabel || (
-                        <FormattedMessage defaultMessage="Email" description="Field label" />
-                    ),
-                },
-                {
-                    name: 'password',
-                    type: 'password',
-                    size,
-                    label: passwordLabel || (
-                        <FormattedMessage defaultMessage="Password" description="Field label" />
-                    ),
-                },
-                {
-                    name: 'password_confirmation',
-                    type: 'password',
-                    size,
-                    label: passwordConfirmationLabel || (
-                        <FormattedMessage
-                            defaultMessage="Confirm your password"
-                            description="Field label"
-                        />
-                    ),
-                },
-            ]
-        }
-        submitButtonLabel={
-            submitButtonLabel || (
-                <FormattedMessage defaultMessage="Create account" description="Button label" />
-            )
-        }
-        actions={
-            withLoginLink ? (
-                <Link href={loginLink} className="py-2 px-4">
-                    {loginLabel || (
-                        <FormattedMessage
-                            defaultMessage="Already have an account? Go to login"
-                            description="Link label"
-                        />
-                    )}
-                </Link>
-            ) : null
-        }
-        {...props}
-    />
-);
+}) {
+    return (
+        <Form
+            action={action}
+            fields={
+                fields || [
+                    {
+                        name: 'name',
+                        type: 'text',
+                        size,
+                        label: nameLabel || (
+                            <FormattedMessage defaultMessage="Name" description="Field label" />
+                        ),
+                    },
+                    {
+                        name: 'email',
+                        type: 'email',
+                        size,
+                        label: emailLabel || (
+                            <FormattedMessage defaultMessage="Email" description="Field label" />
+                        ),
+                    },
+                    {
+                        name: 'password',
+                        type: 'password',
+                        size,
+                        label: passwordLabel || (
+                            <FormattedMessage defaultMessage="Password" description="Field label" />
+                        ),
+                    },
+                    {
+                        name: 'password_confirmation',
+                        type: 'password',
+                        size,
+                        label: passwordConfirmationLabel || (
+                            <FormattedMessage
+                                defaultMessage="Confirm your password"
+                                description="Field label"
+                            />
+                        ),
+                    },
+                ]
+            }
+            submitButtonLabel={
+                submitButtonLabel || (
+                    <FormattedMessage defaultMessage="Create account" description="Button label" />
+                )
+            }
+            actions={
+                withLoginLink ? (
+                    <Link href={loginLink} className="py-2 px-4">
+                        {loginLabel || (
+                            <FormattedMessage
+                                defaultMessage="Already have an account? Go to login"
+                                description="Link label"
+                            />
+                        )}
+                    </Link>
+                ) : null
+            }
+            {...props}
+        />
+    );
+}
 
 Register.propTypes = propTypes;
 
