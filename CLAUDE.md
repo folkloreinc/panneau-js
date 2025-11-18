@@ -77,6 +77,85 @@ The repository uses npm workspaces coordinated by Lerna (v3.0.313):
 5. **CSS Modules with Scoped Names**: `[path][name]__[local]--[hash:base64:5]` naming convention
 6. **SCSS as First-Class Export**: Packages export both compiled CSS and source SCSS for customization
 
+### Component Architecture
+
+**Component Pattern** (All 209+ components follow this standard):
+```javascript
+import PropTypes from 'prop-types';
+import React from 'react';
+
+// PropTypes definition at module level
+const propTypes = {
+    value: PropTypes.string,
+    placeholder: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
+    onChange: PropTypes.func,
+};
+
+// Component using function declaration (NOT arrow functions)
+function ComponentName({
+    value = null,
+    placeholder = null,
+    onChange = null,
+    ...props
+}) {
+    // Component logic with hooks if needed
+    return <JSX />;
+}
+
+// PropTypes assignment
+ComponentName.propTypes = propTypes;
+
+// Default export
+export default ComponentName;
+```
+
+**Key Component Characteristics**:
+- ✅ **Function declarations**: All components use `function ComponentName() {}` (not `const ComponentName = () => {}`)
+- ✅ **Props destructuring**: All props destructured in function signature with default values
+- ✅ **Spread operator**: Unused props captured with `...props` and spread to child components
+- ✅ **PropTypes validation**: Every component has PropTypes defined and assigned
+- ✅ **Default exports**: All components exported as default
+- ✅ **No React.memo**: Memoization is not used anywhere in the codebase
+- ✅ **Hooks usage**: Components freely use useState, useEffect, useMemo, useCallback, etc.
+
+**Component Categories** (Total: ~208 non-story component files):
+
+| Category | Count | Purpose | Examples |
+|----------|-------|---------|----------|
+| **displays/** | 13 | Read-only data display | Text, Avatar, Date, Boolean, Image, Label |
+| **actions/** | 8 | User actions on items | Edit, Delete, Duplicate, Show, Upload, Restore |
+| **fields/** | 41 | Form input fields | TextField, SelectField, DateField, MediaField |
+| **elements/** | 36 | Base UI primitives | Button, Modal, Icon, Loading, Card, Dropdown |
+| **forms/** | 17 | Form layouts & containers | Normal, Horizontal, Inline, Resource, TwoPane |
+| **filters/** | 8 | Data filtering UI | Search, Select, Date, Radios, Toggle |
+| **lists/** | 4 | Data list displays | Table, Cards, Calendar, ResourceItems |
+| **modals/** | 4 | Modal compositions | Dialog, Upload, ResourceForm, ResourceItems |
+| **packages/** | 68 | Core & providers | App pages, menus, providers, utilities |
+
+**Provider Pattern**:
+All provider components follow a consistent pattern (8 providers total):
+```javascript
+function ProviderName({ children, ...config }) {
+    // Provider logic and state management
+    return (
+        <Context.Provider value={contextValue}>
+            {children}
+        </Context.Provider>
+    );
+}
+```
+
+Providers: `FieldsProvider`, `DataProvider`, `ActionsProvider`, `ModalsProvider`, `DisplaysProvider`, `ListsProvider`, `FormsProvider`, `FiltersProvider`
+
+**Common Patterns Observed**:
+
+1. **Value/Placeholder Pattern**: Most display/field components accept `value` and `placeholder` props
+2. **Path-based Access**: Components use lodash `get()` for safe nested property access (e.g., `itemLabelPath`, `valuePath`)
+3. **Conditional Rendering**: Heavy use of ternary operators and conditional JSX
+4. **Bootstrap Integration**: Components use Bootstrap 5 classes extensively with `classnames` utility
+5. **Icon Integration**: FontAwesome icons via `@panneau/element-icon`
+6. **React Intl**: Internationalized components use `<FormattedMessage>` and `useIntl()` hook
+
 ### Build System
 
 **Rollup Configuration** (`rollup.config.js`):
@@ -164,17 +243,33 @@ The repository uses npm workspaces coordinated by Lerna (v3.0.313):
 ```
 package-name/
 ├── src/
-│   ├── index.js           # Main export
-│   ├── Component.jsx      # Component implementation
-│   ├── definition.js      # Component metadata
-│   ├── styles.module.css  # Scoped styles
-│   └── _stories/          # Storybook stories
+│   ├── index.js           # Barrel export: export { default } from './Component'
+│   ├── Component.jsx      # Component implementation (function declaration)
+│   ├── definition.js      # Component metadata { id, component, ... }
+│   ├── styles.module.css  # Scoped CSS Modules (or .scss)
+│   └── _stories/          # Storybook stories (Container.jsx, *.stories.jsx)
 ├── es/                    # ESM build output (gitignored)
 ├── lib/                   # CJS build output (gitignored)
 ├── assets/                # Compiled CSS (gitignored)
 ├── scss/                  # SCSS exports (gitignored, if --scss used)
 ├── package.json
 └── rollup.config.js       # Optional custom config
+```
+
+**Barrel Export Pattern** (`index.js`):
+```javascript
+export { default } from './ComponentName';
+```
+
+**Definition File Pattern** (`definition.js`):
+```javascript
+import Component from './ComponentName';
+
+export default {
+    id: 'component-id',
+    component: Component,
+    type: 'component-type',  // e.g., 'field', 'display', 'action'
+};
 ```
 
 ### Key Dependencies
@@ -197,3 +292,68 @@ package-name/
 - **Legacy peer deps**: Bootstrap uses `--legacy-peer-deps` flag
 - **CSS Module naming**: Follows `[path][name]__[local]--[hash:base64:5]` pattern
 - **Side effects**: CSS/SCSS files marked as side effects to ensure inclusion in builds
+- **Component style**: All components use function declarations, NOT arrow functions
+- **Story files**: `*.stories.jsx` files follow different patterns and conventions than component files
+
+## Development Guidelines
+
+### When Creating New Components
+
+1. **Use function declarations**, not const arrow functions:
+   ```javascript
+   // ✅ Correct
+   function MyComponent({ value }) {
+       return <div>{value}</div>;
+   }
+
+   // ❌ Incorrect
+   const MyComponent = ({ value }) => {
+       return <div>{value}</div>;
+   };
+   ```
+
+2. **Always define PropTypes** before the component and assign after:
+   ```javascript
+   const propTypes = { /* ... */ };
+
+   function MyComponent(props) { /* ... */ }
+
+   MyComponent.propTypes = propTypes;
+   ```
+
+3. **Destructure props in function signature** with default values:
+   ```javascript
+   function MyComponent({
+       value = null,
+       placeholder = 'Default',
+       onChange = null,
+       ...props  // Capture remaining props
+   }) { /* ... */ }
+   ```
+
+4. **Follow naming conventions**:
+   - Display components: `Text`, `Avatar`, `Date` (noun form)
+   - Field components: `TextField`, `SelectField`, `DateField` (ends with "Field")
+   - Form layouts: `NormalForm`, `HorizontalForm` (ends with "Form")
+   - Filters: `SearchFilter`, `DateFilter` (ends with "Filter")
+   - Actions: `EditAction`, `DeleteAction` (ends with "Action")
+   - Lists: `TableList`, `CardsList` (ends with "List")
+   - Modals: `ModalDialog`, `ModalResourceForm` (starts with "Modal")
+
+5. **Use PanneauPropTypes** from `@panneau/core` for common types:
+   ```javascript
+   import { PropTypes as PanneauPropTypes } from '@panneau/core';
+
+   const propTypes = {
+       field: PanneauPropTypes.field.isRequired,
+       size: PanneauPropTypes.buttonSize,
+   };
+   ```
+
+### When Refactoring Components
+
+1. **Preserve PropTypes**: Never remove or change PropTypes during refactoring
+2. **Maintain default values**: Keep existing default parameter values
+3. **Test with Storybook**: Always verify changes in Storybook before committing
+4. **Keep spread operators**: Maintain `{...props}` spreading to child components
+5. **Don't change story files**: Leave `*.stories.jsx` files unchanged unless specifically updating stories
