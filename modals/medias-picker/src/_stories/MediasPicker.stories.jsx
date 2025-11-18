@@ -54,14 +54,24 @@ const Container = (props) => {
     );
 };
 
-export const Normal = () => <Container />;
+export const Normal = {
+    render: () => <Container />,
+};
 
-export const Multiple = () => <Container multiple />;
+export const Multiple = {
+    render: () => <Container multiple />,
+};
 
-export const MultipleCustom = () => <Container multiple />;
+export const MultipleCustom = {
+    render: () => <Container multiple />,
+};
 
-export const MultipleWithResource = () => (
+export const MultipleWithResource = {
+    render: () => (
+
     <PanneauProvider definition={panneauDefinition}>
         <Container multiple resource="medias" />
     </PanneauProvider>
-);
+
+    ),
+};

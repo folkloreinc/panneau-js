@@ -13,11 +13,15 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <ModalProvider>
         <Modals />
         <Confirm title="Confirm">
             <p>Are u sure?</p>
         </Confirm>
     </ModalProvider>
-);
+
+    ),
+};

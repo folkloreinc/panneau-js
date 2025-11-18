@@ -53,8 +53,14 @@ const CalendarContainer = (props = null) => {
     );
 };
 
-export const Monthly = () => <CalendarContainer />;
+export const Monthly = {
+    render: () => <CalendarContainer />,
+};
 
-export const Weekly = () => <CalendarContainer mode="weekly" />;
+export const Weekly = {
+    render: () => <CalendarContainer mode="weekly" />,
+};
 
-export const Empty = () => <CalendarContainer items={null} />;
+export const Empty = {
+    render: () => <CalendarContainer items={null} />,
+};

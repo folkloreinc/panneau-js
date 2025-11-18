@@ -70,7 +70,9 @@ function Container(props) {
     );
 }
 
-export const EmptyImages = () => (
+export const EmptyImages = {
+    render: () => (
+
     <UppyProvider>
         <Container
             itemField={{ component: 'image', components: { display: 'image' }, defaultValue: null }}
@@ -83,9 +85,13 @@ export const EmptyImages = () => (
             // value={[]}
         />
     </UppyProvider>
-);
 
-export const Normal = () => (
+    ),
+};
+
+export const Normal = {
+    render: () => (
+
     <Container
         itemFields={itemFields}
         addItemLabel="Add something"
@@ -94,9 +100,13 @@ export const Normal = () => (
         itemLabelPath="title"
         value={items}
     />
-);
 
-export const NormalWithRequired = () => (
+    ),
+};
+
+export const NormalWithRequired = {
+    render: () => (
+
     <Container
         itemFields={itemFieldsWithRequired}
         addItemLabel="Add something"
@@ -105,9 +115,13 @@ export const NormalWithRequired = () => (
         itemLabelPath="title"
         value={items}
     />
-);
 
-export const EmptyWithRequired = () => (
+    ),
+};
+
+export const EmptyWithRequired = {
+    render: () => (
+
     <Container
         itemFields={itemFieldsWithRequired}
         addItemLabel="Add something"
@@ -116,37 +130,71 @@ export const EmptyWithRequired = () => (
         itemLabelPath="title"
         value={null}
     />
-);
 
-export const Inline = () => (
+    ),
+};
+
+export const Inline = {
+    render: () => (
+
     <Container itemFields={[{ name: 'title', component: 'text', label: 'Title' }]} inline />
-);
 
-export const WithoutCard = () => <Container itemFields={itemFields} withoutCard />;
-export const WithoutCardWithoutSort = () => (
+    ),
+};
+
+export const WithoutCard = {
+    render: () => <Container itemFields={itemFields} withoutCard />,
+};
+export const WithoutCardWithoutSort = {
+    render: () => (
+
     <Container itemFields={itemFields} withoutCard withoutSort />
-);
-export const InlineWithoutSort = () => <Container itemFields={itemFields} inline withoutSort />;
 
-export const WithoutSort = () => <Container itemFields={itemFields} withoutSort />;
-export const WithoutCollapse = () => <Container itemFields={itemFields} withoutCollapse />;
-export const WithItemRender = () => (
+    ),
+};
+export const InlineWithoutSort = {
+    render: () => <Container itemFields={itemFields} inline withoutSort />,
+};
+
+export const WithoutSort = {
+    render: () => <Container itemFields={itemFields} withoutSort />,
+};
+export const WithoutCollapse = {
+    render: () => <Container itemFields={itemFields} withoutCollapse />,
+};
+export const WithItemRender = {
+    render: () => (
+
     <Container renderItem={(it, index) => <div>Item #{index + 1}</div>} />
-);
 
-export const WithItemComponent = () => <Container itemComponent={Dummy} />;
+    ),
+};
 
-export const WithFieldComponent = () => <Container itemField={itemField} newItemValue={null} />;
+export const WithItemComponent = {
+    render: () => <Container itemComponent={Dummy} />,
+};
 
-export const WithBlocks = () => (
+export const WithFieldComponent = {
+    render: () => <Container itemField={itemField} newItemValue={null} />,
+};
+
+export const WithBlocks = {
+    render: () => (
+
     <div style={{ maxWidth: 500 }}>
         <Container types={BlocksResource.types} newItemValue={null} inline />
     </div>
-);
 
-export const WithMaxItems = () => <Container itemFields={itemFields} maxItems={2} />;
+    ),
+};
 
-export const WithTypes = () => (
+export const WithMaxItems = {
+    render: () => <Container itemFields={itemFields} maxItems={2} />,
+};
+
+export const WithTypes = {
+    render: () => (
+
     <Container
         buttons={
             <div className="me-2">
@@ -213,4 +261,6 @@ export const WithTypes = () => (
             },
         ]}
     />
-);
+
+    ),
+};

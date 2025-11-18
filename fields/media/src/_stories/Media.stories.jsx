@@ -57,29 +57,53 @@ function Container({ value: initialValue = null, ...props }) {
     );
 }
 
-export const Normal = () => <Container />;
+export const Normal = {
+    render: () => <Container />,
+};
 
-export const Disabled = () => <Container disabled value={{ url: 'lol' }} />;
+export const Disabled = {
+    render: () => <Container disabled value={{ url: 'lol' }} />,
+};
 
-export const WithButton = () => <Container withButton />;
+export const WithButton = {
+    render: () => <Container withButton />,
+};
 
-export const WithResourceList = () => <Container withButton withResourceList />;
+export const WithResourceList = {
+    render: () => <Container withButton withResourceList />,
+};
 
-export const Audio = () => <Container types={['audio']} />;
+export const Audio = {
+    render: () => <Container types={['audio']} />,
+};
 
-export const Image = () => <Container types={['image']} />;
+export const Image = {
+    render: () => <Container types={['image']} />,
+};
 
-export const Images = () => <Container types={['image']} allowMultipleUploads />;
+export const Images = {
+    render: () => <Container types={['image']} allowMultipleUploads />,
+};
 
-export const Video = () => <Container types={['video']} />;
+export const Video = {
+    render: () => <Container types={['video']} />,
+};
 
-export const PDF = () => <Container fileTypes={['.pdf']} />;
+export const PDF = {
+    render: () => <Container fileTypes={['.pdf']} />,
+};
 
-export const Fonts = () => <Container fileTypes={['.ttf', '.otf']} />;
+export const Fonts = {
+    render: () => <Container fileTypes={['.ttf', '.otf']} />,
+};
 
-export const WithValue = () => <Container value={[{ data: { file: '1200x300.png' } }]} />;
+export const WithValue = {
+    render: () => <Container value={[{ data: { file: '1200x300.png' } }]} />,
+};
 
-export const WithValuesAndClear = () => (
+export const WithValuesAndClear = {
+    render: () => (
+
     <Container
         value={[
             { data: { file: '1200x300.png' }, preview: 'https://picsum.photos/200/300' },
@@ -88,27 +112,47 @@ export const WithValuesAndClear = () => (
         allowMultipleUploads
         withClearButton
     />
-);
 
-export const WithoutSize = () => (
+    ),
+};
+
+export const WithoutSize = {
+    render: () => (
+
     <Container types={['video']} value={null} width={null} height={null} />
-);
 
-export const MultiplePdfs = () => (
+    ),
+};
+
+export const MultiplePdfs = {
+    render: () => (
+
     <>
         <Container fileTypes={['.pdf']} />
         <UppyProvider id="test2">
             <Container fileTypes={['.pdf']} />
         </UppyProvider>
     </>
-);
 
-export const WithModal = () => <Container withButton withFind />;
+    ),
+};
 
-export const WithModalAndTypes = () => <Container withButton withFind types={['video']} />;
+export const WithModal = {
+    render: () => <Container withButton withFind />,
+};
 
-export const WithModalMultiple = () => (
+export const WithModalAndTypes = {
+    render: () => <Container withButton withFind types={['video']} />,
+};
+
+export const WithModalMultiple = {
+    render: () => (
+
     <Container withButton withFind types={['video']} allowMultipleUploads />
-);
 
-export const WithButtonDisabled = () => <Container withButton disabled />;
+    ),
+};
+
+export const WithButtonDisabled = {
+    render: () => <Container withButton disabled />,
+};

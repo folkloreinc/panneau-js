@@ -10,6 +10,10 @@ export default {
     },
 };
 
-export const Normal = () => <LoadingElement>Loading</LoadingElement>;
+export const Normal = {
+    render: () => <LoadingElement>Loading</LoadingElement>,
+};
 
-export const Warning = () => <LoadingElement theme="warning">Loading</LoadingElement>;
+export const Warning = {
+    render: () => <LoadingElement theme="warning">Loading</LoadingElement>,
+};

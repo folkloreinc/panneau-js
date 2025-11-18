@@ -16,9 +16,11 @@ export default {
     },
 };
 
-export const Normal = (props) => (
-    <ModalProvider>
-        <Modals />
-        <Upload {...props} />
-    </ModalProvider>
-);
+export const Normal = {
+    render: (props) => (
+        <ModalProvider>
+            <Modals />
+            <Upload {...props} />
+        </ModalProvider>
+    ),
+};

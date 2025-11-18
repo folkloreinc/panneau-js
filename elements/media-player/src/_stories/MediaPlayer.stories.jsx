@@ -43,10 +43,18 @@ const embed = {
     },
 };
 
-export const Image = () => <MediaPlayer value={Media1} />;
+export const Image = {
+    render: () => <MediaPlayer value={Media1} />,
+};
 
-export const Video = () => <MediaPlayer value={Media3} />;
+export const Video = {
+    render: () => <MediaPlayer value={Media3} />,
+};
 
-export const Audio = () => <MediaPlayer value={Media11} />;
+export const Audio = {
+    render: () => <MediaPlayer value={Media11} />,
+};
 
-export const Embed = () => <MediaPlayer value={embed} />;
+export const Embed = {
+    render: () => <MediaPlayer value={embed} />,
+};

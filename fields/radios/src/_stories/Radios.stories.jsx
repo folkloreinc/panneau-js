@@ -13,6 +13,10 @@ function Container(props) {
     return <RadiosField {...props} value={value} onChange={setValue} />;
 }
 
-export const Normal = () => <Container options={['One', 'Two', 'Three']} />;
+export const Normal = {
+    render: () => <Container options={['One', 'Two', 'Three']} />,
+};
 
-export const Disabled = () => <Container options={['One', 'Two', 'Three']} disabled />;
+export const Disabled = {
+    render: () => <Container options={['One', 'Two', 'Three']} disabled />,
+};

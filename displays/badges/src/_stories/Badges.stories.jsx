@@ -10,7 +10,9 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <Badges
         value={[
             { label: 'Hello!', value: 'hello' },
@@ -18,9 +20,13 @@ export const Normal = () => (
         ]}
         itemLabelPath="label"
     />
-);
 
-export const Custom = () => (
+    ),
+};
+
+export const Custom = {
+    render: () => (
+
     <Badges
         value={[
             {
@@ -35,6 +41,10 @@ export const Custom = () => (
         itemClassNamePath="labelzz.class"
         itemIconPath="icon"
     />
-);
 
-export const Empty = () => <Badges value={null} itemLabelPath="null" />;
+    ),
+};
+
+export const Empty = {
+    render: () => <Badges value={null} itemLabelPath="null" />,
+};

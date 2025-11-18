@@ -20,7 +20,9 @@ const FieldContainer = ({ options }) => {
     );
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <FieldContainer
         options={[
             {
@@ -37,4 +39,6 @@ export const Normal = () => (
             },
         ]}
     />
-);
+
+    ),
+};

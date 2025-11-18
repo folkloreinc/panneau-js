@@ -53,66 +53,102 @@ const Container = ({ ...props } = {}) => {
     );
 };
 
-export const Default = () => <Container />;
+export const Default = {
+    render: () => <Container />,
+};
 
-export const Table = () => (
+export const Table = {
+    render: () => (
+
     <UppyProvider>
         <Container layout="table" />
     </UppyProvider>
-);
 
-export const Grid = () => (
+    ),
+};
+
+export const Grid = {
+    render: () => (
+
     <UppyProvider>
         <Container layout="grid" />
     </UppyProvider>
-);
 
-export const GridOnly = () => (
+    ),
+};
+
+export const GridOnly = {
+    render: () => (
+
     <UppyProvider>
         <Container layout="grid" layouts={null} />
     </UppyProvider>
-);
 
-export const Dark = () => (
+    ),
+};
+
+export const Dark = {
+    render: () => (
+
     <UppyProvider>
         <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
             <Container layout="grid" />
         </div>
     </UppyProvider>
-);
 
-export const Theme = () => (
+    ),
+};
+
+export const Theme = {
+    render: () => (
+
     <UppyProvider>
         <div style={{ padding: 20, backgroundColor: '#000' }}>
             <Container theme="dark" layout="grid" />
         </div>
     </UppyProvider>
-);
 
-export const WithTrash = () => (
+    ),
+};
+
+export const WithTrash = {
+    render: () => (
+
     <UppyProvider>
         <Container withTrash />
     </UppyProvider>
-);
 
-export const WithoutUpload = () => (
+    ),
+};
+
+export const WithoutUpload = {
+    render: () => (
+
     <UppyProvider>
         <Container withoutUpload />
     </UppyProvider>
-);
 
-export const Permissions = () => (
+    ),
+};
+
+export const Permissions = {
+    render: () => (
+
     <UppyProvider>
         <Container permissions={{ edit: false, delete: false, create: false }} />
     </UppyProvider>
-);
+
+    ),
+};
 
 const fields = [];
 const columns = [];
 const filters = [];
 const metadatas = { sections: [], displays: [] };
 
-export const Custom = () => (
+export const Custom = {
+    render: () => (
+
     <UppyProvider>
         <Container
             layout="table"
@@ -125,4 +161,6 @@ export const Custom = () => (
             metadatas={metadatas}
         />
     </UppyProvider>
-);
+
+    ),
+};

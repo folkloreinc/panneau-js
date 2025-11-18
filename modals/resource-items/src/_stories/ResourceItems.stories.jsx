@@ -25,8 +25,12 @@ const Container = ({ children }) => (
     </ModalProvider>
 );
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <Container>
         <ResourceItems resource={pageResource} />
     </Container>
-);
+
+    ),
+};

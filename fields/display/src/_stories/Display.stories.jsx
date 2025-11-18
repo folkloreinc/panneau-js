@@ -21,6 +21,10 @@ function Container({ value: initialValue = null, ...props }) {
     );
 }
 
-export const Normal = () => <Container component="text" value="Hello" />;
+export const Normal = {
+    render: () => <Container component="text" value="Hello" />,
+};
 
-export const Image = () => <Container component="image" value={Media1} />;
+export const Image = {
+    render: () => <Container component="image" value={Media1} />,
+};

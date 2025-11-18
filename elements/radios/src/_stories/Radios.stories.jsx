@@ -13,4 +13,6 @@ const Container = (props) => {
     return <Radios {...props} value={value} onChange={setValue} />;
 };
 
-export const Normal = () => <Container options={['One', 'Two', 'Three']} />;
+export const Normal = {
+    render: () => <Container options={['One', 'Two', 'Three']} />,
+};

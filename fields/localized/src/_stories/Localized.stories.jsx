@@ -75,10 +75,18 @@ function ContainerCustom(props = null) {
     );
 };
 
-export const Normal = () => <Container />;
+export const Normal = {
+    render: () => <Container />,
+};
 
-export const NormalFromContextComponents = () => <ContainerCustom />;
+export const NormalFromContextComponents = {
+    render: () => <ContainerCustom />,
+};
 
-export const NormalDisabled = () => <ContainerCustom disabled />;
+export const NormalDisabled = {
+    render: () => <ContainerCustom disabled />,
+};
 
-export const Html = () => <Container locales={['fr', 'en', 'wendat']} fieldComponent={HtmlField} />;
+export const Html = {
+    render: () => <Container locales={['fr', 'en', 'wendat']} fieldComponent={HtmlField} />,
+};

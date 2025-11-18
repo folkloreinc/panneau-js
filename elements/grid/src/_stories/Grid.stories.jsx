@@ -18,6 +18,10 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <GridElement items={items} component={({ value }) => <p>{value.name}</p>} />
-);
+
+    ),
+};

@@ -17,14 +17,26 @@ function Container({ value: initialValue, ...props }) {
     return <UrlField {...props} value={value} onChange={setValue} />;
 }
 
-export const Normal = () => <Container />;
+export const Normal = {
+    render: () => <Container />,
+};
 
-export const Disabled = () => <Container disabled value="https://hello" />;
+export const Disabled = {
+    render: () => <Container disabled value="https://hello" />,
+};
 
-export const PrependAndAppend = () => <Container prepend="hello" append="goodbye" />;
+export const PrependAndAppend = {
+    render: () => <Container prepend="hello" append="goodbye" />,
+};
 
-export const Preview = () => <Container prepend="https://www.google.com/" preview />;
+export const Preview = {
+    render: () => <Container prepend="https://www.google.com/" preview />,
+};
 
-export const Copy = () => <Container prepend="https://www.google.com/paul/" copy />;
+export const Copy = {
+    render: () => <Container prepend="https://www.google.com/paul/" copy />,
+};
 
-export const WithUrl = () => <Container url="https://test.com/chose/" />;
+export const WithUrl = {
+    render: () => <Container url="https://test.com/chose/" />,
+};

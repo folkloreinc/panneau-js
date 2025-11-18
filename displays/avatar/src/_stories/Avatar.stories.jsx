@@ -12,7 +12,9 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <Avatar
         value={{
             url: test,
@@ -21,9 +23,13 @@ export const Normal = () => (
         }}
         namePath="name"
     />
-);
 
-export const Large = () => (
+    ),
+};
+
+export const Large = {
+    render: () => (
+
     <Avatar
         value={{
             url: test,
@@ -33,4 +39,6 @@ export const Large = () => (
         size="large"
         namePath="name"
     />
-);
+
+    ),
+};

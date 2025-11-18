@@ -19,19 +19,33 @@ function Container({ value: initialValue, ...props }) {
     );
 }
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <Container value="https://www.youtube.com/watch?v=Xw5AiRVqfqk&t=1058s" />
-);
 
-export const Disabled = () => (
+    ),
+};
+
+export const Disabled = {
+    render: () => (
+
     <Container value="https://www.youtube.com/watch?v=Xw5AiRVqfqk&t=1058s" disabled />
-);
 
-export const WithValue = () => (
+    ),
+};
+
+export const WithValue = {
+    render: () => (
+
     <Container value={{ url: 'https://www.youtube.com/watch?v=Xw5AiRVqfqk&t=1058s' }} />
-);
 
-export const WithMeta = () => (
+    ),
+};
+
+export const WithMeta = {
+    render: () => (
+
     <Container
         value={{
             url: 'https://www.youtube.com/watch?v=Xw5AiRVqfqk&t=1058s',
@@ -47,4 +61,6 @@ export const WithMeta = () => (
             },
         }}
     />
-);
+
+    ),
+};

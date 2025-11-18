@@ -51,11 +51,17 @@ const CustomHomePage = () => <div className="text-primary bg-info">Home sweet ho
 
 const CustomEventPage = () => <div className="text-primary bg-info">Events page replacement</div>;
 
-export const Guest = () => (
-    <PanneauContainer definition={panneauDefinition} memoryRouter {...props} />
-);
+export const Guest = {
+    render: () => (
 
-export const GuestDarkEnglish = () => (
+    <PanneauContainer definition={panneauDefinition} memoryRouter {...props} />
+
+    ),
+};
+
+export const GuestDarkEnglish = {
+    render: () => (
+
     <PanneauContainer
         definition={{
             ...panneauDefinition,
@@ -65,29 +71,41 @@ export const GuestDarkEnglish = () => (
         memoryRouter
         {...props}
     />
-);
 
-export const LightMode = () => (
+    ),
+};
+
+export const LightMode = {
+    render: () => (
+
     <PanneauContainer
         definition={{ ...panneauDefinition, theme: { colorScheme: 'light' } }}
         memoryRouter
         user={user}
         {...props}
     />
-);
 
-export const DarkMode = () => (
+    ),
+};
+
+export const DarkMode = {
+    render: () => (
+
     <PanneauContainer
         definition={{ ...panneauDefinition, theme: { colorScheme: 'dark' } }}
         memoryRouter
         user={user}
         {...props}
     />
-);
+
+    ),
+};
 
 const CustomPreviewPage = () => <div className="text-primary bg-info">PAGE PREVIEW</div>;
 
-export const BlueModeWithComps = () => (
+export const BlueModeWithComps = {
+    render: () => (
+
     <PanneauContainer
         definition={{ ...panneauDefinition, theme: { colorScheme: 'blue' } }}
         components={{
@@ -107,9 +125,13 @@ export const BlueModeWithComps = () => (
         user={user}
         {...props}
     />
-);
 
-export const Tenk = () => (
+    ),
+};
+
+export const Tenk = {
+    render: () => (
+
     <PanneauContainer
         definition={{
             ...tenkDefinition,
@@ -119,9 +141,13 @@ export const Tenk = () => (
         user={user}
         {...props}
     />
-);
 
-export const English = () => (
+    ),
+};
+
+export const English = {
+    render: () => (
+
     <PanneauContainer
         definition={{
             ...panneauDefinition,
@@ -131,4 +157,6 @@ export const English = () => (
         user={user}
         {...props}
     />
-);
+
+    ),
+};

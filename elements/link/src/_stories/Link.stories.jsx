@@ -10,12 +10,20 @@ export default {
     },
 };
 
-export const Normal = () => (
-    <LinkElement href="/blabla">{{ id: 'test', defaultMessage: 'Translated Link' }}</LinkElement>
-);
+export const Normal = {
+    render: () => (
 
-export const External = () => (
+    <LinkElement href="/blabla">{{ id: 'test', defaultMessage: 'Translated Link' }}</LinkElement>
+
+    ),
+};
+
+export const External = {
+    render: () => (
+
     <LinkElement href="/blabla" external>
         {{ id: 'test', defaultMessage: 'Translated Link' }}
     </LinkElement>
-);
+
+    ),
+};

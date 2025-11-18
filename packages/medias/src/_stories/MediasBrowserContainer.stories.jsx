@@ -36,8 +36,12 @@ const Container = (props) => {
     );
 };
 
-export const Default = () => (
+export const Default = {
+    render: () => (
+
     <UppyProvider>
         <Container />
     </UppyProvider>
-);
+
+    ),
+};

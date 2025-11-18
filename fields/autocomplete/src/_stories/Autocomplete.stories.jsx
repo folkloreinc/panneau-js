@@ -30,12 +30,22 @@ function Container(props) {
     );
 }
 
-export const Normal = () => <Container items={defaultItems} />;
+export const Normal = {
+    render: () => <Container items={defaultItems} />,
+};
 
-export const Empty = () => <Container />;
+export const Empty = {
+    render: () => <Container />,
+};
 
-export const WithoutMatch = () => <Container items={defaultItems} withoutMatch />;
+export const WithoutMatch = {
+    render: () => <Container items={defaultItems} withoutMatch />,
+};
 
-export const Disabled = () => (
+export const Disabled = {
+    render: () => (
+
     <Container disabled value={defaultItems[0].label} items={defaultItems} />
-);
+
+    ),
+};

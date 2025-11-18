@@ -36,7 +36,9 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <div>
         <div>
             <AccordionElement
@@ -49,4 +51,6 @@ export const Normal = () => (
             <AccordionElement items={accordeonItems} title="Un accordéon normal" />
         </div>
     </div>
-);
+
+    ),
+};

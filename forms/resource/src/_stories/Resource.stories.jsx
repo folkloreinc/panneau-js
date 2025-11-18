@@ -26,4 +26,6 @@ const Container = () => {
     return <Resource resource={pageResource} />;
 };
 
-export const ResourceForm = () => <Container />;
+export const ResourceForm = {
+    render: () => <Container />,
+};

@@ -33,10 +33,18 @@ function Container({ value: initialValue = null, ...props }) {
     return <ImportField template={template} {...props} value={value} onChange={setValue} />;
 }
 
-export const Normal = () => <Container />;
+export const Normal = {
+    render: () => <Container />,
+};
 
-export const Disabled = () => <Container disabled />;
+export const Disabled = {
+    render: () => <Container disabled />,
+};
 
-export const isModal = () => <Container isModal />;
+export const isModal = {
+    render: () => <Container isModal />,
+};
 
-export const isModalDisabled = () => <Container isModal disabled />;
+export const isModalDisabled = {
+    render: () => <Container isModal disabled />,
+};

@@ -30,6 +30,8 @@ function FieldContainer(props) {
     );
 }
 
-export function Normal() {
-    return <FieldContainer label="Hello" withConfirmation />;
-}
+export const Normal = {
+    render: function() {
+        return <FieldContainer label="Hello" withConfirmation />;
+    },
+};

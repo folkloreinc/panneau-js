@@ -14,9 +14,13 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <ModalProvider>
         <Modals />
         <Form fields={fields} onClose={() => {}} />
     </ModalProvider>
-);
+
+    ),
+};

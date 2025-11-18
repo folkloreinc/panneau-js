@@ -43,20 +43,38 @@ function Container(props) {
     );
 };
 
-export const Normal = () => <Container resource="pages" />;
+export const Normal = {
+    render: () => <Container resource="pages" />,
+};
 
-export const Multiple = () => <Container resource="pages" multiple />;
+export const Multiple = {
+    render: () => <Container resource="pages" multiple />,
+};
 
-export const Disabled = () => <Container resource="pages" disabled />;
+export const Disabled = {
+    render: () => <Container resource="pages" disabled />,
+};
 
-export const DisabledWithValue = () => <Container resource="pages" value={{ id: '1' }} disabled />;
+export const DisabledWithValue = {
+    render: () => <Container resource="pages" value={{ id: '1' }} disabled />,
+};
 
-export const DisabledWithValues = () => (
+export const DisabledWithValues = {
+    render: () => (
+
     <Container resource="pages" value={[{ id: '1' }, { id: 2 }]} disabled multiple />
-);
 
-export const CanCreate = () => <Container resource="pages" canCreate />;
+    ),
+};
 
-export const CanCreateInPlace = () => <Container resource="pages" canCreate createInPlace />;
+export const CanCreate = {
+    render: () => <Container resource="pages" canCreate />,
+};
 
-export const CanCreateMultiple = () => <Container resource="pages" canCreate multiple />;
+export const CanCreateInPlace = {
+    render: () => <Container resource="pages" canCreate createInPlace />,
+};
+
+export const CanCreateMultiple = {
+    render: () => <Container resource="pages" canCreate multiple />,
+};

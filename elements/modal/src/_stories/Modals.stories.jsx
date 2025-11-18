@@ -24,30 +24,36 @@ export default {
     ],
 };
 
-export const Basic = () => (
+export const Basic = {
+    render: () => (
+
     <ModalElement>
         <div style={{ width: 300, height: 200, color: 'white', backgroundColor: 'black' }}>
             My modal
         </div>
     </ModalElement>
-);
 
-export const WithClose = () => {
-    const [show, setShow] = useState(true);
-    return show ? (
-        <ModalElement onClose={() => setShow(!show)}>
-            <div
-                style={{
-                    width: 300,
-                    height: 200,
-                    color: 'white',
-                    backgroundColor: 'black',
-                    pointerEvents: 'none',
-                    zIndex: 10000,
-                }}
-            >
-                My modal
-            </div>
-        </ModalElement>
-    ) : null;
+    ),
+};
+
+export const WithClose = {
+    render: () => {
+        const [show, setShow] = useState(true);
+        return show ? (
+            <ModalElement onClose={() => setShow(!show)}>
+                <div
+                    style={{
+                        width: 300,
+                        height: 200,
+                        color: 'white',
+                        backgroundColor: 'black',
+                        pointerEvents: 'none',
+                        zIndex: 10000,
+                    }}
+                >
+                    My modal
+                </div>
+            </ModalElement>
+        ) : null;
+    },
 };

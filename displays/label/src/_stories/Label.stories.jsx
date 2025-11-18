@@ -9,4 +9,6 @@ export default {
     },
 };
 
-export const Normal = () => <Label value="hello" labels={{ hello: 'Hello!' }} />;
+export const Normal = {
+    render: () => <Label value="hello" labels={{ hello: 'Hello!' }} />,
+};

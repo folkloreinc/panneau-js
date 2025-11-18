@@ -28,10 +28,18 @@ const value = [
     },
 ];
 
-export const Normal = () => <MediaCardsElement value={value} />;
+export const Normal = {
+    render: () => <MediaCardsElement value={value} />,
+};
 
-export const WithoutDescription = () => <MediaCardsElement value={value} withoutDescription />;
+export const WithoutDescription = {
+    render: () => <MediaCardsElement value={value} withoutDescription />,
+};
 
-export const WithRemove = () => (
+export const WithRemove = {
+    render: () => (
+
     <MediaCardsElement value={value} onClickRemove={() => console.log('hello')} />
-);
+
+    ),
+};

@@ -33,6 +33,8 @@ function FieldContainer(props) {
     );
 }
 
-export function Normal() {
-    return <FieldContainer label="Upload me" />;
-}
+export const Normal = {
+    render: function() {
+        return <FieldContainer label="Upload me" />;
+    },
+};

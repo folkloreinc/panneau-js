@@ -10,11 +10,15 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <ButtonsElement
         items={[
             { label: 'hello', theme: 'primary' },
             { label: 'goodbye', theme: 'success' },
         ]}
     />
-);
+
+    ),
+};

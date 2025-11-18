@@ -43,6 +43,8 @@ function FieldContainer({ value: initialValue, ...props }) {
     );
 }
 
-export function Normal() {
-    return <FieldContainer label="Edit mee" withConfirmation />;
-}
+export const Normal = {
+    render: function() {
+        return <FieldContainer label="Edit mee" withConfirmation />;
+    },
+};

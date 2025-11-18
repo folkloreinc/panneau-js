@@ -37,25 +37,31 @@ function ActionsContainer({ value: initialValue, ...props }) {
     );
 }
 
-export function Normal() {
-    return <ActionsContainer />;
-}
+export const Normal = {
+    render: function() {
+        return <ActionsContainer />;
+    },
+};
 
-export function WithItems() {
-    return (
-        <ActionsContainer value={[{ id: '1', name: 'OK' }]} withConfirmation />
-    );
-}
+export const WithItems = {
+    render: function() {
+        return (
+            <ActionsContainer value={[{ id: '1', name: 'OK' }]} withConfirmation />
+        );
+    },
+};
 
-export function WithMultipleItems() {
-    return (
-        <ActionsContainer
-            value={[
-                { id: '1', name: 'OK' },
-                { id: '2', name: 'KO' },
-                { id: 3, name: 'WHAT' },
-            ]}
-            withConfirmation
-        />
-    );
-}
+export const WithMultipleItems = {
+    render: function() {
+        return (
+            <ActionsContainer
+                value={[
+                    { id: '1', name: 'OK' },
+                    { id: '2', name: 'KO' },
+                    { id: 3, name: 'WHAT' },
+                ]}
+                withConfirmation
+            />
+        );
+    },
+};

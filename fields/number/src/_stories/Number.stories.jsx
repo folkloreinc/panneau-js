@@ -13,16 +13,30 @@ function Container(props) {
     return <NumberField {...props} value={value} onChange={setValue} />;
 }
 
-export const Normal = () => <Container placeholder="Integers" />;
+export const Normal = {
+    render: () => <Container placeholder="Integers" />,
+};
 
-export const Disabled = () => <Container placeholder="Integers are disabled" disabled />;
+export const Disabled = {
+    render: () => <Container placeholder="Integers are disabled" disabled />,
+};
 
-export const WithDataList = () => (
+export const WithDataList = {
+    render: () => (
+
     <Container dataList={[0, 10, 20, 30, 40, 50]} placeholder="With data list" />
-);
 
-export const WithFloats = () => (
+    ),
+};
+
+export const WithFloats = {
+    render: () => (
+
     <Container dataList={[0, 0.1, 0.2, 0.3, 0.4, 0.5]} float placeholder="With floats" />
-);
 
-export const WithAppend = () => <Container placeholder="With append" append="CAD $" />;
+    ),
+};
+
+export const WithAppend = {
+    render: () => <Container placeholder="With append" append="CAD $" />,
+};

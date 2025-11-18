@@ -11,11 +11,19 @@ export default {
 };
 
 // eslint-disable-next-line react/jsx-boolean-value
-export const True = () => <Boolean value={true} />;
+export const True = {
+    render: () => <Boolean value={true} />,
+};
 
-export const False = () => <Boolean value={false} />;
+export const False = {
+    render: () => <Boolean value={false} />,
+};
 
 // eslint-disable-next-line react/jsx-boolean-value
-export const TrueWithIcon = () => <Boolean value={true} iconTrue="check" />;
+export const TrueWithIcon = {
+    render: () => <Boolean value={true} iconTrue="check" />,
+};
 
-export const FalseWithLabel = () => <Boolean value={false} labelFalse="WRONG" />;
+export const FalseWithLabel = {
+    render: () => <Boolean value={false} labelFalse="WRONG" />,
+};

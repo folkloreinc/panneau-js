@@ -19,4 +19,6 @@ const FieldContainer = () => {
     );
 };
 
-export const Normal = () => <FieldContainer />;
+export const Normal = {
+    render: () => <FieldContainer />,
+};

@@ -19,20 +19,38 @@ export default {
     decorators: [withFormsFields],
 };
 
-export const LoginForm = () => <Login />;
+export const LoginForm = {
+    render: () => <Login />,
+};
 
-export const ForgotPasswordForm = () => <ForgotPassword />;
+export const ForgotPasswordForm = {
+    render: () => <ForgotPassword />,
+};
 
-export const ResetPasswordForm = () => <ResetPassword value={{ email: 'paul@paul.com' }} />;
+export const ResetPasswordForm = {
+    render: () => <ResetPassword value={{ email: 'paul@paul.com' }} />,
+};
 
-export const RegisterForm = () => <Register />;
+export const RegisterForm = {
+    render: () => <Register />,
+};
 
-export const ConfirmPasswordForm = () => <ConfirmPassword />;
+export const ConfirmPasswordForm = {
+    render: () => <ConfirmPassword />,
+};
 
-export const ChangePasswordForm = () => <ChangePassword />;
+export const ChangePasswordForm = {
+    render: () => <ChangePassword />,
+};
 
-export const TwoFactorChallengeForm = () => <TwoFactorChallenge />;
+export const TwoFactorChallengeForm = {
+    render: () => <TwoFactorChallenge />,
+};
 
-export const TwoFactorEnableForm = () => <TwoFactorEnable />;
+export const TwoFactorEnableForm = {
+    render: () => <TwoFactorEnable />,
+};
 
-export const TwoFactorDisableForm = () => <TwoFactorDisable />;
+export const TwoFactorDisableForm = {
+    render: () => <TwoFactorDisable />,
+};

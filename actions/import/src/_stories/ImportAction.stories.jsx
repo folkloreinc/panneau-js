@@ -46,6 +46,8 @@ function FieldContainer(props) {
     );
 }
 
-export function Normal() {
-    return <FieldContainer label="Welcome to csv" withConfirmation />;
-}
+export const Normal = {
+    render: function() {
+        return <FieldContainer label="Welcome to csv" withConfirmation />;
+    },
+};

@@ -10,7 +10,9 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <Select
         value="hello"
         field={{
@@ -20,11 +22,17 @@ export const Normal = () => (
             ],
         }}
     />
-);
 
-export const Empty = () => <Select value="hello" />;
+    ),
+};
 
-export const withOptions = () => (
+export const Empty = {
+    render: () => <Select value="hello" />,
+};
+
+export const withOptions = {
+    render: () => (
+
     <Select
         value="hello"
         options={[
@@ -33,4 +41,6 @@ export const withOptions = () => (
         ]}
         onChange={() => {}} // eslint-disable-line no-console
     />
-);
+
+    ),
+};

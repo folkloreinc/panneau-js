@@ -12,16 +12,22 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <Image
         value={{
             url: test,
             thumbnailUrl: test,
         }}
     />
-);
 
-export const Small = () => (
+    ),
+};
+
+export const Small = {
+    render: () => (
+
     <Image
         value={{
             url: test,
@@ -29,4 +35,6 @@ export const Small = () => (
         }}
         maxHeight={80}
     />
-);
+
+    ),
+};

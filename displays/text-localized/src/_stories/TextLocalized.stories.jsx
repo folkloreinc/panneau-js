@@ -10,4 +10,6 @@ export default {
     },
 };
 
-export const Normal = () => <TextLocalized value={{ fr: 'Allo!', en: 'Hello!' }} />;
+export const Normal = {
+    render: () => <TextLocalized value={{ fr: 'Allo!', en: 'Hello!' }} />,
+};

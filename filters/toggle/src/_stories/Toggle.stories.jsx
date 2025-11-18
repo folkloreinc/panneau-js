@@ -21,6 +21,10 @@ const FieldContainer = (props) => {
     );
 };
 
-export const Normal = () => <FieldContainer />;
+export const Normal = {
+    render: () => <FieldContainer />,
+};
 
-export const WithLabel = () => <FieldContainer label="Hello" />;
+export const WithLabel = {
+    render: () => <FieldContainer label="Hello" />,
+};

@@ -18,4 +18,6 @@ const value = [
     { id: 5, name: 'Paul', label: 'PAUL' },
 ];
 
-export const Normal = () => <ResourceCardsElement value={value} itemLabelPath="name" />;
+export const Normal = {
+    render: () => <ResourceCardsElement value={value} itemLabelPath="name" />,
+};

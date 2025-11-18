@@ -23,8 +23,14 @@ function Container({ value: initialValue = {}, ...props }) {
     );
 }
 
-export const Normal = () => <Container />;
+export const Normal = {
+    render: () => <Container />,
+};
 
-export const WithFlat = () => <Container />;
+export const WithFlat = {
+    render: () => <Container />,
+};
 
-export const Horizontal = () => <Container horizontal />;
+export const Horizontal = {
+    render: () => <Container horizontal />,
+};

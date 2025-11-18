@@ -10,4 +10,6 @@ export default {
     },
 };
 
-export const Success = () => <PortalElement />;
+export const Success = {
+    render: () => <PortalElement />,
+};

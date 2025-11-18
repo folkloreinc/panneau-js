@@ -10,11 +10,17 @@ export default {
     },
 };
 
-export const Normal = () => <FormElement />;
+export const Normal = {
+    render: () => <FormElement />,
+};
 
-export const WithStatus = () => <FormElement status="success" />;
+export const WithStatus = {
+    render: () => <FormElement status="success" />,
+};
 
-export const WithLinks = () => (
+export const WithLinks = {
+    render: () => (
+
     <FormElement
         status="success"
         actions={
@@ -23,9 +29,13 @@ export const WithLinks = () => (
             </a>
         }
     />
-);
 
-export const CantSave = () => (
+    ),
+};
+
+export const CantSave = {
+    render: () => (
+
     <FormElement
         status="error"
         canSave={false}
@@ -35,4 +45,6 @@ export const CantSave = () => (
             </a>
         }
     />
-);
+
+    ),
+};

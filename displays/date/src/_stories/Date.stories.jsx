@@ -9,12 +9,22 @@ export default {
     },
 };
 
-export const Normal = () => <DateDisplay value="2021-07-16T00:00:00-04:00" />;
+export const Normal = {
+    render: () => <DateDisplay value="2021-07-16T00:00:00-04:00" />,
+};
 
-export const French = () => (
+export const French = {
+    render: () => (
+
     <DateDisplay value="2021-07-16T00:00:00-04:00" format="LLLL" locale="fr" />
-);
 
-export const Japanese = () => (
+    ),
+};
+
+export const Japanese = {
+    render: () => (
+
     <DateDisplay value="2021-07-16T00:00:00-04:00" format="LLLL" locale="ja" />
-);
+
+    ),
+};

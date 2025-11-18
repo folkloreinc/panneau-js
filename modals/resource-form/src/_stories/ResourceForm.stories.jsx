@@ -13,9 +13,13 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <ModalProvider>
         <Modals />
         <ResourceForm resource="events" />
     </ModalProvider>
-);
+
+    ),
+};

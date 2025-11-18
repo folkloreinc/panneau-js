@@ -11,7 +11,9 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <Breadcrumbs
         items={[
             { url: '/value1', label: 'Label 1' },
@@ -19,4 +21,6 @@ export const Normal = () => (
             { url: '/value3', label: 'Label 3' },
         ]}
     />
-);
+
+    ),
+};

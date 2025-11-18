@@ -7,8 +7,14 @@ export default {
     title: 'Elements/Icon',
 };
 
-export const Normal = () => <Icon name="caret-down" />;
+export const Normal = {
+    render: () => <Icon name="caret-down" />,
+};
 
-export const Bold = () => <Icon name="caret-down" bold />;
+export const Bold = {
+    render: () => <Icon name="caret-down" bold />,
+};
 
-export const Opaque = () => <Icon name="caret-down" opaque />;
+export const Opaque = {
+    render: () => <Icon name="caret-down" opaque />,
+};

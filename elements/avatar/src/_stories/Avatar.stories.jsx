@@ -22,14 +22,26 @@ const userImage = {
     url: image,
 };
 
-export const Basic = () => <AvatarElement {...user} />;
+export const Basic = {
+    render: () => <AvatarElement {...user} />,
+};
 
-export const WithImage = () => <AvatarElement {...user} image={userImage} />;
+export const WithImage = {
+    render: () => <AvatarElement {...user} image={userImage} />,
+};
 
-export const WithShortName = () => <AvatarElement shortName="MR" />;
+export const WithShortName = {
+    render: () => <AvatarElement shortName="MR" />,
+};
 
-export const WithChildren = () => <AvatarElement>Bad</AvatarElement>;
+export const WithChildren = {
+    render: () => <AvatarElement>Bad</AvatarElement>,
+};
 
-export const WithTheme = () => (
+export const WithTheme = {
+    render: () => (
+
     <AvatarElement theme={{ text: 'danger', border: 'warning' }}>Bad</AvatarElement>
-);
+
+    ),
+};

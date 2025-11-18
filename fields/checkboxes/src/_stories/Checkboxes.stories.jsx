@@ -14,8 +14,14 @@ function Container(props) {
     return <CheckboxesField {...props} value={value} onChange={setValue} />;
 }
 
-export const Normal = () => <Container options={['One', 'Two', 'Three']} />;
+export const Normal = {
+    render: () => <Container options={['One', 'Two', 'Three']} />,
+};
 
-export const Disabled = () => (
+export const Disabled = {
+    render: () => (
+
     <Container options={['One', 'Two', 'Three']} disabled value={['One']} />
-);
+
+    ),
+};

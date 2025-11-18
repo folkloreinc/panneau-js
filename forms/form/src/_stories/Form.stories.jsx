@@ -26,8 +26,14 @@ const Container = (props) => {
     return <Form value={value} onChange={setValue} onSubmit={onSubmit} {...props} />;
 };
 
-export const Normal = () => <Container fields={fields} />;
+export const Normal = {
+    render: () => <Container fields={fields} />,
+};
 
-export const WithFields = () => <Container fields={formFields} />;
+export const WithFields = {
+    render: () => <Container fields={formFields} />,
+};
 
-export const WithFieldsAndAction = () => <Container fields={formFields} action="/login" />;
+export const WithFieldsAndAction = {
+    render: () => <Container fields={formFields} action="/login" />,
+};

@@ -10,20 +10,32 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <PaginationElement page={1} lastPage={3}>
         Pagination!
     </PaginationElement>
-);
 
-export const WithPrevNext = () => (
+    ),
+};
+
+export const WithPrevNext = {
+    render: () => (
+
     <PaginationElement page={1} lastPage={3} withPreviousNext>
         Pagination!
     </PaginationElement>
-);
 
-export const LoadingLeft = () => (
+    ),
+};
+
+export const LoadingLeft = {
+    render: () => (
+
     <PaginationElement page={1} lastPage={3} withPreviousNext loading align="left">
         Pagination!
     </PaginationElement>
-);
+
+    ),
+};

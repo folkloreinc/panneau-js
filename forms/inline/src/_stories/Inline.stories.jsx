@@ -23,4 +23,6 @@ const Container = () => {
     return <Inline fields={fields} value={value} onChange={setValue} />;
 };
 
-export const Normal = () => <Container fields={fields} />;
+export const Normal = {
+    render: () => <Container fields={fields} />,
+};

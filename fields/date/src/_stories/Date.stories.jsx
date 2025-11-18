@@ -13,52 +13,66 @@ export default {
     },
 };
 
-export const Normal = () => {
-    const [value, setValue] = useState('2002-01-02T00:00:00-05:00');
-    return (
-        <DateTimeField value={value} onChange={setValue} placeholder="Select date and time..." />
-    );
+export const Normal = {
+    render: () => {
+        const [value, setValue] = useState('2002-01-02T00:00:00-05:00');
+        return (
+            <DateTimeField value={value} onChange={setValue} placeholder="Select date and time..." />
+        );
+    },
 };
 
-export const Disabled = () => {
-    const [value, setValue] = useState('2002-01-02T00:00:00-05:00');
-    return (
-        <DateTimeField
-            value={value}
-            onChange={setValue}
-            placeholder="Select date and time..."
-            disabled
-        />
-    );
+export const Disabled = {
+    render: () => {
+        const [value, setValue] = useState('2002-01-02T00:00:00-05:00');
+        return (
+            <DateTimeField
+                value={value}
+                onChange={setValue}
+                placeholder="Select date and time..."
+                disabled
+            />
+        );
+    },
 };
 
-export const Empty = () => {
-    const [value, setValue] = useState(null);
-    return (
-        <DateTimeField value={value} onChange={setValue} placeholder="Select date and time..." />
-    );
+export const Empty = {
+    render: () => {
+        const [value, setValue] = useState(null);
+        return (
+            <DateTimeField value={value} onChange={setValue} placeholder="Select date and time..." />
+        );
+    },
 };
 
-export const DateOnly = () => {
-    const [value, setValue] = useState('2002-01-02');
-    return <DateField value={value} onChange={setValue} placeholder="Select date..." />;
+export const DateOnly = {
+    render: () => {
+        const [value, setValue] = useState('2002-01-02');
+        return <DateField value={value} onChange={setValue} placeholder="Select date..." />;
+    },
 };
 
-export const TimeOnly = () => {
-    const [value, setValue] = useState(null);
-    return <TimeField value={value} onChange={setValue} placeholder="Select time..." />;
+export const TimeOnly = {
+    render: () => {
+        const [value, setValue] = useState(null);
+        return <TimeField value={value} onChange={setValue} placeholder="Select time..." />;
+    },
 };
 
-export const TimeWithFormat = () => {
-    const [value, setValue] = useState('12:30');
-    return (
-        <TimeField value={value} format="H:m" onChange={setValue} placeholder="Select time..." />
-    );
+export const TimeWithFormat = {
+    render: () => {
+        const [value, setValue] = useState('12:30');
+        return (
+            <TimeField value={value} format="H:m" onChange={setValue} placeholder="Select time..." />
+        );
+    },
 };
 
-export const WithDateString = () => {
-    const [value, setValue] = useState('2024-01-30T17:48:10.000000Z');
-    return (
-        <DateTimeField value={value} onChange={setValue} placeholder="Select date and time..." />
-    );
+export const WithDateString = {
+    render: () => {
+        const [value, setValue] = useState('2024-01-30T17:48:10.000000Z');
+        return (
+            <DateTimeField value={value} onChange={setValue} placeholder="Select date and time..." />
+        );
+    },
 };

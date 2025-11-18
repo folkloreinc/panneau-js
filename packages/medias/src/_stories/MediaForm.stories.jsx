@@ -56,26 +56,42 @@ const Container = ({ value: initialValue, ...props } = {}) => {
     );
 };
 
-export const Image = () => (
+export const Image = {
+    render: () => (
+
     <UppyProvider>
         <Container value={Media1} />
     </UppyProvider>
-);
 
-export const ImageWithReplace = () => (
+    ),
+};
+
+export const ImageWithReplace = {
+    render: () => (
+
     <UppyProvider>
         <Container value={Media1} withReplace />
     </UppyProvider>
-);
 
-export const Video = () => (
+    ),
+};
+
+export const Video = {
+    render: () => (
+
     <UppyProvider>
         <Container value={Media3} />
     </UppyProvider>
-);
 
-export const Audio = () => (
+    ),
+};
+
+export const Audio = {
+    render: () => (
+
     <UppyProvider>
         <Container value={Media11} />
     </UppyProvider>
-);
+
+    ),
+};

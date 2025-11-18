@@ -20,16 +20,30 @@ const FieldContainer = (props) => {
     );
 };
 
-export const Normal = () => <FieldContainer label="Hello" />;
+export const Normal = {
+    render: () => <FieldContainer label="Hello" />,
+};
 
-export const Link = () => (
+export const Link = {
+    render: () => (
+
     <FieldContainer label="Hello" sublabel="hella" href="/?path=/story/filters-radios--normal" />
-);
 
-export const External = () => (
+    ),
+};
+
+export const External = {
+    render: () => (
+
     <FieldContainer label="Hello external link" href="https://www.google.com" external />
-);
 
-export const OnClick = () => <FieldContainer label="Hello" onClick={() => console.log('Hello')} />;
+    ),
+};
 
-export const Disabled = () => <FieldContainer label="Hello" disabled />;
+export const OnClick = {
+    render: () => <FieldContainer label="Hello" onClick={() => console.log('Hello')} />,
+};
+
+export const Disabled = {
+    render: () => <FieldContainer label="Hello" disabled />,
+};

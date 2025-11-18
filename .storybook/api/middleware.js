@@ -6,18 +6,25 @@ const dayjs = require('dayjs');
 const { sync: globSync } = require('glob');
 const isString = require('lodash/isString');
 const isArray = require('lodash/isArray');
+// const bodyParser = require('body-parser');
+
+// TODO: evolve this to use https://github.com/lukeed/polka
+// which is the new thing storybook uses
 
 module.exports = () => {
     const router = express.Router();
 
-    router.use(express.json());
-    router.use(express.urlencoded());
+    console.log('router', router);
+
+    // router.use(bodyParser.json());
+    // router.use(bodyParser.urlencoded({ extended: false }));
 
     const dataPath = path.join(__dirname, '/items');
 
     const resourceExists = (resource) => fs.existsSync(path.join(dataPath, resource));
 
     const updatedResources = {};
+
     const deletedResources = {};
 
     const getResourceItems = (resource) => {
@@ -174,6 +181,10 @@ module.exports = () => {
      * Resource index
      */
     router.get('/:resource', (req, res) => {
+        // console.log('response', res);
+        // res.status(200).json({ test: 1 });
+        // return;
+
         const { resource } = req.params;
         if (!resourceExists(resource)) {
             res.sendStatus(404);
@@ -181,6 +192,7 @@ module.exports = () => {
         }
         // Test unauthorized request here
         // res.status(401);
+
         const defaultCount = 10;
         const {
             page = null,

@@ -11,8 +11,14 @@ export default {
     },
 };
 
-export const Internal = () => <Link value="/panneau/pages" label="Hallo" />;
+export const Internal = {
+    render: () => <Link value="/panneau/pages" label="Hallo" />,
+};
 
-export const External = () => <Link value="https://www.google.com" label="Google" external />;
+export const External = {
+    render: () => <Link value="https://www.google.com" label="Google" external />,
+};
 
-export const withoutLabel = () => <Link value="https://www.google.com" external />;
+export const withoutLabel = {
+    render: () => <Link value="https://www.google.com" external />,
+};

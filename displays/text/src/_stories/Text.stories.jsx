@@ -10,4 +10,6 @@ export default {
     },
 };
 
-export const Normal = () => <Text value="Hello! I am text" />;
+export const Normal = {
+    render: () => <Text value="Hello! I am text" />,
+};

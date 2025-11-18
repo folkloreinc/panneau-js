@@ -10,8 +10,14 @@ export default {
     },
 };
 
-export const Success = () => <FormStatus status="success" />;
+export const Success = {
+    render: () => <FormStatus status="success" />,
+};
 
-export const Loading = () => <FormStatus status="loading" />;
+export const Loading = {
+    render: () => <FormStatus status="loading" />,
+};
 
-export const Error = () => <FormStatus status="error" />;
+export const Error = {
+    render: () => <FormStatus status="error" />,
+};

@@ -13,38 +13,54 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <ModalProvider>
         <Modals />
         <Dialog id="1" title="Hello" onClose={() => {}}>
             <div>Modal content</div>
         </Dialog>
     </ModalProvider>
-);
 
-export const WithoutTitle = () => (
+    ),
+};
+
+export const WithoutTitle = {
+    render: () => (
+
     <ModalProvider>
         <Modals />
         <Dialog id="1" onClose={() => {}}>
             <div>Modal content</div>
         </Dialog>
     </ModalProvider>
-);
 
-export const WithoutOnClose = () => (
+    ),
+};
+
+export const WithoutOnClose = {
+    render: () => (
+
     <ModalProvider>
         <Modals />
         <Dialog id="1" title="Hello">
             <div>Modal content</div>
         </Dialog>
     </ModalProvider>
-);
 
-export const WithCloseOutside = () => (
+    ),
+};
+
+export const WithCloseOutside = {
+    render: () => (
+
     <ModalProvider>
         <Modals />
         <Dialog id="1" title="Hello" withCloseOutside>
             <div>Modal content</div>
         </Dialog>
     </ModalProvider>
-);
+
+    ),
+};

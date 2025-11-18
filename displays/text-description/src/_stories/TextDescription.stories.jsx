@@ -10,10 +10,14 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <TextDescription
         value="Hello! I am text"
         item={{ id: 1, type: 'Image' }}
         descriptionPath="type"
     />
-);
+
+    ),
+};

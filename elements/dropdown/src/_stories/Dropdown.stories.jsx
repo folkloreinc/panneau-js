@@ -27,7 +27,9 @@ const items = [
     },
 ];
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <div style={{ position: 'relative' }}>
         <Dropdown
             visible
@@ -37,9 +39,13 @@ export const Normal = () => (
             ]}
         />
     </div>
-);
 
-export const End = () => (
+    ),
+};
+
+export const End = {
+    render: () => (
+
     <div style={{ position: 'relative' }}>
         <Dropdown
             visible
@@ -50,23 +56,27 @@ export const End = () => (
             ]}
         />
     </div>
-);
 
-export const WithClickOutside = () => {
-    const [value, setValue] = useState(null);
-    return (
-        <div style={{ position: 'relative' }}>
-            <Select
-                onChange={setValue}
-                value={value}
-                options={[
-                    { value: 'value1', label: 'Label 1' },
-                    { value: 'value', label: 'Label 2' },
-                ]}
-            />
-            <div>
-                <Menu items={items} />
+    ),
+};
+
+export const WithClickOutside = {
+    render: () => {
+        const [value, setValue] = useState(null);
+        return (
+            <div style={{ position: 'relative' }}>
+                <Select
+                    onChange={setValue}
+                    value={value}
+                    options={[
+                        { value: 'value1', label: 'Label 1' },
+                        { value: 'value', label: 'Label 2' },
+                    ]}
+                />
+                <div>
+                    <Menu items={items} />
+                </div>
             </div>
-        </div>
-    );
+        );
+    },
 };

@@ -23,4 +23,6 @@ const Container = () => {
     return <Normal fields={fields} value={value} onChange={setValue} />;
 };
 
-export const NormalForm = () => <Container />;
+export const NormalForm = {
+    render: () => <Container />,
+};

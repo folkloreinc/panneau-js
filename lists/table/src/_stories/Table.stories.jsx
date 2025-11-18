@@ -35,15 +35,25 @@ const items = [
     },
 ];
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <Table resource={pageResource} items={items} columns={['title', 'description']} />
-);
 
-export const Sortable = () => (
+    ),
+};
+
+export const Sortable = {
+    render: () => (
+
     <Table resource={pageResource} items={items} columns={['title', 'description']} sortable />
-);
 
-export const Selectable = () => (
+    ),
+};
+
+export const Selectable = {
+    render: () => (
+
     <Table
         resource={{ ...pageResource, index: { tableActions: [] } }}
         items={items}
@@ -54,13 +64,19 @@ export const Selectable = () => (
             console.log('hey');
         }}
     />
-);
 
-export const WithActions = () => (
+    ),
+};
+
+export const WithActions = {
+    render: () => (
+
     <Table
         resource={pageResource}
         items={items}
         columns={['title', 'description']}
         actions={['show', 'delete']}
     />
-);
+
+    ),
+};

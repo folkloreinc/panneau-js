@@ -20,16 +20,26 @@ function Container(props) {
     );
 }
 
-export const Normal = () => <Container />;
+export const Normal = {
+    render: () => <Container />,
+};
 
-export const Inline = () => <Container inline />;
+export const Inline = {
+    render: () => <Container inline />,
+};
 
-export const Disabled = () => <Container disabled />;
+export const Disabled = {
+    render: () => <Container disabled />,
+};
 
-export const WithMediaEmbed = () => (
+export const WithMediaEmbed = {
+    render: () => (
+
     <Container
         type="ck-editor"
         placeholder="Using CK Editor"
         ckConfig={{ toolbar: ['mediaEmbed'] }}
     />
-);
+
+    ),
+};

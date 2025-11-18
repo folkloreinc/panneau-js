@@ -10,7 +10,9 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <div style={{ position: 'relative' }}>
         <Menu
             items={[
@@ -19,9 +21,13 @@ export const Normal = () => (
             ]}
         />
     </div>
-);
 
-export const WithDropdown = () => (
+    ),
+};
+
+export const WithDropdown = {
+    render: () => (
+
     <div style={{ position: 'relative' }}>
         <Menu
             items={[
@@ -34,4 +40,6 @@ export const WithDropdown = () => (
             ]}
         />
     </div>
-);
+
+    ),
+};

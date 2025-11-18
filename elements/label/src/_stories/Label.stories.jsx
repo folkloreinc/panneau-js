@@ -10,6 +10,10 @@ export default {
     },
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <LabelElement>{{ id: 'test', defaultMessage: 'Translated label' }}</LabelElement>
-);
+
+    ),
+};

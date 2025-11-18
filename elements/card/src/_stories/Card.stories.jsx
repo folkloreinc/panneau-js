@@ -9,17 +9,29 @@ export default {
     },
 };
 
-export const Normal = () => <CardElement header={<h1>Title</h1>} />;
+export const Normal = {
+    render: () => <CardElement header={<h1>Title</h1>} />,
+};
 
-export const WithTheme = () => (
+export const WithTheme = {
+    render: () => (
+
     <CardElement header={<h1>Title</h1>} footer={<p>Footer</p>} theme="danger" />
-);
 
-export const WithClose = () => (
+    ),
+};
+
+export const WithClose = {
+    render: () => (
+
     <CardElement header="Title" footer={<p>Footer</p>} onClose={() => {}} />
-);
 
-export const LikeMedia = () => (
+    ),
+};
+
+export const LikeMedia = {
+    render: () => (
+
     <div style={{ width: 400 }}>
         <CardElement
             title="CardTitle"
@@ -29,7 +41,9 @@ export const LikeMedia = () => (
             onClose={() => {}}
         />
     </div>
-);
+
+    ),
+};
 
 // export const ImageLeft = () => (
 //     <div style={{ width: 320 }}>

@@ -10,10 +10,16 @@ export default {
     },
 };
 
-export const Normal = () => <Navbar>Navbar</Navbar>;
+export const Normal = {
+    render: () => <Navbar>Navbar</Navbar>,
+};
 
-export const DarkNav = () => (
+export const DarkNav = {
+    render: () => (
+
     <Navbar theme="dark" brand={<p className="m-2">My brand</p>}>
         Navbar items
     </Navbar>
-);
+
+    ),
+};

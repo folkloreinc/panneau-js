@@ -36,4 +36,6 @@ const Container = () => (
     </RoutesProvider>
 );
 
-export const Normal = () => <Container />;
+export const Normal = {
+    render: () => <Container />,
+};

@@ -19,23 +19,28 @@ function Field() {
     );
 }
 
-export function Normal() {
+export const Normal = {
+    render: function() {
     return (
         <FormGroup label="Form group label">
             <Field />
         </FormGroup>
     );
-}
+    },
+};
 
-export function IsCard() {
+export const IsCard = {
+    render: function() {
     return (
         <FormGroup label="Form group label" isCard>
             <Field />
         </FormGroup>
     );
-}
+    },
+};
 
-export function IsHeading() {
+export const IsHeading = {
+    render: function() {
     return (
         <>
             <FormGroup label="Form group label">
@@ -46,31 +51,44 @@ export function IsHeading() {
             </FormGroup>
         </>
     );
-}
+    },
+};
 
-export function IsCollapsible() {
+export const IsCollapsible = {
+    render: function() {
     return (
         <FormGroup label="Form group label" isCollapsible>
             <Field />
         </FormGroup>
     );
-}
+    },
+};
 
-export const IsCollapsibleCard = () => (
+export const IsCollapsibleCard = {
+    render: () => (
+
     <FormGroup label="Form group label" isCollapsible isCard>
         <Field />
     </FormGroup>
-);
 
-export const Horizontal = () => (
+    ),
+};
+
+export const Horizontal = {
+    render: () => (
+
     <FormGroup label="Form group label" horizontal>
         <Field />
         <Field />
         <Field />
     </FormGroup>
-);
 
-export const Inline = () => (
+    ),
+};
+
+export const Inline = {
+    render: () => (
+
     <FormGroup
         label="Form group label"
         inline
@@ -81,9 +99,13 @@ export const Inline = () => (
         <Field />
         <Field />
     </FormGroup>
-);
 
-export const Stacked = () => (
+    ),
+};
+
+export const Stacked = {
+    render: () => (
+
     <>
         <FormGroup label="Form group label" isCollapsible isCard className="mb-3">
             <Field />
@@ -95,15 +117,23 @@ export const Stacked = () => (
             <Field />
         </FormGroup>
     </>
-);
 
-export const WithHelpText = () => (
+    ),
+};
+
+export const WithHelpText = {
+    render: () => (
+
     <FormGroup label="Form group label" helpText="Help me!">
         <Field />
     </FormGroup>
-);
 
-export const WithErrors = () => (
+    ),
+};
+
+export const WithErrors = {
+    render: () => (
+
     <FormGroup
         label="Form group label"
         helpText="Help me!"
@@ -111,4 +141,6 @@ export const WithErrors = () => (
     >
         <Field />
     </FormGroup>
-);
+
+    ),
+};

@@ -30,47 +30,62 @@ function Container(props) {
     return <Select {...props} value={value} onChange={setValue} />;
 }
 
-export function Normal() {
+export const Normal = {
+    render: function() {
     return <Container options={options} placeholder="Placeholder..." />;
-}
+    },
+};
 
-export function WithoutReset() {
+export const WithoutReset = {
+    render: function() {
     return (
         <Container options={options} withoutReset placeholder="Without reset..." />
     );
-}
+    },
+};
 
-export function MultiSelect() {
+export const MultiSelect = {
+    render: function() {
     return (
         <Container options={options} multiple placeholder="Multi select..." />
     );
-}
+    },
+};
 
-export function MultiSelectDark() {
+export const MultiSelectDark = {
+    render: function() {
     return (
         <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
             <Container options={options} multiple placeholder="Multi select..." />
         </div>
     );
-}
+    },
+};
 
-export function Searchable() {
+export const Searchable = {
+    render: function() {
     return (
         <Container options={options} multiple searchable placeholder="Multi select searchable..." />
     );
-}
+    },
+};
 
-export function Size() {
+export const Size = {
+    render: function() {
     return <Container className="w-25" options={options} placeholder="With size" />;
-}
+    },
+};
 
-export function AutoSize() {
+export const AutoSize = {
+    render: function() {
     return (
         <Container autoSize options={options} placeholder="With min width..." />
     );
-}
+    },
+};
 
-export function Stacked() {
+export const Stacked = {
+    render: function() {
     const [value, setValue] = useState(null);
     return (
         <>
@@ -78,9 +93,11 @@ export function Stacked() {
             <Select options={options} value={value} onChange={setValue} />
         </>
     );
-}
+    },
+};
 
-export function WithItems() {
+export const WithItems = {
+    render: function() {
     return (
         <Container
             options={itemOptions}
@@ -88,9 +105,11 @@ export function WithItems() {
             getOptionValue={(opt) => opt.id}
         />
     );
-}
+    },
+};
 
-export function WithItemsMultiple() {
+export const WithItemsMultiple = {
+    render: function() {
     return (
         <Container
             options={itemOptions}
@@ -99,4 +118,5 @@ export function WithItemsMultiple() {
             getOptionValue={(opt) => opt.id}
         />
     );
-}
+    },
+};

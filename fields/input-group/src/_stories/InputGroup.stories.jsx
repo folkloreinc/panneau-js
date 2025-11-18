@@ -6,8 +6,12 @@ export default {
     component: InputGroupField,
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <InputGroupField prepend="Prepend" append="Append">
         <input className="form-control" />
     </InputGroupField>
-);
+
+    ),
+};

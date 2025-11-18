@@ -23,31 +23,49 @@ const props = {
     size: 'sm',
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <PanneauProvider definition={panneauDefinition}>
         <ItemActions {...props} actions={['show', 'edit', 'duplicate', 'delete']} />
     </PanneauProvider>
-);
 
-export const WithUrl = () => (
+    ),
+};
+
+export const WithUrl = {
+    render: () => (
+
     <PanneauProvider definition={panneauDefinition}>
         <ItemActions {...props} item={{ id: '2', url: 'http://www.google.com' }} />
     </PanneauProvider>
-);
 
-export const WithShowUrl = () => (
+    ),
+};
+
+export const WithShowUrl = {
+    render: () => (
+
     <PanneauProvider definition={panneauDefinition}>
         <ItemActions {...props} showUrl="http://www.google.com" />
     </PanneauProvider>
-);
 
-export const WithItems = () => (
+    ),
+};
+
+export const WithItems = {
+    render: () => (
+
     <PanneauProvider definition={panneauDefinition}>
         <ItemActions {...props} items={[{ id: 'My way', label: 'My button', theme: 'primary' }]} />
     </PanneauProvider>
-);
 
-export const WithActions = () => (
+    ),
+};
+
+export const WithActions = {
+    render: () => (
+
     <PanneauProvider definition={panneauDefinition}>
         <ItemActions
             {...props}
@@ -55,4 +73,6 @@ export const WithActions = () => (
             getSelectPropsFromItem={() => ({ disabled: true })}
         />
     </PanneauProvider>
-);
+
+    ),
+};

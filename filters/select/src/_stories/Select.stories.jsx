@@ -23,7 +23,9 @@ const FieldContainer = (props) => {
     );
 };
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <FieldContainer
         options={[
             {
@@ -40,10 +42,14 @@ export const Normal = () => (
             },
         ]}
     />
-);
+
+    ),
+};
 
 // TODO: figure out how to mock this...
-export const Fetching = () => (
+export const Fetching = {
+    render: () => (
+
     <FieldContainer
         // options={[
         //     {
@@ -56,17 +62,27 @@ export const Fetching = () => (
         itemLabelPath="title.en"
         itemValuePath="id"
     />
-);
 
-export const Paginated = () => (
+    ),
+};
+
+export const Paginated = {
+    render: () => (
+
     <FieldContainer requestUrl="/api/pages" itemLabelPath="title.fr" itemValuePath="id" paginated />
-);
 
-export const WithParams = () => (
+    ),
+};
+
+export const WithParams = {
+    render: () => (
+
     <FieldContainer
         requestUrl="/api/pages"
         itemLabelPath="title.fr"
         itemValuePath="id"
         requestParams={['edition_id']}
     />
-);
+
+    ),
+};

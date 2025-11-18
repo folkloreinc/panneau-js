@@ -27,4 +27,6 @@ const Container = () => {
     );
 };
 
-export const TwoPaneForm = () => <Container />;
+export const TwoPaneForm = {
+    render: () => <Container />,
+};

@@ -16,24 +16,46 @@ function Container(props) {
     return <InputField {...props} value={value} onChange={setValue} />;
 }
 
-export const Normal = () => <Container placeholder="Text" />;
+export const Normal = {
+    render: () => <Container placeholder="Text" />,
+};
 
-export const Disabled = () => <Container placeholder="Text" disabled />;
+export const Disabled = {
+    render: () => <Container placeholder="Text" disabled />,
+};
 
-export const WithDataList = () => (
+export const WithDataList = {
+    render: () => (
+
     <Container placeholder="With data list" dataList={['Bird', 'Cat', 'Dog', 'Fish', 'Snail']} />
-);
 
-export const Email = () => <Container type="email" placeholder="Email" name="Email" />;
+    ),
+};
 
-export const Password = () => <Container type="password" placeholder="Password" />;
+export const Email = {
+    render: () => <Container type="email" placeholder="Email" name="Email" />,
+};
 
-export const Telephone = () => <Container type="tel" placeholder="Telephone" name="Telephone" />;
+export const Password = {
+    render: () => <Container type="password" placeholder="Password" />,
+};
 
-export const TextArea = () => <Container type="textarea" placeholder="Textarea" />;
+export const Telephone = {
+    render: () => <Container type="tel" placeholder="Telephone" name="Telephone" />,
+};
 
-export const WithErrors = () => <Container placeholder="Text" errors={['Invalid field']} />;
+export const TextArea = {
+    render: () => <Container type="textarea" placeholder="Textarea" />,
+};
 
-export const MaxLength = () => <Container placeholder="Max 3 characters" maxLength={3} />;
+export const WithErrors = {
+    render: () => <Container placeholder="Text" errors={['Invalid field']} />,
+};
 
-export const ReadOnly = () => <Container placeholder="Max 3 characters" readOnly />;
+export const MaxLength = {
+    render: () => <Container placeholder="Max 3 characters" maxLength={3} />,
+};
+
+export const ReadOnly = {
+    render: () => <Container placeholder="Max 3 characters" readOnly />,
+};

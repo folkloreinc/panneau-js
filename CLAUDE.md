@@ -9,13 +9,21 @@ Panneau-JS is a comprehensive React UI component library for building data-centr
 ## Common Commands
 
 ### Development
+
 ```bash
 npm run storybook         # Start Storybook dev server on localhost:58800
 npm start                 # Alias for npm run storybook
 ```
 
 ### Building Packages
+
 ```bash
+# Prepare all packages
+lerna run prepublishOnly
+
+#Build all packages
+lerna run build
+
 # Build a single package (from package directory)
 npm run build             # Runs scripts/prepare-package.sh
 
@@ -27,18 +35,21 @@ npm run build -- --scss
 ```
 
 ### Internationalization
+
 ```bash
 npm run intl              # Extract and compile i18n messages (root level)
 npm run intl --prefix ./packages/intl  # Package-specific intl build
 ```
 
 ### Lerna/Publishing
+
 ```bash
 lerna bootstrap           # Install dependencies with hoisting
 lerna publish             # Publish changed packages (allowed branches: v0.4, v0.6, v1.0-react-router5, v2.0, v3.0, feature/es-module)
 ```
 
 ### Linting
+
 ```bash
 npx eslint <path>         # Lint JavaScript files
 npx stylelint <path>      # Lint SCSS/CSS files
@@ -60,13 +71,13 @@ The repository uses npm workspaces coordinated by Lerna (v3.0.313):
 - **`filters/`**: Filter UI components
 - **`modals/`**: Modal dialog compositions
 - **`packages/`**: Core infrastructure and aggregator packages
-  - `core/`: Contexts, hooks, managers (ComponentsManager, DefinitionsManager, EventsManager), utilities, PropTypes
-  - `app/`: Main bundle aggregating all components
-  - `themes/`: SCSS variables, mixins, Bootstrap 5 integration
-  - `intl/`: FormatJS-based internationalization (en, fr)
-  - `data/`: TanStack React Query integration for data fetching
-  - Aggregators: `actions/`, `displays/`, `fields/`, `forms/`, `lists/`, `filters/` (collect related components)
-  - Integrations: `auth/`, `uppy/`, `medias/`, `ckeditor/`
+    - `core/`: Contexts, hooks, managers (ComponentsManager, DefinitionsManager, EventsManager), utilities, PropTypes
+    - `app/`: Main bundle aggregating all components
+    - `themes/`: SCSS variables, mixins, Bootstrap 5 integration
+    - `intl/`: FormatJS-based internationalization (en, fr)
+    - `data/`: TanStack React Query integration for data fetching
+    - Aggregators: `actions/`, `displays/`, `fields/`, `forms/`, `lists/`, `filters/` (collect related components)
+    - Integrations: `auth/`, `uppy/`, `medias/`, `ckeditor/`
 
 ### Key Design Patterns
 
@@ -80,6 +91,7 @@ The repository uses npm workspaces coordinated by Lerna (v3.0.313):
 ### Component Architecture
 
 **Component Pattern** (All 209+ components follow this standard):
+
 ```javascript
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -92,12 +104,7 @@ const propTypes = {
 };
 
 // Component using function declaration (NOT arrow functions)
-function ComponentName({
-    value = null,
-    placeholder = null,
-    onChange = null,
-    ...props
-}) {
+function ComponentName({ value = null, placeholder = null, onChange = null, ...props }) {
     // Component logic with hooks if needed
     return <JSX />;
 }
@@ -110,6 +117,7 @@ export default ComponentName;
 ```
 
 **Key Component Characteristics**:
+
 - ✅ **Function declarations**: All components use `function ComponentName() {}` (not `const ComponentName = () => {}`)
 - ✅ **Props destructuring**: All props destructured in function signature with default values
 - ✅ **Spread operator**: Unused props captured with `...props` and spread to child components
@@ -120,28 +128,25 @@ export default ComponentName;
 
 **Component Categories** (Total: ~208 non-story component files):
 
-| Category | Count | Purpose | Examples |
-|----------|-------|---------|----------|
-| **displays/** | 13 | Read-only data display | Text, Avatar, Date, Boolean, Image, Label |
-| **actions/** | 8 | User actions on items | Edit, Delete, Duplicate, Show, Upload, Restore |
-| **fields/** | 41 | Form input fields | TextField, SelectField, DateField, MediaField |
-| **elements/** | 36 | Base UI primitives | Button, Modal, Icon, Loading, Card, Dropdown |
-| **forms/** | 17 | Form layouts & containers | Normal, Horizontal, Inline, Resource, TwoPane |
-| **filters/** | 8 | Data filtering UI | Search, Select, Date, Radios, Toggle |
-| **lists/** | 4 | Data list displays | Table, Cards, Calendar, ResourceItems |
-| **modals/** | 4 | Modal compositions | Dialog, Upload, ResourceForm, ResourceItems |
-| **packages/** | 68 | Core & providers | App pages, menus, providers, utilities |
+| Category      | Count | Purpose                   | Examples                                       |
+| ------------- | ----- | ------------------------- | ---------------------------------------------- |
+| **displays/** | 13    | Read-only data display    | Text, Avatar, Date, Boolean, Image, Label      |
+| **actions/**  | 8     | User actions on items     | Edit, Delete, Duplicate, Show, Upload, Restore |
+| **fields/**   | 41    | Form input fields         | TextField, SelectField, DateField, MediaField  |
+| **elements/** | 36    | Base UI primitives        | Button, Modal, Icon, Loading, Card, Dropdown   |
+| **forms/**    | 17    | Form layouts & containers | Normal, Horizontal, Inline, Resource, TwoPane  |
+| **filters/**  | 8     | Data filtering UI         | Search, Select, Date, Radios, Toggle           |
+| **lists/**    | 4     | Data list displays        | Table, Cards, Calendar, ResourceItems          |
+| **modals/**   | 4     | Modal compositions        | Dialog, Upload, ResourceForm, ResourceItems    |
+| **packages/** | 68    | Core & providers          | App pages, menus, providers, utilities         |
 
 **Provider Pattern**:
 All provider components follow a consistent pattern (8 providers total):
+
 ```javascript
 function ProviderName({ children, ...config }) {
     // Provider logic and state management
-    return (
-        <Context.Provider value={contextValue}>
-            {children}
-        </Context.Provider>
-    );
+    return <Context.Provider value={contextValue}>{children}</Context.Provider>;
 }
 ```
 
@@ -159,6 +164,7 @@ Providers: `FieldsProvider`, `DataProvider`, `ActionsProvider`, `ModalsProvider`
 ### Build System
 
 **Rollup Configuration** (`rollup.config.js`):
+
 - Factory function `createConfig()` used by all packages
 - Outputs: ESM (`es/`) and optionally CommonJS (`lib/`)
 - PostCSS with CSS Modules for scoped styling
@@ -167,12 +173,14 @@ Providers: `FieldsProvider`, `DataProvider`, `ActionsProvider`, `ModalsProvider`
 - Treeshaking preserves CSS/SCSS files as side effects
 
 **Build Script** (`scripts/prepare-package.sh`):
+
 1. Clean (`rm -rf scss assets lib es`)
 2. Run Rollup build
 3. Copy compiled CSS to `assets/css/`
 4. Optionally copy SCSS sources
 
 **Storybook** (v7):
+
 - Stories collected from all packages: `**/src/**/*.stories.{jsx,mdx}`
 - Webpack 5 with SCSS preset
 - Separate handling for `.module.scss` vs global SCSS
@@ -181,6 +189,7 @@ Providers: `FieldsProvider`, `DataProvider`, `ActionsProvider`, `ModalsProvider`
 ### Code Style
 
 **ESLint** (`.eslintrc.json`):
+
 - Base: Airbnb + Prettier
 - 4-space indentation for JSX
 - FormatJS plugin enforces default messages and no camelCase in i18n IDs
@@ -188,6 +197,7 @@ Providers: `FieldsProvider`, `DataProvider`, `ActionsProvider`, `ModalsProvider`
 - Overrides relaxed for config files, scripts, CLI code
 
 **Prettier** (`.prettierrc.json`):
+
 - 4-space indentation
 - 100-character line width
 - Single quotes
@@ -195,6 +205,7 @@ Providers: `FieldsProvider`, `DataProvider`, `ActionsProvider`, `ModalsProvider`
 - Plugin: `@trivago/prettier-plugin-sort-imports`
 
 **Stylelint** (`.stylelintrc.json`):
+
 - SASS guidelines + SMACSS property ordering
 - Max 4-level nesting
 - Camel-case class selectors
@@ -202,6 +213,7 @@ Providers: `FieldsProvider`, `DataProvider`, `ActionsProvider`, `ModalsProvider`
 ### Internationalization
 
 **Setup**: React Intl + FormatJS CLI
+
 - **Supported locales**: `en` (English), `fr` (French)
 - **Message ID pattern**: `[sha512:contenthash:base64:6]` (hash-based for stability)
 - **Extraction**: `babel-plugin-react-intl` extracts `<FormattedMessage>` during build
@@ -210,6 +222,7 @@ Providers: `FieldsProvider`, `DataProvider`, `ActionsProvider`, `ModalsProvider`
 - **Transifex**: `scripts/tx-config.js` generates configuration for automated translation workflow
 
 **Workflow**:
+
 1. Add `<FormattedMessage>` components with `defaultMessage` prop
 2. Run `npm run intl` to extract messages
 3. Translations stored in `packages/intl/locale/{locale}.json`
@@ -217,29 +230,31 @@ Providers: `FieldsProvider`, `DataProvider`, `ActionsProvider`, `ModalsProvider`
 ### Package Conventions
 
 **package.json structure**:
+
 ```json
 {
-  "type": "module",
-  "module": "es/index.js",
-  "exports": {
-    ".": { "import": "./es/index.js" },
-    "./scss/variables": "./scss/_variables.scss",
-    "./assets/css/styles.css": "./assets/css/styles.css"
-  },
-  "sideEffects": ["*.css", "*.scss"],
-  "files": ["lib", "es", "assets", "scss"],
-  "scripts": {
-    "prepublishOnly": "npm run build",
-    "build": "../../scripts/prepare-package.sh [--scss]"
-  },
-  "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
-  }
+    "type": "module",
+    "module": "es/index.js",
+    "exports": {
+        ".": { "import": "./es/index.js" },
+        "./scss/variables": "./scss/_variables.scss",
+        "./assets/css/styles.css": "./assets/css/styles.css"
+    },
+    "sideEffects": ["*.css", "*.scss"],
+    "files": ["lib", "es", "assets", "scss"],
+    "scripts": {
+        "prepublishOnly": "npm run build",
+        "build": "../../scripts/prepare-package.sh [--scss]"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    }
 }
 ```
 
 **File structure** (typical package):
+
 ```
 package-name/
 ├── src/
@@ -257,18 +272,20 @@ package-name/
 ```
 
 **Barrel Export Pattern** (`index.js`):
+
 ```javascript
 export { default } from './ComponentName';
 ```
 
 **Definition File Pattern** (`definition.js`):
+
 ```javascript
 import Component from './ComponentName';
 
 export default {
     id: 'component-id',
     component: Component,
-    type: 'component-type',  // e.g., 'field', 'display', 'action'
+    type: 'component-type', // e.g., 'field', 'display', 'action'
 };
 ```
 
@@ -300,55 +317,65 @@ export default {
 ### When Creating New Components
 
 1. **Use function declarations**, not const arrow functions:
-   ```javascript
-   // ✅ Correct
-   function MyComponent({ value }) {
-       return <div>{value}</div>;
-   }
 
-   // ❌ Incorrect
-   const MyComponent = ({ value }) => {
-       return <div>{value}</div>;
-   };
-   ```
+    ```javascript
+    // ✅ Correct
+    function MyComponent({ value }) {
+        return <div>{value}</div>;
+    }
+
+    // ❌ Incorrect
+    const MyComponent = ({ value }) => {
+        return <div>{value}</div>;
+    };
+    ```
 
 2. **Always define PropTypes** before the component and assign after:
-   ```javascript
-   const propTypes = { /* ... */ };
 
-   function MyComponent(props) { /* ... */ }
+    ```javascript
+    const propTypes = {
+        /* ... */
+    };
 
-   MyComponent.propTypes = propTypes;
-   ```
+    function MyComponent(props) {
+        /* ... */
+    }
+
+    MyComponent.propTypes = propTypes;
+    ```
 
 3. **Destructure props in function signature** with default values:
-   ```javascript
-   function MyComponent({
-       value = null,
-       placeholder = 'Default',
-       onChange = null,
-       ...props  // Capture remaining props
-   }) { /* ... */ }
-   ```
+
+    ```javascript
+    function MyComponent({
+        value = null,
+        placeholder = 'Default',
+        onChange = null,
+        ...props // Capture remaining props
+    }) {
+        /* ... */
+    }
+    ```
 
 4. **Follow naming conventions**:
-   - Display components: `Text`, `Avatar`, `Date` (noun form)
-   - Field components: `TextField`, `SelectField`, `DateField` (ends with "Field")
-   - Form layouts: `NormalForm`, `HorizontalForm` (ends with "Form")
-   - Filters: `SearchFilter`, `DateFilter` (ends with "Filter")
-   - Actions: `EditAction`, `DeleteAction` (ends with "Action")
-   - Lists: `TableList`, `CardsList` (ends with "List")
-   - Modals: `ModalDialog`, `ModalResourceForm` (starts with "Modal")
+    - Display components: `Text`, `Avatar`, `Date` (noun form)
+    - Field components: `TextField`, `SelectField`, `DateField` (ends with "Field")
+    - Form layouts: `NormalForm`, `HorizontalForm` (ends with "Form")
+    - Filters: `SearchFilter`, `DateFilter` (ends with "Filter")
+    - Actions: `EditAction`, `DeleteAction` (ends with "Action")
+    - Lists: `TableList`, `CardsList` (ends with "List")
+    - Modals: `ModalDialog`, `ModalResourceForm` (starts with "Modal")
 
 5. **Use PanneauPropTypes** from `@panneau/core` for common types:
-   ```javascript
-   import { PropTypes as PanneauPropTypes } from '@panneau/core';
 
-   const propTypes = {
-       field: PanneauPropTypes.field.isRequired,
-       size: PanneauPropTypes.buttonSize,
-   };
-   ```
+    ```javascript
+    import { PropTypes as PanneauPropTypes } from '@panneau/core';
+
+    const propTypes = {
+        field: PanneauPropTypes.field.isRequired,
+        size: PanneauPropTypes.buttonSize,
+    };
+    ```
 
 ### When Refactoring Components
 

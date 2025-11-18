@@ -10,6 +10,10 @@ export default {
     },
 };
 
-export const Success = () => <AlertElement theme="success">Good alert</AlertElement>;
+export const Success = {
+    render: () => <AlertElement theme="success">Good alert</AlertElement>,
+};
 
-export const Error = () => <AlertElement theme="danger">Bad alert</AlertElement>;
+export const Error = {
+    render: () => <AlertElement theme="danger">Bad alert</AlertElement>,
+};

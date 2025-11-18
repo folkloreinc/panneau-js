@@ -10,4 +10,6 @@ export default {
     },
 };
 
-export const Normal = () => <ProgressElement />;
+export const Normal = {
+    render: () => <ProgressElement />,
+};

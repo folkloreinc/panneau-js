@@ -37,8 +37,12 @@ const Container = (props) => (
     </FieldsProvider>
 );
 
-export const Default = () => (
+export const Default = {
+    render: () => (
+
     <UppyProvider>
         <Container />
     </UppyProvider>
-);
+
+    ),
+};

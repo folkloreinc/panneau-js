@@ -61,42 +61,58 @@ const Actions = () => (
     </div>
 );
 
-export const Normal = () => (
+export const Normal = {
+    render: () => (
+
     <DisplaysProvider>
         <TableElement items={items} columns={columns} />
     </DisplaysProvider>
-);
 
-export const Selectable = () => (
+    ),
+};
+
+export const Selectable = {
+    render: () => (
+
     <DisplaysProvider>
         <Container items={items} columns={columnsWithId} selectable />
     </DisplaysProvider>
-);
 
-export const SelectableMultiple = () => (
+    ),
+};
+
+export const SelectableMultiple = {
+    render: () => (
+
     <DisplaysProvider>
         <Container items={items} columns={columnsWithId} selectable multipleSelection />
     </DisplaysProvider>
-);
 
-export const Sortable = () => {
-    const [query, setQuery] = useState({});
-    return (
-        <DisplaysProvider>
-            <TableElement
-                items={items}
-                columns={columns}
-                baseUrl={null}
-                query={query}
-                sortColumnParameter="order"
-                sortDirectionParameter="order_direction"
-                onQueryChange={setQuery}
-            />
-        </DisplaysProvider>
-    );
+    ),
 };
 
-export const WithCustomActions = () => (
+export const Sortable = {
+    render: () => {
+        const [query, setQuery] = useState({});
+        return (
+            <DisplaysProvider>
+                <TableElement
+                    items={items}
+                    columns={columns}
+                    baseUrl={null}
+                    query={query}
+                    sortColumnParameter="order"
+                    sortDirectionParameter="order_direction"
+                    onQueryChange={setQuery}
+                />
+            </DisplaysProvider>
+        );
+    },
+};
+
+export const WithCustomActions = {
+    render: () => (
+
     <DisplaysProvider>
         <TableElement
             items={items}
@@ -105,4 +121,6 @@ export const WithCustomActions = () => (
             withCustomActionsColumn
         />
     </DisplaysProvider>
-);
+
+    ),
+};

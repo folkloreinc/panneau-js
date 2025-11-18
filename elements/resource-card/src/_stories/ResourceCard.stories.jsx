@@ -12,9 +12,13 @@ export default {
 
 const item = { id: 1, name: 'Paul' };
 
-export const Normal = () => <ResourceCardElement item={item} itemLabelPath="name" />;
+export const Normal = {
+    render: () => <ResourceCardElement item={item} itemLabelPath="name" />,
+};
 
-export const WithIdAndChildren = () => (
+export const WithIdAndChildren = {
+    render: () => (
+
     <ResourceCardElement
         item={item}
         itemLabelPath="name"
@@ -24,9 +28,13 @@ export const WithIdAndChildren = () => (
     >
         <div className="ms-1">More more info</div>
     </ResourceCardElement>
-);
 
-export const WithActions = () => (
+    ),
+};
+
+export const WithActions = {
+    render: () => (
+
     <ResourceCardElement
         item={item}
         itemLabelPath="name"
@@ -34,4 +42,6 @@ export const WithActions = () => (
         onClickEdit={() => {}}
         onClickRemove={() => {}}
     />
-);
+
+    ),
+};

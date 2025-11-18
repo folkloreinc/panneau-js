@@ -10,6 +10,10 @@ export default {
     },
 };
 
-export const Normal = () => <EmptyElement>Empty</EmptyElement>;
+export const Normal = {
+    render: () => <EmptyElement>Empty</EmptyElement>,
+};
 
-export const Warning = () => <EmptyElement theme="warning">Empty</EmptyElement>;
+export const Warning = {
+    render: () => <EmptyElement theme="warning">Empty</EmptyElement>,
+};

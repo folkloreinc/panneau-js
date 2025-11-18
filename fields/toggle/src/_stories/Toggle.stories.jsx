@@ -13,6 +13,10 @@ function Container(props = null) {
     return <ToggleField {...props} value={value} onChange={setValue} />;
 }
 
-export const Normal = () => <Container />;
+export const Normal = {
+    render: () => <Container />,
+};
 
-export const Disabled = () => <Container disabled />;
+export const Disabled = {
+    render: () => <Container disabled />,
+};

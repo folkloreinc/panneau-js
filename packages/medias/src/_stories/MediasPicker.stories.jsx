@@ -68,33 +68,51 @@ const Container = ({ value: initialValue = null, ...props } = {}) => {
     );
 };
 
-export const Default = () => (
+export const Default = {
+    render: () => (
+
     <UppyProvider>
         <Container layout="grid" picker />
     </UppyProvider>
-);
 
-export const Items = () => (
+    ),
+};
+
+export const Items = {
+    render: () => (
+
     <UppyProvider>
         <Container layout="grid" picker items={items} />
     </UppyProvider>
-);
 
-export const Multiple = () => (
+    ),
+};
+
+export const Multiple = {
+    render: () => (
+
     <UppyProvider>
         <Container layout="table" picker multipleSelection />
     </UppyProvider>
-);
 
-export const Dark = () => (
+    ),
+};
+
+export const Dark = {
+    render: () => (
+
     <UppyProvider>
         <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
             <Container layout="table" theme="dark" picker withStickySelection />
         </div>
     </UppyProvider>
-);
 
-export const WithUploadMultiple = () => (
+    ),
+};
+
+export const WithUploadMultiple = {
+    render: () => (
+
     <UppyProvider>
         <Container
             layout="table"
@@ -103,9 +121,13 @@ export const WithUploadMultiple = () => (
             uploadButton={{ id: 1, icon: 'circle' }}
         />
     </UppyProvider>
-);
 
-export const WithVideoType = () => (
+    ),
+};
+
+export const WithVideoType = {
+    render: () => (
+
     <UppyProvider>
         <Container
             layout="table"
@@ -115,9 +137,13 @@ export const WithVideoType = () => (
             types={['video']}
         />
     </UppyProvider>
-);
 
-export const WithStickySelectionAndTypes = () => (
+    ),
+};
+
+export const WithStickySelectionAndTypes = {
+    render: () => (
+
     <UppyProvider>
         <Container
             layout="table"
@@ -128,9 +154,13 @@ export const WithStickySelectionAndTypes = () => (
             withStickySelection
         />
     </UppyProvider>
-);
 
-export const WithStickySelection = () => (
+    ),
+};
+
+export const WithStickySelection = {
+    render: () => (
+
     <UppyProvider>
         <Container
             layout="table"
@@ -140,9 +170,13 @@ export const WithStickySelection = () => (
             withStickySelection
         />
     </UppyProvider>
-);
 
-export const WithValueMultiple = () => (
+    ),
+};
+
+export const WithValueMultiple = {
+    render: () => (
+
     <UppyProvider>
         <Container
             layout="table"
@@ -153,19 +187,27 @@ export const WithValueMultiple = () => (
             value={[Media2, Media3]}
         />
     </UppyProvider>
-);
 
-export const WithTrash = () => (
+    ),
+};
+
+export const WithTrash = {
+    render: () => (
+
     <UppyProvider>
         <Container layout="grid" picker withTrash />
     </UppyProvider>
-);
+
+    ),
+};
 
 const fields = [];
 const columns = [];
 // const filters = [];
 
-export const Custom = () => (
+export const Custom = {
+    render: () => (
+
     <UppyProvider>
         <div style={{ padding: 20, backgroundColor: '#0FF' }}>
             <Container
@@ -178,4 +220,6 @@ export const Custom = () => (
             />
         </div>
     </UppyProvider>
-);
+
+    ),
+};

@@ -21,23 +21,41 @@ function Container({ value: initialValue, ...props }) {
     return <SelectField {...props} value={value} onChange={setValue} />;
 }
 
-export const Normal = () => <Container options={options} />;
+export const Normal = {
+    render: () => <Container options={options} />,
+};
 
-export const Disabled = () => <Container options={options} disabled />;
+export const Disabled = {
+    render: () => <Container options={options} disabled />,
+};
 
-export const WithoutReset = () => (
+export const WithoutReset = {
+    render: () => (
+
     <Container options={options} withoutReset placeholder="Without reset..." />
-);
 
-export const MultiSelect = () => (
+    ),
+};
+
+export const MultiSelect = {
+    render: () => (
+
     <Container options={options} multiple placeholder="Multi select..." />
-);
 
-export const MultiDisabled = () => (
+    ),
+};
+
+export const MultiDisabled = {
+    render: () => (
+
     <Container options={options} multiple placeholder="Multi select disabled..." disabled />
-);
 
-export const WithRequestAndValueMultiple = () => (
+    ),
+};
+
+export const WithRequestAndValueMultiple = {
+    render: () => (
+
     <Container
         value={[{ id: '1', type: 'event', title: '1 évévnement' }]}
         valueIsOption
@@ -48,9 +66,13 @@ export const WithRequestAndValueMultiple = () => (
         placeholder="With Request and initial value"
         paginated={false}
     />
-);
 
-export const WithRequest = () => (
+    ),
+};
+
+export const WithRequest = {
+    render: () => (
+
     <Container
         requestUrl="/api/events"
         optionLabelPath="title"
@@ -59,9 +81,13 @@ export const WithRequest = () => (
         placeholder="With Request"
         paginated={false}
     />
-);
 
-export const WithRequestPaginated = () => (
+    ),
+};
+
+export const WithRequestPaginated = {
+    render: () => (
+
     <Container
         requestUrl="/api/persons"
         optionLabelPath="name"
@@ -71,4 +97,6 @@ export const WithRequestPaginated = () => (
         paginated
         requestQuery={{ count: 2 }}
     />
-);
+
+    ),
+};

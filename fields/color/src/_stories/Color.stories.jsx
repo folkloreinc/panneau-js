@@ -14,14 +14,26 @@ function Container(props) {
     return <ColorField {...props} value={value} onChange={setValue} />;
 }
 
-export const Normal = () => <Container />;
+export const Normal = {
+    render: () => <Container />,
+};
 
-export const NormalAlpha = () => <Container withAlpha />;
+export const NormalAlpha = {
+    render: () => <Container withAlpha />,
+};
 
-export const NormalEmpty = () => <Container value={null} />;
+export const NormalEmpty = {
+    render: () => <Container value={null} />,
+};
 
-export const NormalDisabled = () => <Container disabled />;
+export const NormalDisabled = {
+    render: () => <Container disabled />,
+};
 
-export const Native = () => <Container native />;
+export const Native = {
+    render: () => <Container native />,
+};
 
-export const NativeDisabled = () => <Container native disabled />;
+export const NativeDisabled = {
+    render: () => <Container native disabled />,
+};

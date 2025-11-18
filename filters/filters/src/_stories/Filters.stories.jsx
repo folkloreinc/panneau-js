@@ -25,4 +25,6 @@ const FieldContainer = (props) => {
     );
 };
 
-export const Normal = () => <FieldContainer label="Hello" />;
+export const Normal = {
+    render: () => <FieldContainer label="Hello" />,
+};
