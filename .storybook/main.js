@@ -11,7 +11,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // insecure
 
 module.exports = {
     stories: getPackagesPaths().map((packagePath) =>
-        path.join(packagePath, './src/**/*.stories.@(jsx|mdx)'),
+        path.join(packagePath, './src/**/*.stories.@(jsx|mdx|tsx)'),
     ),
     addons: [
         // {
@@ -80,12 +80,19 @@ module.exports = {
     webpackFinal: async (config) => {
         // Add babel-loader for JSX files
         config.module.rules.push({
-            test: /\.jsx?$/,
+            test: /\.(j|t)sx?$/,
             exclude: /node_modules/,
             use: {
                 loader: require.resolve('babel-loader'),
                 options: {
                     presets: [
+                        [
+                            require.resolve('@babel/preset-typescript'),
+                            {
+                                allExtensions: true,
+                                isTSX: true,
+                            },
+                        ],
                         require.resolve('@babel/preset-react'),
                         [
                             require.resolve('@babel/preset-env'),

@@ -1,0 +1,149 @@
+/* eslint-disable react/no-unstable-nested-components, react/jsx-props-no-spreading, react/jsx-indent */
+import isObject from 'lodash-es/isObject';
+// import isString from 'lodash-es/isString';
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
+
+import type { ButtonSize, Item, Resource } from '@panneau/core/types';
+import { useActionsComponentsManager } from '@panneau/core/contexts';
+import { useActions, useResourceUrlGenerator } from '@panneau/core/hooks';
+import Buttons from '@panneau/element-buttons';
+import Icon from '@panneau/element-icon';
+
+// TODO: this one is unused now?
+
+interface ItemActionsProps {
+    resource?: Resource | null;
+    size?: ButtonSize;
+    item: Item;
+    items?: any[] | null;
+    actions?: (string | { id?: string })[];
+    iconsOnly?: boolean;
+    showLabel?: React.ReactNode | null;
+    showUrl?: string | null;
+    editLabel?: React.ReactNode | null;
+    deleteLabel?: React.ReactNode | null;
+    duplicateLabel?: React.ReactNode | null;
+    reload?: (() => void) | null;
+    updateItem?: ((item: Item) => void) | null;
+    onClickShow?: (() => void) | null;
+    onClickEdit?: (() => void) | null;
+    onClickDelete?: (() => void) | null;
+    onClickDuplicate?: (() => void) | null;
+    getShowPropsFromItem?: ((item: Item) => Record<string, unknown>) | null;
+    getEditPropsFromItem?: ((item: Item) => Record<string, unknown>) | null;
+    getDeletePropsFromItem?: ((item: Item) => Record<string, unknown>) | null;
+    getDuplicatePropsFromItem?: ((item: Item) => Record<string, unknown>) | null;
+    withoutItemShowUrl?: boolean;
+    itemLinkProp?: string | null;
+    className?: string | null;
+}
+
+const DEFAULT_ACTIONS = ['show', 'edit', 'delete'];
+
+function ItemActions({
+    resource = null,
+    size = 'sm',
+    item,
+    items = null,
+    actions = DEFAULT_ACTIONS,
+    iconsOnly = true,
+    showLabel = null,
+    showUrl = null,
+    editLabel = null,
+    deleteLabel = null,
+    duplicateLabel = null,
+    reload = null,
+    updateItem = null,
+    onClickShow = null,
+    onClickEdit = null,
+    onClickDelete = null,
+    onClickDuplicate = null,
+    getShowPropsFromItem = null,
+    getEditPropsFromItem = null,
+    getDeletePropsFromItem = null,
+    getDuplicatePropsFromItem = null,
+    withoutItemShowUrl = false,
+    itemLinkProp = null,
+    className = null,
+}: ItemActionsProps) {
+    const urlGenerator = useResourceUrlGenerator(resource);
+    const componentsManager = useActionsComponentsManager();
+    const actionItems = items || actions || [];
+
+    const finalActions = useActions(item, actionItems as any, urlGenerator, {
+        iconsOnly,
+        showLabel: showLabel || (
+            <FormattedMessage defaultMessage="Show" description="Button label" />
+        ),
+        showUrl,
+        editLabel: editLabel || (
+            <FormattedMessage defaultMessage="Edit" description="Button label" />
+        ),
+        deleteLabel: deleteLabel || (
+            <FormattedMessage defaultMessage="Delete" description="Button label" />
+        ),
+        duplicateLabel: duplicateLabel || (
+            <FormattedMessage defaultMessage="Duplicate" description="Button label" />
+        ),
+        onClickShow,
+        onClickEdit,
+        onClickDelete,
+        onClickDuplicate,
+        getShowPropsFromItem,
+        getEditPropsFromItem,
+        getDeletePropsFromItem,
+        getDuplicatePropsFromItem,
+        withoutItemShowUrl,
+        itemLinkProp,
+    } as any);
+
+    return (
+        <Buttons
+            size={size}
+            items={finalActions
+                .map((action: any = null) => {
+                    if (action !== null) {
+                        if (isObject(action)) {
+                            const {
+                                label = null,
+                                icon = null,
+                                linkProps = null,
+                                component = null,
+                                ...otherProps
+                            } = action;
+                            const ActionComponent =
+                                component !== null
+                                    ? componentsManager.getComponent(component)
+                                    : null;
+                            return {
+                                renderButton:
+                                    ActionComponent !== null
+                                        ? (buttonProps: any, index: number, fixedProps: any) => (
+                                              <ActionComponent
+                                                  resource={resource}
+                                                  item={item}
+                                                  {...fixedProps}
+                                                  {...buttonProps}
+                                              />
+                                          )
+                                        : null,
+                                ...otherProps,
+                                ...(ActionComponent !== null ? { reload, updateItem } : null),
+                                label: iconsOnly && icon !== null ? null : label,
+                                icon: iconsOnly && icon !== null ? <Icon name={icon} /> : null,
+                                ...(itemLinkProp !== null && item !== null && (item as any)[itemLinkProp]
+                                    ? { href: (item as any)[itemLinkProp], ...linkProps }
+                                    : null),
+                            };
+                        }
+                    }
+                    return null;
+                })
+                .filter((action: any) => action !== null)}
+            className={className}
+        />
+    );
+}
+
+export default ItemActions;

@@ -22,10 +22,10 @@ interface UploadActionProps {
 }
 
 function UploadAction({
-    endpoint = '/import',
-    action = null,
+    endpoint: _endpoint = '/import',
+    action: _action = null,
     label = null,
-    value = null,
+    value: _value = null,
     icon = 'upload',
     theme = 'primary',
     disabled = false,

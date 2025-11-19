@@ -1,0 +1,147 @@
+/* eslint-disable react/jsx-props-no-spreading */
+import classNames from 'classnames';
+import isNaN from 'lodash-es/isNaN';
+import isNumber from 'lodash-es/isNumber';
+import React, { useCallback, useState } from 'react';
+
+import Icon from '@panneau/element-icon';
+import TextField from '@panneau/field-text';
+
+import styles from './styles.module.css';
+
+interface NumberFieldProps {
+    value?: number | string | null;
+    step?: number;
+    floatStep?: number;
+    float?: boolean;
+    dataList?: number[] | null;
+    autoComplete?: boolean;
+    disabled?: boolean;
+    className?: string | null;
+    onChange?: ((value: number | string | null) => void) | null;
+    [key: string]: unknown;
+}
+
+function isNumeric(str: unknown): boolean {
+    if (typeof str !== 'string') return false; // we only process strings!
+    return (
+        !isNaN(str as any) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+        !isNaN(parseFloat(str))
+    );
+}
+
+function NumberField({
+    value = null,
+    step = 1,
+    floatStep = 0.1,
+    float = false,
+    dataList = null,
+    autoComplete = false,
+    disabled = false,
+    className = null,
+    onChange = null,
+    ...props
+}: NumberFieldProps) {
+    const parseValue = useCallback(
+        (newValue: string | number | null): number | string | null => {
+            if (newValue !== null) {
+                if (float) {
+                    return newValue;
+                }
+                if (isNumber(newValue)) {
+                    return newValue;
+                }
+                if (isNumeric(newValue)) {
+                    return float ? parseFloat(newValue as string) : parseInt(newValue as string, 10);
+                }
+            }
+            return null;
+        },
+        [float],
+    );
+
+    const onInputChange = useCallback(
+        (val: string | null) => {
+            if (onChange !== null) {
+                if (float) {
+                    onChange(val !== null && val.length > 0 ? val : null);
+                } else {
+                    onChange(val !== null && val.length > 0 ? parseValue(val) : null);
+                }
+                onChange(val !== null && val.length > 0 ? parseValue(val) : null);
+            }
+        },
+        [onChange, float, parseValue],
+    );
+
+    // Datalist
+
+    const hasDataList = dataList !== null;
+    const [dataListActive, setDataListActive] = useState(false);
+
+    const onInputFocus = useCallback(() => {
+        if (hasDataList) {
+            setDataListActive(true);
+        }
+    }, [setDataListActive, hasDataList]);
+
+    const onInputBlur = useCallback(() => {
+        if (hasDataList && dataListActive) {
+            setDataListActive(false);
+        }
+    }, [setDataListActive, hasDataList, dataListActive]);
+
+    const onDataListClick = useCallback(
+        (dataListValue: number) => {
+            if (onChange !== null && dataListValue !== null) {
+                onChange(parseValue(dataListValue));
+                setDataListActive(false);
+            }
+        },
+        [onChange, setDataListActive, parseValue],
+    );
+
+    return (
+        <div className={classNames([styles.container, { [className]: className !== null }])}>
+            <TextField
+                type="number"
+                className={styles.input}
+                value={value !== null ? `${value}` : ''}
+                step={float ? floatStep : step}
+                autoComplete={autoComplete ? 'on' : 'off'}
+                onChange={onInputChange}
+                onFocus={onInputFocus}
+                onBlur={onInputBlur}
+                disabled={disabled}
+                {...props}
+            />
+            {!disabled && hasDataList ? (
+                <div className={styles.arrow}>
+                    <Icon name={dataListActive ? 'caret-up' : 'caret-down'} />
+                </div>
+            ) : null}
+            {!disabled && hasDataList && dataListActive ? (
+                <ul className={styles.dataListItems}>
+                    {dataList.map((dataListValue) => (
+                        <li key={`data-list-${dataListValue}`} className={styles.dataListItem}>
+                            <button
+                                className={styles.dataListItemButton}
+                                type="button"
+                                onTouchStart={() => {
+                                    onDataListClick(dataListValue);
+                                }}
+                                onMouseDown={() => {
+                                    onDataListClick(dataListValue);
+                                }}
+                            >
+                                {dataListValue}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            ) : null}
+        </div>
+    );
+}
+
+export default NumberField;

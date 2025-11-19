@@ -1,20 +1,20 @@
 const path = require('path');
 const fs = require('fs');
-const express = require('express');
+// const express = require('express');
 const _ = require('lodash');
 const dayjs = require('dayjs');
 const { sync: globSync } = require('glob');
 const isString = require('lodash/isString');
 const isArray = require('lodash/isArray');
 // const bodyParser = require('body-parser');
+// const sirv = require('sirv');
 
 // TODO: evolve this to use https://github.com/lukeed/polka
 // which is the new thing storybook uses
 
-module.exports = () => {
-    const router = express.Router();
-
+module.exports = (router) => {
     console.log('router', router);
+    // const router = express.Router();
 
     // router.use(bodyParser.json());
     // router.use(bodyParser.urlencoded({ extended: false }));
@@ -140,40 +140,46 @@ module.exports = () => {
         deletedResources[resource] = [...deletedResources[resource], id];
     };
 
-    router.use(
-        '/',
-        express.static(dataPath, {
-            index: false,
-            extensions: ['json'],
-        }),
-    );
+    // const staticServe = sirv(dataPath, {
+    //     dev: true,
+    //     single: false,
+    // });
+
+    // router.use(
+    //     '/items',
+    //     staticServe,
+    //     // express.static(dataPath, {
+    //     //     index: false,
+    //     //     extensions: ['json'],
+    //     // }),
+    // );
 
     let loggedInUser = require(path.join(dataPath, '/me'));
 
     router.get('/auth/check', (req, res) => {
-        res.json(loggedInUser);
+        res.status(200).json(loggedInUser);
         res.end();
     });
 
     router.post('/auth/login', (req, res) => {
         loggedInUser = require(path.join(dataPath, '/me'));
-        res.json(loggedInUser);
+        res.status(200).json(loggedInUser);
         res.end();
     });
 
     router.post('/auth/logout', (req, res) => {
         loggedInUser = null;
-        res.json(loggedInUser);
+        res.status(200).json(loggedInUser);
         res.end();
     });
 
     router.get('/csrf-cookie', (req, res) => {
-        res.json(null);
+        res.status(200).json(null);
         res.end();
     });
 
     router.post('/batch', (req, res) => {
-        res.json(['123']);
+        res.status(200).json(['123']);
         res.end();
     });
 
@@ -217,7 +223,7 @@ module.exports = () => {
         );
 
         if (page !== null) {
-            res.json(
+            res.status(200).json(
                 getItemsPage(
                     filteredItems,
                     parseInt(page, 10),
@@ -225,7 +231,7 @@ module.exports = () => {
                 ),
             );
         } else {
-            res.json(
+            res.status(200).json(
                 count !== null && (paginate === false || paginated === false)
                     ? filteredItems.slice(0, count - 1)
                     : filteredItems,
@@ -260,7 +266,7 @@ module.exports = () => {
         const filteredItems = sortItems(filterItems(items, query), sort, sortDirection);
 
         if (page !== null) {
-            res.json(
+            res.status(200).json(
                 getItemsPage(
                     filteredItems,
                     parseInt(page, 10),
@@ -268,7 +274,7 @@ module.exports = () => {
                 ),
             );
         } else {
-            res.json(
+            res.status(200).json(
                 count !== null && (paginate === false || paginated === false)
                     ? filteredItems.slice(0, count - 1)
                     : filteredItems,
@@ -293,7 +299,7 @@ module.exports = () => {
             res.sendStatus(404);
             return;
         }
-        res.json(item);
+        res.status(200).json(item);
         res.end();
     });
 
@@ -318,7 +324,7 @@ module.exports = () => {
         };
         addResourceItem(resource, newItem);
         // console.log('create', newItem);
-        res.json(newItem);
+        res.status(200).json(newItem);
         res.end();
     });
 
@@ -355,7 +361,7 @@ module.exports = () => {
         // res.end();
 
         updateResourceItem(resource, newItem);
-        res.json(newItem);
+        res.status(200).json(newItem);
         res.end();
     };
 
@@ -368,7 +374,7 @@ module.exports = () => {
             return;
         }
         deleteResourceItem(resource, id);
-        res.json(currentItem);
+        res.status(200).json(currentItem);
         res.end();
     };
 

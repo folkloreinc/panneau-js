@@ -84,3 +84,10 @@ export interface Uppy {
     tus?: Record<string, unknown>;
     [key: string]: unknown;
 }
+
+/**
+ * Uppy instance
+ */
+export interface uppy {
+    [key: string]: unknown;
+}
