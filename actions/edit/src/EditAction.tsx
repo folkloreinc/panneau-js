@@ -1,31 +1,31 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useModalsComponentsManager } from '@panneau/core/contexts';
 import { useActionProps } from '@panneau/core/hooks';
+import type { ButtonTheme, Field } from '@panneau/core/types';
 import Button from '@panneau/element-button';
 
-const propTypes = {
-    id: PropTypes.string.isRequired,
-    title: PropTypes.node,
-    description: PropTypes.node,
-    fields: PropTypes.arrayOf(PropTypes.shape({})),
-    endpoint: PropTypes.string,
-    label: PropTypes.string,
-    value: PropTypes.bool,
-    icon: PropTypes.string,
-    theme: PropTypes.string,
-    disabled: PropTypes.bool,
-    onChange: PropTypes.func,
-    onConfirmed: PropTypes.func,
-    valueLabelPath: PropTypes.string,
-    modalComponent: PropTypes.string,
-    withConfirmation: PropTypes.bool,
-    className: PropTypes.string,
-};
+interface EditActionProps {
+    id: string;
+    title?: React.ReactNode | null;
+    description?: React.ReactNode | null;
+    fields?: Field[] | null;
+    endpoint?: string | null;
+    label?: string | null;
+    value?: boolean | null;
+    icon?: string;
+    theme?: ButtonTheme;
+    disabled?: boolean;
+    onChange?: ((value: unknown) => void) | null;
+    onConfirmed?: ((value: unknown) => void) | null;
+    valueLabelPath?: string | null;
+    modalComponent?: string;
+    withConfirmation?: boolean;
+    className?: string | null;
+}
 
 function EditAction({
     id,
@@ -45,7 +45,7 @@ function EditAction({
     withConfirmation = false,
     className = null,
     ...props
-}) {
+}: EditActionProps) {
     const label = initialLabel || (
         <FormattedMessage defaultMessage="Edit" description="Button label" />
     );
@@ -53,7 +53,7 @@ function EditAction({
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
     const [modalOpen, setModalOpen] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<boolean | null>(null);
 
     const { ids, idLabels, modalKey } = useActionProps(id, value, valueLabelPath);
 
@@ -66,7 +66,7 @@ function EditAction({
     }, [setModalOpen]);
 
     const onComplete = useCallback(
-        (newValue) => {
+        (newValue: unknown) => {
             setModalOpen(false);
             if (onConfirmed !== null) {
                 onConfirmed(newValue);
@@ -75,7 +75,7 @@ function EditAction({
                 onChange(newValue);
             }
         },
-        [onChange, setModalOpen, modalKey],
+        [onChange, onConfirmed, setModalOpen],
     );
 
     const onError = useCallback(() => {
@@ -89,7 +89,7 @@ function EditAction({
             <Button
                 className={classNames([
                     {
-                        [className]: className !== null,
+                        [className!]: className !== null,
                     },
                 ])}
                 label={label}
@@ -143,7 +143,5 @@ function EditAction({
         </>
     );
 }
-
-EditAction.propTypes = propTypes;
 
 export default EditAction;

@@ -1,34 +1,37 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useActionsComponentsManager } from '@panneau/core/contexts';
+import type { ButtonSize, Filter, Item, Resource } from '@panneau/core/types';
 import Button from '@panneau/element-button';
 
-const propTypes = {
-    resource: PanneauPropTypes.resource,
-    actions: PanneauPropTypes.filters,
-    value: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string,
-        }),
-    ),
-    onChange: PropTypes.func,
-    onConfirmed: PropTypes.func,
-    defaultComponent: PropTypes.func,
-    isGroup: PropTypes.bool,
-    size: PropTypes.string,
-    disabled: PropTypes.bool,
-    withConfirmation: PropTypes.bool,
-    className: PropTypes.string,
-};
+interface Action extends Filter {
+    multiple?: boolean;
+    global?: boolean;
+    disabled?: boolean;
+    outline?: boolean;
+    withConfirmation?: boolean;
+}
 
-const DEFAULT_ACTIONS = [];
+interface ActionsProps {
+    resource?: Resource;
+    actions?: Action[];
+    value?: Item[] | null;
+    onChange?: ((value: unknown) => void) | null;
+    onConfirmed?: ((value: unknown) => void) | null;
+    defaultComponent?: React.ComponentType<any>;
+    isGroup?: boolean;
+    size?: ButtonSize;
+    disabled?: boolean;
+    withConfirmation?: boolean;
+    className?: string | null;
+}
+
+const DEFAULT_ACTIONS: Action[] = [];
 
 function Actions({
-    resource = null,
+    resource,
     actions = DEFAULT_ACTIONS,
     value = null,
     onChange = null,
@@ -38,8 +41,8 @@ function Actions({
     isGroup = false,
     disabled: parentDisabled = false,
     withConfirmation = false,
-    className = null
-}) {
+    className = null,
+}: ActionsProps) {
     const actionsComponents = useActionsComponentsManager();
 
     const disabled = value === null || value.length === 0;
@@ -47,21 +50,18 @@ function Actions({
         () =>
             (actions || [])
                 .filter((action) => action !== null)
-                .map(
-                    (action) => {
-                        const { multiple = false, global = false } = action || {};
-                        const enabled = multiple
-                            ? value !== null && value.length > 0
-                            : value !== null && value.length === 1;
-                        const finalDisabled = !global && (parentDisabled || disabled || !enabled);
-                        return {
-                            ...action,
-                            disabled: finalDisabled,
-                            outline: finalDisabled,
-                        };
-                    },
-                    [actions],
-                ),
+                .map((action) => {
+                    const { multiple = false, global = false } = action || {};
+                    const enabled = multiple
+                        ? value !== null && value.length > 0
+                        : value !== null && value.length === 1;
+                    const finalDisabled = !global && (parentDisabled || disabled || !enabled);
+                    return {
+                        ...action,
+                        disabled: finalDisabled,
+                        outline: finalDisabled,
+                    };
+                }),
         [disabled, value, actions, parentDisabled],
     );
 
@@ -72,7 +72,7 @@ function Actions({
                     'd-flex': !isGroup,
                     'btn-group': isGroup,
                     [`btn-group-${size}`]: isGroup && size !== null,
-                    [className]: className !== null,
+                    [className!]: className !== null,
                 },
             ])}
         >
@@ -114,7 +114,5 @@ function Actions({
         </div>
     );
 }
-
-Actions.propTypes = propTypes;
 
 export default Actions;

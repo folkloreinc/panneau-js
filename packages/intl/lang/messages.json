@@ -87,10 +87,6 @@
     "defaultMessage": "Item",
     "description": "Items field's item label"
   },
-  "7OEFyt": {
-    "defaultMessage": "Delete",
-    "description": "Modal title"
-  },
   "82P2dS": {
     "defaultMessage": "You are not authorized to access this page.",
     "description": "Error page description"
@@ -110,10 +106,6 @@
   "8NyYTH": {
     "defaultMessage": "Back",
     "description": "Button label"
-  },
-  "8T+JE7": {
-    "defaultMessage": "Duplicate",
-    "description": "Modal title"
   },
   "9/t5wK": {
     "defaultMessage": "Type",
@@ -142,10 +134,6 @@
   "BAKfhq": {
     "defaultMessage": "W",
     "description": "Wednesday letter"
-  },
-  "BIYKx5": {
-    "defaultMessage": "Preview",
-    "description": "Modal title"
   },
   "BeKVq6": {
     "defaultMessage": "Upload file",
@@ -211,10 +199,6 @@
     "defaultMessage": "Email",
     "description": "Field label"
   },
-  "M49yWb": {
-    "defaultMessage": "The following items will be restored: {ids}. Are you sure you want to continue?",
-    "description": "Modal message"
-  },
   "MHldGi": {
     "defaultMessage": "Duration:",
     "description": "Field description"
@@ -222,10 +206,6 @@
   "Mo0yQb": {
     "defaultMessage": "Error",
     "description": "Form status"
-  },
-  "Mohaye": {
-    "defaultMessage": "Edit item",
-    "description": "Modal title"
   },
   "NeSNvW": {
     "defaultMessage": "clear",
@@ -254,10 +234,6 @@
   "PSlT7H": {
     "defaultMessage": "Trash",
     "description": "Button label"
-  },
-  "PTmocx": {
-    "defaultMessage": "The following items will be deleted: {ids}. Are you sure you want to continue?",
-    "description": "Modal message"
   },
   "Pih2UO": {
     "defaultMessage": "Error 403",
@@ -303,10 +279,6 @@
     "defaultMessage": "Name",
     "description": "Field label"
   },
-  "UaVu03": {
-    "defaultMessage": "Confirm",
-    "description": "Button label"
-  },
   "UbmsLL": {
     "defaultMessage": "No item found.",
     "description": "Label when there is no item in items field"
@@ -347,10 +319,6 @@
     "defaultMessage": "Update password",
     "description": "Button label"
   },
-  "XmY7D8": {
-    "defaultMessage": "The following items will be duplicated: {ids}. Are you sure you want to continue?",
-    "description": "Modal message"
-  },
   "XnyI69": {
     "defaultMessage": "Audio",
     "description": "Media type"
@@ -383,14 +351,6 @@
     "defaultMessage": "Size",
     "description": "Field name"
   },
-  "c6nfry": {
-    "defaultMessage": "Restore",
-    "description": "Modal title"
-  },
-  "cutyQH": {
-    "defaultMessage": "An error has occured.",
-    "description": "Modal message"
-  },
   "d0g58T": {
     "defaultMessage": "Login",
     "description": "Menu label"
@@ -414,10 +374,6 @@
   "eCe9ZY": {
     "defaultMessage": "Dimensions",
     "description": "Field name"
-  },
-  "eL+nIp": {
-    "defaultMessage": "Add file",
-    "description": "Button label"
   },
   "ejwBSw": {
     "defaultMessage": "Error 500",
@@ -507,10 +463,6 @@
     "defaultMessage": "Time",
     "description": "DateTimeField time caption"
   },
-  "sOfogS": {
-    "defaultMessage": "Edit items",
-    "description": "Modal title"
-  },
   "smqUAV": {
     "defaultMessage": "Edit {name}",
     "description": "Page title"
@@ -522,10 +474,6 @@
   "uN/FYD": {
     "defaultMessage": "No results found",
     "description": "Empty label"
-  },
-  "ucieFX": {
-    "defaultMessage": "The following items will be modified: {ids}.",
-    "description": "Modal message"
   },
   "uds4wJ": {
     "defaultMessage": "Deleted at",

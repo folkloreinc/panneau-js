@@ -1,5 +1,7 @@
-import path from 'path';
 import alias from '@rollup/plugin-alias';
+import typescript from '@rollup/plugin-typescript';
+import path from 'path';
+import copy from 'rollup-plugin-copy';
 
 import { createConfig } from '../../rollup.config';
 
@@ -16,7 +18,7 @@ const files = {
         //     }),
         // ],
         resolveOptions: {
-            extensions: ['.mjs', '.js', '.jsx', '.json', '.node'],
+            extensions: ['.mjs', '.js', '.jsx', '.json', '.node', '.ts', '.tsx'],
             resolveOnly: [new RegExp(path.join(__dirname, './src/lib'))],
         },
     },
@@ -37,7 +39,7 @@ const files = {
             }),
         ],
         resolveOptions: {
-            extensions: ['.mjs', '.js', '.jsx', '.json', '.node'],
+            extensions: ['.mjs', '.js', '.jsx', '.json', '.node', '.ts', '.tsx'],
             resolveOnly: [
                 new RegExp(path.join(__dirname, './src/components/namespaces')),
                 new RegExp(path.join(__dirname, './src/contexts')),
@@ -63,7 +65,7 @@ const files = {
             }),
         ],
         resolveOptions: {
-            extensions: ['.mjs', '.js', '.jsx', '.json', '.node'],
+            extensions: ['.mjs', '.js', '.jsx', '.json', '.node', '.ts', '.tsx'],
             resolveOnly: [
                 path.join(__dirname, './src/lib/EventsManager'),
                 new RegExp(path.join(__dirname, './src/hooks')),
@@ -72,14 +74,25 @@ const files = {
     },
 
     'utils.js': {
+        prependPlugins: [
+            copy({
+                targets: [
+                    { src: 'src/types/index.d.ts', dest: 'es/types' },
+                    { src: 'src/types/core.d.ts', dest: 'es/types' },
+                    { src: 'src/types/form.d.ts', dest: 'es/types' },
+                    { src: 'src/types/panneau.d.ts', dest: 'es/types' },
+                    { src: 'src/types/resource.d.ts', dest: 'es/types' },
+                ],
+            }),
+        ],
         resolveOptions: {
-            extensions: ['.mjs', '.js', '.jsx', '.json', '.node'],
+            extensions: ['.mjs', '.js', '.jsx', '.json', '.node', '.ts', '.tsx'],
             resolveOnly: [new RegExp(path.join(__dirname, './src/utils'))],
         },
     },
 };
 
-export default Object.keys(files).reduce(
+const config = Object.keys(files).reduce(
     (configs, file) => [
         ...configs,
         createConfig({
@@ -95,3 +108,7 @@ export default Object.keys(files).reduce(
     ],
     [],
 );
+
+// console.log('Rollup config for @panneau/core:', config);
+
+export default config;

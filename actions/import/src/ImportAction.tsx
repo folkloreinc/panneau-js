@@ -1,30 +1,35 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
 import { useFieldsComponentsManager } from '@panneau/core/contexts';
+import type { ButtonTheme } from '@panneau/core/types';
 
 // TODO: figure out what happens when an item / multiple items are selected
 
-const propTypes = {
-    // eslint-disable-next-line react/no-unused-prop-types
-    id: PropTypes.string,
-    title: PropTypes.node,
-    endpoint: PropTypes.string,
-    action: PropTypes.func, // Promise
-    label: PropTypes.string,
-    template: PropTypes.shape({
-        columns: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })),
-    }),
-    icon: PropTypes.string,
-    theme: PropTypes.string,
-    disabled: PropTypes.bool,
-    outline: PropTypes.bool,
-    fieldComponent: PropTypes.string,
-    onConfirmed: PropTypes.func,
-    className: PropTypes.string,
-};
+interface TemplateColumn {
+    name?: string;
+}
+
+interface Template {
+    columns?: TemplateColumn[];
+}
+
+interface ImportActionProps {
+    id?: string;
+    title?: React.ReactNode | null;
+    endpoint?: string;
+    action?: ((data: unknown) => Promise<unknown>) | null;
+    label?: string | null;
+    template?: Template | null;
+    icon?: string;
+    theme?: ButtonTheme;
+    disabled?: boolean;
+    outline?: boolean;
+    fieldComponent?: string;
+    onConfirmed?: ((response: unknown) => void) | null;
+    className?: string | null;
+}
 
 function ImportAction({
     title = null,
@@ -40,14 +45,14 @@ function ImportAction({
     fieldComponent = 'import',
     className = null,
     ...props
-}) {
+}: ImportActionProps) {
     const FieldComponents = useFieldsComponentsManager();
     const FieldComponent = FieldComponents.getComponent(fieldComponent);
 
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
     const onComplete = useCallback(
-        (data) =>
+        (data: unknown) =>
             (action !== null
                 ? action(data)
                 : postJSON(endpoint, data, {
@@ -61,7 +66,7 @@ function ImportAction({
                     }
                     setError(null);
                 })
-                .catch((err) => {
+                .catch((err: { message?: string }) => {
                     const { message = null } = err || {};
                     setError(message);
                 }),
@@ -87,7 +92,5 @@ function ImportAction({
         </>
     );
 }
-
-ImportAction.propTypes = propTypes;
 
 export default ImportAction;

@@ -6,6 +6,47 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Panneau-JS is a comprehensive React UI component library for building data-centric admin panels and dashboards. It's a Lerna-managed monorepo with 97+ packages organized by category (actions, displays, fields, forms, elements, lists, filters, modals, and core utilities). Published under the `@panneau/` npm scope, it supports React 16.8+ through 19.x and uses ESM-first architecture.
 
+## Main sections
+
+The `actions` folder contains general actions one can add to resources.
+The `displays` folder contains generally small representations fo fields for use in tables or elsewhere.
+The `elements` folder contains basic reusable components used through the system.
+The `fields` folder contains form fields.
+The `filters` folder contains filter controls for lists.
+The `forms` folder contains various forms and form layouts.
+The `lists` folder contains the different types of lists.
+The `modals` folder contains the modals/popups used mainly in forms.
+The `packages` folder contains all the general packages and the meta-packages grouping the main folders (actions, displays, fields, etc.).
+
+## Recent Changes
+
+### November 2025
+
+- **Actions Folder TypeScript Migration**: Migrated all action components to TypeScript
+    - Converted 8 action components from .jsx to .tsx format
+    - Replaced PropTypes with TypeScript interfaces using @panneau/core/types
+    - Components migrated: DeleteAction, EditAction, DuplicateAction, ShowAction, ImportAction, RestoreAction, UploadAction, Actions
+    - All action components now fully type-safe
+
+- **TypeScript Type Definitions**: Added comprehensive TypeScript interfaces
+    - Created type definitions in `packages/core/src/types/`
+    - All PanneauPropTypes now have corresponding TypeScript interfaces
+    - Organized into 4 modules: core, form, resource, and panneau types
+    - Full TypeScript support for developers using Panneau in TS projects
+
+- **Storybook 10 Upgrade**: Upgraded from Storybook v7 to v10.0.8
+    - Updated all story files across the codebase
+    - Migrated to new Storybook 10 APIs and configuration
+    - Updated all package.json dependencies for Storybook-related packages
+
+- **Component Architecture Refactor**: Converted all 130+ components from const arrow functions to function declarations
+    - Updated all action components (8 files)
+    - Updated all display components (13 files)
+    - Updated all field components (41 files)
+    - Updated all element components (36 files)
+    - Updated remaining form, filter, list, and provider components
+    - This change ensures consistency across the entire codebase and aligns with React best practices
+
 ## Common Commands
 
 ### Development
@@ -87,6 +128,45 @@ The repository uses npm workspaces coordinated by Lerna (v3.0.313):
 4. **Dual Module Exports**: All packages export both CommonJS (`lib/`) and ESM (`es/`) via conditional exports
 5. **CSS Modules with Scoped Names**: `[path][name]__[local]--[hash:base64:5]` naming convention
 6. **SCSS as First-Class Export**: Packages export both compiled CSS and source SCSS for customization
+7. **TypeScript Type Definitions**: TypeScript interfaces mirror all PropTypes for type safety in TS projects
+
+### TypeScript Support
+
+**Type Definitions** (`packages/core/src/types/`):
+
+The codebase provides comprehensive TypeScript interfaces corresponding to all PanneauPropTypes:
+
+```typescript
+import type { Button, Field, Form, MenuItem, Resource } from '@panneau/core/types';
+
+interface MyComponentProps {
+    field: Field;
+    buttons?: Button[];
+}
+```
+
+**Type Categories**:
+
+- **Core Types** (`types/core.ts`): UI primitives (Button, MenuItem, Label, FormStatus, etc.)
+- **Form Types** (`types/form.ts`): Form-related types (Field, Form, FieldOption, TableColumn)
+- **Resource Types** (`types/resource.ts`): Entities (Resource, Item, User, Media, Filter, Modal)
+- **Panneau Types** (`types/panneau.ts`): Main config (PanneauDefinition, Routes, Page)
+
+**PropTypes → TypeScript Mapping**:
+
+| PropType Pattern             | TypeScript Equivalent                           |
+| ---------------------------- | ----------------------------------------------- |
+| `PropTypes.string`           | `string` or `string \| undefined` (if optional) |
+| `PropTypes.oneOf([...])`     | `'value1' \| 'value2' \| ...`                   |
+| `PropTypes.shape({...})`     | `interface Name { ... }`                        |
+| `PropTypes.arrayOf(type)`    | `Type[]`                                        |
+| `PropTypes.oneOfType([...])` | `Type1 \| Type2 \| ...`                         |
+
+**Notes**:
+
+- All interfaces use optional properties (`?`) for non-required PropTypes
+- Flexible object types use `Record<string, unknown>` or index signatures
+- Types remain synchronized with PropTypes definitions in `lib/PropTypes.js`
 
 ### Component Architecture
 
@@ -116,12 +196,52 @@ ComponentName.propTypes = propTypes;
 export default ComponentName;
 ```
 
+**TypeScript Component Pattern** (Actions folder uses this pattern):
+
+```typescript
+import React from 'react';
+import type { ButtonTheme, Field } from '@panneau/core/types';
+
+// TypeScript interface for props
+interface ComponentNameProps {
+    id: string;
+    value?: string;
+    placeholder?: React.ReactNode;
+    theme?: ButtonTheme;
+    onChange?: (value: unknown) => void;
+    className?: string;
+}
+
+// Component using function declaration with typed props
+function ComponentName({
+    id,
+    value = null,
+    placeholder = null,
+    theme = 'primary',
+    onChange = null,
+    className = null,
+    ...props
+}: ComponentNameProps) {
+    // Component logic with hooks if needed
+    return <JSX />;
+}
+
+// Default export (no PropTypes needed)
+export default ComponentName;
+```
+
 **Key Component Characteristics**:
 
 - ✅ **Function declarations**: All components use `function ComponentName() {}` (not `const ComponentName = () => {}`)
+    - **Note**: All 130+ component files were refactored from const arrow functions to function declarations in November 2025
 - ✅ **Props destructuring**: All props destructured in function signature with default values
 - ✅ **Spread operator**: Unused props captured with `...props` and spread to child components
-- ✅ **PropTypes validation**: Every component has PropTypes defined and assigned
+- ✅ **PropTypes validation**: JavaScript components have PropTypes defined and assigned
+- ✅ **TypeScript interfaces**: TypeScript components use interface definitions for props
+    - Use `type` imports for better tree-shaking: `import type { ... } from '@panneau/core/types'`
+    - Interface naming convention: `ComponentNameProps`
+    - All optional props use `?` and default values in destructuring
+    - Use `React.ReactNode` for content that can be JSX or text
 - ✅ **Default exports**: All components exported as default
 - ✅ **No React.memo**: Memoization is not used anywhere in the codebase
 - ✅ **Hooks usage**: Components freely use useState, useEffect, useMemo, useCallback, etc.
@@ -179,12 +299,13 @@ Providers: `FieldsProvider`, `DataProvider`, `ActionsProvider`, `ModalsProvider`
 3. Copy compiled CSS to `assets/css/`
 4. Optionally copy SCSS sources
 
-**Storybook** (v7):
+**Storybook** (v10):
 
 - Stories collected from all packages: `**/src/**/*.stories.{jsx,mdx}`
 - Webpack 5 with SCSS preset
 - Separate handling for `.module.scss` vs global SCSS
 - Aliases resolve `@panneau/*` packages for HMR
+- Upgraded from v7 to v10.0.8 with updated story format and configuration
 
 ### Code Style
 
@@ -309,8 +430,9 @@ export default {
 - **Legacy peer deps**: Bootstrap uses `--legacy-peer-deps` flag
 - **CSS Module naming**: Follows `[path][name]__[local]--[hash:base64:5]` pattern
 - **Side effects**: CSS/SCSS files marked as side effects to ensure inclusion in builds
-- **Component style**: All components use function declarations, NOT arrow functions
+- **Component style**: All components use function declarations, NOT arrow functions (refactored November 2025)
 - **Story files**: `*.stories.jsx` files follow different patterns and conventions than component files
+- **Storybook version**: Currently using Storybook v10.0.8 (upgraded November 2025)
 
 ## Development Guidelines
 

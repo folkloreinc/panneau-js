@@ -1,55 +1,62 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useModalsComponentsManager } from '@panneau/core/contexts';
 import { useActionProps } from '@panneau/core/hooks';
+import type { ButtonTheme } from '@panneau/core/types';
 import Button from '@panneau/element-button';
 
-const propTypes = {
-    id: PropTypes.string.isRequired,
-    title: PropTypes.node,
-    description: PropTypes.node,
-    endpoint: PropTypes.string,
-    action: PropTypes.func, // Promise
-    label: PropTypes.string,
-    value: PropTypes.bool,
-    icon: PropTypes.string,
-    theme: PropTypes.string,
-    disabled: PropTypes.bool,
-    onConfirmed: PropTypes.func,
-    valueLabelPath: PropTypes.string,
-    modalComponent: PropTypes.string,
-    withConfirmation: PropTypes.bool,
-    className: PropTypes.string,
-};
+interface DeleteActionProps {
+    id: string;
+    title?: React.ReactNode | null;
+    description?: React.ReactNode | null;
+    endpoint?: string;
+    action?: ((ids: string[]) => Promise<unknown>) | null;
+    label?: string | React.ReactNode | null;
+    value?: boolean | null;
+    icon?: string;
+    theme?: ButtonTheme;
+    disabled?: boolean;
+    onClick?: (() => void) | null;
+    onChange?: ((response: unknown) => void) | null;
+    onConfirmed?: ((response: unknown) => void) | null;
+    valueLabelPath?: string | null;
+    modalComponent?: string;
+    withConfirmation?: boolean;
+    className?: string | null;
+}
 
-function RestoreAction({
+function DeleteAction({
     id,
     title = null,
     description = null,
-    endpoint = '/restore',
+    endpoint = '/delete',
     action = null,
-    label = null,
-    icon = 'box-arrow-left',
+    label: initialLabel = null,
+    icon = 'trash',
     value = null,
-    theme = 'warning',
+    theme = 'primary',
     disabled = false,
+    onClick = null,
+    onChange = null,
     onConfirmed = null,
-    valueLabelPath = null,
     modalComponent = 'confirm',
+    valueLabelPath = null,
     withConfirmation = false,
     className = null,
     ...props
-}) {
+}: DeleteActionProps) {
+    const label = initialLabel || (
+        <FormattedMessage defaultMessage="Delete" description="Button label" />
+    );
     const ModalComponents = useModalsComponentsManager();
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
     const [modalOpen, setModalOpen] = useState(false);
-    const [error, setError] = useState(null);
+
+    const [error, setError] = useState<Error | null>(null);
 
     const { ids, idLabels, modalKey } = useActionProps(id, value, valueLabelPath);
 
@@ -79,27 +86,26 @@ function RestoreAction({
                     if (onConfirmed !== null) {
                         onConfirmed(response);
                     }
+                    if (onChange !== null) {
+                        onChange(response);
+                    }
                     if (withConfirmation) {
                         onClose();
                     }
                 })
-                .catch((err) => {
+                .catch((err: Error) => {
                     setError(err);
                 }),
-        [ids, endpoint, onClose, setError, withConfirmation],
+        [ids, endpoint, onChange, onClose, setError, withConfirmation, action, onConfirmed],
     );
 
     return (
         <>
             <Button
-                className={classNames([
-                    {
-                        [className]: className !== null,
-                    },
-                ])}
+                className={className}
                 label={label}
                 icon={icon}
-                onClick={withConfirmation ? onOpen : onConfirm}
+                onClick={withConfirmation ? onOpen : onClick || onConfirm}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
                 {...props}
@@ -109,7 +115,7 @@ function RestoreAction({
                     id={modalKey}
                     title={
                         title || (
-                            <FormattedMessage defaultMessage="Restore" description="Modal title" />
+                            <FormattedMessage defaultMessage="Delete" description="Modal title" />
                         )
                     }
                     onConfirm={onConfirm}
@@ -131,7 +137,7 @@ function RestoreAction({
                     ) : (
                         <p>
                             <FormattedMessage
-                                defaultMessage="The following items will be restored: {ids}. Are you sure you want to continue?"
+                                defaultMessage="The following items will be deleted: {ids}. Are you sure you want to continue?"
                                 description="Modal message"
                                 values={{ ids: idLabels }}
                             />
@@ -149,6 +155,4 @@ function RestoreAction({
     );
 }
 
-RestoreAction.propTypes = propTypes;
-
-export default RestoreAction;
+export default DeleteAction;

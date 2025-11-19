@@ -65,9 +65,6 @@
     "7M0o0q": {
         "defaultMessage": "Élément"
     },
-    "7OEFyt": {
-        "defaultMessage": "Supprimer"
-    },
     "82P2dS": {
         "defaultMessage": "Vous n’êtes pas autorisé à accéder à cette page."
     },
@@ -82,9 +79,6 @@
     },
     "8NyYTH": {
         "defaultMessage": "Retour"
-    },
-    "8T+JE7": {
-        "defaultMessage": "Dupliquer"
     },
     "9/t5wK": {
         "defaultMessage": "Type"
@@ -106,9 +100,6 @@
     },
     "BAKfhq": {
         "defaultMessage": "M"
-    },
-    "BIYKx5": {
-        "defaultMessage": "Prévisualisation"
     },
     "BeKVq6": {
         "defaultMessage": "Ajouter un fichier"
@@ -158,17 +149,11 @@
     "LI0Gz4": {
         "defaultMessage": "Courriel"
     },
-    "M49yWb": {
-        "defaultMessage": "Les éléments suivants seront retirés de la corbeille: {ids}. Voulez-vous continuer ?"
-    },
     "MHldGi": {
         "defaultMessage": "Durée:"
     },
     "Mo0yQb": {
         "defaultMessage": "Erreur"
-    },
-    "Mohaye": {
-        "defaultMessage": "Modifier l'élément"
     },
     "NeSNvW": {
         "defaultMessage": "effacer"
@@ -190,9 +175,6 @@
     },
     "PSlT7H": {
         "defaultMessage": "Jeter"
-    },
-    "PTmocx": {
-        "defaultMessage": "Les éléments suivants seront supprimés: {ids}. Voulez-vous continuer ?"
     },
     "Pih2UO": {
         "defaultMessage": "Erreur 403"
@@ -227,9 +209,6 @@
     "UUv8FR": {
         "defaultMessage": "Nom"
     },
-    "UaVu03": {
-        "defaultMessage": "Confirmer"
-    },
     "UbmsLL": {
         "defaultMessage": "Aucun élément trouvé."
     },
@@ -260,9 +239,6 @@
     "XW9IKQ": {
         "defaultMessage": "Mettre à jour votre mot de passe"
     },
-    "XmY7D8": {
-        "defaultMessage": "Les éléments suivants seront dupliqués: {ids}. Voulez-vous continuer?"
-    },
     "XnyI69": {
         "defaultMessage": "Audio"
     },
@@ -287,12 +263,6 @@
     "c3hu9o": {
         "defaultMessage": "Taille"
     },
-    "c6nfry": {
-        "defaultMessage": "Restaurer"
-    },
-    "cutyQH": {
-        "defaultMessage": "Une erreur s'est produite."
-    },
     "d0g58T": {
         "defaultMessage": "Connexion"
     },
@@ -310,9 +280,6 @@
     },
     "eCe9ZY": {
         "defaultMessage": "Dimensions"
-    },
-    "eL+nIp": {
-        "defaultMessage": "Ajouter un fichier"
     },
     "ejwBSw": {
         "defaultMessage": "Erreur 500"
@@ -380,9 +347,6 @@
     "s4Xrs9": {
         "defaultMessage": "Heure"
     },
-    "sOfogS": {
-        "defaultMessage": "Modifier les éléments"
-    },
     "smqUAV": {
         "defaultMessage": "Modifier {nom}"
     },
@@ -391,9 +355,6 @@
     },
     "uN/FYD": {
         "defaultMessage": "Aucun résultat"
-    },
-    "ucieFX": {
-        "defaultMessage": "Les éléments suivants seront modifiés: {ids}."
     },
     "uds4wJ": {
         "defaultMessage": "Supprimé le"

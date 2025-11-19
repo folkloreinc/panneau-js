@@ -65,9 +65,6 @@
     "7M0o0q": {
         "defaultMessage": "Item"
     },
-    "7OEFyt": {
-        "defaultMessage": "Delete"
-    },
     "82P2dS": {
         "defaultMessage": "You are not authorized to access this page."
     },
@@ -82,9 +79,6 @@
     },
     "8NyYTH": {
         "defaultMessage": "Back"
-    },
-    "8T+JE7": {
-        "defaultMessage": "Duplicate"
     },
     "9/t5wK": {
         "defaultMessage": "Type"
@@ -106,9 +100,6 @@
     },
     "BAKfhq": {
         "defaultMessage": "W"
-    },
-    "BIYKx5": {
-        "defaultMessage": "Preview"
     },
     "BeKVq6": {
         "defaultMessage": "Upload file"
@@ -158,17 +149,11 @@
     "LI0Gz4": {
         "defaultMessage": "Email"
     },
-    "M49yWb": {
-        "defaultMessage": "The following items will be restored: {ids}. Are you sure you want to continue?"
-    },
     "MHldGi": {
         "defaultMessage": "Duration:"
     },
     "Mo0yQb": {
         "defaultMessage": "Error"
-    },
-    "Mohaye": {
-        "defaultMessage": "Edit item"
     },
     "NeSNvW": {
         "defaultMessage": "clear"
@@ -190,9 +175,6 @@
     },
     "PSlT7H": {
         "defaultMessage": "Trash"
-    },
-    "PTmocx": {
-        "defaultMessage": "The following items will be deleted: {ids}. Are you sure you want to continue?"
     },
     "Pih2UO": {
         "defaultMessage": "Error 403"
@@ -227,9 +209,6 @@
     "UUv8FR": {
         "defaultMessage": "Name"
     },
-    "UaVu03": {
-        "defaultMessage": "Confirm"
-    },
     "UbmsLL": {
         "defaultMessage": "No item found."
     },
@@ -260,9 +239,6 @@
     "XW9IKQ": {
         "defaultMessage": "Update password"
     },
-    "XmY7D8": {
-        "defaultMessage": "The following items will be duplicated: {ids}. Are you sure you want to continue?"
-    },
     "XnyI69": {
         "defaultMessage": "Audio"
     },
@@ -287,12 +263,6 @@
     "c3hu9o": {
         "defaultMessage": "Size"
     },
-    "c6nfry": {
-        "defaultMessage": "Restore"
-    },
-    "cutyQH": {
-        "defaultMessage": "An error has occured."
-    },
     "d0g58T": {
         "defaultMessage": "Login"
     },
@@ -310,9 +280,6 @@
     },
     "eCe9ZY": {
         "defaultMessage": "Dimensions"
-    },
-    "eL+nIp": {
-        "defaultMessage": "Add file"
     },
     "ejwBSw": {
         "defaultMessage": "Error 500"
@@ -380,9 +347,6 @@
     "s4Xrs9": {
         "defaultMessage": "Time"
     },
-    "sOfogS": {
-        "defaultMessage": "Edit items"
-    },
     "smqUAV": {
         "defaultMessage": "Edit {name}"
     },
@@ -391,9 +355,6 @@
     },
     "uN/FYD": {
         "defaultMessage": "No results found"
-    },
-    "ucieFX": {
-        "defaultMessage": "The following items will be modified: {ids}."
     },
     "uds4wJ": {
         "defaultMessage": "Deleted at"

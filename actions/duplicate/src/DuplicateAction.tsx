@@ -1,32 +1,32 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useModalsComponentsManager } from '@panneau/core/contexts';
 import { useActionProps } from '@panneau/core/hooks';
+import type { ButtonTheme } from '@panneau/core/types';
 import Button from '@panneau/element-button';
 
-const propTypes = {
-    id: PropTypes.string.isRequired,
-    title: PropTypes.node,
-    description: PropTypes.node,
-    endpoint: PropTypes.string,
-    action: PropTypes.func, // Promise
-    label: PropTypes.string,
-    value: PropTypes.bool,
-    icon: PropTypes.string,
-    theme: PropTypes.string,
-    disabled: PropTypes.bool,
-    onChange: PropTypes.func,
-    onConfirmed: PropTypes.func,
-    valueLabelPath: PropTypes.string,
-    modalComponent: PropTypes.string,
-    withConfirmation: PropTypes.bool,
-    className: PropTypes.string,
-};
+interface DuplicateActionProps {
+    id: string;
+    title?: React.ReactNode | null;
+    description?: React.ReactNode | null;
+    endpoint?: string;
+    action?: ((ids: string[]) => Promise<unknown>) | null;
+    label?: string | null;
+    value?: boolean | null;
+    icon?: string;
+    theme?: ButtonTheme;
+    disabled?: boolean;
+    onChange?: ((response: unknown) => void) | null;
+    onConfirmed?: ((response: unknown) => void) | null;
+    valueLabelPath?: string | null;
+    modalComponent?: string;
+    withConfirmation?: boolean;
+    className?: string | null;
+}
 
 function DuplicateAction({
     id,
@@ -46,7 +46,7 @@ function DuplicateAction({
     withConfirmation = false,
     className = null,
     ...props
-}) {
+}: DuplicateActionProps) {
     const label = initialLabel || (
         <FormattedMessage defaultMessage="Duplicate" description="Button label" />
     );
@@ -54,7 +54,7 @@ function DuplicateAction({
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
     const [modalOpen, setModalOpen] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<Error | null>(null);
 
     const { ids, idLabels, modalKey } = useActionProps(id, value, valueLabelPath);
 
@@ -88,10 +88,10 @@ function DuplicateAction({
                     }
                     onClose();
                 })
-                .catch((err) => {
+                .catch((err: Error) => {
                     setError(err);
                 }),
-        [ids, endpoint, action, onChange, onClose, setError],
+        [ids, endpoint, action, onChange, onClose, setError, onConfirmed],
     );
 
     return (
@@ -99,7 +99,7 @@ function DuplicateAction({
             <Button
                 className={classNames([
                     {
-                        [className]: className !== null,
+                        [className!]: className !== null,
                     },
                 ])}
                 label={label}
@@ -156,7 +156,5 @@ function DuplicateAction({
         </>
     );
 }
-
-DuplicateAction.propTypes = propTypes;
 
 export default DuplicateAction;

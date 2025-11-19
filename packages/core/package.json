@@ -37,7 +37,14 @@
     "module": "es/index.js",
     "exports": {
         ".": {
-            "import": "./es/index.js"
+            "import": {
+                "types": "./es/types/index.d.ts",
+                "default": "./es/index.js"
+            },
+            "require": {
+                "types": "./lib/types/index.d.ts",
+                "default": "./lib/index.js"
+            }
         },
         "./contexts": {
             "require": "./lib/contexts.js",
@@ -50,6 +57,10 @@
         "./utils": {
             "require": "./lib/utils.js",
             "import": "./es/utils.js"
+        },
+        "./types": {
+            "require": "./lib/types/index.d.ts",
+            "import": "./es/types/index.d.ts"
         }
     },
     "sideEffects": [

@@ -1,26 +1,25 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useFieldsComponentsManager } from '@panneau/core/contexts';
+import type { ButtonTheme } from '@panneau/core/types';
 
 // TODO: figure out what happens when an item / multiple items are selected
 
-const propTypes = {
-    // eslint-disable-next-line react/no-unused-prop-types
-    id: PropTypes.string,
-    endpoint: PropTypes.string,
-    action: PropTypes.func, // Promise
-    label: PropTypes.string,
-    value: PropTypes.shape({}),
-    icon: PropTypes.string,
-    theme: PropTypes.string,
-    disabled: PropTypes.bool,
-    fieldComponent: PropTypes.string,
-    onConfirmed: PropTypes.func,
-    className: PropTypes.string,
-};
+interface UploadActionProps {
+    id?: string;
+    endpoint?: string;
+    action?: ((data: unknown) => Promise<unknown>) | null;
+    label?: string | null;
+    value?: Record<string, unknown> | null;
+    icon?: string;
+    theme?: ButtonTheme;
+    disabled?: boolean;
+    fieldComponent?: string;
+    onConfirmed?: ((data: unknown) => void) | null;
+    className?: string | null;
+}
 
 function UploadAction({
     endpoint = '/import',
@@ -34,12 +33,12 @@ function UploadAction({
     fieldComponent = 'upload',
     className = null,
     ...props
-}) {
+}: UploadActionProps) {
     const FieldComponents = useFieldsComponentsManager();
     const FieldComponent = FieldComponents.getComponent(fieldComponent);
 
     const onComplete = useCallback(
-        (data) => {
+        (data: unknown) => {
             if (onConfirmed !== null) {
                 onConfirmed(data);
             }
@@ -63,7 +62,5 @@ function UploadAction({
         />
     );
 }
-
-UploadAction.propTypes = propTypes;
 
 export default UploadAction;

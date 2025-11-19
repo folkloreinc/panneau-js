@@ -145,12 +145,6 @@ msgctxt "7M0o0q"
 msgid "Item"
 msgstr "Élément"
 
-# Modal title
-#: 7OEFyt
-msgctxt "7OEFyt"
-msgid "Delete"
-msgstr "Supprimer"
-
 # Error page description
 #: 82P2dS
 msgctxt "82P2dS"
@@ -180,12 +174,6 @@ msgstr "Mot de passe actuel"
 msgctxt "8NyYTH"
 msgid "Back"
 msgstr "Retour"
-
-# Modal title
-#: 8T+JE7
-msgctxt "8T+JE7"
-msgid "Duplicate"
-msgstr "Dupliquer"
 
 # Filter label
 #: 9/t5wK
@@ -228,12 +216,6 @@ msgstr "Entrez votre mot de passe pour continuer"
 msgctxt "BAKfhq"
 msgid "W"
 msgstr "M"
-
-# Modal title
-#: BIYKx5
-msgctxt "BIYKx5"
-msgid "Preview"
-msgstr "Prévisualisation"
 
 # Default upload add button label
 #: BeKVq6
@@ -331,16 +313,6 @@ msgctxt "LI0Gz4"
 msgid "Email"
 msgstr "Courriel"
 
-# Modal message
-#: M49yWb
-msgctxt "M49yWb"
-msgid ""
-"The following items will be restored: {ids}. Are you sure you want to "
-"continue?"
-msgstr ""
-"Les éléments suivants seront retirés de la corbeille: {ids}. Voulez-vous "
-"continuer ?"
-
 # Field description
 #: MHldGi
 msgctxt "MHldGi"
@@ -352,12 +324,6 @@ msgstr "Durée:"
 msgctxt "Mo0yQb"
 msgid "Error"
 msgstr "Erreur"
-
-# Modal title
-#: Mohaye
-msgctxt "Mohaye"
-msgid "Edit item"
-msgstr "Modifier l'élément"
 
 # Button label
 #: NeSNvW
@@ -400,14 +366,6 @@ msgstr "Créer mon compte"
 msgctxt "PSlT7H"
 msgid "Trash"
 msgstr "Jeter"
-
-# Modal message
-#: PTmocx
-msgctxt "PTmocx"
-msgid ""
-"The following items will be deleted: {ids}. Are you sure you want to "
-"continue?"
-msgstr "Les éléments suivants seront supprimés: {ids}. Voulez-vous continuer ?"
 
 # Error page title
 #: Pih2UO
@@ -475,12 +433,6 @@ msgctxt "UUv8FR"
 msgid "Name"
 msgstr "Nom"
 
-# Button label
-#: UaVu03
-msgctxt "UaVu03"
-msgid "Confirm"
-msgstr "Confirmer"
-
 # Label when there is no item in items field
 #: UbmsLL
 msgctxt "UbmsLL"
@@ -541,14 +493,6 @@ msgctxt "XW9IKQ"
 msgid "Update password"
 msgstr "Mettre à jour votre mot de passe"
 
-# Modal message
-#: XmY7D8
-msgctxt "XmY7D8"
-msgid ""
-"The following items will be duplicated: {ids}. Are you sure you want to "
-"continue?"
-msgstr "Les éléments suivants seront dupliqués: {ids}. Voulez-vous continuer?"
-
 # Media type
 #: XnyI69
 msgctxt "XnyI69"
@@ -597,18 +541,6 @@ msgctxt "c3hu9o"
 msgid "Size"
 msgstr "Taille"
 
-# Modal title
-#: c6nfry
-msgctxt "c6nfry"
-msgid "Restore"
-msgstr "Restaurer"
-
-# Modal message
-#: cutyQH
-msgctxt "cutyQH"
-msgid "An error has occured."
-msgstr "Une erreur s'est produite."
-
 # Menu label
 #: d0g58T
 msgctxt "d0g58T"
@@ -644,12 +576,6 @@ msgstr "Lien"
 msgctxt "eCe9ZY"
 msgid "Dimensions"
 msgstr "Dimensions"
-
-# Button label
-#: eL+nIp
-msgctxt "eL+nIp"
-msgid "Add file"
-msgstr "Ajouter un fichier"
 
 # Error page meta title
 #: ejwBSw
@@ -785,12 +711,6 @@ msgctxt "s4Xrs9"
 msgid "Time"
 msgstr "Heure"
 
-# Modal title
-#: sOfogS
-msgctxt "sOfogS"
-msgid "Edit items"
-msgstr "Modifier les éléments"
-
 # Page title
 #: smqUAV
 msgctxt "smqUAV"
@@ -808,12 +728,6 @@ msgstr "Retour à la connexion"
 msgctxt "uN/FYD"
 msgid "No results found"
 msgstr "Aucun résultat"
-
-# Modal message
-#: ucieFX
-msgctxt "ucieFX"
-msgid "The following items will be modified: {ids}."
-msgstr "Les éléments suivants seront modifiés: {ids}."
 
 # Column label
 #: uds4wJ

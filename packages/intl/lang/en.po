@@ -143,12 +143,6 @@ msgctxt "7M0o0q"
 msgid "Item"
 msgstr "Item"
 
-# Modal title
-#: 7OEFyt
-msgctxt "7OEFyt"
-msgid "Delete"
-msgstr "Delete"
-
 # Error page description
 #: 82P2dS
 msgctxt "82P2dS"
@@ -178,12 +172,6 @@ msgstr "Current password"
 msgctxt "8NyYTH"
 msgid "Back"
 msgstr "Back"
-
-# Modal title
-#: 8T+JE7
-msgctxt "8T+JE7"
-msgid "Duplicate"
-msgstr "Duplicate"
 
 # Filter label
 #: 9/t5wK
@@ -226,12 +214,6 @@ msgstr "Please enter your password to continue"
 msgctxt "BAKfhq"
 msgid "W"
 msgstr "W"
-
-# Modal title
-#: BIYKx5
-msgctxt "BIYKx5"
-msgid "Preview"
-msgstr "Preview"
 
 # Default upload add button label
 #: BeKVq6
@@ -329,16 +311,6 @@ msgctxt "LI0Gz4"
 msgid "Email"
 msgstr "Email"
 
-# Modal message
-#: M49yWb
-msgctxt "M49yWb"
-msgid ""
-"The following items will be restored: {ids}. Are you sure you want to "
-"continue?"
-msgstr ""
-"The following items will be restored: {ids}. Are you sure you want to "
-"continue?"
-
 # Field description
 #: MHldGi
 msgctxt "MHldGi"
@@ -350,12 +322,6 @@ msgstr "Duration:"
 msgctxt "Mo0yQb"
 msgid "Error"
 msgstr "Error"
-
-# Modal title
-#: Mohaye
-msgctxt "Mohaye"
-msgid "Edit item"
-msgstr "Edit item"
 
 # Button label
 #: NeSNvW
@@ -398,16 +364,6 @@ msgstr "Create account"
 msgctxt "PSlT7H"
 msgid "Trash"
 msgstr "Trash"
-
-# Modal message
-#: PTmocx
-msgctxt "PTmocx"
-msgid ""
-"The following items will be deleted: {ids}. Are you sure you want to "
-"continue?"
-msgstr ""
-"The following items will be deleted: {ids}. Are you sure you want to "
-"continue?"
 
 # Error page title
 #: Pih2UO
@@ -475,12 +431,6 @@ msgctxt "UUv8FR"
 msgid "Name"
 msgstr "Name"
 
-# Button label
-#: UaVu03
-msgctxt "UaVu03"
-msgid "Confirm"
-msgstr "Confirm"
-
 # Label when there is no item in items field
 #: UbmsLL
 msgctxt "UbmsLL"
@@ -541,16 +491,6 @@ msgctxt "XW9IKQ"
 msgid "Update password"
 msgstr "Update password"
 
-# Modal message
-#: XmY7D8
-msgctxt "XmY7D8"
-msgid ""
-"The following items will be duplicated: {ids}. Are you sure you want to "
-"continue?"
-msgstr ""
-"The following items will be duplicated: {ids}. Are you sure you want to "
-"continue?"
-
 # Media type
 #: XnyI69
 msgctxt "XnyI69"
@@ -599,18 +539,6 @@ msgctxt "c3hu9o"
 msgid "Size"
 msgstr "Size"
 
-# Modal title
-#: c6nfry
-msgctxt "c6nfry"
-msgid "Restore"
-msgstr "Restore"
-
-# Modal message
-#: cutyQH
-msgctxt "cutyQH"
-msgid "An error has occured."
-msgstr "An error has occured."
-
 # Menu label
 #: d0g58T
 msgctxt "d0g58T"
@@ -646,12 +574,6 @@ msgstr "Link"
 msgctxt "eCe9ZY"
 msgid "Dimensions"
 msgstr "Dimensions"
-
-# Button label
-#: eL+nIp
-msgctxt "eL+nIp"
-msgid "Add file"
-msgstr "Add file"
 
 # Error page meta title
 #: ejwBSw
@@ -785,12 +707,6 @@ msgctxt "s4Xrs9"
 msgid "Time"
 msgstr "Time"
 
-# Modal title
-#: sOfogS
-msgctxt "sOfogS"
-msgid "Edit items"
-msgstr "Edit items"
-
 # Page title
 #: smqUAV
 msgctxt "smqUAV"
@@ -808,12 +724,6 @@ msgstr "Go back to login"
 msgctxt "uN/FYD"
 msgid "No results found"
 msgstr "No results found"
-
-# Modal message
-#: ucieFX
-msgctxt "ucieFX"
-msgid "The following items will be modified: {ids}."
-msgstr "The following items will be modified: {ids}."
 
 # Column label
 #: uds4wJ

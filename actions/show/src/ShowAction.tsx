@@ -1,31 +1,31 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useModalsComponentsManager } from '@panneau/core/contexts';
 import { useActionProps } from '@panneau/core/hooks';
+import type { ButtonTheme } from '@panneau/core/types';
 import Button from '@panneau/element-button';
 
-const propTypes = {
-    id: PropTypes.string.isRequired,
-    title: PropTypes.node,
-    description: PropTypes.node,
-    endpoint: PropTypes.string,
-    action: PropTypes.func, // Promise
-    label: PropTypes.string,
-    value: PropTypes.bool,
-    icon: PropTypes.string,
-    theme: PropTypes.string,
-    disabled: PropTypes.bool,
-    onClick: PropTypes.func,
-    onConfirmed: PropTypes.func,
-    valueLabelPath: PropTypes.string,
-    modalComponent: PropTypes.string,
-    withConfirmation: PropTypes.bool,
-    className: PropTypes.string,
-};
+interface ShowActionProps {
+    id: string;
+    title?: React.ReactNode | null;
+    description?: React.ReactNode | null;
+    endpoint?: string;
+    action?: ((ids: string[]) => Promise<unknown>) | null;
+    label?: string | null;
+    value?: boolean | null;
+    icon?: string;
+    theme?: ButtonTheme;
+    disabled?: boolean;
+    onClick?: (() => void) | null;
+    onConfirmed?: ((response: unknown) => void) | null;
+    valueLabelPath?: string | null;
+    modalComponent?: string;
+    withConfirmation?: boolean;
+    className?: string | null;
+}
 
 function ShowAction({
     id,
@@ -45,7 +45,7 @@ function ShowAction({
     withConfirmation = false,
     className = null,
     ...props
-}) {
+}: ShowActionProps) {
     const ModalComponents = useModalsComponentsManager();
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
@@ -65,7 +65,7 @@ function ShowAction({
             <Button
                 className={classNames([
                     {
-                        [className]: className !== null,
+                        [className!]: className !== null,
                     },
                 ])}
                 label={label}
@@ -102,7 +102,5 @@ function ShowAction({
         </>
     );
 }
-
-ShowAction.propTypes = propTypes;
 
 export default ShowAction;

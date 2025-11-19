@@ -5,6 +5,7 @@ import image from '@rollup/plugin-image';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
+// import typescript from '@rollup/plugin-typescript';
 import url from '@rollup/plugin-url';
 import path from 'path';
 import postcss from 'rollup-plugin-postcss';
@@ -63,17 +64,29 @@ export const createConfig = ({
             ...prependPlugins,
             json(),
             resolve({
-                extensions: ['.mjs', '.js', '.jsx', '.json', '.node'],
+                extensions: ['.mjs', '.js', '.jsx', '.json', '.node', '.ts', '.tsx'],
                 jail: path.join(process.cwd(), 'src'),
                 ...resolveOptions,
             }),
+            // typescript({
+            //     tsconfig: path.join(__dirname, 'tsconfig.json'),
+            //     sourceMap: true,
+            //     declaration: false,
+            // }),
             commonjs(),
             babel({
-                extensions: ['.mjs', '.js', '.jsx', '.json', '.node'],
+                extensions: ['.mjs', '.js', '.jsx', '.json', '.node', '.ts', '.tsx'],
                 exclude: 'node_modules/**',
                 // rootMode: 'upward',
                 babelHelpers: 'runtime',
                 presets: [
+                    [
+                        require('@babel/preset-typescript'),
+                        {
+                            allExtensions: true,
+                            isTSX: true,
+                        },
+                    ],
                     [
                         require('@babel/preset-env'),
                         isNode
@@ -147,4 +160,5 @@ export const createConfig = ({
     };
 };
 
-export default [createConfig({ format: 'es' }) /*, createConfig({ format: 'cjs' })*/];
+/* createConfig({ format: 'cjs' }) */
+export default [createConfig({ format: 'es' })];
