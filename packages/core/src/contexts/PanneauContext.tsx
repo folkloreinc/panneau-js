@@ -1,0 +1,97 @@
+/* eslint-disable react/jsx-props-no-spreading */
+import isObject from 'lodash-es/isObject';
+import isString from 'lodash-es/isString';
+import React, { useContext } from 'react';
+import type { ReactNode } from 'react';
+import type { PanneauDefinition, Resource } from '@panneau/core/types';
+
+const PanneauContext = React.createContext<PanneauDefinition | null>(null);
+
+export const usePanneau = (): PanneauDefinition | null => useContext(PanneauContext);
+
+const DEFAULT_RESOURCES: Resource[] = [];
+
+export const usePanneauResources = (): Resource[] => {
+    const { resources = DEFAULT_RESOURCES } = usePanneau() || {};
+    return resources;
+};
+
+export const usePanneauResource = (id: string): Resource | null => {
+    const resources = usePanneauResources();
+    return resources.find((it) => it.id === id) || null;
+};
+
+export const usePanneauColorScheme = (): {
+    theme: string;
+    background: string | null;
+    text: string | null;
+} => {
+    const { theme = {} } = usePanneau() || {};
+    const { colorScheme = 'light' } = theme || {};
+
+    if (colorScheme === null || colorScheme === 'light' || colorScheme === 'dark') {
+        return colorScheme === 'dark'
+            ? {
+                  theme: 'dark',
+                  background: 'dark',
+                  text: 'light',
+              }
+            : {
+                  theme: 'light',
+                  background: 'light',
+                  text: 'dark',
+              };
+    }
+    return {
+        theme: colorScheme,
+        background: null,
+        text: null,
+    };
+};
+
+const DEFAULT_COMPONENTS: Record<string, unknown> = {};
+
+export const usePanneauComponents = (): Record<string, unknown> => {
+    const { components = DEFAULT_COMPONENTS } = usePanneau() || {};
+    return components;
+};
+
+export const usePanneauComponent = (namespace: string | null, name: string): string | null => {
+    const { components = {} } = usePanneau() || {};
+    const path = namespace !== null ? `${namespace}.${name}` : name || null;
+    const component = components[path] || null;
+
+    if (isString(component)) {
+        return component;
+    }
+
+    if (isObject(component) && isString(component?.componnent)) {
+        // eslint-disable-next-line no-unused-vars
+        const { component: innerComponent, ...props } = component;
+        return component.component;
+    }
+
+    return null;
+};
+
+export const usePanneauAuth = (): Record<string, unknown> => {
+    const { auth = {} } = usePanneau() || {};
+    return auth;
+};
+
+export const usePanneauSettings = (): Record<string, unknown> => {
+    const { settings = {} } = usePanneau() || {};
+    return settings;
+};
+
+interface PanneauProviderProps {
+    definition: PanneauDefinition;
+    children: ReactNode;
+}
+
+function PanneauProvider({ definition, children }: PanneauProviderProps) {
+    return <PanneauContext.Provider value={definition}>{children}</PanneauContext.Provider>;
+}
+
+export { PanneauProvider };
+export default PanneauContext;

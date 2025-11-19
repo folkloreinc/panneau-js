@@ -1,0 +1,23 @@
+import { useEffect } from 'react';
+
+interface EventsManager {
+    subscribe: (event: string, callback: (...args: unknown[]) => void) => void;
+    unsubscribe: (event: string, callback: (...args: unknown[]) => void) => void;
+}
+
+const createUseEvent =
+    (eventsManager: EventsManager | null) =>
+    (event: string, callback: (...args: unknown[]) => void, enabled: boolean = true): void => {
+        useEffect(() => {
+            if (enabled && eventsManager !== null) {
+                eventsManager.subscribe(event, callback);
+            }
+            return () => {
+                if (enabled && eventsManager !== null) {
+                    eventsManager.unsubscribe(event, callback);
+                }
+            };
+        }, [eventsManager, event, callback, enabled]);
+    };
+
+export default createUseEvent;

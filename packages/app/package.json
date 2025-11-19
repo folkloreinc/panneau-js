@@ -1,125 +1,125 @@
 {
-  "name": "@panneau/app",
-  "version": "3.0.313",
-  "description": "",
-  "keywords": [
-    "javascript"
-  ],
-  "homepage": "https://github.com/folkloreinc/panneau-js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/folkloreinc/panneau-js.git"
-  },
-  "author": {
-    "name": "Folklore",
-    "email": "info@folklore.email"
-  },
-  "contributors": [
-    {
-      "name": "David Mongeau-Petitpas",
-      "email": "dmp@folklore.email"
+    "name": "@panneau/app",
+    "version": "3.0.313",
+    "description": "",
+    "keywords": [
+        "javascript"
+    ],
+    "homepage": "https://github.com/folkloreinc/panneau-js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git"
     },
-    {
-      "name": "Nicolas Roy-Bourdages",
-      "email": "nrb@folklore.email"
+    "author": {
+        "name": "Folklore",
+        "email": "info@folklore.email"
     },
-    {
-      "name": "Julien Carignan",
-      "email": "jc@folklore.email"
+    "contributors": [
+        {
+            "name": "David Mongeau-Petitpas",
+            "email": "dmp@folklore.email"
+        },
+        {
+            "name": "Nicolas Roy-Bourdages",
+            "email": "nrb@folklore.email"
+        },
+        {
+            "name": "Julien Carignan",
+            "email": "jc@folklore.email"
+        },
+        {
+            "name": "Théo Gjini",
+            "email": "tg@folklore.email"
+        }
+    ],
+    "license": "ISC",
+    "type": "module",
+    "module": "es/index.js",
+    "style": "./assets/css/styles.css",
+    "exports": {
+        ".": {
+            "import": "./es/index.js"
+        },
+        "./scss/packages": "./scss/packages.scss",
+        "./scss/packages.scss": "./scss/packages.scss",
+        "./assets/css/styles": "./assets/css/styles.css",
+        "./assets/css/styles.css": "./assets/css/styles.css",
+        "./assets/css/packages": "./assets/css/packages.css",
+        "./assets/css/packages.css": "./assets/css/packages.css"
     },
-    {
-      "name": "Théo Gjini",
-      "email": "tg@folklore.email"
-    }
-  ],
-  "license": "ISC",
-  "type": "module",
-  "module": "es/index.js",
-  "style": "./assets/css/styles.css",
-  "exports": {
-    ".": {
-      "import": "./es/index.js"
+    "files": [
+        "lib",
+        "es",
+        "assets",
+        "scss"
+    ],
+    "scripts": {
+        "prepublishOnly": "npm run build && npm run css:packages",
+        "build": "../../scripts/prepare-package.sh --scss",
+        "css:packages": "../../scripts/build-sass.js ./src/styles/packages.scss ./assets/css/packages.css"
     },
-    "./scss/packages": "./scss/packages.scss",
-    "./scss/packages.scss": "./scss/packages.scss",
-    "./assets/css/styles": "./assets/css/styles.css",
-    "./assets/css/styles.css": "./assets/css/styles.css",
-    "./assets/css/packages": "./assets/css/packages.css",
-    "./assets/css/packages.css": "./assets/css/packages.css"
-  },
-  "files": [
-    "lib",
-    "es",
-    "assets",
-    "scss"
-  ],
-  "scripts": {
-    "prepublishOnly": "npm run build && npm run css:packages",
-    "build": "../../scripts/prepare-package.sh --scss",
-    "css:packages": "../../scripts/build-sass.js ./src/styles/packages.scss ./assets/css/packages.css"
-  },
-  "devDependencies": {
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
-  },
-  "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.12.5",
-    "@folklore/routes": "^0.2.26",
-    "@fortawesome/fontawesome-svg-core": "^6.5.1",
-    "@fortawesome/free-solid-svg-icons": "^6.5.1",
-    "@fortawesome/react-fontawesome": "^0.2.0",
-    "@panneau/actions": "^3.0.310",
-    "@panneau/auth": "^3.0.307",
-    "@panneau/core": "^3.0.307",
-    "@panneau/data": "^3.0.307",
-    "@panneau/displays": "^3.0.311",
-    "@panneau/element-accordion": "^3.0.307",
-    "@panneau/element-alert": "^3.0.308",
-    "@panneau/element-avatar": "^3.0.308",
-    "@panneau/element-breadcrumbs": "^3.0.308",
-    "@panneau/element-button": "^3.0.308",
-    "@panneau/element-buttons": "^3.0.308",
-    "@panneau/element-dropdown": "^3.0.308",
-    "@panneau/element-form": "^3.0.308",
-    "@panneau/element-form-group": "^3.0.308",
-    "@panneau/element-grid": "^3.0.308",
-    "@panneau/element-icon": "^3.0.307",
-    "@panneau/element-label": "^3.0.307",
-    "@panneau/element-link": "^3.0.308",
-    "@panneau/element-loading": "^3.0.307",
-    "@panneau/element-media-card": "^3.0.308",
-    "@panneau/element-media-player": "^3.0.307",
-    "@panneau/element-menu": "^3.0.308",
-    "@panneau/element-modal": "^3.0.308",
-    "@panneau/element-navbar": "^3.0.308",
-    "@panneau/element-pagination": "^3.0.308",
-    "@panneau/element-radios": "^3.0.308",
-    "@panneau/element-range": "^3.0.307",
-    "@panneau/element-resource-card": "^3.0.308",
-    "@panneau/fields": "^3.0.312",
-    "@panneau/filter-filters": "^3.0.308",
-    "@panneau/filters": "^3.0.313",
-    "@panneau/form-resource": "^3.0.308",
-    "@panneau/forms": "^3.0.308",
-    "@panneau/intl": "^3.0.307",
-    "@panneau/list-resource-items": "^3.0.308",
-    "@panneau/lists": "^3.0.308",
-    "@panneau/modals": "^3.0.310",
-    "@panneau/themes": "^3.0.308",
-    "@panneau/uppy": "^3.0.310",
-    "classnames": "^2.5.1",
-    "lodash-es": "^4.17.21",
-    "prop-types": "^15.7.2",
-    "query-string": "^9.0.0",
-    "react-intl": "^5.15.8||^6.0.0",
-    "wouter": "^3.1.2"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "gitHead": "c6430a0e56cc5163db66417c47508b8e0fcc7c16"
+    "devDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.12.5",
+        "@folklore/routes": "^0.2.44",
+        "@fortawesome/fontawesome-svg-core": "^6.5.1",
+        "@fortawesome/free-solid-svg-icons": "^6.5.1",
+        "@fortawesome/react-fontawesome": "^0.2.0",
+        "@panneau/actions": "^3.0.310",
+        "@panneau/auth": "^3.0.307",
+        "@panneau/core": "^3.0.307",
+        "@panneau/data": "^3.0.307",
+        "@panneau/displays": "^3.0.311",
+        "@panneau/element-accordion": "^3.0.307",
+        "@panneau/element-alert": "^3.0.308",
+        "@panneau/element-avatar": "^3.0.308",
+        "@panneau/element-breadcrumbs": "^3.0.308",
+        "@panneau/element-button": "^3.0.308",
+        "@panneau/element-buttons": "^3.0.308",
+        "@panneau/element-dropdown": "^3.0.308",
+        "@panneau/element-form": "^3.0.308",
+        "@panneau/element-form-group": "^3.0.308",
+        "@panneau/element-grid": "^3.0.308",
+        "@panneau/element-icon": "^3.0.307",
+        "@panneau/element-label": "^3.0.307",
+        "@panneau/element-link": "^3.0.308",
+        "@panneau/element-loading": "^3.0.307",
+        "@panneau/element-media-card": "^3.0.308",
+        "@panneau/element-media-player": "^3.0.307",
+        "@panneau/element-menu": "^3.0.308",
+        "@panneau/element-modal": "^3.0.308",
+        "@panneau/element-navbar": "^3.0.308",
+        "@panneau/element-pagination": "^3.0.308",
+        "@panneau/element-radios": "^3.0.308",
+        "@panneau/element-range": "^3.0.307",
+        "@panneau/element-resource-card": "^3.0.308",
+        "@panneau/fields": "^3.0.312",
+        "@panneau/filter-filters": "^3.0.308",
+        "@panneau/filters": "^3.0.313",
+        "@panneau/form-resource": "^3.0.308",
+        "@panneau/forms": "^3.0.308",
+        "@panneau/intl": "^3.0.307",
+        "@panneau/list-resource-items": "^3.0.308",
+        "@panneau/lists": "^3.0.308",
+        "@panneau/modals": "^3.0.310",
+        "@panneau/themes": "^3.0.308",
+        "@panneau/uppy": "^3.0.310",
+        "classnames": "^2.5.1",
+        "lodash-es": "^4.17.21",
+        "prop-types": "^15.7.2",
+        "query-string": "^9.0.0",
+        "react-intl": "^5.15.8||^6.0.0",
+        "wouter": "^3.1.2"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "gitHead": "c6430a0e56cc5163db66417c47508b8e0fcc7c16"
 }

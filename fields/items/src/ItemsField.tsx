@@ -8,12 +8,12 @@ import { FormattedMessage } from 'react-intl';
 import { ReactSortable } from 'react-sortablejs';
 import { v4 as uuid } from 'uuid';
 
-import type { Field, Label } from '@panneau/core/types';
 import { useFieldComponent, useFieldsComponentsManager } from '@panneau/core/contexts';
+import type { Field, Label } from '@panneau/core/types';
 import { getPathValue } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
-import Label as LabelComponent from '@panneau/element-label';
+import LabelComponent from '@panneau/element-label';
 
 interface ItemType {
     id?: string;
@@ -48,13 +48,18 @@ interface ItemsFieldProps {
     itemLabel?: Label | null;
     itemLabelPath?: string | null;
     itemComponent?: React.ComponentType<any> | null;
-    itemProps?: Record<string, unknown> | ((item: ItemsFieldItem, index: number) => Record<string, unknown>) | null;
+    itemProps?:
+        | Record<string, unknown>
+        | ((item: ItemsFieldItem, index: number) => Record<string, unknown>)
+        | null;
     itemFields?: Field[] | null;
-    itemField?: Field & { fields?: Field[] } | null;
+    itemField?: (Field & { fields?: Field[] }) | null;
     className?: string | null;
     onChange?: ((value: ItemsFieldItem[]) => void) | null;
     renderBefore?: (() => React.ReactNode) | null;
-    renderItem?: ((item: ItemsFieldItem, index: number, props: Record<string, unknown>) => React.ReactNode) | null;
+    renderItem?:
+        | ((item: ItemsFieldItem, index: number, props: Record<string, unknown>) => React.ReactNode)
+        | null;
     renderItemLabel?: ((index: number) => React.ReactNode) | null;
     withoutCollapse?: boolean;
     withoutSort?: boolean;
@@ -255,7 +260,11 @@ function ItemsField({
             const idIndex = itemIds.indexOf(it.id);
             const finalValue =
                 emptyIndex !== -1
-                    ? [...(value || []).slice(0, idIndex), newValue, ...(value || []).slice(idIndex)]
+                    ? [
+                          ...(value || []).slice(0, idIndex),
+                          newValue,
+                          ...(value || []).slice(idIndex),
+                      ]
                     : (value || []).map((prevItem, prevIndex) =>
                           prevIndex !== it.valueIndex ? prevItem : newValue,
                       );
@@ -305,8 +314,7 @@ function ItemsField({
                 return;
             }
 
-            const orderChanged =
-                newItems.map(({ id = '' }) => id).join('-') !== itemIds.join('-');
+            const orderChanged = newItems.map(({ id = '' }) => id).join('-') !== itemIds.join('-');
             if (!orderChanged) {
                 return;
             }
@@ -317,9 +325,7 @@ function ItemsField({
             setEmptyItems(newItems.filter(({ empty = false }) => empty));
 
             // Value
-            const finalItems = newItems
-                .filter(({ empty = false }) => !empty)
-                .map(({ it }) => it!);
+            const finalItems = newItems.filter(({ empty = false }) => !empty).map(({ it }) => it!);
 
             if (onChange !== null) {
                 onChange(finalItems);
@@ -549,7 +555,8 @@ function ItemsField({
                             ? renderItem(it!, index, {
                                   ...(isFunction(itemProps) ? itemProps(it!, index) : itemProps),
                                   children: itemChildren,
-                                  onChange: (newValue: ItemsFieldItem) => onItemChange(item, newValue),
+                                  onChange: (newValue: ItemsFieldItem) =>
+                                      onItemChange(item, newValue),
                               })
                             : itemChildren
                         : null}

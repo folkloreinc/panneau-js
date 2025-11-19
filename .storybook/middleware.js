@@ -9,7 +9,7 @@ module.exports = (router) => {
     const proxyUrl = process.env.API_PROXY_URL || null;
     // console.log('Using API proxy:', proxyUrl);
     if (proxyUrl !== null) {
-        // router.use('/api', proxyMiddleware(proxyUrl));
+        router.use('/api', proxyMiddleware(proxyUrl));
     } else {
         // const dataPath = path.join(__dirname, '/api/items');
         // const staticServe = sirv(dataPath, {

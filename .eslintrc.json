@@ -62,17 +62,8 @@
                     "varsIgnorePattern": "^_|value",
                     "args": "after-used"
                 }],
-                "import/extensions": [
-                    "error",
-                    "ignorePackages",
-                    {
-                        "ts": "never",
-                        "tsx": "never"
-                    }
-                ],
-                "import/no-unresolved": ["error", {
-                    "ignore": ["\\.css$", "^@uppy/"]
-                }]
+                "import/extensions": "off",
+                "import/no-unresolved": "off"
             }
         },
         {

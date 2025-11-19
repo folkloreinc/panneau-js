@@ -100,11 +100,11 @@ const config = Object.keys(files).reduce(
             format: 'es',
             ...files[file],
         }),
-        /*createConfig({
+        createConfig({
             file,
             format: 'cjs',
             ...files[file],
-        }),*/
+        }),
     ],
     [],
 );

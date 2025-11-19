@@ -1,6 +1,17 @@
-// import { defineMessages } from 'react-intl';
+import type { Message } from '@panneau/core/types';
 
-export default {
+interface Messages {
+    index: Message;
+    create: Message;
+    edit: Message;
+    delete: Message;
+    created: Message;
+    confirm_delete: Message;
+    deleted: Message;
+    loading: Message;
+}
+
+const messages: Messages = {
     // Resources
     index: {
         id: 'resources.index',
@@ -35,3 +46,5 @@ export default {
         defaultMessage: 'Loading {plural}...',
     },
 };
+
+export default messages;
