@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
 import PropTypes from 'prop-types';
-import React from 'react';
 
 import { MediaProvider } from './MediaContext';
 import { MediasApiProvider, apiPropTypes } from './MediasApiContext';
@@ -12,12 +11,7 @@ const propTypes = {
     onChange: PropTypes.func.isRequired,
 };
 
-function MediasPickerContainer({
-    api = null,
-    media = null,
-    onChange,
-    ...props
-})  {
+function MediasPickerContainer({ api = null, media = null, onChange, ...props }) {
     return (
         <MediasApiProvider api={api}>
             <MediaProvider media={media}>

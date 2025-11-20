@@ -27,7 +27,7 @@ module.exports = (api) => {
                     require.resolve('babel-plugin-module-resolver'),
                     {
                         alias: {
-                            // react: require.resolve('react'),
+                            react: require.resolve('react'),
                             // '@folklore/routes': require.resolve('@folklore/routes'),
                             // 'react-dom/server': require.resolve('react-dom/server'),
                             // 'react-dom': require.resolve('react-dom'),

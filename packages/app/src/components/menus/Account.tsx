@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import { MouseEvent, useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useLogout, useUser } from '@panneau/auth';
@@ -23,7 +23,7 @@ function AccountMenu({
     const logout = useLogout();
 
     const onClickLogout = useCallback(
-        (e: React.MouseEvent) => {
+        (e: MouseEvent) => {
             e.preventDefault();
             logout();
         },

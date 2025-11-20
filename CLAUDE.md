@@ -589,8 +589,8 @@ The codebase is gradually migrating from JavaScript to TypeScript. When migratin
 
     ```javascript
     // ❌ Remove these
-    import React from 'react';
     import PropTypes from 'prop-types';
+    import React from 'react';
 
     const propTypes = {
         /* ... */
@@ -600,7 +600,7 @@ The codebase is gradually migrating from JavaScript to TypeScript. When migratin
 
     ```typescript
     // ✅ Keep only if using hooks
-    import { useState, useCallback } from 'react';
+    import { useCallback, useState } from 'react';
 
     // ✅ Or remove React import entirely if not using hooks
     // No import needed for JSX (React 17+ transform)

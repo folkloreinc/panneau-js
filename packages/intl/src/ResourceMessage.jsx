@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading, formatjs/enforce-default-message */
 import PropTypes from 'prop-types';
-import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
@@ -19,7 +18,7 @@ function ResourceMessage({
     values = null,
     id,
     defaultMessage = null,
-    description = null
+    description = null,
 }) {
     const contextResource = useResource();
     const { messages } = useIntl();

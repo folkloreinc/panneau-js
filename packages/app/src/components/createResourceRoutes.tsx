@@ -1,4 +1,4 @@
-import React from 'react';
+import { ComponentType } from 'react';
 import { Route } from 'wouter';
 
 import type { Resource } from '@panneau/core/types';
@@ -15,7 +15,7 @@ import {
 interface CreateResourceRoutesParams {
     route: (name: string, params?: Record<string, string>) => string;
     componentsManager: {
-        getComponent: (component: unknown) => React.ComponentType<any> | null;
+        getComponent: (component: unknown) => ComponentType<any> | null;
     };
     pages?: Record<string, any>;
 }

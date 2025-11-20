@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import PropTypes from 'prop-types';
-import React from 'react';
 
 import { MediaProvider } from './MediaContext';
 import { MediasApiProvider, apiPropTypes } from './MediasApiContext';
@@ -11,11 +10,7 @@ const propTypes = {
     media: PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) }),
 };
 
-function MediasBrowserContainer({
-    api = null,
-    media = null,
-    ...props
-})  {
+function MediasBrowserContainer({ api = null, media = null, ...props }) {
     return (
         <MediasApiProvider api={api}>
             <MediaProvider media={media}>

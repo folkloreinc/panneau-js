@@ -1,11 +1,9 @@
 import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import image from '@rollup/plugin-image';
-// import svgo from 'rollup-plugin-svgo';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-// import typescript from '@rollup/plugin-typescript';
 import url from '@rollup/plugin-url';
 import path from 'path';
 import postcss from 'rollup-plugin-postcss';
@@ -68,11 +66,6 @@ export const createConfig = ({
                 jail: path.join(process.cwd(), 'src'),
                 ...resolveOptions,
             }),
-            // typescript({
-            //     tsconfig: path.join(__dirname, 'tsconfig.json'),
-            //     sourceMap: true,
-            //     declaration: false,
-            // }),
             commonjs(),
             babel({
                 extensions: ['.mjs', '.js', '.jsx', '.json', '.node', '.ts', '.tsx'],
@@ -106,6 +99,7 @@ export const createConfig = ({
                         require('@babel/preset-react'),
                         {
                             useBuiltIns: true,
+                            runtime: 'automatic',
                         },
                     ],
                 ],

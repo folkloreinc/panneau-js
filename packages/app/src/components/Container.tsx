@@ -1,5 +1,5 @@
 import { createPathToRegexpParser, useMemoryRouter } from '@folklore/routes';
-import React, { useCallback, useMemo } from 'react';
+import { ElementType, useCallback, useMemo } from 'react';
 import { Router } from 'wouter';
 
 import ActionsProvider from '@panneau/actions';
@@ -32,10 +32,7 @@ const DEFAULT_LOCALES: string[] = [];
 
 interface ContainerProps {
     definition: PanneauDefinition;
-    components?:
-        | Record<string, React.ElementType>
-        | Record<string, Record<string, React.ElementType>>
-        | null;
+    components?: Record<string, ElementType> | Record<string, Record<string, ElementType>> | null;
     user?: User | null;
     memoryRouter?: boolean;
     baseUrl?: string | null;
