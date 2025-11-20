@@ -22,6 +22,18 @@ The `packages` folder contains all the general packages and the meta-packages gr
 
 ### November 2025
 
+- **ESLint Flat Config Migration**: Migrated from legacy ESLint configuration to flat config format
+    - Converted from `.eslintrc.json` to `eslint.config.mjs` using typescript-eslint.config
+    - Removed `.eslintignore` file (ignores now defined in config)
+    - Added comprehensive plugin support: React, TypeScript, Import, FormatJS, Prettier
+    - Updated ignore patterns to exclude build outputs and config files
+    - Full TypeScript and JSX/TSX support with Babel parser
+
+- **Stylelint Configuration Update**: Enhanced Stylelint rules for better code quality
+    - Updated to use idiomatic property ordering (SMACSS)
+    - Enforced camelCase class naming convention
+    - Added import notation rules for consistent syntax
+
 - **Actions Folder TypeScript Migration**: Migrated all action components to TypeScript
     - Converted 8 action components from .jsx to .tsx format
     - Replaced PropTypes with TypeScript interfaces using @panneau/core/types
@@ -87,7 +99,19 @@ npm run intl --prefix ./packages/intl  # Package-specific intl build
 ```bash
 lerna bootstrap           # Install dependencies with hoisting
 lerna publish             # Publish changed packages (allowed branches: v0.4, v0.6, v1.0-react-router5, v2.0, v3.0, feature/es-module)
+lerna changed             # List packages that have changed since last release
+lerna version             # Bump package versions without publishing
+lerna run <script>        # Run npm script in all packages that have it
 ```
+
+**Publishing Workflow**:
+
+1. Ensure you're on an allowed branch (v0.4, v0.6, v1.0-react-router5, v2.0, v3.0, feature/es-module)
+2. Run `lerna changed` to see what packages will be published
+3. Run `lerna run prepublishOnly` to build all packages
+4. Run `lerna publish` to version, tag, and publish
+5. Lerna will prompt for version bump type (patch, minor, major)
+6. All packages are versioned together (currently 3.0.313)
 
 ### Linting
 
@@ -445,6 +469,11 @@ export default {
 
 ## Important Notes
 
+- **Mixed JavaScript/TypeScript**: The codebase is in active migration to TypeScript
+    - Actions folder is fully migrated to TypeScript (.tsx)
+    - Other folders still use JavaScript (.jsx) with PropTypes
+    - All PropTypes have corresponding TypeScript interfaces in `@panneau/core/types`
+    - ESLint configuration supports both .js/.jsx and .ts/.tsx files
 - **No unit tests**: Testing relies primarily on Storybook for visual component testing
 - **Version synchronization**: All packages maintained at same version (currently 3.0.313)
 - **Publishing branches**: Only publish from allowed branches (v0.4, v0.6, v1.0-react-router5, v2.0, v3.0, feature/es-module)
@@ -454,8 +483,96 @@ export default {
 - **Component style**: All components use function declarations, NOT arrow functions (refactored November 2025)
 - **Story files**: `*.stories.jsx` files follow different patterns and conventions than component files
 - **Storybook version**: Currently using Storybook v10.0.8 (upgraded November 2025)
+- **ESLint format**: Uses flat config format (`eslint.config.mjs`) with typescript-eslint
+
+## Best Practices
+
+### Component Development
+
+1. **Keep components focused**: Each component should have a single, well-defined purpose
+2. **Use consistent naming**: Follow the naming conventions for each component type (Field, Filter, Action, etc.)
+3. **Export definitions**: Always create a `definition.js` file with component metadata for registry
+4. **Spread unused props**: Always use `{...props}` to pass through unhandled props to child components
+5. **Default values in destructuring**: Define default values in the function signature, not inside the component
+
+### Styling
+
+1. **Use CSS Modules**: All component-specific styles should use `.module.scss` for scoping
+2. **Follow camelCase**: All CSS class names must be in camelCase (enforced by Stylelint)
+3. **Leverage Bootstrap**: Use Bootstrap 5 utility classes where appropriate to reduce custom CSS
+4. **Respect nesting depth**: Keep SCSS nesting to a maximum of 4 levels
+5. **Use SMACSS ordering**: Properties should follow idiomatic (SMACSS) order, not alphabetical
+
+### Code Organization
+
+1. **Barrel exports**: Package `index.js` files should only re-export the main component
+2. **Direct imports**: Within a package, import components directly, not through the index file
+3. **Type imports**: Use `import type` for TypeScript types to enable tree-shaking
+4. **Group imports**: Follow the import order: third-party → `@panneau/*` → utilities/hooks → styles
+5. **Co-locate stories**: Keep story files in `_stories/` subdirectories within each package
+
+### Internationalization
+
+1. **Use FormattedMessage**: Always use `<FormattedMessage>` for user-facing text
+2. **Provide default messages**: Every message must have a `defaultMessage` prop
+3. **Avoid camelCase IDs**: i18n message IDs use hash-based identifiers, not camelCase
+4. **Extract regularly**: Run `npm run intl` after adding new translatable strings
+
+### Performance
+
+1. **Avoid premature optimization**: No React.memo usage in the codebase - only optimize if needed
+2. **Lazy load heavy dependencies**: Use dynamic imports for large libraries when possible
+3. **Use CSS Modules**: Scoped CSS prevents style conflicts and enables better optimization
+4. **Mark side effects**: Ensure CSS/SCSS files are marked as side effects in package.json
 
 ## Development Guidelines
+
+### TypeScript Migration
+
+The codebase is gradually migrating from JavaScript to TypeScript. When migrating components:
+
+1. **File Extension**: Change `.jsx` to `.tsx` (or `.js` to `.ts` for non-component files)
+
+2. **Remove PropTypes**: Remove the PropTypes import and propTypes definition:
+    ```javascript
+    // ❌ Remove these
+    import PropTypes from 'prop-types';
+    const propTypes = { /* ... */ };
+    ComponentName.propTypes = propTypes;
+    ```
+
+3. **Add TypeScript Interface**: Create a TypeScript interface using types from `@panneau/core/types`:
+    ```typescript
+    // ✅ Add this
+    import type { Field, ButtonTheme } from '@panneau/core/types';
+
+    interface ComponentNameProps {
+        field: Field;
+        theme?: ButtonTheme;
+        className?: string;
+    }
+    ```
+
+4. **Type the Component**: Add the interface to the function signature:
+    ```typescript
+    function ComponentName({ field, theme = 'primary', className = null }: ComponentNameProps) {
+        // Component implementation
+    }
+    ```
+
+5. **Key Type Mappings**:
+    - PropTypes required → Interface property without `?`
+    - PropTypes optional → Interface property with `?`
+    - `PropTypes.node` → `React.ReactNode`
+    - `PropTypes.func` → Function signature (e.g., `(value: string) => void`)
+    - `PropTypes.oneOf([...])` → Union type (e.g., `'small' | 'medium' | 'large'`)
+    - `PropTypes.shape({...})` → Import corresponding interface from `@panneau/core/types`
+
+6. **Use Type Imports**: Always use `import type` for better tree-shaking:
+    ```typescript
+    import type { Field } from '@panneau/core/types'; // ✅ Correct
+    import { Field } from '@panneau/core/types';      // ❌ Avoid
+    ```
 
 ### When Creating New Components
 
@@ -522,8 +639,181 @@ export default {
 
 ### When Refactoring Components
 
-1. **Preserve PropTypes**: Never remove or change PropTypes during refactoring
+1. **Preserve PropTypes**: Never remove or change PropTypes during refactoring (unless migrating to TypeScript)
 2. **Maintain default values**: Keep existing default parameter values
 3. **Test with Storybook**: Always verify changes in Storybook before committing
 4. **Keep spread operators**: Maintain `{...props}` spreading to child components
 5. **Don't change story files**: Leave `*.stories.jsx` files unchanged unless specifically updating stories
+
+## Troubleshooting
+
+### Build Issues
+
+**Issue**: `Cannot find module '@panneau/core/types'`
+- **Solution**: The types are exported from `@panneau/core`. Make sure to use `import type` syntax and that the core package is built.
+
+**Issue**: CSS modules not working correctly
+- **Solution**: Check that the filename matches the pattern `*.module.scss` or `*.module.css`. The build system treats these differently from global styles.
+
+**Issue**: Lerna build fails with "no such file or directory"
+- **Solution**: Run `lerna bootstrap` first to ensure all dependencies are properly linked across packages.
+
+### Linting Issues
+
+**Issue**: ESLint not recognizing TypeScript files
+- **Solution**: Ensure the file extension is `.ts` or `.tsx` and that it matches the patterns in `eslint.config.mjs`.
+
+**Issue**: ESLint errors in config files
+- **Solution**: Config files (`*.config.js`) are intentionally ignored by ESLint. Check the ignore patterns in `eslint.config.mjs`.
+
+**Issue**: Stylelint complaining about class names
+- **Solution**: Class names must be in camelCase format (e.g., `myClassName`, not `my-class-name` or `my_class_name`).
+
+### Storybook Issues
+
+**Issue**: Storybook not loading components
+- **Solution**: Check that the story file follows the `*.stories.jsx` naming convention and is located in a `src/` directory.
+
+**Issue**: SCSS imports failing in Storybook
+- **Solution**: Verify that `.module.scss` files are being imported correctly. Regular SCSS files should not use the `.module` suffix.
+
+### Import Issues
+
+**Issue**: Circular dependency warnings
+- **Solution**: Avoid importing from package index files within the same package. Use direct file imports instead.
+
+**Issue**: `@panneau/*` imports not resolving
+- **Solution**: In development with Storybook, aliases are configured. For package builds, ensure the package is published or linked via `lerna bootstrap`.
+
+### TypeScript Issues
+
+**Issue**: Type errors after migrating from PropTypes
+- **Solution**: Ensure you're importing types from `@panneau/core/types` using `import type`. Check that optional props use `?` in the interface.
+
+**Issue**: `Cannot find name 'React'`
+- **Solution**: Add `import React from 'react';` at the top of `.tsx` files, even if using JSX transform.
+
+## Quick Reference
+
+### Component File Template (JavaScript)
+
+```javascript
+import PropTypes from 'prop-types';
+import React from 'react';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import styles from './styles.module.scss';
+
+const propTypes = {
+    value: PropTypes.string,
+    placeholder: PropTypes.string,
+    onChange: PropTypes.func,
+    field: PanneauPropTypes.field,
+};
+
+function ComponentName({ value = null, placeholder = null, onChange = null, field = null, ...props }) {
+    return (
+        <div className={styles.container} {...props}>
+            {/* Component implementation */}
+        </div>
+    );
+}
+
+ComponentName.propTypes = propTypes;
+
+export default ComponentName;
+```
+
+### Component File Template (TypeScript)
+
+```typescript
+import React from 'react';
+import type { Field } from '@panneau/core/types';
+import styles from './styles.module.scss';
+
+interface ComponentNameProps {
+    value?: string;
+    placeholder?: string;
+    onChange?: (value: string) => void;
+    field?: Field;
+    className?: string;
+}
+
+function ComponentName({
+    value = null,
+    placeholder = null,
+    onChange = null,
+    field = null,
+    className = null,
+    ...props
+}: ComponentNameProps) {
+    return (
+        <div className={styles.container} {...props}>
+            {/* Component implementation */}
+        </div>
+    );
+}
+
+export default ComponentName;
+```
+
+### Definition File Template
+
+```javascript
+import ComponentName from './ComponentName';
+
+export default {
+    id: 'component-name',
+    component: ComponentName,
+    type: 'field', // or 'display', 'action', 'filter', 'list', 'form', 'modal'
+};
+```
+
+### Package.json Template
+
+```json
+{
+    "name": "@panneau/package-name",
+    "version": "3.0.313",
+    "type": "module",
+    "module": "es/index.js",
+    "exports": {
+        ".": { "import": "./es/index.js" },
+        "./assets/css/styles.css": "./assets/css/styles.css"
+    },
+    "sideEffects": ["*.css", "*.scss"],
+    "files": ["es", "assets"],
+    "scripts": {
+        "prepublishOnly": "npm run build",
+        "build": "../../scripts/prepare-package.sh"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    },
+    "dependencies": {
+        "@panneau/core": "3.0.313"
+    }
+}
+```
+
+### Common Import Patterns
+
+```javascript
+// Component imports (JavaScript)
+import PropTypes from 'prop-types';
+import React from 'react';
+import { PropTypes as PanneauPropTypes } from '@panneau/core';
+import Button from '@panneau/element-button';
+import styles from './styles.module.scss';
+
+// Component imports (TypeScript)
+import React from 'react';
+import type { Field, Button as ButtonType } from '@panneau/core/types';
+import Button from '@panneau/element-button';
+import styles from './styles.module.scss';
+
+// Utility imports
+import classnames from 'classnames';
+import get from 'lodash-es/get';
+import { FormattedMessage } from 'react-intl';
+```
