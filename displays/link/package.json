@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-link",
-    "version": "4.0.1",
+    "version": "4.0.2",
     "description": "Link item value in list",
     "keywords": [
         "javascript"
@@ -49,8 +49,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^4.0.1",
-        "@panneau/themes": "^4.0.1",
+        "@panneau/core": "^4.0.2",
+        "@panneau/themes": "^4.0.2",
         "lodash-es": "^4.17.21",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0",
