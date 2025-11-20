@@ -1,6 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React from 'react';
 
 import styles from './styles.module.css';
 import 'bootstrap-icons/font/bootstrap-icons.min.css';
@@ -12,13 +10,7 @@ interface IconProps {
     className?: string | null;
 }
 
-function Icon({
-    name,
-    bold = false,
-    opaque = false,
-    className = null,
-    ...props
-}: IconProps) {
+function Icon({ name, bold = false, opaque = false, className = null, ...props }: IconProps) {
     return name === 'loading' ? (
         <>
             <span className="spinner-border spinner-border-sm" aria-hidden="true" />

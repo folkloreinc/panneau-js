@@ -1,7 +1,6 @@
 import { faCheckCircle, faSpinner, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { FormStatus as FormStatusType, Label } from '@panneau/core/types';

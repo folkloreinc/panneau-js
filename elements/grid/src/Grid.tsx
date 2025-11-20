@@ -1,7 +1,7 @@
-/* eslint-disable jsx-a11y/control-has-associated-label, react/jsx-props-no-spreading, react/jsx-indent */
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { selectItem } from '@panneau/core/utils';
@@ -53,13 +53,18 @@ function Grid({
     selectedItems = null,
     onSelectionChange = null,
     multipleSelection = false,
-    className = null
+    className = null,
 }: GridProps) {
     const Component = component || null;
 
     const onSelectItem = useCallback(
         (newItem: GridItem | null = null) => {
-            selectItem(newItem as any, selectedItems as any, onSelectionChange as any, multipleSelection);
+            selectItem(
+                newItem as any,
+                selectedItems as any,
+                onSelectionChange as any,
+                multipleSelection,
+            );
         },
         [items, selectedItems, onSelectionChange, multipleSelection],
     );
@@ -87,7 +92,7 @@ function Grid({
                     [className!]: className !== null,
                 },
             ])}
-            style={gap !== null ? { gridGap: gap } as any : undefined}
+            style={gap !== null ? ({ gridGap: gap } as any) : undefined}
         >
             <div className={styles.inner}>
                 {Component !== null

@@ -1,11 +1,11 @@
-/* eslint-disable react/jsx-indent */
-
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Button as ButtonType, FormStatus as FormStatusType, Label } from '@panneau/core/types';
+import type {
+    Button as ButtonType,
+    FormStatus as FormStatusType,
+    Label,
+} from '@panneau/core/types';
 import Button from '@panneau/element-button';
 import Buttons from '@panneau/element-buttons';
 import FormStatus from '@panneau/element-form-status';
@@ -55,96 +55,96 @@ function Form({
     disabled = false,
     className = null,
     buttonsClassName = null,
-    cancelClassName = null
+    cancelClassName = null,
 }: FormProps) {
     return (
-    <form
-        action={action || undefined}
-        method={method}
-        onSubmit={onSubmit || undefined}
-        disabled={disabled}
-        className={className || undefined}
-    >
-        {children}
-        {!withoutErrors && generalError !== null && !disabled ? (
-            <p className="text-danger mt-4">
-                <FormattedMessage
-                    defaultMessage="An error occured and we could not save this item successfully."
-                    description="Error message"
-                />
-            </p>
-        ) : null}
-        {((!withoutStatus && status !== null) || !withoutActions) && !disabled ? (
-            <div className="mt-4 d-flex align-items-center">
-                {!withoutStatus && status !== null ? <FormStatus status={status} /> : null}
-                {!withoutActions ? (
-                    <div
-                        className={classNames([
-                            'ms-auto d-flex align-items-center',
-                            {
-                                'btn-group': !withoutButtonGroup,
-                            },
-                        ])}
-                    >
-                        {actions}
-                        {onCancel !== null || onCancelHref !== null ? (
-                            <Button
-                                type="button"
-                                onClick={onCancel}
-                                href={onCancelHref}
-                                theme="secondary"
-                                size={buttonSize as any}
-                                disabled={status === 'loading'}
-                                className={classNames([
-                                    {
-                                        'me-2': withoutButtonGroup,
-                                        [cancelClassName!]: cancelClassName !== null,
-                                    },
-                                ])}
-                            >
-                                <FormattedMessage
-                                    defaultMessage="Cancel"
-                                    description="Button label"
+        <form
+            action={action || undefined}
+            method={method}
+            onSubmit={onSubmit || undefined}
+            disabled={disabled}
+            className={className || undefined}
+        >
+            {children}
+            {!withoutErrors && generalError !== null && !disabled ? (
+                <p className="text-danger mt-4">
+                    <FormattedMessage
+                        defaultMessage="An error occured and we could not save this item successfully."
+                        description="Error message"
+                    />
+                </p>
+            ) : null}
+            {((!withoutStatus && status !== null) || !withoutActions) && !disabled ? (
+                <div className="mt-4 d-flex align-items-center">
+                    {!withoutStatus && status !== null ? <FormStatus status={status} /> : null}
+                    {!withoutActions ? (
+                        <div
+                            className={classNames([
+                                'ms-auto d-flex align-items-center',
+                                {
+                                    'btn-group': !withoutButtonGroup,
+                                },
+                            ])}
+                        >
+                            {actions}
+                            {onCancel !== null || onCancelHref !== null ? (
+                                <Button
+                                    type="button"
+                                    onClick={onCancel}
+                                    href={onCancelHref}
+                                    theme="secondary"
+                                    size={buttonSize as any}
+                                    disabled={status === 'loading'}
+                                    className={classNames([
+                                        {
+                                            'me-2': withoutButtonGroup,
+                                            [cancelClassName!]: cancelClassName !== null,
+                                        },
+                                    ])}
+                                >
+                                    <FormattedMessage
+                                        defaultMessage="Cancel"
+                                        description="Button label"
+                                    />
+                                </Button>
+                            ) : null}
+                            {buttons !== null ? (
+                                <Buttons
+                                    items={buttons}
+                                    className={classNames({
+                                        // 'me-auto': actions === null,
+                                        [buttonsClassName!]: buttonsClassName !== null,
+                                    })}
                                 />
-                            </Button>
-                        ) : null}
-                        {buttons !== null ? (
-                            <Buttons
-                                items={buttons}
-                                className={classNames({
-                                    // 'me-auto': actions === null,
-                                    [buttonsClassName!]: buttonsClassName !== null,
-                                })}
-                            />
-                        ) : (
-                            <Button
-                                type="submit"
-                                theme="primary"
-                                size={buttonSize as any}
-                                label={
-                                    submitButtonLabel || (
-                                        <FormattedMessage
-                                            defaultMessage="Save"
-                                            description="Button label"
-                                        />
-                                    )
-                                }
-                                // icon={status === 'loading' ? 'loading' : 'check'}
-                                // iconPosition="right"
-                                disabled={
-                                    !canSave || (status === 'loading' && generalError === null)
-                                }
-                                outline={!canSave}
-                                className={classNames({
-                                    'ms-auto': actions === null,
-                                })}
-                            />
-                        )}
-                    </div>
-                ) : null}
-            </div>
-        ) : null}
-    </form>
+                            ) : (
+                                <Button
+                                    type="submit"
+                                    theme="primary"
+                                    size={buttonSize as any}
+                                    label={
+                                        submitButtonLabel || (
+                                            <FormattedMessage
+                                                defaultMessage="Save"
+                                                description="Button label"
+                                            />
+                                        )
+                                    }
+                                    // icon={status === 'loading' ? 'loading' : 'check'}
+                                    // iconPosition="right"
+                                    disabled={
+                                        !canSave || (status === 'loading' && generalError === null)
+                                    }
+                                    outline={!canSave}
+                                    className={classNames({
+                                        'ms-auto': actions === null,
+                                    })}
+                                />
+                            )}
+                        </div>
+                    ) : null}
+                </div>
+            ) : null}
+        </form>
     );
 }
 

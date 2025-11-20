@@ -1,9 +1,8 @@
-/* eslint-disable formatjs/enforce-default-message, react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isEqual from 'lodash-es/isEqual';
 import isObject from 'lodash-es/isObject';
 import uniqBy from 'lodash-es/uniqBy';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
@@ -57,7 +56,9 @@ function SelectElement({
     noOptionsMessage = <FormattedMessage defaultMessage="No result" description="Default label" />,
     createPrefix = 'Create',
     onCreateOption = null,
-    placeholder = <FormattedMessage defaultMessage="Choose an option" description="Default label" />,
+    placeholder = (
+        <FormattedMessage defaultMessage="Choose an option" description="Default label" />
+    ),
     autoSize = false,
     getOptionValue = null,
     getOptionLabel = null,

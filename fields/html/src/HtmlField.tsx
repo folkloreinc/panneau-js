@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import classNames from 'classnames';
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 
 import type { Feedback } from '@panneau/core/types';
 import InputGroup from '@panneau/field-input-group';

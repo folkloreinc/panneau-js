@@ -73,6 +73,7 @@ module.exports = {
             },
         },
         '@storybook/addon-docs',
+        '@storybook/addon-webpack5-compiler-swc',
     ],
     // features: {
     //     babelModeV7: true,
@@ -138,6 +139,12 @@ module.exports = {
 
         return {
             ...config,
+            plugins: [
+                ...config.plugins,
+                new webpack.ProvidePlugin({
+                    React: 'react',
+                }),
+            ],
             resolve: {
                 ...config.resolve,
                 alias: {
@@ -262,8 +269,21 @@ module.exports = {
     },
     framework: {
         name: '@storybook/react-webpack5',
-        options: {},
+        options: {
+            builder: {
+                useSWC: true,
+            },
+        },
     },
+    swc: () => ({
+        jsc: {
+            transform: {
+                react: {
+                    runtime: 'automatic',
+                },
+            },
+        },
+    }),
     docs: {
         autodocs: false,
         defaultName: 'Docs', // set to change the name of generated docs entries

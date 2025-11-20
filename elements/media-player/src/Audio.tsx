@@ -1,6 +1,6 @@
-/* eslint-disable jsx-a11y/media-has-caption, react/jsx-props-no-spreading, no-param-reassign */
+/* eslint-disable jsx-a11y/media-has-caption */
 import classNames from 'classnames';
-import React, { useRef, forwardRef } from 'react';
+import { forwardRef, useRef } from 'react';
 
 import styles from './styles.module.css';
 
@@ -32,7 +32,7 @@ function Audio({
     height = null,
     withoutControls = false,
     className = null,
-    audioClassName = null
+    audioClassName = null,
 }: AudioProps) {
     const {
         url = null,
@@ -55,7 +55,8 @@ function Audio({
                 },
             ])}
             style={{
-                backgroundImage: finalThumbnailUrl !== null ? `url(${finalThumbnailUrl})` : undefined,
+                backgroundImage:
+                    finalThumbnailUrl !== null ? `url(${finalThumbnailUrl})` : undefined,
             }}
         >
             {url !== null ? (
@@ -78,4 +79,6 @@ function Audio({
     );
 }
 
-export default forwardRef<any, AudioProps>((props, ref) => <Audio {...props} />);
+export default ({ ref, ...props }: AudioProps & { ref?: React.RefObject<any | null> }) => (
+    <Audio {...props} />
+);

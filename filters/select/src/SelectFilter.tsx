@@ -1,10 +1,9 @@
-/* eslint-disable react/jsx-props-no-spreading */
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getCSRFHeaders, getJSON } from '@folklore/fetch';
 import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
 import queryString from 'query-string';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearch } from 'wouter';
 
 // import { useApi } from '@panneau/data';
@@ -155,7 +154,9 @@ function SelectFilter({
                             //     value: get(it, itemValuePath, null),
                             // })),
                             setOptions(result);
-                            setPagination((newPagination || oldPagination) as PaginationMeta | null);
+                            setPagination(
+                                (newPagination || oldPagination) as PaginationMeta | null,
+                            );
                         } else {
                             result = finalItems || [];
                             setOptions(result);
@@ -202,7 +203,11 @@ function SelectFilter({
     const onMenuScrollToBottom = useCallback(() => {
         if (!loading && paginated && pagination !== null) {
             const { page: paginationPage, last_page: lastPage } = pagination || {};
-            if (paginationPage !== undefined && lastPage !== undefined && paginationPage < lastPage) {
+            if (
+                paginationPage !== undefined &&
+                lastPage !== undefined &&
+                paginationPage < lastPage
+            ) {
                 setPage(paginationPage + 1);
             } else {
                 setEndReached(true);

@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import {
     faFile,
     faFileAudio,
@@ -12,7 +11,7 @@ import classNames from 'classnames';
 import get from 'lodash-es/get';
 import isString from 'lodash-es/isString';
 import prettyBytes from 'pretty-bytes';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import Button from '@panneau/element-button';
 import Icon from '@panneau/element-icon';
@@ -79,7 +78,7 @@ function MediaCard({
     onClickDescription = null,
     className = null,
     cardClassName = null,
-    children = null
+    children = null,
 }: MediaCardProps) {
     const value = initialValue || {};
 
@@ -286,21 +285,25 @@ function MediaCard({
                             target={external ? '_blank' : undefined}
                             onClick={onClickThumbnail}
                             // withoutStyle
-                            style={{
-                                border: selected
-                                    ? '1px solid var(--bs-primary-border-subtle)'
-                                    : '1px solid transparent',
-                                backgroundColor: selected ? 'var(--bs-focus-ring-color)' : undefined,
-                                borderRadius: 'var(--bs-border-radius)',
-                                borderTopRightRadius: !vertical ? 0 : 'var(--bs-border-radius)',
-                                borderBottomRightRadius: 0,
-                                borderBottomLeftRadius: !vertical ? 0 : undefined,
-                                overflow: 'hidden',
-                                minWidth:
-                                    !vertical && thumbnailElement !== null
-                                        ? thumbnailSize + 10
+                            style={
+                                {
+                                    border: selected
+                                        ? '1px solid var(--bs-primary-border-subtle)'
+                                        : '1px solid transparent',
+                                    backgroundColor: selected
+                                        ? 'var(--bs-focus-ring-color)'
                                         : undefined,
-                            } as any}
+                                    borderRadius: 'var(--bs-border-radius)',
+                                    borderTopRightRadius: !vertical ? 0 : 'var(--bs-border-radius)',
+                                    borderBottomRightRadius: 0,
+                                    borderBottomLeftRadius: !vertical ? 0 : undefined,
+                                    overflow: 'hidden',
+                                    minWidth:
+                                        !vertical && thumbnailElement !== null
+                                            ? thumbnailSize + 10
+                                            : undefined,
+                                } as any
+                            }
                         >
                             {thumbnailElement || 'Thumbnail'}
                             {selectable ? (

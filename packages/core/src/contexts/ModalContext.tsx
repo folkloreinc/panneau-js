@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 
@@ -20,7 +19,8 @@ interface ModalContextValue {
 
 export const ModalContext = React.createContext<ModalContextValue | null>(null);
 
-export const useModal = (): ModalContextValue => useContext(ModalContext) || ({} as ModalContextValue);
+export const useModal = (): ModalContextValue =>
+    useContext(ModalContext) || ({} as ModalContextValue);
 
 interface ModalProviderProps {
     children: ReactNode;
@@ -98,7 +98,7 @@ function ModalProvider({ children, container: initialContainer = null }: ModalPr
         [modals, container, setContainer, register, unregister, closeLastModal, getModalById],
     );
 
-    return <ModalContext.Provider value={value}>{children}</ModalContext.Provider>;
+    return <ModalContext value={value}>{children}</ModalContext>;
 }
 
 export { ModalProvider };

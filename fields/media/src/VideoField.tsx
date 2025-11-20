@@ -1,5 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import MediaField from './MediaField';
 

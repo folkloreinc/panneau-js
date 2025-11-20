@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import get from 'lodash-es/get';
 import isEmpty from 'lodash-es/isEmpty';
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 
 import type { Message } from '@panneau/core/types';
 import { getPathValue } from '@panneau/core/utils';
@@ -49,7 +49,7 @@ function ResourceCard({
     children = null,
     header = null,
     footer = null,
-    className = null
+    className = null,
 }: ResourceCardProps) {
     const getItemLabel = useCallback(
         (it: ResourceItem, path: string) => {

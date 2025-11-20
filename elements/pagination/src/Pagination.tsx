@@ -1,8 +1,8 @@
-/* eslint-disable jsx-a11y/control-has-associated-label, react/jsx-indent, react/no-array-index-key, react/jsx-props-no-spreading */
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
 import queryString from 'query-string';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Item } from '@panneau/core/types';
@@ -212,7 +212,9 @@ function Pagination({
                                 ])}
                                 href={getUrl(page - 1) || '#'}
                                 onClick={
-                                    onClickPage !== null ? (e) => onClickPage(page - 1, e) : undefined
+                                    onClickPage !== null
+                                        ? (e) => onClickPage(page - 1, e)
+                                        : undefined
                                 }
                             >
                                 {previousLabel}
@@ -255,7 +257,11 @@ function Pagination({
                                           [linkClassName!]: linkClassName !== null,
                                       },
                                   ])}
-                                  href={pageNumber !== '...' ? getUrl(pageNumber as number) || '#' : '#'}
+                                  href={
+                                      pageNumber !== '...'
+                                          ? getUrl(pageNumber as number) || '#'
+                                          : '#'
+                                  }
                                   onClick={
                                       pageNumber !== '...' && onClickPage !== null
                                           ? (e) => onClickPage(pageNumber as number, e)
@@ -291,7 +297,9 @@ function Pagination({
                                 ])}
                                 href={getUrl(page + 1) || '#'}
                                 onClick={
-                                    onClickPage !== null ? (e) => onClickPage(page + 1, e) : undefined
+                                    onClickPage !== null
+                                        ? (e) => onClickPage(page + 1, e)
+                                        : undefined
                                 }
                             >
                                 {nextLabel}

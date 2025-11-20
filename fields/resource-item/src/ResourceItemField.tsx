@@ -1,15 +1,12 @@
-/* eslint-disable no-nested-ternary */
-
-/* eslint-disable no-shadow, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
 import isEmpty from 'lodash-es/isEmpty';
 import uniqBy from 'lodash-es/uniqBy';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import type { FormErrors, Message } from '@panneau/core/types';
 import { usePanneauResource } from '@panneau/core/contexts';
+import type { FormErrors, Message } from '@panneau/core/types';
 import { getPathValue, isMessage } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Button from '@panneau/element-button';
@@ -103,7 +100,7 @@ function ResourceItemField({
     disabled = false,
     className = null,
     inputClassName = null,
-    onChange = null
+    onChange = null,
 }: ResourceItemFieldProps) {
     const intl = useIntl();
     const resource = usePanneauResource(resourceId);
@@ -180,7 +177,12 @@ function ResourceItemField({
     );
 
     const onScrollEnd = useCallback(() => {
-        if (page !== null && typeof page === 'number' && typeof lastPage === 'number' && page >= lastPage) {
+        if (
+            page !== null &&
+            typeof page === 'number' &&
+            typeof lastPage === 'number' &&
+            page >= lastPage
+        ) {
             return;
         }
         if (paginated && typeof page === 'number') {
@@ -222,7 +224,9 @@ function ResourceItemField({
         (newId: string | number | (string | number)[] | null) => {
             if (onChange === null) return;
             if (multiple && isArray(newId)) {
-                const newValue = items.filter(({ id = null }) => newId.indexOf(id as string | number) !== -1) || [];
+                const newValue =
+                    items.filter(({ id = null }) => newId.indexOf(id as string | number) !== -1) ||
+                    [];
                 onChange(newValue);
             } else if (!isArray(newId)) {
                 const newValue = items.filter(({ id = null }) => id === newId) || [];

@@ -1,6 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React from 'react';
 
 import { useDisplaysComponentsManager } from '@panneau/core/contexts';
 

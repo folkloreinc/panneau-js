@@ -1,8 +1,7 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isNaN from 'lodash-es/isNaN';
 import isNumber from 'lodash-es/isNumber';
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import Icon from '@panneau/element-icon';
 import TextField from '@panneau/field-text';
@@ -52,7 +51,9 @@ function NumberField({
                     return newValue;
                 }
                 if (isNumeric(newValue)) {
-                    return float ? parseFloat(newValue as string) : parseInt(newValue as string, 10);
+                    return float
+                        ? parseFloat(newValue as string)
+                        : parseInt(newValue as string, 10);
                 }
             }
             return null;

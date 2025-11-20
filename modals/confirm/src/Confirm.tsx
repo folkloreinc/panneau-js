@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Dialog from '@panneau/modal-dialog';
@@ -26,8 +25,8 @@ function ConfirmModal({
     confirmButton = null,
     cancelButton = null,
     className = null,
-    children = null
-}: ConfirmModalProps)  {
+    children = null,
+}: ConfirmModalProps) {
     return (
         <Dialog
             id={id}

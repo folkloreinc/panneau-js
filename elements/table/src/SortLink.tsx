@@ -1,8 +1,7 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import isObject from 'lodash-es/isObject';
 import omit from 'lodash-es/omit';
 import queryString from 'query-string';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import type { Field } from '@panneau/core/types';
 import Icon from '@panneau/element-icon';

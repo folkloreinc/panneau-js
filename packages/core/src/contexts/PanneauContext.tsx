@@ -1,8 +1,8 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
 import React, { useContext } from 'react';
 import type { ReactNode } from 'react';
+
 import type { PanneauDefinition, Resource } from '@panneau/core/types';
 
 const PanneauContext = React.createContext<PanneauDefinition | null>(null);
@@ -66,7 +66,6 @@ export const usePanneauComponent = (namespace: string | null, name: string): str
     }
 
     if (isObject(component) && isString(component?.componnent)) {
-        // eslint-disable-next-line no-unused-vars
         const { component: innerComponent, ...props } = component;
         return component.component;
     }
@@ -90,7 +89,7 @@ interface PanneauProviderProps {
 }
 
 function PanneauProvider({ definition, children }: PanneauProviderProps) {
-    return <PanneauContext.Provider value={definition}>{children}</PanneauContext.Provider>;
+    return <PanneauContext value={definition}>{children}</PanneauContext>;
 }
 
 export { PanneauProvider };

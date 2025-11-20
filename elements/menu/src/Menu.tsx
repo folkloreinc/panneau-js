@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import type { DropdownAlign, MenuItem } from '@panneau/core/types';
 import Dropdown from '@panneau/element-dropdown';
@@ -46,7 +45,7 @@ function Menu({
     dropdownClassName = null,
     dropdownItemClassName = null,
     dropdownLinkClassName = null,
-    dropdownAlign = null
+    dropdownAlign = null,
 }: MenuProps) {
     const [dropdownsVisible, setDropdownsVisible] = useState(items.map(() => false));
     const ListComponent: any = linkAsItem ? 'div' : tagName;

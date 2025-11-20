@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { loadGoogleApi } from '@folklore/services';
 import React, { useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
@@ -10,8 +9,13 @@ export const GoogleApiClientContext = React.createContext<any | null>(null);
 export const useGoogleApiClient = (): any | null => useContext(GoogleApiClientContext);
 
 export const withGoogleApiClient = (WrappedComponent: React.ComponentType<any>) => {
-    const getDisplayName = ({ displayName = null, name = null }: { displayName?: string | null; name?: string | null }): string =>
-        displayName || name || 'Component';
+    const getDisplayName = ({
+        displayName = null,
+        name = null,
+    }: {
+        displayName?: string | null;
+        name?: string | null;
+    }): string => displayName || name || 'Component';
 
     const WithGoogleApiClientComponent = (props: any) => (
         <GoogleApiClientContext.Consumer>
@@ -42,9 +46,7 @@ function GoogleApiClientProvider({ children }: GoogleApiClientProviderProps) {
             )
             .then((gapi) => setClient(gapi));
     }, [apiKey, setClient]);
-    return (
-        <GoogleApiClientContext.Provider value={client}>{children}</GoogleApiClientContext.Provider>
-    );
+    return <GoogleApiClientContext value={client}>{children}</GoogleApiClientContext>;
 }
 
 export { GoogleApiClientProvider };

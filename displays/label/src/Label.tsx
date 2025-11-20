@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface LabelProps {
     labels?: Record<string, string>;
     value?: string | null;

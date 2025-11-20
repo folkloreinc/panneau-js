@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type { FieldOption } from '@panneau/core/types';
 import Radios from '@panneau/element-radios';
 
@@ -26,7 +24,7 @@ function RadiosField({
     uncheckable = false,
     className = null,
     buttonClassName = null,
-    onChange = null
+    onChange = null,
 }: RadiosFieldProps) {
     return (
         <Radios

@@ -1,5 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { MediasPickerContainer, MediasResourcePicker } from '@panneau/medias';
@@ -28,7 +27,7 @@ function MediasPickerModal({
     cancelButton = null,
     multiple = false,
     ...props
-}: MediasPickerModalProps)  {
+}: MediasPickerModalProps) {
     const [selectedItems, setSelectedItems] = useState(value);
     const onConfirm = useCallback(() => {
         if (onChange !== null) {

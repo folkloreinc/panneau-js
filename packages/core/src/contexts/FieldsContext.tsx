@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import isString from 'lodash-es/isString';
 import uniqBy from 'lodash-es/uniqBy';
 import React, { useContext, useMemo } from 'react';
@@ -59,11 +58,11 @@ function FieldsProvider({ fields = null, manager = null, children }: FieldsProvi
     }, [finalManager]);
 
     return (
-        <FieldsContext.Provider value={finalManager}>
+        <FieldsContext value={finalManager}>
             <ComponentsProvider namespace={FIELDS_NAMESPACE} components={components}>
                 {children}
             </ComponentsProvider>
-        </FieldsContext.Provider>
+        </FieldsContext>
     );
 }
 

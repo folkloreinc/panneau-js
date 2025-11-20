@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 
@@ -90,7 +89,7 @@ function PanelsProvider({ children, container: initialContainer = null }: Panels
         [panels, setContainer, container, register, unregister],
     );
 
-    return <PanelsContext.Provider value={value}>{children}</PanelsContext.Provider>;
+    return <PanelsContext value={value}>{children}</PanelsContext>;
 }
 
 export { PanelsProvider };

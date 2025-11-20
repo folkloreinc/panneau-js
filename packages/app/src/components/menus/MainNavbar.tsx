@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useUser } from '@panneau/auth';
 import { usePanneau, usePanneauColorScheme, useUrlGenerator } from '@panneau/core/contexts';

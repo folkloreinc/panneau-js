@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import isString from 'lodash-es/isString';
 import React, { useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
@@ -224,7 +223,7 @@ function ComponentsProvider({
             }),
         [previousManager, manager, components, namespace],
     );
-    return <ComponentsContext.Provider value={finalManager}>{children}</ComponentsContext.Provider>;
+    return <ComponentsContext value={finalManager}>{children}</ComponentsContext>;
 }
 
 export { ComponentsProvider };

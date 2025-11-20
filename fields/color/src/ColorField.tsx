@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import classNames from 'classnames';
 import isEmpty from 'lodash-es/isEmpty';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
 import { FormattedMessage } from 'react-intl';
 import tinycolor from 'tinycolor2';
@@ -119,10 +119,7 @@ function ColorPickerField({
     const pickerRef = useRef<HTMLDivElement>(null);
     const onDocumentClick = useCallback(
         (e: MouseEvent) => {
-            if (
-                pickerRef.current !== null &&
-                !pickerRef.current.contains(e.target as Node)
-            ) {
+            if (pickerRef.current !== null && !pickerRef.current.contains(e.target as Node)) {
                 setPickerOpened(false);
             }
         },

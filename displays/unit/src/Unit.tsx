@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import isObject from 'lodash-es/isObject';
 import prettyBytes from 'pretty-bytes';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { formatDuration } from '@panneau/core/utils';
 

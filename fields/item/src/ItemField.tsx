@@ -1,7 +1,6 @@
-/* eslint-disable no-shadow, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isString from 'lodash-es/isString';
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import type { ControlSize, Message } from '@panneau/core/types';
@@ -105,10 +104,11 @@ function ItemField({
             if (isString(it)) {
                 return it;
             }
-            const { value: newValue, __isNew__: isNew = false } = (it as {
-                value?: string;
-                __isNew__?: boolean;
-            }) || {};
+            const { value: newValue, __isNew__: isNew = false } =
+                (it as {
+                    value?: string;
+                    __isNew__?: boolean;
+                }) || {};
             if (isNew) {
                 return newValue || '';
             }
@@ -122,10 +122,11 @@ function ItemField({
             if (isString(it)) {
                 return it;
             }
-            const { label: newLabel, __isNew__: isNew = false } = (it as {
-                label?: string;
-                __isNew__?: boolean;
-            }) || {};
+            const { label: newLabel, __isNew__: isNew = false } =
+                (it as {
+                    label?: string;
+                    __isNew__?: boolean;
+                }) || {};
             if (isNew) {
                 return newLabel || '';
             }
@@ -225,7 +226,6 @@ function ItemField({
                                 isMessage(placeholder)
                                     ? intl.formatMessage(placeholder as Message)
                                     : placeholder || (
-                                          // eslint-disable-next-line react/jsx-indent
                                           <FormattedMessage
                                               defaultMessage="Choose an item"
                                               description="Default placeholder"

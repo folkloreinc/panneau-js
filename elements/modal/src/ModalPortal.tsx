@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
 import { useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -10,11 +9,7 @@ interface ModalPortalProps {
     children?: React.ReactNode | null;
 }
 
-function ModalPortal({
-    id = null,
-    data = null,
-    children = null
-}: ModalPortalProps) {
+function ModalPortal({ id = null, data = null, children = null }: ModalPortalProps) {
     const { container = null, register = null, unregister = null } = useModal();
     const finalId = useMemo(() => (id !== null ? id : `modal-${new Date().getTime()}`), [id]);
 

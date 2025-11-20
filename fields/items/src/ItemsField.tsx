@@ -1,9 +1,9 @@
-/* eslint-disable jsx-a11y/control-has-associated-label, no-nested-ternary, react/no-array-index-key, react/jsx-props-no-spreading, react/prop-types */
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import { faCaretDown, faCaretRight, faGripLines, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import isFunction from 'lodash-es/isFunction';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ReactSortable } from 'react-sortablejs';
 import { v4 as uuid } from 'uuid';
@@ -235,7 +235,6 @@ function ItemsField({
                 const emptyIndex = emptyItems.findIndex(({ id = '' }) => it.id === id);
 
                 if (emptyIndex === -1) {
-                    // eslint-disable-next-line no-unused-vars
                     const { valueIndex = undefined, ...otherProps } = it || {};
                     setEmptyItems([...emptyItems, { ...otherProps, empty: true }]);
 

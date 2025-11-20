@@ -1,6 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-
 import type { SelectOption } from '@panneau/core/types';
 import Radios from '@panneau/element-radios';
 

@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import classNames from 'classnames';
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 
 import type { Toggle } from '@panneau/core/types';
 import ToggleField from '@panneau/field-toggle';
@@ -24,7 +24,7 @@ function TogglesField({
     toggles = DEFAULT_TOGGLES,
     disabled = false,
     onChange = null,
-    className = null
+    className = null,
 }: TogglesFieldProps) {
     const onToggleChange = useCallback(
         (key: string, newToggleValue: boolean | string | null) => {

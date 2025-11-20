@@ -1,6 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React from 'react';
 import { Link as ReactLink } from 'wouter';
 
 import type { Label as LabelType } from '@panneau/core/types';

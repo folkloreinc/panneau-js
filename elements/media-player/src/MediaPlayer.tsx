@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 
 import Audio from './Audio';
 import Video from './Video';

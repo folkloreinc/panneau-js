@@ -22,6 +22,20 @@ The `packages` folder contains all the general packages and the meta-packages gr
 
 ### November 2025
 
+- **Story Files TypeScript Migration**: Migrated all Storybook story files to TypeScript
+    - Converted 99 `*.stories.jsx` files to `*.stories.tsx` format across all packages
+    - Story files now benefit from TypeScript type checking
+    - Storybook configuration already supported `.tsx` files
+    - Covers displays, elements, fields, filters, forms, lists, modals, and packages
+    - Total story files: 108 (99 newly converted + 9 from actions folder)
+
+- **React Imports Cleanup**: Removed all unused React imports from TypeScript files
+    - Removed standalone `import React from 'react';` statements from 125 files
+    - Converted `import React, { hooks } from 'react';` to `import { hooks } from 'react';` in 89 files
+    - Total 297 `.tsx` files cleaned up
+    - Leverages modern React 17+ JSX transform (no React import needed for JSX)
+    - Verified with ESLint - zero errors related to React imports
+
 - **ESLint Flat Config Migration**: Migrated from legacy ESLint configuration to flat config format
     - Converted from `.eslintrc.json` to `eslint.config.mjs` using typescript-eslint.config
     - Removed `.eslintignore` file (ignores now defined in config)
@@ -220,11 +234,13 @@ ComponentName.propTypes = propTypes;
 export default ComponentName;
 ```
 
-**TypeScript Component Pattern** (Actions folder uses this pattern):
+**TypeScript Component Pattern** (Actions folder and story files use this pattern):
 
 ```typescript
-import React from 'react';
 import type { ButtonTheme, Field } from '@panneau/core/types';
+
+// Note: No need to import React for JSX (React 17+ JSX transform)
+// Only import from 'react' if you need hooks like useState, useEffect, etc.
 
 // TypeScript interface for props
 interface ComponentNameProps {
@@ -251,6 +267,33 @@ function ComponentName({
 }
 
 // Default export (no PropTypes needed)
+export default ComponentName;
+```
+
+**TypeScript Component with Hooks**:
+
+```typescript
+import { useCallback, useState } from 'react';
+import type { ButtonTheme, Field } from '@panneau/core/types';
+
+// Only import hooks you need from 'react', no need to import React itself
+
+interface ComponentNameProps {
+    initialValue?: string;
+    onChange?: (value: string) => void;
+}
+
+function ComponentName({ initialValue = '', onChange = null }: ComponentNameProps) {
+    const [value, setValue] = useState(initialValue);
+
+    const handleChange = useCallback((newValue: string) => {
+        setValue(newValue);
+        onChange?.(newValue);
+    }, [onChange]);
+
+    return <input value={value} onChange={(e) => handleChange(e.target.value)} />;
+}
+
 export default ComponentName;
 ```
 
@@ -481,9 +524,11 @@ export default {
 - **CSS Module naming**: Follows `[path][name]__[local]--[hash:base64:5]` pattern
 - **Side effects**: CSS/SCSS files marked as side effects to ensure inclusion in builds
 - **Component style**: All components use function declarations, NOT arrow functions (refactored November 2025)
-- **Story files**: `*.stories.jsx` files follow different patterns and conventions than component files
+- **Story files**: All `*.stories.tsx` files (TypeScript format, migrated November 2025)
 - **Storybook version**: Currently using Storybook v10.0.8 (upgraded November 2025)
 - **ESLint format**: Uses flat config format (`eslint.config.mjs`) with typescript-eslint
+- **React imports**: Modern React 17+ JSX transform - no need to import React for JSX usage
+- **TypeScript files**: 297 `.tsx` files with cleaned imports (no unused React imports)
 
 ## Best Practices
 
@@ -510,6 +555,10 @@ export default {
 3. **Type imports**: Use `import type` for TypeScript types to enable tree-shaking
 4. **Group imports**: Follow the import order: third-party → `@panneau/*` → utilities/hooks → styles
 5. **Co-locate stories**: Keep story files in `_stories/` subdirectories within each package
+6. **React imports**: Only import React hooks when needed - no need to import React for JSX
+    - ✅ Correct: `import { useState, useEffect } from 'react';`
+    - ❌ Avoid: `import React from 'react';` (unless using React namespace directly)
+    - ✅ Correct: `import { useCallback } from 'react';` (only what you need)
 
 ### Internationalization
 
@@ -532,17 +581,29 @@ export default {
 The codebase is gradually migrating from JavaScript to TypeScript. When migrating components:
 
 1. **File Extension**: Change `.jsx` to `.tsx` (or `.js` to `.ts` for non-component files)
+    - Component files: `ComponentName.jsx` → `ComponentName.tsx`
+    - Story files: `ComponentName.stories.jsx` → `ComponentName.stories.tsx`
+    - All story files have been migrated to `.tsx` format (108 files total)
 
-2. **Remove PropTypes**: Remove the PropTypes import and propTypes definition:
+2. **Remove PropTypes and unnecessary React imports**: Remove the PropTypes import, propTypes definition, and standalone React import:
 
     ```javascript
     // ❌ Remove these
+    import React from 'react';
     import PropTypes from 'prop-types';
 
     const propTypes = {
         /* ... */
     };
     ComponentName.propTypes = propTypes;
+    ```
+
+    ```typescript
+    // ✅ Keep only if using hooks
+    import { useState, useCallback } from 'react';
+
+    // ✅ Or remove React import entirely if not using hooks
+    // No import needed for JSX (React 17+ transform)
     ```
 
 3. **Add TypeScript Interface**: Create a TypeScript interface using types from `@panneau/core/types`:
@@ -752,9 +813,12 @@ export default ComponentName;
 ### Component File Template (TypeScript)
 
 ```typescript
-import React from 'react';
 import type { Field } from '@panneau/core/types';
+
 import styles from './styles.module.scss';
+
+// No need to import React for JSX (React 17+ transform)
+// Only import hooks if needed: import { useState, useEffect } from 'react';
 
 interface ComponentNameProps {
     value?: string;
@@ -780,6 +844,30 @@ function ComponentName({
 }
 
 export default ComponentName;
+```
+
+### Story File Template (TypeScript)
+
+```typescript
+import ComponentName from '../ComponentName';
+
+export default {
+    component: ComponentName,
+    title: 'Category/ComponentName',
+    parameters: {
+        intl: true,
+    },
+};
+
+export const Default = {
+    render: () => <ComponentName value="example" />,
+};
+
+export const WithCustomProps = {
+    render: () => (
+        <ComponentName value="example" placeholder="Enter text" theme="primary" />
+    ),
+};
 ```
 
 ### Definition File Template
@@ -825,21 +913,68 @@ export default {
 ### Common Import Patterns
 
 ```javascript
-// Component imports (JavaScript)
+// Component imports (JavaScript) - Still uses React import and PropTypes
 import PropTypes from 'prop-types';
 import React from 'react';
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import Button from '@panneau/element-button';
 import styles from './styles.module.scss';
 
-// Component imports (TypeScript)
-import React from 'react';
+// Component imports (TypeScript) - No React import needed for JSX
 import type { Field, Button as ButtonType } from '@panneau/core/types';
 import Button from '@panneau/element-button';
 import styles from './styles.module.scss';
 
+// TypeScript component with hooks - Only import what you need
+import { useCallback, useState, useEffect } from 'react';
+import type { Field } from '@panneau/core/types';
+import Button from '@panneau/element-button';
+import styles from './styles.module.scss';
+
+// Story file imports (TypeScript) - Minimal imports
+import ComponentName from '../ComponentName';
+import testImage from './test.png';
+
 // Utility imports
 import classnames from 'classnames';
 import get from 'lodash-es/get';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
+```
+
+### React Import Guidelines
+
+**Modern approach (React 17+)** - The codebase uses the new JSX transform:
+
+- ✅ **No React import for JSX**: JSX works without importing React
+- ✅ **Import only hooks needed**: `import { useState, useEffect } from 'react';`
+- ✅ **Type-only imports**: `import type { ReactNode } from 'react';` for types
+- ❌ **Avoid**: `import React from 'react';` in `.tsx` files (unless using React namespace)
+
+**Examples**:
+
+```typescript
+// ✅ Story file - no React needed
+import Avatar from '../Avatar';
+export const Normal = {
+    render: () => <Avatar value="test" />
+};
+
+// ✅ Component with hooks - import only hooks
+import { useState, useCallback } from 'react';
+function MyComponent() {
+    const [value, setValue] = useState('');
+    return <input value={value} onChange={(e) => setValue(e.target.value)} />;
+}
+
+// ✅ Component with React types - use type import
+import type { ReactNode } from 'react';
+interface Props {
+    children: ReactNode;
+}
+
+// ❌ Avoid - unnecessary React import
+import React from 'react';
+function MyComponent() {
+    return <div>Hello</div>; // React not used
+}
 ```

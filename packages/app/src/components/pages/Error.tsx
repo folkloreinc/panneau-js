@@ -1,7 +1,6 @@
-import React from 'react';
 import { defineMessages } from 'react-intl';
-import type { StatusCode } from '@panneau/core/types';
 
+import type { StatusCode } from '@panneau/core/types';
 import Label from '@panneau/element-label';
 
 import GuestLayout from '../layouts/Guest';

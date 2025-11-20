@@ -1,11 +1,10 @@
-/* eslint-disable react/jsx-props-no-spreading */
 // import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import format from 'date-fns/format';
 import formatISO from 'date-fns/formatISO';
 import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
 import isObject from 'lodash-es/isObject';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 // import classNames from 'classnames';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { defineMessage, useIntl } from 'react-intl';

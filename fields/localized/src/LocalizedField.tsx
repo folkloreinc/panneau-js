@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isEmpty from 'lodash-es/isEmpty';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useFieldsComponents, useLocales } from '@panneau/core/contexts';
 import type { Field } from '@panneau/core/types';

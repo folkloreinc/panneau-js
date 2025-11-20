@@ -1,0 +1,202 @@
+import { useCallback, useState } from 'react';
+
+import { ModalProvider } from '@panneau/core/contexts';
+import { Modals } from '@panneau/element-modal';
+
+import withApi from '../../../../.storybook/decorators/withApiProvider';
+import ActionsProvider from '../../../actions';
+import { useApi } from '../../../data/src/contexts/ApiContext';
+import DisplaysProvider from '../../../displays';
+import FieldsProvider from '../../../fields';
+import FiltersProvider from '../../../filters';
+import IntlProvider from '../../../intl/src/IntlProvider';
+import { UppyProvider } from '../../../uppy/src/UppyContext';
+import { MediaProvider } from '../MediaContext';
+import { MediasApiProvider } from '../MediasApiContext';
+import MediasPicker from '../MediasPicker';
+
+import Media1 from '../../../../.storybook/api/items/medias/1.json';
+import Media2 from '../../../../.storybook/api/items/medias/2.json';
+import Media3 from '../../../../.storybook/api/items/medias/3.json';
+import Media11 from '../../../../.storybook/api/items/medias/11.json';
+
+export default {
+    title: 'Medias/MediasPicker',
+    component: MediasPicker,
+    decorators: [withApi],
+    parameters: {
+        intl: true,
+    },
+};
+
+const items = { data: [Media1, Media2, Media3], pagination: { page: 1 } };
+
+// eslint-disable-next-line react/prop-types
+const Container = ({ value: initialValue = null, ...props } = {}) => {
+    const api = useApi();
+    const [value, setValue] = useState(initialValue);
+    const onChange = useCallback(
+        (newValue) => {
+            setValue(newValue);
+        },
+        [setValue],
+    );
+    return (
+        <IntlProvider>
+            <FieldsProvider>
+                <DisplaysProvider>
+                    <FiltersProvider>
+                        <ModalProvider>
+                            <ActionsProvider>
+                                <MediasApiProvider api={api.medias}>
+                                    <MediaProvider>
+                                        <MediasPicker
+                                            {...props}
+                                            value={value}
+                                            onChange={onChange}
+                                        />
+                                        <Modals />
+                                    </MediaProvider>
+                                </MediasApiProvider>
+                            </ActionsProvider>
+                        </ModalProvider>
+                    </FiltersProvider>
+                </DisplaysProvider>
+            </FieldsProvider>
+        </IntlProvider>
+    );
+};
+
+export const Default = {
+    render: () => (
+        <UppyProvider>
+            <Container layout="grid" picker />
+        </UppyProvider>
+    ),
+};
+
+export const Items = {
+    render: () => (
+        <UppyProvider>
+            <Container layout="grid" picker items={items} />
+        </UppyProvider>
+    ),
+};
+
+export const Multiple = {
+    render: () => (
+        <UppyProvider>
+            <Container layout="table" picker multipleSelection />
+        </UppyProvider>
+    ),
+};
+
+export const Dark = {
+    render: () => (
+        <UppyProvider>
+            <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
+                <Container layout="table" theme="dark" picker withStickySelection />
+            </div>
+        </UppyProvider>
+    ),
+};
+
+export const WithUploadMultiple = {
+    render: () => (
+        <UppyProvider>
+            <Container
+                layout="table"
+                picker
+                multipleSelection
+                uploadButton={{ id: 1, icon: 'circle' }}
+            />
+        </UppyProvider>
+    ),
+};
+
+export const WithVideoType = {
+    render: () => (
+        <UppyProvider>
+            <Container
+                layout="table"
+                picker
+                multipleSelection
+                uploadButton={{ id: 1, icon: 'circle' }}
+                types={['video']}
+            />
+        </UppyProvider>
+    ),
+};
+
+export const WithStickySelectionAndTypes = {
+    render: () => (
+        <UppyProvider>
+            <Container
+                layout="table"
+                picker
+                uploadButton={{ id: 1, icon: 'circle' }}
+                types={['video', 'audio']}
+                value={Media11}
+                withStickySelection
+            />
+        </UppyProvider>
+    ),
+};
+
+export const WithStickySelection = {
+    render: () => (
+        <UppyProvider>
+            <Container
+                layout="table"
+                picker
+                uploadButton={{ id: 1, icon: 'circle' }}
+                value={Media11}
+                withStickySelection
+            />
+        </UppyProvider>
+    ),
+};
+
+export const WithValueMultiple = {
+    render: () => (
+        <UppyProvider>
+            <Container
+                layout="table"
+                picker
+                multipleSelection
+                uploadButton={{ id: 1, icon: 'circle' }}
+                types={['image', 'video', 'audio']}
+                value={[Media2, Media3]}
+            />
+        </UppyProvider>
+    ),
+};
+
+export const WithTrash = {
+    render: () => (
+        <UppyProvider>
+            <Container layout="grid" picker withTrash />
+        </UppyProvider>
+    ),
+};
+
+const fields = [];
+const columns = [];
+// const filters = [];
+
+export const Custom = {
+    render: () => (
+        <UppyProvider>
+            <div style={{ padding: 20, backgroundColor: '#0FF' }}>
+                <Container
+                    layout="table"
+                    picker
+                    multipleSelection
+                    fields={fields}
+                    columns={columns}
+                    // filters={filters}
+                />
+            </div>
+        </UppyProvider>
+    ),
+};

@@ -1,8 +1,7 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import isEmpty from 'lodash-es/isEmpty';
 import isNumber from 'lodash-es/isNumber';
 import isObject from 'lodash-es/isObject';
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Card from '@panneau/element-card';

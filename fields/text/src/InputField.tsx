@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
 import classNames from 'classnames';
 import isEmpty from 'lodash-es/isEmpty';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { v1 as uuid } from 'uuid';
 
 import InputGroup from '@panneau/field-input-group';
@@ -66,7 +65,7 @@ function InputField({
     dataList = null,
     inputRef = null,
     style = null,
-    className = null
+    className = null,
 }: InputFieldProps) {
     const dataListId = useMemo(() => (dataList !== null ? uuid() : null), [dataList]);
 
@@ -99,7 +98,9 @@ function InputField({
         title: title || undefined,
         onChange: nativeOnChange
             ? onChange
-            : ({ target: { value: newValue = '' } }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+            : ({
+                  target: { value: newValue = '' },
+              }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
                   onChange !== null ? onChange(!isEmpty(newValue) ? newValue : null) : null,
     };
 

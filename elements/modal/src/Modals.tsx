@@ -1,6 +1,5 @@
-/* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useModal } from '@panneau/core/contexts';
 import { KEYCODES, useKeyboardKeys } from '@panneau/core/hooks';
@@ -12,10 +11,7 @@ interface ModalsProps {
     className?: string | null;
 }
 
-function Modals({
-    theme = null,
-    className = null
-}: ModalsProps) {
+function Modals({ theme = null, className = null }: ModalsProps) {
     const { modals = null, setContainer = null, closeLastModal = null } = useModal();
 
     const containerRef = useRef<HTMLDivElement>(null);

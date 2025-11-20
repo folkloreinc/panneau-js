@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';

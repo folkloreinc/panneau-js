@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isObject from 'lodash-es/isObject';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Actions from '@panneau/action-actions';
@@ -71,16 +70,7 @@ function ResourceItemsList({
             actionsProps = null,
             ...listProps
         } = DEFAULT_INDEX,
-    } = resource as Resource & {
-        index?: {
-            component?: string;
-            showPagination?: boolean;
-            filters?: unknown[];
-            actions?: unknown[];
-            batchActions?: unknown[];
-            actionsProps?: Record<string, unknown>;
-        };
-    };
+    } = resource || {};
 
     const resourceUrlGenerator = useResourceUrlGenerator(
         isObject(providedResource) ? resourceId : providedResource,

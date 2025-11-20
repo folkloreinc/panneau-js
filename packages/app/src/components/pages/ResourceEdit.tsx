@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import type { Item, Resource } from '@panneau/core/types';
 
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceTypeName } from '@panneau/core/hooks';
+import type { Item, Resource } from '@panneau/core/types';
 import { useResourceItem } from '@panneau/data';
 import Loading from '@panneau/element-loading';
 import { useResourceValues } from '@panneau/intl';

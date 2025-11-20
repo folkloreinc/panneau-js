@@ -1,9 +1,8 @@
-/* eslint-disable react/jsx-props-no-spreading */
 // import classNames from 'classnames';
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Label } from '@panneau/core/types';
@@ -59,7 +58,13 @@ interface MediaFieldProps {
 }
 
 const DEFAULT_TYPES: MediaType[] = ['audio', 'image', 'video'];
-const DEFAULT_SOURCES: MediaSource[] = ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'];
+const DEFAULT_SOURCES: MediaSource[] = [
+    'webcam',
+    'facebook',
+    'instagram',
+    'dropbox',
+    'google-drive',
+];
 
 function MediaField({
     resource = 'medias',

@@ -1,8 +1,7 @@
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import type { Resource } from '@panneau/core/types';
 
 import { ResourceProvider } from '@panneau/core/contexts';
+import type { Resource } from '@panneau/core/types';
 import { useResourceItem } from '@panneau/data';
 import Loading from '@panneau/element-loading';
 

@@ -1,6 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import Dashboard from '@uppy/react/dashboard';
-import React from 'react';
 
 import Dialog from '@panneau/modal-dialog';
 

@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { loadGoogleMaps } from '@folklore/services';
 import React, { useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
@@ -10,8 +9,13 @@ export const GoogleMapsClientContext = React.createContext<any | null>(null);
 export const useGoogleMapsClient = (): any | null => useContext(GoogleMapsClientContext);
 
 export const withGoogleMapsClient = (WrappedComponent: React.ComponentType<any>) => {
-    const getDisplayName = ({ displayName = null, name = null }: { displayName?: string | null; name?: string | null }): string =>
-        displayName || name || 'Component';
+    const getDisplayName = ({
+        displayName = null,
+        name = null,
+    }: {
+        displayName?: string | null;
+        name?: string | null;
+    }): string => displayName || name || 'Component';
 
     const WithGoogleMapsClientComponent = (props: any) => (
         <GoogleMapsClientContext.Consumer>
@@ -47,11 +51,7 @@ function GoogleMapsClientProvider({
         }
     }, [apiKey, locale, libraries, setClient, exisitingClient]);
 
-    return (
-        <GoogleMapsClientContext.Provider value={client}>
-            {children}
-        </GoogleMapsClientContext.Provider>
-    );
+    return <GoogleMapsClientContext value={client}>{children}</GoogleMapsClientContext>;
 }
 
 export { GoogleMapsClientProvider };

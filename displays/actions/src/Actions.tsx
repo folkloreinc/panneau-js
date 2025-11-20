@@ -1,6 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React from 'react';
 
 import Actions from '@panneau/action-actions';
 import { useActions } from '@panneau/core/hooks';

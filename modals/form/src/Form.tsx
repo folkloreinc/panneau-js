@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field } from '@panneau/core/types';
@@ -35,7 +33,7 @@ function ModalForm({
     className = null,
     children = null,
     ...props
-}: ModalFormProps)  {
+}: ModalFormProps) {
     return (
         <Dialog
             id={id}

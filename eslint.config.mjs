@@ -27,7 +27,8 @@ const config = tseslint.config(
     {
         settings: {
             react: {
-                defaultVersion: '18',
+                version: '19',
+                defaultVersion: '19',
             },
         },
         languageOptions: {

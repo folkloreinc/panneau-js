@@ -1,9 +1,7 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import type { Resource } from '@panneau/core/types';
 
 import { usePanneauResources, useUrlGenerator } from '@panneau/core/contexts';
+import type { Resource } from '@panneau/core/types';
 import Link from '@panneau/element-link';
 import { useResourceValues } from '@panneau/intl';
 
@@ -44,12 +42,7 @@ function HomePage() {
             <div className="container-sm py-4">
                 {visibleResources.map((resource) => {
                     const { id: resourceId } = resource || {};
-                    return (
-                        <ResourceLink
-                            key={`resource-link-${resourceId}`}
-                            resource={resource}
-                        />
-                    );
+                    return <ResourceLink key={`resource-link-${resourceId}`} resource={resource} />;
                 })}
             </div>
         </MainLayout>

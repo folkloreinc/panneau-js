@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import isEmpty from 'lodash-es/isEmpty';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { KEYCODES, useKeyboardKeys } from '@panneau/core/hooks';

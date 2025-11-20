@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
@@ -20,7 +19,7 @@ interface GoogleKeysProviderProps {
 function GoogleKeysProvider({ children, apiKey = null }: GoogleKeysProviderProps) {
     const { apiKey: previousApiKey } = useGoogleKeys();
     const value = useMemo(() => ({ apiKey: apiKey || previousApiKey }), [previousApiKey, apiKey]);
-    return <GoogleKeysContext.Provider value={value}>{children}</GoogleKeysContext.Provider>;
+    return <GoogleKeysContext value={value}>{children}</GoogleKeysContext>;
 }
 
 export { GoogleKeysProvider };

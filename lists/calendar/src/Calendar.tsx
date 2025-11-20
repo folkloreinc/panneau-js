@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import {
     addDays,
@@ -12,7 +11,7 @@ import {
     startOfWeek,
     toDate,
 } from 'date-fns';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedDate, useIntl } from 'react-intl';
 
 import type { Item, Resource } from '@panneau/core/types';
@@ -116,7 +115,6 @@ function CalendarList({
 
     const datesArray: Date[] = [];
     if (mode === 'weekly') {
-        // eslint-disable-next-line no-plusplus
         for (let i = 0; i < 7; i++) {
             const dte = addDays(activeWeekStart, i);
             datesArray.push(dte);
@@ -125,7 +123,7 @@ function CalendarList({
         const firstDayOfActualMonth = new Date(activeYear, activeMonth, 1).getDay();
         const dayBeforeDiff = firstDayOfActualMonth === 0 ? 6 : firstDayOfActualMonth;
         const gridMax = 35;
-        // eslint-disable-next-line no-plusplus
+
         for (let i = 1 - dayBeforeDiff; i <= gridMax; i++) {
             datesArray.push(new Date(activeYear, activeMonth, i));
         }

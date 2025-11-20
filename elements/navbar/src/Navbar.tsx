@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import Button from '@panneau/element-button';
 import Link from '@panneau/element-link';
@@ -36,7 +35,7 @@ function Navbar({
     className = null,
     collapseClassName = null,
     brandClassName = null,
-    breadCrumbsClassName = null
+    breadCrumbsClassName = null,
 }: NavbarProps) {
     const [menuVisible, setMenuVisible] = useState(false);
     const onClickMenu = useCallback(

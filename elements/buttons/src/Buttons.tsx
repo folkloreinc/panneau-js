@@ -1,10 +1,8 @@
-/* eslint-disable react/no-array-index-key, react/button-has-type, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
-import React from 'react';
 
-import type { Button as ButtonType, ButtonSize } from '@panneau/core/types';
 import { useButtonsComponents } from '@panneau/core/contexts';
+import type { ButtonSize, Button as ButtonType } from '@panneau/core/types';
 import Button from '@panneau/element-button';
 
 interface ButtonsProps {
@@ -28,8 +26,8 @@ function Buttons({
     renderButton = null,
     onClickButton = null,
     buttonClassName = null,
-    className = null
-}: ButtonsProps)  {
+    className = null,
+}: ButtonsProps) {
     const componentsManager = useButtonsComponents();
 
     return (
@@ -54,7 +52,7 @@ function Buttons({
                           renderButton: customRenderButton = null,
                           component = null,
                           ...buttonProps
-                      } = button as any || {};
+                      } = (button as any) || {};
 
                       const fixedProps = {
                           key: `button-${index}`,

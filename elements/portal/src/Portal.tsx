@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
 import ReactDOM from 'react-dom';
 
 interface PortalElementProps {
@@ -6,10 +5,7 @@ interface PortalElementProps {
     container?: HTMLElement | null;
 }
 
-function PortalElement({
-    children = null,
-    container = null
-}: PortalElementProps) {
+function PortalElement({ children = null, container = null }: PortalElementProps) {
     return container !== null ? ReactDOM.createPortal(children, container) : null;
 }
 

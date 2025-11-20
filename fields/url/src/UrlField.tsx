@@ -1,8 +1,7 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isEmpty from 'lodash-es/isEmpty';
 import isString from 'lodash-es/isString';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { copyToClipboard } from '@panneau/core/utils';
 import Button from '@panneau/element-button';

@@ -1,13 +1,9 @@
-/* eslint-disable formatjs/no-camel-case */
-
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isString from 'lodash-es/isString';
 import queryString from 'query-string';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useLocation, useSearch } from 'wouter';
-import type { Resource } from '@panneau/core/types';
 
 import {
     ResourceProvider,
@@ -15,6 +11,7 @@ import {
     usePanneauColorScheme,
 } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import type { Resource } from '@panneau/core/types';
 import Alert from '@panneau/element-alert';
 import Button from '@panneau/element-button';
 import { useResourceValues } from '@panneau/intl';
@@ -69,15 +66,18 @@ function ResourceIndexPage({ resource, defaultActions = DEFAULT_ACTIONS }: Resou
         (submitQuery: Record<string, unknown> | null) => {
             const newQuery =
                 submitQuery !== null
-                    ? Object.keys(submitQuery).reduce((currentQuery, key) => {
-                          const value = submitQuery[key];
-                          return value !== null
-                              ? {
-                                    ...currentQuery,
-                                    [key]: value,
-                                }
-                              : currentQuery;
-                      }, {} as Record<string, unknown>)
+                    ? Object.keys(submitQuery).reduce(
+                          (currentQuery, key) => {
+                              const value = submitQuery[key];
+                              return value !== null
+                                  ? {
+                                        ...currentQuery,
+                                        [key]: value,
+                                    }
+                                  : currentQuery;
+                          },
+                          {} as Record<string, unknown>,
+                      )
                     : null;
             navigate(
                 `${url}${

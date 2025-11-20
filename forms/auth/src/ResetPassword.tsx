@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Label } from '@panneau/core/types';
@@ -62,7 +60,10 @@ function ResetPassword({
             }
             submitButtonLabel={
                 submitButtonLabel || (
-                    <FormattedMessage defaultMessage="Save new password" description="Button label" />
+                    <FormattedMessage
+                        defaultMessage="Save new password"
+                        description="Button label"
+                    />
                 )
             }
             {...props}

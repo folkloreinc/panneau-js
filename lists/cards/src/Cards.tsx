@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import get from 'lodash-es/get';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useDisplaysComponents } from '@panneau/core/contexts';
 import type { Item, Resource, TableColumn } from '@panneau/core/types';

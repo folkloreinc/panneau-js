@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Label } from '@panneau/core/types';
@@ -19,7 +19,7 @@ function Loading({
     withDelay = false,
     withoutCard = false,
     className = null,
-    children = null
+    children = null,
 }: LoadingProps) {
     const [visible, setVisible] = useState(!withDelay);
 

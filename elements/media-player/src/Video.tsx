@@ -1,6 +1,6 @@
-/* eslint-disable jsx-a11y/media-has-caption, react/jsx-props-no-spreading, no-param-reassign */
+/* eslint-disable jsx-a11y/media-has-caption */
 import classNames from 'classnames';
-import React, { useRef, forwardRef } from 'react';
+import { forwardRef, useRef } from 'react';
 
 import useVideo from './hooks/useVideo';
 
@@ -65,7 +65,7 @@ function Video({
     playsInline = null,
     className = null,
     iframeClassName = null,
-    videoClassName = null
+    videoClassName = null,
 }: VideoProps) {
     const {
         url = null,
@@ -115,12 +115,7 @@ function Video({
         apiRef.current = api;
     }
 
-    const {
-        muted,
-        playing,
-        buffering,
-        loaded,
-    } = api;
+    const { muted, playing, buffering, loaded } = api;
 
     const loading = finalUrl !== null && (!loaded || buffering);
     const paused = !playing && !loading && loaded;
@@ -154,7 +149,9 @@ function Video({
                             frameBorder={0}
                             src={
                                 lastVideoRef.current !== null
-                                    ? lastVideoRef.current.iframeUrl || lastVideoRef.current.url || undefined
+                                    ? lastVideoRef.current.iframeUrl ||
+                                      lastVideoRef.current.url ||
+                                      undefined
                                     : undefined
                             }
                             ref={ref}
@@ -186,4 +183,6 @@ function Video({
     );
 }
 
-export default forwardRef<any, VideoProps>((props, ref) => <Video apiRef={ref} {...props} />);
+export default ({ ref, ...props }: VideoProps & { ref?: React.RefObject<any | null> }) => (
+    <Video apiRef={ref} {...props} />
+);

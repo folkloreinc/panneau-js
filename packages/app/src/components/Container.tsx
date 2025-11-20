@@ -1,8 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { createPathToRegexpParser, useMemoryRouter } from '@folklore/routes';
 import React, { useCallback, useMemo } from 'react';
 import { Router } from 'wouter';
-import type { PanneauDefinition, StatusCode, User, Uppy } from '@panneau/core/types';
 
 import ActionsProvider from '@panneau/actions';
 import { AuthProvider } from '@panneau/auth';
@@ -12,6 +10,7 @@ import {
     PanneauProvider,
     RoutesProvider,
 } from '@panneau/core/contexts';
+import type { PanneauDefinition, StatusCode, Uppy, User } from '@panneau/core/types';
 import { ApiProvider, QueryProvider } from '@panneau/data';
 import DisplaysProvider from '@panneau/displays';
 import FieldsProvider from '@panneau/fields';
@@ -33,7 +32,10 @@ const DEFAULT_LOCALES: string[] = [];
 
 interface ContainerProps {
     definition: PanneauDefinition;
-    components?: Record<string, React.ElementType> | Record<string, Record<string, React.ElementType>> | null;
+    components?:
+        | Record<string, React.ElementType>
+        | Record<string, Record<string, React.ElementType>>
+        | null;
     user?: User | null;
     memoryRouter?: boolean;
     baseUrl?: string | null;

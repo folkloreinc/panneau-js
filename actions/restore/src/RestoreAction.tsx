@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import classNames from 'classnames';
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useModalsComponentsManager } from '@panneau/core/contexts';

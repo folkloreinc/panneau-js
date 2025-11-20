@@ -1,8 +1,7 @@
 import isString from 'lodash-es/isString';
-import React from 'react';
 
-import SelectElement from '@panneau/element-select';
 import type { Field, FieldOption } from '@panneau/core/types';
+import SelectElement from '@panneau/element-select';
 
 interface SelectProps {
     field: Field;
@@ -11,7 +10,12 @@ interface SelectProps {
     onChange?: ((value: unknown) => void) | null;
 }
 
-function Select({ field, value = null, options: providedOptions = null, onChange = null }: SelectProps) {
+function Select({
+    field,
+    value = null,
+    options: providedOptions = null,
+    onChange = null,
+}: SelectProps) {
     const { options = null } = field || {};
     const finalOptions = providedOptions || options || null;
     const option =

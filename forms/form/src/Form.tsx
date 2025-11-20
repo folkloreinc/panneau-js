@@ -1,11 +1,10 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useFormComponent } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
-import type { Field, FormStatus, Label } from '@panneau/core/types';
+import type { Field, Label } from '@panneau/core/types';
 
 interface FormProps {
     action: string;

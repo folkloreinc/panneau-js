@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import classNames from 'classnames';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { getSelectOptions } from '@panneau/core/utils';
 
@@ -32,7 +32,7 @@ function Radios({
     uncheckable = false,
     className = null,
     buttonClassName = null,
-    onChange = null
+    onChange = null,
 }: RadiosProps) {
     const finalOptions = useMemo(() => getSelectOptions(options as any), [options]);
 
@@ -50,7 +50,6 @@ function Radios({
             style={{ zIndex: 0 }}
         >
             {finalOptions.map(({ value: optionValue = null, label = null }: any, index: number) => {
-                // eslint-disable-next-line eqeqeq
                 const isCurrent = optionValue == value; // Loose to handle numeric values from parseQuery
                 return (
                     <label

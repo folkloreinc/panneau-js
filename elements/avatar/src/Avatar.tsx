@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import styles from './styles.module.css';
@@ -55,7 +54,8 @@ function Avatar({
                 styles.container,
                 {
                     [`text-${textTheme}`]: textTheme !== null && textTheme !== undefined,
-                    [`bg-${backgroundTheme}`]: backgroundTheme !== null && backgroundTheme !== undefined,
+                    [`bg-${backgroundTheme}`]:
+                        backgroundTheme !== null && backgroundTheme !== undefined,
                     [`border-${borderTheme}`]: borderTheme !== null && borderTheme !== undefined,
                     [styles[size!]]: size !== null,
                     [styles.square]: square,
@@ -74,7 +74,12 @@ function Avatar({
                 <span className={styles.letter}>{shortName}</span>
             ) : null}
             {withImage ? (
-                <img className={styles.image} src={image!.url} title={typeof title === 'string' ? title : undefined} alt={typeof title === 'string' ? title : undefined} />
+                <img
+                    className={styles.image}
+                    src={image!.url}
+                    title={typeof title === 'string' ? title : undefined}
+                    alt={typeof title === 'string' ? title : undefined}
+                />
             ) : null}
             {children}
         </div>

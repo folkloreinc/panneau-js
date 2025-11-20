@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useLocation } from 'wouter';
-import type { Resource } from '@panneau/core/types';
 
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceTypeName, useResourceUrlGenerator } from '@panneau/core/hooks';
+import type { Resource } from '@panneau/core/types';
 import { useResourceItem } from '@panneau/data';
 import Loading from '@panneau/element-loading';
 import { useResourceValues } from '@panneau/intl';

@@ -1,6 +1,5 @@
-/* eslint-disable react/no-array-index-key, jsx-a11y/control-has-associated-label */
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
-import React from 'react';
 
 import type { Breadcrumb, Label } from '@panneau/core/types';
 import Button from '@panneau/element-button';
@@ -26,61 +25,61 @@ function Breadcrumbs({
     separator = null,
     withoutBar = false,
     noWrap = false,
-    className = null
+    className = null,
 }: BreadcrumbsProps) {
     return (
-    <nav className={className || undefined}>
-        <ol
-            className={classNames([
-                styles.container,
-                'breadcrumb',
-                'mb-0',
-                {
-                    'p-0': withoutBar,
-                    'bg-transparent': withoutBar,
-                    'rounded-0': withoutBar,
-                    'flex-nowrap': noWrap,
-                },
-            ])}
-        >
-            {items.map(({ url, label, active = false, onClick = null }: any, index: number) => (
-                <li
-                    className={classNames([
-                        'breadcrumb-item',
-                        {
-                            active,
-                            [styles.arrow]: separator === 'arrow',
-                            [`text-${(theme as any)?.text}`]: active && theme !== null,
-                        },
-                    ])}
-                    key={`item-${index}`}
-                >
-                    {active ? <LabelComponent>{label as Label}</LabelComponent> : null}
-                    {!active && url ? (
-                        <Link
-                            href={url}
-                            onClick={onClick}
-                            className={classNames({
-                                [`text-${(theme as any)?.text}`]: theme !== null,
-                            })}
-                        >
-                            <LabelComponent>{label as Label}</LabelComponent>
-                        </Link>
-                    ) : null}
-                    {!active && onClick ? (
-                        <Button
-                            onClick={onClick}
-                            className={classNames({
-                                [`text-${(theme as any)?.text}`]: theme !== null,
-                            })}
-                        >
-                            <LabelComponent>{label as Label}</LabelComponent>
-                        </Button>
-                    ) : null}
-                </li>
-            ))}
-        </ol>
-    </nav>
+        <nav className={className || undefined}>
+            <ol
+                className={classNames([
+                    styles.container,
+                    'breadcrumb',
+                    'mb-0',
+                    {
+                        'p-0': withoutBar,
+                        'bg-transparent': withoutBar,
+                        'rounded-0': withoutBar,
+                        'flex-nowrap': noWrap,
+                    },
+                ])}
+            >
+                {items.map(({ url, label, active = false, onClick = null }: any, index: number) => (
+                    <li
+                        className={classNames([
+                            'breadcrumb-item',
+                            {
+                                active,
+                                [styles.arrow]: separator === 'arrow',
+                                [`text-${(theme as any)?.text}`]: active && theme !== null,
+                            },
+                        ])}
+                        key={`item-${index}`}
+                    >
+                        {active ? <LabelComponent>{label as Label}</LabelComponent> : null}
+                        {!active && url ? (
+                            <Link
+                                href={url}
+                                onClick={onClick}
+                                className={classNames({
+                                    [`text-${(theme as any)?.text}`]: theme !== null,
+                                })}
+                            >
+                                <LabelComponent>{label as Label}</LabelComponent>
+                            </Link>
+                        ) : null}
+                        {!active && onClick ? (
+                            <Button
+                                onClick={onClick}
+                                className={classNames({
+                                    [`text-${(theme as any)?.text}`]: theme !== null,
+                                })}
+                            >
+                                <LabelComponent>{label as Label}</LabelComponent>
+                            </Button>
+                        ) : null}
+                    </li>
+                ))}
+            </ol>
+        </nav>
     );
 }
 

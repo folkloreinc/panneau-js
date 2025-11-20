@@ -1,11 +1,11 @@
 import queryString from 'query-string';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useLocation, useSearch } from 'wouter';
-import type { Resource } from '@panneau/core/types';
 
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceTypeName, useResourceUrlGenerator } from '@panneau/core/hooks';
+import type { Resource } from '@panneau/core/types';
 import { useResourceValues } from '@panneau/intl';
 
 import ResourceForm from '../forms/ResourceForm';

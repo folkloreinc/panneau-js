@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import classNames from 'classnames';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import type { SelectOption } from '@panneau/core/types';
 import { getSelectOptions } from '@panneau/core/utils';

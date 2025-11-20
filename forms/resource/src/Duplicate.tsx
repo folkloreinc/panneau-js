@@ -1,6 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, FormStatus, Resource } from '@panneau/core/types';

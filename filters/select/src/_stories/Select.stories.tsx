@@ -1,0 +1,85 @@
+/* eslint-disable */
+import { useState } from 'react';
+
+import withApi from '../../../../.storybook/decorators/withApiProvider';
+import FieldsProvider from '../../../../packages/fields';
+import SelectFilter from '../SelectFilter';
+
+export default {
+    component: SelectFilter,
+    title: 'Filters/Select',
+    decorators: [withApi],
+    parameters: {
+        intl: true,
+    },
+};
+
+const FieldContainer = (props) => {
+    const [value, setValue] = useState(null);
+    return (
+        <FieldsProvider>
+            <SelectFilter {...props} name="Select" value={value} onChange={setValue} />
+        </FieldsProvider>
+    );
+};
+
+export const Normal = {
+    render: () => (
+        <FieldContainer
+            options={[
+                {
+                    value: 'chose1',
+                    label: 'Chose 1',
+                },
+                {
+                    value: 'chose2',
+                    label: 'Chose 2',
+                },
+                {
+                    value: 'chose3',
+                    label: 'Chose 3',
+                },
+            ]}
+        />
+    ),
+};
+
+// TODO: figure out how to mock this...
+export const Fetching = {
+    render: () => (
+        <FieldContainer
+            // options={[
+            //     {
+            //         value: 'chose1',
+            //         label: 'Chose 1',
+            //     },
+            // ]}
+            requestUrl="/api/pages"
+            itemSearchParam="search"
+            itemLabelPath="title.en"
+            itemValuePath="id"
+        />
+    ),
+};
+
+export const Paginated = {
+    render: () => (
+        <FieldContainer
+            requestUrl="/api/pages"
+            itemLabelPath="title.fr"
+            itemValuePath="id"
+            paginated
+        />
+    ),
+};
+
+export const WithParams = {
+    render: () => (
+        <FieldContainer
+            requestUrl="/api/pages"
+            itemLabelPath="title.fr"
+            itemValuePath="id"
+            requestParams={['edition_id']}
+        />
+    ),
+};

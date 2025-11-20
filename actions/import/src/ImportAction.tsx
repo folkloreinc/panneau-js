@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useFieldsComponentsManager } from '@panneau/core/contexts';
 import type { ButtonTheme } from '@panneau/core/types';

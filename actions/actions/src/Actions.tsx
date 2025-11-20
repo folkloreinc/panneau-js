@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useActionsComponentsManager } from '@panneau/core/contexts';
 import type { ButtonSize, Filter, Item, Resource } from '@panneau/core/types';

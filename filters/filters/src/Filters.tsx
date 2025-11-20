@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useFiltersComponents } from '@panneau/core/contexts';
@@ -107,8 +106,7 @@ function Filters({
             {(currentFilters || []).map(
                 ({ component, name, groupLabel, groupClassName, ...filterProps }, index) => {
                     const FilterComponent = getComponentFromName(component, FilterComponents, null);
-                    const filterValue =
-                        value !== null && name && value[name] ? value[name] : null;
+                    const filterValue = value !== null && name && value[name] ? value[name] : null;
                     const withSize = component === 'select' || component === 'search';
                     return FilterComponent !== null ? (
                         <FormGroup
@@ -129,7 +127,9 @@ function Filters({
                             <FilterComponent
                                 {...filterProps}
                                 value={filterValue}
-                                onChange={(newValue: unknown) => onFilterChange(name || '', newValue)}
+                                onChange={(newValue: unknown) =>
+                                    onFilterChange(name || '', newValue)
+                                }
                                 onClear={() => onFilterClear(name || '')}
                                 className={component === 'select' ? 'mw-100' : null}
                             />

@@ -1,8 +1,7 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import classNames from 'classnames';
 import get from 'lodash-es/get';
 import isObject from 'lodash-es/isObject';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useIntl } from 'react-intl';
 
 interface TextDescriptionProps {

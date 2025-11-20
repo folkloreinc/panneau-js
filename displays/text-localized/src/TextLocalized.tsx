@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
-import React from 'react';
 import { useIntl } from 'react-intl';
 
 interface TextLocalizedProps {

@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import Switch from 'rc-switch';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import styles from './styles.module.css';
 import 'rc-switch/assets/index.css';
@@ -20,7 +20,7 @@ function ToggleField({
     name = null,
     disabled = false,
     className = null,
-    onChange = null
+    onChange = null,
 }: ToggleFieldProps) {
     const isTrue = useMemo(
         () =>
@@ -54,7 +54,12 @@ function ToggleField({
                 },
             ])}
         >
-            <Switch name={name || undefined} checked={isTrue} onChange={finalOnChange} disabled={disabled} />
+            <Switch
+                name={name || undefined}
+                checked={isTrue}
+                onChange={finalOnChange}
+                disabled={disabled}
+            />
         </div>
     );
 }

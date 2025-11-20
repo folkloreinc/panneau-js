@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Label } from '@panneau/core/types';
@@ -43,7 +41,10 @@ function TwoFactorEnable({
                 withSkipLink ? (
                     <Link className="py-2 px-4" href={skipLink}>
                         {skipLabel || (
-                            <FormattedMessage defaultMessage="Skip setup" description="Link label" />
+                            <FormattedMessage
+                                defaultMessage="Skip setup"
+                                description="Link label"
+                            />
                         )}
                     </Link>
                 ) : null

@@ -1,9 +1,9 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { getJSON } from '@folklore/fetch';
 import isObject from 'lodash-es/isObject';
 import uniqBy from 'lodash-es/uniqBy';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
+
 import type { Font } from '@panneau/core/types';
 
 import { useGoogleKeys } from './GoogleKeysContext';
@@ -84,7 +84,13 @@ export const useFonts = ({
     return fonts;
 };
 
-const DEFAULT_SYSTEM_FONTS: string[] = ['Arial', 'Courier', 'Georgia', 'Times New Roman', 'Verdana'];
+const DEFAULT_SYSTEM_FONTS: string[] = [
+    'Arial',
+    'Courier',
+    'Georgia',
+    'Times New Roman',
+    'Verdana',
+];
 
 interface FontsProviderProps {
     children: ReactNode;
@@ -107,17 +113,14 @@ function FontsProvider({
 
     const fonts = useMemo(
         () => ({
-            systemFonts: uniqBy(
-                [...(previousSystemFonts || []), ...(systemFonts || [])],
-                (font) => (isObject(font) ? font.name : font),
+            systemFonts: uniqBy([...(previousSystemFonts || []), ...(systemFonts || [])], (font) =>
+                isObject(font) ? font.name : font,
             ),
-            googleFonts: uniqBy(
-                [...(previousGoogleFonts || []), ...(googleFonts || [])],
-                (font) => (isObject(font) ? font.name : font),
+            googleFonts: uniqBy([...(previousGoogleFonts || []), ...(googleFonts || [])], (font) =>
+                isObject(font) ? font.name : font,
             ),
-            customFonts: uniqBy(
-                [...(previousCustomFonts || []), ...(customFonts || [])],
-                (font) => (isObject(font) ? font.name : font),
+            customFonts: uniqBy([...(previousCustomFonts || []), ...(customFonts || [])], (font) =>
+                isObject(font) ? font.name : font,
             ),
             setGoogleFonts,
         }),
@@ -132,7 +135,7 @@ function FontsProvider({
         ],
     );
 
-    return <FontsContext.Provider value={fonts}>{children}</FontsContext.Provider>;
+    return <FontsContext value={fonts}>{children}</FontsContext>;
 }
 
 export { FontsProvider };

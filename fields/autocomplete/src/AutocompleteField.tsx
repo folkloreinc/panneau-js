@@ -1,13 +1,13 @@
 import classNames from 'classnames';
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import Button from '@panneau/element-button';
 import TextField from '@panneau/field-text';
 
 import styles from './styles.module.css';
-// eslint-disable-next-line import/order
+
 import Fuse from 'fuse.js';
 
 interface AutocompleteItem {

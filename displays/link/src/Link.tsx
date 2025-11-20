@@ -1,6 +1,5 @@
 import get from 'lodash-es/get';
 import isString from 'lodash-es/isString';
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link as WouterLink } from 'wouter';
 

@@ -1,6 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import isObject from 'lodash-es/isObject';
-import React from 'react';
 
 import ResourceList from '@panneau/list-resource-items';
 

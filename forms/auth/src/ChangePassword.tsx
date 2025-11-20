@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Label } from '@panneau/core/types';
@@ -47,7 +45,10 @@ function ChangePassword({
                         type: 'password',
                         size,
                         label: passwordLabel || (
-                            <FormattedMessage defaultMessage="New password" description="Field label" />
+                            <FormattedMessage
+                                defaultMessage="New password"
+                                description="Field label"
+                            />
                         ),
                     },
                     {

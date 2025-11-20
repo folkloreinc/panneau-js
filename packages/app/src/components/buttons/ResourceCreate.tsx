@@ -1,9 +1,9 @@
 import classNames from 'classnames';
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import type { ButtonSize, Resource } from '@panneau/core/types';
 
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import type { ButtonSize, Resource } from '@panneau/core/types';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
 import { useResourceValues } from '@panneau/intl';

@@ -1,7 +1,4 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Label } from '@panneau/core/types';

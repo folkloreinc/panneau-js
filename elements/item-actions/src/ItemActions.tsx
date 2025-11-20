@@ -1,12 +1,10 @@
-/* eslint-disable react/no-unstable-nested-components, react/jsx-props-no-spreading, react/jsx-indent */
 import isObject from 'lodash-es/isObject';
 // import isString from 'lodash-es/isString';
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { ButtonSize, Item, Resource } from '@panneau/core/types';
 import { useActionsComponentsManager } from '@panneau/core/contexts';
 import { useActions, useResourceUrlGenerator } from '@panneau/core/hooks';
+import type { ButtonSize, Item, Resource } from '@panneau/core/types';
 import Buttons from '@panneau/element-buttons';
 import Icon from '@panneau/element-icon';
 
@@ -132,7 +130,9 @@ function ItemActions({
                                 ...(ActionComponent !== null ? { reload, updateItem } : null),
                                 label: iconsOnly && icon !== null ? null : label,
                                 icon: iconsOnly && icon !== null ? <Icon name={icon} /> : null,
-                                ...(itemLinkProp !== null && item !== null && (item as any)[itemLinkProp]
+                                ...(itemLinkProp !== null &&
+                                item !== null &&
+                                (item as any)[itemLinkProp]
                                     ? { href: (item as any)[itemLinkProp], ...linkProps }
                                     : null),
                             };

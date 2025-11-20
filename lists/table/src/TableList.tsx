@@ -1,5 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import type { Item, Resource, TableColumn } from '@panneau/core/types';
 import { getColumnsWithFields } from '@panneau/core/utils';

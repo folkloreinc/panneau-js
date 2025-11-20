@@ -1,7 +1,7 @@
 import formatDate from 'date-fns/format';
 import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { loadPackage } from '@panneau/core/utils';

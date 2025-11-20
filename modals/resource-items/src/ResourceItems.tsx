@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import isObject from 'lodash-es/isObject';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { usePanneauResource } from '@panneau/core/contexts';

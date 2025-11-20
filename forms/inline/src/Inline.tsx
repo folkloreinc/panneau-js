@@ -1,6 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-
 import { useFieldComponent } from '@panneau/core/contexts';
 import type { Button, Field, FormStatus } from '@panneau/core/types';
 import Form from '@panneau/element-form';

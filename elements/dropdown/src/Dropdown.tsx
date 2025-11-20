@@ -1,9 +1,8 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React, { useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
-import type { DropdownAlign, MenuItem } from '@panneau/core/types';
 import { useDocumentEvent } from '@panneau/core/hooks';
+import type { DropdownAlign, MenuItem } from '@panneau/core/types';
 import Button from '@panneau/element-button';
 import LabelComponent from '@panneau/element-label';
 import Link from '@panneau/element-link';
@@ -31,7 +30,7 @@ function Dropdown({
     className = null,
     itemClassName = null,
     onClickItem = null,
-    onClickOutside = null
+    onClickOutside = null,
 }: DropdownProps) {
     const refContainer = useRef<HTMLDivElement>(null);
     const onDocumentClick = useCallback(
@@ -115,7 +114,11 @@ function Dropdown({
                               onClick={finalOnClickItem}
                               {...(itemProps || null)}
                           >
-                              {label !== null ? <LabelComponent>{label}</LabelComponent> : itemChildren}
+                              {label !== null ? (
+                                  <LabelComponent>{label}</LabelComponent>
+                              ) : (
+                                  itemChildren
+                              )}
                           </ItemComponent>
                       ) : null;
                   })}

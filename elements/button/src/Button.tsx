@@ -1,7 +1,6 @@
-/* eslint-disable jsx-a11y/anchor-is-valid, react/button-has-type, react/jsx-props-no-spreading */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import classNames from 'classnames';
 import isString from 'lodash-es/isString';
-import React from 'react';
 import { Link } from 'wouter';
 
 import type { ButtonSize, ButtonTheme, Label } from '@panneau/core/types';
@@ -129,7 +128,8 @@ function Button({
                         className={classNames([
                             styles.right,
                             {
-                                [iconClassName!]: iconClassName !== null && iconPosition === 'right',
+                                [iconClassName!]:
+                                    iconClassName !== null && iconPosition === 'right',
                             },
                         ])}
                     >
@@ -182,7 +182,12 @@ function Button({
                 {content}
             </a>
         ) : (
-            <Link href={href} onClick={onClick || undefined} className={buttonClassNames} ref={refButton}>
+            <Link
+                href={href}
+                onClick={onClick || undefined}
+                className={buttonClassNames}
+                ref={refButton}
+            >
                 {content}
             </Link>
         );

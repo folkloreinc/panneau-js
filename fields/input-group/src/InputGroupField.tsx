@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import isString from 'lodash-es/isString';
-import React from 'react';
 
 import styles from './styles.module.css';
 

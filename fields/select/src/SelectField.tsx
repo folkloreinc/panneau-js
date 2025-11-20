@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { getCSRFHeaders, getJSON } from '@folklore/fetch';
 import queryString from 'query-string';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { getPathValue } from '@panneau/core/utils';
 import Select from '@panneau/element-select';
@@ -50,13 +49,17 @@ function SelectField({
     const getOptionLabel = useMemo(
         () =>
             customGetOptionLabel ||
-            (optionLabelPath !== null ? (option: unknown) => getPathValue(option, optionLabelPath) : null),
+            (optionLabelPath !== null
+                ? (option: unknown) => getPathValue(option, optionLabelPath)
+                : null),
         [customGetOptionLabel, optionLabelPath],
     );
     const getOptionValue = useMemo(
         () =>
             customGetOptionValue ||
-            (optionValuePath !== null ? (option: unknown) => getPathValue(option, optionValuePath) : null),
+            (optionValuePath !== null
+                ? (option: unknown) => getPathValue(option, optionValuePath)
+                : null),
         [customGetOptionValue, optionValuePath],
     );
 

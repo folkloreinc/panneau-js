@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import ResourceForm from '@panneau/form-resource';
@@ -25,7 +24,7 @@ function ModalResourceForm({
     isCreate = null,
     onSuccess = null,
     onClose = null,
-    className = null
+    className = null,
 }: ModalResourceFormProps) {
     const resourceValues = useResourceValues(resource);
     return (

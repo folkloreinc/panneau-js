@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 
 import { ComponentsProvider, DISPLAYS_NAMESPACE } from '@panneau/core/contexts';

@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
@@ -35,7 +34,7 @@ function FormProvider({ value, setValue, children }: FormProviderProps) {
         }),
         [value, setValue],
     );
-    return <FormContext.Provider value={values}>{children}</FormContext.Provider>;
+    return <FormContext value={values}>{children}</FormContext>;
 }
 
 export { FormProvider };

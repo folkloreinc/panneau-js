@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 // import classNames from 'classnames';
 import { UppyContextProvider } from '@uppy/react';
 import Dashboard from '@uppy/react/dashboard';
@@ -6,11 +5,11 @@ import DashboardModal from '@uppy/react/dashboard-modal';
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Label } from '@panneau/core/types';
 import { useQuery } from '@panneau/core/hooks';
+import type { Label } from '@panneau/core/types';
 // import { useModal } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
@@ -79,7 +78,13 @@ interface UploadFieldProps {
 }
 
 const DEFAULT_TYPES: MediaType[] = ['audio', 'image', 'video'];
-const DEFAULT_SOURCES: MediaSource[] = ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'];
+const DEFAULT_SOURCES: MediaSource[] = [
+    'webcam',
+    'facebook',
+    'instagram',
+    'dropbox',
+    'google-drive',
+];
 
 function UploadField({
     resource = 'medias',

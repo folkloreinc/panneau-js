@@ -1,9 +1,7 @@
-/* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React from 'react';
 
-import { isMessage } from '@panneau/core/utils';
 import type { Button as ButtonType, Label as LabelType } from '@panneau/core/types';
+import { isMessage } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import Buttons from '@panneau/element-buttons';
 import Label from '@panneau/element-label';
@@ -34,7 +32,7 @@ function ModalDialog({
     footer = null,
     onClose = null,
     withCloseOutside = false,
-    className = null
+    className = null,
 }: ModalDialogProps) {
     const onCloseButtonOutside =
         (header === null && title === null && onClose !== null) ||

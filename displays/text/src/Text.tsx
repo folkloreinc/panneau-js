@@ -1,6 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
-import React from 'react';
-
 interface TextProps {
     value?: string | number | null;
     placeholder?: React.ReactNode | null;

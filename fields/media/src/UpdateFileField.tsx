@@ -1,5 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import MediaCard from '@panneau/element-media-card';
@@ -24,11 +23,7 @@ interface UpdateFileFieldProps {
     [key: string]: unknown;
 }
 
-function UpdateFileField({
-    value = null,
-    onChange = null,
-    ...props
-}: UpdateFileFieldProps) {
+function UpdateFileField({ value = null, onChange = null, ...props }: UpdateFileFieldProps) {
     const [newValue, setNewValue] = useState<Media | null>(null);
     const [visibleFile, setVisibleFile] = useState<Media | null>(null);
     const { id: previousId, type = null } = value || {};

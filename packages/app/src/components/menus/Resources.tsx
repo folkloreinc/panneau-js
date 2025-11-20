@@ -1,5 +1,5 @@
+import { useMemo } from 'react';
 import { useLocation } from 'wouter';
-import React, { useMemo } from 'react';
 
 import { usePanneauResources } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';

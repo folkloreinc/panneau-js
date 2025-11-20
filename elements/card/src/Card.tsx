@@ -1,10 +1,6 @@
-/* eslint-disable no-nested-ternary */
-
-/* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
-import React from 'react';
 
 import type { Label } from '@panneau/core/types';
 import Button from '@panneau/element-button';
@@ -72,7 +68,7 @@ function Card({
     onClickBody = null,
     onClickFooter = null,
     onClose = null,
-    onCloseIcon = null
+    onCloseIcon = null,
 }: CardProps) {
     const linksElements = (links || []).map(
         ({ label, className: linkClassName = null, ...linkProps }, index) => (
@@ -131,7 +127,7 @@ function Card({
 
     const closeButton = (
         <Button type="button" size="sm" theme="warning" onClick={onClose}>
-            <FontAwesomeIcon icon={onCloseIcon as any || faTimes} />
+            <FontAwesomeIcon icon={(onCloseIcon as any) || faTimes} />
         </Button>
     );
 

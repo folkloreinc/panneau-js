@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { TrackingContainer, TrackingContext } from '@folklore/tracking';
-import React, { useContext, useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
+
 import type { TrackingVariables } from '@panneau/core/types';
 
 import { Tracking } from '../lib';

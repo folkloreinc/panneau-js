@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Label } from '@panneau/core/types';
@@ -25,7 +24,7 @@ function Empty({
     withDelay = false,
     withoutCard = false,
     className = null,
-    children = null
+    children = null,
 }: EmptyProps) {
     const [visible, setVisible] = useState(!withDelay);
 

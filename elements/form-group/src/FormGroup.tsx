@@ -1,8 +1,7 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import type { Label } from '@panneau/core/types';
 import Button from '@panneau/element-button';
@@ -50,7 +49,7 @@ function FormGroup({
     withoutErrors = false,
     labelAfter = false,
     className = null,
-    labelClassName = null
+    labelClassName = null,
 }: FormGroupProps) {
     const labelBefore = !labelAfter;
     const isColumn = horizontal || inline;

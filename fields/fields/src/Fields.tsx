@@ -1,10 +1,9 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import get from 'lodash-es/get';
-import React, { Fragment, useCallback } from 'react';
+import { Fragment, useCallback } from 'react';
 
-import type { Field } from '@panneau/core/types';
 import { useFieldsComponents, useFieldsManager } from '@panneau/core/contexts';
+import type { Field } from '@panneau/core/types';
 import { getComponentFromName } from '@panneau/core/utils';
 import FormGroup from '@panneau/element-form-group';
 

@@ -1,14 +1,14 @@
-/* eslint-disable jsx-a11y/control-has-associated-label, react/jsx-props-no-spreading  */
+/* eslint-disable jsx-a11y/control-has-associated-label  */
 import classNames from 'classnames';
 import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Field, Item, Label, TableColumn } from '@panneau/core/types';
 import { useDisplaysComponents } from '@panneau/core/contexts';
+import type { Field, Item, Label, TableColumn } from '@panneau/core/types';
 import { getComponentFromName, selectItem, selectPage } from '@panneau/core/utils';
 import Empty from '@panneau/element-empty';
 import Loading from '@panneau/element-loading';
@@ -77,11 +77,12 @@ function Table({
     actionsComponent = null,
     actionsProps = null,
     actionsClassName = null,
-    className = null
-}: TableProps)  {
+    className = null,
+}: TableProps) {
     const displayComponents = useDisplaysComponents();
     const hasIdColumn =
-        (columns.find(({ id, field }: any) => id === 'id' || (field as any) === 'id') || null) !== null;
+        (columns.find(({ id, field }: any) => id === 'id' || (field as any) === 'id') || null) !==
+        null;
     const Actions = actionsComponent || null;
     const withActionsColumn = withCustomActionsColumn && Actions !== null;
     const withIdColumn = !withoutId && !hasIdColumn && !selectable;
@@ -95,7 +96,12 @@ function Table({
 
     const onSelectItem = useCallback(
         (newItem: Item | null = null) => {
-            selectItem(newItem as any, selectedItems as any, onSelectionChange as any, multipleSelection);
+            selectItem(
+                newItem as any,
+                selectedItems as any,
+                onSelectionChange as any,
+                multipleSelection,
+            );
         },
         [items, selectedItems, onSelectionChange, multipleSelection],
     );
@@ -117,7 +123,8 @@ function Table({
         ) {
             return false;
         }
-        const ids = (items || []).map(({ id = null }: any = {}) => id).filter((id) => id !== null) || [];
+        const ids =
+            (items || []).map(({ id = null }: any = {}) => id).filter((id) => id !== null) || [];
         if (ids === null || ids.length === 0) {
             return false;
         }
@@ -167,46 +174,44 @@ function Table({
                                 </th>
                             ) : null}
                             {withIdColumn ? <th scope="col">#</th> : null}
-                            {columns.map(
-                                (column: any, idx: number) => {
-                                    const {
-                                        id,
-                                        field = null,
-                                        label = null,
-                                        path = null,
-                                        sortable: columnSortable = false,
-                                        sortColumnName = null,
-                                        sortColumnParameter: columnSortColumnParameter,
-                                        sortDirectionParameter: columnSortDirectionParameter,
-                                        sortDirections,
-                                    } = column;
-                                    return (
-                                        <th scope="col" key={`col-${id}-${label}-${idx + 1}`}>
-                                            {columnSortable ? (
-                                                <SortLink
-                                                    className="text-nowrap"
-                                                    baseUrl={baseUrl || undefined}
-                                                    query={query}
-                                                    field={sortColumnName || field || path}
-                                                    parameterName={
-                                                        columnSortColumnParameter || sortColumnParameter
-                                                    }
-                                                    directionParameterName={
-                                                        columnSortDirectionParameter ||
-                                                        sortDirectionParameter
-                                                    }
-                                                    directions={sortDirections}
-                                                    onQueryChange={onQueryChange}
-                                                >
-                                                    {label}
-                                                </SortLink>
-                                            ) : (
-                                                <span className="text-nowrap">{label}</span>
-                                            )}
-                                        </th>
-                                    );
-                                }
-                            )}
+                            {columns.map((column: any, idx: number) => {
+                                const {
+                                    id,
+                                    field = null,
+                                    label = null,
+                                    path = null,
+                                    sortable: columnSortable = false,
+                                    sortColumnName = null,
+                                    sortColumnParameter: columnSortColumnParameter,
+                                    sortDirectionParameter: columnSortDirectionParameter,
+                                    sortDirections,
+                                } = column;
+                                return (
+                                    <th scope="col" key={`col-${id}-${label}-${idx + 1}`}>
+                                        {columnSortable ? (
+                                            <SortLink
+                                                className="text-nowrap"
+                                                baseUrl={baseUrl || undefined}
+                                                query={query}
+                                                field={sortColumnName || field || path}
+                                                parameterName={
+                                                    columnSortColumnParameter || sortColumnParameter
+                                                }
+                                                directionParameterName={
+                                                    columnSortDirectionParameter ||
+                                                    sortDirectionParameter
+                                                }
+                                                directions={sortDirections}
+                                                onQueryChange={onQueryChange}
+                                            >
+                                                {label}
+                                            </SortLink>
+                                        ) : (
+                                            <span className="text-nowrap">{label}</span>
+                                        )}
+                                    </th>
+                                );
+                            })}
                             {withActionsColumn ? <th scope="col">&nbsp;</th> : null}
                         </tr>
                     </thead>
@@ -265,9 +270,7 @@ function Table({
                                                 checked={checked}
                                                 onChange={selectRow}
                                             />
-                                            <span
-                                                className="form-check-label px-2 text-nowrap"
-                                            >
+                                            <span className="form-check-label px-2 text-nowrap">
                                                 {!withoutId && !hasIdColumn ? (
                                                     id
                                                 ) : (
@@ -309,14 +312,18 @@ function Table({
                                             displayComponents,
                                             colId === 'actions' && actionsComponent !== null
                                                 ? actionsComponent
-                                                : 'span' as any,
+                                                : ('span' as any),
                                         );
 
                                         let displayValue: any = null;
                                         if (path !== null) {
                                             displayValue = get(it, path, null);
                                         } else if (field !== null) {
-                                            displayValue = get(it, (field as Field).name || field, null);
+                                            displayValue = get(
+                                                it,
+                                                (field as Field).name || field,
+                                                null,
+                                            );
                                         }
 
                                         return (

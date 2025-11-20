@@ -1,8 +1,7 @@
-/* eslint-disable no-shadow, react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import get from 'lodash-es/get';
 import isEmpty from 'lodash-es/isEmpty';
-import React, { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import Autosuggest from 'react-autosuggest';
 import { useIntl } from 'react-intl';
 
@@ -191,7 +190,9 @@ function ItemField({
     );
 
     const inputProps = {
-        placeholder: isMessage(placeholder) ? intl.formatMessage(placeholder as Message) : placeholder || '',
+        placeholder: isMessage(placeholder)
+            ? intl.formatMessage(placeholder as Message)
+            : placeholder || '',
         value: inputValue || '',
         name: name || '',
         type: 'search' as const,

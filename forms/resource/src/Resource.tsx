@@ -1,9 +1,8 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { FormProvider, useFormsComponents, useLocales } from '@panneau/core/contexts';
 import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
-import type { Field, Resource } from '@panneau/core/types';
+import type { Resource } from '@panneau/core/types';
 import { getComponentFromName } from '@panneau/core/utils';
 import {
     useResourceClone,

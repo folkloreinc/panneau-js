@@ -1,6 +1,5 @@
-/* eslint-disable react/no-array-index-key, react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { getDisplayName } from '@panneau/core/utils';
 
@@ -21,7 +20,7 @@ function Modal({
     onClose = null,
     children = null,
     position = 'center',
-    title = null
+    title = null,
 }: ModalProps) {
     const name = getDisplayName(children);
     const finalId = useMemo(() => id || name || 'Modal', [id, name]);

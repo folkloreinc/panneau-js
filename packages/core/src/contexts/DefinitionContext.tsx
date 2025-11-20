@@ -1,6 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { useContext } from 'react';
 import type { ReactNode } from 'react';
+
 import type { Definition } from '@panneau/core/types';
 
 const DefinitionContext = React.createContext<Definition | null>(null);
@@ -18,7 +18,7 @@ interface DefinitionProviderProps {
 }
 
 function DefinitionProvider({ definition, children }: DefinitionProviderProps) {
-    return <DefinitionContext.Provider value={definition}>{children}</DefinitionContext.Provider>;
+    return <DefinitionContext value={definition}>{children}</DefinitionContext>;
 }
 
 export { DefinitionProvider };

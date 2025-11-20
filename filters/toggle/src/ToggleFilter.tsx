@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import Switch from 'rc-switch';
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 
 import styles from './styles.module.css';
 import 'rc-switch/assets/index.css';

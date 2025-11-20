@@ -1,8 +1,7 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import { get } from 'lodash-es';
 import isString from 'lodash-es/isString';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import AvatarElement from '@panneau/element-avatar';
 

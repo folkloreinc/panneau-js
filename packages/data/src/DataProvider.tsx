@@ -1,8 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import Api from './lib/Api';
 
 import { ApiProvider } from './contexts/ApiContext';
-import Api from './lib/Api';
 
 interface DataProviderProps {
     api?: Api | null;
@@ -10,11 +8,7 @@ interface DataProviderProps {
     children?: React.ReactNode;
 }
 
-function DataProvider({
-    api = null,
-    apiBaseUrl = undefined,
-    children = null,
-}: DataProviderProps) {
+function DataProvider({ api = null, apiBaseUrl = undefined, children = null }: DataProviderProps) {
     return (
         <ApiProvider api={api} baseUrl={apiBaseUrl}>
             {children}
