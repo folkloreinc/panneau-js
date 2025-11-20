@@ -4,26 +4,26 @@ import React, { useState } from 'react';
 import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
 
-import FieldsProvider from '../../../../packages/fields';
+import FieldsProvider from '../../../../packages/fields/src/FieldsProvider';
 import ModalsProvider from '../../../../packages/modals/src/ModalsProvider';
-import DuplicateAction from '../DuplicateAction';
+import RestoreAction from '../RestoreAction';
 
 export default {
-    component: DuplicateAction,
-    title: 'Actions/DuplicateAction',
+    component: RestoreAction,
+    title: 'Actions/RestoreAction',
     parameters: {
         intl: true,
     },
 };
 
 function FieldContainer(props) {
-    const [value, setValue] = useState([{ id: '12', name: 'Paul' }]);
+    const [value, setValue] = useState([{ id: '12' }]);
     return (
         <FieldsProvider>
             <ModalsProvider>
                 <ModalProvider>
                     <Modals />
-                    <DuplicateAction value={value} {...props} />
+                    <RestoreAction value={value} {...props} />
                 </ModalProvider>
             </ModalsProvider>
         </FieldsProvider>
@@ -31,7 +31,7 @@ function FieldContainer(props) {
 }
 
 export const Normal = {
-    render: function() {
+    render: function () {
         return <FieldContainer label="Hello" withConfirmation />;
     },
 };

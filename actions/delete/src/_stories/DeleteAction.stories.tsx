@@ -4,13 +4,13 @@ import React, { useState } from 'react';
 import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
 
-import FieldsProvider from '../../../../packages/fields';
+import FieldsProvider from '../../../../packages/fields/src/FieldsProvider';
 import ModalsProvider from '../../../../packages/modals/src/ModalsProvider';
-import ShowAction from '../ShowAction';
+import DeleteAction from '../DeleteAction';
 
 export default {
-    component: ShowAction,
-    title: 'Actions/ShowAction',
+    component: DeleteAction,
+    title: 'Actions/DeleteAction',
     parameters: {
         intl: true,
     },
@@ -23,7 +23,7 @@ function FieldContainer(props) {
             <ModalsProvider>
                 <ModalProvider>
                     <Modals />
-                    <ShowAction value={value} {...props} />
+                    <DeleteAction value={value} {...props} />
                 </ModalProvider>
             </ModalsProvider>
         </FieldsProvider>
@@ -31,7 +31,7 @@ function FieldContainer(props) {
 }
 
 export const Normal = {
-    render: function() {
+    render: function () {
         return <FieldContainer label="Hello" withConfirmation />;
     },
 };

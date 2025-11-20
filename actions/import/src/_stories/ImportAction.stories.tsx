@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
 
-import FieldsProvider from '../../../../packages/fields';
+import FieldsProvider from '../../../../packages/fields/src/FieldsProvider';
 import ModalsProvider from '../../../../packages/modals/src/ModalsProvider';
 import ImportAction from '../ImportAction';
 
@@ -47,7 +47,7 @@ function FieldContainer(props) {
 }
 
 export const Normal = {
-    render: function() {
+    render: function () {
         return <FieldContainer label="Welcome to csv" withConfirmation />;
     },
 };

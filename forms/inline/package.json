@@ -1,73 +1,73 @@
 {
-  "name": "@panneau/form-inline",
-  "version": "3.0.308",
-  "description": "Inline form",
-  "keywords": [
-    "javascript"
-  ],
-  "homepage": "https://github.com/folkloreinc/panneau-js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/folkloreinc/panneau-js.git"
-  },
-  "author": {
-    "name": "Folklore",
-    "email": "info@folklore.email"
-  },
-  "contributors": [
-    {
-      "name": "David Mongeau-Petitpas",
-      "email": "dmp@folklore.email"
+    "name": "@panneau/form-inline",
+    "version": "3.0.308",
+    "description": "Inline form",
+    "keywords": [
+        "javascript"
+    ],
+    "homepage": "https://github.com/folkloreinc/panneau-js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git"
     },
-    {
-      "name": "Nicolas Roy-Bourdages",
-      "email": "nrb@folklore.email"
+    "author": {
+        "name": "Folklore",
+        "email": "info@folklore.email"
     },
-    {
-      "name": "Julien Carignan",
-      "email": "jc@folklore.email"
+    "contributors": [
+        {
+            "name": "David Mongeau-Petitpas",
+            "email": "dmp@folklore.email"
+        },
+        {
+            "name": "Nicolas Roy-Bourdages",
+            "email": "nrb@folklore.email"
+        },
+        {
+            "name": "Julien Carignan",
+            "email": "jc@folklore.email"
+        },
+        {
+            "name": "Théo Gjini",
+            "email": "tg@folklore.email"
+        }
+    ],
+    "license": "ISC",
+    "type": "module",
+    "module": "es/index.js",
+    "exports": {
+        ".": "./es/index.js"
     },
-    {
-      "name": "Théo Gjini",
-      "email": "tg@folklore.email"
-    }
-  ],
-  "license": "ISC",
-  "type": "module",
-  "module": "es/index.js",
-  "exports": {
-    ".": "./es/index.js"
-  },
-  "files": [
-    "lib",
-    "es",
-    "assets"
-  ],
-  "scripts": {
-    "prepublishOnly": "npm run build",
-    "build": "../../scripts/prepare-package.sh"
-  },
-  "devDependencies": {
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
-  },
-  "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.12.5",
-    "@panneau/core": "^3.0.307",
-    "@panneau/element-button": "^3.0.308",
-    "@panneau/element-form": "^3.0.308",
-    "@panneau/field-fields": "^3.0.308",
-    "classnames": "^2.5.1",
-    "lodash-es": "^4.17.21",
-    "prop-types": "^15.7.2",
-    "react-intl": "^5.15.8||^6.0.0"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "gitHead": "c6430a0e56cc5163db66417c47508b8e0fcc7c16"
+    "files": [
+        "lib",
+        "es",
+        "assets"
+    ],
+    "scripts": {
+        "prepublishOnly": "npm run build",
+        "build": "../../scripts/prepare-package.sh"
+    },
+    "devDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.12.5",
+        "@panneau/core": "^3.0.307",
+        "@panneau/element-button": "^3.0.308",
+        "@panneau/element-form": "^3.0.308",
+        "@panneau/field-fields": "^3.0.308",
+        "classnames": "^2.5.1",
+        "lodash-es": "^4.17.21",
+        "prop-types": "^15.7.2",
+        "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "gitHead": "c6430a0e56cc5163db66417c47508b8e0fcc7c16"
 }

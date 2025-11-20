@@ -7,7 +7,7 @@ import { Modals } from '@panneau/element-modal';
 import actions from '../../../../.storybook/data/actions';
 import withApi from '../../../../.storybook/decorators/withApiProvider';
 import withUppy from '../../../../.storybook/decorators/withUppy';
-import FiltersProvider from '../../../../packages/actions';
+import ActionsProvider from '../../../../packages/actions/src/index';
 import ModalsProvider from '../../../../packages/modals/src/ModalsProvider';
 import Actions from '../Actions';
 
@@ -26,33 +26,31 @@ function ActionsContainer({ value: initialValue, ...props }) {
         setValue(newValue);
     }, []);
     return (
-        <FiltersProvider>
+        <ActionsProvider>
             <ModalsProvider>
                 <ModalProvider>
                     <Modals />
                     <Actions {...props} actions={actions} value={value} onChange={onChange} />
                 </ModalProvider>
             </ModalsProvider>
-        </FiltersProvider>
+        </ActionsProvider>
     );
 }
 
 export const Normal = {
-    render: function() {
+    render: function () {
         return <ActionsContainer />;
     },
 };
 
 export const WithItems = {
-    render: function() {
-        return (
-            <ActionsContainer value={[{ id: '1', name: 'OK' }]} withConfirmation />
-        );
+    render: function () {
+        return <ActionsContainer value={[{ id: '1', name: 'OK' }]} withConfirmation />;
     },
 };
 
 export const WithMultipleItems = {
-    render: function() {
+    render: function () {
         return (
             <ActionsContainer
                 value={[

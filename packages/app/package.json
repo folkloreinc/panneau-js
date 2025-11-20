@@ -115,7 +115,7 @@
         "lodash-es": "^4.17.21",
         "prop-types": "^15.7.2",
         "query-string": "^9.0.0",
-        "react-intl": "^5.15.8||^6.0.0",
+        "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0",
         "wouter": "^3.1.2"
     },
     "publishConfig": {

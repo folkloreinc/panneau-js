@@ -6,7 +6,7 @@ import { Modals } from '@panneau/element-modal';
 
 import withApi from '../../../../.storybook/decorators/withApiProvider';
 import withUppy from '../../../../.storybook/decorators/withUppy';
-import FieldsProvider from '../../../../packages/fields';
+import FieldsProvider from '../../../../packages/fields/src/FieldsProvider';
 import ModalsProvider from '../../../../packages/modals/src/ModalsProvider';
 import UploadAction from '../UploadAction';
 
@@ -34,7 +34,7 @@ function FieldContainer(props) {
 }
 
 export const Normal = {
-    render: function() {
+    render: function () {
         return <FieldContainer label="Upload me" />;
     },
 };

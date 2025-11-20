@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import { CSVImporter } from 'csv-import-react';
 import React, { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
@@ -14,8 +13,8 @@ interface ImportTemplate {
 }
 
 interface ImportFieldProps {
-    // value?: boolean | null;
-    // name?: string | null;
+    value?: boolean | null;
+    name?: string | null;
     format?: string;
     template?: ImportTemplate | null;
     isModal?: boolean;
@@ -39,8 +38,8 @@ interface ImportFieldProps {
 }
 
 function ImportField({
-    // value = null,
-    // name = null,
+    value = null,
+    name = null,
     format = 'csv',
     isModal = false,
     icon = 'database',
@@ -110,20 +109,21 @@ function ImportField({
                 </Button>
             ) : null}
             {format === 'csv' ? (
-                <CSVImporter
-                    className={styles.importer}
-                    template={template}
-                    isModal={isModal}
-                    modalIsOpen={isOpen}
-                    modalOnCloseTriggered={finalOnClose}
-                    modalCloseOnOutsideClick
-                    darkMode={theme === 'dark' || dark}
-                    primaryColor={primaryColor}
-                    customStyles={customStyles}
-                    onComplete={onComplete}
-                    showDownloadTemplateButton={showDownloadTemplateButton}
-                    skipHeaderRowSelection={skipHeaderRowSelection}
-                />
+                // <CSVImporter
+                //     className={styles.importer}
+                //     template={template}
+                //     isModal={isModal}
+                //     modalIsOpen={isOpen}
+                //     modalOnCloseTriggered={finalOnClose}
+                //     modalCloseOnOutsideClick
+                //     darkMode={theme === 'dark' || dark}
+                //     primaryColor={primaryColor}
+                //     customStyles={customStyles}
+                //     onComplete={onComplete}
+                //     showDownloadTemplateButton={showDownloadTemplateButton}
+                //     skipHeaderRowSelection={skipHeaderRowSelection}
+                // />
+                <div>Replace deprecated CSVImporter component</div>
             ) : null}
         </div>
     );
