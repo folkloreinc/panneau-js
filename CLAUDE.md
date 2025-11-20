@@ -457,7 +457,7 @@ export default {
 
 ### Key Dependencies
 
-- **React ecosystem**: react, react-dom, react-intl, react-helmet
+- **React ecosystem**: react, react-dom, react-intl
 - **Routing**: wouter (lightweight client-side router)
 - **Data fetching**: TanStack React Query, `@folklore/fetch`
 - **Forms**: `@folklore/forms` (validation)
@@ -534,17 +534,22 @@ The codebase is gradually migrating from JavaScript to TypeScript. When migratin
 1. **File Extension**: Change `.jsx` to `.tsx` (or `.js` to `.ts` for non-component files)
 
 2. **Remove PropTypes**: Remove the PropTypes import and propTypes definition:
+
     ```javascript
     // ❌ Remove these
     import PropTypes from 'prop-types';
-    const propTypes = { /* ... */ };
+
+    const propTypes = {
+        /* ... */
+    };
     ComponentName.propTypes = propTypes;
     ```
 
 3. **Add TypeScript Interface**: Create a TypeScript interface using types from `@panneau/core/types`:
+
     ```typescript
     // ✅ Add this
-    import type { Field, ButtonTheme } from '@panneau/core/types';
+    import type { ButtonTheme, Field } from '@panneau/core/types';
 
     interface ComponentNameProps {
         field: Field;
@@ -554,6 +559,7 @@ The codebase is gradually migrating from JavaScript to TypeScript. When migratin
     ```
 
 4. **Type the Component**: Add the interface to the function signature:
+
     ```typescript
     function ComponentName({ field, theme = 'primary', className = null }: ComponentNameProps) {
         // Component implementation
@@ -650,47 +656,59 @@ The codebase is gradually migrating from JavaScript to TypeScript. When migratin
 ### Build Issues
 
 **Issue**: `Cannot find module '@panneau/core/types'`
+
 - **Solution**: The types are exported from `@panneau/core`. Make sure to use `import type` syntax and that the core package is built.
 
 **Issue**: CSS modules not working correctly
+
 - **Solution**: Check that the filename matches the pattern `*.module.scss` or `*.module.css`. The build system treats these differently from global styles.
 
 **Issue**: Lerna build fails with "no such file or directory"
+
 - **Solution**: Run `lerna bootstrap` first to ensure all dependencies are properly linked across packages.
 
 ### Linting Issues
 
 **Issue**: ESLint not recognizing TypeScript files
+
 - **Solution**: Ensure the file extension is `.ts` or `.tsx` and that it matches the patterns in `eslint.config.mjs`.
 
 **Issue**: ESLint errors in config files
+
 - **Solution**: Config files (`*.config.js`) are intentionally ignored by ESLint. Check the ignore patterns in `eslint.config.mjs`.
 
 **Issue**: Stylelint complaining about class names
+
 - **Solution**: Class names must be in camelCase format (e.g., `myClassName`, not `my-class-name` or `my_class_name`).
 
 ### Storybook Issues
 
 **Issue**: Storybook not loading components
+
 - **Solution**: Check that the story file follows the `*.stories.jsx` naming convention and is located in a `src/` directory.
 
 **Issue**: SCSS imports failing in Storybook
+
 - **Solution**: Verify that `.module.scss` files are being imported correctly. Regular SCSS files should not use the `.module` suffix.
 
 ### Import Issues
 
 **Issue**: Circular dependency warnings
+
 - **Solution**: Avoid importing from package index files within the same package. Use direct file imports instead.
 
 **Issue**: `@panneau/*` imports not resolving
+
 - **Solution**: In development with Storybook, aliases are configured. For package builds, ensure the package is published or linked via `lerna bootstrap`.
 
 ### TypeScript Issues
 
 **Issue**: Type errors after migrating from PropTypes
+
 - **Solution**: Ensure you're importing types from `@panneau/core/types` using `import type`. Check that optional props use `?` in the interface.
 
 **Issue**: `Cannot find name 'React'`
+
 - **Solution**: Add `import React from 'react';` at the top of `.tsx` files, even if using JSX transform.
 
 ## Quick Reference
@@ -700,7 +718,9 @@ The codebase is gradually migrating from JavaScript to TypeScript. When migratin
 ```javascript
 import PropTypes from 'prop-types';
 import React from 'react';
+
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
+
 import styles from './styles.module.scss';
 
 const propTypes = {
@@ -710,7 +730,13 @@ const propTypes = {
     field: PanneauPropTypes.field,
 };
 
-function ComponentName({ value = null, placeholder = null, onChange = null, field = null, ...props }) {
+function ComponentName({
+    value = null,
+    placeholder = null,
+    onChange = null,
+    field = null,
+    ...props
+}) {
     return (
         <div className={styles.container} {...props}>
             {/* Component implementation */}
