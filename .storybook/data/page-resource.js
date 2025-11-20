@@ -56,59 +56,59 @@ export default {
                 { label: 'Cool label 3', value: 3 },
             ],
         },
-        {
-            name: 'colors',
-            label: 'Colors',
-            component: 'fields',
-            isCard: true,
-            isCollapsible: false,
-            required: false,
-            fields: [
-                {
-                    name: 'test-select-color-number',
-                    label: 'Things strings',
-                    component: 'select',
-                    type: 'string',
-                    settings: {
-                        hiddenInForm: true,
-                    },
-                    required: true,
-                    defaultValue: 2,
-                    options: [
-                        { label: 'Cool color 1', value: 1 },
-                        { label: 'Cool color 2', value: 2 },
-                        { label: 'Cool color 3', value: 3 },
-                    ],
-                },
-                {
-                    name: 'test-select-color-letter',
-                    label: 'Things numeric',
-                    component: 'select',
-                    type: 'string',
-                    settings: {
-                        hiddenInForm: true,
-                    },
-                    defaultValue: 'C',
-                    options: [
-                        { label: 'Cool color A', value: 'A' },
-                        { label: 'Cool color B', value: 'B' },
-                        { label: 'Cool color C', value: 'C' },
-                    ],
-                },
-                {
-                    name: 'color',
-                    label: 'Color',
-                    component: 'color',
-                    // defaultValue: { color: '#cc00cc', alpha: 1 },
-                },
-                {
-                    name: 'date',
-                    label: 'Date',
-                    component: 'date',
-                    required: true,
-                },
-            ],
-        },
+        // {
+        //     name: 'colors',
+        //     label: 'Colors',
+        //     component: 'fields',
+        //     isCard: true,
+        //     isCollapsible: false,
+        //     required: false,
+        //     fields: [
+        //         {
+        //             name: 'test-select-color-number',
+        //             label: 'Things strings',
+        //             component: 'select',
+        //             type: 'string',
+        //             settings: {
+        //                 hiddenInForm: true,
+        //             },
+        //             required: true,
+        //             defaultValue: 2,
+        //             options: [
+        //                 { label: 'Cool color 1', value: 1 },
+        //                 { label: 'Cool color 2', value: 2 },
+        //                 { label: 'Cool color 3', value: 3 },
+        //             ],
+        //         },
+        //         {
+        //             name: 'test-select-color-letter',
+        //             label: 'Things numeric',
+        //             component: 'select',
+        //             type: 'string',
+        //             settings: {
+        //                 hiddenInForm: true,
+        //             },
+        //             defaultValue: 'C',
+        //             options: [
+        //                 { label: 'Cool color A', value: 'A' },
+        //                 { label: 'Cool color B', value: 'B' },
+        //                 { label: 'Cool color C', value: 'C' },
+        //             ],
+        //         },
+        //         {
+        //             name: 'color',
+        //             label: 'Color',
+        //             component: 'color',
+        //             // defaultValue: { color: '#cc00cc', alpha: 1 },
+        //         },
+        //         {
+        //             name: 'date',
+        //             label: 'Date',
+        //             component: 'date',
+        //             required: true,
+        //         },
+        //     ],
+        // },
         {
             name: 'title',
             label: 'Titre',

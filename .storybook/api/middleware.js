@@ -1,23 +1,20 @@
 const path = require('path');
 const fs = require('fs');
-// const express = require('express');
+const express = require('express');
 const _ = require('lodash');
 const dayjs = require('dayjs');
 const { sync: globSync } = require('glob');
 const isString = require('lodash/isString');
 const isArray = require('lodash/isArray');
-// const bodyParser = require('body-parser');
-// const sirv = require('sirv');
+const send = require('@polka/send-type');
 
-// TODO: evolve this to use https://github.com/lukeed/polka
-// which is the new thing storybook uses
+// NOTE: storybook uses polka now instead of express and it's not great.
 
-module.exports = (router) => {
-    console.log('router', router);
-    // const router = express.Router();
+module.exports = () => {
+    const router = express.Router();
 
-    // router.use(bodyParser.json());
-    // router.use(bodyParser.urlencoded({ extended: false }));
+    router.use(express.json());
+    router.use(express.urlencoded());
 
     const dataPath = path.join(__dirname, '/items');
 
@@ -73,20 +70,11 @@ module.exports = (router) => {
 
         if (search !== null) {
             return _.values(
-                _.filter(items, (it) => {
-                    if (it !== null && typeof it.title !== 'undefined' && isString(it.title)) {
-                        return it.title.indexOf(search) !== -1;
-                    }
-                    if (
-                        it !== null &&
-                        typeof it.title !== 'undefined' &&
-                        typeof it.title.fr !== 'undefined' &&
-                        isString(it.title.fr)
-                    ) {
-                        return it.title.fr.indexOf(search) !== -1;
-                    }
-                    return true;
-                }),
+                _.filter(items, (it) =>
+                    it !== null && typeof it.title !== 'undefined' && isString(it.title)
+                        ? it.title.indexOf(search) !== -1
+                        : true,
+                ),
             );
         }
 
@@ -140,46 +128,38 @@ module.exports = (router) => {
         deletedResources[resource] = [...deletedResources[resource], id];
     };
 
-    // const staticServe = sirv(dataPath, {
-    //     dev: true,
-    //     single: false,
-    // });
-
     // router.use(
-    //     '/items',
-    //     staticServe,
-    //     // express.static(dataPath, {
-    //     //     index: false,
-    //     //     extensions: ['json'],
-    //     // }),
+    //     '/',
+    //     express.static(dataPath, {
+    //         index: false,
+    //         extensions: ['json'],
+    //     }),
     // );
 
     let loggedInUser = require(path.join(dataPath, '/me'));
 
     router.get('/auth/check', (req, res) => {
-        res.status(200).json(loggedInUser);
+        send(res, 200, loggedInUser);
         res.end();
     });
 
     router.post('/auth/login', (req, res) => {
-        loggedInUser = require(path.join(dataPath, '/me'));
-        res.status(200).json(loggedInUser);
+        send(res, 200, loggedInUser);
         res.end();
     });
 
     router.post('/auth/logout', (req, res) => {
-        loggedInUser = null;
-        res.status(200).json(loggedInUser);
+        send(res, 200, null);
         res.end();
     });
 
     router.get('/csrf-cookie', (req, res) => {
-        res.status(200).json(null);
+        send(res, 200, null);
         res.end();
     });
 
     router.post('/batch', (req, res) => {
-        res.status(200).json(['123']);
+        send(res, 200, ['123']);
         res.end();
     });
 
@@ -187,18 +167,13 @@ module.exports = (router) => {
      * Resource index
      */
     router.get('/:resource', (req, res) => {
-        // console.log('response', res);
-        // res.status(200).json({ test: 1 });
-        // return;
-
         const { resource } = req.params;
         if (!resourceExists(resource)) {
-            res.sendStatus(404);
+            send(res, 404);
             return;
         }
         // Test unauthorized request here
         // res.status(401);
-
         const defaultCount = 10;
         const {
             page = null,
@@ -223,7 +198,9 @@ module.exports = (router) => {
         );
 
         if (page !== null) {
-            res.status(200).json(
+            send(
+                res,
+                200,
                 getItemsPage(
                     filteredItems,
                     parseInt(page, 10),
@@ -231,7 +208,9 @@ module.exports = (router) => {
                 ),
             );
         } else {
-            res.status(200).json(
+            send(
+                res,
+                200,
                 count !== null && (paginate === false || paginated === false)
                     ? filteredItems.slice(0, count - 1)
                     : filteredItems,
@@ -243,11 +222,13 @@ module.exports = (router) => {
     router.get('/:resource/trash', (req, res) => {
         const { resource } = req.params;
         if (!resourceExists(resource)) {
-            res.sendStatus(404);
+            send(res, 404);
             return;
         }
+
         // Test unauthorized request here
         // res.status(401);
+
         const defaultCount = 10;
         const {
             page = null,
@@ -266,7 +247,9 @@ module.exports = (router) => {
         const filteredItems = sortItems(filterItems(items, query), sort, sortDirection);
 
         if (page !== null) {
-            res.status(200).json(
+            send(
+                res,
+                200,
                 getItemsPage(
                     filteredItems,
                     parseInt(page, 10),
@@ -274,7 +257,9 @@ module.exports = (router) => {
                 ),
             );
         } else {
-            res.status(200).json(
+            send(
+                res,
+                200,
                 count !== null && (paginate === false || paginated === false)
                     ? filteredItems.slice(0, count - 1)
                     : filteredItems,
@@ -289,17 +274,17 @@ module.exports = (router) => {
     router.get('/:resource/:id', (req, res) => {
         const { resource } = req.params;
         if (!resourceExists(resource)) {
-            res.sendStatus(404);
+            send(res, 404);
             return;
         }
         const { id: itemId } = req.params;
         const items = getResourceItems(resource);
         const item = items.find(({ id, slug = null }) => id === itemId || slug === itemId) || null;
         if (item === null) {
-            res.sendStatus(404);
+            send(res, 404);
             return;
         }
-        res.status(200).json(item);
+        send(res, 200, item);
         res.end();
     });
 
@@ -309,7 +294,8 @@ module.exports = (router) => {
     router.post('/:resource', (req, res) => {
         const { resource } = req.params;
         if (!resourceExists(resource)) {
-            res.sendStatus(404);
+            send(res, 404);
+            res.end();
             return;
         }
         const currentItems = getResourceItems(resource);
@@ -323,8 +309,7 @@ module.exports = (router) => {
             updated_at: now,
         };
         addResourceItem(resource, newItem);
-        // console.log('create', newItem);
-        res.status(200).json(newItem);
+        send(res, 200, newItem);
         res.end();
     });
 
@@ -333,12 +318,11 @@ module.exports = (router) => {
         const currentItems = getResourceItems(resource);
         const currentItem = currentItems.find((it) => it.id === id) || null;
         if (currentItem === null) {
-            res.sendStatus(404);
+            send(res, 404);
+            res.end();
             return;
         }
         const { _method, ...item } = req.body;
-
-        // console.log('update item', item);
 
         const newItem = {
             ...currentItem,
@@ -361,7 +345,7 @@ module.exports = (router) => {
         // res.end();
 
         updateResourceItem(resource, newItem);
-        res.status(200).json(newItem);
+        send(res, 200, newItem);
         res.end();
     };
 
@@ -370,11 +354,12 @@ module.exports = (router) => {
         const currentItems = getResourceItems(resource);
         const currentItem = currentItems.find((it) => it.id === id) || null;
         if (currentItem === null) {
-            res.sendStatus(404);
+            send(res, 404);
+            res.end();
             return;
         }
         deleteResourceItem(resource, id);
-        res.status(200).json(currentItem);
+        send(res, 200, currentItem);
         res.end();
     };
 
@@ -384,7 +369,8 @@ module.exports = (router) => {
     router.post('/:resource/:id', (req, res) => {
         const { resource } = req.params;
         if (!resourceExists(resource)) {
-            res.sendStatus(404);
+            send(res, 404);
+            res.end();
             return;
         }
         const { _method: methodOverride = null } = req.body;
@@ -402,29 +388,33 @@ module.exports = (router) => {
     router.delete('/:resource/trash/:id', (req, res) => {
         const { resource } = req.params;
         if (!resourceExists(resource)) {
-            res.sendStatus(404);
+            send(res, 404);
+            res.end();
             return;
         }
         // TODO implement trashed state
-        deleteResource(req, res);
+        return deleteResource(req, res);
     });
 
     router.post('/:resource/restore/:id', (req, res) => {
         const { resource } = req.params;
         if (!resourceExists(resource)) {
-            res.sendStatus(404);
+            send(res, 404);
+            res.end();
+            return;
         }
-        // TODO implement trashed state
+        // TODO implement trashed state...
         res.sendStatus(200);
     });
 
     router.delete('/:resource/:id', (req, res) => {
         const { resource } = req.params;
         if (!resourceExists(resource)) {
-            res.sendStatus(404);
+            send(res, 404);
+            res.end();
             return;
         }
-        deleteResource(req, res);
+        return deleteResource(req, res);
     });
 
     return router;

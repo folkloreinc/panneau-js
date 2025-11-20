@@ -309,13 +309,28 @@ Providers: `FieldsProvider`, `DataProvider`, `ActionsProvider`, `ModalsProvider`
 
 ### Code Style
 
-**ESLint** (`.eslintrc.json`):
+**ESLint** (`eslint.config.mjs`):
 
-- Base: Airbnb + Prettier
-- 4-space indentation for JSX
-- FormatJS plugin enforces default messages and no camelCase in i18n IDs
-- Console allowed: `warn`, `error`
-- Overrides relaxed for config files, scripts, CLI code
+- **Format**: ESLint flat config (typescript-eslint.config)
+- **File patterns**: `**/*.{js,jsx,ts,tsx}`
+- **Ignored paths**:
+    - Config files (`**/*.config.js`)
+    - Build outputs (`*/*/lib/**`, `*/*/es/**`)
+    - Package root files (`packages/*/*.js`, `fields/*/*.js`, `forms/*/*.js`)
+    - Node modules (`.storybook` is explicitly not ignored)
+- **Parser**: `@babel/eslint-parser` with React and TypeScript presets
+- **Extends**:
+    - `@eslint/js` (recommended)
+    - `typescript-eslint` (recommended)
+    - `@eslint-react/eslint-plugin` (recommended-typescript)
+    - `eslint-plugin-import` (typescript + recommended)
+    - `eslint-plugin-formatjs` (recommended)
+    - `eslint-plugin-react` (flat.recommended + flat.jsx-runtime)
+    - `eslint-plugin-prettier` (recommended)
+- **Settings**: React default version 18
+- **Globals**: Browser environment + custom flags (`__DEV__`, `__SERVER__`, `__EDITOR__`, `__ASSETS_MANIFEST__`, `__EMBEDDED_STYLES__`, `__EMBEDDED_SCRIPTS__`)
+- **Rules**:
+    - `formatjs/no-literal-string-in-jsx`: off (allows literal strings in JSX)
 
 **Prettier** (`.prettierrc.json`):
 
@@ -327,9 +342,15 @@ Providers: `FieldsProvider`, `DataProvider`, `ActionsProvider`, `ModalsProvider`
 
 **Stylelint** (`.stylelintrc.json`):
 
-- SASS guidelines + SMACSS property ordering
-- Max 4-level nesting
-- Camel-case class selectors
+- **Extends**:
+    - `stylelint-config-idiomatic-order` (SMACSS property ordering)
+    - `stylelint-config-standard` (standard rules)
+- **Rules**:
+    - `order/properties-alphabetical-order`: disabled (uses idiomatic order instead)
+    - `alpha-value-notation`: "number" (prefer numeric alpha values)
+    - `selector-class-pattern`: camelCase pattern enforced (`^[a-z][a-z0-9A-Z]+$`)
+    - `max-nesting-depth`: 4 levels maximum
+    - `import-notation`: ["string", "url"] (prefer string notation for imports)
 
 ### Internationalization
 

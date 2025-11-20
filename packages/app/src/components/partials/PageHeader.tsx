@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import React from 'react';
-import type { Label } from '@panneau/core/types';
 
 import { usePanneauColorScheme } from '@panneau/core/contexts';
+import type { Label } from '@panneau/core/types';
 import LabelComponent from '@panneau/element-label';
 
 interface PageHeaderProps {
@@ -22,7 +22,6 @@ function PageHeader({
 }: PageHeaderProps) {
     // TODO: fix page header components
     // const { components } = usePanneau();
-    // console.log('page-header', components); // eslint-disable-line
     const { text, background } = usePanneauColorScheme();
 
     const inner = (

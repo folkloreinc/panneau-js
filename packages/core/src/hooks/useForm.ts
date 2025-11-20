@@ -46,6 +46,7 @@ const getFieldsPropsFromFields = (
         } = isObject(field) ? (field as Field) : {};
 
         const fieldErrors = errors !== null ? (errors[name as string] as string[] | undefined) || [] : [];
+
         const finalErrors = component === 'localized' ? (locales || []).reduce((previousErrors: string[], locale: string) => {
             const items = errors !== null ? get(errors, `${name}.${locale}`, []) || [] : [];
             const finalItems = isArray(items) ? items : [items];
@@ -303,7 +304,6 @@ const useForm = (opts: UseFormOptions = {}): UseFormReturn => {
 
     const onSubmit = useCallback(
         (e: React.FormEvent) => {
-            // console.log('form submit', e); //
             if (withoutDefault) {
                 e.preventDefault();
             }

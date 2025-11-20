@@ -1,5 +1,6 @@
-import type { Resource } from '@panneau/core/types';
 import isObject from 'lodash-es/isObject';
+
+import type { Resource } from '@panneau/core/types';
 
 import { usePanneauResources, useResource, useUrlGenerator } from '../contexts';
 
@@ -17,7 +18,9 @@ type ResourceUrlGenerator = (
     params?: Record<string, unknown> | null,
 ) => string | null;
 
-const useResourceUrlGenerator = (resourceId: string | Resource | null = null): ResourceUrlGenerator => {
+const useResourceUrlGenerator = (
+    resourceId: string | Resource | null = null,
+): ResourceUrlGenerator => {
     const resources = usePanneauResources();
     const contextResource = useResource();
     const resource = getResource(resources, resourceId) || contextResource;
@@ -31,7 +34,6 @@ const useResourceUrlGenerator = (resourceId: string | Resource | null = null): R
         const finalParams = resourceId !== null ? routeName : params;
         const finalResource = getResource(resources, routeResourceId) || resource;
         const { id = null } = finalResource || {};
-        // console.log('route name', finalRouteName, id, finalParams);
         const finalRoute =
             id !== null
                 ? route(`resources.${finalRouteName as string}`, {
@@ -39,7 +41,6 @@ const useResourceUrlGenerator = (resourceId: string | Resource | null = null): R
                       resource: id,
                   })
                 : null;
-        // console.log('route', finalRoute);
         return finalRoute;
     };
 };

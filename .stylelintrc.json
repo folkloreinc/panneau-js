@@ -1,5 +1,5 @@
 {
-    "extends": ["stylelint-config-sass-guidelines", "stylelint-config-property-sort-order-smacss"],
+    "extends": ["stylelint-config-idiomatic-order", "stylelint-config-standard"],
     "rules": {
         "order/properties-alphabetical-order": null,
         "alpha-value-notation": "number",
@@ -9,6 +9,7 @@
                 "message": "Selector should be written in camel-case (selector-class-pattern)"
             }
         ],
-        "max-nesting-depth": 4
+        "max-nesting-depth": 4,
+        "import-notation": ["string", "url"]
     }
 }

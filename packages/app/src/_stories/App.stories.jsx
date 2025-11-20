@@ -45,59 +45,47 @@ const englishIntl = {
     },
 };
 
-// console.log('panneauDefinition', panneauDefinition);
-
 const CustomHomePage = () => <div className="text-primary bg-info">Home sweet home</div>;
 
 const CustomEventPage = () => <div className="text-primary bg-info">Events page replacement</div>;
 
 export const Guest = {
-    render: () => (
-
-    <PanneauContainer definition={panneauDefinition} memoryRouter {...props} />
-
-    ),
+    render: () => <PanneauContainer definition={panneauDefinition} memoryRouter {...props} />,
 };
 
 export const GuestDarkEnglish = {
     render: () => (
-
-    <PanneauContainer
-        definition={{
-            ...panneauDefinition,
-            theme: { colorScheme: 'dark' },
-            intl: englishIntl,
-        }}
-        memoryRouter
-        {...props}
-    />
-
+        <PanneauContainer
+            definition={{
+                ...panneauDefinition,
+                theme: { colorScheme: 'dark' },
+                intl: englishIntl,
+            }}
+            memoryRouter
+            {...props}
+        />
     ),
 };
 
 export const LightMode = {
     render: () => (
-
-    <PanneauContainer
-        definition={{ ...panneauDefinition, theme: { colorScheme: 'light' } }}
-        memoryRouter
-        user={user}
-        {...props}
-    />
-
+        <PanneauContainer
+            definition={{ ...panneauDefinition, theme: { colorScheme: 'light' } }}
+            memoryRouter
+            user={user}
+            {...props}
+        />
     ),
 };
 
 export const DarkMode = {
     render: () => (
-
-    <PanneauContainer
-        definition={{ ...panneauDefinition, theme: { colorScheme: 'dark' } }}
-        memoryRouter
-        user={user}
-        {...props}
-    />
-
+        <PanneauContainer
+            definition={{ ...panneauDefinition, theme: { colorScheme: 'dark' } }}
+            memoryRouter
+            user={user}
+            {...props}
+        />
     ),
 };
 
@@ -105,58 +93,52 @@ const CustomPreviewPage = () => <div className="text-primary bg-info">PAGE PREVI
 
 export const BlueModeWithComps = {
     render: () => (
-
-    <PanneauContainer
-        definition={{ ...panneauDefinition, theme: { colorScheme: 'blue' } }}
-        components={{
-            [PAGES_NAMESPACE]: {
-                Home: CustomHomePage,
-                // EventIndex: CustomEventPage,
-                EventShow: CustomEventPage,
-                EventCreate: CustomEventPage,
-                EventEdit: CustomEventPage,
-                EventDelete: CustomEventPage,
-            },
-            [PREVIEWS_NAMESPACE]: {
-                pages: CustomPreviewPage,
-            },
-        }}
-        memoryRouter
-        user={user}
-        {...props}
-    />
-
+        <PanneauContainer
+            definition={{ ...panneauDefinition, theme: { colorScheme: 'blue' } }}
+            components={{
+                [PAGES_NAMESPACE]: {
+                    Home: CustomHomePage,
+                    // EventIndex: CustomEventPage,
+                    EventShow: CustomEventPage,
+                    EventCreate: CustomEventPage,
+                    EventEdit: CustomEventPage,
+                    EventDelete: CustomEventPage,
+                },
+                [PREVIEWS_NAMESPACE]: {
+                    pages: CustomPreviewPage,
+                },
+            }}
+            memoryRouter
+            user={user}
+            {...props}
+        />
     ),
 };
 
 export const Tenk = {
     render: () => (
-
-    <PanneauContainer
-        definition={{
-            ...tenkDefinition,
-            intl: englishIntl,
-        }}
-        memoryRouter
-        user={user}
-        {...props}
-    />
-
+        <PanneauContainer
+            definition={{
+                ...tenkDefinition,
+                intl: englishIntl,
+            }}
+            memoryRouter
+            user={user}
+            {...props}
+        />
     ),
 };
 
 export const English = {
     render: () => (
-
-    <PanneauContainer
-        definition={{
-            ...panneauDefinition,
-            intl: englishIntl,
-        }}
-        memoryRouter
-        user={user}
-        {...props}
-    />
-
+        <PanneauContainer
+            definition={{
+                ...panneauDefinition,
+                intl: englishIntl,
+            }}
+            memoryRouter
+            user={user}
+            {...props}
+        />
     ),
 };

@@ -1,12 +1,10 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import isEmpty from 'lodash-es/isEmpty';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import type { Field } from '@panneau/core/types';
 import { useFieldsComponents, useLocales } from '@panneau/core/contexts';
+import type { Field } from '@panneau/core/types';
 import { getComponentFromName } from '@panneau/core/utils';
 import Buttons from '@panneau/element-buttons';
 import FormGroup from '@panneau/element-form-group';

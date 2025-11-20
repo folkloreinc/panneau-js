@@ -11,13 +11,18 @@ interface LocalesContextValue {
 
 export const LocalesContext = React.createContext<LocalesContextValue>({ locales: defaultLocales });
 
-export const useLocales = (): LocalesContextValue => {
+export const useLocalesContext = (): LocalesContextValue => {
     const context = useContext(LocalesContext);
     return context;
 };
 
+export const useLocales = (): string[] => {
+    const { locales } = useLocalesContext();
+    return locales;
+};
+
 export const useOtherLocales = (): string[] => {
-    const { locales } = useLocales();
+    const { locales } = useLocalesContext();
     const { locale } = useIntl();
     const otherLocales = useMemo(() => locales.filter((it) => it !== locale), [locales, locale]);
     return otherLocales;

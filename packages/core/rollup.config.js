@@ -109,6 +109,4 @@ const config = Object.keys(files).reduce(
     [],
 );
 
-// console.log('Rollup config for @panneau/core:', config);
-
 export default config;
