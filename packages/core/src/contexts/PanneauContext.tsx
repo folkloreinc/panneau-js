@@ -26,7 +26,7 @@ export const usePanneauColorScheme = (): {
     background: string | null;
     text: string | null;
 } => {
-    const { theme = {} } = usePanneau() || {};
+    const { theme = null } = usePanneau() || {};
     const { colorScheme = 'light' } = theme || {};
 
     if (colorScheme === null || colorScheme === 'light' || colorScheme === 'dark') {

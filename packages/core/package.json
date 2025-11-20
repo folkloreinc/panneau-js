@@ -22,14 +22,6 @@
         {
             "name": "Nicolas Roy-Bourdages",
             "email": "nrb@folklore.email"
-        },
-        {
-            "name": "Julien Carignan",
-            "email": "jc@folklore.email"
-        },
-        {
-            "name": "Théo Gjini",
-            "email": "tg@folklore.email"
         }
     ],
     "license": "ISC",
