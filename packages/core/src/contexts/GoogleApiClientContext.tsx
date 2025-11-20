@@ -1,14 +1,14 @@
 import { loadGoogleApi } from '@folklore/services';
-import React, { useContext, useEffect, useState } from 'react';
-import type { ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
 import { useGoogleKeys } from './GoogleKeysContext';
 
-export const GoogleApiClientContext = React.createContext<any | null>(null);
+export const GoogleApiClientContext = createContext<any | null>(null);
 
 export const useGoogleApiClient = (): any | null => useContext(GoogleApiClientContext);
 
-export const withGoogleApiClient = (WrappedComponent: React.ComponentType<any>) => {
+export const withGoogleApiClient = (WrappedComponent: ComponentType<any>) => {
     const getDisplayName = ({
         displayName = null,
         name = null,

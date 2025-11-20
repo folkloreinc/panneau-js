@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import type { MouseEvent, ReactNode } from 'react';
 import { useState } from 'react';
 
 import type { DropdownAlign, MenuItem } from '@panneau/core/types';
@@ -10,7 +11,7 @@ interface MenuProps {
     items?: MenuItem[];
     tagName?: string;
     itemTagName?: string;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
     linkAsItem?: boolean;
     className?: string | null;
     itemClassName?: string | null;
@@ -69,7 +70,7 @@ function Menu({
                       } = it;
                       const onClickItem =
                           dropdown !== null
-                              ? (e: React.MouseEvent) => {
+                              ? (e: MouseEvent) => {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     setDropdownsVisible([

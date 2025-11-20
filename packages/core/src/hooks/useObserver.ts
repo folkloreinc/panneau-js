@@ -1,3 +1,4 @@
+import type { RefObject } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
 const buildThresholdArray = (): number[] => [0, 1.0];
@@ -151,7 +152,7 @@ export const getObserver = <T,>(
 };
 
 interface UseObserverReturn<T> {
-    ref: React.RefObject<Element>;
+    ref: RefObject<Element>;
     entry: T;
 }
 

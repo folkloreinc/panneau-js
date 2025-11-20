@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import get from 'lodash-es/get';
 import isEmpty from 'lodash-es/isEmpty';
+import type { FormEvent } from 'react';
 import { useCallback, useRef, useState } from 'react';
 import Autosuggest from 'react-autosuggest';
 import { useIntl } from 'react-intl';
@@ -133,14 +134,14 @@ function ItemField({
     }, [setItems]);
 
     const onInputChange = useCallback(
-        (e: React.FormEvent, { newValue }: { newValue: string }) => {
+        (e: FormEvent, { newValue }: { newValue: string }) => {
             setInputValue(newValue);
         },
         [setInputValue],
     );
 
     const onSuggestionSelected = useCallback(
-        (e: React.FormEvent, { suggestion }: { suggestion: ItemFieldItem }) => {
+        (e: FormEvent, { suggestion }: { suggestion: ItemFieldItem }) => {
             setInputValue('');
             if (onChange !== null) {
                 onChange(suggestion);

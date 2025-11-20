@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import classNames from 'classnames';
 import isEmpty from 'lodash-es/isEmpty';
+import type { ChangeEvent, MouseEvent } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
 import { FormattedMessage } from 'react-intl';
@@ -74,7 +75,7 @@ function ColorPickerField({
     );
 
     const onInputChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             if (onChange !== null) {
                 onChange({
                     color: e.target.value,
@@ -86,7 +87,7 @@ function ColorPickerField({
     );
 
     const onInputClick = useCallback(
-        (e: React.MouseEvent) => {
+        (e: MouseEvent) => {
             if (!native) {
                 e.preventDefault();
                 setPickerOpened(!pickerOpened);

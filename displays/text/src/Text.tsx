@@ -1,6 +1,8 @@
+import { type ReactNode } from 'react';
+
 interface TextProps {
     value?: string | number | null;
-    placeholder?: React.ReactNode | null;
+    placeholder?: ReactNode | null;
 }
 
 function Text({ value = null, placeholder = null }: TextProps) {

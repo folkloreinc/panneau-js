@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import type { ChangeEvent } from 'react';
 import { useCallback } from 'react';
 
 import styles from './styles.module.css';
@@ -13,7 +14,7 @@ interface RangeProps {
 
 function Range({ title = null, value = 50, onChange, max = 100, className = null }: RangeProps) {
     const onValueChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             onChange(e.target.value);
         },
         [onChange, max],

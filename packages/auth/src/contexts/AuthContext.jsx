@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
     useAuthCheck,
     useAuthLogin,
@@ -11,7 +11,7 @@ import {
     useAuthResetPassword,
 } from '../hooks';
 
-const AuthContext = React.createContext(null);
+const AuthContext = createContext(null);
 
 export const useAuth = () => useContext(AuthContext);
 

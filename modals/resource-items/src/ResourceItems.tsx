@@ -1,5 +1,5 @@
+import { useMemo, type ReactNode } from 'react';
 import isObject from 'lodash-es/isObject';
-import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { usePanneauResource } from '@panneau/core/contexts';
@@ -18,7 +18,7 @@ interface ModalResourceItemsProps {
     onClose?: (() => void) | null;
     listProps?: Record<string, unknown> | null;
     className?: string | null;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
 }
 
 function ModalResourceItems({

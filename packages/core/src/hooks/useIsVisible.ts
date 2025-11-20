@@ -1,3 +1,4 @@
+import type { RefObject } from 'react';
 import { useRef } from 'react';
 import { useIntersectionObserver } from './useObserver';
 
@@ -8,7 +9,7 @@ interface UseIsVisibleOptions {
 }
 
 interface UseIsVisibleResult {
-    ref: React.RefObject<HTMLElement>;
+    ref: RefObject<HTMLElement>;
     visible: boolean;
 }
 

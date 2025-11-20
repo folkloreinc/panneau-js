@@ -1,13 +1,13 @@
 import classNames from 'classnames';
 import isNumber from 'lodash-es/isNumber';
 import isString from 'lodash-es/isString';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
 interface ImageProps {
     value?: string | Record<string, unknown> | null;
-    placeholder?: React.ReactNode | null;
+    placeholder?: ReactNode | null;
     maxWidth?: number | null;
     maxHeight?: number | null;
     onClick?: (() => void) | null;

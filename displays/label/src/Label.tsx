@@ -1,7 +1,9 @@
+import { type ReactNode } from 'react';
+
 interface LabelProps {
     labels?: Record<string, string>;
     value?: string | null;
-    placeholder?: React.ReactNode | null;
+    placeholder?: ReactNode | null;
 }
 
 const DEFAULT_LABELS = {};

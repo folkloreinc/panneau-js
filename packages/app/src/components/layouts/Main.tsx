@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { type ReactNode } from 'react';
 
 import { usePanneauColorScheme } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
@@ -6,7 +7,7 @@ import { Modals } from '@panneau/element-modal';
 import MainNavbar from '../menus/MainNavbar';
 
 interface MainLayoutProps {
-    children?: React.ReactNode;
+    children?: ReactNode;
     loading?: boolean;
     fullscreen?: boolean;
 }

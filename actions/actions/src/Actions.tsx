@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import type { ComponentType } from 'react';
 import { useMemo } from 'react';
 
 import { useActionsComponentsManager } from '@panneau/core/contexts';
@@ -19,7 +20,7 @@ interface ActionsProps {
     value?: Item[] | null;
     onChange?: ((value: unknown) => void) | null;
     onConfirmed?: ((value: unknown) => void) | null;
-    defaultComponent?: React.ComponentType<any>;
+    defaultComponent?: ComponentType<any>;
     isGroup?: boolean;
     size?: ButtonSize;
     disabled?: boolean;

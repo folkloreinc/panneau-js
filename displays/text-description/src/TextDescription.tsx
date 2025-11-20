@@ -1,12 +1,12 @@
 import classNames from 'classnames';
 import get from 'lodash-es/get';
 import isObject from 'lodash-es/isObject';
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 
 interface TextDescriptionProps {
     value?: string | Record<string, unknown> | null;
-    placeholder?: React.ReactNode | null;
+    placeholder?: ReactNode | null;
     item?: { id: string | number } | null;
     descriptionPath?: string | null;
     descriptionValues?: Record<string, unknown> | null;

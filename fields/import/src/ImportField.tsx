@@ -1,5 +1,5 @@
+import { useCallback, useState, type ReactNode } from 'react';
 import classNames from 'classnames';
-import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Button from '@panneau/element-button';
@@ -19,7 +19,7 @@ interface ImportFieldProps {
     isModal?: boolean;
     icon?: string;
     iconPosition?: string | null;
-    label?: string | React.ReactNode | null;
+    label?: string | ReactNode | null;
     disabled?: boolean;
     theme?: string;
     outline?: boolean;

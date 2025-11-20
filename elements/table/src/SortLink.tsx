@@ -1,6 +1,7 @@
 import isObject from 'lodash-es/isObject';
 import omit from 'lodash-es/omit';
 import queryString from 'query-string';
+import type { MouseEvent, ReactNode } from 'react';
 import { useCallback, useMemo } from 'react';
 
 import type { Field } from '@panneau/core/types';
@@ -11,13 +12,13 @@ interface SortLinkProps {
     baseUrl?: string;
     query?: Record<string, any> | null;
     field?: string | Field | null;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
     parameterName?: string;
     directionParameterName?: string | null;
     directions?: (string | null)[];
     keepsPage?: boolean;
     onQueryChange?: ((query: Record<string, any> | null) => void) | null;
-    onClick?: ((e: React.MouseEvent) => void) | null;
+    onClick?: ((e: MouseEvent) => void) | null;
 }
 
 function SortLink({
@@ -74,7 +75,7 @@ function SortLink({
     }, [query, parameterName, columnName, directionParameterName, newSortDirection, keepsPage]);
 
     const onClick = useCallback(
-        (e: React.MouseEvent) => {
+        (e: MouseEvent) => {
             if (onQueryChange !== null) {
                 e.preventDefault();
                 onQueryChange(newQuery);

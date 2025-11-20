@@ -36,6 +36,26 @@ The `packages` folder contains all the general packages and the meta-packages gr
     - Leverages modern React 17+ JSX transform (no React import needed for JSX)
     - Verified with ESLint - zero errors related to React imports
 
+- **React Namespace Refactoring**: Migrated from `React.*` patterns to named imports across entire codebase
+    - **Phase 1 - ReactNode**: Replaced `React.ReactNode` → `ReactNode` in 63 files
+        - Updated all TypeScript component interfaces across actions, displays, fields, elements, forms, modals, lists, filters, and packages
+        - Added `import { type ReactNode } from 'react';` with proper type imports for tree-shaking
+    - **Phase 2 - createContext**: Replaced `React.createContext` → `createContext` in 19 context files
+        - Updated all provider files in packages/core/src/contexts, packages/data, packages/auth, packages/uppy, and packages/medias
+        - Converted from `import React, { hooks }` to `import { createContext, hooks }` pattern
+    - **Phase 3 - React Types**: Replaced all remaining `React.*` type patterns in 29 files
+        - `React.ComponentType` → `ComponentType` (9 occurrences)
+        - `React.MouseEvent` → `MouseEvent` (13 occurrences)
+        - `React.FormEvent` → `FormEvent` (6 occurrences)
+        - `React.ChangeEvent` → `ChangeEvent` (2 occurrences)
+        - `React.Ref` → `Ref` (1 occurrence)
+        - `React.RefObject` → `RefObject` (6 occurrences)
+        - `React.MutableRefObject` → `MutableRefObject` (1 occurrence)
+        - `React.ReactElement` → `ReactElement` (1 occurrence)
+    - Total: 111 files updated with **zero** remaining `React.*` patterns
+    - All files now use explicit named imports with `import type { ... } from 'react'` for better tree-shaking
+    - Follows modern React 17+ best practices and improves code clarity
+
 - **ESLint Flat Config Migration**: Migrated from legacy ESLint configuration to flat config format
     - Converted from `.eslintrc.json` to `eslint.config.mjs` using typescript-eslint.config
     - Removed `.eslintignore` file (ignores now defined in config)
@@ -246,7 +266,7 @@ import type { ButtonTheme, Field } from '@panneau/core/types';
 interface ComponentNameProps {
     id: string;
     value?: string;
-    placeholder?: React.ReactNode;
+    placeholder?: ReactNode;
     theme?: ButtonTheme;
     onChange?: (value: unknown) => void;
     className?: string;
@@ -308,7 +328,7 @@ export default ComponentName;
     - Use `type` imports for better tree-shaking: `import type { ... } from '@panneau/core/types'`
     - Interface naming convention: `ComponentNameProps`
     - All optional props use `?` and default values in destructuring
-    - Use `React.ReactNode` for content that can be JSX or text
+    - Use `ReactNode` for content that can be JSX or text
 - ✅ **Default exports**: All components exported as default
 - ✅ **No React.memo**: Memoization is not used anywhere in the codebase
 - ✅ **Hooks usage**: Components freely use useState, useEffect, useMemo, useCallback, etc.
@@ -529,6 +549,7 @@ export default {
 - **ESLint format**: Uses flat config format (`eslint.config.mjs`) with typescript-eslint
 - **React imports**: Modern React 17+ JSX transform - no need to import React for JSX usage
 - **TypeScript files**: 297 `.tsx` files with cleaned imports (no unused React imports)
+- **React patterns**: Zero `React.*` namespace patterns - all use explicit named imports (e.g., `ReactNode`, `createContext`, `ComponentType`)
 
 ## Best Practices
 
@@ -630,7 +651,7 @@ The codebase is gradually migrating from JavaScript to TypeScript. When migratin
 5. **Key Type Mappings**:
     - PropTypes required → Interface property without `?`
     - PropTypes optional → Interface property with `?`
-    - `PropTypes.node` → `React.ReactNode`
+    - `PropTypes.node` → `ReactNode` → import from 'react'
     - `PropTypes.func` → Function signature (e.g., `(value: string) => void`)
     - `PropTypes.oneOf([...])` → Union type (e.g., `'small' | 'medium' | 'large'`)
     - `PropTypes.shape({...})` → Import corresponding interface from `@panneau/core/types`
@@ -943,12 +964,36 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 ### React Import Guidelines
 
-**Modern approach (React 17+)** - The codebase uses the new JSX transform:
+**Modern approach (React 17+)** - The codebase uses the new JSX transform with explicit named imports:
 
 - ✅ **No React import for JSX**: JSX works without importing React
 - ✅ **Import only hooks needed**: `import { useState, useEffect } from 'react';`
 - ✅ **Type-only imports**: `import type { ReactNode } from 'react';` for types
+- ✅ **Named imports for types**: `import type { ComponentType, MouseEvent, FormEvent } from 'react';`
+- ✅ **Named imports for APIs**: `import { createContext } from 'react';`
 - ❌ **Avoid**: `import React from 'react';` in `.tsx` files (unless using React namespace)
+- ❌ **Avoid**: `React.*` patterns (use named imports instead)
+
+**Common React Type Imports**:
+
+```typescript
+// ✅ Use named imports for types
+import type {
+    ReactNode,          // For children/content props
+    ComponentType,      // For component type props
+    MouseEvent,         // For mouse event handlers
+    FormEvent,          // For form event handlers
+    ChangeEvent,        // For input change handlers
+    RefObject,          // For ref props
+    MutableRefObject,   // For mutable ref props
+    ReactElement,       // For React element types
+} from 'react';
+
+// ❌ Avoid React namespace patterns
+// React.ReactNode → use ReactNode
+// React.ComponentType → use ComponentType
+// React.MouseEvent → use MouseEvent
+```
 
 **Examples**:
 
@@ -966,15 +1011,34 @@ function MyComponent() {
     return <input value={value} onChange={(e) => setValue(e.target.value)} />;
 }
 
-// ✅ Component with React types - use type import
-import type { ReactNode } from 'react';
+// ✅ Component with React types - use type imports
+import type { ReactNode, MouseEvent } from 'react';
 interface Props {
     children: ReactNode;
+    onClick?: (e: MouseEvent) => void;
+}
+
+// ✅ Context file - use named import for createContext
+import { createContext, useContext } from 'react';
+const MyContext = createContext(null);
+
+// ✅ Component with event handlers - use named event types
+import { useCallback, type ChangeEvent, type FormEvent } from 'react';
+interface FormProps {
+    onSubmit?: (e: FormEvent) => void;
 }
 
 // ❌ Avoid - unnecessary React import
 import React from 'react';
 function MyComponent() {
     return <div>Hello</div>; // React not used
+}
+
+// ❌ Avoid - React namespace patterns
+import React from 'react';
+const MyContext = React.createContext(null);  // Use: import { createContext }
+interface Props {
+    children: React.ReactNode;  // Use: import type { ReactNode }
+    onClick?: (e: React.MouseEvent) => void;  // Use: import type { MouseEvent }
 }
 ```

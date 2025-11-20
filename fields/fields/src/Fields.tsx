@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import get from 'lodash-es/get';
+import type { ComponentType } from 'react';
 import { Fragment, useCallback } from 'react';
 
 import { useFieldsComponents, useFieldsManager } from '@panneau/core/contexts';
@@ -8,7 +9,7 @@ import { getComponentFromName } from '@panneau/core/utils';
 import FormGroup from '@panneau/element-form-group';
 
 interface FieldsProps {
-    components?: Record<string, React.ComponentType<any>> | null;
+    components?: Record<string, ComponentType<any>> | null;
     fields?: Field[];
     value?: Record<string, unknown> | null;
     horizontal?: boolean;

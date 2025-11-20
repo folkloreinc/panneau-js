@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 
 interface ModalData {
@@ -17,7 +17,7 @@ interface ModalContextValue {
     getModalById: (modalId: string) => ModalData | null;
 }
 
-export const ModalContext = React.createContext<ModalContextValue | null>(null);
+export const ModalContext = createContext<ModalContextValue | null>(null);
 
 export const useModal = (): ModalContextValue =>
     useContext(ModalContext) || ({} as ModalContextValue);

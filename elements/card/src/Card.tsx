@@ -1,6 +1,7 @@
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
+import { type ReactNode } from 'react';
 
 import type { Label } from '@panneau/core/types';
 import Button from '@panneau/element-button';
@@ -15,18 +16,18 @@ interface CardLink {
 
 interface CardProps {
     href?: string | null;
-    header?: React.ReactNode | null;
-    image?: React.ReactNode | string | null;
+    header?: ReactNode | null;
+    image?: ReactNode | string | null;
     imageAlt?: string | null;
     imageOverlay?: boolean;
-    beforeBody?: React.ReactNode | null;
+    beforeBody?: ReactNode | null;
     title?: Label | null;
     subtitle?: Label | null;
-    children?: React.ReactNode | null;
-    afterBody?: React.ReactNode | null;
+    children?: ReactNode | null;
+    afterBody?: ReactNode | null;
     links?: CardLink[] | null;
     linksInSameBody?: boolean;
-    footer?: React.ReactNode | null;
+    footer?: ReactNode | null;
     theme?: 'dark' | 'primary' | 'light' | null;
     className?: string | null;
     imageClassName?: string | null;
@@ -39,7 +40,7 @@ interface CardProps {
     onClickBody?: (() => void) | null;
     onClickFooter?: (() => void) | null;
     onClose?: (() => void) | null;
-    onCloseIcon?: React.ReactNode | null;
+    onCloseIcon?: ReactNode | null;
 }
 
 function Card({

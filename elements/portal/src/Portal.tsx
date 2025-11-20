@@ -1,7 +1,8 @@
+import { type ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 
 interface PortalElementProps {
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
     container?: HTMLElement | null;
 }
 

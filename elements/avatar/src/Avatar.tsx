@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { type ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import styles from './styles.module.css';
@@ -16,7 +17,7 @@ interface AvatarTheme {
 interface AvatarProps {
     name?: string | null;
     shortName?: string | null;
-    type?: React.ReactNode | string | null;
+    type?: ReactNode | string | null;
     image?: AvatarImage | null;
     theme?: AvatarTheme | null;
     square?: boolean;
@@ -24,7 +25,7 @@ interface AvatarProps {
     inverted?: boolean;
     blended?: boolean;
     className?: string | null;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
 }
 
 function Avatar({

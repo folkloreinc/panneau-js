@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
+import type { ReactElement } from 'react';
 import { useMemo } from 'react';
 
 import { useUser } from '@panneau/auth';
@@ -84,7 +85,7 @@ function MainNavbar({
                         ? [...currentItems.slice(0, currentItems.length - 1), [...lastItem, item]]
                         : [...currentItems, [item]];
                 },
-                [] as Array<React.ReactElement | unknown[]>,
+                [] as Array<ReactElement | unknown[]>,
             )
             .map((it, index) =>
                 isArray(it) ? (

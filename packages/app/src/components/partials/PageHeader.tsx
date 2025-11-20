@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import classNames from 'classnames';
 
 import { usePanneauColorScheme } from '@panneau/core/contexts';
@@ -6,10 +7,10 @@ import LabelComponent from '@panneau/element-label';
 
 interface PageHeaderProps {
     title?: Label | null;
-    actions?: React.ReactNode;
+    actions?: ReactNode;
     small?: boolean;
     className?: string | null;
-    children?: React.ReactNode;
+    children?: ReactNode;
 }
 
 function PageHeader({

@@ -1,5 +1,5 @@
+import { useCallback, useState, type ReactNode } from 'react';
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
-import { useCallback, useState } from 'react';
 
 import { useFieldsComponentsManager } from '@panneau/core/contexts';
 import type { ButtonTheme } from '@panneau/core/types';
@@ -16,7 +16,7 @@ interface Template {
 
 interface ImportActionProps {
     id?: string;
-    title?: React.ReactNode | null;
+    title?: ReactNode | null;
     endpoint?: string;
     action?: ((data: unknown) => Promise<unknown>) | null;
     label?: string | null;

@@ -1,7 +1,7 @@
 import { getJSON } from '@folklore/fetch';
 import isObject from 'lodash-es/isObject';
 import uniqBy from 'lodash-es/uniqBy';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 
 import type { Font } from '@panneau/core/types';
@@ -15,7 +15,7 @@ interface FontsContextValue {
     setGoogleFonts?: ((fonts: Font[]) => void) | null;
 }
 
-export const FontsContext = React.createContext<FontsContextValue>({
+export const FontsContext = createContext<FontsContextValue>({
     systemFonts: null,
     googleFonts: null,
     customFonts: null,

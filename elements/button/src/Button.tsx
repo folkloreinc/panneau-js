@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import classNames from 'classnames';
 import isString from 'lodash-es/isString';
+import type { ReactNode, Ref } from 'react';
 import { Link } from 'wouter';
 
 import type { ButtonSize, ButtonTheme, Label } from '@panneau/core/types';
@@ -20,7 +21,7 @@ interface ButtonProps {
     children?: Label | null;
     active?: boolean;
     underlined?: boolean;
-    icon?: React.ReactNode | string | null;
+    icon?: ReactNode | string | null;
     iconPosition?: 'left' | 'right' | 'inline';
     disabled?: boolean;
     loading?: boolean;
@@ -34,7 +35,7 @@ interface ButtonProps {
     iconClassName?: string | null;
     labelClassName?: string | null;
     onClick?: (() => void) | null;
-    refButton?: React.Ref<any> | null;
+    refButton?: Ref<any> | null;
 }
 
 function Button({

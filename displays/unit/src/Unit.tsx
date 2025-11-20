@@ -1,12 +1,12 @@
 import isObject from 'lodash-es/isObject';
 import prettyBytes from 'pretty-bytes';
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
 import { formatDuration } from '@panneau/core/utils';
 
 interface UnitProps {
     value?: string | number | Record<string, unknown> | null;
-    placeholder?: React.ReactNode | null;
+    placeholder?: ReactNode | null;
     format?: string | null;
     suffix?: string | null;
 }

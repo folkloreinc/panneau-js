@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import type { MouseEvent } from 'react';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
@@ -25,7 +26,7 @@ function ResourceCreateButton({
 
     const [dropdownOpened, setDropdownOpened] = useState(false);
     const onClickDropdown = useCallback(
-        (e: React.MouseEvent) => {
+        (e: MouseEvent) => {
             e.preventDefault();
             e.stopPropagation();
             setDropdownOpened(!dropdownOpened);

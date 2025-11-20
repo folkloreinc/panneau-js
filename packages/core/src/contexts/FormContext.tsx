@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
 interface FormContextValue {
@@ -6,7 +6,7 @@ interface FormContextValue {
     setValue: (value: Record<string, unknown>) => void;
 }
 
-const FormContext = React.createContext<FormContextValue | null>(null);
+const FormContext = createContext<FormContextValue | null>(null);
 
 export const useForm = (): FormContextValue | null => useContext(FormContext);
 

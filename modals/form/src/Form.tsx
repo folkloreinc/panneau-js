@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field } from '@panneau/core/types';
@@ -6,7 +7,7 @@ import Dialog from '@panneau/modal-dialog';
 
 interface ModalFormProps {
     id: string | number;
-    title?: React.ReactNode | null;
+    title?: ReactNode | null;
     name?: string | null;
     fields?: Field[] | null;
     action?: string | null;
@@ -14,9 +15,9 @@ interface ModalFormProps {
     item?: { id?: string } | null;
     onComplete?: ((value: unknown) => void) | null;
     onClose?: (() => void) | null;
-    submitButtonLabel?: React.ReactNode | null;
+    submitButtonLabel?: ReactNode | null;
     className?: string | null;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
 }
 
 function ModalForm({

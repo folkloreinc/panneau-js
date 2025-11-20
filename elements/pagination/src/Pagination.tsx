@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
 import queryString from 'query-string';
-import { useCallback, useMemo } from 'react';
+import { MouseEvent, ReactNode, cloneElement, useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Item } from '@panneau/core/types';
@@ -21,9 +21,9 @@ interface PaginationProps {
     withCount?: boolean;
     autohide?: boolean;
     align?: 'left' | 'right';
-    previousLabel?: React.ReactNode | null;
-    nextLabel?: React.ReactNode | null;
-    countLabel?: React.ReactNode | null;
+    previousLabel?: ReactNode | null;
+    nextLabel?: ReactNode | null;
+    countLabel?: ReactNode | null;
     alwaysShowButtons?: boolean;
     selectable?: boolean;
     selectedItems?: Item[] | null;
@@ -33,7 +33,7 @@ interface PaginationProps {
     paginationClassName?: string | null;
     itemClassName?: string | null;
     linkClassName?: string | null;
-    onClickPage?: ((page: number, e: React.MouseEvent) => void) | null;
+    onClickPage?: ((page: number, e: MouseEvent) => void) | null;
 }
 
 function Pagination({
@@ -111,7 +111,7 @@ function Pagination({
 
     const pages = strippedPages.length > 0 ? strippedPages : [1];
 
-    const element = React.cloneElement(countLabel as React.ReactElement, {
+    const element = cloneElement(countLabel as ReactElement, {
         values: { count: total },
     });
 

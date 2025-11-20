@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import isObject from 'lodash-es/isObject';
+import type { ComponentType } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
@@ -17,7 +18,7 @@ interface ResourceItemsListProps {
     query?: Record<string, unknown> | null;
     paginated?: boolean;
     baseUrl?: string | null;
-    component?: React.ComponentType | string | null;
+    component?: ComponentType | string | null;
     componentProps?: Record<string, unknown> | null;
     onQueryChange?: ((query: Record<string, unknown>) => void) | null;
     onQueryReset?: (() => void) | null;

@@ -1,14 +1,14 @@
 import formatDate from 'date-fns/format';
 import parse from 'date-fns/parse';
 import parseISO from 'date-fns/parseISO';
-import { useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { loadPackage } from '@panneau/core/utils';
 
 interface DateDisplayProps {
     value?: string | null;
-    placeholder?: React.ReactNode | null;
+    placeholder?: ReactNode | null;
     format?: string;
     parseFormat?: string | null;
     locale?: string | null;

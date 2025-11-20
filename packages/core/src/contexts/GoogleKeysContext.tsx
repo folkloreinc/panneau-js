@@ -1,11 +1,11 @@
-import React, { useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
 interface GoogleKeysContextValue {
     apiKey: string | null;
 }
 
-export const GoogleKeysContext = React.createContext<GoogleKeysContextValue>({
+export const GoogleKeysContext = createContext<GoogleKeysContextValue>({
     apiKey: null,
 });
 

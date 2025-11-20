@@ -1,4 +1,4 @@
-import React from 'react';
+import { type ReactNode } from 'react';
 
 import { ACTIONS_NAMESPACE, ComponentsProvider } from '@panneau/core/contexts';
 
@@ -6,7 +6,7 @@ import * as components from './components';
 
 interface ActionsProvidersProps {
     components?: Record<string, unknown> | null;
-    children?: React.ReactNode;
+    children?: ReactNode;
 }
 
 function ActionsProviders({

@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
-import type { ReactNode } from 'react';
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
 import { getDisplayName } from '../utils';
 
@@ -16,7 +16,7 @@ interface PanelsContextValue {
     unregister: (id: string) => void;
 }
 
-export const PanelsContext = React.createContext<PanelsContextValue>({
+export const PanelsContext = createContext<PanelsContextValue>({
     panels: [],
     container: null,
     setContainer: () => {},
@@ -26,7 +26,7 @@ export const PanelsContext = React.createContext<PanelsContextValue>({
 
 export const usePanels = (): PanelsContextValue => useContext(PanelsContext) || {};
 
-export const withPanels = (WrappedComponent: React.ComponentType<any>) => {
+export const withPanels = (WrappedComponent: ComponentType<any>) => {
     const WithPanelsComponent = (props: any) => (
         <PanelsContext.Consumer>
             {({ panels, setContainer, container, register, unregister }) => (

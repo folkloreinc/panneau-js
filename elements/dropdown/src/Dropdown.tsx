@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import type { MouseEvent, ReactNode } from 'react';
 import { useCallback, useRef } from 'react';
 
 import { useDocumentEvent } from '@panneau/core/hooks';
@@ -11,13 +12,13 @@ import styles from './styles.module.css';
 
 interface DropdownProps {
     items?: MenuItem[];
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
     visible?: boolean;
     align?: DropdownAlign;
     className?: string | null;
     itemClassName?: string | null;
-    onClickItem?: ((e: React.MouseEvent) => void) | null;
-    onClickOutside?: ((e: MouseEvent) => void) | null;
+    onClickItem?: ((e: MouseEvent) => void) | null;
+    onClickOutside?: ((e: globalThis.MouseEvent) => void) | null;
 }
 
 const DEFAULT_ITEMS: MenuItem[] = [];
@@ -34,7 +35,7 @@ function Dropdown({
 }: DropdownProps) {
     const refContainer = useRef<HTMLDivElement>(null);
     const onDocumentClick = useCallback(
-        (e: MouseEvent) => {
+        (e: globalThis.MouseEvent) => {
             if (
                 refContainer.current !== null &&
                 !refContainer.current.contains(e.target as Node) &&
@@ -88,7 +89,7 @@ function Dropdown({
 
                       const finalOnClickItem =
                           customOnClick !== null || (type === 'link' && onClickItem !== null)
-                              ? (e: React.MouseEvent) => {
+                              ? (e: MouseEvent) => {
                                     if (customOnClick !== null) {
                                         customOnClick(e);
                                     }

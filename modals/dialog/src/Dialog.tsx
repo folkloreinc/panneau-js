@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import classNames from 'classnames';
 
 import type { Button as ButtonType, Label as LabelType } from '@panneau/core/types';
@@ -13,9 +14,9 @@ interface ModalDialogProps {
     id: string | number;
     title?: LabelType | null;
     size?: string | null;
-    header?: React.ReactNode | null;
-    children?: React.ReactNode | null;
-    footer?: React.ReactNode | null;
+    header?: ReactNode | null;
+    children?: ReactNode | null;
+    footer?: ReactNode | null;
     buttons?: ButtonType[] | null;
     onClose?: (() => void) | null;
     withCloseOutside?: boolean;

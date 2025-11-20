@@ -1,7 +1,7 @@
 import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
-import { useCallback, useState } from 'react';
+import { type ReactNode, useCallback, useState } from 'react';
 
 import type { Label } from '@panneau/core/types';
 import Button from '@panneau/element-button';
@@ -12,8 +12,8 @@ interface FormGroupProps {
     name?: string | null;
     label?: Label | null;
     errors?: string[] | null;
-    helpText?: React.ReactNode | null;
-    children?: React.ReactNode | null;
+    helpText?: ReactNode | null;
+    children?: ReactNode | null;
     horizontal?: boolean;
     floating?: boolean;
     inline?: boolean;

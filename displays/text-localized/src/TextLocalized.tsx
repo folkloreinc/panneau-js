@@ -1,8 +1,9 @@
+import { type ReactNode } from 'react';
 import { useIntl } from 'react-intl';
 
 interface TextLocalizedProps {
     value?: Record<string, unknown> | null;
-    placeholder?: React.ReactNode | null;
+    placeholder?: ReactNode | null;
     locale?: string | null;
 }
 

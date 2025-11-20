@@ -1,5 +1,5 @@
+import { useCallback, useState, type ReactNode } from 'react';
 import classNames from 'classnames';
-import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useModalsComponentsManager } from '@panneau/core/contexts';
@@ -9,8 +9,8 @@ import Button from '@panneau/element-button';
 
 interface ShowActionProps {
     id: string;
-    title?: React.ReactNode | null;
-    description?: React.ReactNode | null;
+    title?: ReactNode | null;
+    description?: ReactNode | null;
     endpoint?: string;
     action?: ((ids: string[]) => Promise<unknown>) | null;
     label?: string | null;

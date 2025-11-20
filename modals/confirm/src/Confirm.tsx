@@ -1,10 +1,11 @@
+import { type ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Dialog from '@panneau/modal-dialog';
 
 interface ConfirmModalProps {
     id: string | number;
-    title?: React.ReactNode | null;
+    title?: ReactNode | null;
     onConfirm?: (() => void) | null;
     onClose?: (() => void) | null;
     confirmButton?: {
@@ -14,7 +15,7 @@ interface ConfirmModalProps {
         label?: string;
     } | null;
     className?: string | null;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
 }
 
 function ConfirmModal({

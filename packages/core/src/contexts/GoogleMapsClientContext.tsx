@@ -1,14 +1,14 @@
 import { loadGoogleMaps } from '@folklore/services';
-import React, { useContext, useEffect, useState } from 'react';
-import type { ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
 import { useGoogleKeys } from './GoogleKeysContext';
 
-export const GoogleMapsClientContext = React.createContext<any | null>(null);
+export const GoogleMapsClientContext = createContext<any | null>(null);
 
 export const useGoogleMapsClient = (): any | null => useContext(GoogleMapsClientContext);
 
-export const withGoogleMapsClient = (WrappedComponent: React.ComponentType<any>) => {
+export const withGoogleMapsClient = (WrappedComponent: ComponentType<any>) => {
     const getDisplayName = ({
         displayName = null,
         name = null,

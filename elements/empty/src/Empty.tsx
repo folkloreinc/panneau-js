@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Label } from '@panneau/core/types';
@@ -7,7 +7,7 @@ import Button from '@panneau/element-button';
 
 interface EmptyProps {
     theme?: string | null;
-    message?: React.ReactNode | null;
+    message?: ReactNode | null;
     button?: Record<string, unknown> | null;
     delay?: number;
     withDelay?: boolean;

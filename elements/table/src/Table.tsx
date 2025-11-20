@@ -4,6 +4,7 @@ import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
+import type { ComponentType, MouseEvent, ReactNode } from 'react';
 import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
@@ -32,7 +33,7 @@ interface TableProps {
     stripedColumns?: boolean;
     withoutId?: boolean;
     withFadedId?: boolean;
-    displayPlaceholder?: React.ReactNode | string | null;
+    displayPlaceholder?: ReactNode | string | null;
     selectable?: boolean;
     selectedItems?: Item[] | Item | null;
     onSelectionChange?: ((items: Item[] | Item | null) => void) | null;
@@ -40,7 +41,7 @@ interface TableProps {
     withCustomActionsColumn?: boolean;
     withoutLoading?: boolean;
     withoutEmpty?: boolean;
-    actionsComponent?: React.ComponentType<any> | null;
+    actionsComponent?: ComponentType<any> | null;
     actionsProps?: Record<string, any> | null;
     actionsClassName?: string | null;
     className?: string | null;
@@ -232,7 +233,7 @@ function Table({
                                       ) || null) !== null
                                     : false;
 
-                            const selectRow = (e: React.MouseEvent) => {
+                            const selectRow = (e: MouseEvent) => {
                                 if (
                                     onSelectItem !== null &&
                                     !selectionDisabled &&

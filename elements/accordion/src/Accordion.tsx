@@ -1,12 +1,12 @@
 import classNames from 'classnames';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import styles from './styles.module.css';
 
 interface AccordionItem {
     label?: string;
-    content?: React.ReactNode | string;
+    content?: ReactNode | string;
 }
 
 interface AccordionProps {

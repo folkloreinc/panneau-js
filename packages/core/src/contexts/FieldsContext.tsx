@@ -1,6 +1,6 @@
 import isString from 'lodash-es/isString';
 import uniqBy from 'lodash-es/uniqBy';
-import React, { useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
 import type { Field } from '@panneau/core/types';
@@ -9,7 +9,7 @@ import { FieldsManager } from '../lib';
 
 import { ComponentsProvider, FIELDS_NAMESPACE } from './ComponentsContext';
 
-export const FieldsContext = React.createContext<FieldsManager | null>(null);
+export const FieldsContext = createContext<FieldsManager | null>(null);
 
 export const useFieldsManager = (): FieldsManager | null => useContext(FieldsContext);
 

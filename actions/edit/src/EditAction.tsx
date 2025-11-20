@@ -1,5 +1,5 @@
+import { useCallback, useMemo, useState, type ReactNode } from 'react';
 import classNames from 'classnames';
-import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useModalsComponentsManager } from '@panneau/core/contexts';
@@ -9,8 +9,8 @@ import Button from '@panneau/element-button';
 
 interface EditActionProps {
     id: string;
-    title?: React.ReactNode | null;
-    description?: React.ReactNode | null;
+    title?: ReactNode | null;
+    description?: ReactNode | null;
     fields?: Field[] | null;
     endpoint?: string | null;
     label?: string | null;

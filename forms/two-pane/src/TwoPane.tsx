@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import classNames from 'classnames';
 
 import { useFieldComponent, usePreviewComponent } from '@panneau/core/contexts';
@@ -14,7 +15,7 @@ interface TwoPaneFormProps {
     generalError?: string | null;
     errors?: Record<string, string[]> | null;
     buttons?: Button[] | null;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
     className?: string | null;
 }
 

@@ -1,5 +1,6 @@
 import get from 'lodash-es/get';
 import isString from 'lodash-es/isString';
+import { type ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link as WouterLink } from 'wouter';
 
@@ -10,7 +11,7 @@ interface LinkProps {
     labelPath?: string | null;
     external?: boolean;
     target?: string | null;
-    placeholder?: React.ReactNode | null;
+    placeholder?: ReactNode | null;
 }
 
 function Link({

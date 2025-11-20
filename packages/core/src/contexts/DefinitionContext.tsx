@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import { createContext, useContext } from 'react';
 import type { ReactNode } from 'react';
 
 import type { Definition } from '@panneau/core/types';
 
-const DefinitionContext = React.createContext<Definition | null>(null);
+const DefinitionContext = createContext<Definition | null>(null);
 
 export const useDefinitionContext = (): Definition | null => useContext(DefinitionContext);
 

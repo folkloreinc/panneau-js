@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
+import type { MouseEvent, ReactNode } from 'react';
 
 import { useButtonsComponents } from '@panneau/core/contexts';
 import type { ButtonSize, Button as ButtonType } from '@panneau/core/types';
@@ -10,8 +11,8 @@ interface ButtonsProps {
     size?: ButtonSize;
     theme?: string | null;
     outline?: boolean;
-    renderButton?: ((button: ButtonType, index: number, fixedProps: any) => React.ReactNode) | null;
-    onClickButton?: ((e: React.MouseEvent, button: ButtonType, index: number) => void) | null;
+    renderButton?: ((button: ButtonType, index: number, fixedProps: any) => ReactNode) | null;
+    onClickButton?: ((e: MouseEvent, button: ButtonType, index: number) => void) | null;
     className?: string | null;
     buttonClassName?: string | null;
 }
@@ -64,7 +65,7 @@ function Buttons({
                           ]),
                           theme,
                           outline,
-                          onClick: (e: React.MouseEvent) => {
+                          onClick: (e: MouseEvent) => {
                               if (onClick !== null) {
                                   onClick(e, button, index);
                               }

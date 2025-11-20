@@ -1,6 +1,13 @@
 import classNames from 'classnames';
 import isEmpty from 'lodash-es/isEmpty';
-import { useMemo } from 'react';
+import {
+    type CSSProperties,
+    type ChangeEvent,
+    type FocusEventHandler,
+    type ReactNode,
+    type Ref,
+    useMemo,
+} from 'react';
 import { v1 as uuid } from 'uuid';
 
 import InputGroup from '@panneau/field-input-group';
@@ -25,18 +32,18 @@ interface InputFieldProps {
     type?: InputType | null;
     placeholder?: string | null;
     onChange?: ((value: string | null) => void) | null;
-    onFocus?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement> | null;
-    onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement> | null;
+    onFocus?: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement> | null;
+    onBlur?: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement> | null;
     align?: Align | null;
     size?: Size;
     maxLength?: number | null;
-    prepend?: React.ReactNode | null;
-    append?: React.ReactNode | null;
+    prepend?: ReactNode | null;
+    append?: ReactNode | null;
     min?: number | null;
     max?: number | null;
     dataList?: string[] | null;
-    inputRef?: React.Ref<HTMLInputElement | HTMLTextAreaElement> | null;
-    style?: React.CSSProperties | null;
+    inputRef?: Ref<HTMLInputElement | HTMLTextAreaElement> | null;
+    style?: CSSProperties | null;
     className?: string | null;
 }
 
@@ -100,7 +107,7 @@ function InputField({
             ? onChange
             : ({
                   target: { value: newValue = '' },
-              }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+              }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
                   onChange !== null ? onChange(!isEmpty(newValue) ? newValue : null) : null,
     };
 
@@ -133,4 +140,4 @@ function InputField({
     );
 }
 
-export default InputField; // React.forwardRef((props, ref) => <InputField inputRef={ref} {...props} />);
+export default InputField;

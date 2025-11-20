@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import PropTypes from 'prop-types';
-import React, { useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
-const MediasApiContext = React.createContext(null);
+const MediasApiContext = createContext(null);
 
 export const useMediasApi = () => useContext(MediasApiContext);
 

@@ -1,13 +1,13 @@
 import classNames from 'classnames';
 import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
 import Icon from '@panneau/element-icon';
 
 interface BadgesProps {
     value?: string | null;
-    placeholder?: React.ReactNode | null;
+    placeholder?: ReactNode | null;
     itemLabelPath?: string;
     itemIconPath?: string | any[] | null;
     itemClassName?: string;

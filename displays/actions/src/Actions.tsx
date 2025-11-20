@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { type ReactNode } from 'react';
 
 import Actions from '@panneau/action-actions';
 import { useActions } from '@panneau/core/hooks';
@@ -7,7 +8,7 @@ import type { ButtonSize } from '@panneau/core/types';
 interface ActionsDisplayProps {
     item: string | { id: string | number };
     value?: string | Record<string, unknown> | null;
-    placeholder?: React.ReactNode | null;
+    placeholder?: ReactNode | null;
     actions?: (Record<string, unknown> | string)[] | null;
     urlGenerator?: ((item: unknown) => string) | null;
     actionsProps?: Record<string, unknown> | null;

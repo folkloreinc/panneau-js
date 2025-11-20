@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import classNames from 'classnames';
+import type { RefObject } from 'react';
 import { forwardRef, useRef } from 'react';
 
 import styles from './styles.module.css';
@@ -79,6 +80,6 @@ function Audio({
     );
 }
 
-export default ({ ref, ...props }: AudioProps & { ref?: React.RefObject<any | null> }) => (
+export default ({ ref, ...props }: AudioProps & { ref?: RefObject<any | null> }) => (
     <Audio {...props} />
 );

@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import classNames from 'classnames';
+import type { MutableRefObject, RefObject } from 'react';
 import { forwardRef, useRef } from 'react';
 
 import useVideo from './hooks/useVideo';
@@ -27,7 +28,7 @@ interface VideoProps {
     media?: Media | null;
     width?: number | null;
     height?: number | null;
-    apiRef?: React.MutableRefObject<any> | null;
+    apiRef?: MutableRefObject<any> | null;
     withoutControls?: boolean;
     onPlay?: (() => void) | null;
     onPause?: (() => void) | null;
@@ -183,6 +184,6 @@ function Video({
     );
 }
 
-export default ({ ref, ...props }: VideoProps & { ref?: React.RefObject<any | null> }) => (
+export default ({ ref, ...props }: VideoProps & { ref?: RefObject<any | null> }) => (
     <Video apiRef={ref} {...props} />
 );

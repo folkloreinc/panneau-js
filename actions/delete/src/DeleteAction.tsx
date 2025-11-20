@@ -1,5 +1,5 @@
+import { useCallback, useState, type ReactNode } from 'react';
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
-import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useModalsComponentsManager } from '@panneau/core/contexts';
@@ -9,11 +9,11 @@ import Button from '@panneau/element-button';
 
 interface DeleteActionProps {
     id: string;
-    title?: React.ReactNode | null;
-    description?: React.ReactNode | null;
+    title?: ReactNode | null;
+    description?: ReactNode | null;
     endpoint?: string;
     action?: ((ids: string[]) => Promise<unknown>) | null;
-    label?: string | React.ReactNode | null;
+    label?: string | ReactNode | null;
     value?: boolean | null;
     icon?: string;
     theme?: ButtonTheme;

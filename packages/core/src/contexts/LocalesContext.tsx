@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import { useIntl } from 'react-intl';
 
@@ -8,7 +8,7 @@ interface LocalesContextValue {
     locales: string[];
 }
 
-export const LocalesContext = React.createContext<LocalesContextValue>({ locales: defaultLocales });
+export const LocalesContext = createContext<LocalesContextValue>({ locales: defaultLocales });
 
 export const useLocalesContext = (): LocalesContextValue => {
     const context = useContext(LocalesContext);

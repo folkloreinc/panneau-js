@@ -3,6 +3,7 @@ import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
+import type { FormEvent } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 
 import type { Field } from '@panneau/core/types';
@@ -134,7 +135,7 @@ interface UseFormReturn extends RequestState {
     setValue: (value: FieldValue) => void;
     csrfToken: string | null;
     submit: (submitValue?: FieldValue | null) => void;
-    onSubmit: (e: React.FormEvent) => void;
+    onSubmit: (e: FormEvent) => void;
     status: 'loading' | 'success' | 'error' | null;
     response: unknown;
     fields: ProcessedField[];
@@ -303,7 +304,7 @@ const useForm = (opts: UseFormOptions = {}): UseFormReturn => {
     );
 
     const onSubmit = useCallback(
-        (e: React.FormEvent) => {
+        (e: FormEvent) => {
             if (withoutDefault) {
                 e.preventDefault();
             }

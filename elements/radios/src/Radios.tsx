@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import classNames from 'classnames';
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
 import { getSelectOptions } from '@panneau/core/utils';
 
 interface SelectOption {
     value?: string | number | null;
-    label?: React.ReactNode;
+    label?: ReactNode;
 }
 
 interface RadiosProps {

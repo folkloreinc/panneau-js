@@ -1,6 +1,6 @@
+import { useCallback, useMemo, type ReactNode } from 'react';
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
-import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useFiltersComponents } from '@panneau/core/contexts';
@@ -24,7 +24,7 @@ interface FiltersProps {
     withResetLabel?: boolean;
     defaultValue?: Record<string, unknown> | null;
     className?: string | null;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
 }
 
 const DEFAULT_FILTERS: Filter[] = [];

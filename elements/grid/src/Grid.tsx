@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
-import { useCallback, useMemo } from 'react';
+import { type ComponentType, type ReactNode, useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { selectItem } from '@panneau/core/utils';
@@ -22,14 +22,14 @@ interface SelectedItem {
 
 interface GridProps {
     items?: GridItem[];
-    component?: React.ComponentType<any> | null;
+    component?: ComponentType<any> | null;
     componentProps?: Record<string, unknown> | null;
     size?: string | null;
     gap?: string | null;
     loading?: boolean;
     loaded?: boolean;
     empty?: boolean | null;
-    emptyLabel?: React.ReactNode | null;
+    emptyLabel?: ReactNode | null;
     selectable?: boolean;
     selectedItems?: SelectedItem[] | SelectedItem | null;
     multipleSelection?: boolean;

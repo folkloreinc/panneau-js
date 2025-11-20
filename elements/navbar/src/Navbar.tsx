@@ -1,20 +1,20 @@
 import classNames from 'classnames';
-import { useCallback, useState } from 'react';
+import { type ReactNode, useCallback, useState } from 'react';
 
 import Button from '@panneau/element-button';
 import Link from '@panneau/element-link';
 
 interface NavbarProps {
-    brand?: React.ReactNode | null;
+    brand?: ReactNode | null;
     brandLink?: string | null;
-    breadcrumbs?: React.ReactNode | null;
+    breadcrumbs?: ReactNode | null;
     theme?: 'light' | 'dark' | 'primary' | null;
     size?: 'sm' | 'md' | 'lg';
     compact?: boolean;
     noWrap?: boolean;
     withoutCollapse?: boolean;
     vertical?: boolean;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
     className?: string | null;
     collapseClassName?: string | null;
     brandClassName?: string | null;

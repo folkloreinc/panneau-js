@@ -1,4 +1,5 @@
 import { match as matchMediaQuery } from 'css-mediaquery';
+import type { RefObject } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useResizeObserver } from './useObserver';
@@ -78,7 +79,7 @@ interface UseScreenSizeFromElementOptions extends Omit<UseScreenSizeOptions, 'la
 }
 
 interface UseScreenSizeFromElementReturn {
-    ref: React.RefObject<Element>;
+    ref: RefObject<Element>;
     screenSize: ScreenSize;
 }
 

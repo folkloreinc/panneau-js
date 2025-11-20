@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import type { FormEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, FormStatus, Resource } from '@panneau/core/types';
@@ -13,7 +14,7 @@ interface DeleteFormProps {
     fields: Field[];
     value?: Record<string, unknown> | null;
     onChange: (value: Record<string, unknown>) => void;
-    onSubmit?: ((e: React.FormEvent) => void) | null;
+    onSubmit?: ((e: FormEvent) => void) | null;
     status?: FormStatus | null;
     generalError?: string | null;
     errors?: Record<string, string[]> | null;

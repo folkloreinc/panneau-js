@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import isEmpty from 'lodash-es/isEmpty';
+import type { ComponentType } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useFieldsComponents, useLocales } from '@panneau/core/contexts';
@@ -22,7 +23,7 @@ interface LocalizedFieldProps {
     component?: string | null;
     locales?: string[] | null;
     properties?: Record<string, LocaleProperty>;
-    fieldComponent?: React.ComponentType<any> | null;
+    fieldComponent?: ComponentType<any> | null;
     fieldProps?: Record<string, unknown> | null;
     disabled?: boolean;
     className?: string | null;

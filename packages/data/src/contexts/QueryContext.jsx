@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
-import React, { useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
-const QueryContext = React.createContext(null);
+const QueryContext = createContext(null);
 
 export const useQueryContext = () => useContext(QueryContext);
 

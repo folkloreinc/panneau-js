@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import type { FormEvent, ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type {
@@ -14,13 +15,13 @@ interface FormProps {
     action?: string | null;
     method?: string;
     status?: FormStatusType;
-    children?: React.ReactNode | null;
-    actions?: React.ReactNode | null;
+    children?: ReactNode | null;
+    actions?: ReactNode | null;
     buttons?: ButtonType[] | null;
     generalError?: string | null;
     buttonSize?: string;
     submitButtonLabel?: Label | null;
-    onSubmit?: ((e: React.FormEvent) => void) | null;
+    onSubmit?: ((e: FormEvent) => void) | null;
     onCancel?: (() => void) | null;
     onCancelHref?: string | null;
     withoutActions?: boolean;

@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import Api from './lib/Api';
 
 import { ApiProvider } from './contexts/ApiContext';
@@ -5,7 +7,7 @@ import { ApiProvider } from './contexts/ApiContext';
 interface DataProviderProps {
     api?: Api | null;
     apiBaseUrl?: string;
-    children?: React.ReactNode;
+    children?: ReactNode;
 }
 
 function DataProvider({ api = null, apiBaseUrl = undefined, children = null }: DataProviderProps) {

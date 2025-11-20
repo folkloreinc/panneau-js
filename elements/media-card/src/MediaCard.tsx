@@ -11,7 +11,7 @@ import classNames from 'classnames';
 import get from 'lodash-es/get';
 import isString from 'lodash-es/isString';
 import prettyBytes from 'pretty-bytes';
-import { useCallback, useMemo } from 'react';
+import { type ReactNode, useCallback, useMemo } from 'react';
 
 import Button from '@panneau/element-button';
 import Icon from '@panneau/element-icon';
@@ -51,7 +51,7 @@ interface MediaCardProps {
     onClickDescription?: ((value: MediaValue) => void) | null;
     className?: string | null;
     cardClassName?: string | null;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
 }
 
 const DEFAULT_DATA = {};

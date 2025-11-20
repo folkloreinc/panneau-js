@@ -1,6 +1,6 @@
+import { useMemo, type ReactNode } from 'react';
 import classNames from 'classnames';
 import get from 'lodash-es/get';
-import { useMemo } from 'react';
 
 import { useDisplaysComponents } from '@panneau/core/contexts';
 import type { Item, Resource, TableColumn } from '@panneau/core/types';
@@ -16,7 +16,7 @@ interface CardsListProps {
     loaded?: boolean;
     columns?: TableColumn[] | null;
     cardTitlePath?: string;
-    displayPlaceholder?: React.ReactNode;
+    displayPlaceholder?: ReactNode;
     reload?: (() => void) | null;
     updateItem?: ((item: Item) => void) | null;
     actionsProps?: Record<string, unknown> | null;

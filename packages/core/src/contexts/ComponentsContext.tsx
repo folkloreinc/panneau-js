@@ -1,5 +1,5 @@
 import isString from 'lodash-es/isString';
-import React, { useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
 import { ComponentsManager } from '../lib';
@@ -16,7 +16,7 @@ export const PAGES_NAMESPACE = 'pages';
 export const PREVIEWS_NAMESPACE = 'previews';
 export const APP_NAMESPACE = 'app';
 
-export const ComponentsContext = React.createContext<ComponentsManager | null>(null);
+export const ComponentsContext = createContext<ComponentsManager | null>(null);
 
 /**
  * Hooks

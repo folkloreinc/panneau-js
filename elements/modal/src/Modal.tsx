@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
 import { getDisplayName } from '@panneau/core/utils';
 
@@ -12,7 +12,7 @@ interface ModalProps {
     title?: string | null;
     position?: 'center' | 'top';
     onClose?: (() => void) | null;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
 }
 
 function Modal({

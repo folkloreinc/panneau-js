@@ -1,5 +1,6 @@
 import isObject from 'lodash-es/isObject';
 // import isString from 'lodash-es/isString';
+import { type ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useActionsComponentsManager } from '@panneau/core/contexts';
@@ -17,11 +18,11 @@ interface ItemActionsProps {
     items?: any[] | null;
     actions?: (string | { id?: string })[];
     iconsOnly?: boolean;
-    showLabel?: React.ReactNode | null;
+    showLabel?: ReactNode | null;
     showUrl?: string | null;
-    editLabel?: React.ReactNode | null;
-    deleteLabel?: React.ReactNode | null;
-    duplicateLabel?: React.ReactNode | null;
+    editLabel?: ReactNode | null;
+    deleteLabel?: ReactNode | null;
+    duplicateLabel?: ReactNode | null;
     reload?: (() => void) | null;
     updateItem?: ((item: Item) => void) | null;
     onClickShow?: (() => void) | null;

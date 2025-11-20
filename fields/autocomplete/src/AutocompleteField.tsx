@@ -1,7 +1,7 @@
+import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import classNames from 'classnames';
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import Button from '@panneau/element-button';
 import TextField from '@panneau/field-text';
@@ -50,7 +50,7 @@ interface AutocompleteFieldProps {
     onBlur?: (() => void) | null;
     onChange?: ((value: AutocompleteValue) => void) | null;
     onTextChange?: ((value: string | null) => void) | null;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
 }
 
 const DEFAULT_ITEMS: AutocompleteItem[] = [];
@@ -114,7 +114,7 @@ function AutocompleteField({
     const maxedList = maxResults !== null && maxResults > 0 ? list.slice(0, maxResults) : list;
 
     const onClick = useCallback(
-        (e: React.MouseEvent, newValue: AutocompleteValue) => {
+        (e: MouseEvent, newValue: AutocompleteValue) => {
             e.preventDefault();
             if (onChange !== null) {
                 onChange(newValue);
@@ -149,7 +149,7 @@ function AutocompleteField({
     }, [open, setOpen]);
 
     const onClear = useCallback(
-        (e: React.MouseEvent) => {
+        (e: MouseEvent) => {
             e.stopPropagation();
             setTextValue(null);
             setOpen(false);

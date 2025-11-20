@@ -1,4 +1,5 @@
 import isEmpty from 'lodash-es/isEmpty';
+import type { FormEvent } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -56,7 +57,7 @@ function SearchFilter({
     );
 
     const onSubmit = useCallback(
-        (e: React.FormEvent) => {
+        (e: FormEvent) => {
             e.preventDefault();
             hasChanged.current = false;
             if (onChange !== null) {

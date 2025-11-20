@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { type ReactNode, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 
 import { useModal } from '@panneau/core/contexts';
@@ -6,7 +6,7 @@ import { useModal } from '@panneau/core/contexts';
 interface ModalPortalProps {
     id?: string | null;
     data?: Record<string, unknown> | null;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
 }
 
 function ModalPortal({ id = null, data = null, children = null }: ModalPortalProps) {

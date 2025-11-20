@@ -1,4 +1,4 @@
-import React from 'react';
+import { type ReactNode } from 'react';
 
 import {
     FieldsProvider as BaseFieldsProvider,
@@ -12,7 +12,7 @@ import definitions from './definitions';
 interface FieldsProviderProps {
     definitions?: unknown[];
     components?: Record<string, unknown>;
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 const DEFAULT_DEFINITIONS: unknown[] = [];

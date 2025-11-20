@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import PropTypes from 'prop-types';
-import React, { useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 
-const MediaContext = React.createContext(null);
+const MediaContext = createContext(null);
 
 export const useCurrentMedia = () => useContext(MediaContext);
 

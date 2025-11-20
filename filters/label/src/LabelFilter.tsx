@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import classNames from 'classnames';
 
 import Link from '@panneau/element-link';
@@ -5,8 +6,8 @@ import Link from '@panneau/element-link';
 import styles from './styles.module.css';
 
 interface LabelFilterProps {
-    label?: React.ReactNode | null;
-    sublabel?: React.ReactNode | null;
+    label?: ReactNode | null;
+    sublabel?: ReactNode | null;
     href?: string | null;
     disabled?: boolean;
     onClick?: (() => void) | null;

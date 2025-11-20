@@ -1,9 +1,17 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
+import {
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+    type ComponentType,
+    type MouseEvent,
+    type ReactNode,
+} from 'react';
 import { faCaretDown, faCaretRight, faGripLines, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import isFunction from 'lodash-es/isFunction';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ReactSortable } from 'react-sortablejs';
 import { v4 as uuid } from 'uuid';
@@ -47,7 +55,7 @@ interface ItemsFieldProps {
     addItemLabel?: Label | null;
     itemLabel?: Label | null;
     itemLabelPath?: string | null;
-    itemComponent?: React.ComponentType<any> | null;
+    itemComponent?: ComponentType<any> | null;
     itemProps?:
         | Record<string, unknown>
         | ((item: ItemsFieldItem, index: number) => Record<string, unknown>)
@@ -56,11 +64,11 @@ interface ItemsFieldProps {
     itemField?: (Field & { fields?: Field[] }) | null;
     className?: string | null;
     onChange?: ((value: ItemsFieldItem[]) => void) | null;
-    renderBefore?: (() => React.ReactNode) | null;
+    renderBefore?: (() => ReactNode) | null;
     renderItem?:
-        | ((item: ItemsFieldItem, index: number, props: Record<string, unknown>) => React.ReactNode)
+        | ((item: ItemsFieldItem, index: number, props: Record<string, unknown>) => ReactNode)
         | null;
-    renderItemLabel?: ((index: number) => React.ReactNode) | null;
+    renderItemLabel?: ((index: number) => ReactNode) | null;
     withoutCollapse?: boolean;
     withoutSort?: boolean;
     withoutRemove?: boolean;
@@ -69,7 +77,7 @@ interface ItemsFieldProps {
     excludeEmptyRequiredItems?: boolean;
     addItemDisabled?: boolean;
     maxItems?: number | null;
-    buttons?: React.ReactNode | null;
+    buttons?: ReactNode | null;
     inline?: boolean;
     disabled?: boolean;
 }
@@ -276,7 +284,7 @@ function ItemsField({
     );
 
     const onClickRemove = useCallback(
-        (e: React.MouseEvent, it: InternalItem, index: number) => {
+        (e: MouseEvent, it: InternalItem, index: number) => {
             e.preventDefault();
             e.stopPropagation();
             const { id: itemId = '', valueIndex = null } = it || {};
@@ -339,7 +347,7 @@ function ItemsField({
     // Dropdown
     const [dropdownOpened, setDropdownOpened] = useState(false);
     const onClickDropdown = useCallback(
-        (e: React.MouseEvent) => {
+        (e: MouseEvent) => {
             e.preventDefault();
             e.stopPropagation();
             setDropdownOpened((opened) => !opened);

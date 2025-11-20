@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import { FormProvider, useFormsComponents, useLocales } from '@panneau/core/contexts';
 import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
@@ -19,7 +19,7 @@ interface ResourceFormProps {
     item?: Record<string, unknown> | null;
     type?: string | null;
     component?: string | null;
-    header?: React.ReactNode | null;
+    header?: ReactNode | null;
     onSuccess?: ((result: unknown) => void) | null;
     isDelete?: boolean;
     isDuplicate?: boolean;

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import { ReactNode, useContext, useMemo } from 'react';
 import { IntlProvider as BaseIntlProvider, IntlContext } from 'react-intl';
 
 import { LocalesProvider, useLocales } from '@panneau/core/contexts';
@@ -11,7 +11,7 @@ interface IntlProviderProps {
     locale?: string | null;
     locales?: string[] | null;
     extraMessages?: Record<string, string> | null;
-    children?: React.ReactNode;
+    children?: ReactNode;
 }
 
 function IntlProvider({

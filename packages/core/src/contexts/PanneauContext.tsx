@@ -1,11 +1,11 @@
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
-import React, { useContext } from 'react';
+import { createContext, useContext } from 'react';
 import type { ReactNode } from 'react';
 
 import type { PanneauDefinition, Resource } from '@panneau/core/types';
 
-const PanneauContext = React.createContext<PanneauDefinition | null>(null);
+const PanneauContext = createContext<PanneauDefinition | null>(null);
 
 export const usePanneau = (): PanneauDefinition | null => useContext(PanneauContext);
 

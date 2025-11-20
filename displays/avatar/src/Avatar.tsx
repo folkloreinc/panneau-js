@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { get } from 'lodash-es';
 import isString from 'lodash-es/isString';
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
 import AvatarElement from '@panneau/element-avatar';
 
@@ -9,7 +9,7 @@ import styles from './styles.module.css';
 
 interface AvatarProps {
     value?: string | Record<string, unknown> | null;
-    placeholder?: React.ReactNode | null;
+    placeholder?: ReactNode | null;
     imagePath?: string;
     namePath?: string;
     size?: number | null;

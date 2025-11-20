@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import classNames from 'classnames';
 
 import { usePanneauColorScheme } from '@panneau/core/contexts';
@@ -5,7 +6,7 @@ import { usePanneauColorScheme } from '@panneau/core/contexts';
 import MainNavbar from '../menus/MainNavbar';
 
 interface GuestLayoutProps {
-    children: React.ReactNode;
+    children: ReactNode;
     fullscreen?: boolean;
 }
 

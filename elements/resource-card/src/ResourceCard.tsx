@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import get from 'lodash-es/get';
 import isEmpty from 'lodash-es/isEmpty';
-import { useCallback } from 'react';
+import { type ReactNode, useCallback } from 'react';
 
 import type { Message } from '@panneau/core/types';
 import { getPathValue } from '@panneau/core/utils';
@@ -27,9 +27,9 @@ interface ResourceCardProps {
     removeButtonLabel?: Message | null;
     disabled?: boolean;
     className?: string | null;
-    children?: React.ReactNode | null;
-    header?: React.ReactNode | null;
-    footer?: React.ReactNode | null;
+    children?: ReactNode | null;
+    header?: ReactNode | null;
+    footer?: ReactNode | null;
 }
 
 function ResourceCard({

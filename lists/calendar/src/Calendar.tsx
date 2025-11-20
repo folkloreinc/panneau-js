@@ -11,6 +11,7 @@ import {
     startOfWeek,
     toDate,
 } from 'date-fns';
+import type { ComponentType, MouseEvent } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedDate, useIntl } from 'react-intl';
 
@@ -23,7 +24,7 @@ import styles from './styles.module.css';
 interface CalendarListProps {
     mode?: string;
     resource: Resource;
-    component?: React.ComponentType | null;
+    component?: ComponentType | null;
     items?: Item[] | null;
     itemDateField?: string;
     loading?: boolean;
@@ -130,7 +131,7 @@ function CalendarList({
     }
 
     const onClickPeriodChange = useCallback(
-        (e: React.MouseEvent, previous?: boolean) => {
+        (e: MouseEvent, previous?: boolean) => {
             e.preventDefault();
             if (mode === 'weekly') {
                 if (previous) {
@@ -154,7 +155,7 @@ function CalendarList({
     }, [activeDate, onPeriodChange]);
 
     const onSelectDate = useCallback(
-        (e: React.MouseEvent, newDate: string) => {
+        (e: MouseEvent, newDate: string) => {
             e.preventDefault();
             if (!multiple) {
                 onDateChange?.(newDate ? null : newDate);

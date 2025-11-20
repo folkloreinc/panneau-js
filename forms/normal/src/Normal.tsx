@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import classNames from 'classnames';
 
 import { useFieldComponent } from '@panneau/core/contexts';
@@ -14,7 +15,7 @@ interface NormalFormProps {
     errors?: Record<string, string[]> | null;
     buttons?: Button[] | null;
     disabled?: boolean;
-    children?: React.ReactNode | null;
+    children?: ReactNode | null;
     className?: string | null;
 }
 

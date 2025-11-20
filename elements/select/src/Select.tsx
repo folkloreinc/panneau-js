@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import isEqual from 'lodash-es/isEqual';
 import isObject from 'lodash-es/isObject';
 import uniqBy from 'lodash-es/uniqBy';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
@@ -13,7 +13,7 @@ import type { Label } from '@panneau/core/types';
 
 interface SelectOption {
     value?: any;
-    label?: React.ReactNode;
+    label?: ReactNode;
 }
 
 interface SelectElementProps {
@@ -33,7 +33,7 @@ interface SelectElementProps {
     autoSize?: boolean;
     loadOptions?: ((searchValue: string) => Promise<SelectOption[]>) | null;
     getOptionValue?: ((option: SelectOption) => any) | null;
-    getOptionLabel?: ((option: SelectOption) => React.ReactNode) | null;
+    getOptionLabel?: ((option: SelectOption) => ReactNode) | null;
     valueIsOption?: boolean;
     styles?: Record<string, any> | null;
     onChange?: ((value: any) => void) | null;

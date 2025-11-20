@@ -1,12 +1,13 @@
+import { type ReactNode } from 'react';
 import classNames from 'classnames';
 import isString from 'lodash-es/isString';
 
 import styles from './styles.module.css';
 
 interface InputGroupFieldProps {
-    prepend?: React.ReactNode | null;
-    children?: React.ReactNode | null;
-    append?: React.ReactNode | null;
+    prepend?: ReactNode | null;
+    children?: ReactNode | null;
+    append?: ReactNode | null;
     size?: 'sm' | 'lg' | null;
     className?: string | null;
 }

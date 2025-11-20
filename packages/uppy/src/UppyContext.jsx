@@ -2,7 +2,7 @@
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useMemo } from 'react';
+import { createContext, useContext, useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import slugify from 'slugify';
 import { v1 as uuid } from 'uuid';
@@ -13,7 +13,7 @@ import useUppyLocale from './useUppyLocale';
 import useUppySources from './useUppySources';
 import useUppyTransport from './useUppyTransport';
 
-export const UppyContext = React.createContext(null);
+export const UppyContext = createContext(null);
 
 export const useUppyConfig = () => {
     const {

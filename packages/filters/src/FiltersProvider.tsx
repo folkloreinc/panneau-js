@@ -1,4 +1,4 @@
-import React from 'react';
+import { type ReactNode } from 'react';
 
 import { ComponentsProvider, FILTERS_NAMESPACE } from '@panneau/core/contexts';
 
@@ -6,7 +6,7 @@ import * as components from './components';
 
 interface FiltersProviderProps {
     components?: Record<string, unknown> | null;
-    children?: React.ReactNode;
+    children?: ReactNode;
 }
 
 function FiltersProvider({
