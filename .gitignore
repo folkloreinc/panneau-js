@@ -46,6 +46,9 @@ node_modules
 /*/*/lib
 /*/*/assets
 /*/*/scss
+/*/*/types
+/*/*/styles
+/*/*/css
 /output
 /notes
 

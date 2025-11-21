@@ -2,7 +2,7 @@
 
 # Help
 usage() {
-    echo "Usage: $0 [--scss|-s]"
+    echo "Usage: $0 [--scss|-s] [--types|-t]"
 }
 
 # Transform long options to short ones
@@ -11,19 +11,22 @@ for arg in "$@"; do
     case "$arg" in
         "--help") set -- "$@" "-h" ;;
         "--scss") set -- "$@" "-s" ;;
+        "--types") set -- "$@" "-t" ;;
         *)        set -- "$@" "$arg"
     esac
 done
 
 # Set defaults
 scss=false
+types=false
 languages="en fr"
 
 # Get options
-while getopts 'is?h' c
+while getopts 'is?t?h' c
 do
     case $c in
         s) scss=true ;;
+        t) types=true ;;
         h) usage; exit 0 ;;
         ?) usage >&2; exit 1 ;;
     esac
@@ -36,6 +39,7 @@ clean() {
     rm -rf assets
     rm -rf lib
     rm -rf es
+    rm -rf types
 }
 
 build_rollup() {
@@ -45,6 +49,12 @@ build_rollup() {
     else
         ../../node_modules/.bin/rollup --config ../../rollup.config.js --bundleConfigAsCjs
     fi
+}
+
+build_types() {
+    echo "Building types with tsc..."
+    mkdir -p ./types/
+    ../../node_modules/.bin/tsc "src/index.js" --declaration --emitDeclarationOnly --allowJs --jsx "react-jsx" --declarationDir "types" --listEmittedFiles --noCheck
 }
 
 copy_css() {
@@ -65,5 +75,6 @@ copy_scss() {
 export NODE_ENV=production
 clean
 build_rollup
+if [ "$types" = true ]; then build_types; fi
 if [ -f ./es/styles.css ]; then copy_css; fi
 if [ "$scss" = true ]; then copy_scss; fi

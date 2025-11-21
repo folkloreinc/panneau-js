@@ -1,5 +1,5 @@
-import { useCallback, useState, type ReactNode } from 'react';
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
+import { type ReactNode, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useModalsComponentsManager } from '@panneau/core/contexts';
@@ -24,6 +24,7 @@ interface DeleteActionProps {
     valueLabelPath?: string | null;
     modalComponent?: string;
     withConfirmation?: boolean;
+    withDefaultLabel?: boolean;
     className?: string | null;
 }
 
@@ -44,12 +45,15 @@ function DeleteAction({
     modalComponent = 'confirm',
     valueLabelPath = null,
     withConfirmation = false,
+    withDefaultLabel = false,
     className = null,
     ...props
 }: DeleteActionProps) {
-    const label = initialLabel || (
-        <FormattedMessage defaultMessage="Delete" description="Button label" />
-    );
+    const label =
+        initialLabel ||
+        (withDefaultLabel ? (
+            <FormattedMessage defaultMessage="Delete" description="Button label" />
+        ) : null);
     const ModalComponents = useModalsComponentsManager();
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 

@@ -35,9 +35,13 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
+    "types": "types/index.d.ts",
     "exports": {
         ".": {
-            "import": "./es/index.js"
+            "import": {
+                "default": "./es/index.js",
+                "types": "./types/index.d.ts"
+            }
         },
         "./scss/styles": "./scss/styles.scss",
         "./scss/styles.scss": "./scss/styles.scss",
@@ -48,13 +52,14 @@
         "lib",
         "es",
         "assets",
-        "scss"
+        "scss",
+        "types"
     ],
     "scripts": {
         "scss": "../../scripts/build-packages-styles.js --pattern='@panneau/form-*' ./src/styles.scss.ejs ./scss/styles.scss",
         "css": "../../scripts/build-sass.js ./scss/styles.scss ./assets/css/styles.css",
         "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh && npm run scss && npm run css"
+        "build": "../../scripts/prepare-package.sh --types && npm run scss && npm run css"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",

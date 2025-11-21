@@ -30,8 +30,8 @@
     "exports": {
         ".": {
             "import": {
-                "types": "./es/types/index.d.ts",
-                "default": "./es/index.js"
+                "default": "./es/index.js",
+                "types": "./es/types/index.d.ts"
             },
             "require": {
                 "types": "./lib/types/index.d.ts",

@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState, type ReactNode } from 'react';
 import classNames from 'classnames';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useModalsComponentsManager } from '@panneau/core/contexts';
@@ -23,6 +23,7 @@ interface EditActionProps {
     valueLabelPath?: string | null;
     modalComponent?: string;
     withConfirmation?: boolean;
+    withDefaultLabel?: boolean;
     className?: string | null;
 }
 
@@ -42,12 +43,15 @@ function EditAction({
     valueLabelPath = null,
     modalComponent = 'form',
     withConfirmation = false,
+    withDefaultLabel = false,
     className = null,
     ...props
 }: EditActionProps) {
-    const label = initialLabel || (
-        <FormattedMessage defaultMessage="Edit" description="Button label" />
-    );
+    const label =
+        initialLabel ||
+        (withDefaultLabel ? (
+            <FormattedMessage defaultMessage="Edit" description="Button label" />
+        ) : null);
     const ModalComponents = useModalsComponentsManager();
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 

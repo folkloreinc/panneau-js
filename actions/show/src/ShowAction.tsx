@@ -1,5 +1,5 @@
-import { useCallback, useState, type ReactNode } from 'react';
 import classNames from 'classnames';
+import { type ReactNode, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useModalsComponentsManager } from '@panneau/core/contexts';
@@ -23,6 +23,7 @@ interface ShowActionProps {
     valueLabelPath?: string | null;
     modalComponent?: string;
     withConfirmation?: boolean;
+    withDefaultLabel?: boolean;
     className?: string | null;
 }
 
@@ -32,7 +33,7 @@ function ShowAction({
     description: _description = null,
     endpoint: _endpoint = '/show',
     action: _action = null,
-    label = null,
+    label: initialLabel = null,
     icon = 'eye',
     value = null,
     theme = 'infor',
@@ -42,9 +43,16 @@ function ShowAction({
     valueLabelPath = null,
     modalComponent = 'dialog',
     withConfirmation = false,
+    withDefaultLabel = false,
     className = null,
     ...props
 }: ShowActionProps) {
+    const label =
+        initialLabel ||
+        (withDefaultLabel ? (
+            <FormattedMessage defaultMessage="Show" description="Button label" />
+        ) : null);
+
     const ModalComponents = useModalsComponentsManager();
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
