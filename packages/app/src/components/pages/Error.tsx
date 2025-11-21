@@ -1,82 +1,89 @@
-import { defineMessages } from 'react-intl';
+import { useMemo } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import type { StatusCode } from '@panneau/core/types';
-import Label from '@panneau/element-label';
 
 import GuestLayout from '../layouts/Guest';
-
-export const messages = defineMessages({
-    metaTitle401: {
-        defaultMessage: 'Error 401',
-        description: 'Error page meta title',
-    },
-    title401: {
-        defaultMessage: 'Error 401',
-        description: 'Error page title',
-    },
-    description401: {
-        defaultMessage: 'You are not authorized to access this page.',
-        description: 'Error page description',
-    },
-    metaTitle403: {
-        defaultMessage: 'Error 403',
-        description: 'Error page meta title',
-    },
-    title403: {
-        defaultMessage: 'Error 403',
-        description: 'Error page title',
-    },
-    description403: {
-        defaultMessage: 'Access to this page is forbidden',
-        description: 'Error page description',
-    },
-    metaTitle404: {
-        defaultMessage: 'Error 404',
-        description: 'Error page meta title',
-    },
-    title404: {
-        defaultMessage: 'Error 404',
-        description: 'Error page title',
-    },
-    description404: {
-        defaultMessage: "This page doesn't exist",
-        description: 'Error page description',
-    },
-    metaTitle500: {
-        defaultMessage: 'Error 500',
-        description: 'Error page meta title',
-    },
-    title500: {
-        defaultMessage: 'Error 500',
-        description: 'Error page title',
-    },
-    description500: {
-        defaultMessage: 'There was an error',
-        description: 'Error page description',
-    },
-
-    gotoHome: {
-        defaultMessage: 'Go to home page',
-        description: 'Button label',
-    },
-});
 
 interface ErrorPageProps {
     statusCode?: StatusCode | null;
 }
 
 function ErrorPage({ statusCode = null }: ErrorPageProps) {
+    const code = statusCode || 404;
+
+    const title = useMemo(() => {
+        switch (code) {
+            case 401:
+                return (
+                    <FormattedMessage defaultMessage="Error 401" description="Error page title" />
+                );
+            case 403:
+                return (
+                    <FormattedMessage defaultMessage="Error 403" description="Error page title" />
+                );
+            case 404:
+                return (
+                    <FormattedMessage defaultMessage="Error 404" description="Error page title" />
+                );
+            case 500:
+                return (
+                    <FormattedMessage defaultMessage="Error 500" description="Error page title" />
+                );
+            default:
+                return (
+                    <FormattedMessage defaultMessage="Error 404" description="Error page title" />
+                );
+        }
+    }, [statusCode]);
+
+    const description = useMemo(() => {
+        switch (code) {
+            case 401:
+                return (
+                    <FormattedMessage
+                        defaultMessage="You are not authorized to access this page."
+                        description="Error page description"
+                    />
+                );
+            case 403:
+                return (
+                    <FormattedMessage
+                        defaultMessage="Access to this page is forbidden"
+                        description="Error page description"
+                    />
+                );
+            case 404:
+                return (
+                    <FormattedMessage
+                        defaultMessage="This page doesn't exist"
+                        description="Error page description"
+                    />
+                );
+            case 500:
+                return (
+                    <FormattedMessage
+                        defaultMessage="There was an error"
+                        description="Error page description"
+                    />
+                );
+            default:
+                return (
+                    <FormattedMessage
+                        defaultMessage="This page doesn't exist"
+                        description="Error page description"
+                    />
+                );
+        }
+    }, [statusCode]);
+
     return (
         <GuestLayout fullscreen>
             <div className="container-sm py-4">
                 <div className="row justify-content-center">
                     <div className="col-12 col-sm-8 col-md-6">
-                        <h1>
-                            <Label>{messages[`title${statusCode || 404}`]}</Label>
-                        </h1>
-                        <p>
-                            <Label>{messages[`description${statusCode || 404}`]}</Label>
-                        </p>
+                        <h1>{title}</h1>
+                        <p>{description}</p>
                     </div>
                 </div>
             </div>

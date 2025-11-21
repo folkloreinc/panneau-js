@@ -7,12 +7,14 @@ function withIntlProvider(Story, { parameters: { intl = null } }) {
     const enabled = isObject(intl) || intl === true;
     const { locale = 'en', messages = {} } = isObject(intl) ? intl : {};
     const [localeLoaded, setLocaleLoaded] = useState(true);
+    const [packageMessages, setPackageMessages] = useState(messages);
 
     useEffect(() => {
         let canceled = false;
         if (enabled) {
-            import(`../../packages/intl/locale/${locale}`).then(() => {
+            import(`../../packages/intl/locale/${locale}.json`).then((newMessages) => {
                 if (!canceled) {
+                    setPackageMessages(newMessages || {});
                     setLocaleLoaded(true);
                 }
             });
@@ -20,13 +22,14 @@ function withIntlProvider(Story, { parameters: { intl = null } }) {
         return () => {
             canceled = true;
         };
-    }, [locale]);
+    }, [locale, setPackageMessages]);
 
     if (!enabled) {
         return <Story />;
     }
+
     return localeLoaded ? (
-        <IntlProvider locale={locale} messages={messages}>
+        <IntlProvider locale={locale} extraMessages={packageMessages}>
             <Story />
         </IntlProvider>
     ) : null;

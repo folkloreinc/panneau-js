@@ -1,19 +1,12 @@
 import isEmpty from 'lodash-es/isEmpty';
 import type { FormEvent } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { defineMessages, useIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import { KEYCODES, useKeyboardKeys } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Icon from '@panneau/element-icon';
 import TextField from '@panneau/field-text';
-
-const messages = defineMessages({
-    search: {
-        defaultMessage: 'Search',
-        description: 'Filter label',
-    },
-});
 
 interface SearchFilterProps {
     name?: string;
@@ -37,6 +30,7 @@ function SearchFilter({
     className = null,
 }: SearchFilterProps) {
     const intl = useIntl();
+
     const [searchValue, setSearchValue] = useState<string | null>(value);
     const hasChanged = useRef<boolean | null>(null);
 
@@ -121,7 +115,13 @@ function SearchFilter({
                     value={searchValue}
                     theme="light"
                     onChange={onInputChange}
-                    placeholder={placeholder || intl.formatMessage(messages.search)}
+                    placeholder={
+                        placeholder ||
+                        intl.formatMessage({
+                            defaultMessage: 'Search',
+                            description: 'Filter label',
+                        })
+                    }
                     style={{
                         width: width !== null ? width - 42 : undefined,
                     }}

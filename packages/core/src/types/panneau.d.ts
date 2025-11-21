@@ -2,7 +2,6 @@
  * Panneau Definition Types
  * TypeScript interfaces for main Panneau configuration and definitions
  */
-
 import { Intl, Resource } from './resource';
 
 /**

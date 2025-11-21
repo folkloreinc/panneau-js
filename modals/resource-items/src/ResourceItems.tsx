@@ -1,5 +1,5 @@
-import { useMemo, type ReactNode } from 'react';
 import isObject from 'lodash-es/isObject';
+import { type ReactNode, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { usePanneauResource } from '@panneau/core/contexts';

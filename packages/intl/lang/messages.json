@@ -1,2 +1,586 @@
 {
+  "002oWQ": {
+    "defaultMessage": "Duration",
+    "description": "Field name"
+  },
+  "0F5X3C": {
+    "defaultMessage": "S",
+    "description": "Saturday letter"
+  },
+  "0SEHSj": {
+    "defaultMessage": "Select row",
+    "description": "Checkbox label"
+  },
+  "0xeItT": {
+    "defaultMessage": "Loading...",
+    "description": "Hidden label"
+  },
+  "12Px0g": {
+    "defaultMessage": "Send reset link",
+    "description": "Button label"
+  },
+  "1dqmFw": {
+    "defaultMessage": "Document",
+    "description": "Media type"
+  },
+  "22Ld5M": {
+    "defaultMessage": "Enter the code from your authenticator app to continue",
+    "description": "Field label"
+  },
+  "2vB7U4": {
+    "defaultMessage": "An error occured and we could not save this item successfully.",
+    "description": "Error message"
+  },
+  "3RT69u": {
+    "defaultMessage": "Informations",
+    "description": "Field title"
+  },
+  "3ebjtX": {
+    "defaultMessage": "Yes",
+    "description": "Button label"
+  },
+  "4sViWl": {
+    "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} other {# items}}",
+    "description": "Pagination count label"
+  },
+  "4yfet+": {
+    "defaultMessage": "Password",
+    "description": "Field label"
+  },
+  "5nHK/H": {
+    "defaultMessage": "Do you really wish to disable two factor authentication on your account?",
+    "description": "Explaination label"
+  },
+  "5rMPIj": {
+    "defaultMessage": "Loading...",
+    "description": "Form status"
+  },
+  "6Ie+vL": {
+    "defaultMessage": "Error 404",
+    "description": "Error page title"
+  },
+  "6TuTuq": {
+    "defaultMessage": "Choose an option",
+    "description": "Default label"
+  },
+  "6cSFtU": {
+    "defaultMessage": "No color",
+    "description": "Empty label"
+  },
+  "6nwWPR": {
+    "defaultMessage": "Error 401",
+    "description": "Error page title"
+  },
+  "6viUpq": {
+    "defaultMessage": "Create {a_singular}",
+    "description": "Page title"
+  },
+  "7M0o0q": {
+    "defaultMessage": "Item",
+    "description": "Items field's item label"
+  },
+  "7OEFyt": {
+    "defaultMessage": "Delete",
+    "description": "Modal title"
+  },
+  "82P2dS": {
+    "defaultMessage": "You are not authorized to access this page.",
+    "description": "Error page description"
+  },
+  "8HFiMs": {
+    "defaultMessage": "Access to this page is forbidden",
+    "description": "Error page description"
+  },
+  "8INLfU": {
+    "defaultMessage": "Document",
+    "description": "Filter item label"
+  },
+  "8LSb8C": {
+    "defaultMessage": "Current password",
+    "description": "Field label"
+  },
+  "8NyYTH": {
+    "defaultMessage": "Back",
+    "description": "Button label"
+  },
+  "8T+JE7": {
+    "defaultMessage": "Duplicate",
+    "description": "Modal title"
+  },
+  "9/t5wK": {
+    "defaultMessage": "Type",
+    "description": "Filter label"
+  },
+  "9XBwF1": {
+    "defaultMessage": "Yes",
+    "description": "Boolean value"
+  },
+  "AJiMQk": {
+    "defaultMessage": "No results",
+    "description": "Empty label"
+  },
+  "AeOZq+": {
+    "defaultMessage": "Login",
+    "description": "Page title"
+  },
+  "AwDQvD": {
+    "defaultMessage": "Image",
+    "description": "Media type"
+  },
+  "B1h3gd": {
+    "defaultMessage": "Please enter your password to continue",
+    "description": "Field label"
+  },
+  "BAKfhq": {
+    "defaultMessage": "W",
+    "description": "Wednesday letter"
+  },
+  "BIYKx5": {
+    "defaultMessage": "Preview",
+    "description": "Modal title"
+  },
+  "BeKVq6": {
+    "defaultMessage": "Upload file",
+    "description": "Default upload add button label"
+  },
+  "Bhu3B2": {
+    "defaultMessage": "Delete",
+    "description": "Button label"
+  },
+  "CGvQxc": {
+    "defaultMessage": "User",
+    "description": "Avatar label"
+  },
+  "DBU3cu": {
+    "defaultMessage": "T",
+    "description": "Thursday letter"
+  },
+  "DUbv+u": {
+    "defaultMessage": "Confirm your new password",
+    "description": "Field label"
+  },
+  "ESkxLX": {
+    "defaultMessage": "Success!",
+    "description": "Form status"
+  },
+  "FntHPK": {
+    "defaultMessage": "View {the_plural}",
+    "description": "Button label"
+  },
+  "G7M4nI": {
+    "defaultMessage": "Duplicate {a_singular}",
+    "description": "Page title"
+  },
+  "GxOBVL": {
+    "defaultMessage": "Replace",
+    "description": "Media form action"
+  },
+  "HzCxmr": {
+    "defaultMessage": "Duplicate",
+    "description": "Button label"
+  },
+  "IuqEHB": {
+    "defaultMessage": "Account",
+    "description": "Menu label"
+  },
+  "J6Mhku": {
+    "defaultMessage": "F",
+    "description": "Friday letter"
+  },
+  "JuxiUN": {
+    "defaultMessage": "Format",
+    "description": "Field label"
+  },
+  "Ke35Pv": {
+    "defaultMessage": "Edit",
+    "description": "Button label"
+  },
+  "LI0Gz4": {
+    "defaultMessage": "Email",
+    "description": "Field label"
+  },
+  "M49yWb": {
+    "defaultMessage": "The following items will be restored: {ids}. Are you sure you want to continue?",
+    "description": "Modal message"
+  },
+  "MHldGi": {
+    "defaultMessage": "Duration:",
+    "description": "Field description"
+  },
+  "Mo0yQb": {
+    "defaultMessage": "Error",
+    "description": "Form status"
+  },
+  "Mohaye": {
+    "defaultMessage": "Edit item",
+    "description": "Modal title"
+  },
+  "NeSNvW": {
+    "defaultMessage": "clear",
+    "description": "Button label"
+  },
+  "NozDYd": {
+    "defaultMessage": "Uploading",
+    "description": "Button label"
+  },
+  "Of2stw": {
+    "defaultMessage": "T",
+    "description": "Tuesday letter"
+  },
+  "OzYWZz": {
+    "defaultMessage": "Created at",
+    "description": "Field name"
+  },
+  "PN+75e": {
+    "defaultMessage": "Created at",
+    "description": "Field label"
+  },
+  "PQX/ph": {
+    "defaultMessage": "Create account",
+    "description": "Button label"
+  },
+  "PSlT7H": {
+    "defaultMessage": "Trash",
+    "description": "Button label"
+  },
+  "PTmocx": {
+    "defaultMessage": "The following items will be deleted: {ids}. Are you sure you want to continue?",
+    "description": "Modal message"
+  },
+  "Pih2UO": {
+    "defaultMessage": "Error 403",
+    "description": "Error page title"
+  },
+  "PyxZY2": {
+    "defaultMessage": "Cancel",
+    "description": "Button label"
+  },
+  "QUAHwy": {
+    "defaultMessage": "Continue",
+    "description": "Button label"
+  },
+  "R1HYj0": {
+    "defaultMessage": "Save",
+    "description": "Button label"
+  },
+  "REIcPg": {
+    "defaultMessage": "Logout",
+    "description": "Menu label"
+  },
+  "T/NPHK": {
+    "defaultMessage": "Edit",
+    "description": "Page title"
+  },
+  "TV3jir": {
+    "defaultMessage": "Loading",
+    "description": "Loading label"
+  },
+  "Tol+/U": {
+    "defaultMessage": "Clear",
+    "description": "Button label"
+  },
+  "U/ye2x": {
+    "defaultMessage": "Cancel",
+    "description": "Link label"
+  },
+  "UUv8FR": {
+    "defaultMessage": "Name",
+    "description": "Field label"
+  },
+  "UaVu03": {
+    "defaultMessage": "Confirm",
+    "description": "Button label"
+  },
+  "UbmsLL": {
+    "defaultMessage": "No item found.",
+    "description": "Label when there is no item in items field"
+  },
+  "UbxbKP": {
+    "defaultMessage": "Preview",
+    "description": "Field name"
+  },
+  "UpStcP": {
+    "defaultMessage": "Could not find type for this item",
+    "description": "Error message"
+  },
+  "V7Us0a": {
+    "defaultMessage": "Update account",
+    "description": "Menu label"
+  },
+  "VhJUeW": {
+    "defaultMessage": "Confirm your password",
+    "description": "Field label"
+  },
+  "WX83V9": {
+    "defaultMessage": "File name",
+    "description": "Field name"
+  },
+  "WgIC2T": {
+    "defaultMessage": "No results found",
+    "description": "Table label"
+  },
+  "XJ1dc3": {
+    "defaultMessage": "New password",
+    "description": "Field label"
+  },
+  "XLVfN6": {
+    "defaultMessage": "Find {a_singular}",
+    "description": "Page title"
+  },
+  "XW9IKQ": {
+    "defaultMessage": "Update password",
+    "description": "Button label"
+  },
+  "XmY7D8": {
+    "defaultMessage": "The following items will be duplicated: {ids}. Are you sure you want to continue?",
+    "description": "Modal message"
+  },
+  "XnyI69": {
+    "defaultMessage": "Audio",
+    "description": "Media type"
+  },
+  "XrzzDc": {
+    "defaultMessage": "Search",
+    "description": "Filter label"
+  },
+  "ZBNqY2": {
+    "defaultMessage": "Forgot your password?",
+    "description": "Link label"
+  },
+  "ZhnMCD": {
+    "defaultMessage": "Are you sure you want to duplicate {the_singular} #{id}?",
+    "description": "Confirmation message"
+  },
+  "ZxgNge": {
+    "defaultMessage": "Add an item",
+    "description": "Button label in items field"
+  },
+  "bPk79b": {
+    "defaultMessage": "Show",
+    "description": "Button label"
+  },
+  "bfP/d8": {
+    "defaultMessage": "{The_singular} has been created.",
+    "description": "Alert message"
+  },
+  "c3hu9o": {
+    "defaultMessage": "Size",
+    "description": "Field name"
+  },
+  "c6nfry": {
+    "defaultMessage": "Restore",
+    "description": "Modal title"
+  },
+  "cutyQH": {
+    "defaultMessage": "An error has occured.",
+    "description": "Modal message"
+  },
+  "d0g58T": {
+    "defaultMessage": "Login",
+    "description": "Menu label"
+  },
+  "dRB0/1": {
+    "defaultMessage": "Empty",
+    "description": "Empty message"
+  },
+  "daHjZg": {
+    "defaultMessage": "Edit file",
+    "description": "Button label"
+  },
+  "dkRdks": {
+    "defaultMessage": "{The_singular} has been deleted.",
+    "description": "Alert message"
+  },
+  "e0xuLo": {
+    "defaultMessage": "Link",
+    "description": "Display label"
+  },
+  "eCe9ZY": {
+    "defaultMessage": "Dimensions",
+    "description": "Field name"
+  },
+  "eL+nIp": {
+    "defaultMessage": "Add file",
+    "description": "Button label"
+  },
+  "fSfLk8": {
+    "defaultMessage": "S",
+    "description": "Sunday letter"
+  },
+  "g2CRt5": {
+    "defaultMessage": "Size",
+    "description": "Field label"
+  },
+  "g6qbbX": {
+    "defaultMessage": "Log in",
+    "description": "Button label"
+  },
+  "gWmL5V": {
+    "defaultMessage": "Disable two factor authentication",
+    "description": "Button label"
+  },
+  "jbT/g6": {
+    "defaultMessage": "M",
+    "description": "Monday letter"
+  },
+  "l+ddDH": {
+    "defaultMessage": "Create {a_singular}",
+    "description": "Button label"
+  },
+  "li2Qqu": {
+    "defaultMessage": "Skip setup",
+    "description": "Link label"
+  },
+  "lsBBVh": {
+    "defaultMessage": "{count, plural, =0 {no items} one {# item} other {# items}} selected",
+    "description": "Checkbox label"
+  },
+  "mCfzkJ": {
+    "defaultMessage": "Edit {a_singular}",
+    "description": "Page title"
+  },
+  "mQiyAm": {
+    "defaultMessage": "Video",
+    "description": "Media type"
+  },
+  "naie2b": {
+    "defaultMessage": "This page doesn't exist",
+    "description": "Error page description"
+  },
+  "oc3YLT": {
+    "defaultMessage": "Choose an item",
+    "description": "Default placeholder"
+  },
+  "odaCUe": {
+    "defaultMessage": "Clear",
+    "description": "Default upload add button label"
+  },
+  "owrRHV": {
+    "defaultMessage": "Error 500",
+    "description": "Error page title"
+  },
+  "pVHYDd": {
+    "defaultMessage": "Enable two factor authentication",
+    "description": "Button label"
+  },
+  "pZytAx": {
+    "defaultMessage": "No result",
+    "description": "Default label"
+  },
+  "rSt+KL": {
+    "defaultMessage": "No",
+    "description": "Boolean value"
+  },
+  "rmJBin": {
+    "defaultMessage": "Dimensions",
+    "description": "Field label"
+  },
+  "rtwfuZ": {
+    "defaultMessage": "Actions",
+    "description": "Field name"
+  },
+  "rvOVCV": {
+    "defaultMessage": "Confirm selection",
+    "description": "Button label"
+  },
+  "s4Xrs9": {
+    "defaultMessage": "Time",
+    "description": "DateTimeField time caption"
+  },
+  "sOfogS": {
+    "defaultMessage": "Edit items",
+    "description": "Modal title"
+  },
+  "smqUAV": {
+    "defaultMessage": "Edit {name}",
+    "description": "Page title"
+  },
+  "tPeIKO": {
+    "defaultMessage": "Go back to login",
+    "description": "Link label"
+  },
+  "uN/FYD": {
+    "defaultMessage": "No results found",
+    "description": "Empty label"
+  },
+  "ucieFX": {
+    "defaultMessage": "The following items will be modified: {ids}.",
+    "description": "Modal message"
+  },
+  "uds4wJ": {
+    "defaultMessage": "Deleted at",
+    "description": "Column label"
+  },
+  "une5WQ": {
+    "defaultMessage": "Find a file",
+    "description": "Default upload add button label"
+  },
+  "wU++NJ": {
+    "defaultMessage": "Duration",
+    "description": "Field label"
+  },
+  "wa783M": {
+    "defaultMessage": "Already have an account? Go to login",
+    "description": "Link label"
+  },
+  "x27x2b": {
+    "defaultMessage": "Loading",
+    "description": "Loading message"
+  },
+  "xKUOLG": {
+    "defaultMessage": "Technical details",
+    "description": "Field title"
+  },
+  "xSERPA": {
+    "defaultMessage": "Video",
+    "description": "Filter item label"
+  },
+  "y9zauY": {
+    "defaultMessage": "An error occured and we could not delete this item successfully.",
+    "description": "Error message"
+  },
+  "yALN2p": {
+    "defaultMessage": "There was an error",
+    "description": "Error page description"
+  },
+  "yByaBh": {
+    "defaultMessage": "Added by",
+    "description": "Field label"
+  },
+  "yHAmDD": {
+    "defaultMessage": "Image",
+    "description": "Filter item label"
+  },
+  "yQRtgx": {
+    "defaultMessage": "Audio",
+    "description": "Filter item label"
+  },
+  "ygNvmz": {
+    "defaultMessage": "Description",
+    "description": "Field name"
+  },
+  "yhU8J6": {
+    "defaultMessage": "No",
+    "description": "Button label"
+  },
+  "yzfiXJ": {
+    "defaultMessage": "Are you sure you want to delete {the_singular} #{id}?",
+    "description": "Confirmation message"
+  },
+  "z2775Q": {
+    "defaultMessage": "Import",
+    "description": "Button label"
+  },
+  "zN5N/Q": {
+    "defaultMessage": "Delete {a_singular}",
+    "description": "Page title"
+  },
+  "zTiC4D": {
+    "defaultMessage": "Do you wish to enable two factor authentication on your account? You will have to use an authentication app such as Google Authenticator or Microsoft Authenticator in addition to your password to connect.",
+    "description": "Explaination label"
+  },
+  "zwks3g": {
+    "defaultMessage": "Save new password",
+    "description": "Button label"
+  }
 }

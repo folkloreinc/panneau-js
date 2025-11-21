@@ -47,7 +47,7 @@
         "assets"
     ],
     "scripts": {
-        "intl": "../../scripts/build-intl.js '../../!(node_modules)/!(intl)/src/**/*.+(js|jsx)'",
+        "intl": "../../scripts/build-intl.js '../../!(node_modules)/!(intl)/src/**/*.+(js|jsx|tsx)'",
         "prepublishOnly": "npm run build",
         "build": "rm -rf ./locale && npm run intl && ../../scripts/prepare-package.sh"
     },
@@ -61,7 +61,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@formatjs/cli-lib": "^6.0.3",
+        "@formatjs/cli-lib": "^6.6.6",
         "@panneau/core": "^4.0.5",
         "commander": "^12.0.0",
         "fs-extra": "^11.2.0",

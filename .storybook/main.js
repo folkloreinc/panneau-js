@@ -221,7 +221,7 @@ module.exports = {
                                     // ),
                                     // ...getPackagesPaths().map((packagePath) => ({
                                     //     loader: require.resolve('babel-loader'),
-                                    //     test: /\.(js|jsx)$/,
+                                    //     test: /\.(js|jsx|ts|tsx)$/,
                                     //     include: path.join(packagePath, './src/'),
                                     //     exclude: /\/node_modules\//,
                                     //     options: {
@@ -248,7 +248,7 @@ module.exports = {
                                     // })),
                                     // {
                                     //     loader: require.resolve('babel-loader'),
-                                    //     test: /\.(js|jsx)$/,
+                                    //     test: /\.(js|jsx|ts|tsx)$/,
                                     //     include: /\/query-string\//,
                                     //     options: {
                                     //         babelrc: false,

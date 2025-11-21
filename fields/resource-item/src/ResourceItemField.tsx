@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { usePanneauResource } from '@panneau/core/contexts';
-import type { FormErrors, Message } from '@panneau/core/types';
+import type { FormError, Message } from '@panneau/core/types';
 import { getPathValue, isMessage } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Button from '@panneau/element-button';
@@ -15,10 +15,11 @@ import Select from '@panneau/element-select';
 import ResourceForm from '@panneau/form-resource';
 import { useResourceValues } from '@panneau/intl';
 import Dialog from '@panneau/modal-dialog';
-// import ResourceFormModal from '@panneau/modal-resource-form';
-import ResourceItemsModal from '@panneau/modal-resource-items';
+import ModalResourceItems from '@panneau/modal-resource-items';
 
-// TODO: improve the modals (esc key) and switch to FormModal
+// TODO:
+// Improve the modals (esc key) and switch to FormModal
+// Fix the ModalResourceItems usage so it can select an item properly
 
 interface Item {
     id?: string | number | null;
@@ -34,7 +35,7 @@ interface SelectOption {
 interface ResourceItemFieldProps {
     name?: string | null;
     value?: Item | null;
-    errors?: FormErrors | null;
+    errors?: FormError[] | null;
 
     resource?: string | null;
     resourceType?: string | null;
@@ -264,7 +265,7 @@ function ResourceItemField({
     );
 
     const onOpenList = useCallback(() => {
-        setListOpen(false); // TODO: fix this
+        setListOpen(false); // TODO: fix this, see Upload Field
     }, [setListOpen]);
 
     const onCloseList = useCallback(() => {
@@ -426,8 +427,9 @@ function ResourceItemField({
                     </Dialog>
                 )
             ) : null}
+            {/* Disabled on purpose until fixed */}
             {listOpen ? (
-                <ResourceItemsModal
+                <ModalResourceItems
                     resource={resourceId}
                     onClose={onCloseList}
                     listProps={{

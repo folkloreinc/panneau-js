@@ -45,7 +45,7 @@
         "@eslint/js": "^9.39.1",
         "@folklore/fetch": "^0.1.21",
         "@folklore/routes": "^0.2.44",
-        "@formatjs/cli-lib": "^6.0.3",
+        "@formatjs/cli-lib": "^6.6.6",
         "@nrwl/cli": "^15.9.3",
         "@polka/send-type": "^0.5.2",
         "@rollup/plugin-alias": "^5.1.0",
