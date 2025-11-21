@@ -1,6 +1,6 @@
 {
     "name": "@panneau/action-delete",
-    "version": "4.0.5",
+    "version": "4.0.6",
     "description": "Delete action",
     "keywords": [
         "javascript"
@@ -50,9 +50,9 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.21",
-        "@panneau/core": "^4.0.5",
-        "@panneau/element-button": "^4.0.5",
-        "@panneau/themes": "^4.0.5",
+        "@panneau/core": "^4.0.6",
+        "@panneau/element-button": "^4.0.6",
+        "@panneau/themes": "^4.0.6",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0"
