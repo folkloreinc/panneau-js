@@ -64,7 +64,7 @@ function ResourceDuplicatePage({ itemId, resource }: ResourceDuplicatePageProps)
                     />
                 ) : null}
                 {item === null && loading && !error ? (
-                    <Loading className="w-10 m-auto" withDelay>
+                    <Loading className="mw-25 my-4 m-auto" withDelay>
                         <FormattedMessage defaultMessage="Loading" description="Loading label" />
                     </Loading>
                 ) : null}

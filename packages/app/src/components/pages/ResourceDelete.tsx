@@ -64,7 +64,7 @@ function ResourceDeletePage({ itemId, resource }: ResourceDeletePageProps) {
                     />
                 ) : null}
                 {item === null && loading && !error ? (
-                    <Loading withDelay>
+                    <Loading className="mw-25 my-4 m-auto" withDelay>
                         <FormattedMessage defaultMessage="Loading" description="Loading label" />
                     </Loading>
                 ) : null}
