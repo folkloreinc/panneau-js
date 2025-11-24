@@ -25,11 +25,10 @@ const defaultProps = {};
 const ResourceDeletePage = ({ itemId, resource }) => {
     const [, navigate] = useLocation();
     const resourceRoute = useResourceUrlGenerator(resource);
-    const { item, loading, error } = useResourceItem(resource, itemId);
+    const { item = null, loading = false, error = null } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
     const resourceValues = useResourceValues(resource);
     const typeName = useResourceTypeName(resource, type);
-
     const onSuccess = useCallback(
         () => navigate(`${resourceRoute('index')}?deleted=true`),
         [navigate, resourceRoute],
@@ -68,7 +67,7 @@ const ResourceDeletePage = ({ itemId, resource }) => {
                     />
                 ) : null}
                 {item === null && loading && !error ? (
-                    <Loading withDelay>
+                    <Loading className="w-25 my-4 m-auto" withDelay>
                         <FormattedMessage defaultMessage="Loading" description="Loading label" />
                     </Loading>
                 ) : null}

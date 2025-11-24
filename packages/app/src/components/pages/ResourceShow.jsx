@@ -19,8 +19,8 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceShowPage = ({ resource, itemId }) => {
-    const { name } = resource;
-    const { item, loading, error } = useResourceItem(resource, itemId);
+    const { name = null } = resource;
+    const { item = null, loading = false, error = null } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
 
     return (
@@ -37,7 +37,7 @@ const ResourceShowPage = ({ resource, itemId }) => {
                     />
                 ) : null}
                 {item === null && loading && !error ? (
-                    <Loading withDelay>
+                    <Loading className="w-25 my-4 m-auto" withDelay>
                         <FormattedMessage defaultMessage="Loading" description="Loading label" />
                     </Loading>
                 ) : null}

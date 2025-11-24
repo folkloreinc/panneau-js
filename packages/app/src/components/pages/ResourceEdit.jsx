@@ -22,7 +22,7 @@ const propTypes = {
 const defaultProps = {};
 
 const ResourceEditPage = ({ itemId, resource }) => {
-    const { item, loading, error } = useResourceItem(resource, itemId);
+    const { item = null, loading = false, error = null } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
     const [editItem, setEditItem] = useState(item);
     const typeName = useResourceTypeName(resource, type);
@@ -67,7 +67,7 @@ const ResourceEditPage = ({ itemId, resource }) => {
                     />
                 ) : null}
                 {editItem === null && loading && !error ? (
-                    <Loading withDelay>
+                    <Loading className="w-25 my-4 m-auto" withDelay>
                         <FormattedMessage defaultMessage="Loading" description="Loading label" />
                     </Loading>
                 ) : null}
