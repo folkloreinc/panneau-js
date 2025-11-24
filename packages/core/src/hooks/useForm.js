@@ -8,7 +8,7 @@ import { useCallback, useMemo, useState } from 'react';
 // prettier-ignore
 const getFieldsPropsFromFields = (fields, {
     value, errors, onChange, ...props
-}, locales = []) => fields.reduce(
+}, locales = []) => (fields || []).reduce(
     (allFields, field) => {
         const {
             name = isString(field) ? field : null,
@@ -50,7 +50,7 @@ const getFieldsPropsFromFields = (fields, {
                 value: value !== null ? value[name] || null : null,
                 errors: finalErrors.length > 0 ? finalErrors : null,
                 onChange: fieldValue => onChange(name, fieldValue),
-                fields: fieldFields !== null ? getFieldsPropsFromFields(
+                fields: fieldFields !== null && isArray(fieldFields) ? getFieldsPropsFromFields(
                     fieldFields,
                     {
                         value: value !== null && name !== null && isObject(value[name])
@@ -141,7 +141,12 @@ const useForm = (opts = {}) => {
     }, fieldsKey);
 
     const fieldsProps = useMemo(
-        () => getFieldsPropsFromFields(fields, { value, errors, onChange: onFieldChange }, locales),
+        () =>
+            getFieldsPropsFromFields(
+                fields || [],
+                { value, errors, onChange: onFieldChange },
+                locales,
+            ),
         fieldsKey,
     );
 
