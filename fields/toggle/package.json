@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-toggle",
-    "version": "4.0.7",
+    "version": "4.0.8",
     "description": "A toggle field",
     "keywords": [
         "javascript"
@@ -59,8 +59,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^4.0.7",
-        "@panneau/themes": "^4.0.7",
+        "@panneau/core": "^4.0.8",
+        "@panneau/themes": "^4.0.8",
         "classnames": "^2.5.1",
         "prop-types": "^15.7.2",
         "rc-switch": "^4.1.0"
