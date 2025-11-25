@@ -38,7 +38,7 @@ const getFieldsPropsFromFields = (
     fields: FieldInput[],
     { value, errors, onChange, ...props }: FieldProps,
     locales: string[] = [],
-): ProcessedField[] => fields.reduce<ProcessedField[]>(
+): ProcessedField[] => (fields || []).reduce<ProcessedField[]>(
     (allFields, field) => {
         const {
             name = isString(field) ? field : null,
@@ -81,7 +81,7 @@ const getFieldsPropsFromFields = (
                 value: value !== null && name !== null ? value[name] || null : null,
                 errors: finalErrors.length > 0 ? finalErrors : null,
                 onChange: (fieldValue: unknown) => onChange(name as string, fieldValue),
-                fields: fieldFields !== null ? getFieldsPropsFromFields(
+                fields: fieldFields !== null && isArray(fieldFields) ? getFieldsPropsFromFields(
                     fieldFields as FieldInput[],
                     {
                         value: value !== null && name !== null && isObject(value[name])
