@@ -35,19 +35,26 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
+    "types": "types/index.d.ts",
     "exports": {
-        ".": "./es/index.js",
+        ".": {
+            "import": {
+                "default": "./es/index.js",
+                "types": "./types/index.d.ts"
+            }
+        },
         "./assets/css/styles": "./assets/css/styles.css",
         "./assets/css/styles.css": "./assets/css/styles.css"
     },
     "files": [
         "lib",
         "es",
-        "assets"
+        "assets",
+        "types"
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh"
+        "build": "../../scripts/prepare-package.sh --types"
     },
     "devDependencies": {
         "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
