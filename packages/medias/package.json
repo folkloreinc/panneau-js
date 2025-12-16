@@ -1,6 +1,6 @@
 {
     "name": "@panneau/medias",
-    "version": "3.0.314",
+    "version": "3.0.316",
     "description": "",
     "keywords": [
         "javascript"
@@ -63,8 +63,8 @@
         "@panneau/element-media-card": "^3.0.314",
         "@panneau/element-media-player": "^3.0.314",
         "@panneau/element-pagination": "^3.0.314",
-        "@panneau/element-table": "^3.0.314",
-        "@panneau/field-upload": "^3.0.314",
+        "@panneau/element-table": "^3.0.316",
+        "@panneau/field-upload": "^3.0.316",
         "@panneau/filter-filters": "^3.0.314",
         "classnames": "^2.5.1",
         "lodash-es": "^4.17.21",
