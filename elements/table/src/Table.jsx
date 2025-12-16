@@ -425,7 +425,7 @@ function Table({
                                             key={`col-${id}-actions`}
                                         >
                                             <Actions
-                                                {...actionsProps}
+                                                actionsProps={actionsProps}
                                                 item={it}
                                                 disabled={actionsDisabled}
                                             />
