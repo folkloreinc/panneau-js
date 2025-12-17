@@ -1,5 +1,6 @@
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
+
 import type { Item } from '@panneau/core/types';
 
 // For backwards compatibility with the old actions element
@@ -45,9 +46,15 @@ function useActions(
         preferEditModal = false,
         preferDeleteModal = false,
         hasDuplicateRoute = false,
+        locale = null,
     }: UseActionsOptions = {},
 ): Record<string, unknown>[] {
-    const { id, url = null } = item || {};
+    const { id, url: itemUrl = null } = item || {};
+    const { url = null } =
+        itemUrl !== null && locale !== null && isObject(itemUrl)
+            ? { url: itemUrl[locale] || null }
+            : { url: itemUrl };
+
     const hasCustomShowUrl = showUrl !== null || url !== null;
     return (actions || [])
         .map((action) => {

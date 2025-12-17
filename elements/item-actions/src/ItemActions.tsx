@@ -1,7 +1,7 @@
 import isObject from 'lodash-es/isObject';
 // import isString from 'lodash-es/isString';
 import { type ReactNode } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useActionsComponentsManager } from '@panneau/core/contexts';
 import { useActions, useResourceUrlGenerator } from '@panneau/core/hooks';
@@ -66,6 +66,7 @@ function ItemActions({
     itemLinkProp = null,
     className = null,
 }: ItemActionsProps) {
+    const { locale = null } = useIntl();
     const urlGenerator = useResourceUrlGenerator(resource);
     const componentsManager = useActionsComponentsManager();
     const actionItems = items || actions || [];
@@ -95,6 +96,7 @@ function ItemActions({
         getDuplicatePropsFromItem,
         withoutItemShowUrl,
         itemLinkProp,
+        locale,
     } as any);
 
     return (

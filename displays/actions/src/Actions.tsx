@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { type ReactNode } from 'react';
+import { useIntl } from 'react-intl';
 
 import Actions from '@panneau/action-actions';
 import { useActions } from '@panneau/core/hooks';
@@ -35,8 +36,12 @@ function ActionsDisplay({
     buttonsClassName = null,
     ...props
 }: ActionsDisplayProps) {
+    const { locale = null } = useIntl();
     const { urlGenerator, ...otherProps } = actionsProps || {};
-    const finalActions = useActions(item, actions, parentUrlGenerator || urlGenerator, otherProps);
+    const finalActions = useActions(item, actions, parentUrlGenerator || urlGenerator, {
+        ...otherProps,
+        locale,
+    });
     return (
         <div
             className={classNames([

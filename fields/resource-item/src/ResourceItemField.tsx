@@ -42,6 +42,7 @@ interface ResourceItemFieldProps {
     paginated?: boolean;
 
     query?: Record<string, unknown> | null;
+    requestQuery?: Record<string, unknown> | null;
     page?: number | string | null;
     count?: number | string | null;
     options?: Record<string, unknown> | null;
@@ -78,6 +79,7 @@ function ResourceItemField({
     resourceType = null,
     paginated = true,
     query: initialQuery = null,
+    requestQuery: initialRequestQuery = null,
     page: initialPage = null,
     count: initialCount = null,
     options: initialOptions = null,
@@ -122,7 +124,7 @@ function ResourceItemField({
     const [listOpen, setListOpen] = useState(false);
 
     // TODO: list state controls?
-    const [query, setQuery] = useState(initialQuery);
+    const [query, setQuery] = useState(initialQuery || initialRequestQuery || {});
     const [page, setPage] = useState<number | string | null>(defaultPage);
     const [count, setCount] = useState<number | string | null>(defaultCount);
     const [resourceOptions, setOptions] = useState(initialOptions);
