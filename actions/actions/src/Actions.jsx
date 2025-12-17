@@ -10,7 +10,6 @@ import Button from '@panneau/element-button';
 const propTypes = {
     resource: PanneauPropTypes.resource,
     actions: PanneauPropTypes.filters,
-    actionsProps: PropTypes.shape({}),
     value: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string,
@@ -29,7 +28,6 @@ const propTypes = {
 const defaultProps = {
     resource: null,
     actions: [],
-    actionsProps: null,
     value: null,
     onChange: null,
     onConfirmed: null,
@@ -44,7 +42,6 @@ const defaultProps = {
 const Actions = ({
     resource,
     actions,
-    actionsProps,
     value,
     onChange,
     size,
@@ -122,7 +119,6 @@ const Actions = ({
                                   withConfirmation: actionConfirmation || withConfirmation,
                               }
                             : null)}
-                        {...actionsProps}
                         {...otherProps}
                     />
                 ) : null;

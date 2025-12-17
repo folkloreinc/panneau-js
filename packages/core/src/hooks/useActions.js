@@ -23,6 +23,7 @@ const useActions = (
         preferEditModal = false,
         preferDeleteModal = false,
         hasDuplicateRoute = false,
+        ...otherProps
     } = {},
 ) => {
     const { id, url = null } = item || {};
@@ -113,6 +114,7 @@ const useActions = (
             if (isObject(action)) {
                 const { itemLinkProp = null } = action || {};
                 return {
+                    ...otherProps,
                     ...action,
                     ...(itemLinkProp !== null &&
                     isObject(item) &&
