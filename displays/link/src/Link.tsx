@@ -24,18 +24,20 @@ function Link({
     placeholder = null,
 }: LinkProps) {
     const itemLabel = get(item, labelPath);
-    const finalValue = itemLabel || label || placeholder || (
+    const finalLabel = itemLabel || label || placeholder || (
         <FormattedMessage defaultMessage="Link" description="Display label" />
     );
     const isExternal = value !== null && isString(value) ? value.indexOf('http') === 0 : false;
-
-    return external || isExternal ? (
-        <a href={value!} target={target || '_blank'} rel="noopener noreferrer">
-            {finalValue}
-        </a>
-    ) : (
-        <WouterLink href={value!}>{finalValue}</WouterLink>
-    );
+    const link = value !== null ? <WouterLink href={value!}>{finalLabel}</WouterLink> : finalLabel;
+    const element =
+        value !== null && (external || isExternal) ? (
+            <a href={value!} target={target || '_blank'} rel="noopener noreferrer">
+                {finalLabel}
+            </a>
+        ) : (
+            link
+        );
+    return value !== null ? element : null;
 }
 
 export default Link;
