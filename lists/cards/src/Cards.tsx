@@ -1,6 +1,6 @@
-import { useMemo, type ReactNode } from 'react';
 import classNames from 'classnames';
 import get from 'lodash-es/get';
+import { type ReactNode, useMemo } from 'react';
 
 import { useDisplaysComponents } from '@panneau/core/contexts';
 import type { Item, Resource, TableColumn } from '@panneau/core/types';
@@ -46,9 +46,9 @@ function CardsList({
 
     const finalActionsProps = useMemo(
         () => ({
-            ...actionsProps,
             reload,
-            updateItem,
+            updateValue: updateItem,
+            ...actionsProps,
         }),
         [actionsProps, reload, updateItem],
     );

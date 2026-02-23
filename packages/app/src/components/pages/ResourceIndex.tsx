@@ -7,7 +7,7 @@ import { useLocation, useSearch } from 'wouter';
 
 import {
     ResourceProvider,
-    useComponentsManager,
+    useActionsComponentsManager,
     usePanneauColorScheme,
 } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
@@ -52,7 +52,7 @@ function ResourceIndexPage({ resource, defaultActions = DEFAULT_ACTIONS }: Resou
     );
 
     const resourceValues = useResourceValues(resource);
-    const componentsManager = useComponentsManager();
+    const actionsComponentsManager = useActionsComponentsManager();
     const [, navigate] = useLocation();
     const search = useSearch();
     const query = useMemo(() => queryString.parse(search, { arrayFormat: 'bracket' }), [search]);
@@ -119,10 +119,10 @@ function ResourceIndexPage({ resource, defaultActions = DEFAULT_ACTIONS }: Resou
                                         component = Button,
                                         withQuery = false,
                                         href = null,
-                                        ...actionsProps
+                                        ...otherProps
                                     }: any) => {
                                         const ActionComponent = isString(component)
-                                            ? componentsManager.getComponent(component)
+                                            ? actionsComponentsManager.getComponent(component)
                                             : component;
                                         const isButton = ActionComponent === Button;
                                         let finalHref = href;
@@ -138,7 +138,7 @@ function ResourceIndexPage({ resource, defaultActions = DEFAULT_ACTIONS }: Resou
                                             <ActionComponent
                                                 key={`action-${id}`}
                                                 href={finalHref}
-                                                {...actionsProps}
+                                                {...otherProps}
                                                 {...(!isButton
                                                     ? {
                                                           resource,

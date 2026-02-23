@@ -2,8 +2,8 @@ import classNames from 'classnames';
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { useActionProps } from '@panneau/action-actions';
 import { useModalsComponentsManager } from '@panneau/core/contexts';
-import { useActionProps } from '@panneau/core/hooks';
 import type { ButtonTheme, Field } from '@panneau/core/types';
 import Button from '@panneau/element-button';
 

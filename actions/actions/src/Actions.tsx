@@ -1,23 +1,18 @@
 import classNames from 'classnames';
+import isArray from 'lodash-es/isArray';
 import type { ComponentType } from 'react';
 import { useMemo } from 'react';
 
 import { useActionsComponentsManager } from '@panneau/core/contexts';
-import type { ButtonSize, Filter, Item, Resource } from '@panneau/core/types';
+import type { Action, ActionValue, ButtonSize, Resource } from '@panneau/core/types';
 import Button from '@panneau/element-button';
 
-interface Action extends Filter {
-    multiple?: boolean;
-    global?: boolean;
-    disabled?: boolean;
-    outline?: boolean;
-    withConfirmation?: boolean;
-}
+import useActions from './useActions';
 
 interface ActionsProps {
     resource?: Resource;
     actions?: Action[];
-    value?: Item[] | null;
+    value?: ActionValue;
     onChange?: ((value: unknown) => void) | null;
     onConfirmed?: ((value: unknown) => void) | null;
     defaultComponent?: ComponentType<any>;
@@ -25,6 +20,21 @@ interface ActionsProps {
     size?: ButtonSize;
     disabled?: boolean;
     withConfirmation?: boolean;
+    iconsOnly?: boolean;
+    showLabel?: string | null;
+    editLabel?: string | null;
+    deleteLabel?: string | null;
+    onClickShow?: (() => void) | null;
+    onClickEdit?: (() => void) | null;
+    onClickDelete?: (() => void) | null;
+    getShowPropsFromValue?: ((item: ActionValue) => Record<string, unknown>) | null;
+    getEditPropsFromValue?: ((item: ActionValue) => Record<string, unknown>) | null;
+    getDeletePropsFromValue?: ((item: ActionValue) => Record<string, unknown>) | null;
+    showUrl?: string | null;
+    withoutItemShowUrl?: boolean | null;
+    preferEditModal?: boolean;
+    preferDeleteModal?: boolean;
+    hasDuplicateRoute?: boolean;
     className?: string | null;
 }
 
@@ -39,31 +49,47 @@ function Actions({
     onConfirmed = null,
     defaultComponent = Button,
     isGroup = false,
-    disabled: parentDisabled = false,
+    disabled = false,
     withConfirmation = false,
     className = null,
+    iconsOnly = true,
+    showLabel = null,
+    editLabel = null,
+    deleteLabel = null,
+    onClickShow = null,
+    onClickEdit = null,
+    onClickDelete = null,
+    getShowPropsFromValue = null,
+    getEditPropsFromValue = null,
+    getDeletePropsFromValue = null,
+    showUrl = null,
+    withoutItemShowUrl = null,
+    preferEditModal = false,
+    preferDeleteModal = false,
+    hasDuplicateRoute = false,
+    ...globalProps
 }: ActionsProps) {
     const actionsComponents = useActionsComponentsManager();
 
-    const disabled = value === null || value.length === 0;
-    const finalActions = useMemo(
-        () =>
-            (actions || [])
-                .filter((action) => action !== null)
-                .map((action) => {
-                    const { multiple = false, global = false } = action || {};
-                    const enabled = multiple
-                        ? value !== null && value.length > 0
-                        : value !== null && value.length === 1;
-                    const finalDisabled = !global && (parentDisabled || disabled || !enabled);
-                    return {
-                        ...action,
-                        disabled: finalDisabled,
-                        outline: finalDisabled,
-                    };
-                }),
-        [disabled, value, actions, parentDisabled],
-    );
+    const finalActions = useActions(actions, value, {
+        disabled,
+        resource,
+        iconsOnly,
+        showLabel,
+        editLabel,
+        deleteLabel,
+        onClickShow,
+        onClickEdit,
+        onClickDelete,
+        getShowPropsFromValue,
+        getEditPropsFromValue,
+        getDeletePropsFromValue,
+        showUrl,
+        withoutItemShowUrl,
+        preferEditModal,
+        preferDeleteModal,
+        hasDuplicateRoute,
+    });
 
     return (
         <div
@@ -88,7 +114,7 @@ function Actions({
                 const actionComponent = actionsComponents.getComponent(component);
                 const hasActionComponent = actionComponent !== null;
                 const Component = actionComponent || defaultComponent;
-                const [firstValue = null] = value || [];
+                const [firstValue = null] = isArray(value) ? value : [];
                 const finalValue = !multiple && firstValue !== null ? firstValue : value;
                 return Component !== null ? (
                     <Component
@@ -100,6 +126,7 @@ function Actions({
                         size={size}
                         multiple={multiple}
                         resource={resource}
+                        {...globalProps}
                         {...(hasActionComponent
                             ? {
                                   onChange,

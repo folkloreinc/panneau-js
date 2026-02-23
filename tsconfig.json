@@ -2,8 +2,6 @@
     "extends": "@tsconfig/create-react-app/tsconfig.json",
     "compilerOptions": {
         "strict": false,
-        "jsx": "react-jsx",
-        "allowJs": true,
         "typeRoots": ["./packages/core/src/types", "./node_modules/@types"]
     }
 }

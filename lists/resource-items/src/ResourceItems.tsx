@@ -194,8 +194,7 @@ function ResourceItemsList({
                         resource,
                         actions,
                         reload,
-                        updateItem,
-                        urlGenerator: resourceUrlGenerator,
+                        updateValue: updateItem,
                         ...actionsProps,
                     }}
                     selectable={finalSelectable}

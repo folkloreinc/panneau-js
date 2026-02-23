@@ -1,11 +1,18 @@
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
+import isArray from 'lodash-es/isArray';
+import get from 'lodash-es/get';
 
-import type { Item } from '@panneau/core/types';
+import type { Resource, ActionDefinition, ActionValue } from '@panneau/core/types';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import { useIntl } from 'react-intl';
+import { useMemo } from 'react';
 
 // For backwards compatibility with the old actions element
 
 interface UseActionsOptions {
+    resource?: Resource | null;
+    disabled?: boolean;
     iconsOnly?: boolean;
     showLabel?: string | null;
     editLabel?: string | null;
@@ -13,9 +20,9 @@ interface UseActionsOptions {
     onClickShow?: (() => void) | null;
     onClickEdit?: (() => void) | null;
     onClickDelete?: (() => void) | null;
-    getShowPropsFromItem?: ((item: Item) => Record<string, unknown>) | null;
-    getEditPropsFromItem?: ((item: Item) => Record<string, unknown>) | null;
-    getDeletePropsFromItem?: ((item: Item) => Record<string, unknown>) | null;
+    getShowPropsFromValue?: ((item: ActionValue) => Record<string, unknown>) | null;
+    getEditPropsFromValue?: ((item: ActionValue) => Record<string, unknown>) | null;
+    getDeletePropsFromValue?: ((item: ActionValue) => Record<string, unknown>) | null;
     showUrl?: string | null;
     withoutItemShowUrl?: boolean | null;
     preferEditModal?: boolean;
@@ -23,14 +30,14 @@ interface UseActionsOptions {
     hasDuplicateRoute?: boolean;
 }
 
-type ActionDefinition = string | Record<string, unknown>;
-type UrlGenerator = ((action: string, params: Record<string, unknown>) => string) | null;
+
 
 function useActions(
-    item: Item | null = null,
     actions: ActionDefinition[] = [],
-    urlGenerator: UrlGenerator = null,
+    value: ActionValue = null,
     {
+        disabled: globalDisabled = false,
+        resource = null,
         iconsOnly = true,
         showLabel = null,
         editLabel = null,
@@ -38,24 +45,26 @@ function useActions(
         onClickShow = null,
         onClickEdit = null,
         onClickDelete = null,
-        getShowPropsFromItem = null,
-        getEditPropsFromItem = null,
-        getDeletePropsFromItem = null,
+        getShowPropsFromValue = null,
+        getEditPropsFromValue = null,
+        getDeletePropsFromValue = null,
         showUrl = null,
         withoutItemShowUrl = null,
         preferEditModal = false,
         preferDeleteModal = false,
         hasDuplicateRoute = false,
-        locale = null,
     }: UseActionsOptions = {},
 ): Record<string, unknown>[] {
-    const { id, url: itemUrl = null } = item || {};
+    const resourceUrl = useResourceUrlGenerator(resource);
+    const { locale } = useIntl();
+    const { id, url: itemUrl = null } = isObject(value) ? value : {};
     const { url = null } =
         itemUrl !== null && locale !== null && isObject(itemUrl)
             ? { url: itemUrl[locale] || null }
             : { url: itemUrl };
 
     const hasCustomShowUrl = showUrl !== null || url !== null;
+    const withoutValue = value === null || (isArray(value) && value.length === 0);
     return (actions || [])
         .map((action) => {
             if (isString(action)) {
@@ -67,16 +76,16 @@ function useActions(
                             label: iconsOnly ? null : showLabel,
                             icon: iconsOnly ? 'eye' : null,
                             href:
-                                urlGenerator !== null && (!hasCustomShowUrl || withoutItemShowUrl)
-                                    ? urlGenerator('show', {
-                                          id,
-                                      }) || null
+                                (!hasCustomShowUrl || withoutItemShowUrl)
+                                    ? resourceUrl('show', {
+                                        id,
+                                    }) || null
                                     : showUrl || url,
                             external: hasCustomShowUrl,
                             theme: 'info',
                             target: '_blank',
                             onClick: onClickShow,
-                            ...(getShowPropsFromItem !== null ? getShowPropsFromItem(item) : null),
+                            ...(getShowPropsFromValue !== null ? getShowPropsFromValue(value) : null),
                         };
                     case 'edit':
                         return {
@@ -85,14 +94,14 @@ function useActions(
                             label: iconsOnly ? null : editLabel,
                             icon: iconsOnly ? 'pencil-square' : null,
                             href:
-                                urlGenerator !== null && !preferEditModal
-                                    ? urlGenerator('edit', {
-                                          id,
-                                      }) || null
+                                !preferEditModal
+                                    ? resourceUrl('edit', {
+                                        id,
+                                    }) || null
                                     : null,
                             theme: 'primary',
                             onClick: onClickEdit,
-                            ...(getEditPropsFromItem !== null ? getEditPropsFromItem(item) : null),
+                            ...(getEditPropsFromValue !== null ? getEditPropsFromValue(value) : null),
                         };
                     case 'duplicate':
                         return {
@@ -100,10 +109,10 @@ function useActions(
                             component: 'duplicate',
                             label: null,
                             href:
-                                urlGenerator !== null && hasDuplicateRoute
-                                    ? urlGenerator('duplicate', {
-                                          id,
-                                      }) || null
+                                hasDuplicateRoute
+                                    ? resourceUrl('duplicate', {
+                                        id,
+                                    }) || null
                                     : null,
                         };
                     case 'restore':
@@ -115,22 +124,22 @@ function useActions(
                             label: iconsOnly ? null : deleteLabel,
                             icon: iconsOnly ? 'trash3' : null,
                             href:
-                                urlGenerator !== null && !preferDeleteModal
-                                    ? urlGenerator('delete', {
-                                          id,
-                                      }) || null
+                                !preferDeleteModal
+                                    ? resourceUrl('delete', {
+                                        id,
+                                    }) || null
                                     : null,
                             theme: 'danger',
                             onClick: onClickDelete,
                             endpoint:
-                                urlGenerator !== null && preferDeleteModal
-                                    ? urlGenerator('delete', {
-                                          id,
-                                      }) || null
+                                preferDeleteModal
+                                    ? resourceUrl('delete', {
+                                        id,
+                                    }) || null
                                     : null,
                             withConfirmation: preferDeleteModal,
-                            ...(getDeletePropsFromItem !== null
-                                ? getDeletePropsFromItem(item)
+                            ...(getDeletePropsFromValue !== null
+                                ? getDeletePropsFromValue(value)
                                 : null),
                         };
 
@@ -140,20 +149,33 @@ function useActions(
             }
 
             if (isObject(action)) {
-                const { itemLinkProp = null } = action || {};
+                const { itemLinkProp = null, urlPath } = action || {};
+                const finalPath = itemLinkProp || urlPath;
+                const actionLink = get(value, finalPath) || null;
                 return {
-                    ...action,
-                    ...(itemLinkProp !== null &&
-                    isObject(item) &&
-                    typeof item[itemLinkProp] !== 'undefined'
-                        ? { href: item[itemLinkProp] }
+                    ...(actionLink !== null
+                        ? { href: actionLink }
                         : null),
+                    ...action,
                 };
             }
 
             return action;
         })
-        .filter((action) => action !== null);
+        .filter((action) => action !== null)
+        .map((action) => {
+            if (!isArray(value)) {
+                return action;
+            }
+            const { multiple = false, global = false, outlineDisabled = true } = action || {};
+            const enabled = multiple ? value.length > 0 : value.length === 1;
+            const finalDisabled = !global && (globalDisabled || withoutValue || !enabled);
+            return {
+                disabled: finalDisabled,
+                outline: finalDisabled && outlineDisabled,
+                ...action,
+            };
+        });
 }
 
 export default useActions;

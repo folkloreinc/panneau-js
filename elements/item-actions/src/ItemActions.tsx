@@ -29,10 +29,10 @@ interface ItemActionsProps {
     onClickEdit?: (() => void) | null;
     onClickDelete?: (() => void) | null;
     onClickDuplicate?: (() => void) | null;
-    getShowPropsFromItem?: ((item: Item) => Record<string, unknown>) | null;
-    getEditPropsFromItem?: ((item: Item) => Record<string, unknown>) | null;
-    getDeletePropsFromItem?: ((item: Item) => Record<string, unknown>) | null;
-    getDuplicatePropsFromItem?: ((item: Item) => Record<string, unknown>) | null;
+    getShowPropsFromValue?: ((item: Item) => Record<string, unknown>) | null;
+    getEditPropsFromValue?: ((item: Item) => Record<string, unknown>) | null;
+    getDeletePropsFromValue?: ((item: Item) => Record<string, unknown>) | null;
+    getDuplicatePropsFromValue?: ((item: Item) => Record<string, unknown>) | null;
     withoutItemShowUrl?: boolean;
     itemLinkProp?: string | null;
     className?: string | null;
@@ -58,10 +58,10 @@ function ItemActions({
     onClickEdit = null,
     onClickDelete = null,
     onClickDuplicate = null,
-    getShowPropsFromItem = null,
-    getEditPropsFromItem = null,
-    getDeletePropsFromItem = null,
-    getDuplicatePropsFromItem = null,
+    getShowPropsFromValue = null,
+    getEditPropsFromValue = null,
+    getDeletePropsFromValue = null,
+    getDuplicatePropsFromValue = null,
     withoutItemShowUrl = false,
     itemLinkProp = null,
     className = null,
@@ -90,10 +90,10 @@ function ItemActions({
         onClickEdit,
         onClickDelete,
         onClickDuplicate,
-        getShowPropsFromItem,
-        getEditPropsFromItem,
-        getDeletePropsFromItem,
-        getDuplicatePropsFromItem,
+        getShowPropsFromValue,
+        getEditPropsFromValue,
+        getDeletePropsFromValue,
+        getDuplicatePropsFromValue,
         withoutItemShowUrl,
         itemLinkProp,
         locale,

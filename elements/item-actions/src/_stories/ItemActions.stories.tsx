@@ -61,7 +61,7 @@ export const WithActions = {
             <ItemActions
                 {...props}
                 actions={['select']}
-                getSelectPropsFromItem={() => ({ disabled: true })}
+                getSelectPropsFromValue={() => ({ disabled: true })}
             />
         </PanneauProvider>
     ),

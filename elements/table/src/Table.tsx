@@ -306,12 +306,14 @@ function Table({
                                             ...displayProps
                                         } = column || {};
 
+                                        const isActions = colId === 'actions' || component === 'actions';
+
                                         const FieldDisplayComponent = getComponentFromName(
-                                            colId === 'actions'
+                                            isActions
                                                 ? component || 'actions'
                                                 : component || 'text',
                                             displayComponents,
-                                            colId === 'actions' && actionsComponent !== null
+                                            isActions && actionsComponent !== null
                                                 ? actionsComponent
                                                 : ('span' as any),
                                         );
@@ -339,7 +341,7 @@ function Table({
                                                                 displayValue.length >= 30) ||
                                                             isObject(displayValue),
                                                         'text-end':
-                                                            colId === 'actions' &&
+                                                            isActions &&
                                                             !withActionsColumn,
                                                         [columnClassName]: columnClassName !== null,
                                                     },
@@ -347,12 +349,10 @@ function Table({
                                             >
                                                 {FieldDisplayComponent !== null ? (
                                                     <FieldDisplayComponent
+                                                        {...(isActions
+                                                            ? { disabled: actionsDisabled, ...actionsProps }
+                                                            : null)}
                                                         {...displayProps}
-                                                        actionsProps={
-                                                            colId === 'actions'
-                                                                ? actionsProps
-                                                                : null
-                                                        }
                                                         field={field}
                                                         value={displayValue}
                                                         placeholder={
@@ -366,9 +366,6 @@ function Table({
                                                         }
                                                         selected={checked}
                                                         item={it}
-                                                        {...(colId === 'actions'
-                                                            ? { disabled: actionsDisabled }
-                                                            : {})}
                                                     />
                                                 ) : (
                                                     displayPlaceholder

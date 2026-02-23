@@ -611,14 +611,14 @@ function MediasBrowser({
                             loaded={loaded}
                             // empty={emptyWithSticky}
                             actionsProps={{
-                                getDeletePropsFromItem: () => ({
+                                getDeletePropsFromValue: () => ({
                                     href: null,
                                     withConfirmation: true,
                                     disabled: trashing || deleting,
                                     icon: showTrashed ? 'trash-fill' : 'trash',
                                     action: (ids) => onTrashMedia(ids[0]),
                                 }),
-                                getEditPropsFromItem: (it) => ({
+                                getEditPropsFromValue: (it) => ({
                                     href: null,
                                     onClick: () => {
                                         onOpenMedia(it);

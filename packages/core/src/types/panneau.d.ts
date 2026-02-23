@@ -19,6 +19,7 @@ export interface Routes {
     'resources.duplicate': string;
     'resources.clone': string;
     'resources.restore': string;
+    [key: string]: string;
 }
 
 /**

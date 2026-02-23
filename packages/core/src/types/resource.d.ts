@@ -4,6 +4,25 @@
  */
 import { Field } from './form';
 
+export interface Action {
+    id?: string;
+    component?: string;
+    label?: string | null;
+    icon?: string | null;
+    href?: string | null;
+    external?: boolean;
+    theme?: string;
+    target?: string;
+    onClick?: (() => void) | null;
+    endpoint?: string | null;
+    withConfirmation?: boolean;
+    [key: string]: unknown;
+}
+
+export type ActionDefinition = string | Action;
+
+type ActionValue = Item | Item[] | null;
+
 /**
  * Internationalization configuration
  */

@@ -8,32 +8,13 @@
  */
 
 // Core UI Types
-export type {
-    Message,
-    Label,
-    StatusCode,
-    MenuItem,
-    Button,
-    ButtonTheme,
-    ButtonSize,
-    ButtonType,
-    DropdownAlign,
-    ControlSize,
-    FormStatus,
-    Feedback,
-    FormError,
-    Toggle,
-    Breadcrumb,
-    Font,
-    TrackingVariables,
-    TriggerUpdate,
-} from './core';
+export type * from './core';
 
 // Form Types
-export type { FieldOption, SelectOption, Field, Form, TableColumn } from './form';
+export type * from './form';
 
 // Resource Types
-export type { Intl, Resource, Item, User, Media, Preview, Modal, Filter, Uppy } from './resource';
+export type * from './resource';
 
 // Panneau Definition Types
-export type { Routes, Page, PanneauDefinition, Definition } from './panneau';
+export type * from './panneau';

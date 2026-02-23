@@ -1,7 +1,8 @@
 import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
 import { useMemo } from 'react';
-import type { Item } from '@panneau/core/types';
+
+import type { ActionValue } from '@panneau/core/types';
 
 interface UseActionPropsResult {
     ids: string[] | null;
@@ -12,7 +13,7 @@ interface UseActionPropsResult {
 
 function useActionProps(
     action: string,
-    value: Item | Item[] | null,
+    value: ActionValue,
     labelPath: string | null = null,
 ): UseActionPropsResult {
     const values = useMemo(() => {
