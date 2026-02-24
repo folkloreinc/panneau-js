@@ -1,6 +1,6 @@
 {
     "name": "@panneau/displays",
-    "version": "4.0.10",
+    "version": "4.0.11",
     "description": "",
     "keywords": [
         "javascript"
@@ -61,20 +61,20 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^4.0.10",
-        "@panneau/display-actions": "^4.0.10",
-        "@panneau/display-avatar": "^4.0.10",
-        "@panneau/display-badges": "^4.0.10",
-        "@panneau/display-boolean": "^4.0.10",
-        "@panneau/display-date": "^4.0.10",
-        "@panneau/display-image": "^4.0.10",
-        "@panneau/display-label": "^4.0.10",
-        "@panneau/display-link": "^4.0.10",
-        "@panneau/display-select": "^4.0.10",
-        "@panneau/display-text": "^4.0.10",
-        "@panneau/display-text-description": "^4.0.10",
-        "@panneau/display-text-localized": "^4.0.10",
-        "@panneau/display-unit": "^4.0.10",
+        "@panneau/core": "^4.0.11",
+        "@panneau/display-actions": "^4.0.11",
+        "@panneau/display-avatar": "^4.0.11",
+        "@panneau/display-badges": "^4.0.11",
+        "@panneau/display-boolean": "^4.0.11",
+        "@panneau/display-date": "^4.0.11",
+        "@panneau/display-image": "^4.0.11",
+        "@panneau/display-label": "^4.0.11",
+        "@panneau/display-link": "^4.0.11",
+        "@panneau/display-select": "^4.0.11",
+        "@panneau/display-text": "^4.0.11",
+        "@panneau/display-text-description": "^4.0.11",
+        "@panneau/display-text-localized": "^4.0.11",
+        "@panneau/display-unit": "^4.0.11",
         "prop-types": "^15.7.2"
     },
     "publishConfig": {
