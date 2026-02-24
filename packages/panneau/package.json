@@ -57,8 +57,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/app": "^4.0.11",
-        "prop-types": "^15.7.2"
+        "@panneau/app": "^4.0.11"
     },
     "publishConfig": {
         "access": "public"

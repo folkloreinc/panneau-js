@@ -62,7 +62,6 @@
         "@panneau/core": "^4.0.11",
         "@tanstack/react-query": "^5.29.2",
         "lodash-es": "^4.17.21",
-        "prop-types": "^15.7.2",
         "query-string": "^9.0.0"
     },
     "publishConfig": {

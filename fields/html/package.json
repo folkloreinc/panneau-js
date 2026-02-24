@@ -66,8 +66,7 @@
         "@panneau/core": "^4.0.11",
         "@panneau/field-input-group": "^4.0.11",
         "@panneau/themes": "^4.0.11",
-        "classnames": "^2.5.1",
-        "prop-types": "^15.7.2"
+        "classnames": "^2.5.1"
     },
     "overrides": {
         "@ckeditor/ckeditor5-editor-multi-root": "^47.1.0"

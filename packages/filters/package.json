@@ -69,8 +69,7 @@
         "@panneau/filter-radios": "^4.0.11",
         "@panneau/filter-search": "^4.0.11",
         "@panneau/filter-select": "^4.0.11",
-        "@panneau/filter-toggle": "^4.0.11",
-        "prop-types": "^15.7.2"
+        "@panneau/filter-toggle": "^4.0.11"
     },
     "publishConfig": {
         "access": "public"

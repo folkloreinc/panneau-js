@@ -63,8 +63,7 @@
         "@panneau/field-text": "^4.0.11",
         "@panneau/themes": "^4.0.11",
         "classnames": "^2.5.1",
-        "lodash-es": "^4.17.21",
-        "prop-types": "^15.7.2"
+        "lodash-es": "^4.17.21"
     },
     "publishConfig": {
         "access": "public"

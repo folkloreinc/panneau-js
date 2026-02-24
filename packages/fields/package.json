@@ -84,8 +84,7 @@
         "@panneau/field-toggles": "^4.0.11",
         "@panneau/field-upload": "^4.0.11",
         "@panneau/field-url": "^4.0.11",
-        "lodash-es": "^4.17.21",
-        "prop-types": "^15.7.2"
+        "lodash-es": "^4.17.21"
     },
     "publishConfig": {
         "access": "public"

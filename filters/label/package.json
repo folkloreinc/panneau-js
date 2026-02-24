@@ -55,8 +55,7 @@
         "@panneau/core": "^4.0.11",
         "@panneau/element-link": "^4.0.11",
         "@panneau/themes": "^4.0.11",
-        "classnames": "^2.5.1",
-        "prop-types": "^15.7.2"
+        "classnames": "^2.5.1"
     },
     "publishConfig": {
         "access": "public"

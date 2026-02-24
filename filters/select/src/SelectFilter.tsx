@@ -104,80 +104,77 @@ function SelectFilter({
 
     const fetchOptions = useCallback(
         (url: string | null, extraParams: Record<string, unknown> | null = null) => {
-            if (!endReached && url !== null) {
-                setLoading(true);
-                const partialQuery = {
-                    paginated,
-                    ...requestQuery,
-                    ...finalParams,
-                    ...extraParams,
-                };
-                const finalQuery = queryString.stringify(partialQuery, { arrayFormat: 'bracket' });
-                return getJSON(
-                    `${url}${finalQuery !== null && finalQuery.length > 0 ? `?${finalQuery}` : ''}`,
-                    {
-                        credentials: 'include',
-                        headers: getCSRFHeaders(),
-                        ...requestOptions,
-                    },
-                )
-                    .then((newItems: SelectOption[] | ApiResponse) => {
-                        const partialItems =
+            if (endReached || url === null) {
+                return Promise.resolve(null);
+            }
+            setLoading(true);
+            const partialQuery = {
+                paginated,
+                ...requestQuery,
+                ...finalParams,
+                ...extraParams,
+            };
+            const finalQuery = queryString.stringify(partialQuery, { arrayFormat: 'bracket' });
+            return getJSON(
+                `${url}${finalQuery !== null && finalQuery.length > 0 ? `?${finalQuery}` : ''}`,
+                {
+                    credentials: 'include',
+                    headers: getCSRFHeaders(),
+                    ...requestOptions,
+                },
+            )
+                .then((newItems: SelectOption[] | ApiResponse) => {
+                    const partialItems =
+                        newItems !== null &&
+                        !isArray(newItems) &&
+                        typeof (newItems as ApiResponse).data !== 'undefined'
+                            ? (newItems as ApiResponse).data || []
+                            : (newItems as SelectOption[]);
+                    const finalItems =
+                        maxItemsCount !== null
+                            ? partialItems.slice(0, maxItemsCount)
+                            : partialItems;
+
+                    let result: SelectOption[] | null = null;
+
+                    if (paginated) {
+                        const oldPagination =
                             newItems !== null &&
                             !isArray(newItems) &&
-                            typeof (newItems as ApiResponse).data !== 'undefined'
-                                ? (newItems as ApiResponse).data || []
-                                : (newItems as SelectOption[]);
-                        const finalItems =
-                            maxItemsCount !== null
-                                ? partialItems.slice(0, maxItemsCount)
-                                : partialItems;
-
-                        let result: SelectOption[] | null = null;
-
-                        if (paginated) {
-                            const oldPagination =
-                                newItems !== null &&
-                                !isArray(newItems) &&
-                                typeof (newItems as ApiResponse).meta !== 'undefined'
-                                    ? (newItems as ApiResponse).meta || {}
-                                    : null;
-                            const newPagination =
-                                newItems !== null &&
-                                !isArray(newItems) &&
-                                typeof (newItems as ApiResponse).pagination !== 'undefined'
-                                    ? (newItems as ApiResponse).pagination || {}
-                                    : null;
-                            result = [...(options || []), ...(finalItems || [])];
-                            // .map((it) => ({
-                            //     label: get(it, itemLabelPath, null),
-                            //     value: get(it, itemValuePath, null),
-                            // })),
-                            setOptions(result);
-                            setPagination(
-                                (newPagination || oldPagination) as PaginationMeta | null,
-                            );
-                        } else {
-                            result = finalItems || [];
-                            setOptions(result);
-                            setPagination(null);
-                        }
-                        setLoading(false);
-
-                        return result;
-                    })
-                    .catch(() => {
-                        setOptions(initialOptions);
+                            typeof (newItems as ApiResponse).meta !== 'undefined'
+                                ? (newItems as ApiResponse).meta || {}
+                                : null;
+                        const newPagination =
+                            newItems !== null &&
+                            !isArray(newItems) &&
+                            typeof (newItems as ApiResponse).pagination !== 'undefined'
+                                ? (newItems as ApiResponse).pagination || {}
+                                : null;
+                        result = [...(options || []), ...(finalItems || [])];
+                        // .map((it) => ({
+                        //     label: get(it, itemLabelPath, null),
+                        //     value: get(it, itemValuePath, null),
+                        // })),
+                        setOptions(result);
+                        setPagination((newPagination || oldPagination) as PaginationMeta | null);
+                    } else {
+                        result = finalItems || [];
+                        setOptions(result);
                         setPagination(null);
-                        setLoading(false);
-                        return null;
-                    });
-            }
-            return null;
+                    }
+                    setLoading(false);
+
+                    return result;
+                })
+                .catch(() => {
+                    setOptions(initialOptions);
+                    setPagination(null);
+                    setLoading(false);
+                    return null;
+                });
         },
         [
             options,
-            initialOptions,
             maxItemsCount,
             requestQuery,
             requestOptions,
