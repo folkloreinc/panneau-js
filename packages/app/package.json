@@ -51,7 +51,7 @@
     "scripts": {
         "prepublishOnly": "npm run build",
         "build": "../../scripts/prepare-package.sh && npm run css:packages",
-        "css:packages": "postcss ./src/styles/packages.scss -o ./assets/css/packages.css"
+        "css:packages": "postcss ./src/styles/packages.css -o ./assets/css/packages.css"
     },
     "devDependencies": {
         "react": "^19.0.0",
@@ -116,5 +116,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "ee624672ff489420de521b0c7d3655064aa4585e"
+    "gitHead": "09ab0a01c512b731187ac0cd7198d3177e1dd4d3"
 }
