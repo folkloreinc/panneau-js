@@ -51,7 +51,7 @@ build_rollup() {
 build_types() {
     echo "Building types with tsc..."
     mkdir -p ./types/
-    ../../node_modules/.bin/tsc "src/index.js" --declaration --emitDeclarationOnly --allowJs --jsx "react-jsx" --declarationDir "types" --listEmittedFiles --noCheck
+    ../../node_modules/.bin/tsc "src/index.ts" --declaration --emitDeclarationOnly --allowJs --jsx "react-jsx" --declarationDir "types" --listEmittedFiles --noCheck
 }
 
 copy_css() {

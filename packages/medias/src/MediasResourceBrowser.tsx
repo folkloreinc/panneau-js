@@ -1,20 +1,20 @@
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
-import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { usePanneauResource } from '@panneau/core/contexts';
 import { useApi } from '@panneau/data';
 
 import MediasBrowserContainer from './MediasBrowserContainer';
 
-const propTypes = {
-    resource: PropTypes.string,
-};
+interface MediasResourceBrowserProps {
+    resource?: string | null;
+    [key: string]: unknown;
+}
 
 function MediasResourceBrowser({
     resource: resourceId = 'medias',
     ...props
-})  {
+}: MediasResourceBrowserProps) {
     const resource = usePanneauResource(resourceId);
     const api = useApi();
     const mediasApi = useMemo(
@@ -31,7 +31,5 @@ function MediasResourceBrowser({
     );
     return <MediasBrowserContainer api={mediasApi} {...props} />;
 }
-
-MediasResourceBrowser.propTypes = propTypes;
 
 export default MediasResourceBrowser;

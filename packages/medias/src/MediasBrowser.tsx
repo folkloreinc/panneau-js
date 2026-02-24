@@ -1,13 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
 import classNames from 'classnames';
-import isArray from 'lodash-es/isArray';
 import uniqBy from 'lodash-es/uniqBy';
-import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useQuery } from '@panneau/core/hooks';
+import type { Media } from '@panneau/core/types';
 import Buttons from '@panneau/element-buttons';
 import Grid from '@panneau/element-grid';
 import Icon from '@panneau/element-icon';
@@ -26,7 +25,7 @@ import defaultColumns from './defaults/columns';
 import defaultFields from './defaults/fields';
 import defaultFilters from './defaults/filters';
 
-const DEFAULT_LAYOUTS = [
+const DEFAULT_LAYOUTS: LayoutItem[] = [
     {
         id: 'table',
         label: <Icon name="table" />,
@@ -38,44 +37,62 @@ const DEFAULT_LAYOUTS = [
 ];
 const DEFAULT_UPPY_CONFIG = {};
 
-const propTypes = {
-    items: PanneauPropTypes.medias,
-    extraItems: PanneauPropTypes.medias,
-    types: PropTypes.arrayOf(PropTypes.string),
-    permissions: PropTypes.shape({
-        create: PropTypes.bool,
-        edit: PropTypes.bool,
-        delete: PropTypes.bool,
-    }),
-    filters: PanneauPropTypes.filters,
-    columns: PanneauPropTypes.tableColumns,
-    query: PropTypes.shape({}),
-    baseUrl: PropTypes.string,
-    fields: PanneauPropTypes.fields,
-    layout: PropTypes.string,
-    layouts: PropTypes.arrayOf(PropTypes.shape({})),
-    theme: PropTypes.string,
-    onMediaUploaded: PropTypes.func,
-    onItemsChange: PropTypes.func,
-    onLayoutChange: PropTypes.func,
-    onMediaFormOpen: PropTypes.func,
-    onMediaFormClose: PropTypes.func,
-    selectable: PropTypes.bool,
-    selectedItems: PropTypes.oneOfType([
-        PropTypes.shape({}),
-        PropTypes.arrayOf(PropTypes.shape({})),
-    ]),
-    onSelectionChange: PropTypes.func,
-    multipleSelection: PropTypes.bool,
-    uppyConfig: PropTypes.shape({}),
-    withDelete: PropTypes.bool,
-    withTrash: PropTypes.bool,
-    withReplace: PropTypes.bool,
-    withStickySelection: PropTypes.bool,
-    withoutUpload: PropTypes.bool,
-    className: PropTypes.string,
-    formChildren: PropTypes.node,
-};
+type FilterItem = Record<string, unknown> & { id?: string | null };
+type ColumnAction =
+    | string
+    | {
+          id?: string;
+          component?: string;
+          withConfirmation?: boolean;
+          action?: (ids: Array<string | number>) => Promise<unknown> | unknown;
+          [key: string]: unknown;
+      };
+type ColumnItem = Record<string, unknown> & { id?: string | null; actions?: ColumnAction[] };
+type SelectionValue = Media | Media[] | null;
+
+interface LayoutItem {
+    id: string;
+    label: ReactNode;
+    [key: string]: unknown;
+}
+
+interface MediasBrowserProps {
+    items?: Media[] | null;
+    extraItems?: Media[] | null;
+    types?: string[] | null;
+    permissions?: {
+        create?: boolean;
+        edit?: boolean;
+        delete?: boolean;
+    } | null;
+    filters?: FilterItem[] | null;
+    columns?: ColumnItem[] | null;
+    query?: Record<string, unknown> | null;
+    baseUrl?: string | null;
+    fields?: Array<Record<string, unknown>> | null;
+    layout?: string;
+    layouts?: LayoutItem[] | null;
+    theme?: string | null;
+    onMediaUploaded?:
+        | ((medias: Media[]) => Promise<Media[] | Media | null> | Media[] | Media | null)
+        | null;
+    onItemsChange?: ((items: Media[] | null | undefined) => void) | null;
+    onLayoutChange?: ((layout: string) => void) | null;
+    onMediaFormOpen?: (() => void) | null;
+    onMediaFormClose?: (() => void) | null;
+    selectable?: boolean;
+    selectedItems?: SelectionValue;
+    onSelectionChange?: ((selection: SelectionValue) => void) | null;
+    multipleSelection?: boolean;
+    uppyConfig?: Record<string, unknown>;
+    withDelete?: boolean;
+    withTrash?: boolean;
+    withReplace?: boolean;
+    withStickySelection?: boolean;
+    withoutUpload?: boolean;
+    className?: string | null;
+    formChildren?: ReactNode | null;
+}
 
 function MediasBrowser({
     items: initialItems = null,
@@ -106,8 +123,8 @@ function MediasBrowser({
     withStickySelection = false,
     withoutUpload = false,
     className = null,
-    formChildren = null
-})  {
+    formChildren = null,
+}: MediasBrowserProps) {
     const [baseItems] = useState(initialItems || null);
     const baseQuery = useMemo(
         () => ({ count: 12, ...initialQuery, ...(types !== null ? { types } : null) }),
@@ -140,8 +157,7 @@ function MediasBrowser({
 
     const canUpload = canCreate && !withoutUpload;
 
-    // eslint-disable-next-line no-unused-vars
-    const { types: queryTypes = null, trashed = null, ...queryWithoutTypes } = query || {};
+    const { trashed = null, ...queryWithoutTypes } = query || {};
 
     const { mediaTrash, trashing } = useMediaTrash();
     const { mediaDelete, deleting } = useMediaDelete();
@@ -177,7 +193,7 @@ function MediasBrowser({
     const [layout, setLayout] = useState(initialLayout || 'table');
     const hasLayouts = useMemo(() => layouts !== null && layouts.length > 1, [layouts]);
     const onClickLayout = useCallback(
-        (newLayout) => {
+        (newLayout: string) => {
             setLayout(newLayout);
             if (onLayoutChange !== null) {
                 onLayoutChange(newLayout);
@@ -198,7 +214,7 @@ function MediasBrowser({
     }, [currentMedia]);
 
     const onOpenMedia = useCallback(
-        (media) => {
+        (media: Media) => {
             setCurrentMedia(media);
         },
         [setCurrentMedia],
@@ -209,7 +225,7 @@ function MediasBrowser({
     }, [setCurrentMedia]);
 
     const onSaveMedia = useCallback(
-        (item) => {
+        (item: Media) => {
             setCurrentMedia(null);
             updateItem(item);
         },
@@ -217,7 +233,7 @@ function MediasBrowser({
     );
 
     const onReplaceMedia = useCallback(
-        (item) => {
+        (item: Media) => {
             setCurrentMedia(item);
             reload();
         },
@@ -231,13 +247,20 @@ function MediasBrowser({
     }, [reload]);
 
     const onTrashMedia = useCallback(
-        (id) =>
+        (id: string | number) =>
             !showTrashed && withTrash
                 ? mediaTrash(id)
                       .then(() => {
                           if (!multipleSelection) {
-                              const { id: selectedId = null } = selectedItems || {};
-                              if (selectedId !== null && selectedId === id) {
+                              const selectedId =
+                                  selectedItems !== null && !Array.isArray(selectedItems)
+                                      ? selectedItems.id || null
+                                      : null;
+                              if (
+                                  selectedId !== null &&
+                                  selectedId === id &&
+                                  onSelectionChange !== null
+                              ) {
                                   onSelectionChange(null);
                               }
                           }
@@ -247,8 +270,15 @@ function MediasBrowser({
                 : mediaDelete(id)
                       .then(() => {
                           if (!multipleSelection) {
-                              const { id: selectedId = null } = selectedItems || {};
-                              if (selectedId !== null && selectedId === id) {
+                              const selectedId =
+                                  selectedItems !== null && !Array.isArray(selectedItems)
+                                      ? selectedItems.id || null
+                                      : null;
+                              if (
+                                  selectedId !== null &&
+                                  selectedId === id &&
+                                  onSelectionChange !== null
+                              ) {
                                   onSelectionChange(null);
                               }
                           }
@@ -267,20 +297,24 @@ function MediasBrowser({
         ],
     );
 
-    const [uploadedMedias, setUploadedMedias] = useState(null);
+    const [uploadedMedias, setUploadedMedias] = useState<Media[] | null>(null);
     const [uploadProcessing, setUploadProcessing] = useState(false);
 
     const onUploadedMediaChanged = useCallback(
-        (newMedias) => {
+        (newMedias: Media[] | Media | null) => {
             const uploadedNewMedias = (
-                isArray(newMedias)
+                Array.isArray(newMedias)
                     ? [...newMedias, ...(uploadedMedias || [])]
                     : [newMedias, ...(uploadedMedias || [])]
             ).filter((it) => it !== null);
             setUploadedMedias(uploadedNewMedias);
             if (onSelectionChange !== null) {
-                const [firstMedia = null] = newMedias || [];
-                onSelectionChange(multipleSelection && isArray(newMedias) ? newMedias : firstMedia);
+                const firstMedia = Array.isArray(newMedias)
+                    ? (newMedias[0] ?? null)
+                    : (newMedias ?? null);
+                onSelectionChange(
+                    multipleSelection && Array.isArray(newMedias) ? newMedias : firstMedia,
+                );
                 onQueryReset();
                 reload().then(() => {
                     setUploadedMedias(null);
@@ -298,19 +332,21 @@ function MediasBrowser({
     );
 
     const onUploadComplete = useCallback(
-        (medias = null) => {
+        (medias: Media[] | Media | null = null) => {
             if (showTrashed) {
                 setShowTrashed(false);
             }
 
             if (medias === null) return;
 
-            const rawMedias = (isArray(medias) ? medias : [medias]).filter((it) => it !== null);
+            const rawMedias = (Array.isArray(medias) ? medias : [medias]).filter(
+                (it) => it !== null,
+            );
             if (onMediaUploaded !== null) {
                 setUploadProcessing(true);
-                onMediaUploaded(rawMedias)
+                Promise.resolve(onMediaUploaded(rawMedias as Media[]))
                     .then((newMedias) => {
-                        onUploadedMediaChanged(newMedias);
+                        onUploadedMediaChanged((newMedias as Media[] | Media | null) || null);
                         setUploadProcessing(false);
                     })
                     .catch(() => {
@@ -356,7 +392,7 @@ function MediasBrowser({
                       icon: showTrashed ? 'trash-fill' : 'trash',
                       disabled: uploadProcessing,
                       onClick: onClickTrash,
-                  },
+                  } as FilterItem,
               ])
             : filters;
         if (types !== null && partialFilters !== null) {
@@ -644,7 +680,5 @@ function MediasBrowser({
         </div>
     );
 }
-
-MediasBrowser.propTypes = propTypes;
 
 export default MediasBrowser;

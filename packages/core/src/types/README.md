@@ -1,6 +1,6 @@
 # Panneau TypeScript Types
 
-This directory contains TypeScript interface definitions corresponding to the PanneauPropTypes defined in `packages/core/src/lib/PropTypes.js`.
+This directory contains TypeScript interface definitions.
 
 ## Usage
 
@@ -76,17 +76,8 @@ Main configuration types including:
 - `Page` - Page definition
 - `Definition` - Generic definition
 
-## Relationship to PropTypes
-
-These TypeScript interfaces are derived from the PropTypes definitions in `lib/PropTypes.js`. When updating PropTypes:
-
-1. Update the PropTypes definition in `lib/PropTypes.js`
-2. Update the corresponding TypeScript interface in the appropriate file
-3. Ensure the types remain synchronized
-
 ## Notes
 
 - All interfaces use optional properties (`?`) where the corresponding PropType is not required
-- Union types are used for `oneOf` and `oneOfType` PropTypes
 - `Record<string, unknown>` is used for flexible object types
 - Index signatures (`[key: string]: unknown`) allow additional properties on extensible types

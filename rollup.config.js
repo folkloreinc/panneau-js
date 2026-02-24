@@ -11,7 +11,7 @@ import postcss from 'rollup-plugin-postcss';
 import generateScopedName from './scripts/lib/generateScopedName';
 
 export const createConfig = ({
-    file = 'index.js',
+    file = 'index.ts',
     input = null,
     output = null,
     banner = null,

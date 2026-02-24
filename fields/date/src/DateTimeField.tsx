@@ -1,12 +1,10 @@
-// import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import format from 'date-fns/format';
-import formatISO from 'date-fns/formatISO';
-import parse from 'date-fns/parse';
-import parseISO from 'date-fns/parseISO';
-import isObject from 'lodash-es/isObject';
+import { format } from 'date-fns/format';
+import { formatISO } from 'date-fns/formatISO';
+import { parse } from 'date-fns/parse';
+import { parseISO } from 'date-fns/parseISO';
 import { useCallback, useEffect, useState } from 'react';
 // import classNames from 'classnames';
-import DatePicker, { registerLocale } from 'react-datepicker';
+import { DatePicker, registerLocale } from 'react-datepicker';
 import { defineMessage, useIntl } from 'react-intl';
 
 import type { ControlSize, Message } from '@panneau/core/types';
@@ -16,10 +14,6 @@ import TextField from '@panneau/field-text';
 import styles from './styles.module.css';
 // We import this one but customized - needs to be improved with bootstrap themes
 import 'react-datepicker/dist/react-datepicker.css';
-
-// This package has fucked exports, no default
-const FinalDatePicker =
-    isObject(DatePicker) && DatePicker.default ? DatePicker.default : DatePicker;
 
 interface DateTimeFieldProps {
     name?: string | null;
@@ -135,7 +129,7 @@ function DateTimeField({
 
     return (
         <div className={styles.container}>
-            <FinalDatePicker
+            <DatePicker
                 selected={dateValue}
                 onChange={onDateChange}
                 showTimeSelect={!withoutTime}

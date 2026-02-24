@@ -1,27 +1,24 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
+import type { Media } from '@panneau/core/types';
 import ImageDisplay from '@panneau/display-image';
 import MediaPlayer from '@panneau/element-media-player';
 
 import styles from './styles.module.css';
 
-const propTypes = {
-    value: PropTypes.shape({
-        id: PropTypes.string,
-        type: PropTypes.string,
-    }),
-    showPlayer: PropTypes.bool,
-    className: PropTypes.string,
-};
+interface MediaFrameProps {
+    value?: Media | null;
+    showPlayer?: boolean;
+    className?: string | null;
+}
 
 function MediaFrame({
     value = null,
     showPlayer: initialShowPlayer = true,
-    className = null
-})  {
+    className = null,
+}: MediaFrameProps) {
     const [showPlayer, setShowPlayer] = useState(initialShowPlayer);
     const { type = null } = value || {};
 
@@ -47,15 +44,11 @@ function MediaFrame({
                 <ImageDisplay
                     className="w-100"
                     value={value}
-                    maxWidth="100%"
-                    maxHeight="100%"
                     onClick={type === 'video' || type === 'audio' ? onClick : null}
                 />
             )}
         </div>
     );
 }
-
-MediaFrame.propTypes = propTypes;
 
 export default MediaFrame;

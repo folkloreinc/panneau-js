@@ -1,13 +1,13 @@
 /**
  * Core UI Types
- * TypeScript interfaces corresponding to PanneauPropTypes
  */
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import type { MessageDescriptor } from 'react-intl';
 
 /**
  * Internationalization message definition
  */
-export interface Message {
+export interface Message extends MessageDescriptor {
     id: string;
     defaultMessage?: string;
 }

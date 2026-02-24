@@ -31,8 +31,7 @@
     "exports": {
         ".": {
             "import": {
-                "default": "./es/index.js",
-                "types": "./es/types/index.d.ts"
+                "default": "./es/index.js"
             }
         },
         "./contexts": "./es/contexts.js",
@@ -54,7 +53,7 @@
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh"
+        "build": "../../scripts/prepare-package.sh --types"
     },
     "devDependencies": {
         "react": "^19.0.0",

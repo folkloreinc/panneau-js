@@ -46,7 +46,7 @@ const getPackagesAliases = ({ withoutEndSign = false } = {}) =>
             }, {}),
             [`${packageName}${!withoutEndSign ? '$' : ''}`]: path.join(
                 packagePath,
-                './src/index.js',
+                './src/index.ts',
             ),
         };
     }, {});

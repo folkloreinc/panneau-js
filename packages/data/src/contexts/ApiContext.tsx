@@ -1,28 +1,28 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import PropTypes from 'prop-types';
-import { createContext, useContext, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import { createContext, use, useMemo } from 'react';
 
 import { useUrlGenerator } from '@panneau/core/contexts';
 
 import Api from '../lib/Api';
 
-const ApiContext = createContext(null);
+interface ApiProviderProps {
+    api?: Api | null;
+    baseUrl?: string;
+    onUnauthorized?: (() => void) | null;
+    children: ReactNode;
+}
 
-export const useApi = () => useContext(ApiContext);
+const ApiContext = createContext<Api | null>(null);
 
-const propTypes = {
-    api: PropTypes.instanceOf(Api),
-    baseUrl: PropTypes.string,
-    onUnauthorized: PropTypes.func,
-    children: PropTypes.node.isRequired,
-};
+export const useApi = () => use(ApiContext);
 
 export const ApiProvider = ({
     api: initialApi = null,
     baseUrl = undefined,
     onUnauthorized = null,
-    children
-}) => {
+    children,
+}: ApiProviderProps) => {
     const generateUrl = useUrlGenerator();
     const previousApi = useApi();
     const api = useMemo(
@@ -36,9 +36,7 @@ export const ApiProvider = ({
             }),
         [previousApi, initialApi, baseUrl],
     );
-    return <ApiContext.Provider value={api}>{children}</ApiContext.Provider>;
+    return <ApiContext value={api}>{children}</ApiContext>;
 };
-
-ApiProvider.propTypes = propTypes;
 
 export default ApiContext;

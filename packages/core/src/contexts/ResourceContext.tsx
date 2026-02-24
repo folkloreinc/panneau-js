@@ -1,11 +1,11 @@
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 import type { ReactNode } from 'react';
 
 import type { Resource } from '@panneau/core/types';
 
 const ResourceContext = createContext<Resource | null>(null);
 
-export const useResource = (): Resource | null => useContext(ResourceContext);
+export const useResource = (): Resource | null => use(ResourceContext);
 
 interface ResourceProviderProps {
     resource: Resource;

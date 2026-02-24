@@ -1,14 +1,15 @@
 /**
  * Panneau TypeScript Type Definitions
  *
- * This module exports TypeScript interfaces corresponding to the PanneauPropTypes
- * defined in packages/core/src/lib/PropTypes.js
  *
  * @module @panneau/core/types
  */
 
 // Core UI Types
 export type * from './core';
+
+// Auth types
+export type * from './auth';
 
 // Form Types
 export type * from './form';

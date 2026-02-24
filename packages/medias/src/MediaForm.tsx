@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useFieldComponent } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
+import type { Media } from '@panneau/core/types';
 import Button from '@panneau/element-button';
 import Form from '@panneau/element-form';
 import FormStatus from '@panneau/element-form-status';
@@ -18,26 +19,23 @@ import defaultFields from './defaults/fields';
 
 import styles from './styles.module.css';
 
-const propTypes = {
-    value: PropTypes.shape({
-        id: PropTypes.string,
-    }),
-    fields: PropTypes.arrayOf(
-        PropTypes.shape({
-            name: PropTypes.string,
-        }),
-    ),
-    onChange: PropTypes.func,
-    onSave: PropTypes.func,
-    onReplace: PropTypes.func,
-    onDelete: PropTypes.func,
-    onClose: PropTypes.func,
-    withDelete: PropTypes.bool,
-    withTrash: PropTypes.bool,
-    withReplace: PropTypes.bool,
-    className: PropTypes.string,
-    children: PropTypes.node,
-};
+type MediaFormField = Record<string, unknown>;
+type MediaFormPayload = Record<string, unknown>;
+
+interface MediaFormProps {
+    value?: Media | null;
+    fields?: MediaFormField[] | null;
+    onChange?: ((newValue: Media | null) => void) | null;
+    onSave?: ((newValue: Media | null) => void) | null;
+    onReplace?: ((newValue: unknown) => void) | null;
+    onDelete?: (() => void) | null;
+    onClose?: (() => void) | null;
+    withDelete?: boolean;
+    withTrash?: boolean;
+    withReplace?: boolean;
+    className?: string | null;
+    children?: ReactNode | null;
+}
 
 function MediaForm({
     value: initialValue = null,
@@ -51,8 +49,8 @@ function MediaForm({
     withTrash = false,
     withReplace = false,
     className = null,
-    children = null
-})  {
+    children = null,
+}: MediaFormProps) {
     const FieldsComponent = useFieldComponent('fields');
 
     const { update, updating } = useMediaUpdate();
@@ -66,7 +64,7 @@ function MediaForm({
     const { name = null, type = null, deletedAt = null } = initialValue || {};
 
     const onChangeMedia = useCallback(
-        (newValue) => {
+        (newValue: Media | null) => {
             if (onChange !== null) {
                 onChange(newValue);
             }
@@ -76,7 +74,7 @@ function MediaForm({
     );
 
     const onMediaSaved = useCallback(
-        (newValue) => {
+        (newValue: Media | null) => {
             if (onSave !== null) {
                 onSave(newValue);
             }
@@ -112,7 +110,7 @@ function MediaForm({
     }, [initialValue, mediaDelete, mediaTrash, deletedAt, setChanged, onDelete, withTrash]);
 
     const onUploadComplete = useCallback(
-        (data) => {
+        (data: unknown) => {
             const { id = null } = initialValue || {};
             mediaReplace(id, data).then(onReplace);
         },
@@ -120,7 +118,8 @@ function MediaForm({
     );
 
     const postForm = useCallback(
-        (action, data) => (initialValue !== null ? update(initialValue.id, data) : new Promise()),
+        (action: unknown, data: MediaFormPayload) =>
+            initialValue !== null ? update(initialValue.id, data) : Promise.resolve(null),
         [initialValue, update],
     );
 
@@ -238,7 +237,5 @@ function MediaForm({
         </div>
     );
 }
-
-MediaForm.propTypes = propTypes;
 
 export default MediaForm;

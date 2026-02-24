@@ -1,7 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
-import PropTypes from 'prop-types';
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+import { createContext, use, useCallback, useEffect, useMemo, useState } from 'react';
+
+import type { User } from '@panneau/core/types';
+
 import {
     useAuthCheck,
     useAuthLogin,
@@ -11,9 +13,32 @@ import {
     useAuthResetPassword,
 } from '../hooks';
 
-const AuthContext = createContext(null);
+type RegisterData = Record<string, unknown>;
+type ResetPasswordData = Record<string, unknown>;
 
-export const useAuth = () => useContext(AuthContext);
+interface AuthContextValue {
+    user: User | null;
+    setUser: (nextUser: User) => void;
+    loggedIn: boolean;
+    logout: () => Promise<unknown>;
+    login: (email: string, password: string) => Promise<User>;
+    register: (data: RegisterData) => Promise<User>;
+    requestPassword: (email: string) => Promise<unknown>;
+    resetPassword: (data: ResetPasswordData) => Promise<unknown>;
+}
+
+const AuthContext = createContext<AuthContextValue>({
+    user: null,
+    setUser: () => {},
+    loggedIn: false,
+    logout: () => Promise.reject(),
+    login: () => Promise.reject(),
+    register: () => Promise.reject(),
+    requestPassword: () => Promise.reject(),
+    resetPassword: () => Promise.reject(),
+});
+
+export const useAuth = () => use(AuthContext);
 
 export const useUser = () => {
     const { user } = useAuth();
@@ -35,19 +60,19 @@ export const useLoggedIn = () => {
     return loggedIn;
 };
 
-const propTypes = {
-    children: PropTypes.node.isRequired,
-    user: PanneauPropTypes.user,
-    onLogout: PropTypes.func,
-    checkOnMount: PropTypes.bool,
-};
+interface AuthProviderProps {
+    children: ReactNode;
+    user?: User | null;
+    onLogout?: (() => void) | null;
+    checkOnMount?: boolean;
+}
 
 export const AuthProvider = ({
     user: initialUser = null,
     checkOnMount = false,
     onLogout = null,
-    children
-}) => {
+    children,
+}: AuthProviderProps) => {
     // const route = useUrlGenerator();
     const [user, setUser] = useState(initialUser);
     const { login: authLogin } = useAuthLogin();
@@ -58,8 +83,8 @@ export const AuthProvider = ({
     const { reset: authResetPassword } = useAuthResetPassword();
 
     const login = useCallback(
-        (email, password) =>
-            authLogin(email, password).then((newUser) => {
+        (email: string, password: string) =>
+            authLogin(email, password).then((newUser: User) => {
                 setUser(newUser);
                 return newUser;
             }),
@@ -81,8 +106,8 @@ export const AuthProvider = ({
     );
 
     const register = useCallback(
-        (data) =>
-            authRegister(data).then((newUser) => {
+        (data: RegisterData) =>
+            authRegister(data).then((newUser: User) => {
                 setUser(newUser);
                 return newUser;
             }),
@@ -90,16 +115,19 @@ export const AuthProvider = ({
     );
 
     const requestPassword = useCallback(
-        (email) => authRequestPassword(email),
+        (email: string) => authRequestPassword(email),
         [authRequestPassword],
     );
 
-    const resetPassword = useCallback((data) => authResetPassword(data), [authResetPassword]);
+    const resetPassword = useCallback(
+        (data: ResetPasswordData) => authResetPassword(data),
+        [authResetPassword],
+    );
 
     useEffect(() => {
         if (checkOnMount) {
             authCheck()
-                .then((newUser = null) => {
+                .then((newUser: User = null) => {
                     setUser(newUser);
                 })
                 .catch(() => {
@@ -122,9 +150,7 @@ export const AuthProvider = ({
         [user, setUser, logout, login, register, requestPassword, resetPassword],
     );
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return <AuthContext value={value}>{children}</AuthContext>;
 };
-
-AuthProvider.propTypes = propTypes;
 
 export default AuthContext;

@@ -1,4 +1,3 @@
-// import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { getCSRFHeaders, getJSON } from '@folklore/fetch';
 import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';

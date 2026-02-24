@@ -1,20 +1,20 @@
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
-import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { usePanneauResource } from '@panneau/core/contexts';
 import { useApi } from '@panneau/data';
 
 import MediasPickerContainer from './MediasPickerContainer';
 
-const propTypes = {
-    resource: PropTypes.string,
-};
+interface MediasResourcePickerProps {
+    resource?: string | null;
+    [key: string]: unknown;
+}
 
 function MediasResourcePicker({
     resource: resourceId = 'medias',
     ...props
-})  {
+}: MediasResourcePickerProps) {
     const resource = usePanneauResource(resourceId);
 
     const { index = null, fields = null } = resource || {};
@@ -44,7 +44,5 @@ function MediasResourcePicker({
         />
     );
 }
-
-MediasResourcePicker.propTypes = propTypes;
 
 export default MediasResourcePicker;

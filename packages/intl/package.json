@@ -35,21 +35,28 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
+    "types": "types/index.d.ts",
     "exports": {
-        ".": "./es/index.js",
+        ".": {
+            "import": {
+                "default": "./es/index.js",
+                "types": "./types/index.d.ts"
+            }
+        },
         "./locale": "./locale"
     },
     "files": [
         "locale",
         "lib",
         "es",
+        "types",
         "scripts",
         "assets"
     ],
     "scripts": {
         "intl": "../../scripts/build-intl.js '../../!(node_modules)/!(intl)/src/**/*.+(js|jsx|tsx)'",
         "prepublishOnly": "npm run build",
-        "build": "rm -rf ./locale && npm run intl && ../../scripts/prepare-package.sh"
+        "build": "rm -rf ./locale && npm run intl && ../../scripts/prepare-package.sh --types"
     },
     "devDependencies": {
         "react": "^19.0.0",

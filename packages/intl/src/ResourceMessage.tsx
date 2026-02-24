@@ -1,17 +1,25 @@
 /* eslint-disable react/jsx-props-no-spreading, formatjs/enforce-default-message */
-import PropTypes from 'prop-types';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useResource } from '@panneau/core/contexts';
 
-const propTypes = {
-    resource: PanneauPropTypes.resource,
-    values: PropTypes.object, // eslint-disable-line react/forbid-prop-types,
-    id: PropTypes.string.isRequired,
-    defaultMessage: PropTypes.string,
-    description: PropTypes.string,
-};
+interface ResourceIntlConfig {
+    values?: Record<string, unknown>;
+}
+
+interface ResourceConfig {
+    id?: string;
+    name?: string | null;
+    intl?: ResourceIntlConfig;
+}
+
+interface ResourceMessageProps {
+    resource?: ResourceConfig | null;
+    values?: Record<string, unknown> | null;
+    id: string;
+    defaultMessage?: string | null;
+    description?: string | null;
+}
 
 function ResourceMessage({
     resource = null,
@@ -19,7 +27,7 @@ function ResourceMessage({
     id,
     defaultMessage = null,
     description = null,
-}) {
+}: ResourceMessageProps) {
     const contextResource = useResource();
     const { messages } = useIntl();
     const {
@@ -44,6 +52,5 @@ function ResourceMessage({
         />
     );
 }
-ResourceMessage.propTypes = propTypes;
 
 export default ResourceMessage;

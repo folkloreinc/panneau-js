@@ -23,13 +23,19 @@ export type ActionDefinition = string | Action;
 
 type ActionValue = Item | Item[] | null;
 
+export interface ResourceValues {
+    a_singular?: string;
+    a_plural?: string;
+    [key: string]: unknown;
+}
+
 /**
  * Internationalization configuration
  */
 export interface Intl {
     locale?: string;
     messages?: Record<string, string>;
-    values?: Record<string, string>;
+    values?: ResourceValues;
 }
 
 /**
@@ -49,14 +55,6 @@ export interface Resource {
  */
 export interface Item {
     id: string;
-    [key: string]: unknown;
-}
-
-/**
- * User definition
- */
-export interface User {
-    id?: number | string;
     [key: string]: unknown;
 }
 

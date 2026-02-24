@@ -30,6 +30,9 @@ const config = tseslint.config(
                 version: '19',
                 defaultVersion: '19',
             },
+            'import/resolver': {
+                typescript: {},
+            },
         },
         languageOptions: {
             globals: {

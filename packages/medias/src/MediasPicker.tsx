@@ -1,17 +1,20 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import isArray from 'lodash-es/isArray';
-import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
+import type { Media } from '@panneau/core/types';
 
 import MediasBrowser from './MediasBrowser';
 
-const propTypes = {
-    items: PropTypes.arrayOf(PropTypes.shape({})),
-    value: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.arrayOf(PropTypes.shape({}))]),
-    multiple: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
-    className: PropTypes.string,
-};
+type PickerSelection = Media | Media[] | null;
+
+interface MediasPickerProps {
+    items?: Media[] | null;
+    value?: PickerSelection;
+    onChange?: ((selection: PickerSelection) => void) | null;
+    multiple?: boolean;
+    className?: string | null;
+    [key: string]: unknown;
+}
 
 function MediasPicker({
     items: initialItems = null,
@@ -20,19 +23,21 @@ function MediasPicker({
     multiple = false,
     className = null,
     ...props
-})  {
+}: MediasPickerProps) {
     // Keep the previous selection on top of first page
-    const extraItems = useMemo(() => {
+    const extraItems = useMemo<Media[] | null>(() => {
         if (initialSelectedItems === null) {
             return null;
         }
-        return isArray(initialSelectedItems) ? initialSelectedItems : [initialSelectedItems];
+        return Array.isArray(initialSelectedItems) ? initialSelectedItems : [initialSelectedItems];
     }, []);
 
     // Mostly for testing
-    const [selectedItems, setSelectedItems] = useState(initialSelectedItems || null);
+    const [selectedItems, setSelectedItems] = useState<PickerSelection>(
+        initialSelectedItems || null,
+    );
     const onSelectionChange = useCallback(
-        (newSelection) => {
+        (newSelection: PickerSelection) => {
             setSelectedItems(newSelection);
         },
         [setSelectedItems],
@@ -63,7 +68,5 @@ function MediasPicker({
         </div>
     );
 }
-
-MediasPicker.propTypes = propTypes;
 
 export default MediasPicker;

@@ -10,10 +10,15 @@ export default {
 
 export const Normal = () => (
     <Actions
-        value={{
-            id: 3,
+        item={{
+            id: '3',
             name: 'ABC',
-            url: test,
+            url: 'test',
+        }}
+        value={{
+            id: '3',
+            name: 'ABC',
+            url: 'test',
         }}
     />
 );

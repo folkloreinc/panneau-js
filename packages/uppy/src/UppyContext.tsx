@@ -1,8 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import isObject from 'lodash-es/isObject';
-import isString from 'lodash-es/isString';
-import PropTypes from 'prop-types';
-import { createContext, useContext, useEffect, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import { createContext, use, useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import slugify from 'slugify';
 import { v1 as uuid } from 'uuid';
@@ -13,7 +12,96 @@ import useUppyLocale from './useUppyLocale';
 import useUppySources from './useUppySources';
 import useUppyTransport from './useUppyTransport';
 
-export const UppyContext = createContext(null);
+type UppyTransportType = 'xhr' | 'transloadit' | 'tus';
+type UppySourceId = 'webcam' | 'facebook' | 'instagram' | 'dropbox' | 'google-drive';
+
+interface UppyFileLike {
+    name?: string;
+    extension?: string | null;
+    [key: string]: unknown;
+}
+
+interface UppyCompleteResponse {
+    successful?: unknown[];
+    failed?: unknown;
+    [key: string]: unknown;
+}
+
+interface UppyTransloaditConfig {
+    key?: string;
+    templateId?: string;
+    waitForEncoding?: boolean;
+    [key: string]: unknown;
+}
+
+interface UppyCompanionConfig {
+    url: string;
+    allowedHosts: string;
+}
+
+type UppyEndpointConfig =
+    | string
+    | {
+          endpoint: string;
+          [key: string]: unknown;
+      };
+
+interface UppyBuildOptions {
+    sources?: UppySourceId[] | null;
+    [key: string]: unknown;
+}
+
+interface UppyPlugin {
+    [key: string]: unknown;
+}
+
+interface UppyTransportPlugin extends UppyPlugin {
+    COMPANION?: string;
+    COMPANION_PATTERN?: string;
+}
+
+interface UppyInstanceLike {
+    on: (eventName: string, callback: (...args: unknown[]) => void) => void;
+    off: (eventName: string, callback: (...args: unknown[]) => void) => void;
+    getFile: (id: string) => UppyFileLike;
+    setFileMeta: (id: string, meta: Record<string, unknown>) => void;
+    use: (plugin: unknown, options?: Record<string, unknown>) => UppyInstanceLike;
+    [key: string]: unknown;
+}
+
+type UppyConstructor = new (options: Record<string, unknown>) => UppyInstanceLike;
+
+interface UppyContextValue {
+    id?: string;
+    transport?: UppyTransportType | null;
+    locale?: string | null;
+    sources?: UppySourceId[] | null;
+    transloadit?: UppyTransloaditConfig | null;
+    companion?: UppyCompanionConfig | null;
+    tus?: UppyEndpointConfig | null;
+    xhr?: UppyEndpointConfig | null;
+    Uppy?: UppyConstructor | null;
+    uppyTransport?: UppyTransportPlugin | null;
+    uppySources?: Record<string, UppyPlugin> | null;
+    uppyLocale?: Record<string, unknown> | null;
+    buildUppy?: ((opts?: UppyBuildOptions) => UppyInstanceLike) | null;
+}
+
+interface UseUppyOptions {
+    onComplete?: ((successful: unknown[]) => void) | null;
+    onFail?: ((failed: unknown) => void) | null;
+    getFileName?: (file: UppyFileLike) => string | null;
+    getFileNameWithUUID?: (file: UppyFileLike) => string | null;
+    withUUID?: boolean;
+    meta?: Record<string, unknown> | null;
+    allowMultipleUploads?: boolean;
+    maxNumberOfFiles?: number;
+    allowedFileTypes?: string[] | null;
+    autoProceed?: boolean;
+    debug?: boolean;
+}
+
+export const UppyContext = createContext<UppyContextValue | null>(null);
 
 export const useUppyConfig = () => {
     const {
@@ -24,7 +112,7 @@ export const useUppyConfig = () => {
         companion = null,
         tus = null,
         xhr = null,
-    } = useContext(UppyContext) || {};
+    } = use(UppyContext) || {};
 
     return {
         transport,
@@ -53,12 +141,12 @@ export const useUppy = ({
     allowedFileTypes = null,
     autoProceed = false,
     debug = false,
-} = {}) => {
-    const { buildUppy, transport } = useContext(UppyContext) || null;
+}: UseUppyOptions = {}): UppyInstanceLike | null => {
+    const { buildUppy, transport } = use(UppyContext) || {};
 
     const uppy = useMemo(
         () =>
-            buildUppy !== null
+            typeof buildUppy === 'function'
                 ? buildUppy({
                       meta,
                       allowMultipleUploadBatches: allowMultipleUploads,
@@ -82,7 +170,7 @@ export const useUppy = ({
         if (uppy === null) {
             return () => {};
         }
-        const onUppyComplete = (response) => {
+        const onUppyComplete = (response: UppyCompleteResponse) => {
             const { successful = [], failed = null } = response;
             const finalSuccessful =
                 transport === 'transloadit'
@@ -105,7 +193,7 @@ export const useUppy = ({
         if (uppy === null) {
             return () => {};
         }
-        const onUpload = ({ fileIDs: ids = [] }) => {
+        const onUpload = ({ fileIDs: ids = [] }: { fileIDs?: string[] }) => {
             ids.forEach((id) => {
                 const file = uppy.getFile(id);
                 // console.log('file', id, file);
@@ -140,38 +228,25 @@ export const useUppy = ({
     return uppy;
 };
 
-const propTypes = {
-    id: PropTypes.string,
-    children: PropTypes.node.isRequired,
-    transport: PropTypes.oneOf(['xhr', 'transloadit', 'tus']),
-    locale: PropTypes.string,
-    sources: PropTypes.arrayOf(
-        PropTypes.oneOf(['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive']),
-    ),
-    transloadit: PropTypes.shape({
-        key: PropTypes.string.isRequired,
-        templateId: PropTypes.string,
-        waitForEncoding: PropTypes.bool,
-    }),
-    companion: PropTypes.shape({
-        url: PropTypes.string.isRequired,
-        allowedHosts: PropTypes.string.isRequired,
-    }),
-    tus: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.shape({
-            endpoint: PropTypes.string.isRequired,
-        }),
-    ]),
-    xhr: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.shape({
-            endpoint: PropTypes.string.isRequired,
-        }),
-    ]),
-};
+const DEFAULT_UPPY_SOURCES: UppySourceId[] = [
+    'webcam',
+    'facebook',
+    'instagram',
+    'dropbox',
+    'google-drive',
+];
 
-const DEFAULT_UPPY_SOURCES = ['webcam', 'facebook', 'instagram', 'dropbox', 'google-drive'];
+interface UppyProviderProps {
+    id?: string;
+    children: ReactNode;
+    transport?: UppyTransportType | null;
+    locale?: string | null;
+    sources?: UppySourceId[] | null;
+    transloadit?: UppyTransloaditConfig | null;
+    companion?: UppyCompanionConfig | null;
+    tus?: UppyEndpointConfig | null;
+    xhr?: UppyEndpointConfig | null;
+}
 
 export const UppyProvider = ({
     id = 'uppy',
@@ -182,8 +257,8 @@ export const UppyProvider = ({
     transloadit: providedTransloadit = null,
     companion: providedCompanion = null,
     tus: providedTus = null,
-    xhr: providedXhr = null
-}) => {
+    xhr: providedXhr = null,
+}: UppyProviderProps) => {
     const { locale: intlLocale } = useIntl();
 
     const {
@@ -194,21 +269,20 @@ export const UppyProvider = ({
         companion: contextCompanion = null,
         tus: contextTus = null,
         xhr: contextXhr = null,
-    } = useContext(UppyContext) || {};
+    } = use(UppyContext) || {};
 
     const transport = providedTransport || contextTransport || 'xhr';
     const locale = providedLocale || contextLocale || intlLocale;
-    const sources = providedSources ||
-        contextSources || DEFAULT_UPPY_SOURCES;
+    const sources = providedSources || contextSources || DEFAULT_UPPY_SOURCES;
     const transloadit = providedTransloadit || contextTransloadit;
     const companion = providedCompanion || contextCompanion;
     const tus = providedTus || contextTus;
     const xhr = providedXhr || contextXhr;
 
-    const Uppy = useUppyCore();
-    const uppyTransport = useUppyTransport(transport);
-    const uppySources = useUppySources(sources);
-    const uppyLocale = useUppyLocale(locale || intlLocale);
+    const Uppy = useUppyCore() as UppyConstructor | null;
+    const uppyTransport = useUppyTransport(transport) as UppyTransportPlugin | null;
+    const uppySources = useUppySources(sources) as Record<string, UppyPlugin> | null;
+    const uppyLocale = useUppyLocale(locale || intlLocale) as Record<string, unknown> | null;
 
     // console.log('Init uppy', Uppy, uppyTransport, uppySources, uppyLocale);
 
@@ -221,7 +295,7 @@ export const UppyProvider = ({
         ) {
             return null;
         }
-        return (opts = {}) => {
+        return (opts: UppyBuildOptions = {}) => {
             const { sources: customSources = sources, ...uppyOpts } = opts || {};
             // console.log('Uppy opts buildUppy', opts);
             const newUppy = new Uppy({
@@ -230,7 +304,12 @@ export const UppyProvider = ({
                 ...uppyOpts,
             });
             if (transport === 'transloadit') {
-                const { key, templateId, waitForEncoding = true, ...transloaditOpts } = transloadit;
+                const {
+                    key,
+                    templateId,
+                    waitForEncoding = true,
+                    ...transloaditOpts
+                } = transloadit || {};
                 newUppy.use(uppyTransport, {
                     params: {
                         auth: { key },
@@ -240,21 +319,24 @@ export const UppyProvider = ({
                     waitForEncoding,
                 });
             } else if (transport === 'tus') {
+                const tusOptions = typeof tus === 'string' ? { endpoint: tus } : tus || {};
                 newUppy.use(uppyTransport, {
                     endpoint: '/tus',
                     // resume: true, obsolete
                     retryDelays: [0, 1000, 3000, 5000],
-                    ...tus,
+                    ...tusOptions,
                 });
             } else if (transport === 'xhr') {
+                const xhrOptions = typeof xhr === 'string' ? { endpoint: xhr } : xhr || {};
                 newUppy.use(uppyTransport, {
-                    endpoint: isString(xhr) ? xhr : '/upload',
-                    ...(isObject(xhr) ? xhr : null),
+                    endpoint: '/upload',
+                    ...(isObject(xhrOptions) ? xhrOptions : {}),
                 });
             }
 
             if (transport === 'transloadit' || companion !== null) {
-                return customSources.reduce((currentUppy, sourceId) => {
+                const finalSources = customSources || sources || [];
+                return finalSources.reduce((currentUppy, sourceId) => {
                     const source = uppySources[sourceId] || null;
                     if (source === null) {
                         return currentUppy;
@@ -321,7 +403,5 @@ export const UppyProvider = ({
         ],
     );
 
-    return <UppyContext.Provider value={value}>{children}</UppyContext.Provider>;
+    return <UppyContext value={value}>{children}</UppyContext>;
 };
-
-UppyProvider.propTypes = propTypes;

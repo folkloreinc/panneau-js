@@ -1,16 +1,16 @@
 import { FormattedMessage } from 'react-intl';
 
+import type { Resource } from '@panneau/core/types';
 import ResourceForm from '@panneau/form-resource';
-// import { PropTypes as PanneauPropTypes } from '@panneau/core';
 import { useResourceValues } from '@panneau/intl';
 import Dialog from '@panneau/modal-dialog';
 
 interface ModalResourceFormProps {
     id: string | number;
-    resource?: string | null;
+    resource?: Resource | null;
     type?: string | null;
     item?: { id?: string } | null;
-    isCreate?: boolean | null;
+    isCreate?: boolean;
     onSuccess?: ((value: unknown) => void) | null;
     onClose?: (() => void) | null;
     className?: string | null;
@@ -21,7 +21,7 @@ function ModalResourceForm({
     resource = null,
     type = null,
     item = null,
-    isCreate = null,
+    isCreate = false,
     onSuccess = null,
     onClose = null,
     className = null,
@@ -31,7 +31,7 @@ function ModalResourceForm({
         <Dialog
             id={id}
             title={
-                !isCreate !== null ? (
+                !isCreate ? (
                     <FormattedMessage
                         values={resourceValues}
                         defaultMessage="Edit {a_singular}"

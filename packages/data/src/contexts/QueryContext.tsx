@@ -1,25 +1,27 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import PropTypes from 'prop-types';
-import { createContext, useContext, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import { createContext, use, useMemo } from 'react';
 
-const QueryContext = createContext(null);
+type QueryInitialData = Record<string, unknown> | Array<Record<string, unknown>>;
 
-export const useQueryContext = () => useContext(QueryContext);
+interface QueryProviderProps {
+    config?: Record<string, unknown> | null;
+    initialKey?: string[] | null;
+    initialData?: QueryInitialData | null;
+    children: ReactNode;
+}
 
-const propTypes = {
-    config: PropTypes.shape({}),
-    initialKey: PropTypes.arrayOf(PropTypes.string),
-    initialData: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.arrayOf(PropTypes.shape({}))]),
-    children: PropTypes.node.isRequired,
-};
+const QueryContext = createContext<QueryClient | null>(null);
+
+export const useQueryContext = () => use(QueryContext);
 
 export const QueryProvider = ({
     config: initialConfig = null,
     initialKey = null,
     initialData = null,
-    children
-}) => {
+    children,
+}: QueryProviderProps) => {
     const queryClient = useMemo(() => {
         const client = new QueryClient({
             defaultOptions: {
@@ -37,7 +39,5 @@ export const QueryProvider = ({
 
     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };
-
-QueryProvider.propTypes = propTypes;
 
 export default QueryContext;
