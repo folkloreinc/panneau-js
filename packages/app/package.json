@@ -49,9 +49,9 @@
         "assets"
     ],
     "scripts": {
-        "prepublishOnly": "npm run build && npm run css:packages",
-        "build": "../../scripts/prepare-package.sh",
-        "css:packages": "../../scripts/build-sass.js ./src/styles/packages.scss ./assets/css/packages.css"
+        "prepublishOnly": "npm run build",
+        "build": "../../scripts/prepare-package.sh && npm run css:packages",
+        "css:packages": "postcss ./src/styles/packages.scss -o ./assets/css/packages.css"
     },
     "devDependencies": {
         "react": "^19.0.0",
@@ -116,5 +116,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "c6430a0e56cc5163db66417c47508b8e0fcc7c16"
+    "gitHead": "ee624672ff489420de521b0c7d3655064aa4585e"
 }
