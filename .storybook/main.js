@@ -14,29 +14,6 @@ module.exports = {
         path.join(packagePath, './src/**/*.stories.@(jsx|mdx|tsx)'),
     ),
     addons: [
-        // {
-        //     name: '@storybook/preset-scss',
-        //     options: {
-        //         rule: {
-        //             test: /\.module\.s[ca]ss$/,
-        //         },
-        //         cssLoaderOptions: {
-        //             modules: {
-        //                 auto: true,
-        //                 namedExport: false,
-        //                 localIdentName: '[path][name]__[local]--[hash:base64:5]',
-        //             },
-        //         },
-        //     },
-        // },
-        // {
-        //     name: '@storybook/preset-scss',
-        //     options: {
-        //         rule: {
-        //             exclude: /\.module\.s[ca]ss$/,
-        //         },
-        //     },
-        // },
         {
             name: '@storybook/addon-styling-webpack',
             options: {
@@ -49,6 +26,7 @@ module.exports = {
                             {
                                 loader: 'css-loader',
                                 options: {
+                                    importLoaders: 1,
                                     modules: {
                                         auto: true,
                                         namedExport: false,
@@ -56,16 +34,9 @@ module.exports = {
                                     },
                                 },
                             },
-                        ],
-                    },
-                    {
-                        test: /\.s[ca]ss$/,
-                        use: [
-                            'style-loader',
-                            'css-loader',
                             {
-                                loader: 'sass-loader',
-                                // options: { implementation: import.meta.resolve('sass') },
+                                // Gets options from `postcss.config.js` in your project root
+                                loader: 'postcss-loader',
                             },
                         ],
                     },
@@ -197,9 +168,8 @@ module.exports = {
                                         options: {
                                             postcssOptions: styles.getPostCssConfig({
                                                 themeImporter: {
-                                                    themePath: require.resolve(
-                                                        '@ckeditor/ckeditor5-theme-lark',
-                                                    ),
+                                                    themePath:
+                                                        require.resolve('@ckeditor/ckeditor5-theme-lark'),
                                                 },
                                                 minify: true,
                                             }),

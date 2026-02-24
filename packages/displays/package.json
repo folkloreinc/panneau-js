@@ -35,34 +35,29 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
+    "style": "./assets/css/styles.css",
     "exports": {
-        ".": {
-            "import": "./es/index.js"
-        },
-        "./scss/styles": "./scss/styles.scss",
-        "./scss/styles.scss": "./scss/styles.scss",
+        ".": "./es/index.js",
         "./assets/css/styles": "./assets/css/styles.css",
         "./assets/css/styles.css": "./assets/css/styles.css"
     },
     "files": [
         "lib",
         "es",
-        "assets",
-        "scss"
+        "assets"
     ],
     "scripts": {
-        "scss": "../../scripts/build-packages-styles.js --pattern='@panneau/display-*' ./src/styles.scss.ejs ./scss/styles.scss",
-        "css": "../../scripts/build-sass.js ./scss/styles.scss ./assets/css/styles.css",
+        "css": "../../scripts/build-packages-styles.js --pattern='@panneau/display-*' ./src/styles.css.ejs ./assets/css/styles.css",
         "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh && npm run scss && npm run css"
+        "build": "../../scripts/prepare-package.sh && npm run css"
     },
     "devDependencies": {
-        "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0"
     },
     "peerDependencies": {
-        "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0"
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",

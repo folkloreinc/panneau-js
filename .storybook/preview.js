@@ -5,9 +5,8 @@ import withIntlProvider from './decorators/withIntlProvider';
 import withRouter from './decorators/withRouter';
 import withRoutesProvider from './decorators/withRoutesProvider';
 
-import '../packages/themes/src/styles/vendor.scss';
+import '../packages/themes/src/styles/vendor.css';
 
-// import './fonts/fonts.scss';
 
 export const parameters = {
     viewport: {

@@ -27,6 +27,7 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
+    "style": "./assets/css/styles.css",
     "exports": {
         ".": "./es/index.js",
         "./assets/css/styles": "./assets/css/styles.css",
@@ -42,12 +43,12 @@
         "build": "../../scripts/prepare-package.sh"
     },
     "devDependencies": {
-        "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0"
     },
     "peerDependencies": {
-        "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0"
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",

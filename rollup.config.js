@@ -47,7 +47,7 @@ export const createConfig = ({
         input: input || `src/${file}`,
         output: outputConfig,
         treeshake: {
-            moduleSideEffects: (id, external) => id.match(/\.(css|scss)$/) !== null,
+            moduleSideEffects: (id, external) => id.match(/\.(css)$/) !== null,
         },
         plugins: [
             isCjs &&
@@ -131,7 +131,7 @@ export const createConfig = ({
             }),
             !withoutPostCss &&
                 postcss({
-                    extensions: ['.css', '.scss'],
+                    extensions: ['.css'],
                     modules: {
                         generateScopedName,
                     },

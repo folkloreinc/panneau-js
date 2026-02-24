@@ -1,32 +1,30 @@
-@import '@panneau/themes/assets/css/vendor';
-@import '@panneau/themes/assets/css/styles';
-
-@import '@panneau/fields/assets/css/styles';
-@import '@panneau/displays/assets/css/styles';
-@import '@panneau/actions/assets/css/styles';
-@import '@panneau/forms/assets/css/styles';
-@import '@panneau/lists/assets/css/styles';
-@import '@panneau/filters/assets/css/styles';
-@import '@panneau/modals/assets/css/styles';
+@import url('@panneau/themes');
+@import url('@panneau/fields');
+@import url('@panneau/displays');
+@import url('@panneau/actions');
+@import url('@panneau/forms');
+@import url('@panneau/lists');
+@import url('@panneau/filters');
+@import url('@panneau/modals');
 
 /* Note to self: add new elements to this and package.json */
 
-@import '@panneau/element-accordion/assets/css/styles';
-@import '@panneau/element-avatar/assets/css/styles';
-@import '@panneau/element-breadcrumbs/assets/css/styles';
-@import '@panneau/element-button/assets/css/styles';
-@import '@panneau/element-dropdown/assets/css/styles';
-@import '@panneau/element-form-group/assets/css/styles';
-@import '@panneau/element-icon/assets/css/styles';
-@import '@panneau/element-link/assets/css/styles';
-@import '@panneau/element-modal/assets/css/styles';
-@import '@panneau/element-range/assets/css/styles';
-@import '@panneau/element-grid/assets/css/styles';
-@import '@panneau/element-media-card/assets/css/styles';
-@import '@panneau/element-media-player/assets/css/styles';
-@import '@panneau/element-resource-card/assets/css/styles';
+@import url('@panneau/element-accordion');
+@import url('@panneau/element-avatar');
+@import url('@panneau/element-breadcrumbs');
+@import url('@panneau/element-button');
+@import url('@panneau/element-dropdown');
+@import url('@panneau/element-form-group');
+@import url('@panneau/element-icon');
+@import url('@panneau/element-link');
+@import url('@panneau/element-modal');
+@import url('@panneau/element-range');
+@import url('@panneau/element-grid');
+@import url('@panneau/element-media-card');
+@import url('@panneau/element-media-player');
+@import url('@panneau/element-resource-card');
 
 .modal-open {
-    padding-right: 0;
     overflow: hidden;
+    padding-right: 0;
 }

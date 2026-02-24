@@ -39,23 +39,23 @@ module.exports = (api) => {
                 require.resolve('@babel/plugin-transform-runtime'),
                 require.resolve('babel-plugin-dynamic-import-node'),
                 require.resolve('@babel/plugin-proposal-export-namespace-from'),
-                [
-                    require.resolve('babel-plugin-css-modules-transform'),
-                    {
-                        preprocessCss: path.join(__dirname, './scripts/process-scss.js'),
-                        extensions: ['.scss'],
-                        generateScopedName: path.resolve(
-                            __dirname,
-                            './scripts/lib/generateScopedName.js',
-                        ),
-                    },
-                ],
-                [
-                    path.join(__dirname, './scripts/babel-plugin-transform-require-ignore'),
-                    {
-                        extensions: ['.global.scss'],
-                    },
-                ],
+                // [
+                //     require.resolve('babel-plugin-css-modules-transform'),
+                //     {
+                //         preprocessCss: path.join(__dirname, './scripts/process-scss.js'),
+                //         extensions: ['.scss'],
+                //         generateScopedName: path.resolve(
+                //             __dirname,
+                //             './scripts/lib/generateScopedName.js',
+                //         ),
+                //     },
+                // ],
+                // [
+                //     path.join(__dirname, './scripts/babel-plugin-transform-require-ignore'),
+                //     {
+                //         extensions: ['.global.scss'],
+                //     },
+                // ],
                 [
                     require.resolve('babel-plugin-transform-assets-import-to-string'),
                     {

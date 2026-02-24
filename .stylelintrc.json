@@ -9,7 +9,6 @@
                 "message": "Selector should be written in camel-case (selector-class-pattern)"
             }
         ],
-        "max-nesting-depth": 4,
-        "import-notation": ["string", "url"]
+        "max-nesting-depth": 4
     }
 }

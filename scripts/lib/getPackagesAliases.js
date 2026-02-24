@@ -9,8 +9,6 @@ const getPackagesAliases = ({ withoutEndSign = false } = {}) =>
             path.join(packagePath, './package.json'),
         );
         const subFiles = globSync(path.join(packagePath, './*.js'));
-        const hasStylesFile = fs.existsSync(path.join(packagePath, './src/styles.scss'));
-        const hasStylesTemplate = fs.existsSync(path.join(packagePath, './src/styles.scss.ejs'));
         return {
             ...aliases,
             ...subFiles
@@ -46,14 +44,6 @@ const getPackagesAliases = ({ withoutEndSign = false } = {}) =>
                             : sourcePath,
                 };
             }, {}),
-            ...(!hasStylesTemplate
-                ? {
-                      [`${packageName}/scss`]: path.join(
-                          packagePath,
-                          hasStylesFile ? './src' : './src/styles',
-                      ),
-                  }
-                : null),
             [`${packageName}${!withoutEndSign ? '$' : ''}`]: path.join(
                 packagePath,
                 './src/index.js',

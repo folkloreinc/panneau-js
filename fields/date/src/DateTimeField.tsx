@@ -17,8 +17,6 @@ import styles from './styles.module.css';
 // We import this one but customized - needs to be improved with bootstrap themes
 import 'react-datepicker/dist/react-datepicker.css';
 
-import './styles/datepicker.global.scss';
-
 // This package has fucked exports, no default
 const FinalDatePicker =
     isObject(DatePicker) && DatePicker.default ? DatePicker.default : DatePicker;

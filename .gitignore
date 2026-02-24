@@ -34,7 +34,6 @@ publish
 node_modules
 *.log
 .tmp
-.sass-cache
 .DS_Store
 /coverage
 /out*
@@ -45,7 +44,6 @@ node_modules
 /*/*/es
 /*/*/lib
 /*/*/assets
-/*/*/scss
 /*/*/types
 /*/*/styles
 /*/*/css
