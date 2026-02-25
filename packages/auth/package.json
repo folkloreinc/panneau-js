@@ -1,6 +1,6 @@
 {
     "name": "@panneau/auth",
-    "version": "4.0.14",
+    "version": "4.0.15",
     "description": "",
     "keywords": [
         "javascript"
@@ -60,8 +60,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^4.0.14",
-        "@panneau/data": "^4.0.14"
+        "@panneau/core": "^4.0.15",
+        "@panneau/data": "^4.0.15"
     },
     "publishConfig": {
         "access": "public"

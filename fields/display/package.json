@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-display",
-    "version": "4.0.14",
+    "version": "4.0.15",
     "description": "A field rendering a display",
     "keywords": [
         "javascript"
@@ -52,8 +52,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^4.0.14",
-        "@panneau/themes": "^4.0.14",
+        "@panneau/core": "^4.0.15",
+        "@panneau/themes": "^4.0.15",
         "classnames": "^2.5.1"
     },
     "publishConfig": {
