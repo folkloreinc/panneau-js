@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-calendar",
-    "version": "4.0.12",
+    "version": "4.0.13",
     "description": "Calendar list",
     "keywords": [
         "javascript"
@@ -56,12 +56,12 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^4.0.12",
-        "@panneau/element-button": "^4.0.12",
-        "@panneau/element-card": "^4.0.12",
-        "@panneau/element-icon": "^4.0.12",
-        "@panneau/element-loading": "^4.0.12",
-        "@panneau/themes": "^4.0.12",
+        "@panneau/core": "^4.0.13",
+        "@panneau/element-button": "^4.0.13",
+        "@panneau/element-card": "^4.0.13",
+        "@panneau/element-icon": "^4.0.13",
+        "@panneau/element-loading": "^4.0.13",
+        "@panneau/themes": "^4.0.13",
         "classnames": "^2.5.1",
         "date-fns": "^3.3.1",
         "lodash": "^4.17.21",

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-resource-card",
-    "version": "4.0.12",
+    "version": "4.0.13",
     "description": "Resource card element",
     "keywords": [
         "javascript"
@@ -56,10 +56,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^4.0.12",
-        "@panneau/element-button": "^4.0.12",
-        "@panneau/element-icon": "^4.0.12",
-        "@panneau/element-label": "^4.0.12",
+        "@panneau/core": "^4.0.13",
+        "@panneau/element-button": "^4.0.13",
+        "@panneau/element-icon": "^4.0.13",
+        "@panneau/element-label": "^4.0.13",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0"
