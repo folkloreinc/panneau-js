@@ -75,15 +75,6 @@ const files = {
 
     'utils.ts': {
         prependPlugins: [
-            // copy({
-            //     targets: [
-            //         { src: 'src/types/index.d.ts', dest: 'es/types' },
-            //         { src: 'src/types/core.d.ts', dest: 'es/types' },
-            //         { src: 'src/types/form.d.ts', dest: 'es/types' },
-            //         { src: 'src/types/panneau.d.ts', dest: 'es/types' },
-            //         { src: 'src/types/resource.d.ts', dest: 'es/types' },
-            //     ],
-            // }),
         ],
         resolveOptions: {
             extensions: ['.mjs', '.js', '.jsx', '.json', '.node', '.ts', '.tsx'],

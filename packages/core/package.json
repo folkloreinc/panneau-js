@@ -26,31 +26,31 @@
     ],
     "license": "ISC",
     "type": "module",
-    "module": "./es/index.js",
-    "types": "./es/index.d.ts",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "exports": {
         ".": {
-            "default": "./es/index.js",
-            "types": "./es/index.d.ts"
+            "default": "./dist/index.js",
+            "types": "./dist/index.d.ts"
         },
         "./contexts": {
-            "default": "./es/contexts.js",
-            "types": "./es/contexts.d.ts"
+            "default": "./dist/contexts.js",
+            "types": "./dist/contexts.d.ts"
         },
         "./hooks": {
-            "default": "./es/hooks.js",
-            "types": "./es/hooks.d.ts"
+            "default": "./dist/hooks.js",
+            "types": "./dist/hooks.d.ts"
         },
         "./utils": {
-            "default": "./es/utils.js",
-            "types": "./es/utils.d.ts"
+            "default": "./dist/utils.js",
+            "types": "./dist/utils.d.ts"
         }
     },
     "sideEffects": [
-        "./es/hooks.js"
+        "./dist/hooks.js"
     ],
     "files": [
-        "es",
+        "dist",
         "assets"
     ],
     "scripts": {
@@ -96,5 +96,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "5ccb8c32b53e7232df6a4265c1cad6d4d06fc589"
+    "gitHead": "3e63118013f2f287a078195137a0ea071952f8bf"
 }

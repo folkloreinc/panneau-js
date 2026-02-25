@@ -13,16 +13,7 @@ const config = tseslint.config(
         files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
     },
     {
-        ignores: [
-            '**/*.config.js',
-            'node_modules',
-            '*/*/lib/**',
-            '*/*/es/**',
-            'packages/*/*.js',
-            'fields/*/*.js',
-            'forms/*/*.js',
-            '!.storybook',
-        ],
+        ignores: ['**/*.config.js', 'node_modules', '*/*/dist/**', '!.storybook'],
     },
     {
         settings: {

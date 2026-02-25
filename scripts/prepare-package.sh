@@ -36,6 +36,7 @@ clean() {
     rm -rf assets
     rm -rf lib
     rm -rf es
+    rm -rf dist
     rm -rf types
 }
 
@@ -53,8 +54,8 @@ build_types() {
     mkdir -p ./types/
 
     ts_entries=()
-    while IFS= read -r es_file; do
-        rel_path="${es_file#es/}"
+    while IFS= read -r dist_file; do
+        rel_path="${dist_file#dist/}"
         rel_path="${rel_path%.*}"
 
         ts_path="src/${rel_path}.ts"
@@ -67,7 +68,7 @@ build_types() {
         if [ -f "$tsx_path" ]; then
             ts_entries+=("$tsx_path")
         fi
-    done < <(find es -type f \( -name "*.js" -o -name "*.mjs" -o -name "*.jsx" \) 2>/dev/null | sort)
+    done < <(find dist -type f \( -name "*.js" -o -name "*.mjs" -o -name "*.jsx" \) 2>/dev/null | sort)
 
     unique_ts_entries=()
     if [ ${#ts_entries[@]} -gt 0 ]; then
@@ -108,9 +109,8 @@ build_types() {
 copy_css() {
     echo "Copying css..."
     mkdir -p ./assets/css/
-    cp es/styles.css ./assets/css/styles.css
-    rm -f es/styles.css
-    rm -f lib/styles.css
+    cp dist/styles.css ./assets/css/styles.css
+    rm -f dist/styles.css
 }
 
 # Build
@@ -118,4 +118,4 @@ export NODE_ENV=production
 clean
 build_rollup
 if [ "$types" = true ]; then build_types; fi
-if [ -f ./es/styles.css ]; then copy_css; fi
+if [ -f ./dist/styles.css ]; then copy_css; fi

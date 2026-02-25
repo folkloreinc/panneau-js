@@ -139,14 +139,14 @@ The repository uses npm workspaces coordinated by Lerna (v3.0.313):
 ```json
 {
     "type": "module",
-    "module": "es/index.js",
+    "module": "dist/index.js",
     "style": "./assets/css/styles.css",
     "exports": {
-        ".": "./es/index.js",
+        ".": "./dist/index.js",
         "./assets/css/styles.css": "./assets/css/styles.css"
     },
     "sideEffects": ["*.css"],
-    "files": ["lib", "es", "assets"],
+    "files": ["dist", "assets"],
     "scripts": {
         "prepublishOnly": "npm run build",
         "build": "../../scripts/prepare-package.sh"
@@ -318,14 +318,14 @@ export const WithCustomProps = {
     "name": "@panneau/package-name",
     "version": "3.0.313",
     "type": "module",
-    "module": "es/index.js",
+    "module": "dist/index.js",
     "style": "./assets/css/styles.css",
     "exports": {
-        ".": "./es/index.js",
+        ".": "./dist/index.js",
         "./assets/css/styles.css": "./assets/css/styles.css"
     },
     "sideEffects": ["*.css"],
-    "files": ["es", "assets"],
+    "files": ["dist", "assets"],
     "scripts": {
         "prepublishOnly": "npm run build",
         "build": "../../scripts/prepare-package.sh"
