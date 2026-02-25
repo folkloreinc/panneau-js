@@ -5,7 +5,7 @@ import isObject from 'lodash/isObject';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Label } from '@panneau/core/types';
+import type { Label } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import { MediaCards } from '@panneau/element-media-card';

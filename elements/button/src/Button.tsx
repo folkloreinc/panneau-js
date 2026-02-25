@@ -4,7 +4,7 @@ import isString from 'lodash/isString';
 import type { ReactNode, Ref } from 'react';
 import { Link } from 'wouter';
 
-import type { ButtonSize, ButtonTheme, Label } from '@panneau/core/types';
+import type { ButtonSize, ButtonTheme, Label } from '@panneau/core';
 import Icon from '@panneau/element-icon';
 
 import styles from './styles.module.css';

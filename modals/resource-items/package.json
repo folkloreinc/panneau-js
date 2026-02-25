@@ -27,8 +27,12 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
+    "types": "es/index.d.ts",
     "exports": {
-        ".": "./es/index.js"
+        ".": {
+            "default": "./es/index.js",
+            "types": "./es/index.d.ts"
+        }
     },
     "files": [
         "lib",

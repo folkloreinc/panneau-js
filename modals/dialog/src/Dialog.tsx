@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import classNames from 'classnames';
 
-import type { Button as ButtonType, Label as LabelType } from '@panneau/core/types';
+import type { Button as ButtonType, Label as LabelType } from '@panneau/core';
 import { isMessage } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import Buttons from '@panneau/element-buttons';

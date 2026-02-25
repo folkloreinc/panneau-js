@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import type { MouseEvent, ReactNode } from 'react';
 import { useState } from 'react';
 
-import type { DropdownAlign, MenuItem } from '@panneau/core/types';
+import type { DropdownAlign, MenuItem } from '@panneau/core';
 import Dropdown from '@panneau/element-dropdown';
 import Label from '@panneau/element-label';
 import Link from '@panneau/element-link';

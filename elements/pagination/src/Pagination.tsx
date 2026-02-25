@@ -5,7 +5,7 @@ import queryString from 'query-string';
 import { MouseEvent, ReactNode, cloneElement, useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Item } from '@panneau/core/types';
+import type { Item } from '@panneau/core';
 import Icon from '@panneau/element-icon';
 import Link from '@panneau/element-link';
 

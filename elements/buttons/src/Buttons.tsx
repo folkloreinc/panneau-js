@@ -3,7 +3,7 @@ import isArray from 'lodash/isArray';
 import type { MouseEvent, ReactNode } from 'react';
 
 import { useButtonsComponents } from '@panneau/core/contexts';
-import type { ButtonSize, Button as ButtonType } from '@panneau/core/types';
+import type { ButtonSize, Button as ButtonType } from '@panneau/core';
 import Button from '@panneau/element-button';
 
 interface ButtonsProps {

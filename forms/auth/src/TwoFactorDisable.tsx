@@ -2,7 +2,7 @@ import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Field, Label } from '@panneau/core/types';
+import type { Field, Label } from '@panneau/core';
 import Link from '@panneau/element-link';
 import Form from '@panneau/form';
 

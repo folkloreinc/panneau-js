@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import Actions from '@panneau/action-actions';
-import type { Item } from '@panneau/core/types';
+import type { Item } from '@panneau/core';
 
 interface ActionsDisplayProps {
     item: Item;

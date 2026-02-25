@@ -35,9 +35,13 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
+    "types": "es/index.d.ts",
     "style": "./assets/css/styles.css",
     "exports": {
-        ".": "./es/index.js",
+        ".": {
+            "default": "./es/index.js",
+            "types": "./es/index.d.ts"
+        },
         "./assets/css/styles": "./assets/css/styles.css",
         "./assets/css/styles.css": "./assets/css/styles.css",
         "./assets/css/packages": "./assets/css/packages.css",
@@ -50,7 +54,7 @@
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh && npm run css:packages",
+        "build": "../../scripts/prepare-package.sh --types && npm run css:packages",
         "css:packages": "postcss ./src/styles/packages.css -o ./assets/css/packages.css"
     },
     "devDependencies": {

@@ -2,7 +2,7 @@
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { createContext, use, useMemo, useState } from 'react';
 
-import type { Media } from '@panneau/core/types';
+import type { Media } from '@panneau/core';
 
 export interface MediaContextValue {
     currentMedia: Media | null;

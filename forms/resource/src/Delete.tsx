@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 
-import type { Field, FormStatus, Resource } from '@panneau/core/types';
+import type { Field, FormStatus, Resource } from '@panneau/core';
 // import { usePanneauColorScheme } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Form from '@panneau/element-form';

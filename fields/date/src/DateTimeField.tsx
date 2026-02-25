@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { DatePicker, registerLocale } from 'react-datepicker';
 import { defineMessage, useIntl } from 'react-intl';
 
-import type { ControlSize, Message } from '@panneau/core/types';
+import type { ControlSize, Message } from '@panneau/core';
 import { isMessage, loadPackage } from '@panneau/core/utils';
 import TextField from '@panneau/field-text';
 

@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import type { FormEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Field, FormStatus, Resource } from '@panneau/core/types';
+import type { Field, FormStatus, Resource } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Form from '@panneau/element-form';
 import { useResourceValues } from '@panneau/intl';

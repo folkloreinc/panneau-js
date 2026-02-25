@@ -6,7 +6,7 @@ import type {
     Button as ButtonType,
     FormStatus as FormStatusType,
     Label,
-} from '@panneau/core/types';
+} from '@panneau/core';
 import Button from '@panneau/element-button';
 import Buttons from '@panneau/element-buttons';
 import FormStatus from '@panneau/element-form-status';

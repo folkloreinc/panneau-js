@@ -1,7 +1,7 @@
 import { ComponentType } from 'react';
 import { Route } from 'wouter';
 
-import type { Resource } from '@panneau/core/types';
+import type { Resource } from '@panneau/core';
 
 import {
     ResourceCreate,

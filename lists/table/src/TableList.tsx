@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import type { Item, Resource, TableColumn } from '@panneau/core/types';
+import type { Item, Resource, TableColumn } from '@panneau/core';
 import { getColumnsWithFields } from '@panneau/core/utils';
 import Table from '@panneau/element-table';
 

@@ -3,7 +3,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import { type ReactNode, useCallback } from 'react';
 
-import type { Message } from '@panneau/core/types';
+import type { Message } from '@panneau/core';
 import { getPathValue } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 

@@ -27,9 +27,13 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
+    "types": "es/index.d.ts",
     "style": "./assets/css/styles.css",
     "exports": {
-        ".": "./es/index.js",
+        ".": {
+            "default": "./es/index.js",
+            "types": "./es/index.d.ts"
+        },
         "./assets/css/styles": "./assets/css/styles.css",
         "./assets/css/styles.css": "./assets/css/styles.css"
     },

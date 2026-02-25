@@ -4,7 +4,7 @@ import { useLocation } from 'wouter';
 
 import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceTypeName, useResourceUrlGenerator } from '@panneau/core/hooks';
-import type { Resource } from '@panneau/core/types';
+import type { Resource } from '@panneau/core';
 import { useResourceItem } from '@panneau/data';
 import Loading from '@panneau/element-loading';
 import { useResourceValues } from '@panneau/intl';

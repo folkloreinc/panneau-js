@@ -15,7 +15,7 @@ import type { ComponentType, MouseEvent } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedDate, useIntl } from 'react-intl';
 
-import type { Item, Resource } from '@panneau/core/types';
+import type { Item, Resource } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Icon from '@panneau/element-icon';
 

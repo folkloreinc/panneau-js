@@ -4,7 +4,7 @@ import queryString from 'query-string';
 import type { MouseEvent, ReactNode } from 'react';
 import { useCallback, useMemo } from 'react';
 
-import type { Field } from '@panneau/core/types';
+import type { Field } from '@panneau/core';
 import Icon from '@panneau/element-icon';
 import Link from '@panneau/element-link';
 

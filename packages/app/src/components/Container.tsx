@@ -10,7 +10,7 @@ import {
     PanneauProvider,
     RoutesProvider,
 } from '@panneau/core/contexts';
-import type { PanneauDefinition, StatusCode, Uppy, User } from '@panneau/core/types';
+import type { PanneauDefinition, StatusCode, Uppy, User } from '@panneau/core';
 import { ApiProvider, QueryProvider } from '@panneau/data';
 import DisplaysProvider from '@panneau/displays';
 import FieldsProvider from '@panneau/fields';

@@ -3,7 +3,7 @@ import get from 'lodash/get';
 import { type ReactNode, useMemo } from 'react';
 
 import { useDisplaysComponents } from '@panneau/core/contexts';
-import type { Item, Resource, TableColumn } from '@panneau/core/types';
+import type { Item, Resource, TableColumn } from '@panneau/core';
 import { getColumnsWithFields, getComponentFromName } from '@panneau/core/utils';
 import Card from '@panneau/element-card';
 import Empty from '@panneau/element-empty';

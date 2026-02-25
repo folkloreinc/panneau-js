@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { Link as ReactLink } from 'wouter';
 
-import type { Label as LabelType } from '@panneau/core/types';
+import type { Label as LabelType } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 

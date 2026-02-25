@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { useFieldComponent } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
-import type { Media } from '@panneau/core/types';
+import type { Media } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Form from '@panneau/element-form';
 import FormStatus from '@panneau/element-form-status';

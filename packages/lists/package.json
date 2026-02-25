@@ -35,9 +35,13 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
+    "types": "es/index.d.ts",
     "style": "./assets/css/styles.css",
     "exports": {
-        ".": "./es/index.js",
+        ".": {
+            "default": "./es/index.js",
+            "types": "./es/index.d.ts"
+        },
         "./assets/css/styles": "./assets/css/styles.css",
         "./assets/css/styles.css": "./assets/css/styles.css"
     },
@@ -49,7 +53,7 @@
     "scripts": {
         "css": "../../scripts/build-packages-styles.js --pattern='@panneau/list-*' ./src/styles.css.ejs ./assets/css/styles.css",
         "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh && npm run css"
+        "build": "../../scripts/prepare-package.sh --types && npm run css"
     },
     "devDependencies": {
         "react": "^19.0.0",

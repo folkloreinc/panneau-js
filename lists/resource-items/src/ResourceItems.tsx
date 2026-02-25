@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import Actions from '@panneau/action-actions';
 import { useListsComponents, usePanneauResource } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
-import type { Item, Resource } from '@panneau/core/types';
+import type { Item, Resource } from '@panneau/core';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Pagination from '@panneau/element-pagination';

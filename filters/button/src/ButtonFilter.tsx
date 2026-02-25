@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useCallback, useMemo } from 'react';
 
-import type { ButtonTheme } from '@panneau/core/types';
+import type { ButtonTheme } from '@panneau/core';
 import Button from '@panneau/element-button';
 
 interface ButtonFilterProps {

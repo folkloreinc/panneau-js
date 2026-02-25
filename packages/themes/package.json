@@ -35,9 +35,13 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
+    "types": "es/index.d.ts",
     "style": "./assets/css/styles.css",
     "exports": {
-        ".": "./es/index.js",
+        ".": {
+            "default": "./es/index.js",
+            "types": "./es/index.d.ts"
+        },
         "./assets/css/styles": "./assets/css/styles.css",
         "./assets/css/styles.css": "./assets/css/styles.css",
         "./assets/css/vendor": "./assets/css/vendor.css",
@@ -56,7 +60,7 @@
         "css:copy": "cp src/styles/variables.css assets/css/variables.css",
         "css": "npm run css:styles && npm run css:vendor && npm run css:copy",
         "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh && npm run css"
+        "build": "../../scripts/prepare-package.sh --types && npm run css"
     },
     "devDependencies": {
         "react": "^19.0.0",

@@ -4,7 +4,7 @@ import type { ComponentType } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useFieldsComponents, useLocales } from '@panneau/core/contexts';
-import type { Field } from '@panneau/core/types';
+import type { Field } from '@panneau/core';
 import { getComponentFromName } from '@panneau/core/utils';
 import Buttons from '@panneau/element-buttons';
 import FormGroup from '@panneau/element-form-group';

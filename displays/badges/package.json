@@ -27,6 +27,7 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
+    "types": "es/index.d.ts",
     "exports": {
         ".": {
             "default": "./es/index.js",

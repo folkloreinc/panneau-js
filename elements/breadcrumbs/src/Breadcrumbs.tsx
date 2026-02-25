@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
 
-import type { Breadcrumb, Label } from '@panneau/core/types';
+import type { Breadcrumb, Label } from '@panneau/core';
 import Button from '@panneau/element-button';
 import LabelComponent from '@panneau/element-label';
 import Link from '@panneau/element-link';

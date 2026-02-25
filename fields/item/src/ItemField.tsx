@@ -3,7 +3,7 @@ import isString from 'lodash/isString';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import type { ControlSize, Message } from '@panneau/core/types';
+import type { ControlSize, Message } from '@panneau/core';
 import { getPathValue, isMessage } from '@panneau/core/utils';
 import ResourceCard from '@panneau/element-resource-card';
 import Select from '@panneau/field-select';

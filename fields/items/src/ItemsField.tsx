@@ -17,7 +17,7 @@ import { ReactSortable } from 'react-sortablejs';
 import { v4 as uuid } from 'uuid';
 
 import { useFieldComponent, useFieldsComponentsManager } from '@panneau/core/contexts';
-import type { Field, Label } from '@panneau/core/types';
+import type { Field, Label } from '@panneau/core';
 import { getPathValue } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';

@@ -1,5 +1,5 @@
 import { useFieldComponent } from '@panneau/core/contexts';
-import type { Button, Field, FormStatus } from '@panneau/core/types';
+import type { Button, Field, FormStatus } from '@panneau/core';
 import Form from '@panneau/element-form';
 
 interface InlineFormProps {

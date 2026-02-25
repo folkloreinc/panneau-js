@@ -1,6 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 
-import type { Resource } from '@panneau/core/types';
+import type { Resource } from '@panneau/core';
 import ResourceForm from '@panneau/form-resource';
 import { useResourceValues } from '@panneau/intl';
 import Dialog from '@panneau/modal-dialog';

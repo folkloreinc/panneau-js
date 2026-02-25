@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { useFormComponent } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
-import type { Field, Label } from '@panneau/core/types';
+import type { Field, Label } from '@panneau/core';
 
 interface FormProps {
     action: string;

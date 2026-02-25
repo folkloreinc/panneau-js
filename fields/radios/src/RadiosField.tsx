@@ -1,4 +1,4 @@
-import type { FieldOption } from '@panneau/core/types';
+import type { FieldOption } from '@panneau/core';
 import Radios from '@panneau/element-radios';
 
 interface RadiosFieldProps {

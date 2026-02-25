@@ -1,6 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 
-import type { Field, Label } from '@panneau/core/types';
+import type { Field, Label } from '@panneau/core';
 import Form from '@panneau/form';
 
 interface ChangePasswordProps {

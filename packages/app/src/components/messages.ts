@@ -1,4 +1,4 @@
-import type { Message } from '@panneau/core/types';
+import type { Message } from '@panneau/core';
 
 interface Messages {
     index: Message;

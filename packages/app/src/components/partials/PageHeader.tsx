@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 import classNames from 'classnames';
 
 import { usePanneauColorScheme } from '@panneau/core/contexts';
-import type { Label } from '@panneau/core/types';
+import type { Label } from '@panneau/core';
 import LabelComponent from '@panneau/element-label';
 
 interface PageHeaderProps {

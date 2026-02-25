@@ -2,7 +2,7 @@
  * Panneau TypeScript Type Definitions
  *
  *
- * @module @panneau/core/types
+ * @module @panneau/core
  */
 
 // Core UI Types

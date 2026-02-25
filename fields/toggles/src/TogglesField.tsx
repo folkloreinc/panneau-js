@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import { useCallback } from 'react';
 
-import type { Toggle } from '@panneau/core/types';
+import type { Toggle } from '@panneau/core';
 import ToggleField from '@panneau/field-toggle';
 
 import styles from './styles.module.css';

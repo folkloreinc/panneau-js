@@ -2,7 +2,7 @@ import { useCallback, useState, type ReactNode } from 'react';
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 
 import { useFieldsComponentsManager } from '@panneau/core/contexts';
-import type { ButtonTheme } from '@panneau/core/types';
+import type { ButtonTheme } from '@panneau/core';
 
 // TODO: figure out what happens when an item / multiple items are selected
 

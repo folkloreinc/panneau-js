@@ -2,7 +2,7 @@
 import type { ReactNode } from 'react';
 import { createContext, use, useCallback, useEffect, useMemo, useState } from 'react';
 
-import type { User } from '@panneau/core/types';
+import type { User } from '@panneau/core';
 
 import {
     useAuthCheck,

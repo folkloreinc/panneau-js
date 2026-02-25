@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import type { Media } from '@panneau/core/types';
+import type { Media } from '@panneau/core';
 
 import MediasBrowser from './MediasBrowser';
 

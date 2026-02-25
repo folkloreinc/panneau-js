@@ -11,7 +11,7 @@ import {
     usePanneauColorScheme,
 } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
-import type { Resource } from '@panneau/core/types';
+import type { Resource } from '@panneau/core';
 import Alert from '@panneau/element-alert';
 import Button from '@panneau/element-button';
 import { useResourceValues } from '@panneau/intl';

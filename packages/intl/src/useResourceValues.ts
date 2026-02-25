@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { useResource } from '@panneau/core/contexts';
-import type { Resource, ResourceValues } from '@panneau/core/types';
+import type { Resource, ResourceValues } from '@panneau/core';
 
 function useResourceValues(
     resource: Resource | null,

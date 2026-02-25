@@ -4,7 +4,7 @@ import type { ComponentType } from 'react';
 import { Fragment, useCallback } from 'react';
 
 import { useFieldsComponents, useFieldsManager } from '@panneau/core/contexts';
-import type { Field } from '@panneau/core/types';
+import type { Field } from '@panneau/core';
 import { getComponentFromName } from '@panneau/core/utils';
 import FormGroup from '@panneau/element-form-group';
 

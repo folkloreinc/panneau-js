@@ -10,7 +10,7 @@ import {
     useRoutes,
     useUrlGenerator,
 } from '@panneau/core/contexts';
-import type { StatusCode } from '@panneau/core/types';
+import type { StatusCode } from '@panneau/core';
 
 import createResourceRoutes from './createResourceRoutes';
 import AccountPage from './pages/Account';

@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import { useCallback, useState } from 'react';
 
-import type { Media } from '@panneau/core/types';
+import type { Media } from '@panneau/core';
 import ImageDisplay from '@panneau/display-image';
 import MediaPlayer from '@panneau/element-media-player';
 

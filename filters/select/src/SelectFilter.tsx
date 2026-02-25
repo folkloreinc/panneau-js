@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearch } from 'wouter';
 
 // import { useApi } from '@panneau/data';
-import type { SelectOption } from '@panneau/core/types';
+import type { SelectOption } from '@panneau/core';
 import Select from '@panneau/element-select';
 
 interface SelectFilterProps {

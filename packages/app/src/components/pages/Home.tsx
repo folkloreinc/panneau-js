@@ -1,7 +1,7 @@
 import { FormattedMessage } from 'react-intl';
 
 import { usePanneauResources, useUrlGenerator } from '@panneau/core/contexts';
-import type { Resource } from '@panneau/core/types';
+import type { Resource } from '@panneau/core';
 import Link from '@panneau/element-link';
 import { useResourceValues } from '@panneau/intl';
 

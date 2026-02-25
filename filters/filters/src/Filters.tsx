@@ -4,7 +4,7 @@ import isArray from 'lodash/isArray';
 import { FormattedMessage } from 'react-intl';
 
 import { useFiltersComponents } from '@panneau/core/contexts';
-import type { Filter } from '@panneau/core/types';
+import type { Filter } from '@panneau/core';
 import { getComponentFromName } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import FormGroup from '@panneau/element-form-group';

@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { useActionProps } from '@panneau/action-actions';
 import { useModalsComponentsManager } from '@panneau/core/contexts';
-import type { ButtonTheme } from '@panneau/core/types';
+import type { ButtonTheme } from '@panneau/core';
 import Button from '@panneau/element-button';
 
 interface DuplicateActionProps {

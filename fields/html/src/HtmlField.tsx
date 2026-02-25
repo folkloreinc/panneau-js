@@ -2,7 +2,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import classNames from 'classnames';
 import { useCallback } from 'react';
 
-import type { Feedback } from '@panneau/core/types';
+import type { Feedback } from '@panneau/core';
 import InputGroup from '@panneau/field-input-group';
 
 import useCKEditorBuilds from './hooks/useCKEditorBuilds';

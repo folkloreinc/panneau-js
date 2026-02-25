@@ -9,7 +9,7 @@ import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useDisplaysComponents } from '@panneau/core/contexts';
-import type { Field, Item, Label, TableColumn } from '@panneau/core/types';
+import type { Field, Item, Label, TableColumn } from '@panneau/core';
 import { getComponentFromName, selectItem, selectPage } from '@panneau/core/utils';
 import Empty from '@panneau/element-empty';
 import Loading from '@panneau/element-loading';

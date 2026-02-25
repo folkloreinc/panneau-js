@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { StatusCode } from '@panneau/core/types';
+import type { StatusCode } from '@panneau/core';
 
 import GuestLayout from '../layouts/Guest';
 

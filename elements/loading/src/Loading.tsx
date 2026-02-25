@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Label } from '@panneau/core/types';
+import type { Label } from '@panneau/core';
 
 interface LoadingProps {
     theme?: string | null;

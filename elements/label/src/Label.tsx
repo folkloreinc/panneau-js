@@ -1,6 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 
-import type { Label as LabelType } from '@panneau/core/types';
+import type { Label as LabelType } from '@panneau/core';
 import { isMessage } from '@panneau/core/utils';
 
 interface LabelProps {

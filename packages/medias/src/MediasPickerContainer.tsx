@@ -1,4 +1,4 @@
-import type { Media } from '@panneau/core/types';
+import type { Media } from '@panneau/core';
 
 import { MediaProvider } from './MediaContext';
 import type { MediasApi } from './MediasApiContext';

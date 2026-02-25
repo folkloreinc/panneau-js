@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from 'react';
 import Autosuggest from 'react-autosuggest';
 import { useIntl } from 'react-intl';
 
-import type { ControlSize, Message } from '@panneau/core/types';
+import type { ControlSize, Message } from '@panneau/core';
 import { getPathValue, isMessage } from '@panneau/core/utils';
 import { useApi } from '@panneau/data';
 import Button from '@panneau/element-button';

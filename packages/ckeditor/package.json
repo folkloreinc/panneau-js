@@ -28,8 +28,12 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
+    "types": "es/index.d.ts",
     "exports": {
-        ".": "./es/index.js",
+        ".": {
+            "default": "./es/index.js",
+            "types": "./es/index.d.ts"
+        },
         "./build": "./dist/build.cjs"
     },
     "browser": {
@@ -45,7 +49,7 @@
         "clean": "rm -rf es && rm -rf lib && rm -rf dist",
         "build:ckeditor": "../../node_modules/.bin/webpack --mode production --config webpack.config.cjs",
         "prepublishOnly": "npm run build",
-        "build": "rm -rf dist && ../../scripts/prepare-package.sh && npm run build:ckeditor"
+        "build": "rm -rf dist && ../../scripts/prepare-package.sh --types && npm run build:ckeditor"
     },
     "devDependencies": {
         "react": "^19.0.0",

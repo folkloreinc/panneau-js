@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { FormattedMessage } from 'react-intl';
 
-import type { Field, Label } from '@panneau/core/types';
+import type { Field, Label } from '@panneau/core';
 import Link from '@panneau/element-link';
 import Form from '@panneau/form';
 

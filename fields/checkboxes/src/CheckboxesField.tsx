@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import { useMemo } from 'react';
 
-import type { SelectOption } from '@panneau/core/types';
+import type { SelectOption } from '@panneau/core';
 import { getSelectOptions } from '@panneau/core/utils';
 
 import styles from './styles.module.css';

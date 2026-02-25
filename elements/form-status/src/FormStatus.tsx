@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 
-import type { FormStatus as FormStatusType, Label } from '@panneau/core/types';
+import type { FormStatus as FormStatusType, Label } from '@panneau/core';
 import LabelComponent from '@panneau/element-label';
 
 interface FormStatusProps {

@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 
-import type { ButtonTheme, Label } from '@panneau/core/types';
+import type { ButtonTheme, Label } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Icon from '@panneau/element-icon';
 import LabelComponent from '@panneau/element-label';

@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Field } from '@panneau/core/types';
+import type { Field } from '@panneau/core';
 import Form from '@panneau/form';
 import Dialog from '@panneau/modal-dialog';
 

@@ -9,7 +9,7 @@ import AsyncSelect from 'react-select/async';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 import CreatableSelect from 'react-select/creatable';
 
-import type { Label } from '@panneau/core/types';
+import type { Label } from '@panneau/core';
 
 interface SelectOption {
     value?: any;

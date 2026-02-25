@@ -1,4 +1,4 @@
-import type { SelectOption } from '@panneau/core/types';
+import type { SelectOption } from '@panneau/core';
 import Radios from '@panneau/element-radios';
 
 interface RadiosFilterProps {

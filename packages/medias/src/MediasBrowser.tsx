@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useQuery } from '@panneau/core/hooks';
-import type { Media } from '@panneau/core/types';
+import type { Media } from '@panneau/core';
 import Buttons from '@panneau/element-buttons';
 import Grid from '@panneau/element-grid';
 import Icon from '@panneau/element-icon';
