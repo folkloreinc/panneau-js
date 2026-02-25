@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-auth",
-    "version": "4.0.11",
+    "version": "4.0.12",
     "description": "Basic forgot password form",
     "keywords": [
         "javascript"
@@ -54,9 +54,9 @@
     "dependencies": {
         "@babel/runtime": "^7.12.5",
         "@folklore/fetch": "^0.1.21",
-        "@panneau/core": "^4.0.11",
-        "@panneau/element-link": "^4.0.11",
-        "@panneau/form": "^4.0.11",
+        "@panneau/core": "^4.0.12",
+        "@panneau/element-link": "^4.0.12",
+        "@panneau/form": "^4.0.12",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0"
