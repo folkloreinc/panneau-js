@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useMediasApi } from '../MediasApiContext';
 
-const useMediaDelete = () => {
+function useMediaDelete() {
     const [deleting, setDeleting] = useState(false);
     const api = useMediasApi();
     const mediaDelete = useCallback(
@@ -16,6 +16,6 @@ const useMediaDelete = () => {
         [api, setDeleting],
     );
     return { mediaDelete, deleting };
-};
+}
 
 export default useMediaDelete;

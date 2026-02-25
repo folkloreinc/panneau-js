@@ -10,7 +10,7 @@ interface UseMediasParserReturn {
     parser: MediasParser;
 }
 
-const useMediasParser = (): UseMediasParserReturn => {
+function useMediasParser(): UseMediasParserReturn {
     // const screensManager = useScreensManager();
     const fieldsManager = useFieldsManager();
 
@@ -27,6 +27,6 @@ const useMediasParser = (): UseMediasParserReturn => {
     const fromPath = useCallback((story: unknown): unknown => parser.fromPath(story), [parser]);
 
     return { toPath, fromPath, parser };
-};
+}
 
 export default useMediasParser;

@@ -3,7 +3,7 @@ import { useCallback, useRef } from 'react';
 import { useApi } from '../contexts/ApiContext';
 import useItemsStore from './useItemsStore';
 
-const useResourceItems = (resource, query = null, page = null, count = null, opts = null) => {
+function useResourceItems(resource, query = null, page = null, count = null, opts = null) {
     const api = useApi();
 
     const { id = null } = resource || {};
@@ -57,6 +57,6 @@ const useResourceItems = (resource, query = null, page = null, count = null, opt
         items: resourceChanging ? null : items,
         ...request,
     };
-};
+}
 
 export default useResourceItems;

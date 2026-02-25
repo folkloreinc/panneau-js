@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useMediasApi } from '../MediasApiContext';
 
-const useMediaCreate = () => {
+function useMediaCreate() {
     const [creating, setCreating] = useState(false);
     const api = useMediasApi();
     const create = useCallback(
@@ -16,6 +16,6 @@ const useMediaCreate = () => {
         [api, setCreating],
     );
     return { create, creating };
-};
+}
 
 export default useMediaCreate;

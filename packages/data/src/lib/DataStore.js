@@ -1,4 +1,4 @@
-const getQueryKey = query => {
+function getQueryKey(query) {
     if (query === null || typeof query === 'string') {
         return query;
     }
@@ -8,7 +8,7 @@ const getQueryKey = query => {
     return Object.keys(query)
         .reduce((fields, key) => `${key}:${getQueryKey(query[key])}`)
         .join('|');
-};
+}
 
 class DataStore {
     constructor() {

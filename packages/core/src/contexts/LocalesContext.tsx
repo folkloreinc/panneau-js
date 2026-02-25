@@ -10,22 +10,22 @@ interface LocalesContextValue {
 
 export const LocalesContext = createContext<LocalesContextValue>({ locales: defaultLocales });
 
-export const useLocalesContext = (): LocalesContextValue => {
+export function useLocalesContext(): LocalesContextValue {
     const context = useContext(LocalesContext);
     return context;
-};
+}
 
-export const useLocales = (): string[] => {
+export function useLocales(): string[] {
     const { locales } = useLocalesContext();
     return locales;
-};
+}
 
-export const useOtherLocales = (): string[] => {
+export function useOtherLocales(): string[] {
     const { locales } = useLocalesContext();
     const { locale } = useIntl();
     const otherLocales = useMemo(() => locales.filter((it) => it !== locale), [locales, locale]);
     return otherLocales;
-};
+}
 
 const DEFAULT_LOCALES: string[] = [];
 

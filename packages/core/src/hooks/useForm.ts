@@ -34,11 +34,12 @@ interface ProcessedField extends Field {
 }
 
 // prettier-ignore
-const getFieldsPropsFromFields = (
+function getFieldsPropsFromFields(
     fields: FieldInput[],
     { value, errors, onChange, ...props }: FieldProps,
     locales: string[] = [],
-): ProcessedField[] => (fields || []).reduce<ProcessedField[]>(
+): ProcessedField[] {
+    return (fields || []).reduce<ProcessedField[]>(
     (allFields, field) => {
         const {
             name = isString(field) ? field : null,
@@ -98,6 +99,7 @@ const getFieldsPropsFromFields = (
     },
     [],
 );
+}
 
 interface ValidationError extends Error {
     name: 'ValidationError';
@@ -143,7 +145,7 @@ interface UseFormReturn extends RequestState {
     generalError: string | null;
 }
 
-const useForm = (opts: UseFormOptions = {}): UseFormReturn => {
+function useForm(opts: UseFormOptions = {}): UseFormReturn {
     const {
         fields = [],
         action = null,
@@ -340,6 +342,6 @@ const useForm = (opts: UseFormOptions = {}): UseFormReturn => {
         errors,
         generalError,
     };
-};
+}
 
 export default useForm;

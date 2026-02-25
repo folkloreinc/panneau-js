@@ -5,11 +5,11 @@ import { useLocation } from 'wouter';
 
 export { RoutesContext, useRoutes, useUrlGenerator, RoutesProvider };
 
-export const useRoutePush = (): ((
+export function useRoutePush(): (
     route: string | { pathname?: string | null; search?: string | null },
     data?: unknown,
     ...args: unknown[]
-) => void) => {
+) => void {
     const url = useUrlGenerator();
     const [, navigate] = useLocation();
     const push = useCallback(
@@ -28,11 +28,11 @@ export const useRoutePush = (): ((
         [navigate, url],
     );
     return push;
-};
+}
 
-export const useRouteBack = (): (() => void) => {
+export function useRouteBack(): () => void {
     const url = useUrlGenerator();
     const [, navigate] = useLocation();
     const back = useCallback(() => navigate(-1), [navigate, url]);
     return back;
-};
+}

@@ -19,8 +19,9 @@ interface ModalContextValue {
 
 export const ModalContext = createContext<ModalContextValue | null>(null);
 
-export const useModal = (): ModalContextValue =>
-    useContext(ModalContext) || ({} as ModalContextValue);
+export function useModal(): ModalContextValue {
+    return useContext(ModalContext) || ({} as ModalContextValue);
+}
 
 interface ModalProviderProps {
     children: ReactNode;

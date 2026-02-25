@@ -13,7 +13,7 @@ const defaultPackagesMap = {
     dropbox: () => loadPackage('@uppy/dropbox', () => import('@uppy/dropbox')),
     'google-drive': () => loadPackage('@uppy/google-drive', () => import('@uppy/google-drive')),
 };
-const useUppySources = (sources, { packagesMap = defaultPackagesMap } = {}) => {
+function useUppySources(sources, { packagesMap = defaultPackagesMap } = {}) {
     // transport
     const [{ packages: loadedPackages }, setLoadedPackages] = useState({
         packages: sources.reduce((map, source) => {
@@ -73,6 +73,6 @@ const useUppySources = (sources, { packagesMap = defaultPackagesMap } = {}) => {
         };
     }, [sourcesToLoad, packagesMap, loadedPackages, setLoadedPackages]);
     return sourcesToLoad.length === 0 ? loadedPackages : null;
-};
+}
 
 export default useUppySources;

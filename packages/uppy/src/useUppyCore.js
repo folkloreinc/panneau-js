@@ -7,7 +7,7 @@ import { loadPackage } from '@panneau/core/utils';
  */
 let packageCache = null;
 
-const useUppyCore = () => {
+function useUppyCore() {
     // transport
     const [{ package: loadedPackage }, setLoadedPackage] = useState({
         package: packageCache,
@@ -32,6 +32,6 @@ const useUppyCore = () => {
         };
     }, [loadedPackage, setLoadedPackage]);
     return loadedPackage;
-};
+}
 
 export default useUppyCore;

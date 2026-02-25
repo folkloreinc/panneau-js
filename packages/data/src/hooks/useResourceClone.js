@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useApi } from '../contexts/ApiContext';
 
-const useResourceClone = (resource, id = null) => {
+function useResourceClone(resource, id = null) {
     const [loading, setLoading] = useState(false);
     const api = useApi();
     const clone = useCallback(
@@ -22,6 +22,6 @@ const useResourceClone = (resource, id = null) => {
         [api, resource, id, setLoading],
     );
     return { clone, loading };
-};
+}
 
 export default useResourceClone;

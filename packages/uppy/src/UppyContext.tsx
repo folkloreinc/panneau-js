@@ -103,7 +103,7 @@ interface UseUppyOptions {
 
 export const UppyContext = createContext<UppyContextValue | null>(null);
 
-export const useUppyConfig = () => {
+export function useUppyConfig() {
     const {
         transport = null,
         locale = null,
@@ -123,9 +123,9 @@ export const useUppyConfig = () => {
         tus,
         xhr,
     };
-};
+}
 
-export const useUppy = ({
+export function useUppy({
     onComplete = null,
     onFail = null,
     getFileName = ({ name = '', extension = null }) =>
@@ -141,7 +141,7 @@ export const useUppy = ({
     allowedFileTypes = null,
     autoProceed = false,
     debug = false,
-}: UseUppyOptions = {}): UppyInstanceLike | null => {
+}: UseUppyOptions = {}): UppyInstanceLike | null {
     const { buildUppy, transport } = use(UppyContext) || {};
 
     const uppy = useMemo(
@@ -170,7 +170,7 @@ export const useUppy = ({
         if (uppy === null) {
             return () => {};
         }
-        const onUppyComplete = (response: UppyCompleteResponse) => {
+        function onUppyComplete(response: UppyCompleteResponse) {
             const { successful = [], failed = null } = response;
             const finalSuccessful =
                 transport === 'transloadit'
@@ -182,7 +182,7 @@ export const useUppy = ({
             if (onFail !== null) {
                 onFail(failed);
             }
-        };
+        }
         uppy.on('complete', onUppyComplete);
         return () => {
             uppy.off('complete', onUppyComplete);
@@ -193,7 +193,7 @@ export const useUppy = ({
         if (uppy === null) {
             return () => {};
         }
-        const onUpload = ({ fileIDs: ids = [] }: { fileIDs?: string[] }) => {
+        function onUpload({ fileIDs: ids = [] }: { fileIDs?: string[] }) {
             ids.forEach((id) => {
                 const file = uppy.getFile(id);
                 // console.log('file', id, file);
@@ -209,7 +209,7 @@ export const useUppy = ({
                     });
                 }
             });
-        };
+        }
         uppy.on('upload', onUpload);
         return () => {
             uppy.off('upload', onUpload);
@@ -226,7 +226,7 @@ export const useUppy = ({
     // );
 
     return uppy;
-};
+}
 
 const DEFAULT_UPPY_SOURCES: UppySourceId[] = [
     'webcam',
@@ -248,7 +248,7 @@ interface UppyProviderProps {
     xhr?: UppyEndpointConfig | null;
 }
 
-export const UppyProvider = ({
+export function UppyProvider({
     id = 'uppy',
     children,
     transport: providedTransport = null,
@@ -258,7 +258,7 @@ export const UppyProvider = ({
     companion: providedCompanion = null,
     tus: providedTus = null,
     xhr: providedXhr = null,
-}: UppyProviderProps) => {
+}: UppyProviderProps) {
     const { locale: intlLocale } = useIntl();
 
     const {
@@ -404,4 +404,4 @@ export const UppyProvider = ({
     );
 
     return <UppyContext value={value}>{children}</UppyContext>;
-};
+}

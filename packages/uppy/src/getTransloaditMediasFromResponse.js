@@ -1,4 +1,4 @@
-const convertToMedia = (it) => {
+function convertToMedia(it) {
     // console.log('upload', it);
     const { meta = null, transloadit = null, data = null } = it || {};
     const { user = null, name = null, filename = null } = meta || {};
@@ -22,10 +22,10 @@ const convertToMedia = (it) => {
             transloadit: transloadit.results || null,
         },
     };
-};
+}
 
-const getTransloaditMediasFromResponse = (response) =>
-    response.successful
+function getTransloaditMediasFromResponse(response) {
+    return response.successful
         .map((it) => {
             const transloadit =
                 response.transloadit.find(
@@ -52,5 +52,6 @@ const getTransloaditMediasFromResponse = (response) =>
         })
         .filter((it) => it.transloadit !== null)
         .map((it) => convertToMedia(it));
+}
 
 export default getTransloaditMediasFromResponse;

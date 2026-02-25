@@ -11,7 +11,7 @@ const defaultPackagesMap = {
     en: () => loadPackage('@uppy/locales/lib/en_US', () => import('@uppy/locales/lib/en_US')),
 };
 
-const useUppyLocale = (locale, { packagesMap = defaultPackagesMap } = {}) => {
+function useUppyLocale(locale, { packagesMap = defaultPackagesMap } = {}) {
     const [{ package: loadedPackage }, setLoadedPackage] = useState({
         package: packagesCache[locale] || null,
     });
@@ -37,6 +37,6 @@ const useUppyLocale = (locale, { packagesMap = defaultPackagesMap } = {}) => {
         };
     }, [packageLoader, loadedPackage, setLoadedPackage]);
     return loadedPackage;
-};
+}
 
 export default useUppyLocale;

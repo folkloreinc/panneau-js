@@ -4,7 +4,7 @@ import { useItemsStore } from '@panneau/data';
 
 import { useMediasApi } from '../MediasApiContext';
 
-const useMedias = (query = null, page = null, count = null, opts = {}) => {
+function useMedias(query = null, page = null, count = null, opts = {}) {
     const api = useMediasApi();
 
     const trashed = useMemo(() => {
@@ -35,6 +35,6 @@ const useMedias = (query = null, page = null, count = null, opts = {}) => {
         items,
         ...props,
     };
-};
+}
 
 export default useMedias;

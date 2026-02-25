@@ -6,27 +6,33 @@ import { useGoogleKeys } from './GoogleKeysContext';
 
 export const GoogleApiClientContext = createContext<any | null>(null);
 
-export const useGoogleApiClient = (): any | null => useContext(GoogleApiClientContext);
+export function useGoogleApiClient(): any | null {
+    return useContext(GoogleApiClientContext);
+}
 
-export const withGoogleApiClient = (WrappedComponent: ComponentType<any>) => {
-    const getDisplayName = ({
+export function withGoogleApiClient(WrappedComponent: ComponentType<any>) {
+    function getDisplayName({
         displayName = null,
         name = null,
     }: {
         displayName?: string | null;
         name?: string | null;
-    }): string => displayName || name || 'Component';
+    }): string {
+        return displayName || name || 'Component';
+    }
 
-    const WithGoogleApiClientComponent = (props: any) => (
-        <GoogleApiClientContext.Consumer>
-            {(client) => <WrappedComponent googleApiClient={client} {...props} />}
-        </GoogleApiClientContext.Consumer>
-    );
+    function WithGoogleApiClientComponent(props: any) {
+        return (
+            <GoogleApiClientContext.Consumer>
+                {(client) => <WrappedComponent googleApiClient={client} {...props} />}
+            </GoogleApiClientContext.Consumer>
+        );
+    }
     WithGoogleApiClientComponent.displayName = `WithGoogleApiClient(${getDisplayName(
         WrappedComponent,
     )})`;
     return WithGoogleApiClientComponent;
-};
+}
 
 interface GoogleApiClientProviderProps {
     children: ReactNode;

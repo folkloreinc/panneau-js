@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useMediasApi } from '../MediasApiContext';
 
-const useMediaTrash = () => {
+function useMediaTrash() {
     const [trashing, setTrashing] = useState(false);
     const api = useMediasApi();
     const mediaTrash = useCallback(
@@ -16,6 +16,6 @@ const useMediaTrash = () => {
         [api, setTrashing],
     );
     return { mediaTrash, trashing };
-};
+}
 
 export default useMediaTrash;

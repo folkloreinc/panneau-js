@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-const useMediasRecent = (opts, key = 'media-gallery-recent-searches') => {
+function useMediasRecent(opts, key = 'media-gallery-recent-searches') {
     const addSearchValue = useCallback(
         (value) => {
             if (
@@ -35,6 +35,6 @@ const useMediasRecent = (opts, key = 'media-gallery-recent-searches') => {
         addSearchValue,
         getSearchValues,
     };
-};
+}
 
 export default useMediasRecent;

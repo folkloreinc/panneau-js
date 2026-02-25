@@ -14,14 +14,16 @@ interface QueryProviderProps {
 
 const QueryContext = createContext<QueryClient | null>(null);
 
-export const useQueryContext = () => use(QueryContext);
+export function useQueryContext() {
+    return use(QueryContext);
+}
 
-export const QueryProvider = ({
+export function QueryProvider({
     config: initialConfig = null,
     initialKey = null,
     initialData = null,
     children,
-}: QueryProviderProps) => {
+}: QueryProviderProps) {
     const queryClient = useMemo(() => {
         const client = new QueryClient({
             defaultOptions: {
@@ -38,6 +40,6 @@ export const QueryProvider = ({
     }, [initialConfig]);
 
     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
-};
+}
 
 export default QueryContext;

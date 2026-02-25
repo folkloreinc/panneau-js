@@ -13,10 +13,10 @@ interface UseQueryReturn {
     onQueryReset: () => void;
 }
 
-const useQuery = (
+function useQuery(
     initialBaseQuery: QueryParams | null = null,
     paginated = true,
-): UseQueryReturn => {
+): UseQueryReturn {
     const initialQuery = useMemo(
         () =>
             paginated
@@ -66,6 +66,6 @@ const useQuery = (
         onQueryChange,
         onQueryReset,
     };
-};
+}
 
 export default useQuery;

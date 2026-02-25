@@ -24,26 +24,30 @@ export const PanelsContext = createContext<PanelsContextValue>({
     unregister: () => {},
 });
 
-export const usePanels = (): PanelsContextValue => useContext(PanelsContext) || {};
+export function usePanels(): PanelsContextValue {
+    return useContext(PanelsContext) || {};
+}
 
-export const withPanels = (WrappedComponent: ComponentType<any>) => {
-    const WithPanelsComponent = (props: any) => (
-        <PanelsContext.Consumer>
-            {({ panels, setContainer, container, register, unregister }) => (
-                <WrappedComponent
-                    panelsContainer={container}
-                    setPanelsContainer={setContainer}
-                    panels={panels}
-                    registerPanel={register}
-                    unregisterPanel={unregister}
-                    {...props}
-                />
-            )}
-        </PanelsContext.Consumer>
-    );
+export function withPanels(WrappedComponent: ComponentType<any>) {
+    function WithPanelsComponent(props: any) {
+        return (
+            <PanelsContext.Consumer>
+                {({ panels, setContainer, container, register, unregister }) => (
+                    <WrappedComponent
+                        panelsContainer={container}
+                        setPanelsContainer={setContainer}
+                        panels={panels}
+                        registerPanel={register}
+                        unregisterPanel={unregister}
+                        {...props}
+                    />
+                )}
+            </PanelsContext.Consumer>
+        );
+    }
     WithPanelsComponent.displayName = `WithPanels(${getDisplayName(WrappedComponent)})`;
     return WithPanelsComponent;
-};
+}
 
 interface PanelsProviderProps {
     children: ReactNode;

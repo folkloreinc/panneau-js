@@ -36,7 +36,7 @@ interface UseMediaApiReturn {
     ready: boolean;
 }
 
-const useMediaApi = ({
+function useMediaApi({
     url = null,
     initialMuted = false,
     onTimeUpdate = null,
@@ -49,7 +49,7 @@ const useMediaApi = ({
     onSeeked = null,
     onLoadStart = null,
     onCanPlayThough = null,
-}: UseMediaApiOptions = {}): UseMediaApiReturn => {
+}: UseMediaApiOptions = {}): UseMediaApiReturn {
     const ref = useRef<HTMLMediaElement>(null);
     const [muted, setMuted] = useState(initialMuted);
     const [currentTime, setCurrentTime] = useState<number | null>(null);
@@ -265,6 +265,6 @@ const useMediaApi = ({
         paused,
         ready,
     };
-};
+}
 
 export default useMediaApi;

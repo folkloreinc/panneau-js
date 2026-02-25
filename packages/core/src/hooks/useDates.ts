@@ -15,10 +15,10 @@ interface UseFormattedTimeOptions {
     timeGap?: number;
 }
 
-export const useFormattedDate = ({
+export function useFormattedDate({
     format = null,
     showToday = true,
-}: UseFormattedDateOptions = {}): ((date: string | Date | Dayjs) => string) => {
+}: UseFormattedDateOptions = {}): (date: string | Date | Dayjs) => string {
     const intl = useIntl();
     const today = dayjs();
 
@@ -42,13 +42,13 @@ export const useFormattedDate = ({
         },
         [today, showToday, format],
     );
-};
+}
 
-export const useFormattedTime = ({
+export function useFormattedTime({
     format = null,
     showNow = true,
     timeGap = 2,
-}: UseFormattedTimeOptions = {}): ((date: string | Date | Dayjs) => string) => {
+}: UseFormattedTimeOptions = {}): (date: string | Date | Dayjs) => string {
     const intl = useIntl();
     const now = dayjs();
 
@@ -77,4 +77,4 @@ export const useFormattedTime = ({
         },
         [now, showNow, timeGap, format],
     );
-};
+}

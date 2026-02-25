@@ -21,7 +21,7 @@ export const ComponentsContext = createContext<ComponentsManager | null>(null);
 /**
  * Hooks
  */
-export const useComponentsManager = (namespace: string | null = null): ComponentsManager => {
+export function useComponentsManager(namespace: string | null = null): ComponentsManager {
     const manager = useContext(ComponentsContext);
     const finalManager = useMemo(
         () =>
@@ -29,21 +29,21 @@ export const useComponentsManager = (namespace: string | null = null): Component
         [manager, namespace],
     );
     return finalManager;
-};
+}
 
-export const useComponents = (
+export function useComponents(
     namespace: string | null = null,
     defaultComponents: Record<string, unknown> = {},
-): Record<string, unknown> => {
+): Record<string, unknown> {
     const manager = useComponentsManager();
     return manager.getComponents(namespace) || defaultComponents;
-};
+}
 
-export const useComponent = (
+export function useComponent(
     name: unknown,
     defaultComponent: unknown = null,
     namespace: string | null = null,
-): unknown => {
+): unknown {
     const manager = useComponentsManager(namespace);
     return useMemo(() => {
         if (!isString(name)) {
@@ -51,149 +51,194 @@ export const useComponent = (
         }
         return manager.getComponent(name) || defaultComponent;
     }, [manager, name, defaultComponent]);
-};
+}
 
 /**
  * Fields hooks
  */
-export const useFieldsComponentsManager = (): ComponentsManager =>
-    useComponentsManager(FIELDS_NAMESPACE);
+export function useFieldsComponentsManager(): ComponentsManager {
+    return useComponentsManager(FIELDS_NAMESPACE);
+}
 
-export const useFieldsComponents = (
+export function useFieldsComponents(
     defaultComponents: Record<string, unknown> = {},
-): Record<string, unknown> => useComponents(FIELDS_NAMESPACE, defaultComponents);
+): Record<string, unknown> {
+    return useComponents(FIELDS_NAMESPACE, defaultComponents);
+}
 
-export const useFieldComponent = (name: unknown, defaultComponent: unknown = null): unknown =>
-    useComponent(name, defaultComponent, FIELDS_NAMESPACE);
+export function useFieldComponent(name: unknown, defaultComponent: unknown = null): unknown {
+    return useComponent(name, defaultComponent, FIELDS_NAMESPACE);
+}
 
 /**
  * Forms hooks
  */
-export const useFormsComponentsManager = (): ComponentsManager =>
-    useComponentsManager(FORMS_NAMESPACE);
+export function useFormsComponentsManager(): ComponentsManager {
+    return useComponentsManager(FORMS_NAMESPACE);
+}
 
-export const useFormsComponents = (
+export function useFormsComponents(
     defaultComponents: Record<string, unknown> = {},
-): Record<string, unknown> => useComponents(FORMS_NAMESPACE, defaultComponents);
+): Record<string, unknown> {
+    return useComponents(FORMS_NAMESPACE, defaultComponents);
+}
 
-export const useFormComponent = (name: unknown, defaultComponent: unknown = null): unknown =>
-    useComponent(name, defaultComponent, FORMS_NAMESPACE);
+export function useFormComponent(name: unknown, defaultComponent: unknown = null): unknown {
+    return useComponent(name, defaultComponent, FORMS_NAMESPACE);
+}
 
 /**
  * Modals hooks
  */
-export const useModalsComponentsManager = (): ComponentsManager =>
-    useComponentsManager(MODALS_NAMESPACE);
+export function useModalsComponentsManager(): ComponentsManager {
+    return useComponentsManager(MODALS_NAMESPACE);
+}
 
-export const useModalsComponents = (
+export function useModalsComponents(
     defaultComponents: Record<string, unknown> = {},
-): Record<string, unknown> => useComponents(MODALS_NAMESPACE, defaultComponents);
+): Record<string, unknown> {
+    return useComponents(MODALS_NAMESPACE, defaultComponents);
+}
 
-export const useModalComponent = (name: unknown, defaultComponent: unknown = null): unknown =>
-    useComponent(name, defaultComponent, MODALS_NAMESPACE);
+export function useModalComponent(name: unknown, defaultComponent: unknown = null): unknown {
+    return useComponent(name, defaultComponent, MODALS_NAMESPACE);
+}
 
 /**
  * Filters hooks
  */
-export const useFiltersComponentsManager = (): ComponentsManager =>
-    useComponentsManager(FILTERS_NAMESPACE);
+export function useFiltersComponentsManager(): ComponentsManager {
+    return useComponentsManager(FILTERS_NAMESPACE);
+}
 
-export const useFiltersComponents = (
+export function useFiltersComponents(
     defaultComponents: Record<string, unknown> = {},
-): Record<string, unknown> => useComponents(FILTERS_NAMESPACE, defaultComponents);
+): Record<string, unknown> {
+    return useComponents(FILTERS_NAMESPACE, defaultComponents);
+}
 
-export const useFilterComponent = (name: unknown, defaultComponent: unknown = null): unknown =>
-    useComponent(name, defaultComponent, FILTERS_NAMESPACE);
+export function useFilterComponent(name: unknown, defaultComponent: unknown = null): unknown {
+    return useComponent(name, defaultComponent, FILTERS_NAMESPACE);
+}
 
 /**
  * Lists hooks
  */
-export const useListsComponentsManager = (): ComponentsManager =>
-    useComponentsManager(LISTS_NAMESPACE);
+export function useListsComponentsManager(): ComponentsManager {
+    return useComponentsManager(LISTS_NAMESPACE);
+}
 
-export const useListsComponents = (
+export function useListsComponents(
     defaultComponents: Record<string, unknown> = {},
-): Record<string, unknown> => useComponents(LISTS_NAMESPACE, defaultComponents);
+): Record<string, unknown> {
+    return useComponents(LISTS_NAMESPACE, defaultComponents);
+}
 
-export const useListComponent = (name: unknown, defaultComponent: unknown = null): unknown =>
-    useComponent(name, defaultComponent, LISTS_NAMESPACE);
+export function useListComponent(name: unknown, defaultComponent: unknown = null): unknown {
+    return useComponent(name, defaultComponent, LISTS_NAMESPACE);
+}
 
 /**
  * Displays hooks
  */
-export const useDisplaysComponentsManager = (): ComponentsManager =>
-    useComponentsManager(DISPLAYS_NAMESPACE);
+export function useDisplaysComponentsManager(): ComponentsManager {
+    return useComponentsManager(DISPLAYS_NAMESPACE);
+}
 
-export const useDisplaysComponents = (
+export function useDisplaysComponents(
     defaultComponents: Record<string, unknown> = {},
-): Record<string, unknown> => useComponents(DISPLAYS_NAMESPACE, defaultComponents);
+): Record<string, unknown> {
+    return useComponents(DISPLAYS_NAMESPACE, defaultComponents);
+}
 
-export const useDisplayComponent = (name: unknown, defaultComponent: unknown = null): unknown =>
-    useComponent(name, defaultComponent, DISPLAYS_NAMESPACE);
+export function useDisplayComponent(name: unknown, defaultComponent: unknown = null): unknown {
+    return useComponent(name, defaultComponent, DISPLAYS_NAMESPACE);
+}
 
 /**
  * Actions hooks
  */
-export const useActionsComponentsManager = (): ComponentsManager =>
-    useComponentsManager(ACTIONS_NAMESPACE);
+export function useActionsComponentsManager(): ComponentsManager {
+    return useComponentsManager(ACTIONS_NAMESPACE);
+}
 
-export const useActionsComponents = (
+export function useActionsComponents(
     defaultComponents: Record<string, unknown> = {},
-): Record<string, unknown> => useComponents(ACTIONS_NAMESPACE, defaultComponents);
+): Record<string, unknown> {
+    return useComponents(ACTIONS_NAMESPACE, defaultComponents);
+}
 
-export const useActionComponent = (name: unknown, defaultComponent: unknown = null): unknown =>
-    useComponent(name, defaultComponent, ACTIONS_NAMESPACE);
+export function useActionComponent(name: unknown, defaultComponent: unknown = null): unknown {
+    return useComponent(name, defaultComponent, ACTIONS_NAMESPACE);
+}
 
 /**
  * Buttons hooks
  */
-export const useButtonsComponentsManager = (): ComponentsManager =>
-    useComponentsManager(BUTTONS_NAMESPACE);
+export function useButtonsComponentsManager(): ComponentsManager {
+    return useComponentsManager(BUTTONS_NAMESPACE);
+}
 
-export const useButtonsComponents = (
+export function useButtonsComponents(
     defaultComponents: Record<string, unknown> = {},
-): Record<string, unknown> => useComponents(BUTTONS_NAMESPACE, defaultComponents);
+): Record<string, unknown> {
+    return useComponents(BUTTONS_NAMESPACE, defaultComponents);
+}
 
-export const useButtonComponent = (name: unknown, defaultComponent: unknown = null): unknown =>
-    useComponent(name, defaultComponent, BUTTONS_NAMESPACE);
+export function useButtonComponent(name: unknown, defaultComponent: unknown = null): unknown {
+    return useComponent(name, defaultComponent, BUTTONS_NAMESPACE);
+}
 
 /**
  * Pages hooks
  */
-export const usePagesComponentsManager = (): ComponentsManager =>
-    useComponentsManager(PAGES_NAMESPACE);
+export function usePagesComponentsManager(): ComponentsManager {
+    return useComponentsManager(PAGES_NAMESPACE);
+}
 
-export const usePagesComponents = (
+export function usePagesComponents(
     defaultComponents: Record<string, unknown> = {},
-): Record<string, unknown> => useComponents(PAGES_NAMESPACE, defaultComponents);
+): Record<string, unknown> {
+    return useComponents(PAGES_NAMESPACE, defaultComponents);
+}
 
-export const usePageComponent = (name: unknown, defaultComponent: unknown = null): unknown =>
-    useComponent(name, defaultComponent, PAGES_NAMESPACE);
+export function usePageComponent(name: unknown, defaultComponent: unknown = null): unknown {
+    return useComponent(name, defaultComponent, PAGES_NAMESPACE);
+}
 
 /**
  * Previews hooks
  */
-export const usePreviewsComponentsManager = (): ComponentsManager =>
-    useComponentsManager(PREVIEWS_NAMESPACE);
+export function usePreviewsComponentsManager(): ComponentsManager {
+    return useComponentsManager(PREVIEWS_NAMESPACE);
+}
 
-export const usePreviewsComponents = (
+export function usePreviewsComponents(
     defaultComponents: Record<string, unknown> = {},
-): Record<string, unknown> => useComponents(PREVIEWS_NAMESPACE, defaultComponents);
+): Record<string, unknown> {
+    return useComponents(PREVIEWS_NAMESPACE, defaultComponents);
+}
 
-export const usePreviewComponent = (name: unknown, defaultComponent: unknown = null): unknown =>
-    useComponent(name, defaultComponent, PREVIEWS_NAMESPACE);
+export function usePreviewComponent(name: unknown, defaultComponent: unknown = null): unknown {
+    return useComponent(name, defaultComponent, PREVIEWS_NAMESPACE);
+}
 
 /**
  * App hooks
  */
-export const useAppComponentsManager = (): ComponentsManager => useComponentsManager(APP_NAMESPACE);
+export function useAppComponentsManager(): ComponentsManager {
+    return useComponentsManager(APP_NAMESPACE);
+}
 
-export const useAppComponents = (
+export function useAppComponents(
     defaultComponents: Record<string, unknown> = {},
-): Record<string, unknown> => useComponents(APP_NAMESPACE, defaultComponents);
+): Record<string, unknown> {
+    return useComponents(APP_NAMESPACE, defaultComponents);
+}
 
-export const useAppComponent = (name: unknown, defaultComponent: unknown = null): unknown =>
-    useComponent(name, defaultComponent, APP_NAMESPACE);
+export function useAppComponent(name: unknown, defaultComponent: unknown = null): unknown {
+    return useComponent(name, defaultComponent, APP_NAMESPACE);
+}
 
 /**
  * Provider

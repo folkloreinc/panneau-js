@@ -20,13 +20,13 @@ export const FontsContext = createContext<FontsContextValue>({
     customFonts: null,
 });
 
-export const useGoogleFonts = ({
+export function useGoogleFonts({
     disabled = false,
     setFonts = null,
 }: {
     disabled?: boolean;
     setFonts?: ((fonts: Font[]) => void) | null;
-} = {}): Font[] | null => {
+} = {}): Font[] | null {
     const { apiKey } = useGoogleKeys();
     const [googleFonts, setGoogleFonts] = useState<Font[] | null>(null);
     useEffect(() => {
@@ -54,11 +54,11 @@ export const useGoogleFonts = ({
         };
     }, [apiKey, disabled, setFonts, setGoogleFonts]);
     return googleFonts;
-};
+}
 
-export const useFonts = ({
+export function useFonts({
     withoutGoogleFonts = false,
-}: { withoutGoogleFonts?: boolean } = {}): FontsContextValue => {
+}: { withoutGoogleFonts?: boolean } = {}): FontsContextValue {
     const {
         setGoogleFonts = null,
         systemFonts = null,
@@ -81,7 +81,7 @@ export const useFonts = ({
     );
 
     return fonts;
-};
+}
 
 const DEFAULT_SYSTEM_FONTS: string[] = [
     'Arial',

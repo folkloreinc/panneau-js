@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useMediasApi } from '../MediasApiContext';
 
-const useMediaReplace = () => {
+function useMediaReplace() {
     const [replacing, setReplacing] = useState(false);
     const api = useMediasApi();
     const mediaReplace = useCallback(
@@ -16,6 +16,6 @@ const useMediaReplace = () => {
         [api, setReplacing],
     );
     return { mediaReplace, replacing };
-};
+}
 
 export default useMediaReplace;

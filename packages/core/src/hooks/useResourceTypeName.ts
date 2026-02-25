@@ -14,10 +14,10 @@ interface ResourceWithTypes extends Resource {
     };
 }
 
-const useResourceTypeName = (
+function useResourceTypeName(
     resource: ResourceWithTypes | null,
     type: string | null = null,
-): string | null => {
+): string | null {
     const typeName = useMemo(() => {
         const { name: resourceName = null, types = [], settings = {} } = resource || {};
         const { hideTypeNames = false } = settings || {};
@@ -32,6 +32,6 @@ const useResourceTypeName = (
     }, [type, resource]);
 
     return typeName;
-};
+}
 
 export default useResourceTypeName;

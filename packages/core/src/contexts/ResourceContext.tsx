@@ -5,7 +5,9 @@ import type { Resource } from '../types';
 
 const ResourceContext = createContext<Resource | null>(null);
 
-export const useResource = (): Resource | null => use(ResourceContext);
+export function useResource(): Resource | null {
+    return use(ResourceContext);
+}
 
 interface ResourceProviderProps {
     resource: Resource;

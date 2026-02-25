@@ -9,7 +9,9 @@ export const GoogleKeysContext = createContext<GoogleKeysContextValue>({
     apiKey: null,
 });
 
-export const useGoogleKeys = (): GoogleKeysContextValue => useContext(GoogleKeysContext);
+export function useGoogleKeys(): GoogleKeysContextValue {
+    return useContext(GoogleKeysContext);
+}
 
 interface GoogleKeysProviderProps {
     children: ReactNode;

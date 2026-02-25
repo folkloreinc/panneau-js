@@ -6,27 +6,33 @@ import { useGoogleKeys } from './GoogleKeysContext';
 
 export const GoogleMapsClientContext = createContext<any | null>(null);
 
-export const useGoogleMapsClient = (): any | null => useContext(GoogleMapsClientContext);
+export function useGoogleMapsClient(): any | null {
+    return useContext(GoogleMapsClientContext);
+}
 
-export const withGoogleMapsClient = (WrappedComponent: ComponentType<any>) => {
-    const getDisplayName = ({
+export function withGoogleMapsClient(WrappedComponent: ComponentType<any>) {
+    function getDisplayName({
         displayName = null,
         name = null,
     }: {
         displayName?: string | null;
         name?: string | null;
-    }): string => displayName || name || 'Component';
+    }): string {
+        return displayName || name || 'Component';
+    }
 
-    const WithGoogleMapsClientComponent = (props: any) => (
-        <GoogleMapsClientContext.Consumer>
-            {(client) => <WrappedComponent googleApiClient={client} {...props} />}
-        </GoogleMapsClientContext.Consumer>
-    );
+    function WithGoogleMapsClientComponent(props: any) {
+        return (
+            <GoogleMapsClientContext.Consumer>
+                {(client) => <WrappedComponent googleApiClient={client} {...props} />}
+            </GoogleMapsClientContext.Consumer>
+        );
+    }
     WithGoogleMapsClientComponent.displayName = `WithGoogleMapsClient(${getDisplayName(
         WrappedComponent,
     )})`;
     return WithGoogleMapsClientComponent;
-};
+}
 
 interface GoogleMapsClientProviderProps {
     children: ReactNode;

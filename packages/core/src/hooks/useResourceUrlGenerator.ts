@@ -3,13 +3,14 @@ import isObject from 'lodash/isObject';
 import { usePanneauResources, useResource, useUrlGenerator } from '../contexts';
 import type { Resource } from '../types';
 
-const getResource = (
+function getResource(
     resources: Resource[],
     resourceId: string | Resource | null,
-): Resource | null =>
-    resourceId !== null && !isObject(resourceId)
+): Resource | null {
+    return resourceId !== null && !isObject(resourceId)
         ? resources.find((it) => it.id === resourceId) || null
         : (resourceId as Resource);
+}
 
 type ResourceUrlGenerator = (
     routeResourceId: string | Resource,
@@ -17,9 +18,9 @@ type ResourceUrlGenerator = (
     params?: Record<string, unknown> | null,
 ) => string | null;
 
-const useResourceUrlGenerator = (
+function useResourceUrlGenerator(
     resourceId: string | Resource | null = null,
-): ResourceUrlGenerator => {
+): ResourceUrlGenerator {
     const resources = usePanneauResources();
     const contextResource = useResource();
     const resource = getResource(resources, resourceId) || contextResource;
@@ -42,6 +43,6 @@ const useResourceUrlGenerator = (
                 : null;
         return finalRoute;
     };
-};
+}
 
 export default useResourceUrlGenerator;

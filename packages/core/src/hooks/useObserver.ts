@@ -1,7 +1,9 @@
 import type { RefObject } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
-const buildThresholdArray = (): number[] => [0, 1.0];
+function buildThresholdArray(): number[] {
+    return [0, 1.0];
+}
 
 type ObserverConstructor<T> =
     | (new (
@@ -34,13 +36,18 @@ interface ObserverOptions {
 
 const observersCache = new Map<ObserverConstructor<any>, Record<string, ObserverWrapper<any>>>();
 
-const getOptionsKey = ({ root = null, rootMargin, threshold = null }: ObserverOptions): string =>
-    `root_${root}_rootMargin_${rootMargin || null}_threshold_${threshold}`;
+function getOptionsKey({
+    root = null,
+    rootMargin,
+    threshold = null,
+}: ObserverOptions): string {
+    return `root_${root}_rootMargin_${rootMargin || null}_threshold_${threshold}`;
+}
 
-const createObserver = <T>(
+function createObserver<T>(
     Observer: NonNullable<ObserverConstructor<T>>,
     options: Record<string, unknown> = {},
-): ObserverWrapper<T> => {
+): ObserverWrapper<T> {
     let subscribers: Subscriber<T>[] = [];
 
     const addSubscriber = (element: Element, callback: (entry: T) => void): Subscriber<T>[] => {
@@ -120,12 +127,12 @@ const createObserver = <T>(
         unsubscribe,
         observer,
     };
-};
+}
 
-export const getObserver = <T>(
+export function getObserver<T>(
     Observer: ObserverConstructor<T>,
     options: ObserverOptions = {},
-): ObserverWrapper<T> => {
+): ObserverWrapper<T> {
     if (Observer === null) {
         throw new Error('Observer constructor is null');
     }
@@ -139,18 +146,18 @@ export const getObserver = <T>(
         observersCache.set(Observer, observers);
     }
     return observers[observerKey];
-};
+}
 
 interface UseObserverReturn<T> {
     ref: RefObject<Element>;
     entry: T;
 }
 
-export const useObserver = <T>(
+export function useObserver<T>(
     Observer: ObserverConstructor<T>,
     opts: ObserverOptions = {},
     initialEntry: T = {} as T,
-): UseObserverReturn<T> => {
+): UseObserverReturn<T> {
     const { root = null, rootMargin = null, threshold = null, disabled = false } = opts;
     const [entry, setEntry] = useState<T>(initialEntry);
     const nodeRef = useRef<Element>(null);
@@ -187,7 +194,7 @@ export const useObserver = <T>(
         ref: nodeRef,
         entry,
     };
-};
+}
 
 /**
  * Intersection Observer
@@ -223,13 +230,13 @@ interface UseIntersectionObserverOptions {
     disabled?: boolean;
 }
 
-export const useIntersectionObserver = ({
+export function useIntersectionObserver({
     root = null,
     rootMargin = '0px',
     threshold = thresholdArray,
     disabled = false,
-}: UseIntersectionObserverOptions = {}): UseObserverReturn<IntersectionObserverEntry> =>
-    useObserver(
+}: UseIntersectionObserverOptions = {}): UseObserverReturn<IntersectionObserverEntry> {
+    return useObserver(
         typeof window !== 'undefined' ? IntersectionObserver : null,
         {
             root,
@@ -239,6 +246,7 @@ export const useIntersectionObserver = ({
         },
         intersectionObserverInitialEntry,
     );
+}
 
 /**
  * Resize Observer
@@ -261,11 +269,12 @@ interface UseResizeObserverOptions {
     disabled?: boolean;
 }
 
-export const useResizeObserver = ({
+export function useResizeObserver({
     disabled = false,
-}: UseResizeObserverOptions = {}): UseObserverReturn<ResizeObserverEntry> =>
-    useObserver(
+}: UseResizeObserverOptions = {}): UseObserverReturn<ResizeObserverEntry> {
+    return useObserver(
         typeof window !== 'undefined' ? ResizeObserver : null,
         { disabled },
         resizeObserverInitialEntry,
     );
+}

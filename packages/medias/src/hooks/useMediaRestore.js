@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useMediasApi } from '../MediasApiContext';
 
-const useMediaRestore = () => {
+function useMediaRestore() {
     const [restoring, setRestoring] = useState(false);
     const api = useMediasApi();
     const mediaRestore = useCallback(
@@ -16,6 +16,6 @@ const useMediaRestore = () => {
         [api, setRestoring],
     );
     return { mediaRestore, restoring };
-};
+}
 
 export default useMediaRestore;

@@ -5,12 +5,14 @@ import type { Definition } from '../types';
 
 const DefinitionContext = createContext<Definition | null>(null);
 
-export const useDefinitionContext = (): Definition | null => useContext(DefinitionContext);
+export function useDefinitionContext(): Definition | null {
+    return useContext(DefinitionContext);
+}
 
-export const useDefinition = (): Definition | null => {
+export function useDefinition(): Definition | null {
     const definition = useDefinitionContext();
     return definition || null;
-};
+}
 
 interface DefinitionProviderProps {
     definition: Definition;

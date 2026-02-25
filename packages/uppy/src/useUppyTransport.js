@@ -11,7 +11,7 @@ const defaultPackagesMap = {
     tus: () => loadPackage('@uppy/tus', () => import('@uppy/tus')),
     xhr: () => loadPackage('@uppy/xhr-upload', () => import('@uppy/xhr-upload')),
 };
-const useUppyTransport = (transport, { packagesMap = defaultPackagesMap } = {}) => {
+function useUppyTransport(transport, { packagesMap = defaultPackagesMap } = {}) {
     // transport
     const [{ package: loadedPackage }, setLoadedPackage] = useState({
         package: packagesCache[transport] || null,
@@ -44,6 +44,6 @@ const useUppyTransport = (transport, { packagesMap = defaultPackagesMap } = {}) 
         };
     }, [packageLoader, loadedPackage, setLoadedPackage]);
     return loadedPackage;
-};
+}
 
 export default useUppyTransport;

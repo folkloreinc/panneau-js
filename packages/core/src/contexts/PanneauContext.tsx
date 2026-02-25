@@ -7,21 +7,23 @@ import type { PanneauDefinition, Resource } from '../types';
 
 const PanneauContext = createContext<PanneauDefinition | null>(null);
 
-export const usePanneau = (): PanneauDefinition | null => useContext(PanneauContext);
+export function usePanneau(): PanneauDefinition | null {
+    return useContext(PanneauContext);
+}
 
 const DEFAULT_RESOURCES: Resource[] = [];
 
-export const usePanneauResources = (): Resource[] => {
+export function usePanneauResources(): Resource[] {
     const { resources = DEFAULT_RESOURCES } = usePanneau() || {};
     return resources;
-};
+}
 
-export const usePanneauResource = (id: string): Resource | null => {
+export function usePanneauResource(id: string): Resource | null {
     const resources = usePanneauResources();
     return resources.find((it) => it.id === id) || null;
-};
+}
 
-export const usePanneauColorScheme = (): {
+export function usePanneauColorScheme(): {
     theme: string;
     background: string | null;
     text: string | null;
@@ -48,16 +50,16 @@ export const usePanneauColorScheme = (): {
         background: null,
         text: null,
     };
-};
+}
 
 const DEFAULT_COMPONENTS: Record<string, unknown> = {};
 
-export const usePanneauComponents = (): Record<string, unknown> => {
+export function usePanneauComponents(): Record<string, unknown> {
     const { components = DEFAULT_COMPONENTS } = usePanneau() || {};
     return components;
-};
+}
 
-export const usePanneauComponent = (namespace: string | null, name: string): string | null => {
+export function usePanneauComponent(namespace: string | null, name: string): string | null {
     const { components = {} } = usePanneau() || {};
     const path = namespace !== null ? `${namespace}.${name}` : name || null;
     const component = path !== null ? components[path] || null : null;
@@ -72,17 +74,17 @@ export const usePanneauComponent = (namespace: string | null, name: string): str
     }
 
     return null;
-};
+}
 
-export const usePanneauAuth = (): Record<string, unknown> => {
+export function usePanneauAuth(): Record<string, unknown> {
     const { auth = {} } = usePanneau() || {};
     return auth;
-};
+}
 
-export const usePanneauSettings = (): Record<string, unknown> => {
+export function usePanneauSettings(): Record<string, unknown> {
     const { settings = {} } = usePanneau() || {};
     return settings;
-};
+}
 
 interface PanneauProviderProps {
     definition: PanneauDefinition;

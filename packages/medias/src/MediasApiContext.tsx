@@ -20,7 +20,9 @@ interface MediasApiProviderProps {
 
 const MediasApiContext = createContext<MediasApi | null>(null);
 
-export const useMediasApi = () => use(MediasApiContext);
+export function useMediasApi() {
+    return use(MediasApiContext);
+}
 
 export function MediasApiProvider({ api: providedApi = null, children }: MediasApiProviderProps) {
     const previousApi = useMediasApi();

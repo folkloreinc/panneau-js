@@ -8,17 +8,19 @@ interface FormContextValue {
 
 const FormContext = createContext<FormContextValue | null>(null);
 
-export const useFormContext = (): FormContextValue | null => use(FormContext);
+export function useFormContext(): FormContextValue | null {
+    return use(FormContext);
+}
 
-export const useFormValue = (): Record<string, unknown> => {
+export function useFormValue(): Record<string, unknown> {
     const { value } = useFormContext();
     return value;
-};
+}
 
-export const useFormSetValue = (): ((value: Record<string, unknown>) => void) => {
+export function useFormSetValue(): (value: Record<string, unknown>) => void {
     const { setValue } = useFormContext();
     return setValue;
-};
+}
 
 interface FormProviderProps {
     value: Record<string, unknown>;

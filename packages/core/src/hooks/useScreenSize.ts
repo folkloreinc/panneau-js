@@ -32,14 +32,14 @@ interface ScreenSize {
     landscape: boolean;
 }
 
-const useScreenSize = ({
+function useScreenSize({
     width = null,
     height = null,
     landscape = false,
     screens = [],
     mediaType = 'screen',
     media: providedMedia = null,
-}: UseScreenSizeOptions): ScreenSize => {
+}: UseScreenSizeOptions): ScreenSize {
     // Get media
     const media = useMemo(
         () =>
@@ -72,7 +72,7 @@ const useScreenSize = ({
         height,
         landscape,
     };
-};
+}
 
 interface UseScreenSizeFromElementOptions extends Omit<UseScreenSizeOptions, 'landscape'> {
     withoutMaxSize?: boolean;
@@ -83,11 +83,11 @@ interface UseScreenSizeFromElementReturn {
     screenSize: ScreenSize;
 }
 
-export const useScreenSizeFromElement = ({
+export function useScreenSizeFromElement({
     width = null,
     height = null,
     ...opts
-}: UseScreenSizeFromElementOptions = {}): UseScreenSizeFromElementReturn => {
+}: UseScreenSizeFromElementOptions = {}): UseScreenSizeFromElementReturn {
     const {
         ref,
         entry: { contentRect },
@@ -126,19 +126,21 @@ export const useScreenSizeFromElement = ({
         ref,
         screenSize,
     };
-};
+}
 
 interface WindowSize {
     width: number | null;
     height: number | null;
 }
 
-const getWindowSize = (): WindowSize => ({
-    width: typeof window !== 'undefined' ? window.innerWidth : null,
-    height: typeof window !== 'undefined' ? window.innerHeight : null,
-});
+function getWindowSize(): WindowSize {
+    return {
+        width: typeof window !== 'undefined' ? window.innerWidth : null,
+        height: typeof window !== 'undefined' ? window.innerHeight : null,
+    };
+}
 
-export const useScreenSizeFromWindow = (opts: UseScreenSizeOptions = {}): ScreenSize => {
+export function useScreenSizeFromWindow(opts: UseScreenSizeOptions = {}): ScreenSize {
     const [windowSize, setWindowSize] = useState<WindowSize>(getWindowSize());
     useEffect(() => {
         const onResize = () => setWindowSize(getWindowSize());
@@ -155,6 +157,6 @@ export const useScreenSizeFromWindow = (opts: UseScreenSizeOptions = {}): Screen
         ...opts,
         ...windowSize,
     });
-};
+}
 
 export default useScreenSize;

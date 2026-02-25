@@ -36,21 +36,29 @@ const fontsMap: FontsMap = {
     active: [],
 };
 
-const isFontLoading = (name: string): boolean => fontsMap.loading.indexOf(name) !== -1;
-const isFontActive = (name: string): boolean => fontsMap.active.indexOf(name) !== -1;
-const addFontLoading = (name: string): void => {
+function isFontLoading(name: string): boolean {
+    return fontsMap.loading.indexOf(name) !== -1;
+}
+
+function isFontActive(name: string): boolean {
+    return fontsMap.active.indexOf(name) !== -1;
+}
+
+function addFontLoading(name: string): void {
     fontsMap.active = fontsMap.active.filter((it) => it !== name);
     fontsMap.loading = [...fontsMap.loading, name];
-};
-const removeFontLoading = (name: string): void => {
+}
+
+function removeFontLoading(name: string): void {
     fontsMap.loading = fontsMap.loading.filter((it) => it !== name);
-};
-const addFontActive = (name: string): void => {
+}
+
+function addFontActive(name: string): void {
     fontsMap.loading = fontsMap.loading.filter((it) => it !== name);
     fontsMap.active = [...fontsMap.active, name];
-};
+}
 
-const useLoadedFonts = (fonts: (string | FontConfig)[]): { loaded: boolean } => {
+function useLoadedFonts(fonts: (string | FontConfig)[]): { loaded: boolean } {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
@@ -103,6 +111,6 @@ const useLoadedFonts = (fonts: (string | FontConfig)[]): { loaded: boolean } => 
         }
     }, [fonts, setLoaded]);
     return { loaded };
-};
+}
 
 export default useLoadedFonts;

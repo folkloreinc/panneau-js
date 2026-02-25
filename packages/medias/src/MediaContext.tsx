@@ -16,7 +16,9 @@ interface MediaProviderProps {
 
 const MediaContext = createContext<MediaContextValue | null>(null);
 
-export const useCurrentMedia = () => use(MediaContext) as MediaContextValue;
+export function useCurrentMedia(): MediaContextValue {
+    return use(MediaContext) as MediaContextValue;
+}
 
 export function MediaProvider({ media: providedMedia = null, children }: MediaProviderProps) {
     const [currentMedia, setCurrentMedia] = useState(providedMedia);

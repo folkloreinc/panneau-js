@@ -8,7 +8,9 @@ import type { TrackingVariables } from '../types';
 
 export { TrackingContext };
 
-export const useTracking = (): any => useContext(TrackingContext);
+export function useTracking(): any {
+    return useContext(TrackingContext);
+}
 
 interface TrackingProviderProps {
     children: ReactNode;

@@ -15,14 +15,16 @@ interface ApiProviderProps {
 
 const ApiContext = createContext<Api | null>(null);
 
-export const useApi = () => use(ApiContext);
+export function useApi() {
+    return use(ApiContext);
+}
 
-export const ApiProvider = ({
+export function ApiProvider({
     api: initialApi = null,
     baseUrl = undefined,
     onUnauthorized = null,
     children,
-}: ApiProviderProps) => {
+}: ApiProviderProps) {
     const generateUrl = useUrlGenerator();
     const previousApi = useApi();
     const api = useMemo(
@@ -37,6 +39,6 @@ export const ApiProvider = ({
         [previousApi, initialApi, baseUrl],
     );
     return <ApiContext value={api}>{children}</ApiContext>;
-};
+}
 
 export default ApiContext;

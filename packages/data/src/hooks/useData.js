@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-const useData = (loadData, { initialData = null, autoload = true } = {}) => {
+function useData(loadData, { initialData = null, autoload = true } = {}) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [data, setData] = useState(initialData);
@@ -47,6 +47,6 @@ const useData = (loadData, { initialData = null, autoload = true } = {}) => {
         loading,
         error,
     };
-};
+}
 
 export default useData;

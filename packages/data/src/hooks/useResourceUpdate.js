@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useApi } from '../contexts/ApiContext';
 
-const useResourceUpdate = (resource, id) => {
+function useResourceUpdate(resource, id) {
     const [loading, setLoading] = useState(false);
     const api = useApi();
     const update = useCallback(
@@ -22,6 +22,6 @@ const useResourceUpdate = (resource, id) => {
         [api, resource, id, setLoading],
     );
     return { update, loading };
-};
+}
 
 export default useResourceUpdate;

@@ -9,11 +9,11 @@ interface UseObjectFormOptions {
     [key: string]: unknown;
 }
 
-const useObjectForm = ({
+function useObjectForm({
     fields: providedFields = [],
     injectInFields = false,
     ...opts
-}: UseObjectFormOptions = {}) => {
+}: UseObjectFormOptions = {}) {
     const fieldsNames = useMemo(
         () => (providedFields.length > 0 ? providedFields.map(({ name }) => name as string) : []),
         [providedFields],
@@ -31,6 +31,6 @@ const useObjectForm = ({
               }))
             : providedFields,
     };
-};
+}
 
 export default useObjectForm;

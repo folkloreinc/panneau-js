@@ -10,17 +10,19 @@ import { ComponentsProvider, FIELDS_NAMESPACE } from './ComponentsContext';
 
 export const FieldsContext = createContext<FieldsManager | null>(null);
 
-export const useFieldsManager = (): FieldsManager | null => useContext(FieldsContext);
+export function useFieldsManager(): FieldsManager | null {
+    return useContext(FieldsContext);
+}
 
-export const useField = (id: string): Field | null => {
+export function useField(id: string): Field | null {
     const manager = useFieldsManager();
     return manager.getDefinition(id);
-};
+}
 
-export const useFields = (): Field[] => {
+export function useFields(): Field[] {
     const manager = useFieldsManager();
     return manager.getDefinitions();
-};
+}
 
 interface FieldsProviderProps {
     fields?: Field[] | null;
