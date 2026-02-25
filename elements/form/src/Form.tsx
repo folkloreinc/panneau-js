@@ -2,11 +2,7 @@ import classNames from 'classnames';
 import type { FormEvent, ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type {
-    Button as ButtonType,
-    FormStatus as FormStatusType,
-    Label,
-} from '@panneau/core';
+import type { Button as ButtonType, FormStatus as FormStatusType, Label } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Buttons from '@panneau/element-buttons';
 import FormStatus from '@panneau/element-form-status';

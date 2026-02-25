@@ -2,9 +2,9 @@ import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import type { Field, Label } from '@panneau/core';
 import { useFormComponent } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
-import type { Field, Label } from '@panneau/core';
 
 interface FormProps {
     action: string;

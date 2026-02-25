@@ -4,9 +4,9 @@ import type { ReactNode } from 'react';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import type { Media } from '@panneau/core';
 import { useFieldComponent } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
-import type { Media } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Form from '@panneau/element-form';
 import FormStatus from '@panneau/element-form-status';

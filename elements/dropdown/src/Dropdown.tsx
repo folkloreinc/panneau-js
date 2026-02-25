@@ -2,8 +2,8 @@ import classNames from 'classnames';
 import type { MouseEvent, ReactNode } from 'react';
 import { useCallback, useRef } from 'react';
 
-import { useDocumentEvent } from '@panneau/core/hooks';
 import type { DropdownAlign, MenuItem } from '@panneau/core';
+import { useDocumentEvent } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import LabelComponent from '@panneau/element-label';
 import Link from '@panneau/element-link';

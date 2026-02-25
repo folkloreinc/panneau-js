@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 
+import type { Resource } from '@panneau/core';
 import { FormProvider, useFormsComponents, useLocales } from '@panneau/core/contexts';
 import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
-import type { Resource } from '@panneau/core';
 import { getComponentFromName } from '@panneau/core/utils';
 import {
     useResourceClone,

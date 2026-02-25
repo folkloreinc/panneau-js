@@ -1,6 +1,6 @@
-import type { Field } from '../types';
 import { useMemo } from 'react';
 
+import type { Field } from '../types';
 import useBaseForm from './useForm';
 
 interface UseObjectFormOptions {

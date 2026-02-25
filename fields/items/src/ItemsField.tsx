@@ -1,23 +1,23 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import {
-    useCallback,
-    useEffect,
-    useMemo,
-    useState,
-    type ComponentType,
-    type MouseEvent,
-    type ReactNode,
-} from 'react';
 import { faCaretDown, faCaretRight, faGripLines, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import isFunction from 'lodash/isFunction';
+import {
+    type ComponentType,
+    type MouseEvent,
+    type ReactNode,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ReactSortable } from 'react-sortablejs';
 import { v4 as uuid } from 'uuid';
 
-import { useFieldComponent, useFieldsComponentsManager } from '@panneau/core/contexts';
 import type { Field, Label } from '@panneau/core';
+import { useFieldComponent, useFieldsComponentsManager } from '@panneau/core/contexts';
 import { getPathValue } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';

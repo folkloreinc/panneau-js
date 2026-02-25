@@ -2,8 +2,8 @@ import classNames from 'classnames';
 import isArray from 'lodash/isArray';
 import type { MouseEvent, ReactNode } from 'react';
 
-import { useButtonsComponents } from '@panneau/core/contexts';
 import type { ButtonSize, Button as ButtonType } from '@panneau/core';
+import { useButtonsComponents } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 
 interface ButtonsProps {

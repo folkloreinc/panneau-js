@@ -5,8 +5,8 @@ import uniqBy from 'lodash/uniqBy';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { usePanneauResource } from '@panneau/core/contexts';
 import type { FormError, Message } from '@panneau/core';
+import { usePanneauResource } from '@panneau/core/contexts';
 import { getPathValue, isMessage } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Button from '@panneau/element-button';

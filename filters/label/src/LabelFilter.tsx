@@ -1,5 +1,5 @@
-import { type ReactNode } from 'react';
 import classNames from 'classnames';
+import { type ReactNode } from 'react';
 
 import Link from '@panneau/element-link';
 

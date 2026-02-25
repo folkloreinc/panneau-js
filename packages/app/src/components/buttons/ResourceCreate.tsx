@@ -3,8 +3,8 @@ import type { MouseEvent } from 'react';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import type { ButtonSize, Resource } from '@panneau/core';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
 import { useResourceValues } from '@panneau/intl';

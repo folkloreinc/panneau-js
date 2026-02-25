@@ -1,5 +1,5 @@
-import { useFieldComponent } from '@panneau/core/contexts';
 import type { Button, Field, FormStatus } from '@panneau/core';
+import { useFieldComponent } from '@panneau/core/contexts';
 import Form from '@panneau/element-form';
 
 // import Button from '@panneau/element-button';

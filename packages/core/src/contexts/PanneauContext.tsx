@@ -25,6 +25,7 @@ export const usePanneauColorScheme = (): {
     theme: string;
     background: string | null;
     text: string | null;
+    sidebarPosition?: string | null;
 } => {
     const { theme = null } = usePanneau() || {};
     const { colorScheme = 'light' } = theme || {};
@@ -59,13 +60,13 @@ export const usePanneauComponents = (): Record<string, unknown> => {
 export const usePanneauComponent = (namespace: string | null, name: string): string | null => {
     const { components = {} } = usePanneau() || {};
     const path = namespace !== null ? `${namespace}.${name}` : name || null;
-    const component = components[path] || null;
+    const component = path !== null ? components[path] || null : null;
 
     if (isString(component)) {
         return component;
     }
 
-    if (isObject(component) && isString(component?.componnent)) {
+    if (isObject(component) && isString(component?.component)) {
         const { component: innerComponent, ...props } = component;
         return component.component;
     }

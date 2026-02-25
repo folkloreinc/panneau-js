@@ -1,6 +1,6 @@
 import isString from 'lodash/isString';
-import type { Field, Resource, TableColumn } from '../types';
 
+import type { Field, Resource, TableColumn } from '../types';
 import getComponent from './getComponent';
 
 interface Column extends Record<string, unknown> {
@@ -16,7 +16,11 @@ export const getColumnFromField = (field: Field | null): Column | null => {
         return null;
     }
     // eslint-disable-next-line camelcase
-    const { name, components: { display = null } = {}, label } = field as Field & {
+    const {
+        name,
+        components: { display = null } = {},
+        label,
+    } = field as Field & {
         components?: { display?: unknown };
     };
     const { name: componentName = null, props: componentProps = null } = getComponent(display);

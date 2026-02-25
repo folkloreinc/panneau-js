@@ -104,7 +104,10 @@ class MediasParser {
     }
 
     // Convert path to medias object
-    fromPath(story: Story | null, defaultMedias: Record<string, Media> | null = null): Story | null {
+    fromPath(
+        story: Story | null,
+        defaultMedias: Record<string, Media> | null = null,
+    ): Story | null {
         if (story === null) {
             return story;
         }

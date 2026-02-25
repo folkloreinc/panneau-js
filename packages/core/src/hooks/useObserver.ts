@@ -4,7 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 const buildThresholdArray = (): number[] => [0, 1.0];
 
 type ObserverConstructor<T> =
-    | (new (callback: (entries: T[]) => void, options?: Record<string, unknown>) => {
+    | (new (
+          callback: (entries: T[]) => void,
+          options?: Record<string, unknown>,
+      ) => {
           observe: (element: Element) => void;
           unobserve?: (element: Element) => void;
           disconnect: () => void;
@@ -29,28 +32,18 @@ interface ObserverOptions {
     disabled?: boolean;
 }
 
-const observersCache = new Map<
-    ObserverConstructor<any>,
-    Record<string, ObserverWrapper<any>>
->();
+const observersCache = new Map<ObserverConstructor<any>, Record<string, ObserverWrapper<any>>>();
 
-const getOptionsKey = ({
-    root = null,
-    rootMargin,
-    threshold = null,
-}: ObserverOptions): string =>
+const getOptionsKey = ({ root = null, rootMargin, threshold = null }: ObserverOptions): string =>
     `root_${root}_rootMargin_${rootMargin || null}_threshold_${threshold}`;
 
-const createObserver = <T,>(
+const createObserver = <T>(
     Observer: NonNullable<ObserverConstructor<T>>,
     options: Record<string, unknown> = {},
 ): ObserverWrapper<T> => {
     let subscribers: Subscriber<T>[] = [];
 
-    const addSubscriber = (
-        element: Element,
-        callback: (entry: T) => void,
-    ): Subscriber<T>[] => {
+    const addSubscriber = (element: Element, callback: (entry: T) => void): Subscriber<T>[] => {
         const currentSubscriber = subscribers.find((it) => it.element === element) || null;
         if (currentSubscriber !== null) {
             return subscribers
@@ -73,10 +66,7 @@ const createObserver = <T,>(
         ];
     };
 
-    const removeSubscriber = (
-        element: Element,
-        callback: (entry: T) => void,
-    ): Subscriber<T>[] =>
+    const removeSubscriber = (element: Element, callback: (entry: T) => void): Subscriber<T>[] =>
         subscribers
             .map((it) =>
                 it.element === element
@@ -132,7 +122,7 @@ const createObserver = <T,>(
     };
 };
 
-export const getObserver = <T,>(
+export const getObserver = <T>(
     Observer: ObserverConstructor<T>,
     options: ObserverOptions = {},
 ): ObserverWrapper<T> => {
@@ -156,7 +146,7 @@ interface UseObserverReturn<T> {
     entry: T;
 }
 
-export const useObserver = <T,>(
+export const useObserver = <T>(
     Observer: ObserverConstructor<T>,
     opts: ObserverOptions = {},
     initialEntry: T = {} as T,

@@ -3,8 +3,8 @@ import isEmpty from 'lodash/isEmpty';
 import type { ComponentType } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { useFieldsComponents, useLocales } from '@panneau/core/contexts';
 import type { Field } from '@panneau/core';
+import { useFieldsComponents, useLocales } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import Buttons from '@panneau/element-buttons';
 import FormGroup from '@panneau/element-form-group';

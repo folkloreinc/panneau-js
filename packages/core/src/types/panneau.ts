@@ -2,7 +2,7 @@
  * Panneau Definition Types
  * TypeScript interfaces for main Panneau configuration and definitions
  */
-import { Intl, Resource } from './resource';
+import { Resource } from './resource';
 
 /**
  * Panneau route configuration
@@ -30,6 +30,31 @@ export interface Page {
     [key: string]: unknown;
 }
 
+export interface PanneauTheme {
+    colorScheme?: string | null;
+    [key: string]: unknown;
+}
+
+export interface PanneauComponents {
+    [key: string]:
+        | string
+        | {
+              component: string;
+              [key: string]: unknown;
+          };
+}
+
+export interface PanneauIntlValues {
+    [key: string]: string;
+}
+
+export interface PanneauIntl {
+    locale?: string;
+    locales?: string[];
+    messages?: Record<string, string>;
+    values?: PanneauIntlValues;
+}
+
 /**
  * Panneau definition (main configuration)
  */
@@ -38,7 +63,10 @@ export interface PanneauDefinition {
     resources?: Resource[];
     routes?: Routes;
     pages?: Record<string, Page>;
-    intl?: Intl;
+    intl?: PanneauIntl;
+    theme?: PanneauTheme;
+    components?: PanneauComponents;
+    settings?: Record<string, unknown>;
 }
 
 /**

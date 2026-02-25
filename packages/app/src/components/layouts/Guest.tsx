@@ -1,5 +1,5 @@
-import { type ReactNode } from 'react';
 import classNames from 'classnames';
+import { type ReactNode } from 'react';
 
 import { usePanneauColorScheme } from '@panneau/core/contexts';
 

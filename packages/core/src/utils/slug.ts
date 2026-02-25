@@ -1,6 +1,7 @@
 import slugify from 'slugify';
-import snakeCase from './snakeCase';
+
 import dashCase from './dashCase';
+import snakeCase from './snakeCase';
 
 const slug = (str: string, separator: string | null = null): string => {
     let toSlug: string;

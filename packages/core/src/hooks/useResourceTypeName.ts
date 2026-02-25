@@ -1,5 +1,6 @@
-import type { Resource } from '../types';
 import { useMemo } from 'react';
+
+import type { Resource } from '../types';
 
 interface ResourceType {
     id?: string | null;

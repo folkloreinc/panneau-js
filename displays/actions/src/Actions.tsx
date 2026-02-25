@@ -26,15 +26,8 @@ function ActionsDisplay({
     //     locale,
     // });
     return (
-        <div
-            className={className}
-        >
-            <Actions
-                {...props}
-                value={displayValue || item}
-                className={buttonsClassName}
-                isGroup
-            />
+        <div className={className}>
+            <Actions {...props} value={displayValue || item} className={buttonsClassName} isGroup />
         </div>
     );
 }

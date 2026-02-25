@@ -1,4 +1,3 @@
-
 export * from './UppyContext';
 export { default as useUppyCore } from './useUppyCore';
 export { default as useUppyLocale } from './useUppyLocale';

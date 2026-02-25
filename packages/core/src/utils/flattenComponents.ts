@@ -1,5 +1,5 @@
-import ReactIs from 'react-is';
 import type { ComponentType } from 'react';
+import ReactIs from 'react-is';
 
 type ComponentMap = Record<string, ComponentType<unknown> | ComponentMap>;
 

@@ -71,7 +71,9 @@ const useLoadedFonts = (fonts: (string | FontConfig)[]): { loaded: boolean } => 
                         ...newConfig,
                         [type]: {
                             families: [
-                                ...(newConfig !== null ? (newConfig[type] || {}).families || [] : []),
+                                ...(newConfig !== null
+                                    ? (newConfig[type] || {}).families || []
+                                    : []),
                                 name,
                             ],
                         },

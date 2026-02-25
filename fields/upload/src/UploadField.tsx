@@ -8,8 +8,8 @@ import isObject from 'lodash/isObject';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useQuery } from '@panneau/core/hooks';
 import type { Label } from '@panneau/core';
+import { useQuery } from '@panneau/core/hooks';
 // import { useModal } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';

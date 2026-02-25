@@ -82,8 +82,12 @@ class Tracking extends BaseTracking {
         action: string,
         { value = null, ...opts }: TrackingEventOptions = {},
     ): void {
-        const { id: mediaId = null, name = null, duration = null, currentTime = null } =
-            media || {};
+        const {
+            id: mediaId = null,
+            name = null,
+            duration = null,
+            currentTime = null,
+        } = media || {};
         const label = name;
         const data = {
             ...opts,

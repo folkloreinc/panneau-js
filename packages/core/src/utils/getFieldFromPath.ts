@@ -1,6 +1,6 @@
 import isArray from 'lodash/isArray';
-import type { Field } from '../types';
 
+import type { Field } from '../types';
 import getFieldByName from './getFieldByName';
 
 interface FieldDefinition {

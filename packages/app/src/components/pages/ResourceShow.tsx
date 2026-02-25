@@ -1,7 +1,7 @@
 import { FormattedMessage } from 'react-intl';
 
-import { ResourceProvider } from '@panneau/core/contexts';
 import type { Resource } from '@panneau/core';
+import { ResourceProvider } from '@panneau/core/contexts';
 import { useResourceItem } from '@panneau/data';
 import Loading from '@panneau/element-loading';
 

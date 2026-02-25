@@ -38,9 +38,7 @@ class EventsManager extends EventEmitter {
                     [eventName]: this.events[eventName],
                 };
             }
-            const newListeners = this.events[eventName].filter(
-                (listener) => listener !== callback,
-            );
+            const newListeners = this.events[eventName].filter((listener) => listener !== callback);
             return newListeners.length > 0
                 ? {
                       ...newEvents,

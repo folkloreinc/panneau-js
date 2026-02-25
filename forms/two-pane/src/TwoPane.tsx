@@ -1,8 +1,8 @@
-import { type ReactNode } from 'react';
 import classNames from 'classnames';
+import { type ReactNode } from 'react';
 
-import { useFieldComponent, usePreviewComponent } from '@panneau/core/contexts';
 import type { Button, Field, FormStatus, Resource } from '@panneau/core';
+import { useFieldComponent, usePreviewComponent } from '@panneau/core/contexts';
 import Form from '@panneau/element-form';
 
 interface TwoPaneFormProps {

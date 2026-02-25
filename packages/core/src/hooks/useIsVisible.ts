@@ -1,5 +1,6 @@
 import type { RefObject } from 'react';
 import { useRef } from 'react';
+
 import { useIntersectionObserver } from './useObserver';
 
 interface UseIsVisibleOptions {

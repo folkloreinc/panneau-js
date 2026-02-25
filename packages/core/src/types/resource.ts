@@ -23,7 +23,7 @@ export type ActionDefinition = string | Action;
 
 export type ActionValue = Item | Item[] | null;
 
-export interface ResourceValues {
+export interface ResourceIntlValues {
     a_singular?: string;
     a_plural?: string;
     [key: string]: unknown;
@@ -32,10 +32,9 @@ export interface ResourceValues {
 /**
  * Internationalization configuration
  */
-export interface Intl {
-    locale?: string;
+export interface ResourceIntl {
     messages?: Record<string, string>;
-    values?: ResourceValues;
+    values?: ResourceIntlValues;
 }
 
 /**
@@ -44,10 +43,11 @@ export interface Intl {
 export interface Resource {
     id: string;
     name: string;
-    intl?: Intl;
+    intl?: ResourceIntl;
     fields?: Field[];
     forms?: Record<string, unknown>;
     shows_in_navbar?: boolean;
+    settings?: Record<string, unknown>;
 }
 
 /**

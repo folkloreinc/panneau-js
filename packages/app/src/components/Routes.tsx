@@ -3,6 +3,7 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'wouter';
 
 import { useUser } from '@panneau/auth';
+import type { StatusCode } from '@panneau/core';
 import {
     usePagesComponentsManager,
     usePanneau,
@@ -10,7 +11,6 @@ import {
     useRoutes,
     useUrlGenerator,
 } from '@panneau/core/contexts';
-import type { StatusCode } from '@panneau/core';
 
 import createResourceRoutes from './createResourceRoutes';
 import AccountPage from './pages/Account';

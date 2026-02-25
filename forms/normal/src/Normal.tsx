@@ -1,8 +1,8 @@
-import { type ReactNode } from 'react';
 import classNames from 'classnames';
+import { type ReactNode } from 'react';
 
-import { useFieldComponent } from '@panneau/core/contexts';
 import { type Button, type Field, type FormStatus } from '@panneau/core';
+import { useFieldComponent } from '@panneau/core/contexts';
 import Form from '@panneau/element-form';
 
 interface NormalFormProps {

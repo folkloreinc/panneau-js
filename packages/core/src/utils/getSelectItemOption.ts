@@ -1,5 +1,4 @@
 import type { Item } from '../types';
-
 import getItemLabel from './getItemLabel';
 import getPathValue from './getPathValue';
 

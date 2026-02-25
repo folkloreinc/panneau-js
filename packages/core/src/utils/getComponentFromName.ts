@@ -1,7 +1,7 @@
 import { pascalCase } from 'change-case';
 import type { ComponentType } from 'react';
 
-const getComponentFromName = <T = ComponentType<unknown>>(
+const getComponentFromName = <T = ComponentType<unknown> | 'string'>(
     name: string | null = null,
     components: Record<string, T> | null = {},
     defaultComponent: T | null = null,

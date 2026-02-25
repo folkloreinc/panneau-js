@@ -1,10 +1,10 @@
-import { useCallback, useMemo, type ReactNode } from 'react';
 import classNames from 'classnames';
 import isArray from 'lodash/isArray';
+import { type ReactNode, useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useFiltersComponents } from '@panneau/core/contexts';
 import type { Filter } from '@panneau/core';
+import { useFiltersComponents } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import FormGroup from '@panneau/element-form-group';

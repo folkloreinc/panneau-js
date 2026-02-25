@@ -8,8 +8,8 @@ import type { ComponentType, MouseEvent, ReactNode } from 'react';
 import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useDisplaysComponents } from '@panneau/core/contexts';
 import type { Field, Item, Label, TableColumn } from '@panneau/core';
+import { useDisplaysComponents } from '@panneau/core/contexts';
 import { getComponentFromName, selectItem, selectPage } from '@panneau/core/utils';
 import Empty from '@panneau/element-empty';
 import Loading from '@panneau/element-loading';
@@ -306,7 +306,8 @@ function Table({
                                             ...displayProps
                                         } = column || {};
 
-                                        const isActions = colId === 'actions' || component === 'actions';
+                                        const isActions =
+                                            colId === 'actions' || component === 'actions';
 
                                         const FieldDisplayComponent = getComponentFromName(
                                             isActions
@@ -340,9 +341,7 @@ function Table({
                                                                 isString(displayValue) &&
                                                                 displayValue.length >= 30) ||
                                                             isObject(displayValue),
-                                                        'text-end':
-                                                            isActions &&
-                                                            !withActionsColumn,
+                                                        'text-end': isActions && !withActionsColumn,
                                                         [columnClassName]: columnClassName !== null,
                                                     },
                                                 ])}
@@ -350,7 +349,10 @@ function Table({
                                                 {FieldDisplayComponent !== null ? (
                                                     <FieldDisplayComponent
                                                         {...(isActions
-                                                            ? { disabled: actionsDisabled, ...actionsProps }
+                                                            ? {
+                                                                  disabled: actionsDisabled,
+                                                                  ...actionsProps,
+                                                              }
                                                             : null)}
                                                         {...displayProps}
                                                         field={field}

@@ -1,8 +1,7 @@
 import isObject from 'lodash/isObject';
 
-import type { Resource } from '../types';
-
 import { usePanneauResources, useResource, useUrlGenerator } from '../contexts';
+import type { Resource } from '../types';
 
 const getResource = (
     resources: Resource[],

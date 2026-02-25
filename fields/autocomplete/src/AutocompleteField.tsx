@@ -1,7 +1,15 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import classNames from 'classnames';
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
+import {
+    type MouseEvent,
+    type ReactNode,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 
 import Button from '@panneau/element-button';
 import TextField from '@panneau/field-text';

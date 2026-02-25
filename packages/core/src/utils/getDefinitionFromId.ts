@@ -1,5 +1,6 @@
 import { pascalCase } from 'change-case';
 import isArray from 'lodash/isArray';
+
 import type { Definition } from '../types';
 
 const getDefinitionFromId = <T extends Definition = Definition>(

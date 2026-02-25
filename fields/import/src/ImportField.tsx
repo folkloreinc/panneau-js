@@ -1,5 +1,5 @@
-import { useCallback, useState, type ReactNode } from 'react';
 import classNames from 'classnames';
+import { type ReactNode, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Button from '@panneau/element-button';
