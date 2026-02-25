@@ -1,8 +1,8 @@
 import isNumber from 'lodash/isNumber';
 import { snakeCase } from 'snake-case';
 
-const convertStyleToString = (style: Record<string, unknown> | null): string =>
-    style !== null
+function convertStyleToString(style: Record<string, unknown> | null): string {
+    return style !== null
         ? Object.keys(style)
               .map(
                   (key) =>
@@ -10,5 +10,6 @@ const convertStyleToString = (style: Record<string, unknown> | null): string =>
               )
               .join('\n')
         : '';
+}
 
 export default convertStyleToString;

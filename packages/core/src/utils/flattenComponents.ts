@@ -3,10 +3,10 @@ import ReactIs from 'react-is';
 
 type ComponentMap = Record<string, ComponentType<unknown> | ComponentMap>;
 
-const flattenComponents = (
+function flattenComponents(
     components: ComponentMap | null,
     prefix: string | null = null,
-): Record<string, ComponentType<unknown>> | null => {
+): Record<string, ComponentType<unknown>> | null {
     if (components === null) {
         return null;
     }
@@ -23,6 +23,6 @@ const flattenComponents = (
                   },
         {} as Record<string, ComponentType<unknown>>,
     );
-};
+}
 
 export default flattenComponents;

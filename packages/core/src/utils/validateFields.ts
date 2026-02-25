@@ -6,11 +6,11 @@ interface FieldWithValidation extends Field {
     required?: boolean;
 }
 
-export const validateFields = (
+export function validateFields(
     fields: FieldWithValidation[],
     value: Record<string, unknown> | null,
-): boolean =>
-    fields.reduce((acc: boolean, field: FieldWithValidation) => {
+): boolean {
+    return fields.reduce((acc: boolean, field: FieldWithValidation) => {
         if (acc === true) {
             if (field.type === 'fields' && field.fields) {
                 return validateFields(field.fields, value);
@@ -20,5 +20,6 @@ export const validateFields = (
         }
         return acc;
     }, true);
+}
 
 export default validateFields;

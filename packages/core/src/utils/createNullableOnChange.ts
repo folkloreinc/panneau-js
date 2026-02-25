@@ -1,8 +1,9 @@
 import isObject from 'lodash/isObject';
 
-const createNullableOnChange =
-    <T = unknown>(onChange: ((value: T | null) => void) | null = null) =>
-    (newValue: T): void => {
+function createNullableOnChange<T = unknown>(
+    onChange: ((value: T | null) => void) | null = null,
+): (newValue: T) => void {
+    return function nullableOnChange(newValue: T): void {
         let nullableValue: T | null = newValue;
         if (isObject(newValue)) {
             const allNull = Object.keys(newValue as Record<string, unknown>).reduce(
@@ -17,5 +18,6 @@ const createNullableOnChange =
             onChange(nullableValue);
         }
     };
+}
 
 export default createNullableOnChange;

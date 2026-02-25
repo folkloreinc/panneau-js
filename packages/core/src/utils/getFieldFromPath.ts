@@ -24,12 +24,12 @@ interface PathContext {
     fields: Field[];
 }
 
-const getFieldFromPath = (
+function getFieldFromPath(
     path: string | string[],
     fields: Field[],
     fieldManager: FieldManager,
-): FieldWithSubFields | null =>
-    (isArray(path) ? path : [path]).reduce<FieldWithSubFields | null>(
+): FieldWithSubFields | null {
+    return (isArray(path) ? path : [path]).reduce<FieldWithSubFields | null>(
         (foundField, key) => {
             if (foundField === null) {
                 return null;
@@ -56,5 +56,6 @@ const getFieldFromPath = (
         },
         { fields } as PathContext,
     );
+}
 
 export default getFieldFromPath;

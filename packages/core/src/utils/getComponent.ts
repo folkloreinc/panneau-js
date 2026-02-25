@@ -5,7 +5,7 @@ interface ComponentResult {
     props: Record<string, unknown> | null;
 }
 
-const getComponent = (component: unknown): ComponentResult => {
+function getComponent(component: unknown): ComponentResult {
     const { component: name, ...props } = isObject(component)
         ? (component as Record<string, unknown>)
         : {
@@ -15,6 +15,6 @@ const getComponent = (component: unknown): ComponentResult => {
         name: component,
         props: Object.keys(props).length > 0 ? props : null,
     };
-};
+}
 
 export default getComponent;

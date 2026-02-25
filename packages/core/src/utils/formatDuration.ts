@@ -1,4 +1,4 @@
-const formatDuration = (timeInSeconds: number | string): string => {
+function formatDuration(timeInSeconds: number | string): string {
     const numberOfSeconds = parseInt(String(timeInSeconds), 10); // don't forget the second param
     let hours: number | string = Math.floor(numberOfSeconds / 3600);
     let minutes: number | string = Math.floor((numberOfSeconds - (hours as number) * 3600) / 60);
@@ -14,6 +14,6 @@ const formatDuration = (timeInSeconds: number | string): string => {
         seconds = `0${seconds}`;
     }
     return `${hours}:${minutes}:${seconds}`;
-};
+}
 
 export default formatDuration;

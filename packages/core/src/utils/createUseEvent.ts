@@ -5,9 +5,14 @@ interface EventsManager {
     unsubscribe: (event: string, callback: (...args: unknown[]) => void) => void;
 }
 
-const createUseEvent =
-    (eventsManager: EventsManager | null) =>
-    (event: string, callback: (...args: unknown[]) => void, enabled: boolean = true): void => {
+function createUseEvent(
+    eventsManager: EventsManager | null,
+): (event: string, callback: (...args: unknown[]) => void, enabled?: boolean) => void {
+    return function useEvent(
+        event: string,
+        callback: (...args: unknown[]) => void,
+        enabled: boolean = true,
+    ): void {
         useEffect(() => {
             if (enabled && eventsManager !== null) {
                 eventsManager.subscribe(event, callback);
@@ -19,5 +24,6 @@ const createUseEvent =
             };
         }, [eventsManager, event, callback, enabled]);
     };
+}
 
 export default createUseEvent;

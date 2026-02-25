@@ -10,8 +10,8 @@ interface FormattedOption {
     label: string | ReactElement;
 }
 
-const getSelectOptions = (options: SelectOption[]): FormattedOption[] =>
-    options.map((it) => {
+function getSelectOptions(options: SelectOption[]): FormattedOption[] {
+    return options.map((it) => {
         if (isObject(it)) {
             const { label = null, value } = it as Record<string, unknown>;
             if (label === null) {
@@ -24,5 +24,6 @@ const getSelectOptions = (options: SelectOption[]): FormattedOption[] =>
         }
         return { value: it, label: capitalize(`${it}`) };
     });
+}
 
 export default getSelectOptions;

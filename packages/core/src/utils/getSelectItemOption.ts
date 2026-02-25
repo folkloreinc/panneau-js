@@ -15,7 +15,7 @@ interface SelectItemResult {
     label: unknown;
 }
 
-const getSelectItemOption = (item: Item, options: SelectItemOptions | null): SelectItemResult => {
+function getSelectItemOption(item: Item, options: SelectItemOptions | null): SelectItemResult {
     const {
         getItemLabel: initialGetItemLabel = getPathValue,
         getItemDescription = getPathValue,
@@ -26,7 +26,7 @@ const getSelectItemOption = (item: Item, options: SelectItemOptions | null): Sel
         itemLabelWithId,
     } = options || {};
 
-    const parseItem = (it: Item): SelectItemResult => {
+    function parseItem(it: Item): SelectItemResult {
         const label = getItemLabel(it, itemLabelPath, initialGetItemLabel, itemLabelWithId);
         const description = getItemDescription(it, itemDescriptionPath);
         const finalLabel = description !== null ? `${label}: ${description}` : label;
@@ -35,9 +35,9 @@ const getSelectItemOption = (item: Item, options: SelectItemOptions | null): Sel
             value: it.id,
             label: finalLabel,
         };
-    };
+    }
 
     return parseItem(item);
-};
+}
 
 export default getSelectItemOption;

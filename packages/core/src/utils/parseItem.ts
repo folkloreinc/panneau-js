@@ -12,7 +12,7 @@ interface ParsedOption {
     label: string | null;
 }
 
-const parseItemOption = (it: Item, options: ParseItemOptions): ParsedOption => {
+function parseItemOption(it: Item, options: ParseItemOptions): ParsedOption {
     const {
         getItemLabel = null,
         itemLabelPath = null,
@@ -31,6 +31,6 @@ const parseItemOption = (it: Item, options: ParseItemOptions): ParsedOption => {
         value: it.id,
         label: finalLabel,
     };
-};
+}
 
 export default parseItemOption;

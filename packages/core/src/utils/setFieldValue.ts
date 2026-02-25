@@ -1,6 +1,6 @@
 type Value = Record<string, unknown> | unknown[] | null;
 
-const setValue = (value: Value, keyParts: string[], fieldValue: unknown): Value => {
+function setValue(value: Value, keyParts: string[], fieldValue: unknown): Value {
     const key = keyParts.shift();
     if (!key) {
         return value;
@@ -40,6 +40,6 @@ const setValue = (value: Value, keyParts: string[], fieldValue: unknown): Value 
         };
     }
     return null;
-};
+}
 
 export default setValue;

@@ -4,11 +4,11 @@ interface FieldWithSubFields extends Field {
     fields?: FieldWithSubFields[];
 }
 
-const getFieldByName = (
+function getFieldByName(
     fields: FieldWithSubFields[],
     name: string | null,
-): FieldWithSubFields | null =>
-    fields.reduce((foundField: FieldWithSubFields | null, it: FieldWithSubFields) => {
+): FieldWithSubFields | null {
+    return fields.reduce((foundField: FieldWithSubFields | null, it: FieldWithSubFields) => {
         if (foundField !== null) {
             return foundField;
         }
@@ -18,5 +18,6 @@ const getFieldByName = (
         }
         return getFieldByName(subFields, name);
     }, null);
+}
 
 export default getFieldByName;

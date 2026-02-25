@@ -11,7 +11,7 @@ interface Column extends Record<string, unknown> {
     field?: Field | string | null;
 }
 
-export const getColumnFromField = (field: Field | null): Column | null => {
+export function getColumnFromField(field: Field | null): Column | null {
     if (field === null) {
         return null;
     }
@@ -32,12 +32,12 @@ export const getColumnFromField = (field: Field | null): Column | null => {
         component: componentName,
         field,
     };
-};
+}
 
-export const getColumnsWithFields = (
+export function getColumnsWithFields(
     resource: Resource,
     columns: TableColumn[] | null,
-): Column[] => {
+): Column[] {
     const { fields = [] } = resource;
     const newColumns =
         columns !== null
@@ -63,6 +63,6 @@ export const getColumnsWithFields = (
             : [];
 
     return newColumns;
-};
+}
 
 export default getColumnsWithFields;

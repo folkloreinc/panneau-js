@@ -1,11 +1,11 @@
 import { pascalCase } from 'change-case';
 import type { ComponentType } from 'react';
 
-const getComponentFromName = <T = ComponentType<unknown> | 'string'>(
+function getComponentFromName<T = ComponentType<unknown> | 'string'>(
     name: string | null = null,
     components: Record<string, T> | null = {},
     defaultComponent: T | null = null,
-): T | null => {
+): T | null {
     if (components === null || name === null) {
         return defaultComponent;
     }
@@ -15,6 +15,6 @@ const getComponentFromName = <T = ComponentType<unknown> | 'string'>(
         console.warn('Could not find component from name', name, pascalName, components);
     }
     return component;
-};
+}
 
 export default getComponentFromName;

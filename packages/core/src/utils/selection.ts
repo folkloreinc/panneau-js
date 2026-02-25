@@ -46,7 +46,7 @@ export function selectPage(
 ): void {
     let nextItems: Item[] = [];
     if (!pageSelected) {
-        nextItems = uniqBy(
+        nextItems = uniqBy<Item>(
             [...(items || []), ...(selectedItems || [])],
             ({ id = null }: Partial<Item> = {}) => id,
         );
@@ -54,7 +54,7 @@ export function selectPage(
         const ids = (items || [])
             .map(({ id = null }: Partial<Item> = {}) => id)
             .filter((id): id is string => id !== null);
-        nextItems = uniqBy(
+        nextItems = uniqBy<Item>(
             (selectedItems || []).filter((it) => {
                 const { id = null } = it || {};
                 return ids.indexOf(id) === -1;

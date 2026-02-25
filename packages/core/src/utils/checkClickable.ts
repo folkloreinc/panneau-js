@@ -16,7 +16,7 @@ function checkClickable(
 ): boolean {
     const { maxParentDistance = 5, tags = ['BUTTON', 'A', 'INPUT', 'I', 'TEXTAREA'] } =
         options || {};
-    const { tagName = null, parentNode = null, dataset = {} } = el || {};
+    const { tagName = null, parentNode = null } = el || {};
 
     if (tagName === 'BODY') {
         return false;

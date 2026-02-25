@@ -3,7 +3,8 @@ interface ComponentWithName {
     name?: string | null;
 }
 
-const getDisplayName = ({ displayName = null, name = null }: ComponentWithName): string =>
-    displayName || name || 'Component';
+function getDisplayName({ displayName = null, name = null }: ComponentWithName): string {
+    return displayName || name || 'Component';
+}
 
 export default getDisplayName;
