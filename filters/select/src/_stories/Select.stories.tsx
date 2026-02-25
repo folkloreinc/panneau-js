@@ -14,14 +14,14 @@ export default {
     },
 };
 
-const FieldContainer = (props) => {
+function FieldContainer(props) {
     const [value, setValue] = useState(null);
     return (
         <FieldsProvider>
             <SelectFilter {...props} name="Select" value={value} onChange={setValue} />
         </FieldsProvider>
     );
-};
+}
 
 export const Normal = {
     render: () => (

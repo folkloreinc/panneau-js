@@ -32,7 +32,7 @@ export default {
 const items = { data: [Media1, Media2, Media3], pagination: { page: 1 } };
 
 // eslint-disable-next-line react/prop-types
-const Container = ({ value: initialValue = null, ...props } = {}) => {
+function Container({ value: initialValue = null, ...props } = {}) {
     const api = useApi();
     const [value, setValue] = useState(initialValue);
     const onChange = useCallback(
@@ -65,7 +65,7 @@ const Container = ({ value: initialValue = null, ...props } = {}) => {
             </FieldsProvider>
         </IntlProvider>
     );
-};
+}
 
 export const Default = {
     render: () => (

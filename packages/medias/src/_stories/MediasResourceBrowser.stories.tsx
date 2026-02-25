@@ -18,21 +18,23 @@ export default {
     },
 };
 
-const Container = (props) => (
-    <FieldsProvider>
-        <IntlProvider>
-            <DisplaysProvider>
-                <FiltersProvider>
-                    <ActionsProvider>
-                        <PanneauProvider definition={panneauDefinition}>
-                            <MediasResourceBrowser {...props} />
-                        </PanneauProvider>
-                    </ActionsProvider>
-                </FiltersProvider>
-            </DisplaysProvider>
-        </IntlProvider>
-    </FieldsProvider>
-);
+function Container(props) {
+    return (
+        <FieldsProvider>
+            <IntlProvider>
+                <DisplaysProvider>
+                    <FiltersProvider>
+                        <ActionsProvider>
+                            <PanneauProvider definition={panneauDefinition}>
+                                <MediasResourceBrowser {...props} />
+                            </PanneauProvider>
+                        </ActionsProvider>
+                    </FiltersProvider>
+                </DisplaysProvider>
+            </IntlProvider>
+        </FieldsProvider>
+    );
+}
 
 export const Default = {
     render: () => (

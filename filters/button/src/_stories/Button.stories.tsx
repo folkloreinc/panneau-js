@@ -12,14 +12,14 @@ export default {
     },
 };
 
-const FieldContainer = (props) => {
+function FieldContainer(props) {
     const [value, setValue] = useState(null);
     return (
         <FieldsProvider>
             <ButtonFilter {...props} name="button" value={value} onChange={setValue} />
         </FieldsProvider>
     );
-};
+}
 
 export const Normal = {
     render: () => <FieldContainer label="Hello" />,

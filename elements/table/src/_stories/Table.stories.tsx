@@ -37,7 +37,7 @@ const columnsWithId = [
     { id: 'name', label: 'Name', path: 'name', sortable: true },
 ];
 
-const Container = ({ value: initialValue, ...props }) => {
+function Container({ value: initialValue, ...props }) {
     const [selectedItems, onSelectionChange] = useState(initialValue);
 
     return (
@@ -49,16 +49,18 @@ const Container = ({ value: initialValue, ...props }) => {
             onSelectionChange={onSelectionChange}
         />
     );
-};
+}
 
-const Actions = () => (
-    <div>
-        <p className="d-inline">????</p>
-        <button className="d-inline" type="button">
-            HAHAHA this is action
-        </button>
-    </div>
-);
+function Actions() {
+    return (
+        <div>
+            <p className="d-inline">????</p>
+            <button className="d-inline" type="button">
+                HAHAHA this is action
+            </button>
+        </div>
+    );
+}
 
 export const Normal = {
     render: () => (

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-const useItems = ({
+function useItems({
     getPage = null,
     getItems = null,
     page = null,
@@ -22,7 +22,7 @@ const useItems = ({
     onPageLoaded = null,
     onLoaded = null,
     onError = null,
-}) => {
+}) {
     const isPaginated = getPage !== null || initialPages !== null;
 
     const lastState = useRef(null);
@@ -258,6 +258,6 @@ const useItems = ({
         reset,
         updateItem,
     };
-};
+}
 
 export default useItems;

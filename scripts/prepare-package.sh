@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -Eeuo pipefail
+trap 'echo "Error: command failed in ${FUNCNAME[0]:-main} at line ${LINENO}." >&2' ERR
+
 # Help
 usage() {
     echo "Usage: $0 [--types|-t]"

@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useApi } from '@panneau/data';
 
-const useAuthCheck = () => {
+function useAuthCheck() {
     const [loading, setLoading] = useState(false);
     const api = useApi();
     const check = useCallback(() => {
@@ -19,6 +19,6 @@ const useAuthCheck = () => {
             });
     }, [api, setLoading]);
     return { check, loading };
-};
+}
 
 export default useAuthCheck;

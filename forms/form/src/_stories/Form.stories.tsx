@@ -14,7 +14,7 @@ export default {
     decorators: [withFormsFields],
 };
 
-const Container = (props) => {
+function Container(props) {
     const [value, setValue] = useState({});
     const onSubmit = useCallback(
         (e) => {
@@ -24,7 +24,7 @@ const Container = (props) => {
         [value],
     );
     return <Form value={value} onChange={setValue} onSubmit={onSubmit} {...props} />;
-};
+}
 
 export const Normal = {
     render: () => <Container fields={fields} />,

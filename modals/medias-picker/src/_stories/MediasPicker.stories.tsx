@@ -23,7 +23,7 @@ export default {
     },
 };
 
-const Container = (props) => {
+function Container(props) {
     const api = useApi();
     const [value, setValue] = useState(null);
     const onChange = useCallback(
@@ -51,7 +51,7 @@ const Container = (props) => {
             </DisplaysProvider>
         </MediasApiProvider>
     );
-};
+}
 
 export const Normal = {
     render: () => <Container />,

@@ -14,7 +14,7 @@ export default {
     },
 };
 
-const CalendarContainer = (props = null) => {
+function CalendarContainer(props = null) {
     const [initialDate] = useState('2023-04-01');
 
     const onDateChange = useCallback((newDate) => {
@@ -50,7 +50,7 @@ const CalendarContainer = (props = null) => {
             </ResourceProvider>
         </RoutesProvider>
     );
-};
+}
 
 export const Monthly = {
     render: () => <CalendarContainer />,

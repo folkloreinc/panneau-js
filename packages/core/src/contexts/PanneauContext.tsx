@@ -28,7 +28,7 @@ export function usePanneauColorScheme(): {
     background: string | null;
     text: string | null;
     sidebarPosition?: string | null;
-} => {
+} {
     const { theme = null } = usePanneau() || {};
     const { colorScheme = 'light' } = theme || {};
 

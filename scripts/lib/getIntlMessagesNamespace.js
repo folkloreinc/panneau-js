@@ -1,6 +1,6 @@
 const path = require('path');
 
-const getIntlMessagesNamespace = (id) => {
+function getIntlMessagesNamespace(id) {
     const packageJson = require(path.join(process.cwd(), './package.json'));
     const { name = null } = packageJson || {};
     const namespace =
@@ -13,6 +13,6 @@ const getIntlMessagesNamespace = (id) => {
                   .replace(/^@panneau\/(.*)$/, '$1')
             : null;
     return name !== null ? `${namespace}.${id}` : id;
-};
+}
 
 module.exports = getIntlMessagesNamespace;

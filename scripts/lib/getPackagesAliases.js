@@ -3,8 +3,8 @@ const fs = require('fs');
 const { sync: globSync } = require('glob');
 const getPackagesPaths = require('./getPackagesPaths');
 
-const getPackagesAliases = ({ withoutEndSign = false } = {}) =>
-    getPackagesPaths().reduce((aliases, packagePath) => {
+function getPackagesAliases({ withoutEndSign = false } = {}) {
+    return getPackagesPaths().reduce((aliases, packagePath) => {
         const { name: packageName, exports = null } = require(
             path.join(packagePath, './package.json'),
         );
@@ -50,5 +50,6 @@ const getPackagesAliases = ({ withoutEndSign = false } = {}) =>
             ),
         };
     }, {});
+}
 
 module.exports = getPackagesAliases;

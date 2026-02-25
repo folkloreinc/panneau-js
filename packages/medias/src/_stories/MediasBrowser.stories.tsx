@@ -25,7 +25,7 @@ export default {
     },
 };
 
-const Container = ({ ...props } = {}) => {
+function Container({ ...props } = {}) {
     const api = useApi();
     return (
         <IntlProvider>
@@ -47,7 +47,7 @@ const Container = ({ ...props } = {}) => {
             </ModalProvider>
         </IntlProvider>
     );
-};
+}
 
 export const Default = {
     render: () => <Container />,

@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // For backwards compatibility
 
-const useItems = ({
+function useItems({
     store,
     url,
     paginated: initialPaginated = false,
@@ -15,7 +15,7 @@ const useItems = ({
     queryConfig = null,
     keepData = true,
     ...oldProps
-}) => {
+}) {
     // Legacy compatibility
     const {
         getPage = null,
@@ -237,6 +237,6 @@ const useItems = ({
         status,
         error,
     };
-};
+}
 
 export default useItems;

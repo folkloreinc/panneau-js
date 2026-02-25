@@ -13,7 +13,7 @@ export default {
     },
 };
 
-const FieldContainer = (props) => {
+function FieldContainer(props) {
     const [value, setValue] = useState();
     const onChange = useCallback((newValue) => {
         setValue(newValue);
@@ -23,7 +23,7 @@ const FieldContainer = (props) => {
             <Filters {...props} filters={filters} value={value} onChange={onChange} />
         </FiltersProvider>
     );
-};
+}
 
 export const Normal = {
     render: () => <FieldContainer label="Hello" />,

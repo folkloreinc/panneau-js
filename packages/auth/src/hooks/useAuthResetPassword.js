@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useApi } from '@panneau/data';
 
-const useAuthResetPassword = () => {
+function useAuthResetPassword() {
     const [loading, setLoading] = useState(false);
     const api = useApi();
     const reset = useCallback(
@@ -22,6 +22,6 @@ const useAuthResetPassword = () => {
         [api, setLoading],
     );
     return { reset, loading };
-};
+}
 
 export default useAuthResetPassword;

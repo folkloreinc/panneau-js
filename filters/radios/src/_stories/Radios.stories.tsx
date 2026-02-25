@@ -12,14 +12,14 @@ export default {
     },
 };
 
-const FieldContainer = ({ options }) => {
+function FieldContainer({ options }) {
     const [value, setValue] = useState(null);
     return (
         <FieldsProvider>
             <RadiosFilter name="Radios" value={value} options={options} onChange={setValue} />
         </FieldsProvider>
     );
-};
+}
 
 export const Normal = {
     render: () => (

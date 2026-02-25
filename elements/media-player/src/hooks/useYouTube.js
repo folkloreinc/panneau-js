@@ -2,17 +2,19 @@ import { useRef, useCallback, useEffect, useState } from 'react';
 import { loadYouTube } from '@folklore/services';
 import createDebug from 'debug';
 
-const getYoutubeVideoId = (url) => {
+function getYoutubeVideoId(url) {
     const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
     const match = url.match(regExp);
     return match && match[7].length === 11 ? match[7] : false;
-};
+}
 
 const debug = createDebug('video:youtube');
 
-export const isVideoId = (url) => url !== null && url.match(/^https?:/) === null;
+export function isVideoId(url) {
+    return url !== null && url.match(/^https?:/) === null;
+}
 
-const getVideoId = (url) => {
+function getVideoId(url) {
     if (url === null) {
         return null;
     }
@@ -20,11 +22,11 @@ const getVideoId = (url) => {
         return url;
     }
     return getYoutubeVideoId(url);
-};
+}
 
 const noPlayerError = new Error('No player');
 
-const useYouTube = (
+function useYouTube(
     url,
     {
         videoId: initialVideoId = null,
@@ -44,7 +46,7 @@ const useYouTube = (
         onBufferEnded: customOnBufferEnded = null,
         onTimeUpdate: customOnTimeUpdate = null,
     } = {},
-) => {
+) {
     const iframeRef = useRef(null);
     const playerRef = useRef(null);
     const playerIframeRef = useRef(iframeRef.current);
@@ -344,6 +346,6 @@ const useYouTube = (
         ...metadata,
         ...playState,
     };
-};
+}
 
 export default useYouTube;

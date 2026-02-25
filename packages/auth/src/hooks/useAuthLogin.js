@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useApi } from '@panneau/data';
 
-const useAuthLogin = () => {
+function useAuthLogin() {
     const [loading, setLoading] = useState(false);
     const api = useApi();
     const login = useCallback(
@@ -22,6 +22,6 @@ const useAuthLogin = () => {
         [api, setLoading],
     );
     return { login, loading };
-};
+}
 
 export default useAuthLogin;

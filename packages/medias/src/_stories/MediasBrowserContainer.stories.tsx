@@ -16,7 +16,7 @@ export default {
     },
 };
 
-const Container = (props) => {
+function Container(props) {
     const api = useApi();
     const mediasApi = useMemo(
         () => ({
@@ -33,7 +33,7 @@ const Container = (props) => {
             <MediasBrowserContainer api={mediasApi} {...props} />
         </IntlProvider>
     );
-};
+}
 
 export const Default = {
     render: () => (

@@ -2,7 +2,7 @@ const fs = require('fs');
 const glob = require('glob');
 const sortIntlMessages = require('./sortIntlMessages');
 
-const getIntlMessages = (messagesPattern) => {
+function getIntlMessages(messagesPattern) {
     const messages = glob.sync(messagesPattern)
         .map(filename => fs.readFileSync(filename, 'utf8'))
         .map(file => JSON.parse(file))
@@ -14,6 +14,6 @@ const getIntlMessages = (messagesPattern) => {
             }), collection)),
         }), {});
     return sortIntlMessages(messages);
-};
+}
 
 module.exports = getIntlMessages;

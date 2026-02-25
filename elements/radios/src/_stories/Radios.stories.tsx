@@ -7,10 +7,10 @@ export default {
     component: Radios,
 };
 
-const Container = (props) => {
+function Container(props) {
     const [value, setValue] = useState(null);
     return <Radios {...props} value={value} onChange={setValue} />;
-};
+}
 
 export const Normal = {
     render: () => <Container options={['One', 'Two', 'Three']} />,

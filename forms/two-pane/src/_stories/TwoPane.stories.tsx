@@ -19,14 +19,14 @@ export default {
     ],
 };
 
-const Container = () => {
+function Container() {
     const [value, setValue] = useState({});
     return (
         <TwoPane fields={fields} value={value} onChange={setValue}>
             <p>Page preview</p>
         </TwoPane>
     );
-};
+}
 
 export const TwoPaneForm = {
     render: () => <Container />,

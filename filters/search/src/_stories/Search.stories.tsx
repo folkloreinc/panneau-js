@@ -11,14 +11,14 @@ export default {
     },
 };
 
-const FieldContainer = () => {
+function FieldContainer() {
     const [value, setValue] = useState(null);
     return (
         <FieldsProvider>
             <SearchFilter name="search" value={value} onChange={setValue} />
         </FieldsProvider>
     );
-};
+}
 
 export const Normal = {
     render: () => <FieldContainer />,

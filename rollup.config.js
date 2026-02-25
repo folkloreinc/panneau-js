@@ -10,7 +10,7 @@ import postcss from 'rollup-plugin-postcss';
 
 import generateScopedName from './scripts/lib/generateScopedName';
 
-export const createConfig = ({
+export function createConfig({
     file = 'index.ts',
     input = null,
     output = null,
@@ -21,7 +21,7 @@ export const createConfig = ({
     resolveOptions = null,
     prependPlugins = [],
     appendPlugins = [],
-} = {}) => {
+} = {}) {
     const isNode = format === 'node';
     const isCjs = format === 'cjs' || format === 'node';
     const outputCjs = {
@@ -152,7 +152,7 @@ export const createConfig = ({
             ...appendPlugins,
         ].filter(Boolean),
     };
-};
+}
 
 /* createConfig({ format: 'cjs' }) */
 export default [createConfig({ format: 'es' })];

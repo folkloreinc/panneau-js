@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const useCKEditorBuilds = () => {
+function useCKEditorBuilds() {
     const [loaded, setLoaded] = useState(false);
     const ref = useRef(null);
 
@@ -26,6 +26,6 @@ const useCKEditorBuilds = () => {
     }, [loaded, setLoaded]);
 
     return ref.current;
-};
+}
 
 export default useCKEditorBuilds;

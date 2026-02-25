@@ -5,8 +5,8 @@ const lerna = require('../../package.json');
 
 const rootDir = path.join(__dirname, '../../');
 
-const getPackagesPaths = () =>
-    lerna.workspaces
+function getPackagesPaths() {
+    return lerna.workspaces
         .map((it) => it.replace(/\/\*/, '/'))
         .reduce(
             (paths, packagesPath) => [
@@ -16,5 +16,6 @@ const getPackagesPaths = () =>
             [],
         )
         .filter((packagePath) => fs.existsSync(path.join(packagePath, './package.json')));
+}
 
 module.exports = getPackagesPaths;

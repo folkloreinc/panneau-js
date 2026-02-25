@@ -38,27 +38,29 @@ const AuthContext = createContext<AuthContextValue>({
     resetPassword: () => Promise.reject(),
 });
 
-export const useAuth = () => use(AuthContext);
+export function useAuth() {
+    return use(AuthContext);
+}
 
-export const useUser = () => {
+export function useUser() {
     const { user } = useAuth();
     return user;
-};
+}
 
-export const useSetUser = () => {
+export function useSetUser() {
     const { setUser } = useAuth();
     return setUser;
-};
+}
 
-export const useLogout = () => {
+export function useLogout() {
     const { logout } = useAuth();
     return logout;
-};
+}
 
-export const useLoggedIn = () => {
+export function useLoggedIn() {
     const { loggedIn } = useAuth();
     return loggedIn;
-};
+}
 
 interface AuthProviderProps {
     children: ReactNode;
@@ -67,12 +69,12 @@ interface AuthProviderProps {
     checkOnMount?: boolean;
 }
 
-export const AuthProvider = ({
+export function AuthProvider({
     user: initialUser = null,
     checkOnMount = false,
     onLogout = null,
     children,
-}: AuthProviderProps) => {
+}: AuthProviderProps) {
     // const route = useUrlGenerator();
     const [user, setUser] = useState(initialUser);
     const { login: authLogin } = useAuthLogin();
@@ -151,6 +153,6 @@ export const AuthProvider = ({
     );
 
     return <AuthContext value={value}>{children}</AuthContext>;
-};
+}
 
 export default AuthContext;

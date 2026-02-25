@@ -12,27 +12,29 @@ export default {
     },
 };
 
-const Container = () => (
-    <RoutesProvider
-        routes={{
-            'resources.show': '/{resource}/{id}',
-            'resources.edit': '/{resource}/{id}/edit',
-            'resources.delete': '/{resource}/{id}/delete',
-        }}
-    >
-        <ResourceProvider resource={pageResource}>
-            <Cards
-                resource={pageResource}
-                items={[
-                    { id: '1', slug: 'paul', title: 'Paul' },
-                    { id: '2', slug: 'john', title: 'John' },
-                    { id: '3', slug: 'george', title: 'George' },
-                    { id: '4', slug: 'ringo', title: 'Ringo' },
-                ]}
-            />
-        </ResourceProvider>
-    </RoutesProvider>
-);
+function Container() {
+    return (
+        <RoutesProvider
+            routes={{
+                'resources.show': '/{resource}/{id}',
+                'resources.edit': '/{resource}/{id}/edit',
+                'resources.delete': '/{resource}/{id}/delete',
+            }}
+        >
+            <ResourceProvider resource={pageResource}>
+                <Cards
+                    resource={pageResource}
+                    items={[
+                        { id: '1', slug: 'paul', title: 'Paul' },
+                        { id: '2', slug: 'john', title: 'John' },
+                        { id: '3', slug: 'george', title: 'George' },
+                        { id: '4', slug: 'ringo', title: 'Ringo' },
+                    ]}
+                />
+            </ResourceProvider>
+        </RoutesProvider>
+    );
+}
 
 export const Normal = {
     render: () => <Container />,

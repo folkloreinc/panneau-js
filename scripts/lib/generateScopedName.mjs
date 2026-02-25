@@ -7,7 +7,7 @@ const stylesPath = path.join(process.cwd(), 'src/styles');
 const hasStylesPath = fs.existsSync(stylesPath);
 const namespace = slugify(packageName.replace(/[@/]/gi, ' '));
 
-const generateScopedName = (localName, filePath) => {
+function generateScopedName(localName, filePath) {
     if (!filePath.match(/\.module\.css$/)) {
         return localName;
     }
@@ -32,6 +32,6 @@ const generateScopedName = (localName, filePath) => {
     return '[name]-[local]'
         .replace(/\[\s*name\s*\]/gi, name)
         .replace(/\[\s*local\s*\]/gi, localName);
-};
+}
 
 export default generateScopedName;

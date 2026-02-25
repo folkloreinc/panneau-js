@@ -11,14 +11,14 @@ export default {
     },
 };
 
-const FieldContainer = (props) => {
+function FieldContainer(props) {
     const [value, setValue] = useState(null);
     return (
         <FieldsProvider>
             <ToggleFilter name="toggle" value={value} onChange={setValue} {...props} />
         </FieldsProvider>
     );
-};
+}
 
 export const Normal = {
     render: () => <FieldContainer />,

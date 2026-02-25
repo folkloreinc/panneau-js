@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useApi } from '@panneau/data';
 
-const useAuthLogout = () => {
+function useAuthLogout() {
     const [loading, setLoading] = useState(false);
     const api = useApi();
     const logout = useCallback(() => {
@@ -25,6 +25,6 @@ const useAuthLogout = () => {
     }, [api, setLoading]);
 
     return { logout, loading };
-};
+}
 
 export default useAuthLogout;

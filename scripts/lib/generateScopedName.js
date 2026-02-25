@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const slugify = require('slugify');
 
-const generateScopedName = (localName, filePath) => {
+function generateScopedName(localName, filePath) {
     if (!filePath.match(/\.module\.css$/)) {
         return localName;
     }
@@ -36,6 +36,6 @@ const generateScopedName = (localName, filePath) => {
     return '[name]-[local]'
         .replace(/\[\s*name\s*\]/gi, name)
         .replace(/\[\s*local\s*\]/gi, localName);
-};
+}
 
 module.exports = generateScopedName;

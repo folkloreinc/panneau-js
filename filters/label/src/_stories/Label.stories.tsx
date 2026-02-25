@@ -12,13 +12,13 @@ export default {
     },
 };
 
-const FieldContainer = (props) => {
+function FieldContainer(props) {
     return (
         <FieldsProvider>
             <LabelFilter {...props} />
         </FieldsProvider>
     );
-};
+}
 
 export const Normal = {
     render: () => <FieldContainer label="Hello" />,

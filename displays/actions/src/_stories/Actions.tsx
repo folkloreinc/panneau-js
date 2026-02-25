@@ -8,17 +8,19 @@ export default {
     },
 };
 
-export const Normal = () => (
-    <Actions
-        item={{
-            id: '3',
-            name: 'ABC',
-            url: 'test',
-        }}
-        value={{
-            id: '3',
-            name: 'ABC',
-            url: 'test',
-        }}
-    />
-);
+export function Normal() {
+    return (
+        <Actions
+            item={{
+                id: '3',
+                name: 'ABC',
+                url: 'test',
+            }}
+            value={{
+                id: '3',
+                name: 'ABC',
+                url: 'test',
+            }}
+        />
+    );
+}

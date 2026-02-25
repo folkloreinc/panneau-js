@@ -1,5 +1,5 @@
-const sortIntlMessages = (messages) =>
-    Object.keys(messages)
+function sortIntlMessages(messages) {
+    return Object.keys(messages)
         .sort()
         .reduce(
             (allMessages, key) => ({
@@ -8,5 +8,6 @@ const sortIntlMessages = (messages) =>
             }),
             {},
         );
+}
 
 module.exports = sortIntlMessages;

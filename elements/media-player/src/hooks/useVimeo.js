@@ -4,9 +4,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 const debug = createDebug('video:vimeo');
 
-export const isVideoId = (url) => url !== null && url.match(/^[0-9]+$/);
+export function isVideoId(url) {
+    return url !== null && url.match(/^[0-9]+$/);
+}
 
-const getVideoId = (url) => {
+function getVideoId(url) {
     if (url === null) {
         return null;
     }
@@ -15,11 +17,11 @@ const getVideoId = (url) => {
     }
     const match = url.match(/\/[0-9]+/);
     return match !== null ? match[1] : null;
-};
+}
 
 const noPlayerError = new Error('No player');
 
-const useVimeo = (
+function useVimeo(
     url,
     {
         videoId: initialVideoId = null,
@@ -41,7 +43,7 @@ const useVimeo = (
         onTimeUpdate: customOnTimeUpdate = null,
         onLoaded: customOnLoaded = null,
     } = {},
-) => {
+) {
     const iframeRef = useRef(null);
     const playerRef = useRef(null);
 
@@ -348,6 +350,6 @@ const useVimeo = (
         ...metadata,
         ...playState,
     };
-};
+}
 
 export default useVimeo;

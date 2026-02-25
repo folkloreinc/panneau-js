@@ -16,12 +16,14 @@ export default {
 };
 
 // eslint-disable-next-line react/prop-types
-const Container = ({ children }) => (
-    <ModalProvider>
-        <Modals />
-        <ResourceProvider resource={pageResource}>{children}</ResourceProvider>
-    </ModalProvider>
-);
+function Container({ children }) {
+    return (
+        <ModalProvider>
+            <Modals />
+            <ResourceProvider resource={pageResource}>{children}</ResourceProvider>
+        </ModalProvider>
+    );
+}
 
 export const Normal = {
     render: () => (

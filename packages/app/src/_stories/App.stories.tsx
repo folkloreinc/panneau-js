@@ -43,9 +43,13 @@ const englishIntl = {
     },
 };
 
-const CustomHomePage = () => <div className="text-primary bg-info">Home sweet home</div>;
+function CustomHomePage() {
+    return <div className="text-primary bg-info">Home sweet home</div>;
+}
 
-const CustomEventPage = () => <div className="text-primary bg-info">Events page replacement</div>;
+function CustomEventPage() {
+    return <div className="text-primary bg-info">Events page replacement</div>;
+}
 
 export const Guest = {
     render: () => <PanneauContainer definition={panneauDefinition} memoryRouter {...props} />,
@@ -87,7 +91,9 @@ export const DarkMode = {
     ),
 };
 
-const CustomPreviewPage = () => <div className="text-primary bg-info">PAGE PREVIEW</div>;
+function CustomPreviewPage() {
+    return <div className="text-primary bg-info">PAGE PREVIEW</div>;
+}
 
 export const BlueModeWithComps = {
     render: () => (

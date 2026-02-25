@@ -24,7 +24,7 @@ export default {
 };
 
 // eslint-disable-next-line react/prop-types
-const Container = ({ value: initialValue, ...props } = {}) => {
+function Container({ value: initialValue, ...props } = {}) {
     const api = useApi();
     const [value, setValue] = useState(initialValue);
     const onChange = useCallback(
@@ -53,7 +53,7 @@ const Container = ({ value: initialValue, ...props } = {}) => {
             </DisplaysProvider>
         </FieldsProvider>
     );
-};
+}
 
 export const Image = {
     render: () => (

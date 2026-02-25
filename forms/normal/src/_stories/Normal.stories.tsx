@@ -19,10 +19,10 @@ export default {
     ],
 };
 
-const Container = () => {
+function Container() {
     const [value, setValue] = useState({});
     return <Normal fields={fields} value={value} onChange={setValue} />;
-};
+}
 
 export const NormalForm = {
     render: () => <Container />,

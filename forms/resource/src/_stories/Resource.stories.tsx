@@ -21,10 +21,10 @@ export default {
     ],
 };
 
-const Container = () => {
+function Container() {
     const [value, setValue] = useState({});
     return <Resource resource={pageResource} />;
-};
+}
 
 export const ResourceForm = {
     render: () => <Container />,
