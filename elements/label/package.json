@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-label",
-    "version": "4.0.13",
+    "version": "4.0.14",
     "description": "Label element",
     "keywords": [
         "javascript"
@@ -60,7 +60,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^4.0.13",
+        "@panneau/core": "^4.0.14",
         "classnames": "^2.5.1",
         "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0"
     },

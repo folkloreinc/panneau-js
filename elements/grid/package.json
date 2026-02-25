@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-grid",
-    "version": "4.0.13",
+    "version": "4.0.14",
     "description": "Grid element",
     "keywords": [
         "javascript"
@@ -55,10 +55,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^4.0.13",
-        "@panneau/element-empty": "^4.0.13",
-        "@panneau/element-icon": "^4.0.13",
-        "@panneau/element-loading": "^4.0.13",
+        "@panneau/core": "^4.0.14",
+        "@panneau/element-empty": "^4.0.14",
+        "@panneau/element-icon": "^4.0.14",
+        "@panneau/element-loading": "^4.0.14",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0",
