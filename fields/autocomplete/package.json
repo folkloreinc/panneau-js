@@ -48,7 +48,7 @@
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh"
+        "build": "../../scripts/prepare-package.sh --types"
     },
     "devDependencies": {
         "react": "^19.0.0",
@@ -66,7 +66,7 @@
         "@panneau/themes": "^4.0.11",
         "classnames": "^2.5.1",
         "fuse.js": "^7.0.0",
-        "lodash-es": "^4.17.21"
+        "lodash": "^4.17.21"
     },
     "publishConfig": {
         "access": "public"

@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import isEmpty from 'lodash-es/isEmpty';
-import isString from 'lodash-es/isString';
+import isEmpty from 'lodash/isEmpty';
+import isString from 'lodash/isString';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { copyToClipboard } from '@panneau/core/utils';

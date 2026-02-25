@@ -35,13 +35,11 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
-    "types": "types/index.d.ts",
+    "types": "es/index.d.ts",
     "exports": {
         ".": {
-            "import": {
-                "default": "./es/index.js",
-                "types": "./types/index.d.ts"
-            }
+            "default": "./es/index.js",
+            "types": "./es/index.d.ts"
         }
     },
     "files": [
@@ -66,7 +64,7 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^4.0.11",
         "@panneau/themes": "^4.0.11",
-        "lodash-es": "^4.17.21",
+        "lodash": "^4.17.21",
         "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0"
     },
     "publishConfig": {

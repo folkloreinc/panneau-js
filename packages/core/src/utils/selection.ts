@@ -1,6 +1,6 @@
-import isArray from 'lodash-es/isArray';
-import uniqBy from 'lodash-es/uniqBy';
-import type { Item } from '@panneau/core/types';
+import isArray from 'lodash/isArray';
+import uniqBy from 'lodash/uniqBy';
+import type { Item } from '../types';
 
 function filterNullItems<T>(items: T[] | T | null): T[] | T | null {
     return isArray(items) ? items.filter((it) => it !== null) : items;

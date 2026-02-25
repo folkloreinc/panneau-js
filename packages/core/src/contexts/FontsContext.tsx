@@ -1,11 +1,10 @@
 import { getJSON } from '@folklore/fetch';
-import isObject from 'lodash-es/isObject';
-import uniqBy from 'lodash-es/uniqBy';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import isObject from 'lodash/isObject';
+import uniqBy from 'lodash/uniqBy';
+import { createContext, use, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 
-import type { Font } from '@panneau/core/types';
-
+import type { Font } from '../types';
 import { useGoogleKeys } from './GoogleKeysContext';
 
 interface FontsContextValue {
@@ -65,7 +64,7 @@ export const useFonts = ({
         systemFonts = null,
         googleFonts = null,
         customFonts = null,
-    } = useContext(FontsContext);
+    } = use(FontsContext);
 
     useGoogleFonts({
         disabled: withoutGoogleFonts || (googleFonts !== null && googleFonts.length > 0),

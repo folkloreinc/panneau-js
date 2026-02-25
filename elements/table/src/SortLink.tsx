@@ -1,5 +1,5 @@
-import isObject from 'lodash-es/isObject';
-import omit from 'lodash-es/omit';
+import isObject from 'lodash/isObject';
+import omit from 'lodash/omit';
 import queryString from 'query-string';
 import type { MouseEvent, ReactNode } from 'react';
 import { useCallback, useMemo } from 'react';

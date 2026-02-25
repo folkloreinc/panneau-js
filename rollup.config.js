@@ -25,14 +25,14 @@ export const createConfig = ({
     const isNode = format === 'node';
     const isCjs = format === 'cjs' || format === 'node';
     const outputCjs = {
-        file: output || `lib/${file}`,
+        file: output || `lib/${file.replace(/\.ts$/, '.js')}`,
         format: 'cjs',
         banner,
         exports: 'named',
         inlineDynamicImports: true,
     };
     const outputEs = {
-        file: output || `es/${file}`,
+        file: output || `es/${file.replace(/\.ts$/, '.js')}`,
         banner,
         exports: 'named',
     };

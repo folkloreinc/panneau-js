@@ -1,4 +1,4 @@
-import type { Field } from '@panneau/core/types';
+import type { Field } from '../types';
 
 interface FieldWithValidation extends Field {
     type?: string;

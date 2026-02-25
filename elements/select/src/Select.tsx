@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import isEqual from 'lodash-es/isEqual';
-import isObject from 'lodash-es/isObject';
-import uniqBy from 'lodash-es/uniqBy';
+import isEqual from 'lodash/isEqual';
+import isObject from 'lodash/isObject';
+import uniqBy from 'lodash/uniqBy';
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Select from 'react-select';

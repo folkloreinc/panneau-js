@@ -1,12 +1,12 @@
 import { getCSRFHeaders, getCsrfToken, postJSON } from '@folklore/fetch';
-import get from 'lodash-es/get';
-import isArray from 'lodash-es/isArray';
-import isObject from 'lodash-es/isObject';
-import isString from 'lodash-es/isString';
-import type { FormEvent } from 'react';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
+import type { SubmitEvent } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 
-import type { Field } from '@panneau/core/types';
+import type { Field } from '../types';
 
 type FieldInput = string | Field;
 
@@ -135,7 +135,7 @@ interface UseFormReturn extends RequestState {
     setValue: (value: FieldValue) => void;
     csrfToken: string | null;
     submit: (submitValue?: FieldValue | null) => void;
-    onSubmit: (e: FormEvent) => void;
+    onSubmit: (e: SubmitEvent) => void;
     status: 'loading' | 'success' | 'error' | null;
     response: unknown;
     fields: ProcessedField[];

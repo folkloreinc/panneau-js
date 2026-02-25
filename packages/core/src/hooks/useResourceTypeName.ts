@@ -1,4 +1,4 @@
-import type { Resource } from '@panneau/core/types';
+import type { Resource } from '../types';
 import { useMemo } from 'react';
 
 interface ResourceType {

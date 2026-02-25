@@ -1,12 +1,11 @@
-import isObject from 'lodash-es/isObject';
-import isString from 'lodash-es/isString';
-import isArray from 'lodash-es/isArray';
-import get from 'lodash-es/get';
-
-import type { Resource, ActionDefinition, ActionValue } from '@panneau/core/types';
-import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
 import { useIntl } from 'react-intl';
-import { useMemo } from 'react';
+
+import { type ActionDefinition, type ActionValue, type Resource } from '@panneau/core';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
 
 // For backwards compatibility with the old actions element
 
@@ -29,8 +28,6 @@ interface UseActionsOptions {
     preferDeleteModal?: boolean;
     hasDuplicateRoute?: boolean;
 }
-
-
 
 function useActions(
     actions: ActionDefinition[] = [],
@@ -76,16 +73,18 @@ function useActions(
                             label: iconsOnly ? null : showLabel,
                             icon: iconsOnly ? 'eye' : null,
                             href:
-                                (!hasCustomShowUrl || withoutItemShowUrl)
+                                !hasCustomShowUrl || withoutItemShowUrl
                                     ? resourceUrl('show', {
-                                        id,
-                                    }) || null
+                                          id,
+                                      }) || null
                                     : showUrl || url,
                             external: hasCustomShowUrl,
                             theme: 'info',
                             target: '_blank',
                             onClick: onClickShow,
-                            ...(getShowPropsFromValue !== null ? getShowPropsFromValue(value) : null),
+                            ...(getShowPropsFromValue !== null
+                                ? getShowPropsFromValue(value)
+                                : null),
                         };
                     case 'edit':
                         return {
@@ -93,27 +92,27 @@ function useActions(
                             component: 'edit',
                             label: iconsOnly ? null : editLabel,
                             icon: iconsOnly ? 'pencil-square' : null,
-                            href:
-                                !preferEditModal
-                                    ? resourceUrl('edit', {
-                                        id,
-                                    }) || null
-                                    : null,
+                            href: !preferEditModal
+                                ? resourceUrl('edit', {
+                                      id,
+                                  }) || null
+                                : null,
                             theme: 'primary',
                             onClick: onClickEdit,
-                            ...(getEditPropsFromValue !== null ? getEditPropsFromValue(value) : null),
+                            ...(getEditPropsFromValue !== null
+                                ? getEditPropsFromValue(value)
+                                : null),
                         };
                     case 'duplicate':
                         return {
                             id: 'duplicate',
                             component: 'duplicate',
                             label: null,
-                            href:
-                                hasDuplicateRoute
-                                    ? resourceUrl('duplicate', {
-                                        id,
-                                    }) || null
-                                    : null,
+                            href: hasDuplicateRoute
+                                ? resourceUrl('duplicate', {
+                                      id,
+                                  }) || null
+                                : null,
                         };
                     case 'restore':
                         return { id: 'restore', component: 'restore', label: null };
@@ -123,20 +122,18 @@ function useActions(
                             component: 'delete',
                             label: iconsOnly ? null : deleteLabel,
                             icon: iconsOnly ? 'trash3' : null,
-                            href:
-                                !preferDeleteModal
-                                    ? resourceUrl('delete', {
-                                        id,
-                                    }) || null
-                                    : null,
+                            href: !preferDeleteModal
+                                ? resourceUrl('delete', {
+                                      id,
+                                  }) || null
+                                : null,
                             theme: 'danger',
                             onClick: onClickDelete,
-                            endpoint:
-                                preferDeleteModal
-                                    ? resourceUrl('delete', {
-                                        id,
-                                    }) || null
-                                    : null,
+                            endpoint: preferDeleteModal
+                                ? resourceUrl('delete', {
+                                      id,
+                                  }) || null
+                                : null,
                             withConfirmation: preferDeleteModal,
                             ...(getDeletePropsFromValue !== null
                                 ? getDeletePropsFromValue(value)
@@ -153,9 +150,7 @@ function useActions(
                 const finalPath = itemLinkProp || urlPath;
                 const actionLink = get(value, finalPath) || null;
                 return {
-                    ...(actionLink !== null
-                        ? { href: actionLink }
-                        : null),
+                    ...(actionLink !== null ? { href: actionLink } : null),
                     ...action,
                 };
             }

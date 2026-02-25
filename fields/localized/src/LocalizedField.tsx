@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import isEmpty from 'lodash-es/isEmpty';
+import isEmpty from 'lodash/isEmpty';
 import type { ComponentType } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 

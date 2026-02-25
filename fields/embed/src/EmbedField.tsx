@@ -1,6 +1,6 @@
-import isEmpty from 'lodash-es/isEmpty';
-import isNumber from 'lodash-es/isNumber';
-import isObject from 'lodash-es/isObject';
+import isEmpty from 'lodash/isEmpty';
+import isNumber from 'lodash/isNumber';
+import isObject from 'lodash/isObject';
 import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 

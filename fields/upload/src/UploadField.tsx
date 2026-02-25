@@ -3,8 +3,8 @@ import { UppyContextProvider } from '@uppy/react';
 import Dashboard from '@uppy/react/dashboard';
 import DashboardModal from '@uppy/react/dashboard-modal';
 import classNames from 'classnames';
-import isArray from 'lodash-es/isArray';
-import isObject from 'lodash-es/isObject';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 

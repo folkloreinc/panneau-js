@@ -1,4 +1,4 @@
-import isString from 'lodash-es/isString';
+import isString from 'lodash/isString';
 import { createContext, useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
 

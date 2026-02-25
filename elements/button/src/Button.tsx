@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import classNames from 'classnames';
-import isString from 'lodash-es/isString';
+import isString from 'lodash/isString';
 import type { ReactNode, Ref } from 'react';
 import { Link } from 'wouter';
 

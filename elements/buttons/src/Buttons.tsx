@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import isArray from 'lodash-es/isArray';
+import isArray from 'lodash/isArray';
 import type { MouseEvent, ReactNode } from 'react';
 
 import { useButtonsComponents } from '@panneau/core/contexts';

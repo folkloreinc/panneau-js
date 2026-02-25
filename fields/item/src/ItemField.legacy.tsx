@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import get from 'lodash-es/get';
-import isEmpty from 'lodash-es/isEmpty';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import type { FormEvent } from 'react';
 import { useCallback, useRef, useState } from 'react';
 import Autosuggest from 'react-autosuggest';

@@ -1,4 +1,4 @@
-import type { Item } from '@panneau/core/types';
+import type { Item } from '../types';
 
 interface ParseItemOptions {
     getItemLabel?: ((item: Item, path: string | string[]) => unknown) | null;

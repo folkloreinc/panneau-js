@@ -27,14 +27,12 @@
     "license": "ISC",
     "type": "module",
     "module": "es/index.js",
-    "types": "types/index.d.ts",
+    "types": "es/index.d.ts",
     "style": "./assets/css/styles.css",
     "exports": {
         ".": {
-            "import": {
-                "default": "./es/index.js",
-                "types": "./types/index.d.ts"
-            }
+            "default": "./es/index.js",
+            "types": "./es/index.d.ts"
         },
         "./assets/css/styles": "./assets/css/styles.css",
         "./assets/css/styles.css": "./assets/css/styles.css"
@@ -63,7 +61,7 @@
         "@panneau/element-avatar": "^4.0.11",
         "@panneau/themes": "^4.0.11",
         "classnames": "^2.5.1",
-        "lodash-es": "^4.17.21",
+        "lodash": "^4.17.21",
         "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0"
     },
     "publishConfig": {

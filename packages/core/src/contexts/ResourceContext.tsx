@@ -1,7 +1,7 @@
 import { createContext, use } from 'react';
 import type { ReactNode } from 'react';
 
-import type { Resource } from '@panneau/core/types';
+import type { Resource } from '../types';
 
 const ResourceContext = createContext<Resource | null>(null);
 

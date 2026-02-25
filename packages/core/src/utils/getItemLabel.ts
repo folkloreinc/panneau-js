@@ -1,4 +1,4 @@
-import type { Item } from '@panneau/core/types';
+import type { Item } from '../types';
 
 type GetLabelFunction = (item: Item, path: string | null) => string;
 

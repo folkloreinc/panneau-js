@@ -1,6 +1,6 @@
 import { useCallback, useMemo, type ReactNode } from 'react';
 import classNames from 'classnames';
-import isArray from 'lodash-es/isArray';
+import isArray from 'lodash/isArray';
 import { FormattedMessage } from 'react-intl';
 
 import { useFiltersComponents } from '@panneau/core/contexts';

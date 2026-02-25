@@ -119,6 +119,7 @@ export interface Breadcrumb {
  * Font definition
  */
 export interface Font {
+    name: string;
     // Properties to be defined based on requirements
 }
 

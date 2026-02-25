@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
 import classNames from 'classnames';
-import uniqBy from 'lodash-es/uniqBy';
+import uniqBy from 'lodash/uniqBy';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';

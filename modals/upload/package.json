@@ -45,7 +45,7 @@
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh"
+        "build": "../../scripts/prepare-package.sh --types"
     },
     "devDependencies": {
         "react": "^19.0.0",
@@ -64,7 +64,7 @@
         "@uppy/dashboard": "^5.0.4",
         "@uppy/react": "^5.1.1",
         "@uppy/utils": "^7.1.3",
-        "lodash-es": "^4.17.21",
+        "lodash": "^4.17.21",
         "tailwindcss": "^4.1.17"
     },
     "publishConfig": {

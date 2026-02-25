@@ -1,4 +1,4 @@
-import type { Field } from '@panneau/core/types';
+import type { Field } from '../types';
 import { useMemo } from 'react';
 
 import useBaseForm from './useForm';

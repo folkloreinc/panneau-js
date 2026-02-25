@@ -2,7 +2,7 @@ import { TrackingContainer, TrackingContext } from '@folklore/tracking';
 import { useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
-import type { TrackingVariables } from '@panneau/core/types';
+import type { TrackingVariables } from '../types';
 
 import { Tracking } from '../lib';
 

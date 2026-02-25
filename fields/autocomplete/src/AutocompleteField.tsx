@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import classNames from 'classnames';
-import isObject from 'lodash-es/isObject';
-import isString from 'lodash-es/isString';
+import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
 
 import Button from '@panneau/element-button';
 import TextField from '@panneau/field-text';

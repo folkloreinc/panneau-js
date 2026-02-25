@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import isObject from 'lodash-es/isObject';
+import isObject from 'lodash/isObject';
 import type { ComponentType } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';

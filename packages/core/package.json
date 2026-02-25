@@ -26,30 +26,32 @@
     ],
     "license": "ISC",
     "type": "module",
-    "module": "es/index.js",
-    "types": "es/types/index.d.ts",
+    "module": "./es/index.js",
+    "types": "./es/index.d.ts",
     "exports": {
         ".": {
-            "import": {
-                "default": "./es/index.js"
-            }
+            "default": "./es/index.js",
+            "types": "./es/index.d.ts"
         },
-        "./contexts": "./es/contexts.js",
-        "./hooks": "./es/hooks.js",
-        "./utils": "./es/utils.js",
-        "./types": "./es/types/index.d.ts"
+        "./contexts": {
+            "default": "./es/contexts.js",
+            "types": "./es/contexts.d.ts"
+        },
+        "./hooks": {
+            "default": "./es/hooks.js",
+            "types": "./es/hooks.d.ts"
+        },
+        "./utils": {
+            "default": "./es/utils.js",
+            "types": "./es/utils.d.ts"
+        }
     },
     "sideEffects": [
         "./es/hooks.js"
     ],
     "files": [
-        "lib",
         "es",
-        "assets",
-        "components.js",
-        "contexts.js",
-        "hooks.js",
-        "utils.js"
+        "assets"
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
@@ -81,7 +83,7 @@
         "debug": "^4.3.4",
         "flat": "^6.0.1",
         "hoist-non-react-statics": "^3.3.2",
-        "lodash-es": "^4.17.21",
+        "lodash": "^4.17.21",
         "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0",
         "react-is": "^18.2.0",
         "slugify": "^1.5.0",

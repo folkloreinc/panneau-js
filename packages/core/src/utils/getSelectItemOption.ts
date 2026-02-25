@@ -1,4 +1,4 @@
-import type { Item } from '@panneau/core/types';
+import type { Item } from '../types';
 
 import getItemLabel from './getItemLabel';
 import getPathValue from './getPathValue';

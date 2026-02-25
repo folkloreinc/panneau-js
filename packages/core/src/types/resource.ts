@@ -21,7 +21,7 @@ export interface Action {
 
 export type ActionDefinition = string | Action;
 
-type ActionValue = Item | Item[] | null;
+export type ActionValue = Item | Item[] | null;
 
 export interface ResourceValues {
     a_singular?: string;

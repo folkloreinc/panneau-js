@@ -6,24 +6,24 @@ import copy from 'rollup-plugin-copy';
 import { createConfig } from '../../rollup.config';
 
 const files = {
-    'index.js': {
-        // prependPlugins: [
-        //     alias({
-        //         entries: [
-        //             {
-        //                 find: /(\.|\.\.)\/(contexts|utils|hooks|components)\/?$/,
-        //                 replacement: '@panneau/core/$2',
-        //             },
-        //         ],
-        //     }),
-        // ],
+    'index.ts': {
+        prependPlugins: [
+            alias({
+                entries: [
+                    {
+                        find: /(\.|\.\.)\/(contexts|utils|hooks|components)\/?$/,
+                        replacement: '@panneau/core/$2',
+                    },
+                ],
+            }),
+        ],
         resolveOptions: {
             extensions: ['.mjs', '.js', '.jsx', '.json', '.node', '.ts', '.tsx'],
             resolveOnly: [new RegExp(path.join(__dirname, './src/lib'))],
         },
     },
 
-    'contexts.js': {
+    'contexts.ts': {
         prependPlugins: [
             alias({
                 entries: [
@@ -49,7 +49,7 @@ const files = {
         },
     },
 
-    'hooks.js': {
+    'hooks.ts': {
         prependPlugins: [
             alias({
                 entries: [
@@ -73,17 +73,17 @@ const files = {
         },
     },
 
-    'utils.js': {
+    'utils.ts': {
         prependPlugins: [
-            copy({
-                targets: [
-                    { src: 'src/types/index.d.ts', dest: 'es/types' },
-                    { src: 'src/types/core.d.ts', dest: 'es/types' },
-                    { src: 'src/types/form.d.ts', dest: 'es/types' },
-                    { src: 'src/types/panneau.d.ts', dest: 'es/types' },
-                    { src: 'src/types/resource.d.ts', dest: 'es/types' },
-                ],
-            }),
+            // copy({
+            //     targets: [
+            //         { src: 'src/types/index.d.ts', dest: 'es/types' },
+            //         { src: 'src/types/core.d.ts', dest: 'es/types' },
+            //         { src: 'src/types/form.d.ts', dest: 'es/types' },
+            //         { src: 'src/types/panneau.d.ts', dest: 'es/types' },
+            //         { src: 'src/types/resource.d.ts', dest: 'es/types' },
+            //     ],
+            // }),
         ],
         resolveOptions: {
             extensions: ['.mjs', '.js', '.jsx', '.json', '.node', '.ts', '.tsx'],
@@ -100,11 +100,11 @@ const config = Object.keys(files).reduce(
             format: 'es',
             ...files[file],
         }),
-        createConfig({
-            file,
-            format: 'cjs',
-            ...files[file],
-        }),
+        // createConfig({
+        //     file,
+        //     format: 'cjs',
+        //     ...files[file],
+        // }),
     ],
     [],
 );

@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import classNames from 'classnames';
-import isEmpty from 'lodash-es/isEmpty';
+import isEmpty from 'lodash/isEmpty';
 import type { ChangeEvent, MouseEvent } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';

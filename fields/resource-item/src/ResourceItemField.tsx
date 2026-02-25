@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import isArray from 'lodash-es/isArray';
-import isEmpty from 'lodash-es/isEmpty';
-import uniqBy from 'lodash-es/uniqBy';
+import isArray from 'lodash/isArray';
+import isEmpty from 'lodash/isEmpty';
+import uniqBy from 'lodash/uniqBy';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 

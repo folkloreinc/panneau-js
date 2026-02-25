@@ -6,16 +6,16 @@
  */
 
 // Core UI Types
-export type * from './core';
+export * from './core';
 
 // Auth types
-export type * from './auth';
+export * from './auth';
 
 // Form Types
-export type * from './form';
+export * from './form';
 
 // Resource Types
-export type * from './resource';
+export * from './resource';
 
 // Panneau Definition Types
-export type * from './panneau';
+export * from './panneau';

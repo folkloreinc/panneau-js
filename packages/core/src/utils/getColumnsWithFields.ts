@@ -1,5 +1,5 @@
-import isString from 'lodash-es/isString';
-import type { Field, Resource, TableColumn } from '@panneau/core/types';
+import isString from 'lodash/isString';
+import type { Field, Resource, TableColumn } from '../types';
 
 import getComponent from './getComponent';
 

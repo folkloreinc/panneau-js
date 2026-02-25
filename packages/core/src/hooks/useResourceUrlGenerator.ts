@@ -1,6 +1,6 @@
-import isObject from 'lodash-es/isObject';
+import isObject from 'lodash/isObject';
 
-import type { Resource } from '@panneau/core/types';
+import type { Resource } from '../types';
 
 import { usePanneauResources, useResource, useUrlGenerator } from '../contexts';
 

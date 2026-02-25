@@ -51,7 +51,58 @@ build_rollup() {
 build_types() {
     echo "Building types with tsc..."
     mkdir -p ./types/
-    ../../node_modules/.bin/tsc "src/index.ts" --declaration --emitDeclarationOnly --allowJs --jsx "react-jsx" --declarationDir "types" --listEmittedFiles --noCheck
+
+    ts_entries=()
+    while IFS= read -r es_file; do
+        rel_path="${es_file#es/}"
+        rel_path="${rel_path%.*}"
+
+        ts_path="src/${rel_path}.ts"
+        tsx_path="src/${rel_path}.tsx"
+
+        if [ -f "$ts_path" ]; then
+            ts_entries+=("$ts_path")
+            continue
+        fi
+        if [ -f "$tsx_path" ]; then
+            ts_entries+=("$tsx_path")
+        fi
+    done < <(find es -type f \( -name "*.js" -o -name "*.mjs" -o -name "*.jsx" \) 2>/dev/null | sort)
+
+    unique_ts_entries=()
+    if [ ${#ts_entries[@]} -gt 0 ]; then
+        while IFS= read -r line; do
+            if [ -n "$line" ]; then
+                unique_ts_entries+=("$line")
+            fi
+        done < <(printf '%s\n' "${ts_entries[@]}" | awk '!seen[$0]++')
+    fi
+
+    if [ ${#unique_ts_entries[@]} -eq 0 ] && [ -f "src/index.ts" ]; then
+        unique_ts_entries+=("src/index.ts")
+    fi
+
+    if [ ${#unique_ts_entries[@]} -eq 0 ]; then
+        echo "No TypeScript entrypoints found from es directory."
+        return 0
+    fi
+
+    echo "TypeScript entrypoints:"
+    for entry in "${unique_ts_entries[@]}"; do
+        echo "  - $entry"
+    done
+
+    ../../node_modules/.bin/tsc "${unique_ts_entries[@]}" --declaration --emitDeclarationOnly --allowJs --jsx "react-jsx" --declarationDir "types" --listEmittedFiles --noCheck
+
+    echo "Bundling types with rollup..."
+    if [ -f ./rollup.config.dts.js ]; then
+        ../../node_modules/.bin/rollup --config ./rollup.config.dts.js --bundleConfigAsCjs
+    else
+        ../../node_modules/.bin/rollup --config ../../rollup.config.dts.js --bundleConfigAsCjs
+    fi
+
+    echo "Cleaning up types..."
+    rm -rf types
 }
 
 copy_css() {

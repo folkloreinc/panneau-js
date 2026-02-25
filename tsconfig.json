@@ -2,6 +2,6 @@
     "extends": "@tsconfig/create-react-app/tsconfig.json",
     "compilerOptions": {
         "strict": false,
-        "typeRoots": ["./packages/core/src/types", "./node_modules/@types"]
+        "typeRoots": ["./node_modules/@types", "./*/*/types"]
     }
 }

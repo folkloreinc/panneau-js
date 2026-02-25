@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import isArray from 'lodash-es/isArray';
+import isArray from 'lodash/isArray';
 import { useMemo } from 'react';
 
 import MediaCard from './MediaCard';

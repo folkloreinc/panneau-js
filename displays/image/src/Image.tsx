@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import isNumber from 'lodash-es/isNumber';
-import isString from 'lodash-es/isString';
+import isNumber from 'lodash/isNumber';
+import isString from 'lodash/isString';
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 
 import styles from './styles.module.css';

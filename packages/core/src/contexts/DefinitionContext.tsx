@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 import type { ReactNode } from 'react';
 
-import type { Definition } from '@panneau/core/types';
+import type { Definition } from '../types';
 
 const DefinitionContext = createContext<Definition | null>(null);
 

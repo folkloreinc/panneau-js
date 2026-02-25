@@ -1,4 +1,4 @@
-import type { Field } from '@panneau/core/types';
+import type { Field } from '../types';
 
 interface FieldWithSubFields extends Field {
     fields?: FieldWithSubFields[];

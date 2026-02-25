@@ -1,5 +1,5 @@
-import isArray from 'lodash-es/isArray';
-import type { Field } from '@panneau/core/types';
+import isArray from 'lodash/isArray';
+import type { Field } from '../types';
 
 import getFieldByName from './getFieldByName';
 

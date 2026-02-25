@@ -45,7 +45,7 @@
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh"
+        "build": "../../scripts/prepare-package.sh --types"
     },
     "devDependencies": {
         "react": "^19.0.0",
@@ -70,7 +70,7 @@
         "@uppy/tus": "^5.0.2",
         "@uppy/webcam": "^5.0.2",
         "@uppy/xhr-upload": "^5.0.2",
-        "lodash-es": "^4.17.21",
+        "lodash": "^4.17.21",
         "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0",
         "slugify": "^1.5.0",
         "uuid": "^9.0.1"

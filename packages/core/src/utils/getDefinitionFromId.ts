@@ -1,6 +1,6 @@
 import { pascalCase } from 'change-case';
-import isArray from 'lodash-es/isArray';
-import type { Definition } from '@panneau/core/types';
+import isArray from 'lodash/isArray';
+import type { Definition } from '../types';
 
 const getDefinitionFromId = <T extends Definition = Definition>(
     id: string | null = null,

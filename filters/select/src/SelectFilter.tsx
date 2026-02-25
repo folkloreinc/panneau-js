@@ -1,6 +1,6 @@
 import { getCSRFHeaders, getJSON } from '@folklore/fetch';
-import get from 'lodash-es/get';
-import isArray from 'lodash-es/isArray';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import queryString from 'query-string';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearch } from 'wouter';

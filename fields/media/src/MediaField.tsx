@@ -1,7 +1,7 @@
 // import classNames from 'classnames';
 import classNames from 'classnames';
-import isArray from 'lodash-es/isArray';
-import isObject from 'lodash-es/isObject';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 

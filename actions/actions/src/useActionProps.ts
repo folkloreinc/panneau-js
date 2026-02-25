@@ -1,8 +1,8 @@
-import get from 'lodash-es/get';
-import isArray from 'lodash-es/isArray';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import { useMemo } from 'react';
 
-import type { ActionValue } from '@panneau/core/types';
+import type { ActionValue } from '@panneau/core';
 
 interface UseActionPropsResult {
     ids: string[] | null;

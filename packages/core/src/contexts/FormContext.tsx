@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, use, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
 interface FormContextValue {
@@ -8,15 +8,15 @@ interface FormContextValue {
 
 const FormContext = createContext<FormContextValue | null>(null);
 
-export const useForm = (): FormContextValue | null => useContext(FormContext);
+export const useFormContext = (): FormContextValue | null => use(FormContext);
 
 export const useFormValue = (): Record<string, unknown> => {
-    const { value } = useForm();
+    const { value } = useFormContext();
     return value;
 };
 
 export const useFormSetValue = (): ((value: Record<string, unknown>) => void) => {
-    const { setValue } = useForm();
+    const { setValue } = useFormContext();
     return setValue;
 };
 
