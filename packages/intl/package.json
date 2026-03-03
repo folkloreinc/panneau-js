@@ -71,7 +71,7 @@
         "gettext-parser": "^7.0.1",
         "glob": "^10.3.12",
         "lodash": "^4.17.21",
-        "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0"
+        "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0"
     },
     "lang": "locale",
     "supportedLocales": [

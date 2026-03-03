@@ -84,7 +84,7 @@
         "flat": "^6.0.1",
         "hoist-non-react-statics": "^3.3.2",
         "lodash": "^4.17.21",
-        "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0",
+        "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0",
         "react-is": "^18.2.0",
         "slugify": "^1.5.0",
         "snake-case": "^4.0.0",

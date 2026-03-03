@@ -60,7 +60,7 @@
         "@panneau/element-label": "^4.0.15",
         "@panneau/themes": "^4.0.15",
         "classnames": "^2.5.1",
-        "react-intl": "^5.15.8 || ^6.0.0 || ^7.0.0"
+        "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0"
     },
     "publishConfig": {
         "access": "public"
