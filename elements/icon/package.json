@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-icon",
-    "version": "4.0.17",
+    "version": "4.0.18",
     "description": "Link element",
     "keywords": [
         "javascript"
@@ -63,7 +63,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.17",
+        "@panneau/core": "^4.0.18",
         "bootstrap-icons": "^1.13.1",
         "classnames": "^2.5.1"
     },

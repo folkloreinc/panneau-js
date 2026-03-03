@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-label",
-    "version": "4.0.17",
+    "version": "4.0.18",
     "description": "Label filter",
     "keywords": [
         "javascript"
@@ -55,9 +55,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.17",
-        "@panneau/element-link": "^4.0.17",
-        "@panneau/themes": "^4.0.17",
+        "@panneau/core": "^4.0.18",
+        "@panneau/element-link": "^4.0.18",
+        "@panneau/themes": "^4.0.18",
         "classnames": "^2.5.1"
     },
     "publishConfig": {

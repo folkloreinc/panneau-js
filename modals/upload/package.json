@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modal-upload",
-    "version": "4.0.17",
+    "version": "4.0.18",
     "description": "File upload modal",
     "keywords": [
         "javascript"
@@ -60,9 +60,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.17",
-        "@panneau/modal-dialog": "^4.0.17",
-        "@panneau/uppy": "^4.0.17",
+        "@panneau/core": "^4.0.18",
+        "@panneau/modal-dialog": "^4.0.18",
+        "@panneau/uppy": "^4.0.18",
         "@uppy/core": "^5.1.1",
         "@uppy/dashboard": "^5.0.4",
         "@uppy/react": "^5.1.1",

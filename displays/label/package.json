@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-label",
-    "version": "4.0.17",
+    "version": "4.0.18",
     "description": "Label item value in list",
     "keywords": [
         "javascript"
@@ -60,8 +60,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.17",
-        "@panneau/themes": "^4.0.17",
+        "@panneau/core": "^4.0.18",
+        "@panneau/themes": "^4.0.18",
         "lodash": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0"
     },

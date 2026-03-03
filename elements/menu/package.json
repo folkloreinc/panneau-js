@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-menu",
-    "version": "4.0.17",
+    "version": "4.0.18",
     "description": "Menu element",
     "keywords": [
         "javascript"
@@ -60,10 +60,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.17",
-        "@panneau/element-dropdown": "^4.0.17",
-        "@panneau/element-label": "^4.0.17",
-        "@panneau/element-link": "^4.0.17",
+        "@panneau/core": "^4.0.18",
+        "@panneau/element-dropdown": "^4.0.18",
+        "@panneau/element-label": "^4.0.18",
+        "@panneau/element-link": "^4.0.18",
         "classnames": "^2.5.1",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0"
     },

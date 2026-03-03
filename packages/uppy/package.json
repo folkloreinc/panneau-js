@@ -1,6 +1,6 @@
 {
     "name": "@panneau/uppy",
-    "version": "4.0.17",
+    "version": "4.0.18",
     "description": "",
     "keywords": [
         "javascript"
@@ -60,7 +60,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.17",
+        "@panneau/core": "^4.0.18",
         "@uppy/core": "^5.1.1",
         "@uppy/dashboard": "^5.0.4",
         "@uppy/dropbox": "^5.0.1",
