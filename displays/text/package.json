@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-text",
-    "version": "4.0.15",
+    "version": "4.0.17",
     "description": "Text item value in list",
     "keywords": [
         "javascript"
@@ -60,8 +60,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.12.5",
-        "@panneau/core": "^4.0.15",
-        "@panneau/themes": "^4.0.15",
+        "@panneau/core": "^4.0.17",
+        "@panneau/themes": "^4.0.17",
         "lodash": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0"
     },
