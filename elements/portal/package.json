@@ -59,7 +59,7 @@
         "react-dom": "^19.0.0"
     },
     "dependencies": {
-        "@babel/runtime": "^7.12.5",
+        "@babel/runtime": "^7.28.6",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0"
     },
     "publishConfig": {

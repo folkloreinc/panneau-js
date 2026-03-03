@@ -65,7 +65,7 @@
         "react-dom": "^19.0.0"
     },
     "dependencies": {
-        "@babel/runtime": "^7.12.5",
+        "@babel/runtime": "^7.28.6",
         "@folklore/routes": "^0.2.44",
         "@fortawesome/fontawesome-svg-core": "^6.5.1",
         "@fortawesome/free-solid-svg-icons": "^6.5.1",

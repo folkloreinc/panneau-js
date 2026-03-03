@@ -59,7 +59,7 @@
         "react-dom": "^19.0.0"
     },
     "dependencies": {
-        "@babel/runtime": "^7.12.5",
+        "@babel/runtime": "^7.28.6",
         "@folklore/fetch": "^0.1.21",
         "@folklore/routes": "^0.2.44",
         "@panneau/core": "^4.0.17",

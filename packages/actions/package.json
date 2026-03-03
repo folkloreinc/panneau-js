@@ -55,7 +55,7 @@
         "react-dom": "^19.0.0"
     },
     "dependencies": {
-        "@babel/runtime": "^7.12.5",
+        "@babel/runtime": "^7.28.6",
         "@panneau/action-delete": "^4.0.17",
         "@panneau/action-duplicate": "^4.0.17",
         "@panneau/action-edit": "^4.0.17",
