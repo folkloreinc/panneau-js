@@ -550,59 +550,59 @@ function MediasBrowser({
                 </MediaForm>
             ) : (
                 <>
-                    <div className={classNames(['d-flex', 'justify-content-between'])}>
-                        {filters !== null ? (
-                            <Filters
-                                value={query}
-                                clearValue={types !== null ? queryWithoutTypes : null}
-                                filters={finalFilters}
-                                onChange={onQueryChange}
-                                onReset={onQueryReset}
-                                theme={theme}
-                            />
+                    <div className="card card-body py-2 mb-3">
+                        <div className="row g-2 align-items-center">
+                            <div className="col-12 col-lg">
+                                {filters !== null ? (
+                                    <Filters
+                                        value={query}
+                                        clearValue={types !== null ? queryWithoutTypes : null}
+                                        filters={finalFilters}
+                                        onChange={onQueryChange}
+                                        onReset={onQueryReset}
+                                        theme={theme}
+                                    />
+                                ) : null}
+                            </div>
+                            <div className="col-12 col-lg-auto">
+                                <div className="d-flex flex-wrap gap-2 justify-content-lg-end">
+                                    {hasLayouts ? (
+                                        <Buttons
+                                            size="sm"
+                                            theme="secondary"
+                                            outline
+                                            items={(layouts || []).map((lay) => ({
+                                                ...lay,
+                                                active: layout === lay.id,
+                                                onClick: () => onClickLayout(lay.id),
+                                                className: 'px-3 py-2',
+                                            }))}
+                                        />
+                                    ) : null}
+                                    {/* make this actions someday ? */}
+                                    {canUpload ? (
+                                        <UploadField
+                                            className="w-auto text-nowrap"
+                                            withButton
+                                            withoutMedia
+                                            uppyProps={uppyConfig}
+                                            types={types}
+                                            allowMultipleUploads
+                                            onChange={onUploadComplete}
+                                            disabled={uploadProcessing}
+                                            loading={uploadProcessing}
+                                            outline={false}
+                                            closeAfterFinish
+                                        />
+                                    ) : null}
+                                </div>
+                            </div>
+                        </div>
+                        {!hidePagination ? (
+                            <div className="d-none d-md-flex mt-2 justify-content-end">
+                                {pagination}
+                            </div>
                         ) : null}
-                        {/* make this actions someday ? */}
-                        {canUpload ? (
-                            <UploadField
-                                className="ms-auto w-auto text-nowrap mt-2 mb-2 ps-2"
-                                withButton
-                                withoutMedia
-                                uppyProps={uppyConfig}
-                                types={types}
-                                allowMultipleUploads
-                                onChange={onUploadComplete}
-                                disabled={uploadProcessing}
-                                loading={uploadProcessing}
-                                outline={false}
-                                closeAfterFinish
-                            />
-                        ) : null}
-                    </div>
-                    <div
-                        className={classNames([
-                            'd-flex',
-                            'mt-1',
-                            'mb-3',
-                            {
-                                'justify-content-between': hasLayouts,
-                                'justify-content-end': !hasLayouts,
-                            },
-                        ])}
-                    >
-                        {hasLayouts ? (
-                            <Buttons
-                                size="sm"
-                                theme="secondary"
-                                outline
-                                items={(layouts || []).map((lay) => ({
-                                    ...lay,
-                                    active: layout === lay.id,
-                                    onClick: () => onClickLayout(lay.id),
-                                    className: 'px-3 py-2',
-                                }))}
-                            />
-                        ) : null}
-                        {!hidePagination ? pagination : <div />}
                     </div>
                     {layout === 'grid' ? (
                         <Grid
@@ -667,6 +667,7 @@ function MediasBrowser({
                         <div
                             className={classNames([
                                 'd-flex',
+                                'd-md-none',
                                 'mt-3',
                                 'mb-1',
                                 'justify-content-end',
