@@ -30,6 +30,7 @@ interface ResourceItemsListProps {
     onSelectionChange?: ((items: Item[]) => void) | null;
     multipleSelection?: boolean;
     listProps?: Record<string, unknown> | null;
+    actionsProps?: Record<string, unknown> | null;
     theme?: string | null;
     className?: string | null;
 }
@@ -52,6 +53,7 @@ function ResourceItemsList({
     onSelectionChange: parentOnChangeSelection = null,
     multipleSelection = false,
     listProps: customListProps = null,
+    actionsProps: customActionProps = null,
     theme = null,
     className = null,
 }: ResourceItemsListProps) {
@@ -135,6 +137,11 @@ function ResourceItemsList({
         setSelectedItems([]);
     }, [setSelectedItems]);
 
+    const finalActionProps = {
+        ...customActionProps,
+        ...actionsProps,
+    };
+
     return (
         <div className={className!}>
             {withFilters ? (
@@ -195,7 +202,7 @@ function ResourceItemsList({
                         actions,
                         reload,
                         updateValue: updateItem,
-                        ...actionsProps,
+                        ...finalActionProps,
                     }}
                     selectable={finalSelectable}
                     selectedItems={selectedItems}

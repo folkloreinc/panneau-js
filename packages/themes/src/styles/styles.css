@@ -17,6 +17,11 @@ body {
     --bs-input-color: var(--bs-body-bg, #000);
 }
 
+[data-bs-theme='blue'] {
+    --bs-body-bg: var(--bs-body-bg, #5f8b9a);
+    --bs-body-color: var(--bs-body-color, #fff);
+}
+
 html,
 body {
     margin: 0;
@@ -25,4 +30,3 @@ body {
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
 }
-

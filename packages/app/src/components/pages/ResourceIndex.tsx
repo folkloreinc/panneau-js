@@ -181,6 +181,7 @@ function ResourceIndexPage({ resource, defaultActions = DEFAULT_ACTIONS }: Resou
                         onQueryChange={onQueryChange}
                         onQueryReset={onQueryReset}
                         theme={theme}
+                        // actionsProps={{ size: 'sm' }}
                     />
                 </div>
             </MainLayout>

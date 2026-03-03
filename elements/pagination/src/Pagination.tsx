@@ -21,6 +21,7 @@ interface PaginationProps {
     withCount?: boolean;
     autohide?: boolean;
     align?: 'left' | 'right';
+    size?: 'sm' | 'md' | 'lg' | null;
     previousLabel?: ReactNode | null;
     nextLabel?: ReactNode | null;
     countLabel?: ReactNode | null;
@@ -48,6 +49,7 @@ function Pagination({
     withCount = true,
     autohide = false,
     align = 'right',
+    size = null,
     previousLabel: initialPreviousLabel = null,
     nextLabel: initialNextLabel = null,
     countLabel: initialCountLabel = null,
@@ -186,6 +188,8 @@ function Pagination({
                     'pagination',
                     'm-0',
                     {
+                        'pagination-sm': size === 'sm',
+                        'pagination-lg': size === 'lg',
                         [paginationClassName!]: paginationClassName !== null,
                     },
                 ])}

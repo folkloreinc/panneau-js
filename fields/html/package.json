@@ -63,8 +63,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@ckeditor/ckeditor5-editor-multi-root": "^47.1.0",
-        "@ckeditor/ckeditor5-react": "^11.0.0",
+        "@ckeditor/ckeditor5-editor-multi-root": "^47.5.0",
+        "@ckeditor/ckeditor5-react": "^11.0.1",
         "@panneau/ckeditor": "^4.0.14",
         "@panneau/core": "^4.0.18",
         "@panneau/field-input-group": "^4.0.18",
@@ -72,7 +72,7 @@
         "classnames": "^2.5.1"
     },
     "overrides": {
-        "@ckeditor/ckeditor5-editor-multi-root": "^47.1.0"
+        "@ckeditor/ckeditor5-editor-multi-root": "^47.5.0"
     },
     "publishConfig": {
         "access": "public"
