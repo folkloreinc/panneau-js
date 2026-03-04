@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-boolean",
-    "version": "4.0.19",
+    "version": "4.0.20",
     "description": "Boolean value in list",
     "keywords": [
         "javascript"
@@ -63,7 +63,7 @@
         "@panneau/core": "^4.0.18",
         "@panneau/element-icon": "^4.0.18",
         "@panneau/element-label": "^4.0.18",
-        "@panneau/themes": "^4.0.19",
+        "@panneau/themes": "^4.0.20",
         "lodash": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0"
     },
