@@ -1,6 +1,8 @@
 import replace from '@rollup/plugin-replace';
-import { createConfig } from '../../rollup.config';
-import { supportedLocales as locales } from './package.json';
+import { createConfig } from '../../rollup.config.js';
+import packageJson from './package.json' with { type: 'json' };
+
+const { supportedLocales: locales } = packageJson;
 
 const localesFiles = locales.reduce(
     (configs, locale) => [

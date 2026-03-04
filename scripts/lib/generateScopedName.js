@@ -3,11 +3,13 @@ const path = require('path');
 const fs = require('fs');
 const slugify = require('slugify');
 
+const pkgUpSync = pkgUp.pkgUpSync || pkgUp.sync;
+
 function generateScopedName(localName, filePath) {
     if (!filePath.match(/\.module\.css$/)) {
         return localName;
     }
-    const packageJsonPath = pkgUp.sync({
+    const packageJsonPath = pkgUpSync({
         cwd: path.dirname(filePath),
     });
     const packagePath = path.dirname(packageJsonPath);

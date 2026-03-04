@@ -1,9 +1,12 @@
 import alias from '@rollup/plugin-alias';
 import typescript from '@rollup/plugin-typescript';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import copy from 'rollup-plugin-copy';
 
-import { createConfig } from '../../rollup.config';
+import { createConfig } from '../../rollup.config.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const files = {
     'index.ts': {
