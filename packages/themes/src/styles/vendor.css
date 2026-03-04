@@ -1,3 +1,6 @@
 /* stylelint-disable selector-class-pattern */
 @import url('bootstrap');
 
+.uppy-Dashboard-AddFiles-title {
+    white-space: wrap;
+}
