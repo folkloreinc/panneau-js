@@ -14,7 +14,6 @@ export default {
 
 const options = ['One', 'Two', 'Three'];
 
-// eslint-disable-next-line react/prop-types
 function Container({ value: initialValue, ...props }) {
     const [value, setValue] = useState(initialValue);
     return <SelectField {...props} value={value} onChange={setValue} />;

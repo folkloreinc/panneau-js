@@ -5,10 +5,13 @@ import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import url from '@rollup/plugin-url';
+import { createRequire } from 'module';
 import path from 'path';
 import postcss from 'rollup-plugin-postcss';
 
-import generateScopedName from './scripts/lib/generateScopedName';
+import generateScopedName from './scripts/lib/generateScopedName.js';
+
+const require = createRequire(import.meta.url);
 
 export function createConfig({
     file = 'index.ts',

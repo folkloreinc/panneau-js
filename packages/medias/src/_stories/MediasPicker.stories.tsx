@@ -31,7 +31,6 @@ export default {
 
 const items = { data: [Media1, Media2, Media3], pagination: { page: 1 } };
 
-// eslint-disable-next-line react/prop-types
 function Container({ value: initialValue = null, ...props } = {}) {
     const api = useApi();
     const [value, setValue] = useState(initialValue);

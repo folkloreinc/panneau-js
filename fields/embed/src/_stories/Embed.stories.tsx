@@ -10,7 +10,6 @@ export default {
     },
 };
 
-// eslint-disable-next-line react/prop-types
 function Container({ value: initialValue, ...props }) {
     const [value, setValue] = useState(initialValue);
     return (
