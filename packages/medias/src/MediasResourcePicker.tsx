@@ -16,10 +16,8 @@ function MediasResourcePicker({
     ...props
 }: MediasResourcePickerProps) {
     const resource = usePanneauResource(resourceId);
-
     const { index = null, fields = null } = resource || {};
     const { filters = null, columns = null } = index || {};
-
     const api = useApi();
     const mediasApi = useMemo(
         () => ({

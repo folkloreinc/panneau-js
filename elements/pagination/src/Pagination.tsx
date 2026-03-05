@@ -34,7 +34,7 @@ interface PaginationProps {
     paginationClassName?: string | null;
     itemClassName?: string | null;
     linkClassName?: string | null;
-    onClickPage?: ((page: number, e: MouseEvent) => void) | null;
+    onClickPage?: ((e: MouseEvent, page: number) => void) | null;
 }
 
 function Pagination({
@@ -217,7 +217,7 @@ function Pagination({
                                 href={getUrl(page - 1) || '#'}
                                 onClick={
                                     onClickPage !== null
-                                        ? (e) => onClickPage(page - 1, e)
+                                        ? (e) => onClickPage(e, page - 1)
                                         : undefined
                                 }
                             >
@@ -268,7 +268,7 @@ function Pagination({
                                   }
                                   onClick={
                                       pageNumber !== '...' && onClickPage !== null
-                                          ? (e) => onClickPage(pageNumber as number, e)
+                                          ? (e) => onClickPage(e, pageNumber as number)
                                           : undefined
                                   }
                                   style={{ zIndex: 0 }}
@@ -302,7 +302,7 @@ function Pagination({
                                 href={getUrl(page + 1) || '#'}
                                 onClick={
                                     onClickPage !== null
-                                        ? (e) => onClickPage(page + 1, e)
+                                        ? (e) => onClickPage(e, page + 1)
                                         : undefined
                                 }
                             >

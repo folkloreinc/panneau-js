@@ -359,6 +359,15 @@ function MediasBrowser({
         [onMediaUploaded, setUploadedMedias, setUploadProcessing, onUploadedMediaChanged],
     );
 
+    const onClickPage = useCallback(
+        (e, pageNumber) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onPageChange(pageNumber);
+        },
+        [onPageChange],
+    );
+
     const pagination = (
         <Pagination
             page={page}
@@ -366,7 +375,7 @@ function MediasBrowser({
             total={total}
             url={baseUrl}
             query={query}
-            onClickPage={onPageChange}
+            onClickPage={onClickPage}
             theme={theme}
             loading={loading && pages !== null}
             selectable={selectable}
