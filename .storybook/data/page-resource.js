@@ -190,6 +190,8 @@ export default {
             name: 'image',
             label: 'Image',
             component: 'image',
+            withButton: true,
+            withFind: true,
         },
         {
             name: 'blocks',

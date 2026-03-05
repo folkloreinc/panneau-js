@@ -32,35 +32,33 @@ function MediasPicker({
         return Array.isArray(initialSelectedItems) ? initialSelectedItems : [initialSelectedItems];
     }, []);
 
-    // Mostly for testing
-    const [selectedItems, setSelectedItems] = useState<PickerSelection>(
-        initialSelectedItems || null,
-    );
-    const onSelectionChange = useCallback(
-        (newSelection: PickerSelection) => {
-            setSelectedItems(newSelection);
-        },
-        [setSelectedItems],
-    );
-
-    // Sync from the top
-    useEffect(() => {
-        setSelectedItems(initialSelectedItems);
-    }, [initialSelectedItems, setSelectedItems]);
-
-    useEffect(() => {
-        if (onChange !== null) {
-            onChange(selectedItems);
-        }
-    }, [selectedItems, onChange]);
+    // // Mostly for testing
+    // const [selectedItems, setSelectedItems] = useState<PickerSelection>(
+    //     initialSelectedItems || null,
+    // );
+    // const onSelectionChange = useCallback(
+    //     (newSelection: PickerSelection) => {
+    //         setSelectedItems(newSelection);
+    //     },
+    //     [setSelectedItems],
+    // );
+    // // Sync from the top
+    // useEffect(() => {
+    //     setSelectedItems(initialSelectedItems);
+    // }, [initialSelectedItems, setSelectedItems]);
+    // useEffect(() => {
+    //     if (onChange !== null) {
+    //         onChange(selectedItems);
+    //     }
+    // }, [selectedItems, onChange]);
 
     return (
         <div className={className}>
             <MediasBrowser
                 items={initialItems} // TODO: fix useItems if actually using this
                 selectable
-                selectedItems={selectedItems}
-                onSelectionChange={onSelectionChange}
+                selectedItems={initialSelectedItems}
+                onSelectionChange={onChange}
                 multipleSelection={multiple}
                 extraItems={extraItems}
                 {...props}
