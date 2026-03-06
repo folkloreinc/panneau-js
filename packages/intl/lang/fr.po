@@ -15,301 +15,303 @@ msgstr ""
 #: 002oWQ
 msgctxt "002oWQ"
 msgid "Duration"
-msgstr ""
+msgstr "Durée"
 
 # Saturday letter
 #: 0F5X3C
 msgctxt "0F5X3C"
 msgid "S"
-msgstr ""
+msgstr "S"
 
 # Checkbox label
 #: 0SEHSj
 msgctxt "0SEHSj"
 msgid "Select row"
-msgstr ""
+msgstr "Sélectionner la ligne"
 
 # Hidden label
 #: 0xeItT
 msgctxt "0xeItT"
 msgid "Loading..."
-msgstr ""
+msgstr "Chargement..."
 
 # Button label
 #: 12Px0g
 msgctxt "12Px0g"
 msgid "Send reset link"
-msgstr ""
+msgstr "Envoyer le lien de réinitialisation"
 
 # Media type
 #: 1dqmFw
 msgctxt "1dqmFw"
 msgid "Document"
-msgstr ""
+msgstr "Document"
 
 # Field label
 #: 22Ld5M
 msgctxt "22Ld5M"
 msgid "Enter the code from your authenticator app to continue"
-msgstr ""
+msgstr "Entrez le code de votre application d'authentification pour continuer"
 
 # Error message
 #: 2vB7U4
 msgctxt "2vB7U4"
 msgid "An error occured and we could not save this item successfully."
-msgstr ""
+msgstr "Une erreur est survenue et nous n'avons pas pu sauvegarder cet élément."
 
 # Field title
 #: 3RT69u
 msgctxt "3RT69u"
 msgid "Informations"
-msgstr ""
+msgstr "Informations"
 
 # Button label
 #: 3ebjtX
 msgctxt "3ebjtX"
 msgid "Yes"
-msgstr ""
+msgstr "Oui"
 
 # Pagination count label
 #: 4sViWl
 msgctxt "4sViWl"
 msgid "{count, plural, =0 {No item.} =1 {# item} other {# items}}"
-msgstr ""
+msgstr "{count, plural, =0 {Aucun élément.} =1 {# élément} other {# éléments}}"
 
 # Field label
 #: 4yfet+
 msgctxt "4yfet+"
 msgid "Password"
-msgstr ""
+msgstr "Mot de passe"
 
 # Explaination label
 #: 5nHK/H
 msgctxt "5nHK/H"
 msgid "Do you really wish to disable two factor authentication on your account?"
 msgstr ""
+"Souhaitez-vous vraiment désactiver l'authentification à deux facteurs sur "
+"votre compte ?"
 
 # Form status
 #: 5rMPIj
 msgctxt "5rMPIj"
 msgid "Loading..."
-msgstr ""
+msgstr "Chargement..."
 
 # Error page title
 #: 6Ie+vL
 msgctxt "6Ie+vL"
 msgid "Error 404"
-msgstr ""
+msgstr "Erreur 404"
 
 # Default label
 #: 6TuTuq
 msgctxt "6TuTuq"
 msgid "Choose an option"
-msgstr ""
+msgstr "Choisir une option"
 
 # Empty label
 #: 6cSFtU
 msgctxt "6cSFtU"
 msgid "No color"
-msgstr ""
+msgstr "Aucune couleur"
 
 # Error page title
 #: 6nwWPR
 msgctxt "6nwWPR"
 msgid "Error 401"
-msgstr ""
+msgstr "Erreur 401"
 
 # Page title
 #: 6viUpq
 msgctxt "6viUpq"
 msgid "Create {a_singular}"
-msgstr ""
+msgstr "Créer {a_singular}"
 
 # Items field's item label
 #: 7M0o0q
 msgctxt "7M0o0q"
 msgid "Item"
-msgstr ""
+msgstr "Élément"
 
 # Modal title
 #: 7OEFyt
 msgctxt "7OEFyt"
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 # Error page description
 #: 82P2dS
 msgctxt "82P2dS"
 msgid "You are not authorized to access this page."
-msgstr ""
+msgstr "Vous n'êtes pas autorisé à accéder à cette page."
 
 # Error page description
 #: 8HFiMs
 msgctxt "8HFiMs"
 msgid "Access to this page is forbidden"
-msgstr ""
+msgstr "L'accès à cette page est interdit"
 
 # Filter item label
 #: 8INLfU
 msgctxt "8INLfU"
 msgid "Document"
-msgstr ""
+msgstr "Document"
 
 # Field label
 #: 8LSb8C
 msgctxt "8LSb8C"
 msgid "Current password"
-msgstr ""
+msgstr "Mot de passe actuel"
 
 # Button label
 #: 8NyYTH
 msgctxt "8NyYTH"
 msgid "Back"
-msgstr ""
+msgstr "Retour"
 
 # Modal title
 #: 8T+JE7
 msgctxt "8T+JE7"
 msgid "Duplicate"
-msgstr ""
+msgstr "Dupliquer"
 
 # Filter label
 #: 9/t5wK
 msgctxt "9/t5wK"
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 # Boolean value
 #: 9XBwF1
 msgctxt "9XBwF1"
 msgid "Yes"
-msgstr ""
+msgstr "Oui"
 
 # Empty label
 #: AJiMQk
 msgctxt "AJiMQk"
 msgid "No results"
-msgstr ""
+msgstr "Aucun résultat"
 
 # Page title
 #: AeOZq+
 msgctxt "AeOZq+"
 msgid "Login"
-msgstr ""
+msgstr "Connexion"
 
 # Media type
 #: AwDQvD
 msgctxt "AwDQvD"
 msgid "Image"
-msgstr ""
+msgstr "Image"
 
 # Field label
 #: B1h3gd
 msgctxt "B1h3gd"
 msgid "Please enter your password to continue"
-msgstr ""
+msgstr "Veuillez entrer votre mot de passe pour continuer"
 
 # Wednesday letter
 #: BAKfhq
 msgctxt "BAKfhq"
 msgid "W"
-msgstr ""
+msgstr "M"
 
 # Modal title
 #: BIYKx5
 msgctxt "BIYKx5"
 msgid "Preview"
-msgstr ""
+msgstr "Aperçu"
 
 # Default upload add button label
 #: BeKVq6
 msgctxt "BeKVq6"
 msgid "Upload file"
-msgstr ""
+msgstr "Téléverser un fichier"
 
 # Button label
 #: Bhu3B2
 msgctxt "Bhu3B2"
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 # Avatar label
 #: CGvQxc
 msgctxt "CGvQxc"
 msgid "User"
-msgstr ""
+msgstr "Utilisateur"
 
 # Thursday letter
 #: DBU3cu
 msgctxt "DBU3cu"
 msgid "T"
-msgstr ""
+msgstr "J"
 
 # Field label
 #: DUbv+u
 msgctxt "DUbv+u"
 msgid "Confirm your new password"
-msgstr ""
+msgstr "Confirmez votre nouveau mot de passe"
 
 # Form status
 #: ESkxLX
 msgctxt "ESkxLX"
 msgid "Success!"
-msgstr ""
+msgstr "Succès !"
 
 # Button label
 #: FntHPK
 msgctxt "FntHPK"
 msgid "View {the_plural}"
-msgstr ""
+msgstr "Voir {the_plural}"
 
 # Page title
 #: G7M4nI
 msgctxt "G7M4nI"
 msgid "Duplicate {a_singular}"
-msgstr ""
+msgstr "Dupliquer {a_singular}"
 
 # Media form action
 #: GxOBVL
 msgctxt "GxOBVL"
 msgid "Replace"
-msgstr ""
+msgstr "Remplacer"
 
 # Button label
 #: HzCxmr
 msgctxt "HzCxmr"
 msgid "Duplicate"
-msgstr ""
+msgstr "Dupliquer"
 
 # Menu label
 #: IuqEHB
 msgctxt "IuqEHB"
 msgid "Account"
-msgstr ""
+msgstr "Compte"
 
 # Friday letter
 #: J6Mhku
 msgctxt "J6Mhku"
 msgid "F"
-msgstr ""
+msgstr "V"
 
 # Field label
 #: JuxiUN
 msgctxt "JuxiUN"
 msgid "Format"
-msgstr ""
+msgstr "Format"
 
 # Button label
 #: Ke35Pv
 msgctxt "Ke35Pv"
 msgid "Edit"
-msgstr ""
+msgstr "Modifier"
 
 # Field label
 #: LI0Gz4
 msgctxt "LI0Gz4"
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
 # Modal message
 #: M49yWb
@@ -318,66 +320,68 @@ msgid ""
 "The following items will be restored: {ids}. Are you sure you want to "
 "continue?"
 msgstr ""
+"Les éléments suivants seront restaurés : {ids}. Êtes-vous sûr de vouloir "
+"continuer ?"
 
 # Field description
 #: MHldGi
 msgctxt "MHldGi"
 msgid "Duration:"
-msgstr ""
+msgstr "Durée :"
 
 # Form status
 #: Mo0yQb
 msgctxt "Mo0yQb"
 msgid "Error"
-msgstr ""
+msgstr "Erreur"
 
 # Modal title
 #: Mohaye
 msgctxt "Mohaye"
 msgid "Edit item"
-msgstr ""
+msgstr "Modifier l'élément"
 
 # Button label
 #: NeSNvW
 msgctxt "NeSNvW"
 msgid "clear"
-msgstr ""
+msgstr "effacer"
 
 # Button label
 #: NozDYd
 msgctxt "NozDYd"
 msgid "Uploading"
-msgstr ""
+msgstr "Téléversement"
 
 # Tuesday letter
 #: Of2stw
 msgctxt "Of2stw"
 msgid "T"
-msgstr ""
+msgstr "M"
 
 # Field name
 #: OzYWZz
 msgctxt "OzYWZz"
 msgid "Created at"
-msgstr ""
+msgstr "Créé le"
 
 # Field label
 #: PN+75e
 msgctxt "PN+75e"
 msgid "Created at"
-msgstr ""
+msgstr "Créé le"
 
 # Button label
 #: PQX/ph
 msgctxt "PQX/ph"
 msgid "Create account"
-msgstr ""
+msgstr "Créer un compte"
 
 # Button label
 #: PSlT7H
 msgctxt "PSlT7H"
 msgid "Trash"
-msgstr ""
+msgstr "Corbeille"
 
 # Modal message
 #: PTmocx
@@ -386,132 +390,134 @@ msgid ""
 "The following items will be deleted: {ids}. Are you sure you want to "
 "continue?"
 msgstr ""
+"Les éléments suivants seront supprimés : {ids}. Êtes-vous sûr de vouloir "
+"continuer ?"
 
 # Error page title
 #: Pih2UO
 msgctxt "Pih2UO"
 msgid "Error 403"
-msgstr ""
+msgstr "Erreur 403"
 
 # Button label
 #: PyxZY2
 msgctxt "PyxZY2"
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 # Button label
 #: QUAHwy
 msgctxt "QUAHwy"
 msgid "Continue"
-msgstr ""
+msgstr "Continuer"
 
 # Button label
 #: R1HYj0
 msgctxt "R1HYj0"
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 # Menu label
 #: REIcPg
 msgctxt "REIcPg"
 msgid "Logout"
-msgstr ""
+msgstr "Déconnexion"
 
 # Page title
 #: T/NPHK
 msgctxt "T/NPHK"
 msgid "Edit"
-msgstr ""
+msgstr "Modifier"
 
 # Loading label
 #: TV3jir
 msgctxt "TV3jir"
 msgid "Loading"
-msgstr ""
+msgstr "Chargement"
 
 # Button label
 #: Tol+/U
 msgctxt "Tol+/U"
 msgid "Clear"
-msgstr ""
+msgstr "Effacer"
 
 # Link label
 #: U/ye2x
 msgctxt "U/ye2x"
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 # Field label
 #: UUv8FR
 msgctxt "UUv8FR"
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 # Button label
 #: UaVu03
 msgctxt "UaVu03"
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmer"
 
 # Label when there is no item in items field
 #: UbmsLL
 msgctxt "UbmsLL"
 msgid "No item found."
-msgstr ""
+msgstr "Aucun élément trouvé."
 
 # Field name
 #: UbxbKP
 msgctxt "UbxbKP"
 msgid "Preview"
-msgstr ""
+msgstr "Aperçu"
 
 # Error message
 #: UpStcP
 msgctxt "UpStcP"
 msgid "Could not find type for this item"
-msgstr ""
+msgstr "Impossible de trouver le type pour cet élément"
 
 # Menu label
 #: V7Us0a
 msgctxt "V7Us0a"
 msgid "Update account"
-msgstr ""
+msgstr "Mettre à jour le compte"
 
 # Field label
 #: VhJUeW
 msgctxt "VhJUeW"
 msgid "Confirm your password"
-msgstr ""
+msgstr "Confirmez votre mot de passe"
 
 # Field name
 #: WX83V9
 msgctxt "WX83V9"
 msgid "File name"
-msgstr ""
+msgstr "Nom du fichier"
 
 # Table label
 #: WgIC2T
 msgctxt "WgIC2T"
 msgid "No results found"
-msgstr ""
+msgstr "Aucun résultat trouvé"
 
 # Field label
 #: XJ1dc3
 msgctxt "XJ1dc3"
 msgid "New password"
-msgstr ""
+msgstr "Nouveau mot de passe"
 
 # Page title
 #: XLVfN6
 msgctxt "XLVfN6"
 msgid "Find {a_singular}"
-msgstr ""
+msgstr "Trouver {a_singular}"
 
 # Button label
 #: XW9IKQ
 msgctxt "XW9IKQ"
 msgid "Update password"
-msgstr ""
+msgstr "Mettre à jour le mot de passe"
 
 # Modal message
 #: XmY7D8
@@ -520,366 +526,370 @@ msgid ""
 "The following items will be duplicated: {ids}. Are you sure you want to "
 "continue?"
 msgstr ""
+"Les éléments suivants seront dupliqués : {ids}. Êtes-vous sûr de vouloir "
+"continuer ?"
 
 # Media type
 #: XnyI69
 msgctxt "XnyI69"
 msgid "Audio"
-msgstr ""
+msgstr "Audio"
 
 # Filter label
 #: XrzzDc
 msgctxt "XrzzDc"
 msgid "Search"
-msgstr ""
+msgstr "Rechercher"
 
 # Link label
 #: ZBNqY2
 msgctxt "ZBNqY2"
 msgid "Forgot your password?"
-msgstr ""
+msgstr "Mot de passe oublié ?"
 
 # Confirmation message
 #: ZhnMCD
 msgctxt "ZhnMCD"
 msgid "Are you sure you want to duplicate {the_singular} #{id}?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir dupliquer {the_singular} #{id} ?"
 
 # Button label in items field
 #: ZxgNge
 msgctxt "ZxgNge"
 msgid "Add an item"
-msgstr ""
+msgstr "Ajouter un élément"
 
 # Button label
 #: bPk79b
 msgctxt "bPk79b"
 msgid "Show"
-msgstr ""
+msgstr "Afficher"
 
 # Alert message
 #: bfP/d8
 msgctxt "bfP/d8"
 msgid "{The_singular} has been created."
-msgstr ""
+msgstr "{The_singular} a été créé."
 
 # Field name
 #: c3hu9o
 msgctxt "c3hu9o"
 msgid "Size"
-msgstr ""
+msgstr "Taille"
 
 # Modal title
 #: c6nfry
 msgctxt "c6nfry"
 msgid "Restore"
-msgstr ""
+msgstr "Restaurer"
 
 # Modal message
 #: cutyQH
 msgctxt "cutyQH"
 msgid "An error has occured."
-msgstr ""
+msgstr "Une erreur est survenue."
 
 # Menu label
 #: d0g58T
 msgctxt "d0g58T"
 msgid "Login"
-msgstr ""
+msgstr "Connexion"
 
 # Empty message
 #: dRB0/1
 msgctxt "dRB0/1"
 msgid "Empty"
-msgstr ""
+msgstr "Vide"
 
 # Button label
 #: daHjZg
 msgctxt "daHjZg"
 msgid "Edit file"
-msgstr ""
+msgstr "Modifier le fichier"
 
 # Alert message
 #: dkRdks
 msgctxt "dkRdks"
 msgid "{The_singular} has been deleted."
-msgstr ""
+msgstr "{The_singular} a été supprimé."
 
 # Display label
 #: e0xuLo
 msgctxt "e0xuLo"
 msgid "Link"
-msgstr ""
+msgstr "Lien"
 
 # Field name
 #: eCe9ZY
 msgctxt "eCe9ZY"
 msgid "Dimensions"
-msgstr ""
+msgstr "Dimensions"
 
 # Button label
 #: eL+nIp
 msgctxt "eL+nIp"
 msgid "Add file"
-msgstr ""
+msgstr "Ajouter un fichier"
 
 # Sunday letter
 #: fSfLk8
 msgctxt "fSfLk8"
 msgid "S"
-msgstr ""
+msgstr "D"
 
 # Field label
 #: g2CRt5
 msgctxt "g2CRt5"
 msgid "Size"
-msgstr ""
+msgstr "Taille"
 
 # Button label
 #: g6qbbX
 msgctxt "g6qbbX"
 msgid "Log in"
-msgstr ""
+msgstr "Se connecter"
 
 # Button label
 #: gWmL5V
 msgctxt "gWmL5V"
 msgid "Disable two factor authentication"
-msgstr ""
+msgstr "Désactiver l'authentification à deux facteurs"
 
 # Monday letter
 #: jbT/g6
 msgctxt "jbT/g6"
 msgid "M"
-msgstr ""
+msgstr "L"
 
 # Button label
 #: l+ddDH
 msgctxt "l+ddDH"
 msgid "Create {a_singular}"
-msgstr ""
+msgstr "Créer {a_singular}"
 
 # Link label
 #: li2Qqu
 msgctxt "li2Qqu"
 msgid "Skip setup"
-msgstr ""
+msgstr "Passer la configuration"
 
 # Checkbox label
 #: lsBBVh
 msgctxt "lsBBVh"
 msgid "{count, plural, =0 {no items} one {# item} other {# items}} selected"
 msgstr ""
+"{count, plural, =0 {aucun élément} one {# élément} other {# éléments}} "
+"sélectionné(s)"
 
 # Page title
 #: mCfzkJ
 msgctxt "mCfzkJ"
 msgid "Edit {a_singular}"
-msgstr ""
+msgstr "Modifier {a_singular}"
 
 # Media type
 #: mQiyAm
 msgctxt "mQiyAm"
 msgid "Video"
-msgstr ""
+msgstr "Vidéo"
 
 # Error page description
 #: naie2b
 msgctxt "naie2b"
 msgid "This page doesn't exist"
-msgstr ""
+msgstr "Cette page n'existe pas"
 
 # Default placeholder
 #: oc3YLT
 msgctxt "oc3YLT"
 msgid "Choose an item"
-msgstr ""
+msgstr "Choisir un élément"
 
 # Default upload add button label
 #: odaCUe
 msgctxt "odaCUe"
 msgid "Clear"
-msgstr ""
+msgstr "Effacer"
 
 # Error page title
 #: owrRHV
 msgctxt "owrRHV"
 msgid "Error 500"
-msgstr ""
+msgstr "Erreur 500"
 
 # Button label
 #: pVHYDd
 msgctxt "pVHYDd"
 msgid "Enable two factor authentication"
-msgstr ""
+msgstr "Activer l'authentification à deux facteurs"
 
 # Default label
 #: pZytAx
 msgctxt "pZytAx"
 msgid "No result"
-msgstr ""
+msgstr "Aucun résultat"
 
 # Boolean value
 #: rSt+KL
 msgctxt "rSt+KL"
 msgid "No"
-msgstr ""
+msgstr "Non"
 
 # Field label
 #: rmJBin
 msgctxt "rmJBin"
 msgid "Dimensions"
-msgstr ""
+msgstr "Dimensions"
 
 # Field name
 #: rtwfuZ
 msgctxt "rtwfuZ"
 msgid "Actions"
-msgstr ""
+msgstr "Actions"
 
 # Button label
 #: rvOVCV
 msgctxt "rvOVCV"
 msgid "Confirm selection"
-msgstr ""
+msgstr "Confirmer la sélection"
 
 # DateTimeField time caption
 #: s4Xrs9
 msgctxt "s4Xrs9"
 msgid "Time"
-msgstr ""
+msgstr "Heure"
 
 # Modal title
 #: sOfogS
 msgctxt "sOfogS"
 msgid "Edit items"
-msgstr ""
+msgstr "Modifier les éléments"
 
 # Page title
 #: smqUAV
 msgctxt "smqUAV"
 msgid "Edit {name}"
-msgstr ""
+msgstr "Modifier {name}"
 
 # Link label
 #: tPeIKO
 msgctxt "tPeIKO"
 msgid "Go back to login"
-msgstr ""
+msgstr "Retour à la connexion"
 
 # Empty label
 #: uN/FYD
 msgctxt "uN/FYD"
 msgid "No results found"
-msgstr ""
+msgstr "Aucun résultat trouvé"
 
 # Modal message
 #: ucieFX
 msgctxt "ucieFX"
 msgid "The following items will be modified: {ids}."
-msgstr ""
+msgstr "Les éléments suivants seront modifiés : {ids}."
 
 # Column label
 #: uds4wJ
 msgctxt "uds4wJ"
 msgid "Deleted at"
-msgstr ""
+msgstr "Supprimé le"
 
 # Default upload add button label
 #: une5WQ
 msgctxt "une5WQ"
 msgid "Find a file"
-msgstr ""
+msgstr "Trouver un fichier"
 
 # Field label
 #: wU++NJ
 msgctxt "wU++NJ"
 msgid "Duration"
-msgstr ""
+msgstr "Durée"
 
 # Link label
 #: wa783M
 msgctxt "wa783M"
 msgid "Already have an account? Go to login"
-msgstr ""
+msgstr "Vous avez déjà un compte ? Se connecter"
 
 # Loading message
 #: x27x2b
 msgctxt "x27x2b"
 msgid "Loading"
-msgstr ""
+msgstr "Chargement"
 
 # Field title
 #: xKUOLG
 msgctxt "xKUOLG"
 msgid "Technical details"
-msgstr ""
+msgstr "Détails techniques"
 
 # Filter item label
 #: xSERPA
 msgctxt "xSERPA"
 msgid "Video"
-msgstr ""
+msgstr "Vidéo"
 
 # Error message
 #: y9zauY
 msgctxt "y9zauY"
 msgid "An error occured and we could not delete this item successfully."
-msgstr ""
+msgstr "Une erreur est survenue et nous n'avons pas pu supprimer cet élément."
 
 # Error page description
 #: yALN2p
 msgctxt "yALN2p"
 msgid "There was an error"
-msgstr ""
+msgstr "Une erreur est survenue"
 
 # Field label
 #: yByaBh
 msgctxt "yByaBh"
 msgid "Added by"
-msgstr ""
+msgstr "Ajouté par"
 
 # Filter item label
 #: yHAmDD
 msgctxt "yHAmDD"
 msgid "Image"
-msgstr ""
+msgstr "Image"
 
 # Filter item label
 #: yQRtgx
 msgctxt "yQRtgx"
 msgid "Audio"
-msgstr ""
+msgstr "Audio"
 
 # Field name
 #: ygNvmz
 msgctxt "ygNvmz"
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 # Button label
 #: yhU8J6
 msgctxt "yhU8J6"
 msgid "No"
-msgstr ""
+msgstr "Non"
 
 # Confirmation message
 #: yzfiXJ
 msgctxt "yzfiXJ"
 msgid "Are you sure you want to delete {the_singular} #{id}?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir supprimer {the_singular} #{id} ?"
 
 # Button label
 #: z2775Q
 msgctxt "z2775Q"
 msgid "Import"
-msgstr ""
+msgstr "Importer"
 
 # Page title
 #: zN5N/Q
 msgctxt "zN5N/Q"
 msgid "Delete {a_singular}"
-msgstr ""
+msgstr "Supprimer {a_singular}"
 
 # Explaination label
 #: zTiC4D
@@ -889,9 +899,13 @@ msgid ""
 "have to use an authentication app such as Google Authenticator or Microsoft "
 "Authenticator in addition to your password to connect."
 msgstr ""
+"Souhaitez-vous activer l'authentification à deux facteurs sur votre compte "
+"? Vous devrez utiliser une application d'authentification telle que Google "
+"Authenticator ou Microsoft Authenticator en plus de votre mot de passe pour "
+"vous connecter."
 
 # Button label
 #: zwks3g
 msgctxt "zwks3g"
 msgid "Save new password"
-msgstr ""
+msgstr "Enregistrer le nouveau mot de passe"

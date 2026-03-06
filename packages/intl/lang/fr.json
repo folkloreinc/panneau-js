@@ -1,1 +1,440 @@
-{}
+{
+    "002oWQ": {
+        "defaultMessage": "Durée"
+    },
+    "0F5X3C": {
+        "defaultMessage": "S"
+    },
+    "0SEHSj": {
+        "defaultMessage": "Sélectionner la ligne"
+    },
+    "0xeItT": {
+        "defaultMessage": "Chargement..."
+    },
+    "12Px0g": {
+        "defaultMessage": "Envoyer le lien de réinitialisation"
+    },
+    "1dqmFw": {
+        "defaultMessage": "Document"
+    },
+    "22Ld5M": {
+        "defaultMessage": "Entrez le code de votre application d'authentification pour continuer"
+    },
+    "2vB7U4": {
+        "defaultMessage": "Une erreur est survenue et nous n'avons pas pu sauvegarder cet élément."
+    },
+    "3RT69u": {
+        "defaultMessage": "Informations"
+    },
+    "3ebjtX": {
+        "defaultMessage": "Oui"
+    },
+    "4sViWl": {
+        "defaultMessage": "{count, plural, =0 {Aucun élément.} =1 {# élément} other {# éléments}}"
+    },
+    "4yfet+": {
+        "defaultMessage": "Mot de passe"
+    },
+    "5nHK/H": {
+        "defaultMessage": "Souhaitez-vous vraiment désactiver l'authentification à deux facteurs sur votre compte ?"
+    },
+    "5rMPIj": {
+        "defaultMessage": "Chargement..."
+    },
+    "6Ie+vL": {
+        "defaultMessage": "Erreur 404"
+    },
+    "6TuTuq": {
+        "defaultMessage": "Choisir une option"
+    },
+    "6cSFtU": {
+        "defaultMessage": "Aucune couleur"
+    },
+    "6nwWPR": {
+        "defaultMessage": "Erreur 401"
+    },
+    "6viUpq": {
+        "defaultMessage": "Créer {a_singular}"
+    },
+    "7M0o0q": {
+        "defaultMessage": "Élément"
+    },
+    "7OEFyt": {
+        "defaultMessage": "Supprimer"
+    },
+    "82P2dS": {
+        "defaultMessage": "Vous n'êtes pas autorisé à accéder à cette page."
+    },
+    "8HFiMs": {
+        "defaultMessage": "L'accès à cette page est interdit"
+    },
+    "8INLfU": {
+        "defaultMessage": "Document"
+    },
+    "8LSb8C": {
+        "defaultMessage": "Mot de passe actuel"
+    },
+    "8NyYTH": {
+        "defaultMessage": "Retour"
+    },
+    "8T+JE7": {
+        "defaultMessage": "Dupliquer"
+    },
+    "9/t5wK": {
+        "defaultMessage": "Type"
+    },
+    "9XBwF1": {
+        "defaultMessage": "Oui"
+    },
+    "AJiMQk": {
+        "defaultMessage": "Aucun résultat"
+    },
+    "AeOZq+": {
+        "defaultMessage": "Connexion"
+    },
+    "AwDQvD": {
+        "defaultMessage": "Image"
+    },
+    "B1h3gd": {
+        "defaultMessage": "Veuillez entrer votre mot de passe pour continuer"
+    },
+    "BAKfhq": {
+        "defaultMessage": "M"
+    },
+    "BIYKx5": {
+        "defaultMessage": "Aperçu"
+    },
+    "BeKVq6": {
+        "defaultMessage": "Téléverser un fichier"
+    },
+    "Bhu3B2": {
+        "defaultMessage": "Supprimer"
+    },
+    "CGvQxc": {
+        "defaultMessage": "Utilisateur"
+    },
+    "DBU3cu": {
+        "defaultMessage": "J"
+    },
+    "DUbv+u": {
+        "defaultMessage": "Confirmez votre nouveau mot de passe"
+    },
+    "ESkxLX": {
+        "defaultMessage": "Succès !"
+    },
+    "FntHPK": {
+        "defaultMessage": "Voir {the_plural}"
+    },
+    "G7M4nI": {
+        "defaultMessage": "Dupliquer {a_singular}"
+    },
+    "GxOBVL": {
+        "defaultMessage": "Remplacer"
+    },
+    "HzCxmr": {
+        "defaultMessage": "Dupliquer"
+    },
+    "IuqEHB": {
+        "defaultMessage": "Compte"
+    },
+    "J6Mhku": {
+        "defaultMessage": "V"
+    },
+    "JuxiUN": {
+        "defaultMessage": "Format"
+    },
+    "Ke35Pv": {
+        "defaultMessage": "Modifier"
+    },
+    "LI0Gz4": {
+        "defaultMessage": "E-mail"
+    },
+    "M49yWb": {
+        "defaultMessage": "Les éléments suivants seront restaurés : {ids}. Êtes-vous sûr de vouloir continuer ?"
+    },
+    "MHldGi": {
+        "defaultMessage": "Durée :"
+    },
+    "Mo0yQb": {
+        "defaultMessage": "Erreur"
+    },
+    "Mohaye": {
+        "defaultMessage": "Modifier l'élément"
+    },
+    "NeSNvW": {
+        "defaultMessage": "effacer"
+    },
+    "NozDYd": {
+        "defaultMessage": "Téléversement"
+    },
+    "Of2stw": {
+        "defaultMessage": "M"
+    },
+    "OzYWZz": {
+        "defaultMessage": "Créé le"
+    },
+    "PN+75e": {
+        "defaultMessage": "Créé le"
+    },
+    "PQX/ph": {
+        "defaultMessage": "Créer un compte"
+    },
+    "PSlT7H": {
+        "defaultMessage": "Corbeille"
+    },
+    "PTmocx": {
+        "defaultMessage": "Les éléments suivants seront supprimés : {ids}. Êtes-vous sûr de vouloir continuer ?"
+    },
+    "Pih2UO": {
+        "defaultMessage": "Erreur 403"
+    },
+    "PyxZY2": {
+        "defaultMessage": "Annuler"
+    },
+    "QUAHwy": {
+        "defaultMessage": "Continuer"
+    },
+    "R1HYj0": {
+        "defaultMessage": "Enregistrer"
+    },
+    "REIcPg": {
+        "defaultMessage": "Déconnexion"
+    },
+    "T/NPHK": {
+        "defaultMessage": "Modifier"
+    },
+    "TV3jir": {
+        "defaultMessage": "Chargement"
+    },
+    "Tol+/U": {
+        "defaultMessage": "Effacer"
+    },
+    "U/ye2x": {
+        "defaultMessage": "Annuler"
+    },
+    "UUv8FR": {
+        "defaultMessage": "Nom"
+    },
+    "UaVu03": {
+        "defaultMessage": "Confirmer"
+    },
+    "UbmsLL": {
+        "defaultMessage": "Aucun élément trouvé."
+    },
+    "UbxbKP": {
+        "defaultMessage": "Aperçu"
+    },
+    "UpStcP": {
+        "defaultMessage": "Impossible de trouver le type pour cet élément"
+    },
+    "V7Us0a": {
+        "defaultMessage": "Mettre à jour le compte"
+    },
+    "VhJUeW": {
+        "defaultMessage": "Confirmez votre mot de passe"
+    },
+    "WX83V9": {
+        "defaultMessage": "Nom du fichier"
+    },
+    "WgIC2T": {
+        "defaultMessage": "Aucun résultat trouvé"
+    },
+    "XJ1dc3": {
+        "defaultMessage": "Nouveau mot de passe"
+    },
+    "XLVfN6": {
+        "defaultMessage": "Trouver {a_singular}"
+    },
+    "XW9IKQ": {
+        "defaultMessage": "Mettre à jour le mot de passe"
+    },
+    "XmY7D8": {
+        "defaultMessage": "Les éléments suivants seront dupliqués : {ids}. Êtes-vous sûr de vouloir continuer ?"
+    },
+    "XnyI69": {
+        "defaultMessage": "Audio"
+    },
+    "XrzzDc": {
+        "defaultMessage": "Rechercher"
+    },
+    "ZBNqY2": {
+        "defaultMessage": "Mot de passe oublié ?"
+    },
+    "ZhnMCD": {
+        "defaultMessage": "Êtes-vous sûr de vouloir dupliquer {the_singular} #{id} ?"
+    },
+    "ZxgNge": {
+        "defaultMessage": "Ajouter un élément"
+    },
+    "bPk79b": {
+        "defaultMessage": "Afficher"
+    },
+    "bfP/d8": {
+        "defaultMessage": "{The_singular} a été créé."
+    },
+    "c3hu9o": {
+        "defaultMessage": "Taille"
+    },
+    "c6nfry": {
+        "defaultMessage": "Restaurer"
+    },
+    "cutyQH": {
+        "defaultMessage": "Une erreur est survenue."
+    },
+    "d0g58T": {
+        "defaultMessage": "Connexion"
+    },
+    "dRB0/1": {
+        "defaultMessage": "Vide"
+    },
+    "daHjZg": {
+        "defaultMessage": "Modifier le fichier"
+    },
+    "dkRdks": {
+        "defaultMessage": "{The_singular} a été supprimé."
+    },
+    "e0xuLo": {
+        "defaultMessage": "Lien"
+    },
+    "eCe9ZY": {
+        "defaultMessage": "Dimensions"
+    },
+    "eL+nIp": {
+        "defaultMessage": "Ajouter un fichier"
+    },
+    "fSfLk8": {
+        "defaultMessage": "D"
+    },
+    "g2CRt5": {
+        "defaultMessage": "Taille"
+    },
+    "g6qbbX": {
+        "defaultMessage": "Se connecter"
+    },
+    "gWmL5V": {
+        "defaultMessage": "Désactiver l'authentification à deux facteurs"
+    },
+    "jbT/g6": {
+        "defaultMessage": "L"
+    },
+    "l+ddDH": {
+        "defaultMessage": "Créer {a_singular}"
+    },
+    "li2Qqu": {
+        "defaultMessage": "Passer la configuration"
+    },
+    "lsBBVh": {
+        "defaultMessage": "{count, plural, =0 {aucun élément} one {# élément} other {# éléments}} sélectionné(s)"
+    },
+    "mCfzkJ": {
+        "defaultMessage": "Modifier {a_singular}"
+    },
+    "mQiyAm": {
+        "defaultMessage": "Vidéo"
+    },
+    "naie2b": {
+        "defaultMessage": "Cette page n'existe pas"
+    },
+    "oc3YLT": {
+        "defaultMessage": "Choisir un élément"
+    },
+    "odaCUe": {
+        "defaultMessage": "Effacer"
+    },
+    "owrRHV": {
+        "defaultMessage": "Erreur 500"
+    },
+    "pVHYDd": {
+        "defaultMessage": "Activer l'authentification à deux facteurs"
+    },
+    "pZytAx": {
+        "defaultMessage": "Aucun résultat"
+    },
+    "rSt+KL": {
+        "defaultMessage": "Non"
+    },
+    "rmJBin": {
+        "defaultMessage": "Dimensions"
+    },
+    "rtwfuZ": {
+        "defaultMessage": "Actions"
+    },
+    "rvOVCV": {
+        "defaultMessage": "Confirmer la sélection"
+    },
+    "s4Xrs9": {
+        "defaultMessage": "Heure"
+    },
+    "sOfogS": {
+        "defaultMessage": "Modifier les éléments"
+    },
+    "smqUAV": {
+        "defaultMessage": "Modifier {name}"
+    },
+    "tPeIKO": {
+        "defaultMessage": "Retour à la connexion"
+    },
+    "uN/FYD": {
+        "defaultMessage": "Aucun résultat trouvé"
+    },
+    "ucieFX": {
+        "defaultMessage": "Les éléments suivants seront modifiés : {ids}."
+    },
+    "uds4wJ": {
+        "defaultMessage": "Supprimé le"
+    },
+    "une5WQ": {
+        "defaultMessage": "Trouver un fichier"
+    },
+    "wU++NJ": {
+        "defaultMessage": "Durée"
+    },
+    "wa783M": {
+        "defaultMessage": "Vous avez déjà un compte ? Se connecter"
+    },
+    "x27x2b": {
+        "defaultMessage": "Chargement"
+    },
+    "xKUOLG": {
+        "defaultMessage": "Détails techniques"
+    },
+    "xSERPA": {
+        "defaultMessage": "Vidéo"
+    },
+    "y9zauY": {
+        "defaultMessage": "Une erreur est survenue et nous n'avons pas pu supprimer cet élément."
+    },
+    "yALN2p": {
+        "defaultMessage": "Une erreur est survenue"
+    },
+    "yByaBh": {
+        "defaultMessage": "Ajouté par"
+    },
+    "yHAmDD": {
+        "defaultMessage": "Image"
+    },
+    "yQRtgx": {
+        "defaultMessage": "Audio"
+    },
+    "ygNvmz": {
+        "defaultMessage": "Description"
+    },
+    "yhU8J6": {
+        "defaultMessage": "Non"
+    },
+    "yzfiXJ": {
+        "defaultMessage": "Êtes-vous sûr de vouloir supprimer {the_singular} #{id} ?"
+    },
+    "z2775Q": {
+        "defaultMessage": "Importer"
+    },
+    "zN5N/Q": {
+        "defaultMessage": "Supprimer {a_singular}"
+    },
+    "zTiC4D": {
+        "defaultMessage": "Souhaitez-vous activer l'authentification à deux facteurs sur votre compte ? Vous devrez utiliser une application d'authentification telle que Google Authenticator ou Microsoft Authenticator en plus de votre mot de passe pour vous connecter."
+    },
+    "zwks3g": {
+        "defaultMessage": "Enregistrer le nouveau mot de passe"
+    }
+}
