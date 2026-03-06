@@ -1,6 +1,6 @@
 {
     "name": "@panneau/actions",
-    "version": "4.0.24",
+    "version": "4.0.25",
     "description": "",
     "keywords": [
         "javascript"
@@ -62,7 +62,7 @@
         "@panneau/action-import": "^4.0.21",
         "@panneau/action-restore": "^4.0.21",
         "@panneau/action-show": "^4.0.21",
-        "@panneau/action-upload": "^4.0.24",
+        "@panneau/action-upload": "^4.0.25",
         "@panneau/core": "^4.0.21"
     },
     "publishConfig": {
