@@ -50,7 +50,7 @@
         "assets"
     ],
     "scripts": {
-        "intl": "../../scripts/build-intl.js '../../!(node_modules)/!(intl)/src/**/*.+(js|jsx|tsx)'",
+        "intl": "../../scripts/build-intl.js '../../!(node_modules)/!(intl)/src/**/*.+(js|jsx|ts|tsx)'",
         "prepublishOnly": "npm run build",
         "build": "rm -rf ./locale && npm run intl && ../../scripts/prepare-package.sh --types"
     },

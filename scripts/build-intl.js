@@ -30,7 +30,7 @@ async function build({ langPath, destPath, idInterpolationPattern, defaultLocale
     const files = globSync(srcPath, {
         nodir: true,
         cwd: process.cwd(),
-    });
+    }).filter((f) => !f.endsWith('.d.ts'));
 
     const messagesPath = path.join(process.cwd(), langPath, 'messages.json');
 

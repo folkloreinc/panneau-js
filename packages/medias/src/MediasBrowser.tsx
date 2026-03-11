@@ -171,7 +171,7 @@ function MediasBrowser({
         loading = false,
         loaded = false,
         updateItem = null,
-        pagination: { lastPage, total } = {},
+        pagination: { lastPage = null, total = null } = {},
         pages = null,
         reload,
     } = useMedias(query, page, count, {
@@ -387,7 +387,7 @@ function MediasBrowser({
         />
     );
 
-    const hidePagination = loaded && !loading && (items || []).length === 0;
+    const hidePagination = loaded && !loading && total === 0;
 
     const finalFilters = useMemo(() => {
         const partialFilters = withTrash

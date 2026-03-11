@@ -39,6 +39,10 @@
     "defaultMessage": "Yes",
     "description": "Button label"
   },
+  "3na7F8": {
+    "defaultMessage": "Now",
+    "description": "Now date time message"
+  },
   "4sViWl": {
     "defaultMessage": "{count, plural, =0 {No item.} =1 {# item} other {# items}}",
     "description": "Pagination count label"
@@ -514,6 +518,10 @@
   "une5WQ": {
     "defaultMessage": "Find a file",
     "description": "Default upload add button label"
+  },
+  "v4Qtl9": {
+    "defaultMessage": "Today",
+    "description": "Today date message"
   },
   "wU++NJ": {
     "defaultMessage": "Duration",

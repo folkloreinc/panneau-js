@@ -71,6 +71,12 @@ msgctxt "3ebjtX"
 msgid "Yes"
 msgstr "Oui"
 
+# Now date time message
+#: 3na7F8
+msgctxt "3na7F8"
+msgid "Now"
+msgstr "Maintenant"
+
 # Pagination count label
 #: 4sViWl
 msgctxt "4sViWl"
@@ -800,6 +806,12 @@ msgstr "Supprimé le"
 msgctxt "une5WQ"
 msgid "Find a file"
 msgstr "Trouver un fichier"
+
+# Today date message
+#: v4Qtl9
+msgctxt "v4Qtl9"
+msgid "Today"
+msgstr "Aujourd'hui"
 
 # Field label
 #: wU++NJ

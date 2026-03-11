@@ -29,6 +29,9 @@
     "3ebjtX": {
         "defaultMessage": "Oui"
     },
+    "3na7F8": {
+        "defaultMessage": "Maintenant"
+    },
     "4sViWl": {
         "defaultMessage": "{count, plural, =0 {Aucun élément.} =1 {# élément} other {# éléments}}"
     },
@@ -385,6 +388,9 @@
     },
     "une5WQ": {
         "defaultMessage": "Trouver un fichier"
+    },
+    "v4Qtl9": {
+        "defaultMessage": "Aujourd'hui"
     },
     "wU++NJ": {
         "defaultMessage": "Durée"
