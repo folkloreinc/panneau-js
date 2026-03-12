@@ -13,10 +13,7 @@ interface UseQueryReturn {
     onQueryReset: () => void;
 }
 
-function useQuery(
-    initialBaseQuery: QueryParams | null = null,
-    paginated = true,
-): UseQueryReturn {
+function useQuery(initialBaseQuery: QueryParams | null = null, paginated = true): UseQueryReturn {
     const initialQuery = useMemo(
         () =>
             paginated
@@ -32,9 +29,11 @@ function useQuery(
 
     const onPageChange = useCallback(
         (newPage: number) => {
-            setQuery({ ...(query || {}), page: newPage || 1 });
+            if (newPage !== null) {
+                setQuery((prev) => ({ ...(prev || {}), page: newPage || 1 }));
+            }
         },
-        [query, setQuery],
+        [setQuery],
     );
 
     const onQueryChange = useCallback(
@@ -53,7 +52,7 @@ function useQuery(
                     : null;
             setQuery({ ...(initialQuery || {}), ...(finalQuery || {}) });
         },
-        [query, setQuery, initialQuery],
+        [setQuery, initialQuery],
     );
 
     const onQueryReset = useCallback(() => {

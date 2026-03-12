@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import uniqBy from 'lodash/uniqBy';
 import type { ReactNode } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Media } from '@panneau/core';
@@ -132,21 +132,17 @@ function MediasBrowser({
     );
     const { query: fullQuery, onPageChange, onQueryChange, onQueryReset } = useQuery(baseQuery);
 
-    const {
-        page = null,
-        count = null,
-        query = null,
-    } = useMemo(() => {
-        const {
-            page: fullQueryPage = null,
-            count: fullQueryCount = null,
-            ...params
-        } = fullQuery || {};
-        return {
-            page: fullQueryPage,
-            count: fullQueryCount,
-            query: params,
-        };
+    const page = useMemo(() => (fullQuery || {}).page ?? null, [fullQuery]);
+    const count = useMemo(() => (fullQuery || {}).count ?? null, [fullQuery]);
+
+    const queryRef = useRef<Record<string, unknown> | null>(null);
+    const query = useMemo(() => {
+        const { page: _p, count: _c, ...params } = fullQuery || {};
+        const newQuery = Object.keys(params).length > 0 ? params : null;
+        if (JSON.stringify(queryRef.current) !== JSON.stringify(newQuery)) {
+            queryRef.current = newQuery;
+        }
+        return queryRef.current;
     }, [fullQuery]);
 
     const {
@@ -360,7 +356,7 @@ function MediasBrowser({
     );
 
     const onClickPage = useCallback(
-        (e, pageNumber) => {
+        (e, pageNumber = null) => {
             e.preventDefault();
             e.stopPropagation();
             onPageChange(pageNumber);

@@ -26,7 +26,7 @@ const useItemsStore = (
     const paginated = page !== null;
     const queryKey = useMemo(
         () => (paginated ? [store, page || 1, count || 12, queryWithoutPage] : [store, query]),
-        [paginated, store, page, count, query, queryWithoutPage, getPage, getItems],
+        [paginated, store, page, count, query],
     );
 
     const {

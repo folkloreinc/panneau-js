@@ -149,12 +149,8 @@ function SelectFilter({
                             typeof (newItems as ApiResponse).pagination !== 'undefined'
                                 ? (newItems as ApiResponse).pagination || {}
                                 : null;
-                        result = [...(options || []), ...(finalItems || [])];
-                        // .map((it) => ({
-                        //     label: get(it, itemLabelPath, null),
-                        //     value: get(it, itemValuePath, null),
-                        // })),
-                        setOptions(result);
+                        result = finalItems || [];
+                        setOptions((prev) => [...(prev || []), ...result]);
                         setPagination((newPagination || oldPagination) as PaginationMeta | null);
                     } else {
                         result = finalItems || [];
@@ -173,7 +169,6 @@ function SelectFilter({
                 });
         },
         [
-            options,
             maxItemsCount,
             requestQuery,
             requestOptions,
@@ -183,6 +178,7 @@ function SelectFilter({
             setPagination,
             setLoading,
             endReached,
+            initialOptions,
         ],
     );
 

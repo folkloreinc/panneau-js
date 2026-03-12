@@ -12,7 +12,7 @@ interface ModalContextValue {
     container: unknown | null;
     setContainer: (container: unknown) => void;
     register: (id: string, data?: Record<string, unknown> | null) => void;
-    unregister: (id?: string | null, data?: Record<string, unknown> | null) => void;
+    unregister: (id?: string | null) => void;
     closeLastModal: () => void;
     getModalById: (modalId: string) => ModalData | null;
 }
@@ -52,14 +52,10 @@ function ModalProvider({ children, container: initialContainer = null }: ModalPr
     );
 
     const unregister = useCallback(
-        (id: string | null = null, data: Record<string, unknown> | null = null) => {
+        (id: string | null = null) => {
             const { current: currentModals = [] } = modalsRef;
             const foundIndex = currentModals.findIndex(({ id: modalId }) => modalId === id);
             if (foundIndex !== -1) {
-                const { onClose = null } = data || {};
-                if (onClose !== null) {
-                    onClose();
-                }
                 const newModals = currentModals.filter(({ id: modalId }) => modalId !== id);
                 setModals(newModals);
                 modalsRef.current = newModals;
