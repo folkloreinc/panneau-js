@@ -1,6 +1,6 @@
 {
     "name": "@panneau/themes",
-    "version": "4.0.21",
+    "version": "4.0.27",
     "description": "",
     "keywords": [
         "javascript"
@@ -71,7 +71,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.21",
+        "@panneau/core": "^4.0.27",
         "bootstrap": "^5.3.8",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21"
