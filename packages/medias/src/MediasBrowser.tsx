@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import uniqBy from 'lodash/uniqBy';
 import type { ReactNode } from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Media } from '@panneau/core';
@@ -135,15 +135,17 @@ function MediasBrowser({
     const page = useMemo(() => (fullQuery || {}).page ?? null, [fullQuery]);
     const count = useMemo(() => (fullQuery || {}).count ?? null, [fullQuery]);
 
-    const queryRef = useRef<Record<string, unknown> | null>(null);
-    const query = useMemo(() => {
+    // Stabilize the filter query reference: only create a new object when filter values actually change.
+    // We use JSON.stringify as a stable primitive key so that useMemo only recomputes when values differ.
+    const queryJSON = useMemo(() => {
         const { page: _p, count: _c, ...params } = fullQuery || {};
-        const newQuery = Object.keys(params).length > 0 ? params : null;
-        if (JSON.stringify(queryRef.current) !== JSON.stringify(newQuery)) {
-            queryRef.current = newQuery;
-        }
-        return queryRef.current;
+        return Object.keys(params).length > 0 ? JSON.stringify(params) : null;
     }, [fullQuery]);
+
+    const query = useMemo(
+        () => (queryJSON !== null ? JSON.parse(queryJSON) : null),
+        [queryJSON],
+    );
 
     const {
         create: canCreate = true,
