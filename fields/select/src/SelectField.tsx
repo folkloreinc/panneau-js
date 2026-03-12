@@ -5,10 +5,16 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { getPathValue } from '@panneau/core/utils';
 import Select from '@panneau/element-select';
 
+interface SelectOption {
+    value?: any;
+    label?: React.ReactNode;
+}
+
 interface SelectFieldProps {
     value?: unknown;
     paginated?: boolean;
-    loadOptions?: ((searchValue: string | null) => Promise<unknown[]>) | null;
+    options?: SelectOption[] | null;
+    loadOptions?: ((searchValue: string | null) => Promise<SelectOption[]>) | null;
     requestUrl?: string | null;
     requestOptions?: Record<string, unknown> | null;
     requestQuery?: Record<string, unknown> | null;
@@ -29,6 +35,7 @@ interface SelectFieldProps {
 function SelectField({
     value = null,
     paginated = false,
+    options = null,
     loadOptions: customLoadOptions = null,
     requestUrl = null,
     requestQuery = null,
@@ -120,7 +127,8 @@ function SelectField({
         ],
     );
 
-    const finalLoadOptions = customLoadOptions || loadOptions || null;
+    const finalLoadOptions =
+        customLoadOptions || (requestUrl !== null ? loadOptions : null) || null;
 
     const onValueChange = useCallback(
         (newValue: unknown) => {
@@ -146,6 +154,7 @@ function SelectField({
         <Select
             className={className}
             value={value}
+            options={options !== null ? options : undefined}
             isAsync={finalLoadOptions !== null}
             defaultOptions={finalLoadOptions !== null}
             loadOptions={finalLoadOptions}
