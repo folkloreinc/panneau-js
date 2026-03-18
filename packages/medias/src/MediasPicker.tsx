@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import type { Media } from '@panneau/core';
 
@@ -32,7 +32,6 @@ function MediasPicker({
         return Array.isArray(initialSelectedItems) ? initialSelectedItems : [initialSelectedItems];
     }, []);
 
-    // // Mostly for testing
     // const [selectedItems, setSelectedItems] = useState<PickerSelection>(
     //     initialSelectedItems || null,
     // );

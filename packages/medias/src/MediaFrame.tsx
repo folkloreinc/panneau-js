@@ -45,6 +45,8 @@ function MediaFrame({
                     className="w-100"
                     value={value}
                     onClick={type === 'video' || type === 'audio' ? onClick : null}
+                    maxWidth={null}
+                    maxHeight={null}
                 />
             )}
         </div>
