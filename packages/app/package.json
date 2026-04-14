@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "4.0.31",
+    "version": "4.0.32",
     "description": "",
     "keywords": [
         "javascript"
@@ -102,7 +102,7 @@
         "@panneau/filter-filters": "^4.0.31",
         "@panneau/filters": "^4.0.31",
         "@panneau/form-resource": "^4.0.27",
-        "@panneau/forms": "^4.0.27",
+        "@panneau/forms": "^4.0.32",
         "@panneau/intl": "^4.0.27",
         "@panneau/list-resource-items": "^4.0.31",
         "@panneau/lists": "^4.0.31",
