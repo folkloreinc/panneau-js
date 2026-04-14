@@ -124,7 +124,6 @@ function MediaField({
 
     const onComplete = useCallback(
         (response: any) => {
-            // console.log('upload complete', response); // eslint-disable-line
             let newValue: Media | Media[] | null = null;
             if (isArray(response)) {
                 if (allowMultipleUploads) {
@@ -143,8 +142,6 @@ function MediaField({
             } else if (newValue !== null) {
                 newValue = mergeData(newValue);
             }
-
-            // console.log('new upload value', newValue); // eslint-disable-line
 
             if (onChange !== null) {
                 onChange(newValue);

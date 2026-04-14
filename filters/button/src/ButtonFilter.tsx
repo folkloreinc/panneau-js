@@ -5,6 +5,8 @@ import type { ButtonTheme } from '@panneau/core';
 import Button from '@panneau/element-button';
 
 interface ButtonFilterProps {
+    onChange: (value: boolean | null) => void;
+    onClear: (() => void) | null;
     label?: string | null;
     name?: string;
     value?: boolean | string | number | null;
@@ -12,11 +14,12 @@ interface ButtonFilterProps {
     theme?: ButtonTheme;
     activeTheme?: ButtonTheme;
     disableOutline?: boolean;
-    onChange: (value: boolean | null) => void;
     className?: string | null;
 }
 
 function ButtonFilter({
+    onChange = null,
+    onClear = null,
     name = 'button',
     label = null,
     value = false,
@@ -24,7 +27,6 @@ function ButtonFilter({
     theme = 'primary',
     activeTheme = 'primary',
     disableOutline = false,
-    onChange,
     className = null,
     ...props
 }: ButtonFilterProps) {

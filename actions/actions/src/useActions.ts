@@ -146,12 +146,12 @@ function useActions(
             }
 
             if (isObject(action)) {
-                const { itemLinkProp = null, urlPath } = action || {};
-                const finalPath = itemLinkProp || urlPath;
+                const { itemLinkProp = null, urlPath = null, ...rest } = action || {};
+                const finalPath = itemLinkProp || urlPath || null;
                 const actionLink = get(value, finalPath) || null;
                 return {
                     ...(actionLink !== null ? { href: actionLink } : null),
-                    ...action,
+                    ...rest,
                 };
             }
 

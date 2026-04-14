@@ -1,5 +1,5 @@
 import isObject from 'lodash/isObject';
-import { type ReactNode, useMemo } from 'react';
+import { type ReactNode, useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { usePanneauResource } from '@panneau/core/contexts';
@@ -41,7 +41,21 @@ function ModalResourceItems({
     const finalQuery = useMemo(() => ({ ...initialQuery }), [initialQuery]);
     const { query, onPageChange, onQueryChange, onQueryReset } = useQuery(finalQuery, paginated);
 
-    // TODO: add default list props and stuff?
+    const finalOnPageChange = useCallback(
+        (e, pageNumber = null) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onPageChange(pageNumber);
+        },
+        [onPageChange],
+    );
+
+    const finalOnQueryChange = useCallback(
+        (newQuery: Record<string, unknown>) => {
+            onQueryChange(newQuery);
+        },
+        [onQueryChange],
+    );
 
     return (
         <Dialog
@@ -62,8 +76,8 @@ function ModalResourceItems({
             <ResourceItemsList
                 resource={resource}
                 query={query}
-                onPageChange={onPageChange}
-                onQueryChange={onQueryChange}
+                onPageChange={finalOnPageChange}
+                onQueryChange={finalOnQueryChange}
                 onQueryReset={onQueryReset}
                 listProps={listProps}
                 {...props}

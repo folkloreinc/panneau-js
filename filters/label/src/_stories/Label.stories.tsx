@@ -1,6 +1,4 @@
 /* eslint-disable */
-import { useState } from 'react';
-
 import FieldsProvider from '../../../../packages/fields';
 import LabelFilter from '../LabelFilter';
 

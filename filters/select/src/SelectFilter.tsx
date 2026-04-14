@@ -11,6 +11,7 @@ import Select from '@panneau/element-select';
 
 interface SelectFilterProps {
     onChange: (value: unknown) => void;
+    onClear?: (() => void) | null;
     options?: SelectOption[] | null;
     requestUrl?: string | null;
     requestOptions?: Record<string, unknown> | null;
@@ -41,7 +42,8 @@ interface ApiResponse {
 }
 
 function SelectFilter({
-    onChange,
+    onChange = null,
+    onClear = null,
     options: initialOptions = null,
     requestUrl = null,
     requestOptions = null,

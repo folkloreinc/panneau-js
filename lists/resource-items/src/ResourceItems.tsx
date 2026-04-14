@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import Actions from '@panneau/action-actions';
 import type { Item, Resource } from '@panneau/core';
 import { useListsComponents, usePanneauResource } from '@panneau/core/contexts';
-import { useResourceUrlGenerator } from '@panneau/core/hooks';
+// import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
 import Pagination from '@panneau/element-pagination';
@@ -75,9 +75,9 @@ function ResourceItemsList({
         } = DEFAULT_INDEX,
     } = resource || {};
 
-    const resourceUrlGenerator = useResourceUrlGenerator(
-        isObject(providedResource) ? resourceId : providedResource,
-    );
+    // const resourceUrlGenerator = useResourceUrlGenerator(
+    //     isObject(providedResource) ? resourceId : providedResource,
+    // );
 
     const [page, queryWithoutPage] = useMemo(() => {
         const { page: currentPage = 1, ...rest } = query || {};
@@ -149,7 +149,7 @@ function ResourceItemsList({
                     filters={filters}
                     value={query}
                     onChange={onQueryChange}
-                    onReset={onQueryReset}
+                    onClear={onQueryReset}
                     theme={theme}
                 />
             ) : null}

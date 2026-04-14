@@ -78,6 +78,17 @@ function Pagination({
         />
     );
 
+    const finalOnClickPage = useCallback(
+        (e, value) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (onClickPage !== null) {
+                onClickPage(e, value);
+            }
+        },
+        [onClickPage],
+    );
+
     const getUrl = useCallback(
         (currentPage: number) =>
             url !== null
@@ -215,11 +226,7 @@ function Pagination({
                                     },
                                 ])}
                                 href={getUrl(page - 1) || '#'}
-                                onClick={
-                                    onClickPage !== null
-                                        ? (e) => onClickPage(e, page - 1)
-                                        : undefined
-                                }
+                                onClick={(e) => finalOnClickPage(e, page - 1)}
                             >
                                 {previousLabel}
                             </Link>
@@ -267,8 +274,8 @@ function Pagination({
                                           : '#'
                                   }
                                   onClick={
-                                      pageNumber !== '...' && onClickPage !== null
-                                          ? (e) => onClickPage(e, pageNumber as number)
+                                      pageNumber !== '...'
+                                          ? (e) => finalOnClickPage(e, pageNumber as number)
                                           : undefined
                                   }
                                   style={{ zIndex: 0 }}
@@ -300,11 +307,7 @@ function Pagination({
                                     },
                                 ])}
                                 href={getUrl(page + 1) || '#'}
-                                onClick={
-                                    onClickPage !== null
-                                        ? (e) => onClickPage(e, page + 1)
-                                        : undefined
-                                }
+                                onClick={(e) => finalOnClickPage(e, page + 1)}
                             >
                                 {nextLabel}
                             </Link>

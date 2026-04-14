@@ -1,8 +1,8 @@
 .container {
     display: flex;
+    min-height: 38px;
     align-items: center;
     justify-content: flex-start;
-    min-height: 38px;
     user-select: none;
 
     &.vertical {

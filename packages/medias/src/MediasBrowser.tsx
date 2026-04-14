@@ -142,10 +142,7 @@ function MediasBrowser({
         return Object.keys(params).length > 0 ? JSON.stringify(params) : null;
     }, [fullQuery]);
 
-    const query = useMemo(
-        () => (queryJSON !== null ? JSON.parse(queryJSON) : null),
-        [queryJSON],
-    );
+    const query = useMemo(() => (queryJSON !== null ? JSON.parse(queryJSON) : null), [queryJSON]);
 
     const {
         create: canCreate = true,
@@ -566,7 +563,7 @@ function MediasBrowser({
                                         clearValue={types !== null ? queryWithoutTypes : null}
                                         filters={finalFilters}
                                         onChange={onQueryChange}
-                                        onReset={onQueryReset}
+                                        onClear={onQueryReset}
                                         theme={theme}
                                     />
                                 ) : null}

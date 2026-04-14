@@ -8,7 +8,7 @@ import isObject from 'lodash/isObject';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Label } from '@panneau/core';
+import type { Label as LabelType } from '@panneau/core';
 import { useQuery } from '@panneau/core/hooks';
 // import { useModal } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
@@ -52,9 +52,9 @@ interface UploadFieldProps {
     withFind?: boolean;
     withClearButton?: boolean;
     withoutMedia?: boolean;
-    addButtonLabel?: Label | null;
-    findButtonLabel?: Label | null;
-    clearButtonLabel?: Label | null;
+    addButtonLabel?: LabelType | null;
+    findButtonLabel?: LabelType | null;
+    clearButtonLabel?: LabelType | null;
     allowMultipleUploads?: boolean;
     closeAfterFinish?: boolean;
     maxNumberOfFiles?: number;
@@ -151,7 +151,6 @@ function UploadField({
 
     const onComplete = useCallback(
         (response: any) => {
-            // console.log('upload complete', response); // eslint-disable-line
             let newValue: Media | Media[] | null = null;
             if (isArray(response)) {
                 if (allowMultipleUploads) {
@@ -171,8 +170,6 @@ function UploadField({
                 newValue = mergeData(newValue);
             }
 
-            // console.log('new upload value', newValue); // eslint-disable-line
-
             if (onChange !== null) {
                 onChange(newValue);
             }
@@ -184,6 +181,7 @@ function UploadField({
         () => (types !== null ? types.join('.') : ['audio', 'image', 'video'].join('.')),
         [types],
     );
+
     const allowedFileTypes = useMemo(() => {
         if (fileTypes !== null) {
             return fileTypes;
@@ -315,6 +313,22 @@ function UploadField({
         onQueryChange: onListQueryChange,
         onQueryReset: onListQueryReset,
     } = useQuery(initialQuery, true);
+
+    const finalOnPageChange = useCallback(
+        (e, pageNumber = null) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onListPageChange(pageNumber);
+        },
+        [onListPageChange],
+    );
+
+    const finalOnQueryChange = useCallback(
+        (newQuery: Record<string, unknown>) => {
+            onListQueryChange(newQuery);
+        },
+        [onListQueryChange],
+    );
 
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -475,8 +489,8 @@ function UploadField({
                     id={`upload-${name}`}
                     resource={resource}
                     query={listQuery}
-                    onPageChange={onListPageChange}
-                    onQueryChange={onListQueryChange}
+                    onPageChange={finalOnPageChange}
+                    onQueryChange={finalOnQueryChange}
                     onQueryReset={onListQueryReset}
                     baseUrl={null}
                     showActions={false}

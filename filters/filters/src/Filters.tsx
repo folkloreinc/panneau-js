@@ -14,11 +14,11 @@ import Navbar from '@panneau/element-navbar';
 import styles from './styles.module.css';
 
 interface FiltersProps {
+    onChange?: ((value: Record<string, unknown> | null) => void) | null;
+    onClear?: ((value: null) => void) | null;
     filters?: Filter[];
     value?: Record<string, unknown> | null;
     clearValue?: Record<string, unknown> | null;
-    onChange?: ((value: Record<string, unknown> | null) => void) | null;
-    onReset?: ((value: null) => void) | null;
     withContainer?: boolean;
     withReset?: boolean;
     withResetLabel?: boolean;
@@ -30,11 +30,11 @@ interface FiltersProps {
 const DEFAULT_FILTERS: Filter[] = [];
 
 function Filters({
+    onChange = null,
+    onClear = null,
     filters = DEFAULT_FILTERS,
     value = null,
     clearValue = null,
-    onChange = null,
-    onReset = null,
     withContainer = false,
     withReset = true,
     withResetLabel = false,
@@ -50,13 +50,13 @@ function Filters({
     );
 
     const onFiltersReset = useCallback(() => {
-        if (onReset !== null) {
-            onReset(null);
+        if (onClear !== null) {
+            onClear(null);
         }
         if (onChange !== null) {
             onChange(null);
         }
-    }, [onReset, onChange]);
+    }, [onClear, onChange]);
 
     const hasActiveFilter = (currentFilters || []).reduce((isActive, item) => {
         const activeValue = clearValue || value || null;

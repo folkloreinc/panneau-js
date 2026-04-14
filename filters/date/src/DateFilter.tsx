@@ -2,10 +2,11 @@ import type { SelectOption } from '@panneau/core';
 import { Date } from '@panneau/field-date';
 
 interface DateFilterProps {
+    onChange: (value: unknown) => void;
+    onClear?: (() => void) | null;
     name?: string;
     options?: SelectOption[];
     value?: string | null;
-    onChange: (value: unknown) => void;
     placeholder?: string | null;
     className?: string | null;
 }
@@ -13,11 +14,12 @@ interface DateFilterProps {
 const DEFAULT_OPTIONS: SelectOption[] = [];
 
 function DateFilter({
+    onChange = null,
+    onClear = null,
     name = 'radios',
     value = null,
     options = DEFAULT_OPTIONS,
     placeholder = null,
-    onChange,
     className = null,
     ...props
 }: DateFilterProps) {

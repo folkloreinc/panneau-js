@@ -6,22 +6,22 @@ import styles from './styles.module.css';
 import 'rc-switch/assets/index.css';
 
 interface ToggleFilterProps {
+    onChange: (value: boolean) => void;
+    onClear: () => void;
     name?: string;
     value?: boolean | string | number | null;
     label?: string | null;
-    onChange: (value: boolean) => void;
-    onClear: () => void;
     vertical?: boolean;
     className?: string | null;
 }
 
 function ToggleFilter({
+    onChange = null,
+    onClear = null,
     name = 'toggle',
     value = false,
     label = null,
     vertical = false,
-    onChange,
-    onClear,
     className = null,
     ...props
 }: ToggleFilterProps) {

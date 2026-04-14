@@ -41,15 +41,16 @@ module.exports = () => {
         return [...items, ...updatedItems];
     };
 
-    const getItemsPage = (items, page, count) => {
+    const getItemsPage = (items = [], page = 1, count = 10) => {
         const startIndex = (page - 1) * count;
         const endIndex = startIndex + count;
         const total = items.length;
         const lastPage = Math.ceil(total / count);
-        return {
+        const value = {
             pagination: { page, last_page: lastPage, total, per_page: count },
             data: items.slice(startIndex, endIndex),
         };
+        return value;
     };
 
     const sortItems = (items, field = null, direction = 'asc') => {
@@ -66,7 +67,13 @@ module.exports = () => {
         }
 
         // Types is exception for medias so u get results
-        const { source, search = null, types = null, ...queryWithoutSource } = query;
+        const {
+            source,
+            search = null,
+            types = null,
+            skip = true,
+            ...queryWithoutSource
+        } = query || {};
 
         if (search !== null) {
             return _.values(
@@ -86,6 +93,10 @@ module.exports = () => {
                         : true,
                 ),
             );
+        }
+
+        if (skip) {
+            return items;
         }
 
         return _.values(_.filter(items, _.matches(queryWithoutSource)));
@@ -172,8 +183,10 @@ module.exports = () => {
             send(res, 404);
             return;
         }
+
         // Test unauthorized request here
         // res.status(401);
+
         const defaultCount = 10;
         const {
             page = null,
@@ -190,7 +203,9 @@ module.exports = () => {
             // The rest
             ...query
         } = req.query;
+
         const items = getResourceItems(resource);
+
         const filteredItems = sortItems(
             filterItems(items, query),
             order || sort,
@@ -243,6 +258,7 @@ module.exports = () => {
             // The rest
             ...query
         } = req.query;
+
         const items = getResourceItems(resource);
         const filteredItems = sortItems(filterItems(items, query), sort, sortDirection);
 

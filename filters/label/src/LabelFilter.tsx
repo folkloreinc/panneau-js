@@ -6,20 +6,22 @@ import Link from '@panneau/element-link';
 import styles from './styles.module.css';
 
 interface LabelFilterProps {
+    onClick?: (() => void) | null;
+    onClear?: (() => void) | null;
     label?: ReactNode | null;
     sublabel?: ReactNode | null;
     href?: string | null;
     disabled?: boolean;
-    onClick?: (() => void) | null;
     className?: string | null;
 }
 
 function LabelFilter({
+    onClick = null,
+    onClear = null,
     label = null,
     sublabel = null,
     href = null,
     disabled = false,
-    onClick = null,
     className = null,
     ...props
 }: LabelFilterProps) {

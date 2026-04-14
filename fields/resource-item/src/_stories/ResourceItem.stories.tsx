@@ -29,8 +29,6 @@ function Container(props) {
         [setValue],
     );
 
-    // console.log('panneauDefinition', panneauDefinition);
-
     return (
         <ModalProvider>
             <PanneauProvider definition={panneauDefinition}>

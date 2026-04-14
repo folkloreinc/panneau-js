@@ -6,6 +6,7 @@ interface RadiosFilterProps {
     options?: SelectOption[];
     value?: string | null;
     onChange: (value: unknown) => void;
+    onClear?: (() => void) | null;
     className?: string | null;
 }
 
@@ -15,7 +16,8 @@ function RadiosFilter({
     name = 'radios',
     value = null,
     options = DEFAULT_OPTIONS,
-    onChange,
+    onChange = null,
+    onClear = null,
     className = null,
     ...props
 }: RadiosFilterProps) {

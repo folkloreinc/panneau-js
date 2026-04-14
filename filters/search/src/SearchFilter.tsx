@@ -12,6 +12,7 @@ interface SearchFilterProps {
     name?: string;
     value?: string | null;
     onChange: (value: string | null) => void;
+    onClear?: (() => void) | null;
     placeholder?: string | null;
     position?: string | null;
     width?: number | null;
@@ -22,7 +23,8 @@ interface SearchFilterProps {
 function SearchFilter({
     name = 'q',
     value = null,
-    onChange,
+    onChange = null,
+    onClear: initialOnClear = null,
     placeholder = null,
     position = null,
     width = null,
@@ -61,13 +63,13 @@ function SearchFilter({
         [searchValue, onChange],
     );
 
-    const onReset = useCallback(() => {
+    const onClear = useCallback(() => {
         setSearchValue(null);
         hasChanged.current = false;
-        if (onChange !== null) {
-            onChange(null);
+        if (initialOnClear !== null) {
+            initialOnClear();
         }
-    }, [onChange, setSearchValue]);
+    }, [initialOnClear, setSearchValue]);
 
     useEffect(() => {
         let timeout: ReturnType<typeof setTimeout> | null = null;
@@ -93,7 +95,7 @@ function SearchFilter({
     const canClear = !isEmpty(searchValue);
 
     useKeyboardKeys({
-        [KEYCODES.ESCAPE]: onReset,
+        [KEYCODES.ESCAPE]: onClear,
     });
 
     return (
@@ -129,7 +131,7 @@ function SearchFilter({
                 {canClear ? (
                     <Button
                         type="button"
-                        onClick={onReset}
+                        onClick={onClear}
                         className="position-absolute top-0 me-0 border-0"
                         outline={false}
                         style={{

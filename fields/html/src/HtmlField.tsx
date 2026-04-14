@@ -24,6 +24,50 @@ interface HtmlFieldProps {
     className?: string | null;
 }
 
+const defaultCkConfig = {
+    toolbar: [
+        'heading',
+        '|',
+        'bold',
+        'italic',
+        'link',
+        '|',
+        'bulletedList',
+        'numberedList',
+        // 'blockQuote',
+        // 'horizontalLine
+        // 'mediaEmbed',
+    ],
+    heading: {
+        options: [
+            { model: 'paragraph', title: 'Paragraph' },
+            { model: 'heading1', view: 'h1', title: 'Heading 1' },
+            { model: 'heading2', view: 'h2', title: 'Heading 2' },
+            { model: 'heading3', view: 'h3', title: 'Heading 3' },
+        ],
+    },
+    enterMode: '1',
+    shiftEnterMode: '1',
+    link: {
+        addTargetToExternalLinks: true,
+        // TODO: test this ?
+        // decorators: {
+        //     openInSamePage: {
+        //         mode: 'manual',
+        //         label: 'Open in same page',
+        //         attributes: {
+        //             target: '_self',
+        //             rel: 'noopener noreferrer',
+        //         },
+        //     },
+        // },
+        // allowedProtocols: [ 'https?', 'tel', 'sms', 'mailto' ],
+    },
+    // mediaEmbed: {
+    //     previewsInData: true,
+    // },
+};
+
 function HtmlField({
     feedback = null,
     errors = null,
@@ -34,45 +78,7 @@ function HtmlField({
     onChange = null,
     onFocus = null,
     onBlur = null,
-    ckConfig = {
-        toolbar: [
-            'heading',
-            '|',
-            'bold',
-            'italic',
-            'link',
-            'bulletedList',
-            'numberedList',
-            // 'blockQuote',
-            // 'mediaEmbed',
-        ],
-        heading: {
-            options: [
-                { model: 'paragraph', title: 'Paragraph' },
-                { model: 'heading1', view: 'h1', title: 'Heading 1' },
-                { model: 'heading2', view: 'h2', title: 'Heading 2' },
-                { model: 'heading3', view: 'h3', title: 'Heading 3' },
-            ],
-        },
-        link: {
-            addTargetToExternalLinks: true,
-            // TODO: test this
-            // decorators: {
-            //     openInSamePage: {
-            //         mode: 'manual',
-            //         label: 'Open in same page',
-            //         attributes: {
-            //             target: '_self',
-            //             rel: 'noopener noreferrer',
-            //         },
-            //     },
-            // },
-            // allowedProtocols: [ 'https?', 'tel', 'sms', 'mailto' ],
-        },
-        // mediaEmbed: {
-        //     previewsInData: true,
-        // },
-    },
+    ckConfig = defaultCkConfig,
     ckOptions = null,
     className = null,
 }: HtmlFieldProps) {
