@@ -4,3 +4,11 @@
 .uppy-Dashboard-AddFiles-title {
     white-space: wrap;
 }
+
+.uppy-Dashboard-innerWrap {
+    align-items: center;
+}
+
+.uppy-Dashboard-AddFiles-list {
+    flex: 0;
+}

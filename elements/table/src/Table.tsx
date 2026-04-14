@@ -403,7 +403,7 @@ function Table({
                 </table>
             ) : null}
             {loading && !loaded && (items === null || items.length === 0) && !withoutLoading ? (
-                <Loading className="mt-3" withDelay>
+                <Loading className="mw-25 mt-3 m-auto" withDelay>
                     <FormattedMessage defaultMessage="Loading" description="Loading label" />
                 </Loading>
             ) : null}

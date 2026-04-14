@@ -128,12 +128,12 @@ function Grid({
                     : null}
             </div>
             {loading && !loaded && (items === null || items.length === 0) ? (
-                <Loading withDelay>
+                <Loading className="mw-25 my-4 m-auto" withDelay>
                     <FormattedMessage defaultMessage="Loading" description="Loading label" />
                 </Loading>
             ) : null}
             {empty || (!loading && loaded && (items === null || items.length === 0)) ? (
-                <Empty withDelay>
+                <Empty className="mw-25 my-4 m-auto" withDelay>
                     {emptyLabel || (
                         <FormattedMessage
                             defaultMessage="No results found"

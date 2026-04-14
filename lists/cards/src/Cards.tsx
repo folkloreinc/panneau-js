@@ -158,10 +158,10 @@ function CardsList({
                   })
                 : null}
             {loading && !loaded && (items === null || items.length === 0) ? (
-                <Loading withDelay />
+                <Loading className="mw-25 my-4 m-auto" withDelay />
             ) : null}
             {!loading && loaded && (items === null || items.length === 0) ? (
-                <Empty withDelay />
+                <Empty className="mw-25 my-4 m-auto" withDelay />
             ) : null}
         </div>
     );

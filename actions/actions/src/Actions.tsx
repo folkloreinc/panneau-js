@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import isArray from 'lodash/isArray';
 import type { ComponentType } from 'react';
-import { useMemo } from 'react';
 
 import type { Action, ActionValue, ButtonSize, Resource } from '@panneau/core';
 import { useActionsComponentsManager } from '@panneau/core/contexts';

@@ -5,7 +5,7 @@ import isObject from 'lodash/isObject';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Label } from '@panneau/core';
+import type { Label as LabelType } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import { MediaCards } from '@panneau/element-media-card';
@@ -40,9 +40,9 @@ interface MediaFieldProps {
     withFind?: boolean;
     withClearButton?: boolean;
     withoutMedia?: boolean;
-    addButtonLabel?: Label | null;
-    findButtonLabel?: Label | null;
-    clearButtonLabel?: Label | null;
+    addButtonLabel?: LabelType | null;
+    findButtonLabel?: LabelType | null;
+    clearButtonLabel?: LabelType | null;
     allowMultipleUploads?: boolean;
     maxNumberOfFiles?: number;
     namePath?: string;
@@ -290,20 +290,22 @@ function MediaField({
                 </div>
             ) : null}
 
-            {withoutMedia || ((!hasMedia || allowMultipleUploads) && withButton) ? (
+            {withoutMedia || ((!hasMedia || allowMultipleUploads) && (withButton || withFind)) ? (
                 <div className="row">
-                    <div className="col-auto">
-                        <Button
-                            id="trigger-uppy"
-                            type="button"
-                            theme="primary"
-                            onClick={onClickAdd || openModal}
-                            disabled={disabled}
-                            outline
-                        >
-                            <Label>{addButtonLabel}</Label>
-                        </Button>
-                    </div>
+                    {withButton ? (
+                        <div className="col-auto">
+                            <Button
+                                id="trigger-uppy"
+                                type="button"
+                                theme="primary"
+                                onClick={onClickAdd || openModal}
+                                disabled={disabled}
+                                outline
+                            >
+                                <Label>{addButtonLabel}</Label>
+                            </Button>
+                        </div>
+                    ) : null}
                     {withFind ? (
                         <div className="col-auto ps-0">
                             <Button

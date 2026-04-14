@@ -261,6 +261,7 @@ export default {
     index: {
         striped: true,
         actionsProps: {
+            size: 'small',
             hasDuplicateRoute: true,
         },
         columns: [

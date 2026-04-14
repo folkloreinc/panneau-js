@@ -397,49 +397,6 @@ function UploadField({
                 </div>
             ) : null}
 
-            {withoutMedia || ((!hasMedia || allowMultipleUploads) && withButton) ? (
-                <div className="row">
-                    <div className="col-auto">
-                        <Button
-                            id="trigger-uppy"
-                            type="button"
-                            theme="primary"
-                            icon={finalLoading ? 'loading' : 'upload'}
-                            iconPosition="right"
-                            onClick={onClickAdd || openModal}
-                            disabled={finalLoading || disabled}
-                            outline={outline}
-                        >
-                            <Label>
-                                {finalLoading ? (
-                                    <FormattedMessage
-                                        defaultMessage="Uploading"
-                                        description="Button label"
-                                    />
-                                ) : (
-                                    addButtonLabel
-                                )}
-                            </Label>
-                        </Button>
-                    </div>
-                    {withFind ? (
-                        <div className="col-auto ps-0">
-                            <Button
-                                type="button"
-                                theme="primary"
-                                icon="search"
-                                iconPosition="right"
-                                onClick={finalOnClickFind}
-                                disabled={disabled}
-                                outline={outline}
-                            >
-                                <Label>{findButtonLabel}</Label>
-                            </Button>
-                        </div>
-                    ) : null}
-                </div>
-            ) : null}
-
             {finalUppy !== null ? (
                 <UppyContextProvider uppy={finalUppy}>
                     {!uploadDisabled && !hasMedia && !withButton && finalUppy !== null ? (
@@ -482,6 +439,51 @@ function UploadField({
                         />
                     ) : null}
                 </UppyContextProvider>
+            ) : null}
+
+            {withoutMedia || ((!hasMedia || allowMultipleUploads) && (withButton || withFind)) ? (
+                <div className="row">
+                    {withButton ? (
+                        <div className="col-auto mb-2 pe-0">
+                            <Button
+                                id="trigger-uppy"
+                                type="button"
+                                theme="primary"
+                                icon={finalLoading ? 'loading' : 'upload'}
+                                iconPosition="right"
+                                onClick={onClickAdd || openModal}
+                                disabled={finalLoading || disabled}
+                                outline={outline}
+                            >
+                                <Label>
+                                    {finalLoading ? (
+                                        <FormattedMessage
+                                            defaultMessage="Uploading"
+                                            description="Button label"
+                                        />
+                                    ) : (
+                                        addButtonLabel
+                                    )}
+                                </Label>
+                            </Button>
+                        </div>
+                    ) : null}
+                    {withFind ? (
+                        <div className="col-auto mb-2">
+                            <Button
+                                type="button"
+                                theme="primary"
+                                icon="search"
+                                iconPosition="right"
+                                onClick={finalOnClickFind}
+                                disabled={disabled}
+                                outline={outline}
+                            >
+                                <Label>{findButtonLabel}</Label>
+                            </Button>
+                        </div>
+                    ) : null}
+                </div>
             ) : null}
 
             {showResourceModal ? (
