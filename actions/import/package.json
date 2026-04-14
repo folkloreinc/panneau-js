@@ -1,6 +1,6 @@
 {
     "name": "@panneau/action-import",
-    "version": "4.0.27",
+    "version": "4.0.33",
     "description": "Import action",
     "keywords": [
         "javascript"
@@ -54,8 +54,8 @@
         "@babel/runtime": "^7.28.6",
         "@folklore/fetch": "^0.1.21",
         "@panneau/core": "^4.0.27",
-        "@panneau/element-button": "^4.0.27",
-        "@panneau/themes": "^4.0.27",
+        "@panneau/element-button": "^4.0.33",
+        "@panneau/themes": "^4.0.33",
         "classnames": "^2.5.1",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0"
     },

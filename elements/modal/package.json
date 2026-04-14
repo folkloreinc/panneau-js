@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-modal",
-    "version": "4.0.27",
+    "version": "4.0.33",
     "description": "Modal element",
     "keywords": [
         "javascript"
@@ -56,7 +56,7 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@panneau/core": "^4.0.27",
-        "@panneau/element-button": "^4.0.27",
+        "@panneau/element-button": "^4.0.33",
         "@panneau/element-icon": "^4.0.27",
         "@panneau/element-label": "^4.0.27",
         "classnames": "^2.5.1",

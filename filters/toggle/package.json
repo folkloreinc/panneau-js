@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-toggle",
-    "version": "4.0.31",
+    "version": "4.0.33",
     "description": "Toggle filter",
     "keywords": [
         "javascript"
@@ -64,7 +64,7 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@panneau/core": "^4.0.27",
-        "@panneau/themes": "^4.0.27",
+        "@panneau/themes": "^4.0.33",
         "classnames": "^2.5.1",
         "rc-switch": "^4.1.0"
     },
