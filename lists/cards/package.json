@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-cards",
-    "version": "4.0.30",
+    "version": "4.0.31",
     "description": "Cards list",
     "keywords": [
         "javascript"
@@ -70,7 +70,7 @@
         "@panneau/element-empty": "^4.0.27",
         "@panneau/element-label": "^4.0.27",
         "@panneau/element-loading": "^4.0.27",
-        "@panneau/element-pagination": "^4.0.30",
+        "@panneau/element-pagination": "^4.0.31",
         "@panneau/themes": "^4.0.27",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/medias",
-    "version": "4.0.30",
+    "version": "4.0.31",
     "description": "",
     "keywords": [
         "javascript"
@@ -66,10 +66,10 @@
         "@panneau/element-icon": "^4.0.27",
         "@panneau/element-media-card": "^4.0.27",
         "@panneau/element-media-player": "^4.0.27",
-        "@panneau/element-pagination": "^4.0.30",
+        "@panneau/element-pagination": "^4.0.31",
         "@panneau/element-table": "^4.0.27",
-        "@panneau/field-upload": "^4.0.30",
-        "@panneau/filter-filters": "^4.0.30",
+        "@panneau/field-upload": "^4.0.31",
+        "@panneau/filter-filters": "^4.0.31",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0"
