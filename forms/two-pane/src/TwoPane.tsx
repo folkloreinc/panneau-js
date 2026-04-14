@@ -8,6 +8,7 @@ import Form from '@panneau/element-form';
 interface TwoPaneFormProps {
     fields: Record<string, unknown>;
     resource?: Resource | null;
+    size?: 'half' | 'medium' | 'large' | null;
     value?: Record<string, unknown> | null;
     onChange: (value: Record<string, unknown>) => void;
     onSubmit: () => void;
@@ -21,11 +22,12 @@ interface TwoPaneFormProps {
 
 function TwoPaneForm({
     resource = null,
-    fields,
+    fields = null,
+    size = 'medium',
     status = null,
     value = null,
-    onChange,
-    onSubmit,
+    onChange = null,
+    onSubmit = null,
     errors = null,
     buttons = null,
     children = null,
@@ -35,17 +37,32 @@ function TwoPaneForm({
     const { id = null } = resource || {};
     const FieldsComponent = useFieldComponent('fields');
     const PreviewComponent = usePreviewComponent(id);
+
+    const formClassName = classNames([
+        'form',
+        'col-12',
+        {
+            'col-lg-6': size === 'half',
+            'col-lg-5': size === 'medium',
+            'col-lg-4': size === 'large',
+            [className]: className !== null,
+        },
+    ]);
+
+    const previewClassName = classNames([
+        'preview',
+        'col-12',
+        {
+            'col-lg-6': size === 'half',
+            'col-lg-7': size === 'medium',
+            'col-lg-8': size === 'large',
+        },
+    ]);
+
     return (
         <div className="container-fluid row gx-4">
             <Form
-                className={classNames([
-                    'form',
-                    'col-12',
-                    'col-lg-6',
-                    {
-                        [className!]: className !== null,
-                    },
-                ])}
+                className={formClassName}
                 resource={resource}
                 status={status}
                 buttons={buttons}
@@ -60,7 +77,7 @@ function TwoPaneForm({
                     errors={errors}
                 />
             </Form>
-            <div className="col-12 col-lg-6">
+            <div className={previewClassName}>
                 {PreviewComponent !== null ? (
                     <PreviewComponent resource={resource} value={value} />
                 ) : (
