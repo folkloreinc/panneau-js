@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modal-medias-picker",
-    "version": "4.0.29",
+    "version": "4.0.30",
     "description": "Medias picker modal",
     "keywords": [
         "javascript"
@@ -53,7 +53,7 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@panneau/core": "^4.0.27",
-        "@panneau/medias": "^4.0.29",
+        "@panneau/medias": "^4.0.30",
         "@panneau/modal-dialog": "^4.0.27",
         "@uppy/core": "^5.1.1",
         "@uppy/dashboard": "^5.0.4",
