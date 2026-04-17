@@ -7,8 +7,13 @@
 
 .uppy-Dashboard-innerWrap {
     align-items: center;
+    padding: 0 6px;
 }
 
 .uppy-Dashboard-AddFiles-list {
     flex: 0;
+}
+
+.uppy-Dashboard-AddFiles {
+    width: 100%;
 }

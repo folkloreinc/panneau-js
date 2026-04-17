@@ -80,8 +80,6 @@ function Pagination({
 
     const finalOnClickPage = useCallback(
         (e, value) => {
-            e.preventDefault();
-            e.stopPropagation();
             if (onClickPage !== null) {
                 onClickPage(e, value);
             }

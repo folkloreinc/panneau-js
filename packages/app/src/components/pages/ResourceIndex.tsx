@@ -24,11 +24,16 @@ import ResourceItemsList from '../partials/ResourceItemsList';
 interface ResourceIndexPageProps {
     resource: Resource;
     defaultActions?: Array<string | Record<string, unknown>>;
+    actionsProps?: Record<string, unknown> | null;
 }
 
 const DEFAULT_ACTIONS = ['create'];
 
-function ResourceIndexPage({ resource, defaultActions = DEFAULT_ACTIONS }: ResourceIndexPageProps) {
+function ResourceIndexPage({
+    resource,
+    defaultActions = DEFAULT_ACTIONS,
+    actionsProps = null,
+}: ResourceIndexPageProps) {
     const { theme = null } = usePanneauColorScheme();
 
     const { name, settings = {}, index = {} } = resource;
@@ -181,7 +186,7 @@ function ResourceIndexPage({ resource, defaultActions = DEFAULT_ACTIONS }: Resou
                         onQueryChange={onQueryChange}
                         onQueryReset={onQueryReset}
                         theme={theme}
-                        // actionsProps={{ size: 'sm' }}
+                        actionsProps={{ size: 'sm', ...(actionsProps || {}) }}
                     />
                 </div>
             </MainLayout>
