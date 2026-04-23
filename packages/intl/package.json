@@ -37,7 +37,6 @@
     "module": "es/index.js",
     "exports": {
         ".": "./es/index.js",
-        "./locale": "./locale",
         "./locale/fr": "./locale/fr.js",
         "./locale/en": "./locale/en.js",
         "./locale/fr/json": "./locale/fr.json",
