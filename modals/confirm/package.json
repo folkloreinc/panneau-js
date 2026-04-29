@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modal-confirm",
-    "version": "4.0.36",
+    "version": "4.0.37",
     "description": "Confirm modal",
     "keywords": [
         "javascript"
@@ -52,10 +52,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.27",
-        "@panneau/intl": "^4.0.36",
-        "@panneau/modal-dialog": "^4.0.36",
-        "@panneau/themes": "^4.0.36",
+        "@panneau/core": "^4.0.37",
+        "@panneau/intl": "^4.0.37",
+        "@panneau/modal-dialog": "^4.0.37",
+        "@panneau/themes": "^4.0.37",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0"
