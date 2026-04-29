@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-toggles",
-    "version": "4.0.34",
+    "version": "4.0.35",
     "description": "A group of toggle fields",
     "keywords": [
         "javascript"
@@ -64,8 +64,8 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@panneau/core": "^4.0.27",
-        "@panneau/field-toggle": "^4.0.34",
-        "@panneau/themes": "^4.0.34",
+        "@panneau/field-toggle": "^4.0.35",
+        "@panneau/themes": "^4.0.35",
         "classnames": "^2.5.1"
     },
     "publishConfig": {
