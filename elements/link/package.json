@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-link",
-    "version": "4.0.37",
+    "version": "4.0.38",
     "description": "Link element",
     "keywords": [
         "javascript"
@@ -64,9 +64,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.37",
-        "@panneau/element-button": "^4.0.37",
-        "@panneau/element-label": "^4.0.37",
+        "@panneau/core": "^4.0.38",
+        "@panneau/element-button": "^4.0.38",
+        "@panneau/element-label": "^4.0.38",
         "classnames": "^2.5.1",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0",
         "wouter": "^3.1.2"
