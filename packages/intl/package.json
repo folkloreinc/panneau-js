@@ -41,7 +41,8 @@
             "default": "./dist/index.js",
             "types": "./dist/index.d.ts"
         },
-        "./locale": "./locale"
+        "./locale/*.json": "./locale/*.json",
+        "./locale*": "./locale/*.js"
     },
     "files": [
         "dist",
