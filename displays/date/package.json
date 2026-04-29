@@ -38,8 +38,8 @@
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
-            "default": "./dist/index.js",
-            "types": "./dist/index.d.ts"
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
         }
     },
     "files": [
@@ -69,5 +69,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "b1d5a3dfb062fedeae0da27642f4a8eabeb3258f"
+    "gitHead": "844823292485a7f2dfea6480cc53b2792c33cdd5"
 }
