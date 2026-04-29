@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-autocomplete",
-    "version": "4.0.38",
+    "version": "4.0.39",
     "description": "An autocomplete field",
     "keywords": [
         "javascript"
@@ -65,7 +65,7 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@panneau/core": "^4.0.38",
-        "@panneau/element-button": "^4.0.38",
+        "@panneau/element-button": "^4.0.39",
         "@panneau/field-text": "^4.0.38",
         "@panneau/themes": "^4.0.38",
         "classnames": "^2.5.1",

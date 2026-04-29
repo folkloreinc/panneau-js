@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-boolean",
-    "version": "4.0.38",
+    "version": "4.0.39",
     "description": "Boolean value in list",
     "keywords": [
         "javascript"
@@ -61,7 +61,7 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@panneau/core": "^4.0.38",
-        "@panneau/element-icon": "^4.0.38",
+        "@panneau/element-icon": "^4.0.39",
         "@panneau/element-label": "^4.0.38",
         "@panneau/themes": "^4.0.38",
         "lodash": "^4.17.21",

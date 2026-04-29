@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-media-card",
-    "version": "4.0.38",
+    "version": "4.0.39",
     "description": "Media card element",
     "keywords": [
         "javascript"
@@ -60,9 +60,9 @@
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",
         "@panneau/core": "^4.0.38",
-        "@panneau/element-button": "^4.0.38",
-        "@panneau/element-icon": "^4.0.38",
-        "@panneau/element-link": "^4.0.38",
+        "@panneau/element-button": "^4.0.39",
+        "@panneau/element-icon": "^4.0.39",
+        "@panneau/element-link": "^4.0.39",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "pretty-bytes": "^6.1.1",
