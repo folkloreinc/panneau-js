@@ -12,8 +12,8 @@
     }
 
     .calendarHeader {
-        display: flex;
         position: relative;
+        display: flex;
         align-items: center;
         padding: 0.5rem 0.75rem 1.25rem;
         font-weight: 700;
@@ -33,9 +33,9 @@
 
     .arrow {
         display: flex;
+        width: 2rem;
         align-items: center;
         justify-content: center;
-        width: 2rem;
         padding: 0.25rem;
     }
 
@@ -62,12 +62,12 @@
 
     .day {
         display: flex;
-        align-items: center;
-        justify-content: center;
         width: 2.25rem;
         height: 2.25rem;
+        align-items: center;
+        justify-content: center;
         border-radius: 50%;
-        color: rgba(#ccc, 0.75);
+        color: rgb(204 204 204 / 0.75);
         font-weight: 700;
         line-height: 1;
         user-select: none;
@@ -82,7 +82,7 @@
     }
 
     .dayButton {
-        background-color: rgba(#fff, 0.05);
+        background-color: rgb(255 255 255 /0.05);
         color: red;
 
         &.isPast {
@@ -106,5 +106,3 @@
         }
     }
 }
-
-
