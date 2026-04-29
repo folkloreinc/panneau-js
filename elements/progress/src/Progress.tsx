@@ -7,14 +7,7 @@ interface ProgressProps {
 
 function Progress({ className = null }: ProgressProps) {
     return (
-        <div
-            className={classNames([
-                'progress',
-                {
-                    [className!]: className !== null,
-                },
-            ])}
-        >
+        <div className={classNames(['progress', className])}>
             <div
                 className="progress-bar"
                 role="progressbar"

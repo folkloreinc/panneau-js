@@ -44,15 +44,7 @@ function Avatar({
     const empty = !showImage && !showName;
 
     return (
-        <div
-            className={classNames([
-                styles.container,
-                {
-                    [styles[size!]]: size !== null,
-                    [className!]: className !== null,
-                },
-            ])}
-        >
+        <div className={classNames([styles.container, styles[size], className])}>
             <div className="d-flex align-items-center">
                 {showImage ? (
                     <AvatarElement name={name} image={{ url: imageUrl }} size={size} {...props} />

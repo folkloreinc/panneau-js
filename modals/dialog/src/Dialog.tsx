@@ -48,8 +48,8 @@ function ModalDialog({
                     {
                         [`modal-${size}`]: size !== null,
                         [styles.closeOutside]: onCloseButtonOutside,
-                        [className!]: className !== null,
                     },
+                    className,
                 ])}
                 role="dialog"
             >

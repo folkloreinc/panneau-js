@@ -27,6 +27,8 @@ interface FormProps {
     canSave?: boolean;
     disabled?: boolean;
     className?: string | null;
+    actionsClassName?: string | null;
+    buttonGroupClassName?: string | null;
     buttonsClassName?: string | null;
     cancelClassName?: string | null;
 }
@@ -51,6 +53,8 @@ function Form({
     canSave = true,
     disabled = false,
     className = null,
+    actionsClassName = null,
+    buttonGroupClassName = null,
     buttonsClassName = null,
     cancelClassName = null,
 }: FormProps) {
@@ -72,7 +76,7 @@ function Form({
                 </p>
             ) : null}
             {((!withoutStatus && status !== null) || !withoutActions) && !disabled ? (
-                <div className="mt-4 d-flex align-items-center">
+                <div className={classNames(['mt-4 d-flex align-items-center', actionsClassName])}>
                     {!withoutStatus && status !== null ? <FormStatus status={status} /> : null}
                     {!withoutActions ? (
                         <div
@@ -81,6 +85,7 @@ function Form({
                                 {
                                     'btn-group': !withoutButtonGroup,
                                 },
+                                buttonGroupClassName,
                             ])}
                         >
                             {actions}
@@ -95,8 +100,8 @@ function Form({
                                     className={classNames([
                                         {
                                             'me-2': withoutButtonGroup,
-                                            [cancelClassName!]: cancelClassName !== null,
                                         },
+                                        cancelClassName,
                                     ])}
                                 >
                                     <FormattedMessage
@@ -106,13 +111,7 @@ function Form({
                                 </Button>
                             ) : null}
                             {buttons !== null ? (
-                                <Buttons
-                                    items={buttons}
-                                    className={classNames({
-                                        // 'me-auto': actions === null,
-                                        [buttonsClassName!]: buttonsClassName !== null,
-                                    })}
-                                />
+                                <Buttons items={buttons} className={buttonsClassName} />
                             ) : (
                                 <Button
                                     type="submit"

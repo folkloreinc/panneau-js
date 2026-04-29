@@ -38,12 +38,7 @@ function Modals({ theme = null, className = null }: ModalsProps) {
 
     return (
         <div
-            className={classNames([
-                styles.modalsContainer,
-                {
-                    [className!]: className !== null,
-                },
-            ])}
+            className={classNames([styles.modalsContainer, className])}
             data-bs-theme={theme !== null ? theme : undefined}
             style={{ color: theme === 'dark' ? '#FFF' : undefined }}
         >

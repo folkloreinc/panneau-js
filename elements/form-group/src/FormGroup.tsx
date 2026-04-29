@@ -79,8 +79,8 @@ function FormGroup({
             'pe-1': isCollapsible,
             'rounded border-bottom border-light border-secondary': isCollapsible && collapsed,
             dropup: isCollapsible && !collapsed,
-            [labelClassName!]: labelClassName !== null,
         },
+        labelClassName
     ]);
 
     const innerLabel = isCollapsible ? label || null : label || null;
@@ -155,8 +155,8 @@ function FormGroup({
                 {
                     'border-top pt-3 mt-3': isHeading,
                     'list-group-item': isListItem,
-                    [className!]: className !== null,
                 },
+                className
             ])}
         >
             <div

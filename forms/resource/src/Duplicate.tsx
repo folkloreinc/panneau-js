@@ -43,8 +43,8 @@ function DuplicateForm({
                 'form',
                 {
                     'invalid-feedback': generalError !== null,
-                    [className!]: className !== null,
                 },
+                className,
             ])}
             action={action}
             onSubmit={onSubmit}
@@ -53,14 +53,7 @@ function DuplicateForm({
             disabled={loading}
             {...props}
         >
-            <div
-                className={classNames([
-                    'card',
-                    {
-                        [className!]: className !== null,
-                    },
-                ])}
-            >
+            <div className={classNames(['card', className])}>
                 <div className="card-body">
                     <FormattedMessage
                         values={resourceValues}

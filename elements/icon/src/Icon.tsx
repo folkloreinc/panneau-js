@@ -20,11 +20,14 @@ function Icon({ name, bold = false, opaque = false, className = null, ...props }
         </>
     ) : (
         <i
-            className={classNames([`bi-${name}`], {
-                [styles.bold]: bold,
-                [styles.opaque]: opaque,
-                [className!]: className !== null,
-            })}
+            className={classNames([
+                `bi-${name}`,
+                {
+                    [styles.bold]: bold,
+                    [styles.opaque]: opaque,
+                },
+                className,
+            ])}
             {...props}
         />
     );

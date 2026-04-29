@@ -32,14 +32,11 @@ function ResourceCards({
         return value !== null ? [value] : [];
     }, [value]);
     return (
-        <div className={classNames([styles.container, { [className!]: className !== null }])}>
+        <div className={classNames([styles.container, className])}>
             {values.map((val, idx) => (
                 <ResourceCard
                     key={`resource-card-${idx + 1}-${val !== null ? val?.id : null}`}
-                    className={classNames([
-                        styles.card,
-                        { [cardClassName!]: cardClassName !== null },
-                    ])}
+                    className={classNames([styles.card, cardClassName])}
                     {...props}
                     item={val}
                 />

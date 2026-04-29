@@ -133,8 +133,8 @@ function Video({
                     [styles.loading]: loading,
                     [styles.muted]: muted,
                     [styles.isNative]: videoProvider === null,
-                    [className!]: className !== null,
                 },
+                className,
             ])}
         >
             {url !== null ? (
@@ -142,10 +142,7 @@ function Video({
                     {videoProvider === 'youtube' || videoProvider === 'vimeo' ? (
                         <iframe
                             key={media !== null ? `video-${finalUrl}` : 'video'}
-                            className={classNames([
-                                styles.iframe,
-                                { [iframeClassName!]: iframeClassName !== null },
-                            ])}
+                            className={classNames([styles.iframe, iframeClassName])}
                             title="video"
                             frameBorder={0}
                             src={
@@ -165,10 +162,7 @@ function Video({
                     {videoProvider === null ? (
                         <video
                             key={media !== null ? `video-${url}` : 'video'}
-                            className={classNames([
-                                styles.video,
-                                { [videoClassName!]: videoClassName !== null },
-                            ])}
+                            className={classNames([styles.video, videoClassName])}
                             src={finalUrl || undefined}
                             type="video/mp4"
                             playsInline={playsInline || undefined}

@@ -70,11 +70,7 @@ function ShowAction({
     return (
         <>
             <Button
-                className={classNames([
-                    {
-                        [className!]: className !== null,
-                    },
-                ])}
+                className={className}
                 label={label}
                 icon={icon}
                 onClick={withConfirmation ? onOpen : onClick}

@@ -52,8 +52,8 @@ function Audio({
                 styles.audioContainer,
                 {
                     [styles.isNative]: videoProvider === null,
-                    [className!]: className !== null,
                 },
+                className,
             ])}
             style={{
                 backgroundImage:
@@ -63,10 +63,7 @@ function Audio({
             {url !== null ? (
                 <audio
                     key={media !== null ? `video-${url}` : 'video'}
-                    className={classNames([
-                        styles.audio,
-                        { [audioClassName!]: audioClassName !== null },
-                    ])}
+                    className={classNames([styles.audio, audioClassName])}
                     src={url !== null ? url : undefined}
                     type="audio/mp3"
                     style={{ width: width || undefined, height: height || undefined }}

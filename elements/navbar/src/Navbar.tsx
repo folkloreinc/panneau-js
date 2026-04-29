@@ -55,8 +55,8 @@ function Navbar({
                     'px-2': compact,
                     'flex-nowrap': noWrap,
                     'flex-column align-items-stretch': vertical,
-                    [className!]: className !== null,
                 },
+                className,
             ])}
         >
             {brand !== null && brandLink !== null ? (
@@ -65,8 +65,8 @@ function Navbar({
                         'navbar-brand',
                         {
                             'py-0': compact,
-                            [brandClassName!]: brandClassName !== null,
                         },
+                        brandClassName,
                     ])}
                     href={brandLink}
                 >
@@ -79,8 +79,8 @@ function Navbar({
                         'navbar-brand',
                         {
                             'py-0': compact,
-                            [brandClassName!]: brandClassName !== null,
                         },
+                        brandClassName,
                     ])}
                 >
                     {brand}
@@ -92,8 +92,8 @@ function Navbar({
                         'navbar-breadcrumbs',
                         {
                             'py-0': compact,
-                            [breadCrumbsClassName!]: breadCrumbsClassName !== null,
                         },
+                        breadCrumbsClassName,
                     ])}
                 >
                     {breadcrumbs}
@@ -122,8 +122,8 @@ function Navbar({
                             'flex-column': !menuVisible && vertical,
                             'align-items-stretch': !menuVisible && vertical,
                             'ps-2': !menuVisible && vertical,
-                            [collapseClassName!]: collapseClassName !== null,
                         },
+                        collapseClassName,
                     ])}
                 >
                     {children}

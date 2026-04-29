@@ -46,11 +46,7 @@ function TextDescription({
 
     return label !== null ? (
         <div
-            className={classNames([
-                {
-                    [className!]: className !== null,
-                },
-            ])}
+            className={className}
         >
             <p className="d-block m-0 p-0 lh-sm">{value || placeholder}</p>
             <p

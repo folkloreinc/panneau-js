@@ -98,8 +98,8 @@ function Filters({
                 'justify-content-start',
                 {
                     'navbar-expand-md': withContainer,
-                    [className!]: className !== null,
                 },
+                className,
             ])}
             withoutCollapse
         >
@@ -120,8 +120,8 @@ function Filters({
                                         currentFilters.length < 3 &&
                                         index === currentFilters.length - 1 &&
                                         name === 'search',
-                                    [groupClassName as string]: groupClassName !== null,
                                 },
+                                groupClassName,
                             ])}
                         >
                             <FilterComponent

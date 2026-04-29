@@ -68,9 +68,7 @@ function Image({
         <div
             className={classNames([
                 styles.container,
-                {
-                    [className!]: className !== null,
-                },
+                className,
             ])}
             {...(withZoom && image !== null
                 ? {

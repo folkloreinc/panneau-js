@@ -42,9 +42,7 @@ function Radios({
                 'd-block',
                 'btn-group',
                 'btn-group-toggle',
-                {
-                    [className!]: className !== null,
-                },
+                className
             ])}
             data-toggle="buttons"
             style={{ zIndex: 0 }}
@@ -60,8 +58,8 @@ function Radios({
                             {
                                 active: isCurrent,
                                 disabled,
-                                [buttonClassName!]: buttonClassName !== null,
                             },
+                            buttonClassName
                         ])}
                     >
                         <input

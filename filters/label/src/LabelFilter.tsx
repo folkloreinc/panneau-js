@@ -37,8 +37,8 @@ function LabelFilter({
                 styles.container,
                 {
                     [styles.disabled]: disabled,
-                    [className!]: className !== null,
                 },
+                className,
             ])}
         >
             {href === null && onClick !== null ? (

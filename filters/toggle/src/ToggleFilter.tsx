@@ -45,8 +45,8 @@ function ToggleFilter({
                 styles.container,
                 {
                     [styles.vertical]: vertical,
-                    [className!]: className !== null,
                 },
+                className,
             ])}
         >
             {label !== null ? <span className="me-2">{label}</span> : null}

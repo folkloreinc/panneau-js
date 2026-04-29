@@ -73,8 +73,8 @@ function ResourceCard({
                 {
                     [`bg-muted`]: disabled,
                     [`text-muted`]: disabled,
-                    [className!]: className !== null,
                 },
+                className,
             ])}
         >
             {header !== null ? <div className="card-header p-1 ps-2">{header}</div> : null}

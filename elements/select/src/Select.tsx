@@ -169,7 +169,7 @@ function SelectElement({
     }
 
     return (
-        <div className={classNames(['position-relative', { [className!]: className !== null }])}>
+        <div className={classNames(['position-relative', className])}>
             <SelectComponent
                 {...props}
                 {...(getOptionValue !== null ? { getOptionValue } : {})}

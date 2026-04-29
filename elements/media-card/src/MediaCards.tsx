@@ -33,14 +33,11 @@ function MediaCards({
     }, [value]);
 
     return (
-        <div className={classNames([styles.mediaCards, { [className!]: className !== null }])}>
+        <div className={classNames([styles.mediaCards, className])}>
             {values.map((media, idx) => (
                 <MediaCard
                     key={`media-card-${idx + 1}-${media !== null ? media?.id : null}`}
-                    className={classNames([
-                        styles.card,
-                        { [cardClassName!]: cardClassName !== null },
-                    ])}
+                    className={classNames([styles.card, cardClassName])}
                     {...props}
                     value={media}
                     index={idx}

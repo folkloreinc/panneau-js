@@ -23,9 +23,7 @@ function Alert({ theme = 'success', children, onClose = null, className = null }
                 'd-flex',
                 'align-items-center',
                 'justify-content-between',
-                {
-                    [className!]: className !== null,
-                },
+                className,
             ])}
         >
             <LabelComponent>{children}</LabelComponent>

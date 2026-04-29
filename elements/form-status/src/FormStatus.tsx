@@ -52,8 +52,8 @@ function FormStatus({
                     [`text-danger`]: status === 'error',
                     [`text-success`]: status === 'success',
                     [`text-muted`]: status === 'loading',
-                    [className!]: className !== null,
                 },
+                className,
             ])}
         >
             {icon !== null ? (

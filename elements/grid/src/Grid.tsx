@@ -85,13 +85,7 @@ function Grid({
 
     return (
         <div
-            className={classNames([
-                styles.container,
-                {
-                    [styles[size!]]: size !== null,
-                    [className!]: className !== null,
-                },
-            ])}
+            className={classNames([styles.container, styles[size], className])}
             style={gap !== null ? ({ gridGap: gap } as any) : undefined}
         >
             <div className={styles.inner}>

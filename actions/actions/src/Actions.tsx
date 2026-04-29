@@ -97,8 +97,8 @@ function Actions({
                     'd-flex': !isGroup,
                     'btn-group': isGroup,
                     [`btn-group-${size}`]: isGroup && size !== null,
-                    [className!]: className !== null,
                 },
+                className
             ])}
         >
             {finalActions.map((action, idx) => {

@@ -17,6 +17,7 @@ interface NormalFormProps {
     disabled?: boolean;
     children?: ReactNode | null;
     className?: string | null;
+    fieldsClassName?: string | null;
 }
 
 function NormalForm({
@@ -29,18 +30,14 @@ function NormalForm({
     disabled = false,
     children = null,
     className = null,
+    fieldsClassName = null,
     ...props
 }: NormalFormProps) {
     const FieldsComponent = useFieldComponent('fields');
 
     return (
         <Form
-            className={classNames([
-                'form',
-                {
-                    [className!]: className !== null,
-                },
-            ])}
+            className={classNames(['form', className])}
             status={status}
             buttons={buttons}
             disabled={disabled}
@@ -53,6 +50,7 @@ function NormalForm({
                 <FieldsComponent
                     fields={fields}
                     value={value}
+                    className={fieldsClassName}
                     onChange={onChange}
                     disabled={disabled}
                 />

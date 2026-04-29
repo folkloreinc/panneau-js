@@ -20,14 +20,7 @@ function Range({ title = null, value = 50, onChange, max = 100, className = null
         [onChange, max],
     );
     return (
-        <div
-            className={classNames([
-                styles.container,
-                {
-                    [className!]: className !== null,
-                },
-            ])}
-        >
+        <div className={classNames([styles.container, className])}>
             <h4>
                 <label className={styles.label} htmlFor="range">
                     {title}

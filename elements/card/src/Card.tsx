@@ -75,12 +75,7 @@ function Card({
         ({ label, className: linkClassName = null, ...linkProps }, index) => (
             <Link
                 key={`link-${label}-${index}`}
-                className={classNames([
-                    'card-link',
-                    {
-                        [linkClassName!]: linkClassName !== null,
-                    },
-                ])}
+                className={classNames(['card-link', linkClassName])}
                 {...linkProps}
             >
                 {label}
@@ -95,27 +90,12 @@ function Card({
         (links !== null && linksInSameBody) ? (
             <>
                 {title !== null ? (
-                    <h5
-                        className={classNames([
-                            'card-title',
-                            'text-break',
-                            {
-                                [titleClassName!]: titleClassName !== null,
-                            },
-                        ])}
-                    >
+                    <h5 className={classNames(['card-title', 'text-break', titleClassName])}>
                         <LabelComponent>{title}</LabelComponent>
                     </h5>
                 ) : null}
                 {subtitle !== null ? (
-                    <h6
-                        className={classNames([
-                            'card-subtitle',
-                            {
-                                [subtitleClassName!]: subtitleClassName !== null,
-                            },
-                        ])}
-                    >
+                    <h6 className={classNames(['card-subtitle', subtitleClassName])}>
                         <LabelComponent>{subtitle}</LabelComponent>
                     </h6>
                 ) : null}
@@ -135,14 +115,7 @@ function Card({
     const cardInner = (
         <>
             {header !== null ? (
-                <div
-                    className={classNames([
-                        'card-header',
-                        {
-                            [headerClassName!]: headerClassName !== null,
-                        },
-                    ])}
-                >
+                <div className={classNames(['card-header', headerClassName])}>
                     <LabelComponent>{header}</LabelComponent>
                 </div>
             ) : null}
@@ -150,12 +123,7 @@ function Card({
                 <img
                     src={image}
                     alt={imageAlt || undefined}
-                    className={classNames([
-                        'card-img-top',
-                        {
-                            [imageClassName!]: imageClassName !== null,
-                        },
-                    ])}
+                    className={classNames(['card-img-top', imageClassName])}
                 />
             ) : (
                 image
@@ -174,7 +142,7 @@ function Card({
                             className={classNames({
                                 'card-body': !imageOverlay,
                                 'card-img-overlay': imageOverlay,
-                                [bodyClassName!]: bodyClassName !== null,
+                                bodyClassName,
                             })}
                             onClick={onClickBody}
                         >
@@ -185,7 +153,7 @@ function Card({
                             className={classNames({
                                 'card-body': !imageOverlay,
                                 'card-img-overlay': imageOverlay,
-                                [bodyClassName!]: bodyClassName !== null,
+                                bodyClassName,
                             })}
                         >
                             {bodyInner}
@@ -201,25 +169,13 @@ function Card({
                 onClickFooter !== null ? (
                     <button
                         type="button"
-                        className={classNames([
-                            'card-footer',
-                            {
-                                [footerClassName!]: footerClassName !== null,
-                            },
-                        ])}
+                        className={classNames(['card-footer', footerClassName])}
                         onClick={onClickFooter}
                     >
                         <LabelComponent>{footer}</LabelComponent>
                     </button>
                 ) : (
-                    <div
-                        className={classNames([
-                            'card-footer',
-                            {
-                                [footerClassName!]: footerClassName !== null,
-                            },
-                        ])}
-                    >
+                    <div className={classNames(['card-footer', footerClassName])}>
                         <LabelComponent>{footer}</LabelComponent>
                     </div>
                 )
@@ -230,8 +186,8 @@ function Card({
         'card',
         {
             [`bg-${theme}`]: !imageOverlay && theme !== 'dark',
-            [className!]: className !== null,
         },
+        className,
     ]);
 
     if (href !== null) {

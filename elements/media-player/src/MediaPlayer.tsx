@@ -32,12 +32,7 @@ function MediaPlayer({
     const apiRef = useRef(null);
     return (
         <div
-            className={classNames([
-                styles.container,
-                'border',
-                'p-2',
-                { [className!]: className !== null },
-            ])}
+            className={classNames([styles.container, 'border', 'p-2', className])}
             style={{ width: width || undefined, height: height || undefined }}
         >
             {type === 'video' ? <Video media={value} apiRef={apiRef} {...props} /> : null}

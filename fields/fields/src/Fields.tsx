@@ -18,6 +18,10 @@ interface FieldsProps {
     hideWithoutValue?: boolean;
     onChange?: ((value: Record<string, unknown>) => void) | null;
     className?: string | null;
+    horizontalClassName?: string | null;
+    fieldClassName?: string | null;
+    fieldGroupClassName?: string | null;
+    fieldLabelClassName?: string | null;
 }
 
 const DEFAULT_FIELDS: Field[] = [];
@@ -32,6 +36,10 @@ function Fields({
     disabled = false,
     onChange = null,
     className = null,
+    horizontalClassName = null,
+    fieldClassName = null,
+    fieldGroupClassName = null,
+    fieldLabelClassName = null,
 }: FieldsProps) {
     const fieldsManager = useFieldsManager();
     const contextComponents = useFieldsComponents();
@@ -67,9 +75,9 @@ function Fields({
             isListItem = isList,
             siblingFields = DEFAULT_FIELDS,
             defaultValue = null,
-            className: fieldClassName = null,
-            groupClassName = null,
-            labelClassName = null,
+            className: customFieldClassName = null,
+            groupClassName: customGroupClassName = null,
+            labelClassName: customLabelClassName = null,
             ...fieldProps
         } = (field || {}) as Field & {
             horizontal?: boolean;
@@ -121,7 +129,7 @@ function Fields({
                     value={fieldValue}
                     horizontal={horizontal}
                     onChange={(newValue: unknown) => onFieldChange(field, newValue)}
-                    className={fieldClassName}
+                    className={classNames([fieldClassName, customFieldClassName])}
                 />
             ) : null;
 
@@ -135,8 +143,12 @@ function Fields({
                         horizontal={horizontal}
                         inline={inline}
                         isListItem={isListItem}
-                        className={classNames([{ 'mb-3': !isListItem }, groupClassName])}
-                        labelClassName={classNames([labelClassName])}
+                        className={classNames([
+                            { 'mb-3': !isListItem },
+                            fieldGroupClassName,
+                            customGroupClassName,
+                        ])}
+                        labelClassName={classNames([fieldLabelClassName, customLabelClassName])}
                     >
                         {fieldElement}
                     </FormGroup>
@@ -152,20 +164,22 @@ function Fields({
 
     return (
         <div
-            className={classNames([
+            className={classNames('fields', [
                 {
-                    fields: true,
                     'list-group': isList,
                     'list-group-horizontal': fieldsHorizontal,
-                    [className]: className !== null,
                 },
+                className,
             ])}
         >
             {fieldsHorizontal && !isList ? (
                 <div
-                    className={classNames({
-                        'd-inline-flex flex-row': !isList,
-                    })}
+                    className={classNames([
+                        {
+                            'd-inline-flex flex-row': !isList,
+                        },
+                        horizontalClassName,
+                    ])}
                 >
                     {content}
                 </div>

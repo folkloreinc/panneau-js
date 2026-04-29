@@ -45,8 +45,8 @@ function DeleteForm({
                 'form',
                 {
                     'invalid-feedback': generalError !== null,
-                    [className!]: className !== null,
                 },
+                className,
             ])}
             action={action}
             onSubmit={onSubmit}
@@ -55,16 +55,7 @@ function DeleteForm({
             disabled={loading}
             {...props}
         >
-            <div
-                className={classNames([
-                    'card',
-                    {
-                        // [`bg-${background}`]: background !== null,
-                        // [`border-${text}`]: text !== null,
-                        [className!]: className !== null,
-                    },
-                ])}
-            >
+            <div className={classNames(['card', className])}>
                 <div className="card-body">
                     <FormattedMessage
                         values={resourceValues}

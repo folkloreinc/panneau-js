@@ -38,9 +38,7 @@ function Buttons({
                 {
                     [`btn-group-${size}`]: size !== null,
                 },
-                {
-                    [className!]: className !== null,
-                },
+                className,
             ])}
             role="group"
             style={{ zIndex: 0 }}
@@ -57,12 +55,7 @@ function Buttons({
 
                       const fixedProps = {
                           key: `button-${index}`,
-                          className: classNames([
-                              {
-                                  [buttonClassName!]: buttonClassName !== null,
-                                  [customClassName]: customClassName !== null,
-                              },
-                          ]),
+                          className: classNames([buttonClassName, customClassName]),
                           theme,
                           outline,
                           onClick: (e: MouseEvent) => {

@@ -151,8 +151,8 @@ function Table({
                             [`table-${theme}`]: theme !== null,
                             'table-striped': striped,
                             'table-striped-columns': stripedColumns,
-                            [className!]: className !== null,
                         },
+                        className,
                     ])}
                 >
                     <thead>
@@ -382,8 +382,8 @@ function Table({
                                                 {
                                                     'table-row': true,
                                                     'text-end': true,
-                                                    [actionsClassName!]: actionsClassName !== null,
                                                 },
+                                                actionsClassName,
                                             ])}
                                             key={`col-${id}-actions`}
                                         >

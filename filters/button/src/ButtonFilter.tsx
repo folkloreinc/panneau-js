@@ -47,13 +47,7 @@ function ButtonFilter({
     }, [isActive, href, onChange]);
 
     return (
-        <div
-            className={classNames([
-                {
-                    [className!]: className !== null,
-                },
-            ])}
-        >
+        <div className={className}>
             <Button
                 href={href}
                 label={label}

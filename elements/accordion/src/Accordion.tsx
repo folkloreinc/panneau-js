@@ -60,9 +60,7 @@ function Accordion({
             className={classNames([
                 styles.container,
                 'accordion',
-                {
-                    [className!]: className !== null,
-                },
+                className,
             ])}
             id={accordionId}
         >

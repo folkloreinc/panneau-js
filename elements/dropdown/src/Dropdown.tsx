@@ -59,8 +59,8 @@ function Dropdown({
                 {
                     [`dropdown-menu-${align}`]: align !== null,
                     show: visible,
-                    [className!]: className !== null,
                 },
+                className,
             ])}
             ref={refContainer}
             style={{ right: align === 'end' ? 0 : 'auto', left: align === 'start' ? 0 : 'auto' }}
@@ -101,17 +101,19 @@ function Dropdown({
                       return ItemComponent !== null ? (
                           <ItemComponent
                               key={`item-${id || index}`}
-                              className={classNames({
-                                  'dropdown-item': type === 'link',
-                                  'dropdown-divider': type === 'divider',
-                                  'dropdown-header': type === 'header',
-                                  'text-start': true,
-                                  'd-block': true,
-                                  'w-100': true,
-                                  active,
-                                  [itemClassName!]: itemClassName !== null,
-                                  [customClassName]: customClassName !== null,
-                              })}
+                              className={classNames([
+                                  {
+                                      'dropdown-item': type === 'link',
+                                      'dropdown-divider': type === 'divider',
+                                      'dropdown-header': type === 'header',
+                                      'text-start': true,
+                                      'd-block': true,
+                                      'w-100': true,
+                                      active,
+                                  },
+                                  itemClassName,
+                                  customClassName,
+                              ])}
                               onClick={finalOnClickItem}
                               {...(itemProps || null)}
                           >

@@ -197,14 +197,7 @@ function CalendarList({
     }, false);
 
     return (
-        <div
-            className={classNames([
-                styles.container,
-                {
-                    [className!]: className !== null,
-                },
-            ])}
-        >
+        <div className={classNames([styles.container, className])}>
             <div className={styles.inner}>
                 <div className={styles.calendarHeader}>
                     <Button className={styles.arrow} onClick={(e) => onClickPeriodChange(e, true)}>

@@ -91,11 +91,7 @@ function RestoreAction({
     return (
         <>
             <Button
-                className={classNames([
-                    {
-                        [className!]: className !== null,
-                    },
-                ])}
+                className={className}
                 label={label}
                 icon={icon}
                 onClick={withConfirmation ? onOpen : onConfirm}

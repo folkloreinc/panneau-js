@@ -37,8 +37,8 @@ function Loading({
             className={classNames([
                 {
                     card: !withoutCard,
-                    [className!]: className !== null,
                 },
+                className,
             ])}
         >
             <div className="card-body d-flex align-items-center justify-content-center text-muted">

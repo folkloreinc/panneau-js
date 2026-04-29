@@ -58,13 +58,13 @@ function Avatar({
                     [`bg-${backgroundTheme}`]:
                         backgroundTheme !== null && backgroundTheme !== undefined,
                     [`border-${borderTheme}`]: borderTheme !== null && borderTheme !== undefined,
-                    [styles[size!]]: size !== null,
                     [styles.square]: square,
                     [styles.inverted]: inverted,
                     [styles.blend]: withImage && blended,
                     [styles.hidden]: !withImage && shortName === null,
-                    [className!]: className !== null,
                 },
+                styles[size],
+                className
             ])}
             style={{
                 ...(withImage ? { backgroundImage: `url(${image!.url})` } : null),

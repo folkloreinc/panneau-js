@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import { type ReactNode, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Label } from '@panneau/core';
 import Button from '@panneau/element-button';
 
 interface EmptyProps {
@@ -13,7 +12,7 @@ interface EmptyProps {
     withDelay?: boolean;
     withoutCard?: boolean;
     className?: string | null;
-    children?: Label | null;
+    children?: ReactNode | null;
 }
 
 function Empty({
@@ -42,8 +41,8 @@ function Empty({
             className={classNames([
                 {
                     card: !withoutCard,
-                    [className!]: className !== null,
                 },
+                className,
             ])}
         >
             <div className="card-body d-flex align-items-center justify-content-center text-muted">

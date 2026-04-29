@@ -249,12 +249,13 @@ function MediaCard({
     }, [value, onClickDescription]);
 
     return (
-        <div className={classNames(['w-100', 'mb-1', { [className!]: className !== null }])}>
+        <div className={classNames(['w-100', 'mb-1', className])}>
             <div
                 className={classNames([
                     'card',
                     'mb-1',
-                    { 'mw-100': maxWidth === null, [cardClassName!]: cardClassName !== null },
+                    { 'mw-100': maxWidth === null },
+                    cardClassName,
                 ])}
                 key={`media-${id}`}
                 style={{

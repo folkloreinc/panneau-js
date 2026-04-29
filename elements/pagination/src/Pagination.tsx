@@ -178,8 +178,8 @@ function Pagination({
                 'm-0',
                 {
                     'justify-content-end': align === 'right',
-                    [className!]: className !== null,
                 },
+                className,
             ])}
         >
             {loading && align === 'right' ? (
@@ -199,8 +199,8 @@ function Pagination({
                     {
                         'pagination-sm': size === 'sm',
                         'pagination-lg': size === 'lg',
-                        [paginationClassName!]: paginationClassName !== null,
                     },
+                    paginationClassName,
                 ])}
             >
                 {withPreviousNext && (pages.length > 1 || alwaysShowButtons) ? (
@@ -209,8 +209,8 @@ function Pagination({
                             'page-item',
                             {
                                 disabled: page <= 1,
-                                [itemClassName!]: itemClassName !== null,
                             },
+                            itemClassName,
                         ])}
                     >
                         {page > 1 ? (
@@ -219,9 +219,7 @@ function Pagination({
                                     'page-link',
                                     'rounded-0',
                                     'rounded-start',
-                                    {
-                                        [linkClassName!]: linkClassName !== null,
-                                    },
+                                    linkClassName,
                                 ])}
                                 href={getUrl(page - 1) || '#'}
                                 onClick={(e) => finalOnClickPage(e, page - 1)}
@@ -234,9 +232,7 @@ function Pagination({
                                     'page-link',
                                     'rounded-0',
                                     'rounded-start',
-                                    {
-                                        [linkClassName!]: linkClassName !== null,
-                                    },
+                                    linkClassName,
                                 ])}
                             >
                                 {previousLabel}
@@ -254,18 +250,12 @@ function Pagination({
                                   {
                                       disabled: pageNumber === '...' || pages.length < 2,
                                       active: pageNumber === page && pages.length > 1,
-                                      [itemClassName!]: itemClassName !== null,
                                   },
+                                  itemClassName,
                               ])}
                           >
                               <Link
-                                  className={classNames([
-                                      'page-link',
-                                      'rounded-0',
-                                      {
-                                          [linkClassName!]: linkClassName !== null,
-                                      },
-                                  ])}
+                                  className={classNames(['page-link', 'rounded-0', linkClassName])}
                                   href={
                                       pageNumber !== '...'
                                           ? getUrl(pageNumber as number) || '#'
@@ -290,8 +280,8 @@ function Pagination({
                             'page-item',
                             {
                                 disabled: page >= lastPage,
-                                [itemClassName!]: itemClassName !== null,
                             },
+                            itemClassName,
                         ])}
                     >
                         {page < lastPage ? (
@@ -300,9 +290,7 @@ function Pagination({
                                     'page-link',
                                     'rounded-0',
                                     'rounded-end',
-                                    {
-                                        [linkClassName!]: linkClassName !== null,
-                                    },
+                                    linkClassName,
                                 ])}
                                 href={getUrl(page + 1) || '#'}
                                 onClick={(e) => finalOnClickPage(e, page + 1)}
@@ -315,9 +303,7 @@ function Pagination({
                                     'page-link',
                                     'rounded-0',
                                     'rounded-end',
-                                    {
-                                        [linkClassName!]: linkClassName !== null,
-                                    },
+                                    linkClassName,
                                 ])}
                             >
                                 {nextLabel}
