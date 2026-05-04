@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useArgs } from 'storybook/preview-api';
 
 import Menu from '../../../menu/src/Menu';
 import Select from '../../../select/src/Select';
@@ -56,21 +57,30 @@ export const End = {
     ),
 };
 
-export const WithClickOutside = {
-    render: () => {
-        const [value, setValue] = useState(null);
+export const WithButton = {
+    args: {
+        visible: false,
+    },
+    render: function () {
+        const [{ visible }, updateArgs] = useArgs();
+
+        function onClick() {
+            updateArgs({ visible: !visible });
+        }
         return (
             <div style={{ position: 'relative' }}>
-                <Select
-                    onChange={setValue}
-                    value={value}
-                    options={[
-                        { value: 'value1', label: 'Label 1' },
-                        { value: 'value', label: 'Label 2' },
-                    ]}
-                />
-                <div>
-                    <Menu items={items} />
+                <div className="dropdown">
+                    <button className="btn btn-secondary dropdown-toggle" onClick={onClick}>
+                        Dropdown button
+                    </button>
+                    <Dropdown
+                        visible={visible}
+                        items={[
+                            { id: 'value1', label: 'Label 1' },
+                            { id: 'value', label: 'Label 2' },
+                        ]}
+                        className="mt-1"
+                    />
                 </div>
             </div>
         );

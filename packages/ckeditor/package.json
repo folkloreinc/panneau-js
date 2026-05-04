@@ -47,7 +47,7 @@
         "clean": "rm -rf es && rm -rf lib && rm -rf dist",
         "build:ckeditor": "../../node_modules/.bin/webpack --mode production --config webpack.config.cjs",
         "prepublishOnly": "npm run build",
-        "build": "rm -rf dist && ../../scripts/prepare-package.sh --types && npm run build:ckeditor"
+        "build": "rm -rf dist && ../../scripts/prepare-package.sh --types"
     },
     "devDependencies": {
         "react": "^19.2.0",
@@ -59,18 +59,18 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.13.10",
-        "@ckeditor/ckeditor5-basic-styles": "^47.5.0",
-        "@ckeditor/ckeditor5-dev-translations": "54.3.4",
-        "@ckeditor/ckeditor5-dev-utils": "54.3.4",
-        "@ckeditor/ckeditor5-editor-classic": "^47.5.0",
-        "@ckeditor/ckeditor5-editor-inline": "^47.5.0",
-        "@ckeditor/ckeditor5-essentials": "^47.5.0",
-        "@ckeditor/ckeditor5-heading": "^47.5.0",
-        "@ckeditor/ckeditor5-link": "^47.5.0",
-        "@ckeditor/ckeditor5-list": "^47.5.0",
-        "@ckeditor/ckeditor5-paragraph": "^47.5.0",
-        "@ckeditor/ckeditor5-react": "^11.0.1",
-        "@ckeditor/ckeditor5-theme-lark": "^47.5.0",
+        "@ckeditor/ckeditor5-basic-styles": "^48.0.1",
+        "@ckeditor/ckeditor5-dev-translations": "^55.5.0",
+        "@ckeditor/ckeditor5-dev-utils": "^55.5.0",
+        "@ckeditor/ckeditor5-editor-classic": "^48.0.1",
+        "@ckeditor/ckeditor5-editor-inline": "^48.0.1",
+        "@ckeditor/ckeditor5-essentials": "^48.0.1",
+        "@ckeditor/ckeditor5-heading": "^48.0.1",
+        "@ckeditor/ckeditor5-link": "^48.0.1",
+        "@ckeditor/ckeditor5-list": "^48.0.1",
+        "@ckeditor/ckeditor5-paragraph": "^48.0.1",
+        "@ckeditor/ckeditor5-react": "^11.1.2",
+        "@ckeditor/ckeditor5-theme-lark": "^47.6.2",
         "@folklore/fetch": "0.1.21"
     },
     "publishConfig": {

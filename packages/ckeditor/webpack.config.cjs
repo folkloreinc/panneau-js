@@ -26,55 +26,55 @@ module.exports = {
         ],
     },
 
-    plugins: [
-        new CKEditorTranslationsPlugin({
-            // See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
-            language: 'fr',
-            additionalLanguages: ['en'],
-            //
-        }),
-    ],
+    // plugins: [
+    //     new CKEditorTranslationsPlugin({
+    //         // See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
+    //         language: 'fr',
+    //         additionalLanguages: ['en'],
+    //         //
+    //     }),
+    // ],
 
-    module: {
-        rules: [
-            {
-                test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-                use: ['raw-loader'],
-            },
-            {
-                test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
-                use: [
-                    {
-                        loader: 'style-loader',
-                        options: {
-                            injectType: 'singletonStyleTag',
-                            attributes: {
-                                'data-cke': true,
-                            },
-                        },
-                    },
-                    'css-loader',
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            postcssOptions: styles.getPostCssConfig({
-                                themeImporter: {
-                                    themePath: require.resolve('@ckeditor/ckeditor5-theme-lark'),
-                                },
-                                minify: true,
-                            }),
-                        },
-                    },
-                ],
-            },
-            // {
-            //     test: /\.m?js$/,
-            //     resolve: {
-            //         fullySpecified: false,
-            //     },
-            // },
-        ],
-    },
+    // module: {
+    //     rules: [
+    //         {
+    //             test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+    //             use: ['raw-loader'],
+    //         },
+    //         {
+    //             test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+    //             use: [
+    //                 {
+    //                     loader: 'style-loader',
+    //                     options: {
+    //                         injectType: 'singletonStyleTag',
+    //                         attributes: {
+    //                             'data-cke': true,
+    //                         },
+    //                     },
+    //                 },
+    //                 'css-loader',
+    //                 {
+    //                     loader: 'postcss-loader',
+    //                     options: {
+    //                         postcssOptions: styles.getPostCssConfig({
+    //                             themeImporter: {
+    //                                 themePath: require.resolve('@ckeditor/ckeditor5-theme-lark'),
+    //                             },
+    //                             minify: true,
+    //                         }),
+    //                     },
+    //                 },
+    //             ],
+    //         },
+    //         // {
+    //         //     test: /\.m?js$/,
+    //         //     resolve: {
+    //         //         fullySpecified: false,
+    //         //     },
+    //         // },
+    //     ],
+    // },
 
     // Useful for debugging.
     // devtool: 'source-map',

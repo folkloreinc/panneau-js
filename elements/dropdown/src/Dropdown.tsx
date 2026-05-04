@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import type { MouseEvent, ReactNode } from 'react';
+import type { CSSProperties, MouseEvent, ReactNode } from 'react';
 import { useCallback, useRef } from 'react';
 
 import type { DropdownAlign, MenuItem } from '@panneau/core';
@@ -8,13 +8,13 @@ import Button from '@panneau/element-button';
 import LabelComponent from '@panneau/element-label';
 import Link from '@panneau/element-link';
 
-import styles from './styles.module.css';
-
 interface DropdownProps {
     items?: MenuItem[];
     children?: ReactNode | null;
     visible?: boolean;
+    dropup?: boolean;
     align?: DropdownAlign;
+    style?: CSSProperties | null;
     className?: string | null;
     itemClassName?: string | null;
     onClickItem?: ((e: MouseEvent) => void) | null;
@@ -27,7 +27,9 @@ function Dropdown({
     items = DEFAULT_ITEMS,
     children = null,
     visible = false,
+    dropup = false,
     align = null,
+    style = null,
     className = null,
     itemClassName = null,
     onClickItem = null,
@@ -48,22 +50,29 @@ function Dropdown({
         [visible, onClickOutside],
     );
 
-    useDocumentEvent('click', onDocumentClick, visible);
+    useDocumentEvent('click', onDocumentClick, visible && onClickOutside !== null);
+
+    const MenuComponent = children !== null ? 'div' : 'ul';
 
     return (
-        <div
+        <MenuComponent
             className={classNames([
-                styles.container,
                 'dropdown-menu',
-                'relative',
                 {
                     [`dropdown-menu-${align}`]: align !== null,
                     show: visible,
                 },
                 className,
             ])}
+            style={
+                style || {
+                    right: align === 'end' ? 0 : 'auto',
+                    left: align === 'start' ? 0 : 'auto',
+                    top: dropup ? 'auto' : '100%',
+                    bottom: dropup ? '100%' : 'auto',
+                }
+            }
             ref={refContainer}
-            style={{ right: align === 'end' ? 0 : 'auto', left: align === 'start' ? 0 : 'auto' }}
         >
             {children !== null
                 ? children
@@ -99,33 +108,32 @@ function Dropdown({
                                 }
                               : null;
                       return ItemComponent !== null ? (
-                          <ItemComponent
-                              key={`item-${id || index}`}
-                              className={classNames([
-                                  {
-                                      'dropdown-item': type === 'link',
-                                      'dropdown-divider': type === 'divider',
-                                      'dropdown-header': type === 'header',
-                                      'text-start': true,
-                                      'd-block': true,
-                                      'w-100': true,
-                                      active,
-                                  },
-                                  itemClassName,
-                                  customClassName,
-                              ])}
-                              onClick={finalOnClickItem}
-                              {...(itemProps || null)}
-                          >
-                              {label !== null ? (
-                                  <LabelComponent>{label}</LabelComponent>
-                              ) : (
-                                  itemChildren
-                              )}
-                          </ItemComponent>
+                          <li>
+                              <ItemComponent
+                                  key={`item-${id || index}`}
+                                  className={classNames([
+                                      {
+                                          'dropdown-item': type === 'link' || type === 'button',
+                                          'dropdown-divider': type === 'divider',
+                                          'dropdown-header': type === 'header',
+                                          active,
+                                      },
+                                      itemClassName,
+                                      customClassName,
+                                  ])}
+                                  onClick={finalOnClickItem}
+                                  {...itemProps}
+                              >
+                                  {label !== null ? (
+                                      <LabelComponent>{label}</LabelComponent>
+                                  ) : (
+                                      itemChildren
+                                  )}
+                              </ItemComponent>
+                          </li>
                       ) : null;
                   })}
-        </div>
+        </MenuComponent>
     );
 }
 

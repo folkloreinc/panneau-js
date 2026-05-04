@@ -86,6 +86,7 @@ function Fields({
             isListItem?: boolean;
             siblingFields?: Field[];
             defaultValue?: unknown;
+            className?: string | null;
             groupClassName?: string | null;
             labelClassName?: string | null;
         };

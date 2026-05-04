@@ -1,13 +1,16 @@
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import classNames from 'classnames';
 import { useCallback } from 'react';
+import { useIntl } from 'react-intl';
 
 import type { Feedback } from '@panneau/core';
 import InputGroup from '@panneau/field-input-group';
 
-import useCKEditorBuilds from './hooks/useCKEditorBuilds';
+import useCKEditor from './useCKEditor';
+import useCKEditorTranslations from './useCKEditorTranslations';
 
 import styles from './styles.module.css';
+import 'ckeditor5/ckeditor5.css';
 
 interface HtmlFieldProps {
     feedback?: Feedback;
@@ -82,7 +85,9 @@ function HtmlField({
     ckOptions = null,
     className = null,
 }: HtmlFieldProps) {
-    const { Editor = null, InlineEditor = null } = useCKEditorBuilds() || {};
+    const { locale } = useIntl();
+    const { Editor = null, InlineEditor = null } = useCKEditor() || {};
+    const translations = useCKEditorTranslations(locale);
     const CKValue = value !== null ? value : '';
     const EditorBuild = inline ? InlineEditor : Editor;
 
@@ -119,6 +124,7 @@ function HtmlField({
     };
 
     const finalCkConfig = {
+        translations: [translations],
         ...ckConfig,
         licenseKey:
             (ckConfig != null && typeof ckConfig.licenseKey !== 'undefined'

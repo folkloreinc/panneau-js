@@ -5,6 +5,9 @@ import HtmlField from '../HtmlField';
 export default {
     title: 'Fields/Html',
     component: HtmlField,
+    parameters: {
+        intl: true,
+    },
 };
 
 function Container(props) {
@@ -29,14 +32,4 @@ export const Inline = {
 
 export const Disabled = {
     render: () => <Container disabled />,
-};
-
-export const WithMediaEmbed = {
-    render: () => (
-        <Container
-            type="ck-editor"
-            placeholder="Using CK Editor"
-            ckConfig={{ toolbar: ['mediaEmbed'] }}
-        />
-    ),
 };

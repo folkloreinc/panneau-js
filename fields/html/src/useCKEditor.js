@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-function useCKEditorBuilds() {
+function useCKEditor() {
     const [loaded, setLoaded] = useState(false);
     const ref = useRef(null);
 
@@ -11,8 +11,8 @@ function useCKEditorBuilds() {
                 canceled = true;
             };
         }
-        import('@panneau/ckeditor/build')
-            .then(({ default: Editors }) => {
+        import('@panneau/ckeditor')
+            .then((Editors) => {
                 if (!canceled) {
                     ref.current = Editors;
                     setLoaded(true);
@@ -28,4 +28,4 @@ function useCKEditorBuilds() {
     return ref.current;
 }
 
-export default useCKEditorBuilds;
+export default useCKEditor;

@@ -1,12 +1,14 @@
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
-import { useCallback } from 'react';
+import classNames from 'classnames';
+import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Label } from '@panneau/core';
 import { useFormComponent } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
+import type { FormProps as BaseFormProps } from '@panneau/element-form';
 
-interface FormProps {
+interface FormProps extends BaseFormProps {
     action: string;
     method?: string | null;
     postForm?: ((action: string, data: unknown) => Promise<unknown>) | null;
@@ -19,6 +21,7 @@ interface FormProps {
     onComplete?: ((result: unknown) => void) | null;
     submitButtonLabel?: Label | null;
     useFormProps?: Record<string, unknown> | null;
+    withValidation?: boolean;
     className?: string | null;
 }
 
@@ -36,8 +39,10 @@ function Form({
     submitButtonLabel = null,
     useFormProps = null,
     className = null,
+    withValidation = false,
     ...props
 }: FormProps) {
+    const [wasValidated, setWasValidated] = useState(false);
     const FormComponent = useFormComponent(type);
 
     const defaultPostForm = useCallback(
@@ -54,12 +59,24 @@ function Form({
     const { value, setValue, fields, onSubmit, status, generalError, errors } = useForm({
         action,
         fields: providedFields,
-        postForm: postForm || defaultPostForm,
+        postForm: (act: string, data: unknown) =>
+            (postForm || defaultPostForm)(act, data).then((result) => {
+                setWasValidated(false);
+                return result;
+            }),
         onComplete,
         value: providedValue,
         setValue: parentOnChange,
         ...useFormProps,
     });
+
+    const onFormSubmit = useCallback(
+        (event) => {
+            setWasValidated(true);
+            onSubmit(event);
+        },
+        [onSubmit],
+    );
 
     return (
         <FormComponent
@@ -67,8 +84,13 @@ function Form({
             action={action}
             method="post"
             fields={fields}
-            onSubmit={onSubmit}
-            className={className}
+            onSubmit={withValidation ? onFormSubmit : onSubmit}
+            className={classNames([
+                className,
+                {
+                    'was-validated': wasValidated,
+                },
+            ])}
             status={status}
             generalError={generalError}
             errors={errors}

@@ -7,7 +7,6 @@ import withRoutesProvider from './decorators/withRoutesProvider';
 
 import '../packages/themes/src/styles/vendor.css';
 
-
 export const parameters = {
     viewport: {
         viewports: {

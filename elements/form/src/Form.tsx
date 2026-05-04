@@ -7,7 +7,7 @@ import Button from '@panneau/element-button';
 import Buttons from '@panneau/element-buttons';
 import FormStatus from '@panneau/element-form-status';
 
-interface FormProps {
+export interface FormProps {
     action?: string | null;
     method?: string;
     status?: FormStatusType;

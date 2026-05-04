@@ -28,6 +28,7 @@ interface FormGroupProps {
     labelAfter?: boolean;
     className?: string | null;
     labelClassName?: string | null;
+    helpTextClassName?: string | null;
 }
 
 function FormGroup({
@@ -50,6 +51,7 @@ function FormGroup({
     labelAfter = false,
     className = null,
     labelClassName = null,
+    helpTextClassName = null,
 }: FormGroupProps) {
     const labelBefore = !labelAfter;
     const isColumn = horizontal || inline;
@@ -80,7 +82,7 @@ function FormGroup({
             'rounded border-bottom border-light border-secondary': isCollapsible && collapsed,
             dropup: isCollapsible && !collapsed,
         },
-        labelClassName
+        labelClassName,
     ]);
 
     const innerLabel = isCollapsible ? label || null : label || null;
@@ -110,6 +112,7 @@ function FormGroup({
                     'form-text',
                     'text-muted',
                     { 'card-body': isCard },
+                    helpTextClassName,
                 ])}
             >
                 {helpText}
@@ -156,7 +159,7 @@ function FormGroup({
                     'border-top pt-3 mt-3': isHeading,
                     'list-group-item': isListItem,
                 },
-                className
+                className,
             ])}
         >
             <div
