@@ -1,16 +1,17 @@
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { type Media, Resource } from '@panneau/core';
 import { MediasPickerContainer, MediasResourcePicker } from '@panneau/medias';
 import Dialog from '@panneau/modal-dialog';
 
 interface MediasPickerModalProps {
-    id: string | number;
-    value?: Record<string, unknown> | null;
-    resource?: string | null;
+    id: string;
+    value?: Media | Media[] | null;
+    resource?: Resource | string | null;
     title?: string | null;
     multiple?: boolean;
-    onChange?: ((items: unknown) => void) | null;
+    onChange?: ((items: Media | Media[]) => void) | null;
     onClosed?: (() => void) | null;
     confirmButton?: Record<string, unknown> | null;
     cancelButton?: Record<string, unknown> | null;
@@ -41,7 +42,7 @@ function MediasPickerModal({
     }, [onChange, requestClose, selectedItems]);
 
     const onSelectionChange = useCallback(
-        (items: unknown) => {
+        (items: Media | Media[]) => {
             setSelectedItems(items);
         },
         [setSelectedItems],
@@ -57,7 +58,7 @@ function MediasPickerModal({
 
     return (
         <Dialog
-            id={id || 'picker'}
+            id={id || 'medias-picker'}
             size="xl"
             visible={opened}
             requestClose={requestClose}
@@ -68,7 +69,6 @@ function MediasPickerModal({
                     ? [
                           {
                               id: 'cancel',
-                              name: 'cancel',
                               label: (
                                   <FormattedMessage
                                       defaultMessage="Cancel"
@@ -81,7 +81,6 @@ function MediasPickerModal({
                           },
                           {
                               id: 'confirm',
-                              name: 'confirm',
                               label: (
                                   <FormattedMessage
                                       defaultMessage="Confirm selection"

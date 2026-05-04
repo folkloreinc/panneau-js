@@ -8,7 +8,7 @@ import Buttons from '@panneau/element-buttons';
 import Label from '@panneau/element-label';
 import Modal, { type ModalProps } from '@panneau/element-modal';
 
-interface ModalDialogProps extends ModalProps {
+interface ModalDialogProps extends Omit<ModalProps, 'title'> {
     id: string;
     title?: LabelType | null;
     size?: string | null;
@@ -64,7 +64,6 @@ function ModalDialog({
                             className={classNames([
                                 'btn',
                                 'btn-close',
-                                // 'btn-close-white',
                                 'bg-light',
                                 'position-absolute',
                                 'start-100',

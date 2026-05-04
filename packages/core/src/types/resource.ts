@@ -2,7 +2,7 @@
  * Resource Types
  * TypeScript interfaces for resources, items, users, media, and other entities
  */
-import { Field } from './form';
+import { Field, TableColumn } from './form';
 
 export interface Action {
     id?: string;
@@ -40,11 +40,20 @@ export interface ResourceIntl {
 /**
  * Resource definition
  */
+
+export interface ResourceIndex {
+    filters?: Filter[];
+    columns?: TableColumn[];
+    actions?: ActionDefinition[];
+    fields?: Field[];
+    [key: string]: unknown;
+}
 export interface Resource {
     id: string;
     name: string;
     intl?: ResourceIntl;
     fields?: Field[];
+    index?: ResourceIndex;
     forms?: Record<string, unknown>;
     shows_in_navbar?: boolean;
     settings?: Record<string, unknown>;
@@ -61,7 +70,7 @@ export interface Item {
 /**
  * Media file definition
  */
-export interface Media {
+export interface Media extends Item {
     id: string;
     name: string;
     type: string;

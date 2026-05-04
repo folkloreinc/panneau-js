@@ -5,14 +5,22 @@ import { createContext, use, useMemo } from 'react';
 import { type Media } from '@panneau/core';
 
 export interface MediasApi {
-    get: (...args: unknown[]) => Promise<unknown>;
-    getTrashed: (...args: unknown[]) => Promise<unknown>;
-    create: (...args: unknown[]) => Promise<Media>;
-    find: (...args: unknown[]) => Promise<Media>;
-    update: (...args: unknown[]) => Promise<Media>;
-    trash: (...args: unknown[]) => Promise<unknown>;
-    restore?: (...args: unknown[]) => Promise<unknown>;
-    delete: (...args: unknown[]) => Promise<unknown>;
+    get: (
+        query?: Record<string, unknown>,
+        page?: number | null,
+        count?: number | null,
+    ) => Promise<unknown>;
+    getTrashed: (
+        query?: Record<string, unknown>,
+        page?: number | null,
+        count?: number | null,
+    ) => Promise<unknown>;
+    create: (data: Partial<Media>) => Promise<Media>;
+    find: (id: string) => Promise<Media>;
+    update: (id: string, data: Partial<Media>) => Promise<Media>;
+    trash: (id: string) => Promise<unknown>;
+    restore?: (id: string) => Promise<unknown>;
+    delete: (id: string) => Promise<unknown>;
 }
 
 interface MediasApiProviderProps {

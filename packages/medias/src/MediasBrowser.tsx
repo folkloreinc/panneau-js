@@ -261,7 +261,7 @@ function MediasBrowser({
                           }
                           // Todo remove from mult selection
                       })
-                      .then(reload)
+                      .then(() => reload())
                 : mediaDelete(id)
                       .then(() => {
                           if (!multipleSelection) {
@@ -279,7 +279,7 @@ function MediasBrowser({
                           }
                           // Todo remove from selection
                       })
-                      .then(reload),
+                      .then(() => reload()),
         [
             showTrashed,
             withTrash,
@@ -371,7 +371,6 @@ function MediasBrowser({
             url={baseUrl}
             query={query}
             onClickPage={onClickPage}
-            theme={theme}
             loading={loading && pages !== null}
             selectable={selectable}
             selectedItems={selectedItems}
@@ -564,7 +563,6 @@ function MediasBrowser({
                                         filters={finalFilters}
                                         onChange={onQueryChange}
                                         onClear={onQueryReset}
-                                        theme={theme}
                                     />
                                 ) : null}
                             </div>
@@ -611,7 +609,6 @@ function MediasBrowser({
                     {layout === 'grid' ? (
                         <Grid
                             size="small"
-                            theme={theme}
                             component={MediaCard}
                             componentProps={{
                                 className: 'd-flex w-100',

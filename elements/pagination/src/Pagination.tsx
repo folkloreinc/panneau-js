@@ -27,8 +27,8 @@ interface PaginationProps {
     countLabel?: ReactNode | null;
     alwaysShowButtons?: boolean;
     selectable?: boolean;
-    selectedItems?: Item[] | null;
-    onSelectionChange?: ((items: Item[] | null) => void) | null;
+    selectedItems?: Item | Item[] | null;
+    onSelectionChange?: ((items: Item | Item[] | null) => void) | null;
     multipleSelection?: boolean;
     className?: string | null;
     paginationClassName?: string | null;

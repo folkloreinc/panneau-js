@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import type { FormEvent, ReactNode } from 'react';
+import type { ReactNode, SubmitEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Button as ButtonType, FormStatus as FormStatusType, Label } from '@panneau/core';
@@ -16,20 +16,22 @@ export interface FormProps {
     buttons?: ButtonType[] | null;
     generalError?: string | null;
     buttonSize?: string;
+    cancelButtonLabel?: Label | null;
     submitButtonLabel?: Label | null;
-    onSubmit?: ((e: FormEvent) => void) | null;
+    onSubmit?: ((e: SubmitEvent) => void) | null;
     onCancel?: (() => void) | null;
     onCancelHref?: string | null;
     withoutActions?: boolean;
     withoutStatus?: boolean;
     withoutErrors?: boolean;
+    withoutSubmitButton?: boolean;
+    withoutCancelButton?: boolean;
     withoutButtonGroup?: boolean;
     canSave?: boolean;
     disabled?: boolean;
     className?: string | null;
     actionsClassName?: string | null;
     buttonGroupClassName?: string | null;
-    buttonsClassName?: string | null;
     cancelClassName?: string | null;
 }
 
@@ -43,27 +45,85 @@ function Form({
     generalError = null,
     buttonSize = 'lg',
     withoutButtonGroup = false,
+    cancelButtonLabel = null,
     submitButtonLabel = null,
     onSubmit = null,
     onCancel = null,
     onCancelHref = null,
     withoutActions = false,
     withoutStatus = false,
+    withoutSubmitButton = false,
+    withoutCancelButton = false,
     withoutErrors = false,
     canSave = true,
     disabled = false,
     className = null,
     actionsClassName = null,
     buttonGroupClassName = null,
-    buttonsClassName = null,
     cancelClassName = null,
 }: FormProps) {
+    const finalButtons =
+        buttons !== null ? (
+            <Buttons items={buttons} className={buttonGroupClassName} />
+        ) : (
+            <div
+                className={classNames([
+                    'ms-auto d-flex align-items-center',
+                    {
+                        'btn-group': !withoutButtonGroup,
+                    },
+                    buttonGroupClassName,
+                ])}
+            >
+                {!withoutCancelButton ? (
+                    <Button
+                        type="button"
+                        onClick={onCancel}
+                        href={onCancelHref}
+                        theme="secondary"
+                        size={buttonSize as any}
+                        disabled={status === 'loading'}
+                        className={classNames([
+                            {
+                                'me-2': withoutButtonGroup,
+                            },
+                            cancelClassName,
+                        ])}
+                    >
+                        {cancelButtonLabel || (
+                            <FormattedMessage defaultMessage="Cancel" description="Button label" />
+                        )}
+                    </Button>
+                ) : null}
+                {!withoutSubmitButton ? (
+                    <Button
+                        type="submit"
+                        theme="primary"
+                        size={buttonSize as any}
+                        label={
+                            submitButtonLabel || (
+                                <FormattedMessage
+                                    defaultMessage="Save"
+                                    description="Button label"
+                                />
+                            )
+                        }
+                        // icon={status === 'loading' ? 'loading' : 'check'}
+                        // iconPosition="right"
+                        disabled={!canSave || (status === 'loading' && generalError === null)}
+                        outline={!canSave}
+                        className={classNames({
+                            'ms-auto': actions === null,
+                        })}
+                    />
+                ) : null}
+            </div>
+        );
     return (
         <form
             action={action || undefined}
             method={method}
             onSubmit={onSubmit || undefined}
-            disabled={disabled}
             className={className || undefined}
         >
             {children}
@@ -75,69 +135,10 @@ function Form({
                     />
                 </p>
             ) : null}
-            {((!withoutStatus && status !== null) || !withoutActions) && !disabled ? (
+            {!withoutStatus || !withoutActions ? (
                 <div className={classNames(['mt-4 d-flex align-items-center', actionsClassName])}>
-                    {!withoutStatus && status !== null ? <FormStatus status={status} /> : null}
-                    {!withoutActions ? (
-                        <div
-                            className={classNames([
-                                'ms-auto d-flex align-items-center',
-                                {
-                                    'btn-group': !withoutButtonGroup,
-                                },
-                                buttonGroupClassName,
-                            ])}
-                        >
-                            {actions}
-                            {onCancel !== null || onCancelHref !== null ? (
-                                <Button
-                                    type="button"
-                                    onClick={onCancel}
-                                    href={onCancelHref}
-                                    theme="secondary"
-                                    size={buttonSize as any}
-                                    disabled={status === 'loading'}
-                                    className={classNames([
-                                        {
-                                            'me-2': withoutButtonGroup,
-                                        },
-                                        cancelClassName,
-                                    ])}
-                                >
-                                    <FormattedMessage
-                                        defaultMessage="Cancel"
-                                        description="Button label"
-                                    />
-                                </Button>
-                            ) : null}
-                            {buttons !== null ? (
-                                <Buttons items={buttons} className={buttonsClassName} />
-                            ) : (
-                                <Button
-                                    type="submit"
-                                    theme="primary"
-                                    size={buttonSize as any}
-                                    label={
-                                        submitButtonLabel || (
-                                            <FormattedMessage
-                                                defaultMessage="Save"
-                                                description="Button label"
-                                            />
-                                        )
-                                    }
-                                    // icon={status === 'loading' ? 'loading' : 'check'}
-                                    // iconPosition="right"
-                                    disabled={
-                                        !canSave || (status === 'loading' && generalError === null)
-                                    }
-                                    outline={!canSave}
-                                    className={classNames({
-                                        'ms-auto': actions === null,
-                                    })}
-                                />
-                            )}
-                        </div>
-                    ) : null}
+                    {!withoutStatus ? <FormStatus status={status} /> : null}
+                    {!withoutActions ? actions || finalButtons : null}
                 </div>
             ) : null}
         </form>
