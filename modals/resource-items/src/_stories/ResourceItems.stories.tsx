@@ -6,7 +6,6 @@ import ListsProvider from '@panneau/lists';
 
 import pageResource from '../../../../.storybook/data/page-resource';
 import withApi from '../../../../.storybook/decorators/withApiProvider';
-import { ResourceProvider } from '../../../../packages/core/src/contexts';
 import ResourceItems from '../ResourceItems';
 
 export default {
@@ -23,7 +22,7 @@ function Container({ children }) {
         <ListsProvider>
             <ModalProvider>
                 <Modals />
-                <ResourceProvider resource={pageResource}>{children}</ResourceProvider>
+                {children}
             </ModalProvider>
         </ListsProvider>
     );

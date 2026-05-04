@@ -1,4 +1,3 @@
-import { isObject, isString } from 'lodash';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
@@ -9,7 +8,7 @@ import { useResourceValues } from '@panneau/intl';
 import Dialog from '@panneau/modal-dialog';
 
 interface ModalResourceFormProps {
-    id: string | number;
+    id?: string;
     resource?: Resource | string | null;
     type?: string | null;
     item?: { id?: string } | null;
@@ -50,7 +49,7 @@ function ModalResourceForm({
     );
     return (
         <Dialog
-            id={id}
+            id={id || `resource-form-modal-${resource?.id}`}
             title={
                 !isCreate ? (
                     <FormattedMessage

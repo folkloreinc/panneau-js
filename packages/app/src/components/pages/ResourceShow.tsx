@@ -16,12 +16,12 @@ interface ResourceShowPageProps {
 
 function ResourceShowPage({ resource, itemId }: ResourceShowPageProps) {
     const { name } = resource;
-    const { item, loading, error } = useResourceItem(resource, itemId);
+    const { item, isLoading, error } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
 
     return (
         <ResourceProvider resource={resource}>
-            <MainLayout loading={loading}>
+            <MainLayout loading={isLoading}>
                 {item !== null ? (
                     <ResourceForm
                         resource={resource}
@@ -32,7 +32,7 @@ function ResourceShowPage({ resource, itemId }: ResourceShowPageProps) {
                         withContainer
                     />
                 ) : null}
-                {item === null && loading && !error ? (
+                {item === null && isLoading && !error ? (
                     <Loading className="mw-25 my-4 m-auto" withDelay>
                         <FormattedMessage defaultMessage="Loading" description="Loading label" />
                     </Loading>

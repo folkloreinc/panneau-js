@@ -63,7 +63,7 @@
         "@folklore/fetch": "^0.1.21",
         "@folklore/routes": "^0.2.44",
         "@panneau/core": "^4.0.38",
-        "@tanstack/react-query": "^5.29.2",
+        "@tanstack/react-query": "^5.100.9",
         "lodash": "^4.17.21",
         "query-string": "^9.0.0"
     },

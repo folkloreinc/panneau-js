@@ -2,10 +2,7 @@ import babelParser from '@babel/eslint-parser';
 import eslintReact from '@eslint-react/eslint-plugin';
 import js from '@eslint/js';
 import formatjs from 'eslint-plugin-formatjs';
-import importPlugin from 'eslint-plugin-import';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import reactPlugin from 'eslint-plugin-react';
-import reactHooks from 'eslint-plugin-react-hooks';
 import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -23,9 +20,9 @@ const config = defineConfig(
                 version: '19',
                 defaultVersion: '19',
             },
-            'import/resolver': {
-                typescript: {},
-            },
+            // 'import/resolver': {
+            //     typescript: {},
+            // },
         },
         languageOptions: {
             globals: {
@@ -60,13 +57,8 @@ const config = defineConfig(
     js.configs.recommended,
     tseslint.configs.recommended,
     eslintReact.configs['recommended-typescript'],
-    importPlugin.flatConfigs.typescript,
-    importPlugin.flatConfigs.recommended,
     formatjs.configs.recommended,
-    reactPlugin.configs.flat.recommended,
-    reactPlugin.configs.flat['jsx-runtime'],
     eslintPluginPrettierRecommended,
-    reactHooks.configs.recommended,
     {
         rules: {
             'formatjs/no-literal-string-in-jsx': 'off',

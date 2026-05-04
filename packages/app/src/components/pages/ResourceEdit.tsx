@@ -18,11 +18,11 @@ interface ResourceEditPageProps {
 }
 
 function ResourceEditPage({ itemId, resource }: ResourceEditPageProps) {
-    const { item, loading, error } = useResourceItem(resource, itemId);
+    const { item, isLoading, error } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
     const [editItem, setEditItem] = useState<Item | null>(item);
     const typeName = useResourceTypeName(resource, type);
-    const onSuccess = useCallback((newItem: Item) => setEditItem(newItem), []);
+    const onComplete = useCallback((newItem: Item) => setEditItem(newItem), []);
 
     useEffect(() => {
         setEditItem(item);
@@ -32,13 +32,13 @@ function ResourceEditPage({ itemId, resource }: ResourceEditPageProps) {
 
     return (
         <ResourceProvider resource={resource}>
-            <MainLayout loading={loading}>
+            <MainLayout loading={isLoading}>
                 {editItem !== null ? (
                     <ResourceForm
                         resource={resource}
                         item={editItem}
                         type={type}
-                        onSuccess={onSuccess}
+                        onComplete={onComplete}
                         withContainer
                         header={
                             <PageHeader
@@ -62,7 +62,7 @@ function ResourceEditPage({ itemId, resource }: ResourceEditPageProps) {
                         }
                     />
                 ) : null}
-                {editItem === null && loading && !error ? (
+                {editItem === null && isLoading && !error ? (
                     <Loading className="mw-25 my-4 m-auto" withDelay>
                         <FormattedMessage defaultMessage="Loading" description="Loading label" />
                     </Loading>

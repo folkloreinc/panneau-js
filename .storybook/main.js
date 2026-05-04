@@ -75,6 +75,42 @@ module.exports = {
                             },
                         ],
                     ],
+                    plugins: [
+                        [
+                            require.resolve('babel-plugin-react-compiler'),
+                            {
+                                // compilationMode: 'annotation',
+                                logger: {
+                                    logEvent(filename, event) {
+                                        if (event.kind === 'CompileError') {
+                                            console.error(`\nCompilation failed: ${filename}`);
+                                            console.error(`Reason: ${event.detail.reason}`);
+
+                                            if (event.detail.description) {
+                                                console.error(
+                                                    `Details: ${event.detail.description}`,
+                                                );
+                                            }
+
+                                            if (event.detail.loc) {
+                                                const { line, column } = event.detail.loc.start;
+                                                console.error(
+                                                    `Location: Line ${line}, Column ${column}`,
+                                                );
+                                            }
+
+                                            if (event.detail.suggestions) {
+                                                console.error(
+                                                    'Suggestions:',
+                                                    event.detail.suggestions,
+                                                );
+                                            }
+                                        }
+                                    },
+                                },
+                            },
+                        ],
+                    ],
                 },
             },
         });
@@ -120,15 +156,7 @@ module.exports = {
                 ...config.resolve,
                 alias: {
                     ...config.resolve.alias,
-                    // '@folklore/routes': require.resolve('@folklore/routes'),
-                    // 'wouter': require.resolve('wouter'),
-                    // 'react-intl': require.resolve('react-intl'),
-                    // '@uppy/core/css/style.css': require.resolve('@uppy/core/css/style.css'),
-                    // '@uppy/core': require.resolve('@uppy/core'),
-                    // '@uppy/react': require.resolve('@uppy/react'),
                     ...getPackagesAliases(),
-                    // '@panneau/ckeditor': path.join(__dirname, '../packages/ckeditor/src/index'),
-                    // '@panneau/ckeditor': path.join(__dirname, '../packages/ckeditor/dist/build'),
                     '@panneau/ckeditor/build': path.join(
                         __dirname,
                         '../packages/ckeditor/src/build',
@@ -146,85 +174,9 @@ module.exports = {
                     },
                     {
                         oneOf: [
-                            // {
-                            //     test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-                            //     use: ['raw-loader'],
-                            // },
-                            // {
-                            //     test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
-                            //     use: [
-                            //         {
-                            //             loader: 'style-loader',
-                            //             options: {
-                            //                 injectType: 'singletonStyleTag',
-                            //                 attributes: {
-                            //                     'data-cke': true,
-                            //                 },
-                            //             },
-                            //         },
-                            //         'css-loader',
-                            //         {
-                            //             loader: 'postcss-loader',
-                            //             options: {
-                            //                 postcssOptions: styles.getPostCssConfig({
-                            //                     themeImporter: {
-                            //                         themePath:
-                            //                             require.resolve('@ckeditor/ckeditor5-theme-lark'),
-                            //                     },
-                            //                     minify: true,
-                            //                 }),
-                            //             },
-                            //         },
-                            //     ],
-                            // },
                             {
                                 rules: [
                                     ...config.module.rules,
-
-                                    // ...config.module.rules.map((rule, index) =>
-                                    //     index === 0
-                                    //         ? {
-                                    //               ...rule,
-                                    //               exclude: [rule.exclude, /@ckeditor/],
-                                    //           }
-                                    //         : rule,
-                                    // ),
-                                    // ...getPackagesPaths().map((packagePath) => ({
-                                    //     loader: require.resolve('babel-loader'),
-                                    //     test: /\.(js|jsx|ts|tsx)$/,
-                                    //     include: path.join(packagePath, './src/'),
-                                    //     exclude: /\/node_modules\//,
-                                    //     options: {
-                                    //         babelrc: false,
-                                    //         presets: [
-                                    //             [
-                                    //                 require.resolve('@babel/preset-env'),
-                                    //                 {
-                                    //                     loose: true,
-                                    //                 },
-                                    //             ],
-                                    //         ],
-                                    //         plugins: [
-                                    //             [
-                                    //                 require.resolve('babel-plugin-react-intl'),
-                                    //                 {
-                                    //                     ast: true,
-                                    //                     extractFromFormatMessageCall: true,
-                                    //                     idInterpolationPattern,
-                                    //                 },
-                                    //             ],
-                                    //         ],
-                                    //     },
-                                    // })),
-                                    // {
-                                    //     loader: require.resolve('babel-loader'),
-                                    //     test: /\.(js|jsx|ts|tsx)$/,
-                                    //     include: /\/query-string\//,
-                                    //     options: {
-                                    //         babelrc: false,
-                                    //         plugins: [require.resolve('@babel/plugin-transform-modules-commonjs')],
-                                    //     },
-                                    // },
                                     {
                                         test: /\.(srt)$/,
                                         loader: require.resolve('file-loader'),

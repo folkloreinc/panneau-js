@@ -10,7 +10,7 @@ function LoginPage() {
     const route = useUrlGenerator();
     // Sadly necessary to update cookies and routes correctly from the backend,
     // make it post directly instead of api call
-    const onSuccess = useCallback(() => {
+    const onComplete = useCallback(() => {
         window.location.href = route('home');
     }, [route]);
     return (
@@ -21,7 +21,7 @@ function LoginPage() {
                         <h1 className="mb-4">
                             <FormattedMessage defaultMessage="Login" description="Page title" />
                         </h1>
-                        <LoginForm onSuccess={onSuccess} />
+                        <LoginForm onComplete={onComplete} />
                     </div>
                 </div>
             </div>

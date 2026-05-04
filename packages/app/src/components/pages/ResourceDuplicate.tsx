@@ -21,24 +21,22 @@ interface ResourceDuplicatePageProps {
 function ResourceDuplicatePage({ itemId, resource }: ResourceDuplicatePageProps) {
     const [, navigate] = useLocation();
     const resourceRoute = useResourceUrlGenerator(resource);
-    const { item, loading, error } = useResourceItem(resource, itemId);
+    const { item, isLoading, error } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
     const resourceValues = useResourceValues(resource);
     const typeName = useResourceTypeName(resource, type);
 
-    const onSuccess = useCallback(
-        ({ id = null } = {}) => navigate(`${resourceRoute('edit', { id })}?duplicated=true`),
-        [navigate, resourceRoute],
-    );
+    const onComplete = ({ id = null } = {}) =>
+        navigate(`${resourceRoute('edit', { id })}?duplicated=true`);
 
     return (
         <ResourceProvider resource={resource}>
-            <MainLayout loading={loading}>
+            <MainLayout loading={isLoading}>
                 {item !== null ? (
                     <ResourceForm
                         resource={resource}
                         item={item}
-                        onSuccess={onSuccess}
+                        onComplete={onComplete}
                         isDuplicate
                         withContainer
                         header={
@@ -63,7 +61,7 @@ function ResourceDuplicatePage({ itemId, resource }: ResourceDuplicatePageProps)
                         }
                     />
                 ) : null}
-                {item === null && loading && !error ? (
+                {item === null && isLoading && !error ? (
                     <Loading className="mw-25 my-4 m-auto" withDelay>
                         <FormattedMessage defaultMessage="Loading" description="Loading label" />
                     </Loading>

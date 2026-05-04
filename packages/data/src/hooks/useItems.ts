@@ -1,0 +1,130 @@
+import { getJSON } from '@folklore/fetch';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
+import queryString from 'query-string';
+import { useState } from 'react';
+
+import { Item, Pagination } from '@panneau/core';
+
+// The new, better version
+
+function useItems<T = Item>(
+    scope,
+    {
+        url = null,
+        getItems = null,
+        page: initialPage = null,
+        count: initialCount = null,
+        query = null,
+        queryConfig = null,
+        keepData = true,
+    },
+) {
+    const { page = initialPage, count = initialCount, ...queryWithoutPage } = query || {};
+    const paginated = page !== null;
+
+    const {
+        data = null,
+        refetch: reload,
+        isLoading,
+        isFetching,
+        isRefetching,
+        isFetched,
+        ...otherProps
+    } = useQuery<{ data: T[]; pagination: Pagination; meta?: Pagination } | T[]>({
+        queryKey: [scope, queryWithoutPage, page, count],
+        queryFn: ({ queryKey: key = null }) => {
+            const [, queryParam = null, pageParam = null, countParam = null] = key;
+            return getItems !== null
+                ? getItems(queryParam, pageParam, countParam)
+                : getJSON(
+                      `${url}?${queryString.stringify(
+                          {
+                              ...(isObject(queryParam) ? queryParam : {}),
+                              ...(pageParam !== null ? { page: pageParam } : null),
+                              ...(countParam !== null ? { count: countParam } : null),
+                          },
+                          { arrayFormat: 'bracket' },
+                      )}`,
+                  );
+        },
+        refetchOnMount: 'always',
+        ...(keepData ? { placeholderData: keepPreviousData } : null),
+        // ...(providedItems !== null ? { initialData: providedItems } : null), TODO: beware of this one
+        ...queryConfig,
+    });
+
+    const {
+        data: items = [],
+        pagination = null,
+        meta = null,
+    } = isArray(data) ? { data } : data || {};
+    const {
+        page: currentPage = null,
+        last_page: lastPage = 0,
+        total = null,
+    } = pagination || meta || {};
+
+    // Keep a list of updated items
+    const [updatedItems, setUpdatedItems] = useState([]);
+    const updateItem = (item) => {
+        const { id: itemId = null } = item || {};
+        if (itemId !== null) {
+            setUpdatedItems([
+                ...(updatedItems || []).filter(({ id = null } = {}) => id !== itemId),
+                item,
+            ]);
+        }
+    };
+
+    const replaceUpdatedItems = (currentItems) => {
+        if (currentItems === null || updatedItems === null || updatedItems.length === 0) {
+            return currentItems;
+        }
+        return (currentItems || []).map((item) => {
+            const { id: itemId = null } = item || {};
+            const updated =
+                (updatedItems || []).find(({ id = null } = {}) => id === itemId) || null;
+            if (updated !== null) {
+                return updated;
+            }
+            return item;
+        }, []);
+    };
+
+    const finalItems = replaceUpdatedItems(items);
+
+    // Keep a list of pages, useEffect wont work here because delayed
+    const [pages, setPages] = useState({});
+    if (isFetched && page !== null && data !== null && typeof pages[page] === 'undefined') {
+        setPages({
+            ...pages,
+            [page]: data,
+        });
+    }
+
+    const allItems = pages
+        ? replaceUpdatedItems(Object.keys(pages).flatMap((k) => pages[k]?.data))
+        : finalItems;
+
+    const finalLoading = isLoading || isFetching || isRefetching;
+
+    return {
+        ...otherProps,
+        isLoading,
+        isFetching,
+        isRefetching,
+        isFetched,
+        items: finalItems,
+        pages,
+        allItems,
+        loading: finalLoading,
+        loaded: isFetched,
+        reload,
+        updateItem,
+        pagination: paginated ? { page: currentPage, lastPage, total } : null,
+    };
+}
+
+export default useItems;

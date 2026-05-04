@@ -21,24 +21,24 @@ interface ResourceDeletePageProps {
 function ResourceDeletePage({ itemId, resource }: ResourceDeletePageProps) {
     const [, navigate] = useLocation();
     const resourceRoute = useResourceUrlGenerator(resource);
-    const { item, loading, error } = useResourceItem(resource, itemId);
+    const { item, isLoading, error } = useResourceItem(resource, itemId);
     const { type = null } = item || {};
     const resourceValues = useResourceValues(resource);
     const typeName = useResourceTypeName(resource, type);
 
-    const onSuccess = useCallback(
+    const onComplete = useCallback(
         () => navigate(`${resourceRoute('index')}?deleted=true`),
         [navigate, resourceRoute],
     );
 
     return (
         <ResourceProvider resource={resource}>
-            <MainLayout loading={loading}>
+            <MainLayout loading={isLoading}>
                 {item !== null ? (
                     <ResourceForm
                         resource={resource}
                         item={item}
-                        onSuccess={onSuccess}
+                        onComplete={onComplete}
                         isDelete
                         withContainer
                         header={
@@ -63,7 +63,7 @@ function ResourceDeletePage({ itemId, resource }: ResourceDeletePageProps) {
                         }
                     />
                 ) : null}
-                {item === null && loading && !error ? (
+                {item === null && isLoading && !error ? (
                     <Loading className="mw-25 my-4 m-auto" withDelay>
                         <FormattedMessage defaultMessage="Loading" description="Loading label" />
                     </Loading>

@@ -1,4 +1,5 @@
-import { type ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { type ReactNode, useState } from 'react';
 
 import Api from './lib/Api';
 
@@ -11,10 +12,13 @@ interface DataProviderProps {
 }
 
 function DataProvider({ api = null, apiBaseUrl = undefined, children = null }: DataProviderProps) {
+    const [client] = useState(() => new QueryClient());
     return (
-        <ApiProvider api={api} baseUrl={apiBaseUrl}>
-            {children}
-        </ApiProvider>
+        <QueryClientProvider client={client}>
+            <ApiProvider api={api} baseUrl={apiBaseUrl}>
+                {children}
+            </ApiProvider>
+        </QueryClientProvider>
     );
 }
 

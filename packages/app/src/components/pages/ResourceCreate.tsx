@@ -28,7 +28,7 @@ function ResourceCreatePage({ resource }: ResourceCreatePageProps) {
     const resourceValues = useResourceValues(resource);
     const typeName = useResourceTypeName(resource, type);
 
-    const onSuccess = useCallback(() => {
+    const onComplete = useCallback(() => {
         navigate(`${resourceRoute('index')}?created=true`);
     }, [navigate, resourceRoute]);
 
@@ -38,7 +38,7 @@ function ResourceCreatePage({ resource }: ResourceCreatePageProps) {
                 <ResourceForm
                     resource={resource}
                     type={type}
-                    onSuccess={onSuccess}
+                    onComplete={onComplete}
                     withContainer
                     header={
                         <PageHeader

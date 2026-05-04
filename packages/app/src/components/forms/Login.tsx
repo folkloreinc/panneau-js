@@ -7,10 +7,10 @@ import { getComponentFromName } from '@panneau/core/utils';
 
 interface LoginFormProps {
     className?: string | null;
-    onSuccess?: (() => void) | null;
+    onComplete?: (() => void) | null;
 }
 
-function LoginForm({ className = null, onSuccess = null }: LoginFormProps) {
+function LoginForm({ className = null, onComplete = null }: LoginFormProps) {
     const url = useUrlGenerator();
     const { login } = useAuth();
     const postForm = useCallback(
@@ -24,7 +24,7 @@ function LoginForm({ className = null, onSuccess = null }: LoginFormProps) {
         <FormComponent
             action={url('auth.login')}
             postForm={postForm}
-            onComplete={onSuccess}
+            onComplete={onComplete}
             className={className}
             submitButtonLabel={
                 <FormattedMessage defaultMessage="Log in" description="Button label" />

@@ -132,3 +132,10 @@ export type TrackingVariables = Record<string, unknown>;
  * Trigger update identifier
  */
 export type TriggerUpdate = string;
+
+export interface Pagination {
+    page: number;
+    count: number;
+    total: number;
+    last_page: number;
+}

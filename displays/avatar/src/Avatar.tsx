@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import isString from 'lodash/isString';
 import { type ReactNode, useMemo } from 'react';
 

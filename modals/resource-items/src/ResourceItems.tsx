@@ -1,7 +1,7 @@
-import isObject from 'lodash/isObject';
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { type Resource } from '@panneau/core';
 import { usePanneauResource } from '@panneau/core/contexts';
 import { useQuery } from '@panneau/core/hooks';
 import { useResourceValues } from '@panneau/intl';
@@ -9,8 +9,8 @@ import ResourceItemsList from '@panneau/list-resource-items';
 import Dialog from '@panneau/modal-dialog';
 
 interface ModalResourceItemsProps {
-    id: string | number;
-    resource?: string | null;
+    id?: string;
+    resource?: Resource | string | null;
     title?: string | null;
     query?: Record<string, unknown> | null;
     paginated?: boolean;
@@ -74,8 +74,8 @@ function ModalResourceItems({
     const onSelectionChange = useCallback(
         (newSelectedItems) => {
             console.log({
-                newSelectedItems
-            })
+                newSelectedItems,
+            });
             setSelectedItems(newSelectedItems);
         },
         [setSelectedItems],
@@ -97,7 +97,7 @@ function ModalResourceItems({
 
     return (
         <Dialog
-            id={id}
+            id={id || `resource-items-modal-${resource?.id}`}
             title={
                 title || (
                     <FormattedMessage

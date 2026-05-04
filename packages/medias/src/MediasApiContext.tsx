@@ -2,15 +2,17 @@
 import type { ReactNode } from 'react';
 import { createContext, use, useMemo } from 'react';
 
+import { type Media } from '@panneau/core';
+
 export interface MediasApi {
-    get: (...args: unknown[]) => Promise<unknown> | unknown;
-    getTrashed: (...args: unknown[]) => Promise<unknown> | unknown;
-    create: (...args: unknown[]) => Promise<unknown> | unknown;
-    find: (...args: unknown[]) => Promise<unknown> | unknown;
-    update: (...args: unknown[]) => Promise<unknown> | unknown;
-    trash: (...args: unknown[]) => Promise<unknown> | unknown;
-    restore?: (...args: unknown[]) => Promise<unknown> | unknown;
-    delete: (...args: unknown[]) => Promise<unknown> | unknown;
+    get: (...args: unknown[]) => Promise<unknown>;
+    getTrashed: (...args: unknown[]) => Promise<unknown>;
+    create: (...args: unknown[]) => Promise<Media>;
+    find: (...args: unknown[]) => Promise<Media>;
+    update: (...args: unknown[]) => Promise<Media>;
+    trash: (...args: unknown[]) => Promise<unknown>;
+    restore?: (...args: unknown[]) => Promise<unknown>;
+    delete: (...args: unknown[]) => Promise<unknown>;
 }
 
 interface MediasApiProviderProps {
