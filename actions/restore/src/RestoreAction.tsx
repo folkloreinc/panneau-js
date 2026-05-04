@@ -56,7 +56,7 @@ function RestoreAction({
         setModalOpen(true);
     }, [setModalOpen]);
 
-    const onClose = useCallback(() => {
+    const onClosed = useCallback(() => {
         setModalOpen(false);
     }, [setModalOpen]);
 
@@ -77,9 +77,6 @@ function RestoreAction({
                 .then((response) => {
                     if (onConfirmed !== null) {
                         onConfirmed(response);
-                    }
-                    if (withConfirmation) {
-                        onClose();
                     }
                 })
                 .catch((err: Error) => {
@@ -108,7 +105,7 @@ function RestoreAction({
                         )
                     }
                     onConfirm={onConfirm}
-                    onClose={onClose}
+                    onClosed={onClosed}
                     confirmButton={{
                         label: (
                             <FormattedMessage defaultMessage="Confirm" description="Button label" />

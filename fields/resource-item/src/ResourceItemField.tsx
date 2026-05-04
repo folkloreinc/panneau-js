@@ -15,6 +15,7 @@ import Select from '@panneau/element-select';
 import ResourceForm from '@panneau/form-resource';
 import { useResourceValues } from '@panneau/intl';
 import Dialog from '@panneau/modal-dialog';
+import ModalResourceForm from '@panneau/modal-resource-form';
 import ModalResourceItems from '@panneau/modal-resource-items';
 
 // TODO:
@@ -61,6 +62,7 @@ interface ResourceItemFieldProps {
     canEdit?: boolean;
     canFind?: boolean;
     withoutModal?: boolean;
+    withoutSelect?: boolean;
     createButtonLabel?: Message | null;
     editButtonLabel?: Message | null;
     findButtonLabel?: Message | null;
@@ -96,6 +98,7 @@ function ResourceItemField({
     canEdit = false,
     canFind = false,
     withoutModal = false,
+    withoutSelect = false,
     createButtonLabel = null,
     editButtonLabel = null,
     findButtonLabel = null,
@@ -247,7 +250,7 @@ function ResourceItemField({
         setFormOpen(true);
     }, [setFormOpen]);
 
-    const onCloseForm = useCallback(() => {
+    const onClosedForm = useCallback(() => {
         setFormOpen(false);
     }, [setFormOpen]);
 
@@ -267,10 +270,10 @@ function ResourceItemField({
     );
 
     const onOpenList = useCallback(() => {
-        setListOpen(false); // TODO: fix this, see Upload Field
+        setListOpen(true); // TODO: fix this, see Upload Field
     }, [setListOpen]);
 
-    const onCloseList = useCallback(() => {
+    const onClosedList = useCallback(() => {
         setListOpen(false);
     }, [setListOpen]);
 
@@ -305,16 +308,6 @@ function ResourceItemField({
         }
     }, [onChange, paginated, defaultPage, reload]);
 
-    const form = formOpen ? (
-        <ResourceForm
-            resource={resource}
-            type={finalType}
-            item={!multiple ? value : null}
-            onSuccess={onFormSuccess}
-            isModal
-        />
-    ) : null;
-
     return (
         <div className={classNames(['position-relative', { [className]: className != null }])}>
             {hasValue && !multiple ? (
@@ -331,56 +324,56 @@ function ResourceItemField({
                             itemImagePath={itemImagePath}
                             itemLabelWithId={itemLabelWithId}
                             disable={disabled}
-                            onClickEdit={
-                                canEdit && !multiple ? (formOpen ? onCloseForm : onOpenForm) : null
-                            }
+                            onClickEdit={canEdit && !multiple ? onOpenForm : null}
                             onClickRemove={onClickRemove}
                             editButtonLabel={editButtonLabel}
                         />
                     </div>
                 </div>
             ) : (
-                <div className="row align-items-center">
-                    <div className="col-8 flex-grow-1">
-                        <Select
-                            className={classNames([
-                                'py-1',
-                                'shadow-none',
-                                {
-                                    [disabled]: disabled,
-                                    'is-invalid': errors !== null,
-                                    [inputClassName]: inputClassName !== null,
-                                },
-                            ])}
-                            disabled={disabled}
-                            name={name}
-                            value={finalValue}
-                            options={options}
-                            isClearable
-                            isSearchable
-                            placeholder={
-                                isMessage(placeholder) ? (
-                                    intl.formatMessage(placeholder as Message)
-                                ) : (
-                                    <FormattedMessage
-                                        defaultMessage="Choose an item"
-                                        description="Default placeholder"
-                                    />
-                                )
-                            }
-                            onChange={onValueChange}
-                            onInputChange={onInputChange}
-                            // onFocus={onFocus}
-                            onMenuScrollToBottom={onScrollEnd}
-                            multiple={multiple}
-                        />
-                    </div>
+                <div className="row align-items-center gx-1">
+                    {!withoutSelect ? (
+                        <div className="col-8 flex-grow-1">
+                            <Select
+                                className={classNames([
+                                    'py-1',
+                                    'shadow-none',
+                                    {
+                                        disabled: disabled,
+                                        'is-invalid': errors !== null,
+                                        [inputClassName]: inputClassName !== null,
+                                    },
+                                ])}
+                                disabled={disabled}
+                                name={name}
+                                value={finalValue}
+                                options={options}
+                                isClearable
+                                isSearchable
+                                placeholder={
+                                    isMessage(placeholder) ? (
+                                        intl.formatMessage(placeholder as Message)
+                                    ) : (
+                                        <FormattedMessage
+                                            defaultMessage="Choose an item"
+                                            description="Default placeholder"
+                                        />
+                                    )
+                                }
+                                onChange={onValueChange}
+                                onInputChange={onInputChange}
+                                // onFocus={onFocus}
+                                onMenuScrollToBottom={onScrollEnd}
+                                multiple={multiple}
+                            />
+                        </div>
+                    ) : null}
                     {canFind ? (
                         <div className="col-auto">
                             <Button
-                                theme="primary"
+                                theme="secondary"
                                 icon={findButtonLabel === null ? 'search' : null}
-                                onClick={listOpen ? onCloseList : onOpenList}
+                                onClick={onOpenList}
                                 outline
                             >
                                 {findButtonLabel}
@@ -390,9 +383,9 @@ function ResourceItemField({
                     {canCreate ? (
                         <div className="col-auto">
                             <Button
-                                theme="primary"
+                                theme="secondary"
                                 icon={createButtonLabel === null ? 'plus-lg' : null}
-                                onClick={formOpen ? onCloseForm : onOpenForm}
+                                onClick={onOpenForm}
                                 outline
                             >
                                 {createButtonLabel}
@@ -405,39 +398,21 @@ function ResourceItemField({
                 withoutModal ? (
                     <div className="card mt-4 p-4">{form}</div>
                 ) : (
-                    <Dialog
-                        id={resourceId}
-                        title={
-                            hasValue && !multiple ? (
-                                <FormattedMessage
-                                    values={resourceValues}
-                                    defaultMessage="Edit {a_singular}"
-                                    description="Page title"
-                                />
-                            ) : (
-                                <FormattedMessage
-                                    values={resourceValues}
-                                    defaultMessage="Create {a_singular}"
-                                    description="Page title"
-                                />
-                            )
-                        }
-                        size="lg"
-                        onClose={onCloseForm}
-                    >
-                        {form}
-                    </Dialog>
+                    <ModalResourceForm
+                        resource={resource}
+                        item={!multiple ? value : null}
+                        isCreate
+                        onClosed={onClosedForm}
+                        onComplete={onFormSuccess}
+                    />
                 )
             ) : null}
             {/* Disabled on purpose until fixed */}
             {listOpen ? (
                 <ModalResourceItems
                     resource={resourceId}
-                    onClose={onCloseList}
-                    listProps={{
-                        actions: ['select'],
-                        actionsProps: { onClickSelect: onSelectListItem },
-                    }}
+                    onClosed={onClosedList}
+                    onSelect={onSelectListItem}
                 />
             ) : null}
         </div>

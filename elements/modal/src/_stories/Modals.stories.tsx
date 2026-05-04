@@ -24,33 +24,83 @@ export default {
 };
 
 export const Basic = {
-    render: () => (
-        <ModalElement>
-            <div style={{ width: 300, height: 200, color: 'white', backgroundColor: 'black' }}>
-                My modal
+    render: function () {
+        const [show, setShow] = useState(false);
+        return (
+            <div>
+                <button type="button" className="btn btn-primary" onClick={() => setShow(true)}>
+                    Open modal
+                </button>
+                <ModalElement visible={show}>
+                    <div className="modal-dialog" style={{ width: 300, height: 200 }}>
+                        <div className="modal-content">
+                            <div className="modal-body">
+                                <p>My modal</p>
+                                <button
+                                    type="button"
+                                    className="btn btn-danger"
+                                    onClick={() => setShow(false)}
+                                >
+                                    Close modal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </ModalElement>
             </div>
-        </ModalElement>
-    ),
+        );
+    },
 };
 
-export const WithClose = {
-    render: () => {
-        const [show, setShow] = useState(true);
-        return show ? (
-            <ModalElement onClose={() => setShow(!show)}>
-                <div
-                    style={{
-                        width: 300,
-                        height: 200,
-                        color: 'white',
-                        backgroundColor: 'black',
-                        pointerEvents: 'none',
-                        zIndex: 10000,
-                    }}
-                >
-                    My modal
-                </div>
-            </ModalElement>
-        ) : null;
+export const Multiple = {
+    render: function () {
+        const [show, setShow] = useState(false);
+        const [showSecond, setShowSecond] = useState(false);
+        return (
+            <div>
+                <button type="button" className="btn btn-primary" onClick={() => setShow(true)}>
+                    Open modal 1
+                </button>
+                <ModalElement visible={show} withoutBackdrop>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-body">
+                                <p>My modal</p>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    onClick={() => setShowSecond(true)}
+                                >
+                                    Open modal 2
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-danger"
+                                    onClick={() => setShow(false)}
+                                >
+                                    Close modal 1
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </ModalElement>
+                <ModalElement visible={showSecond}>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-body">
+                                <p>Second modal</p>
+                                <button
+                                    type="button"
+                                    className="btn btn-danger"
+                                    onClick={() => setShowSecond(false)}
+                                >
+                                    Close modal 2
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </ModalElement>
+            </div>
+        );
     },
 };

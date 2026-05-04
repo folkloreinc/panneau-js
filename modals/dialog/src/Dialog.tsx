@@ -6,21 +6,23 @@ import { isMessage } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import Buttons from '@panneau/element-buttons';
 import Label from '@panneau/element-label';
-import Modal from '@panneau/element-modal';
+import Modal, { type ModalProps } from '@panneau/element-modal';
 
-import styles from './styles.module.css';
-
-interface ModalDialogProps {
-    id: string | number;
+interface ModalDialogProps extends ModalProps {
+    id: string;
     title?: LabelType | null;
     size?: string | null;
     header?: ReactNode | null;
     children?: ReactNode | null;
     footer?: ReactNode | null;
     buttons?: ButtonType[] | null;
-    onClose?: (() => void) | null;
     withCloseOutside?: boolean;
+    withoutClose?: boolean;
     className?: string | null;
+    headerClassName?: string | null;
+    bodyClassName?: string | null;
+    footerClassName?: string | null;
+    buttonsClassName?: string | null;
 }
 
 function ModalDialog({
@@ -31,43 +33,45 @@ function ModalDialog({
     children = null,
     buttons = null,
     footer = null,
-    onClose = null,
+    requestClose = null,
+    withoutClose = false,
     withCloseOutside = false,
     className = null,
+    headerClassName = null,
+    bodyClassName = null,
+    footerClassName = null,
+    buttonsClassName = null,
+    ...props
 }: ModalDialogProps) {
-    const onCloseButtonOutside =
-        (header === null && title === null && onClose !== null) ||
-        (withCloseOutside && onClose !== null);
+    const onCloseButtonOutside = (header === null && title === null) || withCloseOutside;
 
     return (
-        <Modal id={id} onClose={onClose}>
+        <Modal id={id} requestClose={requestClose} {...props}>
             <div
                 className={classNames([
                     'modal-dialog',
-                    styles.container,
                     {
                         [`modal-${size}`]: size !== null,
-                        [styles.closeOutside]: onCloseButtonOutside,
                     },
                     className,
                 ])}
                 role="dialog"
             >
                 <div className="modal-content">
-                    {onCloseButtonOutside ? (
+                    {onCloseButtonOutside && !withoutClose ? (
                         <Button
                             type="button"
                             className={classNames([
-                                styles.closeOutsideButton,
                                 'btn',
                                 'btn-close',
-                                'bg-light',
                                 // 'btn-close-white',
-                                'btn-secondary',
-                                'p-2',
+                                'bg-light',
+                                'position-absolute',
+                                'start-100',
+                                'ms-1',
                             ])}
                             aria-label="Close"
-                            onClick={onClose}
+                            onClick={requestClose}
                         />
                     ) : null}
                     {header !== null ? (
@@ -78,6 +82,7 @@ function ModalDialog({
                                 {
                                     'modal-header': title !== null,
                                 },
+                                headerClassName,
                             ])}
                         >
                             {title !== null ? (
@@ -85,22 +90,22 @@ function ModalDialog({
                                     {isMessage(title) ? <Label>{title}</Label> : title}
                                 </h5>
                             ) : null}
-                            {title !== null && onClose !== null ? (
+                            {title !== null && !withoutClose && !onCloseButtonOutside ? (
                                 <Button
                                     type="button"
-                                    className={classNames(['btn-close', 'close'])}
+                                    className="btn-close"
                                     aria-label="Close"
-                                    onClick={onClose}
+                                    onClick={requestClose}
                                 />
                             ) : null}
                         </div>
                     )}
-                    <div className={classNames(['modal-body', styles.body])}>{children}</div>
+                    <div className={classNames(['modal-body', bodyClassName])}>{children}</div>
                     {footer !== null || buttons !== null ? (
-                        <div className={classNames(['modal-footer', styles.footer])}>
+                        <div className={classNames(['modal-footer', footerClassName])}>
                             {footer !== null ? footer : null}
                             {buttons !== null ? (
-                                <Buttons items={buttons} className={styles.buttons} />
+                                <Buttons items={buttons} className={buttonsClassName} />
                             ) : null}
                         </div>
                     ) : null}

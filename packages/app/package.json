@@ -54,7 +54,8 @@
     ],
     "scripts": {
         "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh --types && npm run css:packages",
+        "build": "npm run css:aggregates && ../../scripts/prepare-package.sh --types && npm run css:packages",
+        "css:aggregates": "../../scripts/build-packages-styles.js --pattern='@panneau/element-*' ./src/styles/packages.css.ejs ./src/styles/packages.css",
         "css:packages": "postcss ./src/styles/packages.css -o ./assets/css/packages.css"
     },
     "devDependencies": {

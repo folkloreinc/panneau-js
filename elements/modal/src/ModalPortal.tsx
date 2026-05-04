@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo, useRef } from 'react';
+import { type ReactNode, useEffect, useId, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
 import { useModal } from '@panneau/core/contexts';
@@ -11,7 +11,8 @@ interface ModalPortalProps {
 
 function ModalPortal({ id = null, data = null, children = null }: ModalPortalProps) {
     const { container = null, register = null, unregister = null } = useModal();
-    const finalId = useMemo(() => (id !== null ? id : `modal-${new Date().getTime()}`), [id]);
+    const backupId = useId();
+    const finalId = id || backupId;
     const dataRef = useRef(data);
 
     useEffect(() => {

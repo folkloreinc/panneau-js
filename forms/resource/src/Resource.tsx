@@ -1,7 +1,12 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { Resource } from '@panneau/core';
-import { FormProvider, useFormsComponents, useLocales } from '@panneau/core/contexts';
+import {
+    FormProvider,
+    useFormsComponents,
+    useLocales,
+    usePanneauResource,
+} from '@panneau/core/contexts';
 import { useForm, useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
 import {
@@ -15,12 +20,12 @@ import DeleteForm from './Delete';
 import DuplicateForm from './Duplicate';
 
 interface ResourceFormProps {
-    resource: Resource;
+    resource: Resource | string;
     item?: Record<string, unknown> | null;
     type?: string | null;
     component?: string | null;
     header?: ReactNode | null;
-    onSuccess?: ((result: unknown) => void) | null;
+    onComplete?: ((result: unknown) => void) | null;
     isDelete?: boolean;
     isDuplicate?: boolean;
     isModal?: boolean;
@@ -28,10 +33,10 @@ interface ResourceFormProps {
 }
 
 function ResourceForm({
+    resource: providedResource,
     component = null,
     header = null,
-    resource,
-    onSuccess = null,
+    onComplete = null,
     item = null,
     type = null,
     isDelete = false,
@@ -44,6 +49,7 @@ function ResourceForm({
     const FormComponents = useFormsComponents();
     const { id: itemId = null } = item || {};
 
+    const resource = usePanneauResource(providedResource);
     const { fields: resourceFields = [], types: resourceTypes = [], forms } = resource;
     const resourceType = type !== null ? resourceTypes.find((it) => it.id === type) || null : null;
     const { fields: resourceTypeFields = null } = resourceType || {};
@@ -171,7 +177,7 @@ function ResourceForm({
         value,
         postForm,
         setValue,
-        onComplete: onSuccess,
+        onComplete: onComplete,
         locales,
     });
 

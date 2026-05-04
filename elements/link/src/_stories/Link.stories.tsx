@@ -23,3 +23,11 @@ export const External = {
         </LinkElement>
     ),
 };
+
+export const WithoutStyle = {
+    render: () => (
+        <LinkElement href="/blabla" withoutStyle>
+            {{ id: 'test', defaultMessage: 'Translated Link' }}
+        </LinkElement>
+    ),
+};

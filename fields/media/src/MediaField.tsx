@@ -175,8 +175,8 @@ function MediaField({
     const [modalOpened, setModalOpened] = useState(false);
 
     const openModal = useCallback(() => {
-        setModalOpened(!modalOpened);
-    }, [modalOpened, setModalOpened]);
+        setModalOpened((val) => !val);
+    }, []);
 
     const onClickRemove = useCallback(
         (idx: number) => {
@@ -204,12 +204,8 @@ function MediaField({
     const showResourceModal = withFind && resourceModalOpen;
 
     const toggleResourceModal = useCallback(() => {
-        if (resourceModalOpen) {
-            setResourceModalOpen(false);
-        } else {
-            setResourceModalOpen(true);
-        }
-    }, [resourceModalOpen, setResourceModalOpen, modalKey]);
+        setResourceModalOpen((val) => !val);
+    }, [setResourceModalOpen]);
 
     const [modalItems, setModalItems] = useState<Media[]>([]);
     const closeResourceModal = useCallback(() => {
@@ -243,18 +239,16 @@ function MediaField({
                 // Single value onchange
                 const [finalValue = null] = isArray(newValue) ? newValue : [newValue];
                 onChange(finalValue);
-                setResourceModalOpen(false);
             }
         },
-        [onChange, setResourceModalOpen, modalKey, allowMultipleUploads, modalItems, setModalItems],
+        [onChange, modalKey, allowMultipleUploads, modalItems, setModalItems],
     );
 
     const onConfirmSelection = useCallback(() => {
         if (onChange !== null) {
             onChange(modalItems);
-            setResourceModalOpen(false);
         }
-    }, [onChange, modalItems, setResourceModalOpen, modalKey, allowMultipleUploads]);
+    }, [onChange, modalItems, modalKey, allowMultipleUploads]);
 
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -366,7 +360,7 @@ function MediaField({
                     selectable
                     onChange={onChangeSelection}
                     onConfirm={onConfirmSelection}
-                    onClose={closeResourceModal}
+                    onClosed={closeResourceModal}
                     uppyConfig={uppyFinalProps}
                     // buttons={[
                     //     {

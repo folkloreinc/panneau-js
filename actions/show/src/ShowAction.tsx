@@ -63,7 +63,7 @@ function ShowAction({
         setModalOpen(true);
     }, [setModalOpen]);
 
-    const onClose = useCallback(() => {
+    const onClosed = useCallback(() => {
         setModalOpen(false);
     }, [setModalOpen]);
 
@@ -86,7 +86,7 @@ function ShowAction({
                             <FormattedMessage defaultMessage="Preview" description="Modal title" />
                         )
                     }
-                    onClose={onClose}
+                    onClosed={onClosed}
                     confirmButton={{
                         label: (
                             <FormattedMessage defaultMessage="Confirm" description="Button label" />

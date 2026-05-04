@@ -61,7 +61,7 @@ function DuplicateAction({
         setModalOpen(true);
     }, [setModalOpen]);
 
-    const onClose = useCallback(() => {
+    const onClosed = useCallback(() => {
         setModalOpen(false);
     }, [setModalOpen]);
 
@@ -85,12 +85,11 @@ function DuplicateAction({
                     if (onChange !== null) {
                         onChange(response);
                     }
-                    onClose();
                 })
                 .catch((err: Error) => {
                     setError(err);
                 }),
-        [ids, endpoint, action, onChange, onClose, setError, onConfirmed],
+        [ids, endpoint, action, onChange, setError, onConfirmed],
     );
 
     return (
@@ -116,7 +115,7 @@ function DuplicateAction({
                         )
                     }
                     onConfirm={onConfirm}
-                    onClose={onClose}
+                    onClosed={onClosed}
                     confirmButton={{
                         label: (
                             <FormattedMessage defaultMessage="Confirm" description="Button label" />

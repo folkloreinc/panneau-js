@@ -64,13 +64,12 @@ function EditAction({
         setModalOpen(true);
     }, [setModalOpen]);
 
-    const onClose = useCallback(() => {
+    const onClosed = useCallback(() => {
         setModalOpen(false);
     }, [setModalOpen]);
 
     const onComplete = useCallback(
         (newValue: unknown) => {
-            setModalOpen(false);
             if (onConfirmed !== null) {
                 onConfirmed(newValue);
             }
@@ -115,7 +114,7 @@ function EditAction({
                             />
                         ))
                     }
-                    onClose={onClose}
+                    onClosed={onClosed}
                     onComplete={onComplete}
                     onError={onError}
                     postData={{ ids }}

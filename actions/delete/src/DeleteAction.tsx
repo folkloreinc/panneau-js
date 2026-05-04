@@ -67,7 +67,7 @@ function DeleteAction({
         setModalOpen(true);
     }, [setModalOpen]);
 
-    const onClose = useCallback(() => {
+    const onClosed = useCallback(() => {
         setModalOpen(false);
     }, [setModalOpen]);
 
@@ -91,9 +91,6 @@ function DeleteAction({
                     }
                     if (onChange !== null) {
                         onChange(response);
-                    }
-                    if (withConfirmation) {
-                        onClose();
                     }
                 })
                 .catch((err: Error) => {
@@ -122,7 +119,7 @@ function DeleteAction({
                         )
                     }
                     onConfirm={onConfirm}
-                    onClose={onClose}
+                    onClosed={onClosed}
                     confirmButton={{
                         label: (
                             <FormattedMessage defaultMessage="Confirm" description="Button label" />

@@ -1,5 +1,5 @@
 import isObject from 'lodash/isObject';
-import { type ReactNode, useCallback, useMemo } from 'react';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { usePanneauResource } from '@panneau/core/contexts';
@@ -15,8 +15,13 @@ interface ModalResourceItemsProps {
     query?: Record<string, unknown> | null;
     paginated?: boolean;
     size?: string;
-    onClose?: (() => void) | null;
+    withoutCloseOnSelect?: boolean;
+    onClosed?: (() => void) | null;
+    onSelect?: ((item: unknown) => void) | null;
+    multiple?: boolean;
     listProps?: Record<string, unknown> | null;
+    confirmButton?: Record<string, unknown> | null;
+    cancelButton?: Record<string, unknown> | null;
     className?: string | null;
     children?: ReactNode | null;
 }
@@ -28,15 +33,22 @@ function ModalResourceItems({
     query: initialQuery = null,
     paginated = true,
     size = 'xl',
-    onClose = null,
+    onClosed = null,
+    onSelect = null,
+    multiple = false,
     listProps = null,
+    confirmButton = null,
+    cancelButton = null,
+    withoutCloseOnSelect = false,
     className = null,
     children = null,
     ...props
 }: ModalResourceItemsProps) {
-    const panneauResource = usePanneauResource(providedResource);
-    const resource = isObject(providedResource) ? providedResource : panneauResource;
-
+    const [opened, setOpened] = useState(true);
+    const requestClose = useCallback(() => {
+        setOpened(false);
+    }, [onClosed]);
+    const resource = usePanneauResource(providedResource);
     const resourceValues = useResourceValues(resource);
     const finalQuery = useMemo(() => ({ ...initialQuery }), [initialQuery]);
     const { query, onPageChange, onQueryChange, onQueryReset } = useQuery(finalQuery, paginated);
@@ -57,6 +69,32 @@ function ModalResourceItems({
         [onQueryChange],
     );
 
+    const [selectedItems, setSelectedItems] = useState(null);
+
+    const onSelectionChange = useCallback(
+        (newSelectedItems) => {
+            console.log({
+                newSelectedItems
+            })
+            setSelectedItems(newSelectedItems);
+        },
+        [setSelectedItems],
+    );
+
+    const onClickCancel = useCallback(() => {
+        setSelectedItems(null);
+        requestClose();
+    }, [requestClose]);
+
+    const onClickConfirm = useCallback(() => {
+        if (onSelect !== null) {
+            onSelect(selectedItems);
+        }
+        if (!withoutCloseOnSelect) {
+            requestClose();
+        }
+    }, [multiple, requestClose, withoutCloseOnSelect, onSelect, selectedItems]);
+
     return (
         <Dialog
             id={id}
@@ -70,7 +108,26 @@ function ModalResourceItems({
                 )
             }
             size={size}
-            onClose={onClose}
+            visible={opened}
+            requestClose={requestClose}
+            onClosed={onClosed}
+            buttons={[
+                {
+                    id: 'no',
+                    label: <FormattedMessage defaultMessage="Cancel" description="Button label" />,
+                    theme: 'secondary',
+                    onClick: onClickCancel,
+                    ...cancelButton,
+                },
+                {
+                    id: 'yes',
+                    disabled: selectedItems == null || selectedItems.length === 0,
+                    label: <FormattedMessage defaultMessage="Confirm" description="Button label" />,
+                    theme: 'primary',
+                    onClick: onClickConfirm,
+                    ...confirmButton,
+                },
+            ]}
             className={className}
         >
             <ResourceItemsList
@@ -79,7 +136,10 @@ function ModalResourceItems({
                 onPageChange={finalOnPageChange}
                 onQueryChange={finalOnQueryChange}
                 onQueryReset={onQueryReset}
-                listProps={listProps}
+                selectable
+                selectedItems={selectedItems}
+                onSelectionChange={onSelectionChange}
+                multipleSelection={multiple}
                 {...props}
             />
             {children}

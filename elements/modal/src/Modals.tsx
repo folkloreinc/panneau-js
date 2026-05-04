@@ -1,17 +1,15 @@
 import classNames from 'classnames';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useModal } from '@panneau/core/contexts';
 import { KEYCODES, useKeyboardKeys } from '@panneau/core/hooks';
 
-import styles from './styles.module.css';
-
 interface ModalsProps {
-    theme?: string | null;
+    closeOnEscape?: boolean;
     className?: string | null;
 }
 
-function Modals({ theme = null, className = null }: ModalsProps) {
+function Modals({ closeOnEscape = false, className = null }: ModalsProps) {
     const { modals = null, setContainer = null, closeLastModal = null } = useModal();
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -22,35 +20,62 @@ function Modals({ theme = null, className = null }: ModalsProps) {
         }
     }, [setContainer]);
 
+    const hasModal = modals !== null && modals.length > 0;
+
     useEffect(() => {
-        if (document.body) {
-            if (modals !== null && modals.length > 0) {
-                document.body.className = 'modal-open';
-            } else {
-                document.body.className = '';
-            }
+        if (hasModal) {
+            document.body.classList.add('modal-open');
+        } else {
+            document.body.classList.remove('modal-open');
         }
     }, [modals]);
 
-    useKeyboardKeys({
-        [KEYCODES.ESCAPE]: closeLastModal,
-    });
+    useKeyboardKeys(
+        closeOnEscape
+            ? {
+                  [KEYCODES.ESCAPE]: closeLastModal,
+              }
+            : {},
+    );
+
+    const hasModalWithBackdrop = (modals || []).reduce(
+        (withBackdrop, { withoutBackdrop = false }) => withBackdrop || !withoutBackdrop,
+        false,
+    );
+
+    const [backdropMounted, setBackdropMounted] = useState(hasModalWithBackdrop);
+    const [showBackdrop, setShowBackdrop] = useState(hasModalWithBackdrop);
+    const onTransitionEnd = useCallback(
+        (e) => {
+            if (!hasModalWithBackdrop && e.target === e.currentTarget) {
+                setBackdropMounted(false);
+            }
+        },
+        [hasModalWithBackdrop],
+    );
+
+    useEffect(() => {
+        if (hasModalWithBackdrop) {
+            setBackdropMounted(true);
+            setTimeout(() => {
+                setShowBackdrop(true);
+            }, 1);
+        } else {
+            setShowBackdrop(false);
+        }
+    }, [hasModalWithBackdrop]);
 
     return (
-        <div
-            className={classNames([styles.modalsContainer, className])}
-            data-bs-theme={theme !== null ? theme : undefined}
-            style={{ color: theme === 'dark' ? '#FFF' : undefined }}
-        >
-            <div
-                className={classNames([
-                    styles.modals,
-                    {
-                        [styles.hasModals]: modals !== null && modals.length > 0,
-                    },
-                ])}
-                ref={containerRef}
-            />
+        <div className={classNames(['position-static', className])}>
+            <div ref={containerRef} />
+            {backdropMounted ? (
+                <div
+                    className={classNames('modal-backdrop fade', {
+                        show: showBackdrop,
+                    })}
+                    onTransitionEnd={onTransitionEnd}
+                />
+            ) : null}
         </div>
     );
 }

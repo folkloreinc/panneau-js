@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field } from '@panneau/core';
@@ -12,10 +12,11 @@ interface ModalFormProps {
     fields?: Field[] | null;
     action?: string | null;
     type?: string;
-    item?: { id?: string } | null;
     onComplete?: ((value: unknown) => void) | null;
-    onClose?: (() => void) | null;
+    onCancel?: (() => void) | null;
+    onClosed?: (() => void) | null;
     submitButtonLabel?: ReactNode | null;
+    withoutCloseOnComplete?: boolean;
     className?: string | null;
     children?: ReactNode | null;
 }
@@ -27,14 +28,36 @@ function ModalForm({
     fields = null,
     action = null,
     type = 'normal',
-    item = null,
     onComplete = null,
-    onClose = null,
+    onCancel = null,
+    onClosed = null,
     submitButtonLabel = null,
+    withoutCloseOnComplete = false,
     className = null,
     children = null,
     ...props
 }: ModalFormProps) {
+    const [opened, setOpened] = useState(true);
+    const requestClose = () => {
+        setOpened(false);
+    };
+    const onFormCancel = useCallback(() => {
+        setOpened(false);
+        if (onCancel !== null) {
+            onCancel();
+        }
+    }, [onCancel]);
+    const onFormComplete = useCallback(
+        (value) => {
+            if (!withoutCloseOnComplete) {
+                setOpened(false);
+            }
+            if (onComplete !== null) {
+                onComplete(value);
+            }
+        },
+        [withoutCloseOnComplete, onComplete],
+    );
     return (
         <Dialog
             id={id}
@@ -51,7 +74,9 @@ function ModalForm({
                 ))
             }
             size="lg"
-            onClose={onClose}
+            visible={opened}
+            requestClose={requestClose}
+            onClosed={onClosed}
             className={className}
         >
             {children}
@@ -60,10 +85,9 @@ function ModalForm({
                 fields={fields}
                 action={action}
                 type={type}
-                item={item}
                 buttonSize="md"
-                onComplete={onComplete}
-                onCancel={onClose}
+                onComplete={onFormComplete}
+                onCancel={onFormCancel}
                 submitButtonLabel={submitButtonLabel}
             />
         </Dialog>

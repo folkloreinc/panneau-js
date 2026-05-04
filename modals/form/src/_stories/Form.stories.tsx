@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
 
@@ -13,10 +15,16 @@ export default {
 };
 
 export const Normal = {
-    render: () => (
-        <ModalProvider>
-            <Modals />
-            <Form fields={fields} onClose={() => {}} />
-        </ModalProvider>
-    ),
+    render: function () {
+        const [opened, setOpened] = useState(true);
+        return (
+            <ModalProvider>
+                <Modals />
+                <button type="button" className="btn btn-primary" onClick={() => setOpened(true)}>
+                    Open modal
+                </button>
+                {opened ? <Form fields={fields} onClosed={() => setOpened(false)} /> : null}
+            </ModalProvider>
+        );
+    },
 };

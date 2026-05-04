@@ -1,10 +1,14 @@
 import { useCallback, useState } from 'react';
 
+import { ModalProvider, ResourceProvider } from '@panneau/core/contexts';
+import { Modals } from '@panneau/element-modal';
+import ListsProvider from '@panneau/lists';
+
+import pageResource from '../../../../.storybook/data/page-resource';
 // import { Modals } from '@panneau/element-modal';
 import panneauDefinition from '../../../../.storybook/data/panneau-definition';
 // import pageResource from '../../../../.storybook/data/page-resource';
 import withApi from '../../../../.storybook/decorators/withApiProvider';
-import { ModalProvider, PanneauProvider } from '../../../../packages/core/src/contexts';
 // import { ApiProvider } from '../../../../packages/data/src/contexts/ApiContext';
 import FieldsProvider from '../../../../packages/fields';
 // import IntlProvider from '../../../../packages/intl/src/IntlProvider';
@@ -31,43 +35,46 @@ function Container(props) {
 
     return (
         <ModalProvider>
-            <PanneauProvider definition={panneauDefinition}>
-                <FieldsProvider>
+            <FieldsProvider>
+                <ListsProvider>
+                    <Modals />
                     <ResourceItemField {...props} label="Item" value={value} onChange={onChange} />
-                </FieldsProvider>
-            </PanneauProvider>
+                </ListsProvider>
+            </FieldsProvider>
         </ModalProvider>
     );
 }
 
 export const Normal = {
-    render: () => <Container resource="pages" />,
+    render: () => <Container resource={pageResource} />,
 };
 
 export const Multiple = {
-    render: () => <Container resource="pages" multiple />,
+    render: () => <Container resource={pageResource} multiple />,
 };
 
 export const Disabled = {
-    render: () => <Container resource="pages" disabled />,
+    render: () => <Container resource={pageResource} disabled />,
 };
 
 export const DisabledWithValue = {
-    render: () => <Container resource="pages" value={{ id: '1' }} disabled />,
+    render: () => <Container resource={pageResource} value={{ id: '1' }} disabled />,
 };
 
 export const DisabledWithValues = {
-    render: () => <Container resource="pages" value={[{ id: '1' }, { id: 2 }]} disabled multiple />,
+    render: () => (
+        <Container resource={pageResource} value={[{ id: '1' }, { id: 2 }]} disabled multiple />
+    ),
 };
 
 export const CanCreate = {
-    render: () => <Container resource="pages" canCreate />,
+    render: () => <Container resource={pageResource} canFind canCreate />,
 };
 
 export const CanCreateInPlace = {
-    render: () => <Container resource="pages" canCreate createInPlace />,
+    render: () => <Container resource={pageResource} canCreate createInPlace />,
 };
 
 export const CanCreateMultiple = {
-    render: () => <Container resource="pages" canCreate multiple />,
+    render: () => <Container resource={pageResource} canCreate multiple />,
 };

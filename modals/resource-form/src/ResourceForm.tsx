@@ -1,32 +1,53 @@
+import { isObject, isString } from 'lodash';
+import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Resource } from '@panneau/core';
+import { usePanneauResource } from '@panneau/core/contexts';
 import ResourceForm from '@panneau/form-resource';
 import { useResourceValues } from '@panneau/intl';
 import Dialog from '@panneau/modal-dialog';
 
 interface ModalResourceFormProps {
     id: string | number;
-    resource?: Resource | null;
+    resource?: Resource | string | null;
     type?: string | null;
     item?: { id?: string } | null;
     isCreate?: boolean;
-    onSuccess?: ((value: unknown) => void) | null;
-    onClose?: (() => void) | null;
+    withoutCloseOnComplete?: boolean;
+    onComplete?: ((value: unknown) => void) | null;
+    onClosed?: (() => void) | null;
     className?: string | null;
 }
 
 function ModalResourceForm({
     id,
-    resource = null,
+    resource: providedResource = null,
     type = null,
     item = null,
     isCreate = false,
-    onSuccess = null,
-    onClose = null,
+    onComplete = null,
+    onClosed = null,
+    withoutCloseOnComplete = false,
     className = null,
 }: ModalResourceFormProps) {
+    const [opened, setOpened] = useState(true);
+    const requestClose = useCallback(() => {
+        setOpened(false);
+    }, [onClosed]);
+    const resource = usePanneauResource(providedResource);
     const resourceValues = useResourceValues(resource);
+    const onFormComplete = useCallback(
+        (value) => {
+            if (onComplete !== null) {
+                onComplete(value);
+            }
+            if (!withoutCloseOnComplete) {
+                setOpened(false);
+            }
+        },
+        [withoutCloseOnComplete, onComplete],
+    );
     return (
         <Dialog
             id={id}
@@ -46,14 +67,16 @@ function ModalResourceForm({
                 )
             }
             size="lg"
-            onClose={onClose}
+            visible={opened}
+            requestClose={requestClose}
+            onClosed={onClosed}
             className={className}
         >
             <ResourceForm
                 resource={resource}
                 type={type}
                 item={item}
-                onSuccess={onSuccess}
+                onComplete={onFormComplete}
                 isModal
             />
         </Dialog>

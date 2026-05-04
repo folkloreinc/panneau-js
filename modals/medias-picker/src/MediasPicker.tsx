@@ -11,7 +11,7 @@ interface MediasPickerModalProps {
     title?: string | null;
     multiple?: boolean;
     onChange?: ((items: unknown) => void) | null;
-    onClose?: (() => void) | null;
+    onClosed?: (() => void) | null;
     confirmButton?: Record<string, unknown> | null;
     cancelButton?: Record<string, unknown> | null;
 }
@@ -22,21 +22,23 @@ function MediasPickerModal({
     resource = null,
     title = null,
     onChange = null,
-    onClose = null,
+    onClosed = null,
     confirmButton = null,
     cancelButton = null,
     multiple = false,
     ...props
 }: MediasPickerModalProps) {
+    const [opened, setOpened] = useState(true);
+    const requestClose = useCallback(() => {
+        setOpened(false);
+    }, [onClosed]);
     const [selectedItems, setSelectedItems] = useState(value);
     const onConfirm = useCallback(() => {
         if (onChange !== null) {
             onChange(selectedItems);
         }
-        if (onClose !== null) {
-            onClose();
-        }
-    }, [onChange, onClose, selectedItems]);
+        requestClose();
+    }, [onChange, requestClose, selectedItems]);
 
     const onSelectionChange = useCallback(
         (items: unknown) => {
@@ -57,7 +59,9 @@ function MediasPickerModal({
         <Dialog
             id={id || 'picker'}
             size="xl"
-            onClose={onClose}
+            visible={opened}
+            requestClose={requestClose}
+            onClosed={onClosed}
             title={title}
             buttons={
                 !mediaFormOpen
@@ -72,7 +76,7 @@ function MediasPickerModal({
                                   />
                               ),
                               theme: 'secondary',
-                              onClick: onClose,
+                              onClick: requestClose,
                               ...cancelButton,
                           },
                           {
@@ -98,7 +102,7 @@ function MediasPickerModal({
                     value={selectedItems}
                     resource={resource}
                     onChange={onSelectionChange}
-                    onClose={onClose}
+                    onClose={requestClose}
                     multiple={multiple}
                     onMediaFormOpen={onMediaFormOpen}
                     onMediaFormClose={onMediaFormClose}
@@ -108,7 +112,7 @@ function MediasPickerModal({
                     {...props}
                     value={selectedItems}
                     onChange={onSelectionChange}
-                    onClose={onClose}
+                    onClose={requestClose}
                     multiple={multiple}
                     onMediaFormOpen={onMediaFormOpen}
                     onMediaFormClose={onMediaFormClose}

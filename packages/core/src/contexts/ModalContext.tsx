@@ -1,18 +1,20 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 
-interface ModalData {
+export interface ModalData {
     id: string;
-    onClose?: (() => void) | null;
+    requestClose?: (() => void) | null;
+    withoutBackdrop?: boolean;
     [key: string]: unknown;
 }
 
-interface ModalContextValue {
+export interface ModalContextValue {
     modals: ModalData[];
     container: unknown | null;
     setContainer: (container: unknown) => void;
     register: (id: string, data?: Record<string, unknown> | null) => void;
     unregister: (id?: string | null) => void;
+    closeModal: (id: string) => void;
     closeLastModal: () => void;
     getModalById: (modalId: string) => ModalData | null;
 }
@@ -64,16 +66,21 @@ function ModalProvider({ children, container: initialContainer = null }: ModalPr
         [setModals],
     );
 
-    const closeLastModal = useCallback(() => {
-        const lastModal = modals.pop() || null;
-        if (lastModal !== null) {
-            const { id: lastModalId = null, onClose = null } = lastModal || {};
-            if (onClose !== null) {
-                onClose();
+    const closeModal = useCallback(
+        (id: string) => {
+            const { requestClose = null } = modals.find(({ id: modalId }) => modalId === id) || {};
+            if (requestClose !== null) {
+                requestClose();
             }
-            const newModals = modals.filter(({ id: modalId }) => modalId !== lastModalId);
-            setModals(newModals);
-            modalsRef.current = newModals;
+        },
+        [modals, setModals],
+    );
+
+    const closeLastModal = useCallback(() => {
+        const { requestClose = null } =
+            modals !== null && modals.length > 0 ? modals[modals.length - 1] || {} : {};
+        if (requestClose !== null) {
+            requestClose();
         }
     }, [modals, setModals]);
 
@@ -89,10 +96,20 @@ function ModalProvider({ children, container: initialContainer = null }: ModalPr
             setContainer,
             register,
             unregister,
+            closeModal,
             closeLastModal,
             getModalById,
         }),
-        [modals, container, setContainer, register, unregister, closeLastModal, getModalById],
+        [
+            modals,
+            container,
+            setContainer,
+            register,
+            unregister,
+            closeModal,
+            closeLastModal,
+            getModalById,
+        ],
     );
 
     return <ModalContext value={value}>{children}</ModalContext>;

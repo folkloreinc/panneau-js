@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Dialog from '@panneau/modal-dialog';
@@ -7,7 +7,7 @@ interface ConfirmModalProps {
     id: string | number;
     title?: ReactNode | null;
     onConfirm?: (() => void) | null;
-    onClose?: (() => void) | null;
+    onClosed?: (() => void) | null;
     confirmButton?: {
         label?: string;
     } | null;
@@ -22,18 +22,40 @@ function ConfirmModal({
     id,
     title = null,
     onConfirm = null,
-    onClose = null,
+    onClosed = null,
     confirmButton = null,
     cancelButton = null,
     className = null,
     children = null,
 }: ConfirmModalProps) {
+    const [opened, setOpened] = useState(true);
+    const [confirmed, setConfirmed] = useState(false);
+    const requestClose = () => {
+        setOpened(false);
+    };
+    const onModalClosed = useCallback(() => {
+        if (confirmed && onConfirm !== null) {
+            onConfirm();
+        } else if (!confirmed && onClosed !== null) {
+            onClosed();
+        }
+    }, [confirmed, onConfirm, onClosed]);
+    const onClickCancel = useCallback(() => {
+        setConfirmed(false);
+        setOpened(false);
+    }, []);
+    const onClickConfirm = useCallback(() => {
+        setConfirmed(true);
+        setOpened(false);
+    }, []);
     return (
         <Dialog
             id={id}
             title={title}
             size="lg"
-            onClose={onClose}
+            visible={opened}
+            requestClose={requestClose}
+            onClosed={onModalClosed}
             className={className}
             buttons={[
                 {
@@ -41,7 +63,7 @@ function ConfirmModal({
                     name: 'no',
                     label: <FormattedMessage defaultMessage="No" description="Button label" />,
                     theme: 'secondary',
-                    onClick: onClose,
+                    onClick: onClickCancel,
                     ...cancelButton,
                 },
                 {
@@ -49,7 +71,7 @@ function ConfirmModal({
                     name: 'yes',
                     label: <FormattedMessage defaultMessage="Yes" description="Button label" />,
                     theme: 'primary',
-                    onClick: onConfirm,
+                    onClick: onClickConfirm,
                     ...confirmButton,
                 },
             ]}

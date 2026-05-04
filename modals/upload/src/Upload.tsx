@@ -1,4 +1,5 @@
 import Dashboard from '@uppy/react/dashboard';
+import { useCallback, useState } from 'react';
 
 import Dialog from '@panneau/modal-dialog';
 
@@ -12,7 +13,7 @@ interface UploadModalProps {
     title?: string | null;
     uppy?: uppy | null;
     plugins?: string[];
-    onClose?: (() => void) | null;
+    onClosed?: (() => void) | null;
 }
 
 const DEFAULT_PLUGINS: string[] = [];
@@ -22,11 +23,22 @@ function UploadModal({
     title = null,
     uppy = null,
     plugins = DEFAULT_PLUGINS,
-    onClose = null,
+    onClosed = null,
     ...props
 }: UploadModalProps) {
+    const [opened, setOpened] = useState(true);
+    const requestClose = () => {
+        setOpened(false);
+    };
     return (
-        <Dialog id={id} size="lg" onClose={onClose} title={title}>
+        <Dialog
+            id={id}
+            title={title}
+            size="lg"
+            visible={opened}
+            onClosed={onClosed}
+            requestClose={requestClose}
+        >
             {uppy !== null ? (
                 <Dashboard
                     inline
@@ -36,7 +48,7 @@ function UploadModal({
                     proudlyDisplayPoweredByUppy={false}
                     {...props}
                     uppy={uppy}
-                    onRequestClose={onClose}
+                    onRequestClose={requestClose}
                     plugins={plugins}
                 />
             ) : null}

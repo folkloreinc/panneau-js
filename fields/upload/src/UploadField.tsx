@@ -500,7 +500,7 @@ function UploadField({
                     selectedItems={modalItems}
                     onSelectionChange={onSelectionChange}
                     multipleSelection={allowMultipleUploads}
-                    onClose={closeResourceModal}
+                    onClosed={closeResourceModal}
                 >
                     <div className="d-flex mt-4 justify-content-between">
                         {modalItems !== null && modalItems.length > 0 ? (

@@ -1,55 +1,93 @@
 import classNames from 'classnames';
-import { type ReactNode, useMemo } from 'react';
-
-import { getDisplayName } from '@panneau/core/utils';
+import { type ReactNode, useCallback, useEffect, useId, useMemo, useState } from 'react';
 
 import ModalPortal from './ModalPortal';
 
-import styles from './styles.module.css';
-
-interface ModalProps {
+export interface ModalProps {
     id?: string | null;
     title?: string | null;
-    position?: 'center' | 'top';
-    onClose?: (() => void) | null;
+    visible?: boolean;
+    withoutTransition?: boolean;
+    withoutBackdrop?: boolean;
+    className?: string | null;
     children?: ReactNode | null;
+    requestClose?: (() => void) | null;
+    onClosed?: (() => void) | null;
 }
 
 function Modal({
     id = null,
-    onClose = null,
-    children = null,
-    position = 'center',
+    className = null,
     title = null,
+    visible = true,
+    withoutTransition = false,
+    withoutBackdrop = false,
+    requestClose = null,
+    onClosed = null,
+    children = null,
 }: ModalProps) {
-    const name = getDisplayName(children);
-    const finalId = useMemo(() => id || name || 'Modal', [id, name]);
+    const backupId = useId();
+    const finalId = id || backupId;
     const data = useMemo(
         () => ({
             title,
-            onClose,
+            withoutBackdrop,
+            requestClose: !withoutTransition
+                ? requestClose
+                : () => {
+                      requestClose();
+                      onClosed();
+                  },
         }),
-        [title, onClose],
+        [title, withoutBackdrop, withoutTransition, requestClose, onClosed],
     );
-    return (
+    const [mounted, setMounted] = useState(visible);
+    const [show, setShow] = useState(false);
+    const finalMounted = mounted || (withoutTransition && visible);
+    useEffect(() => {
+        if (visible) {
+            setMounted(true);
+            setTimeout(() => {
+                setShow(true);
+            }, 1);
+        } else {
+            setShow(false);
+        }
+    }, [visible]);
+
+    const onTransitionEnd = useCallback(
+        (e) => {
+            if (e.target === e.currentTarget && !visible) {
+                setMounted(false);
+                if (onClosed !== null) {
+                    onClosed();
+                }
+            }
+        },
+        [visible, onClosed],
+    );
+
+    return finalMounted ? (
         <ModalPortal id={finalId} data={data}>
             <div
                 className={classNames([
-                    styles.modal,
+                    'modal',
+                    'd-block',
                     {
-                        [styles[position]]: position !== null,
+                        fade: !withoutTransition,
+                        show: show || (visible && withoutTransition),
                     },
+                    className,
                 ])}
+                aria-dialog="true"
+                role="dialog"
+                tabIndex={-1}
+                onTransitionEnd={onTransitionEnd}
             >
-                <div
-                    className={classNames(['modal', 'fade', 'show', 'd-block', styles.inner])}
-                    tabIndex={-1}
-                >
-                    {children}
-                </div>
+                {children}
             </div>
         </ModalPortal>
-    );
+    ) : null;
 }
 
 export default Modal;

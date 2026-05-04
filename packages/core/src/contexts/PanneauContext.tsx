@@ -18,9 +18,12 @@ export function usePanneauResources(): Resource[] {
     return resources;
 }
 
-export function usePanneauResource(id: string): Resource | null {
+export function usePanneauResource(id: Resource | string | null): Resource | null {
     const resources = usePanneauResources();
-    return resources.find((it) => it.id === id) || null;
+    if (isObject(id)) {
+        return id;
+    }
+    return id !== null ? resources.find((it) => it.id === id) || null : null;
 }
 
 export function usePanneauColorScheme(): {

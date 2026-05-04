@@ -1,5 +1,8 @@
+import { useState } from 'react';
+
 import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
+import ListsProvider from '@panneau/lists';
 
 import pageResource from '../../../../.storybook/data/page-resource';
 import withApi from '../../../../.storybook/decorators/withApiProvider';
@@ -17,17 +20,27 @@ export default {
 
 function Container({ children }) {
     return (
-        <ModalProvider>
-            <Modals />
-            <ResourceProvider resource={pageResource}>{children}</ResourceProvider>
-        </ModalProvider>
+        <ListsProvider>
+            <ModalProvider>
+                <Modals />
+                <ResourceProvider resource={pageResource}>{children}</ResourceProvider>
+            </ModalProvider>
+        </ListsProvider>
     );
 }
 
 export const Normal = {
-    render: () => (
-        <Container>
-            <ResourceItems resource={pageResource} />
-        </Container>
-    ),
+    render: function () {
+        const [opened, setOpened] = useState(true);
+        return (
+            <Container>
+                <button type="button" className="btn btn-primary" onClick={() => setOpened(true)}>
+                    Open ResourceItems modal
+                </button>
+                {opened ? (
+                    <ResourceItems resource={pageResource} onClosed={() => setOpened(false)} />
+                ) : null}
+            </Container>
+        );
+    },
 };

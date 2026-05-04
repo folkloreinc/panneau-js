@@ -5,8 +5,6 @@ import type { Label as LabelType } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 
-import styles from './styles.module.css';
-
 interface LinkProps {
     href?: string | null;
     external?: boolean;
@@ -34,14 +32,20 @@ function Link({
             <ReactLink
                 href={href}
                 onClick={onClick || undefined}
-                className={classNames([className, { [styles.withoutStyle]: withoutStyle }])}
+                className={classNames([
+                    className,
+                    { 'text-reset text-decoration-none': withoutStyle },
+                ])}
                 {...props}
             >
                 <Label>{children!}</Label>
             </ReactLink>
         ) : (
             <Button
-                className={classNames([className, { [styles.withoutStyle]: withoutStyle }])}
+                className={classNames([
+                    className,
+                    { 'text-reset text-decoration-none': withoutStyle },
+                ])}
                 theme="primary"
                 outline
                 {...props}
@@ -52,7 +56,7 @@ function Link({
         );
     return external ? (
         <a
-            className={classNames([className, { [styles.withoutStyle]: withoutStyle }])}
+            className={classNames([className, { 'text-reset text-decoration-none': withoutStyle }])}
             target={target}
             rel={rel}
             href={href || undefined}
