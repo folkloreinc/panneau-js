@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "4.0.40-alpha.1",
+    "version": "4.0.40-alpha.2",
     "description": "",
     "keywords": [
         "javascript"
@@ -100,7 +100,7 @@
         "@panneau/element-radios": "^4.0.40-alpha.1",
         "@panneau/element-range": "^4.0.40-alpha.1",
         "@panneau/element-resource-card": "^4.0.40-alpha.1",
-        "@panneau/fields": "^4.0.40-alpha.1",
+        "@panneau/fields": "^4.0.40-alpha.2",
         "@panneau/filter-filters": "^4.0.40-alpha.1",
         "@panneau/filters": "^4.0.40-alpha.1",
         "@panneau/form-resource": "^4.0.40-alpha.1",
