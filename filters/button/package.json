@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-button",
-    "version": "4.0.40-alpha.0",
+    "version": "4.0.40-alpha.1",
     "description": "Button filter",
     "keywords": [
         "javascript"
@@ -60,9 +60,9 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.40-alpha.0",
-        "@panneau/element-button": "^4.0.40-alpha.0",
-        "@panneau/themes": "^4.0.40-alpha.0",
+        "@panneau/core": "^4.0.40-alpha.1",
+        "@panneau/element-button": "^4.0.40-alpha.1",
+        "@panneau/themes": "^4.0.40-alpha.1",
         "classnames": "^2.5.1"
     },
     "publishConfig": {
