@@ -104,9 +104,6 @@
     "BAKfhq": {
         "defaultMessage": "W"
     },
-    "BIYKx5": {
-        "defaultMessage": "Preview"
-    },
     "BeKVq6": {
         "defaultMessage": "Upload file"
     },
@@ -335,6 +332,9 @@
     "mQiyAm": {
         "defaultMessage": "Video"
     },
+    "nTqkUi": {
+        "defaultMessage": "The following item will be deleted: {id}. Are you sure you want to continue?"
+    },
     "naie2b": {
         "defaultMessage": "This page doesn't exist"
     },
@@ -379,9 +379,6 @@
     },
     "uN/FYD": {
         "defaultMessage": "No results found"
-    },
-    "ucieFX": {
-        "defaultMessage": "The following items will be modified: {ids}."
     },
     "uds4wJ": {
         "defaultMessage": "Deleted at"

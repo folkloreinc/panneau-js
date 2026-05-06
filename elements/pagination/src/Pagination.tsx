@@ -27,8 +27,8 @@ interface PaginationProps {
     countLabel?: ReactNode | null;
     alwaysShowButtons?: boolean;
     selectable?: boolean;
-    selectedItems?: Item | Item[] | null;
-    onSelectionChange?: ((items: Item | Item[] | null) => void) | null;
+    selectedItems?: Item[] | null;
+    onSelectionChange?: ((items: Item[] | null) => void) | null;
     multipleSelection?: boolean;
     className?: string | null;
     paginationClassName?: string | null;
@@ -126,12 +126,7 @@ function Pagination({
         values: { count: total },
     });
 
-    const selectedCount = useMemo(() => {
-        if (isArray(selectedItems)) {
-            return selectedItems.length;
-        }
-        return selectedItems !== null ? 1 : 0;
-    }, [selectedItems]);
+    const selectedCount = selectedItems?.length ?? 0;
 
     const onClearSelection = useCallback(() => {
         if (onSelectionChange) {

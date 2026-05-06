@@ -11,7 +11,7 @@ interface MediasPickerModalProps {
     resource?: Resource | string | null;
     title?: string | null;
     multiple?: boolean;
-    onChange?: ((items: Media | Media[]) => void) | null;
+    onChange?: ((items: Media[]) => void) | null;
     onClosed?: (() => void) | null;
     confirmButton?: Record<string, unknown> | null;
     cancelButton?: Record<string, unknown> | null;
@@ -42,7 +42,7 @@ function MediasPickerModal({
     }, [onChange, requestClose, selectedItems]);
 
     const onSelectionChange = useCallback(
-        (items: Media | Media[]) => {
+        (items: Media[]) => {
             setSelectedItems(items);
         },
         [setSelectedItems],

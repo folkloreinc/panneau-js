@@ -1,64 +1,57 @@
-import classNames from 'classnames';
-import { type ReactNode, useCallback, useMemo, useState } from 'react';
+import isObject from 'lodash/isObject';
+import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useActionProps } from '@panneau/action-actions';
-import type { ButtonTheme, Field } from '@panneau/core';
-import { useModalsComponentsManager } from '@panneau/core/contexts';
+import type { ActionValue, ButtonTheme } from '@panneau/core';
+import { useModalComponent, useResource } from '@panneau/core/contexts';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 
 interface EditActionProps {
     id: string;
-    title?: ReactNode | null;
-    description?: ReactNode | null;
-    fields?: Field[] | null;
-    endpoint?: string | null;
+    href?: string | null;
     label?: string | null;
-    value?: boolean | null;
+    value?: ActionValue | null;
     icon?: string;
     theme?: ButtonTheme;
     disabled?: boolean;
-    onChange?: ((value: unknown) => void) | null;
-    onConfirmed?: ((value: unknown) => void) | null;
-    valueLabelPath?: string | null;
+    multiple?: boolean;
+    onChange?: ((value: ActionValue) => void) | null;
     modalComponent?: string;
-    withConfirmation?: boolean;
+    withModal?: boolean;
     withDefaultLabel?: boolean;
     className?: string | null;
 }
 
 function EditAction({
     id,
-    title = null,
-    description = null,
-    fields = null,
-    endpoint = null,
+    href: initialHref = null,
     label: initialLabel = null,
     icon = 'pencil',
     value = null,
     theme = 'primary',
     disabled = false,
+    multiple = false,
     onChange = null,
-    onConfirmed = null,
-    valueLabelPath = null,
-    modalComponent = 'form',
-    withConfirmation = false,
+    modalComponent = null,
+    withModal = false,
     withDefaultLabel = false,
     className = null,
     ...props
 }: EditActionProps) {
+    const resource = useResource();
+    const resourceUrl = useResourceUrlGenerator();
+    const finalHref =
+        initialHref || (!multiple && isObject(value) ? resourceUrl('edit', value) : null);
     const label =
         initialLabel ||
         (withDefaultLabel ? (
             <FormattedMessage defaultMessage="Edit" description="Button label" />
         ) : null);
-    const ModalComponents = useModalsComponentsManager();
-    const ModalComponent = ModalComponents.getComponent(modalComponent);
-
+    const ModalComponent = useModalComponent(
+        modalComponent || (resource !== null ? 'resource-form' : 'form'),
+    );
     const [modalOpen, setModalOpen] = useState(false);
-    const [error, setError] = useState<boolean | null>(null);
-
-    const { ids, idLabels, modalKey } = useActionProps(id, value, valueLabelPath);
 
     const onOpen = useCallback(() => {
         setModalOpen(true);
@@ -69,22 +62,13 @@ function EditAction({
     }, [setModalOpen]);
 
     const onComplete = useCallback(
-        (newValue: unknown) => {
-            if (onConfirmed !== null) {
-                onConfirmed(newValue);
-            }
+        (newValue: ActionValue) => {
             if (onChange !== null) {
                 onChange(newValue);
             }
         },
-        [onChange, onConfirmed, setModalOpen],
+        [onChange],
     );
-
-    const onError = useCallback(() => {
-        setError(true);
-    }, [setError]);
-
-    const multipleValues = useMemo(() => value !== null && value.length > 1, [value]);
 
     return (
         <>
@@ -92,17 +76,16 @@ function EditAction({
                 className={className}
                 label={label}
                 icon={icon}
-                onClick={withConfirmation ? onOpen : null}
+                onClick={withModal ? onOpen : null}
                 disabled={disabled}
-                theme={disabled ? 'secondary' : theme}
+                theme={theme}
+                href={!withModal ? finalHref : null}
                 {...props}
             />
             {modalOpen ? (
                 <ModalComponent
-                    id={modalKey}
                     title={
-                        title ||
-                        (multipleValues ? (
+                        multiple ? (
                             <FormattedMessage
                                 defaultMessage="Edit items"
                                 description="Modal title"
@@ -112,31 +95,14 @@ function EditAction({
                                 defaultMessage="Edit item"
                                 description="Modal title"
                             />
-                        ))
+                        )
                     }
+                    resource={resource}
+                    value={value}
                     onClosed={onClosed}
                     onComplete={onComplete}
-                    onError={onError}
-                    postData={{ ids }}
-                    fields={fields}
-                    action={endpoint}
-                >
-                    {description || (
-                        <p>
-                            <FormattedMessage
-                                defaultMessage="The following items will be modified: {ids}."
-                                description="Modal message"
-                                values={{ ids: idLabels }}
-                            />
-                        </p>
-                    )}
-                    {error !== null ? (
-                        <FormattedMessage
-                            defaultMessage="An error has occured."
-                            description="Modal message"
-                        />
-                    ) : null}
-                </ModalComponent>
+                    {...props}
+                />
             ) : null}
         </>
     );

@@ -57,10 +57,7 @@ function ResourceItemsList({
     theme = null,
     className = null,
 }: ResourceItemsListProps) {
-    const panneauResource = usePanneauResource(
-        typeof providedResource === 'string' ? providedResource : null,
-    );
-    const resource = isObject(providedResource) ? providedResource : panneauResource;
+    const resource = usePanneauResource(providedResource);
 
     const {
         id: resourceId = null,
@@ -118,14 +115,12 @@ function ResourceItemsList({
     const onSelectionChange = useCallback(
         (newSelection: Item[]) => {
             setSelectedItems(newSelection);
+            if (parentOnChangeSelection !== null) {
+                parentOnChangeSelection(selectedItems!);
+            }
         },
         [setSelectedItems],
     );
-    useEffect(() => {
-        if (parentOnChangeSelection !== null) {
-            parentOnChangeSelection(selectedItems!);
-        }
-    }, [selectedItems, parentOnChangeSelection]);
 
     const onActionsChange = useCallback(() => {
         if (reload !== null) {
@@ -134,7 +129,11 @@ function ResourceItemsList({
     }, [reload]);
 
     const clearSelectedItems = useCallback(() => {
-        setSelectedItems([]);
+        const newSelectedItems = [];
+        setSelectedItems(newSelectedItems);
+        if (parentOnChangeSelection !== null) {
+            parentOnChangeSelection(newSelectedItems);
+        }
     }, [setSelectedItems]);
 
     const finalActionProps = {

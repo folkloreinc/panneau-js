@@ -10,7 +10,7 @@ module.exports = (api) => {
                     require('@babel/preset-env'),
                     {
                         targets: {
-                            node: 'current',
+                            node: '18',
                         },
                         loose: true,
                     },
@@ -66,21 +66,41 @@ module.exports = (api) => {
         };
     }
     return {
-        presets: api.env('development')
-            ? [
-                  '@babel/preset-react',
-                  [
-                      require('@babel/preset-env'),
-                      {
-                          targets: {
-                              node: 'current',
-                          },
-                      },
-                  ],
-                  // require.resolve('@babel/plugin-proposal-numeric-separator'),
-              ].filter(Boolean)
-            : [],
+        presets: [
+            [
+                require('@babel/preset-env'),
+                {
+                    modules: false,
+                    useBuiltIns: false,
+                    targets: {
+                        node: '18',
+                    },
+                },
+            ],
+            [
+                require('@babel/preset-typescript'),
+                {
+                    allExtensions: true,
+                    isTSX: true,
+                },
+            ],
+            [
+                require('@babel/preset-react'),
+                {
+                    useBuiltIns: true,
+                    runtime: 'automatic',
+                },
+            ],
+        ],
         plugins: [
+            [
+                require.resolve('@babel/plugin-transform-runtime'),
+                {
+                    version: require('@babel/helpers/package.json').version,
+                    helpers: true,
+                    // useESModules: !isAbsolute,
+                },
+            ],
             require.resolve('@babel/plugin-proposal-export-namespace-from'),
             [
                 require.resolve('babel-plugin-static-fs'),
@@ -88,15 +108,14 @@ module.exports = (api) => {
                     target: 'browser', // defaults to node
                 },
             ],
-            require.resolve('@babel/plugin-proposal-numeric-separator'),
-            [require.resolve('@babel/plugin-proposal-private-property-in-object'), { loose: true }],
-            [require.resolve('@babel/plugin-proposal-class-properties'), { loose: true }],
-            [require.resolve('@babel/plugin-proposal-private-methods'), { loose: true }],
+            // require.resolve('@babel/plugin-proposal-numeric-separator'),
+            // [require.resolve('@babel/plugin-proposal-private-property-in-object'), { loose: true }],
+            // [require.resolve('@babel/plugin-proposal-class-properties'), { loose: true }],
+            // [require.resolve('@babel/plugin-proposal-private-methods'), { loose: true }],
             [
-                require.resolve('babel-plugin-react-intl'),
+                require.resolve('babel-plugin-formatjs'),
                 {
-                    ast: true,
-                    extractFromFormatMessageCall: true,
+                    removeDefaultMessage: true,
                     idInterpolationPattern: '[sha512:contenthash:base64:6]',
                 },
             ],

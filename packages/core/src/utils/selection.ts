@@ -1,69 +1,34 @@
-import isArray from 'lodash/isArray';
-import uniqBy from 'lodash/uniqBy';
-
 import type { Item } from '../types';
 
-function filterNullItems<T>(items: T[] | T | null): T[] | T | null {
-    return isArray(items) ? items.filter((it) => it !== null) : items;
-}
-
-function getItemsArray(items: Item | Item[] | null): Item[] {
-    return (items !== null && isArray(items) ? items.filter((it) => it !== null) : [items]).filter(
-        (it): it is Item => it !== null,
-    );
-}
-
-export function selectItem(
-    item: Item,
-    selectedItems: Item | Item[] | null,
-    onSelectionChange: ((value: Item | Item[] | null) => void) | null,
-    multipleSelection: boolean = false,
-): void {
-    const { id: itemId = null } = item || {};
-    const selectedItemsArray = getItemsArray(selectedItems);
-    const oldItem = selectedItemsArray.find(({ id }) => id === itemId) || null;
-
-    let newItems: Item[] = [];
-    if (oldItem === null) {
-        newItems =
-            selectedItems !== null && multipleSelection ? [...selectedItemsArray, item] : [item];
-    } else {
-        newItems = selectedItemsArray.filter(({ id }) => id !== itemId);
-    }
-
-    if (onSelectionChange !== null) {
-        const [firstItem = null] = newItems || [];
-        const value = multipleSelection ? filterNullItems(newItems) : firstItem;
-        onSelectionChange(value);
-    }
-}
-
-export function selectPage(
-    pageSelected: boolean,
+export function toggleSelectedItem(
     items: Item[] | null,
-    selectedItems: Item[] | null,
-    onSelectionChange: ((value: Item[]) => void) | null,
-): void {
-    let nextItems: Item[] = [];
-    if (!pageSelected) {
-        nextItems = uniqBy<Item>(
-            [...(items || []), ...(selectedItems || [])],
-            ({ id = null }: Partial<Item> = {}) => id,
-        );
-    } else {
-        const ids = (items || [])
-            .map(({ id = null }: Partial<Item> = {}) => id)
-            .filter((id): id is string => id !== null);
-        nextItems = uniqBy<Item>(
-            (selectedItems || []).filter((it) => {
-                const { id = null } = it || {};
-                return ids.indexOf(id) === -1;
-            }),
-            ({ id = null }: Partial<Item> = {}) => id,
-        );
+    item: Item,
+    { multiple: multipleSelection = false }: { multiple?: boolean } = {},
+): Item[] | null {
+    const { id: itemId = null } = item || {};
+    const currentItem = (items || []).find(({ id }) => id === itemId) || null;
+
+    if (currentItem !== null) {
+        return items.filter(({ id }) => id !== itemId);
     }
-    const finalNextItems = nextItems;
-    if (onSelectionChange !== null) {
-        onSelectionChange(finalNextItems);
-    }
+
+    return multipleSelection ? [...(items || []), item] : [item];
+}
+
+export function selectItems(items: Item[] | null, itemsToSelect: Item[]): Item[] | null {
+    const newItems = itemsToSelect.filter((item) => {
+        const { id: itemId = null } = item || {};
+        const currentItem = (items || []).find(({ id }) => id === itemId) || null;
+        return currentItem === null;
+    });
+    return newItems.length > 0 ? [...(items || []), ...newItems] : items;
+}
+
+export function unselectItems(items: Item[] | null, itemsToUnselect: Item[]): Item[] | null {
+    const newItems = (items || []).filter((item) => {
+        const { id: itemId = null } = item || {};
+        const currentItem = itemsToUnselect.find(({ id }) => id === itemId) || null;
+        return currentItem === null;
+    });
+    return items !== null && newItems.length !== items.length ? newItems : items;
 }

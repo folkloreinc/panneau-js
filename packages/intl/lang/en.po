@@ -221,12 +221,6 @@ msgctxt "BAKfhq"
 msgid "W"
 msgstr "W"
 
-# Modal title
-#: BIYKx5
-msgctxt "BIYKx5"
-msgid "Preview"
-msgstr "Preview"
-
 # Default upload add button label
 #: BeKVq6
 msgctxt "BeKVq6"
@@ -695,6 +689,12 @@ msgctxt "mQiyAm"
 msgid "Video"
 msgstr "Video"
 
+# Modal message
+#: nTqkUi
+msgctxt "nTqkUi"
+msgid "The following item will be deleted: {id}. Are you sure you want to continue?"
+msgstr "The following item will be deleted: {id}. Are you sure you want to continue?"
+
 # Error page description
 #: naie2b
 msgctxt "naie2b"
@@ -784,12 +784,6 @@ msgstr "Go back to login"
 msgctxt "uN/FYD"
 msgid "No results found"
 msgstr "No results found"
-
-# Modal message
-#: ucieFX
-msgctxt "ucieFX"
-msgid "The following items will be modified: {ids}."
-msgstr "The following items will be modified: {ids}."
 
 # Column label
 #: uds4wJ

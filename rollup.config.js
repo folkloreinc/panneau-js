@@ -75,62 +75,66 @@ export function createConfig({
                 exclude: 'node_modules/**',
                 // rootMode: 'upward',
                 babelHelpers: 'runtime',
-                presets: [
-                    [
-                        require('@babel/preset-typescript'),
-                        {
-                            allExtensions: true,
-                            isTSX: true,
-                        },
-                    ],
-                    [
-                        require('@babel/preset-env'),
-                        isNode
-                            ? {
-                                  modules: false,
-                                  useBuiltIns: false,
-                                  targets: {
-                                      node: '12',
-                                  },
-                              }
-                            : {
-                                  modules: false,
-                                  useBuiltIns: false,
-                              },
-                    ],
-                    [
-                        require('@babel/preset-react'),
-                        {
-                            useBuiltIns: true,
-                            runtime: 'automatic',
-                        },
-                    ],
-                ],
-                plugins: [
-                    [
-                        require.resolve('@babel/plugin-transform-runtime'),
-                        {
-                            version: require('@babel/helpers/package.json').version,
-                            helpers: true,
-                            // useESModules: !isAbsolute,
-                        },
-                    ],
-                    require.resolve('@babel/plugin-proposal-export-namespace-from'),
-                    [
-                        require.resolve('babel-plugin-static-fs'),
-                        {
-                            target: isNode ? 'node' : 'browser', // defaults to node
-                        },
-                    ],
-                    [
-                        require.resolve('babel-plugin-react-intl'),
-                        {
-                            ast: true,
-                            extractFromFormatMessageCall: true,
-                            idInterpolationPattern: '[sha512:contenthash:base64:6]',
-                        },
-                    ],
-                ],
+                configFile: path.resolve(process.cwd(), '../../babel.config.js')
+                // presets: [
+                //     [
+                //         require('@babel/preset-env'),
+                //         isNode
+                //             ? {
+                //                   modules: false,
+                //                   useBuiltIns: false,
+                //                   targets: {
+                //                       node: '18',
+                //                   },
+                //               }
+                //             : {
+                //                   modules: false,
+                //                   useBuiltIns: false,
+                //                   targets: {
+                //                       node: '18',
+                //                   },
+                //               },
+                //     ],
+                //     [
+                //         require('@babel/preset-typescript'),
+                //         {
+                //             allExtensions: true,
+                //             isTSX: true,
+                //         },
+                //     ],
+                //     [
+                //         require('@babel/preset-react'),
+                //         {
+                //             useBuiltIns: true,
+                //             runtime: 'automatic',
+                //         },
+                //     ],
+                // ],
+                // plugins: [
+                //     [
+                //         require.resolve('@babel/plugin-transform-runtime'),
+                //         {
+                //             version: require('@babel/helpers/package.json').version,
+                //             helpers: true,
+                //             // useESModules: !isAbsolute,
+                //         },
+                //     ],
+                //     require.resolve('@babel/plugin-proposal-export-namespace-from'),
+                //     [
+                //         require.resolve('babel-plugin-static-fs'),
+                //         {
+                //             target: isNode ? 'node' : 'browser', // defaults to node
+                //         },
+                //     ],
+                //     [
+                //         require.resolve('babel-plugin-react-intl'),
+                //         {
+                //             ast: true,
+                //             extractFromFormatMessageCall: true,
+                //             idInterpolationPattern: '[sha512:contenthash:base64:6]',
+                //         },
+                //     ],
+                // ],
             }),
             !withoutPostCss &&
                 postcss({

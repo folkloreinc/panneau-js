@@ -16,26 +16,14 @@ export default {
     },
 };
 
-function FieldContainer({ value: initialValue, ...props }) {
+function ActionContainer({ value: initialValue, ...props }) {
     const [value, setValue] = useState(initialValue);
     return (
         <FieldsProvider>
             <ModalsProvider>
                 <ModalProvider>
                     <Modals />
-                    <EditAction
-                        {...props}
-                        value={value}
-                        onChange={setValue}
-                        fields={[
-                            {
-                                type: 'select',
-                                name: 'select-test',
-                                label: 'A Select',
-                                placeholder: 'Select me',
-                            },
-                        ]}
-                    />
+                    <EditAction {...props} value={value} onChange={setValue} />
                 </ModalProvider>
             </ModalsProvider>
         </FieldsProvider>
@@ -44,6 +32,18 @@ function FieldContainer({ value: initialValue, ...props }) {
 
 export const Normal = {
     render: function () {
-        return <FieldContainer label="Edit mee" withConfirmation />;
+        return (
+            <ActionContainer
+                label="Edit me"
+                withModal
+                fields={[
+                    {
+                        name: 'name',
+                        label: 'Name',
+                        type: 'text',
+                    },
+                ]}
+            />
+        );
     },
 };

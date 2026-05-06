@@ -139,10 +139,6 @@
     "defaultMessage": "W",
     "description": "Wednesday letter"
   },
-  "BIYKx5": {
-    "defaultMessage": "Preview",
-    "description": "Modal title"
-  },
   "BeKVq6": {
     "defaultMessage": "Upload file",
     "description": "Default upload add button label"
@@ -447,6 +443,10 @@
     "defaultMessage": "Video",
     "description": "Media type"
   },
+  "nTqkUi": {
+    "defaultMessage": "The following item will be deleted: {id}. Are you sure you want to continue?",
+    "description": "Modal message"
+  },
   "naie2b": {
     "defaultMessage": "This page doesn't exist",
     "description": "Error page description"
@@ -506,10 +506,6 @@
   "uN/FYD": {
     "defaultMessage": "No results found",
     "description": "Empty label"
-  },
-  "ucieFX": {
-    "defaultMessage": "The following items will be modified: {ids}.",
-    "description": "Modal message"
   },
   "uds4wJ": {
     "defaultMessage": "Deleted at",

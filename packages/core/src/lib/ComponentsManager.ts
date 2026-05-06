@@ -1,13 +1,15 @@
+import { ElementType } from 'react';
+
 import { flattenComponents, getComponentFromName } from '../utils';
 
 class ComponentsManager {
-    components: Record<string, unknown>;
+    components: Record<string, ElementType>;
 
-    constructor(components: Record<string, unknown> = {}) {
+    constructor(components: Record<string, ElementType> = {}) {
         this.components = flattenComponents(components);
     }
 
-    addComponent(name: string, component: unknown, namespace: string | null = null): this {
+    addComponent(name: string, component: ElementType, namespace: string | null = null): this {
         return this.addComponents(
             {
                 [name]: component,
@@ -16,7 +18,7 @@ class ComponentsManager {
         );
     }
 
-    addComponents(components: Record<string, unknown>, namespace: string | null = null): this {
+    addComponents(components: Record<string, ElementType>, namespace: string | null = null): this {
         const newComponents =
             namespace !== null
                 ? Object.keys(components).reduce(
@@ -54,23 +56,26 @@ class ComponentsManager {
         return this;
     }
 
-    getComponent(name: string, namespace: string | null = null): unknown {
+    getComponent(name: string, namespace: string | null = null): ElementType | null {
         const components = this.getComponents(namespace);
         return getComponentFromName(name, components);
     }
 
-    getComponents(namespace: string | null = null): Record<string, unknown> | null {
+    getComponents(namespace: string | null = null): Record<string, ElementType> | null {
         return namespace !== null
-            ? Object.keys(this.components || {}).reduce((componentsMap, name) => {
-                  const pattern = new RegExp(`^${namespace}\\.(.*)$`);
-                  const matches = pattern.exec(name);
-                  return matches !== null
-                      ? {
-                            ...componentsMap,
-                            [matches[1]]: this.components[name],
-                        }
-                      : componentsMap;
-              }, null)
+            ? Object.keys(this.components || {}).reduce<Record<string, ElementType> | null>(
+                  (componentsMap, name) => {
+                      const pattern = new RegExp(`^${namespace}\\.(.*)$`);
+                      const matches = pattern.exec(name);
+                      return matches !== null
+                          ? {
+                                ...(componentsMap || {}),
+                                [matches[1]]: this.components[name],
+                            }
+                          : componentsMap;
+                  },
+                  null,
+              )
             : this.components;
     }
 

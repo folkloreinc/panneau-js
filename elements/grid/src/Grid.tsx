@@ -4,7 +4,8 @@ import isArray from 'lodash/isArray';
 import { type ComponentType, type ReactNode, useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { selectItem } from '@panneau/core/utils';
+import { type Item } from '@panneau/core';
+import { selectItem, toggleSelectedItem } from '@panneau/core/utils';
 import Empty from '@panneau/element-empty';
 import Loading from '@panneau/element-loading';
 
@@ -14,10 +15,6 @@ interface GridItem {
     id?: string;
     actionsDisabled?: boolean;
     selectionDisabled?: boolean;
-}
-
-interface SelectedItem {
-    id?: string | null;
 }
 
 interface GridProps {
@@ -31,9 +28,9 @@ interface GridProps {
     empty?: boolean | null;
     emptyLabel?: ReactNode | null;
     selectable?: boolean;
-    selectedItems?: SelectedItem[] | SelectedItem | null;
+    selectedItems?: Item[] | null;
     multipleSelection?: boolean;
-    onSelectionChange?: ((items: SelectedItem[] | SelectedItem | null) => void) | null;
+    onSelectionChange?: ((items: Item[] | null) => void) | null;
     className?: string | null;
 }
 
@@ -59,29 +56,15 @@ function Grid({
 
     const onSelectItem = useCallback(
         (newItem: GridItem | null = null) => {
-            selectItem(
-                newItem as any,
-                selectedItems as any,
-                onSelectionChange as any,
-                multipleSelection,
-            );
+            const newSelectedItems = toggleSelectedItem(newItem as any, selectedItems as any, {
+                multiple: multipleSelection,
+            });
+            if (onSelectionChange !== null) {
+                onSelectionChange(newSelectedItems);
+            }
         },
         [items, selectedItems, onSelectionChange, multipleSelection],
     );
-
-    const finalSelectedItems = useMemo(() => {
-        if (selectedItems === null) {
-            return null;
-        }
-        return isArray(selectedItems) ? selectedItems : [selectedItems];
-    }, [selectedItems]);
-
-    // const onSelectPage = useCallback(
-    //     (pageSelected = false) => {
-    //         selectPage(pageSelected, items, selectedItems, onSelectionChange);
-    //     },
-    //     [items, selectedItems, onSelectionChange],
-    // );
 
     return (
         <div
@@ -98,7 +81,7 @@ function Grid({
                           } = item || {};
                           const itemSelectable = selectionDisabled ? false : selectable;
                           const selected = itemSelectable
-                              ? ((finalSelectedItems || []).find(
+                              ? ((selectedItems || []).find(
                                     ({ id = null }: any = {}) => id === itemId,
                                 ) || null) !== null
                               : false;

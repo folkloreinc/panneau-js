@@ -1,49 +1,83 @@
-import { useCallback, useRef } from 'react';
+import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
 
-import { Item } from '@panneau/core';
+import { Resource, type ResourceItem } from '@panneau/core';
+import { usePanneauResource, useResource } from '@panneau/core/contexts';
 
 import { useApi } from '../contexts/ApiContext';
-import useItems from './useItems';
+import useItems, { UseItemsOptions } from './useItems';
 
-function useResourceItems<T = Item>(
-    resource,
-    query = null,
-    page = null,
-    count = null,
-    opts = null,
+function useResourceItems<T = ResourceItem>();
+function useResourceItems<T = ResourceItem>(resource: Resource | string);
+function useResourceItems<T = ResourceItem>(
+    resource: Resource | string,
+    query: Record<string, unknown> | null,
+);
+function useResourceItems<T = ResourceItem>(
+    resource: Resource | string,
+    query: Record<string, unknown> | null,
+    page: number | null,
+);
+function useResourceItems<T = ResourceItem>(
+    resource: Resource | string,
+    query: Record<string, unknown> | null,
+    page: number | null,
+    count: number | null,
+);
+function useResourceItems<T = ResourceItem>(
+    resource: Resource | string,
+    query: Record<string, unknown> | null,
+    page: number | null,
+    count: number | null,
+    opts: UseItemsOptions<T>,
+);
+function useResourceItems<T = ResourceItem>(query: Record<string, unknown> | null);
+function useResourceItems<T = ResourceItem>(
+    query: Record<string, unknown> | null,
+    page: number | null,
+);
+function useResourceItems<T = ResourceItem>(
+    query: Record<string, unknown> | null,
+    page: number | null,
+    count: number | null,
+);
+function useResourceItems<T = ResourceItem>(
+    query: Record<string, unknown> | null,
+    page: number | null,
+    count: number | null,
+    opts: UseItemsOptions<T>,
+);
+
+function useResourceItems<T = ResourceItem>(
+    resource: Resource | string | Record<string, unknown> | null = null,
+    query: Record<string, unknown> | number | null = null,
+    page: number | null = null,
+    count: number | null | UseItemsOptions<T> = null,
+    opts: UseItemsOptions<T> = null,
 ) {
     const api = useApi();
-
-    const { id = null } = resource || {};
-    const lastResourceRef = useRef(id);
-    const resourceChanging = lastResourceRef.current !== id;
+    const providedResource = usePanneauResource(
+        isString(resource) || isObject(resource) ? (resource as Resource | string) : null,
+    );
+    const firstIsResource = (isString(resource) || isObject(resource)) && providedResource !== null;
+    const contextResource = useResource();
+    const finalResource = providedResource || contextResource;
+    const { id: resourceId = null } = finalResource || {};
+    const finalQuery = (firstIsResource ? query : resource) as Record<string, unknown> | null;
+    const finalPage = (firstIsResource ? page : query) as number | null;
+    const finalCount = (firstIsResource ? count : page) as number | null;
+    const finalOpts = (firstIsResource ? opts : count) as UseItemsOptions<T>;
 
     const getItems = (query, requestedPage = null, count = null) =>
-        api.resources
-            .get(resource, query, requestedPage, count)
-            .then((response) => {
-                const { id: resourceId } = resource || {};
-                lastResourceRef.current = resourceId;
-                return response;
-            })
-            .catch((err) => {
-                const { id: resourceId } = resource || {};
-                lastResourceRef.current = resourceId;
-                throw err;
-            });
+        api.resources.get(finalResource, query, requestedPage, count);
 
-    const { items, ...request } = useItems<T>(id, {
+    return useItems<T>(resourceId, {
         getItems,
-        query,
-        page,
-        count,
-        ...opts,
+        query: finalQuery,
+        page: finalPage,
+        count: finalCount,
+        ...finalOpts,
     });
-
-    return {
-        items: resourceChanging ? null : items,
-        ...request,
-    };
 }
 
 export default useResourceItems;

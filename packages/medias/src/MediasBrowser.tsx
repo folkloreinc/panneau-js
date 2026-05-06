@@ -48,7 +48,6 @@ type ColumnAction =
           [key: string]: unknown;
       };
 type ColumnItem = Record<string, unknown> & { id?: string | null; actions?: ColumnAction[] };
-type SelectionValue = Media | Media[] | null;
 
 interface LayoutItem {
     id: string;
@@ -81,8 +80,8 @@ interface MediasBrowserProps {
     onMediaFormOpen?: (() => void) | null;
     onMediaFormClose?: (() => void) | null;
     selectable?: boolean;
-    selectedItems?: SelectionValue;
-    onSelectionChange?: ((selection: SelectionValue) => void) | null;
+    selectedItems?: Media[] | null;
+    onSelectionChange?: ((items: Media[] | null) => void) | null;
     multipleSelection?: boolean;
     uppyConfig?: Record<string, unknown>;
     withDelete?: boolean;
@@ -247,10 +246,7 @@ function MediasBrowser({
                 ? mediaTrash(id)
                       .then(() => {
                           if (!multipleSelection) {
-                              const selectedId =
-                                  selectedItems !== null && !Array.isArray(selectedItems)
-                                      ? selectedItems.id || null
-                                      : null;
+                              const selectedId = selectedItems?.[0]?.id || null;
                               if (
                                   selectedId !== null &&
                                   selectedId === id &&
@@ -265,10 +261,7 @@ function MediasBrowser({
                 : mediaDelete(id)
                       .then(() => {
                           if (!multipleSelection) {
-                              const selectedId =
-                                  selectedItems !== null && !Array.isArray(selectedItems)
-                                      ? selectedItems.id || null
-                                      : null;
+                              const selectedId = selectedItems?.[0]?.id || null;
                               if (
                                   selectedId !== null &&
                                   selectedId === id &&
@@ -308,7 +301,7 @@ function MediasBrowser({
                     ? (newMedias[0] ?? null)
                     : (newMedias ?? null);
                 onSelectionChange(
-                    multipleSelection && Array.isArray(newMedias) ? newMedias : firstMedia,
+                    multipleSelection && Array.isArray(newMedias) ? newMedias : [firstMedia],
                 );
                 onQueryReset();
                 reload().then(() => {

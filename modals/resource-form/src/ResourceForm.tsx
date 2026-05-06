@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Resource } from '@panneau/core';
+import type { Item, Resource } from '@panneau/core';
 import { usePanneauResource } from '@panneau/core/contexts';
 import ResourceForm from '@panneau/form-resource';
 import { useResourceValues } from '@panneau/intl';
@@ -11,10 +11,10 @@ interface ModalResourceFormProps {
     id?: string;
     resource?: Resource | string | null;
     type?: string | null;
-    item?: { id?: string } | null;
+    item?: Item | null;
     isCreate?: boolean;
     withoutCloseOnComplete?: boolean;
-    onComplete?: ((value: unknown) => void) | null;
+    onComplete?: ((value: Item) => void) | null;
     onClosed?: (() => void) | null;
     className?: string | null;
 }

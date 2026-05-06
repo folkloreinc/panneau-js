@@ -1,63 +1,58 @@
-import classNames from 'classnames';
+import isObject from 'lodash/isObject';
 import { type ReactNode, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useActionProps } from '@panneau/action-actions';
-import type { ButtonTheme } from '@panneau/core';
-import { useModalsComponentsManager } from '@panneau/core/contexts';
+import type { ActionValue, ButtonTheme } from '@panneau/core';
+import { useModalComponent } from '@panneau/core/contexts';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 
 interface ShowActionProps {
     id: string;
-    title?: ReactNode | null;
-    description?: ReactNode | null;
-    endpoint?: string;
-    action?: ((ids: string[]) => Promise<unknown>) | null;
+    href?: string | null;
     label?: string | null;
-    value?: boolean | null;
+    value?: ActionValue;
     icon?: string;
     theme?: ButtonTheme;
     disabled?: boolean;
+    multiple?: boolean;
     onClick?: (() => void) | null;
-    onConfirmed?: ((response: unknown) => void) | null;
     valueLabelPath?: string | null;
     modalComponent?: string;
-    withConfirmation?: boolean;
+    withModal?: boolean;
     withDefaultLabel?: boolean;
     className?: string | null;
 }
 
 function ShowAction({
     id,
-    title = null,
-    description: _description = null,
-    endpoint: _endpoint = '/show',
-    action: _action = null,
     label: initialLabel = null,
+    href: initialHref = null,
     icon = 'eye',
     value = null,
-    theme = 'infor',
+    theme = 'info',
     disabled = false,
+    multiple = false,
     onClick = null,
-    onConfirmed: _onConfirmed = null,
     valueLabelPath = null,
     modalComponent = 'dialog',
-    withConfirmation = false,
+    withModal = false,
     withDefaultLabel = false,
     className = null,
     ...props
 }: ShowActionProps) {
+    const resourceUrl = useResourceUrlGenerator();
+    const finalHref =
+        initialHref || (!multiple && isObject(value) ? resourceUrl('show', value) : null);
     const label =
         initialLabel ||
         (withDefaultLabel ? (
             <FormattedMessage defaultMessage="Show" description="Button label" />
         ) : null);
 
-    const ModalComponents = useModalsComponentsManager();
-    const ModalComponent = ModalComponents.getComponent(modalComponent);
+    const ModalComponent = useModalComponent(modalComponent);
 
     const [modalOpen, setModalOpen] = useState(false);
-    const { modalKey } = useActionProps(id, value, valueLabelPath);
 
     const onOpen = useCallback(() => {
         setModalOpen(true);
@@ -73,34 +68,14 @@ function ShowAction({
                 className={className}
                 label={label}
                 icon={icon}
-                onClick={withConfirmation ? onOpen : onClick}
+                onClick={withModal && ModalComponent !== null ? onOpen : onClick}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
+                href={finalHref}
                 {...props}
             />
             {modalOpen ? (
-                <ModalComponent
-                    id={modalKey}
-                    title={
-                        title || (
-                            <FormattedMessage defaultMessage="Preview" description="Modal title" />
-                        )
-                    }
-                    onClosed={onClosed}
-                    confirmButton={{
-                        label: (
-                            <FormattedMessage defaultMessage="Confirm" description="Button label" />
-                        ),
-                        theme: 'danger',
-                    }}
-                    cancelButton={{
-                        label: (
-                            <FormattedMessage defaultMessage="Cancel" description="Button label" />
-                        ),
-                    }}
-                >
-                    Show Something
-                </ModalComponent>
+                <ModalComponent id={`${id}-modal`} value={value} onClosed={onClosed} {...props} />
             ) : null}
         </>
     );

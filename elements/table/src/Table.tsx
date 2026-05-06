@@ -10,7 +10,14 @@ import { FormattedMessage } from 'react-intl';
 
 import type { Field, Item, Label, TableColumn } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
-import { getComponentFromName, selectItem, selectPage } from '@panneau/core/utils';
+import {
+    getComponentFromName,
+    selectItem,
+    selectItems,
+    selectPage,
+    toggleSelectedItem,
+    unselectItems,
+} from '@panneau/core/utils';
 import Empty from '@panneau/element-empty';
 import Loading from '@panneau/element-loading';
 
@@ -35,8 +42,8 @@ interface TableProps {
     withFadedId?: boolean;
     displayPlaceholder?: ReactNode | string | null;
     selectable?: boolean;
-    selectedItems?: Item[] | Item | null;
-    onSelectionChange?: ((items: Item[] | Item | null) => void) | null;
+    selectedItems?: Item[] | null;
+    onSelectionChange?: ((items: Item[] | null) => void) | null;
     multipleSelection?: boolean;
     withCustomActionsColumn?: boolean;
     withoutLoading?: boolean;
@@ -88,28 +95,26 @@ function Table({
     const withActionsColumn = withCustomActionsColumn && Actions !== null;
     const withIdColumn = !withoutId && !hasIdColumn && !selectable;
 
-    const finalSelectedItems = useMemo(() => {
-        if (selectedItems === null) {
-            return null;
-        }
-        return isArray(selectedItems) ? selectedItems : [selectedItems];
-    }, [selectedItems]);
-
     const onSelectItem = useCallback(
         (newItem: Item | null = null) => {
-            selectItem(
-                newItem as any,
-                selectedItems as any,
-                onSelectionChange as any,
-                multipleSelection,
-            );
+            const newSelectedItems = toggleSelectedItem(selectedItems, newItem, {
+                multiple: multipleSelection,
+            });
+            if (newSelectedItems !== selectedItems && onSelectionChange !== null) {
+                onSelectionChange(newSelectedItems);
+            }
         },
         [items, selectedItems, onSelectionChange, multipleSelection],
     );
 
     const onSelectPage = useCallback(
         (pageSelected = false) => {
-            selectPage(pageSelected, items, selectedItems as any, onSelectionChange as any);
+            const newSelectedItems = pageSelected
+                ? selectItems(selectedItems, items)
+                : unselectItems(selectedItems, items);
+            if (newSelectedItems !== selectedItems && onSelectionChange !== null) {
+                onSelectionChange(newSelectedItems);
+            }
         },
         [items, selectedItems, onSelectionChange],
     );
@@ -119,7 +124,7 @@ function Table({
             items === null ||
             items.length === 0 ||
             selectedItems === null ||
-            (selectedItems as any).length === 0 ||
+            selectedItems.length === 0 ||
             !multipleSelection
         ) {
             return false;
@@ -130,12 +135,12 @@ function Table({
             return false;
         }
         const currentPageItems =
-            ((finalSelectedItems as any) || []).filter((it: any) => {
+            (selectedItems || []).filter((it: any) => {
                 const { id = null } = it || {};
                 return (ids || []).indexOf(id) !== -1;
             }) || [];
         return currentPageItems.length > 0 && currentPageItems.length === (items || []).length;
-    }, [selectedItems, items, multipleSelection, finalSelectedItems]);
+    }, [selectedItems, items, multipleSelection, selectedItems]);
 
     return (
         <div>
@@ -228,7 +233,7 @@ function Table({
 
                             const checked =
                                 selectable && !selectionDisabled
-                                    ? ((finalSelectedItems || []).find(
+                                    ? ((selectedItems || []).find(
                                           ({ id: itemId = null }: any = {}) => id === itemId,
                                       ) || null) !== null
                                     : false;

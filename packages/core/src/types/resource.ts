@@ -67,6 +67,10 @@ export interface Item {
     [key: string]: unknown;
 }
 
+export interface ResourceItem extends Item {
+    type?: string;
+}
+
 /**
  * Media file definition
  */

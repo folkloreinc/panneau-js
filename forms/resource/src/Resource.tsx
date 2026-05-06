@@ -102,7 +102,7 @@ function ResourceForm({
         resource,
         item !== null ? itemId : null,
     );
-    const { destroy, loading: destroying } = useResourceDestroy(
+    const { destroyAsync, loading: destroying } = useResourceDestroy(
         resource,
         item !== null ? itemId : null,
     );
@@ -113,7 +113,7 @@ function ResourceForm({
     const postForm = useCallback(
         (action: string, data: unknown) => {
             if (isDelete) {
-                return destroy();
+                return destroyAsync();
             }
             if (isDuplicate) {
                 return clone();
@@ -123,7 +123,7 @@ function ResourceForm({
             }
             return update(data);
         },
-        [itemId, isCreate, isDelete, isDuplicate, destroy, clone, store, update],
+        [itemId, isCreate, isDelete, isDuplicate, destroyAsync, clone, store, update],
     );
 
     // Form state

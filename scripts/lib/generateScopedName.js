@@ -1,9 +1,7 @@
-const pkgUp = require('pkg-up');
-const path = require('path');
-const fs = require('fs');
-const slugify = require('slugify');
-
-const pkgUpSync = pkgUp.pkgUpSync || pkgUp.sync;
+import { pkgUpSync } from 'pkg-up';
+import path from 'path';
+import fs from 'fs';
+import slugify from 'slugify';
 
 function generateScopedName(localName, filePath) {
     if (!filePath.match(/\.module\.css$/)) {
@@ -40,4 +38,4 @@ function generateScopedName(localName, filePath) {
         .replace(/\[\s*local\s*\]/gi, localName);
 }
 
-module.exports = generateScopedName;
+export default generateScopedName;

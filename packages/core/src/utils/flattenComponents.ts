@@ -1,27 +1,27 @@
-import type { ComponentType } from 'react';
-import ReactIs from 'react-is';
+import type { ElementType } from 'react';
+import { isValidElementType } from 'react-is';
 
-type ComponentMap = Record<string, ComponentType<unknown> | ComponentMap>;
+type ComponentMap = Record<string, ElementType | Record<string, unknown>>;
 
 function flattenComponents(
     components: ComponentMap | null,
     prefix: string | null = null,
-): Record<string, ComponentType<unknown>> | null {
+): Record<string, ElementType> | null {
     if (components === null) {
         return null;
     }
     return Object.keys(components).reduce(
         (newMap, key) =>
-            ReactIs.isValidElementType(components[key])
+            isValidElementType(components[key])
                 ? {
                       ...newMap,
-                      [prefix !== null ? `${prefix}.${key}` : key]: components[key],
+                      [prefix !== null ? `${prefix}.${key}` : key]: components[key] as ElementType,
                   }
                 : {
                       ...newMap,
                       ...flattenComponents(components[key] as ComponentMap, key),
                   },
-        {} as Record<string, ComponentType<unknown>>,
+        {} as Record<string, ElementType>,
     );
 }
 

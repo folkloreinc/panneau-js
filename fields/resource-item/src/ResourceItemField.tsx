@@ -5,7 +5,7 @@ import uniqBy from 'lodash/uniqBy';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import type { FormError, Message } from '@panneau/core';
+import type { FormError, Item, Message, SelectOption } from '@panneau/core';
 import { usePanneauResource } from '@panneau/core/contexts';
 import { getPathValue, isMessage } from '@panneau/core/utils';
 import { useResourceItems } from '@panneau/data';
@@ -17,21 +17,6 @@ import { useResourceValues } from '@panneau/intl';
 import Dialog from '@panneau/modal-dialog';
 import ModalResourceForm from '@panneau/modal-resource-form';
 import ModalResourceItems from '@panneau/modal-resource-items';
-
-// TODO:
-// Improve the modals (esc key) and switch to FormModal
-// Fix the ModalResourceItems usage so it can select an item properly
-
-interface Item {
-    id?: string | number | null;
-    type?: string;
-    [key: string]: unknown;
-}
-
-interface SelectOption {
-    value: string | number;
-    label: string;
-}
 
 interface ResourceItemFieldProps {
     name?: string | null;
@@ -152,7 +137,6 @@ function ResourceItemField({
         };
     }, [inputTextValue, setQueryTextValue]);
 
-    const queryResource = useMemo(() => ({ id: resourceId }), [resourceId]);
     const finalQuery = useMemo(
         () => ({
             ...query,
@@ -167,7 +151,7 @@ function ResourceItemField({
         reload = null,
         pagination = null,
     } = useResourceItems(
-        queryResource,
+        resource,
         finalQuery,
         paginated ? page : null,
         paginated ? count : null,
@@ -278,9 +262,9 @@ function ResourceItemField({
     }, [setListOpen]);
 
     const onSelectListItem = useCallback(
-        (newValue: Item) => {
+        (newValue: Item[] | null) => {
             if (onChange !== null) {
-                onChange(newValue);
+                onChange(isArray(newValue) && !multiple ? newValue?.[0] || null : newValue);
                 setListOpen(false);
             }
         },

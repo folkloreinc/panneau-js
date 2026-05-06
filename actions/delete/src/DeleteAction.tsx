@@ -1,10 +1,13 @@
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
 import { type ReactNode, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useActionProps } from '@panneau/action-actions';
-import type { ButtonTheme } from '@panneau/core';
-import { useModalsComponentsManager } from '@panneau/core/contexts';
+import type { ActionValue, ButtonTheme } from '@panneau/core';
+import { useModalComponent, useResource } from '@panneau/core/contexts';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import { useResourceDestroy } from '@panneau/data';
 import Button from '@panneau/element-button';
 
 interface DeleteActionProps {
@@ -12,15 +15,17 @@ interface DeleteActionProps {
     title?: ReactNode | null;
     description?: ReactNode | null;
     endpoint?: string;
-    action?: ((ids: string[]) => Promise<unknown>) | null;
+    endpointIdsParamName?: string;
+    action?: ((value: ActionValue) => Promise<unknown>) | null;
     label?: string | ReactNode | null;
-    value?: boolean | null;
+    href?: string | null;
+    value?: ActionValue | null;
     icon?: string;
     theme?: ButtonTheme;
+    multiple?: boolean;
     disabled?: boolean;
     onClick?: (() => void) | null;
-    onChange?: ((response: unknown) => void) | null;
-    onConfirmed?: ((response: unknown) => void) | null;
+    onChange?: ((response: ActionValue) => void) | null;
     valueLabelPath?: string | null;
     modalComponent?: string;
     withConfirmation?: boolean;
@@ -32,16 +37,18 @@ function DeleteAction({
     id,
     title = null,
     description = null,
-    endpoint = '/delete',
+    endpoint = null,
+    endpointIdsParamName = 'ids',
     action = null,
     label: initialLabel = null,
+    href: initialHref = null,
     icon = 'trash',
     value = null,
     theme = 'primary',
+    multiple = false,
     disabled = false,
     onClick = null,
     onChange = null,
-    onConfirmed = null,
     modalComponent = 'confirm',
     valueLabelPath = null,
     withConfirmation = false,
@@ -49,55 +56,46 @@ function DeleteAction({
     className = null,
     ...props
 }: DeleteActionProps) {
+    const resource = useResource();
+    const resourceUrl = useResourceUrlGenerator();
+    const { destroyAsync } = useResourceDestroy();
+    const finalHref =
+        initialHref || (!multiple && isObject(value) ? resourceUrl('delete', value) : null);
     const label =
         initialLabel ||
         (withDefaultLabel ? (
             <FormattedMessage defaultMessage="Delete" description="Button label" />
         ) : null);
-    const ModalComponents = useModalsComponentsManager();
-    const ModalComponent = ModalComponents.getComponent(modalComponent);
+    const ModalComponent = useModalComponent(modalComponent);
 
     const [modalOpen, setModalOpen] = useState(false);
 
-    const [error, setError] = useState<Error | null>(null);
+    const onOpen = () => setModalOpen(true);
+    const onClosed = () => setModalOpen(false);
 
-    const { ids, idLabels, modalKey } = useActionProps(id, value, valueLabelPath);
-
-    const onOpen = useCallback(() => {
-        setModalOpen(true);
-    }, [setModalOpen]);
-
-    const onClosed = useCallback(() => {
-        setModalOpen(false);
-    }, [setModalOpen]);
-
-    const onConfirm = useCallback(
-        () =>
-            (action !== null
-                ? action(ids)
-                : postJSON(
+    let deleteAction =
+        action ||
+        (endpoint !== null
+            ? (value) =>
+                  postJSON(
                       endpoint,
-                      { ids },
+                      {
+                          [endpointIdsParamName]: (isArray(value) ? value : [value])
+                              .filter((it) => it !== null)
+                              .map((it) => it?.id),
+                          _method: 'DELETE',
+                      },
                       {
                           credentials: 'include',
                           headers: getCSRFHeaders(),
-                          _method: 'DELETE',
                       },
                   )
-            )
-                .then((response) => {
-                    if (onConfirmed !== null) {
-                        onConfirmed(response);
-                    }
-                    if (onChange !== null) {
-                        onChange(response);
-                    }
-                })
-                .catch((err: Error) => {
-                    setError(err);
-                }),
-        [ids, endpoint, onChange, onClose, setError, withConfirmation, action, onConfirmed],
-    );
+            : null) ||
+        (resource !== null && !multiple)
+            ? (value) => destroyAsync(value?.id)
+            : null;
+
+    const onConfirm = deleteAction !== null ? () => deleteAction(value) : null;
 
     return (
         <>
@@ -105,14 +103,14 @@ function DeleteAction({
                 className={className}
                 label={label}
                 icon={icon}
-                onClick={withConfirmation ? onOpen : onClick || onConfirm}
+                onClick={onClick || (withConfirmation ? onOpen : onConfirm)}
                 disabled={disabled}
-                theme={disabled ? 'secondary' : theme}
+                theme={theme}
+                href={!withConfirmation ? finalHref : null}
                 {...props}
             />
             {modalOpen ? (
                 <ModalComponent
-                    id={modalKey}
                     title={
                         title || (
                             <FormattedMessage defaultMessage="Delete" description="Modal title" />
@@ -120,35 +118,36 @@ function DeleteAction({
                     }
                     onConfirm={onConfirm}
                     onClosed={onClosed}
-                    confirmButton={{
-                        label: (
-                            <FormattedMessage defaultMessage="Confirm" description="Button label" />
-                        ),
-                        theme: 'danger',
-                    }}
-                    cancelButton={{
-                        label: (
-                            <FormattedMessage defaultMessage="Cancel" description="Button label" />
-                        ),
-                    }}
                 >
                     {description !== null ? (
                         description
                     ) : (
                         <p>
-                            <FormattedMessage
-                                defaultMessage="The following items will be deleted: {ids}. Are you sure you want to continue?"
-                                description="Modal message"
-                                values={{ ids: idLabels }}
-                            />
+                            {multiple ? (
+                                <FormattedMessage
+                                    defaultMessage="The following item will be deleted: {id}. Are you sure you want to continue?"
+                                    description="Modal message"
+                                    values={{
+                                        id:
+                                            value !== null && !isArray(value)
+                                                ? `#${value?.id}`
+                                                : '',
+                                    }}
+                                />
+                            ) : (
+                                <FormattedMessage
+                                    defaultMessage="The following items will be deleted: {ids}. Are you sure you want to continue?"
+                                    description="Modal message"
+                                    values={{
+                                        ids:
+                                            value !== null && isArray(value)
+                                                ? value.map((it) => `#${it?.id}`).join(', ')
+                                                : '',
+                                    }}
+                                />
+                            )}
                         </p>
                     )}
-                    {error !== null ? (
-                        <FormattedMessage
-                            defaultMessage="An error has occured."
-                            description="Modal message"
-                        />
-                    ) : null}
                 </ModalComponent>
             ) : null}
         </>

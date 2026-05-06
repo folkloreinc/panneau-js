@@ -1,5 +1,5 @@
 import { getJSON } from '@folklore/fetch';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { UseQueryOptions, UseQueryResult, keepPreviousData, useQuery } from '@tanstack/react-query';
 import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import queryString from 'query-string';
@@ -9,6 +9,46 @@ import { Item, Pagination } from '@panneau/core';
 
 // The new, better version
 
+type UseItemsResponse<T> =
+    | {
+          data: T[];
+          pagination: Pagination;
+          meta?: Pagination;
+      }
+    | T[];
+
+type UseItemsKey = [string, Record<string, unknown> | null, number | null, number | null];
+
+export type UseItemsOptions<T> = UseQueryOptions<
+    UseItemsResponse<T>,
+    Error,
+    UseItemsResponse<T>,
+    UseItemsKey
+> & {
+    url?: string | null;
+    getItems?:
+        | ((
+              query: Record<string, unknown> | null,
+              page: number | null,
+              count: number | null,
+          ) => Promise<UseItemsResponse<T>>)
+        | null;
+    page?: number | null;
+    count?: number | null;
+    query?: Record<string, unknown> | null;
+    keepData?: boolean;
+};
+
+type UseItemsResult<T> = {
+    items: T[];
+    allItems: T[];
+    pagination: { page: number; lastPage: number; total: number } | null;
+    loading: boolean;
+    loaded: boolean;
+    reload: () => void;
+    updateItem: (item: T) => void;
+} & UseQueryResult<UseItemsResponse<T>, Error>;
+
 function useItems<T = Item>(
     scope,
     {
@@ -17,10 +57,10 @@ function useItems<T = Item>(
         page: initialPage = null,
         count: initialCount = null,
         query = null,
-        queryConfig = null,
         keepData = true,
-    },
-) {
+        ...queryConfig
+    }: UseItemsOptions<T>,
+): UseItemsResult<T> {
     const { page = initialPage, count = initialCount, ...queryWithoutPage } = query || {};
     const paginated = page !== null;
 
@@ -32,10 +72,11 @@ function useItems<T = Item>(
         isRefetching,
         isFetched,
         ...otherProps
-    } = useQuery<{ data: T[]; pagination: Pagination; meta?: Pagination } | T[]>({
+    } = useQuery<UseItemsResponse<T>, Error, UseItemsResponse<T>, UseItemsKey>({
         queryKey: [scope, queryWithoutPage, page, count],
-        queryFn: ({ queryKey: key = null }) => {
-            const [, queryParam = null, pageParam = null, countParam = null] = key;
+        queryFn: ({
+            queryKey: [, queryParam = null, pageParam = null, countParam = null] = [],
+        }) => {
             return getItems !== null
                 ? getItems(queryParam, pageParam, countParam)
                 : getJSON(

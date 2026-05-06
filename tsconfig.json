@@ -7,6 +7,8 @@
             "@panneau/core": ["./packages/core/src/index.ts"],
             "@panneau/core/*": ["./packages/core/src/*"],
             "@panneau/data": ["./packages/data/src/index.ts"],
+            "@panneau/actions": ["./actions/actions/src/index.ts"],
+            "@panneau/action-*": ["./actions/*/src/index.ts"],
             "@panneau/element-*": ["./elements/*/src/index.ts"],
             "@panneau/field-*": ["./fields/*/src/index.ts"],
             "@panneau/form": ["./forms/form/src/index.ts"],

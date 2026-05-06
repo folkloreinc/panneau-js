@@ -1,7 +1,7 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { type Resource } from '@panneau/core';
+import { type Item, type Resource } from '@panneau/core';
 import { usePanneauResource } from '@panneau/core/contexts';
 import { useQuery } from '@panneau/core/hooks';
 import { useResourceValues } from '@panneau/intl';
@@ -17,7 +17,7 @@ interface ModalResourceItemsProps {
     size?: string;
     withoutCloseOnSelect?: boolean;
     onClosed?: (() => void) | null;
-    onSelect?: ((item: unknown) => void) | null;
+    onSelect?: ((item: Item[] | null) => void) | null;
     multiple?: boolean;
     listProps?: Record<string, unknown> | null;
     confirmButton?: Record<string, unknown> | null;
@@ -73,9 +73,6 @@ function ModalResourceItems({
 
     const onSelectionChange = useCallback(
         (newSelectedItems) => {
-            console.log({
-                newSelectedItems,
-            });
             setSelectedItems(newSelectedItems);
         },
         [setSelectedItems],

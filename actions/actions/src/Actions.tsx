@@ -6,34 +6,18 @@ import type { Action, ActionValue, ButtonSize, Resource } from '@panneau/core';
 import { useActionsComponentsManager } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 
-import useActions from './useActions';
+import useActions, { UseActionsOptions } from './useActions';
 
-interface ActionsProps {
+interface ActionsProps extends UseActionsOptions {
     resource?: Resource;
     actions?: Action[];
     value?: ActionValue;
-    onChange?: ((value: unknown) => void) | null;
-    onConfirmed?: ((value: unknown) => void) | null;
+    onChange?: ((value: ActionValue) => void) | null;
     defaultComponent?: ComponentType<any>;
     isGroup?: boolean;
     size?: ButtonSize;
     disabled?: boolean;
     withConfirmation?: boolean;
-    iconsOnly?: boolean;
-    showLabel?: string | null;
-    editLabel?: string | null;
-    deleteLabel?: string | null;
-    onClickShow?: (() => void) | null;
-    onClickEdit?: (() => void) | null;
-    onClickDelete?: (() => void) | null;
-    getShowPropsFromValue?: ((item: ActionValue) => Record<string, unknown>) | null;
-    getEditPropsFromValue?: ((item: ActionValue) => Record<string, unknown>) | null;
-    getDeletePropsFromValue?: ((item: ActionValue) => Record<string, unknown>) | null;
-    showUrl?: string | null;
-    withoutItemShowUrl?: boolean | null;
-    preferEditModal?: boolean;
-    preferDeleteModal?: boolean;
-    hasDuplicateRoute?: boolean;
     className?: string | null;
 }
 
@@ -43,29 +27,12 @@ function Actions({
     resource,
     actions = DEFAULT_ACTIONS,
     value = null,
-    onChange = null,
     size = null,
-    onConfirmed = null,
     defaultComponent = Button,
     isGroup = false,
     disabled = false,
     withConfirmation = false,
     className = null,
-    iconsOnly = true,
-    showLabel = null,
-    editLabel = null,
-    deleteLabel = null,
-    onClickShow = null,
-    onClickEdit = null,
-    onClickDelete = null,
-    getShowPropsFromValue = null,
-    getEditPropsFromValue = null,
-    getDeletePropsFromValue = null,
-    showUrl = null,
-    withoutItemShowUrl = null,
-    preferEditModal = false,
-    preferDeleteModal = false,
-    hasDuplicateRoute = false,
     ...globalProps
 }: ActionsProps) {
     const actionsComponents = useActionsComponentsManager();
@@ -73,21 +40,7 @@ function Actions({
     const finalActions = useActions(actions, value, {
         disabled,
         resource,
-        iconsOnly,
-        showLabel,
-        editLabel,
-        deleteLabel,
-        onClickShow,
-        onClickEdit,
-        onClickDelete,
-        getShowPropsFromValue,
-        getEditPropsFromValue,
-        getDeletePropsFromValue,
-        showUrl,
-        withoutItemShowUrl,
-        preferEditModal,
-        preferDeleteModal,
-        hasDuplicateRoute,
+        ...globalProps
     });
 
     return (
@@ -105,34 +58,23 @@ function Actions({
                 const {
                     id = null,
                     component = null,
-                    multiple = false,
                     withConfirmation: actionConfirmation = false,
                     ...otherProps
                 } = action || {};
 
                 const actionComponent = actionsComponents.getComponent(component);
-                const hasActionComponent = actionComponent !== null;
                 const Component = actionComponent || defaultComponent;
-                const [firstValue = null] = isArray(value) ? value : [];
-                const finalValue = !multiple && firstValue !== null ? firstValue : value;
                 return Component !== null ? (
                     <Component
                         id={id}
                         key={`action-${id}-${idx + 1}`}
                         className={!isGroup ? 'me-2' : null}
                         iconPosition="right"
-                        value={finalValue}
+                        value={value}
                         size={size}
-                        multiple={multiple}
                         resource={resource}
+                        withConfirmation={actionConfirmation || withConfirmation}
                         {...globalProps}
-                        {...(hasActionComponent
-                            ? {
-                                  onChange,
-                                  onConfirmed,
-                                  withConfirmation: actionConfirmation || withConfirmation,
-                              }
-                            : null)}
                         {...otherProps}
                     />
                 ) : null;
