@@ -100,9 +100,9 @@ build_types() {
 
     echo "Bundling types with rollup..."
     if [ -f ./rollup.config.dts.js ]; then
-        ../../node_modules/.bin/rollup --config ./rollup.config.dts.js
+        ../../node_modules/.bin/rollup --bundleConfigAsCjs --config ./rollup.config.dts.js
     else
-        ../../node_modules/.bin/rollup --config ../../rollup.config.dts.js
+        ../../node_modules/.bin/rollup --bundleConfigAsCjs --config ../../rollup.config.dts.js
     fi
 
     echo "Cleaning up types..."
