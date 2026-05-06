@@ -1,8 +1,6 @@
 import alias from '@rollup/plugin-alias';
-import typescript from '@rollup/plugin-typescript';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import copy from 'rollup-plugin-copy';
 
 import { createConfig } from '../../rollup.config.js';
 
@@ -77,8 +75,7 @@ const files = {
     },
 
     'utils.ts': {
-        prependPlugins: [
-        ],
+        prependPlugins: [],
         resolveOptions: {
             extensions: ['.mjs', '.js', '.jsx', '.json', '.node', '.ts', '.tsx'],
             resolveOnly: [new RegExp(path.join(__dirname, './src/utils'))],

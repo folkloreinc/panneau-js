@@ -1,4 +1,3 @@
-import babelParser from '@babel/eslint-parser';
 import eslintReact from '@eslint-react/eslint-plugin';
 import js from '@eslint/js';
 import formatjs from 'eslint-plugin-formatjs';
@@ -12,7 +11,7 @@ const config = defineConfig(
         files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
     },
     {
-        ignores: ['**/*.config.js', 'node_modules', '*/*/dist/**', '!.storybook'],
+        ignores: ['node_modules', '*/*/dist/**', '!.storybook'],
     },
     {
         settings: {
@@ -33,24 +32,13 @@ const config = defineConfig(
                     }),
                     {},
                 ),
+                ...globals.node,
                 __DEV__: 'readonly',
                 __SERVER__: 'readonly',
                 __EDITOR__: 'readonly',
                 __ASSETS_MANIFEST__: 'readonly',
                 __EMBEDDED_STYLES__: 'readonly',
                 __EMBEDDED_SCRIPTS__: 'readonly',
-            },
-        },
-    },
-    {
-        languageOptions: {
-            parser: babelParser,
-            parserOptions: {
-                ecmaVersion: 'latest',
-                requireConfigFile: false,
-                babelOptions: {
-                    presets: ['@babel/preset-react', '@babel/preset-typescript'],
-                },
             },
         },
     },
