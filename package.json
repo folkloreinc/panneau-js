@@ -19,7 +19,6 @@
         "start": "npm run storybook",
         "server": "npm run storybook",
         "intl:tx-config": "./scripts/tx-config.js",
-        "output-static": "NODE_ENV=node BABEL_ENV=node babel-node ./scripts/output-static.js",
         "intl": "npm run intl --prefix ./packages/intl",
         "build": "npm run build:all",
         "build:all": "nx run-many --target=build",

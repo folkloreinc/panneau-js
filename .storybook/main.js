@@ -50,108 +50,25 @@ module.exports = {
     //     babelModeV7: true,
     // },
     webpackFinal: async (config) => {
-        // Add babel-loader for JSX files
         config.module.rules.push({
             test: /\.(j|t)sx?$/,
             exclude: /node_modules/,
             use: {
                 loader: require.resolve('babel-loader'),
                 options: {
-                    presets: [
-                        [
-                            require.resolve('@babel/preset-typescript'),
-                            {
-                                allExtensions: true,
-                                isTSX: true,
-                            },
-                        ],
-                        require.resolve('@babel/preset-react'),
-                        [
-                            require.resolve('@babel/preset-env'),
-                            {
-                                targets: {
-                                    browsers: ['last 2 versions'],
-                                },
-                            },
-                        ],
-                    ],
-                    plugins: [
-                        [
-                            require.resolve('babel-plugin-react-compiler'),
-                            {
-                                // compilationMode: 'annotation',
-                                logger: {
-                                    logEvent(filename, event) {
-                                        if (event.kind === 'CompileError') {
-                                            console.error(`\nCompilation failed: ${filename}`);
-                                            console.error(`Reason: ${event.detail.reason}`);
-
-                                            if (event.detail.description) {
-                                                console.error(
-                                                    `Details: ${event.detail.description}`,
-                                                );
-                                            }
-
-                                            if (event.detail.loc) {
-                                                const { line, column } = event.detail.loc.start;
-                                                console.error(
-                                                    `Location: Line ${line}, Column ${column}`,
-                                                );
-                                            }
-
-                                            if (event.detail.suggestions) {
-                                                console.error(
-                                                    'Suggestions:',
-                                                    event.detail.suggestions,
-                                                );
-                                            }
-                                        }
-                                    },
-                                },
-                            },
-                        ],
-                    ],
+                    babelrc: false,
+                    configFile: path.join(__dirname, '../babel.config.js'),
                 },
             },
         });
 
-        // Enable CSS modules in existing Storybook CSS loaders
-        config.module.rules.forEach((rule) => {
-            if (rule.oneOf) {
-                rule.oneOf.forEach((oneOfRule) => {
-                    if (
-                        oneOfRule.test &&
-                        (oneOfRule.test.toString().includes('\\.css') ||
-                            oneOfRule.test.toString().includes('\\.s[ac]ss'))
-                    ) {
-                        if (oneOfRule.use && Array.isArray(oneOfRule.use)) {
-                            oneOfRule.use.forEach((loader) => {
-                                if (loader.loader && loader.loader.includes('css-loader')) {
-                                    if (!loader.options) {
-                                        loader.options = {};
-                                    }
-                                    // Enable CSS modules with auto mode (only for .module.* files)
-                                    loader.options.modules = {
-                                        auto: true,
-                                        namedExport: false,
-                                        localIdentName: '[path][name]__[local]--[hash:base64:5]',
-                                    };
-                                }
-                            });
-                        }
-                    }
-                });
-            }
+        config.module.rules.push({
+            test: /\.(srt)$/,
+            loader: require.resolve('file-loader'),
         });
 
         return {
             ...config,
-            plugins: [
-                ...config.plugins,
-                new webpack.ProvidePlugin({
-                    React: 'react',
-                }),
-            ],
             resolve: {
                 ...config.resolve,
                 alias: {
@@ -162,30 +79,6 @@ module.exports = {
                         '../packages/ckeditor/src/build',
                     ),
                 },
-            },
-            module: {
-                ...config.module,
-                rules: [
-                    {
-                        test: /\.m?js$/,
-                        resolve: {
-                            fullySpecified: false,
-                        },
-                    },
-                    {
-                        oneOf: [
-                            {
-                                rules: [
-                                    ...config.module.rules,
-                                    {
-                                        test: /\.(srt)$/,
-                                        loader: require.resolve('file-loader'),
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
             },
         };
     },

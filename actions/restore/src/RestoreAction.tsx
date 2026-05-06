@@ -1,9 +1,7 @@
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
-import classNames from 'classnames';
 import { type ReactNode, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useActionProps } from '@panneau/action-actions';
 import type { ButtonTheme } from '@panneau/core';
 import { useModalsComponentsManager } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
