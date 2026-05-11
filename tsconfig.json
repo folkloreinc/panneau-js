@@ -3,10 +3,8 @@
     "compilerOptions": {
         "strict": false,
         "paths": {
-            "@panneau/app": ["./packages/app/src/index.ts"],
             "@panneau/core": ["./packages/core/src/index.ts"],
             "@panneau/core/*": ["./packages/core/src/*"],
-            "@panneau/data": ["./packages/data/src/index.ts"],
             "@panneau/actions": ["./actions/actions/src/index.ts"],
             "@panneau/action-*": ["./actions/*/src/index.ts"],
             "@panneau/element-*": ["./elements/*/src/index.ts"],
@@ -16,6 +14,16 @@
             "@panneau/list-*": ["./lists/*/src/index.ts"],
             "@panneau/modal-*": ["./modals/*/src/index.ts"],
             "@panneau/*": ["./packages/*/src/index.ts"],
-        }
-    }
+        },
+        "plugins": [{ "name": "typescript-plugin-css-modules" }]
+    },
+    "exclude": [
+        "node_modules",
+        "**/node_modules",
+        "**/es",
+        "**/lib",
+        "**/dist",
+        "**/build",
+        "**/assets"
+    ]
 }

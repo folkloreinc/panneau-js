@@ -42,7 +42,7 @@
             "default": "./dist/index.js"
         },
         "./locale/*.json": "./locale/*.json",
-        "./locale*": "./locale/*.js"
+        "./locale/*": "./locale/*.js"
     },
     "files": [
         "dist",
