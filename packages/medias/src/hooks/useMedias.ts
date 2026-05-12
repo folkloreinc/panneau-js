@@ -17,7 +17,7 @@ function useMedias(query = null, page = null, count = null, opts: UseMediasOpts 
             : api.get(requestedQuery, requestedPage, requestedCount);
 
     const { items, ...props } = useItems('medias', {
-        getItems: page === null ? getItems : null,
+        getItems,
         page,
         count,
         query: finalQuery,
