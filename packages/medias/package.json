@@ -1,6 +1,6 @@
 {
     "name": "@panneau/medias",
-    "version": "4.0.44",
+    "version": "4.0.45",
     "description": "",
     "keywords": [
         "javascript"
@@ -57,11 +57,11 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@panneau/core": "^4.0.41",
-        "@panneau/data": "^4.0.44",
+        "@panneau/data": "^4.0.45",
         "@panneau/display-image": "^4.0.41",
         "@panneau/element-button": "^4.0.41",
         "@panneau/element-buttons": "^4.0.41",
-        "@panneau/element-form": "^4.0.44",
+        "@panneau/element-form": "^4.0.45",
         "@panneau/element-form-status": "^4.0.41",
         "@panneau/element-grid": "^4.0.41",
         "@panneau/element-icon": "^4.0.41",
@@ -69,7 +69,7 @@
         "@panneau/element-media-player": "^4.0.41",
         "@panneau/element-pagination": "^4.0.41",
         "@panneau/element-table": "^4.0.41",
-        "@panneau/field-upload": "^4.0.44",
+        "@panneau/field-upload": "^4.0.45",
         "@panneau/filter-filters": "^4.0.41",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
