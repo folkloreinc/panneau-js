@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "4.0.50",
+    "version": "4.0.51",
     "description": "",
     "keywords": [
         "javascript"
@@ -108,7 +108,7 @@
         "@panneau/intl": "^4.0.50",
         "@panneau/list-resource-items": "^4.0.50",
         "@panneau/lists": "^4.0.50",
-        "@panneau/modals": "^4.0.50",
+        "@panneau/modals": "^4.0.51",
         "@panneau/themes": "^4.0.50",
         "@panneau/uppy": "^4.0.50",
         "classnames": "^2.5.1",
