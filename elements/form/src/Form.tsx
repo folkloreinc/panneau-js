@@ -1,13 +1,18 @@
 import classNames from 'classnames';
-import type { ForwardedRef, ReactNode, SubmitEvent } from 'react';
+import type { FormHTMLAttributes, ForwardedRef, ReactNode, SubmitEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Button as ButtonType, FormStatus as FormStatusType, Label } from '@panneau/core';
+import type {
+    ButtonSize,
+    Button as ButtonType,
+    FormStatus as FormStatusType,
+    Label,
+} from '@panneau/core';
 import Button from '@panneau/element-button';
 import Buttons from '@panneau/element-buttons';
 import FormStatus from '@panneau/element-form-status';
 
-export interface FormProps {
+export interface FormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
     action?: string | null;
     method?: string;
     status?: FormStatusType;
@@ -22,10 +27,11 @@ export interface FormProps {
     onCancel?: (() => void) | null;
     onCancelHref?: string | null;
     withoutActions?: boolean;
+    withoutButtons?: boolean;
     withoutStatus?: boolean;
     withoutErrors?: boolean;
     withoutSubmitButton?: boolean;
-    withoutCancelButton?: boolean;
+    withCancelButton?: boolean;
     withoutButtonGroup?: boolean;
     canSave?: boolean;
     disabled?: boolean;
@@ -53,8 +59,9 @@ function Form({
     onCancelHref = null,
     withoutActions = false,
     withoutStatus = false,
+    withoutButtons = false,
     withoutSubmitButton = false,
-    withoutCancelButton = false,
+    withCancelButton = false,
     withoutErrors = false,
     canSave = true,
     disabled = false,
@@ -63,6 +70,7 @@ function Form({
     buttonGroupClassName = null,
     cancelClassName = null,
     ref = null,
+    ...props
 }: FormProps) {
     const finalButtons =
         buttons !== null ? (
@@ -77,13 +85,13 @@ function Form({
                     buttonGroupClassName,
                 ])}
             >
-                {!withoutCancelButton ? (
+                {withCancelButton ? (
                     <Button
                         type="button"
                         onClick={onCancel}
                         href={onCancelHref}
                         theme="secondary"
-                        size={buttonSize as any}
+                        size={buttonSize as ButtonSize}
                         disabled={status === 'loading'}
                         className={classNames([
                             {
@@ -91,19 +99,23 @@ function Form({
                             },
                             cancelClassName,
                         ])}
-                    >
-                        {cancelButtonLabel || (
-                            <FormattedMessage defaultMessage="Cancel" description="Button label" />
-                        )}
-                    </Button>
+                        label={
+                            cancelButtonLabel ?? (
+                                <FormattedMessage
+                                    defaultMessage="Cancel"
+                                    description="Button label"
+                                />
+                            )
+                        }
+                    />
                 ) : null}
                 {!withoutSubmitButton ? (
                     <Button
                         type="submit"
                         theme="primary"
-                        size={buttonSize as any}
+                        size={buttonSize as ButtonSize}
                         label={
-                            submitButtonLabel || (
+                            submitButtonLabel ?? (
                                 <FormattedMessage
                                     defaultMessage="Save"
                                     description="Button label"
@@ -128,6 +140,7 @@ function Form({
             onSubmit={onSubmit || undefined}
             className={className || undefined}
             ref={ref}
+            {...props}
         >
             {children}
             {!withoutErrors && generalError !== null && !disabled ? (
@@ -138,10 +151,10 @@ function Form({
                     />
                 </p>
             ) : null}
-            {!withoutStatus || !withoutActions ? (
+            {!withoutActions ? (
                 <div className={classNames(['mt-4 d-flex align-items-center', actionsClassName])}>
                     {!withoutStatus ? <FormStatus status={status} /> : null}
-                    {!withoutActions ? actions || finalButtons : null}
+                    {!withoutButtons ? actions || finalButtons : null}
                 </div>
             ) : null}
         </form>
