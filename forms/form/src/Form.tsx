@@ -8,7 +8,7 @@ import { useFormComponent } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
 import type { FormProps as BaseFormProps } from '@panneau/element-form';
 
-interface FormProps extends BaseFormProps {
+export interface FormProps extends Omit<BaseFormProps, 'onChange'> {
     action: string;
     method?: string | null;
     postForm?: ((action: string, data: unknown) => Promise<unknown>) | null;
