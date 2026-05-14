@@ -61,7 +61,7 @@ function FormModal({
     );
     const onClickSubmit = useCallback(() => {
         if (formRef.current !== null) {
-            formRef.current.submit();
+            formRef.current.requestSubmit();
         }
     }, []);
     return (
