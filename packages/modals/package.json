@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modals",
-    "version": "4.0.45",
+    "version": "4.0.46",
     "description": "",
     "keywords": [
         "javascript"
@@ -64,8 +64,8 @@
         "@panneau/element-portal": "^4.0.41",
         "@panneau/modal-confirm": "^4.0.45",
         "@panneau/modal-dialog": "^4.0.41",
-        "@panneau/modal-form": "^4.0.45",
-        "@panneau/modal-resource-form": "^4.0.45",
+        "@panneau/modal-form": "^4.0.46",
+        "@panneau/modal-resource-form": "^4.0.46",
         "@panneau/modal-resource-items": "^4.0.45",
         "@panneau/modal-upload": "^4.0.41",
         "@panneau/themes": "^4.0.41",

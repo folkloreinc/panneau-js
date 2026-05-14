@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-normal",
-    "version": "4.0.45",
+    "version": "4.0.46",
     "description": "Default resource forms",
     "keywords": [
         "javascript"
@@ -63,7 +63,7 @@
         "@panneau/core": "^4.0.41",
         "@panneau/data": "^4.0.45",
         "@panneau/element-button": "^4.0.41",
-        "@panneau/element-form": "^4.0.45",
+        "@panneau/element-form": "^4.0.46",
         "@panneau/field-fields": "^4.0.41",
         "@panneau/themes": "^4.0.41",
         "classnames": "^2.5.1",
