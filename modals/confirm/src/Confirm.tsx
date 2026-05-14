@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import Dialog from '@panneau/modal-dialog';
 
-interface ConfirmModalProps {
+export interface ConfirmModalProps {
     id: string | number;
     title?: ReactNode | null;
     onConfirm?: (() => void) | null;

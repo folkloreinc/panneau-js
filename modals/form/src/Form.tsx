@@ -1,45 +1,44 @@
-import { ForwardedRef, type ReactNode, useCallback, useState } from 'react';
+import { ForwardedRef, type ReactNode, useCallback, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Field } from '@panneau/core';
-import Form from '@panneau/form';
-import Dialog from '@panneau/modal-dialog';
+import { mergeRefs } from '@panneau/core/utils';
+import Form, { FormProps } from '@panneau/form';
+import Dialog, { DialogProps } from '@panneau/modal-dialog';
 
-interface ModalFormProps {
-    id: string | number;
-    title?: ReactNode | null;
+export interface FormModalProps
+    extends Omit<FormProps, 'id' | 'title'>, Pick<DialogProps, 'id' | 'title' | 'size'> {
     name?: string | null;
-    fields?: Field[] | null;
-    action?: string | null;
     type?: string;
-    onComplete?: ((value: unknown) => void) | null;
     onCancel?: (() => void) | null;
     onClosed?: (() => void) | null;
-    submitButtonLabel?: ReactNode | null;
     withoutCloseOnComplete?: boolean;
     className?: string | null;
     children?: ReactNode | null;
     formRef?: ForwardedRef<HTMLFormElement> | null;
 }
 
-function ModalForm({
+function FormModal({
     id,
     title = null,
     name = null,
     fields = null,
-    action = null,
     type = 'normal',
+    size = 'lg',
     onComplete = null,
     onCancel = null,
     onClosed = null,
-    submitButtonLabel = null,
     withoutCloseOnComplete = false,
     className = null,
     children = null,
-    formRef = null,
+    formRef: customFormRef = null,
+    submitButtonLabel = null,
+    cancelButtonLabel = null,
+    withCancelButton = true,
+    withoutSubmitButton = false,
     ...props
-}: ModalFormProps) {
+}: FormModalProps) {
     const [opened, setOpened] = useState(true);
+    const formRef = useRef<HTMLFormElement>(null);
     const requestClose = () => {
         setOpened(false);
     };
@@ -60,6 +59,11 @@ function ModalForm({
         },
         [withoutCloseOnComplete, onComplete],
     );
+    const onClickSubmit = useCallback(() => {
+        if (formRef.current !== null) {
+            formRef.current.submit();
+        }
+    }, []);
     return (
         <Dialog
             id={id}
@@ -75,26 +79,29 @@ function ModalForm({
                     <FormattedMessage defaultMessage="Edit" description="Page title" />
                 ))
             }
-            size="lg"
+            size={size}
             visible={opened}
+            withCancelButton={withCancelButton}
+            withSubmitButton={!withoutSubmitButton}
             requestClose={requestClose}
             onClosed={onClosed}
+            onClickSubmit={onClickSubmit}
             className={className}
+            submitButtonLabel={submitButtonLabel}
+            cancelButtonLabel={cancelButtonLabel}
         >
             {children}
             <Form
+                withoutActions
                 {...props}
-                ref={formRef}
+                ref={mergeRefs(formRef, customFormRef)}
                 fields={fields}
-                action={action}
                 type={type}
-                buttonSize="md"
                 onComplete={onFormComplete}
                 onCancel={onFormCancel}
-                submitButtonLabel={submitButtonLabel}
             />
         </Dialog>
     );
 }
 
-export default ModalForm;
+export default FormModal;

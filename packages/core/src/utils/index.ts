@@ -18,6 +18,7 @@ export { default as getPathValue } from './getPathValue';
 export { default as getSelectOptions } from './getSelectOptions';
 export { default as isMessage } from './isMessage';
 export { default as loadPackage } from './loadPackage';
+export { default as mergeRefs } from './mergeRefs';
 export { default as pascalCase } from './pascalCase';
 export * from './selection';
 export { default as setFieldValue } from './setFieldValue';

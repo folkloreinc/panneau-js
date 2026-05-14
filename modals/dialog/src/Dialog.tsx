@@ -9,10 +9,10 @@ import Buttons from '@panneau/element-buttons';
 import Label from '@panneau/element-label';
 import Modal, { type ModalProps } from '@panneau/element-modal';
 
-interface ModalDialogProps extends Omit<ModalProps, 'title'> {
+export interface DialogModalProps extends Omit<ModalProps, 'title'> {
     id: string;
     title?: LabelType | null;
-    size?: string | null;
+    size?: 'lg' | 'sm' | null;
     header?: ReactNode | null;
     children?: ReactNode | null;
     footer?: ReactNode | null;
@@ -35,7 +35,7 @@ interface ModalDialogProps extends Omit<ModalProps, 'title'> {
     onClickCancel?: (() => void) | null;
 }
 
-function ModalDialog({
+function DialogModal({
     id,
     title = null,
     size = null,
@@ -61,7 +61,7 @@ function ModalDialog({
     onClickCancel = null,
     onClickSubmit = null,
     ...props
-}: ModalDialogProps) {
+}: DialogModalProps) {
     const onCloseButtonOutside = (header === null && title === null) || withCloseOutside;
 
     const finalButtons =
@@ -163,4 +163,4 @@ function ModalDialog({
     );
 }
 
-export default ModalDialog;
+export default DialogModal;
