@@ -1,29 +1,22 @@
-import { ForwardedRef, type ReactNode, useCallback, useRef, useState } from 'react';
+import { ForwardedRef, useCallback, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { mergeRefs } from '@panneau/core/utils';
 import Form, { FormProps } from '@panneau/form';
-import Dialog, { DialogProps } from '@panneau/modal-dialog';
+import Dialog, { DialogModalProps } from '@panneau/modal-dialog';
 
-export interface FormModalProps
-    extends Omit<FormProps, 'id' | 'title'>, Pick<DialogProps, 'id' | 'title' | 'size'> {
-    name?: string | null;
-    type?: string;
-    onCancel?: (() => void) | null;
-    onClosed?: (() => void) | null;
+export interface FormModalProps extends Omit<FormProps, 'id' | 'title'>, DialogModalProps {
     withoutCloseOnComplete?: boolean;
-    className?: string | null;
-    children?: ReactNode | null;
     formRef?: ForwardedRef<HTMLFormElement> | null;
 }
 
 function FormModal({
     id,
     title = null,
-    name = null,
     fields = null,
-    type = 'normal',
     size = 'lg',
+    visible = null,
+    requestClose: customRequestClose = null,
     onComplete = null,
     onCancel = null,
     onClosed = null,
@@ -39,26 +32,25 @@ function FormModal({
 }: FormModalProps) {
     const [opened, setOpened] = useState(true);
     const formRef = useRef<HTMLFormElement>(null);
-    const requestClose = () => {
-        setOpened(false);
-    };
-    const onFormCancel = useCallback(() => {
-        setOpened(false);
+    const requestClose =
+        customRequestClose ??
+        (() => {
+            setOpened(false);
+        });
+    const onFormCancel = () => {
+        requestClose();
         if (onCancel !== null) {
             onCancel();
         }
-    }, [onCancel]);
-    const onFormComplete = useCallback(
-        (value) => {
-            if (!withoutCloseOnComplete) {
-                setOpened(false);
-            }
-            if (onComplete !== null) {
-                onComplete(value);
-            }
-        },
-        [withoutCloseOnComplete, onComplete],
-    );
+    };
+    const onFormComplete = (value) => {
+        if (!withoutCloseOnComplete) {
+            requestClose();
+        }
+        if (onComplete !== null) {
+            onComplete(value);
+        }
+    };
     const onClickSubmit = useCallback(() => {
         if (formRef.current !== null) {
             formRef.current.requestSubmit();
@@ -67,20 +59,9 @@ function FormModal({
     return (
         <Dialog
             id={id}
-            title={
-                title ||
-                (name !== null ? (
-                    <FormattedMessage
-                        defaultMessage="Edit {name}"
-                        description="Page title"
-                        values={{ name }}
-                    />
-                ) : (
-                    <FormattedMessage defaultMessage="Edit" description="Page title" />
-                ))
-            }
+            title={title || <FormattedMessage defaultMessage="Edit" description="Page title" />}
             size={size}
-            visible={opened}
+            visible={visible ?? opened}
             withCancelButton={withCancelButton}
             withSubmitButton={!withoutSubmitButton}
             requestClose={requestClose}
@@ -96,7 +77,6 @@ function FormModal({
                 {...props}
                 ref={mergeRefs(formRef, customFormRef)}
                 fields={fields}
-                type={type}
                 onComplete={onFormComplete}
                 onCancel={onFormCancel}
             />
