@@ -9,7 +9,7 @@ import { Item, Pagination } from '@panneau/core';
 
 // The new, better version
 
-type UseItemsResponse<T> =
+export type UseItemsResponse<T> =
     | {
           data: T[];
           pagination: Pagination;
@@ -19,11 +19,9 @@ type UseItemsResponse<T> =
 
 type UseItemsKey = [string, Record<string, unknown> | null, number | null, number | null];
 
-export type UseItemsOptions<T> = UseQueryOptions<
-    UseItemsResponse<T>,
-    Error,
-    UseItemsResponse<T>,
-    UseItemsKey
+export type UseItemsOptions<T> = Omit<
+    UseQueryOptions<UseItemsResponse<T>, Error, UseItemsResponse<T>, UseItemsKey>,
+    'queryKey' | 'queryFn'
 > & {
     url?: string | null;
     getItems?:
@@ -50,7 +48,7 @@ type UseItemsResult<T> = {
 } & UseQueryResult<UseItemsResponse<T>, Error>;
 
 function useItems<T = Item>(
-    scope,
+    scope: string,
     {
         url = null,
         getItems = null,

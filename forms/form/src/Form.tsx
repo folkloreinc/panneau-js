@@ -1,6 +1,6 @@
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import classNames from 'classnames';
-import { useCallback, useState } from 'react';
+import { ForwardedRef, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Label } from '@panneau/core';
@@ -23,6 +23,7 @@ interface FormProps extends BaseFormProps {
     useFormProps?: Record<string, unknown> | null;
     withValidation?: boolean;
     className?: string | null;
+    ref?: ForwardedRef<HTMLFormElement> | null;
 }
 
 function Form({
@@ -40,6 +41,7 @@ function Form({
     useFormProps = null,
     className = null,
     withValidation = false,
+    ref,
     ...props
 }: FormProps) {
     const [wasValidated, setWasValidated] = useState(false);
@@ -81,6 +83,7 @@ function Form({
     return (
         <FormComponent
             {...props}
+            ref={ref}
             action={action}
             method="post"
             fields={fields}

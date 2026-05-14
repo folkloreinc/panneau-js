@@ -1,3 +1,5 @@
+import { ForwardedRef } from 'react';
+
 import type { Button, Field, FormStatus } from '@panneau/core';
 import { useFieldComponent } from '@panneau/core/contexts';
 import Form from '@panneau/element-form';
@@ -14,6 +16,7 @@ interface HorizontalFormProps {
     errors?: Record<string, string[]> | null;
     buttons?: Button[] | null;
     className?: string | null;
+    ref?: ForwardedRef<HTMLFormElement> | null;
 }
 
 function HorizontalForm({
@@ -23,11 +26,12 @@ function HorizontalForm({
     onChange,
     className = null,
     onSubmit = null,
+    ref = null,
     ...props
 }: HorizontalFormProps) {
     const FieldsComponent = useFieldComponent('fields');
     return (
-        <Form onSubmit={onSubmit} className={className} status={status} {...props}>
+        <Form onSubmit={onSubmit} className={className} status={status} ref={ref} {...props}>
             <FieldsComponent
                 fields={fields.map((f) => ({ ...f, horizontal: true }))}
                 value={value}

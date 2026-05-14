@@ -1,12 +1,12 @@
-import { ReactNode, useContext, useMemo } from 'react';
-import { IntlProvider as BaseIntlProvider, IntlContext } from 'react-intl';
+import { ReactNode, use, useMemo } from 'react';
+import { IntlProvider as BaseIntlProvider, IntlConfig, IntlContext } from 'react-intl';
 
 import { LocalesProvider, useLocales } from '@panneau/core/contexts';
 
 import IntlManager from './IntlManager';
 import defaultManager from './manager';
 
-interface IntlProviderProps {
+interface IntlProviderProps extends Omit<IntlConfig, 'locale' | 'messages'> {
     intlManager?: IntlManager;
     locale?: string | null;
     locales?: string[] | null;
@@ -20,10 +20,11 @@ function IntlProvider({
     locales = null,
     children = null,
     extraMessages = null,
+    ...props
 }: IntlProviderProps) {
     const previousLocales = useLocales();
     const { locale: previousLocale = null, messages: previousMessages = null } =
-        useContext(IntlContext) || {};
+        use(IntlContext) || {};
     const managerMessages = intlManager !== null ? intlManager.getMessages(locale) : null;
     const messages = useMemo(() => {
         if (process.env.NODE_ENV === 'development') {
@@ -32,13 +33,13 @@ function IntlProvider({
             }
         }
         return {
-            ...(previousLocale === locale ? previousMessages : null),
+            ...(previousLocale === locale || locale === null ? previousMessages : null),
             ...managerMessages,
             ...extraMessages,
         };
     }, [managerMessages, locale, previousLocale, previousMessages, extraMessages]);
     return (
-        <BaseIntlProvider locale={locale} messages={messages}>
+        <BaseIntlProvider locale={locale || previousLocale} messages={messages} {...props}>
             <LocalesProvider locales={locales || previousLocales}>{children}</LocalesProvider>
         </BaseIntlProvider>
     );

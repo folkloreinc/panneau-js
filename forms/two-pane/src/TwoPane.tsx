@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { type ReactNode } from 'react';
+import { ForwardedRef, type ReactNode } from 'react';
 
 import type { Button, Field, FormStatus, Resource } from '@panneau/core';
 import { useFieldComponent, usePreviewComponent } from '@panneau/core/contexts';
@@ -18,6 +18,7 @@ interface TwoPaneFormProps {
     buttons?: Button[] | null;
     children?: ReactNode | null;
     className?: string | null;
+    ref?: ForwardedRef<HTMLFormElement> | null;
 }
 
 function TwoPaneForm({
@@ -32,6 +33,7 @@ function TwoPaneForm({
     buttons = null,
     children = null,
     className = null,
+    ref,
     ...props
 }: TwoPaneFormProps) {
     const { id = null } = resource || {};
@@ -63,11 +65,11 @@ function TwoPaneForm({
         <div className="container-fluid row gx-4">
             <Form
                 className={formClassName}
-                resource={resource}
                 status={status}
                 buttons={buttons}
                 onSubmit={onSubmit}
                 errors={errors}
+                ref={ref}
                 {...props}
             >
                 <FieldsComponent

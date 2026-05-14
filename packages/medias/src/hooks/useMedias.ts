@@ -11,7 +11,7 @@ function useMedias(query = null, page = null, count = null, opts: UseMediasOpts 
     const api = useMediasApi();
     const { trashed = false, ...queryOpts } = opts || {};
     const finalQuery = { ...query, trashed };
-    const getItems = (requestedQuery, requestedPage = null, requestedCount) =>
+    const getItems = (requestedQuery, requestedPage = null, requestedCount = null) =>
         trashed
             ? api.getTrashed(requestedQuery, requestedPage, requestedCount)
             : api.get(requestedQuery, requestedPage, requestedCount);

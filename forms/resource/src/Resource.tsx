@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { ForwardedRef, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { Resource } from '@panneau/core';
 import {
@@ -30,6 +30,7 @@ interface ResourceFormProps {
     isDuplicate?: boolean;
     isModal?: boolean;
     withContainer?: boolean;
+    ref?: ForwardedRef<HTMLFormElement> | null;
 }
 
 function ResourceForm({
@@ -43,6 +44,7 @@ function ResourceForm({
     isDuplicate = false,
     isModal = false,
     withContainer = false,
+    ref,
     ...props
 }: ResourceFormProps) {
     const locales = useLocales();
@@ -219,6 +221,7 @@ function ResourceForm({
     const element = (
         <FormComponent
             {...props}
+            ref={ref}
             status={status}
             resource={resource}
             item={item}

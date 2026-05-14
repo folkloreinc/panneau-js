@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import type { ReactNode, SubmitEvent } from 'react';
+import type { ForwardedRef, ReactNode, SubmitEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Button as ButtonType, FormStatus as FormStatusType, Label } from '@panneau/core';
@@ -33,6 +33,7 @@ export interface FormProps {
     actionsClassName?: string | null;
     buttonGroupClassName?: string | null;
     cancelClassName?: string | null;
+    ref?: ForwardedRef<HTMLFormElement> | null;
 }
 
 function Form({
@@ -61,6 +62,7 @@ function Form({
     actionsClassName = null,
     buttonGroupClassName = null,
     cancelClassName = null,
+    ref = null,
 }: FormProps) {
     const finalButtons =
         buttons !== null ? (
@@ -125,6 +127,7 @@ function Form({
             method={method}
             onSubmit={onSubmit || undefined}
             className={className || undefined}
+            ref={ref}
         >
             {children}
             {!withoutErrors && generalError !== null && !disabled ? (

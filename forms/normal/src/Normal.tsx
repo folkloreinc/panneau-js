@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { type ReactNode } from 'react';
+import { ForwardedRef, type ReactNode } from 'react';
 
 import { type Button, type Field, type FormStatus } from '@panneau/core';
 import { useFieldComponent } from '@panneau/core/contexts';
@@ -18,6 +18,7 @@ interface NormalFormProps {
     children?: ReactNode | null;
     className?: string | null;
     fieldsClassName?: string | null;
+    ref?: ForwardedRef<HTMLFormElement> | null;
 }
 
 function NormalForm({
@@ -31,6 +32,7 @@ function NormalForm({
     children = null,
     className = null,
     fieldsClassName = null,
+    ref,
     ...props
 }: NormalFormProps) {
     const FieldsComponent = useFieldComponent('fields');
@@ -42,6 +44,7 @@ function NormalForm({
             buttons={buttons}
             disabled={disabled}
             onSubmit={onSubmit}
+            ref={ref}
             {...props}
         >
             {children !== null ? (

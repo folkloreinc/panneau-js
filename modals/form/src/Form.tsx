@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useState } from 'react';
+import { ForwardedRef, type ReactNode, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field } from '@panneau/core';
@@ -19,6 +19,7 @@ interface ModalFormProps {
     withoutCloseOnComplete?: boolean;
     className?: string | null;
     children?: ReactNode | null;
+    formRef?: ForwardedRef<HTMLFormElement> | null;
 }
 
 function ModalForm({
@@ -35,6 +36,7 @@ function ModalForm({
     withoutCloseOnComplete = false,
     className = null,
     children = null,
+    formRef = null,
     ...props
 }: ModalFormProps) {
     const [opened, setOpened] = useState(true);
@@ -82,6 +84,7 @@ function ModalForm({
             {children}
             <Form
                 {...props}
+                ref={formRef}
                 fields={fields}
                 action={action}
                 type={type}
