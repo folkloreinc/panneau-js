@@ -1,7 +1,7 @@
 /**
  * Core UI Types
  */
-import type { ReactNode } from 'react';
+import type { ElementType, MouseEvent, ReactNode } from 'react';
 import type { MessageDescriptor } from 'react-intl';
 
 /**
@@ -36,10 +36,12 @@ export interface MenuItem {
 /**
  * Button definition
  */
+
+export type ButtonElement = HTMLButtonElement | HTMLAnchorElement;
 export interface Button {
     id?: string;
     label?: Label;
-    onClick?: () => void;
+    onClick?: (e: MouseEvent<ButtonElement>, button?: Button, index?: number) => void;
     href?: string;
     target?: string;
     theme?: ButtonTheme;
@@ -47,6 +49,13 @@ export interface Button {
     type?: ButtonType;
     disabled?: boolean;
     external?: boolean;
+    className?: string;
+    component?: string | ElementType;
+    renderButton?: (
+        button: Button,
+        index: number,
+        fixedProps: Record<string, unknown>,
+    ) => ReactNode;
 }
 
 /**

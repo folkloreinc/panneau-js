@@ -1,5 +1,5 @@
 import { UseMutationOptions, UseMutationResult, useMutation } from '@tanstack/react-query';
-import { isObject } from 'lodash';
+import isObject from 'lodash/isObject';
 
 import { Resource } from '@panneau/core';
 import { usePanneauResource, useResource } from '@panneau/core/contexts';

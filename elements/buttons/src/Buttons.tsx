@@ -1,26 +1,28 @@
 import classNames from 'classnames';
-import isArray from 'lodash/isArray';
+import isString from 'lodash/isString';
 import type { MouseEvent, ReactNode } from 'react';
 
-import type { ButtonSize, Button as ButtonType } from '@panneau/core';
-import { useButtonsComponents } from '@panneau/core/contexts';
+import type { ButtonElement, ButtonSize, ButtonTheme, Button as ButtonType } from '@panneau/core';
+import { useButtonsComponentsManager } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 
 interface ButtonsProps {
     items?: ButtonType[];
-    size?: ButtonSize;
-    theme?: string | null;
+    size?: ButtonSize | null;
+    theme?: ButtonTheme | null;
     outline?: boolean;
-    renderButton?: ((button: ButtonType, index: number, fixedProps: any) => ReactNode) | null;
-    onClickButton?: ((e: MouseEvent, button: ButtonType, index: number) => void) | null;
+    renderButton?:
+        | ((button: ButtonType, index: number, fixedProps: Record<string, unknown>) => ReactNode)
+        | null;
+    onClickButton?:
+        | ((e: MouseEvent<ButtonElement>, button: ButtonType, index: number) => void)
+        | null;
     className?: string | null;
     buttonClassName?: string | null;
 }
 
-const DEFAULT_ITEMS: ButtonType[] = [];
-
 function Buttons({
-    items = DEFAULT_ITEMS,
+    items = null,
     size = null,
     theme = null,
     outline = false,
@@ -29,59 +31,56 @@ function Buttons({
     buttonClassName = null,
     className = null,
 }: ButtonsProps) {
-    const componentsManager = useButtonsComponents();
+    const componentsManager = useButtonsComponentsManager();
 
     return (
         <div
             className={classNames([
                 'btn-group',
-                {
-                    [`btn-group-${size}`]: size !== null,
-                },
+                size !== null ? `btn-group-${size}` : null,
                 className,
             ])}
             role="group"
-            style={{ zIndex: 0 }}
         >
-            {isArray(items)
-                ? items.map((button, index) => {
-                      const {
-                          className: customClassName = null,
-                          onClick = null,
-                          renderButton: customRenderButton = null,
-                          component = null,
-                          ...buttonProps
-                      } = (button as any) || {};
+            {(items || []).map((button, index) => {
+                const {
+                    className: customClassName = null,
+                    onClick = null,
+                    renderButton: customRenderButton = null,
+                    component = null,
+                    ...buttonProps
+                } = (button as ButtonType) || {};
 
-                      const fixedProps = {
-                          key: `button-${index}`,
-                          className: classNames([buttonClassName, customClassName]),
-                          theme,
-                          outline,
-                          onClick: (e: MouseEvent) => {
-                              if (onClick !== null) {
-                                  onClick(e, button, index);
-                              }
-                              if (onClickButton !== null) {
-                                  onClickButton(e, button, index);
-                              }
-                          },
-                      };
+                const fixedProps = {
+                    key: `button-${index}`,
+                    className: classNames([buttonClassName, customClassName]),
+                    theme,
+                    outline,
+                    onClick: (e: MouseEvent<ButtonElement>) => {
+                        if (onClick !== null) {
+                            onClick(e, button, index);
+                        }
+                        if (onClickButton !== null) {
+                            onClickButton(e, button, index);
+                        }
+                    },
+                };
 
-                      const ButtonComponent =
-                          component !== null ? componentsManager.getComponent(component) : null;
+                const ButtonComponent =
+                    component !== null && isString(component)
+                        ? componentsManager.getComponent(component)
+                        : component;
 
-                      if (ButtonComponent !== null) {
-                          return <ButtonComponent {...fixedProps} {...buttonProps} />;
-                      }
-                      const finalRenderButton = customRenderButton || renderButton;
-                      if (finalRenderButton) {
-                          return finalRenderButton(button, index, fixedProps);
-                      }
+                if (ButtonComponent !== null) {
+                    return <ButtonComponent {...fixedProps} {...buttonProps} />;
+                }
+                const finalRenderButton = customRenderButton || renderButton;
+                if (finalRenderButton) {
+                    return finalRenderButton(button, index, fixedProps);
+                }
 
-                      return <Button {...fixedProps} {...buttonProps} />;
-                  })
-                : null}
+                return <Button {...fixedProps} {...buttonProps} />;
+            })}
         </div>
     );
 }

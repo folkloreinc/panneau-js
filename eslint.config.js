@@ -50,6 +50,7 @@ const config = defineConfig(
     {
         rules: {
             'formatjs/no-literal-string-in-jsx': 'off',
+            '@eslint-react/static-components': 'off',
         },
     },
 );

@@ -1,7 +1,8 @@
 import classNames from 'classnames';
 import { type ReactNode } from 'react';
+import { FormattedMessage } from 'react-intl';
 
-import type { Button as ButtonType, Label as LabelType } from '@panneau/core';
+import type { ButtonSize, Button as ButtonType, Label as LabelType } from '@panneau/core';
 import { isMessage } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import Buttons from '@panneau/element-buttons';
@@ -16,6 +17,13 @@ interface ModalDialogProps extends Omit<ModalProps, 'title'> {
     children?: ReactNode | null;
     footer?: ReactNode | null;
     buttons?: ButtonType[] | null;
+    buttonsSize?: ButtonSize | null;
+    submitButtonLabel?: LabelType | null;
+    cancelButtonLabel?: LabelType | null;
+    cancelButton?: Partial<ButtonType> | null;
+    submitButton?: Partial<ButtonType> | null;
+    withSubmitButton?: boolean;
+    withCancelButton?: boolean;
     withCloseOutside?: boolean;
     withoutClose?: boolean;
     className?: string | null;
@@ -23,6 +31,8 @@ interface ModalDialogProps extends Omit<ModalProps, 'title'> {
     bodyClassName?: string | null;
     footerClassName?: string | null;
     buttonsClassName?: string | null;
+    onClickSubmit?: (() => void) | null;
+    onClickCancel?: (() => void) | null;
 }
 
 function ModalDialog({
@@ -32,6 +42,11 @@ function ModalDialog({
     header = null,
     children = null,
     buttons = null,
+    buttonsSize = null,
+    submitButtonLabel = null,
+    cancelButtonLabel = null,
+    cancelButton = null,
+    submitButton = null,
     footer = null,
     requestClose = null,
     withoutClose = false,
@@ -41,9 +56,39 @@ function ModalDialog({
     bodyClassName = null,
     footerClassName = null,
     buttonsClassName = null,
+    withCancelButton = false,
+    withSubmitButton = false,
+    onClickCancel = null,
+    onClickSubmit = null,
     ...props
 }: ModalDialogProps) {
     const onCloseButtonOutside = (header === null && title === null) || withCloseOutside;
+
+    const finalButtons =
+        buttons ||
+        ([
+            withCancelButton
+                ? {
+                      label: cancelButtonLabel ?? (
+                          <FormattedMessage defaultMessage="Cancel" description="Button label" />
+                      ),
+                      onClick: onClickCancel || requestClose || undefined,
+                      theme: 'secondary',
+                      ...cancelButton,
+                  }
+                : null,
+            withSubmitButton
+                ? {
+                      label: submitButtonLabel ?? (
+                          <FormattedMessage defaultMessage="Save" description="Button label" />
+                      ),
+                      theme: 'primary',
+                      onClick: onClickSubmit || undefined,
+                      ...submitButton,
+                  }
+                : null,
+        ].filter((button) => button !== null) as ButtonType[]);
+    const hasButtons = finalButtons !== null && finalButtons.length > 0;
 
     return (
         <Modal id={id} requestClose={requestClose} {...props}>
@@ -100,11 +145,15 @@ function ModalDialog({
                         </div>
                     )}
                     <div className={classNames(['modal-body', bodyClassName])}>{children}</div>
-                    {footer !== null || buttons !== null ? (
+                    {footer !== null || hasButtons ? (
                         <div className={classNames(['modal-footer', footerClassName])}>
                             {footer !== null ? footer : null}
-                            {buttons !== null ? (
-                                <Buttons items={buttons} className={buttonsClassName} />
+                            {hasButtons ? (
+                                <Buttons
+                                    items={finalButtons}
+                                    size={buttonsSize}
+                                    className={buttonsClassName}
+                                />
                             ) : null}
                         </div>
                     ) : null}

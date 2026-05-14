@@ -1,16 +1,15 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import classNames from 'classnames';
 import isString from 'lodash/isString';
-import type { ReactNode, Ref } from 'react';
+import type { ForwardedRef, MouseEventHandler, ReactNode } from 'react';
 import { Link } from 'wouter';
 
-import type { ButtonSize, ButtonTheme, Label } from '@panneau/core';
+import type { ButtonElement, ButtonSize, ButtonTheme, Label } from '@panneau/core';
 import Icon from '@panneau/element-icon';
 
 import styles from './styles.module.css';
 
 interface ButtonProps {
-    type?: string;
+    type?: 'button' | 'submit' | 'reset';
     theme?: ButtonTheme;
     size?: ButtonSize;
     href?: string | null;
@@ -34,8 +33,8 @@ interface ButtonProps {
     className?: string | null;
     iconClassName?: string | null;
     labelClassName?: string | null;
-    onClick?: (() => void) | null;
-    refButton?: Ref<any> | null;
+    onClick?: MouseEventHandler<ButtonElement> | null;
+    ref?: ForwardedRef<ButtonElement> | null;
 }
 
 function Button({
@@ -64,7 +63,7 @@ function Button({
     className = null,
     iconClassName = null,
     labelClassName = null,
-    refButton = null,
+    ref = null,
     ...props
 }: ButtonProps) {
     const finalLabel = label || children;
@@ -79,23 +78,9 @@ function Button({
         <>
             {hasInlineIcon ? (
                 <>
-                    <span
-                        className={classNames([
-                            styles.icon,
-                            iconClassName,
-                        ])}
-                    >
-                        {finalIcon}
-                    </span>
+                    <span className={classNames([styles.icon, iconClassName])}>{finalIcon}</span>
                     {text !== null ? (
-                        <span
-                            className={classNames([
-                                styles.label,
-                                labelClassName,
-                            ])}
-                        >
-                            {text}
-                        </span>
+                        <span className={classNames([styles.label, labelClassName])}>{text}</span>
                     ) : null}
                 </>
             ) : null}
@@ -111,14 +96,7 @@ function Button({
                     >
                         {iconPosition === 'left' ? finalIcon : null}
                     </span>
-                    <span
-                        className={classNames([
-                            styles.center,
-                            labelClassName,
-                        ])}
-                    >
-                        {text}
-                    </span>
+                    <span className={classNames([styles.center, labelClassName])}>{text}</span>
                     <span
                         className={classNames([
                             styles.right,
@@ -163,24 +141,27 @@ function Button({
         className,
     ]);
 
-    if (href !== null && !disabled) {
-        return external || direct ? (
+    if (href !== null) {
+        return external || direct || disabled ? (
             <a
                 {...props}
-                href={href}
+                href={!disabled ? href : null}
                 className={buttonClassNames}
                 onClick={onClick || undefined}
                 target={external ? target : undefined}
-                ref={refButton}
+                ref={ref as ForwardedRef<HTMLAnchorElement>}
+                aria-disabled={disabled}
             >
                 {content}
             </a>
         ) : (
             <Link
+                {...props}
                 href={href}
                 onClick={onClick || undefined}
                 className={buttonClassNames}
-                ref={refButton}
+                ref={ref as ForwardedRef<HTMLAnchorElement>}
+                aria-disabled={disabled}
             >
                 {content}
             </Link>
@@ -194,7 +175,7 @@ function Button({
             className={buttonClassNames}
             onClick={onClick || undefined}
             disabled={disabled || (disableOnLoading && loading)}
-            ref={refButton}
+            ref={ref as ForwardedRef<HTMLButtonElement>}
         >
             {content}
         </button>

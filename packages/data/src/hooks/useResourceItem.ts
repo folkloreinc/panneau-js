@@ -1,7 +1,7 @@
 import { UseQueryOptions, UseQueryResult, useQuery } from '@tanstack/react-query';
-import { isObject } from 'lodash';
+import isObject from 'lodash/isObject';
 
-import { type ResourceItem, type Resource } from '@panneau/core';
+import { type Resource, type ResourceItem } from '@panneau/core';
 import { usePanneauResource, useResource } from '@panneau/core/contexts';
 
 import { useApi } from '../contexts/ApiContext';
