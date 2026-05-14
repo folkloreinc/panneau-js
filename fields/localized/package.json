@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-localized",
-    "version": "4.0.41",
+    "version": "4.0.47",
     "description": "A localized field",
     "keywords": [
         "javascript"
@@ -60,12 +60,12 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.41",
-        "@panneau/element-buttons": "^4.0.41",
-        "@panneau/element-form-group": "^4.0.41",
-        "@panneau/element-label": "^4.0.41",
-        "@panneau/field-input-group": "^4.0.41",
-        "@panneau/themes": "^4.0.41",
+        "@panneau/core": "^4.0.47",
+        "@panneau/element-buttons": "^4.0.47",
+        "@panneau/element-form-group": "^4.0.47",
+        "@panneau/element-label": "^4.0.47",
+        "@panneau/field-input-group": "^4.0.47",
+        "@panneau/themes": "^4.0.47",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "uuid": "^9.0.1"
