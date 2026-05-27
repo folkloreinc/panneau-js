@@ -208,7 +208,7 @@ function MediaField({
     }, [setResourceModalOpen]);
 
     const [modalItems, setModalItems] = useState<Media[]>([]);
-    const closeResourceModal = useCallback(() => {
+    const onModalClosed = useCallback(() => {
         setResourceModalOpen(false);
         setModalItems([]);
     }, [resourceModalOpen, setResourceModalOpen, modalKey, setModalItems]);
@@ -360,7 +360,7 @@ function MediaField({
                     selectable
                     onChange={onChangeSelection}
                     onConfirm={onConfirmSelection}
-                    onClosed={closeResourceModal}
+                    onClosed={onModalClosed}
                     uppyConfig={uppyFinalProps}
                     // buttons={[
                     //     {

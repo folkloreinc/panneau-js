@@ -1,39 +1,53 @@
-/* eslint-disable jsx-a11y/media-has-caption */
 import classNames from 'classnames';
-import type { MutableRefObject, RefObject } from 'react';
-import { forwardRef, useRef } from 'react';
+import type { ForwardedRef } from 'react';
+import { useImperativeHandle } from 'react';
+
+import { VideoMedia } from '@panneau/core';
 
 import useVideo from './hooks/useVideo';
 
 import styles from './styles.module.css';
 
-interface Media {
-    url?: string | null;
-    iframeUrl?: string | null;
-    provider?: string | null;
-    id?: string;
+interface VideoMetadata {
+    duration?: number;
     width?: number;
     height?: number;
-    duration?: number;
-    files?: {
-        h264?: { url?: string | null };
-        webm?: { url?: string | null };
-    };
 }
 
-interface VideoProps {
+export interface VideoApi {
+    play: () => void;
+    pause: () => void;
+    seek?: (time: number) => void;
+    setVolume?: (volume: number) => void;
+    mute?: () => void;
+    unmute?: () => void;
+    playing: boolean;
+    paused: boolean;
+    ended: boolean;
+    muted: boolean;
+    buffering?: boolean;
+    volume?: number;
+    currentTime?: number;
+    loaded?: boolean;
+    ready?: boolean;
+    duration?: number | null;
+    width?: number | null;
+    height?: number | null;
+}
+
+export interface VideoProps {
     autoPlay?: boolean;
     loop?: boolean;
     initialMuted?: boolean;
-    media?: Media | null;
-    width?: number | null;
-    height?: number | null;
-    apiRef?: MutableRefObject<any> | null;
+    media?: VideoMedia | null;
+    width?: number | string | null;
+    height?: number | string | null;
+    apiRef?: ForwardedRef<VideoApi> | null;
     withoutControls?: boolean;
     onPlay?: (() => void) | null;
     onPause?: (() => void) | null;
     onEnd?: (() => void) | null;
-    onMetadataChange?: ((metadata: any) => void) | null;
+    onMetadataChange?: ((metadata: VideoMetadata) => void) | null;
     onVolumeChange?: ((volume: number) => void) | null;
     onBufferStart?: (() => void) | null;
     onBufferEnded?: (() => void) | null;
@@ -76,16 +90,9 @@ function Video({
         width: videoWidth,
         height: videoHeight,
         duration: videoDuration,
+        files = null,
     } = media || {};
 
-    const lastVideoRef = useRef(media);
-    if (lastVideoRef.current === null) {
-        lastVideoRef.current = media;
-    } else {
-        lastVideoRef.current = media;
-    }
-
-    const { files = null } = lastVideoRef.current || {};
     const { h264 = null, webm = null } = files || {};
     const { url: h264Url = null } = h264 || {};
     const { url: webmUrl = null } = webm || {};
@@ -112,20 +119,15 @@ function Video({
         onLoaded,
     });
 
-    if (apiRef !== null) {
-        apiRef.current = api;
-    }
+    useImperativeHandle(apiRef, () => api, [api]);
 
     const { muted, playing, buffering, loaded } = api;
 
     const loading = finalUrl !== null && (!loaded || buffering);
     const paused = !playing && !loading && loaded;
 
-    const el = useRef<HTMLDivElement>(null);
-
     return (
         <div
-            ref={el}
             className={classNames([
                 styles.videoContainer,
                 {
@@ -144,14 +146,7 @@ function Video({
                             key={media !== null ? `video-${finalUrl}` : 'video'}
                             className={classNames([styles.iframe, iframeClassName])}
                             title="video"
-                            frameBorder={0}
-                            src={
-                                lastVideoRef.current !== null
-                                    ? lastVideoRef.current.iframeUrl ||
-                                      lastVideoRef.current.url ||
-                                      undefined
-                                    : undefined
-                            }
+                            src={iframeUrl ?? url}
                             ref={ref}
                             allow="autoplay"
                             allowFullScreen
@@ -164,7 +159,6 @@ function Video({
                             key={media !== null ? `video-${url}` : 'video'}
                             className={classNames([styles.video, videoClassName])}
                             src={finalUrl || undefined}
-                            type="video/mp4"
                             playsInline={playsInline || undefined}
                             ref={ref}
                             style={{ width: width || undefined, height: height || undefined }}
@@ -178,6 +172,4 @@ function Video({
     );
 }
 
-export default ({ ref, ...props }: VideoProps & { ref?: RefObject<any | null> }) => (
-    <Video apiRef={ref} {...props} />
-);
+export default Video;

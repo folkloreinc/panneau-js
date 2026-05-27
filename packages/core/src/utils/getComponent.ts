@@ -1,18 +1,21 @@
-import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
+import { ElementType } from 'react';
 
 interface ComponentResult {
-    name: unknown;
+    name: string | ElementType | null;
     props: Record<string, unknown> | null;
 }
 
-function getComponent(component: unknown): ComponentResult {
-    const { component: name, ...props } = isObject(component)
-        ? (component as Record<string, unknown>)
-        : {
+function getComponent(
+    component: string | { component: string | ElementType; [key: string]: unknown },
+): ComponentResult {
+    const { component: name = null, ...props } = isString(component)
+        ? {
               component,
-          };
+          }
+        : component || {};
     return {
-        name: component,
+        name,
         props: Object.keys(props).length > 0 ? props : null,
     };
 }

@@ -22,9 +22,9 @@ function MediaFrame({
     const [showPlayer, setShowPlayer] = useState(initialShowPlayer);
     const { type = null } = value || {};
 
-    const onClick = useCallback(() => {
+    const onClick = () => {
         setShowPlayer(!showPlayer);
-    }, [showPlayer, setShowPlayer]);
+    };
 
     return (
         <div

@@ -36,6 +36,7 @@ function Container({ value: initialValue = null, ...props } = {}) {
     const [value, setValue] = useState(initialValue);
     const onChange = useCallback(
         (newValue) => {
+            console.log(newValue);
             setValue(newValue);
         },
         [setValue],

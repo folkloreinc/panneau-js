@@ -1,24 +1,16 @@
-/* eslint-disable jsx-a11y/media-has-caption */
 import classNames from 'classnames';
-import type { RefObject } from 'react';
-import { forwardRef, useRef } from 'react';
+
+import { AudioMedia } from '@panneau/core';
 
 import styles from './styles.module.css';
 
-interface Media {
-    url?: string | null;
-    thumbnail_url?: string | null;
-    thumbnailUrl?: string | null;
-    provider?: string | null;
-}
-
-interface AudioProps {
+export interface AudioProps {
     autoPlay?: boolean;
     muted?: boolean;
     loop?: boolean;
-    media?: Media | null;
-    width?: number | null;
-    height?: number | null;
+    media?: AudioMedia | null;
+    width?: number | string | null;
+    height?: number | string | null;
     withoutControls?: boolean;
     className?: string | null;
     audioClassName?: string | null;
@@ -42,12 +34,10 @@ function Audio({
         provider: videoProvider = null,
     } = media || {};
 
-    const el = useRef<HTMLDivElement>(null);
     const finalThumbnailUrl = thumbnail || thumbnailUrl || null;
 
     return (
         <div
-            ref={el}
             className={classNames([
                 styles.audioContainer,
                 {
@@ -64,8 +54,7 @@ function Audio({
                 <audio
                     key={media !== null ? `video-${url}` : 'video'}
                     className={classNames([styles.audio, audioClassName])}
-                    src={url !== null ? url : undefined}
-                    type="audio/mp3"
+                    src={url}
                     style={{ width: width || undefined, height: height || undefined }}
                     controls={!withoutControls}
                     loop={loop}
@@ -77,6 +66,4 @@ function Audio({
     );
 }
 
-export default ({ ref, ...props }: AudioProps & { ref?: RefObject<any | null> }) => (
-    <Audio {...props} />
-);
+export default Audio;

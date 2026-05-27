@@ -1,7 +1,9 @@
-import { useCallback, useState } from 'react';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
+import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { type Media, Resource } from '@panneau/core';
+import type { Button, Media, Resource } from '@panneau/core';
 import { MediasPickerContainer, MediasResourcePicker } from '@panneau/medias';
 import Dialog from '@panneau/modal-dialog';
 
@@ -11,15 +13,15 @@ interface MediasPickerModalProps {
     resource?: Resource | string | null;
     title?: string | null;
     multiple?: boolean;
-    onChange?: ((items: Media[]) => void) | null;
+    onChange?: ((items: Media | Media[] | null) => void) | null;
     onClosed?: (() => void) | null;
-    confirmButton?: Record<string, unknown> | null;
-    cancelButton?: Record<string, unknown> | null;
+    confirmButton?: Button | null;
+    cancelButton?: Button | null;
 }
 
 function MediasPickerModal({
     id,
-    value = null,
+    value: initialValue = null,
     resource = null,
     title = null,
     onChange = null,
@@ -30,31 +32,31 @@ function MediasPickerModal({
     ...props
 }: MediasPickerModalProps) {
     const [opened, setOpened] = useState(true);
-    const requestClose = useCallback(() => {
+    const requestClose = () => {
         setOpened(false);
-    }, [onClosed]);
-    const [selectedItems, setSelectedItems] = useState(value);
-    const onConfirm = useCallback(() => {
-        if (onChange !== null) {
-            onChange(selectedItems);
-        }
-        requestClose();
-    }, [onChange, requestClose, selectedItems]);
-
-    const onSelectionChange = useCallback(
-        (items: Media[]) => {
-            setSelectedItems(items);
-        },
-        [setSelectedItems],
+    };
+    const [selectedItems, setSelectedItems] = useState<Media[] | null>(() =>
+        isObject(initialValue) && !isArray(initialValue) ? [initialValue] : initialValue,
     );
 
+    const onConfirm = () => {
+        if (onChange !== null) {
+            onChange(!multiple ? selectedItems?.[0] || null : selectedItems);
+        }
+        requestClose();
+    };
+
+    const onSelectionChange = (items: Media[]) => {
+        setSelectedItems(items);
+    };
+
     const [mediaFormOpen, setMediaFormOpen] = useState(false);
-    const onMediaFormOpen = useCallback(() => {
+    const onMediaFormOpen = () => {
         setMediaFormOpen(true);
-    }, [setMediaFormOpen]);
-    const onMediaFormClose = useCallback(() => {
+    };
+    const onMediaFormClose = () => {
         setMediaFormOpen(false);
-    }, [setMediaFormOpen]);
+    };
 
     return (
         <Dialog
@@ -64,36 +66,18 @@ function MediasPickerModal({
             requestClose={requestClose}
             onClosed={onClosed}
             title={title}
-            buttons={
-                !mediaFormOpen
-                    ? [
-                          {
-                              id: 'cancel',
-                              label: (
-                                  <FormattedMessage
-                                      defaultMessage="Cancel"
-                                      description="Button label"
-                                  />
-                              ),
-                              theme: 'secondary',
-                              onClick: requestClose,
-                              ...cancelButton,
-                          },
-                          {
-                              id: 'confirm',
-                              label: (
-                                  <FormattedMessage
-                                      defaultMessage="Confirm selection"
-                                      description="Button label"
-                                  />
-                              ),
-                              theme: 'primary',
-                              onClick: onConfirm,
-                              ...confirmButton,
-                          },
-                      ]
-                    : null
+            withCancelButton={!mediaFormOpen}
+            withSubmitButton={!mediaFormOpen}
+            submitButtonLabel={
+                <FormattedMessage defaultMessage="Confirm selection" description="Button label" />
             }
+            submitButton={{
+                ...confirmButton,
+                disabled: selectedItems === null || selectedItems.length === 0,
+            }}
+            cancelButton={cancelButton}
+            onClickSubmit={onConfirm}
+            buttonsSize="lg"
         >
             {resource !== null ? (
                 <MediasResourcePicker
@@ -101,7 +85,6 @@ function MediasPickerModal({
                     value={selectedItems}
                     resource={resource}
                     onChange={onSelectionChange}
-                    onClose={requestClose}
                     multiple={multiple}
                     onMediaFormOpen={onMediaFormOpen}
                     onMediaFormClose={onMediaFormClose}
@@ -111,7 +94,6 @@ function MediasPickerModal({
                     {...props}
                     value={selectedItems}
                     onChange={onSelectionChange}
-                    onClose={requestClose}
                     multiple={multiple}
                     onMediaFormOpen={onMediaFormOpen}
                     onMediaFormClose={onMediaFormClose}

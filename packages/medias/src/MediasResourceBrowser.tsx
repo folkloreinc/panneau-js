@@ -1,15 +1,12 @@
-/* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
-import { useMemo } from 'react';
-
+import type { Resource } from '@panneau/core';
 import { usePanneauResource } from '@panneau/core/contexts';
 import { useApi } from '@panneau/data';
 
 import { MediasApi } from './MediasApiContext';
-import MediasBrowserContainer from './MediasBrowserContainer';
+import MediasBrowserContainer, { MediasBrowserContainerProps } from './MediasBrowserContainer';
 
-interface MediasResourceBrowserProps {
-    resource?: string | null;
-    [key: string]: unknown;
+export interface MediasResourceBrowserProps extends MediasBrowserContainerProps {
+    resource?: Resource | string | null;
 }
 
 function MediasResourceBrowser({
@@ -17,6 +14,8 @@ function MediasResourceBrowser({
     ...props
 }: MediasResourceBrowserProps) {
     const resource = usePanneauResource(resourceId);
+    const { index = null, fields = null } = resource || {};
+    const { filters = null, columns = null } = index || {};
     const api = useApi();
     const mediasApi: MediasApi = {
         get: (...args) => api.resources.get(resource, ...args),
@@ -27,7 +26,15 @@ function MediasResourceBrowser({
         trash: (...args) => api.resources.trash(resource, ...args),
         delete: (...args) => api.resources.destroy(resource, ...args),
     };
-    return <MediasBrowserContainer api={mediasApi} {...props} />;
+    return (
+        <MediasBrowserContainer
+            api={mediasApi}
+            {...(filters !== null ? { filters } : null)}
+            {...(fields !== null ? { fields } : null)}
+            {...(columns !== null ? { columns } : null)}
+            {...props}
+        />
+    );
 }
 
 export default MediasResourceBrowser;

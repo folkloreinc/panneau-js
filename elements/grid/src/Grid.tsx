@@ -1,25 +1,22 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
-import isArray from 'lodash/isArray';
-import { type ComponentType, type ReactNode, useCallback, useMemo } from 'react';
+import type { ElementType, ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { type Item } from '@panneau/core';
-import { selectItem, toggleSelectedItem } from '@panneau/core/utils';
+import { toggleSelectedItem } from '@panneau/core/utils';
 import Empty from '@panneau/element-empty';
 import Loading from '@panneau/element-loading';
 
 import styles from './styles.module.css';
 
-interface GridItem {
-    id?: string;
+interface GridItem extends Item {
     actionsDisabled?: boolean;
     selectionDisabled?: boolean;
 }
 
 interface GridProps {
     items?: GridItem[];
-    component?: ComponentType<any> | null;
+    component?: ElementType | null;
     componentProps?: Record<string, unknown> | null;
     size?: string | null;
     gap?: string | null;
@@ -54,22 +51,19 @@ function Grid({
 }: GridProps) {
     const Component = component || null;
 
-    const onSelectItem = useCallback(
-        (newItem: GridItem | null = null) => {
-            const newSelectedItems = toggleSelectedItem(newItem as any, selectedItems as any, {
-                multiple: multipleSelection,
-            });
-            if (onSelectionChange !== null) {
-                onSelectionChange(newSelectedItems);
-            }
-        },
-        [items, selectedItems, onSelectionChange, multipleSelection],
-    );
+    const onSelectItem = (newItem: GridItem | null = null) => {
+        const newSelectedItems = toggleSelectedItem(selectedItems, newItem, {
+            multiple: multipleSelection,
+        });
+        if (onSelectionChange !== null) {
+            onSelectionChange(newSelectedItems);
+        }
+    };
 
     return (
         <div
             className={classNames([styles.container, styles[size], className])}
-            style={gap !== null ? ({ gridGap: gap } as any) : undefined}
+            style={gap !== null ? { gridGap: gap } : undefined}
         >
             <div className={styles.inner}>
                 {Component !== null
@@ -81,9 +75,8 @@ function Grid({
                           } = item || {};
                           const itemSelectable = selectionDisabled ? false : selectable;
                           const selected = itemSelectable
-                              ? ((selectedItems || []).find(
-                                    ({ id = null }: any = {}) => id === itemId,
-                                ) || null) !== null
+                              ? ((selectedItems || []).find(({ id = null }) => id === itemId) ||
+                                    null) !== null
                               : false;
                           return (
                               <Component

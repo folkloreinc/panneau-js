@@ -133,11 +133,6 @@ export interface Font {
 }
 
 /**
- * Tracking variables
- */
-export type TrackingVariables = Record<string, unknown>;
-
-/**
  * Trigger update identifier
  */
 export type TriggerUpdate = string;
@@ -147,4 +142,12 @@ export interface Pagination {
     count: number;
     total: number;
     last_page: number;
+}
+
+/**
+ * Generic item (base interface for data items)
+ */
+export interface Item {
+    id: string;
+    [key: string]: unknown;
 }

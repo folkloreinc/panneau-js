@@ -1,20 +1,15 @@
-/* eslint-disable jsx-a11y/control-has-associated-label  */
 import classNames from 'classnames';
 import get from 'lodash/get';
-import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
-import type { ComponentType, MouseEvent, ReactNode } from 'react';
-import { useCallback, useMemo } from 'react';
+import type { ChangeEvent, ElementType, ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Field, Item, Label, TableColumn } from '@panneau/core';
+import type { Column, Item, Label } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
 import {
     getComponentFromName,
-    selectItem,
     selectItems,
-    selectPage,
     toggleSelectedItem,
     unselectItems,
 } from '@panneau/core/utils';
@@ -23,18 +18,25 @@ import Loading from '@panneau/element-loading';
 
 import SortLink from './SortLink';
 
+interface TableItem extends Item {
+    rowClassName?: string | null;
+    actionsDisabled?: boolean;
+    selectionDisabled?: boolean;
+    loading?: boolean;
+}
+
 interface TableProps {
-    items?: Item[];
-    columns?: TableColumn[];
+    items?: TableItem[];
+    columns?: Column[];
     loading?: boolean;
     loaded?: boolean;
     empty?: boolean;
     theme?: string | null;
     baseUrl?: string | null;
-    query?: Record<string, any> | null;
+    query?: Record<string, unknown> | null;
     sortColumnParameter?: string;
     sortDirectionParameter?: string;
-    onQueryChange?: ((query: Record<string, any>) => void) | null;
+    onQueryChange?: ((query: Record<string, unknown>) => void) | null;
     emptyLabel?: Label | null;
     striped?: boolean;
     stripedColumns?: boolean;
@@ -48,14 +50,14 @@ interface TableProps {
     withCustomActionsColumn?: boolean;
     withoutLoading?: boolean;
     withoutEmpty?: boolean;
-    actionsComponent?: ComponentType<any> | null;
-    actionsProps?: Record<string, any> | null;
+    actionsComponent?: ElementType | null;
+    actionsProps?: Record<string, unknown> | null;
     actionsClassName?: string | null;
     className?: string | null;
 }
 
 const DEFAULT_ITEMS: Item[] = [];
-const DEFAULT_COLUMNS: TableColumn[] = [];
+const DEFAULT_COLUMNS: Column[] = [];
 
 function Table({
     items = DEFAULT_ITEMS,
@@ -89,58 +91,39 @@ function Table({
 }: TableProps) {
     const displayComponents = useDisplaysComponents();
     const hasIdColumn =
-        (columns.find(({ id, field }: any) => id === 'id' || (field as any) === 'id') || null) !==
-        null;
+        (columns.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
     const Actions = actionsComponent || null;
     const withActionsColumn = withCustomActionsColumn && Actions !== null;
     const withIdColumn = !withoutId && !hasIdColumn && !selectable;
 
-    const onSelectItem = useCallback(
-        (newItem: Item | null = null) => {
-            const newSelectedItems = toggleSelectedItem(selectedItems, newItem, {
-                multiple: multipleSelection,
-            });
-            if (newSelectedItems !== selectedItems && onSelectionChange !== null) {
-                onSelectionChange(newSelectedItems);
-            }
-        },
-        [items, selectedItems, onSelectionChange, multipleSelection],
-    );
-
-    const onSelectPage = useCallback(
-        (pageSelected = false) => {
-            const newSelectedItems = pageSelected
-                ? selectItems(selectedItems, items)
-                : unselectItems(selectedItems, items);
-            if (newSelectedItems !== selectedItems && onSelectionChange !== null) {
-                onSelectionChange(newSelectedItems);
-            }
-        },
-        [items, selectedItems, onSelectionChange],
-    );
-
-    const pageSelected = useMemo(() => {
-        if (
-            items === null ||
-            items.length === 0 ||
-            selectedItems === null ||
-            selectedItems.length === 0 ||
-            !multipleSelection
-        ) {
-            return false;
+    const onSelectItem = (newItem: Item | null = null) => {
+        const newSelectedItems = toggleSelectedItem(selectedItems, newItem, {
+            multiple: multipleSelection,
+        });
+        if (newSelectedItems !== selectedItems && onSelectionChange !== null) {
+            onSelectionChange(newSelectedItems);
         }
-        const ids =
-            (items || []).map(({ id = null }: any = {}) => id).filter((id) => id !== null) || [];
-        if (ids === null || ids.length === 0) {
-            return false;
+    };
+
+    const onSelectPage = (pageSelected = false) => {
+        const newSelectedItems = pageSelected
+            ? selectItems(selectedItems, items)
+            : unselectItems(selectedItems, items);
+        if (newSelectedItems !== selectedItems && onSelectionChange !== null) {
+            onSelectionChange(newSelectedItems);
         }
-        const currentPageItems =
-            (selectedItems || []).filter((it: any) => {
-                const { id = null } = it || {};
-                return (ids || []).indexOf(id) !== -1;
-            }) || [];
-        return currentPageItems.length > 0 && currentPageItems.length === (items || []).length;
-    }, [selectedItems, items, multipleSelection, selectedItems]);
+    };
+
+    const ids = (items || []).map(({ id = null }) => id).filter((id) => id !== null) || [];
+    const currentPageItems =
+        (selectedItems || []).filter((it) => {
+            const { id = null } = it;
+            return (ids || []).indexOf(id) !== -1;
+        }) || [];
+    const pageSelected =
+        multipleSelection &&
+        currentPageItems.length > 0 &&
+        currentPageItems.length === (items || []).length;
 
     return (
         <div>
@@ -152,8 +135,8 @@ function Table({
                         'table-hover',
                         'align-middle',
                         'mb-0',
+                        theme !== null ? `table-${theme}` : null,
                         {
-                            [`table-${theme}`]: theme !== null,
                             'table-striped': striped,
                             'table-striped-columns': stripedColumns,
                         },
@@ -180,7 +163,7 @@ function Table({
                                 </th>
                             ) : null}
                             {withIdColumn ? <th scope="col">#</th> : null}
-                            {columns.map((column: any, idx: number) => {
+                            {columns.map((column, idx: number) => {
                                 const {
                                     id,
                                     field = null,
@@ -222,7 +205,7 @@ function Table({
                         </tr>
                     </thead>
                     <tbody>
-                        {items.map((it: any, rowIdx: number) => {
+                        {items.map((it, rowIdx: number) => {
                             const {
                                 id = null,
                                 rowClassName = null,
@@ -234,11 +217,11 @@ function Table({
                             const checked =
                                 selectable && !selectionDisabled
                                     ? ((selectedItems || []).find(
-                                          ({ id: itemId = null }: any = {}) => id === itemId,
+                                          ({ id: itemId = null }) => id === itemId,
                                       ) || null) !== null
                                     : false;
 
-                            const selectRow = (e: MouseEvent) => {
+                            const selectRow = (e: ChangeEvent) => {
                                 if (
                                     onSelectItem !== null &&
                                     !selectionDisabled &&
@@ -301,7 +284,7 @@ function Table({
                                         </td>
                                     ) : null}
 
-                                    {columns.map((column: any, idx: number) => {
+                                    {columns.map((column, idx: number) => {
                                         const {
                                             id: colId,
                                             component,
@@ -321,16 +304,16 @@ function Table({
                                             displayComponents,
                                             isActions && actionsComponent !== null
                                                 ? actionsComponent
-                                                : ('span' as any),
+                                                : 'span',
                                         );
 
-                                        let displayValue: any = null;
+                                        let displayValue = null;
                                         if (path !== null) {
                                             displayValue = get(it, path, null);
                                         } else if (field !== null) {
                                             displayValue = get(
                                                 it,
-                                                (field as Field).name || field,
+                                                isString(field) ? field : field?.name,
                                                 null,
                                             );
                                         }
@@ -347,8 +330,8 @@ function Table({
                                                                 displayValue.length >= 30) ||
                                                             isObject(displayValue),
                                                         'text-end': isActions && !withActionsColumn,
-                                                        [columnClassName]: columnClassName !== null,
                                                     },
+                                                    columnClassName,
                                                 ])}
                                             >
                                                 {FieldDisplayComponent !== null ? (

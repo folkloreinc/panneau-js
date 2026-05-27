@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { createContext, use, useMemo, useState } from 'react';
 

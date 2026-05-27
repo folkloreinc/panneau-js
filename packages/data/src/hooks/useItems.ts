@@ -19,6 +19,12 @@ export type UseItemsResponse<T> =
 
 type UseItemsKey = [string, Record<string, unknown> | null, number | null, number | null];
 
+type Query = {
+    page?: number | null;
+    count?: number | null;
+    [key: string]: unknown;
+};
+
 export type UseItemsOptions<T> = Omit<
     UseQueryOptions<UseItemsResponse<T>, Error, UseItemsResponse<T>, UseItemsKey>,
     'queryKey' | 'queryFn'
@@ -33,13 +39,14 @@ export type UseItemsOptions<T> = Omit<
         | null;
     page?: number | null;
     count?: number | null;
-    query?: Record<string, unknown> | null;
+    query?: Query | null;
     keepData?: boolean;
 };
 
 type UseItemsResult<T> = {
     items: T[];
     allItems: T[];
+    pages: Record<string, UseItemsResponse<T>>;
     pagination: { page: number; lastPage: number; total: number } | null;
     loading: boolean;
     loaded: boolean;

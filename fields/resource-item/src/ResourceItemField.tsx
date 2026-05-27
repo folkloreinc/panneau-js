@@ -12,9 +12,7 @@ import { useResourceItems } from '@panneau/data';
 import Button from '@panneau/element-button';
 import ResourceCard from '@panneau/element-resource-card';
 import Select from '@panneau/element-select';
-import ResourceForm from '@panneau/form-resource';
 import { useResourceValues } from '@panneau/intl';
-import Dialog from '@panneau/modal-dialog';
 import ModalResourceForm from '@panneau/modal-resource-form';
 import ModalResourceItems from '@panneau/modal-resource-items';
 

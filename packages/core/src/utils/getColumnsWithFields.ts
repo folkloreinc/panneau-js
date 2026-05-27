@@ -1,27 +1,21 @@
 import isString from 'lodash/isString';
+import { ElementType } from 'react';
 
-import type { Field, Resource, TableColumn } from '../types';
+import type { Column, Field, Resource, TableColumn } from '../types';
 import getComponent from './getComponent';
-
-interface Column extends Record<string, unknown> {
-    id?: string | null;
-    label?: unknown;
-    valueKey?: string;
-    component?: string | null;
-    field?: Field | string | null;
-}
 
 export function getColumnFromField(field: Field | null): Column | null {
     if (field === null) {
         return null;
     }
-    // eslint-disable-next-line camelcase
     const {
         name,
         components: { display = null } = {},
         label,
     } = field as Field & {
-        components?: { display?: unknown };
+        components?: {
+            display?: string | { component: string | ElementType; [key: string]: unknown };
+        };
     };
     const { name: componentName = null, props: componentProps = null } = getComponent(display);
     return {
@@ -34,10 +28,7 @@ export function getColumnFromField(field: Field | null): Column | null {
     };
 }
 
-export function getColumnsWithFields(
-    resource: Resource,
-    columns: TableColumn[] | null,
-): Column[] {
+export function getColumnsWithFields(resource: Resource, columns: TableColumn[] | null): Column[] {
     const { fields = [] } = resource;
     const newColumns =
         columns !== null
@@ -59,7 +50,7 @@ export function getColumnsWithFields(
                           id: colId || (isString(column) ? column : null) || null,
                       };
                   })
-                  .filter((it): it is Column => it !== null)
+                  .filter((it) => it !== null)
             : [];
 
     return newColumns;

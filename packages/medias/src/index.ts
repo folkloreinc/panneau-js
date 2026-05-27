@@ -1,10 +1,16 @@
 export { default as MediaForm } from './MediaForm';
 
-export { default as MediasBrowser } from './MediasBrowser';
-export { default as MediasPicker } from './MediasPicker';
+export { default as MediasBrowser, type MediasBrowserProps } from './MediasBrowser';
+export { default as MediasPicker, type MediasPickerProps } from './MediasPicker';
 
-export { default as MediasBrowserContainer } from './MediasBrowserContainer';
-export { default as MediasPickerContainer } from './MediasPickerContainer';
+export {
+    default as MediasBrowserContainer,
+    type MediasBrowserContainerProps,
+} from './MediasBrowserContainer';
+export {
+    default as MediasPickerContainer,
+    type MediasPickerContainerProps,
+} from './MediasPickerContainer';
 
 export * from './MediaContext';
 export * from './MediasApiContext';

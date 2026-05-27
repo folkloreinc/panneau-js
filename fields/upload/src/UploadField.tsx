@@ -8,7 +8,7 @@ import isObject from 'lodash/isObject';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Label as LabelType } from '@panneau/core';
+import type { Label as LabelType, MediaType } from '@panneau/core';
 import { useQuery } from '@panneau/core/hooks';
 // import { useModal } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
@@ -25,7 +25,6 @@ import '@uppy/dashboard/css/style.css';
 
 // import '@uppy/react/css/style.css';
 
-type MediaType = 'audio' | 'image' | 'video' | 'document';
 type MediaSource = 'webcam' | 'facebook' | 'instagram' | 'dropbox' | 'google-drive';
 
 interface Media {
@@ -388,12 +387,10 @@ function UploadField({
             ) : null}
 
             {!withoutMedia && hasMedia && withClearButton ? (
-                <div className="row mt-2">
-                    <div className="col-auto">
-                        <Button type="button" theme="primary" onClick={onClickClear}>
-                            <Label>{clearButtonLabel}</Label>
-                        </Button>
-                    </div>
+                <div className="d-flex">
+                    <Button type="button" theme="primary" onClick={onClickClear}>
+                        <Label>{clearButtonLabel}</Label>
+                    </Button>
                 </div>
             ) : null}
 
@@ -442,46 +439,43 @@ function UploadField({
             ) : null}
 
             {withoutMedia || ((!hasMedia || allowMultipleUploads) && (withButton || withFind)) ? (
-                <div className="row">
+                <div className="d-flex">
                     {withButton ? (
-                        <div className="col-auto mb-2 pe-0">
-                            <Button
-                                id="trigger-uppy"
-                                type="button"
-                                theme="primary"
-                                icon={finalLoading ? 'loading' : 'upload'}
-                                iconPosition="right"
-                                onClick={onClickAdd || openModal}
-                                disabled={finalLoading || disabled}
-                                outline={outline}
-                            >
-                                <Label>
-                                    {finalLoading ? (
-                                        <FormattedMessage
-                                            defaultMessage="Uploading"
-                                            description="Button label"
-                                        />
-                                    ) : (
-                                        addButtonLabel
-                                    )}
-                                </Label>
-                            </Button>
-                        </div>
+                        <Button
+                            id="trigger-uppy"
+                            type="button"
+                            theme="primary"
+                            icon={finalLoading ? 'loading' : 'upload'}
+                            iconPosition="right"
+                            onClick={onClickAdd || openModal}
+                            disabled={finalLoading || disabled}
+                            outline={outline}
+                            className={classNames([{ 'me-2': withFind }])}
+                        >
+                            <Label>
+                                {finalLoading ? (
+                                    <FormattedMessage
+                                        defaultMessage="Uploading"
+                                        description="Button label"
+                                    />
+                                ) : (
+                                    addButtonLabel
+                                )}
+                            </Label>
+                        </Button>
                     ) : null}
                     {withFind ? (
-                        <div className="col-auto mb-2">
-                            <Button
-                                type="button"
-                                theme="primary"
-                                icon="search"
-                                iconPosition="right"
-                                onClick={finalOnClickFind}
-                                disabled={disabled}
-                                outline={outline}
-                            >
-                                <Label>{findButtonLabel}</Label>
-                            </Button>
-                        </div>
+                        <Button
+                            type="button"
+                            theme="primary"
+                            icon="search"
+                            iconPosition="right"
+                            onClick={finalOnClickFind}
+                            disabled={disabled}
+                            outline={outline}
+                        >
+                            <Label>{findButtonLabel}</Label>
+                        </Button>
                     ) : null}
                 </div>
             ) : null}

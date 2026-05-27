@@ -3,25 +3,18 @@ import type { Media } from '@panneau/core';
 import { MediaProvider } from './MediaContext';
 import type { MediasApi } from './MediasApiContext';
 import { MediasApiProvider } from './MediasApiContext';
-import MediasPicker from './MediasPicker';
+import MediasPicker, { MediasPickerProps } from './MediasPicker';
 
-interface MediasPickerContainerProps {
+export interface MediasPickerContainerProps extends MediasPickerProps {
     api?: MediasApi | null;
     media?: Media | null;
-    onChange?: ((...args: unknown[]) => void) | null;
-    [key: string]: unknown;
 }
 
-function MediasPickerContainer({
-    api = null,
-    media = null,
-    onChange = null,
-    ...props
-}: MediasPickerContainerProps) {
+function MediasPickerContainer({ api = null, media = null, ...props }: MediasPickerContainerProps) {
     return (
         <MediasApiProvider api={api}>
             <MediaProvider media={media}>
-                <MediasPicker {...props} onChange={onChange} />
+                <MediasPicker {...props} />
             </MediaProvider>
         </MediasApiProvider>
     );

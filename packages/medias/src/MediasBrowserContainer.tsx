@@ -1,15 +1,13 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import type { Media } from '@panneau/core';
 
 import { MediaProvider } from './MediaContext';
 import type { MediasApi } from './MediasApiContext';
 import { MediasApiProvider } from './MediasApiContext';
-import MediasBrowser from './MediasBrowser';
+import MediasBrowser, { MediasBrowserProps } from './MediasBrowser';
 
-interface MediasBrowserContainerProps {
+export interface MediasBrowserContainerProps extends MediasBrowserProps {
     api?: MediasApi | null;
     media?: Media | null;
-    [key: string]: unknown;
 }
 
 function MediasBrowserContainer({

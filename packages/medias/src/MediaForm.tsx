@@ -1,10 +1,9 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Media } from '@panneau/core';
+import type { Field, Media } from '@panneau/core';
 import { useFieldComponent } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
@@ -19,12 +18,11 @@ import defaultFields from './defaults/fields';
 
 import styles from './styles.module.css';
 
-type MediaFormField = Record<string, unknown>;
 type MediaFormPayload = Record<string, unknown>;
 
 interface MediaFormProps {
     value?: Media | null;
-    fields?: MediaFormField[] | null;
+    fields?: Field[] | null;
     onChange?: ((newValue: Media | null) => void) | null;
     onSave?: ((newValue: Media | null) => void) | null;
     onReplace?: ((newValue: unknown) => void) | null;

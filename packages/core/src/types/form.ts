@@ -2,7 +2,7 @@
  * Form Types
  * TypeScript interfaces for form-related components
  */
-import { ReactNode } from 'react';
+import { ElementType, ReactNode } from 'react';
 
 import { Label } from './core';
 
@@ -32,7 +32,7 @@ export type SelectOption =
 export interface Field {
     name?: string; // Not required on localized fields
     type?: string;
-    component?: string;
+    component?: string | ElementType;
     label?: ReactNode;
 }
 
@@ -43,16 +43,3 @@ export interface Form {
     title: ReactNode;
     fields?: Field[];
 }
-
-/**
- * Table column definition
- */
-export type TableColumn =
-    | string
-    | {
-          id?: string;
-          component?: string;
-          path?: string;
-          field?: string;
-          columnClassName?: string;
-      };

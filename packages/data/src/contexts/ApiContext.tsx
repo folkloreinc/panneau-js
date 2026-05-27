@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import type { ReactNode } from 'react';
 import { createContext, use, useMemo } from 'react';
 

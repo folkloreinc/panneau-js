@@ -161,7 +161,7 @@ function Pagination({
                     <Icon className="ps-1" name="x" bold />
                 </button>
             ) : null}
-            <span className="text-muted">{element}</span>
+            <span className="text-muted text-nowrap">{element}</span>
         </div>
     );
 

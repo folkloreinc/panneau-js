@@ -1,13 +1,18 @@
 import { pascalCase } from 'change-case';
-import type { ComponentType } from 'react';
+import isFunction from 'lodash/isFunction';
+import isObject from 'lodash/isObject';
+import type { ElementType } from 'react';
 
-function getComponentFromName<T = ComponentType<unknown> | 'string'>(
-    name: string | null = null,
-    components: Record<string, T> | null = {},
-    defaultComponent: T | null = null,
-): T | null {
+function getComponentFromName(
+    name: string | ElementType | null = null,
+    components: Record<string, ElementType> | null = {},
+    defaultComponent: ElementType | null = null,
+): ElementType | null {
     if (components === null || name === null) {
         return defaultComponent;
+    }
+    if (isObject(name) || isFunction(name)) {
+        return name;
     }
     const pascalName = pascalCase(name);
     const component = components[pascalName] || components[name] || defaultComponent;

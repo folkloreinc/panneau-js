@@ -2,7 +2,25 @@
  * Resource Types
  * TypeScript interfaces for resources, items, users, media, and other entities
  */
-import { Field, TableColumn } from './form';
+import { ElementType } from 'react';
+
+import { Item } from './core';
+import { Field } from './form';
+
+/**
+ * Table column definition
+ */
+export type TableColumn = string | Column;
+
+export interface Column extends Record<string, unknown> {
+    id?: string | null;
+    label?: unknown;
+    path?: string;
+    valueKey?: string;
+    component?: string | ElementType | null;
+    field?: Field | string | null;
+    actions?: ActionDefinition[] | null;
+}
 
 export interface Action {
     id?: string;
@@ -59,27 +77,8 @@ export interface Resource {
     settings?: Record<string, unknown>;
 }
 
-/**
- * Generic item (base interface for data items)
- */
-export interface Item {
-    id: string;
-    [key: string]: unknown;
-}
-
 export interface ResourceItem extends Item {
     type?: string;
-}
-
-/**
- * Media file definition
- */
-export interface Media extends Item {
-    id: string;
-    name: string;
-    type: string;
-    thumbnail_url?: string;
-    [key: string]: unknown;
 }
 
 /**

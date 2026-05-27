@@ -56,10 +56,17 @@ export interface PanneauIntl {
 }
 
 /**
+ * Generic definition
+ */
+export interface Definition {
+    name?: string;
+    [key: string]: unknown;
+}
+
+/**
  * Panneau definition (main configuration)
  */
-export interface PanneauDefinition {
-    name?: string;
+export interface PanneauDefinition extends Definition {
     resources?: Resource[];
     routes?: Routes;
     pages?: Record<string, Page>;
@@ -70,9 +77,6 @@ export interface PanneauDefinition {
 }
 
 /**
- * Generic definition
+ * Tracking variables
  */
-export interface Definition {
-    name?: string;
-    [key: string]: unknown;
-}
+export type TrackingVariables = Record<string, unknown>;

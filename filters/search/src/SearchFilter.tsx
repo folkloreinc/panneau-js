@@ -100,7 +100,7 @@ function SearchFilter({
 
     return (
         <form className={className || undefined} onSubmit={onSubmit}>
-            <div className="input-group ">
+            <div className="input-group flex-nowrap">
                 {position === 'left' ? (
                     <Button
                         theme={active ? 'primary' : 'secondary'}

@@ -12,7 +12,7 @@ import Modal, { type ModalProps } from '@panneau/element-modal';
 export interface DialogModalProps extends Omit<ModalProps, 'title'> {
     id: string;
     title?: LabelType | null;
-    size?: 'lg' | 'sm' | null;
+    size?: 'xl' | 'lg' | 'sm' | null;
     header?: ReactNode | null;
     children?: ReactNode | null;
     footer?: ReactNode | null;
@@ -95,9 +95,7 @@ function DialogModal({
             <div
                 className={classNames([
                     'modal-dialog',
-                    {
-                        [`modal-${size}`]: size !== null,
-                    },
+                    size !== null ? `modal-${size}` : null,
                     className,
                 ])}
                 role="dialog"

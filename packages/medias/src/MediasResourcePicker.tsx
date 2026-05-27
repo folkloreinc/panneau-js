@@ -1,14 +1,11 @@
-/* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
-import { useMemo } from 'react';
-
 import { type Resource } from '@panneau/core';
 import { usePanneauResource } from '@panneau/core/contexts';
 import { useApi } from '@panneau/data';
 
 import { MediasApi } from './MediasApiContext';
-import MediasPickerContainer from './MediasPickerContainer';
+import MediasPickerContainer, { MediasPickerContainerProps } from './MediasPickerContainer';
 
-interface MediasResourcePickerProps {
+export interface MediasResourcePickerProps extends MediasPickerContainerProps {
     resource?: Resource | string | null;
     [key: string]: unknown;
 }

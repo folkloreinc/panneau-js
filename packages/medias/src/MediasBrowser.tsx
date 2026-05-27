@@ -1,11 +1,10 @@
-/* eslint-disable react/jsx-props-no-spreading, react/no-array-index-key */
 import classNames from 'classnames';
 import uniqBy from 'lodash/uniqBy';
 import type { ReactNode } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Media } from '@panneau/core';
+import type { Column, Field, Filter, Media, MediaType } from '@panneau/core';
 import { useQuery } from '@panneau/core/hooks';
 import Buttons from '@panneau/element-buttons';
 import Grid from '@panneau/element-grid';
@@ -37,38 +36,26 @@ const DEFAULT_LAYOUTS: LayoutItem[] = [
 ];
 const DEFAULT_UPPY_CONFIG = {};
 
-type FilterItem = Record<string, unknown> & { id?: string | null };
-type ColumnAction =
-    | string
-    | {
-          id?: string;
-          component?: string;
-          withConfirmation?: boolean;
-          action?: (ids: Array<string | number>) => Promise<unknown> | unknown;
-          [key: string]: unknown;
-      };
-type ColumnItem = Record<string, unknown> & { id?: string | null; actions?: ColumnAction[] };
-
 interface LayoutItem {
     id: string;
     label: ReactNode;
     [key: string]: unknown;
 }
 
-interface MediasBrowserProps {
+export interface MediasBrowserProps {
     items?: Media[] | null;
     extraItems?: Media[] | null;
-    types?: string[] | null;
+    types?: MediaType[] | null;
     permissions?: {
         create?: boolean;
         edit?: boolean;
         delete?: boolean;
     } | null;
-    filters?: FilterItem[] | null;
-    columns?: ColumnItem[] | null;
+    filters?: Filter[] | null;
+    columns?: Column[] | null;
     query?: Record<string, unknown> | null;
     baseUrl?: string | null;
-    fields?: Array<Record<string, unknown>> | null;
+    fields?: Field[] | null;
     layout?: string;
     layouts?: LayoutItem[] | null;
     theme?: string | null;
@@ -125,23 +112,9 @@ function MediasBrowser({
     formChildren = null,
 }: MediasBrowserProps) {
     const [baseItems] = useState(initialItems || null);
-    const baseQuery = useMemo(
-        () => ({ count: 12, ...initialQuery, ...(types !== null ? { types } : null) }),
-        [initialQuery, types],
-    );
+    const baseQuery = { count: 12, ...initialQuery, ...(types !== null ? { types } : null) };
     const { query: fullQuery, onPageChange, onQueryChange, onQueryReset } = useQuery(baseQuery);
-
-    const page = useMemo(() => (fullQuery || {}).page ?? null, [fullQuery]);
-    const count = useMemo(() => (fullQuery || {}).count ?? null, [fullQuery]);
-
-    // Stabilize the filter query reference: only create a new object when filter values actually change.
-    // We use JSON.stringify as a stable primitive key so that useMemo only recomputes when values differ.
-    const queryJSON = useMemo(() => {
-        const { page: _p, count: _c, ...params } = fullQuery || {};
-        return Object.keys(params).length > 0 ? JSON.stringify(params) : null;
-    }, [fullQuery]);
-
-    const query = useMemo(() => (queryJSON !== null ? JSON.parse(queryJSON) : null), [queryJSON]);
+    const { page = null, count = null, ...query } = fullQuery || {};
 
     const {
         create: canCreate = true,
@@ -174,9 +147,9 @@ function MediasBrowser({
         queryConfig: { staleTime: 0 },
     });
 
-    const onClickTrash = useCallback(() => {
+    const onClickTrash = () => {
         setShowTrashed(!showTrashed);
-    }, [showTrashed, setShowTrashed]);
+    };
 
     useEffect(() => {
         if (onItemsChange !== null) {
@@ -185,16 +158,13 @@ function MediasBrowser({
     }, [items, onItemsChange]);
 
     const [layout, setLayout] = useState(initialLayout || 'table');
-    const hasLayouts = useMemo(() => layouts !== null && layouts.length > 1, [layouts]);
-    const onClickLayout = useCallback(
-        (newLayout: string) => {
-            setLayout(newLayout);
-            if (onLayoutChange !== null) {
-                onLayoutChange(newLayout);
-            }
-        },
-        [setLayout],
-    );
+    const hasLayouts = layouts !== null && layouts.length > 1;
+    const onClickLayout = (newLayout: string) => {
+        setLayout(newLayout);
+        if (onLayoutChange !== null) {
+            onLayoutChange(newLayout);
+        }
+    };
 
     const { currentMedia, setCurrentMedia } = useCurrentMedia();
 
@@ -205,156 +175,95 @@ function MediasBrowser({
         if (currentMedia === null && onMediaFormClose !== null) {
             onMediaFormClose();
         }
-    }, [currentMedia]);
+    }, [currentMedia, onMediaFormOpen, onMediaFormClose]);
 
-    const onOpenMedia = useCallback(
-        (media: Media) => {
-            setCurrentMedia(media);
-        },
-        [setCurrentMedia],
-    );
+    const onOpenMedia = (media: Media) => {
+        setCurrentMedia(media);
+    };
 
-    const onCloseMedia = useCallback(() => {
+    const onCloseMedia = () => {
         setCurrentMedia(null);
-    }, [setCurrentMedia]);
+    };
 
-    const onSaveMedia = useCallback(
-        (item: Media) => {
-            setCurrentMedia(null);
-            updateItem(item);
-        },
-        [setCurrentMedia, updateItem],
-    );
+    const onSaveMedia = (item: Media) => {
+        setCurrentMedia(null);
+        updateItem(item);
+    };
 
-    const onReplaceMedia = useCallback(
-        (item: Media) => {
-            setCurrentMedia(item);
-            reload();
-        },
-        [setCurrentMedia],
-    );
+    const onReplaceMedia = (item: Media) => {
+        setCurrentMedia(item);
+        reload();
+    };
 
-    const onDeleteMedia = useCallback(() => {
+    const onDeleteMedia = () => {
         if (reload !== null) {
             reload();
         }
-    }, [reload]);
+    };
 
-    const onTrashMedia = useCallback(
-        (id: string | number) =>
-            !showTrashed && withTrash
-                ? mediaTrash(id)
-                      .then(() => {
-                          if (!multipleSelection) {
-                              const selectedId = selectedItems?.[0]?.id || null;
-                              if (
-                                  selectedId !== null &&
-                                  selectedId === id &&
-                                  onSelectionChange !== null
-                              ) {
-                                  onSelectionChange(null);
-                              }
-                          }
-                          // Todo remove from mult selection
-                      })
-                      .then(() => reload())
-                : mediaDelete(id)
-                      .then(() => {
-                          if (!multipleSelection) {
-                              const selectedId = selectedItems?.[0]?.id || null;
-                              if (
-                                  selectedId !== null &&
-                                  selectedId === id &&
-                                  onSelectionChange !== null
-                              ) {
-                                  onSelectionChange(null);
-                              }
-                          }
-                          // Todo remove from selection
-                      })
-                      .then(() => reload()),
-        [
-            showTrashed,
-            withTrash,
-            mediaTrash,
-            mediaDelete,
-            reload,
-            selectedItems,
-            multipleSelection,
-            onSelectionChange,
-        ],
-    );
+    const onTrashMedia = (id: string | number) =>
+        (!showTrashed && withTrash ? mediaTrash(id) : mediaDelete(id))
+            .then(() => {
+                const newSelectedItems = (selectedItems || []).filter(
+                    ({ id: itemId = null }) => itemId !== id,
+                );
+                if (onSelectionChange !== null) {
+                    onSelectionChange(newSelectedItems.length > 0 ? newSelectedItems : null);
+                }
+            })
+            .then(() => reload());
 
     const [uploadedMedias, setUploadedMedias] = useState<Media[] | null>(null);
     const [uploadProcessing, setUploadProcessing] = useState(false);
 
-    const onUploadedMediaChanged = useCallback(
-        (newMedias: Media[] | Media | null) => {
-            const uploadedNewMedias = (
-                Array.isArray(newMedias)
-                    ? [...newMedias, ...(uploadedMedias || [])]
-                    : [newMedias, ...(uploadedMedias || [])]
-            ).filter((it) => it !== null);
-            setUploadedMedias(uploadedNewMedias);
-            if (onSelectionChange !== null) {
-                const firstMedia = Array.isArray(newMedias)
-                    ? (newMedias[0] ?? null)
-                    : (newMedias ?? null);
-                onSelectionChange(
-                    multipleSelection && Array.isArray(newMedias) ? newMedias : [firstMedia],
-                );
-                onQueryReset();
-                reload().then(() => {
-                    setUploadedMedias(null);
-                });
-            }
-        },
-        [
-            onSelectionChange,
-            setUploadedMedias,
-            uploadedMedias,
-            onQueryReset,
-            reload,
-            multipleSelection,
-        ],
-    );
-
-    const onUploadComplete = useCallback(
-        (medias: Media[] | Media | null = null) => {
-            if (showTrashed) {
-                setShowTrashed(false);
-            }
-
-            if (medias === null) return;
-
-            const rawMedias = (Array.isArray(medias) ? medias : [medias]).filter(
-                (it) => it !== null,
+    const onUploadedMediaChanged = (newMedias: Media[] | Media | null) => {
+        const uploadedNewMedias = (
+            Array.isArray(newMedias)
+                ? [...newMedias, ...(uploadedMedias || [])]
+                : [newMedias, ...(uploadedMedias || [])]
+        ).filter((it) => it !== null);
+        setUploadedMedias(uploadedNewMedias);
+        if (onSelectionChange !== null) {
+            const firstMedia = Array.isArray(newMedias)
+                ? (newMedias[0] ?? null)
+                : (newMedias ?? null);
+            onSelectionChange(
+                multipleSelection && Array.isArray(newMedias) ? newMedias : [firstMedia],
             );
-            if (onMediaUploaded !== null) {
-                setUploadProcessing(true);
-                Promise.resolve(onMediaUploaded(rawMedias as Media[]))
-                    .then((newMedias) => {
-                        onUploadedMediaChanged((newMedias as Media[] | Media | null) || null);
-                        setUploadProcessing(false);
-                    })
-                    .catch(() => {
-                        setUploadProcessing(false);
-                    });
-            } else {
-                onUploadedMediaChanged(rawMedias);
-            }
-        },
-        [onMediaUploaded, setUploadedMedias, setUploadProcessing, onUploadedMediaChanged],
-    );
+            onQueryReset();
+            reload();
+            setUploadedMedias(null);
+        }
+    };
 
-    const onClickPage = useCallback(
-        (e, pageNumber = null) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onPageChange(pageNumber);
-        },
-        [onPageChange],
-    );
+    const onUploadComplete = (medias: Media[] | Media | null = null) => {
+        if (showTrashed) {
+            setShowTrashed(false);
+        }
+
+        if (medias === null) return;
+
+        const rawMedias = (Array.isArray(medias) ? medias : [medias]).filter((it) => it !== null);
+        if (onMediaUploaded !== null) {
+            setUploadProcessing(true);
+            Promise.resolve(onMediaUploaded(rawMedias as Media[]))
+                .then((newMedias) => {
+                    onUploadedMediaChanged((newMedias as Media[] | Media | null) || null);
+                    setUploadProcessing(false);
+                })
+                .catch(() => {
+                    setUploadProcessing(false);
+                });
+        } else {
+            onUploadedMediaChanged(rawMedias);
+        }
+    };
+
+    const onClickPage = (e, pageNumber = null) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onPageChange(pageNumber);
+    };
 
     const pagination = (
         <Pagination
@@ -376,151 +285,127 @@ function MediasBrowser({
 
     const hidePagination = loaded && !loading && total === 0;
 
-    const finalFilters = useMemo(() => {
-        const partialFilters = withTrash
-            ? (filters || []).concat([
-                  {
-                      name: 'trashed',
-                      component: 'button',
-                      theme: showTrashed ? 'danger' : 'secondary',
-                      outline: !showTrashed,
-                      activeTheme: 'danger',
-                      icon: showTrashed ? 'trash-fill' : 'trash',
-                      disabled: uploadProcessing,
-                      onClick: onClickTrash,
-                  } as FilterItem,
-              ])
-            : filters;
-        if (types !== null && partialFilters !== null) {
-            return (partialFilters || []).map((filter) => {
-                const { id = null } = filter || {};
-                return id === 'types' ? { ...filter, disabled: true } : filter;
-            });
-        }
-        return partialFilters;
-    }, [filters, types, withTrash, showTrashed, uploadProcessing, onClickTrash]);
+    let finalFilters = withTrash
+        ? (filters || []).concat([
+              {
+                  name: 'trashed',
+                  component: 'button',
+                  theme: showTrashed ? 'danger' : 'secondary',
+                  outline: !showTrashed,
+                  activeTheme: 'danger',
+                  icon: showTrashed ? 'trash-fill' : 'trash',
+                  disabled: uploadProcessing,
+                  onClick: onClickTrash,
+              } as Filter,
+          ])
+        : filters;
+    if (types !== null && finalFilters !== null) {
+        finalFilters = (finalFilters || []).map((filter) => {
+            const { id = null } = filter || {};
+            return id === 'types' ? { ...filter, disabled: true } : filter;
+        });
+    }
 
-    const partialColumns = useMemo(
-        () =>
-            withTrash && showTrashed
-                ? (columns || []).map((column) => {
-                      const { id: columnId = null } = column || {};
-                      if (columnId === 'created_at') {
-                          return {
-                              ...column,
-                              path: 'deleted_at',
-                              label: (
-                                  <FormattedMessage
-                                      defaultMessage="Deleted at"
-                                      description="Column label"
-                                  />
-                              ),
-                          };
-                      }
-                      if (columnId === 'actions') {
-                          const { actions = [] } = column || {};
-                          return {
-                              ...column,
-                              actions: (actions || [])
-                                  .reduce((acc, action) => {
-                                      if (action === 'delete') {
-                                          acc.push({
-                                              id: 'restore',
-                                              component: 'restore',
-                                              withConfirmation: true,
-                                              action: (ids) => mediaRestore(ids[0]).then(reload),
-                                          });
-                                      }
-                                      acc.push(action);
-                                      return acc;
-                                  }, [])
-                                  .filter((it) => it !== 'edit'),
-                          };
-                      }
-                      return column;
-                  })
-                : columns,
-        [columns, withTrash, showTrashed],
-    );
+    const partialColumns =
+        withTrash && showTrashed
+            ? (columns || []).map((column) => {
+                  const { id: columnId = null } = column || {};
+                  if (columnId === 'created_at') {
+                      return {
+                          ...column,
+                          path: 'deleted_at',
+                          label: (
+                              <FormattedMessage
+                                  defaultMessage="Deleted at"
+                                  description="Column label"
+                              />
+                          ),
+                      };
+                  }
+                  if (columnId === 'actions') {
+                      const { actions = [] } = column || {};
+                      return {
+                          ...column,
+                          actions: (actions || [])
+                              .reduce((acc, action) => {
+                                  if (action === 'delete') {
+                                      acc.push({
+                                          id: 'restore',
+                                          component: 'restore',
+                                          withConfirmation: true,
+                                          action: (ids) => mediaRestore(ids[0]).then(reload),
+                                      });
+                                  }
+                                  acc.push(action);
+                                  return acc;
+                              }, [])
+                              .filter((it) => it !== 'edit'),
+                      };
+                  }
+                  return column;
+              })
+            : columns;
 
-    const finalColumns = useMemo(
-        () =>
-            (partialColumns || [])
-                .map((column) => {
-                    const { id: columnId = null } = column || {};
-                    if (columnId === 'actions') {
-                        const { actions = [] } = column || {};
-                        const availableActions = actions
-                            .filter((act) => act !== 'delete' || canDelete)
-                            .filter((act) => act !== 'edit' || canEdit);
-                        if (availableActions.length === 0) {
-                            return null;
-                        }
-                        return {
-                            ...column,
-                            actions: availableActions,
-                        };
-                    }
-                    return column;
-                })
-                .filter((act) => act !== null),
-        [partialColumns, canEdit, canDelete],
-    );
+    const finalColumns = (partialColumns || [])
+        .map((column) => {
+            const { id: columnId = null } = column || {};
+            if (columnId === 'actions') {
+                const { actions = [] } = column || {};
+                const availableActions = actions
+                    .filter((act) => act !== 'delete' || canDelete)
+                    .filter((act) => act !== 'edit' || canEdit);
+                if (availableActions.length === 0) {
+                    return null;
+                }
+                return {
+                    ...column,
+                    actions: availableActions,
+                };
+            }
+            return column;
+        })
+        .filter((act) => act !== null);
 
-    const hasQueryItem = useMemo(() => {
-        const showOnTopQuery = types === null ? query : queryWithoutTypes;
-        return showOnTopQuery !== null && !trashed ? Object.keys(showOnTopQuery).length > 0 : false;
-    }, [types, query, queryWithoutTypes, trashed]);
+    const showOnTopQuery = types === null ? query : queryWithoutTypes;
+    const hasQueryItem =
+        showOnTopQuery !== null && !trashed ? Object.keys(showOnTopQuery).length > 0 : false;
 
-    const finalItems = useMemo(() => {
-        if (
-            withStickySelection &&
-            (extraItems !== null || uploadedMedias !== null || uploadProcessing === true)
-        ) {
-            return uniqBy(
-                [
-                    ...(uploadProcessing
-                        ? [
-                              {
-                                  id: '-',
-                                  loading: true,
-                                  actionsDisabled: true,
-                                  selectionDisabled: true,
-                              },
-                          ]
-                        : []),
-                    ...(page === 1 && !hasQueryItem ? uploadedMedias || [] : []),
-                    ...(page === 1 && !hasQueryItem && !showTrashed
-                        ? (extraItems || [])
-                              .map((item) => {
-                                  const { id: itemId = null } = item;
-                                  return (
-                                      (allItems || []).find(
-                                          ({ id: otherId = null } = {}) => otherId === itemId,
-                                      ) ||
-                                      item ||
-                                      null
-                                  );
-                              })
-                              .filter((it) => it !== null) || []
-                        : []),
+    const finalItems =
+        withStickySelection &&
+        (extraItems !== null || uploadedMedias !== null || uploadProcessing === true)
+            ? uniqBy(
+                  [
+                      ...(uploadProcessing
+                          ? [
+                                {
+                                    id: '-',
+                                    loading: true,
+                                    actionsDisabled: true,
+                                    selectionDisabled: true,
+                                },
+                            ]
+                          : []),
+                      ...(page === 1 && !hasQueryItem ? uploadedMedias || [] : []),
+                      ...(page === 1 && !hasQueryItem && !showTrashed
+                          ? (extraItems || [])
+                                .map((item) => {
+                                    const { id: itemId = null } = item;
+                                    return (
+                                        (allItems || []).find(
+                                            ({ id: otherId = null }) => otherId === itemId,
+                                        ) ||
+                                        item ||
+                                        null
+                                    );
+                                })
+                                .filter((it) => it !== null) || []
+                          : []),
 
-                    ...(items || []),
-                ],
-                (it) => it?.id,
-            );
-        }
-        return items;
-    }, [
-        items,
-        page,
-        allItems,
-        withStickySelection,
-        extraItems,
-        uploadProcessing,
-        hasQueryItem,
-        showTrashed,
-    ]);
+                      ...(items || []),
+                  ],
+                  (it) => it?.id,
+              )
+            : items;
 
     // const emptyWithSticky = useMemo(
     //     () => (items || []).length === 0 && (finalItems || []).length > 0,
@@ -546,59 +431,54 @@ function MediasBrowser({
                 </MediaForm>
             ) : (
                 <>
-                    <div className="card card-body py-2 mb-3">
-                        <div className="row g-2 align-items-center">
-                            <div className="col-12 col-lg">
-                                {filters !== null ? (
-                                    <Filters
-                                        value={query}
-                                        clearValue={types !== null ? queryWithoutTypes : null}
-                                        filters={finalFilters}
-                                        onChange={onQueryChange}
-                                        onClear={onQueryReset}
+                    <div className="border rounded p-2 bg-light mb-3">
+                        <div className="d-flex flex-wrap gap-2 flex-row-reverse justify-content-end">
+                            {canUpload ? (
+                                <UploadField
+                                    withButton
+                                    withoutMedia
+                                    className="w-auto ms-auto"
+                                    uppyProps={uppyConfig}
+                                    types={types}
+                                    allowMultipleUploads
+                                    onChange={onUploadComplete}
+                                    disabled={uploadProcessing}
+                                    loading={uploadProcessing}
+                                    outline={false}
+                                    closeAfterFinish
+                                />
+                            ) : null}
+                            {filters !== null ? (
+                                <Filters
+                                    value={query}
+                                    clearValue={types !== null ? queryWithoutTypes : null}
+                                    filters={finalFilters}
+                                    onChange={onQueryChange}
+                                    onClear={onQueryReset}
+                                    className="p-0"
+                                />
+                            ) : null}
+                        </div>
+                    </div>
+                        {!hidePagination ? (
+                            <div className="d-flex mb-3 justify-content-end">
+                                {hasLayouts ? (
+                                    <Buttons
+                                        size="sm"
+                                        theme="secondary"
+                                        outline
+                                        className="me-auto"
+                                        items={(layouts || []).map((lay) => ({
+                                            ...lay,
+                                            active: layout === lay.id,
+                                            onClick: () => onClickLayout(lay.id),
+                                            className: 'px-3',
+                                        }))}
                                     />
                                 ) : null}
-                            </div>
-                            <div className="col-12 col-lg-auto">
-                                <div className="d-flex flex-wrap gap-2 justify-content-lg-end">
-                                    {hasLayouts ? (
-                                        <Buttons
-                                            size="sm"
-                                            theme="secondary"
-                                            outline
-                                            items={(layouts || []).map((lay) => ({
-                                                ...lay,
-                                                active: layout === lay.id,
-                                                onClick: () => onClickLayout(lay.id),
-                                                className: 'px-3 py-2',
-                                            }))}
-                                        />
-                                    ) : null}
-                                    {/* make this actions someday ? */}
-                                    {canUpload ? (
-                                        <UploadField
-                                            className="w-auto text-nowrap"
-                                            withButton
-                                            withoutMedia
-                                            uppyProps={uppyConfig}
-                                            types={types}
-                                            allowMultipleUploads
-                                            onChange={onUploadComplete}
-                                            disabled={uploadProcessing}
-                                            loading={uploadProcessing}
-                                            outline={false}
-                                            closeAfterFinish
-                                        />
-                                    ) : null}
-                                </div>
-                            </div>
-                        </div>
-                        {!hidePagination ? (
-                            <div className="d-none d-md-flex mt-2 justify-content-end">
                                 {pagination}
                             </div>
                         ) : null}
-                    </div>
                     {layout === 'grid' ? (
                         <Grid
                             size="small"
@@ -607,16 +487,12 @@ function MediasBrowser({
                                 className: 'd-flex w-100',
                                 cardClassName: 'flex-grow-1',
                                 vertical: true,
-                                onClickDescription: (it) => {
-                                    onOpenMedia(it);
-                                },
+                                onClickDescription: (it) => onOpenMedia(it),
                             }}
                             selectable={selectable && !showTrashed}
                             selectedItems={selectedItems}
                             onSelectionChange={uploadProcessing ? null : onSelectionChange}
                             multipleSelection={multipleSelection}
-                            query={query} // For sort
-                            onQueryChange={onQueryChange}
                             items={finalItems || []}
                             loading={loading}
                             loaded={loaded}
@@ -661,7 +537,6 @@ function MediasBrowser({
                         <div
                             className={classNames([
                                 'd-flex',
-                                'd-md-none',
                                 'mt-3',
                                 'mb-1',
                                 'justify-content-end',
