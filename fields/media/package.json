@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-media",
-    "version": "4.0.50",
+    "version": "4.0.53",
     "description": "A media field with picker",
     "keywords": [
         "javascript"
@@ -59,13 +59,13 @@
         "@fortawesome/fontawesome-svg-core": "^6.5.1",
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",
-        "@panneau/core": "^4.0.50",
-        "@panneau/element-button": "^4.0.50",
-        "@panneau/element-label": "^4.0.50",
-        "@panneau/element-media-card": "^4.0.50",
-        "@panneau/list-resource-items": "^4.0.50",
-        "@panneau/modal-dialog": "^4.0.50",
-        "@panneau/themes": "^4.0.50",
+        "@panneau/core": "^4.0.53",
+        "@panneau/element-button": "^4.0.53",
+        "@panneau/element-label": "^4.0.53",
+        "@panneau/element-media-card": "^4.0.53",
+        "@panneau/list-resource-items": "^4.0.53",
+        "@panneau/modal-dialog": "^4.0.53",
+        "@panneau/themes": "^4.0.53",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0"

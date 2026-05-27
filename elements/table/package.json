@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-table",
-    "version": "4.0.50",
+    "version": "4.0.53",
     "description": "Table element",
     "keywords": [
         "javascript"
@@ -52,11 +52,11 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.50",
-        "@panneau/element-empty": "^4.0.50",
-        "@panneau/element-icon": "^4.0.50",
-        "@panneau/element-link": "^4.0.50",
-        "@panneau/element-loading": "^4.0.50",
+        "@panneau/core": "^4.0.53",
+        "@panneau/element-empty": "^4.0.53",
+        "@panneau/element-icon": "^4.0.53",
+        "@panneau/element-link": "^4.0.53",
+        "@panneau/element-loading": "^4.0.53",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "query-string": "^9.0.0",

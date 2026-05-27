@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-alert",
-    "version": "4.0.50",
+    "version": "4.0.53",
     "description": "Alert element",
     "keywords": [
         "javascript"
@@ -60,10 +60,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.50",
-        "@panneau/element-button": "^4.0.50",
-        "@panneau/element-icon": "^4.0.50",
-        "@panneau/element-label": "^4.0.50",
+        "@panneau/core": "^4.0.53",
+        "@panneau/element-button": "^4.0.53",
+        "@panneau/element-icon": "^4.0.53",
+        "@panneau/element-label": "^4.0.53",
         "classnames": "^2.5.1",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0"
     },
