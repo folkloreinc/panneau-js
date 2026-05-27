@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-search",
-    "version": "4.0.53",
+    "version": "4.0.54",
     "description": "Search filter",
     "keywords": [
         "javascript"
@@ -60,11 +60,11 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.53",
-        "@panneau/element-button": "^4.0.53",
-        "@panneau/element-form": "^4.0.53",
-        "@panneau/element-icon": "^4.0.53",
-        "@panneau/field-text": "^4.0.53",
+        "@panneau/core": "^4.0.54",
+        "@panneau/element-button": "^4.0.54",
+        "@panneau/element-form": "^4.0.54",
+        "@panneau/element-icon": "^4.0.54",
+        "@panneau/field-text": "^4.0.54",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0"
