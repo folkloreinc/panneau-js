@@ -771,12 +771,6 @@ msgctxt "sOfogS"
 msgid "Edit items"
 msgstr "Modifier les éléments"
 
-# Page title
-#: smqUAV
-msgctxt "smqUAV"
-msgid "Edit {name}"
-msgstr "Modifier {name}"
-
 # Link label
 #: tPeIKO
 msgctxt "tPeIKO"

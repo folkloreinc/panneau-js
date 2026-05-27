@@ -495,10 +495,6 @@
     "defaultMessage": "Edit items",
     "description": "Modal title"
   },
-  "smqUAV": {
-    "defaultMessage": "Edit {name}",
-    "description": "Page title"
-  },
   "tPeIKO": {
     "defaultMessage": "Go back to login",
     "description": "Link label"
