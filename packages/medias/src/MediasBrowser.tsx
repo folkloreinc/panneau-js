@@ -77,6 +77,7 @@ export interface MediasBrowserProps {
     withStickySelection?: boolean;
     withoutUpload?: boolean;
     className?: string | null;
+    filtersClassName?: string | null;
     formChildren?: ReactNode | null;
 }
 
@@ -109,6 +110,7 @@ function MediasBrowser({
     withStickySelection = false,
     withoutUpload = false,
     className = null,
+    filtersClassName = null,
     formChildren = null,
 }: MediasBrowserProps) {
     const [baseItems] = useState(initialItems || null);
@@ -431,7 +433,7 @@ function MediasBrowser({
                 </MediaForm>
             ) : (
                 <>
-                    <div className="border rounded p-2 bg-light mb-3">
+                    <div className={classNames(['mb-3', filtersClassName])}>
                         <div className="d-flex flex-wrap gap-2 flex-row-reverse justify-content-end">
                             {canUpload ? (
                                 <UploadField
@@ -460,25 +462,25 @@ function MediasBrowser({
                             ) : null}
                         </div>
                     </div>
-                        {!hidePagination ? (
-                            <div className="d-flex mb-3 justify-content-end">
-                                {hasLayouts ? (
-                                    <Buttons
-                                        size="sm"
-                                        theme="secondary"
-                                        outline
-                                        className="me-auto"
-                                        items={(layouts || []).map((lay) => ({
-                                            ...lay,
-                                            active: layout === lay.id,
-                                            onClick: () => onClickLayout(lay.id),
-                                            className: 'px-3',
-                                        }))}
-                                    />
-                                ) : null}
-                                {pagination}
-                            </div>
-                        ) : null}
+                    {!hidePagination ? (
+                        <div className="d-flex mb-3 justify-content-end">
+                            {hasLayouts ? (
+                                <Buttons
+                                    size="sm"
+                                    theme="secondary"
+                                    outline
+                                    className="me-auto"
+                                    items={(layouts || []).map((lay) => ({
+                                        ...lay,
+                                        active: layout === lay.id,
+                                        onClick: () => onClickLayout(lay.id),
+                                        className: 'px-3',
+                                    }))}
+                                />
+                            ) : null}
+                            {pagination}
+                        </div>
+                    ) : null}
                     {layout === 'grid' ? (
                         <Grid
                             size="small"

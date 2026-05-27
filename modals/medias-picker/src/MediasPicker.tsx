@@ -65,7 +65,11 @@ function MediasPickerModal({
             visible={opened}
             requestClose={requestClose}
             onClosed={onClosed}
-            title={title}
+            title={
+                title ?? (
+                    <FormattedMessage defaultMessage="Select media" description="Modal title" />
+                )
+            }
             withCancelButton={!mediaFormOpen}
             withSubmitButton={!mediaFormOpen}
             submitButtonLabel={
@@ -75,9 +79,9 @@ function MediasPickerModal({
                 ...confirmButton,
                 disabled: selectedItems === null || selectedItems.length === 0,
             }}
+            className="modal-fullscreen-lg-down"
             cancelButton={cancelButton}
             onClickSubmit={onConfirm}
-            buttonsSize="lg"
         >
             {resource !== null ? (
                 <MediasResourcePicker

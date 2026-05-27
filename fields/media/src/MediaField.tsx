@@ -289,7 +289,6 @@ function MediaField({
                     {withButton ? (
                         <div className="col-auto">
                             <Button
-                                id="trigger-uppy"
                                 type="button"
                                 theme="primary"
                                 onClick={onClickAdd || openModal}

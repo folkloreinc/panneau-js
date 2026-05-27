@@ -62,8 +62,6 @@ function DialogModal({
     onClickSubmit = null,
     ...props
 }: DialogModalProps) {
-    const onCloseButtonOutside = (header === null && title === null) || withCloseOutside;
-
     const finalButtons =
         buttons ||
         ([
@@ -101,7 +99,7 @@ function DialogModal({
                 role="dialog"
             >
                 <div className="modal-content">
-                    {onCloseButtonOutside && !withoutClose ? (
+                    {withCloseOutside && !withoutClose ? (
                         <Button
                             type="button"
                             className={classNames([
@@ -119,20 +117,13 @@ function DialogModal({
                     {header !== null ? (
                         header
                     ) : (
-                        <div
-                            className={classNames([
-                                {
-                                    'modal-header': title !== null,
-                                },
-                                headerClassName,
-                            ])}
-                        >
+                        <div className={classNames('modal-header py-2', [headerClassName])}>
                             {title !== null ? (
                                 <h5 className="modal-title pe-2">
                                     {isMessage(title) ? <Label>{title}</Label> : title}
                                 </h5>
                             ) : null}
-                            {title !== null && !withoutClose && !onCloseButtonOutside ? (
+                            {!withoutClose ? (
                                 <Button
                                     type="button"
                                     className="btn-close"
@@ -144,7 +135,7 @@ function DialogModal({
                     )}
                     <div className={classNames(['modal-body', bodyClassName])}>{children}</div>
                     {footer !== null || hasButtons ? (
-                        <div className={classNames(['modal-footer', footerClassName])}>
+                        <div className={classNames(['modal-footer py-2', footerClassName])}>
                             {footer !== null ? footer : null}
                             {hasButtons ? (
                                 <Buttons

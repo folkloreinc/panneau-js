@@ -55,7 +55,7 @@ export const Normal = {
 };
 
 export const Disabled = {
-    render: () => <Container disabled value={{ url: 'lol' }} />,
+    render: () => <Container disabled />,
 };
 
 export const WithButton = {

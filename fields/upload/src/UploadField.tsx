@@ -220,6 +220,9 @@ function UploadField({
         if (onClear !== null) {
             onClear();
         }
+        if (onChange !== null) {
+            onChange(null);
+        }
         if (uppy !== null) {
             uppy.cancelAll({ reason: 'user' });
         }
@@ -370,10 +373,7 @@ function UploadField({
     const finalLoading = loading || parentLoading;
 
     return (
-        <div
-            className={classNames([styles.container, { [className]: className !== null }])}
-            ref={containerRef}
-        >
+        <div className={className} ref={containerRef}>
             {!withoutMedia && hasMedia ? (
                 <MediaCards
                     value={values}
@@ -386,13 +386,50 @@ function UploadField({
                 />
             ) : null}
 
-            {!withoutMedia && hasMedia && withClearButton ? (
-                <div className="d-flex">
+            <div className={classNames('d-flex')}>
+                {withClearButton && !withoutMedia && hasMedia ? (
                     <Button type="button" theme="primary" onClick={onClickClear}>
                         <Label>{clearButtonLabel}</Label>
                     </Button>
-                </div>
-            ) : null}
+                ) : null}
+
+                {withButton && (withoutMedia || !hasMedia || allowMultipleUploads) ? (
+                    <Button
+                        type="button"
+                        theme="primary"
+                        icon={finalLoading ? 'loading' : 'upload'}
+                        iconPosition="right"
+                        onClick={onClickAdd || openModal}
+                        disabled={finalLoading || disabled}
+                        outline={outline}
+                        className={classNames([{ 'me-2': withFind }])}
+                    >
+                        <Label>
+                            {finalLoading ? (
+                                <FormattedMessage
+                                    defaultMessage="Uploading"
+                                    description="Button label"
+                                />
+                            ) : (
+                                addButtonLabel
+                            )}
+                        </Label>
+                    </Button>
+                ) : null}
+                {withFind && (withoutMedia || !hasMedia || allowMultipleUploads) ? (
+                    <Button
+                        type="button"
+                        theme="primary"
+                        icon="search"
+                        iconPosition="right"
+                        onClick={finalOnClickFind}
+                        disabled={disabled}
+                        outline={outline}
+                    >
+                        <Label>{findButtonLabel}</Label>
+                    </Button>
+                ) : null}
+            </div>
 
             {finalUppy !== null ? (
                 <UppyContextProvider uppy={finalUppy}>
@@ -405,6 +442,7 @@ function UploadField({
                                 // : null)}
                                 {...(width !== null ? { width } : null)}
                                 {...(height !== null ? { height } : null)}
+                                disabled={disabled}
                                 plugins={sources}
                                 inline
                                 showProgressDetails
@@ -423,6 +461,7 @@ function UploadField({
                             uppy={finalUppy}
                             className={styles.dashboardModal}
                             plugins={sources}
+                            disabled={disabled}
                             open
                             onRequestClose={closeModal}
                             proudlyDisplayPoweredByUppy={false}
@@ -436,48 +475,6 @@ function UploadField({
                         />
                     ) : null}
                 </UppyContextProvider>
-            ) : null}
-
-            {withoutMedia || ((!hasMedia || allowMultipleUploads) && (withButton || withFind)) ? (
-                <div className="d-flex">
-                    {withButton ? (
-                        <Button
-                            id="trigger-uppy"
-                            type="button"
-                            theme="primary"
-                            icon={finalLoading ? 'loading' : 'upload'}
-                            iconPosition="right"
-                            onClick={onClickAdd || openModal}
-                            disabled={finalLoading || disabled}
-                            outline={outline}
-                            className={classNames([{ 'me-2': withFind }])}
-                        >
-                            <Label>
-                                {finalLoading ? (
-                                    <FormattedMessage
-                                        defaultMessage="Uploading"
-                                        description="Button label"
-                                    />
-                                ) : (
-                                    addButtonLabel
-                                )}
-                            </Label>
-                        </Button>
-                    ) : null}
-                    {withFind ? (
-                        <Button
-                            type="button"
-                            theme="primary"
-                            icon="search"
-                            iconPosition="right"
-                            onClick={finalOnClickFind}
-                            disabled={disabled}
-                            outline={outline}
-                        >
-                            <Label>{findButtonLabel}</Label>
-                        </Button>
-                    ) : null}
-                </div>
             ) : null}
 
             {showResourceModal ? (
