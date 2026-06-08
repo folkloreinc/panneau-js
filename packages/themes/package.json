@@ -10,6 +10,7 @@
         "type": "git",
         "url": "git+https://github.com/folkloreinc/panneau-js.git"
     },
+    "license": "ISC",
     "author": {
         "name": "Folklore",
         "email": "info@folklore.email"
@@ -32,14 +33,10 @@
             "email": "tg@folklore.email"
         }
     ],
-    "license": "ISC",
-    "type": "module",
-    "module": "dist/index.js",
-    "types": "dist/index.d.ts",
     "sideEffects": [
         "**/*.css"
     ],
-    "style": "assets/css/styles.css",
+    "type": "module",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
@@ -53,17 +50,27 @@
         "./assets/css/variables": "./assets/css/variables.css",
         "./assets/css/variables.css": "./assets/css/variables.css"
     },
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "style": "assets/css/styles.css",
     "files": [
         "dist",
         "assets"
     ],
     "scripts": {
+        "build": "../../scripts/prepare-package.sh --types && npm run css",
+        "css": "npm run css:styles && npm run css:vendor && npm run css:copy",
+        "css:copy": "cp src/styles/variables.css assets/css/variables.css",
         "css:styles": "postcss src/styles/styles.css -o assets/css/styles.css",
         "css:vendor": "postcss src/styles/vendor.css -o assets/css/vendor.css",
-        "css:copy": "cp src/styles/variables.css assets/css/variables.css",
-        "css": "npm run css:styles && npm run css:vendor && npm run css:copy",
-        "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh --types && npm run css"
+        "prepublishOnly": "npm run build"
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.28.6",
+        "@panneau/core": "^4.0.56",
+        "bootstrap": "^5.3.8",
+        "classnames": "^2.5.1",
+        "lodash": "^4.17.21"
     },
     "devDependencies": {
         "react": "^19.2.0",
@@ -72,13 +79,6 @@
     "peerDependencies": {
         "react": "^19.2.0",
         "react-dom": "^19.0.0"
-    },
-    "dependencies": {
-        "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.56",
-        "bootstrap": "^5.3.8",
-        "classnames": "^2.5.1",
-        "lodash": "^4.17.21"
     },
     "publishConfig": {
         "access": "public"

@@ -10,6 +10,7 @@
         "type": "git",
         "url": "git+https://github.com/folkloreinc/panneau-js.git"
     },
+    "license": "ISC",
     "author": {
         "name": "Folklore",
         "email": "info@folklore.email"
@@ -32,13 +33,10 @@
             "email": "tg@folklore.email"
         }
     ],
-    "license": "ISC",
-    "type": "module",
-    "module": "dist/index.js",
-    "types": "dist/index.d.ts",
     "sideEffects": [
         "locale/*"
     ],
+    "type": "module",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
@@ -47,6 +45,8 @@
         "./locale/*.json": "./locale/*.json",
         "./locale/*": "./locale/*.js"
     },
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
     "files": [
         "dist",
         "locale",
@@ -54,17 +54,9 @@
         "assets"
     ],
     "scripts": {
+        "build": "rm -rf ./locale && npm run intl && ../../scripts/prepare-package.sh --types",
         "intl": "../../scripts/build-intl.js '../../!(node_modules)/!(intl)/src/**/*.+(js|jsx|ts|tsx)'",
-        "prepublishOnly": "npm run build",
-        "build": "rm -rf ./locale && npm run intl && ../../scripts/prepare-package.sh --types"
-    },
-    "devDependencies": {
-        "react": "^19.2.0",
-        "react-dom": "^19.0.0"
-    },
-    "peerDependencies": {
-        "react": "^19.2.0",
-        "react-dom": "^19.0.0"
+        "prepublishOnly": "npm run build"
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
@@ -77,13 +69,21 @@
         "lodash": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0"
     },
+    "devDependencies": {
+        "react": "^19.2.0",
+        "react-dom": "^19.0.0"
+    },
+    "peerDependencies": {
+        "react": "^19.2.0",
+        "react-dom": "^19.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "gitHead": "e4bedb3c20005429bd1a2741b562ead9ad436c5b",
     "lang": "locale",
     "supportedLocales": [
         "en",
         "fr"
-    ],
-    "publishConfig": {
-        "access": "public"
-    },
-    "gitHead": "e4bedb3c20005429bd1a2741b562ead9ad436c5b"
+    ]
 }

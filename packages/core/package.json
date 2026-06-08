@@ -10,6 +10,7 @@
         "type": "git",
         "url": "git+https://github.com/folkloreinc/panneau-js.git"
     },
+    "license": "ISC",
     "author": {
         "name": "Folklore",
         "email": "info@folklore.email"
@@ -24,46 +25,37 @@
             "email": "nrb@folklore.email"
         }
     ],
-    "license": "ISC",
+    "sideEffects": [
+        "**/*.css"
+    ],
     "type": "module",
-    "module": "./dist/index.js",
-    "types": "./dist/index.d.ts",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
             "default": "./dist/index.js"
         },
         "./contexts": {
-            "default": "./dist/contexts.js",
-            "types": "./dist/contexts.d.ts"
+            "types": "./dist/contexts.d.ts",
+            "default": "./dist/contexts.js"
         },
         "./hooks": {
-            "default": "./dist/hooks.js",
-            "types": "./dist/hooks.d.ts"
+            "types": "./dist/hooks.d.ts",
+            "default": "./dist/hooks.js"
         },
         "./utils": {
-            "default": "./dist/utils.js",
-            "types": "./dist/utils.d.ts"
+            "types": "./dist/utils.d.ts",
+            "default": "./dist/utils.js"
         }
     },
-    "sideEffects": [
-        "**/*.css"
-    ],
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "files": [
         "dist",
         "assets"
     ],
     "scripts": {
-        "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh --types"
-    },
-    "devDependencies": {
-        "react": "^19.2.0",
-        "react-dom": "^19.0.0"
-    },
-    "peerDependencies": {
-        "react": "^19.2.0",
-        "react-dom": "^19.0.0"
+        "build": "../../scripts/prepare-package.sh --types",
+        "prepublishOnly": "npm run build"
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
@@ -92,6 +84,14 @@
         "webfontloader": "^1.6.28",
         "wolfy87-eventemitter": "^5.2.9",
         "wouter": "^3.1.2"
+    },
+    "devDependencies": {
+        "react": "^19.2.0",
+        "react-dom": "^19.0.0"
+    },
+    "peerDependencies": {
+        "react": "^19.2.0",
+        "react-dom": "^19.0.0"
     },
     "publishConfig": {
         "access": "public"

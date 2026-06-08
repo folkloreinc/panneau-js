@@ -10,6 +10,7 @@
         "type": "git",
         "url": "git+https://github.com/folkloreinc/panneau-js.git"
     },
+    "license": "ISC",
     "author": {
         "name": "Folklore",
         "email": "info@folklore.email"
@@ -32,14 +33,10 @@
             "email": "tg@folklore.email"
         }
     ],
-    "license": "ISC",
-    "type": "module",
-    "module": "dist/index.js",
-    "types": "dist/index.d.ts",
     "sideEffects": [
         "**/*.css"
     ],
-    "style": "assets/css/styles.css",
+    "type": "module",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
@@ -49,13 +46,23 @@
         "./assets/css/styles": "./assets/css/styles.css",
         "./assets/css/styles.css": "./assets/css/styles.css"
     },
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "style": "assets/css/styles.css",
     "files": [
         "dist",
         "assets"
     ],
     "scripts": {
-        "prepublishOnly": "npm run build",
-        "build": "../../scripts/prepare-package.sh --types"
+        "build": "../../scripts/prepare-package.sh --types",
+        "prepublishOnly": "npm run build"
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.28.6",
+        "@panneau/core": "^4.0.56",
+        "@panneau/themes": "^4.0.56",
+        "classnames": "^2.5.1",
+        "lodash": "^4.17.21"
     },
     "devDependencies": {
         "react": "^19.2.0",
@@ -64,13 +71,6 @@
     "peerDependencies": {
         "react": "^19.2.0",
         "react-dom": "^19.0.0"
-    },
-    "dependencies": {
-        "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.56",
-        "@panneau/themes": "^4.0.56",
-        "classnames": "^2.5.1",
-        "lodash": "^4.17.21"
     },
     "publishConfig": {
         "access": "public"

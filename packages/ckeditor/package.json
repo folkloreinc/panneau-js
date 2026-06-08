@@ -11,6 +11,7 @@
         "type": "git",
         "url": "git+https://github.com/folkloreinc/panneau-js.git"
     },
+    "license": "ISC",
     "author": {
         "name": "Folklore",
         "email": "info@folklore.email"
@@ -25,13 +26,10 @@
             "email": "nrb@folklore.email"
         }
     ],
-    "license": "ISC",
-    "type": "module",
-    "module": "dist/index.js",
-    "types": "dist/index.d.ts",
     "sideEffects": [
         "**/*.css"
     ],
+    "type": "module",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
@@ -39,26 +37,20 @@
         },
         "./build": "./dist/build.cjs"
     },
+    "module": "dist/index.js",
     "browser": {
         ".": "./dist/index.js",
         "./build": "./dist/build.cjs"
     },
+    "types": "dist/index.d.ts",
     "files": [
         "dist"
     ],
     "scripts": {
-        "clean": "rm -rf es && rm -rf lib && rm -rf dist",
+        "build": "rm -rf dist && ../../scripts/prepare-package.sh --types && npm run build:ckeditor",
         "build:ckeditor": "../../node_modules/.bin/webpack --mode production --config webpack.config.cjs",
-        "prepublishOnly": "npm run build",
-        "build": "rm -rf dist && ../../scripts/prepare-package.sh --types && npm run build:ckeditor"
-    },
-    "devDependencies": {
-        "react": "^19.2.0",
-        "react-dom": "^19.0.0"
-    },
-    "peerDependencies": {
-        "react": "^19.2.0",
-        "react-dom": "^19.0.0"
+        "clean": "rm -rf es && rm -rf lib && rm -rf dist",
+        "prepublishOnly": "npm run build"
     },
     "dependencies": {
         "@babel/runtime": "^7.13.10",
@@ -75,6 +67,14 @@
         "@ckeditor/ckeditor5-react": "^11.1.2",
         "@ckeditor/ckeditor5-theme-lark": "^47.6.2",
         "@folklore/fetch": "0.1.21"
+    },
+    "devDependencies": {
+        "react": "^19.2.0",
+        "react-dom": "^19.0.0"
+    },
+    "peerDependencies": {
+        "react": "^19.2.0",
+        "react-dom": "^19.0.0"
     },
     "publishConfig": {
         "access": "public",
