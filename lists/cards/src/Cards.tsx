@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import get from 'lodash/get';
+import get from 'lodash-es/get';
 import { type ReactNode, useMemo } from 'react';
 
 import type { Item, Resource, TableColumn } from '@panneau/core';

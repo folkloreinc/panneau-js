@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import uniqBy from 'lodash/uniqBy';
+import uniqBy from 'lodash-es/uniqBy';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';

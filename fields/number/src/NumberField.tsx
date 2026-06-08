@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import isNaN from 'lodash/isNaN';
-import isNumber from 'lodash/isNumber';
+import isNaN from 'lodash-es/isNaN';
+import isNumber from 'lodash-es/isNumber';
 import { useCallback, useState } from 'react';
 
 import Icon from '@panneau/element-icon';

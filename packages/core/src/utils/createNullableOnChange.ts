@@ -1,4 +1,4 @@
-import isObject from 'lodash/isObject';
+import isObject from 'lodash-es/isObject';
 
 function createNullableOnChange<T = unknown>(
     onChange: ((value: T | null) => void) | null = null,

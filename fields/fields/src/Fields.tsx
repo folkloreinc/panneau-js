@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import get from 'lodash/get';
+import get from 'lodash-es/get';
 import type { ComponentType } from 'react';
 import { Fragment, useCallback } from 'react';
 

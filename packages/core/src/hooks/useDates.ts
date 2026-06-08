@@ -1,6 +1,6 @@
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import isString from 'lodash/isString';
+import isString from 'lodash-es/isString';
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 

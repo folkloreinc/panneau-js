@@ -1,7 +1,7 @@
 import { getJSON } from '@folklore/fetch';
 import { UseQueryOptions, UseQueryResult, keepPreviousData, useQuery } from '@tanstack/react-query';
-import isArray from 'lodash/isArray';
-import isObject from 'lodash/isObject';
+import isArray from 'lodash-es/isArray';
+import isObject from 'lodash-es/isObject';
 import queryString from 'query-string';
 import { useState } from 'react';
 

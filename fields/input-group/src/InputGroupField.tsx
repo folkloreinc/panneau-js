@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import isString from 'lodash/isString';
+import isString from 'lodash-es/isString';
 import { type ReactNode } from 'react';
 
 import styles from './styles.module.css';

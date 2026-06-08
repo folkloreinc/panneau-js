@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import isArray from 'lodash/isArray';
+import isArray from 'lodash-es/isArray';
 import type { ReactElement } from 'react';
 import { useMemo } from 'react';
 

@@ -1,6 +1,6 @@
 import { pascalCase } from 'change-case';
-import isFunction from 'lodash/isFunction';
-import isObject from 'lodash/isObject';
+import isFunction from 'lodash-es/isFunction';
+import isObject from 'lodash-es/isObject';
 import type { ElementType } from 'react';
 
 function getComponentFromName(

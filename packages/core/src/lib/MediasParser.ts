@@ -1,5 +1,5 @@
-import isArray from 'lodash/isArray';
-import isObject from 'lodash/isObject';
+import isArray from 'lodash-es/isArray';
+import isObject from 'lodash-es/isObject';
 
 interface Manager {
     getDefinition: (type: string) => Record<string, unknown> | null;

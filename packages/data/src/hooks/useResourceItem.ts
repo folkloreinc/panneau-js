@@ -1,5 +1,5 @@
 import { UseQueryOptions, UseQueryResult, useQuery } from '@tanstack/react-query';
-import isObject from 'lodash/isObject';
+import isObject from 'lodash-es/isObject';
 
 import { type Resource, type ResourceItem } from '@panneau/core';
 import { usePanneauResource, useResource } from '@panneau/core/contexts';

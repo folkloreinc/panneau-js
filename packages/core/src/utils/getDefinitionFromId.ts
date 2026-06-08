@@ -1,5 +1,5 @@
 import { pascalCase } from 'change-case';
-import isArray from 'lodash/isArray';
+import isArray from 'lodash-es/isArray';
 
 import type { Definition } from '../types';
 

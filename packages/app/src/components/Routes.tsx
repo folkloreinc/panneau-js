@@ -1,4 +1,4 @@
-import isObject from 'lodash/isObject';
+import isObject from 'lodash-es/isObject';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'wouter';
 

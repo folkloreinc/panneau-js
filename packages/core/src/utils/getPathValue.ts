@@ -1,5 +1,5 @@
-import get from 'lodash/get';
-import isObject from 'lodash/isObject';
+import get from 'lodash-es/get';
+import isObject from 'lodash-es/isObject';
 
 function getPathValue(it: unknown, path: string | string[]): unknown {
     const value = get(it, path, null);

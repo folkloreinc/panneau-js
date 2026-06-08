@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import isString from 'lodash/isString';
+import isString from 'lodash-es/isString';
 import queryString from 'query-string';
 import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';

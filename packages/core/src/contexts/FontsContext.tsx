@@ -1,6 +1,6 @@
 import { getJSON } from '@folklore/fetch';
-import isObject from 'lodash/isObject';
-import uniqBy from 'lodash/uniqBy';
+import isObject from 'lodash-es/isObject';
+import uniqBy from 'lodash-es/uniqBy';
 import { createContext, use, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 

@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import isObject from 'lodash/isObject';
-import isString from 'lodash/isString';
+import isObject from 'lodash-es/isObject';
+import isString from 'lodash-es/isString';
 import {
     type MouseEvent,
     type ReactNode,

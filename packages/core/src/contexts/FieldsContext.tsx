@@ -1,5 +1,5 @@
-import isString from 'lodash/isString';
-import uniqBy from 'lodash/uniqBy';
+import isString from 'lodash-es/isString';
+import uniqBy from 'lodash-es/uniqBy';
 import { createContext, useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
 

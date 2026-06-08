@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import isObject from 'lodash/isObject';
+import isObject from 'lodash-es/isObject';
 import type { ReactNode } from 'react';
 import { createContext, use, useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';

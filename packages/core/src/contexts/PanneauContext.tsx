@@ -1,5 +1,5 @@
-import isObject from 'lodash/isObject';
-import isString from 'lodash/isString';
+import isObject from 'lodash-es/isObject';
+import isString from 'lodash-es/isString';
 import { createContext, useContext } from 'react';
 import type { ReactNode } from 'react';
 
