@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import get from 'lodash/get';
-import isObject from 'lodash/isObject';
+import get from 'lodash-es/get';
+import isObject from 'lodash-es/isObject';
 import { type ReactNode, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 

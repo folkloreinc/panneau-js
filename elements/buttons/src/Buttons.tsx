@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import isString from 'lodash/isString';
+import isString from 'lodash-es/isString';
 import type { MouseEvent, ReactNode } from 'react';
 
 import type { ButtonElement, ButtonSize, ButtonTheme, Button as ButtonType } from '@panneau/core';

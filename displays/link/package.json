@@ -28,6 +28,9 @@
     "type": "module",
     "module": "dist/index.js",
     "types": "dist/index.d.ts",
+    "sideEffects": [
+        "**/*.css"
+    ],
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
@@ -54,7 +57,7 @@
         "@babel/runtime": "^7.28.6",
         "@panneau/core": "^4.0.55",
         "@panneau/themes": "^4.0.55",
-        "lodash": "^4.17.21",
+        "lodash-es": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0",
         "wouter": "^3.1.2"
     },

@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import isArray from 'lodash/isArray';
 import type { ComponentType } from 'react';
 
 import type { Action, ActionValue, ButtonSize, Resource } from '@panneau/core';

@@ -253,6 +253,12 @@ msgctxt "DUbv+u"
 msgid "Confirm your new password"
 msgstr "Confirmez votre nouveau mot de passe"
 
+# Modal title
+#: DV8/HU
+msgctxt "DV8/HU"
+msgid "Select media"
+msgstr ""
+
 # Form status
 #: ESkxLX
 msgctxt "ESkxLX"

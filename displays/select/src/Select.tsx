@@ -1,4 +1,4 @@
-import isString from 'lodash/isString';
+import isString from 'lodash-es/isString';
 
 import type { Field, FieldOption } from '@panneau/core';
 import SelectElement from '@panneau/element-select';

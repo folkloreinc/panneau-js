@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import get from 'lodash/get';
-import isObject from 'lodash/isObject';
-import isString from 'lodash/isString';
+import get from 'lodash-es/get';
+import isObject from 'lodash-es/isObject';
+import isString from 'lodash-es/isString';
 import type { ChangeEvent, ElementType, ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 

@@ -159,6 +159,10 @@
     "defaultMessage": "Confirm your new password",
     "description": "Field label"
   },
+  "DV8/HU": {
+    "defaultMessage": "Select media",
+    "description": "Modal title"
+  },
   "ESkxLX": {
     "defaultMessage": "Success!",
     "description": "Form status"

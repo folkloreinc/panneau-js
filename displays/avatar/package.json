@@ -29,6 +29,9 @@
     "module": "dist/index.js",
     "types": "dist/index.d.ts",
     "style": "assets/css/styles.css",
+    "sideEffects": [
+        "**/*.css"
+    ],
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
@@ -60,7 +63,7 @@
         "@panneau/element-avatar": "^4.0.55",
         "@panneau/themes": "^4.0.55",
         "classnames": "^2.5.1",
-        "lodash": "^4.17.21",
+        "lodash-es": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0"
     },
     "publishConfig": {

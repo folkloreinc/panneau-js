@@ -47,7 +47,7 @@
         }
     },
     "sideEffects": [
-        "./dist/hooks.js"
+        "**/*.css"
     ],
     "files": [
         "dist",

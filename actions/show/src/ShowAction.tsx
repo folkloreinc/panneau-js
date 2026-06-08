@@ -1,4 +1,4 @@
-import isObject from 'lodash/isObject';
+import isObject from 'lodash-es/isObject';
 import { type ReactNode, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 

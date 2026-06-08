@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
+import get from 'lodash-es/get';
+import isArray from 'lodash-es/isArray';
 import { type ReactNode, useMemo } from 'react';
 
 import Icon from '@panneau/element-icon';

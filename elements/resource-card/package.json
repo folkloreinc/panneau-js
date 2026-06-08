@@ -28,6 +28,9 @@
     "type": "module",
     "module": "dist/index.js",
     "types": "dist/index.d.ts",
+    "sideEffects": [
+        "**/*.css"
+    ],
     "style": "assets/css/styles.css",
     "exports": {
         ".": {
@@ -61,7 +64,7 @@
         "@panneau/element-icon": "^4.0.55",
         "@panneau/element-label": "^4.0.55",
         "classnames": "^2.5.1",
-        "lodash": "^4.17.21",
+        "lodash-es": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0"
     },
     "publishConfig": {

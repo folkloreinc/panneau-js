@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import get from 'lodash/get';
-import isString from 'lodash/isString';
+import get from 'lodash-es/get';
+import isString from 'lodash-es/isString';
 import { type ReactNode, useMemo } from 'react';
 
 import AvatarElement from '@panneau/element-avatar';

@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import isString from 'lodash/isString';
+import isString from 'lodash-es/isString';
 import type { ForwardedRef, MouseEventHandler, ReactNode } from 'react';
 import { Link } from 'wouter';
 

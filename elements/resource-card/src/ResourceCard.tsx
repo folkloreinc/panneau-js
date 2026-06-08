@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import get from 'lodash/get';
-import isEmpty from 'lodash/isEmpty';
+import get from 'lodash-es/get';
+import isEmpty from 'lodash-es/isEmpty';
 import { type ReactNode, useCallback } from 'react';
 
 import type { Message } from '@panneau/core';
