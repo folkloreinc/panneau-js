@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-accordion",
-    "version": "4.0.55",
+    "version": "4.0.56",
     "description": "Accordion element",
     "keywords": [
         "javascript"
@@ -67,8 +67,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.55",
-        "@panneau/element-label": "^4.0.55",
+        "@panneau/core": "^4.0.56",
+        "@panneau/element-label": "^4.0.56",
         "classnames": "^2.5.1",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0",
         "uuid": "^9.0.1"

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-url",
-    "version": "4.0.55",
+    "version": "4.0.56",
     "description": "A url field",
     "keywords": [
         "javascript"
@@ -63,11 +63,11 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.55",
-        "@panneau/element-button": "^4.0.55",
-        "@panneau/element-icon": "^4.0.55",
-        "@panneau/field-text": "^4.0.55",
-        "@panneau/themes": "^4.0.55",
+        "@panneau/core": "^4.0.56",
+        "@panneau/element-button": "^4.0.56",
+        "@panneau/element-icon": "^4.0.56",
+        "@panneau/field-text": "^4.0.56",
+        "@panneau/themes": "^4.0.56",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21"
     },

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/display-badges",
-    "version": "4.0.55",
+    "version": "4.0.56",
     "description": "Colored badges",
     "keywords": [
         "javascript"
@@ -55,8 +55,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.55",
-        "@panneau/element-icon": "^4.0.55",
+        "@panneau/core": "^4.0.56",
+        "@panneau/element-icon": "^4.0.56",
         "classnames": "^2.5.1",
         "lodash-es": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0"

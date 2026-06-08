@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-resource-item",
-    "version": "4.0.55",
+    "version": "4.0.56",
     "description": "An item mapping a resource",
     "keywords": [
         "javascript"
@@ -55,16 +55,16 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.55",
-        "@panneau/data": "^4.0.55",
-        "@panneau/element-button": "^4.0.55",
-        "@panneau/element-resource-card": "^4.0.55",
-        "@panneau/element-select": "^4.0.55",
-        "@panneau/form-resource": "^4.0.55",
-        "@panneau/intl": "^4.0.55",
-        "@panneau/modal-dialog": "^4.0.55",
-        "@panneau/modal-resource-form": "^4.0.55",
-        "@panneau/modal-resource-items": "^4.0.55",
+        "@panneau/core": "^4.0.56",
+        "@panneau/data": "^4.0.56",
+        "@panneau/element-button": "^4.0.56",
+        "@panneau/element-resource-card": "^4.0.56",
+        "@panneau/element-select": "^4.0.56",
+        "@panneau/form-resource": "^4.0.56",
+        "@panneau/intl": "^4.0.56",
+        "@panneau/modal-dialog": "^4.0.56",
+        "@panneau/modal-resource-form": "^4.0.56",
+        "@panneau/modal-resource-items": "^4.0.56",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0"

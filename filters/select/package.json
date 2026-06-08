@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filter-select",
-    "version": "4.0.55",
+    "version": "4.0.56",
     "description": "Select filter",
     "keywords": [
         "javascript"
@@ -64,8 +64,8 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@folklore/fetch": "^0.1.21",
-        "@panneau/core": "^4.0.55",
-        "@panneau/element-select": "^4.0.55",
+        "@panneau/core": "^4.0.56",
+        "@panneau/element-select": "^4.0.56",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "query-string": "^9.0.0",
