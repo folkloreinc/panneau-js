@@ -1,6 +1,6 @@
 {
     "name": "@panneau/intl",
-    "version": "4.0.56",
+    "version": "4.0.58",
     "description": "",
     "keywords": [
         "javascript"
@@ -61,7 +61,7 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@formatjs/cli-lib": "^6.6.6",
-        "@panneau/core": "^4.0.56",
+        "@panneau/core": "^4.0.58",
         "commander": "^12.0.0",
         "fs-extra": "^11.2.0",
         "gettext-parser": "^7.0.1",
