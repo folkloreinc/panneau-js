@@ -2,6 +2,7 @@
 @import url('@panneau/fields');
 @import url('@panneau/displays');
 @import url('@panneau/filters');
+@import url('@panneau/element-accordion');
 @import url('@panneau/element-avatar');
 @import url('@panneau/element-breadcrumbs');
 @import url('@panneau/element-button');
