@@ -1,6 +1,6 @@
 {
     "name": "@panneau/forms",
-    "version": "4.0.58",
+    "version": "4.0.59",
     "description": "",
     "keywords": [
         "javascript"
@@ -64,8 +64,8 @@
         "@panneau/form-auth": "^4.0.58",
         "@panneau/form-horizontal": "^4.0.58",
         "@panneau/form-inline": "^4.0.58",
-        "@panneau/form-normal": "^4.0.58",
-        "@panneau/form-two-pane": "^4.0.58"
+        "@panneau/form-normal": "^4.0.59",
+        "@panneau/form-two-pane": "^4.0.59"
     },
     "devDependencies": {
         "react": "^19.2.0",
