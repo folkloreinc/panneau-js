@@ -77,7 +77,7 @@ class DataStore {
         return Promise.resolve(item);
     }
 
-    deleteItem(type, id) {
+    destroyItem(type, id) {
         if (typeof this.items[type] === 'undefined') {
             return Promise.reject();
         }

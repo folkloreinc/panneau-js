@@ -20,12 +20,12 @@ function MediasResourcePicker({
     const api = useApi();
     const mediasApi: MediasApi = {
         get: (...args) => api.resources.get(resource, ...args),
-        getTrashed: (...args) => api.resources.getTrashed(resource, ...args),
+        getTrashed: (query, page, count) =>
+            api.resources.get(resource, { ...query, trashed: true }, page, count),
         find: (...args) => api.resources.find(resource, ...args),
         create: (...args) => api.resources.store(resource, ...args),
         update: (...args) => api.resources.update(resource, ...args),
-        trash: (...args) => api.resources.trash(resource, ...args),
-        delete: (...args) => api.resources.destroy(resource, ...args),
+        destroy: (...args) => api.resources.destroy(resource, ...args),
     };
 
     return (

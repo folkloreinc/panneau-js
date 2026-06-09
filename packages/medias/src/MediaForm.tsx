@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Media } from '@panneau/core';
@@ -11,7 +11,7 @@ import Form from '@panneau/element-form';
 import FormStatus from '@panneau/element-form-status';
 import UploadField from '@panneau/field-upload';
 
-import { useMediaDelete, useMediaReplace, useMediaTrash, useMediaUpdate } from './hooks';
+import { useMediaDestroy, useMediaReplace, useMediaUpdate } from './hooks';
 
 import MediaFrame from './MediaFrame';
 import defaultFields from './defaults/fields';
@@ -52,74 +52,49 @@ function MediaForm({
     const FieldsComponent = useFieldComponent('fields');
 
     const { update, updating } = useMediaUpdate();
-    const { mediaTrash, trashing } = useMediaTrash();
-    const { mediaDelete, deleting } = useMediaDelete();
+    const { mediaDestroy, destroying } = useMediaDestroy();
     const { mediaReplace, replacing } = useMediaReplace();
 
     const [changed, setChanged] = useState(false);
-    const disabled = updating || deleting || trashing || initialValue === null;
+    const disabled = updating || destroying || initialValue === null;
 
     const { name = null, type = null, deletedAt = null } = initialValue || {};
 
-    const onChangeMedia = useCallback(
-        (newValue: Media | null) => {
-            if (onChange !== null) {
-                onChange(newValue);
-            }
-            setChanged(true);
-        },
-        [onChange, setChanged],
-    );
+    const onChangeMedia = (newValue: Media | null) => {
+        if (onChange !== null) {
+            onChange(newValue);
+        }
+        setChanged(true);
+    };
 
-    const onMediaSaved = useCallback(
-        (newValue: Media | null) => {
-            if (onSave !== null) {
-                onSave(newValue);
+    const onMediaSaved = (newValue: Media | null) => {
+        if (onSave !== null) {
+            onSave(newValue);
+        }
+        setChanged(false);
+    };
+
+    const onDeleteMedia = () => {
+        const { id = null } = initialValue || {};
+        // Destroy
+        mediaDestroy(id, initialValue).then(() => {
+            if (onDelete !== null) {
+                onDelete();
             }
             setChanged(false);
-        },
-        [onChange, setChanged],
-    );
+            if (onClose !== null) {
+                onClose();
+            }
+        });
+    };
 
-    const onDeleteMedia = useCallback(() => {
+    const onUploadComplete = (data: unknown) => {
         const { id = null } = initialValue || {};
-        if (withTrash && deletedAt !== null) {
-            mediaTrash(id, initialValue).then(() => {
-                if (onDelete !== null) {
-                    onDelete();
-                }
-                setChanged(false);
-                if (onClose !== null) {
-                    onClose();
-                }
-            });
-        } else {
-            // Destroy
-            mediaDelete(id, initialValue).then(() => {
-                if (onDelete !== null) {
-                    onDelete();
-                }
-                setChanged(false);
-                if (onClose !== null) {
-                    onClose();
-                }
-            });
-        }
-    }, [initialValue, mediaDelete, mediaTrash, deletedAt, setChanged, onDelete, withTrash]);
+        mediaReplace(id, data).then(onReplace);
+    };
 
-    const onUploadComplete = useCallback(
-        (data: unknown) => {
-            const { id = null } = initialValue || {};
-            mediaReplace(id, data).then(onReplace);
-        },
-        [initialValue, onReplace],
-    );
-
-    const postForm = useCallback(
-        (action: unknown, data: MediaFormPayload) =>
-            initialValue !== null ? update(initialValue.id, data) : Promise.resolve(null),
-        [initialValue, update],
-    );
+    const postForm = (action: unknown, data: MediaFormPayload) =>
+        initialValue !== null ? update(initialValue.id, data) : Promise.resolve(null);
 
     const { value, setValue, fields, onSubmit, status, generalError } = useForm({
         fields: initialFields,
@@ -127,7 +102,6 @@ function MediaForm({
         onComplete: onMediaSaved,
         value: initialValue,
         setValue: onChangeMedia,
-        disabled: updating,
     });
 
     return (
@@ -161,7 +135,7 @@ function MediaForm({
                             types={[type]}
                             outline={false}
                             closeAfterFinish
-                            disabled={deleting || trashing || updating || replacing}
+                            disabled={destroying || updating || replacing}
                             addButtonLabel={
                                 <FormattedMessage
                                     defaultMessage="Replace"
@@ -178,7 +152,7 @@ function MediaForm({
                             icon={withTrash && deletedAt !== null ? 'trash-fill' : 'trash'}
                             iconPosition="right"
                             onClick={onDeleteMedia}
-                            disabled={deleting || trashing || updating || replacing}
+                            disabled={destroying || updating || replacing}
                         >
                             {withTrash && deletedAt === null ? (
                                 <FormattedMessage
@@ -200,7 +174,7 @@ function MediaForm({
                             icon={changed ? 'check' : 'check'}
                             iconPosition="right"
                             onClick={onSubmit}
-                            disabled={!changed || updating || deleting || trashing}
+                            disabled={!changed || updating || destroying}
                         >
                             <FormattedMessage defaultMessage="Save" description="Button label" />
                         </Button>
@@ -217,7 +191,7 @@ function MediaForm({
                     {children}
                 </div>
                 <div className="col-md-6">
-                    <Form onChange={onChangeMedia} withoutActions>
+                    <Form withoutActions>
                         <FieldsComponent
                             fields={fields}
                             value={value}

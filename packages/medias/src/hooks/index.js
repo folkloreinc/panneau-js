@@ -3,7 +3,6 @@ export { default as useMedias } from './useMedias';
 export { default as useMedia } from './useMedia';
 export { default as useMediaCreate } from './useMediaCreate';
 export { default as useMediaUpdate } from './useMediaUpdate';
-export { default as useMediaDelete } from './useMediaDelete';
-export { default as useMediaTrash } from './useMediaTrash';
+export { default as useMediaDestroy } from './useMediaDestroy';
 export { default as useMediaRestore } from './useMediaRestore';
 export { default as useMediaReplace } from './useMediaReplace';

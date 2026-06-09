@@ -13,7 +13,7 @@ class MediasApi extends Base {
                 update: 'medias/:media',
                 trash: 'medias/trash/:media',
                 restore: 'medias/restore/:media',
-                delete: 'medias/:media',
+                destroy: 'medias/:media',
                 replace: 'medias/replace/:media',
                 ...(opts.routes || null),
             },
@@ -42,16 +42,7 @@ class MediasApi extends Base {
     }
 
     getTrashed(query = {}, page = 1, count = 10) {
-        const finalQuery = {
-            ...query,
-        };
-        if (page !== null) {
-            finalQuery.page = page;
-        }
-        if (count !== null) {
-            finalQuery.count = count;
-        }
-        return this.requestGet(this.route('trashed'), finalQuery);
+        return this.get({ trashed: true, ...query }, page, count);
     }
 
     getTags(query = {}, count = 10) {
@@ -88,14 +79,14 @@ class MediasApi extends Base {
     restore(id) {
         return this.requestPost(
             this.route('restore', {
-                media: id
-            })
-        )
+                media: id,
+            }),
+        );
     }
 
-    delete(id) {
+    destroy(id) {
         return this.requestDelete(
-            this.route('delete', {
+            this.route('destroy', {
                 media: id,
             }),
         );
@@ -106,8 +97,8 @@ class MediasApi extends Base {
             this.route('replace', {
                 media: id,
             }),
-            data
-        )
+            data,
+        );
     }
 }
 

@@ -32,9 +32,8 @@ function Container(props) {
             find: (...args) => api.medias.find(...args),
             create: (...args) => api.medias.create(...args),
             update: (...args) => api.medias.update(...args),
-            delete: (...args) => api.medias.delete(...args),
+            destroy: (...args) => api.medias.destroy(...args),
             getTrashed: (...args) => api.medias.get(...args),
-            trash: (...args) => api.medias.delete(...args),
         }),
         [api],
     );

@@ -18,7 +18,7 @@ class DataRepository {
             get: (...args) => this.getEntities(type, ...args),
             create: (...args) => this.createEntity(type, ...args),
             update: (...args) => this.updateEntity(type, ...args),
-            delete: (...args) => this.deleteEntity(type, ...args),
+            destroy: (...args) => this.destroyEntity(type, ...args),
         };
     }
 
@@ -53,8 +53,8 @@ class DataRepository {
         return this.api.update(type, key, data).then(item => this.store.updateItem(type, key, item));
     }
 
-    deleteEntity(type, key) {
-        return this.api.delete(type, key).then(() => this.store.deleteItem(type, key));
+    destroyEntity(type, key) {
+        return this.api.destroy(type, key).then(() => this.store.destroyItem(type, key));
     }
 }
 

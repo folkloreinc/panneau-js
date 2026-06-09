@@ -15,7 +15,7 @@ import Table from '@panneau/element-table';
 import UploadField from '@panneau/field-upload';
 import Filters from '@panneau/filter-filters';
 
-import { useMediaDelete, useMediaTrash, useMedias } from './hooks';
+import { useMediaDestroy, useMedias } from './hooks';
 import useMediaRestore from './hooks/useMediaRestore';
 
 import { useCurrentMedia } from './MediaContext';
@@ -128,8 +128,7 @@ function MediasBrowser({
 
     const { trashed = null, ...queryWithoutTypes } = query || {};
 
-    const { mediaTrash, trashing } = useMediaTrash();
-    const { mediaDelete, deleting } = useMediaDelete();
+    const { mediaDestroy, destroying } = useMediaDestroy();
     const { mediaRestore } = useMediaRestore();
 
     const [showTrashed, setShowTrashed] = useState(false);
@@ -204,7 +203,7 @@ function MediasBrowser({
     };
 
     const onTrashMedia = (id: string | number) =>
-        (!showTrashed && withTrash ? mediaTrash(id) : mediaDelete(id))
+        mediaDestroy(id)
             .then(() => {
                 const newSelectedItems = (selectedItems || []).filter(
                     ({ id: itemId = null }) => itemId !== id,
@@ -522,7 +521,7 @@ function MediasBrowser({
                                 getDeletePropsFromValue: () => ({
                                     href: null,
                                     withConfirmation: true,
-                                    disabled: trashing || deleting,
+                                    disabled: destroying,
                                     icon: showTrashed ? 'trash-fill' : 'trash',
                                     action: (ids) => onTrashMedia(ids[0]),
                                 }),
