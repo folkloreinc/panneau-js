@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "4.0.60",
+    "version": "4.0.61",
     "description": "",
     "keywords": [
         "javascript"
@@ -81,7 +81,7 @@
         "@panneau/field-text": "^4.0.58",
         "@panneau/field-toggle": "^4.0.58",
         "@panneau/field-toggles": "^4.0.58",
-        "@panneau/field-upload": "^4.0.60",
+        "@panneau/field-upload": "^4.0.61",
         "@panneau/field-url": "^4.0.58",
         "lodash": "^4.17.21"
     },
