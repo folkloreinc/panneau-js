@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import isObject from 'lodash-es/isObject';
 import type { ReactNode } from 'react';
 import { createContext, use, useEffect, useMemo } from 'react';
@@ -70,7 +69,6 @@ interface UppyInstanceLike {
 }
 
 type UppyConstructor = new (options: Record<string, unknown>) => UppyInstanceLike;
-
 interface UppyContextValue {
     id?: string;
     transport?: UppyTransportType | null;
@@ -236,9 +234,8 @@ const DEFAULT_UPPY_SOURCES: UppySourceId[] = [
     'google-drive',
 ];
 
-interface UppyProviderProps {
+export interface UppyProviderConfig {
     id?: string;
-    children: ReactNode;
     transport?: UppyTransportType | null;
     locale?: string | null;
     sources?: UppySourceId[] | null;
@@ -246,6 +243,10 @@ interface UppyProviderProps {
     companion?: UppyCompanionConfig | null;
     tus?: UppyEndpointConfig | null;
     xhr?: UppyEndpointConfig | null;
+}
+
+interface UppyProviderProps extends UppyProviderConfig {
+    children: ReactNode;
 }
 
 export function UppyProvider({
