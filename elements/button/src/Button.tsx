@@ -1,6 +1,12 @@
 import classNames from 'classnames';
 import isString from 'lodash-es/isString';
-import type { ForwardedRef, MouseEventHandler, ReactNode } from 'react';
+import type {
+    AnchorHTMLAttributes,
+    ButtonHTMLAttributes,
+    ForwardedRef,
+    MouseEventHandler,
+    ReactNode,
+} from 'react';
 import { Link } from 'wouter';
 
 import type { ButtonElement, ButtonSize, ButtonTheme, Label } from '@panneau/core';
@@ -8,7 +14,10 @@ import Icon from '@panneau/element-icon';
 
 import styles from './styles.module.css';
 
-interface ButtonProps {
+interface ButtonProps extends Omit<
+    ButtonHTMLAttributes<HTMLButtonElement> & AnchorHTMLAttributes<HTMLAnchorElement>,
+    'onClick' | 'children'
+> {
     type?: 'button' | 'submit' | 'reset';
     theme?: ButtonTheme;
     size?: ButtonSize;

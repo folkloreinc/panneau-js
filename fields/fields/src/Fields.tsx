@@ -126,6 +126,7 @@ function Fields({
                     {...definitionProps}
                     disabled={disabled === true}
                     {...fieldProps}
+                    inline={inline}
                     name={name}
                     value={fieldValue}
                     horizontal={horizontal}
