@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-two-pane",
-    "version": "4.0.60",
+    "version": "4.0.62",
     "description": "Two-pane resource forms",
     "keywords": [
         "javascript"
@@ -57,9 +57,9 @@
         "@babel/runtime": "^7.28.6",
         "@panneau/core": "^4.0.58",
         "@panneau/data": "^4.0.60",
-        "@panneau/element-button": "^4.0.58",
-        "@panneau/element-form": "^4.0.58",
-        "@panneau/field-fields": "^4.0.58",
+        "@panneau/element-button": "^4.0.62",
+        "@panneau/element-form": "^4.0.62",
+        "@panneau/field-fields": "^4.0.62",
         "@panneau/themes": "^4.0.58",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
