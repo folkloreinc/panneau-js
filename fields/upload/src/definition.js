@@ -4,23 +4,27 @@ export default [
         component: 'Upload',
     },
     {
-        id: 'audio',
-        component: 'Audio',
+        id: 'audio-upload',
+        component: 'AudioUpload',
     },
     {
-        id: 'image',
-        component: 'Image',
+        id: 'image-upload',
+        component: 'ImageUpload',
     },
     {
-        id: 'video',
-        component: 'Video',
+        id: 'images-upload',
+        component: 'ImagesUpload',
     },
     {
-        id: 'document',
-        component: 'Document',
+        id: 'video-upload',
+        component: 'VideoUpload',
     },
     {
-        id: 'font',
-        component: 'Font',
+        id: 'document-upload',
+        component: 'DocumentUpload',
+    },
+    {
+        id: 'font-upload',
+        component: 'FontUpload',
     },
 ];

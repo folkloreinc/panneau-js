@@ -1,33 +1,19 @@
-// import classNames from 'classnames';
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
-import isObject from 'lodash-es/isObject';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Label as LabelType } from '@panneau/core';
+import type { Label as LabelType, Media } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 import { MediaCards } from '@panneau/element-media-card';
 import ModalPicker from '@panneau/modal-medias-picker';
+import type { UseUppyOptions } from '@panneau/uppy';
 
 import styles from './styles.module.css';
 
 type MediaType = 'audio' | 'image' | 'video' | 'document';
 type MediaSource = 'webcam' | 'facebook' | 'instagram' | 'dropbox' | 'google-drive';
-
-interface Media {
-    filename?: string;
-    size?: number;
-    url?: string;
-    id?: string | number;
-    [key: string]: unknown;
-}
-
-interface UppyProps {
-    withUUID?: boolean;
-    [key: string]: unknown;
-}
 
 interface MediaFieldProps {
     resource?: string;
@@ -36,24 +22,20 @@ interface MediaFieldProps {
     types?: MediaType[];
     fileTypes?: string[] | null;
     sources?: MediaSource[];
-    withButton?: boolean;
-    withFind?: boolean;
     withClearButton?: boolean;
     withoutMedia?: boolean;
-    addButtonLabel?: LabelType | null;
-    findButtonLabel?: LabelType | null;
+    buttonLabel?: LabelType | null;
     clearButtonLabel?: LabelType | null;
-    allowMultipleUploads?: boolean;
+    multiple?: boolean;
     maxNumberOfFiles?: number;
     namePath?: string;
     thumbnailPath?: string;
     sizePath?: string;
     linkPath?: string | null;
-    uppyProps?: UppyProps | null;
+    uppyConfig?: UseUppyOptions | null;
     disabled?: boolean;
     onChange?: ((value: Media | Media[] | null) => void) | null;
-    onClickAdd?: (() => void) | null;
-    onClickFind?: (() => void) | null;
+    onClickButton?: (() => void) | null;
     className?: string | null;
 }
 
@@ -73,182 +55,75 @@ function MediaField({
     types = DEFAULT_TYPES,
     fileTypes = null,
     sources = DEFAULT_SOURCES,
-    withButton = false,
-    withFind = false,
     withClearButton = false,
     withoutMedia = false,
-    addButtonLabel: initialAddButtonLabel = null,
-    findButtonLabel: initialFindButtonLabel = null,
-    clearButtonLabel: initialCleanButtonLabel = null,
-    allowMultipleUploads = false,
+    buttonLabel: initialButtonLabel = null,
+    clearButtonLabel: initialClearButtonLabel = null,
+    multiple = false,
     maxNumberOfFiles = 1,
     namePath = 'name',
     thumbnailPath = 'thumbnail_url',
     sizePath = 'metadata.size',
     linkPath = null,
-    uppyProps = null,
+    uppyConfig = null,
     disabled = false,
     onChange = null,
-    onClickAdd = null,
-    onClickFind = null,
+    onClickButton = null,
     className = null,
 }: MediaFieldProps) {
-    const addButtonLabel = initialAddButtonLabel || (
+    const buttonLabel = initialButtonLabel || (
         <FormattedMessage
-            defaultMessage="Upload file"
-            description="Default upload add button label"
+            defaultMessage="Select media"
+            description="Default media picker button label"
         />
     );
-    const findButtonLabel = initialFindButtonLabel || (
-        <FormattedMessage
-            defaultMessage="Find a file"
-            description="Default upload add button label"
-        />
-    );
-    const clearButtonLabel = initialCleanButtonLabel || (
-        <FormattedMessage defaultMessage="Clear" description="Default upload add button label" />
+    const clearButtonLabel = initialClearButtonLabel || (
+        <FormattedMessage defaultMessage="Clear" description="Default media clear button label" />
     );
 
-    const mergeData = useCallback((newValue: Media) => {
-        // Merge the response from our back-end
-        if (
-            isObject(newValue) &&
-            isObject(newValue.response) &&
-            (newValue.response as any).status === 200 &&
-            (newValue.response as any).body !== null
-        ) {
-            return { ...newValue, ...((newValue.response as any).body || null) };
+    const finalUppyConfig = {
+        maxNumberOfFiles: multiple && maxNumberOfFiles === 1 ? 50 : maxNumberOfFiles,
+        ...uppyConfig,
+        allowedFileTypes: fileTypes !== null ? fileTypes : types.map((type) => `${type}/*`),
+        allowMultipleUploads: multiple,
+        sources,
+        autoProceed: true,
+    };
+
+    const onClickRemove = (idx: number) => {
+        if (onChange !== null && isArray(value) && value.length > 1) {
+            onChange(value.filter((v, i) => i !== idx));
+        } else if (onChange !== null) {
+            onChange(null);
         }
-        return newValue;
-    }, []);
+    };
 
-    const onComplete = useCallback(
-        (response: any) => {
-            let newValue: Media | Media[] | null = null;
-            if (isArray(response)) {
-                if (allowMultipleUploads) {
-                    newValue = response;
-                } else {
-                    const [first] = response;
-                    newValue = first;
-                }
-            } else if (response && response.successful) {
-                newValue =
-                    response.successful.length > 0 ? response.successful[0].response.body : null;
-            }
+    const modalKey = `media-field-${name}`;
+    const [modalOpen, setModalOpen] = useState(false);
 
-            if (isArray(newValue)) {
-                newValue = newValue.map((val) => mergeData(val));
-            } else if (newValue !== null) {
-                newValue = mergeData(newValue);
-            }
+    const hasMedia = isArray(value) ? value.length > 0 : value !== null;
 
-            if (onChange !== null) {
-                onChange(newValue);
-            }
-        },
-        [onChange, allowMultipleUploads, mergeData],
-    );
+    const openModal = () => {
+        setModalOpen(true);
+    };
 
-    const typesString = useMemo(() => types.join('.'), [types]);
-    const allowedFileTypes = useMemo(() => {
-        if (fileTypes !== null) {
-            return fileTypes;
-        }
-        return typesString.split('.').map((type) => `${type}/*`);
-    }, [typesString, fileTypes]);
+    const closeModal = () => {
+        setModalOpen(false);
+    };
 
-    const uppyFinalProps = useMemo(
-        () => ({
-            maxNumberOfFiles:
-                allowMultipleUploads && maxNumberOfFiles === 1 ? 50 : maxNumberOfFiles,
-            ...uppyProps,
-            allowedFileTypes,
-            allowMultipleUploads,
-            sources,
-            autoProceed: true,
-            onComplete,
-        }),
-        [uppyProps, allowedFileTypes, allowMultipleUploads, maxNumberOfFiles, sources, onComplete],
-    );
-
-    const [modalOpened, setModalOpened] = useState(false);
-
-    const openModal = useCallback(() => {
-        setModalOpened((val) => !val);
-    }, []);
-
-    const onClickRemove = useCallback(
-        (idx: number) => {
-            if (onChange !== null && isArray(value) && value.length > 1) {
-                onChange(value.filter((v, i) => i !== idx));
-            } else if (onChange !== null) {
-                onChange(null);
-            }
-        },
-        [value, onChange],
-    );
-
-    const values = useMemo(() => {
-        if (isArray(value)) {
-            return value;
-        }
-        return value !== null ? [value] : null;
-    }, [value]);
-
-    const hasMedia = values !== null && values.length > 0;
-
-    // Resource-modal-picker
-    const modalKey = `upload-field-${name}`;
-    const [resourceModalOpen, setResourceModalOpen] = useState(false);
-    const showResourceModal = withFind && resourceModalOpen;
-
-    const toggleResourceModal = useCallback(() => {
-        setResourceModalOpen((val) => !val);
-    }, [setResourceModalOpen]);
-
-    const [modalItems, setModalItems] = useState<Media[]>([]);
-    const onModalClosed = useCallback(() => {
-        setResourceModalOpen(false);
-        setModalItems([]);
-    }, [resourceModalOpen, setResourceModalOpen, modalKey, setModalItems]);
-
-    const onChangeSelection = useCallback(
-        (newValue: Media | Media[] | null) => {
-            if (allowMultipleUploads) {
-                if (newValue !== null && !isArray(newValue)) {
-                    const { id = null } = newValue || {};
-                    if (id !== null) {
-                        const previous = (modalItems || []).find(
-                            ({ id: itemId = null }: any = {}) => id === itemId,
-                        );
-                        if (previous) {
-                            setModalItems(
-                                (modalItems || []).filter(
-                                    ({ id: itemId = null }: any = {}) => id !== itemId,
-                                ),
-                            );
-                        } else {
-                            setModalItems([...(modalItems || []), newValue]);
-                        }
-                    }
-                } else if (newValue !== null && isArray(newValue)) {
-                    setModalItems(newValue);
-                }
-            } else if (onChange !== null) {
-                // Single value onchange
-                const [finalValue = null] = isArray(newValue) ? newValue : [newValue];
-                onChange(finalValue);
-            }
-        },
-        [onChange, modalKey, allowMultipleUploads, modalItems, setModalItems],
-    );
-
-    const onConfirmSelection = useCallback(() => {
+    const onModalChange = (newValue: Media | Media[] | null) => {
         if (onChange !== null) {
-            onChange(modalItems);
+            onChange(newValue);
         }
-    }, [onChange, modalItems, modalKey, allowMultipleUploads]);
+    };
+
+    const onClick = () => {
+        if (onClickButton !== null) {
+            onClickButton();
+        } else {
+            openModal();
+        }
+    };
 
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -259,7 +134,7 @@ function MediaField({
         >
             {!withoutMedia && hasMedia ? (
                 <MediaCards
-                    value={values}
+                    value={value}
                     namePath={namePath}
                     thumbnailPath={thumbnailPath}
                     sizePath={sizePath}
@@ -275,7 +150,8 @@ function MediaField({
                         <Button
                             type="button"
                             theme="primary"
-                            onClick={() => onChange(null)}
+                            onClick={() => onChange?.(null)}
+                            disabled={disabled}
                             outline
                         >
                             <Label>{clearButtonLabel}</Label>
@@ -284,93 +160,33 @@ function MediaField({
                 </div>
             ) : null}
 
-            {withoutMedia || ((!hasMedia || allowMultipleUploads) && (withButton || withFind)) ? (
-                <div className="row">
-                    {withButton ? (
-                        <div className="col-auto">
-                            <Button
-                                type="button"
-                                theme="primary"
-                                onClick={onClickAdd || openModal}
-                                disabled={disabled}
-                                outline
-                            >
-                                <Label>{addButtonLabel}</Label>
-                            </Button>
-                        </div>
-                    ) : null}
-                    {withFind ? (
-                        <div className="col-auto ps-0">
-                            <Button
-                                type="button"
-                                theme="primary"
-                                onClick={onClickFind || toggleResourceModal}
-                                disabled={disabled}
-                                outline
-                            >
-                                <Label>{findButtonLabel}</Label>
-                            </Button>
-                        </div>
-                    ) : null}
+            {withoutMedia || !hasMedia || multiple ? (
+                <div className="row mt-2">
+                    <div className="col-auto">
+                        <Button
+                            type="button"
+                            theme="primary"
+                            onClick={onClick}
+                            disabled={disabled}
+                            outline
+                        >
+                            <Label>{buttonLabel}</Label>
+                        </Button>
+                    </div>
                 </div>
             ) : null}
 
-            {/* {!showResourceModal && !disabled && !hasMedia && !withButton && finalUppy !== null ? (
-                <div className={styles.dashboard}>
-                    <Dashboard
-                        uppy={finalUppy}
-                        // {...(containerWidth !== null && height !== null
-                        //     ? { width: containerWidth }
-                        // : null)}
-                        {...(width !== null ? { width } : null)}
-                        {...(height !== null ? { height } : null)}
-                        plugins={sources}
-                        inline
-                        showProgressDetails
-                        areInsidesReadyToBeVisible
-                        proudlyDisplayPoweredByUppy={false}
-                    />
-                </div>
-            ) : null} */}
-
-            {/* {!showResourceModal && !disabled && withButton && finalUppy !== null && modalOpened ? (
-                <DashboardModal
-                    uppy={finalUppy}
-                    className={styles.dashboardModal}
-                    plugins={sources}
-                    open
-                    onRequestClose={closeModal}
-                    proudlyDisplayPoweredByUppy={false}
-                    closeModalOnClickOutside
-                    areInsidesReadyToBeVisible
-                    isDashboardVisible
-                    showProgressDetails
-                    showAddFilesPanel
-                    doneButtonHandler={closeModal}
-                />
-            ) : null} */}
-
-            {showResourceModal ? (
+            {modalOpen ? (
                 <ModalPicker
                     id={modalKey}
                     value={value}
                     resource={resource}
                     types={types}
                     selectable
-                    onChange={onChangeSelection}
-                    onConfirm={onConfirmSelection}
-                    onClosed={onModalClosed}
-                    uppyConfig={uppyFinalProps}
-                    // buttons={[
-                    //     {
-                    //         id: 'upload',
-                    //         label: addButtonLabel,
-                    //         theme: 'primary',
-                    //         onClick: openModalInResource,
-                    //     },
-                    // ]}
-                    // buttonsClassName="ms-xl-auto"
-                    multiple={allowMultipleUploads}
+                    onChange={onModalChange}
+                    onClosed={closeModal}
+                    uppyConfig={finalUppyConfig}
+                    multiple={multiple}
                 />
             ) : null}
         </div>

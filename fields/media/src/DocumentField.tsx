@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import MediaField from './MediaField';
 
 interface DocumentFieldProps {
@@ -7,9 +5,7 @@ interface DocumentFieldProps {
 }
 
 function DocumentField(props: DocumentFieldProps) {
-    const fileTypes = useMemo(() => ['.pdf'], []);
-    const types = useMemo(() => ['document'], []);
-    return <MediaField {...props} fileTypes={fileTypes} types={types} />;
+    return <MediaField fileTypes={['.pdf']} {...props} types={['document']} />;
 }
 
 export default DocumentField;

@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import MediaField from './MediaField';
 
 interface ImagesFieldProps {
@@ -7,8 +5,7 @@ interface ImagesFieldProps {
 }
 
 function ImagesField(props: ImagesFieldProps) {
-    const types = useMemo(() => ['image'], []);
-    return <MediaField {...props} types={types} allowMultipleUploads />;
+    return <MediaField {...props} types={['image']} multiple />;
 }
 
 export default ImagesField;

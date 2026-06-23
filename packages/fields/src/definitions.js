@@ -13,6 +13,7 @@ import { definition as InputGroup } from '@panneau/field-input-group';
 import { definition as Item } from '@panneau/field-item';
 import { definition as Items } from '@panneau/field-items';
 import { definition as Localized } from '@panneau/field-localized';
+import { definition as Media } from '@panneau/field-media';
 import { definition as Number } from '@panneau/field-number';
 import { definition as Radios } from '@panneau/field-radios';
 import { definition as ResourceItem } from '@panneau/field-resource-item';
@@ -37,6 +38,7 @@ export default [
     Item,
     Items,
     Localized,
+    Media,
     Number,
     Radios,
     ResourceItem,

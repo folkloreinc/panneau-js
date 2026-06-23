@@ -19,12 +19,21 @@ export { default as Toggle } from '@panneau/field-toggle';
 export { default as Toggles } from '@panneau/field-toggles';
 export {
     default as Upload,
+    AudioField as AudioUpload,
+    VideoField as VideoUpload,
+    ImageField as ImageUpload,
+    ImagesField as ImagesUpload,
+    DocumentField as DocumentUpload,
+    FontField as FontUpload,
+} from '@panneau/field-upload';
+export {
+    default as Media,
     AudioField as Audio,
     VideoField as Video,
     ImageField as Image,
     ImagesField as Images,
     DocumentField as Document,
     FontField as Font,
-} from '@panneau/field-upload';
+} from '@panneau/field-media';
 export { default as Url } from '@panneau/field-url';
 export { default as ResourceItem } from '@panneau/field-resource-item';

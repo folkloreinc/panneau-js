@@ -12,6 +12,10 @@ export default [
         component: 'Image',
     },
     {
+        id: 'images',
+        component: 'Images',
+    },
+    {
         id: 'video',
         component: 'Video',
     },

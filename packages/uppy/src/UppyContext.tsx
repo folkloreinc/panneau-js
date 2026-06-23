@@ -1,3 +1,4 @@
+import type Uppy from '@uppy/core';
 import isObject from 'lodash-es/isObject';
 import type { ReactNode } from 'react';
 import { createContext, use, useEffect, useMemo } from 'react';
@@ -59,16 +60,7 @@ interface UppyTransportPlugin extends UppyPlugin {
     COMPANION_PATTERN?: string;
 }
 
-interface UppyInstanceLike {
-    on: (eventName: string, callback: (...args: unknown[]) => void) => void;
-    off: (eventName: string, callback: (...args: unknown[]) => void) => void;
-    getFile: (id: string) => UppyFileLike;
-    setFileMeta: (id: string, meta: Record<string, unknown>) => void;
-    use: (plugin: unknown, options?: Record<string, unknown>) => UppyInstanceLike;
-    [key: string]: unknown;
-}
-
-type UppyConstructor = new (options: Record<string, unknown>) => UppyInstanceLike;
+type UppyConstructor = new (options: Record<string, unknown>) => Uppy;
 interface UppyContextValue {
     id?: string;
     transport?: UppyTransportType | null;
@@ -82,10 +74,10 @@ interface UppyContextValue {
     uppyTransport?: UppyTransportPlugin | null;
     uppySources?: Record<string, UppyPlugin> | null;
     uppyLocale?: Record<string, unknown> | null;
-    buildUppy?: ((opts?: UppyBuildOptions) => UppyInstanceLike) | null;
+    buildUppy?: ((opts?: UppyBuildOptions) => Uppy) | null;
 }
 
-interface UseUppyOptions {
+export interface UseUppyOptions {
     onComplete?: ((successful: unknown[]) => void) | null;
     onFail?: ((failed: unknown) => void) | null;
     getFileName?: (file: UppyFileLike) => string | null;
@@ -139,7 +131,7 @@ export function useUppy({
     allowedFileTypes = null,
     autoProceed = false,
     debug = false,
-}: UseUppyOptions = {}): UppyInstanceLike | null {
+}: UseUppyOptions = {}): Uppy | null {
     const { buildUppy, transport } = use(UppyContext) || {};
 
     const uppy = useMemo(

@@ -17,5 +17,11 @@ export * from './MediasApiContext';
 export * from './hooks/index';
 export * from './defaults/index';
 
-export { default as MediasResourceBrowser } from './MediasResourceBrowser';
-export { default as MediasResourcePicker } from './MediasResourcePicker';
+export {
+    default as MediasResourceBrowser,
+    type MediasResourceBrowserProps,
+} from './MediasResourceBrowser';
+export {
+    default as MediasResourcePicker,
+    type MediasResourcePickerProps,
+} from './MediasResourcePicker';

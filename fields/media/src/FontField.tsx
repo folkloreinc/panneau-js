@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import MediaField from './MediaField';
 
 interface FontFieldProps {
@@ -7,8 +5,7 @@ interface FontFieldProps {
 }
 
 function FontField(props: FontFieldProps) {
-    const fileTypes = useMemo(() => ['.ttf', '.otf'], []);
-    return <MediaField {...props} fileTypes={fileTypes} />;
+    return <MediaField fileTypes={['.ttf', '.otf']} {...props} />;
 }
 
 export default FontField;

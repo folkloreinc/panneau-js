@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import MediaField from './MediaField';
 
 interface VideoFieldProps {
@@ -7,8 +5,7 @@ interface VideoFieldProps {
 }
 
 function VideoField(props: VideoFieldProps) {
-    const types = useMemo(() => ['video'] as const, []);
-    return <MediaField {...props} types={types} />;
+    return <MediaField {...props} types={['video']} />;
 }
 
 export default VideoField;

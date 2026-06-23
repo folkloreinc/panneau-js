@@ -75,7 +75,7 @@ export const Image = {
 };
 
 export const Images = {
-    render: () => <Container types={['image']} allowMultipleUploads />,
+    render: () => <Container types={['image']} multiple />,
 };
 
 export const Video = {
@@ -101,7 +101,7 @@ export const WithValuesAndClear = {
                 { data: { file: '1200x300.png' }, preview: 'https://picsum.photos/200/300' },
                 { data: { file: '1200x301.png' }, size: 2000078, type: 'image' },
             ]}
-            allowMultipleUploads
+            multiple
             withClearButton
         />
     ),
@@ -123,15 +123,15 @@ export const MultiplePdfs = {
 };
 
 export const WithModal = {
-    render: () => <Container withButton withFind />,
+    render: () => <Container withButton />,
 };
 
 export const WithModalAndTypes = {
-    render: () => <Container withButton withFind types={['video']} />,
+    render: () => <Container withButton types={['video']} />,
 };
 
 export const WithModalMultiple = {
-    render: () => <Container withButton withFind types={['video']} allowMultipleUploads />,
+    render: () => <Container withButton types={['video']} multiple />,
 };
 
 export const WithButtonDisabled = {

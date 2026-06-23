@@ -74,6 +74,7 @@
         "@panneau/field-item": "^4.0.62",
         "@panneau/field-items": "^4.0.62",
         "@panneau/field-localized": "^4.0.62",
+        "@panneau/field-media": "^4.0.62",
         "@panneau/field-number": "^4.0.58",
         "@panneau/field-radios": "^4.0.58",
         "@panneau/field-resource-item": "^4.0.62",

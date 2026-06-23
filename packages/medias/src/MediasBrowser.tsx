@@ -14,6 +14,7 @@ import Pagination from '@panneau/element-pagination';
 import Table from '@panneau/element-table';
 import UploadField from '@panneau/field-upload';
 import Filters from '@panneau/filter-filters';
+import { UseUppyOptions } from '@panneau/uppy';
 
 import { useMediaDestroy, useMedias } from './hooks';
 import useMediaRestore from './hooks/useMediaRestore';
@@ -34,7 +35,7 @@ const DEFAULT_LAYOUTS: LayoutItem[] = [
         label: <Icon name="grid" />,
     },
 ];
-const DEFAULT_UPPY_CONFIG = {};
+const DEFAULT_UPPY_CONFIG: UseUppyOptions = {};
 
 interface LayoutItem {
     id: string;
@@ -70,7 +71,7 @@ export interface MediasBrowserProps {
     selectedItems?: Media[] | null;
     onSelectionChange?: ((items: Media[] | null) => void) | null;
     multipleSelection?: boolean;
-    uppyConfig?: Record<string, unknown>;
+    uppyConfig?: UseUppyOptions | null;
     withDelete?: boolean;
     withTrash?: boolean;
     withReplace?: boolean;
@@ -439,9 +440,9 @@ function MediasBrowser({
                                     withButton
                                     withoutMedia
                                     className="w-auto ms-auto"
-                                    uppyProps={uppyConfig}
+                                    uppyConfig={uppyConfig}
                                     types={types}
-                                    allowMultipleUploads
+                                    multiple
                                     onChange={onUploadComplete}
                                     disabled={uploadProcessing}
                                     loading={uploadProcessing}

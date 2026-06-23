@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import MediaField from './MediaField';
 
 interface AudioFieldProps {
@@ -7,8 +5,7 @@ interface AudioFieldProps {
 }
 
 function AudioField(props: AudioFieldProps) {
-    const types = useMemo(() => ['audio'], []);
-    return <MediaField {...props} types={types} />;
+    return <MediaField {...props} types={['audio']} />;
 }
 
 export default AudioField;

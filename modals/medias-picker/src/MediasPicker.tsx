@@ -4,10 +4,19 @@ import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Button, Media, Resource } from '@panneau/core';
-import { MediasPickerContainer, MediasResourcePicker } from '@panneau/medias';
+import { usePanneauResource } from '@panneau/core/contexts';
+import {
+    MediasPickerContainer,
+    type MediasPickerContainerProps,
+    MediasResourcePicker,
+    MediasResourcePickerProps,
+} from '@panneau/medias';
 import Dialog from '@panneau/modal-dialog';
 
-interface MediasPickerModalProps {
+interface MediasPickerModalProps extends Omit<
+    MediasPickerContainerProps & MediasResourcePickerProps,
+    'value' | 'onChange'
+> {
     id: string;
     value?: Media | Media[] | null;
     resource?: Resource | string | null;
@@ -22,7 +31,7 @@ interface MediasPickerModalProps {
 function MediasPickerModal({
     id,
     value: initialValue = null,
-    resource = null,
+    resource: resourceId = null,
     title = null,
     onChange = null,
     onClosed = null,
@@ -31,6 +40,7 @@ function MediasPickerModal({
     multiple = false,
     ...props
 }: MediasPickerModalProps) {
+    const resource = usePanneauResource(resourceId);
     const [opened, setOpened] = useState(true);
     const requestClose = () => {
         setOpened(false);

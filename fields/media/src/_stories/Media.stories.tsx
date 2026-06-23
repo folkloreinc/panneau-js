@@ -5,6 +5,7 @@ import { Modals } from '@panneau/element-modal';
 
 import definition from '../../../../.storybook/data/panneau-definition';
 import withApi from '../../../../.storybook/decorators/withApiProvider';
+import withUppy from '../../../../.storybook/decorators/withUppy';
 import ActionsProvider from '../../../../packages/actions';
 import { PanneauProvider } from '../../../../packages/core/src/contexts';
 import DisplaysProvider from '../../../../packages/displays';
@@ -18,7 +19,7 @@ import MediaField from '../MediaField';
 export default {
     title: 'Fields/Media',
     component: MediaField,
-    decorators: [withApi],
+    decorators: [withUppy, withApi],
     parameters: {
         intl: true,
     },
@@ -63,12 +64,8 @@ export const Disabled = {
     render: () => <Container disabled value={{ url: 'lol' }} />,
 };
 
-export const WithButton = {
-    render: () => <Container withButton />,
-};
-
-export const WithResourceList = {
-    render: () => <Container withButton withResourceList />,
+export const WithCustomButtonLabel = {
+    render: () => <Container buttonLabel="Choose a media" />,
 };
 
 export const Audio = {
@@ -80,7 +77,7 @@ export const Image = {
 };
 
 export const Images = {
-    render: () => <Container types={['image']} allowMultipleUploads />,
+    render: () => <Container types={['image']} multiple />,
 };
 
 export const Video = {
@@ -106,14 +103,14 @@ export const WithValuesAndClear = {
                 { data: { file: '1200x300.png' }, preview: 'https://picsum.photos/200/300' },
                 { data: { file: '1200x301.png' }, size: 2000078, type: 'image' },
             ]}
-            allowMultipleUploads
+            multiple
             withClearButton
         />
     ),
 };
 
 export const WithoutSize = {
-    render: () => <Container types={['video']} value={null} width={null} height={null} />,
+    render: () => <Container types={['video']} value={null} />,
 };
 
 export const MultiplePdfs = {
@@ -128,17 +125,17 @@ export const MultiplePdfs = {
 };
 
 export const WithModal = {
-    render: () => <Container withButton withFind />,
+    render: () => <Container />,
 };
 
 export const WithModalAndTypes = {
-    render: () => <Container withButton withFind types={['video']} />,
+    render: () => <Container types={['video']} />,
 };
 
 export const WithModalMultiple = {
-    render: () => <Container withButton withFind types={['video']} allowMultipleUploads />,
+    render: () => <Container types={['video']} multiple />,
 };
 
 export const WithButtonDisabled = {
-    render: () => <Container withButton disabled />,
+    render: () => <Container disabled />,
 };
