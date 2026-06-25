@@ -122,6 +122,9 @@
     "DV8/HU": {
         "defaultMessage": "Select media"
     },
+    "DhReUK": {
+        "defaultMessage": "The following item will be restored: {id}. Are you sure you want to continue?"
+    },
     "ESkxLX": {
         "defaultMessage": "Success!"
     },
@@ -130,6 +133,9 @@
     },
     "G7M4nI": {
         "defaultMessage": "Duplicate {a_singular}"
+    },
+    "GKcYDd": {
+        "defaultMessage": "The following item will be duplicated: {id}. Are you sure you want to continue?"
     },
     "GxOBVL": {
         "defaultMessage": "Replace"

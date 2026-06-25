@@ -259,6 +259,16 @@ msgctxt "DV8/HU"
 msgid "Select media"
 msgstr "Sélectionner un média"
 
+# Modal message
+#: DhReUK
+msgctxt "DhReUK"
+msgid ""
+"The following item will be restored: {id}. Are you sure you want to "
+"continue?"
+msgstr ""
+"L'élément suivant sera restauré: {id}. Êtes-vous certain de vouloir "
+"continuer?"
+
 # Form status
 #: ESkxLX
 msgctxt "ESkxLX"
@@ -276,6 +286,16 @@ msgstr "Voir {the_plural}"
 msgctxt "G7M4nI"
 msgid "Duplicate {a_singular}"
 msgstr "Dupliquer {a_singular}"
+
+# Modal message
+#: GKcYDd
+msgctxt "GKcYDd"
+msgid ""
+"The following item will be duplicated: {id}. Are you sure you want to "
+"continue?"
+msgstr ""
+"L'élément suivant sera dupliqué: {id}. Êtes-vous certain de vouloir "
+"continuer?"
 
 # Media form action
 #: GxOBVL

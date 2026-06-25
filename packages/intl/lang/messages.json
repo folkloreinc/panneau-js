@@ -163,6 +163,10 @@
     "defaultMessage": "Select media",
     "description": "Modal title"
   },
+  "DhReUK": {
+    "defaultMessage": "The following item will be restored: {id}. Are you sure you want to continue?",
+    "description": "Modal message"
+  },
   "ESkxLX": {
     "defaultMessage": "Success!",
     "description": "Form status"
@@ -174,6 +178,10 @@
   "G7M4nI": {
     "defaultMessage": "Duplicate {a_singular}",
     "description": "Page title"
+  },
+  "GKcYDd": {
+    "defaultMessage": "The following item will be duplicated: {id}. Are you sure you want to continue?",
+    "description": "Modal message"
   },
   "GxOBVL": {
     "defaultMessage": "Replace",
