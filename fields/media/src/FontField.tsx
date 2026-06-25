@@ -1,10 +1,6 @@
-import MediaField from './MediaField';
+import MediaField, { MediaFieldProps } from './MediaField';
 
-interface FontFieldProps {
-    [key: string]: unknown;
-}
-
-function FontField(props: FontFieldProps) {
+function FontField(props: MediaFieldProps) {
     return <MediaField fileTypes={['.ttf', '.otf']} {...props} />;
 }
 

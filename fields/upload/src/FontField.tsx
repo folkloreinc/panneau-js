@@ -1,14 +1,7 @@
-import { useMemo } from 'react';
+import UploadField, { UploadFieldProps } from './UploadField';
 
-import UploadField from './UploadField';
-
-interface FontFieldProps {
-    [key: string]: unknown;
+function FontUploadField(props: UploadFieldProps) {
+    return <UploadField fileTypes={['.ttf', '.otf']} {...props} />;
 }
 
-function FontField(props: FontFieldProps) {
-    const fileTypes = useMemo(() => ['.ttf', '.otf'], []);
-    return <UploadField {...props} fileTypes={fileTypes} />;
-}
-
-export default FontField;
+export default FontUploadField;

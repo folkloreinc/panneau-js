@@ -1,10 +1,6 @@
-import MediaField from './MediaField';
+import MediaField, { MediaFieldProps } from './MediaField';
 
-interface AudioFieldProps {
-    [key: string]: unknown;
-}
-
-function AudioField(props: AudioFieldProps) {
+function AudioField(props: MediaFieldProps) {
     return <MediaField {...props} types={['audio']} />;
 }
 

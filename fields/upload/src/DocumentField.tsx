@@ -1,15 +1,7 @@
-import { useMemo } from 'react';
+import UploadField, { UploadFieldProps } from './UploadField';
 
-import UploadField from './UploadField';
-
-interface DocumentFieldProps {
-    [key: string]: unknown;
+function DocumentUploadField(props: UploadFieldProps) {
+    return <UploadField fileTypes={['.pdf']} {...props} types={['document']} />;
 }
 
-function DocumentField(props: DocumentFieldProps) {
-    const fileTypes = useMemo(() => ['.pdf'], []);
-    const types = useMemo(() => ['document'] as const, []);
-    return <UploadField {...props} fileTypes={fileTypes} types={types} />;
-}
-
-export default DocumentField;
+export default DocumentUploadField;

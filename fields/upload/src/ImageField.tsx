@@ -1,14 +1,7 @@
-import { useMemo } from 'react';
+import UploadField, { UploadFieldProps } from './UploadField';
 
-import UploadField from './UploadField';
-
-interface ImageFieldProps {
-    [key: string]: unknown;
+function ImageUploadField(props: UploadFieldProps) {
+    return <UploadField {...props} types={['image']} />;
 }
 
-function ImageField(props: ImageFieldProps) {
-    const types = useMemo(() => ['image'] as const, []);
-    return <UploadField {...props} types={types} />;
-}
-
-export default ImageField;
+export default ImageUploadField;

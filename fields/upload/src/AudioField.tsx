@@ -1,14 +1,7 @@
-import { useMemo } from 'react';
+import UploadField, { UploadFieldProps } from './UploadField';
 
-import UploadField from './UploadField';
-
-interface AudioFieldProps {
-    [key: string]: unknown;
+function AudioUploadField(props: UploadFieldProps) {
+    return <UploadField {...props} types={['audio']} />;
 }
 
-function AudioField(props: AudioFieldProps) {
-    const types = useMemo(() => ['audio'] as const, []);
-    return <UploadField {...props} types={types} />;
-}
-
-export default AudioField;
+export default AudioUploadField;

@@ -15,7 +15,7 @@ import styles from './styles.module.css';
 type MediaType = 'audio' | 'image' | 'video' | 'document';
 type MediaSource = 'webcam' | 'facebook' | 'instagram' | 'dropbox' | 'google-drive';
 
-interface MediaFieldProps {
+export interface MediaFieldProps {
     resource?: string;
     value?: Media | Media[] | null;
     name?: string | null;

@@ -1,10 +1,6 @@
-import MediaField from './MediaField';
+import MediaField, { MediaFieldProps } from './MediaField';
 
-interface VideoFieldProps {
-    [key: string]: unknown;
-}
-
-function VideoField(props: VideoFieldProps) {
+function VideoField(props: MediaFieldProps) {
     return <MediaField {...props} types={['video']} />;
 }
 

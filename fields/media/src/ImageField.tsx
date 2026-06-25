@@ -1,10 +1,6 @@
-import MediaField from './MediaField';
+import MediaField, { MediaFieldProps } from './MediaField';
 
-interface ImageFieldProps {
-    [key: string]: unknown;
-}
-
-function ImageField(props: ImageFieldProps) {
+function ImageField(props: MediaFieldProps) {
     return <MediaField {...props} types={['image']} />;
 }
 

@@ -20,7 +20,7 @@ import '@uppy/dashboard/css/style.css';
 
 type MediaSource = 'webcam' | 'facebook' | 'instagram' | 'dropbox' | 'google-drive';
 
-interface UploadFieldProps {
+export interface UploadFieldProps {
     value?: Media | Media[] | null;
     name?: string | null;
     types?: MediaType[] | null;

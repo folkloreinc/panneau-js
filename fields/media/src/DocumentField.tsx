@@ -1,10 +1,6 @@
-import MediaField from './MediaField';
+import MediaField, { MediaFieldProps } from './MediaField';
 
-interface DocumentFieldProps {
-    [key: string]: unknown;
-}
-
-function DocumentField(props: DocumentFieldProps) {
+function DocumentField(props: MediaFieldProps) {
     return <MediaField fileTypes={['.pdf']} {...props} types={['document']} />;
 }
 

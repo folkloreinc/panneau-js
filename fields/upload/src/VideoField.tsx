@@ -1,14 +1,7 @@
-import { useMemo } from 'react';
+import UploadField, { UploadFieldProps } from './UploadField';
 
-import UploadField from './UploadField';
-
-interface VideoFieldProps {
-    [key: string]: unknown;
+function VideoUploadField(props: UploadFieldProps) {
+    return <UploadField {...props} types={['video']} />;
 }
 
-function VideoField(props: VideoFieldProps) {
-    const types = useMemo(() => ['video'] as const, []);
-    return <UploadField {...props} types={types} />;
-}
-
-export default VideoField;
+export default VideoUploadField;
