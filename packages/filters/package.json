@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filters",
-    "version": "4.0.62",
+    "version": "4.0.63",
     "description": "",
     "keywords": [
         "javascript"
@@ -67,7 +67,7 @@
         "@panneau/filter-label": "^4.0.62",
         "@panneau/filter-radios": "^4.0.58",
         "@panneau/filter-search": "^4.0.62",
-        "@panneau/filter-select": "^4.0.58",
+        "@panneau/filter-select": "^4.0.63",
         "@panneau/filter-toggle": "^4.0.58"
     },
     "devDependencies": {
