@@ -257,7 +257,7 @@ msgstr "Confirmez votre nouveau mot de passe"
 #: DV8/HU
 msgctxt "DV8/HU"
 msgid "Select media"
-msgstr ""
+msgstr "Sélectionner un média"
 
 # Form status
 #: ESkxLX
@@ -422,6 +422,12 @@ msgstr "Continuer"
 msgctxt "R1HYj0"
 msgid "Save"
 msgstr "Enregistrer"
+
+# Default media picker button label
+#: RA7nmH
+msgctxt "RA7nmH"
+msgid "Select media"
+msgstr "Sélectionner un média"
 
 # Menu label
 #: REIcPg
@@ -607,12 +613,6 @@ msgctxt "dRB0/1"
 msgid "Empty"
 msgstr "Vide"
 
-# Button label
-#: daHjZg
-msgctxt "daHjZg"
-msgid "Edit file"
-msgstr "Modifier le fichier"
-
 # Alert message
 #: dkRdks
 msgctxt "dkRdks"
@@ -654,6 +654,12 @@ msgstr "Taille"
 msgctxt "g6qbbX"
 msgid "Log in"
 msgstr "Se connecter"
+
+# Default media clear button label
+#: gHZ3St
+msgctxt "gHZ3St"
+msgid "Clear"
+msgstr "Effacer"
 
 # Button label
 #: gWmL5V
@@ -704,6 +710,8 @@ msgstr "Vidéo"
 msgctxt "nTqkUi"
 msgid "The following item will be deleted: {id}. Are you sure you want to continue?"
 msgstr ""
+"L'élément suivant sera supprimé: {id}. Êtes-vous certain de vouloir "
+"continuer?"
 
 # Error page description
 #: naie2b
@@ -794,12 +802,6 @@ msgstr "Aucun résultat trouvé"
 msgctxt "uds4wJ"
 msgid "Deleted at"
 msgstr "Supprimé le"
-
-# Default upload add button label
-#: une5WQ
-msgctxt "une5WQ"
-msgid "Find a file"
-msgstr "Trouver un fichier"
 
 # Today date message
 #: v4Qtl9

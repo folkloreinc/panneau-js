@@ -421,6 +421,12 @@ msgctxt "R1HYj0"
 msgid "Save"
 msgstr "Save"
 
+# Default media picker button label
+#: RA7nmH
+msgctxt "RA7nmH"
+msgid "Select media"
+msgstr "Select media"
+
 # Menu label
 #: REIcPg
 msgctxt "REIcPg"
@@ -605,12 +611,6 @@ msgctxt "dRB0/1"
 msgid "Empty"
 msgstr "Empty"
 
-# Button label
-#: daHjZg
-msgctxt "daHjZg"
-msgid "Edit file"
-msgstr "Edit file"
-
 # Alert message
 #: dkRdks
 msgctxt "dkRdks"
@@ -652,6 +652,12 @@ msgstr "Size"
 msgctxt "g6qbbX"
 msgid "Log in"
 msgstr "Log in"
+
+# Default media clear button label
+#: gHZ3St
+msgctxt "gHZ3St"
+msgid "Clear"
+msgstr "Clear"
 
 # Button label
 #: gWmL5V
@@ -790,12 +796,6 @@ msgstr "No results found"
 msgctxt "uds4wJ"
 msgid "Deleted at"
 msgstr "Deleted at"
-
-# Default upload add button label
-#: une5WQ
-msgctxt "une5WQ"
-msgid "Find a file"
-msgstr "Find a file"
 
 # Today date message
 #: v4Qtl9

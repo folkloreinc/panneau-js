@@ -267,6 +267,10 @@
     "defaultMessage": "Save",
     "description": "Button label"
   },
+  "RA7nmH": {
+    "defaultMessage": "Select media",
+    "description": "Default media picker button label"
+  },
   "REIcPg": {
     "defaultMessage": "Logout",
     "description": "Menu label"
@@ -387,10 +391,6 @@
     "defaultMessage": "Empty",
     "description": "Empty message"
   },
-  "daHjZg": {
-    "defaultMessage": "Edit file",
-    "description": "Button label"
-  },
   "dkRdks": {
     "defaultMessage": "{The_singular} has been deleted.",
     "description": "Alert message"
@@ -418,6 +418,10 @@
   "g6qbbX": {
     "defaultMessage": "Log in",
     "description": "Button label"
+  },
+  "gHZ3St": {
+    "defaultMessage": "Clear",
+    "description": "Default media clear button label"
   },
   "gWmL5V": {
     "defaultMessage": "Disable two factor authentication",
@@ -510,10 +514,6 @@
   "uds4wJ": {
     "defaultMessage": "Deleted at",
     "description": "Column label"
-  },
-  "une5WQ": {
-    "defaultMessage": "Find a file",
-    "description": "Default upload add button label"
   },
   "v4Qtl9": {
     "defaultMessage": "Today",

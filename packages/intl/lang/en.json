@@ -200,6 +200,9 @@
     "R1HYj0": {
         "defaultMessage": "Save"
     },
+    "RA7nmH": {
+        "defaultMessage": "Select media"
+    },
     "REIcPg": {
         "defaultMessage": "Logout"
     },
@@ -290,9 +293,6 @@
     "dRB0/1": {
         "defaultMessage": "Empty"
     },
-    "daHjZg": {
-        "defaultMessage": "Edit file"
-    },
     "dkRdks": {
         "defaultMessage": "{The_singular} has been deleted."
     },
@@ -313,6 +313,9 @@
     },
     "g6qbbX": {
         "defaultMessage": "Log in"
+    },
+    "gHZ3St": {
+        "defaultMessage": "Clear"
     },
     "gWmL5V": {
         "defaultMessage": "Disable two factor authentication"
@@ -382,9 +385,6 @@
     },
     "uds4wJ": {
         "defaultMessage": "Deleted at"
-    },
-    "une5WQ": {
-        "defaultMessage": "Find a file"
     },
     "v4Qtl9": {
         "defaultMessage": "Today"

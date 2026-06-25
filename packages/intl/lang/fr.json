@@ -119,6 +119,9 @@
     "DUbv+u": {
         "defaultMessage": "Confirmez votre nouveau mot de passe"
     },
+    "DV8/HU": {
+        "defaultMessage": "Sélectionner un média"
+    },
     "ESkxLX": {
         "defaultMessage": "Succès !"
     },
@@ -196,6 +199,9 @@
     },
     "R1HYj0": {
         "defaultMessage": "Enregistrer"
+    },
+    "RA7nmH": {
+        "defaultMessage": "Sélectionner un média"
     },
     "REIcPg": {
         "defaultMessage": "Déconnexion"
@@ -287,9 +293,6 @@
     "dRB0/1": {
         "defaultMessage": "Vide"
     },
-    "daHjZg": {
-        "defaultMessage": "Modifier le fichier"
-    },
     "dkRdks": {
         "defaultMessage": "{The_singular} a été supprimé."
     },
@@ -311,6 +314,9 @@
     "g6qbbX": {
         "defaultMessage": "Se connecter"
     },
+    "gHZ3St": {
+        "defaultMessage": "Effacer"
+    },
     "gWmL5V": {
         "defaultMessage": "Désactiver l'authentification à deux facteurs"
     },
@@ -331,6 +337,9 @@
     },
     "mQiyAm": {
         "defaultMessage": "Vidéo"
+    },
+    "nTqkUi": {
+        "defaultMessage": "L'élément suivant sera supprimé: {id}. Êtes-vous certain de vouloir continuer?"
     },
     "naie2b": {
         "defaultMessage": "Cette page n'existe pas"
@@ -376,9 +385,6 @@
     },
     "uds4wJ": {
         "defaultMessage": "Supprimé le"
-    },
-    "une5WQ": {
-        "defaultMessage": "Trouver un fichier"
     },
     "v4Qtl9": {
         "defaultMessage": "Aujourd'hui"
