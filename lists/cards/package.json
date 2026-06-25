@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-cards",
-    "version": "4.0.62",
+    "version": "4.0.65",
     "description": "Cards list",
     "keywords": [
         "javascript"
@@ -59,13 +59,13 @@
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",
         "@panneau/core": "^4.0.58",
-        "@panneau/element-button": "^4.0.62",
-        "@panneau/element-buttons": "^4.0.62",
-        "@panneau/element-card": "^4.0.62",
-        "@panneau/element-empty": "^4.0.62",
+        "@panneau/element-button": "^4.0.65",
+        "@panneau/element-buttons": "^4.0.65",
+        "@panneau/element-card": "^4.0.65",
+        "@panneau/element-empty": "^4.0.65",
         "@panneau/element-label": "^4.0.58",
         "@panneau/element-loading": "^4.0.58",
-        "@panneau/element-pagination": "^4.0.62",
+        "@panneau/element-pagination": "^4.0.65",
         "@panneau/themes": "^4.0.58",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",

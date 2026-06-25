@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-upload",
-    "version": "4.0.64",
+    "version": "4.0.65",
     "description": "An Upload field",
     "keywords": [
         "javascript"
@@ -60,10 +60,10 @@
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",
         "@panneau/core": "^4.0.58",
-        "@panneau/element-button": "^4.0.62",
+        "@panneau/element-button": "^4.0.65",
         "@panneau/element-label": "^4.0.58",
-        "@panneau/element-media-card": "^4.0.63",
-        "@panneau/modal-resource-items": "^4.0.64",
+        "@panneau/element-media-card": "^4.0.65",
+        "@panneau/modal-resource-items": "^4.0.65",
         "@panneau/themes": "^4.0.58",
         "@panneau/uppy": "^4.0.63",
         "@uppy/core": "^5.1.1",
