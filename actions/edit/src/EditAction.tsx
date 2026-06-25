@@ -2,7 +2,7 @@ import isObject from 'lodash-es/isObject';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { ActionValue, ButtonTheme } from '@panneau/core';
+import type { ActionValue, ButtonTheme, Resource } from '@panneau/core';
 import { useModalComponent, useResource } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
@@ -20,6 +20,7 @@ interface EditActionProps {
     modalComponent?: string;
     withModal?: boolean;
     withDefaultLabel?: boolean;
+    resource?: Resource | string | null;
     className?: string | null;
 }
 
@@ -37,10 +38,12 @@ function EditAction({
     withModal = false,
     withDefaultLabel = false,
     className = null,
+    resource: initialResource = null,
     ...props
 }: EditActionProps) {
-    const resource = useResource();
-    const resourceUrl = useResourceUrlGenerator();
+    const contextResource = useResource();
+    const resource = initialResource || contextResource;
+    const resourceUrl = useResourceUrlGenerator(resource);
     const finalHref =
         initialHref || (!multiple && isObject(value) ? resourceUrl('edit', value) : null);
     const label =

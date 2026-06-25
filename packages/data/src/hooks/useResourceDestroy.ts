@@ -12,6 +12,7 @@ type UseResourceDestroyResult = UseMutationResult & {
     loading: boolean;
 };
 
+function useResourceDestroy(resource: Resource | string): UseResourceDestroyResult;
 function useResourceDestroy(id: string | null): UseResourceDestroyResult;
 function useResourceDestroy(
     id: string | null,

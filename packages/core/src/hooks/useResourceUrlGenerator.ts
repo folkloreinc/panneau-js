@@ -3,10 +3,7 @@ import isObject from 'lodash-es/isObject';
 import { usePanneauResources, useResource, useUrlGenerator } from '../contexts';
 import type { Resource } from '../types';
 
-function getResource(
-    resources: Resource[],
-    resourceId: string | Resource | null,
-): Resource | null {
+function getResource(resources: Resource[], resourceId: string | Resource | null): Resource | null {
     return resourceId !== null && !isObject(resourceId)
         ? resources.find((it) => it.id === resourceId) || null
         : (resourceId as Resource);

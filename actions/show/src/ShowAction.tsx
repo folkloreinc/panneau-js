@@ -1,14 +1,15 @@
 import isObject from 'lodash-es/isObject';
-import { type ReactNode, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { ActionValue, ButtonTheme } from '@panneau/core';
-import { useModalComponent } from '@panneau/core/contexts';
+import type { ActionValue, ButtonTheme, Resource } from '@panneau/core';
+import { useModalComponent, useResource } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 
 interface ShowActionProps {
     id: string;
+    resource?: Resource | string | null;
     href?: string | null;
     label?: string | null;
     value?: ActionValue;
@@ -26,6 +27,7 @@ interface ShowActionProps {
 
 function ShowAction({
     id,
+    resource: initialResource = null,
     label: initialLabel = null,
     href: initialHref = null,
     icon = 'eye',
@@ -41,7 +43,9 @@ function ShowAction({
     className = null,
     ...props
 }: ShowActionProps) {
-    const resourceUrl = useResourceUrlGenerator();
+    const contextResource = useResource();
+    const resource = initialResource || contextResource;
+    const resourceUrl = useResourceUrlGenerator(resource);
     const finalHref =
         initialHref || (!multiple && isObject(value) ? resourceUrl('show', value) : null);
     const label =

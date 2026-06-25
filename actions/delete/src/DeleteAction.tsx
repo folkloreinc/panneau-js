@@ -1,17 +1,17 @@
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
-import { type ReactNode, useCallback, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { ActionValue, ButtonTheme } from '@panneau/core';
+import type { ActionValue, ButtonTheme, Resource } from '@panneau/core';
 import { useModalComponent, useResource } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { useResourceDestroy } from '@panneau/data';
 import Button from '@panneau/element-button';
 
 interface DeleteActionProps {
-    id: string;
+    resource?: Resource | string | null;
     title?: ReactNode | null;
     description?: ReactNode | null;
     endpoint?: string;
@@ -34,7 +34,7 @@ interface DeleteActionProps {
 }
 
 function DeleteAction({
-    id,
+    resource: initialResource = null,
     title = null,
     description = null,
     endpoint = null,
@@ -56,9 +56,10 @@ function DeleteAction({
     className = null,
     ...props
 }: DeleteActionProps) {
-    const resource = useResource();
-    const resourceUrl = useResourceUrlGenerator();
-    const { destroyAsync } = useResourceDestroy();
+    const contextResource = useResource();
+    const resource = initialResource || contextResource;
+    const resourceUrl = useResourceUrlGenerator(resource);
+    const { destroyAsync } = useResourceDestroy(resource);
     const finalHref =
         initialHref || (!multiple && isObject(value) ? resourceUrl('delete', value) : null);
     const label =
@@ -73,7 +74,7 @@ function DeleteAction({
     const onOpen = () => setModalOpen(true);
     const onClosed = () => setModalOpen(false);
 
-    let deleteAction =
+    const deleteAction =
         action ||
         (endpoint !== null
             ? (value) =>
