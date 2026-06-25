@@ -33,9 +33,6 @@
             "email": "tg@folklore.email"
         }
     ],
-    "sideEffects": [
-        "**/*.css"
-    ],
     "type": "module",
     "exports": {
         ".": {
