@@ -1,6 +1,6 @@
 {
     "name": "@panneau/medias",
-    "version": "4.0.63",
+    "version": "4.0.64",
     "description": "",
     "keywords": [
         "javascript"
@@ -64,7 +64,7 @@
         "@panneau/element-media-player": "^4.0.58",
         "@panneau/element-pagination": "^4.0.62",
         "@panneau/element-table": "^4.0.62",
-        "@panneau/field-upload": "^4.0.63",
+        "@panneau/field-upload": "^4.0.64",
         "@panneau/filter-filters": "^4.0.62",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
