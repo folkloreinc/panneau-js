@@ -273,7 +273,7 @@ export function UppyProvider({
     const xhr = providedXhr || contextXhr;
 
     const Uppy = useUppyCore() as UppyConstructor | null;
-    const uppyTransport = useUppyTransport(transport) as UppyTransportPlugin | null;
+    const uppyTransport = useUppyTransport(transport);
     const uppySources = useUppySources(sources) as Record<string, UppyPlugin> | null;
     const uppyLocale = useUppyLocale(locale || intlLocale) as Record<string, unknown> | null;
 

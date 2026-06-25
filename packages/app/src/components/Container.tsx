@@ -11,7 +11,7 @@ import {
     PanneauProvider,
     RoutesProvider,
 } from '@panneau/core/contexts';
-import { ApiProvider, QueryProvider } from '@panneau/data';
+import { DataProvider } from '@panneau/data';
 import DisplaysProvider from '@panneau/displays';
 import FieldsProvider from '@panneau/fields';
 import FiltersProvider from '@panneau/filters';
@@ -104,27 +104,23 @@ function Container({
                                                 <ActionsProvider>
                                                     <ModalProvider>
                                                         <ModalsProvider>
-                                                            <ApiProvider
+                                                            <DataProvider
                                                                 baseUrl={baseUrl}
                                                                 onUnauthorized={onUnauthorized}
                                                             >
-                                                                <QueryProvider>
-                                                                    <AuthProvider
-                                                                        user={user}
-                                                                        onLogout={onLogout}
+                                                                <AuthProvider
+                                                                    user={user}
+                                                                    onLogout={onLogout}
+                                                                >
+                                                                    <ComponentsProvider
+                                                                        components={components}
                                                                     >
-                                                                        <ComponentsProvider
-                                                                            components={components}
-                                                                        >
-                                                                            <Routes
-                                                                                statusCode={
-                                                                                    statusCode
-                                                                                }
-                                                                            />
-                                                                        </ComponentsProvider>
-                                                                    </AuthProvider>
-                                                                </QueryProvider>
-                                                            </ApiProvider>
+                                                                        <Routes
+                                                                            statusCode={statusCode}
+                                                                        />
+                                                                    </ComponentsProvider>
+                                                                </AuthProvider>
+                                                            </DataProvider>
                                                         </ModalsProvider>
                                                     </ModalProvider>
                                                 </ActionsProvider>

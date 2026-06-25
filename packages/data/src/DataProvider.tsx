@@ -1,24 +1,42 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { type ReactNode, useState } from 'react';
+import { QueryClientConfig } from '@tanstack/react-query';
+import { type ReactNode } from 'react';
 
 import Api from './lib/Api';
 
 import { ApiProvider } from './contexts/ApiContext';
+import { QueryProvider } from './contexts/QueryContext';
 
 interface DataProviderProps {
     api?: Api | null;
     apiBaseUrl?: string;
+    baseUrl?: string;
+    queryConfig?: QueryClientConfig | null;
+    initialQueryKey?: string[] | null;
+    initialQueryData?: Record<string, unknown> | Array<Record<string, unknown>> | null;
+    onUnauthorized?: (() => void) | null;
     children?: ReactNode;
 }
 
-function DataProvider({ api = null, apiBaseUrl = undefined, children = null }: DataProviderProps) {
-    const [client] = useState(() => new QueryClient());
+function DataProvider({
+    api = null,
+    apiBaseUrl = undefined,
+    baseUrl = undefined,
+    children = null,
+    queryConfig = null,
+    initialQueryKey = null,
+    initialQueryData = null,
+    onUnauthorized = null,
+}: DataProviderProps) {
     return (
-        <QueryClientProvider client={client}>
-            <ApiProvider api={api} baseUrl={apiBaseUrl}>
+        <QueryProvider
+            config={queryConfig}
+            initialKey={initialQueryKey}
+            initialData={initialQueryData}
+        >
+            <ApiProvider api={api} baseUrl={baseUrl ?? apiBaseUrl} onUnauthorized={onUnauthorized}>
                 {children}
             </ApiProvider>
-        </QueryClientProvider>
+        </QueryProvider>
     );
 }
 

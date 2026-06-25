@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { loadPackage } from '@panneau/core/utils';
 
@@ -13,9 +13,10 @@ const defaultPackagesMap = {
 };
 function useUppyTransport(transport, { packagesMap = defaultPackagesMap } = {}) {
     // transport
-    const [{ package: loadedPackage }, setLoadedPackage] = useState({
+    const [loadedPackageState, setLoadedPackageState] = useState({
         package: packagesCache[transport] || null,
     });
+    const { package: loadedPackage } = loadedPackageState;
     const packageLoader = packagesMap[transport] || null;
     useEffect(() => {
         let canceled = false;
@@ -25,24 +26,22 @@ function useUppyTransport(transport, { packagesMap = defaultPackagesMap } = {}) 
             };
         }
 
-        packageLoader().then(
-            ({ default: pack, ...others }) => {
-                const dep = Object.keys(others).reduce((map, key) => {
-                    map[key] = others[key]; // eslint-disable-line no-param-reassign
-                    return map;
-                }, pack);
-                packagesCache[transport] = dep;
-                if (!canceled) {
-                    setLoadedPackage({
-                        package: dep,
-                    });
-                }
-            },
-        );
+        packageLoader().then(({ default: pack, ...others }) => {
+            const dep = Object.keys(others).reduce((map, key) => {
+                map[key] = others[key];
+                return map;
+            }, pack);
+            packagesCache[transport] = dep;
+            if (!canceled) {
+                setLoadedPackageState({
+                    package: dep,
+                });
+            }
+        });
         return () => {
             canceled = true;
         };
-    }, [packageLoader, loadedPackage, setLoadedPackage]);
+    }, [packageLoader, loadedPackage, setLoadedPackageState, transport]);
     return loadedPackage;
 }
 

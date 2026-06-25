@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { createContext, use, useMemo } from 'react';
+import { createContext, use } from 'react';
 
 import { useUrlGenerator } from '@panneau/core/contexts';
 
@@ -26,17 +26,14 @@ export function ApiProvider({
 }: ApiProviderProps) {
     const generateUrl = useUrlGenerator();
     const previousApi = useApi();
-    const api = useMemo(
-        () =>
-            initialApi ||
-            previousApi ||
-            new Api({
-                baseUrl,
-                generateUrl,
-                onUnauthorized,
-            }),
-        [previousApi, initialApi, baseUrl],
-    );
+    const api =
+        initialApi ||
+        previousApi ||
+        new Api({
+            baseUrl,
+            generateUrl,
+            onUnauthorized,
+        });
     return <ApiContext value={api}>{children}</ApiContext>;
 }
 
