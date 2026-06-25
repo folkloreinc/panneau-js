@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "4.0.66",
+    "version": "4.0.67",
     "description": "",
     "keywords": [
         "javascript"
@@ -74,15 +74,15 @@
         "@panneau/field-item": "^4.0.66",
         "@panneau/field-items": "^4.0.66",
         "@panneau/field-localized": "^4.0.66",
-        "@panneau/field-media": "^4.0.66",
+        "@panneau/field-media": "^4.0.67",
         "@panneau/field-number": "^4.0.66",
         "@panneau/field-radios": "^4.0.66",
-        "@panneau/field-resource-item": "^4.0.66",
+        "@panneau/field-resource-item": "^4.0.67",
         "@panneau/field-select": "^4.0.66",
         "@panneau/field-text": "^4.0.66",
         "@panneau/field-toggle": "^4.0.66",
         "@panneau/field-toggles": "^4.0.66",
-        "@panneau/field-upload": "^4.0.66",
+        "@panneau/field-upload": "^4.0.67",
         "@panneau/field-url": "^4.0.66",
         "lodash": "^4.17.21"
     },
