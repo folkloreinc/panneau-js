@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
 
-import withApi from '../../../../.storybook/decorators/withApiProvider';
+import withApi from '../../../../.storybook/decorators/withDataProvider';
 import ActionsProvider from '../../../actions';
 import { useApi } from '../../../data/src/contexts/ApiContext';
 import DisplaysProvider from '../../../displays';

@@ -1,7 +1,7 @@
 import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
 
-import withApi from '../../../../.storybook/decorators/withApiProvider';
+import withApi from '../../../../.storybook/decorators/withDataProvider';
 import withIntl from '../../../../.storybook/decorators/withIntlProvider';
 import withUppy from '../../../../.storybook/decorators/withUppy';
 import ActionsProvider from '../../../actions';

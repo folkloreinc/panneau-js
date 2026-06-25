@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import withApi from '../../../../.storybook/decorators/withApiProvider';
+import withApi from '../../../../.storybook/decorators/withDataProvider';
 import ActionsProvider from '../../../actions';
 import { useApi } from '../../../data/src/contexts/ApiContext';
 import DisplaysProvider from '../../../displays';

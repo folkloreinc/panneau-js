@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import withApi from '../../../../.storybook/decorators/withApiProvider';
+import withApi from '../../../../.storybook/decorators/withDataProvider';
 import FieldsProvider from '../../../../packages/fields';
 import IntlProvider from '../../../../packages/intl/src/IntlProvider';
 import ItemField from '../ItemField';

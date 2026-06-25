@@ -5,7 +5,7 @@ import { Modals } from '@panneau/element-modal';
 import ListsProvider from '@panneau/lists';
 
 import pageResource from '../../../../.storybook/data/page-resource';
-import withApi from '../../../../.storybook/decorators/withApiProvider';
+import withApi from '../../../../.storybook/decorators/withDataProvider';
 import ResourceItems from '../ResourceItems';
 
 export default {

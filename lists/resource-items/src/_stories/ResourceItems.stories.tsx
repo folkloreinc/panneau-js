@@ -1,5 +1,5 @@
 import pageResource from '../../../../.storybook/data/page-resource';
-import withApi from '../../../../.storybook/decorators/withApiProvider';
+import withApi from '../../../../.storybook/decorators/withDataProvider';
 import { PanneauProvider } from '../../../../packages/core/src/contexts';
 import DisplaysProvider from '../../../../packages/displays/src';
 import ListsProvider from '../../../../packages/lists/src';

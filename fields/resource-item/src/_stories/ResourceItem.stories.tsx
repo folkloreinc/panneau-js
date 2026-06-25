@@ -8,7 +8,7 @@ import pageResource from '../../../../.storybook/data/page-resource';
 // import { Modals } from '@panneau/element-modal';
 import panneauDefinition from '../../../../.storybook/data/panneau-definition';
 // import pageResource from '../../../../.storybook/data/page-resource';
-import withApi from '../../../../.storybook/decorators/withApiProvider';
+import withApi from '../../../../.storybook/decorators/withDataProvider';
 // import { ApiProvider } from '../../../../packages/data/src/contexts/ApiContext';
 import FieldsProvider from '../../../../packages/fields';
 // import IntlProvider from '../../../../packages/intl/src/IntlProvider';

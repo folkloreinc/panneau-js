@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
 
-import withApi from '../../../../.storybook/decorators/withApiProvider';
+import withApi from '../../../../.storybook/decorators/withDataProvider';
 import withUppy from '../../../../.storybook/decorators/withUppy';
 import FieldsProvider from '../../../../packages/fields/src/FieldsProvider';
 import ModalsProvider from '../../../../packages/modals/src/ModalsProvider';

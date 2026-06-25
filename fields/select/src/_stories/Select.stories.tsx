@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import withApi from '../../../../.storybook/decorators/withApiProvider';
+import withApi from '../../../../.storybook/decorators/withDataProvider';
 import SelectField from '../SelectField';
 
 export default {

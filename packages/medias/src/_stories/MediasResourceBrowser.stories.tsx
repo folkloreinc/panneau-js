@@ -1,5 +1,5 @@
 import panneauDefinition from '../../../../.storybook/data/panneau-definition';
-import withApi from '../../../../.storybook/decorators/withApiProvider';
+import withApi from '../../../../.storybook/decorators/withDataProvider';
 import ActionsProvider from '../../../actions';
 import { PanneauProvider } from '../../../core/src/contexts';
 import DisplaysProvider from '../../../displays';
