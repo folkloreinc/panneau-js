@@ -1,6 +1,6 @@
 {
     "name": "@panneau/list-resource-items",
-    "version": "4.0.66",
+    "version": "4.0.68",
     "description": "Default resource list",
     "keywords": [
         "javascript"
@@ -47,7 +47,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/action-actions": "^4.0.66",
+        "@panneau/action-actions": "^4.0.68",
         "@panneau/core": "^4.0.66",
         "@panneau/data": "^4.0.66",
         "@panneau/element-button": "^4.0.66",
@@ -55,7 +55,7 @@
         "@panneau/element-navbar": "^4.0.66",
         "@panneau/element-pagination": "^4.0.66",
         "@panneau/filter-filters": "^4.0.66",
-        "@panneau/list-table": "^4.0.66",
+        "@panneau/list-table": "^4.0.68",
         "@panneau/themes": "^4.0.66",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
