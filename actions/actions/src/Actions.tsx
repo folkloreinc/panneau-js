@@ -39,7 +39,7 @@ function Actions({
     const finalActions = useActions(actions, value, {
         disabled,
         resource,
-        ...globalProps
+        ...globalProps,
     });
 
     return (
@@ -50,7 +50,7 @@ function Actions({
                     'btn-group': isGroup,
                     [`btn-group-${size}`]: isGroup && size !== null,
                 },
-                className
+                className,
             ])}
         >
             {finalActions.map((action, idx) => {

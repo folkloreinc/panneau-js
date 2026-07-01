@@ -58,6 +58,7 @@
         "@panneau/core": "^4.0.66",
         "@panneau/element-button": "^4.0.66",
         "@panneau/element-buttons": "^4.0.66",
+        "@panneau/element-empty": "^4.0.66",
         "@panneau/element-icon": "^4.0.66",
         "@panneau/element-label": "^4.0.66",
         "@panneau/element-link": "^4.0.66",

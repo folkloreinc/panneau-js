@@ -1,6 +1,6 @@
+import get from 'lodash-es/get';
 import { useState } from 'react';
 
-import DisplaysProvider from '../../../../packages/displays/src';
 import TableElement from '../Table';
 
 export default {
@@ -12,108 +12,46 @@ export default {
 };
 
 const items = [
-    {
-        id: '1',
-        name: 'Hello1',
-    },
-    {
-        id: '2',
-        name: '2Hello2',
-    },
-    {
-        id: '3',
-        name: 'He3llo3',
-    },
-    {
-        id: '4',
-        name: '4Hello4',
-    },
+    { id: '1', name: 'Hello1' },
+    { id: '2', name: '2Hello2' },
+    { id: '3', name: 'He3llo3' },
+    { id: '4', name: '4Hello4' },
 ];
 
 const columns = [{ id: 'name', label: 'Name', path: 'name', sortable: true }];
 
-const columnsWithId = [
-    { id: 'id', label: 'ID', path: 'id', sortable: true },
-    { id: 'name', label: 'Name', path: 'name', sortable: true },
-];
-
-function Container({ value: initialValue, ...props }) {
-    const [selectedItems, onSelectionChange] = useState(initialValue);
-
-    return (
-        <TableElement
-            items={items}
-            columns={columns}
-            {...props}
-            selectedItems={selectedItems}
-            onSelectionChange={onSelectionChange}
-        />
-    );
-}
-
-function Actions() {
-    return (
-        <div>
-            <p className="d-inline">????</p>
-            <button className="d-inline" type="button">
-                HAHAHA this is action
-            </button>
-        </div>
-    );
+// The basic table only renders the scaffolding (header + tbody wrapper).
+// Rows are provided as children by the parent (the list).
+function renderRows(cols) {
+    return items.map((item) => (
+        <tr key={`row-${item.id}`}>
+            {cols.map((column) => (
+                <td key={`col-${item.id}-${column.id}`}>{get(item, column.path, null)}</td>
+            ))}
+        </tr>
+    ));
 }
 
 export const Normal = {
-    render: () => (
-        <DisplaysProvider>
-            <TableElement items={items} columns={columns} />
-        </DisplaysProvider>
-    ),
+    render: () => <TableElement columns={columns}>{renderRows(columns)}</TableElement>,
 };
 
-export const Selectable = {
-    render: () => (
-        <DisplaysProvider>
-            <Container items={items} columns={columnsWithId} selectable />
-        </DisplaysProvider>
-    ),
-};
-
-export const SelectableMultiple = {
-    render: () => (
-        <DisplaysProvider>
-            <Container items={items} columns={columnsWithId} selectable multipleSelection />
-        </DisplaysProvider>
-    ),
-};
+function SortableExample() {
+    const [query, setQuery] = useState({});
+    return (
+        <TableElement
+            columns={columns}
+            baseUrl={null}
+            query={query}
+            sortColumnParameter="order"
+            sortDirectionParameter="order_direction"
+            onQueryChange={setQuery}
+        >
+            {renderRows(columns)}
+        </TableElement>
+    );
+}
 
 export const Sortable = {
-    render: () => {
-        const [query, setQuery] = useState({});
-        return (
-            <DisplaysProvider>
-                <TableElement
-                    items={items}
-                    columns={columns}
-                    baseUrl={null}
-                    query={query}
-                    sortColumnParameter="order"
-                    sortDirectionParameter="order_direction"
-                    onQueryChange={setQuery}
-                />
-            </DisplaysProvider>
-        );
-    },
-};
-
-export const WithCustomActions = {
-    render: () => (
-        <DisplaysProvider>
-            <TableElement
-                items={items}
-                columns={columns}
-                actionsComponent={Actions}
-                withCustomActionsColumn
-            />
-        </DisplaysProvider>
-    ),
+    render: () => <SortableExample />,
 };

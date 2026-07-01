@@ -11,9 +11,9 @@ import Grid from '@panneau/element-grid';
 import Icon from '@panneau/element-icon';
 import MediaCard from '@panneau/element-media-card';
 import Pagination from '@panneau/element-pagination';
-import Table from '@panneau/element-table';
 import UploadField from '@panneau/field-upload';
 import Filters from '@panneau/filter-filters';
+import Table from '@panneau/list-table';
 import { UseUppyOptions } from '@panneau/uppy';
 
 import { useMediaDestroy, useMedias } from './hooks';

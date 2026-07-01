@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import pageResource from '../../../../.storybook/data/page-resource';
 import { ResourceProvider } from '../../../../packages/core/src/contexts';
 import DisplayProvider from '../../../../packages/displays';
@@ -46,18 +48,23 @@ export const Sortable = {
 };
 
 export const Selectable = {
-    render: () => (
-        <Table
-            resource={{ ...pageResource, index: { tableActions: [] } }}
-            items={items}
-            columns={['title', 'description']}
-            sortable
-            selectable
-            onSelectionChange={() => {
-                console.log('hey');
-            }}
-        />
-    ),
+    render: () => {
+        const [selection, setSelection] = useState([]);
+        return (
+            <Table
+                resource={{ ...pageResource, index: { tableActions: [] } }}
+                items={items}
+                columns={['title', 'description']}
+                sortable
+                selectable
+                selectedItems={selection}
+                onSelectionChange={(newSelection) => {
+                    console.log('hey');
+                    setSelection(newSelection);
+                }}
+            />
+        );
+    },
 };
 
 export const WithActions = {

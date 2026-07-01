@@ -10,6 +10,7 @@ import Link from '@panneau/element-link';
 
 interface SortLinkProps {
     baseUrl?: string;
+    className?: string;
     query?: Record<string, any> | null;
     field?: string | Field | null;
     children?: ReactNode | null;
