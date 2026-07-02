@@ -1,33 +1,29 @@
-import { type ReactNode } from 'react';
+import Actions, { type ActionsProps } from '@panneau/action-actions';
+import { Item } from '@panneau/core';
 
-import Actions from '@panneau/action-actions';
-import type { Item } from '@panneau/core';
-
-interface ActionsDisplayProps {
-    item: Item;
-    value: unknown;
+interface ActionsDisplayProps extends ActionsProps {
+    item?: Item;
     className?: string | null;
     buttonsClassName?: string | null;
 }
-
-const DEFAULT_ACTIONS = ['show', 'edit', 'delete'];
 
 function ActionsDisplay({
     item,
     value: displayValue = null,
     className = null,
     buttonsClassName = null,
+    isDropdown = false,
     ...props
 }: ActionsDisplayProps) {
-    // const { locale = null } = useIntl();
-    // const { urlGenerator, ...otherProps } = actionsProps || {};
-    // const finalActions = useActions(item, actions, parentUrlGenerator || urlGenerator, {
-    //     ...otherProps,
-    //     locale,
-    // });
     return (
         <div className={className}>
-            <Actions {...props} value={displayValue || item} className={buttonsClassName} isGroup />
+            <Actions
+                value={displayValue || item}
+                className={buttonsClassName}
+                isGroup={!isDropdown}
+                isDropdown={isDropdown}
+                {...props}
+            />
         </div>
     );
 }

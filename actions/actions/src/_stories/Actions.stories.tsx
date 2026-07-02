@@ -30,7 +30,7 @@ function ActionsContainer({ value: initialValue, ...props }) {
             <ModalsProvider>
                 <ModalProvider>
                     <Modals />
-                    <Actions {...props} actions={actions} value={value} onChange={onChange} />
+                    <Actions actions={actions} value={value} onChange={onChange} {...props} />
                 </ModalProvider>
             </ModalsProvider>
         </ActionsProvider>
@@ -61,5 +61,13 @@ export const WithMultipleItems = {
                 withConfirmation
             />
         );
+    },
+};
+
+export const IsDropdown = {
+    render: function () {
+        return <ActionsContainer value={{
+            id: '1',
+        }} actions={['show', 'edit', 'delete']} isDropdown />;
     },
 };

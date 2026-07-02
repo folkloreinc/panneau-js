@@ -48,6 +48,7 @@
         "@panneau/core": "^4.0.66",
         "@panneau/element-button": "^4.0.66",
         "@panneau/element-icon": "^4.0.66",
+        "@panneau/element-dropdown": "^4.0.66",
         "@panneau/themes": "^4.0.66",
         "classnames": "^2.5.1",
         "lodash-es": "^4.17.21",
