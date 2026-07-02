@@ -22,6 +22,8 @@ function ActionsDisplay({
                 className={buttonsClassName}
                 isGroup={!isDropdown}
                 isDropdown={isDropdown}
+                dropdownAlign="end"
+                iconsOnly={!isDropdown}
                 {...props}
             />
         </div>

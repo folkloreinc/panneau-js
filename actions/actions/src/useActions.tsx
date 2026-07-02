@@ -1,6 +1,8 @@
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
+import { ReactNode } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import { Action, type ActionDefinition, type ActionValue, type Resource } from '@panneau/core';
 
@@ -10,12 +12,13 @@ export interface UseActionsOptions {
     resource?: Resource | null;
     disabled?: boolean;
     iconsOnly?: boolean;
+    withIcons?: boolean;
     showUrl?: string | null;
-    showLabel?: string | null;
-    editLabel?: string | null;
-    duplicateLabel?: string | null;
-    deleteLabel?: string | null;
-    restoreLabel?: string | null;
+    showLabel?: ReactNode | null;
+    editLabel?: ReactNode | null;
+    duplicateLabel?: ReactNode | null;
+    deleteLabel?: ReactNode | null;
+    restoreLabel?: ReactNode | null;
     onClickShow?: (() => void) | null;
     onClickEdit?: (() => void) | null;
     onClickDuplicate?: (() => void) | null;
@@ -40,12 +43,13 @@ function useActions(
     {
         disabled: globalDisabled = false,
         iconsOnly = true,
+        withIcons = true,
         showUrl = null,
-        showLabel = null,
-        editLabel = null,
-        duplicateLabel = null,
-        deleteLabel = null,
-        restoreLabel = null,
+        showLabel = <FormattedMessage defaultMessage="Show" description="Action label" />,
+        editLabel = <FormattedMessage defaultMessage="Edit" description="Action label" />,
+        duplicateLabel = <FormattedMessage defaultMessage="Duplicate" description="Action label" />,
+        deleteLabel = <FormattedMessage defaultMessage="Delete" description="Action label" />,
+        restoreLabel = <FormattedMessage defaultMessage="Restore" description="Action label" />,
         onClickShow = null,
         onClickEdit = null,
         onClickDuplicate = null,
@@ -72,7 +76,7 @@ function useActions(
                             id: 'show',
                             component: 'show',
                             label: iconsOnly ? null : showLabel,
-                            icon: iconsOnly ? 'eye' : null,
+                            icon: iconsOnly || withIcons ? 'eye' : null,
                             href: showUrl,
                             external: showUrl !== null,
                             theme: 'info',
@@ -86,7 +90,7 @@ function useActions(
                             id: 'edit',
                             component: 'edit',
                             label: iconsOnly ? null : editLabel,
-                            icon: iconsOnly ? 'pencil-square' : null,
+                            icon: iconsOnly || withIcons ? 'pencil-square' : null,
                             theme: 'primary',
                             withModal: withEditModal,
                             onClick: onClickEdit,
@@ -97,7 +101,7 @@ function useActions(
                             id: 'duplicate',
                             component: 'duplicate',
                             label: iconsOnly ? null : duplicateLabel,
-                            icon: iconsOnly ? 'copy' : null,
+                            icon: iconsOnly || withIcons ? 'copy' : null,
                             withModal: withDuplicateModal,
                             onClick: onClickDuplicate,
                             ...getDuplicatePropsFromValue?.(value),
@@ -107,7 +111,7 @@ function useActions(
                             id: 'restore',
                             component: 'restore',
                             label: iconsOnly ? null : restoreLabel,
-                            icon: iconsOnly ? 'recycle' : null,
+                            icon: iconsOnly || withIcons ? 'recycle' : null,
                             withModal: withRestoreModal,
                             onClick: onClickRestore,
                             ...getRestorePropsFromValue?.(value),
@@ -117,7 +121,7 @@ function useActions(
                             id: 'delete',
                             component: 'delete',
                             label: iconsOnly ? null : deleteLabel,
-                            icon: iconsOnly ? 'trash3' : null,
+                            icon: iconsOnly || withIcons ? 'trash3' : null,
                             theme: 'danger',
                             onClick: onClickDelete,
                             withConfirmation: withDeleteModal,

@@ -1,7 +1,13 @@
 import classNames from 'classnames';
-import { type ComponentType, useState } from 'react';
+import { type ComponentType, ReactNode, useState } from 'react';
 
-import type { Action, ActionDefinition, ActionValue, ButtonSize, Resource } from '@panneau/core';
+import type {
+    ActionDefinition,
+    ActionValue,
+    ButtonSize,
+    DropdownAlign,
+    Resource,
+} from '@panneau/core';
 import { useActionsComponentsManager } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
 import Dropdown from '@panneau/element-dropdown';
@@ -16,7 +22,9 @@ export interface ActionsProps extends UseActionsOptions {
     defaultComponent?: ComponentType | null;
     isGroup?: boolean;
     isDropdown?: boolean;
+    dropdownLabel?: ReactNode | null;
     dropdownIcon?: string;
+    dropdownAlign?: DropdownAlign | null;
     size?: ButtonSize;
     disabled?: boolean;
     withConfirmation?: boolean;
@@ -34,6 +42,7 @@ function Actions({
     isGroup = false,
     isDropdown = false,
     dropdownLabel = null,
+    dropdownAlign = null,
     dropdownIcon = 'three-dots-vertical',
     disabled = false,
     withConfirmation = false,
@@ -45,6 +54,7 @@ function Actions({
     const finalActions = useActions(actions, value, {
         disabled,
         resource,
+        iconsOnly: !isDropdown,
         ...globalProps,
     });
 
@@ -53,6 +63,9 @@ function Actions({
             id = null,
             component = null,
             withConfirmation: actionConfirmation = false,
+            iconPosition = isDropdown ? 'left' : 'right',
+            label = null,
+            icon = null,
             ...otherProps
         } = action || {};
 
@@ -67,7 +80,13 @@ function Actions({
                         'me-2': !isGroup,
                         'dropdown-item': isDropdown,
                     })}
-                    iconPosition="right"
+                    iconPosition={iconPosition}
+                    iconClassName={classNames({
+                        'me-2': label !== null && icon !== null && iconPosition === 'left',
+                        'ms-2': label !== null && icon !== null && iconPosition === 'right',
+                    })}
+                    label={label}
+                    icon={icon}
                     value={value}
                     size={size}
                     resource={resource}
@@ -117,7 +136,11 @@ function Actions({
                 </Button>
             )}
             {isDropdown ? (
-                <Dropdown visible={dropdownOpened} onClickOutside={onClickOutsideDropdown}>
+                <Dropdown
+                    visible={dropdownOpened}
+                    onClickOutside={onClickOutsideDropdown}
+                    align={dropdownAlign}
+                >
                     {actionsElements}
                 </Dropdown>
             ) : (
