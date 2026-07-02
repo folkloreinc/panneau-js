@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modals",
-    "version": "4.0.69",
+    "version": "4.0.70",
     "description": "",
     "keywords": [
         "javascript"
@@ -61,7 +61,7 @@
         "@panneau/modal-dialog": "^4.0.66",
         "@panneau/modal-form": "^4.0.67",
         "@panneau/modal-resource-form": "^4.0.67",
-        "@panneau/modal-resource-items": "^4.0.69",
+        "@panneau/modal-resource-items": "^4.0.70",
         "@panneau/modal-upload": "^4.0.66",
         "@panneau/themes": "^4.0.66",
         "classnames": "^2.5.1"
