@@ -1,6 +1,6 @@
 {
     "name": "@panneau/action-duplicate",
-    "version": "4.0.72",
+    "version": "4.0.73",
     "description": "Duplicate action",
     "keywords": [
         "javascript"
@@ -46,9 +46,9 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@folklore/fetch": "^0.1.21",
-        "@panneau/core": "^4.0.72",
-        "@panneau/element-button": "^4.0.72",
-        "@panneau/themes": "^4.0.72",
+        "@panneau/core": "^4.0.73",
+        "@panneau/element-button": "^4.0.73",
+        "@panneau/themes": "^4.0.73",
         "classnames": "^2.5.1",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0"
     },

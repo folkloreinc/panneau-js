@@ -1,6 +1,6 @@
 {
     "name": "@panneau/auth",
-    "version": "4.0.72",
+    "version": "4.0.73",
     "description": "",
     "keywords": [
         "javascript"
@@ -55,8 +55,8 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.72",
-        "@panneau/data": "^4.0.72"
+        "@panneau/core": "^4.0.73",
+        "@panneau/data": "^4.0.73"
     },
     "devDependencies": {
         "react": "^19.2.0",
