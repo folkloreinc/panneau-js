@@ -125,6 +125,9 @@
     "DhReUK": {
         "defaultMessage": "The following item will be restored: {id}. Are you sure you want to continue?"
     },
+    "EA9SvM": {
+        "defaultMessage": "Restore"
+    },
     "ESkxLX": {
         "defaultMessage": "Success!"
     },
@@ -151,6 +154,9 @@
     },
     "JuxiUN": {
         "defaultMessage": "Format"
+    },
+    "K6mcBD": {
+        "defaultMessage": "Duplicate"
     },
     "Ke35Pv": {
         "defaultMessage": "Edit"
@@ -326,6 +332,9 @@
     "gWmL5V": {
         "defaultMessage": "Disable two factor authentication"
     },
+    "hrybC9": {
+        "defaultMessage": "Show"
+    },
     "jbT/g6": {
         "defaultMessage": "M"
     },
@@ -359,11 +368,17 @@
     "owrRHV": {
         "defaultMessage": "Error 500"
     },
+    "pRfuIL": {
+        "defaultMessage": "Delete"
+    },
     "pVHYDd": {
         "defaultMessage": "Enable two factor authentication"
     },
     "pZytAx": {
         "defaultMessage": "No result"
+    },
+    "qEXR2f": {
+        "defaultMessage": "Edit"
     },
     "rSt+KL": {
         "defaultMessage": "No"

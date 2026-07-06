@@ -267,6 +267,12 @@ msgstr ""
 "The following item will be restored: {id}. Are you sure you want to "
 "continue?"
 
+# Action label
+#: EA9SvM
+msgctxt "EA9SvM"
+msgid "Restore"
+msgstr "Restore"
+
 # Form status
 #: ESkxLX
 msgctxt "ESkxLX"
@@ -324,6 +330,12 @@ msgstr "F"
 msgctxt "JuxiUN"
 msgid "Format"
 msgstr "Format"
+
+# Action label
+#: K6mcBD
+msgctxt "K6mcBD"
+msgid "Duplicate"
+msgstr "Duplicate"
 
 # Button label
 #: Ke35Pv
@@ -685,6 +697,12 @@ msgctxt "gWmL5V"
 msgid "Disable two factor authentication"
 msgstr "Disable two factor authentication"
 
+# Action label
+#: hrybC9
+msgctxt "hrybC9"
+msgid "Show"
+msgstr "Show"
+
 # Monday letter
 #: jbT/g6
 msgctxt "jbT/g6"
@@ -751,6 +769,12 @@ msgctxt "owrRHV"
 msgid "Error 500"
 msgstr "Error 500"
 
+# Action label
+#: pRfuIL
+msgctxt "pRfuIL"
+msgid "Delete"
+msgstr "Delete"
+
 # Button label
 #: pVHYDd
 msgctxt "pVHYDd"
@@ -762,6 +786,12 @@ msgstr "Enable two factor authentication"
 msgctxt "pZytAx"
 msgid "No result"
 msgstr "No result"
+
+# Action label
+#: qEXR2f
+msgctxt "qEXR2f"
+msgid "Edit"
+msgstr "Edit"
 
 # Boolean value
 #: rSt+KL

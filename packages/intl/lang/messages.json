@@ -167,6 +167,10 @@
     "defaultMessage": "The following item will be restored: {id}. Are you sure you want to continue?",
     "description": "Modal message"
   },
+  "EA9SvM": {
+    "defaultMessage": "Restore",
+    "description": "Action label"
+  },
   "ESkxLX": {
     "defaultMessage": "Success!",
     "description": "Form status"
@@ -202,6 +206,10 @@
   "JuxiUN": {
     "defaultMessage": "Format",
     "description": "Field label"
+  },
+  "K6mcBD": {
+    "defaultMessage": "Duplicate",
+    "description": "Action label"
   },
   "Ke35Pv": {
     "defaultMessage": "Edit",
@@ -435,6 +443,10 @@
     "defaultMessage": "Disable two factor authentication",
     "description": "Button label"
   },
+  "hrybC9": {
+    "defaultMessage": "Show",
+    "description": "Action label"
+  },
   "jbT/g6": {
     "defaultMessage": "M",
     "description": "Monday letter"
@@ -479,6 +491,10 @@
     "defaultMessage": "Error 500",
     "description": "Error page title"
   },
+  "pRfuIL": {
+    "defaultMessage": "Delete",
+    "description": "Action label"
+  },
   "pVHYDd": {
     "defaultMessage": "Enable two factor authentication",
     "description": "Button label"
@@ -486,6 +502,10 @@
   "pZytAx": {
     "defaultMessage": "No result",
     "description": "Default label"
+  },
+  "qEXR2f": {
+    "defaultMessage": "Edit",
+    "description": "Action label"
   },
   "rSt+KL": {
     "defaultMessage": "No",

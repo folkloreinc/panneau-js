@@ -125,6 +125,9 @@
     "DhReUK": {
         "defaultMessage": "L'élément suivant sera restauré: {id}. Êtes-vous certain de vouloir continuer?"
     },
+    "EA9SvM": {
+        "defaultMessage": "Restaurer"
+    },
     "ESkxLX": {
         "defaultMessage": "Succès !"
     },
@@ -151,6 +154,9 @@
     },
     "JuxiUN": {
         "defaultMessage": "Format"
+    },
+    "K6mcBD": {
+        "defaultMessage": "Dupliquer"
     },
     "Ke35Pv": {
         "defaultMessage": "Modifier"
@@ -326,6 +332,9 @@
     "gWmL5V": {
         "defaultMessage": "Désactiver l'authentification à deux facteurs"
     },
+    "hrybC9": {
+        "defaultMessage": "Voir"
+    },
     "jbT/g6": {
         "defaultMessage": "L"
     },
@@ -359,11 +368,17 @@
     "owrRHV": {
         "defaultMessage": "Erreur 500"
     },
+    "pRfuIL": {
+        "defaultMessage": "Supprimer"
+    },
     "pVHYDd": {
         "defaultMessage": "Activer l'authentification à deux facteurs"
     },
     "pZytAx": {
         "defaultMessage": "Aucun résultat"
+    },
+    "qEXR2f": {
+        "defaultMessage": "Modifier"
     },
     "rSt+KL": {
         "defaultMessage": "Non"
