@@ -31,20 +31,12 @@ function useResourceUrlGenerator(resourceId: string | Resource | null = null) {
     const route = useUrlGenerator();
     const routes = useRoutes();
 
-    function generateUrl(routeName: string): string | null;
-    function generateUrl(routeName: string, params: Record<string, unknown>): string | null;
-    function generateUrl(routeResourceId: string | Resource, routeName: string): string | null;
-    function generateUrl(
-        routeResourceId: string | Resource,
-        routeName: string,
-        params: Record<string, unknown>,
-    ): string | null;
-    function generateUrl(
+    const generateUrl = (
         routeResourceId: string | Resource,
         routeName: string | Record<string, unknown> | null = null,
         params: Record<string, unknown> | null = null,
-    ): string | null {
-        const hasResourceId = isString(routeResourceId) && isString(routeName);
+    ): string | null => {
+        const hasResourceId = isString(routeName);
         const finalRouteName = hasResourceId ? routeName : (routeResourceId as string);
         const finalParams = hasResourceId ? params : (routeName as Record<string, unknown> | null);
         const finalResource = hasResourceId ? getResource(resources, routeResourceId) : resource;
@@ -64,7 +56,7 @@ function useResourceUrlGenerator(resourceId: string | Resource | null = null) {
                   )
                 : null;
         return finalRoute;
-    }
+    };
 
     return generateUrl;
 }

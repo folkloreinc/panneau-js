@@ -1,11 +1,13 @@
+import { ConsoleLogger } from 'storybook/internal/node-logger';
+
 class ResourcesApi {
     constructor(api) {
         this.api = api;
     }
 
     resourceRoute({ id, has_routes: hasRoutes = false }, route, params) {
-        const hasSpecificRoute = this.hasRoute(`resources.${id}.${route}`);
-        const routeName = hasSpecificRoute ? `resources.${id}.${route}` : `resources.${id}`;
+        const hasSpecificRoute = this.api.hasRoute(`resources.${id}.${route}`);
+        const routeName = hasSpecificRoute ? `resources.${id}.${route}` : `resources.${route}`;
         return this.api.route(
             routeName,
             hasSpecificRoute
