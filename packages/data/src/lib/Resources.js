@@ -4,10 +4,11 @@ class ResourcesApi {
     }
 
     resourceRoute({ id, has_routes: hasRoutes = false }, route, params) {
-        const routePrefix = hasRoutes ? `resources.${id}` : 'resources';
+        const hasSpecificRoute = this.hasRoute(`resources.${id}.${route}`);
+        const routeName = hasSpecificRoute ? `resources.${id}.${route}` : `resources.${id}`;
         return this.api.route(
-            `${routePrefix}.${route}`,
-            hasRoutes
+            routeName,
+            hasSpecificRoute
                 ? params
                 : {
                       resource: id,

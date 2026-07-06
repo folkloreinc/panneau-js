@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { createContext, use } from 'react';
 
-import { useUrlGenerator } from '@panneau/core/contexts';
+import { useRoutes, useUrlGenerator } from '@panneau/core/contexts';
 
 import Api from '../lib/Api';
 
@@ -26,12 +26,14 @@ export function ApiProvider({
 }: ApiProviderProps) {
     const generateUrl = useUrlGenerator();
     const previousApi = useApi();
+    const routes = useRoutes();
     const api =
         initialApi ||
         previousApi ||
         new Api({
             baseUrl,
             generateUrl,
+            routes,
             onUnauthorized,
         });
     return <ApiContext value={api}>{children}</ApiContext>;

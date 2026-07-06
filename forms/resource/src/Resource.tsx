@@ -1,6 +1,6 @@
 import { ForwardedRef, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 
-import type { Resource } from '@panneau/core';
+import type { Item, Resource } from '@panneau/core';
 import {
     FormProvider,
     useFormsComponents,
@@ -21,7 +21,7 @@ import DuplicateForm from './Duplicate';
 
 interface ResourceFormProps {
     resource: Resource | string;
-    item?: Record<string, unknown> | null;
+    item?: Item | null;
     type?: string | null;
     component?: string | null;
     header?: ReactNode | null;
@@ -125,7 +125,7 @@ function ResourceForm({
             }
             return update(data);
         },
-        [itemId, isCreate, isDelete, isDuplicate, destroyAsync, clone, store, update],
+        [isCreate, isDelete, isDuplicate, destroyAsync, clone, store, update],
     );
 
     // Form state

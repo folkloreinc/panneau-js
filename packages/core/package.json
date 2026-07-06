@@ -61,7 +61,7 @@
         "@babel/runtime": "^7.28.6",
         "@folklore/fetch": "^0.1.21",
         "@folklore/forms": "~0.0.30",
-        "@folklore/routes": "^0.2.44",
+        "@folklore/routes": "^0.4.11",
         "@folklore/services": "^0.1.44",
         "@folklore/tracking": "~0.0.34",
         "@fortawesome/fontawesome-svg-core": "^6.5.1",

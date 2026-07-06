@@ -72,6 +72,11 @@ class Base {
         }).catch((error) => this.onError(error));
     }
 
+    hasRoute(route) {
+        const { routes } = this.options;
+        return typeof routes[route] !== 'undefined';
+    }
+
     route(route, params) {
         const { routes, generateUrl = null } = this.options;
         if (generateUrl !== null) {

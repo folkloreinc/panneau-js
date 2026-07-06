@@ -5,7 +5,7 @@
 import { ElementType } from 'react';
 
 import { Item } from './core';
-import { Field } from './form';
+import { Field, Form } from './form';
 
 /**
  * Table column definition
@@ -72,7 +72,7 @@ export interface Resource {
     intl?: ResourceIntl;
     fields?: Field[];
     index?: ResourceIndex;
-    forms?: Record<string, unknown>;
+    forms?: Record<string, Form>;
     shows_in_navbar?: boolean;
     settings?: Record<string, unknown>;
 }

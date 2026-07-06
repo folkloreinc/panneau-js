@@ -63,7 +63,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@folklore/routes": "^0.2.44",
+        "@folklore/routes": "^0.4.11",
         "@fortawesome/fontawesome-svg-core": "^6.5.1",
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",

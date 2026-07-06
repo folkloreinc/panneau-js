@@ -3,10 +3,10 @@ import get from 'lodash-es/get';
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
 import omit from 'lodash-es/omit';
-import { type ElementType, type ReactNode, type SyntheticEvent, useMemo } from 'react';
+import { type ElementType, type ReactNode, type SyntheticEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Column, Item, Resource, TableColumn } from '@panneau/core';
+import type { Item, Resource, TableColumn } from '@panneau/core';
 import { useDisplaysComponents } from '@panneau/core/contexts';
 import {
     getColumnsWithFields,

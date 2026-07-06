@@ -14,6 +14,10 @@ export interface UseActionsOptions {
     iconsOnly?: boolean;
     withIcons?: boolean;
     showUrl?: string | null;
+    editUrl?: string | null;
+    duplicateUrl?: string | null;
+    deleteUrl?: string | null;
+    restoreUrl?: string | null;
     showLabel?: ReactNode | null;
     editLabel?: ReactNode | null;
     duplicateLabel?: ReactNode | null;
@@ -45,6 +49,10 @@ function useActions(
         iconsOnly = true,
         withIcons = true,
         showUrl = null,
+        editUrl = null,
+        duplicateUrl = null,
+        deleteUrl = null,
+        restoreUrl = null,
         showLabel = <FormattedMessage defaultMessage="Show" description="Action label" />,
         editLabel = <FormattedMessage defaultMessage="Edit" description="Action label" />,
         duplicateLabel = <FormattedMessage defaultMessage="Duplicate" description="Action label" />,
@@ -91,6 +99,7 @@ function useActions(
                             component: 'edit',
                             label: iconsOnly ? null : editLabel,
                             icon: iconsOnly || withIcons ? 'pencil-square' : null,
+                            href: editUrl,
                             theme: 'primary',
                             withModal: withEditModal,
                             onClick: onClickEdit,
@@ -102,6 +111,7 @@ function useActions(
                             component: 'duplicate',
                             label: iconsOnly ? null : duplicateLabel,
                             icon: iconsOnly || withIcons ? 'copy' : null,
+                            href: duplicateUrl,
                             withModal: withDuplicateModal,
                             onClick: onClickDuplicate,
                             ...getDuplicatePropsFromValue?.(value),
@@ -112,6 +122,7 @@ function useActions(
                             component: 'restore',
                             label: iconsOnly ? null : restoreLabel,
                             icon: iconsOnly || withIcons ? 'recycle' : null,
+                            href: restoreUrl,
                             withModal: withRestoreModal,
                             onClick: onClickRestore,
                             ...getRestorePropsFromValue?.(value),
@@ -122,6 +133,7 @@ function useActions(
                             component: 'delete',
                             label: iconsOnly ? null : deleteLabel,
                             icon: iconsOnly || withIcons ? 'trash3' : null,
+                            href: deleteUrl,
                             theme: 'danger',
                             onClick: onClickDelete,
                             withConfirmation: withDeleteModal,

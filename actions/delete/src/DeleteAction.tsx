@@ -61,7 +61,8 @@ function DeleteAction({
     const resourceUrl = useResourceUrlGenerator(resource);
     const { destroyAsync } = useResourceDestroy(resource);
     const finalHref =
-        initialHref || (!multiple && isObject(value) ? resourceUrl('delete', value) : null);
+        initialHref ||
+        (!multiple && isObject(value) && !isArray(value) ? resourceUrl('delete', value) : null);
     const label =
         initialLabel ||
         (withDefaultLabel ? (

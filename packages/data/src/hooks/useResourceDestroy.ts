@@ -15,12 +15,12 @@ type UseResourceDestroyResult = UseMutationResult & {
 function useResourceDestroy(resource: Resource | string): UseResourceDestroyResult;
 function useResourceDestroy(id: string | null): UseResourceDestroyResult;
 function useResourceDestroy(
-    id: string | null,
-    options: UseMutationOptions,
-): UseResourceDestroyResult;
-function useResourceDestroy(
     resource: Resource | string,
     id: string | null,
+): UseResourceDestroyResult;
+function useResourceDestroy(
+    id: string | null,
+    options: UseMutationOptions,
 ): UseResourceDestroyResult;
 function useResourceDestroy(
     resource: Resource | string,
