@@ -1,20 +1,23 @@
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
+import { isObject } from 'lodash';
 import isArray from 'lodash-es/isArray';
 import { type ReactNode, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { ActionValue, ButtonTheme } from '@panneau/core';
-import { useModalsComponentsManager } from '@panneau/core/contexts';
+import type { ActionValue, ButtonTheme, Resource } from '@panneau/core';
+import { useModalsComponentsManager, useResource } from '@panneau/core/contexts';
+import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 
 interface DuplicateActionProps {
-    id: string;
+    resource?: Resource | string | null;
     title?: ReactNode | null;
     description?: ReactNode | null;
     endpoint?: string;
     endpointIdsParamName?: string;
     action?: ((value: ActionValue) => Promise<unknown>) | null;
     label?: string | null;
+    href?: string | null;
     value?: ActionValue | null;
     icon?: string;
     theme?: ButtonTheme;
@@ -30,13 +33,14 @@ interface DuplicateActionProps {
 }
 
 function DuplicateAction({
-    id,
+    resource: initialResource = null,
     title = null,
     description = null,
     endpoint = '/duplicate',
     endpointIdsParamName = 'ids',
     action = null,
     label: initialLabel = null,
+    href: initialHref = null,
     icon = 'copy',
     value = null,
     theme = 'secondary',
@@ -51,9 +55,15 @@ function DuplicateAction({
     onClick = null,
     ...props
 }: DuplicateActionProps) {
+    const contextResource = useResource();
+    const resource = initialResource || contextResource;
+    const resourceUrl = useResourceUrlGenerator(resource);
     const label = initialLabel || (
         <FormattedMessage defaultMessage="Duplicate" description="Button label" />
     );
+    const finalHref =
+        initialHref ||
+        (!multiple && isObject(value) && !isArray(value) ? resourceUrl('duplicate', value) : null);
     const ModalComponents = useModalsComponentsManager();
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
@@ -108,6 +118,7 @@ function DuplicateAction({
                 onClick={onClick ?? (withoutConfirmation ? onConfirm : onOpen)}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
+                href={withoutConfirmation ? finalHref : null}
                 {...props}
             />
             {modalOpen ? (
