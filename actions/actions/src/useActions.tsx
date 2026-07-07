@@ -35,10 +35,10 @@ export interface UseActionsOptions {
     getRestorePropsFromValue?: ((value: ActionValue) => Partial<Action> | null) | null;
     withoutItemShowUrl?: boolean | null;
     withShowModal?: boolean;
-    withDuplicateModal?: boolean;
+    withoutDuplicateConfirmation?: boolean;
     withEditModal?: boolean;
-    withDeleteModal?: boolean;
-    withRestoreModal?: boolean;
+    withoutDeleteConfirmation?: boolean;
+    withoutRestoreConfirmation?: boolean;
 }
 
 function useActions(
@@ -69,10 +69,10 @@ function useActions(
         getDeletePropsFromValue = null,
         getRestorePropsFromValue = null,
         withShowModal = false,
-        withDuplicateModal = false,
         withEditModal = false,
-        withDeleteModal = false,
-        withRestoreModal = false,
+       withoutDuplicateConfirmation = false,
+        withoutDeleteConfirmation = false,
+        withoutRestoreConfirmation = false,
     }: UseActionsOptions = {},
 ): Action[] {
     return (actions || [])
@@ -112,7 +112,7 @@ function useActions(
                             label: iconsOnly ? null : duplicateLabel,
                             icon: iconsOnly || withIcons ? 'copy' : null,
                             href: duplicateUrl,
-                            withModal: withDuplicateModal,
+                            withoutConfirmation: withoutDuplicateConfirmation,
                             onClick: onClickDuplicate,
                             ...getDuplicatePropsFromValue?.(value),
                         };
@@ -123,7 +123,7 @@ function useActions(
                             label: iconsOnly ? null : restoreLabel,
                             icon: iconsOnly || withIcons ? 'recycle' : null,
                             href: restoreUrl,
-                            withModal: withRestoreModal,
+                            withoutConfirmation: withoutRestoreConfirmation,
                             onClick: onClickRestore,
                             ...getRestorePropsFromValue?.(value),
                         };
@@ -136,7 +136,7 @@ function useActions(
                             href: deleteUrl,
                             theme: 'danger',
                             onClick: onClickDelete,
-                            withConfirmation: withDeleteModal,
+                            withoutConfirmation: withoutDeleteConfirmation,
                             ...getDeletePropsFromValue?.(value),
                         };
 

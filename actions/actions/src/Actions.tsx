@@ -27,7 +27,7 @@ export interface ActionsProps extends UseActionsOptions {
     dropdownAlign?: DropdownAlign | null;
     size?: ButtonSize;
     disabled?: boolean;
-    withConfirmation?: boolean;
+    withoutConfirmation?: boolean;
     className?: string | null;
 }
 
@@ -45,7 +45,7 @@ function Actions({
     dropdownAlign = null,
     dropdownIcon = 'three-dots-vertical',
     disabled = false,
-    withConfirmation = false,
+    withoutConfirmation = false,
     className = null,
     ...globalProps
 }: ActionsProps) {
@@ -62,7 +62,7 @@ function Actions({
         const {
             id = null,
             component = null,
-            withConfirmation: actionConfirmation = false,
+            withoutConfirmation: actionConfirmation = false,
             iconPosition = isDropdown ? 'left' : 'right',
             label = null,
             icon = null,
@@ -90,7 +90,7 @@ function Actions({
                     value={value}
                     size={size}
                     resource={resource}
-                    withConfirmation={actionConfirmation || withConfirmation}
+                    withoutConfirmation={actionConfirmation || withoutConfirmation}
                     {...globalProps}
                     {...otherProps}
                 />

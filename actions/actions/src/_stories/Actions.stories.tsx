@@ -45,7 +45,7 @@ export const Normal = {
 
 export const WithItems = {
     render: function () {
-        return <ActionsContainer value={[{ id: '1', name: 'OK' }]} withConfirmation />;
+        return <ActionsContainer value={[{ id: '1', name: 'OK' }]} />;
     },
 };
 
@@ -58,7 +58,6 @@ export const WithMultipleItems = {
                     { id: '2', name: 'KO' },
                     { id: 3, name: 'WHAT' },
                 ]}
-                withConfirmation
             />
         );
     },

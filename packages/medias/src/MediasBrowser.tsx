@@ -334,7 +334,6 @@ function MediasBrowser({
                                       acc.push({
                                           id: 'restore',
                                           component: 'restore',
-                                          withConfirmation: true,
                                           action: (ids) => mediaRestore(ids[0]).then(reload),
                                       });
                                   }
@@ -520,8 +519,6 @@ function MediasBrowser({
                             // empty={emptyWithSticky}
                             actionsProps={{
                                 getDeletePropsFromValue: () => ({
-                                    href: null,
-                                    withConfirmation: true,
                                     disabled: destroying,
                                     icon: showTrashed ? 'trash-fill' : 'trash',
                                     action: (ids) => onTrashMedia(ids[0]),

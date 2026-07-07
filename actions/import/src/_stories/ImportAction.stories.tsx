@@ -48,6 +48,6 @@ function FieldContainer(props) {
 
 export const Normal = {
     render: function () {
-        return <FieldContainer label="Welcome to csv" withConfirmation />;
+        return <FieldContainer label="Welcome to csv" />;
     },
 };

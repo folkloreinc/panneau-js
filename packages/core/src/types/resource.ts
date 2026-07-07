@@ -33,7 +33,7 @@ export interface Action {
     target?: string;
     onClick?: (() => void) | null;
     endpoint?: string | null;
-    withConfirmation?: boolean;
+    withoutConfirmation?: boolean;
     [key: string]: unknown;
 }
 

@@ -168,7 +168,6 @@ function ResourceItemsList({
                         value={selectedItems}
                         onChange={onActionsChange}
                         onConfirmed={clearSelectedItems}
-                        withConfirmation
                         theme={theme}
                     />
                 ) : null}
