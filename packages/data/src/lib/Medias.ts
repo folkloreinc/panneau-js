@@ -1,9 +1,9 @@
 import Base from './Base';
 
 class MediasApi extends Base {
-    constructor(opts = {}) {
+    constructor(opts) {
         super({
-            baseUrl: opts.baseUrl ? opts.baseUrl : null,
+            ...opts,
             routes: {
                 index: 'medias',
                 trashed: 'medias/trash',
@@ -15,7 +15,7 @@ class MediasApi extends Base {
                 restore: 'medias/restore/:media',
                 destroy: 'medias/:media',
                 replace: 'medias/replace/:media',
-                ...(opts.routes || null),
+                ...(opts?.routes || null),
             },
         });
     }
@@ -28,8 +28,8 @@ class MediasApi extends Base {
         );
     }
 
-    get(query = {}, page = 1, count = 10) {
-        const finalQuery = {
+    get(query: Record<string, unknown> = {}, page: number | null = 1, count: number | null = 10) {
+        const finalQuery: Record<string, unknown> = {
             ...query,
         };
         if (page !== null) {
@@ -41,12 +41,16 @@ class MediasApi extends Base {
         return this.requestGet(this.route('index'), finalQuery);
     }
 
-    getTrashed(query = {}, page = 1, count = 10) {
+    getTrashed(
+        query: Record<string, unknown> = {},
+        page: number | null = 1,
+        count: number | null = 10,
+    ) {
         return this.get({ trashed: true, ...query }, page, count);
     }
 
-    getTags(query = {}, count = 10) {
-        const finalQuery = {
+    getTags(query: Record<string, unknown> = {}, count: number | null = 10) {
+        const finalQuery: Record<string, unknown> = {
             ...query,
         };
         if (count !== null) {
@@ -55,11 +59,11 @@ class MediasApi extends Base {
         return this.requestGet(this.route('tags'), finalQuery);
     }
 
-    create(data) {
+    create(data: Record<string, unknown>) {
         return this.requestPost(this.route('store'), data);
     }
 
-    update(id, data) {
+    update(id: string, data: Record<string, unknown>) {
         return this.requestPut(
             this.route('update', {
                 media: id,
@@ -68,7 +72,7 @@ class MediasApi extends Base {
         );
     }
 
-    trash(id) {
+    trash(id: string) {
         return this.requestDelete(
             this.route('trash', {
                 media: id,
@@ -76,7 +80,7 @@ class MediasApi extends Base {
         );
     }
 
-    restore(id) {
+    restore(id: string) {
         return this.requestPost(
             this.route('restore', {
                 media: id,
@@ -84,7 +88,7 @@ class MediasApi extends Base {
         );
     }
 
-    destroy(id) {
+    destroy(id: string) {
         return this.requestDelete(
             this.route('destroy', {
                 media: id,
@@ -92,7 +96,7 @@ class MediasApi extends Base {
         );
     }
 
-    replace(id, data) {
+    replace(id: string, data: Record<string, unknown>) {
         return this.requestPost(
             this.route('replace', {
                 media: id,

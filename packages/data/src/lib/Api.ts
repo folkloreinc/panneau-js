@@ -5,16 +5,17 @@ import MediasApi from './Medias';
 import ResourcesApi from './Resources';
 
 class Api extends Base {
-    constructor(opts = {}) {
+    resources: ResourcesApi;
+    medias: MediasApi;
+    auth: AuthApi;
+    account: AccountApi;
+
+    constructor(opts) {
         super(opts);
-        this.auth = new AuthApi(this, {
-            withCredentials: true,
-        });
-        this.account = new AccountApi(this, {
-            withCredentials: true,
-        });
+        this.auth = new AuthApi(opts);
+        this.account = new AccountApi(opts);
         this.medias = new MediasApi(opts);
-        this.resources = new ResourcesApi(this);
+        this.resources = new ResourcesApi(opts);
     }
 }
 

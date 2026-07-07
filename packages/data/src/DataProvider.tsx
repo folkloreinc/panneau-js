@@ -9,6 +9,7 @@ import { QueryProvider } from './contexts/QueryContext';
 interface DataProviderProps {
     api?: Api | null;
     apiBaseUrl?: string;
+    routes?: Record<string, string> | null;
     baseUrl?: string;
     queryConfig?: QueryClientConfig | null;
     initialQueryKey?: string[] | null;
@@ -20,6 +21,7 @@ interface DataProviderProps {
 function DataProvider({
     api = null,
     apiBaseUrl = undefined,
+    routes = undefined,
     baseUrl = undefined,
     children = null,
     queryConfig = null,
@@ -33,7 +35,12 @@ function DataProvider({
             initialKey={initialQueryKey}
             initialData={initialQueryData}
         >
-            <ApiProvider api={api} baseUrl={baseUrl ?? apiBaseUrl} onUnauthorized={onUnauthorized}>
+            <ApiProvider
+                api={api}
+                baseUrl={baseUrl ?? apiBaseUrl}
+                routes={routes}
+                onUnauthorized={onUnauthorized}
+            >
                 {children}
             </ApiProvider>
         </QueryProvider>

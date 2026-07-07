@@ -6,17 +6,17 @@ import { usePanneauResource, useResource } from '@panneau/core/contexts';
 
 import { useApi } from '../contexts/ApiContext';
 
-function useResourceDestroy(resource: Resource | string);
-function useResourceDestroy(id: string | null);
-function useResourceDestroy(resource: Resource | string, id: string | null);
-function useResourceDestroy(id: string | null, options: UseMutationOptions);
-function useResourceDestroy(
+function useResourceClone(resource: Resource | string);
+function useResourceClone(id: string | null);
+function useResourceClone(resource: Resource | string, id: string | null);
+function useResourceClone(id: string | null, options: UseMutationOptions);
+function useResourceClone(
     resource: Resource | string,
     id: string | null,
     options: UseMutationOptions,
 );
 
-function useResourceDestroy(
+function useResourceClone(
     resource: Resource | string | null = null,
     id: string | null | UseMutationOptions = null,
     options: UseMutationOptions = {},
@@ -29,13 +29,13 @@ function useResourceDestroy(
     const { mutate, mutateAsync, isPending, ...other } = useMutation<unknown, Error, string | void>(
         {
             mutationFn: (providedId = null) =>
-                api.resources.destroy(finalResource, (providedId ?? finalId) as string),
+                api.resources.clone(finalResource, (providedId ?? finalId) as string),
             ...options,
         },
     );
     return {
-        destroy: mutate,
-        destroyAsync: mutateAsync,
+        clone: mutate,
+        cloneAsync: mutateAsync,
         loading: isPending,
         mutate,
         mutateAsync,
@@ -44,4 +44,4 @@ function useResourceDestroy(
     };
 }
 
-export default useResourceDestroy;
+export default useResourceClone;

@@ -1,4 +1,4 @@
-import { UseQueryOptions, UseQueryResult, useQuery } from '@tanstack/react-query';
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import isObject from 'lodash-es/isObject';
 
 import { type Resource, type ResourceItem } from '@panneau/core';
@@ -6,32 +6,21 @@ import { usePanneauResource, useResource } from '@panneau/core/contexts';
 
 import { useApi } from '../contexts/ApiContext';
 
-type UseResourceItem<T> = UseQueryResult<T> & {
-    item: T | null;
-};
-
-function useResourceItem<T = ResourceItem>(id: string | null): UseResourceItem<T>;
-function useResourceItem<T = ResourceItem>(id: string | null, opts): UseResourceItem<T>;
-function useResourceItem<T = ResourceItem>(
-    resource: Resource | string | null,
-    id: string | null,
-): UseResourceItem<T>;
-function useResourceItem<T = ResourceItem>(
-    resource: Resource | string | null,
-    id: string | null,
-    opts,
-): UseResourceItem<T>;
+function useResourceItem(id: string | null);
+function useResourceItem(id: string | null, opts);
+function useResourceItem(resource: Resource | string | null, id: string | null);
+function useResourceItem(resource: Resource | string | null, id: string | null, opts);
 
 function useResourceItem<T = ResourceItem>(
     resource: Resource | string | null,
     id: string | null | UseQueryOptions<T> = null,
     opts: UseQueryOptions<T> = null,
-): UseResourceItem<T> {
+) {
     const api = useApi();
     const providedResource = usePanneauResource(id !== null && !isObject(id) ? resource : null);
     const contextResource = useResource();
     const finalResource = providedResource || contextResource;
-    const finalId = providedResource !== null ? id : resource;
+    const finalId = providedResource !== null ? (id as string) : (resource as string);
     const { id: resourceId } = finalResource;
     const { data = null, ...request } = useQuery<T>({
         queryKey: [resourceId, finalId],

@@ -7,18 +7,15 @@ import { usePanneauResource, useResource } from '@panneau/core/contexts';
 import { useApi } from '../contexts/ApiContext';
 import useItems, { UseItemsOptions } from './useItems';
 
-function useResourceItems<T = ResourceItem>();
-function useResourceItems<T = ResourceItem>(resource: Resource | string);
-function useResourceItems<T = ResourceItem>(
-    resource: Resource | string,
-    query: Record<string, unknown> | null,
-);
-function useResourceItems<T = ResourceItem>(
+function useResourceItems();
+function useResourceItems(resource: Resource | string);
+function useResourceItems(resource: Resource | string, query: Record<string, unknown> | null);
+function useResourceItems(
     resource: Resource | string,
     query: Record<string, unknown> | null,
     page: number | null,
 );
-function useResourceItems<T = ResourceItem>(
+function useResourceItems(
     resource: Resource | string,
     query: Record<string, unknown> | null,
     page: number | null,
@@ -31,12 +28,9 @@ function useResourceItems<T = ResourceItem>(
     count: number | null,
     opts: UseItemsOptions<T>,
 );
-function useResourceItems<T = ResourceItem>(query: Record<string, unknown> | null);
-function useResourceItems<T = ResourceItem>(
-    query: Record<string, unknown> | null,
-    page: number | null,
-);
-function useResourceItems<T = ResourceItem>(
+function useResourceItems(query: Record<string, unknown> | null);
+function useResourceItems(query: Record<string, unknown> | null, page: number | null);
+function useResourceItems(
     query: Record<string, unknown> | null,
     page: number | null,
     count: number | null,
@@ -69,7 +63,7 @@ function useResourceItems<T = ResourceItem>(
     const finalOpts = (firstIsResource ? opts : count) as UseItemsOptions<T>;
 
     const getItems = (query, requestedPage = null, count = null) =>
-        api.resources.get(finalResource, query, requestedPage, count);
+        api.resources.get<T>(finalResource, query, requestedPage, count);
 
     return useItems<T>(resourceId, {
         getItems,

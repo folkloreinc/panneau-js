@@ -43,17 +43,6 @@ export type UseItemsOptions<T> = Omit<
     keepData?: boolean;
 };
 
-type UseItemsResult<T> = {
-    items: T[];
-    allItems: T[];
-    pages: Record<string, UseItemsResponse<T>>;
-    pagination: { page: number; lastPage: number; total: number } | null;
-    loading: boolean;
-    loaded: boolean;
-    reload: () => void;
-    updateItem: (item: T) => void;
-} & UseQueryResult<UseItemsResponse<T>, Error>;
-
 function useItems<T = Item>(
     scope: string,
     {
@@ -65,7 +54,7 @@ function useItems<T = Item>(
         keepData = true,
         ...queryConfig
     }: UseItemsOptions<T>,
-): UseItemsResult<T> {
+) {
     const { page = initialPage, count = initialCount, ...queryWithoutPage } = query || {};
     const paginated = page !== null;
 
