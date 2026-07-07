@@ -28,7 +28,7 @@ interface DeleteActionProps {
     onChange?: ((response: ActionValue) => void) | null;
     valueLabelPath?: string | null;
     modalComponent?: string;
-    withConfirmation?: boolean;
+    withoutConfirmation?: boolean;
     withDefaultLabel?: boolean;
     className?: string | null;
 }
@@ -51,7 +51,7 @@ function DeleteAction({
     onChange = null,
     modalComponent = 'confirm',
     valueLabelPath = null,
-    withConfirmation = false,
+    withoutConfirmation = false,
     withDefaultLabel = false,
     className = null,
     ...props
@@ -105,10 +105,10 @@ function DeleteAction({
                 className={className}
                 label={label}
                 icon={icon}
-                onClick={onClick || (withConfirmation ? onOpen : onConfirm)}
+                onClick={onClick ?? (withoutConfirmation ? onConfirm : onOpen)}
                 disabled={disabled}
                 theme={theme}
-                href={!withConfirmation ? finalHref : null}
+                href={withoutConfirmation ? finalHref : null}
                 {...props}
             />
             {modalOpen ? (

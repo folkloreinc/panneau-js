@@ -24,7 +24,8 @@ interface DuplicateActionProps {
     onConfirmed?: ((response: unknown) => void) | null;
     valueLabelPath?: string | null;
     modalComponent?: string;
-    withConfirmation?: boolean;
+    withoutConfirmation?: boolean;
+    onClick?: (() => void) | null;
     className?: string | null;
 }
 
@@ -45,8 +46,9 @@ function DuplicateAction({
     onConfirmed = null,
     valueLabelPath = null,
     modalComponent = 'confirm',
-    withConfirmation = false,
+    withoutConfirmation = false,
     className = null,
+    onClick = null,
     ...props
 }: DuplicateActionProps) {
     const label = initialLabel || (
@@ -94,7 +96,7 @@ function DuplicateAction({
                 .catch((err: Error) => {
                     setError(err);
                 }),
-        [value, endpoint, action, onChange, setError, onConfirmed],
+        [value, endpoint, action, onChange, setError, onConfirmed, endpointIdsParamName],
     );
 
     return (
@@ -103,7 +105,7 @@ function DuplicateAction({
                 className={className}
                 label={label}
                 icon={icon}
-                onClick={withConfirmation ? onOpen : null}
+                onClick={onClick ?? (withoutConfirmation ? onConfirm : onOpen)}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
                 {...props}

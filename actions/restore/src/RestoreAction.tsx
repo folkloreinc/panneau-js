@@ -23,7 +23,8 @@ interface RestoreActionProps {
     onConfirmed?: ((response: unknown) => void) | null;
     valueLabelPath?: string | null;
     modalComponent?: string;
-    withConfirmation?: boolean;
+    withoutConfirmation?: boolean;
+    onClick?: (() => void) | null;
     className?: string | null;
 }
 
@@ -43,7 +44,8 @@ function RestoreAction({
     onConfirmed = null,
     valueLabelPath = null,
     modalComponent = 'confirm',
-    withConfirmation = false,
+    withoutConfirmation = false,
+    onClick = null,
     className = null,
     ...props
 }: RestoreActionProps) {
@@ -95,7 +97,7 @@ function RestoreAction({
                 className={className}
                 label={label}
                 icon={icon}
-                onClick={withConfirmation ? onOpen : onConfirm}
+                onClick={onClick ?? (withoutConfirmation ? onConfirm : onOpen)}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
                 {...props}
