@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "3.0.319",
+    "version": "3.0.323",
     "description": "",
     "keywords": [
         "javascript"
@@ -82,12 +82,12 @@
         "@panneau/field-localized": "^3.0.319",
         "@panneau/field-number": "^3.0.319",
         "@panneau/field-radios": "^3.0.319",
-        "@panneau/field-resource-item": "^3.0.319",
+        "@panneau/field-resource-item": "^3.0.323",
         "@panneau/field-select": "^3.0.319",
         "@panneau/field-text": "^3.0.319",
         "@panneau/field-toggle": "^3.0.319",
         "@panneau/field-toggles": "^3.0.319",
-        "@panneau/field-upload": "^3.0.319",
+        "@panneau/field-upload": "^3.0.323",
         "@panneau/field-url": "^3.0.319",
         "lodash-es": "^4.17.21",
         "prop-types": "^15.7.2"
@@ -95,5 +95,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "060fc0e53a4e9541790d57ac29d27f03a7aa5bf9"
+    "gitHead": "38c44aa310c2792967be7be6cb6818f3d8751962"
 }

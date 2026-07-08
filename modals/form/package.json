@@ -1,6 +1,6 @@
 {
     "name": "@panneau/modal-form",
-    "version": "3.0.319",
+    "version": "3.0.323",
     "description": "Resource form modal",
     "keywords": [
         "javascript"
@@ -51,7 +51,7 @@
         "@babel/runtime": "^7.12.5",
         "@panneau/core": "^3.0.319",
         "@panneau/form": "^3.0.319",
-        "@panneau/intl": "^3.0.319",
+        "@panneau/intl": "^3.0.323",
         "@panneau/modal-dialog": "^3.0.319",
         "@panneau/themes": "^3.0.319",
         "classnames": "^2.5.1",
@@ -62,5 +62,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "060fc0e53a4e9541790d57ac29d27f03a7aa5bf9"
+    "gitHead": "38c44aa310c2792967be7be6cb6818f3d8751962"
 }

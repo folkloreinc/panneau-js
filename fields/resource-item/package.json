@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-resource-item",
-    "version": "3.0.319",
+    "version": "3.0.323",
     "description": "An item mapping a resource",
     "keywords": [
         "javascript"
@@ -54,11 +54,11 @@
         "@panneau/element-button": "^3.0.319",
         "@panneau/element-resource-card": "^3.0.319",
         "@panneau/element-select": "^3.0.319",
-        "@panneau/form-resource": "^3.0.319",
-        "@panneau/intl": "^3.0.319",
+        "@panneau/form-resource": "^3.0.323",
+        "@panneau/intl": "^3.0.323",
         "@panneau/modal-dialog": "^3.0.319",
-        "@panneau/modal-resource-form": "^3.0.319",
-        "@panneau/modal-resource-items": "^3.0.319",
+        "@panneau/modal-resource-form": "^3.0.323",
+        "@panneau/modal-resource-items": "^3.0.323",
         "classnames": "^2.5.1",
         "lodash-es": "^4.17.21",
         "prop-types": "^15.7.2",
@@ -67,5 +67,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "060fc0e53a4e9541790d57ac29d27f03a7aa5bf9"
+    "gitHead": "38c44aa310c2792967be7be6cb6818f3d8751962"
 }

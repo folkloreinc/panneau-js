@@ -1,6 +1,6 @@
 {
     "name": "@panneau/medias",
-    "version": "3.0.319",
+    "version": "3.0.323",
     "description": "",
     "keywords": [
         "javascript"
@@ -64,7 +64,7 @@
         "@panneau/element-media-player": "^3.0.319",
         "@panneau/element-pagination": "^3.0.319",
         "@panneau/element-table": "^3.0.319",
-        "@panneau/field-upload": "^3.0.319",
+        "@panneau/field-upload": "^3.0.323",
         "@panneau/filter-filters": "^3.0.319",
         "classnames": "^2.5.1",
         "lodash-es": "^4.17.21",
@@ -74,5 +74,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "060fc0e53a4e9541790d57ac29d27f03a7aa5bf9"
+    "gitHead": "38c44aa310c2792967be7be6cb6818f3d8751962"
 }
