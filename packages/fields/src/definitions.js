@@ -49,6 +49,9 @@ export default [
     Upload,
     Url,
 ].reduce(
-    (allFields, definition) => [...allFields, ...(isArray(definition) ? definition : [definition])],
+    (allDefinitions, definition) => [
+        ...allDefinitions,
+        ...(isArray(definition) ? definition : [definition]),
+    ],
     [],
 );

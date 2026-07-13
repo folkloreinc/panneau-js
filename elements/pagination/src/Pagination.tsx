@@ -5,7 +5,7 @@ import queryString from 'query-string';
 import { MouseEvent, ReactNode, cloneElement, useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Item } from '@panneau/core';
+import type { ControlSize, Item } from '@panneau/core';
 import Icon from '@panneau/element-icon';
 import Link from '@panneau/element-link';
 
@@ -21,7 +21,7 @@ interface PaginationProps {
     withCount?: boolean;
     autohide?: boolean;
     align?: 'left' | 'right';
-    size?: 'sm' | 'md' | 'lg' | null;
+    size?: ControlSize;
     previousLabel?: ReactNode | null;
     nextLabel?: ReactNode | null;
     countLabel?: ReactNode | null;

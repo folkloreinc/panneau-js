@@ -1,4 +1,12 @@
-import { ForwardedRef, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+    ElementType,
+    ForwardedRef,
+    type ReactNode,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react';
 
 import type { Item, Resource } from '@panneau/core';
 import {
@@ -89,48 +97,42 @@ function ResourceForm({
         withoutContainer: formWithoutContainer = false,
     } = currentForm || {};
 
-    const finalFields = useMemo(
-        () =>
-            (formFields || defaultFields || resourceTypeFields || resourceFields).filter(
-                ({ settings: { hiddenInForm = false } = {} }) => !hiddenInForm,
-            ),
-        [formFields, defaultFields, resourceTypeFields, resourceFields],
-    );
+    const finalFields = (
+        formFields ||
+        defaultFields ||
+        resourceTypeFields ||
+        resourceFields
+    ).filter(({ settings: { hiddenInForm = false } = {} }) => !hiddenInForm);
 
     // Form routes
     const resourceRoute = useResourceUrlGenerator(resource);
     const { store, loading: storing } = useResourceStore(resource);
-    const { update, loading: updating } = useResourceUpdate(
-        resource,
-        item !== null ? itemId : null,
-    );
-    const { destroyAsync, loading: destroying } = useResourceDestroy(
-        resource,
-        item !== null ? itemId : null,
-    );
-    const { clone, loading: cloning } = useResourceClone(resource, item !== null ? itemId : null);
+    const { update, loading: updating } = useResourceUpdate(resource, itemId);
+    const { destroyAsync, loading: destroying } = useResourceDestroy(resource, itemId);
+    const { clone, loading: cloning } = useResourceClone(resource, itemId);
     const loading = storing || updating || destroying || cloning;
 
     // Post actions
-    const postForm = useCallback(
-        (action: string, data: unknown) => {
-            if (isDelete) {
-                return destroyAsync();
-            }
-            if (isDuplicate) {
-                return clone();
-            }
-            if (isCreate) {
-                return store(data);
-            }
-            return update(data);
-        },
-        [isCreate, isDelete, isDuplicate, destroyAsync, clone, store, update],
-    );
+    const postForm = (action: string, data: unknown) => {
+        if (isDelete) {
+            return destroyAsync();
+        }
+        if (isDuplicate) {
+            return clone();
+        }
+        if (isCreate) {
+            return store(data);
+        }
+        return update(data);
+    };
 
     // Form state
-    const getInitialValue = useCallback(
-        () =>
+
+    const [currentItem, setCurrentItem] = useState(item);
+    const [value, setValue] = useState(null);
+    if (item !== currentItem) {
+        setCurrentItem(item);
+        setValue(
             item !== null
                 ? item
                 : finalFields.reduce(
@@ -143,16 +145,8 @@ function ResourceForm({
                               : defaultValues,
                       type !== null ? { type } : {},
                   ),
-        [item, type, finalFields],
-    );
-
-    const [value, setValueState] = useState(getInitialValue());
-    const setValue = useCallback(
-        (newValue: Record<string, unknown>) => {
-            setValueState(newValue);
-        },
-        [setValueState],
-    );
+        );
+    }
 
     // Form action
     let action = isCreate
@@ -200,7 +194,7 @@ function ResourceForm({
         !defaultFormWithoutHeader &&
         !formWithoutHeader;
 
-    let finalComponent = component;
+    let finalComponent: string | ElementType = component;
 
     if (isDelete) {
         finalComponent = DeleteForm;
@@ -212,11 +206,6 @@ function ResourceForm({
 
     // Form component
     const FormComponent = getComponentFromName(defaultFormName, FormComponents, finalComponent);
-
-    // Listen to item value change - this is important
-    useEffect(() => {
-        setValue(getInitialValue());
-    }, [getInitialValue, setValue]);
 
     const element = (
         <FormComponent

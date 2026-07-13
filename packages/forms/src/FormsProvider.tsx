@@ -1,27 +1,38 @@
-import { type ReactNode } from 'react';
+import { ElementType, type ReactNode } from 'react';
 
-import { ComponentsProvider, FORMS_NAMESPACE } from '@panneau/core/contexts';
+import { FormDefinition } from '@panneau/core';
+import {
+    FormsProvider as BaseFormsProvider,
+    ComponentsProvider,
+    FORMS_NAMESPACE,
+} from '@panneau/core/contexts';
 
 import * as components from './components';
+import definitions from './definitions';
 
 interface FormsProviderProps {
-    components?: Record<string, unknown> | null;
-    children?: ReactNode;
+    definitions?: FormDefinition[];
+    components?: Record<string, ElementType>;
+    children: ReactNode;
 }
 
+const DEFAULT_DEFINITIONS: FormDefinition[] = [];
+const DEFAULT_COMPONENTS: Record<string, ElementType> = {};
+
 function FormsProvider({
-    components: injectedComponents = null,
-    children = null,
-    ...props
+    definitions: injectedDefinitions = DEFAULT_DEFINITIONS,
+    components: injectedComponents = DEFAULT_COMPONENTS,
+    children,
 }: FormsProviderProps) {
     return (
-        <ComponentsProvider
-            namespace={FORMS_NAMESPACE}
-            components={{ ...components, ...injectedComponents }}
-            {...props}
-        >
-            {children}
-        </ComponentsProvider>
+        <BaseFormsProvider forms={[...definitions, ...injectedDefinitions]}>
+            <ComponentsProvider
+                namespace={FORMS_NAMESPACE}
+                components={{ ...components, ...injectedComponents }}
+            >
+                {children}
+            </ComponentsProvider>
+        </BaseFormsProvider>
     );
 }
 

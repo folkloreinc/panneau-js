@@ -4,8 +4,8 @@
  */
 import { ElementType } from 'react';
 
-import { Item } from './core';
-import { Field, Form } from './form';
+import { Item, PageDefinition, RouteDefinition } from './core';
+import { Field, Form, FormDefinition } from './form';
 
 /**
  * Table column definition
@@ -66,15 +66,35 @@ export interface ResourceIndex {
     fields?: Field[];
     [key: string]: unknown;
 }
+
+export interface ResourcePages {
+    index?: PageDefinition;
+    show?: PageDefinition;
+    create?: PageDefinition;
+    edit?: PageDefinition;
+    delete?: PageDefinition;
+    duplicate?: PageDefinition;
+    [key: string]: PageDefinition | undefined;
+}
+
+export interface ResourceForms {
+    default: FormDefinition | null;
+    create: FormDefinition | null;
+    edit: FormDefinition | null;
+    delete: FormDefinition | null;
+    modal: FormDefinition | null;
+    [key: string]: FormDefinition | null;
+}
 export interface Resource {
     id: string;
     name: string;
     intl?: ResourceIntl;
     fields?: Field[];
     index?: ResourceIndex;
-    forms?: Record<string, Form>;
-    shows_in_navbar?: boolean;
+    forms?: ResourceForms;
     settings?: Record<string, unknown>;
+    extraRoutes?: RouteDefinition[];
+    pages?: ResourcePages;
 }
 
 export interface ResourceItem extends Item {

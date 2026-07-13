@@ -2,9 +2,9 @@
  * Form Types
  * TypeScript interfaces for form-related components
  */
-import { ElementType, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
-import { Label } from './core';
+import { ControlSize, Definition, Label } from './core';
 
 /**
  * Field option for select/radio inputs
@@ -32,14 +32,24 @@ export type SelectOption =
 export interface Field {
     name?: string; // Not required on localized fields
     type?: string;
-    component?: string | ElementType;
-    label?: ReactNode;
+    label?: Label;
+    component?: string;
+    size?: ControlSize;
+    [key: string]: unknown;
 }
+
+export interface FieldDefinition extends Omit<Field, 'component'>, Definition {}
 
 /**
  * Form definition
  */
 export interface Form {
-    title: ReactNode;
+    title?: ReactNode;
     fields?: Field[];
+    method?: string | null;
+    action?: string | null;
+    submitButtonLabel?: Label | null;
+    [key: string]: unknown;
 }
+
+export interface FormDefinition extends Form, Definition {}

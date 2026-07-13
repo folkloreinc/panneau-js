@@ -7,10 +7,7 @@ import type { MessageDescriptor } from 'react-intl';
 /**
  * Internationalization message definition
  */
-export interface Message extends MessageDescriptor {
-    id: string;
-    defaultMessage?: string;
-}
+export type Message = MessageDescriptor;
 
 /**
  * Label can be either a message object or any React node
@@ -62,20 +59,17 @@ export interface Button {
  * Button theme variants (Bootstrap 5)
  */
 export type ButtonTheme =
-    | 'primary'
-    | 'secondary'
-    | 'success'
-    | 'danger'
-    | 'warning'
-    | 'info'
-    | 'light'
-    | 'dark'
-    | null;
+    'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark' | null;
+
+/**
+ * Breakpoints size variants
+ */
+export type BreakpointsSize = 'xxl' | 'xl' | 'lg' | 'md' | 'sm' | null;
 
 /**
  * Button size variants
  */
-export type ButtonSize = 'lg' | 'md' | 'sm' | null;
+export type ButtonSize = 'lg' | 'sm' | null;
 
 /**
  * Button type attribute
@@ -91,6 +85,11 @@ export type DropdownAlign = 'start' | 'end';
  * Form control size
  */
 export type ControlSize = 'lg' | 'sm' | null;
+
+/**
+ * Dialog size
+ */
+export type DialogSize = 'xl' | 'lg' | 'sm' | null;
 
 /**
  * Form status states
@@ -150,4 +149,24 @@ export interface Pagination {
 export interface Item {
     id: string;
     [key: string]: unknown;
+}
+
+/**
+ * Generic definition
+ */
+export interface Definition {
+    id: string;
+    component?: string | ElementType;
+    [key: string]: unknown;
+}
+
+export interface RouteDefinition {
+    path?: string;
+    route?: string;
+    component: string | ElementType;
+    [key: string]: unknown;
+}
+
+export interface PageDefinition {
+    component: string | ElementType;
 }

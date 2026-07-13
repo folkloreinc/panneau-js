@@ -3,6 +3,7 @@ export * from './DefinitionContext';
 export * from './FieldsContext';
 export * from './FontsContext';
 export * from './FormContext';
+export * from './FormsContext';
 export * from './GoogleApiClientContext';
 export * from './GoogleKeysContext';
 export * from './GoogleMapsClientContext';

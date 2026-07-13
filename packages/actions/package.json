@@ -32,15 +32,11 @@
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
-            "style": "./assets/css/styles.css",
             "default": "./dist/index.js"
-        },
-        "./assets/css/styles": "./assets/css/styles.css",
-        "./assets/css/styles.css": "./assets/css/styles.css"
+        }
     },
     "module": "dist/index.js",
     "types": "dist/index.d.ts",
-    "style": "assets/css/styles.css",
     "files": [
         "dist",
         "assets"

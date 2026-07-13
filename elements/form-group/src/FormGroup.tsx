@@ -2,8 +2,10 @@ import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import { type ReactNode, useCallback, useState } from 'react';
+import { useIntl } from 'react-intl';
 
 import type { Label } from '@panneau/core';
+import { isMessage } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 
 import styles from './styles.module.css';
@@ -53,6 +55,7 @@ function FormGroup({
     labelClassName = null,
     helpTextClassName = null,
 }: FormGroupProps) {
+    const intl = useIntl();
     const labelBefore = !labelAfter;
     const isColumn = horizontal || inline;
     const [collapsed, setCollapsed] = useState(initialCollapsed);
@@ -89,7 +92,7 @@ function FormGroup({
 
     const outerLabel = isCollapsible ? (
         <Button htmlFor={name || undefined} className={labelClassNames} onClick={toggleCollapsed}>
-            {innerLabel}
+            {isMessage(innerLabel) ? intl.formatMessage(innerLabel) : innerLabel}
             <FontAwesomeIcon
                 style={{ width: 20 }}
                 className="me-1"
@@ -98,7 +101,7 @@ function FormGroup({
         </Button>
     ) : (
         <label htmlFor={name || undefined} className={labelClassNames}>
-            {innerLabel}
+            {isMessage(innerLabel) ? intl.formatMessage(innerLabel) : innerLabel}
         </label>
     );
 

@@ -1,6 +1,7 @@
 import classNames from 'classnames';
-import { type ReactNode, useCallback, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
+import { BreakpointsSize } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Link from '@panneau/element-link';
 
@@ -9,7 +10,7 @@ interface NavbarProps {
     brandLink?: string | null;
     breadcrumbs?: ReactNode | null;
     theme?: 'light' | 'dark' | 'primary' | null;
-    size?: 'sm' | 'md' | 'lg';
+    size?: BreakpointsSize;
     compact?: boolean;
     noWrap?: boolean;
     withoutCollapse?: boolean;
@@ -38,10 +39,7 @@ function Navbar({
     breadCrumbsClassName = null,
 }: NavbarProps) {
     const [menuVisible, setMenuVisible] = useState(false);
-    const onClickMenu = useCallback(
-        () => setMenuVisible(!menuVisible),
-        [setMenuVisible, menuVisible],
-    );
+    const onClickMenu = () => setMenuVisible(!menuVisible);
     return (
         <nav
             className={classNames([

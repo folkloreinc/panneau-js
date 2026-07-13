@@ -66,8 +66,7 @@ interface ItemsFieldProps {
     onChange?: ((value: ItemsFieldItem[]) => void) | null;
     renderBefore?: (() => ReactNode) | null;
     renderItem?:
-        | ((item: ItemsFieldItem, index: number, props: Record<string, unknown>) => ReactNode)
-        | null;
+        ((item: ItemsFieldItem, index: number, props: Record<string, unknown>) => ReactNode) | null;
     renderItemLabel?: ((index: number) => ReactNode) | null;
     withoutCollapse?: boolean;
     withoutSort?: boolean;
@@ -551,7 +550,7 @@ function ItemsField({
                     className={classNames([
                         'position-relative',
                         {
-                            'p-4': !withoutCard,
+                            'p-2': !withoutCard,
                             'flex-grow-1': inline || withoutCard,
                             collapse: isCollapsed,
                         },
@@ -568,8 +567,17 @@ function ItemsField({
                             : itemChildren
                         : null}
                 </div>
-                {inline && !withoutCard ? (
-                    <div className={classNames(['card-header', 'd-flex', 'border-bottom-0'])}>
+                {inline ? (
+                    <div
+                        className={classNames([
+                            {
+                                'card-header': !withoutCard,
+                                'ms-2': withoutCard,
+                            },
+                            'd-flex',
+                            'border-bottom-0',
+                        ])}
+                    >
                         {!withoutSort && !disabled ? (
                             <Button
                                 className="m-auto me-2 item-handle"

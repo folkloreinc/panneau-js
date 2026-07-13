@@ -2,13 +2,15 @@ import classNames from 'classnames';
 import isString from 'lodash-es/isString';
 import { type ReactNode } from 'react';
 
+import { ControlSize } from '@panneau/core';
+
 import styles from './styles.module.css';
 
 interface InputGroupFieldProps {
     prepend?: ReactNode | null;
     children?: ReactNode | null;
     append?: ReactNode | null;
-    size?: 'sm' | 'lg' | null;
+    size?: ControlSize;
     className?: string | null;
 }
 

@@ -46,8 +46,6 @@ function Link({
                     className,
                     { 'text-reset text-decoration-none': withoutStyle },
                 ])}
-                theme="primary"
-                outline
                 {...props}
                 onClick={onClick}
             >

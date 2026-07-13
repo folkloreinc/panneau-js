@@ -2,7 +2,12 @@ import classNames from 'classnames';
 import { type ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { ButtonSize, Button as ButtonType, Label as LabelType } from '@panneau/core';
+import type {
+    ButtonSize,
+    Button as ButtonType,
+    DialogSize,
+    Label as LabelType,
+} from '@panneau/core';
 import { isMessage } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 import Buttons from '@panneau/element-buttons';
@@ -12,7 +17,7 @@ import Modal, { type ModalProps } from '@panneau/element-modal';
 export interface DialogModalProps extends Omit<ModalProps, 'title'> {
     id: string;
     title?: LabelType | null;
-    size?: 'xl' | 'lg' | 'sm' | null;
+    size?: DialogSize;
     header?: ReactNode | null;
     children?: ReactNode | null;
     footer?: ReactNode | null;

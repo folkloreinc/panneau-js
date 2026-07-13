@@ -25,7 +25,6 @@ interface DeleteActionProps {
     multiple?: boolean;
     disabled?: boolean;
     onClick?: (() => void) | null;
-    onChange?: ((response: ActionValue) => void) | null;
     valueLabelPath?: string | null;
     modalComponent?: string;
     withoutConfirmation?: boolean;
@@ -48,7 +47,6 @@ function DeleteAction({
     multiple = false,
     disabled = false,
     onClick = null,
-    onChange = null,
     modalComponent = 'confirm',
     valueLabelPath = null,
     withoutConfirmation = false,
@@ -83,8 +81,8 @@ function DeleteAction({
                       endpoint,
                       {
                           [endpointIdsParamName]: (isArray(value) ? value : [value])
-                              .filter((it) => it !== null)
-                              .map((it) => it?.id),
+                              .map((it) => it?.id ?? null)
+                              .filter((it) => it !== null),
                           _method: 'DELETE',
                       },
                       {

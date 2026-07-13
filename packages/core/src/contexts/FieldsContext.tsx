@@ -1,31 +1,31 @@
 import isString from 'lodash-es/isString';
 import uniqBy from 'lodash-es/uniqBy';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, use, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
 import { FieldsManager } from '../lib';
 
-import type { Field } from '../types';
+import type { FieldDefinition } from '../types';
 import { ComponentsProvider, FIELDS_NAMESPACE } from './ComponentsContext';
 
 export const FieldsContext = createContext<FieldsManager | null>(null);
 
 export function useFieldsManager(): FieldsManager | null {
-    return useContext(FieldsContext);
+    return use(FieldsContext);
 }
 
-export function useField(id: string): Field | null {
+export function useFieldDefinition(id: string): FieldDefinition | null {
     const manager = useFieldsManager();
     return manager.getDefinition(id);
 }
 
-export function useFields(): Field[] {
+export function useFieldDefinitions(): FieldDefinition[] {
     const manager = useFieldsManager();
     return manager.getDefinitions();
 }
 
 interface FieldsProviderProps {
-    fields?: Field[] | null;
+    fields?: FieldDefinition[] | null;
     manager?: FieldsManager | null;
     children: ReactNode;
 }

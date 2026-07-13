@@ -3,8 +3,8 @@ import classNames from 'classnames';
 import { ForwardedRef, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Field, Label } from '@panneau/core';
-import { useFormComponent } from '@panneau/core/contexts';
+import type { ControlSize, Field, Label } from '@panneau/core';
+import { useFormComponent, useFormDefinition } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
 import type { FormProps as BaseFormProps } from '@panneau/element-form';
 
@@ -15,7 +15,8 @@ export interface FormProps extends Omit<BaseFormProps, 'onChange'> {
     postOptions?: Record<string, unknown> | null;
     postData?: Record<string, unknown> | null;
     type?: string;
-    fields: Field[];
+    fields?: Field[];
+    size?: ControlSize;
     value?: Record<string, unknown> | null;
     onChange?: ((value: Record<string, unknown>) => void) | null;
     onComplete?: ((result: unknown) => void) | null;
@@ -45,22 +46,39 @@ function Form({
     ...props
 }: FormProps) {
     const [wasValidated, setWasValidated] = useState(false);
-    const FormComponent = useFormComponent(type);
+
+    const formDefinition = useFormDefinition(type);
+    const {
+        component: definitionComponent,
+        fields: definitionFields,
+        method: definitionMethod,
+        action: definitionAction,
+        submitButtonLabel: definitionSubmitButtonLabel,
+        ...definitionProps
+    } = formDefinition || {};
+
+    const finalComponent = definitionComponent ?? type ?? 'normal';
+    const finalFields = providedFields ?? definitionFields;
+    const finalMethod = method ?? definitionMethod;
+    const finalAction = action ?? definitionAction;
+    const finalSubmitButtonLabel = submitButtonLabel ?? definitionSubmitButtonLabel;
+
+    const FormComponent = useFormComponent(finalComponent);
 
     const defaultPostForm = useCallback(
         (act: string, data: unknown) =>
             postJSON(act, postData !== null ? { ...postData, ...data } : data, {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
-                ...(method !== null ? { method } : null),
+                ...(finalMethod !== null ? { method: finalMethod } : null),
                 ...(postOptions !== null ? postOptions : null),
             }),
-        [method, postOptions, postData],
+        [finalMethod, postOptions, postData],
     );
 
     const { value, setValue, fields, onSubmit, status, generalError, errors } = useForm({
-        action,
-        fields: providedFields,
+        action: finalAction,
+        fields: finalFields,
         postForm: (act: string, data: unknown) =>
             (postForm || defaultPostForm)(act, data).then((result) => {
                 setWasValidated(false);
@@ -82,9 +100,10 @@ function Form({
 
     return (
         <FormComponent
+            {...definitionProps}
             {...props}
             ref={ref}
-            action={action}
+            action={finalAction}
             method="post"
             fields={fields}
             onSubmit={withValidation ? onFormSubmit : onSubmit}
@@ -100,7 +119,7 @@ function Form({
             value={value}
             onChange={setValue}
             submitButtonLabel={
-                submitButtonLabel || (
+                finalSubmitButtonLabel || (
                     <FormattedMessage defaultMessage="Save" description="Button label" />
                 )
             }

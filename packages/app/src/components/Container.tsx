@@ -4,7 +4,14 @@ import { Router } from 'wouter';
 
 import ActionsProvider from '@panneau/actions';
 import { AuthProvider } from '@panneau/auth';
-import type { PanneauDefinition, StatusCode, Uppy, User } from '@panneau/core';
+import type {
+    FieldDefinition,
+    FormDefinition,
+    PanneauDefinition,
+    StatusCode,
+    Uppy,
+    User,
+} from '@panneau/core';
 import {
     ComponentsProvider,
     ModalProvider,
@@ -32,6 +39,8 @@ const DEFAULT_LOCALES: string[] = [];
 
 interface ContainerProps {
     definition: PanneauDefinition;
+    forms: FormDefinition[];
+    fields: FieldDefinition[];
     components?: Record<string, ElementType> | Record<string, Record<string, ElementType>> | null;
     user?: User | null;
     memoryRouter?: boolean;
@@ -42,6 +51,8 @@ interface ContainerProps {
 
 function Container({
     definition,
+    forms: providedForms = null,
+    fields: providedFields = null,
     components = null,
     user = null,
     memoryRouter = false,
@@ -50,39 +61,39 @@ function Container({
     statusCode = null,
 }: ContainerProps) {
     const {
-        intl: { locale = 'en', locales = DEFAULT_LOCALES } = {},
+        intl: { locale = 'en', locales = DEFAULT_LOCALES, messages } = {},
         routes = DEFAULT_ROUTES,
+        resources = [],
         settings: { memoryRouter: usesMemoryRouter = false } = {},
+        forms,
+        fields,
     } = definition || {};
 
     const isMemoryRouter = memoryRouter || usesMemoryRouter || false;
-    const extraMessages = useMemo(() => {
-        const { intl: { messages = null } = {}, resources = [] } = definition;
-        return {
-            ...messages,
-            ...resources.reduce(
-                (allMessages, { id, intl: { messages: resourceMessages = {} } = {} }) => ({
-                    ...allMessages,
-                    ...Object.keys(resourceMessages).reduce(
-                        (allResourceMessages, key) => ({
-                            ...allResourceMessages,
-                            [`resources.${id}.${key}`]: resourceMessages[key],
-                        }),
-                        {},
-                    ),
-                }),
-                {},
-            ),
-        };
-    }, [definition]);
+    const extraMessages = {
+        ...messages,
+        ...resources.reduce(
+            (allMessages, { id, intl: { messages: resourceMessages = {} } = {} }) => ({
+                ...allMessages,
+                ...Object.keys(resourceMessages).reduce(
+                    (allResourceMessages, key) => ({
+                        ...allResourceMessages,
+                        [`resources.${id}.${key}`]: resourceMessages[key],
+                    }),
+                    {},
+                ),
+            }),
+            {},
+        ),
+    };
 
-    const onUnauthorized = useCallback(() => {
+    const onUnauthorized = () => {
         window.location.href = baseUrl || '/';
-    }, [baseUrl]);
+    };
 
-    const onLogout = useCallback(() => {
+    const onLogout = () => {
         window.location.reload();
-    }, []);
+    };
 
     const { hook: memoryLocationHook, searchHook: memorySearchHook } = useMemoryRouter();
 
@@ -96,8 +107,12 @@ function Container({
                 <PanneauProvider definition={definition}>
                     <UppyProvider {...uppy}>
                         <RoutesProvider routes={routes}>
-                            <FieldsProvider>
-                                <FormsProvider>
+                            <FieldsProvider
+                                definitions={[...(fields || []), ...(providedFields || [])]}
+                            >
+                                <FormsProvider
+                                    definitions={[...(forms || []), ...(providedForms || [])]}
+                                >
                                     <ListsProvider>
                                         <DisplaysProvider>
                                             <FiltersProvider>

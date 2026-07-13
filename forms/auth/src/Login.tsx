@@ -1,15 +1,15 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import { FormattedMessage } from 'react-intl';
 
-import type { Field, Label } from '@panneau/core';
+import type { ControlSize, Field, Label } from '@panneau/core';
+import { useFormDefinition } from '@panneau/core/contexts';
 import Link from '@panneau/element-link';
 import Form from '@panneau/form';
 
 interface LoginProps {
     action?: string;
     postForm?: ((action: string, data: unknown) => Promise<unknown>) | null;
-    fields?: Field[] | null;
-    size?: string;
+    fields: Field[] | null;
+    size?: ControlSize;
     emailLabel?: Label | null;
     passwordLabel?: Label | null;
     submitButtonLabel?: Label | null;
@@ -21,40 +21,18 @@ interface LoginProps {
 function Login({
     action = '/login',
     postForm = null,
-    fields = null,
     size = 'lg',
-    emailLabel = null,
-    passwordLabel = null,
     submitButtonLabel = null,
     withForgotPassword = false,
     forgotPasswordLink = '/forgot-password',
     forgotPasswordLabel = null,
     ...props
 }: LoginProps) {
+    const { fields } = useFormDefinition('login') || {};
     return (
         <Form
             action={action}
             postForm={postForm}
-            fields={
-                fields || [
-                    {
-                        name: 'email',
-                        type: 'email',
-                        size,
-                        label: emailLabel || (
-                            <FormattedMessage defaultMessage="Email" description="Field label" />
-                        ),
-                    },
-                    {
-                        name: 'password',
-                        type: 'password',
-                        size,
-                        label: passwordLabel || (
-                            <FormattedMessage defaultMessage="Password" description="Field label" />
-                        ),
-                    },
-                ]
-            }
             submitButtonLabel={
                 submitButtonLabel || (
                     <FormattedMessage defaultMessage="Log in" description="Button label" />
@@ -72,6 +50,8 @@ function Login({
                     </Link>
                 ) : null
             }
+            size={size}
+            fields={fields || []}
             {...props}
         />
     );

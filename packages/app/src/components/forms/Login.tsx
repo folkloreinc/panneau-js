@@ -1,9 +1,8 @@
 import { useCallback } from 'react';
-import { FormattedMessage } from 'react-intl';
 
 import { useAuth } from '@panneau/auth';
-import { useFormsComponents, useUrlGenerator } from '@panneau/core/contexts';
-import { getComponentFromName } from '@panneau/core/utils';
+import { useUrlGenerator } from '@panneau/core/contexts';
+import Form from '@panneau/form';
 
 interface LoginFormProps {
     className?: string | null;
@@ -18,19 +17,15 @@ function LoginForm({ className = null, onComplete = null }: LoginFormProps) {
             login(email, password),
         [login],
     );
-    const FormComponents = useFormsComponents();
-    const FormComponent = getComponentFromName('login', FormComponents);
-    return FormComponent !== null ? (
-        <FormComponent
+    return (
+        <Form
+            type="login"
             action={url('auth.login')}
             postForm={postForm}
             onComplete={onComplete}
             className={className}
-            submitButtonLabel={
-                <FormattedMessage defaultMessage="Log in" description="Button label" />
-            }
         />
-    ) : null;
+    );
 }
 
 export default LoginForm;

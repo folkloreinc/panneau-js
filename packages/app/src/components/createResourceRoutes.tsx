@@ -1,7 +1,6 @@
-import { ComponentType } from 'react';
 import { Route } from 'wouter';
 
-import type { Resource } from '@panneau/core';
+import type { ComponentsManager, Resource, ResourcePages } from '@panneau/core';
 
 import {
     ResourceCreate,
@@ -14,10 +13,8 @@ import {
 
 interface CreateResourceRoutesParams {
     route: (name: string, params?: Record<string, string>) => string;
-    componentsManager: {
-        getComponent: (component: unknown) => ComponentType<any> | null;
-    };
-    pages?: Record<string, any>;
+    componentsManager: ComponentsManager;
+    pages?: ResourcePages;
 }
 
 function createResourceRoutes(
@@ -26,48 +23,29 @@ function createResourceRoutes(
 ) {
     const { id: resourceId, pages: resourcePages = {}, extraRoutes = [] } = resource;
 
-    // Load custom pages from resource
-    const {
-        index: indexPage = null,
-        show: showPage = null,
-        create: createPage = null,
-        edit: editPage = null,
-        delete: deletePage = null,
-        duplicate: duplicatePage = null,
-    } = pages || {};
-
-    const {
-        index: resourceIndexPage = null,
-        show: resourceShowPage = null,
-        create: resourceCreatePage = null,
-        edit: resourceEditPage = null,
-        delete: resourceDeletePage = null,
-        duplicate: resourceDuplicatePage = null,
-    } = resourcePages || {};
-
     const ResourceIndexComponent =
-        componentsManager.getComponent(resourceIndexPage?.component) ||
-        componentsManager.getComponent(indexPage?.component) ||
+        componentsManager.getComponent(resourcePages?.resourceIndexPage?.component) ||
+        componentsManager.getComponent(pages?.indexPage?.component) ||
         ResourceIndex;
     const ResourceShowComponent =
-        componentsManager.getComponent(resourceShowPage?.component) ||
-        componentsManager.getComponent(showPage?.component) ||
+        componentsManager.getComponent(resourcePages?.resourceShowPage?.component) ||
+        componentsManager.getComponent(pages?.showPage?.component) ||
         ResourceShow;
     const ResourceCreateComponent =
-        componentsManager.getComponent(resourceCreatePage?.component) ||
-        componentsManager.getComponent(createPage?.component) ||
+        componentsManager.getComponent(resourcePages?.resourceCreatePage?.component) ||
+        componentsManager.getComponent(pages?.createPage?.component) ||
         ResourceCreate;
     const ResourceEditComponent =
-        componentsManager.getComponent(resourceEditPage?.component) ||
-        componentsManager.getComponent(editPage?.component) ||
+        componentsManager.getComponent(resourcePages?.resourceEditPage?.component) ||
+        componentsManager.getComponent(pages?.editPage?.component) ||
         ResourceEdit;
     const ResourceDeleteComponent =
-        componentsManager.getComponent(resourceDeletePage?.component) ||
-        componentsManager.getComponent(deletePage?.component) ||
+        componentsManager.getComponent(resourcePages?.resourceDeletePage?.component) ||
+        componentsManager.getComponent(pages?.deletePage?.component) ||
         ResourceDelete;
     const ResourceDuplicateComponent =
-        componentsManager.getComponent(resourceDuplicatePage?.component) ||
-        componentsManager.getComponent(duplicatePage?.component) ||
+        componentsManager.getComponent(resourcePages?.resourceDuplicatePage?.component) ||
+        componentsManager.getComponent(pages?.duplicatePage?.component) ||
         ResourceDuplicate;
 
     return [
@@ -76,11 +54,10 @@ function createResourceRoutes(
             path={route('resources.create', {
                 resource: resourceId,
             })}
-            exact
         >
             {() => <ResourceCreateComponent resource={resource} />}
         </Route>,
-        <Route
+        <Route<{ id: string }>
             key={`${resourceId}-show`}
             path={route('resources.show', {
                 resource: resourceId,
@@ -89,7 +66,7 @@ function createResourceRoutes(
         >
             {({ id = null }) => <ResourceShowComponent itemId={id} resource={resource} />}
         </Route>,
-        <Route
+        <Route<{ id: string }>
             key={`${resourceId}-edit`}
             path={route('resources.edit', {
                 resource: resourceId,
@@ -98,7 +75,7 @@ function createResourceRoutes(
         >
             {({ id = null }) => <ResourceEditComponent itemId={id} resource={resource} />}
         </Route>,
-        <Route
+        <Route<{ id: string }>
             key={`${resourceId}-delete`}
             path={route('resources.delete', {
                 resource: resourceId,
@@ -107,7 +84,7 @@ function createResourceRoutes(
         >
             {({ id = null }) => <ResourceDeleteComponent itemId={id} resource={resource} />}
         </Route>,
-        <Route
+        <Route<{ id: string }>
             key={`${resourceId}-duplicate`}
             path={route('resources.duplicate', {
                 resource: resourceId,

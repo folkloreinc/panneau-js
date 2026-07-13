@@ -7,35 +7,35 @@ interface Definition {
     [key: string]: unknown;
 }
 
-class DefinitionsManager {
-    definitions: Definition[];
+class DefinitionsManager<T extends Definition = Definition> {
+    definitions: T[];
 
-    constructor(definitions: Definition[] = []) {
+    constructor(definitions: T[] = []) {
         this.definitions = definitions || [];
     }
 
-    addDefinition(definition: Definition | Definition[]): this {
+    addDefinition(definition: T | T[]): this {
         this.addDefinitions(isArray(definition) ? definition : [definition]);
         return this;
     }
 
-    addDefinitions(definitions: Definition[]): this {
+    addDefinitions(definitions: T[]): this {
         this.definitions = uniqBy([...definitions, ...this.definitions], (it) => it.id);
         return this;
     }
 
-    merge(manager: DefinitionsManager): this {
+    merge(manager: DefinitionsManager<T>): this {
         return this.addDefinitions(manager.getDefinitions());
     }
 
-    getDefinition(id: string | null): Definition | null {
+    getDefinition(id: string | null): T | null {
         if (id === null) {
             return null;
         }
         return this.definitions.find((it) => it.id === id) || null;
     }
 
-    getDefinitions(): Definition[] {
+    getDefinitions(): T[] {
         return this.definitions;
     }
 

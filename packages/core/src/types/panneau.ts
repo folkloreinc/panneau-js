@@ -2,32 +2,26 @@
  * Panneau Definition Types
  * TypeScript interfaces for main Panneau configuration and definitions
  */
-import { Resource } from './resource';
+import { PageDefinition, RouteDefinition } from './core';
+import { FieldDefinition, FormDefinition } from './form';
+import { Resource, ResourcePages } from './resource';
 
 /**
  * Panneau route configuration
  */
 export interface Routes {
-    'resources.index': string;
-    'resources.create': string;
-    'resources.store': string;
-    'resources.show': string;
-    'resources.edit': string;
-    'resources.update': string;
-    'resources.delete': string;
-    'resources.destroy': string;
-    'resources.duplicate': string;
-    'resources.clone': string;
-    'resources.restore': string;
-    [key: string]: string;
-}
-
-/**
- * Page definition
- */
-export interface Page {
-    component: string;
-    [key: string]: unknown;
+    'resources.index': RouteDefinition | string;
+    'resources.create': RouteDefinition | string;
+    'resources.store': RouteDefinition | string;
+    'resources.show': RouteDefinition | string;
+    'resources.edit': RouteDefinition | string;
+    'resources.update': RouteDefinition | string;
+    'resources.delete': RouteDefinition | string;
+    'resources.destroy': RouteDefinition | string;
+    'resources.duplicate': RouteDefinition | string;
+    'resources.clone': RouteDefinition | string;
+    'resources.restore': RouteDefinition | string;
+    [key: string]: RouteDefinition | string;
 }
 
 export interface PanneauTheme {
@@ -55,25 +49,27 @@ export interface PanneauIntl {
     values?: PanneauIntlValues;
 }
 
-/**
- * Generic definition
- */
-export interface Definition {
-    name?: string;
-    [key: string]: unknown;
+export interface PanneauPages extends ResourcePages {
+    home?: PageDefinition;
+    login?: PageDefinition;
+    account?: PageDefinition;
+    error?: PageDefinition;
 }
 
 /**
  * Panneau definition (main configuration)
  */
-export interface PanneauDefinition extends Definition {
+export interface PanneauDefinition {
+    name?: string;
     resources?: Resource[];
     routes?: Routes;
-    pages?: Record<string, Page>;
+    pages?: PanneauPages;
     intl?: PanneauIntl;
     theme?: PanneauTheme;
     components?: PanneauComponents;
     settings?: Record<string, unknown>;
+    forms?: FormDefinition[];
+    fields?: FieldDefinition[];
 }
 
 /**

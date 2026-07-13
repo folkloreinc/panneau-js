@@ -1,12 +1,13 @@
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import { isObject } from 'lodash';
 import isArray from 'lodash-es/isArray';
-import { type ReactNode, useCallback, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { ActionValue, ButtonTheme, Resource } from '@panneau/core';
 import { useModalsComponentsManager, useResource } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
+import { useResourceClone } from '@panneau/data';
 import Button from '@panneau/element-button';
 
 interface DuplicateActionProps {
@@ -58,6 +59,7 @@ function DuplicateAction({
     const contextResource = useResource();
     const resource = initialResource || contextResource;
     const resourceUrl = useResourceUrlGenerator(resource);
+    const { cloneAsync } = useResourceClone(resource);
     const label = initialLabel || (
         <FormattedMessage defaultMessage="Duplicate" description="Button label" />
     );
@@ -70,44 +72,36 @@ function DuplicateAction({
     const [modalOpen, setModalOpen] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
-    const onOpen = useCallback(() => {
+    const onOpen = () => {
         setModalOpen(true);
-    }, [setModalOpen]);
+    };
 
-    const onClosed = useCallback(() => {
+    const onClosed = () => {
         setModalOpen(false);
-    }, [setModalOpen]);
+    };
 
-    const onConfirm = useCallback(
-        () =>
-            (action !== null
-                ? action(value)
-                : postJSON(
+    const finalAction =
+        action ||
+        (endpoint !== null
+            ? (value) =>
+                  postJSON(
                       endpoint,
                       {
                           [endpointIdsParamName]: (isArray(value) ? value : [value])
-                              .filter((it) => it !== null)
-                              .map((it) => it?.id),
+                              .map((it) => it?.id ?? null)
+                              .filter((it) => it !== null),
                       },
                       {
                           credentials: 'include',
                           headers: getCSRFHeaders(),
                       },
                   )
-            )
-                .then((response) => {
-                    if (onConfirmed !== null) {
-                        onConfirmed(response);
-                    }
-                    if (onChange !== null) {
-                        onChange(response);
-                    }
-                })
-                .catch((err: Error) => {
-                    setError(err);
-                }),
-        [value, endpoint, action, onChange, setError, onConfirmed, endpointIdsParamName],
-    );
+            : null) ||
+        (resource !== null && !multiple)
+            ? (value) => cloneAsync(value?.id)
+            : null;
+
+    const onConfirm = finalAction !== null ? () => finalAction(value) : null;
 
     return (
         <>

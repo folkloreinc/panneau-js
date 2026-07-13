@@ -35,7 +35,6 @@ interface ResourceItemsListProps {
     className?: string | null;
 }
 
-const DEFAULT_INDEX = {};
 const DEFAULT_ITEMS: Item[] = [];
 
 function ResourceItemsList({
@@ -60,17 +59,14 @@ function ResourceItemsList({
     const resource = usePanneauResource(providedResource);
 
     const {
-        id: resourceId = null,
-        index: {
-            component: listComponent = null,
-            showPagination = true,
-            filters = null,
-            actions = null,
-            batchActions = null,
-            actionsProps = null,
-            ...listProps
-        } = DEFAULT_INDEX,
-    } = resource || {};
+        component: listComponent = null,
+        showPagination = true,
+        filters = null,
+        actions = null,
+        batchActions = null,
+        actionsProps = null,
+        ...listProps
+    } = resource?.index || {};
 
     // const resourceUrlGenerator = useResourceUrlGenerator(
     //     isObject(providedResource) ? resourceId : providedResource,
@@ -116,10 +112,10 @@ function ResourceItemsList({
         (newSelection: Item[]) => {
             setSelectedItems(newSelection);
             if (parentOnChangeSelection !== null) {
-                parentOnChangeSelection(selectedItems!);
+                parentOnChangeSelection(newSelection);
             }
         },
-        [setSelectedItems],
+        [setSelectedItems, parentOnChangeSelection],
     );
 
     const onActionsChange = useCallback(() => {
@@ -134,7 +130,7 @@ function ResourceItemsList({
         if (parentOnChangeSelection !== null) {
             parentOnChangeSelection(newSelectedItems);
         }
-    }, [setSelectedItems]);
+    }, [setSelectedItems, parentOnChangeSelection]);
 
     const finalActionProps = {
         ...customActionProps,

@@ -135,6 +135,16 @@ export const Inline = {
     ),
 };
 
+export const InlineWithoutCard = {
+    render: () => (
+        <Container
+            itemFields={[{ name: 'title', component: 'text', label: 'Title' }]}
+            inline
+            withoutCard
+        />
+    ),
+};
+
 export const WithoutCard = {
     render: () => <Container itemFields={itemFields} withoutCard />,
 };

@@ -111,7 +111,7 @@ function MainNavbar({
             {...props}
         >
             {name !== null ? (
-                <Link href={route('home')} className="navbar-brand">
+                <Link href={route('home')} className="navbar-brand" withoutTheme>
                     <span
                         className={classNames([{ 'text-opacity-75': loading, 'ms-2': vertical }])}
                     >

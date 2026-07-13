@@ -1,6 +1,7 @@
 import { ElementType } from 'react';
 
 import { flattenComponents, getComponentFromName } from '../utils';
+import { isObject } from 'lodash';
 
 class ComponentsManager {
     components: Record<string, ElementType>;
@@ -56,7 +57,10 @@ class ComponentsManager {
         return this;
     }
 
-    getComponent(name: string, namespace: string | null = null): ElementType | null {
+    getComponent(name: string | ElementType, namespace: string | null = null): ElementType | null {
+        if (isObject(name)) {
+            return name as ElementType;
+        }
         const components = this.getComponents(namespace);
         return getComponentFromName(name, components);
     }
