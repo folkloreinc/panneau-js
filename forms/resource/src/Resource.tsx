@@ -127,25 +127,25 @@ function ResourceForm({
     };
 
     // Form state
-
+    function getInitialValue() {
+        return item !== null
+            ? item
+            : finalFields.reduce(
+                  (defaultValues, { name, defaultValue = null }) =>
+                      defaultValue !== null
+                          ? {
+                                ...defaultValues,
+                                [name!]: defaultValue,
+                            }
+                          : defaultValues,
+                  type !== null ? { type } : {},
+              );
+    }
     const [currentItem, setCurrentItem] = useState(item);
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState(() => getInitialValue());
     if (item !== currentItem) {
         setCurrentItem(item);
-        setValue(
-            item !== null
-                ? item
-                : finalFields.reduce(
-                      (defaultValues, { name, defaultValue = null }) =>
-                          defaultValue !== null
-                              ? {
-                                    ...defaultValues,
-                                    [name!]: defaultValue,
-                                }
-                              : defaultValues,
-                      type !== null ? { type } : {},
-                  ),
-        );
+        setValue(getInitialValue());
     }
 
     // Form action
