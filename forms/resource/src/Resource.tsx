@@ -106,10 +106,10 @@ function ResourceForm({
 
     // Form routes
     const resourceRoute = useResourceUrlGenerator(resource);
-    const { store, loading: storing } = useResourceStore(resource);
-    const { update, loading: updating } = useResourceUpdate(resource, itemId);
+    const { storeAsync, loading: storing } = useResourceStore(resource);
+    const { updateAsync, loading: updating } = useResourceUpdate(resource, itemId);
     const { destroyAsync, loading: destroying } = useResourceDestroy(resource, itemId);
-    const { clone, loading: cloning } = useResourceClone(resource, itemId);
+    const { cloneAsync, loading: cloning } = useResourceClone(resource, itemId);
     const loading = storing || updating || destroying || cloning;
 
     // Post actions
@@ -118,12 +118,12 @@ function ResourceForm({
             return destroyAsync();
         }
         if (isDuplicate) {
-            return clone();
+            return cloneAsync();
         }
         if (isCreate) {
-            return store(data);
+            return storeAsync(data);
         }
-        return update(data);
+        return updateAsync(data);
     };
 
     // Form state
