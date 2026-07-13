@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "4.0.75",
+    "version": "4.0.76",
     "description": "",
     "keywords": [
         "javascript"
@@ -77,7 +77,7 @@
         "@panneau/field-media": "^4.0.75",
         "@panneau/field-number": "^4.0.75",
         "@panneau/field-radios": "^4.0.75",
-        "@panneau/field-resource-item": "^4.0.75",
+        "@panneau/field-resource-item": "^4.0.76",
         "@panneau/field-select": "^4.0.75",
         "@panneau/field-text": "^4.0.75",
         "@panneau/field-toggle": "^4.0.75",
