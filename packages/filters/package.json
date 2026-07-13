@@ -1,6 +1,6 @@
 {
     "name": "@panneau/filters",
-    "version": "4.0.75",
+    "version": "4.0.78",
     "description": "",
     "keywords": [
         "javascript"
@@ -60,15 +60,15 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.75",
-        "@panneau/filter-button": "^4.0.75",
-        "@panneau/filter-date": "^4.0.75",
-        "@panneau/filter-filters": "^4.0.75",
-        "@panneau/filter-label": "^4.0.75",
-        "@panneau/filter-radios": "^4.0.75",
-        "@panneau/filter-search": "^4.0.75",
-        "@panneau/filter-select": "^4.0.75",
-        "@panneau/filter-toggle": "^4.0.75"
+        "@panneau/core": "^4.0.78",
+        "@panneau/filter-button": "^4.0.78",
+        "@panneau/filter-date": "^4.0.78",
+        "@panneau/filter-filters": "^4.0.78",
+        "@panneau/filter-label": "^4.0.78",
+        "@panneau/filter-radios": "^4.0.78",
+        "@panneau/filter-search": "^4.0.78",
+        "@panneau/filter-select": "^4.0.78",
+        "@panneau/filter-toggle": "^4.0.78"
     },
     "devDependencies": {
         "react": "^19.2.0",

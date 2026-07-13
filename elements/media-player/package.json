@@ -1,6 +1,6 @@
 {
     "name": "@panneau/element-media-player",
-    "version": "4.0.75",
+    "version": "4.0.78",
     "description": "Media player element",
     "keywords": [
         "javascript"
@@ -51,7 +51,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.75",
+        "@panneau/core": "^4.0.78",
         "@vimeo/player": "^2.22.0",
         "classnames": "^2.5.1",
         "debug": "^4.3.4",
