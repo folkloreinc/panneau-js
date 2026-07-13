@@ -1,6 +1,6 @@
 {
     "name": "@panneau/field-import",
-    "version": "4.0.74",
+    "version": "4.0.75",
     "description": "An import csv field",
     "keywords": [
         "javascript"
@@ -51,10 +51,10 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.74",
-        "@panneau/element-button": "^4.0.74",
-        "@panneau/element-label": "^4.0.74",
-        "@panneau/themes": "^4.0.74",
+        "@panneau/core": "^4.0.75",
+        "@panneau/element-button": "^4.0.75",
+        "@panneau/element-label": "^4.0.75",
+        "@panneau/themes": "^4.0.75",
         "classnames": "^2.5.1",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0"
     },
