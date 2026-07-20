@@ -28,6 +28,7 @@ interface DuplicateActionProps {
     onConfirmed?: ((response: unknown) => void) | null;
     valueLabelPath?: string | null;
     modalComponent?: string;
+    withDefaultLabel?: boolean;
     withoutConfirmation?: boolean;
     onClick?: (() => void) | null;
     className?: string | null;
@@ -51,6 +52,7 @@ function DuplicateAction({
     onConfirmed = null,
     valueLabelPath = null,
     modalComponent = 'confirm',
+    withDefaultLabel = false,
     withoutConfirmation = false,
     className = null,
     onClick = null,
@@ -60,9 +62,11 @@ function DuplicateAction({
     const resource = initialResource || contextResource;
     const resourceUrl = useResourceUrlGenerator(resource);
     const { cloneAsync } = useResourceClone(resource);
-    const label = initialLabel || (
-        <FormattedMessage defaultMessage="Duplicate" description="Button label" />
-    );
+    const label =
+        initialLabel ||
+        (withDefaultLabel ? (
+            <FormattedMessage defaultMessage="Duplicate" description="Button label" />
+        ) : null);
     const finalHref =
         initialHref ||
         (!multiple && isObject(value) && !isArray(value) ? resourceUrl('duplicate', value) : null);
