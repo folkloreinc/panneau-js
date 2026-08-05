@@ -1,7 +1,7 @@
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Label } from '@panneau/core';
-import Form from '@panneau/form';
+import { useFormComponent } from '@panneau/core/contexts';
 
 interface ResetPasswordProps {
     action?: string;
@@ -23,8 +23,9 @@ function ResetPassword({
     submitButtonLabel = null,
     ...props
 }: ResetPasswordProps) {
+    const FormComponent = useFormComponent('normal');
     return (
-        <Form
+        <FormComponent
             action={action}
             fields={
                 fields || [

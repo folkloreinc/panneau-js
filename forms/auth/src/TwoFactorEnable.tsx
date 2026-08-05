@@ -1,8 +1,8 @@
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Label } from '@panneau/core';
+import { useFormComponent } from '@panneau/core/contexts';
 import Link from '@panneau/element-link';
-import Form from '@panneau/form';
 
 interface TwoFactorEnableProps {
     action?: string;
@@ -26,8 +26,9 @@ function TwoFactorEnable({
     skipLabel = null,
     ...props
 }: TwoFactorEnableProps) {
+    const FormComponent = useFormComponent('normal');
     return (
-        <Form
+        <FormComponent
             action={action}
             submitButtonLabel={
                 submitButtonLabel || (
@@ -59,7 +60,7 @@ function TwoFactorEnable({
                     />
                 )}
             </p>
-        </Form>
+        </FormComponent>
     );
 }
 

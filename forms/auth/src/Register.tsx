@@ -1,9 +1,8 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Label } from '@panneau/core';
+import { useFormComponent } from '@panneau/core/contexts';
 import Link from '@panneau/element-link';
-import Form from '@panneau/form';
 
 interface RegisterProps {
     action?: string;
@@ -33,8 +32,9 @@ function Register({
     loginLabel = null,
     ...props
 }: RegisterProps) {
+    const FormComponent = useFormComponent('normal');
     return (
-        <Form
+        <FormComponent
             action={action}
             fields={
                 fields || [

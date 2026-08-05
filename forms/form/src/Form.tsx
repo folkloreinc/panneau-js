@@ -48,6 +48,10 @@ function Form({
     const [wasValidated, setWasValidated] = useState(false);
 
     const formDefinition = useFormDefinition(type);
+    console.log({
+        type,
+        formDefinition
+    })
     const {
         component: definitionComponent,
         fields: definitionFields,

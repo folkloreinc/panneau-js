@@ -1,9 +1,8 @@
 import { FormattedMessage } from 'react-intl';
 
 import type { ControlSize, Field, Label } from '@panneau/core';
-import { useFormDefinition } from '@panneau/core/contexts';
+import { useFormComponent, useFormDefinition } from '@panneau/core/contexts';
 import Link from '@panneau/element-link';
-import Form from '@panneau/form';
 
 interface LoginProps {
     action?: string;
@@ -28,9 +27,10 @@ function Login({
     forgotPasswordLabel = null,
     ...props
 }: LoginProps) {
+    const FormComponent = useFormComponent('normal');
     const { fields } = useFormDefinition('login') || {};
     return (
-        <Form
+        <FormComponent
             action={action}
             postForm={postForm}
             submitButtonLabel={

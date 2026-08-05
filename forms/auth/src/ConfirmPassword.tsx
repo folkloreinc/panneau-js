@@ -1,7 +1,7 @@
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Label } from '@panneau/core';
-import Form from '@panneau/form';
+import { useFormComponent } from '@panneau/core/contexts';
 
 interface ConfirmPasswordProps {
     action?: string;
@@ -19,8 +19,9 @@ function ConfirmPassword({
     submitButtonLabel = null,
     ...props
 }: ConfirmPasswordProps) {
+    const FormComponent = useFormComponent('normal');
     return (
-        <Form
+        <FormComponent
             action={action}
             fields={
                 fields || [

@@ -3,8 +3,8 @@ import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Label } from '@panneau/core';
+import { useFormComponent } from '@panneau/core/contexts';
 import Link from '@panneau/element-link';
-import Form from '@panneau/form';
 
 interface TwoFactorDisableProps {
     action?: string;
@@ -28,6 +28,7 @@ function TwoFactorDisable({
     cancelLabel = null,
     ...props
 }: TwoFactorDisableProps) {
+    const FormComponent = useFormComponent('normal');
     const defaultPostForm = useCallback(
         (act: string, data: unknown) =>
             postJSON(act, data, {
@@ -38,7 +39,7 @@ function TwoFactorDisable({
         [],
     );
     return (
-        <Form
+        <FormComponent
             action={action}
             submitButtonLabel={
                 submitButtonLabel || (
@@ -68,7 +69,7 @@ function TwoFactorDisable({
                     />
                 )}
             </p>
-        </Form>
+        </FormComponent>
     );
 }
 
