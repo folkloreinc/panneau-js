@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "4.0.78",
+    "version": "4.0.79",
     "description": "",
     "keywords": [
         "javascript"
@@ -67,7 +67,7 @@
         "@fortawesome/fontawesome-svg-core": "^6.5.1",
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",
-        "@panneau/actions": "^4.0.78",
+        "@panneau/actions": "^4.0.79",
         "@panneau/auth": "^4.0.78",
         "@panneau/core": "^4.0.78",
         "@panneau/data": "^4.0.78",
@@ -99,11 +99,11 @@
         "@panneau/filter-filters": "^4.0.78",
         "@panneau/filters": "^4.0.78",
         "@panneau/form-resource": "^4.0.78",
-        "@panneau/forms": "^4.0.78",
+        "@panneau/forms": "^4.0.79",
         "@panneau/intl": "^4.0.78",
         "@panneau/list-resource-items": "^4.0.78",
         "@panneau/lists": "^4.0.78",
-        "@panneau/modals": "^4.0.78",
+        "@panneau/modals": "^4.0.79",
         "@panneau/themes": "^4.0.78",
         "@panneau/uppy": "^4.0.78",
         "classnames": "^2.5.1",

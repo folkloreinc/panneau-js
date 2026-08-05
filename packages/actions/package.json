@@ -1,6 +1,6 @@
 {
     "name": "@panneau/actions",
-    "version": "4.0.78",
+    "version": "4.0.79",
     "description": "",
     "keywords": [
         "javascript"
@@ -49,7 +49,7 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@panneau/action-delete": "^4.0.78",
-        "@panneau/action-duplicate": "^4.0.78",
+        "@panneau/action-duplicate": "^4.0.79",
         "@panneau/action-edit": "^4.0.78",
         "@panneau/action-import": "^4.0.78",
         "@panneau/action-restore": "^4.0.78",
