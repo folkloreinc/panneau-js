@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "4.0.78",
+    "version": "4.0.80",
     "description": "",
     "keywords": [
         "javascript"
@@ -68,7 +68,7 @@
         "@panneau/field-display": "^4.0.78",
         "@panneau/field-embed": "^4.0.78",
         "@panneau/field-fields": "^4.0.78",
-        "@panneau/field-html": "^4.0.78",
+        "@panneau/field-html": "^4.0.80",
         "@panneau/field-import": "^4.0.78",
         "@panneau/field-input-group": "^4.0.78",
         "@panneau/field-item": "^4.0.78",
