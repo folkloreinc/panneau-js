@@ -63,6 +63,7 @@
         "@ckeditor/ckeditor5-heading": "^48.0.1",
         "@ckeditor/ckeditor5-link": "^48.0.1",
         "@ckeditor/ckeditor5-list": "^48.0.1",
+        "@ckeditor/ckeditor5-style": "^48.0.1",
         "@ckeditor/ckeditor5-paragraph": "^48.0.1",
         "@ckeditor/ckeditor5-react": "^11.1.2",
         "@ckeditor/ckeditor5-theme-lark": "^47.6.2",
