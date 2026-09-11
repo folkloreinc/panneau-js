@@ -60,9 +60,8 @@ export interface MediasBrowserProps {
     layout?: string;
     layouts?: LayoutItem[] | null;
     theme?: string | null;
-    onMediaUploaded?:
-        | ((medias: Media[]) => Promise<Media[] | Media | null> | Media[] | Media | null)
-        | null;
+    processUpload?:
+        ((medias: Media[]) => Promise<Media[] | Media | null> | Media[] | Media | null) | null;
     onItemsChange?: ((items: Media[] | null | undefined) => void) | null;
     onLayoutChange?: ((layout: string) => void) | null;
     onMediaFormOpen?: (() => void) | null;
@@ -95,7 +94,7 @@ function MediasBrowser({
     layout: initialLayout = 'table',
     layouts = DEFAULT_LAYOUTS,
     theme = null,
-    onMediaUploaded = null,
+    processUpload = null,
     onItemsChange = null,
     onLayoutChange = null,
     onMediaFormOpen = null,
@@ -246,9 +245,9 @@ function MediasBrowser({
         if (medias === null) return;
 
         const rawMedias = (Array.isArray(medias) ? medias : [medias]).filter((it) => it !== null);
-        if (onMediaUploaded !== null) {
+        if (processUpload !== null) {
             setUploadProcessing(true);
-            Promise.resolve(onMediaUploaded(rawMedias as Media[]))
+            Promise.resolve(processUpload(rawMedias as Media[]))
                 .then((newMedias) => {
                     onUploadedMediaChanged((newMedias as Media[] | Media | null) || null);
                     setUploadProcessing(false);

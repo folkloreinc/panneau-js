@@ -4,6 +4,7 @@ import { MediaProvider } from './MediaContext';
 import type { MediasApi } from './MediasApiContext';
 import { MediasApiProvider } from './MediasApiContext';
 import MediasBrowser, { MediasBrowserProps } from './MediasBrowser';
+import { useMediasBrowserContext } from './MediasBrowserContext';
 
 export interface MediasBrowserContainerProps extends MediasBrowserProps {
     api?: MediasApi | null;
@@ -15,10 +16,11 @@ function MediasBrowserContainer({
     media = null,
     ...props
 }: MediasBrowserContainerProps) {
+    const contextProps = useMediasBrowserContext();
     return (
         <MediasApiProvider api={api}>
             <MediaProvider media={media}>
-                <MediasBrowser {...props} />
+                <MediasBrowser {...contextProps} {...props} />
             </MediaProvider>
         </MediasApiProvider>
     );
