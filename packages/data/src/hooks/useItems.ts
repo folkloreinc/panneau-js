@@ -1,5 +1,11 @@
 import { getJSON } from '@folklore/fetch';
-import { UseQueryOptions, UseQueryResult, keepPreviousData, useQuery } from '@tanstack/react-query';
+import {
+    UseQueryOptions,
+    UseQueryResult,
+    hashKey,
+    keepPreviousData,
+    useQuery,
+} from '@tanstack/react-query';
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
 import queryString from 'query-string';
@@ -65,6 +71,7 @@ function useItems<T = Item>(
         isFetching,
         isRefetching,
         isFetched,
+        isPlaceholderData,
         ...otherProps
     } = useQuery<UseItemsResponse<T>, Error, UseItemsResponse<T>, UseItemsKey>({
         queryKey: [scope, queryWithoutPage, page, count],
@@ -130,18 +137,30 @@ function useItems<T = Item>(
 
     const finalItems = replaceUpdatedItems(items);
 
-    // Keep a list of pages, useEffect wont work here because delayed
-    const [pages, setPages] = useState({});
-    if (isFetched && page !== null && data !== null && typeof pages[page] === 'undefined') {
-        setPages({
-            ...pages,
-            [page]: data,
+    // Keep pages with key
+    const pagesKey = hashKey([scope, queryWithoutPage, count]);
+    const [pagesState, setPagesState] = useState({ key: pagesKey, pages: {} });
+    const pages = pagesState.key === pagesKey ? pagesState.pages : {};
+    if (
+        isFetched &&
+        !isPlaceholderData &&
+        page !== null &&
+        data !== null &&
+        typeof pages[page] === 'undefined'
+    ) {
+        setPagesState({
+            key: pagesKey,
+            pages: {
+                ...pages,
+                [page]: data,
+            },
         });
     }
 
-    const allItems = pages
-        ? replaceUpdatedItems(Object.keys(pages).flatMap((k) => pages[k]?.data))
-        : finalItems;
+    const allItems =
+        Object.keys(pages).length > 0
+            ? replaceUpdatedItems(Object.keys(pages).flatMap((k) => pages[k]?.data))
+            : finalItems;
 
     const finalLoading = isLoading || isFetching || isRefetching;
 
@@ -151,6 +170,7 @@ function useItems<T = Item>(
         isFetching,
         isRefetching,
         isFetched,
+        isPlaceholderData,
         items: finalItems,
         pages,
         allItems,
