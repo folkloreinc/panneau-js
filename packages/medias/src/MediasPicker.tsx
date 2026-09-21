@@ -1,6 +1,7 @@
 import type { Media } from '@panneau/core';
 
 import MediasBrowser, { MediasBrowserProps } from './MediasBrowser';
+import { useMediasBrowserContext } from './MediasBrowserContext';
 
 export interface MediasPickerProps extends MediasBrowserProps {
     items?: Media[] | null;

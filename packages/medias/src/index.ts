@@ -14,6 +14,7 @@ export {
 
 export * from './MediaContext';
 export * from './MediasApiContext';
+export * from './MediasBrowserContext';
 export * from './hooks/index';
 export * from './defaults/index';
 

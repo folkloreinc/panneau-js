@@ -7,6 +7,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Style } from '@ckeditor/ckeditor5-style';
 
 // import { SimpleUploadAdapter } from '@ckeditor/ckeditor5-upload';
 
@@ -14,7 +15,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 export class Editor extends ClassicEditorBase {}
 
-Editor.builtinPlugins = [Essentials, Heading, Paragraph, Bold, Italic, Link, List];
+Editor.builtinPlugins = [Essentials, Heading, Style, Paragraph, Bold, Italic, Link, List];
 Editor.defaultConfig = {};
 
 // TODO: fix this
