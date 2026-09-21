@@ -1,6 +1,6 @@
 {
     "name": "@panneau/forms",
-    "version": "4.0.79",
+    "version": "4.0.82",
     "description": "",
     "keywords": [
         "javascript"
@@ -61,11 +61,11 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@panneau/core": "^4.0.78",
-        "@panneau/form-auth": "^4.0.79",
+        "@panneau/form-auth": "^4.0.82",
         "@panneau/form-horizontal": "^4.0.78",
         "@panneau/form-inline": "^4.0.78",
-        "@panneau/form-normal": "^4.0.78",
-        "@panneau/form-two-pane": "^4.0.78"
+        "@panneau/form-normal": "^4.0.82",
+        "@panneau/form-two-pane": "^4.0.82"
     },
     "devDependencies": {
         "react": "^19.2.0",
