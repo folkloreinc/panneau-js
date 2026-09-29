@@ -55,6 +55,9 @@ function SearchFilter({
     const onSubmit = useCallback(
         (e: FormEvent) => {
             e.preventDefault();
+            // The filter can be rendered in a portal inside another form (ex: medias picker in a
+            // resource form): React events bubble through portals, so don't submit the parent form
+            e.stopPropagation();
             hasChanged.current = false;
             if (onChange !== null) {
                 onChange(searchValue);

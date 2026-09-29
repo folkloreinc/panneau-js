@@ -1,4 +1,4 @@
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
+import { UseMutationOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 import { isObject, isString } from 'lodash-es';
 
 import { Resource, ResourceItem } from '@panneau/core';
@@ -25,10 +25,25 @@ function useResourceUpdate<
     const finalResource = providedResource || contextResource;
     const finalId = !isObject(id) ? id : (resource as string);
     const finalOptions = isObject(id) ? id : options;
+    const { onSuccess: customOnSuccess = null, ...otherOptions } = finalOptions || {};
+    const { id: resourceId = null } = finalResource || {};
     const api = useApi();
+    const queryClient = useQueryClient();
     const { mutate, mutateAsync, isPending, ...other } = useMutation<T, Error, TData>({
         mutationFn: (data) => api.resources.update<T>(finalResource, finalId, data),
-        ...finalOptions,
+        onSuccess: (data, ...args) => {
+            // Queries never go stale: keep the item and the lists in sync with the saved data
+            queryClient.setQueryData([resourceId, finalId], data);
+            queryClient.invalidateQueries({
+                queryKey: [resourceId],
+                predicate: ({ queryKey }) => String(queryKey[1]) !== String(finalId),
+            });
+            if (customOnSuccess !== null) {
+                return customOnSuccess(data, ...args);
+            }
+            return undefined;
+        },
+        ...otherOptions,
     });
     return {
         update: mutate,
