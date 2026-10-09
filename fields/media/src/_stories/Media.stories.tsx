@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
 
-import definition from '../../../../.storybook/data/panneau-definition';
+import definition from '../../../../.storybook/data/definition';
 import withApi from '../../../../.storybook/decorators/withDataProvider';
 import withUppy from '../../../../.storybook/decorators/withUppy';
 import ActionsProvider from '../../../../packages/actions/src';

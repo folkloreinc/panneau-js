@@ -1,10 +1,11 @@
 import withAuthProvider from './decorators/withAuthProvider';
-import withFormsFields from './decorators/withFormsFields';
+import withComponents from './decorators/withComponents';
 import withGoogleKeys from './decorators/withGoogleKeys';
 import withIntlProvider from './decorators/withIntlProvider';
 import withRouter from './decorators/withRouter';
 import withRoutesProvider from './decorators/withRoutesProvider';
 
+import './intl';
 import '../packages/themes/src/styles/vendor.css';
 
 export const parameters = {
@@ -76,5 +77,5 @@ export const decorators = [
     withRoutesProvider,
     withAuthProvider,
     withRouter,
-    withFormsFields,
+    withComponents,
 ];

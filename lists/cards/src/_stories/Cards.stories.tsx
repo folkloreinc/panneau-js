@@ -1,6 +1,6 @@
 import { RoutesProvider } from '@panneau/core/contexts';
 
-import pageResource from '../../../../.storybook/data/page-resource';
+import pageResource from '../../../../.storybook/data/resources/pages';
 import { ResourceProvider } from '../../../../packages/core/src/contexts';
 import Cards from '../Cards';
 

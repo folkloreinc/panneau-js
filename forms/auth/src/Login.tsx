@@ -19,7 +19,9 @@ interface LoginProps {
 
 function Login({
     action = '/login',
-    postForm = null,
+    // The form is submitted by the parent <Form type="login" postForm={...} />
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    postForm: _postForm = null,
     size = 'lg',
     submitButtonLabel = null,
     withForgotPassword = false,
@@ -32,7 +34,6 @@ function Login({
     return (
         <FormComponent
             action={action}
-            postForm={postForm}
             submitButtonLabel={
                 submitButtonLabel || (
                     <FormattedMessage defaultMessage="Log in" description="Button label" />

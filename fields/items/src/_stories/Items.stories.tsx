@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import BlocksResource from '../../../../.storybook/data/blocks-resource';
+import blockTypes from '../../../../.storybook/data/blocks';
 import FieldsProvider from '../../../../packages/fields/src';
 import IntlProvider from '../../../../packages/intl/src/IntlProvider';
 import { UppyProvider } from '../../../../packages/uppy/src/UppyContext';
@@ -176,7 +176,7 @@ export const WithFieldComponent = {
 export const WithBlocks = {
     render: () => (
         <div style={{ maxWidth: 500 }}>
-            <Container types={BlocksResource.types} newItemValue={null} inline />
+            <Container types={blockTypes} newItemValue={null} inline />
         </div>
     ),
 };

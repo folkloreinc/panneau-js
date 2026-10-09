@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import pageResource from '../../../../.storybook/data/page-resource';
+import pageResource from '../../../../.storybook/data/resources/pages';
 import { ResourceProvider } from '../../../../packages/core/src/contexts';
 import DisplayProvider from '../../../../packages/displays/src';
 import Table from '../TableList';

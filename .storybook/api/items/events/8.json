@@ -1,0 +1,97 @@
+{
+    "id": "8",
+    "type": "event",
+    "title": {
+        "fr": "Soirée de clôture",
+        "en": "Closing night"
+    },
+    "category": "concert",
+    "starts_at": "2026-10-25 20:00:00",
+    "ends_at": "2026-10-26 01:00:00",
+    "venue": "Place des Arts",
+    "price": 55,
+    "description": {
+        "fr": "<p>Une activité de la programmation officielle présentée à Place des Arts.</p>",
+        "en": "<p>An official program activity presented at Place des Arts.</p>"
+    },
+    "is_free": false,
+    "registration_url": "https://example.com/billets/8",
+    "page": {
+        "id": "3",
+        "type": "page",
+        "title": {
+            "fr": "Programmation",
+            "en": "Program"
+        },
+        "slug": "programmation"
+    },
+    "speakers": [
+        {
+            "id": "2",
+            "name": "Olivier Gagnon",
+            "role": {
+                "fr": "Directeur artistique",
+                "en": "Artistic Director"
+            },
+            "photo": {
+                "id": "33",
+                "type": "image",
+                "name": "768x1024.png",
+                "url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/768x1024.png",
+                "thumbnail_url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/768x1024.png",
+                "metadata": {
+                    "filename": "768x1024.png",
+                    "size": 158897,
+                    "mime": "image/png",
+                    "width": 768,
+                    "height": 1024
+                }
+            }
+        },
+        {
+            "id": "6",
+            "name": "Jonathan Côté",
+            "role": {
+                "fr": "Musicien",
+                "en": "Musician"
+            },
+            "photo": {
+                "id": "1",
+                "type": "image",
+                "name": "00728_941201_fa_4359823465324065534_345i6234958.jpg",
+                "created_at": "2024-02-03 00:00:01",
+                "url": "https://urbania-submissions.s3-ca-central-1.amazonaws.com/60/e9c5420ae74109adf43f4066d4daf3/00728_941201_fa.jpg",
+                "thumbnail_url": "https://urbania-submissions.s3-ca-central-1.amazonaws.com/6c/6301388b2b45dba2e3b2973d255932/00728_941201_fa.jpg",
+                "metadata": {
+                    "filename": "00728_941201_fa.jpg",
+                    "size": 158897,
+                    "mime": "image/jpeg",
+                    "width": 512,
+                    "height": 768,
+                    "author": {
+                        "name": "Joe avec un nom-plus-long",
+                        "thumbnail_url": "https://urbania-submissions.s3-ca-central-1.amazonaws.com/6c/6301388b2b45dba2e3b2973d255932/00728_941201_fa.jpg"
+                    }
+                }
+            }
+        }
+    ],
+    "image": {
+        "id": "33",
+        "type": "image",
+        "name": "768x1024.png",
+        "url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/768x1024.png",
+        "thumbnail_url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/768x1024.png",
+        "metadata": {
+            "filename": "768x1024.png",
+            "size": 158897,
+            "mime": "image/png",
+            "width": 768,
+            "height": 1024
+        }
+    },
+    "featured": true,
+    "published": true,
+    "created_at": "2026-08-15 11:00:00",
+    "updated_at": "2026-09-27 09:15:00"
+}

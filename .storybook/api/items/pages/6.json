@@ -1,6 +1,20 @@
 {
     "id": "6",
     "type": "page",
-    "title": { "fr": "Une page autre", "en": "Another page" },
-    "slug": "mon-slug-6"
+    "title": {
+        "fr": "Partenaires",
+        "en": "Partners"
+    },
+    "slug": "partenaires",
+    "description": {
+        "fr": "Merci à nos partenaires",
+        "en": "Thanks to our partners"
+    },
+    "url": "/partenaires",
+    "image": null,
+    "published": false,
+    "publish_at": null,
+    "blocks": [],
+    "created_at": "2026-06-01 09:00:00",
+    "updated_at": "2026-09-15 16:45:00"
 }

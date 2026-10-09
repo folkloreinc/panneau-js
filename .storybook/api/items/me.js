@@ -1,5 +1,5 @@
 module.exports = {
     id: '1',
-    name: 'Test user',
-    email: 'example@example.com',
+    name: 'Camille Tremblay',
+    email: 'camille.tremblay@example.com',
 };

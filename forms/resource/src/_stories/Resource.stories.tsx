@@ -1,7 +1,5 @@
-import { useState } from 'react';
-
-// import fields from '../../../../.storybook/data/fields';
-import pageResource from '../../../../.storybook/data/page-resource';
+import pageResource from '../../../../.storybook/data/resources/pages';
+import withDataProvider from '../../../../.storybook/decorators/withDataProvider';
 import FieldsProvider from '../../../../packages/fields/src';
 import Resource from '../Resource';
 
@@ -10,9 +8,9 @@ export default {
     title: 'Forms/Resource',
     parameters: {
         intl: true,
-        api: true,
     },
     decorators: [
+        withDataProvider,
         (Story) => (
             <FieldsProvider>
                 <Story />
@@ -21,11 +19,11 @@ export default {
     ],
 };
 
-function Container() {
-    const [value, setValue] = useState({});
-    return <Resource resource={pageResource} />;
-}
+export const Create = {
+    render: () => <Resource resource={pageResource} />,
+};
 
-export const ResourceForm = {
-    render: () => <Container />,
+export const CreateWithType = {
+    name: 'Create with type',
+    render: () => <Resource resource={pageResource} type="contact" />,
 };

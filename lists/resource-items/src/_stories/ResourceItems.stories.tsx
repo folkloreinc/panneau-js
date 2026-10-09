@@ -1,4 +1,4 @@
-import pageResource from '../../../../.storybook/data/page-resource';
+import pageResource from '../../../../.storybook/data/resources/pages';
 import withApi from '../../../../.storybook/decorators/withDataProvider';
 import DisplaysProvider from '../../../../packages/displays/src';
 import ListsProvider from '../../../../packages/lists/src';

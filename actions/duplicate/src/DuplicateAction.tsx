@@ -1,6 +1,7 @@
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
+import omit from 'lodash-es/omit';
 import { type ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
@@ -9,6 +10,9 @@ import { useModalsComponentsManager, useResource } from '@panneau/core/contexts'
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { useResourceClone } from '@panneau/data';
 import Button from '@panneau/element-button';
+
+// Props given by <Actions> to all the actions, not used by this one
+const ACTIONS_LIST_PROPS = ['reload', 'updateValue'];
 
 interface DuplicateActionProps {
     resource?: Resource | string | null;
@@ -32,6 +36,8 @@ interface DuplicateActionProps {
     withoutConfirmation?: boolean;
     onClick?: (() => void) | null;
     className?: string | null;
+    reload?: (() => void) | null;
+    updateValue?: ((value: unknown) => void) | null;
 }
 
 function DuplicateAction({
@@ -139,7 +145,7 @@ function DuplicateAction({
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
                 href={withoutConfirmation && onConfirm === null ? finalHref : null}
-                {...props}
+                {...omit(props, ACTIONS_LIST_PROPS)}
             />
             {error !== null ? (
                 <span className="text-danger small ms-1">

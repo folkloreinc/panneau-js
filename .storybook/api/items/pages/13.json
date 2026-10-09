@@ -1,6 +1,25 @@
 {
     "id": "13",
-    "type": "page",
-    "title": { "fr": "Une page finale", "en": "Finale page" },
-    "slug": "mon-slug-13"
+    "type": "contact",
+    "title": {
+        "fr": "Nous joindre",
+        "en": "Contact us"
+    },
+    "slug": "nous-joindre",
+    "description": {
+        "fr": "Coordonnées et heures d’ouverture",
+        "en": "Contact details and opening hours"
+    },
+    "contact": {
+        "email": "info@example.com",
+        "phone": "514 555-0123",
+        "address": "1234, rue Saint-Denis, Montréal (Québec)"
+    },
+    "url": "/nous-joindre",
+    "image": null,
+    "published": true,
+    "publish_at": "2026-04-01 09:00:00",
+    "blocks": [],
+    "created_at": "2026-04-01 09:00:00",
+    "updated_at": "2026-09-22 16:45:00"
 }

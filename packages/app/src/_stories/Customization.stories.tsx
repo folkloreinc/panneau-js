@@ -1,150 +1,91 @@
-import { getCSRFHeaders } from '@folklore/fetch';
-import { Link } from 'wouter';
-
 import type { Resource } from '@panneau/core';
 
-import panneauDefinition from '../../../../.storybook/data/panneau-definition';
-import { PAGES_NAMESPACE, useUrlGenerator } from '../../../core/src/contexts';
-import PanneauContainer from '../components/Container';
+import { resourceValues } from '../../../../.storybook/data/utils';
 
+import definition from '../../../../.storybook/data/definition';
+import { eventsResource, jobListingsResource } from '../../../../.storybook/data/resources';
+import AppStory from './components/AppStory';
+
+/**
+ * How to customize the app from the definition. The custom components are in
+ * ./components and are given to the container with the `components` prop.
+ */
 export default {
-    component: PanneauContainer,
     title: 'App/Customization',
+    component: AppStory,
     parameters: {
-        intl: {
-            locale: panneauDefinition.intl.locale,
-        },
+        intl: { locale: 'fr' },
         router: false,
+        layout: 'fullscreen',
     },
 };
 
-const props = {
-    baseUrl: 'http://localhost:58800/api', // Should be whatever, /api is for storybook
-    uppy: {
-        transport: 'xhr' as const,
-        xhr: {
-            endpoint: 'https://ondinnok.test:8080/panneau/upload',
-            headers: getCSRFHeaders(),
-            timeout: 0,
-        },
-    },
+/** pages: { home: { component: 'dashboard-page' } } */
+export const CustomHomePage = {
+    name: 'Custom home page',
+    render: () => (
+        <AppStory
+            path="/"
+            definition={{
+                ...definition,
+                pages: {
+                    home: { component: 'dashboard-page' },
+                },
+            }}
+        />
+    ),
 };
 
-const user = { id: 1, name: 'Folklore', email: 'info@atelierfolklore.ca' };
-
-interface CustomResourcePageProps {
-    resource: Resource;
-    itemId?: string | null;
-}
-
-function CustomResourceIndexPage({ resource }: CustomResourcePageProps) {
-    const route = useUrlGenerator();
-    return (
-        <div className="container py-4 text-primary bg-info">
-            Custom index page for {resource.id}{' '}
-            <Link href={route('resources.show', { resource: resource.id, id: '1' })}>
-                Show item #1
-            </Link>
-        </div>
-    );
-}
-
-function CustomResourceShowPage({ resource, itemId = null }: CustomResourcePageProps) {
-    return (
-        <div className="container py-4 text-primary bg-info">
-            Custom show page for {resource.id} #{itemId}
-        </div>
-    );
-}
-
-const components = {
-    [PAGES_NAMESPACE]: {
-        CustomResourceIndexPage,
-        CustomResourceShowPage,
-    },
+/** routes: { statistics: { path: '/statistiques', component: 'statistics-page' } } */
+export const CustomRoute = {
+    name: 'Custom route',
+    render: () => <AppStory path="/statistiques" />,
 };
 
-// Overrides the index and show pages of the "pages" resource
-function withResourcePages(pages: Resource['pages']) {
+function withEventsPages(pages: Resource['pages']) {
     return {
-        ...panneauDefinition,
-        resources: panneauDefinition.resources.map((resource) =>
-            resource.id === 'pages' ? { ...resource, pages } : resource,
+        ...definition,
+        resources: definition.resources.map((resource) =>
+            resource.id === eventsResource.id ? { ...resource, pages } : resource,
         ),
     };
 }
 
+/** On the resource: pages: { show: { component: 'event-show-page' } } */
 export const ResourcePageOverride = {
     name: 'Resource page override',
     render: () => (
-        <PanneauContainer
-            definition={withResourcePages({
-                index: { component: 'custom-resource-index-page' },
-                show: { component: 'custom-resource-show-page' },
+        <AppStory
+            path="/events/1"
+            definition={withEventsPages({
+                show: { component: 'event-show-page' },
             })}
-            components={components}
-            memoryRouter
-            user={user}
-            {...props}
         />
     ),
 };
 
-export const PanneauPageOverride = {
-    name: 'Panneau page override (all resources)',
-    render: () => (
-        <PanneauContainer
-            definition={{
-                ...panneauDefinition,
-                pages: {
-                    index: { component: 'custom-resource-index-page' },
-                },
-            }}
-            components={components}
-            memoryRouter
-            user={user}
-            {...props}
-        />
-    ),
-};
-
-export const LegacyResourcePageOverride = {
+/** The legacy keys still work: pages: { resourceShowPage: { component: 'event-show-page' } } */
+export const ResourcePageOverrideLegacy = {
     name: 'Resource page override (legacy keys)',
     render: () => (
-        <PanneauContainer
-            definition={withResourcePages({
-                resourceIndexPage: { component: 'custom-resource-index-page' },
-                resourceShowPage: { component: 'custom-resource-show-page' },
+        <AppStory
+            path="/events/1"
+            definition={withEventsPages({
+                resourceShowPage: { component: 'event-show-page' },
             })}
-            components={components}
-            memoryRouter
-            user={user}
-            {...props}
         />
     ),
 };
 
-// The duplicate page is not linked from the list, so the home page links to it
-function DuplicateLinkHomePage() {
-    const route = useUrlGenerator();
-    return (
-        <div className="container py-4">
-            <Link href={route('resources.duplicate', { resource: 'pages', id: '1' })}>
-                Duplicate page #1
-            </Link>
-        </div>
-    );
-}
-
-// The duplicate page should keep its confirmation form even if the edit form has a custom component
+/** forms: { edit: { component: 'normal' } } does not replace the duplicate confirmation */
 export const DuplicateWithCustomEditForm = {
     name: 'Duplicate with custom edit form',
     render: () => (
-        <PanneauContainer
+        <AppStory
+            path="/pages/1/duplicate"
             definition={{
-                ...panneauDefinition,
-                pages: { home: { component: 'duplicate-link-home-page' } },
-                resources: panneauDefinition.resources.map((resource) =>
+                ...definition,
+                resources: definition.resources.map((resource) =>
                     resource.id === 'pages'
                         ? {
                               ...resource,
@@ -153,10 +94,93 @@ export const DuplicateWithCustomEditForm = {
                         : resource,
                 ),
             }}
-            components={{ [PAGES_NAMESPACE]: { DuplicateLinkHomePage } }}
-            memoryRouter
-            user={user}
-            {...props}
+        />
+    ),
+};
+
+/** Without `index.columns`, the fields with settings.showInIndex are the columns */
+export const ColumnsFromFields = {
+    name: 'Columns from fields',
+    render: () => (
+        <AppStory
+            path="/jobListings"
+            definition={{
+                ...definition,
+                resources: definition.resources.map((resource) =>
+                    resource.id === jobListingsResource.id
+                        ? { ...resource, index: { ...resource.index, columns: undefined } }
+                        : resource,
+                ),
+            }}
+        />
+    ),
+};
+
+/** Hide a resource from the menu with settings.hideInNavbar */
+export const HiddenResource = {
+    name: 'Resource hidden in navbar',
+    render: () => (
+        <AppStory
+            path="/"
+            definition={{
+                ...definition,
+                resources: definition.resources.map((resource) =>
+                    resource.id === 'medias'
+                        ? { ...resource, settings: { ...resource.settings, hideInNavbar: true } }
+                        : resource,
+                ),
+            }}
+        />
+    ),
+};
+
+/** theme: { colorScheme: 'dark' } */
+export const DarkMode = {
+    name: 'Dark mode',
+    render: () => (
+        <AppStory path="/pages" definition={{ ...definition, theme: { colorScheme: 'dark' } }} />
+    ),
+};
+
+// The labels written in the definition are not translated: give them in English
+function english(name: string, singular: string, plural: string, a: string = 'a') {
+    return {
+        name,
+        values: resourceValues({
+            name: singular,
+            singular,
+            plural,
+            aSingular: `${a} ${singular}`,
+            theSingular: `the ${singular}`,
+            thePlural: `the ${plural}`,
+        }),
+    };
+}
+
+const englishResources = {
+    pages: english('Pages', 'page', 'pages'),
+    events: english('Events', 'event', 'events', 'an'),
+    persons: english('Team', 'person', 'team'),
+    jobListings: english('Jobs', 'job listing', 'job listings'),
+    medias: english('Medias', 'media', 'medias'),
+};
+
+/** intl: { locale: 'en' } */
+export const English = {
+    parameters: {
+        intl: { locale: 'en' },
+    },
+    render: () => (
+        <AppStory
+            path="/events"
+            definition={{
+                ...definition,
+                intl: { locale: 'en', locales: ['en', 'fr'] },
+                resources: definition.resources.map((resource) => {
+                    const { name, values } = englishResources[resource.id];
+                    return { ...resource, name, intl: { values } };
+                }),
+            }}
         />
     ),
 };

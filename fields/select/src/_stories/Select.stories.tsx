@@ -44,10 +44,10 @@ export const MultiDisabled = {
 export const WithRequestAndValueMultiple = {
     render: () => (
         <Container
-            value={[{ id: '1', type: 'event', title: '1 évévnement' }]}
+            value={[{ id: '1', type: 'event', title: { fr: 'Soirée d’ouverture' } }]}
             valueIsOption
             requestUrl="/api/events"
-            optionLabelPath="title"
+            optionLabelPath="title.fr"
             optionValuePath="id"
             multiple
             placeholder="With Request and initial value"
@@ -60,7 +60,7 @@ export const WithRequest = {
     render: () => (
         <Container
             requestUrl="/api/events"
-            optionLabelPath="title"
+            optionLabelPath="title.fr"
             optionValuePath="id"
             multiple
             placeholder="With Request"

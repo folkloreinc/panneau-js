@@ -1,6 +1,20 @@
 {
     "id": "4",
     "type": "page",
-    "title": { "fr": "Une page autre", "en": "Another page" },
-    "slug": "mon-slug-4"
+    "title": {
+        "fr": "Billetterie",
+        "en": "Tickets"
+    },
+    "slug": "billetterie",
+    "description": {
+        "fr": "Laissez-passer et billets à l’unité",
+        "en": "Passes and single tickets"
+    },
+    "url": "/billetterie",
+    "image": null,
+    "published": true,
+    "publish_at": "2026-04-01 09:00:00",
+    "blocks": [],
+    "created_at": "2026-04-01 09:00:00",
+    "updated_at": "2026-09-13 16:45:00"
 }

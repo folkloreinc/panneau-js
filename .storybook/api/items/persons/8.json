@@ -1,0 +1,18 @@
+{
+    "id": "8",
+    "type": "person",
+    "name": "Samuel Bergeron",
+    "role": {
+        "fr": "Technicien de scène",
+        "en": "Stage Technician"
+    },
+    "email": "samuel.bergeron@example.com",
+    "photo": null,
+    "bio": {
+        "fr": "<p>Samuel travaille avec l’équipe depuis 2022 et participe à la programmation annuelle.</p>",
+        "en": "<p>Samuel has been working with the team since 2022 and contributes to the yearly program.</p>"
+    },
+    "url": "/equipe/samuel.bergeron",
+    "created_at": "2026-08-12 10:00:00",
+    "updated_at": "2026-09-30 14:30:00"
+}

@@ -1,4 +1,3 @@
-import withFormsFields from '../../../../.storybook/decorators/withFormsFields';
 import ChangePassword from '../ChangePassword';
 import ConfirmPassword from '../ConfirmPassword';
 import ForgotPassword from '../ForgotPassword';
@@ -15,7 +14,6 @@ export default {
     parameters: {
         intl: true,
     },
-    decorators: [withFormsFields],
 };
 
 export const LoginForm = {

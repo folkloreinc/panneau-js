@@ -1,7 +1,9 @@
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
+
+import getDefinitionWarnings from '../utils/getDefinitionWarnings';
 
 import type { PanneauAuth, PanneauDefinition, Resource } from '../types';
 
@@ -57,11 +59,13 @@ export function usePanneauColorScheme(): {
 
 const DEFAULT_COMPONENTS: Record<string, unknown> = {};
 
+/** @deprecated The `components` key of the definition is not supported */
 export function usePanneauComponents(): Record<string, unknown> {
     const { components = DEFAULT_COMPONENTS } = usePanneau() || {};
     return components;
 }
 
+/** @deprecated The `components` key of the definition is not supported */
 export function usePanneauComponent(namespace: string | null, name: string): string | null {
     const { components = {} } = usePanneau() || {};
     const path = namespace !== null ? `${namespace}.${name}` : name || null;
@@ -95,6 +99,13 @@ interface PanneauProviderProps {
 }
 
 function PanneauProvider({ definition, children }: PanneauProviderProps) {
+    useEffect(() => {
+        if (process.env.NODE_ENV !== 'production') {
+            getDefinitionWarnings(definition).forEach((warning) =>
+                console.warn(`Panneau definition: ${warning}`),
+            );
+        }
+    }, [definition]);
     return <PanneauContext value={definition}>{children}</PanneauContext>;
 }
 

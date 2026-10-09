@@ -10,6 +10,7 @@ export { default as getColumnsWithFields } from './getColumnsWithFields';
 export { default as getComponent } from './getComponent';
 export { default as getComponentFromName } from './getComponentFromName';
 export { default as getDefinitionFromId } from './getDefinitionFromId';
+export { default as getDefinitionWarnings } from './getDefinitionWarnings';
 export { default as getDisplayName } from './getDisplayName';
 export { default as getFieldByName } from './getFieldByName';
 export { default as getFieldFromPath } from './getFieldFromPath';

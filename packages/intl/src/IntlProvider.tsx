@@ -27,7 +27,8 @@ function IntlProvider({
         use(IntlContext) || {};
     const managerMessages = intlManager !== null ? intlManager.getMessages(locale) : null;
     if (process.env.NODE_ENV === 'development') {
-        if (managerMessages === null) {
+        // Without a locale, the provider uses the locale and messages of its parent
+        if (locale !== null && managerMessages === null) {
             console.warn(`IntlProvider: ${locale} is not added.`);
         }
     }

@@ -1,15 +1,72 @@
 {
     "id": "1",
-    "type": "page",
+    "type": "home",
     "title": {
-        "fr": "Une page avec un titre 4591347550234568013465092348592380456723455552389456702374659802347659072348567340958723475602348675982347568349576023746582734690723904856723984756923874659082374",
-        "en": "A page"
+        "fr": "Accueil",
+        "en": "Home"
     },
-    "description": "Une description",
-    "slug": "image",
-    "url": "/mon-slug-1",
+    "slug": "accueil",
+    "description": {
+        "fr": "Festival des arts et des idées",
+        "en": "Festival of arts and ideas"
+    },
+    "hero": {
+        "title": {
+            "fr": "Le festival revient du 15 au 25 octobre",
+            "en": "The festival is back October 15 to 25"
+        },
+        "button_label": {
+            "fr": "Voir la programmation",
+            "en": "See the program"
+        },
+        "button_url": "https://example.com/programmation"
+    },
+    "url": "/",
     "image": {
-        "id": 1,
-        "thumbnailUrl": "/test"
-    }
+        "id": "34",
+        "type": "image",
+        "name": "1200x630.png",
+        "url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/1200x630.png",
+        "thumbnail_url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/1200x630.png",
+        "metadata": {
+            "filename": "1200x630.png",
+            "size": 158897,
+            "mime": "image/png",
+            "width": 1200,
+            "height": 630
+        }
+    },
+    "published": true,
+    "publish_at": "2026-01-01 09:00:00",
+    "blocks": [
+        {
+            "id": "b1",
+            "type": "heading",
+            "title": {
+                "fr": "Bienvenue",
+                "en": "Welcome"
+            },
+            "size": "large"
+        },
+        {
+            "id": "b2",
+            "type": "text",
+            "body": {
+                "fr": "<p>Dix jours de spectacles, de conférences et d’ateliers partout en ville.</p>",
+                "en": "<p>Ten days of shows, talks and workshops all around town.</p>"
+            }
+        },
+        {
+            "id": "b3",
+            "type": "button",
+            "label": {
+                "fr": "Acheter un laissez-passer",
+                "en": "Buy a pass"
+            },
+            "url": "https://example.com/billets",
+            "theme": "primary"
+        }
+    ],
+    "created_at": "2026-01-01 09:00:00",
+    "updated_at": "2026-09-10 16:45:00"
 }

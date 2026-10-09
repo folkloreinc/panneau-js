@@ -1,8 +1,31 @@
 {
     "id": "1",
     "type": "person",
-    "title": "Une personne #1 avec un long titre",
-    "name": "Bro 1",
-    "email": "1@email.com",
-    "url": "/url/chose/1"
+    "name": "Camille Tremblay",
+    "role": {
+        "fr": "Directrice générale",
+        "en": "Executive Director"
+    },
+    "email": "camille.tremblay@example.com",
+    "photo": {
+        "id": "31",
+        "type": "image",
+        "name": "300x300.png",
+        "url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/300x300.png",
+        "thumbnail_url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/300x300.png",
+        "metadata": {
+            "filename": "300x300.png",
+            "size": 158897,
+            "mime": "image/png",
+            "width": 300,
+            "height": 300
+        }
+    },
+    "bio": {
+        "fr": "<p>Camille travaille avec l’équipe depuis 2015 et participe à la programmation annuelle.</p>",
+        "en": "<p>Camille has been working with the team since 2015 and contributes to the yearly program.</p>"
+    },
+    "url": "/equipe/camille.tremblay",
+    "created_at": "2026-01-12 10:00:00",
+    "updated_at": "2026-09-30 14:30:00"
 }
