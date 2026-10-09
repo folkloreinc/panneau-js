@@ -20,6 +20,7 @@ interface RestoreActionProps {
     theme?: ButtonTheme;
     disabled?: boolean;
     multiple?: boolean;
+    onChange?: ((response: unknown) => void) | null;
     onConfirmed?: ((response: unknown) => void) | null;
     valueLabelPath?: string | null;
     modalComponent?: string;
@@ -41,6 +42,7 @@ function RestoreAction({
     theme = 'warning',
     disabled = false,
     multiple = false,
+    onChange = null,
     onConfirmed = null,
     valueLabelPath = null,
     modalComponent = 'confirm',
@@ -63,9 +65,11 @@ function RestoreAction({
         setModalOpen(false);
     }, [setModalOpen]);
 
-    const onConfirm = useCallback(
-        () =>
-            (action !== null
+    const onConfirm = useCallback(() => {
+        setModalOpen(false);
+        setError(null);
+        return (
+            action !== null
                 ? action(value)
                 : postJSON(
                       endpoint,
@@ -79,17 +83,19 @@ function RestoreAction({
                           headers: getCSRFHeaders(),
                       },
                   )
-            )
-                .then((response) => {
-                    if (onConfirmed !== null) {
-                        onConfirmed(response);
-                    }
-                })
-                .catch((err: Error) => {
-                    setError(err);
-                }),
-        [value, endpoint, setError, action, onConfirmed, endpointIdsParamName],
-    );
+        )
+            .then((response) => {
+                if (onConfirmed !== null) {
+                    onConfirmed(response);
+                }
+                if (onChange !== null) {
+                    onChange(response);
+                }
+            })
+            .catch((err: Error) => {
+                setError(err);
+            });
+    }, [value, endpoint, setError, action, onConfirmed, onChange, endpointIdsParamName]);
 
     return (
         <>
@@ -102,6 +108,14 @@ function RestoreAction({
                 theme={disabled ? 'secondary' : theme}
                 {...props}
             />
+            {error !== null ? (
+                <span className="text-danger small ms-1">
+                    <FormattedMessage
+                        defaultMessage="An error has occured."
+                        description="Modal message"
+                    />
+                </span>
+            ) : null}
             {modalOpen ? (
                 <ModalComponent
                     title={
@@ -127,7 +141,7 @@ function RestoreAction({
                         description
                     ) : (
                         <p>
-                            {multiple ? (
+                            {!multiple ? (
                                 <FormattedMessage
                                     defaultMessage="The following item will be restored: {id}. Are you sure you want to continue?"
                                     description="Modal message"
@@ -152,12 +166,6 @@ function RestoreAction({
                             )}
                         </p>
                     )}
-                    {error !== null ? (
-                        <FormattedMessage
-                            defaultMessage="An error has occured."
-                            description="Modal message"
-                        />
-                    ) : null}
                 </ModalComponent>
             ) : null}
         </>

@@ -23,21 +23,21 @@ function Link({
     target = null,
     placeholder = null,
 }: LinkProps) {
+    if (value === null || value === '') {
+        return placeholder !== null ? <>{placeholder}</> : null;
+    }
     const itemLabel = get(item, labelPath);
-    const finalLabel = itemLabel || label || placeholder || (
+    const finalLabel = itemLabel || label || (
         <FormattedMessage defaultMessage="Link" description="Display label" />
     );
-    const isExternal = value !== null && isString(value) ? value.indexOf('http') === 0 : false;
-    const link = value !== null ? <WouterLink href={value!}>{finalLabel}</WouterLink> : finalLabel;
-    const element =
-        value !== null && (external || isExternal) ? (
-            <a href={value!} target={target || '_blank'} rel="noopener noreferrer">
-                {finalLabel}
-            </a>
-        ) : (
-            link
-        );
-    return value !== null ? element : null;
+    const isExternal = isString(value) ? value.indexOf('http') === 0 : false;
+    return external || isExternal ? (
+        <a href={value} target={target || '_blank'} rel="noopener noreferrer">
+            {finalLabel}
+        </a>
+    ) : (
+        <WouterLink href={value}>{finalLabel}</WouterLink>
+    );
 }
 
 export default Link;

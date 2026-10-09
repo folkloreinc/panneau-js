@@ -17,6 +17,7 @@ interface EditActionProps {
     disabled?: boolean;
     multiple?: boolean;
     onChange?: ((value: ActionValue) => void) | null;
+    onClick?: (() => void) | null;
     modalComponent?: string;
     withModal?: boolean;
     withDefaultLabel?: boolean;
@@ -34,6 +35,7 @@ function EditAction({
     disabled = false,
     multiple = false,
     onChange = null,
+    onClick = null,
     modalComponent = null,
     withModal = false,
     withDefaultLabel = false,
@@ -79,7 +81,7 @@ function EditAction({
                 className={className}
                 label={label}
                 icon={icon}
-                onClick={withModal ? onOpen : null}
+                onClick={onClick ?? (withModal ? onOpen : null)}
                 disabled={disabled}
                 theme={theme}
                 href={!withModal ? finalHref : null}

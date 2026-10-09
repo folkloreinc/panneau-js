@@ -33,7 +33,7 @@ function TextDescription({
                 ? initialValue[parentLocale || locale] || null
                 : initialValue;
 
-        const labelValue = get(item, descriptionPath);
+        const labelValue = get(item, descriptionPath, null) ?? null;
         const partialLabel =
             labelValue !== null && isObject(descriptionValues)
                 ? descriptionValues[labelValue] || null
@@ -45,9 +45,7 @@ function TextDescription({
     }, [initialValue, descriptionPath, descriptionValues, item, locale, parentLocale]);
 
     return label !== null ? (
-        <div
-            className={className}
-        >
+        <div className={className}>
             <p className="d-block m-0 p-0 lh-sm">{value || placeholder}</p>
             <p
                 className={classNames([

@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import omit from 'lodash-es/omit';
 import { type ComponentType, ReactNode, useState } from 'react';
 
 import type {
@@ -33,6 +34,38 @@ export interface ActionsProps extends UseActionsOptions {
 
 const DEFAULT_ACTIONS: ActionDefinition[] = ['show', 'edit', 'delete'];
 
+// Options consumed by useActions that should not be passed down to the action components
+const USE_ACTIONS_OPTIONS_KEYS: (keyof UseActionsOptions)[] = [
+    'iconsOnly',
+    'withIcons',
+    'showUrl',
+    'editUrl',
+    'duplicateUrl',
+    'deleteUrl',
+    'restoreUrl',
+    'showLabel',
+    'editLabel',
+    'duplicateLabel',
+    'deleteLabel',
+    'restoreLabel',
+    'onClickShow',
+    'onClickEdit',
+    'onClickDuplicate',
+    'onClickDelete',
+    'onClickRestore',
+    'getShowPropsFromValue',
+    'getEditPropsFromValue',
+    'getDuplicatePropsFromValue',
+    'getDeletePropsFromValue',
+    'getRestorePropsFromValue',
+    'withoutItemShowUrl',
+    'withShowModal',
+    'withoutDuplicateConfirmation',
+    'withEditModal',
+    'withoutDeleteConfirmation',
+    'withoutRestoreConfirmation',
+];
+
 function Actions({
     resource,
     actions = DEFAULT_ACTIONS,
@@ -57,6 +90,7 @@ function Actions({
         iconsOnly: !isDropdown,
         ...globalProps,
     });
+    const componentProps = omit(globalProps, USE_ACTIONS_OPTIONS_KEYS);
 
     const actionsElements = finalActions.map((action, idx) => {
         const {
@@ -91,7 +125,7 @@ function Actions({
                     size={size}
                     resource={resource}
                     withoutConfirmation={actionConfirmation || withoutConfirmation}
-                    {...globalProps}
+                    {...componentProps}
                     {...otherProps}
                 />
             ) : null;

@@ -1,6 +1,6 @@
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
-import { isObject } from 'lodash';
 import isArray from 'lodash-es/isArray';
+import isObject from 'lodash-es/isObject';
 import { type ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
@@ -38,7 +38,7 @@ function DuplicateAction({
     resource: initialResource = null,
     title = null,
     description = null,
-    endpoint = '/duplicate',
+    endpoint = null,
     endpointIdsParamName = 'ids',
     action = null,
     label: initialLabel = null,
@@ -61,7 +61,11 @@ function DuplicateAction({
     const contextResource = useResource();
     const resource = initialResource || contextResource;
     const resourceUrl = useResourceUrlGenerator(resource);
-    const { cloneAsync } = useResourceClone(resource);
+    // The hook only uses the provided resource when an id is also provided
+    const { cloneAsync } = useResourceClone(
+        resource,
+        !multiple && value !== null && !isArray(value) ? (value.id ?? null) : null,
+    );
     const label =
         initialLabel ||
         (withDefaultLabel ? (
@@ -101,11 +105,29 @@ function DuplicateAction({
                       },
                   )
             : null) ||
-        (resource !== null && !multiple)
-            ? (value) => cloneAsync(value?.id)
-            : null;
+        (resource !== null && !multiple
+            ? (value) => cloneAsync(!isArray(value) ? value?.id : undefined)
+            : null);
 
-    const onConfirm = finalAction !== null ? () => finalAction(value) : null;
+    const onConfirm =
+        finalAction !== null
+            ? () => {
+                  setModalOpen(false);
+                  setError(null);
+                  return finalAction(value)
+                      .then((response) => {
+                          if (onConfirmed !== null) {
+                              onConfirmed(response);
+                          }
+                          if (onChange !== null) {
+                              onChange(response);
+                          }
+                      })
+                      .catch((err: Error) => {
+                          setError(err);
+                      });
+              }
+            : null;
 
     return (
         <>
@@ -116,9 +138,17 @@ function DuplicateAction({
                 onClick={onClick ?? (withoutConfirmation ? onConfirm : onOpen)}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
-                href={withoutConfirmation ? finalHref : null}
+                href={withoutConfirmation && onConfirm === null ? finalHref : null}
                 {...props}
             />
+            {error !== null ? (
+                <span className="text-danger small ms-1">
+                    <FormattedMessage
+                        defaultMessage="An error has occured."
+                        description="Modal message"
+                    />
+                </span>
+            ) : null}
             {modalOpen ? (
                 <ModalComponent
                     title={
@@ -147,7 +177,7 @@ function DuplicateAction({
                         description
                     ) : (
                         <p>
-                            {multiple ? (
+                            {!multiple ? (
                                 <FormattedMessage
                                     defaultMessage="The following item will be duplicated: {id}. Are you sure you want to continue?"
                                     description="Modal message"
@@ -172,12 +202,6 @@ function DuplicateAction({
                             )}
                         </p>
                     )}
-                    {error !== null ? (
-                        <FormattedMessage
-                            defaultMessage="An error has occured."
-                            description="Modal message"
-                        />
-                    ) : null}
                 </ModalComponent>
             ) : null}
         </>

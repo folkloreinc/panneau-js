@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
-import { type ReactNode, useMemo } from 'react';
+import { Fragment, type ReactNode, useMemo } from 'react';
 
 import Icon from '@panneau/element-icon';
 
@@ -26,12 +26,13 @@ function Badges({
         () => (isArray(value) ? value : [value]).filter((it) => it !== null) || [],
         [value],
     );
-    return items.map((it) => {
+    return items.map((it, idx) => {
         const label = get(it, itemLabelPath, null);
         const icon = get(it, itemIconPath, null);
         const className = get(it, itemClassNamePath, null);
         return label !== null || icon !== null ? (
             <span
+                key={`badge-${idx}`}
                 className={classNames([
                     'badge',
                     'mb-1',
@@ -42,7 +43,7 @@ function Badges({
                 {icon !== null ? <Icon name={icon} /> : label}
             </span>
         ) : (
-            placeholder
+            <Fragment key={`badge-${idx}`}>{placeholder}</Fragment>
         );
     });
 }

@@ -1,5 +1,3 @@
-import isString from 'lodash-es/isString';
-
 import type { Field, FieldOption } from '@panneau/core';
 import SelectElement from '@panneau/element-select';
 
@@ -21,7 +19,7 @@ function Select({
     const option =
         (finalOptions || []).find(({ value: itemValue = null }) => itemValue === value) || null;
     const label = option !== null ? option.label : null;
-    const finalLabel = isString(value) ? value : label;
+    const finalLabel = label !== null ? label : value;
 
     return finalOptions !== null ? (
         <SelectElement value={value} options={finalOptions} onChange={onChange} />

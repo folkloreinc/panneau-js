@@ -34,7 +34,11 @@ function Unit({ value = null, placeholder = null, format = null, suffix = null }
         }
         return value;
     }, [value, format, suffix]);
-    return <span className="text-nowrap">{finalValue || placeholder}</span>;
+    return (
+        <span className="text-nowrap">
+            {finalValue !== null && finalValue !== '' ? finalValue : placeholder}
+        </span>
+    );
 }
 
 export default Unit;

@@ -1,6 +1,6 @@
-import formatDate from 'date-fns/format';
-import parse from 'date-fns/parse';
-import parseISO from 'date-fns/parseISO';
+import { format as formatDate } from 'date-fns/format';
+import { parse } from 'date-fns/parse';
+import { parseISO } from 'date-fns/parseISO';
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 

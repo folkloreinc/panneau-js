@@ -25,6 +25,8 @@ interface DeleteActionProps {
     multiple?: boolean;
     disabled?: boolean;
     onClick?: (() => void) | null;
+    onChange?: ((response: unknown) => void) | null;
+    onConfirmed?: ((response: unknown) => void) | null;
     valueLabelPath?: string | null;
     modalComponent?: string;
     withoutConfirmation?: boolean;
@@ -47,6 +49,8 @@ function DeleteAction({
     multiple = false,
     disabled = false,
     onClick = null,
+    onChange = null,
+    onConfirmed = null,
     modalComponent = 'confirm',
     valueLabelPath = null,
     withoutConfirmation = false,
@@ -57,7 +61,11 @@ function DeleteAction({
     const contextResource = useResource();
     const resource = initialResource || contextResource;
     const resourceUrl = useResourceUrlGenerator(resource);
-    const { destroyAsync } = useResourceDestroy(resource);
+    // The hook only uses the provided resource when an id is also provided
+    const { destroyAsync } = useResourceDestroy(
+        resource,
+        !multiple && value !== null && !isArray(value) ? (value.id ?? null) : null,
+    );
     const finalHref =
         initialHref ||
         (!multiple && isObject(value) && !isArray(value) ? resourceUrl('delete', value) : null);
@@ -69,6 +77,7 @@ function DeleteAction({
     const ModalComponent = useModalComponent(modalComponent);
 
     const [modalOpen, setModalOpen] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
 
     const onOpen = () => setModalOpen(true);
     const onClosed = () => setModalOpen(false);
@@ -91,11 +100,29 @@ function DeleteAction({
                       },
                   )
             : null) ||
-        (resource !== null && !multiple)
-            ? (value) => destroyAsync(value?.id)
-            : null;
+        (resource !== null && !multiple
+            ? (value) => destroyAsync(!isArray(value) ? value?.id : undefined)
+            : null);
 
-    const onConfirm = deleteAction !== null ? () => deleteAction(value) : null;
+    const onConfirm =
+        deleteAction !== null
+            ? () => {
+                  setModalOpen(false);
+                  setError(null);
+                  return deleteAction(value)
+                      .then((response) => {
+                          if (onConfirmed !== null) {
+                              onConfirmed(response);
+                          }
+                          if (onChange !== null) {
+                              onChange(response);
+                          }
+                      })
+                      .catch((err: Error) => {
+                          setError(err);
+                      });
+              }
+            : null;
 
     return (
         <>
@@ -106,9 +133,17 @@ function DeleteAction({
                 onClick={onClick ?? (withoutConfirmation ? onConfirm : onOpen)}
                 disabled={disabled}
                 theme={theme}
-                href={withoutConfirmation ? finalHref : null}
+                href={withoutConfirmation && onConfirm === null ? finalHref : null}
                 {...props}
             />
+            {error !== null ? (
+                <span className="text-danger small ms-1">
+                    <FormattedMessage
+                        defaultMessage="An error has occured."
+                        description="Modal message"
+                    />
+                </span>
+            ) : null}
             {modalOpen ? (
                 <ModalComponent
                     title={
@@ -123,7 +158,7 @@ function DeleteAction({
                         description
                     ) : (
                         <p>
-                            {multiple ? (
+                            {!multiple ? (
                                 <FormattedMessage
                                     defaultMessage="The following item will be deleted: {id}. Are you sure you want to continue?"
                                     description="Modal message"

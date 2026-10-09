@@ -6,7 +6,7 @@ interface TextProps {
 }
 
 function Text({ value = null, placeholder = null }: TextProps) {
-    return <>{value || placeholder}</>;
+    return <>{value !== null && value !== '' ? value : placeholder}</>;
 }
 
 export default Text;

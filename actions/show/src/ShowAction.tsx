@@ -75,7 +75,7 @@ function ShowAction({
                 onClick={onClick ?? (withModal && ModalComponent !== null ? onOpen : undefined)}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
-                href={finalHref}
+                href={!withModal || ModalComponent === null ? finalHref : null}
                 {...props}
             />
             {modalOpen ? (
