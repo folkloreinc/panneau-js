@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 // import fields from '../../../../.storybook/data/fields';
-import pageResource from '../../../../.storybook/data/page-resource';
+import pageResource from '../../../../.storybook/data/resources/pages';
 import FieldsProvider from '../../../../packages/fields/src';
 import Resource from '../Resource';
 

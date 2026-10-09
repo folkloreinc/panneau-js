@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { RoutesProvider } from '../../packages/core/src/contexts';
-import panneauDefinition from '../data/panneau-definition';
+import panneauDefinition from '../data/definition';
 
 function withRoutesProvider(Story) {
     return (

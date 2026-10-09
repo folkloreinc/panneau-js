@@ -1,0 +1,36 @@
+{
+    "id": "6",
+    "type": "person",
+    "name": "Jonathan Côté",
+    "role": {
+        "fr": "Musicien",
+        "en": "Musician"
+    },
+    "email": "jonathan.cote@example.com",
+    "photo": {
+        "id": "1",
+        "type": "image",
+        "name": "00728_941201_fa_4359823465324065534_345i6234958.jpg",
+        "created_at": "2024-02-03 00:00:01",
+        "url": "https://urbania-submissions.s3-ca-central-1.amazonaws.com/60/e9c5420ae74109adf43f4066d4daf3/00728_941201_fa.jpg",
+        "thumbnail_url": "https://urbania-submissions.s3-ca-central-1.amazonaws.com/6c/6301388b2b45dba2e3b2973d255932/00728_941201_fa.jpg",
+        "metadata": {
+            "filename": "00728_941201_fa.jpg",
+            "size": 158897,
+            "mime": "image/jpeg",
+            "width": 512,
+            "height": 768,
+            "author": {
+                "name": "Joe avec un nom-plus-long",
+                "thumbnail_url": "https://urbania-submissions.s3-ca-central-1.amazonaws.com/6c/6301388b2b45dba2e3b2973d255932/00728_941201_fa.jpg"
+            }
+        }
+    },
+    "bio": {
+        "fr": "<p>Jonathan travaille avec l’équipe depuis 2020 et participe à la programmation annuelle.</p>",
+        "en": "<p>Jonathan has been working with the team since 2020 and contributes to the yearly program.</p>"
+    },
+    "url": "/equipe/jonathan.cote",
+    "created_at": "2026-06-12 10:00:00",
+    "updated_at": "2026-09-30 14:30:00"
+}

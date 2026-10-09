@@ -4,10 +4,10 @@ import { ModalProvider, ResourceProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
 import ListsProvider from '@panneau/lists';
 
-import pageResource from '../../../../.storybook/data/page-resource';
+import pageResource from '../../../../.storybook/data/resources/pages';
 // import { Modals } from '@panneau/element-modal';
-import panneauDefinition from '../../../../.storybook/data/panneau-definition';
-// import pageResource from '../../../../.storybook/data/page-resource';
+import panneauDefinition from '../../../../.storybook/data/definition';
+// import pageResource from '../../../../.storybook/data/resources/pages';
 import withApi from '../../../../.storybook/decorators/withDataProvider';
 // import { ApiProvider } from '../../../../packages/data/src/contexts/ApiContext';
 import FieldsProvider from '../../../../packages/fields/src';

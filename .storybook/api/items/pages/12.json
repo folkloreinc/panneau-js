@@ -1,6 +1,20 @@
 {
     "id": "12",
     "type": "page",
-    "title": { "fr": "Une page autre", "en": "Another page" },
-    "slug": "mon-slug-12"
+    "title": {
+        "fr": "Une page avec un titre particulièrement long pour tester l’affichage dans les listes et les formulaires",
+        "en": "A page with a particularly long title to test how lists and forms handle it"
+    },
+    "slug": "titre-long",
+    "description": {
+        "fr": "Cas limite",
+        "en": "Edge case"
+    },
+    "url": "/titre-long",
+    "image": null,
+    "published": false,
+    "publish_at": null,
+    "blocks": [],
+    "created_at": "2026-03-01 09:00:00",
+    "updated_at": "2026-09-21 16:45:00"
 }
