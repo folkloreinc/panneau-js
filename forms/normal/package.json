@@ -1,6 +1,6 @@
 {
     "name": "@panneau/form-normal",
-    "version": "4.0.84",
+    "version": "4.1.0",
     "description": "Default resource forms",
     "keywords": [
         "javascript"
@@ -55,12 +55,12 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.0.78",
-        "@panneau/data": "^4.0.84",
-        "@panneau/element-button": "^4.0.78",
-        "@panneau/element-form": "^4.0.78",
-        "@panneau/field-fields": "^4.0.78",
-        "@panneau/themes": "^4.0.78",
+        "@panneau/core": "^4.1.0",
+        "@panneau/data": "^4.1.0",
+        "@panneau/element-button": "^4.1.0",
+        "@panneau/element-form": "^4.1.0",
+        "@panneau/field-fields": "^4.1.0",
+        "@panneau/themes": "^4.1.0",
         "classnames": "^2.5.1",
         "lodash": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0"
