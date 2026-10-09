@@ -149,14 +149,12 @@ function TableList({
 
     const selectRow = (e: SyntheticEvent, item: TableItem) => {
         const { selectionDisabled = false } = item || {};
-        const tag = (e.target as HTMLElement).tagName.toLowerCase();
-        if (
-            onSelectionChange !== null &&
-            !selectionDisabled &&
-            tag !== 'button' &&
-            tag !== 'a' &&
-            tag !== 'i'
-        ) {
+        const target = e.target as HTMLElement | null;
+        const isInteractive =
+            target !== null &&
+            typeof target.closest === 'function' &&
+            target.closest('button, a, input, select, textarea, label') !== null;
+        if (onSelectionChange !== null && !selectionDisabled && !isInteractive) {
             onSelectItem(item);
         }
     };

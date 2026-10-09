@@ -16,7 +16,7 @@ const DEFAULT_OPTIONS: SelectOption[] = [];
 function DateFilter({
     onChange = null,
     onClear = null,
-    name = 'radios',
+    name = 'date',
     value = null,
     options = DEFAULT_OPTIONS,
     placeholder = null,

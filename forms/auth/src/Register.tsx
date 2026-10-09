@@ -37,43 +37,54 @@ function Register({
         <FormComponent
             action={action}
             fields={
-                fields || [
-                    {
-                        name: 'name',
-                        type: 'text',
-                        size,
-                        label: nameLabel || (
-                            <FormattedMessage defaultMessage="Name" description="Field label" />
-                        ),
-                    },
-                    {
-                        name: 'email',
-                        type: 'email',
-                        size,
-                        label: emailLabel || (
-                            <FormattedMessage defaultMessage="Email" description="Field label" />
-                        ),
-                    },
-                    {
-                        name: 'password',
-                        type: 'password',
-                        size,
-                        label: passwordLabel || (
-                            <FormattedMessage defaultMessage="Password" description="Field label" />
-                        ),
-                    },
-                    {
-                        name: 'password_confirmation',
-                        type: 'password',
-                        size,
-                        label: passwordConfirmationLabel || (
-                            <FormattedMessage
-                                defaultMessage="Confirm your password"
-                                description="Field label"
-                            />
-                        ),
-                    },
-                ]
+                fields !== null && fields.length > 0
+                    ? fields
+                    : [
+                          {
+                              name: 'name',
+                              type: 'text',
+                              size,
+                              label: nameLabel || (
+                                  <FormattedMessage
+                                      defaultMessage="Name"
+                                      description="Field label"
+                                  />
+                              ),
+                          },
+                          {
+                              name: 'email',
+                              type: 'email',
+                              size,
+                              label: emailLabel || (
+                                  <FormattedMessage
+                                      defaultMessage="Email"
+                                      description="Field label"
+                                  />
+                              ),
+                          },
+                          {
+                              name: 'password',
+                              type: 'password',
+                              size,
+                              label: passwordLabel || (
+                                  <FormattedMessage
+                                      defaultMessage="Password"
+                                      description="Field label"
+                                  />
+                              ),
+                          },
+                          {
+                              name: 'password_confirmation',
+                              type: 'password',
+                              size,
+                              label: passwordConfirmationLabel || (
+                                  <FormattedMessage
+                                      defaultMessage="Confirm your password"
+                                      description="Field label"
+                                  />
+                              ),
+                          },
+                      ]
             }
             submitButtonLabel={
                 submitButtonLabel || (

@@ -24,19 +24,21 @@ function TwoFactorChallenge({
         <FormComponent
             action={action}
             fields={
-                fields || [
-                    {
-                        name: 'code',
-                        type: 'text',
-                        size,
-                        label: codeLabel || (
-                            <FormattedMessage
-                                defaultMessage="Enter the code from your authenticator app to continue"
-                                description="Field label"
-                            />
-                        ),
-                    },
-                ]
+                fields !== null && fields.length > 0
+                    ? fields
+                    : [
+                          {
+                              name: 'code',
+                              type: 'text',
+                              size,
+                              label: codeLabel || (
+                                  <FormattedMessage
+                                      defaultMessage="Enter the code from your authenticator app to continue"
+                                      description="Field label"
+                                  />
+                              ),
+                          },
+                      ]
             }
             submitButtonLabel={
                 submitButtonLabel || (

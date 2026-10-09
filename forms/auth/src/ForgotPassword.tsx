@@ -31,16 +31,21 @@ function ForgotPassword({
         <FormComponent
             action={action}
             fields={
-                fields || [
-                    {
-                        name: 'email',
-                        type: 'email',
-                        size,
-                        label: emailLabel || (
-                            <FormattedMessage defaultMessage="Email" description="Field label" />
-                        ),
-                    },
-                ]
+                fields !== null && fields.length > 0
+                    ? fields
+                    : [
+                          {
+                              name: 'email',
+                              type: 'email',
+                              size,
+                              label: emailLabel || (
+                                  <FormattedMessage
+                                      defaultMessage="Email"
+                                      description="Field label"
+                                  />
+                              ),
+                          },
+                      ]
             }
             submitButtonLabel={
                 submitButtonLabel || (

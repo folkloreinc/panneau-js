@@ -39,13 +39,7 @@ function DuplicateForm({
     const resourceValues = useResourceValues(resource, { id });
     return (
         <Form
-            className={classNames([
-                'form',
-                {
-                    'invalid-feedback': generalError !== null,
-                },
-                className,
-            ])}
+            className={classNames(['form', className])}
             action={action}
             onSubmit={onSubmit}
             withoutActions
@@ -63,7 +57,7 @@ function DuplicateForm({
                     {generalError ? (
                         <p className="text-danger">
                             <FormattedMessage
-                                defaultMessage="An error occured and we could not delete this item successfully."
+                                defaultMessage="An error occured and we could not duplicate this item successfully."
                                 description="Error message"
                             />
                         </p>

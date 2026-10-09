@@ -1,7 +1,6 @@
 import classNames from 'classnames';
-import isObject from 'lodash-es/isObject';
-import type { ComponentType } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { ComponentType, MouseEvent } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Actions from '@panneau/action-actions';
@@ -22,7 +21,7 @@ interface ResourceItemsListProps {
     componentProps?: Record<string, unknown> | null;
     onQueryChange?: ((query: Record<string, unknown>) => void) | null;
     onQueryReset?: (() => void) | null;
-    onPageChange?: ((page: number) => void) | null;
+    onPageChange?: ((e: MouseEvent, page: number) => void) | null;
     showFilters?: boolean;
     showActions?: boolean;
     selectable?: boolean;
@@ -108,6 +107,16 @@ function ResourceItemsList({
     const finalMultipleSelection = withMultipleActions || multipleSelection;
 
     const [selectedItems, setSelectedItems] = useState<Item[] | null>(initialSelectedItems || null);
+
+    // Keep in sync with the selectedItems prop when its content changes
+    const selectedItemsKey = (initialSelectedItems || [])
+        .map((it) => (it !== null && typeof it === 'object' ? String(it.id ?? '') : ''))
+        .join(',');
+    const [lastSelectedItemsKey, setLastSelectedItemsKey] = useState(selectedItemsKey);
+    if (selectedItemsKey !== lastSelectedItemsKey) {
+        setLastSelectedItemsKey(selectedItemsKey);
+        setSelectedItems(initialSelectedItems || null);
+    }
     const onSelectionChange = useCallback(
         (newSelection: Item[]) => {
             setSelectedItems(newSelection);

@@ -71,15 +71,10 @@ function SelectFilter({
 
     const search = useSearch();
     const [page, setPage] = useState(1);
-    const query = useMemo(
-        () => ({
-            ...(paginated ? { page } : null),
-            ...queryString.parse(search, { arrayFormat: 'bracket' }),
-        }),
-        [search, page, paginated],
-    );
+    const query = useMemo(() => queryString.parse(search, { arrayFormat: 'bracket' }), [search]);
 
-    const finalParams = useMemo(() => {
+    // Params taken from the URL query (the page is managed locally)
+    const baseParams = useMemo(() => {
         const currentQuery = query || {};
         const currentParams = requestParams || [];
         return Object.keys(currentQuery).reduce(
@@ -91,7 +86,7 @@ function SelectFilter({
                         [name]: currentQuery[name],
                     };
                 }
-                if (paginated && (name === 'page' || name === 'count')) {
+                if (paginated && name === 'count') {
                     return {
                         ...obj,
                         [name]: currentQuery[name],
@@ -103,18 +98,40 @@ function SelectFilter({
         );
     }, [query, requestParams, paginated]);
 
+    // Reset pagination when the request params change
+    const baseParamsKey = useMemo(
+        () => `${requestUrl}?${queryString.stringify(baseParams, { arrayFormat: 'bracket' })}`,
+        [requestUrl, baseParams],
+    );
+    const [lastBaseParamsKey, setLastBaseParamsKey] = useState(baseParamsKey);
+    if (lastBaseParamsKey !== baseParamsKey) {
+        setLastBaseParamsKey(baseParamsKey);
+        setPage(1);
+        setEndReached(false);
+    }
+
+    const finalParams = useMemo(
+        () => ({
+            ...baseParams,
+            ...(paginated ? { page } : null),
+        }),
+        [baseParams, paginated, page],
+    );
+
     const fetchOptions = useCallback(
         (url: string | null, extraParams: Record<string, unknown> | null = null) => {
-            if (endReached || url === null) {
-                return Promise.resolve(null);
-            }
-            setLoading(true);
-            const partialQuery = {
+            const partialQuery: Record<string, unknown> = {
                 paginated,
                 ...requestQuery,
                 ...finalParams,
                 ...extraParams,
             };
+            const isNextPage =
+                paginated && extraParams === null && (Number(partialQuery.page) || 1) > 1;
+            if (url === null || (endReached && isNextPage)) {
+                return Promise.resolve(null);
+            }
+            setLoading(true);
             const finalQuery = queryString.stringify(partialQuery, { arrayFormat: 'bracket' });
             return getJSON(
                 `${url}${finalQuery !== null && finalQuery.length > 0 ? `?${finalQuery}` : ''}`,
@@ -152,7 +169,7 @@ function SelectFilter({
                                 ? (newItems as ApiResponse).pagination || {}
                                 : null;
                         result = finalItems || [];
-                        setOptions((prev) => [...(prev || []), ...result]);
+                        setOptions((prev) => (isNextPage ? [...(prev || []), ...result] : result));
                         setPagination((newPagination || oldPagination) as PaginationMeta | null);
                     } else {
                         result = finalItems || [];
@@ -228,9 +245,7 @@ function SelectFilter({
     const loadOptions = useCallback(
         (searchValue: string) => {
             const searchParams =
-                hasSearch && searchValue.length > 2
-                    ? { [itemSearchParam!]: encodeURIComponent(searchValue) }
-                    : null;
+                hasSearch && searchValue.length > 2 ? { [itemSearchParam!]: searchValue } : null;
             return fetchOptions(requestUrl, searchParams);
         },
         [fetchOptions, hasSearch, requestUrl, itemSearchParam],

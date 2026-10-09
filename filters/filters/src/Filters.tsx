@@ -50,15 +50,15 @@ function Filters({
     );
 
     const onFiltersReset = useCallback(() => {
+        // Only trigger one change (both handlers usually navigate)
         if (onClear !== null) {
             onClear(null);
-        }
-        if (onChange !== null) {
+        } else if (onChange !== null) {
             onChange(null);
         }
     }, [onClear, onChange]);
 
-    const hasActiveFilter = (currentFilters || []).reduce((isActive, item) => {
+    const hasActiveFilter = (currentFilters || []).some((item) => {
         const activeValue = clearValue || value || null;
         if (activeValue !== null && typeof activeValue[item.name || ''] !== 'undefined') {
             if (isArray(activeValue[item.name || ''])) {
@@ -66,8 +66,8 @@ function Filters({
             }
             return activeValue[item.name || ''] !== null;
         }
-        return isActive;
-    }, false);
+        return false;
+    });
 
     const onFilterChange = useCallback(
         (name: string, newFilterValue: unknown) => {

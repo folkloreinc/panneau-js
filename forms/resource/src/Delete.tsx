@@ -41,13 +41,7 @@ function DeleteForm({
 
     return (
         <Form
-            className={classNames([
-                'form',
-                {
-                    'invalid-feedback': generalError !== null,
-                },
-                className,
-            ])}
+            className={classNames(['form', className])}
             action={action}
             onSubmit={onSubmit}
             withoutActions

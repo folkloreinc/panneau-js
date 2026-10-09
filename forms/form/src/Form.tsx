@@ -48,10 +48,6 @@ function Form({
     const [wasValidated, setWasValidated] = useState(false);
 
     const formDefinition = useFormDefinition(type);
-    console.log({
-        type,
-        formDefinition
-    })
     const {
         component: definitionComponent,
         fields: definitionFields,
@@ -74,7 +70,7 @@ function Form({
             postJSON(act, postData !== null ? { ...postData, ...data } : data, {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
-                ...(finalMethod !== null ? { method: finalMethod } : null),
+                ...(finalMethod ? { method: finalMethod } : null),
                 ...(postOptions !== null ? postOptions : null),
             }),
         [finalMethod, postOptions, postData],

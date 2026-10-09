@@ -12,7 +12,7 @@ interface ModalResourceFormProps {
     resource?: Resource | string | null;
     type?: string | null;
     item?: Item | null;
-    isCreate?: boolean;
+    isCreate?: boolean | null;
     withoutCloseOnComplete?: boolean;
     onComplete?: ((value: Item) => void) | null;
     onClosed?: (() => void) | null;
@@ -24,16 +24,17 @@ function ModalResourceForm({
     resource: providedResource = null,
     type = null,
     item = null,
-    isCreate = false,
+    isCreate = null,
     onComplete = null,
     onClosed = null,
     withoutCloseOnComplete = false,
     className = null,
 }: ModalResourceFormProps) {
     const [opened, setOpened] = useState(true);
+    const finalIsCreate = isCreate ?? item === null;
     const requestClose = useCallback(() => {
         setOpened(false);
-    }, [onClosed]);
+    }, []);
     const resource = usePanneauResource(providedResource);
     const resourceValues = useResourceValues(resource);
     const onFormComplete = useCallback(
@@ -51,7 +52,7 @@ function ModalResourceForm({
         <Dialog
             id={id || `resource-form-modal-${resource?.id}`}
             title={
-                !isCreate ? (
+                !finalIsCreate ? (
                     <FormattedMessage
                         values={resourceValues}
                         defaultMessage="Edit {a_singular}"

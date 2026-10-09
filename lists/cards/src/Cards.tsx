@@ -53,9 +53,8 @@ function CardsList({
         [actionsProps, reload, updateItem],
     );
 
-    const idColumn =
+    const hasIdColumn =
         (columnWithFields.find(({ id, field }) => id === 'id' || field === 'id') || null) !== null;
-    const { id: itemId } = idColumn || {};
 
     const actionColumn = (columnWithFields || []).find((it) => it.id === 'actions') || null;
     const { component: actionsComponent = null } = actionColumn || {};
@@ -72,14 +71,16 @@ function CardsList({
             {items !== null
                 ? items.map((it) => {
                       const { id = null } = it || {};
-                      const title = get(it, cardTitlePath);
+                      const itemId = hasIdColumn ? id : null;
+                      const title = get(it, cardTitlePath, null);
                       return (
                           <div className="col-12 col-md-6 col-lg-4 col-xl-3" key={`card-${id}`}>
                               <Card
                                   header={
                                       title !== null ? (
                                           <span>
-                                              {itemId} {title}
+                                              {itemId !== null ? `${itemId} ` : null}
+                                              {title}
                                           </span>
                                       ) : (
                                           itemId

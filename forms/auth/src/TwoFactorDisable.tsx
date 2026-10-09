@@ -1,10 +1,8 @@
-import { getCSRFHeaders, postJSON } from '@folklore/fetch';
-import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Label } from '@panneau/core';
-import { useFormComponent } from '@panneau/core/contexts';
 import Link from '@panneau/element-link';
+import Form from '@panneau/form';
 
 interface TwoFactorDisableProps {
     action?: string;
@@ -28,19 +26,13 @@ function TwoFactorDisable({
     cancelLabel = null,
     ...props
 }: TwoFactorDisableProps) {
-    const FormComponent = useFormComponent('normal');
-    const defaultPostForm = useCallback(
-        (act: string, data: unknown) =>
-            postJSON(act, data, {
-                credentials: 'include',
-                headers: getCSRFHeaders(),
-                method: 'DELETE',
-            }),
-        [],
-    );
+    // Use the data form so the request is actually sent with the DELETE method
+    // (a native form only supports GET/POST)
     return (
-        <FormComponent
+        <Form
+            type="normal"
             action={action}
+            method="DELETE"
             submitButtonLabel={
                 submitButtonLabel || (
                     <FormattedMessage
@@ -58,7 +50,6 @@ function TwoFactorDisable({
                     </Link>
                 ) : null
             }
-            postForm={defaultPostForm}
             {...props}
         >
             <p>
@@ -69,7 +60,7 @@ function TwoFactorDisable({
                     />
                 )}
             </p>
-        </FormComponent>
+        </Form>
     );
 }
 

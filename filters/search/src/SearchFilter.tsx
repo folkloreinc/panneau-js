@@ -1,9 +1,8 @@
 import isEmpty from 'lodash-es/isEmpty';
-import type { FormEvent } from 'react';
+import type { FormEvent, KeyboardEvent } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import { KEYCODES, useKeyboardKeys } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 import Icon from '@panneau/element-icon';
 import TextField from '@panneau/field-text';
@@ -97,12 +96,19 @@ function SearchFilter({
     const active = !isEmpty(value);
     const canClear = !isEmpty(searchValue);
 
-    useKeyboardKeys({
-        [KEYCODES.ESCAPE]: onClear,
-    });
+    // Only clear on Escape when the focus is inside this filter and there is something to clear
+    const onKeyDown = useCallback(
+        (e: KeyboardEvent<HTMLFormElement>) => {
+            if (e.key === 'Escape' && canClear) {
+                e.preventDefault();
+                onClear();
+            }
+        },
+        [canClear, onClear],
+    );
 
     return (
-        <form className={className || undefined} onSubmit={onSubmit}>
+        <form className={className || undefined} onSubmit={onSubmit} onKeyDown={onKeyDown}>
             <div className="input-group flex-nowrap">
                 {position === 'left' ? (
                     <Button

@@ -45,7 +45,7 @@ function CalendarList({
     items = DEFAULT_ITEMS,
     itemDateField = 'date',
     loading: _loading = false,
-    value: _value = null,
+    value = null,
     multiple = false,
     onDateChange = null,
     onPeriodChange = null,
@@ -58,25 +58,36 @@ function CalendarList({
     const [weekIdx, setWeekIdx] = useState(0);
 
     const currentDate = new Date();
-    const currentYear = currentDate.getUTCFullYear();
-    const currentMonth = currentDate.getUTCMonth();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
     const currentDayOfTheMonth = currentDate.getDate();
 
     const dates = (items || [])
         .map((it) => (it !== null && it[itemDateField] ? it[itemDateField] : null))
         .filter((d) => d !== null) as string[];
 
-    const parsedInitialDate = initialDate !== null ? parseISO(initialDate) : null;
-    const partialInitialDate = parsedInitialDate !== null ? toDate(parsedInitialDate) : new Date();
-    const finalInitialDate =
-        mode === 'weekly' ? startOfWeek(partialInitialDate) : partialInitialDate;
-    const activeDate =
-        mode === 'weekly'
+    const selectedDates = useMemo<string[]>(() => {
+        if (value === null || typeof value === 'undefined') {
+            return [];
+        }
+        return (Array.isArray(value) ? value : [value]).filter(
+            (d): d is string => typeof d === 'string',
+        );
+    }, [value]);
+
+    const activeDate = useMemo(() => {
+        const parsedInitialDate = initialDate !== null ? parseISO(initialDate) : null;
+        const partialInitialDate =
+            parsedInitialDate !== null ? toDate(parsedInitialDate) : new Date();
+        const finalInitialDate =
+            mode === 'weekly' ? startOfWeek(partialInitialDate) : partialInitialDate;
+        return mode === 'weekly'
             ? addWeeks(finalInitialDate, weekIdx)
             : addMonths(finalInitialDate, monthIdx);
+    }, [initialDate, mode, weekIdx, monthIdx]);
 
     const activeYear = activeDate.getFullYear();
-    const activeMonth = activeDate.getUTCMonth();
+    const activeMonth = activeDate.getMonth();
     const activeWeekStart = startOfWeek(activeDate);
     const activeWeekEnd = endOfWeek(activeDate);
 
@@ -121,8 +132,8 @@ function CalendarList({
             datesArray.push(dte);
         }
     } else {
-        const firstDayOfActualMonth = new Date(activeYear, activeMonth, 1).getDay();
-        const dayBeforeDiff = firstDayOfActualMonth === 0 ? 6 : firstDayOfActualMonth;
+        // Header starts on Sunday, so the offset is the weekday index (0 = Sunday)
+        const dayBeforeDiff = new Date(activeYear, activeMonth, 1).getDay();
         const gridMax = 35;
 
         for (let i = 1 - dayBeforeDiff; i <= gridMax; i++) {
@@ -158,18 +169,16 @@ function CalendarList({
         (e: MouseEvent, newDate: string) => {
             e.preventDefault();
             if (!multiple) {
-                onDateChange?.(newDate ? null : newDate);
+                onDateChange?.(selectedDates.includes(newDate) ? null : newDate);
                 return;
             }
-            const valuesUpdate = [...dates];
-            if (!valuesUpdate.includes(newDate)) {
-                onDateChange?.([newDate]);
+            if (!selectedDates.includes(newDate)) {
+                onDateChange?.([...selectedDates, newDate]);
             } else {
-                const filteredOptions = valuesUpdate.filter((oldDate) => oldDate !== newDate);
-                onDateChange?.(filteredOptions);
+                onDateChange?.(selectedDates.filter((oldDate) => oldDate !== newDate));
             }
         },
-        [dates, onDateChange, multiple],
+        [selectedDates, onDateChange, multiple],
     );
 
     const weekHasDates = dates.reduce((acc, dte) => {
@@ -254,8 +263,8 @@ function CalendarList({
                     {datesArray.map((d, i) => {
                         const dTime = format(d, 'yyyy-MM-dd');
 
-                        const isCurrentYear = d.getUTCFullYear() === currentYear;
-                        const isCurrentMonth = d.getUTCMonth() === currentMonth;
+                        const isCurrentYear = d.getFullYear() === currentYear;
+                        const isCurrentMonth = d.getMonth() === currentMonth;
                         const isToday =
                             isCurrentYear && isCurrentMonth && d.getDate() === currentDayOfTheMonth;
                         const eventTime = d.getTime();
@@ -269,7 +278,7 @@ function CalendarList({
                                 className={classNames(styles.day, styles.dayButton, {
                                     [styles.isToday]: isToday,
                                     [styles.isPast]: isPast,
-                                    [styles.active]: dates.includes(dTime),
+                                    [styles.active]: selectedDates.includes(dTime),
                                 })}
                             >
                                 {format(d, 'd')}
@@ -285,7 +294,7 @@ function CalendarList({
                         );
                         return (
                             <div key={`date-${d.getTime}-${i + 1}`} className={styles.calendarBox}>
-                                {d.getUTCMonth() !== activeMonth && mode === 'monthly' ? '' : inner}
+                                {d.getMonth() !== activeMonth && mode === 'monthly' ? '' : inner}
                             </div>
                         );
                     })}

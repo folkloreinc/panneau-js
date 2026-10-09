@@ -1,3 +1,4 @@
+import type Uppy from '@uppy/core';
 import Dashboard from '@uppy/react/dashboard';
 import { useCallback, useState } from 'react';
 
@@ -11,7 +12,7 @@ import '@uppy/dashboard/css/style.css';
 interface UploadModalProps {
     id: string | number;
     title?: string | null;
-    uppy?: uppy | null;
+    uppy?: Uppy | null;
     plugins?: string[];
     onClosed?: (() => void) | null;
 }

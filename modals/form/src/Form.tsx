@@ -67,6 +67,7 @@ function FormModal({
             requestClose={requestClose}
             onClosed={onClosed}
             onClickSubmit={onClickSubmit}
+            onClickCancel={onFormCancel}
             className={className}
             submitButtonLabel={submitButtonLabel}
             cancelButtonLabel={cancelButtonLabel}

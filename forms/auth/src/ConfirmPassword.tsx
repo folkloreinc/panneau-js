@@ -24,19 +24,21 @@ function ConfirmPassword({
         <FormComponent
             action={action}
             fields={
-                fields || [
-                    {
-                        name: 'password',
-                        type: 'password',
-                        size,
-                        label: passwordLabel || (
-                            <FormattedMessage
-                                defaultMessage="Please enter your password to continue"
-                                description="Field label"
-                            />
-                        ),
-                    },
-                ]
+                fields !== null && fields.length > 0
+                    ? fields
+                    : [
+                          {
+                              name: 'password',
+                              type: 'password',
+                              size,
+                              label: passwordLabel || (
+                                  <FormattedMessage
+                                      defaultMessage="Please enter your password to continue"
+                                      description="Field label"
+                                  />
+                              ),
+                          },
+                      ]
             }
             submitButtonLabel={
                 submitButtonLabel || (

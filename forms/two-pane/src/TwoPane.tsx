@@ -6,7 +6,7 @@ import { useFieldComponent, usePreviewComponent } from '@panneau/core/contexts';
 import Form from '@panneau/element-form';
 
 interface TwoPaneFormProps {
-    fields: Record<string, unknown>;
+    fields?: Field[] | null;
     resource?: Resource | null;
     size?: 'half' | 'medium' | 'large' | null;
     value?: Record<string, unknown> | null;
