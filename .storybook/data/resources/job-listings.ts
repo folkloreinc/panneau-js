@@ -15,6 +15,7 @@ const departments = [
  * - grouped fields stored in an object ("fields" component -> value.details.*)
  * - batch actions: select many rows and delete them at once
  * - a two-pane form layout
+ * - settings.showInIndex: the columns used when `index.columns` is not set
  */
 const jobListingsResource: Resource = {
     id: 'jobListings',
@@ -35,6 +36,7 @@ const jobListingsResource: Resource = {
     fields: [
         localized({
             name: 'title',
+            settings: { showInIndex: true },
             label: 'Titre du poste',
             component: 'text',
             display: 'text-localized',
@@ -70,12 +72,14 @@ const jobListingsResource: Resource = {
         localized({ name: 'description', label: 'Description', component: 'html' }),
         {
             name: 'deadline',
+            settings: { showInIndex: true },
             label: 'Date limite',
             component: 'date',
             components: { display: { component: 'date', format: 'd MMMM yyyy' } },
         },
         {
             name: 'published',
+            settings: { showInIndex: true },
             label: 'Publiée',
             component: 'toggle',
             components: { display: 'boolean' },

@@ -1,7 +1,7 @@
 import { resourceValues } from '../../../../.storybook/data/utils';
 
 import definition from '../../../../.storybook/data/definition';
-import { eventsResource } from '../../../../.storybook/data/resources';
+import { eventsResource, jobListingsResource } from '../../../../.storybook/data/resources';
 import AppStory from './components/AppStory';
 
 /**
@@ -56,6 +56,24 @@ export const ResourcePageOverride = {
                                   resourceShowPage: { component: 'event-show-page' },
                               },
                           }
+                        : resource,
+                ),
+            }}
+        />
+    ),
+};
+
+/** Without `index.columns`, the fields with settings.showInIndex are the columns */
+export const ColumnsFromFields = {
+    name: 'Columns from fields',
+    render: () => (
+        <AppStory
+            path="/jobListings"
+            definition={{
+                ...definition,
+                resources: definition.resources.map((resource) =>
+                    resource.id === jobListingsResource.id
+                        ? { ...resource, index: { ...resource.index, columns: undefined } }
                         : resource,
                 ),
             }}

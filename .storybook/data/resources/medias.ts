@@ -54,7 +54,14 @@ const mediasResource: Resource = {
             options: mediaTypes,
             components: { display: optionsLabelDisplay(mediaTypes) },
         },
-        { name: 'url', label: 'URL', component: 'url', disabled: true },
+        {
+            name: 'url',
+            label: 'URL',
+            component: 'url',
+            disabled: true,
+            // The url exists once the media is uploaded: only in the edit form
+            settings: { updateOnly: true },
+        },
     ],
 
     index: {

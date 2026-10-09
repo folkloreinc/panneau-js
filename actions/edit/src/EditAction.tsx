@@ -1,5 +1,6 @@
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
+import omit from 'lodash-es/omit';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
@@ -7,6 +8,9 @@ import type { ActionValue, ButtonTheme, Resource } from '@panneau/core';
 import { useModalComponent, useResource } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
+
+// Props given by <Actions> to all the actions, not used by this one
+const ACTIONS_LIST_PROPS = ['withoutConfirmation', 'reload', 'updateValue'];
 
 interface EditActionProps {
     id?: string | null;
@@ -24,6 +28,9 @@ interface EditActionProps {
     withDefaultLabel?: boolean;
     resource?: Resource | string | null;
     className?: string | null;
+    withoutConfirmation?: boolean;
+    reload?: (() => void) | null;
+    updateValue?: ((value: unknown) => void) | null;
 }
 
 function EditAction({
@@ -87,7 +94,7 @@ function EditAction({
                 disabled={disabled}
                 theme={theme}
                 href={!withModal ? finalHref : null}
-                {...props}
+                {...omit(props, ACTIONS_LIST_PROPS)}
             />
             {modalOpen ? (
                 <ModalComponent
@@ -108,7 +115,7 @@ function EditAction({
                     value={value}
                     onClosed={onClosed}
                     onComplete={onComplete}
-                    {...props}
+                    {...omit(props, ACTIONS_LIST_PROPS)}
                 />
             ) : null}
         </>

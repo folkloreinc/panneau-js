@@ -8,6 +8,7 @@ import { localized, resourceValues } from '../utils';
  * Shows:
  * - an index displayed as cards instead of a table
  * - a simple resource without types
+ * - a field only shown in the create form (settings.createOnly)
  */
 const personsResource: Resource = {
     id: 'persons',
@@ -34,6 +35,13 @@ const personsResource: Resource = {
             display: 'text-localized',
         }),
         { name: 'email', label: 'Courriel', component: 'email' },
+        {
+            name: 'send_invitation',
+            label: 'Envoyer une invitation par courriel',
+            component: 'toggle',
+            // Only in the create form
+            settings: { createOnly: true },
+        },
         {
             name: 'photo',
             label: 'Photo',

@@ -19,6 +19,9 @@ interface TwoPaneFormProps {
     children?: ReactNode | null;
     className?: string | null;
     ref?: ForwardedRef<HTMLFormElement> | null;
+    item?: Record<string, unknown> | null;
+    isCreate?: boolean;
+    loading?: boolean;
 }
 
 function TwoPaneForm({
@@ -34,6 +37,13 @@ function TwoPaneForm({
     children = null,
     className = null,
     ref,
+    // Given by the resource form and not used here: keep them off the <form> element
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    item: _item = null,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    isCreate: _isCreate = false,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    loading: _loading = false,
     ...props
 }: TwoPaneFormProps) {
     const { id = null } = resource || {};

@@ -1,6 +1,6 @@
 import { ElementType, ForwardedRef, type ReactNode, useState } from 'react';
 
-import type { FormDefinition, Item, Resource } from '@panneau/core';
+import type { FieldSettings, FormDefinition, Item, Resource } from '@panneau/core';
 import {
     FormProvider,
     useFormsComponents,
@@ -18,10 +18,6 @@ import {
 
 import DeleteForm from './Delete';
 import DuplicateForm from './Duplicate';
-
-interface FieldSettings {
-    hiddenInForm?: boolean;
-}
 
 interface ResourceFormDefinition extends Partial<FormDefinition> {
     withoutHeader?: boolean;
@@ -103,7 +99,14 @@ function ResourceForm({
         defaultFields ||
         resourceTypeFields ||
         resourceFields
-    ).filter(({ settings }) => !(settings as FieldSettings | null | undefined)?.hiddenInForm);
+    ).filter(({ settings = null }) => {
+        const {
+            hiddenInForm = false,
+            createOnly = false,
+            updateOnly = false,
+        } = (settings || {}) as FieldSettings;
+        return !hiddenInForm && !(createOnly && !isCreate) && !(updateOnly && isCreate);
+    });
 
     // Form routes
     const resourceRoute = useResourceUrlGenerator(resource);

@@ -46,6 +46,7 @@ export interface PanneauIntl {
     locale?: string;
     locales?: string[];
     messages?: Record<string, string>;
+    /** @deprecated Not used: set the values of each resource in `resources[].intl.values` */
     values?: PanneauIntlValues;
 }
 
@@ -68,9 +69,14 @@ export interface PanneauMenus {
     [key: string]: PanneauMenuItem[] | null | undefined;
 }
 
+/**
+ * Links shown on the login page: `true` for the default url, or the url of the page
+ */
 export interface PanneauAuth {
-    forgotPassword?: boolean;
-    register?: boolean;
+    /** "Forgot your password?" link (default url: /forgot-password) */
+    forgotPassword?: boolean | string;
+    /** "Create account" link (default url: /register) */
+    register?: boolean | string;
     [key: string]: unknown;
 }
 
@@ -84,6 +90,7 @@ export interface PanneauDefinition {
     pages?: PanneauPages;
     intl?: PanneauIntl;
     theme?: PanneauTheme;
+    /** @deprecated Not used: give the custom components to the `components` prop of the container */
     components?: PanneauComponents;
     settings?: Record<string, unknown>;
     forms?: FormDefinition[];

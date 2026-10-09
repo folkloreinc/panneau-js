@@ -1,11 +1,15 @@
 import { getCSRFHeaders, postJSON } from '@folklore/fetch';
 import isArray from 'lodash-es/isArray';
+import omit from 'lodash-es/omit';
 import { type ReactNode, useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { ActionValue, ButtonTheme } from '@panneau/core';
 import { useModalsComponentsManager } from '@panneau/core/contexts';
 import Button from '@panneau/element-button';
+
+// Props given by <Actions> to all the actions, not used by this one
+const ACTIONS_LIST_PROPS = ['reload', 'updateValue'];
 
 interface RestoreActionProps {
     id: string;
@@ -27,6 +31,8 @@ interface RestoreActionProps {
     withoutConfirmation?: boolean;
     onClick?: (() => void) | null;
     className?: string | null;
+    reload?: (() => void) | null;
+    updateValue?: ((value: unknown) => void) | null;
 }
 
 function RestoreAction({
@@ -106,7 +112,7 @@ function RestoreAction({
                 onClick={onClick ?? (withoutConfirmation ? onConfirm : onOpen)}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
-                {...props}
+                {...omit(props, ACTIONS_LIST_PROPS)}
             />
             {error !== null ? (
                 <span className="text-danger small ms-1">

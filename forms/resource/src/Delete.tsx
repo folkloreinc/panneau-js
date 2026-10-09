@@ -19,6 +19,8 @@ interface DeleteFormProps {
     generalError?: string | null;
     errors?: Record<string, string[]> | null;
     loading?: boolean;
+    item?: Partial<Item> | null;
+    isCreate?: boolean;
     className?: string | null;
 }
 
@@ -38,6 +40,10 @@ function DeleteForm({
     fields: _fields = null,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onChange: _onChange = null,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    item: _item = null,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    isCreate: _isCreate = false,
     ...props
 }: DeleteFormProps) {
     const { id = null } = value || {};

@@ -5,6 +5,7 @@ import withIntlProvider from './decorators/withIntlProvider';
 import withRouter from './decorators/withRouter';
 import withRoutesProvider from './decorators/withRoutesProvider';
 
+import './intl';
 import '../packages/themes/src/styles/vendor.css';
 
 export const parameters = {

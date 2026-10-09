@@ -1,3 +1,4 @@
+import definition from '../../../../.storybook/data/definition';
 import AppStory from './components/AppStory';
 
 /**
@@ -21,6 +22,18 @@ export const Home = {
 export const Login = {
     name: 'Login (logged out)',
     render: () => <AppStory path="/" user={null} />,
+};
+
+/** auth: { forgotPassword: true, register: '/inscription' } (pages served by the backend) */
+export const LoginWithLinks = {
+    name: 'Login with links',
+    render: () => (
+        <AppStory
+            path="/"
+            user={null}
+            definition={{ ...definition, auth: { forgotPassword: true, register: '/inscription' } }}
+        />
+    ),
 };
 
 export const Account = {
