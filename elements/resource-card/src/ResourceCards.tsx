@@ -3,6 +3,7 @@ import isArray from 'lodash-es/isArray';
 import { useMemo } from 'react';
 
 import ResourceCard from './ResourceCard';
+import type { ResourceCardProps } from './ResourceCard';
 
 import styles from './styles.module.css';
 
@@ -13,7 +14,7 @@ interface ResourceItem {
     url?: string;
 }
 
-interface ResourceCardsProps {
+interface ResourceCardsProps extends Omit<ResourceCardProps, 'item' | 'className'> {
     value?: ResourceItem[] | ResourceItem | null;
     className?: string | null;
     cardClassName?: string | null;

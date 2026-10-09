@@ -108,9 +108,8 @@ function Dropdown({
                                 }
                               : null;
                       return ItemComponent !== null ? (
-                          <li>
+                          <li key={`item-${id || index}`}>
                               <ItemComponent
-                                  key={`item-${id || index}`}
                                   className={classNames([
                                       {
                                           'dropdown-item': type === 'link' || type === 'button',

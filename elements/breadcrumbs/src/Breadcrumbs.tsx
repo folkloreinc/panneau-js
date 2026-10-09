@@ -66,7 +66,7 @@ function Breadcrumbs({
                                 <LabelComponent>{label as Label}</LabelComponent>
                             </Link>
                         ) : null}
-                        {!active && onClick ? (
+                        {!active && !url && onClick ? (
                             <Button
                                 onClick={onClick}
                                 className={classNames({

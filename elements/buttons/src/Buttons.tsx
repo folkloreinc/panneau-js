@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import isString from 'lodash-es/isString';
 import type { MouseEvent, ReactNode } from 'react';
+import { Fragment } from 'react';
 
 import type { ButtonElement, ButtonSize, ButtonTheme, Button as ButtonType } from '@panneau/core';
 import { useButtonsComponentsManager } from '@panneau/core/contexts';
@@ -15,8 +16,7 @@ interface ButtonsProps {
         | ((button: ButtonType, index: number, fixedProps: Record<string, unknown>) => ReactNode)
         | null;
     onClickButton?:
-        | ((e: MouseEvent<ButtonElement>, button: ButtonType, index: number) => void)
-        | null;
+        ((e: MouseEvent<ButtonElement>, button: ButtonType, index: number) => void) | null;
     className?: string | null;
     buttonClassName?: string | null;
 }
@@ -51,8 +51,8 @@ function Buttons({
                     ...buttonProps
                 } = (button as ButtonType) || {};
 
+                const key = `button-${index}`;
                 const fixedProps = {
-                    key: `button-${index}`,
                     className: classNames([buttonClassName, customClassName]),
                     theme,
                     outline,
@@ -72,14 +72,18 @@ function Buttons({
                         : component;
 
                 if (ButtonComponent !== null) {
-                    return <ButtonComponent {...fixedProps} {...buttonProps} />;
+                    return <ButtonComponent key={key} {...fixedProps} {...buttonProps} />;
                 }
                 const finalRenderButton = customRenderButton || renderButton;
                 if (finalRenderButton) {
-                    return finalRenderButton(button, index, fixedProps);
+                    return (
+                        <Fragment key={key}>
+                            {finalRenderButton(button, index, fixedProps)}
+                        </Fragment>
+                    );
                 }
 
-                return <Button {...fixedProps} {...buttonProps} />;
+                return <Button key={key} {...fixedProps} {...buttonProps} />;
             })}
         </div>
     );

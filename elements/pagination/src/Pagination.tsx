@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
-import isArray from 'lodash-es/isArray';
 import queryString from 'query-string';
-import { MouseEvent, ReactNode, cloneElement, useCallback, useMemo } from 'react';
+import type { MouseEvent, ReactElement, ReactNode } from 'react';
+import { cloneElement, useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { ControlSize, Item } from '@panneau/core';
@@ -100,25 +100,21 @@ function Pagination({
         [url, query],
     );
 
-    const pageNumbers = Array.from({ length: parseInt(String(lastPage), 10) }, (_, i) => i + 1);
-    const stripPages = maxPages !== null && lastPage > maxPages;
-    const startPage = stripPages
-        ? Math.min(Math.max(page - maxPages / 2, 1), lastPage - maxPages)
-        : 1;
-    const endPage = stripPages ? startPage + maxPages : lastPage;
-    const strippedPages = stripPages
-        ? pageNumbers.reduce((selectedPages: (number | string)[], pageNumber: number) => {
-              if (pageNumber === 1 && startPage - 1 > 1) {
-                  return [pageNumber, '...'];
-              }
-              if (pageNumber === lastPage && endPage + 1 < lastPage) {
-                  return [...selectedPages, '...', pageNumber];
-              }
-              return pageNumber >= startPage && pageNumber <= endPage
-                  ? [...selectedPages, pageNumber]
-                  : selectedPages;
-          }, [])
-        : pageNumbers;
+    const pageNumbers = Array.from({ length: Math.max(lastPage, 0) }, (_, i) => i + 1);
+    const stripPages = !Number.isNaN(maxPages) && maxPages > 0 && lastPage > maxPages;
+    let strippedPages: (number | string)[] = pageNumbers;
+    if (stripPages) {
+        const halfPages = Math.floor(maxPages / 2);
+        const endPage = Math.min(Math.max(page - halfPages, 1) + maxPages - 1, lastPage);
+        const startPage = Math.max(endPage - maxPages + 1, 1);
+        strippedPages = [
+            ...(startPage > 1 ? [1] : []),
+            ...(startPage > 2 ? ['...'] : []),
+            ...pageNumbers.slice(startPage - 1, endPage),
+            ...(endPage < lastPage - 1 ? ['...'] : []),
+            ...(endPage < lastPage ? [lastPage] : []),
+        ];
+    }
 
     const pages = strippedPages.length > 0 ? strippedPages : [1];
 

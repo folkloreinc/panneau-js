@@ -28,7 +28,14 @@ function Modals({ closeOnEscape = false, className = null }: ModalsProps) {
         } else {
             document.body.classList.remove('modal-open');
         }
-    }, [modals]);
+    }, [hasModal]);
+
+    useEffect(
+        () => () => {
+            document.body.classList.remove('modal-open');
+        },
+        [],
+    );
 
     useKeyboardKeys(
         closeOnEscape
@@ -55,14 +62,20 @@ function Modals({ closeOnEscape = false, className = null }: ModalsProps) {
     );
 
     useEffect(() => {
+        let timeout: ReturnType<typeof setTimeout> | null = null;
         if (hasModalWithBackdrop) {
             setBackdropMounted(true);
-            setTimeout(() => {
+            timeout = setTimeout(() => {
                 setShowBackdrop(true);
             }, 1);
         } else {
             setShowBackdrop(false);
         }
+        return () => {
+            if (timeout !== null) {
+                clearTimeout(timeout);
+            }
+        };
     }, [hasModalWithBackdrop]);
 
     return (

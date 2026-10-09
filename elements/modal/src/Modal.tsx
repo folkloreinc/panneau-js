@@ -35,8 +35,12 @@ function Modal({
             requestClose: !withoutTransition
                 ? requestClose
                 : () => {
-                      requestClose();
-                      onClosed();
+                      if (requestClose !== null) {
+                          requestClose();
+                      }
+                      if (onClosed !== null) {
+                          onClosed();
+                      }
                   },
         }),
         [title, withoutBackdrop, withoutTransition, requestClose, onClosed],
@@ -45,15 +49,25 @@ function Modal({
     const [show, setShow] = useState(false);
     const finalMounted = mounted || (withoutTransition && visible);
     useEffect(() => {
+        let timeout: ReturnType<typeof setTimeout> | null = null;
         if (visible) {
             setMounted(true);
-            setTimeout(() => {
+            timeout = setTimeout(() => {
                 setShow(true);
             }, 1);
         } else {
             setShow(false);
+            if (withoutTransition) {
+                // No transitionend event will fire, so unmount right away
+                setMounted(false);
+            }
         }
-    }, [visible]);
+        return () => {
+            if (timeout !== null) {
+                clearTimeout(timeout);
+            }
+        };
+    }, [visible, withoutTransition]);
 
     const onTransitionEnd = useCallback(
         (e) => {
@@ -79,7 +93,7 @@ function Modal({
                     },
                     className,
                 ])}
-                aria-dialog="true"
+                aria-modal="true"
                 role="dialog"
                 tabIndex={-1}
                 onTransitionEnd={onTransitionEnd}

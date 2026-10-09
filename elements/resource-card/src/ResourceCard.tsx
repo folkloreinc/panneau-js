@@ -12,7 +12,7 @@ interface ResourceItem {
     [key: string]: any;
 }
 
-interface ResourceCardProps {
+export interface ResourceCardProps {
     item?: ResourceItem | null;
     itemLabelPath?: string;
     itemDescriptionPath?: string | null;

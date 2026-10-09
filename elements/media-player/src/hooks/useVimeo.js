@@ -15,7 +15,7 @@ function getVideoId(url) {
     if (isVideoId(url)) {
         return url;
     }
-    const match = url.match(/\/[0-9]+/);
+    const match = url.match(/\/([0-9]+)/);
     return match !== null ? match[1] : null;
 }
 
@@ -139,6 +139,9 @@ function useVimeo(
         let canceled = false;
 
         let player = currentPlayer;
+        if (player === null && iframeRef.current === null) {
+            return () => {};
+        }
         if (player === null) {
             debug('Create player [ID: %s]', videoId);
             const { current: iframe } = iframeRef;

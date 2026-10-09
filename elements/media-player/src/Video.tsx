@@ -86,7 +86,6 @@ function Video({
         url = null,
         iframeUrl = null,
         provider: videoProvider = null,
-        id: videoId,
         width: videoWidth,
         height: videoHeight,
         duration: videoDuration,
@@ -103,7 +102,6 @@ function Video({
         autoplay: autoPlay,
         controls: 0,
         type: videoProvider,
-        videoId,
         initialMuted,
         width: videoWidth,
         height: videoHeight,
@@ -139,14 +137,14 @@ function Video({
                 className,
             ])}
         >
-            {url !== null ? (
+            {finalUrl !== null ? (
                 <div className={styles.inner}>
                     {videoProvider === 'youtube' || videoProvider === 'vimeo' ? (
                         <iframe
                             key={media !== null ? `video-${finalUrl}` : 'video'}
                             className={classNames([styles.iframe, iframeClassName])}
                             title="video"
-                            src={iframeUrl ?? url}
+                            src={iframeUrl ?? url ?? undefined}
                             ref={ref}
                             allow="autoplay"
                             allowFullScreen
@@ -156,7 +154,7 @@ function Video({
                     ) : null}
                     {videoProvider === null ? (
                         <video
-                            key={media !== null ? `video-${url}` : 'video'}
+                            key={media !== null ? `video-${finalUrl}` : 'video'}
                             className={classNames([styles.video, videoClassName])}
                             src={finalUrl || undefined}
                             playsInline={playsInline || undefined}

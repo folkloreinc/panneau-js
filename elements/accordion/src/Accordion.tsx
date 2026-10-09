@@ -56,14 +56,7 @@ function Accordion({
     );
 
     return (
-        <div
-            className={classNames([
-                styles.container,
-                'accordion',
-                className,
-            ])}
-            id={accordionId}
-        >
+        <div className={classNames([styles.container, 'accordion', className])} id={accordionId}>
             {title !== null ? <h3>{title}</h3> : null}
             {items.length > 0
                 ? items.map((it, idx) => {
@@ -71,17 +64,14 @@ function Accordion({
                       const { label = null, content = null } = it || {};
                       return (
                           <div className="accordion-item" key={`acc-${idx + 1}`}>
-                              <h2
-                                  className="accordion-header"
-                                  id={`${accordionId}-${label}-${idx + 1}`}
-                              >
+                              <h2 className="accordion-header" id={`${accordionId}-header${idx}`}>
                                   <button
                                       className={`accordion-button ${
                                           itemOpened ? '' : 'collapsed'
                                       }`}
                                       type="button"
                                       onClick={() => openItem(idx)}
-                                      aria-expanded="true"
+                                      aria-expanded={itemOpened}
                                       aria-controls={`${accordionId}-collapse${idx}`}
                                   >
                                       {label}
@@ -93,7 +83,7 @@ function Accordion({
                                       'accordion-item collapse show',
                                       styles.accordeonItem,
                                   ])}
-                                  aria-labelledby={`${accordionId}-${label}-${idx + 1}`}
+                                  aria-labelledby={`${accordionId}-header${idx}`}
                                   data-bs-parent={`#${accordionId}`}
                                   style={{
                                       height: `${itemOpened ? accordionItemsHeights[idx] : '0'}`,

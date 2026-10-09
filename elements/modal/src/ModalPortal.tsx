@@ -21,7 +21,23 @@ function ModalPortal({ id = null, data = null, children = null }: ModalPortalPro
 
     useEffect(() => {
         if (register !== null) {
-            register(finalId, dataRef.current);
+            // Function values (and requestClose, which may be set later) are proxied through
+            // the ref so the registry always calls the latest version, not the one at mount
+            const currentData = dataRef.current || {};
+            const registeredData = Object.keys(currentData).reduce(
+                (acc: Record<string, unknown>, key: string) => ({
+                    ...acc,
+                    [key]:
+                        typeof currentData[key] === 'function' || key === 'requestClose'
+                            ? (...args: unknown[]) => {
+                                  const latest = (dataRef.current || {})[key];
+                                  return typeof latest === 'function' ? latest(...args) : undefined;
+                              }
+                            : currentData[key],
+                }),
+                {},
+            );
+            register(finalId, registeredData);
         }
         return () => {
             if (unregister !== null) {

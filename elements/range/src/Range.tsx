@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import type { ChangeEvent } from 'react';
-import { useCallback } from 'react';
+import { useCallback, useId } from 'react';
 
 import styles from './styles.module.css';
 
@@ -13,6 +13,7 @@ interface RangeProps {
 }
 
 function Range({ title = null, value = 50, onChange, max = 100, className = null }: RangeProps) {
+    const inputId = useId();
     const onValueChange = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
             onChange(e.target.value);
@@ -22,14 +23,14 @@ function Range({ title = null, value = 50, onChange, max = 100, className = null
     return (
         <div className={classNames([styles.container, className])}>
             <h4>
-                <label className={styles.label} htmlFor="range">
+                <label className={styles.label} htmlFor={inputId}>
                     {title}
                 </label>
             </h4>
             <input
                 className="form-range"
                 type="range"
-                id="range"
+                id={inputId}
                 min="0"
                 max={max}
                 onChange={onValueChange}

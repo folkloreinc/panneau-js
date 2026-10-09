@@ -62,70 +62,149 @@ const useNativeVideo = (
     const setVolume = useCallback(
         (volume) => {
             const { current: player } = playerRef;
-            const promise =
-                player !== null && typeof player.volume !== 'undefined'
-                    ? Promise.resolve(() => {
-                          player.volume = volume * 100;
-                      })
-                    : Promise.reject(noPlayerError);
+            if (player === null || typeof player.volume === 'undefined') {
+                return Promise.reject(noPlayerError);
+            }
+            // HTMLMediaElement volume is between 0 and 1
+            player.volume = Math.min(Math.max(volume, 0), 1);
             if (customOnVolumeChange) {
                 customOnVolumeChange(volume);
             }
-            return promise;
+            return Promise.resolve();
         },
         [customOnVolumeChange],
     );
 
     const mute = useCallback(() => {
         const { current: player } = playerRef;
-        return (
-            player !== null && typeof player.volume !== 'undefined'
-                ? Promise.resolve(() => {
-                      player.volume = 0;
-                  })
-                : Promise.reject(noPlayerError)
-        ).then(() => setMuted(true));
+        if (player === null || typeof player.muted === 'undefined') {
+            return Promise.reject(noPlayerError);
+        }
+        player.muted = true;
+        setMuted(true);
+        return Promise.resolve();
     }, [setMuted]);
 
     const unmute = useCallback(() => {
         const { current: player } = playerRef;
-        return (
-            player !== null && typeof player.volume !== 'undefined'
-                ? Promise.resolve(() => {
-                      player.volume = 1;
-                  })
-                : Promise.reject(noPlayerError)
-        ).then(() => setMuted(false));
-    }, []);
+        if (player === null || typeof player.muted === 'undefined') {
+            return Promise.reject(noPlayerError);
+        }
+        player.muted = false;
+        setMuted(false);
+        return Promise.resolve();
+    }, [setMuted]);
 
     const seek = useCallback((time) => {
         const { current: player } = playerRef;
-        return player !== null && typeof player.currentTime !== 'undefined'
-            ? Promise.resolve(() => {
-                  player.currentTime = time;
-              })
-            : Promise.reject(noPlayerError);
+        if (player === null || typeof player.currentTime === 'undefined') {
+            return Promise.reject(noPlayerError);
+        }
+        player.currentTime = time;
+        return Promise.resolve();
     }, []);
 
     const setLoop = useCallback((loop) => {
         const { current: player } = playerRef;
-        return player !== null && typeof player.loop !== 'undefined'
-            ? Promise.resolve(() => {
-                  player.loop = loop;
-              })
-            : Promise.reject(noPlayerError);
-    }, []);
-
-    const destroyPlayer = useCallback(() => {
-        const { current: player } = playerRef;
-        if (player !== null) {
-            debug('Unset player');
-            playerRef.current = null;
+        if (player === null || typeof player.loop === 'undefined') {
+            return Promise.reject(noPlayerError);
         }
+        player.loop = loop;
+        return Promise.resolve();
     }, []);
 
-    // Create player
-    useEffect(() => {}, [setPlayState, setReady, setMetadata, destroyPlayer]);
+    // Bind media events
+    useEffect(() => {
+        const { current: player } = playerRef;
+        if (url === null || player === null || typeof player.addEventListener === 'undefined') {
+            return () => {};
+        }
+        debug('Bind events [URL: %s]', url);
+        setReady(player.readyState >= 1);
+
+        const onLoadedMetadata = () => {
+            setMetadata({
+                width: player.videoWidth || width,
+                height: player.videoHeight || height,
+                duration: player.duration || duration,
+            });
+            setReady(true);
+        };
+        const onPlay = () =>
+            setPlayState({
+                playing: true,
+                paused: false,
+                ended: false,
+                buffering: false,
+            });
+        const onPause = () =>
+            setPlayState({
+                playing: false,
+                paused: true,
+                ended: false,
+                buffering: false,
+            });
+        const onEnded = () =>
+            setPlayState({
+                playing: false,
+                paused: false,
+                ended: true,
+                buffering: false,
+            });
+        const onWaiting = () =>
+            setPlayState((state) => ({
+                ...state,
+                buffering: true,
+            }));
+        const onPlaying = () =>
+            setPlayState({
+                playing: true,
+                paused: false,
+                ended: false,
+                buffering: false,
+            });
+        const onVolumeChange = () => setMuted(player.muted);
+        const onTimeUpdate = () => {
+            const seconds = player.currentTime;
+            realCurrentTime.current = seconds;
+            setCurrentTime(seconds);
+            if (customOnTimeUpdate !== null) {
+                customOnTimeUpdate(seconds);
+            }
+        };
+
+        player.addEventListener('loadedmetadata', onLoadedMetadata);
+        player.addEventListener('play', onPlay);
+        player.addEventListener('pause', onPause);
+        player.addEventListener('ended', onEnded);
+        player.addEventListener('waiting', onWaiting);
+        player.addEventListener('playing', onPlaying);
+        player.addEventListener('volumechange', onVolumeChange);
+        player.addEventListener('timeupdate', onTimeUpdate);
+
+        return () => {
+            debug('Unbind events [URL: %s]', url);
+            player.removeEventListener('loadedmetadata', onLoadedMetadata);
+            player.removeEventListener('play', onPlay);
+            player.removeEventListener('pause', onPause);
+            player.removeEventListener('ended', onEnded);
+            player.removeEventListener('waiting', onWaiting);
+            player.removeEventListener('playing', onPlaying);
+            player.removeEventListener('volumechange', onVolumeChange);
+            player.removeEventListener('timeupdate', onTimeUpdate);
+        };
+    }, [
+        url,
+        width,
+        height,
+        duration,
+        customOnTimeUpdate,
+        setPlayState,
+        setReady,
+        setMetadata,
+        setMuted,
+        setCurrentTime,
+    ]);
 
     const { playing, paused, buffering, ended } = playState;
 
@@ -170,7 +249,9 @@ const useNativeVideo = (
 
     useEffect(() => {
         if (autoplay && playerRef.current !== null) {
-            playerRef.current.play();
+            Promise.resolve(playerRef.current.play()).catch((e) => {
+                debug('Autoplay error: %o', e);
+            });
         }
     }, [autoplay, playerRef.current]);
 
@@ -184,32 +265,6 @@ const useNativeVideo = (
             });
         }
     }, [metaWidth, metaHeight, metaDuration, customOnMetadataChange]);
-
-    // Check time update
-    useEffect(() => {
-        const { current: player } = playerRef;
-        if (player === null) {
-            return () => {};
-        }
-        const onTimeUpdate = () => {
-            const seconds = player.getCurrentTime();
-            realCurrentTime.current = seconds;
-            setCurrentTime(seconds);
-
-            if (customOnTimeUpdate !== null) {
-                customOnTimeUpdate(seconds);
-            }
-        };
-        let interval = null;
-        if (playing) {
-            interval = setInterval(onTimeUpdate, 1000);
-        }
-        return () => {
-            if (interval !== null) {
-                clearInterval(interval);
-            }
-        };
-    }, [setCurrentTime, playing]);
 
     return {
         ref: playerRef,

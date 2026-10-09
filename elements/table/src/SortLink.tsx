@@ -39,9 +39,11 @@ function SortLink({
     const { [parameterName]: currentSortValue = null } = query || {};
     const [currentSort, fallbackCurrentDirection = null] = (currentSortValue || '').split(',');
     const currentSortDirection =
-        directionParameterName !== null
-            ? (query || {})[directionParameterName] || null
-            : fallbackCurrentDirection;
+        currentSort === columnName
+            ? (directionParameterName !== null
+                  ? (query || {})[directionParameterName] || null
+                  : fallbackCurrentDirection) || null
+            : null;
     const sortDirectionIndex = directions.indexOf(currentSortDirection);
     const newSortDirection =
         directions[sortDirectionIndex === directions.length - 1 ? 0 : sortDirectionIndex + 1];

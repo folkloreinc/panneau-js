@@ -1,6 +1,6 @@
-import { useRef, useCallback, useEffect, useState } from 'react';
 import { loadYouTube } from '@folklore/services';
 import createDebug from 'debug';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 function getYoutubeVideoId(url) {
     const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
@@ -35,7 +35,7 @@ function useYouTube(
         duration = 0,
         autoplay = false,
         controls = 0,
-        muted: initialMuted = false,
+        initialMuted = false,
         onLoaded: customOnLoaded = null,
         onPlay: customOnPlay = null,
         onPause: customOnPause = null,
@@ -252,7 +252,7 @@ function useYouTube(
                 },
             });
             playerIframeRef.current = iframe;
-        } else {
+        } else if (player !== null) {
             debug('Switch video [ID: %s]', videoId);
             player.loadVideoById(videoId);
         }

@@ -229,13 +229,8 @@ function SelectElement({
                             : 'none',
                         '&:hover': {
                             borderColor: 'rgba(var(--bs-primary-rgb), 0.25)',
-                            boxShadow: '0 0 0 1px rgba(var(--bs-primary-rgb, 0.25)',
+                            boxShadow: '0 0 0 1px rgba(var(--bs-primary-rgb), 0.25)',
                         },
-                    }),
-                    indicators: (base: any) => ({
-                        ...base,
-                        color: 'var(--bs-body-bg)',
-                        backgroundColor: 'var(--bs-body-color)',
                     }),
                     menu: (base: any) => ({
                         ...base,
@@ -248,17 +243,25 @@ function SelectElement({
                         border: '1px solid var(--bs-border-color)',
                         borderRadius: '4px',
                     }),
-                    option: (base: any, { isDisabled }: any) => ({
-                        ...base,
-                        color: 'var(--bs-body-color)',
-                        backgroundColor: 'var(--bs-body-bg)',
-                        cursor: isDisabled ? 'not-allowed' : 'pointer',
-                        ':active': {
-                            ...(base as any)[':active'],
-                            color: 'var(--bs-primary)',
-                            cursor: 'pointer',
-                        },
-                    }),
+                    option: (base: any, { isDisabled, isFocused, isSelected }: any) => {
+                        let backgroundColor = 'var(--bs-body-bg)';
+                        if (isSelected) {
+                            backgroundColor = 'var(--bs-primary)';
+                        } else if (isFocused) {
+                            backgroundColor = 'var(--bs-tertiary-bg)';
+                        }
+                        return {
+                            ...base,
+                            color: isSelected ? 'var(--bs-white)' : 'var(--bs-body-color)',
+                            backgroundColor,
+                            cursor: isDisabled ? 'not-allowed' : 'pointer',
+                            ':active': {
+                                ...(base as any)[':active'],
+                                color: isSelected ? 'var(--bs-white)' : 'var(--bs-primary)',
+                                cursor: 'pointer',
+                            },
+                        };
+                    },
                     dropdownIndicator: (base: any) => ({
                         ...base,
                         color: 'inherit',

@@ -16,7 +16,7 @@ import { type ReactNode, useCallback, useMemo } from 'react';
 import Button from '@panneau/element-button';
 import Icon from '@panneau/element-icon';
 
-interface MediaValue {
+export interface MediaValue {
     id?: string | null;
     filename?: string | null;
     size?: number;
@@ -29,7 +29,7 @@ interface MediaValue {
     type?: string;
 }
 
-interface MediaCardProps {
+export interface MediaCardProps {
     value?: MediaValue | null;
     vertical?: boolean;
     index?: number | null;
@@ -330,7 +330,8 @@ function MediaCard({
                         </Button>
                     ) : null}
 
-                    {!withoutDescription && (onClickDescription === null || actionsDisabled) ? (
+                    {!withoutDescription &&
+                    (link !== null || onClickDescription === null || actionsDisabled) ? (
                         <div className="flex-grow-1 w-100">{descriptionElement}</div>
                     ) : null}
 

@@ -1,11 +1,15 @@
 import classNames from 'classnames';
+import type { AnchorHTMLAttributes, MouseEventHandler } from 'react';
 import { Link as ReactLink } from 'wouter';
 
-import type { Label as LabelType } from '@panneau/core';
+import type { ButtonElement, Label as LabelType } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Label from '@panneau/element-label';
 
-interface LinkProps {
+export interface LinkProps extends Omit<
+    AnchorHTMLAttributes<HTMLAnchorElement>,
+    'href' | 'onClick' | 'children' | 'className' | 'type'
+> {
     href?: string | null;
     external?: boolean;
     target?: string;
@@ -13,7 +17,7 @@ interface LinkProps {
     rel?: string;
     withoutStyle?: boolean;
     className?: string | null;
-    onClick?: (() => void) | null;
+    onClick?: MouseEventHandler<ButtonElement> | null;
 }
 
 function Link({

@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useId, useState } from 'react';
 
 import { BreakpointsSize } from '@panneau/core';
 import Button from '@panneau/element-button';
@@ -38,6 +38,7 @@ function Navbar({
     brandClassName = null,
     breadCrumbsClassName = null,
 }: NavbarProps) {
+    const collapseId = useId();
     const [menuVisible, setMenuVisible] = useState(false);
     const onClickMenu = () => setMenuVisible(!menuVisible);
     return (
@@ -102,8 +103,8 @@ function Navbar({
                     className="navbar-toggler"
                     onClick={onClickMenu}
                     withoutTheme
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
+                    aria-controls={collapseId}
+                    aria-expanded={menuVisible}
                     aria-label="Toggle navigation"
                 >
                     <span className="navbar-toggler-icon" />
@@ -111,6 +112,7 @@ function Navbar({
             ) : null}
             {!withoutCollapse ? (
                 <div
+                    id={collapseId}
                     className={classNames([
                         'navbar-collapse',
                         'collapse',

@@ -98,9 +98,7 @@ function Button({
                     <span
                         className={classNames([
                             styles.left,
-                            {
-                                [iconClassName]: iconPosition === 'left',
-                            },
+                            iconPosition === 'left' ? iconClassName : null,
                         ])}
                     >
                         {iconPosition === 'left' ? finalIcon : null}
@@ -109,14 +107,11 @@ function Button({
                     <span
                         className={classNames([
                             styles.right,
-                            {
-                                [iconClassName]: iconPosition === 'right',
-                            },
+                            iconPosition === 'right' ? iconClassName : null,
                         ])}
                     >
                         {iconPosition === 'right' ? finalIcon : null}
                     </span>
-                    {hasChildren ? children : null}
                 </>
             ) : null}
             {!hasIcon ? text : null}
