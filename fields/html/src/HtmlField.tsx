@@ -22,7 +22,7 @@ interface HtmlFieldProps {
     onChange?: ((value: string | null) => void) | null;
     onFocus?: (() => void) | null;
     onBlur?: (() => void) | null;
-    ckConfig?: Record<string, unknown>;
+    ckConfig?: { licenseKey?: string; [key: string]: unknown };
     ckOptions?: Record<string, unknown> | null;
     className?: string | null;
 }

@@ -48,6 +48,11 @@ interface ItemFieldProps {
     onCreate?: ((label: string) => void) | null;
 }
 
+// Typed wrapper around getPathValue, which returns `unknown`
+function getItemPathValue(it: ItemFieldItem, path: string | null): string | null {
+    return getPathValue(it, path) as string | null;
+}
+
 function ItemField({
     name = null,
     value = null,
@@ -62,10 +67,10 @@ function ItemField({
     requestQuery = null,
     requestOptions = null,
     requestSearchParamName = 'search',
-    getItemLabel: initialGetItemLabel = getPathValue,
-    getItemDescription = getPathValue,
-    getItemImage = getPathValue,
-    getItemId = getPathValue,
+    getItemLabel: initialGetItemLabel = getItemPathValue,
+    getItemDescription = getItemPathValue,
+    getItemImage = getItemPathValue,
+    getItemId = getItemPathValue,
     getNewItem = null,
     itemLabelPath = 'label',
     itemDescriptionPath = null,

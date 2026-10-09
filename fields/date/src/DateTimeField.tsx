@@ -103,9 +103,13 @@ function DateTimeField({
         const localeName = `${locale}-CA`;
         const loader =
             locale === 'fr'
-                ? loadPackage('date-fns/locale/fr-CA', () => import('date-fns/locale/fr-CA'))
-                : loadPackage('date-fns/locale/en-CA', () => import('date-fns/locale/en-CA'));
-        loader.then(({ default: localePackage }) => {
+                ? loadPackage('date-fns/locale/fr-CA', () => import('date-fns/locale/fr-CA')).then(
+                      ({ frCA }) => frCA,
+                  )
+                : loadPackage('date-fns/locale/en-CA', () => import('date-fns/locale/en-CA')).then(
+                      ({ enCA }) => enCA,
+                  );
+        loader.then((localePackage) => {
             registerLocale(localeName, localePackage);
             setLoadedLocale(localeName);
         });

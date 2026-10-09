@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import DisplaysProvider from '../../../../packages/displays';
+import DisplaysProvider from '../../../../packages/displays/src';
 import DisplayField from '../DisplayField';
 
 import Media1 from '../../../../.storybook/api/items/medias/1.json';

@@ -8,7 +8,7 @@ import TextField from '@panneau/field-text';
 
 import styles from './styles.module.css';
 
-import Fuse from 'fuse.js';
+import Fuse, { type IFuseOptions } from 'fuse.js';
 
 interface AutocompleteItem {
     label?: string;
@@ -24,15 +24,7 @@ interface AutocompleteValue {
     value?: number | string;
 }
 
-interface SearchOptions {
-    isCaseSensitive?: boolean;
-    includeScore?: boolean;
-    includeMatches?: boolean;
-    minMatchCharLength?: number;
-    shouldSort?: boolean;
-    threshold?: number;
-    distance?: number;
-}
+type SearchOptions = IFuseOptions<AutocompleteItem>;
 
 interface AutocompleteFieldProps {
     items?: AutocompleteItem[];

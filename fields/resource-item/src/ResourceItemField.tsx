@@ -57,6 +57,11 @@ interface ResourceItemFieldProps {
     onChange?: ((value: Item | Item[] | null) => void) | null;
 }
 
+// Typed wrapper around getPathValue, which returns `unknown`
+function getItemPathValue(it: Item, path: string | null): string | null {
+    return getPathValue(it, path) as string | null;
+}
+
 function ResourceItemField({
     name = null,
     value = null,
@@ -70,9 +75,9 @@ function ResourceItemField({
     count: initialCount = null,
     options: initialOptions = null,
     searchParamName = 'search',
-    getItemLabel: initialGetItemLabel = getPathValue,
-    getItemDescription = getPathValue,
-    getItemImage = getPathValue,
+    getItemLabel: initialGetItemLabel = getItemPathValue,
+    getItemDescription = getItemPathValue,
+    getItemImage = getItemPathValue,
     itemLabelPath = 'label',
     itemDescriptionPath = null,
     itemImagePath = 'image.thumbnail_url',

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import fields from '../../../../.storybook/data/fields';
-import FieldsProvider from '../../../../packages/fields';
+import FieldsProvider from '../../../../packages/fields/src';
 import Fields from '../Fields';
 
 export default {

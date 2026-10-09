@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import isEmpty from 'lodash-es/isEmpty';
+import isString from 'lodash-es/isString';
 import type { ComponentType } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -109,7 +110,7 @@ function LocalizedField({
             }
             helpText={helpText}
             className={classNames(['mb-3', className])}
-            errors={errors}
+            errors={isString(errors) ? [errors] : errors}
             labelClassName="d-flex align-items-center"
         >
             {locales

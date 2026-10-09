@@ -14,7 +14,7 @@ export default {
 
 const options = ['One', 'Two', 'Three'];
 
-function Container({ value: initialValue, ...props }) {
+function Container({ value: initialValue = null, ...props }) {
     const [value, setValue] = useState(initialValue);
     return <SelectField {...props} value={value} onChange={setValue} />;
 }

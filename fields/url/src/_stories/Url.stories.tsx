@@ -10,7 +10,7 @@ export default {
     },
 };
 
-function Container({ value: initialValue, ...props }) {
+function Container({ value: initialValue = null, ...props }) {
     const [value, setValue] = useState(initialValue);
     return <UrlField {...props} value={value} onChange={setValue} />;
 }

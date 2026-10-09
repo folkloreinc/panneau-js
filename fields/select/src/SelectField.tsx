@@ -13,7 +13,7 @@ interface SelectOption {
 interface SelectFieldProps {
     value?: unknown;
     paginated?: boolean;
-    options?: SelectOption[] | null;
+    options?: (SelectOption | string | number)[] | null;
     loadOptions?: ((searchValue: string | null) => Promise<SelectOption[]>) | null;
     requestUrl?: string | null;
     requestOptions?: Record<string, unknown> | null;

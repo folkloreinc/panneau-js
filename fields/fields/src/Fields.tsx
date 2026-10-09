@@ -148,7 +148,6 @@ function Fields({
             <Fragment key={`field-${name || index}-${index + 1}`}>
                 {!withoutFormGroup && fieldElement !== null ? (
                     <FormGroup
-                        key={`field-${name || index}`}
                         {...definitionProps}
                         {...fieldProps}
                         horizontal={horizontal}

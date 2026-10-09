@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import FieldsProvider from '../../../../packages/fields';
+import FieldsProvider from '../../../../packages/fields/src';
 import IntlProvider from '../../../../packages/intl/src/IntlProvider';
 import HtmlField from '../../../html/src';
 import TextField from '../../../text/src';
