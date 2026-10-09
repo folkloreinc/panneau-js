@@ -1,15 +1,22 @@
 import classNames from 'classnames';
 import get from 'lodash-es/get';
 import isEmpty from 'lodash-es/isEmpty';
+import isNumber from 'lodash-es/isNumber';
+import isString from 'lodash-es/isString';
 import { type ReactNode, useCallback } from 'react';
 
 import type { Message } from '@panneau/core';
 import { getPathValue } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
 
-interface ResourceItem {
+export interface ResourceItem {
     id?: string | number;
     [key: string]: any;
+}
+
+function getItemPathValue(item: ResourceItem, path: string | null): string | null {
+    const value = path !== null ? getPathValue(item, path) : null;
+    return isString(value) || isNumber(value) ? String(value) : null;
 }
 
 export interface ResourceCardProps {
@@ -38,9 +45,9 @@ function ResourceCard({
     itemDescriptionPath = null,
     itemImagePath = null,
     itemLabelWithId = false,
-    getItemLabel: initialGetItemLabel = getPathValue,
-    getItemDescription = getPathValue,
-    getItemImage = getPathValue,
+    getItemLabel: initialGetItemLabel = getItemPathValue,
+    getItemDescription = getItemPathValue,
+    getItemImage = getItemPathValue,
     onClickEdit = null,
     onClickRemove = null,
     editButtonLabel = null,

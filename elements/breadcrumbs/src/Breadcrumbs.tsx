@@ -1,23 +1,35 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import classNames from 'classnames';
+import type { MouseEventHandler } from 'react';
 
-import type { Breadcrumb, Label } from '@panneau/core';
+import type { Breadcrumb, ButtonElement, Label } from '@panneau/core';
 import Button from '@panneau/element-button';
 import LabelComponent from '@panneau/element-label';
 import Link from '@panneau/element-link';
 
 import styles from './styles.module.css';
 
+export interface BreadcrumbItem extends Breadcrumb {
+    label?: Label;
+    active?: boolean;
+    onClick?: MouseEventHandler<ButtonElement> | null;
+}
+
+interface BreadcrumbsTheme {
+    text?: string;
+    [key: string]: unknown;
+}
+
 interface BreadcrumbsProps {
-    items?: Breadcrumb[];
-    theme?: Record<string, unknown> | null;
+    items?: BreadcrumbItem[];
+    theme?: BreadcrumbsTheme | null;
     separator?: 'arrow' | null;
     withoutBar?: boolean;
     noWrap?: boolean;
     className?: string | null;
 }
 
-const DEFAULT_ITEMS: Breadcrumb[] = [];
+const DEFAULT_ITEMS: BreadcrumbItem[] = [];
 
 function Breadcrumbs({
     items = DEFAULT_ITEMS,
@@ -42,38 +54,38 @@ function Breadcrumbs({
                     },
                 ])}
             >
-                {items.map(({ url, label, active = false, onClick = null }: any, index: number) => (
+                {items.map(({ url, label, active = false, onClick = null }, index) => (
                     <li
                         className={classNames([
                             'breadcrumb-item',
                             {
                                 active,
                                 [styles.arrow]: separator === 'arrow',
-                                [`text-${(theme as any)?.text}`]: active && theme !== null,
+                                [`text-${theme?.text}`]: active && theme !== null,
                             },
                         ])}
                         key={`item-${index}`}
                     >
-                        {active ? <LabelComponent>{label as Label}</LabelComponent> : null}
+                        {active ? <LabelComponent>{label}</LabelComponent> : null}
                         {!active && url ? (
                             <Link
                                 href={url}
                                 onClick={onClick}
                                 className={classNames({
-                                    [`text-${(theme as any)?.text}`]: theme !== null,
+                                    [`text-${theme?.text}`]: theme !== null,
                                 })}
                             >
-                                <LabelComponent>{label as Label}</LabelComponent>
+                                <LabelComponent>{label}</LabelComponent>
                             </Link>
                         ) : null}
                         {!active && !url && onClick ? (
                             <Button
                                 onClick={onClick}
                                 className={classNames({
-                                    [`text-${(theme as any)?.text}`]: theme !== null,
+                                    [`text-${theme?.text}`]: theme !== null,
                                 })}
                             >
-                                <LabelComponent>{label as Label}</LabelComponent>
+                                <LabelComponent>{label}</LabelComponent>
                             </Button>
                         ) : null}
                     </li>

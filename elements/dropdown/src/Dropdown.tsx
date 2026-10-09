@@ -8,8 +8,19 @@ import Button from '@panneau/element-button';
 import LabelComponent from '@panneau/element-label';
 import Link from '@panneau/element-link';
 
+export interface DropdownItem extends MenuItem {
+    // 'link' (default), 'button', 'header' or 'divider'
+    type?: string;
+    href?: string | null;
+    target?: string;
+    disabled?: boolean;
+    className?: string | null;
+    children?: ReactNode | null;
+    onClick?: ((e: MouseEvent) => void) | null;
+}
+
 interface DropdownProps {
-    items?: MenuItem[];
+    items?: DropdownItem[];
     children?: ReactNode | null;
     visible?: boolean;
     dropup?: boolean;
@@ -21,7 +32,7 @@ interface DropdownProps {
     onClickOutside?: ((e: globalThis.MouseEvent) => void) | null;
 }
 
-const DEFAULT_ITEMS: MenuItem[] = [];
+const DEFAULT_ITEMS: DropdownItem[] = [];
 
 function Dropdown({
     items = DEFAULT_ITEMS,
@@ -86,7 +97,7 @@ function Dropdown({
                           onClick: customOnClick = null,
                           active = false,
                           ...itemProps
-                      } = it as any;
+                      } = it;
                       let ItemComponent: any = 'div';
                       if (type === 'link') {
                           ItemComponent = Link;

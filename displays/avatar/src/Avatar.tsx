@@ -12,7 +12,7 @@ interface AvatarProps {
     placeholder?: ReactNode | null;
     imagePath?: string;
     namePath?: string;
-    size?: number | null;
+    size?: string | null;
     withoutName?: boolean;
     withoutImage?: boolean;
     className?: string | null;

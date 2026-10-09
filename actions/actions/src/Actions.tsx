@@ -30,6 +30,9 @@ export interface ActionsProps extends UseActionsOptions {
     disabled?: boolean;
     withoutConfirmation?: boolean;
     className?: string | null;
+    // Passed down to the action components
+    onConfirmed?: ((response: unknown) => void) | null;
+    theme?: string | null;
 }
 
 const DEFAULT_ACTIONS: ActionDefinition[] = ['show', 'edit', 'delete'];

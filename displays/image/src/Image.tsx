@@ -5,11 +5,20 @@ import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react
 
 import styles from './styles.module.css';
 
+interface ImageValue {
+    url?: string | null;
+    thumbnailUrl?: string | null;
+    thumbnail_url?: string | null;
+    description?: string | null;
+    name?: string | null;
+    [key: string]: unknown;
+}
+
 interface ImageProps {
-    value?: string | Record<string, unknown> | null;
+    value?: string | ImageValue | null;
     placeholder?: ReactNode | null;
-    maxWidth?: number | null;
-    maxHeight?: number | null;
+    maxWidth?: number | string | null;
+    maxHeight?: number | string | null;
     onClick?: (() => void) | null;
     withZoom?: boolean;
     className?: string | null;
@@ -30,7 +39,7 @@ function Image({
         thumbnail_url: altThumbnailUrl = null,
         description = null,
         name = null,
-    } = value || {};
+    }: ImageValue = (!isString(value) ? value : null) || {};
 
     const defaultValue = isString(value) ? value : null;
     const image = useMemo(
@@ -66,10 +75,7 @@ function Image({
 
     return (
         <div
-            className={classNames([
-                styles.container,
-                className,
-            ])}
+            className={classNames([styles.container, className])}
             {...(withZoom && image !== null
                 ? {
                       onMouseEnter: onHoverIn,
@@ -87,10 +93,10 @@ function Image({
                 ])}
                 style={{
                     width:
-                        maxWidth !== null && isNumber(maxWidth) ? parseInt(maxWidth, 10) : maxWidth,
+                        maxWidth !== null && isNumber(maxWidth) ? Math.trunc(maxWidth) : maxWidth,
                     height:
                         maxHeight !== null && isNumber(maxHeight)
-                            ? parseInt(maxHeight, 10)
+                            ? Math.trunc(maxHeight)
                             : maxHeight,
                     transition: 'transform 0.15s ease-out',
                     ...(zoomed

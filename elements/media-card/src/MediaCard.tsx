@@ -54,7 +54,7 @@ export interface MediaCardProps {
     children?: ReactNode | null;
 }
 
-const DEFAULT_DATA = {};
+const DEFAULT_DATA: NonNullable<MediaValue['data']> = {};
 
 function MediaCard({
     value: initialValue = null,

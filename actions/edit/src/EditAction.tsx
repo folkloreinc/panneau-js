@@ -1,3 +1,4 @@
+import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -8,7 +9,7 @@ import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
 
 interface EditActionProps {
-    id: string;
+    id?: string | null;
     href?: string | null;
     label?: string | null;
     value?: ActionValue | null;
@@ -47,7 +48,8 @@ function EditAction({
     const resource = initialResource || contextResource;
     const resourceUrl = useResourceUrlGenerator(resource);
     const finalHref =
-        initialHref || (!multiple && isObject(value) ? resourceUrl('edit', value) : null);
+        initialHref ||
+        (!multiple && !isArray(value) && isObject(value) ? resourceUrl('edit', value) : null);
     const label =
         initialLabel ||
         (withDefaultLabel ? (

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import { type ReactNode } from 'react';
 
-import type { Label } from '@panneau/core';
+import type { ButtonTheme, Label } from '@panneau/core';
 import Button from '@panneau/element-button';
 import LabelComponent from '@panneau/element-label';
 import Link from '@panneau/element-link';
@@ -28,7 +28,7 @@ interface CardProps {
     links?: CardLink[] | null;
     linksInSameBody?: boolean;
     footer?: ReactNode | null;
-    theme?: 'dark' | 'primary' | 'light' | null;
+    theme?: ButtonTheme;
     className?: string | null;
     imageClassName?: string | null;
     headerClassName?: string | null;

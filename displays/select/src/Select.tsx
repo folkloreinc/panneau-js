@@ -1,15 +1,19 @@
 import type { Field, FieldOption } from '@panneau/core';
 import SelectElement from '@panneau/element-select';
 
+interface SelectDisplayField extends Field {
+    options?: FieldOption[] | null;
+}
+
 interface SelectProps {
-    field: Field;
+    field?: SelectDisplayField | null;
     value?: string | null;
     options?: FieldOption[] | null;
     onChange?: ((value: unknown) => void) | null;
 }
 
 function Select({
-    field,
+    field = null,
     value = null,
     options: providedOptions = null,
     onChange = null,

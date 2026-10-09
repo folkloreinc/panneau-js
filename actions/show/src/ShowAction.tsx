@@ -1,3 +1,4 @@
+import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -47,7 +48,8 @@ function ShowAction({
     const resource = initialResource || contextResource;
     const resourceUrl = useResourceUrlGenerator(resource);
     const finalHref =
-        initialHref || (!multiple && isObject(value) ? resourceUrl('show', value) : null);
+        initialHref ||
+        (!multiple && !isArray(value) && isObject(value) ? resourceUrl('show', value) : null);
     const label =
         initialLabel ||
         (withDefaultLabel ? (

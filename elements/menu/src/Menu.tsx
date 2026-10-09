@@ -3,12 +3,21 @@ import type { MouseEvent, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 
 import type { DropdownAlign, MenuItem } from '@panneau/core';
-import Dropdown from '@panneau/element-dropdown';
+import Dropdown, { type DropdownItem } from '@panneau/element-dropdown';
 import Label from '@panneau/element-label';
 import Link from '@panneau/element-link';
 
+export interface MenuElementItem extends MenuItem {
+    href?: string | null;
+    className?: string | null;
+    linkClassName?: string | null;
+    items?: MenuElementItem[] | null;
+    dropdown?: DropdownItem[] | null;
+    onClick?: ((e: MouseEvent) => void) | null;
+}
+
 interface MenuProps {
-    items?: MenuItem[];
+    items?: MenuElementItem[];
     tagName?: string;
     itemTagName?: string;
     children?: ReactNode | null;
@@ -27,7 +36,7 @@ interface MenuProps {
     dropdownAlign?: DropdownAlign;
 }
 
-const DEFAULT_ITEMS: MenuItem[] = [];
+const DEFAULT_ITEMS: MenuElementItem[] = [];
 
 function Menu({
     items = DEFAULT_ITEMS,
@@ -57,7 +66,7 @@ function Menu({
         <ListComponent className={className}>
             {children !== null
                 ? children
-                : items.map((it: any, index: number) => {
+                : items.map((it, index) => {
                       const {
                           id,
                           className: customClassName = null,

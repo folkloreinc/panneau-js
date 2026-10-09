@@ -1,10 +1,8 @@
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
 
-import type { Media } from '@panneau/core';
-
 import MediaCard from './MediaCard';
-import type { MediaCardProps } from './MediaCard';
+import type { MediaCardProps, MediaValue } from './MediaCard';
 
 import styles from './styles.module.css';
 
@@ -12,7 +10,7 @@ interface MediaCardsProps extends Omit<
     MediaCardProps,
     'value' | 'index' | 'className' | 'cardClassName'
 > {
-    value?: Media[] | Media | null;
+    value?: MediaValue[] | MediaValue | null;
     className?: string | null;
     cardClassName?: string | null;
 }
@@ -23,11 +21,16 @@ function MediaCards({
     cardClassName = null,
     ...props
 }: MediaCardsProps) {
-    const values = !isArray(value) && value !== null ? [value] : value;
+    let values: MediaValue[] = [];
+    if (isArray(value)) {
+        values = value;
+    } else if (value !== null) {
+        values = [value];
+    }
 
     return (
         <div className={classNames([styles.mediaCards, className])}>
-            {(values || []).map((media, idx) => (
+            {values.map((media, idx) => (
                 <MediaCard
                     key={`media-card-${idx + 1}-${media !== null ? media?.id : null}`}
                     className={classNames([styles.card, cardClassName])}

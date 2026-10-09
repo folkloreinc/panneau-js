@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { useCallback, useState } from 'react';
 
 import { ModalProvider } from '@panneau/core/contexts';
@@ -20,7 +19,7 @@ export default {
     },
 };
 
-function ActionsContainer({ value: initialValue, ...props }) {
+function ActionsContainer({ value: initialValue = null, ...props }) {
     const [value, setValue] = useState(initialValue);
     const onChange = useCallback((newValue) => {
         setValue(newValue);
@@ -65,8 +64,14 @@ export const WithMultipleItems = {
 
 export const IsDropdown = {
     render: function () {
-        return <ActionsContainer value={{
-            id: '1',
-        }} actions={['show', 'edit', 'delete']} isDropdown />;
+        return (
+            <ActionsContainer
+                value={{
+                    id: '1',
+                }}
+                actions={['show', 'edit', 'delete']}
+                isDropdown
+            />
+        );
     },
 };

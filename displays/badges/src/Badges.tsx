@@ -5,8 +5,10 @@ import { Fragment, type ReactNode, useMemo } from 'react';
 
 import Icon from '@panneau/element-icon';
 
+type BadgeItem = Record<string, unknown>;
+
 interface BadgesProps {
-    value?: string | null;
+    value?: BadgeItem | BadgeItem[] | string | null;
     placeholder?: ReactNode | null;
     itemLabelPath?: string;
     itemIconPath?: string | any[] | null;

@@ -13,8 +13,8 @@ export const Normal = {
         <div style={{ position: 'relative' }}>
             <Menu
                 items={[
-                    { value: 'value', label: 'Label 1' },
-                    { value: 'value', label: 'Label 2' },
+                    { id: 'item-1', label: 'Label 1' },
+                    { id: 'item-2', label: 'Label 2' },
                 ]}
             />
         </div>
@@ -26,11 +26,11 @@ export const WithDropdown = {
         <div style={{ position: 'relative' }}>
             <Menu
                 items={[
-                    { value: 'value', label: 'Label 1' },
+                    { id: 'item-3', label: 'Label 1' },
                     {
-                        value: 'value',
+                        id: 'item-4',
                         label: 'Label 2',
-                        dropdown: [{ value: 'value', label: 'Sub Label 1' }],
+                        dropdown: [{ id: 'item-5', label: 'Sub Label 1' }],
                     },
                 ]}
             />

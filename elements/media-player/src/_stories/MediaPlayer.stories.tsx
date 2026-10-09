@@ -13,6 +13,8 @@ export default {
 };
 
 const embed = {
+    id: 'embed',
+    name: 'Vimeo embed',
     url: 'https://vimeo.com/766616310/efcbc961d0',
     iframeUrl:
         'https://player.vimeo.com/video/766616310?app_id=122963&app_id=58479&color=ffff00&controls=1&muted=1&autoplay=1',

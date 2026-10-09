@@ -16,7 +16,7 @@ export default {
     },
 };
 
-function ActionContainer({ value: initialValue, ...props }) {
+function ActionContainer({ value: initialValue = null, ...props }) {
     const [value, setValue] = useState(initialValue);
     return (
         <FieldsProvider>

@@ -4,22 +4,25 @@ import isObject from 'lodash-es/isObject';
 import uniqBy from 'lodash-es/uniqBy';
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Select from 'react-select';
+import Select, { type InputActionMeta } from 'react-select';
 import AsyncSelect from 'react-select/async';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 import CreatableSelect from 'react-select/creatable';
 
 import type { Label } from '@panneau/core';
 
-interface SelectOption {
+export interface SelectOption {
     value?: any;
     label?: ReactNode;
 }
 
-interface SelectElementProps {
+// Scalar options are converted to { value, label } objects
+export type SelectOptionInput = SelectOption | Record<string, any> | string | number;
+
+export interface SelectElementProps {
     value?: any;
     clearValue?: any;
-    options?: SelectOption[] | Record<string, any>[];
+    options?: SelectOptionInput[] | null;
     isAsync?: boolean;
     disabled?: boolean;
     multiple?: boolean;
@@ -39,6 +42,13 @@ interface SelectElementProps {
     onChange?: ((value: any) => void) | null;
     className?: string | null;
     selectClassName?: string | null;
+    // Props passed through to react-select
+    name?: string;
+    inputValue?: string;
+    onInputChange?: (newValue: string, actionMeta: InputActionMeta) => void;
+    onMenuScrollToBottom?: (event: WheelEvent | TouchEvent) => void;
+    defaultOptions?: boolean | SelectOptionInput[];
+    cacheOptions?: boolean;
 }
 
 const DEFAULT_OPTIONS: SelectOption[] = [];

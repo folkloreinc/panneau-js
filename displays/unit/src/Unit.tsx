@@ -4,8 +4,15 @@ import { type ReactNode, useMemo } from 'react';
 
 import { formatDuration } from '@panneau/core/utils';
 
+interface UnitDimensions {
+    width?: number | null;
+    height?: number | null;
+    depth?: number | null;
+    [key: string]: unknown;
+}
+
 interface UnitProps {
-    value?: string | number | Record<string, unknown> | null;
+    value?: string | number | UnitDimensions | null;
     placeholder?: ReactNode | null;
     format?: string | null;
     suffix?: string | null;
@@ -20,7 +27,11 @@ function Unit({ value = null, placeholder = null, format = null, suffix = null }
             return prettyBytes(parseInt(value as string, 10));
         }
         if (format === 'dimensions') {
-            const { width = null, height = null, depth = null } = value || {};
+            const {
+                width = null,
+                height = null,
+                depth = null,
+            }: UnitDimensions = (isObject(value) ? value : null) || {};
             const finalWidth = width !== null && width > 0 ? width : null;
             const finalHeight = height !== null && height > 0 ? height : null;
             const finalDepth = depth !== null && depth > 0 ? depth : null;
@@ -28,6 +39,10 @@ function Unit({ value = null, placeholder = null, format = null, suffix = null }
             return `${finalWidth !== null ? `${finalWidth}${finalSuffix}` : ''}${
                 finalHeight !== null ? ` x ${finalHeight}${finalSuffix}` : ''
             }${finalDepth !== null ? ` x ${finalDepth}${finalSuffix}` : ''}`;
+        }
+        if (isObject(value)) {
+            // Objects are only supported by the dimensions format and can't be rendered as is
+            return null;
         }
         if (format === 'duration') {
             return formatDuration(value);

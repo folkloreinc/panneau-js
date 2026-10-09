@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl';
 interface TextDescriptionProps {
     value?: string | Record<string, unknown> | null;
     placeholder?: ReactNode | null;
-    item?: { id: string | number } | null;
+    item?: { id: string | number; [key: string]: unknown } | null;
     descriptionPath?: string | null;
     descriptionValues?: Record<string, unknown> | null;
     locale?: string | null;

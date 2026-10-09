@@ -3,16 +3,9 @@ import isArray from 'lodash-es/isArray';
 import { useMemo } from 'react';
 
 import ResourceCard from './ResourceCard';
-import type { ResourceCardProps } from './ResourceCard';
+import type { ResourceCardProps, ResourceItem } from './ResourceCard';
 
 import styles from './styles.module.css';
-
-interface ResourceItem {
-    id?: string;
-    filename?: string;
-    size?: number;
-    url?: string;
-}
 
 interface ResourceCardsProps extends Omit<ResourceCardProps, 'item' | 'className'> {
     value?: ResourceItem[] | ResourceItem | null;

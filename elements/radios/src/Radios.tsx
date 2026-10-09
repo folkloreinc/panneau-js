@@ -1,18 +1,14 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import classNames from 'classnames';
-import { type ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
 
+import type { SelectOption } from '@panneau/core';
 import { getSelectOptions } from '@panneau/core/utils';
-
-interface SelectOption {
-    value?: string | number | null;
-    label?: ReactNode;
-}
 
 interface RadiosProps {
     name?: string | null;
     value?: string | null;
-    options?: SelectOption[] | Record<string, string>[];
+    options?: SelectOption[];
     withBackground?: boolean;
     disabled?: boolean;
     uncheckable?: boolean;
@@ -34,16 +30,11 @@ function Radios({
     buttonClassName = null,
     onChange = null,
 }: RadiosProps) {
-    const finalOptions = useMemo(() => getSelectOptions(options as any), [options]);
+    const finalOptions = useMemo(() => getSelectOptions(options), [options]);
 
     return (
         <div
-            className={classNames([
-                'd-block',
-                'btn-group',
-                'btn-group-toggle',
-                className
-            ])}
+            className={classNames(['d-block', 'btn-group', 'btn-group-toggle', className])}
             data-toggle="buttons"
             style={{ zIndex: 0 }}
         >
@@ -59,7 +50,7 @@ function Radios({
                                 active: isCurrent,
                                 disabled,
                             },
-                            buttonClassName
+                            buttonClassName,
                         ])}
                     >
                         <input

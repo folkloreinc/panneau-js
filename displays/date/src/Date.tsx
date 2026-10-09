@@ -15,12 +15,29 @@ interface DateDisplayProps {
     localeLoaders?: Record<string, () => Promise<{ default: unknown }>>;
 }
 
-const DEFAULT_LOADERS = {
-    fr: () => loadPackage('date-fns/locale/fr-CA', () => import('date-fns/locale/fr-CA')),
-    de: () => loadPackage('date-fns/locale/de', () => import('date-fns/locale/de')),
-    ja: () => loadPackage('date-fns/locale/ja', () => import('date-fns/locale/ja')),
-    es: () => loadPackage('date-fns/locale/es', () => import('date-fns/locale/es')),
-    en: () => loadPackage('date-fns/locale/en-US', () => import('date-fns/locale/en-US')),
+// date-fns locale typings only declare named exports, so expose them as `default`
+// (the shape also expected by other loaders sharing the same loadPackage cache key)
+const DEFAULT_LOADERS: Record<string, () => Promise<{ default: unknown }>> = {
+    fr: () =>
+        loadPackage('date-fns/locale/fr-CA', () =>
+            import('date-fns/locale/fr-CA').then(({ frCA }) => ({ default: frCA })),
+        ),
+    de: () =>
+        loadPackage('date-fns/locale/de', () =>
+            import('date-fns/locale/de').then(({ de }) => ({ default: de })),
+        ),
+    ja: () =>
+        loadPackage('date-fns/locale/ja', () =>
+            import('date-fns/locale/ja').then(({ ja }) => ({ default: ja })),
+        ),
+    es: () =>
+        loadPackage('date-fns/locale/es', () =>
+            import('date-fns/locale/es').then(({ es }) => ({ default: es })),
+        ),
+    en: () =>
+        loadPackage('date-fns/locale/en-US', () =>
+            import('date-fns/locale/en-US').then(({ enUS }) => ({ default: enUS })),
+        ),
 };
 
 function DateDisplay({
