@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Actions from '@panneau/action-actions';
-import type { Item, Resource } from '@panneau/core';
+import type { ActionDefinition, Item, Resource, ResourceIndex } from '@panneau/core';
 import { useListsComponents, usePanneauResource } from '@panneau/core/contexts';
 // import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
@@ -32,6 +32,13 @@ interface ResourceItemsListProps {
     actionsProps?: Record<string, unknown> | null;
     theme?: string | null;
     className?: string | null;
+}
+
+interface ResourceIndexList extends ResourceIndex {
+    component?: ComponentType | string | null;
+    showPagination?: boolean;
+    batchActions?: ActionDefinition[] | null;
+    actionsProps?: Record<string, unknown> | null;
 }
 
 const DEFAULT_ITEMS: Item[] = [];
@@ -65,7 +72,7 @@ function ResourceItemsList({
         batchActions = null,
         actionsProps = null,
         ...listProps
-    } = resource?.index || {};
+    } = (resource?.index || {}) as ResourceIndexList;
 
     // const resourceUrlGenerator = useResourceUrlGenerator(
     //     isObject(providedResource) ? resourceId : providedResource,
@@ -97,8 +104,8 @@ function ResourceItemsList({
     const finalSelectable = selectable || withActions;
     const withMultipleActions =
         withActions &&
-        (batchActions as { multiple?: boolean }[]).reduce((acc, it) => {
-            const { multiple = false } = it || {};
+        batchActions.reduce((acc, it) => {
+            const { multiple = false } = typeof it === 'object' && it !== null ? it : {};
             if (multiple) {
                 return true;
             }
@@ -154,7 +161,6 @@ function ResourceItemsList({
                     value={query}
                     onChange={onQueryChange}
                     onClear={onQueryReset}
-                    theme={theme}
                 />
             ) : null}
             <div
@@ -185,9 +191,7 @@ function ResourceItemsList({
                         query={query}
                         onClickPage={onPageChange}
                         className="mt-1 mb-3"
-                        theme={theme}
                         loading={loading && pages !== null}
-                        loaded={loaded}
                         withPreviousNext
                         selectable={finalSelectable}
                         selectedItems={selectedItems}
@@ -239,9 +243,7 @@ function ResourceItemsList({
                     query={query}
                     onClickPage={onPageChange}
                     className="mt-4 mb-1"
-                    theme={theme}
                     loading={loading && pages !== null}
-                    loaded={loaded}
                     withPreviousNext
                     selectable={finalSelectable}
                     selectedItems={selectedItems}

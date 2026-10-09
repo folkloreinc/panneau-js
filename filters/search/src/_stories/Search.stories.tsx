@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import FieldsProvider from '../../../../packages/fields';
+import FieldsProvider from '../../../../packages/fields/src';
 import SearchFilter from '../SearchFilter';
 
 export default {

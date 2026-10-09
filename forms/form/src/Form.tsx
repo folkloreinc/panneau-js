@@ -9,9 +9,9 @@ import { useForm } from '@panneau/core/hooks';
 import type { FormProps as BaseFormProps } from '@panneau/element-form';
 
 export interface FormProps extends Omit<BaseFormProps, 'onChange'> {
-    action: string;
+    action?: string | null;
     method?: string | null;
-    postForm?: ((action: string, data: unknown) => Promise<unknown>) | null;
+    postForm?: ((action: string, data: Record<string, unknown>) => Promise<unknown>) | null;
     postOptions?: Record<string, unknown> | null;
     postData?: Record<string, unknown> | null;
     type?: string;
@@ -28,7 +28,7 @@ export interface FormProps extends Omit<BaseFormProps, 'onChange'> {
 }
 
 function Form({
-    action,
+    action = null,
     method = null,
     type = 'normal',
     postForm = null,
@@ -66,7 +66,7 @@ function Form({
     const FormComponent = useFormComponent(finalComponent);
 
     const defaultPostForm = useCallback(
-        (act: string, data: unknown) =>
+        (act: string, data: Record<string, unknown>) =>
             postJSON(act, postData !== null ? { ...postData, ...data } : data, {
                 credentials: 'include',
                 headers: getCSRFHeaders(),
@@ -79,7 +79,7 @@ function Form({
     const { value, setValue, fields, onSubmit, status, generalError, errors } = useForm({
         action: finalAction,
         fields: finalFields,
-        postForm: (act: string, data: unknown) =>
+        postForm: (act: string, data: Record<string, unknown>) =>
             (postForm || defaultPostForm)(act, data).then((result) => {
                 setWasValidated(false);
                 return result;

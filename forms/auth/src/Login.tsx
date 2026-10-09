@@ -7,7 +7,7 @@ import Link from '@panneau/element-link';
 interface LoginProps {
     action?: string;
     postForm?: ((action: string, data: unknown) => Promise<unknown>) | null;
-    fields: Field[] | null;
+    fields?: Field[] | null;
     size?: ControlSize;
     emailLabel?: Label | null;
     passwordLabel?: Label | null;

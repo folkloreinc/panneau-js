@@ -1,5 +1,5 @@
 /* eslint-disable */
-import FieldsProvider from '../../../../packages/fields';
+import FieldsProvider from '../../../../packages/fields/src';
 import LabelFilter from '../LabelFilter';
 
 export default {

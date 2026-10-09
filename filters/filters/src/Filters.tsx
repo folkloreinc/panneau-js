@@ -3,7 +3,7 @@ import isArray from 'lodash-es/isArray';
 import { type ReactNode, useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Filter } from '@panneau/core';
+import type { Filter, Label } from '@panneau/core';
 import { useFiltersComponents } from '@panneau/core/contexts';
 import { getComponentFromName } from '@panneau/core/utils';
 import Button from '@panneau/element-button';
@@ -13,10 +13,16 @@ import Navbar from '@panneau/element-navbar';
 
 import styles from './styles.module.css';
 
-interface FiltersProps {
+interface FilterItem extends Filter {
+    name?: string;
+    groupLabel?: Label | null;
+    groupClassName?: string | null;
+}
+
+export interface FiltersProps {
     onChange?: ((value: Record<string, unknown> | null) => void) | null;
     onClear?: ((value: null) => void) | null;
-    filters?: Filter[];
+    filters?: FilterItem[];
     value?: Record<string, unknown> | null;
     clearValue?: Record<string, unknown> | null;
     withContainer?: boolean;
@@ -27,7 +33,7 @@ interface FiltersProps {
     children?: ReactNode | null;
 }
 
-const DEFAULT_FILTERS: Filter[] = [];
+const DEFAULT_FILTERS: FilterItem[] = [];
 
 function Filters({
     onChange = null,
@@ -138,7 +144,7 @@ function Filters({
                 },
             )}
             {withButton && (currentFilters || []).length > 1 ? (
-                <Button size="md" theme="secondary" outline onClick={onFiltersReset}>
+                <Button theme="secondary" outline onClick={onFiltersReset}>
                     {withResetLabel ? (
                         <span className="me-2">
                             <FormattedMessage defaultMessage="Clear" description="Button label" />

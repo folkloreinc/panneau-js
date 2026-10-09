@@ -2,7 +2,7 @@
 import { useState } from 'react';
 
 import withApi from '../../../../.storybook/decorators/withDataProvider';
-import FieldsProvider from '../../../../packages/fields';
+import FieldsProvider from '../../../../packages/fields/src';
 import SelectFilter from '../SelectFilter';
 
 export default {

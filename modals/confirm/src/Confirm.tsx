@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import Dialog from '@panneau/modal-dialog';
 
 export interface ConfirmModalProps {
-    id: string | number;
+    id?: string | null;
     title?: ReactNode | null;
     onConfirm?: (() => void) | null;
     onClosed?: (() => void) | null;
@@ -19,7 +19,7 @@ export interface ConfirmModalProps {
 }
 
 function ConfirmModal({
-    id,
+    id = null,
     title = null,
     onConfirm = null,
     onClosed = null,

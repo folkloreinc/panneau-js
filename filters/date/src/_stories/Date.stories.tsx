@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { useState } from 'react';
 
-import FieldsProvider from '../../../../packages/fields';
+import FieldsProvider from '../../../../packages/fields/src';
 import DateFilter from '../DateFilter';
 
 export default {

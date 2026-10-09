@@ -1,6 +1,5 @@
 import pageResource from '../../../../.storybook/data/page-resource';
 import withApi from '../../../../.storybook/decorators/withDataProvider';
-import { PanneauProvider } from '../../../../packages/core/src/contexts';
 import DisplaysProvider from '../../../../packages/displays/src';
 import ListsProvider from '../../../../packages/lists/src';
 import ResourceItems from '../ResourceItems';
@@ -16,21 +15,11 @@ export default {
 
 function Container() {
     return (
-        <PanneauProvider resource={pageResource}>
-            <ListsProvider>
-                <DisplaysProvider>
-                    <ResourceItems
-                        resource={pageResource}
-                        items={[
-                            { id: '1', type: 'audio', name: 'Audio Paul' },
-                            { id: '2', type: 'video', name: 'Video John' },
-                            { id: '3', type: 'document', name: 'Document George' },
-                            { id: '4', type: 'image', name: 'Image Ringo' },
-                        ]}
-                    />
-                </DisplaysProvider>
-            </ListsProvider>
-        </PanneauProvider>
+        <ListsProvider>
+            <DisplaysProvider>
+                <ResourceItems resource={pageResource} />
+            </DisplaysProvider>
+        </ListsProvider>
     );
 }
 

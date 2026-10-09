@@ -1,14 +1,6 @@
-import {
-    ElementType,
-    ForwardedRef,
-    type ReactNode,
-    useCallback,
-    useEffect,
-    useMemo,
-    useState,
-} from 'react';
+import { ElementType, ForwardedRef, type ReactNode, useState } from 'react';
 
-import type { Item, Resource } from '@panneau/core';
+import type { FormDefinition, Item, Resource } from '@panneau/core';
 import {
     FormProvider,
     useFormsComponents,
@@ -26,6 +18,15 @@ import {
 
 import DeleteForm from './Delete';
 import DuplicateForm from './Duplicate';
+
+interface FieldSettings {
+    hiddenInForm?: boolean;
+}
+
+interface ResourceFormDefinition extends Partial<FormDefinition> {
+    withoutHeader?: boolean;
+    withoutContainer?: boolean;
+}
 
 interface ResourceFormProps {
     resource: Resource | string;
@@ -79,7 +80,7 @@ function ResourceForm({
         component: defaultComponent,
         withoutHeader: defaultFormWithoutHeader = false,
         withoutContainer: defaultFormWithoutContainer = false,
-    } = defaultForm || {};
+    } = (defaultForm || {}) as ResourceFormDefinition;
 
     let currentForm = editForm || null;
     if (isModal) {
@@ -95,14 +96,14 @@ function ResourceForm({
         component: formComponent = null,
         withoutHeader: formWithoutHeader = false,
         withoutContainer: formWithoutContainer = false,
-    } = currentForm || {};
+    } = (currentForm || {}) as ResourceFormDefinition;
 
     const finalFields = (
         formFields ||
         defaultFields ||
         resourceTypeFields ||
         resourceFields
-    ).filter(({ settings: { hiddenInForm = false } = {} }) => !hiddenInForm);
+    ).filter(({ settings }) => !(settings as FieldSettings | null | undefined)?.hiddenInForm);
 
     // Form routes
     const resourceRoute = useResourceUrlGenerator(resource);

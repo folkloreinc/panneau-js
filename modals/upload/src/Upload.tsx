@@ -1,6 +1,6 @@
 import type Uppy from '@uppy/core';
 import Dashboard from '@uppy/react/dashboard';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import Dialog from '@panneau/modal-dialog';
 
@@ -10,7 +10,7 @@ import '@uppy/dashboard/css/style.css';
 // import '@uppy/react/css/style.css';
 
 interface UploadModalProps {
-    id: string | number;
+    id?: string | null;
     title?: string | null;
     uppy?: Uppy | null;
     plugins?: string[];
@@ -20,7 +20,7 @@ interface UploadModalProps {
 const DEFAULT_PLUGINS: string[] = [];
 
 function UploadModal({
-    id,
+    id = null,
     title = null,
     uppy = null,
     plugins = DEFAULT_PLUGINS,

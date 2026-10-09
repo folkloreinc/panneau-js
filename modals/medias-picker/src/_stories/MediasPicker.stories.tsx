@@ -9,9 +9,9 @@ import panneauDefinition from '../../../../.storybook/data/panneau-definition';
 import withDataProvider from '../../../../.storybook/decorators/withDataProvider';
 import withUppy from '../../../../.storybook/decorators/withUppy';
 import { PanneauProvider } from '../../../../packages/core/src/contexts';
-import DisplaysProvider from '../../../../packages/displays';
-import FieldsProvider from '../../../../packages/fields';
-import FiltersProvider from '../../../../packages/filters';
+import DisplaysProvider from '../../../../packages/displays/src';
+import FieldsProvider from '../../../../packages/fields/src';
+import FiltersProvider from '../../../../packages/filters/src';
 import MediasPicker from '../MediasPicker';
 
 export default {

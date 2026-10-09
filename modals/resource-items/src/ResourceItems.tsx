@@ -1,7 +1,7 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { type Item, type Resource } from '@panneau/core';
+import { type DialogSize, type Item, type Resource } from '@panneau/core';
 import { usePanneauResource } from '@panneau/core/contexts';
 import { useQuery } from '@panneau/core/hooks';
 import { useResourceValues } from '@panneau/intl';
@@ -14,7 +14,7 @@ interface ModalResourceItemsProps {
     title?: string | null;
     query?: Record<string, unknown> | null;
     paginated?: boolean;
-    size?: string;
+    size?: DialogSize;
     withoutCloseOnSelect?: boolean;
     onClosed?: (() => void) | null;
     onSelect?: ((item: Item[] | null) => void) | null;

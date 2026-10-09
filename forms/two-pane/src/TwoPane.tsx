@@ -10,8 +10,8 @@ interface TwoPaneFormProps {
     resource?: Resource | null;
     size?: 'half' | 'medium' | 'large' | null;
     value?: Record<string, unknown> | null;
-    onChange: (value: Record<string, unknown>) => void;
-    onSubmit: () => void;
+    onChange?: ((value: Record<string, unknown>) => void) | null;
+    onSubmit?: (() => void) | null;
     status?: FormStatus | null;
     generalError?: string | null;
     errors?: Record<string, string[]> | null;

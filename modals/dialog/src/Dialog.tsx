@@ -15,7 +15,7 @@ import Label from '@panneau/element-label';
 import Modal, { type ModalProps } from '@panneau/element-modal';
 
 export interface DialogModalProps extends Omit<ModalProps, 'title'> {
-    id: string;
+    id?: string | null;
     title?: LabelType | null;
     size?: DialogSize;
     header?: ReactNode | null;
@@ -41,7 +41,7 @@ export interface DialogModalProps extends Omit<ModalProps, 'title'> {
 }
 
 function DialogModal({
-    id,
+    id = null,
     title = null,
     size = null,
     header = null,

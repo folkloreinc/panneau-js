@@ -2,7 +2,7 @@
 import { useCallback, useState } from 'react';
 
 import filters from '../../../../.storybook/data/filters';
-import FiltersProvider from '../../../../packages/filters';
+import FiltersProvider from '../../../../packages/filters/src';
 import Filters from '../Filters';
 
 export default {

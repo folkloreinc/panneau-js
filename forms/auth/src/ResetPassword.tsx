@@ -6,6 +6,7 @@ import { useFormComponent } from '@panneau/core/contexts';
 interface ResetPasswordProps {
     action?: string;
     fields?: Field[] | null;
+    value?: Record<string, unknown> | null;
     size?: string;
     emailLabel?: Label | null;
     passwordLabel?: Label | null;
