@@ -1,36 +1,47 @@
-import { UseMutationOptions, useMutation } from '@tanstack/react-query';
-import isObject from 'lodash-es/isObject';
+import { UseMutationOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { Resource } from '@panneau/core';
-import { usePanneauResource, useResource } from '@panneau/core/contexts';
 
 import { useApi } from '../contexts/ApiContext';
+import useResourceArguments from './useResourceArguments';
+
+type MutationOptions = UseMutationOptions<unknown, Error, string | void>;
 
 function useResourceClone(resource: Resource | string);
 function useResourceClone(id: string | null);
 function useResourceClone(resource: Resource | string, id: string | null);
-function useResourceClone(id: string | null, options: UseMutationOptions);
-function useResourceClone(
-    resource: Resource | string,
-    id: string | null,
-    options: UseMutationOptions,
-);
+function useResourceClone(resource: Resource | string, options: MutationOptions);
+function useResourceClone(id: string | null, options: MutationOptions);
+function useResourceClone(resource: Resource | string, id: string | null, options: MutationOptions);
 
 function useResourceClone(
     resource: Resource | string | null = null,
-    id: string | null | UseMutationOptions = null,
-    options: UseMutationOptions = {},
+    id: string | null | MutationOptions = null,
+    options: MutationOptions = {},
 ) {
-    const providedResource = usePanneauResource(id !== null && !isObject(id) ? resource : null);
-    const contextResource = useResource();
-    const finalResource = providedResource || contextResource;
-    const finalId = providedResource !== null ? (id as string) : (resource as string);
+    const {
+        resource: finalResource,
+        id: finalId,
+        options: finalOptions,
+    } = useResourceArguments<MutationOptions>(resource, id, options);
+    const { onSuccess: customOnSuccess = null, ...otherOptions } = finalOptions || {};
+    const { id: resourceId = null } = finalResource || {};
     const api = useApi();
+    const queryClient = useQueryClient();
     const { mutate, mutateAsync, isPending, ...other } = useMutation<unknown, Error, string | void>(
         {
             mutationFn: (providedId = null) =>
                 api.resources.clone(finalResource, (providedId ?? finalId) as string),
-            ...options,
+            onSuccess: (data, variables, ...args) => {
+                queryClient.invalidateQueries({
+                    queryKey: [resourceId],
+                });
+                if (customOnSuccess !== null) {
+                    return customOnSuccess(data, variables, ...args);
+                }
+                return undefined;
+            },
+            ...otherOptions,
         },
     );
     return {

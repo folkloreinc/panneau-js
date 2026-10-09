@@ -1,4 +1,5 @@
 import type Uppy from '@uppy/core';
+import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
 import type { ReactNode } from 'react';
 import { createContext, use, useEffect, useMemo } from 'react';
@@ -78,6 +79,7 @@ interface UppyContextValue {
 }
 
 export interface UseUppyOptions {
+    sources?: UppySourceId[] | null;
     onComplete?: ((successful: unknown[]) => void) | null;
     onFail?: ((failed: unknown) => void) | null;
     getFileName?: (file: UppyFileLike) => string | null;
@@ -115,15 +117,26 @@ export function useUppyConfig() {
     };
 }
 
+function defaultGetFileName({ name = '', extension = null }: UppyFileLike) {
+    return `${(slugify(name) || '').substring(0, 160)}${
+        extension !== null && (name || '').indexOf(extension) === -1 ? `.${extension}` : ''
+    }`;
+}
+
+function defaultGetFileNameWithUUID({ extension = null }: UppyFileLike) {
+    return `${uuid()}${extension !== null ? `.${extension}` : ''}`;
+}
+
+// Uppy instances waiting to be destroyed. The destroy is deferred, so an instance
+// remounted right away (ex: StrictMode double effects) is not destroyed.
+const pendingDestroys = new Map<Uppy, ReturnType<typeof setTimeout>>();
+
 export function useUppy({
+    sources = null,
     onComplete = null,
     onFail = null,
-    getFileName = ({ name = '', extension = null }) =>
-        `${(slugify(name) || '').substring(0, 160)}${
-            extension !== null && (name || '').indexOf(extension) === -1 ? `.${extension}` : ''
-        }`,
-    getFileNameWithUUID = ({ extension = null }) =>
-        `${uuid()}${extension !== null ? `.${extension}` : ''}`,
+    getFileName = defaultGetFileName,
+    getFileNameWithUUID = defaultGetFileNameWithUUID,
     withUUID = false,
     meta = null,
     allowMultipleUploads = false,
@@ -138,6 +151,7 @@ export function useUppy({
         () =>
             typeof buildUppy === 'function'
                 ? buildUppy({
+                      ...(sources !== null ? { sources } : null),
                       meta,
                       allowMultipleUploadBatches: allowMultipleUploads,
                       restrictions: { maxNumberOfFiles, allowedFileTypes },
@@ -147,6 +161,7 @@ export function useUppy({
                 : null,
         [
             buildUppy,
+            sources,
             meta,
             allowMultipleUploads,
             debug,
@@ -169,7 +184,7 @@ export function useUppy({
             if (onComplete !== null) {
                 onComplete(finalSuccessful);
             }
-            if (onFail !== null) {
+            if (onFail !== null && isArray(failed) && failed.length > 0) {
                 onFail(failed);
             }
         }
@@ -177,7 +192,7 @@ export function useUppy({
         return () => {
             uppy.off('complete', onUppyComplete);
         };
-    }, [uppy, transport, onComplete]);
+    }, [uppy, transport, onComplete, onFail]);
 
     useEffect(() => {
         if (uppy === null) {
@@ -187,12 +202,7 @@ export function useUppy({
             ids.forEach((id) => {
                 const file = uppy.getFile(id);
                 // console.log('file', id, file);
-                let newName = null;
-                if (withUUID) {
-                    newName = getFileNameWithUUID(file);
-                } else {
-                    newName = getFileName(file);
-                }
+                const newName = withUUID ? getFileNameWithUUID(file) : getFileName(file);
                 if (newName !== null) {
                     uppy.setFileMeta(id, {
                         name: newName,
@@ -204,16 +214,27 @@ export function useUppy({
         return () => {
             uppy.off('upload', onUpload);
         };
-    }, [uppy]);
+    }, [uppy, withUUID, getFileName, getFileNameWithUUID]);
 
-    // useEffect(
-    //     () => () => {
-    //         if (uppy !== null) {
-    //             uppy.close();
-    //         }
-    //     },
-    //     [uppy],
-    // );
+    // Destroy the instance when it is replaced or on unmount
+    useEffect(() => {
+        if (uppy === null) {
+            return () => {};
+        }
+        if (pendingDestroys.has(uppy)) {
+            clearTimeout(pendingDestroys.get(uppy));
+            pendingDestroys.delete(uppy);
+        }
+        return () => {
+            // Cleared by the next effect if the same instance is remounted
+            // eslint-disable-next-line @eslint-react/web-api-no-leaked-timeout
+            const timeout = setTimeout(() => {
+                pendingDestroys.delete(uppy);
+                uppy.destroy();
+            }, 0);
+            pendingDestroys.set(uppy, timeout);
+        };
+    }, [uppy]);
 
     return uppy;
 }

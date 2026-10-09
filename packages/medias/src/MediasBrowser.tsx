@@ -145,7 +145,7 @@ function MediasBrowser({
     } = useMedias(query, page, count, {
         items: baseItems,
         trashed: showTrashed,
-        queryConfig: { staleTime: 0 },
+        staleTime: 0,
     });
 
     const onClickTrash = () => {

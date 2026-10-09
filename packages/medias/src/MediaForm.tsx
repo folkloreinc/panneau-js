@@ -77,7 +77,7 @@ function MediaForm({
     const onDeleteMedia = () => {
         const { id = null } = initialValue || {};
         // Destroy
-        mediaDestroy(id, initialValue).then(() => {
+        mediaDestroy(id).then(() => {
             if (onDelete !== null) {
                 onDelete();
             }

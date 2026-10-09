@@ -8,9 +8,8 @@ function useMediaReplace() {
     const mediaReplace = useCallback(
         (id, data) => {
             setReplacing(true);
-            return api.replace(id, data).then((response) => {
+            return api.replace(id, data).finally(() => {
                 setReplacing(false);
-                return response;
             });
         },
         [api, setReplacing],

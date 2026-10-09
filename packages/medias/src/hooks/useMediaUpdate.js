@@ -8,9 +8,8 @@ function useMediaUpdate() {
     const update = useCallback(
         (id, data) => {
             setUpdating(true);
-            return api.update(id, data).then((response) => {
+            return api.update(id, data).finally(() => {
                 setUpdating(false);
-                return response;
             });
         },
         [api, setUpdating],

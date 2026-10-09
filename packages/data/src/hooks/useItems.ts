@@ -1,11 +1,5 @@
 import { getJSON } from '@folklore/fetch';
-import {
-    UseQueryOptions,
-    UseQueryResult,
-    hashKey,
-    keepPreviousData,
-    useQuery,
-} from '@tanstack/react-query';
+import { UseQueryOptions, hashKey, keepPreviousData, useQuery } from '@tanstack/react-query';
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
 import queryString from 'query-string';
@@ -113,8 +107,8 @@ function useItems<T = Item>(
     const updateItem = (item) => {
         const { id: itemId = null } = item || {};
         if (itemId !== null) {
-            setUpdatedItems([
-                ...(updatedItems || []).filter(({ id = null } = {}) => id !== itemId),
+            setUpdatedItems((currentUpdatedItems) => [
+                ...(currentUpdatedItems || []).filter(({ id = null } = {}) => id !== itemId),
                 item,
             ]);
         }
@@ -141,13 +135,7 @@ function useItems<T = Item>(
     const pagesKey = hashKey([scope, queryWithoutPage, count]);
     const [pagesState, setPagesState] = useState({ key: pagesKey, pages: {} });
     const pages = pagesState.key === pagesKey ? pagesState.pages : {};
-    if (
-        isFetched &&
-        !isPlaceholderData &&
-        page !== null &&
-        data !== null &&
-        typeof pages[page] === 'undefined'
-    ) {
+    if (isFetched && !isPlaceholderData && page !== null && data !== null && pages[page] !== data) {
         setPagesState({
             key: pagesKey,
             pages: {

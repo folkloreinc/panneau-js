@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import isString from 'lodash-es/isString';
+import omit from 'lodash-es/omit';
 import queryString from 'query-string';
 import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -61,7 +62,8 @@ function ResourceIndexPage({
     const [, navigate] = useLocation();
     const search = useSearch();
     const query = useMemo(() => queryString.parse(search, { arrayFormat: 'bracket' }), [search]);
-    const listQuery = useMemo(() => query, [query]); // TODO: omit routes
+    // Remove the UI flags from the query sent to the list
+    const listQuery = useMemo(() => omit(query, ['created', 'deleted']), [query]);
     const { created = false, deleted = false } = query || {};
 
     const resourceRoute = useResourceUrlGenerator(resource);

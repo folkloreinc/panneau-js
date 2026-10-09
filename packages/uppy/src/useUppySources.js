@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { loadPackage } from '@panneau/core/utils';
 
@@ -15,8 +15,8 @@ const defaultPackagesMap = {
 };
 function useUppySources(sources, { packagesMap = defaultPackagesMap } = {}) {
     // transport
-    const [{ packages: loadedPackages }, setLoadedPackages] = useState({
-        packages: sources.reduce((map, source) => {
+    const [{ packages: loadedPackages }, setLoadedPackages] = useState(() => ({
+        packages: (sources || []).reduce((map, source) => {
             const sourcePackage = packagesCache[source] || null;
             if (sourcePackage === null) {
                 return map;
@@ -25,15 +25,16 @@ function useUppySources(sources, { packagesMap = defaultPackagesMap } = {}) {
                 ...map,
                 [source]: sourcePackage,
             };
-        }, null),
-    });
+        }, {}),
+    }));
     const sourcesToLoad = useMemo(() => {
-        if (loadedPackages === null) {
-            return sources;
-        }
         const sourcesLoaded = Object.keys(loadedPackages);
-        return sources.filter((source) => sourcesLoaded.indexOf(source) === -1);
-    }, [sources, loadedPackages]);
+        // Only load known sources that are not already loaded
+        return (sources || []).filter(
+            (source) =>
+                sourcesLoaded.indexOf(source) === -1 && (packagesMap[source] || null) !== null,
+        );
+    }, [sources, loadedPackages, packagesMap]);
     useEffect(() => {
         let canceled = false;
         if (sourcesToLoad.length === 0) {
@@ -42,18 +43,13 @@ function useUppySources(sources, { packagesMap = defaultPackagesMap } = {}) {
             };
         }
 
-        Promise.all(
-            sourcesToLoad
-                .map((source) => packagesMap[source] || null)
-                .filter((it) => it !== null)
-                .map((promise) => promise()),
-        ).then((packagesLoaded) => {
+        Promise.all(sourcesToLoad.map((source) => packagesMap[source]())).then((packagesLoaded) => {
             const newLoadedPackages = sourcesToLoad.reduce((map, source, index) => {
                 const { default: pack, ...others } = packagesLoaded[index];
                 return {
                     ...map,
                     [source]: Object.keys(others).reduce((otherMap, key) => {
-                        otherMap[key] = others[key]; // eslint-disable-line no-param-reassign
+                        otherMap[key] = others[key];
                         return otherMap;
                     }, pack),
                 };
@@ -63,15 +59,18 @@ function useUppySources(sources, { packagesMap = defaultPackagesMap } = {}) {
                 ...newLoadedPackages,
             };
             if (!canceled) {
-                setLoadedPackages({
-                    packages: newLoadedPackages,
-                });
+                setLoadedPackages(({ packages }) => ({
+                    packages: {
+                        ...packages,
+                        ...newLoadedPackages,
+                    },
+                }));
             }
         });
         return () => {
             canceled = true;
         };
-    }, [sourcesToLoad, packagesMap, loadedPackages, setLoadedPackages]);
+    }, [sourcesToLoad, packagesMap, setLoadedPackages]);
     return sourcesToLoad.length === 0 ? loadedPackages : null;
 }
 

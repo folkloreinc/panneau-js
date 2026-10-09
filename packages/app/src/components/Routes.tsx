@@ -45,7 +45,7 @@ function PanneauRoutes({ statusCode: initialStatusCode = null }: PanneauRoutesPr
     }, [pathname, lastPathname]);
 
     // Custom Pages
-    const { pages = null, routes: routesDefinition } = usePanneau();
+    const { pages = null, routes: routesDefinition = null } = usePanneau() || {};
     const builtinPages = [
         'home',
         'login',
@@ -75,7 +75,7 @@ function PanneauRoutes({ statusCode: initialStatusCode = null }: PanneauRoutesPr
     } = pages || {};
 
     const customRoutes: RouteDefinition[] = [
-        ...Object.keys(routesDefinition)
+        ...Object.keys(routesDefinition || {})
             .filter(
                 (key) =>
                     key.match(/^(resources\.|auth\.)/) === null &&

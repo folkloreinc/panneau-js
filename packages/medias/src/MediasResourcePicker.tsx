@@ -26,6 +26,7 @@ function MediasResourcePicker({
         create: (...args) => api.resources.store(resource, ...args),
         update: (...args) => api.resources.update(resource, ...args),
         destroy: (...args) => api.resources.destroy(resource, ...args),
+        restore: (...args) => api.resources.restore(resource, ...args),
     };
 
     return (

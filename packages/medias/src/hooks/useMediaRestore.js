@@ -8,9 +8,8 @@ function useMediaRestore() {
     const mediaRestore = useCallback(
         (id, data) => {
             setRestoring(true);
-            return api.restore(id, data).then((response) => {
+            return api.restore(id, data).finally(() => {
                 setRestoring(false);
-                return response;
             });
         },
         [api, setRestoring],

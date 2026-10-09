@@ -8,9 +8,8 @@ function useMediaDestroy() {
     const mediaDestroy = useCallback(
         (id, data) => {
             setDestroying(true);
-            return api.destroy(id, data).then((response) => {
+            return api.destroy(id, data).finally(() => {
                 setDestroying(false);
-                return response;
             });
         },
         [api, setDestroying],

@@ -37,9 +37,10 @@ function getTransloaditMediasFromResponse(response) {
                 transloadit:
                     results !== null
                         ? Object.keys(results).reduce((map, resultKey) => {
-                              const result = results[resultKey].find(
-                                  (itResult) => itResult.name === it.name,
-                              );
+                              const result =
+                                  results[resultKey].find(
+                                      (itResult) => itResult.name === it.name,
+                                  ) || null;
                               return result !== null
                                   ? {
                                         ...map,

@@ -8,9 +8,8 @@ function useMediaCreate() {
     const create = useCallback(
         (data) => {
             setCreating(true);
-            return api.create(data).then((response) => {
+            return api.create(data).finally(() => {
                 setCreating(false);
-                return response;
             });
         },
         [api, setCreating],

@@ -21,9 +21,9 @@ function useResourceItem<T = ResourceItem>(
     const contextResource = useResource();
     const finalResource = providedResource || contextResource;
     const finalId = providedResource !== null ? (id as string) : (resource as string);
-    const { id: resourceId } = finalResource;
+    const { id: resourceId = null } = finalResource || {};
     const { data = null, ...request } = useQuery<T>({
-        queryKey: [resourceId, finalId],
+        queryKey: [resourceId, finalId !== null ? String(finalId) : null],
         queryFn: () => api.resources.find(finalResource, finalId),
         ...opts,
     });

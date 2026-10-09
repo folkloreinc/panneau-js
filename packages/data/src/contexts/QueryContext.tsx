@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientConfig, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
-import { createContext, use } from 'react';
+import { createContext, use, useState } from 'react';
 
 type QueryInitialData = Record<string, unknown> | Array<Record<string, unknown>>;
 
@@ -23,20 +23,27 @@ export function QueryProvider({
     initialData = null,
     children,
 }: QueryProviderProps) {
-    const client = new QueryClient({
-        defaultOptions: {
-            queries: {
-                staleTime: Infinity,
+    // Create the client only once, it holds the whole cache
+    const [client] = useState(() => {
+        const newClient = new QueryClient({
+            defaultOptions: {
+                queries: {
+                    staleTime: Infinity,
+                },
             },
-        },
-        ...initialConfig,
+            ...initialConfig,
+        });
+        if (initialKey !== null && initialData !== null) {
+            newClient.setQueryData(initialKey, initialData);
+        }
+        return newClient;
     });
 
-    if (initialKey !== null && initialData !== null) {
-        client.setQueryData(initialKey, initialData);
-    }
-
-    return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+    return (
+        <QueryContext value={client}>
+            <QueryClientProvider client={client}>{children}</QueryClientProvider>
+        </QueryContext>
+    );
 }
 
 export default QueryContext;

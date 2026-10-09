@@ -11,14 +11,31 @@ const defaultPackagesMap = {
     en: () => loadPackage('@uppy/locales/lib/en_US', () => import('@uppy/locales/lib/en_US')),
 };
 
+function getPackageKey(locale, packagesMap) {
+    if (locale !== null && typeof packagesMap[locale] !== 'undefined') {
+        return locale;
+    }
+    // Fallback to the base language (ex: fr-CA => fr), then to english
+    const baseLocale = locale !== null ? `${locale}`.split(/[-_]/)[0].toLowerCase() : null;
+    if (baseLocale !== null && typeof packagesMap[baseLocale] !== 'undefined') {
+        return baseLocale;
+    }
+    return typeof packagesMap.en !== 'undefined' ? 'en' : null;
+}
+
 function useUppyLocale(locale, { packagesMap = defaultPackagesMap } = {}) {
-    const [{ package: loadedPackage }, setLoadedPackage] = useState({
-        package: packagesCache[locale] || null,
+    const packageKey = getPackageKey(locale || null, packagesMap);
+    const [{ key: loadedKey, package: loadedPackage }, setLoadedPackage] = useState({
+        key: packageKey,
+        package: packagesCache[packageKey] || null,
     });
-    const packageLoader = packagesMap[locale] || null;
+    // Reset the loaded package when the locale changes
+    const currentPackage =
+        loadedKey === packageKey ? loadedPackage : packagesCache[packageKey] || null;
+    const packageLoader = packageKey !== null ? packagesMap[packageKey] || null : null;
     useEffect(() => {
         let canceled = false;
-        if (loadedPackage !== null || packageLoader === null) {
+        if (currentPackage !== null || packageLoader === null) {
             return () => {
                 canceled = true;
             };
@@ -28,6 +45,7 @@ function useUppyLocale(locale, { packagesMap = defaultPackagesMap } = {}) {
             // packagesCache[locale] = dep;
             if (!canceled) {
                 setLoadedPackage({
+                    key: packageKey,
                     package: dep,
                 });
             }
@@ -35,8 +53,8 @@ function useUppyLocale(locale, { packagesMap = defaultPackagesMap } = {}) {
         return () => {
             canceled = true;
         };
-    }, [packageLoader, loadedPackage, setLoadedPackage]);
-    return loadedPackage;
+    }, [packageKey, packageLoader, currentPackage, setLoadedPackage]);
+    return currentPackage;
 }
 
 export default useUppyLocale;

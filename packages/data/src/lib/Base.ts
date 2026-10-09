@@ -98,15 +98,22 @@ class Base {
         return typeof routes[route] !== 'undefined';
     }
 
-    route(route: string, params: Record<string, unknown> | null = null) {
+    route(route: string, params: Record<string, unknown> | null = null): string | null {
         const { routes, generateUrl = null } = this.options;
-        if (generateUrl !== null) {
-            return generateUrl(route, params);
+        // The url generator returns null for routes it doesn't know: fallback to the routes option
+        const url = generateUrl !== null ? generateUrl(route, params) : null;
+        if (url !== null && typeof url !== 'undefined') {
+            return url;
         }
-        return generatePath(routes?.[route] || route, params);
+        const path = routes?.[route] ?? null;
+        // Return null for unknown routes, so callers can fallback to another route
+        return path !== null ? generatePath(path, params || {}) : null;
     }
 
-    getFullUrl(path: string, query: Record<string, unknown> | null = null) {
+    getFullUrl(path: string | null, query: Record<string, unknown> | null = null) {
+        if (path === null || typeof path === 'undefined') {
+            throw new Error('Api: route not found');
+        }
         const { baseUrl = null } = this.options;
         const hasProtocol = path.indexOf('://') !== -1;
         const url =

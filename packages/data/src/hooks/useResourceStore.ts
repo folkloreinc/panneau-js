@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { UseMutationOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { Resource, ResourceItem } from '@panneau/core';
 import { usePanneauResource, useResource } from '@panneau/core/contexts';
@@ -10,14 +10,26 @@ function useResourceStore(options);
 function useResourceStore<
     T = ResourceItem,
     TData extends Record<string, unknown> = Record<string, unknown>,
->(resource: Resource | string, options = {}) {
+>(resource: Resource | string, options: UseMutationOptions<T, Error, TData> = {}) {
     const providedResource = usePanneauResource(resource);
     const contextResource = useResource();
     const finalResource = providedResource || contextResource;
+    const { id: resourceId = null } = finalResource || {};
+    const { onSuccess: customOnSuccess = null, ...otherOptions } = options || {};
     const api = useApi();
+    const queryClient = useQueryClient();
     const { mutate, mutateAsync, isPending, ...other } = useMutation<T, Error, TData>({
         mutationFn: (data) => api.resources.store<T>(finalResource, data),
-        ...options,
+        onSuccess: (data, ...args) => {
+            queryClient.invalidateQueries({
+                queryKey: [resourceId],
+            });
+            if (customOnSuccess !== null) {
+                return customOnSuccess(data, ...args);
+            }
+            return undefined;
+        },
+        ...otherOptions,
     });
     return {
         store: mutate,

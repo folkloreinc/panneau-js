@@ -10,7 +10,8 @@ interface UseMediasOpts {
 function useMedias(query = null, page = null, count = null, opts: UseMediasOpts = {}) {
     const api = useMediasApi();
     const { trashed = false, ...queryOpts } = opts || {};
-    const finalQuery = { ...query, trashed };
+    // Only add trashed when true, it would be sent to the api as a filter
+    const finalQuery = { ...query, ...(trashed ? { trashed } : null) };
     const getItems = (requestedQuery, requestedPage = null, requestedCount = null) =>
         trashed
             ? api.getTrashed(requestedQuery, requestedPage, requestedCount)
