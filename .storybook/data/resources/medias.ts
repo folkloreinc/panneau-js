@@ -1,6 +1,12 @@
 import type { Resource } from '@panneau/core';
 
-import { resourceValues } from '../utils';
+import { optionsLabelDisplay, resourceValues } from '../utils';
+
+const mediaTypes = [
+    { value: 'image', label: 'Image' },
+    { value: 'video', label: 'Vidéo' },
+    { value: 'audio', label: 'Audio' },
+];
 
 /**
  * Medias library
@@ -45,12 +51,8 @@ const mediasResource: Resource = {
             label: 'Type',
             component: 'select',
             disabled: true,
-            options: [
-                { value: 'image', label: 'Image' },
-                { value: 'video', label: 'Vidéo' },
-                { value: 'audio', label: 'Audio' },
-            ],
-            components: { display: 'select' },
+            options: mediaTypes,
+            components: { display: optionsLabelDisplay(mediaTypes) },
         },
         { name: 'url', label: 'URL', component: 'url', disabled: true },
     ],

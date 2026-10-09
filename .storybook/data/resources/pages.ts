@@ -1,6 +1,6 @@
 import type { Resource } from '@panneau/core';
 
-import { localized, resourceValues } from '../utils';
+import { localized, optionsLabelDisplay, resourceValues } from '../utils';
 
 import { blocksField } from '../blocks';
 
@@ -13,6 +13,12 @@ import { blocksField } from '../blocks';
  * - localized fields (fr/en), html, image, blocks (items field with block types)
  * - table index with filters (search, select, radios), sortable columns and row actions
  */
+
+const pageTypes = [
+    { value: 'page', label: 'Page standard' },
+    { value: 'home', label: 'Accueil' },
+    { value: 'contact', label: 'Contact' },
+];
 
 const baseFields = [
     localized({
@@ -121,22 +127,9 @@ const pagesResource: Resource = {
         },
     ],
 
-    // Used for the columns of the index (merged with the columns by name)
-    fields: [
-        ...baseFields,
-        {
-            name: 'type',
-            label: 'Type',
-            component: 'select',
-            options: [
-                { value: 'page', label: 'Page standard' },
-                { value: 'home', label: 'Accueil' },
-                { value: 'contact', label: 'Contact' },
-            ],
-            components: { display: 'select' },
-        },
-        ...publicationFields,
-    ],
+    // Fields used when there is no type, and to display the columns of the index
+    // (columns are merged with the fields by name)
+    fields: [...baseFields, blocksField(), ...publicationFields],
 
     index: {
         component: 'table',
@@ -145,7 +138,7 @@ const pagesResource: Resource = {
             { id: 'id', label: '#', path: 'id', sortable: true },
             { id: 'image', path: 'image', label: '' },
             { id: 'title', sortable: true },
-            { id: 'type' },
+            { id: 'type', label: 'Type', path: 'type', ...optionsLabelDisplay(pageTypes) },
             { id: 'slug', path: 'slug', label: 'Slug' },
             { id: 'published' },
             { id: 'publish_at', sortable: true },
@@ -164,11 +157,7 @@ const pagesResource: Resource = {
                 name: 'type',
                 component: 'select',
                 placeholder: 'Tous les types',
-                options: [
-                    { value: 'page', label: 'Page standard' },
-                    { value: 'home', label: 'Accueil' },
-                    { value: 'contact', label: 'Contact' },
-                ],
+                options: pageTypes,
             },
             {
                 name: 'published',

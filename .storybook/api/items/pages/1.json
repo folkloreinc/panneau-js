@@ -19,7 +19,7 @@
             "fr": "Voir la programmation",
             "en": "See the program"
         },
-        "button_url": "/programmation"
+        "button_url": "https://example.com/programmation"
     },
     "url": "/",
     "image": {

@@ -24,7 +24,7 @@ export const IndexWithFilters = {
 };
 
 export const Create = {
-    name: 'Create (choose a type)',
+    name: 'Create (without type)',
     render: () => <AppStory path="/pages/create" />,
 };
 

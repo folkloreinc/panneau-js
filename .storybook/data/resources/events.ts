@@ -1,6 +1,6 @@
 import type { Resource } from '@panneau/core';
 
-import { localized, resourceValues } from '../utils';
+import { localized, optionsLabelDisplay, resourceValues } from '../utils';
 
 const categories = [
     { value: 'concert', label: 'Concert' },
@@ -48,7 +48,7 @@ const eventsResource: Resource = {
             component: 'select',
             required: true,
             options: categories,
-            components: { display: 'select' },
+            components: { display: optionsLabelDisplay(categories) },
         },
         {
             name: 'starts_at',
@@ -93,9 +93,8 @@ const eventsResource: Resource = {
         },
         {
             name: 'price',
-            label: 'Prix',
+            label: 'Prix ($)',
             component: 'number',
-            components: { display: { component: 'unit', suffix: '$' } },
         },
         {
             name: 'registration_url',

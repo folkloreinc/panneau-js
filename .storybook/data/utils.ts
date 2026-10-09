@@ -75,3 +75,16 @@ export function resourceValues({
         The_plural: capitalize(thePlural),
     };
 }
+
+/**
+ * Display of a value with options in a list (ex: "concert" -> "Concert")
+ */
+export function optionsLabelDisplay(options: { value: unknown; label: string }[]) {
+    return {
+        component: 'label',
+        labels: options.reduce(
+            (labels, { value, label }) => ({ ...labels, [`${value}`]: label }),
+            {},
+        ),
+    };
+}

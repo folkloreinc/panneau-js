@@ -1,6 +1,6 @@
 import type { Resource } from '@panneau/core';
 
-import { localized, resourceValues } from '../utils';
+import { localized, optionsLabelDisplay, resourceValues } from '../utils';
 
 const departments = [
     { value: 'production', label: 'Production' },
@@ -90,8 +90,7 @@ const jobListingsResource: Resource = {
                 id: 'department',
                 label: 'Département',
                 path: 'details.department',
-                component: 'select',
-                options: departments,
+                ...optionsLabelDisplay(departments),
             },
             { id: 'location', label: 'Lieu', path: 'details.location' },
             { id: 'deadline', sortable: true },
