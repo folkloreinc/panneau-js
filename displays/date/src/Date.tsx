@@ -5,7 +5,7 @@ import { parseISO } from 'date-fns/parseISO';
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import { loadPackage } from '@panneau/core/utils';
+import { loadPackage, parseDateOnly } from '@panneau/core/utils';
 
 interface DateDisplayProps {
     value?: string | null;
@@ -46,6 +46,31 @@ const DEFAULT_LOADERS: Record<string, () => Promise<{ default: Locale }>> = {
         ),
 };
 
+// A format without time tokens (ignoring quoted text) displays a calendar day
+const isDateOnlyFormat = (format: string): boolean =>
+    !/[HhkKmsSaBbp]/.test(format.replace(/'[^']*'/g, ''));
+
+function formatValue(
+    value: string,
+    format: string,
+    parseFormat: string | null,
+    localePackage: Locale | null,
+): string | null {
+    try {
+        // Read a date-only value as is, so it doesn't move to the previous day in the
+        // browser timezone (ex: 2026-10-01T00:00:00Z is 2026-09-30 in Montreal)
+        const dateOnly =
+            parseFormat === null && isDateOnlyFormat(format) ? parseDateOnly(value) : null;
+        const parsed =
+            dateOnly ??
+            (parseFormat !== null ? parse(value, parseFormat, new Date()) : parseISO(value));
+        return formatDate(parsed, format, localePackage !== null ? { locale: localePackage } : {});
+    } catch {
+        console.error('An error occured parsing or formatting date');
+        return value;
+    }
+}
+
 function DateDisplay({
     value = null,
     placeholder = null,
@@ -65,27 +90,10 @@ function DateDisplay({
         }
     }, [finalLocale, localeLoaders]);
 
-    const date = useMemo(() => {
-        if (value === null) {
-            return null;
-        }
-        let newDate = null;
-        try {
-            const parsed =
-                parseFormat !== null ? parse(value, parseFormat, new Date()) : parseISO(value);
-            newDate = parsed
-                ? formatDate(
-                      parsed,
-                      format,
-                      localePackage !== null ? { locale: localePackage } : {},
-                  )
-                : null;
-        } catch {
-            console.error('An error occured parsing or formatting date');
-            newDate = value !== null ? value : null;
-        }
-        return newDate;
-    }, [localePackage, value, format, parseFormat]);
+    const date = useMemo(
+        () => (value !== null ? formatValue(value, format, parseFormat, localePackage) : null),
+        [localePackage, value, format, parseFormat],
+    );
 
     return <div>{date || placeholder}</div>;
 }

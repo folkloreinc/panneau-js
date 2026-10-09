@@ -1,5 +1,6 @@
 import { format } from 'date-fns/format';
 import { formatISO } from 'date-fns/formatISO';
+import { isValid } from 'date-fns/isValid';
 import { parse } from 'date-fns/parse';
 import { parseISO } from 'date-fns/parseISO';
 import { useCallback, useEffect, useState } from 'react';
@@ -8,12 +9,22 @@ import { DatePicker, registerLocale } from 'react-datepicker';
 import { defineMessage, useIntl } from 'react-intl';
 
 import type { ControlSize, Message } from '@panneau/core';
-import { isMessage, loadPackage } from '@panneau/core/utils';
+import { isMessage, loadPackage, parseDateOnly } from '@panneau/core/utils';
 import TextField from '@panneau/field-text';
 
 import styles from './styles.module.css';
 // We import this one but customized - needs to be improved with bootstrap themes
 import 'react-datepicker/dist/react-datepicker.css';
+
+const loadFrLocale = () =>
+    loadPackage('date-fns/locale/fr-CA', () => import('date-fns/locale/fr-CA')).then(
+        ({ frCA }) => frCA,
+    );
+
+const loadEnLocale = () =>
+    loadPackage('date-fns/locale/en-CA', () => import('date-fns/locale/en-CA')).then(
+        ({ enCA }) => enCA,
+    );
 
 interface DateTimeFieldProps {
     name?: string | null;
@@ -62,16 +73,22 @@ function DateTimeField({
 
     // The internal value of this field must be a Date object
     const parseDate = useCallback(
-        (date: string | Date) => {
+        (date: string | Date): Date | null => {
             if (date instanceof Date) {
                 return date;
             }
             if (fnsFormat) {
-                return parse(date, fnsFormat, new Date());
+                const parsedDate = parse(date, fnsFormat, new Date());
+                if (isValid(parsedDate)) {
+                    return parsedDate;
+                }
             }
-            return parseISO(date);
+            // A date without time is a calendar day: read it as is, whatever its timezone,
+            // so it doesn't move to the previous day in the browser timezone
+            const parsedDate = (withoutTime ? parseDateOnly(date) : null) || parseISO(date);
+            return isValid(parsedDate) ? parsedDate : null;
         },
-        [fnsFormat],
+        [fnsFormat, withoutTime],
     );
 
     const formatDate = useCallback(
@@ -101,14 +118,7 @@ function DateTimeField({
 
     useEffect(() => {
         const localeName = `${locale}-CA`;
-        const loader =
-            locale === 'fr'
-                ? loadPackage('date-fns/locale/fr-CA', () => import('date-fns/locale/fr-CA')).then(
-                      ({ frCA }) => frCA,
-                  )
-                : loadPackage('date-fns/locale/en-CA', () => import('date-fns/locale/en-CA')).then(
-                      ({ enCA }) => enCA,
-                  );
+        const loader = locale === 'fr' ? loadFrLocale() : loadEnLocale();
         loader.then((localePackage) => {
             registerLocale(localeName, localePackage);
             setLoadedLocale(localeName);
