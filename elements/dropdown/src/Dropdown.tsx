@@ -73,8 +73,8 @@ function Dropdown({
         <MenuComponent
             className={classNames([
                 'dropdown-menu',
+                align !== null ? `dropdown-menu-${align}` : null,
                 {
-                    [`dropdown-menu-${align}`]: align !== null,
                     show: visible,
                 },
                 className,

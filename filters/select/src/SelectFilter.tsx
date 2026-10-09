@@ -244,8 +244,9 @@ function SelectFilter({
 
     const loadOptions = useCallback(
         (searchValue: string) => {
+            const searchParamKey = itemSearchParam as string;
             const searchParams =
-                hasSearch && searchValue.length > 2 ? { [itemSearchParam!]: searchValue } : null;
+                hasSearch && searchValue.length > 2 ? { [searchParamKey]: searchValue } : null;
             return fetchOptions(requestUrl, searchParams);
         },
         [fetchOptions, hasSearch, requestUrl, itemSearchParam],

@@ -1,5 +1,5 @@
 import isEqual from 'lodash-es/isEqual';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface QueryParams {
     page?: number;
@@ -16,12 +16,13 @@ interface UseQueryReturn {
 
 function useQuery(initialBaseQuery: QueryParams | null = null, paginated = true): UseQueryReturn {
     // Keep a stable reference to the base query so a new object with the same
-    // value (ex: an inline object literal) doesn't reset the query on every render
-    const baseQueryRef = useRef<QueryParams | null>(initialBaseQuery);
-    if (!isEqual(baseQueryRef.current, initialBaseQuery)) {
-        baseQueryRef.current = initialBaseQuery;
+    // value (ex: an inline object literal) doesn't reset the query on every render.
+    // Uses the "store information from previous renders" pattern: when the content
+    // changes, the state is updated during render and React re-renders immediately.
+    const [stableBaseQuery, setStableBaseQuery] = useState<QueryParams | null>(initialBaseQuery);
+    if (!isEqual(stableBaseQuery, initialBaseQuery)) {
+        setStableBaseQuery(initialBaseQuery);
     }
-    const { current: stableBaseQuery } = baseQueryRef;
 
     const initialQuery = useMemo(
         () =>

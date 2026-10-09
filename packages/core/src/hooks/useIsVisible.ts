@@ -1,5 +1,5 @@
 import type { RefObject } from 'react';
-import { useRef } from 'react';
+import { useState } from 'react';
 
 import { useIntersectionObserver } from './useObserver';
 
@@ -27,12 +27,14 @@ function useIsVisible({
         threshold,
     });
 
-    const wasIntersecting = useRef(isIntersecting);
-    if (isIntersecting && !wasIntersecting.current) {
-        wasIntersecting.current = isIntersecting;
+    // Remember if the element has been intersecting once (used with `persist`)
+    const [wasIntersecting, setWasIntersecting] = useState(isIntersecting);
+    if (isIntersecting && !wasIntersecting) {
+        setWasIntersecting(true);
     }
+    const hasIntersected = wasIntersecting || isIntersecting;
 
-    const isVisible = (!persist && isIntersecting) || (persist && wasIntersecting.current);
+    const isVisible = (!persist && isIntersecting) || (persist && hasIntersected);
 
     return {
         ref,

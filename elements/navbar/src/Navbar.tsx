@@ -45,11 +45,11 @@ function Navbar({
         <nav
             className={classNames([
                 'navbar',
+                theme !== null ? `bg-${theme}` : null,
+                !withoutCollapse ? `navbar-expand-${size}` : null,
+                theme !== null ? `navbar-${theme === 'light' ? 'light' : 'dark'}` : null,
+                theme !== null ? `text-${theme === 'light' ? 'dark' : 'light'}` : null,
                 {
-                    [`bg-${theme}`]: theme !== null,
-                    [`navbar-expand-${size}`]: !withoutCollapse,
-                    [`navbar-${theme === 'light' ? 'light' : 'dark'}`]: theme !== null,
-                    [`text-${theme === 'light' ? 'dark' : 'light'}`]: theme !== null,
                     'py-2': compact,
                     'px-2': compact,
                     'flex-nowrap': noWrap,

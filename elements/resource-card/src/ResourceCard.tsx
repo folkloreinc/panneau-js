@@ -78,8 +78,8 @@ function ResourceCard({
             className={classNames([
                 'card',
                 {
-                    [`bg-muted`]: disabled,
-                    [`text-muted`]: disabled,
+                    'bg-muted': disabled,
+                    'text-muted': disabled,
                 },
                 className,
             ])}

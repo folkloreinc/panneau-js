@@ -23,11 +23,13 @@ function GuestLayout({ fullscreen = false, children }: GuestLayoutProps) {
         >
             <MainNavbar className={classNames(['sticky-top', 'px-3'])} />
             <div
-                className={classNames({
-                    'd-flex flex-column flex-grow-1': fullscreen,
-                    [`bg-${background}`]: background !== null,
-                    [`text-${text}`]: text !== null,
-                })}
+                className={classNames([
+                    {
+                        'd-flex flex-column flex-grow-1': fullscreen,
+                    },
+                    background !== null ? `bg-${background}` : null,
+                    text !== null ? `text-${text}` : null,
+                ])}
             >
                 <div
                     className={classNames({

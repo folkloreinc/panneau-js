@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import isArray from 'lodash-es/isArray';
+import omit from 'lodash-es/omit';
 import { type ReactNode, useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 
@@ -87,7 +88,7 @@ function Filters({
     const onFilterClear = useCallback(
         (name: string) => {
             if (name !== null && onChange !== null) {
-                const { [name]: _oldName, ...newValue } = value || {};
+                const newValue = omit(value || {}, [name]);
                 onChange({ ...newValue, ...defaultValue });
             }
         },

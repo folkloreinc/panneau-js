@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const loaders = {
     fr: () => import(`ckeditor5/translations/fr`),
@@ -6,8 +6,11 @@ const loaders = {
 };
 
 function useCKEditorTranslations(locale) {
-    const [loaded, setLoaded] = useState(false);
-    const ref = useRef(null);
+    const [loadedState, setLoadedState] = useState({
+        locale: false,
+        translations: null,
+    });
+    const { locale: loaded, translations } = loadedState;
 
     useEffect(() => {
         let canceled = false;
@@ -17,10 +20,12 @@ function useCKEditorTranslations(locale) {
             };
         }
         (loaders[locale] || (() => Promise.reject()))()
-            .then(({ default: translations }) => {
+            .then(({ default: newTranslations }) => {
                 if (!canceled) {
-                    ref.current = translations;
-                    setLoaded(locale);
+                    setLoadedState({
+                        locale,
+                        translations: newTranslations,
+                    });
                 }
             })
             // eslint-disable-next-line no-console
@@ -28,9 +33,9 @@ function useCKEditorTranslations(locale) {
         return () => {
             canceled = true;
         };
-    }, [locale, loaded, setLoaded]);
+    }, [locale, loaded, setLoadedState]);
 
-    return ref.current;
+    return translations;
 }
 
 export default useCKEditorTranslations;

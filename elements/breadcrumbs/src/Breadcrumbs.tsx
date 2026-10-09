@@ -61,8 +61,8 @@ function Breadcrumbs({
                             {
                                 active,
                                 [styles.arrow]: separator === 'arrow',
-                                [`text-${theme?.text}`]: active && theme !== null,
                             },
+                            active && theme !== null ? `text-${theme?.text}` : null,
                         ])}
                         key={`item-${index}`}
                     >
@@ -71,9 +71,9 @@ function Breadcrumbs({
                             <Link
                                 href={url}
                                 onClick={onClick}
-                                className={classNames({
-                                    [`text-${theme?.text}`]: theme !== null,
-                                })}
+                                className={classNames(
+                                    theme !== null ? `text-${theme?.text}` : null,
+                                )}
                             >
                                 <LabelComponent>{label}</LabelComponent>
                             </Link>
@@ -81,9 +81,9 @@ function Breadcrumbs({
                         {!active && !url && onClick ? (
                             <Button
                                 onClick={onClick}
-                                className={classNames({
-                                    [`text-${theme?.text}`]: theme !== null,
-                                })}
+                                className={classNames(
+                                    theme !== null ? `text-${theme?.text}` : null,
+                                )}
                             >
                                 <LabelComponent>{label}</LabelComponent>
                             </Button>

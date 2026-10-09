@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 
 import { loadPackage } from '../utils';
 
+const loadWebFontLoader = () => import('webfontloader');
+
 interface FontsMap {
     loading: string[];
     active: string[];
@@ -95,7 +97,7 @@ function useLoadedFonts(fonts: (string | FontConfig)[]): { loaded: boolean } {
         const hasConfig = config !== null;
 
         if (hasConfig && typeof window !== 'undefined') {
-            loadPackage('webfontloader', () => import('webfontloader')).then(
+            loadPackage('webfontloader', loadWebFontLoader).then(
                 ({ default: WebFont }: { default: WebFont }) =>
                     WebFont.load({
                         ...config,

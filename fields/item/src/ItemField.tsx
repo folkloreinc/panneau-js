@@ -209,8 +209,10 @@ function ItemField({
                                 {
                                     disabled,
                                     'is-invalid': errors !== null,
-                                    [`form-control`]: size !== null,
-                                    [`form-control-${size}`]: size !== null,
+                                    'form-control': size !== null,
+                                },
+                                size !== null ? `form-control-${size}` : null,
+                                {
                                     [inputClassName]: inputClassName !== null,
                                 },
                             ])}

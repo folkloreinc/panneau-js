@@ -162,6 +162,17 @@ interface UseObserverReturn<T> {
     entry: T;
 }
 
+interface ObserverSubscription<T> {
+    element: Element | null;
+    Observer: ObserverConstructor<T>;
+    disabled: boolean;
+    root: Element | null;
+    rootMargin: string | null;
+    threshold: number | number[] | null;
+    unsubscribe: ((element: Element, callback: (entry: T) => void) => void) | null;
+    callback: (entry: T) => void;
+}
+
 export function useObserver<T>(
     Observer: ObserverConstructor<T>,
     opts: ObserverOptions = {},
@@ -170,10 +181,37 @@ export function useObserver<T>(
     const { root = null, rootMargin = null, threshold = null, disabled = false } = opts;
     const [entry, setEntry] = useState<T>(initialEntry);
     const nodeRef = useRef<Element>(null);
-    const currentElement = useRef<Element | null>(null);
-    const elementChanged = nodeRef.current !== currentElement.current;
+    const subscriptionRef = useRef<ObserverSubscription<T> | null>(null);
+
+    // Runs after every commit so a change of the referenced element is detected
+    // (refs can't be read during render). The subscription is only renewed when
+    // the element or the observer options changed.
     useEffect(() => {
         const { current: nodeElement } = nodeRef;
+        const { current: currentSubscription } = subscriptionRef;
+        if (
+            currentSubscription !== null &&
+            currentSubscription.element === nodeElement &&
+            currentSubscription.Observer === Observer &&
+            currentSubscription.disabled === disabled &&
+            currentSubscription.root === root &&
+            currentSubscription.rootMargin === rootMargin &&
+            currentSubscription.threshold === threshold
+        ) {
+            return;
+        }
+
+        if (
+            currentSubscription !== null &&
+            currentSubscription.unsubscribe !== null &&
+            currentSubscription.element !== null
+        ) {
+            currentSubscription.unsubscribe(
+                currentSubscription.element,
+                currentSubscription.callback,
+            );
+        }
+
         const callback = (newEntry: T) => setEntry(newEntry);
         let unsubscribe: ((element: Element, callback: (entry: T) => void) => void) | null = null;
         if (!disabled && nodeElement !== null && Observer !== null) {
@@ -191,13 +229,36 @@ export function useObserver<T>(
             unsubscribe = localUnsubscribe;
             subscribe(nodeElement, callback);
         }
-        currentElement.current = nodeElement;
-        return () => {
-            if (unsubscribe !== null && nodeElement !== null) {
-                unsubscribe(nodeElement, callback);
-            }
+        subscriptionRef.current = {
+            element: nodeElement,
+            Observer,
+            disabled,
+            root,
+            rootMargin,
+            threshold,
+            unsubscribe,
+            callback,
         };
-    }, [Observer, elementChanged, disabled, root, rootMargin, threshold]);
+    });
+
+    // Unsubscribe on unmount
+    useEffect(
+        () => () => {
+            const { current: currentSubscription } = subscriptionRef;
+            if (
+                currentSubscription !== null &&
+                currentSubscription.unsubscribe !== null &&
+                currentSubscription.element !== null
+            ) {
+                currentSubscription.unsubscribe(
+                    currentSubscription.element,
+                    currentSubscription.callback,
+                );
+            }
+            subscriptionRef.current = null;
+        },
+        [],
+    );
 
     return {
         ref: nodeRef,

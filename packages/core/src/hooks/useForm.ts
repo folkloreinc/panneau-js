@@ -226,12 +226,12 @@ function useForm<T extends FieldValue = FieldValue>(
                 [fieldName]: fieldValue,
             } as T);
         },
-        [value, errors, requestState, setErrors, setValue, ...fields],
+        [value, errors, requestState, setErrors, setValue],
     );
 
     const fieldsProps = useMemo(
         () => getFieldsPropsFromFields(fields, { value, errors, onChange: onFieldChange }, locales),
-        [value, errors, locales, fields, onFieldChange, ...fields],
+        [value, errors, locales, fields, onFieldChange],
     );
 
     const csrfToken = useMemo(() => getCsrfToken(), []);

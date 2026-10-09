@@ -188,9 +188,7 @@ function Card({
     );
     const cardClassName = classNames([
         'card',
-        {
-            [`bg-${theme}`]: theme !== null && !imageOverlay && theme !== 'dark',
-        },
+        theme !== null && !imageOverlay && theme !== 'dark' ? `bg-${theme}` : null,
         className,
     ]);
 

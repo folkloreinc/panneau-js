@@ -53,18 +53,19 @@ function Avatar({
         <div
             className={classNames([
                 styles.container,
+                textTheme !== null && textTheme !== undefined ? `text-${textTheme}` : null,
+                backgroundTheme !== null && backgroundTheme !== undefined
+                    ? `bg-${backgroundTheme}`
+                    : null,
+                borderTheme !== null && borderTheme !== undefined ? `border-${borderTheme}` : null,
                 {
-                    [`text-${textTheme}`]: textTheme !== null && textTheme !== undefined,
-                    [`bg-${backgroundTheme}`]:
-                        backgroundTheme !== null && backgroundTheme !== undefined,
-                    [`border-${borderTheme}`]: borderTheme !== null && borderTheme !== undefined,
                     [styles.square]: square,
                     [styles.inverted]: inverted,
                     [styles.blend]: withImage && blended,
                     [styles.hidden]: !withImage && shortName === null,
                 },
                 styles[size],
-                className
+                className,
             ])}
             style={{
                 ...(withImage ? { backgroundImage: `url(${image!.url})` } : null),

@@ -154,8 +154,8 @@ function Actions({
                     'd-flex': !isGroup && !isDropdown,
                     dropdown: isDropdown,
                     'btn-group': isGroup,
-                    [`btn-group-${size}`]: isGroup && size !== null,
                 },
+                isGroup && size !== null ? `btn-group-${size}` : null,
                 className,
             ])}
         >

@@ -76,13 +76,13 @@ function Container({
         ...resources.reduce(
             (allMessages, { id, intl: { messages: resourceMessages = {} } = {} }) => ({
                 ...allMessages,
-                ...Object.keys(resourceMessages).reduce(
-                    (allResourceMessages, key) => ({
+                ...Object.keys(resourceMessages).reduce((allResourceMessages, key) => {
+                    const messageKey = `resources.${id}.${key}`;
+                    return {
                         ...allResourceMessages,
-                        [`resources.${id}.${key}`]: resourceMessages[key],
-                    }),
-                    {},
-                ),
+                        [messageKey]: resourceMessages[key],
+                    };
+                }, {}),
             }),
             {},
         ),

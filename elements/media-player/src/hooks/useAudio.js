@@ -26,6 +26,15 @@ const useNativeVideo = (
     } = {},
 ) => {
     const playerRef = useRef(null);
+    // Keep the element in state so effects re-run when it changes (refs can't be read during render)
+    const [playerElement, setPlayerElement] = useState(null);
+    const ref = useCallback(
+        (element) => {
+            playerRef.current = element;
+            setPlayerElement(element);
+        },
+        [setPlayerElement],
+    );
 
     const [ready, setReady] = useState(false);
     const [muted, setMuted] = useState(initialMuted);
@@ -42,8 +51,6 @@ const useNativeVideo = (
         height,
         duration,
     });
-
-    const realCurrentTime = useRef(currentTime);
 
     const play = useCallback(() => {
         const { current: player } = playerRef;
@@ -166,7 +173,6 @@ const useNativeVideo = (
         const onVolumeChange = () => setMuted(player.muted);
         const onTimeUpdate = () => {
             const seconds = player.currentTime;
-            realCurrentTime.current = seconds;
             setCurrentTime(seconds);
             if (customOnTimeUpdate !== null) {
                 customOnTimeUpdate(seconds);
@@ -241,19 +247,21 @@ const useNativeVideo = (
     }, [ended, customOnEnd]);
 
     useEffect(() => {
-        if (muted && playerRef.current !== null) {
-            playerRef.current.muted = muted;
-            playerRef.current.defaultMuted = muted;
+        const { current: player } = playerRef;
+        if (muted && player !== null) {
+            player.muted = muted;
+            player.defaultMuted = muted;
         }
-    }, [muted, playerRef.current]);
+    }, [muted, playerElement]);
 
     useEffect(() => {
-        if (autoplay && playerRef.current !== null) {
-            Promise.resolve(playerRef.current.play()).catch((e) => {
+        const { current: player } = playerRef;
+        if (autoplay && player !== null) {
+            Promise.resolve(player.play()).catch((e) => {
                 debug('Autoplay error: %o', e);
             });
         }
-    }, [autoplay, playerRef.current]);
+    }, [autoplay, playerElement]);
 
     const { width: metaWidth, height: metaHeight, duration: metaDuration } = metadata;
     useEffect(() => {
@@ -267,7 +275,7 @@ const useNativeVideo = (
     }, [metaWidth, metaHeight, metaDuration, customOnMetadataChange]);
 
     return {
-        ref: playerRef,
+        ref,
         play,
         pause,
         mute,
@@ -276,7 +284,7 @@ const useNativeVideo = (
         seek,
         setLoop,
         ready,
-        currentTime: realCurrentTime.current,
+        currentTime,
         muted,
         loaded: ready,
         ...metadata,

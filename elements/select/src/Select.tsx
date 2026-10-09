@@ -54,6 +54,12 @@ export interface SelectElementProps {
 }
 
 const DEFAULT_OPTIONS: SelectOption[] = [];
+const DEFAULT_NO_OPTIONS_MESSAGE = (
+    <FormattedMessage defaultMessage="No result" description="Default label" />
+);
+const DEFAULT_PLACEHOLDER = (
+    <FormattedMessage defaultMessage="Choose an option" description="Default label" />
+);
 
 function SelectElement({
     value = null,
@@ -65,12 +71,10 @@ function SelectElement({
     searchable = true,
     creatable = false,
     withoutReset = false,
-    noOptionsMessage = <FormattedMessage defaultMessage="No result" description="Default label" />,
+    noOptionsMessage = DEFAULT_NO_OPTIONS_MESSAGE,
     createPrefix = 'Create',
     onCreateOption = null,
-    placeholder = (
-        <FormattedMessage defaultMessage="Choose an option" description="Default label" />
-    ),
+    placeholder = DEFAULT_PLACEHOLDER,
     autoSize = false,
     getOptionValue = null,
     getOptionLabel = null,

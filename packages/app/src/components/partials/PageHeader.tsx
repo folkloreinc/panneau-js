@@ -39,10 +39,10 @@ function PageHeader({
         <div
             className={classNames([
                 'py-4',
+                background !== null ? `bg-${background}` : null,
+                text !== null ? `text-${text}` : null,
                 {
-                    [`bg-${background}`]: background !== null,
-                    [`text-${text}`]: text !== null,
-                    [`border-bottom`]: background || text !== null,
+                    'border-bottom': background || text !== null,
                     [className]: className !== null,
                 },
             ])}

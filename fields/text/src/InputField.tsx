@@ -99,8 +99,8 @@ function InputField({
         className: classNames([
             styles.inputElement,
             'form-control',
+            size !== null ? `form-control-${size}` : null,
             {
-                [`form-control-${size}`]: size !== null,
                 'is-valid': feedback === 'valid',
                 'is-invalid': feedback === 'invalid' || errors !== null,
                 [className]: className !== null,

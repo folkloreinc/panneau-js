@@ -41,6 +41,18 @@ export interface UseActionsOptions {
     withoutRestoreConfirmation?: boolean;
 }
 
+const DEFAULT_SHOW_LABEL = <FormattedMessage defaultMessage="Show" description="Action label" />;
+const DEFAULT_EDIT_LABEL = <FormattedMessage defaultMessage="Edit" description="Action label" />;
+const DEFAULT_DUPLICATE_LABEL = (
+    <FormattedMessage defaultMessage="Duplicate" description="Action label" />
+);
+const DEFAULT_DELETE_LABEL = (
+    <FormattedMessage defaultMessage="Delete" description="Action label" />
+);
+const DEFAULT_RESTORE_LABEL = (
+    <FormattedMessage defaultMessage="Restore" description="Action label" />
+);
+
 function useActions(
     actions: ActionDefinition[] = [],
     value: ActionValue = null,
@@ -53,11 +65,11 @@ function useActions(
         duplicateUrl = null,
         deleteUrl = null,
         restoreUrl = null,
-        showLabel = <FormattedMessage defaultMessage="Show" description="Action label" />,
-        editLabel = <FormattedMessage defaultMessage="Edit" description="Action label" />,
-        duplicateLabel = <FormattedMessage defaultMessage="Duplicate" description="Action label" />,
-        deleteLabel = <FormattedMessage defaultMessage="Delete" description="Action label" />,
-        restoreLabel = <FormattedMessage defaultMessage="Restore" description="Action label" />,
+        showLabel = DEFAULT_SHOW_LABEL,
+        editLabel = DEFAULT_EDIT_LABEL,
+        duplicateLabel = DEFAULT_DUPLICATE_LABEL,
+        deleteLabel = DEFAULT_DELETE_LABEL,
+        restoreLabel = DEFAULT_RESTORE_LABEL,
         onClickShow = null,
         onClickEdit = null,
         onClickDuplicate = null,
@@ -70,7 +82,7 @@ function useActions(
         getRestorePropsFromValue = null,
         withShowModal = false,
         withEditModal = false,
-       withoutDuplicateConfirmation = false,
+        withoutDuplicateConfirmation = false,
         withoutDeleteConfirmation = false,
         withoutRestoreConfirmation = false,
     }: UseActionsOptions = {},

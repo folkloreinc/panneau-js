@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+
+const loadCKEditor = () => import('@panneau/ckeditor');
 
 function useCKEditor() {
-    const [loaded, setLoaded] = useState(false);
-    const ref = useRef(null);
+    const [editors, setEditors] = useState(null);
+    const loaded = editors !== null;
 
     useEffect(() => {
         let canceled = false;
@@ -11,11 +13,10 @@ function useCKEditor() {
                 canceled = true;
             };
         }
-        import('@panneau/ckeditor')
+        loadCKEditor()
             .then((Editors) => {
                 if (!canceled) {
-                    ref.current = Editors;
-                    setLoaded(true);
+                    setEditors(Editors);
                 }
             })
             // eslint-disable-next-line no-console
@@ -23,9 +24,9 @@ function useCKEditor() {
         return () => {
             canceled = true;
         };
-    }, [loaded, setLoaded]);
+    }, [loaded, setEditors]);
 
-    return ref.current;
+    return editors;
 }
 
 export default useCKEditor;

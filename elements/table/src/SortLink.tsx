@@ -36,7 +36,8 @@ function SortLink({
     ...props
 }: SortLinkProps) {
     const { name: columnName } = isObject(field) ? (field as Field) : { name: field as string };
-    const { [parameterName]: currentSortValue = null } = query || {};
+    const queryParameterValue = (query || {})[parameterName];
+    const currentSortValue = queryParameterValue !== undefined ? queryParameterValue : null;
     const [currentSort, fallbackCurrentDirection = null] = (currentSortValue || '').split(',');
     const currentSortDirection =
         currentSort === columnName

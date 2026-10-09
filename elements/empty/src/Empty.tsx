@@ -47,11 +47,11 @@ function Empty({
         >
             <div className="card-body d-flex align-items-center justify-content-center text-muted">
                 {children !== null ? (
-                    <div className={classNames(['mx-2', { [`text-${theme}`]: theme !== null }])}>
+                    <div className={classNames(['mx-2', theme !== null ? `text-${theme}` : null])}>
                         {children}
                     </div>
                 ) : (
-                    <div className={classNames([{ [`text-${theme}`]: theme !== null }])}>
+                    <div className={classNames([theme !== null ? `text-${theme}` : null])}>
                         {message || (
                             <FormattedMessage defaultMessage="Empty" description="Empty message" />
                         )}

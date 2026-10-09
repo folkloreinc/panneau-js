@@ -27,11 +27,8 @@ function Accordion({
     const accordionRefs = useRef<(HTMLDivElement | null)[]>([]);
     const accordionId = useMemo(() => uuid(), []);
 
-    const accordionItemsHeights = items.map((it, idx) =>
-        accordionRefs.current[idx]
-            ? `${accordionRefs.current[idx]!.getBoundingClientRect().height}px`
-            : null,
-    );
+    // Heights are measured from the DOM when an item is toggled (refs can't be read during render)
+    const [accordionItemsHeights, setAccordionItemsHeights] = useState<(string | null)[]>([]);
 
     const [openedItem, setOpenedItem] = useState<number | null>(null);
     const [openedItems, setOpenedItems] = useState(items.map(() => false));
@@ -43,6 +40,12 @@ function Accordion({
 
     const openItem = useCallback(
         (idx: number) => {
+            setAccordionItemsHeights(
+                items.map((it, itemIdx) => {
+                    const element = accordionRefs.current[itemIdx] || null;
+                    return element !== null ? `${element.getBoundingClientRect().height}px` : null;
+                }),
+            );
             if (oneAtATime) {
                 const valueToUpdate = idx !== openedItem ? idx : null;
                 setOpenedItem(valueToUpdate);
@@ -52,7 +55,7 @@ function Accordion({
                 setOpenedItems(openItempsUpdated);
             }
         },
-        [openedItem, openedItems, setOpenedItem, setOpenedItems, oneAtATime],
+        [items, openedItem, openedItems, setOpenedItem, setOpenedItems, oneAtATime],
     );
 
     return (
@@ -86,7 +89,7 @@ function Accordion({
                                   aria-labelledby={`${accordionId}-header${idx}`}
                                   data-bs-parent={`#${accordionId}`}
                                   style={{
-                                      height: `${itemOpened ? accordionItemsHeights[idx] : '0'}`,
+                                      height: `${itemOpened ? (accordionItemsHeights[idx] ?? null) : '0'}`,
                                   }}
                               >
                                   <div

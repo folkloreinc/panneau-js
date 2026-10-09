@@ -49,7 +49,7 @@ function useYouTube(
 ) {
     const iframeRef = useRef(null);
     const playerRef = useRef(null);
-    const playerIframeRef = useRef(iframeRef.current);
+    const playerIframeRef = useRef(null);
 
     const [apiReady, setApiReady] = useState(typeof window.YT !== 'undefined');
     const videoId = initialVideoId || getVideoId(url);
@@ -70,12 +70,11 @@ function useYouTube(
         duration,
     });
 
-    const realCurrentTime = useRef(currentTime);
-    const lastVideoId = useRef(videoId);
-    const videoIdChanged = lastVideoId.current !== videoId;
-    if (videoIdChanged) {
-        realCurrentTime.current = 0;
-        lastVideoId.current = videoId;
+    // Reset the current time when the video changes
+    const [lastVideoId, setLastVideoId] = useState(videoId);
+    if (lastVideoId !== videoId) {
+        setLastVideoId(videoId);
+        setCurrentTime(0);
     }
 
     const play = useCallback(() => {
@@ -312,7 +311,6 @@ function useYouTube(
         }
         const onTimeUpdate = () => {
             const seconds = player.getCurrentTime();
-            realCurrentTime.current = seconds;
             setCurrentTime(seconds);
 
             if (customOnTimeUpdate !== null) {
@@ -340,7 +338,7 @@ function useYouTube(
         seek,
         setLoop,
         ready,
-        currentTime: realCurrentTime.current,
+        currentTime,
         muted,
         loaded: ready,
         ...metadata,

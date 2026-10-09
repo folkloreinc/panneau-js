@@ -1,6 +1,6 @@
 import { getCSRFHeaders, getJSON } from '@folklore/fetch';
 import queryString from 'query-string';
-import { type ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { getPathValue } from '@panneau/core/utils';
 import Select from '@panneau/element-select';
@@ -67,7 +67,6 @@ function SelectField({
     );
 
     const [inputTextValue, setInputTextValue] = useState('');
-    const inputRef = useRef(false);
 
     const loadOptions = useMemo(
         () =>
@@ -102,14 +101,11 @@ function SelectField({
                                   : { data: newItems || [] };
                               const finalNewItems =
                                   maxOptionsCount !== null ? data.slice(0, maxOptionsCount) : data;
-                              inputRef.current = false;
                               return prepareRequestOptions !== null
                                   ? prepareRequestOptions(finalNewItems)
                                   : finalNewItems;
                           })
-                          .catch(() => {
-                              inputRef.current = false;
-                          });
+                          .catch(() => undefined);
                   }
                 : null,
         [

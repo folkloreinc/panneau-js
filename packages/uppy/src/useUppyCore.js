@@ -7,6 +7,8 @@ import { loadPackage } from '@panneau/core/utils';
  */
 let packageCache = null;
 
+const loadUppyCore = () => import('@uppy/core');
+
 function useUppyCore() {
     // transport
     const [{ package: loadedPackage }, setLoadedPackage] = useState({
@@ -19,7 +21,7 @@ function useUppyCore() {
                 canceled = true;
             };
         }
-        loadPackage('@uppy/core', () => import('@uppy/core')).then(({ default: Uppy }) => {
+        loadPackage('@uppy/core', loadUppyCore).then(({ default: Uppy }) => {
             packageCache = Uppy;
             if (!canceled) {
                 setLoadedPackage({

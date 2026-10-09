@@ -152,11 +152,13 @@ function Menu({
                                   {
                                       dropdown: dropdown !== null,
                                       active,
-                                      [hasSubMenuClassName!]:
-                                          subItems !== null && hasSubMenuClassName !== null,
-                                      [hasDropdownClassName!]:
-                                          subItems !== null && hasDropdownClassName !== null,
                                   },
+                                  subItems !== null && hasSubMenuClassName !== null
+                                      ? hasSubMenuClassName
+                                      : null,
+                                  subItems !== null && hasDropdownClassName !== null
+                                      ? hasDropdownClassName
+                                      : null,
                                   itemClassName,
                                   customClassName,
                               ])}
@@ -186,19 +188,15 @@ function Menu({
                                       className={subMenuClassName}
                                       itemClassName={classNames([
                                           subMenuItemClassName,
-                                          {
-                                              [itemClassName!]:
-                                                  subMenuItemClassName === null &&
-                                                  itemClassName !== null,
-                                          },
+                                          subMenuItemClassName === null && itemClassName !== null
+                                              ? itemClassName
+                                              : null,
                                       ])}
                                       linkClassName={classNames([
                                           subMenuLinkClassName,
-                                          {
-                                              [linkClassName!]:
-                                                  subMenuLinkClassName === null &&
-                                                  linkClassName !== null,
-                                          },
+                                          subMenuLinkClassName === null && linkClassName !== null
+                                              ? linkClassName
+                                              : null,
                                       ])}
                                   />
                               ) : null}
@@ -209,11 +207,9 @@ function Menu({
                                       className={dropdownClassName}
                                       itemClassName={classNames([
                                           dropdownItemClassName,
-                                          {
-                                              [itemClassName!]:
-                                                  dropdownItemClassName === null &&
-                                                  itemClassName !== null,
-                                          },
+                                          dropdownItemClassName === null && itemClassName !== null
+                                              ? itemClassName
+                                              : null,
                                       ])}
                                       align={dropdownAlign}
                                       onClickItem={closeDropdown}

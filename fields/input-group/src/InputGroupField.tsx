@@ -25,9 +25,7 @@ function InputGroupField({
         <div
             className={classNames([
                 'input-group',
-                {
-                    [`input-group-${size}`]: size !== null,
-                },
+                size !== null ? `input-group-${size}` : null,
                 styles.container,
                 {
                     [className]: className !== null,

@@ -148,6 +148,7 @@ function MediaCard({
         altThumbnailUrl,
         filename,
         file,
+        fileSize,
         preview,
     ]);
 

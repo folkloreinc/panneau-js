@@ -65,12 +65,11 @@ function useVimeo(
         duration,
     });
 
-    const realCurrentTime = useRef(currentTime);
-    const lastVideoId = useRef(videoId);
-    const videoIdChanged = lastVideoId.current !== videoId;
-    if (videoIdChanged) {
-        realCurrentTime.current = 0;
-        lastVideoId.current = videoId;
+    // Reset the current time when the video changes
+    const [lastVideoId, setLastVideoId] = useState(videoId);
+    if (lastVideoId !== videoId) {
+        setLastVideoId(videoId);
+        setCurrentTime(0);
     }
 
     const play = useCallback(() => {
@@ -120,7 +119,7 @@ function useVimeo(
         }
     }, []);
 
-    const playerIframeRef = useRef(iframeRef.current);
+    const playerIframeRef = useRef(null);
     useEffect(() => {
         const { current: currentPlayer } = playerRef;
         if (playerIframeRef.current !== iframeRef.current && currentPlayer !== null) {
@@ -216,7 +215,6 @@ function useVimeo(
             debug('onPause [ID: %s]', videoId);
         };
         const onTimeUpdate = ({ seconds }) => {
-            realCurrentTime.current = seconds;
             setCurrentTime(seconds);
 
             if (customOnTimeUpdate !== null) {
@@ -347,7 +345,7 @@ function useVimeo(
         setLoop,
         ready,
         buffering,
-        currentTime: realCurrentTime.current,
+        currentTime,
         loaded,
         muted: volume === 0,
         ...metadata,

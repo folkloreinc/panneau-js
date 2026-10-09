@@ -52,9 +52,9 @@ function MainLayout({ fullscreen = false, loading = false, children = null }: Ma
                     'flex-grow-1',
                     {
                         'd-flex flex-column': fullscreen,
-                        [`bg-${background}`]: background !== null,
-                        [`text-${text}`]: text !== null,
                     },
+                    background !== null ? `bg-${background}` : null,
+                    text !== null ? `text-${text}` : null,
                 ])}
             >
                 {children}

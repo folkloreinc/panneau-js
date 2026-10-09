@@ -49,9 +49,9 @@ function FormStatus({
                 'd-flex',
                 'align-items-center',
                 {
-                    [`text-danger`]: status === 'error',
-                    [`text-success`]: status === 'success',
-                    [`text-muted`]: status === 'loading',
+                    'text-danger': status === 'error',
+                    'text-success': status === 'success',
+                    'text-muted': status === 'loading',
                 },
                 className,
             ])}

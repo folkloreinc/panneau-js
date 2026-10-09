@@ -132,13 +132,15 @@ function ResourceForm({
         return item !== null
             ? item
             : finalFields.reduce(
-                  (defaultValues, { name, defaultValue = null }) =>
-                      defaultValue !== null
+                  (defaultValues, { name, defaultValue = null }) => {
+                      const fieldName = name as string;
+                      return defaultValue !== null
                           ? {
                                 ...defaultValues,
-                                [name!]: defaultValue,
+                                [fieldName]: defaultValue,
                             }
-                          : defaultValues,
+                          : defaultValues;
+                  },
                   type !== null ? { type } : {},
               );
     }

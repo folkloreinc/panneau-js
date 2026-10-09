@@ -44,7 +44,7 @@ function Loading({
                 <div
                     className={classNames([
                         'spinner-border',
-                        { [`text-${theme}`]: theme !== null },
+                        theme !== null ? `text-${theme}` : null,
                     ])}
                 >
                     <span className="visually-hidden">
@@ -52,7 +52,7 @@ function Loading({
                     </span>
                 </div>
                 {children !== null ? (
-                    <div className={classNames(['mx-2', { [`text-${theme}`]: theme !== null }])}>
+                    <div className={classNames(['mx-2', theme !== null ? `text-${theme}` : null])}>
                         {children}
                     </div>
                 ) : null}

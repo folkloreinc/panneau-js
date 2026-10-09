@@ -200,10 +200,14 @@ function ItemsField({
 
             if (requiredFields.length === 0) return false;
 
-            return requiredFields.reduce(
-                (acc, field) => acc || ((item || {})[field.name || ''] || null) === null,
-                false,
-            );
+            return requiredFields.reduce((acc, field) => {
+                if (acc) {
+                    return acc;
+                }
+                const fieldName = field.name || '';
+                const fieldValue = (item || {})[fieldName] || null;
+                return fieldValue === null;
+            }, false);
         },
         [itemFields, itemField, types],
     );

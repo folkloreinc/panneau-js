@@ -136,9 +136,11 @@ function Button({
     const buttonClassNames = classNames([
         {
             btn: withStyle,
-            [`btn-${outline ? 'outline-' : ''}${theme}`]: withStyle && theme !== null,
-            [`btn-${size}`]: withStyle && size !== null,
-            [`text-decoration-underline`]: !withoutStyle && underlined,
+        },
+        withStyle && theme !== null ? `btn-${outline ? 'outline-' : ''}${theme}` : null,
+        withStyle && size !== null ? `btn-${size}` : null,
+        {
+            'text-decoration-underline': !withoutStyle && underlined,
             active: !withoutStyle && active,
         },
         styles.container,
