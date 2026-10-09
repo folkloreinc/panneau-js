@@ -1,10 +1,10 @@
 import panneauDefinition from '../../../../.storybook/data/panneau-definition';
 import withApi from '../../../../.storybook/decorators/withDataProvider';
-import ActionsProvider from '../../../actions';
+import ActionsProvider from '../../../actions/src';
 import { PanneauProvider } from '../../../core/src/contexts';
-import DisplaysProvider from '../../../displays';
-import FieldsProvider from '../../../fields';
-import FiltersProvider from '../../../filters';
+import DisplaysProvider from '../../../displays/src';
+import FieldsProvider from '../../../fields/src';
+import FiltersProvider from '../../../filters/src';
 import IntlProvider from '../../../intl/src/IntlProvider';
 import { UppyProvider } from '../../../uppy/src/UppyContext';
 import MediasResourceBrowser from '../MediasResourceBrowser';

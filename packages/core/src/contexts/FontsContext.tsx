@@ -8,9 +8,9 @@ import type { Font } from '../types';
 import { useGoogleKeys } from './GoogleKeysContext';
 
 interface FontsContextValue {
-    systemFonts: Font[] | null;
-    googleFonts: Font[] | null;
-    customFonts: Font[] | null;
+    systemFonts: (Font | string)[] | null;
+    googleFonts: (Font | string)[] | null;
+    customFonts: (Font | string)[] | null;
     setGoogleFonts?: ((fonts: Font[]) => void) | null;
 }
 
@@ -112,14 +112,17 @@ function FontsProvider({
 
     const fonts = useMemo(
         () => ({
-            systemFonts: uniqBy([...(previousSystemFonts || []), ...(systemFonts || [])], (font) =>
-                isObject(font) ? font.name : font,
+            systemFonts: uniqBy(
+                [...(previousSystemFonts || []), ...(systemFonts || [])],
+                (font: Font | string) => (isObject(font) ? font.name : font),
             ),
-            googleFonts: uniqBy([...(previousGoogleFonts || []), ...(googleFonts || [])], (font) =>
-                isObject(font) ? font.name : font,
+            googleFonts: uniqBy(
+                [...(previousGoogleFonts || []), ...(googleFonts || [])],
+                (font: Font | string) => (isObject(font) ? font.name : font),
             ),
-            customFonts: uniqBy([...(previousCustomFonts || []), ...(customFonts || [])], (font) =>
-                isObject(font) ? font.name : font,
+            customFonts: uniqBy(
+                [...(previousCustomFonts || []), ...(customFonts || [])],
+                (font: Font | string) => (isObject(font) ? font.name : font),
             ),
             setGoogleFonts,
         }),

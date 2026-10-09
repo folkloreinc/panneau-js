@@ -4,16 +4,17 @@ import { ModalProvider } from '@panneau/core/contexts';
 import { Modals } from '@panneau/element-modal';
 
 import withApi from '../../../../.storybook/decorators/withDataProvider';
-import ActionsProvider from '../../../actions';
+import ActionsProvider from '../../../actions/src';
 import { useApi } from '../../../data/src/contexts/ApiContext';
-import DisplaysProvider from '../../../displays';
-import FieldsProvider from '../../../fields';
-import FiltersProvider from '../../../filters';
+import DisplaysProvider from '../../../displays/src';
+import FieldsProvider from '../../../fields/src';
+import FiltersProvider from '../../../filters/src';
 import IntlProvider from '../../../intl/src/IntlProvider';
 import { UppyProvider } from '../../../uppy/src/UppyContext';
 import { MediaProvider } from '../MediaContext';
 import { MediasApiProvider } from '../MediasApiContext';
 import MediasPicker from '../MediasPicker';
+import type { MediasPickerProps } from '../MediasPicker';
 
 import Media1 from '../../../../.storybook/api/items/medias/1.json';
 import Media2 from '../../../../.storybook/api/items/medias/2.json';
@@ -31,7 +32,7 @@ export default {
 
 const items = { data: [Media1, Media2, Media3], pagination: { page: 1 } };
 
-function Container({ value: initialValue = null, ...props } = {}) {
+function Container({ value: initialValue = null, ...props }: MediasPickerProps) {
     const api = useApi();
     const [value, setValue] = useState(initialValue);
     const onChange = useCallback(
@@ -70,7 +71,7 @@ function Container({ value: initialValue = null, ...props } = {}) {
 export const Default = {
     render: () => (
         <UppyProvider>
-            <Container layout="grid" picker />
+            <Container layout="grid" />
         </UppyProvider>
     ),
 };
@@ -78,7 +79,7 @@ export const Default = {
 export const Items = {
     render: () => (
         <UppyProvider>
-            <Container layout="grid" picker items={items} />
+            <Container layout="grid" items={items.data} />
         </UppyProvider>
     ),
 };
@@ -86,7 +87,7 @@ export const Items = {
 export const Multiple = {
     render: () => (
         <UppyProvider>
-            <Container layout="table" picker multipleSelection />
+            <Container layout="table" multipleSelection />
         </UppyProvider>
     ),
 };
@@ -95,7 +96,7 @@ export const Dark = {
     render: () => (
         <UppyProvider>
             <div data-bs-theme="dark" style={{ padding: 20, backgroundColor: '#000' }}>
-                <Container layout="table" theme="dark" picker withStickySelection />
+                <Container layout="table" theme="dark" withStickySelection />
             </div>
         </UppyProvider>
     ),
@@ -104,12 +105,7 @@ export const Dark = {
 export const WithUploadMultiple = {
     render: () => (
         <UppyProvider>
-            <Container
-                layout="table"
-                picker
-                multipleSelection
-                uploadButton={{ id: 1, icon: 'circle' }}
-            />
+            <Container layout="table" multipleSelection />
         </UppyProvider>
     ),
 };
@@ -117,13 +113,7 @@ export const WithUploadMultiple = {
 export const WithVideoType = {
     render: () => (
         <UppyProvider>
-            <Container
-                layout="table"
-                picker
-                multipleSelection
-                uploadButton={{ id: 1, icon: 'circle' }}
-                types={['video']}
-            />
+            <Container layout="table" multipleSelection types={['video']} />
         </UppyProvider>
     ),
 };
@@ -133,10 +123,8 @@ export const WithStickySelectionAndTypes = {
         <UppyProvider>
             <Container
                 layout="table"
-                picker
-                uploadButton={{ id: 1, icon: 'circle' }}
                 types={['video', 'audio']}
-                value={Media11}
+                value={[Media11]}
                 withStickySelection
             />
         </UppyProvider>
@@ -146,13 +134,7 @@ export const WithStickySelectionAndTypes = {
 export const WithStickySelection = {
     render: () => (
         <UppyProvider>
-            <Container
-                layout="table"
-                picker
-                uploadButton={{ id: 1, icon: 'circle' }}
-                value={Media11}
-                withStickySelection
-            />
+            <Container layout="table" value={[Media11]} withStickySelection />
         </UppyProvider>
     ),
 };
@@ -162,9 +144,7 @@ export const WithValueMultiple = {
         <UppyProvider>
             <Container
                 layout="table"
-                picker
                 multipleSelection
-                uploadButton={{ id: 1, icon: 'circle' }}
                 types={['image', 'video', 'audio']}
                 value={[Media2, Media3]}
             />
@@ -175,7 +155,7 @@ export const WithValueMultiple = {
 export const WithTrash = {
     render: () => (
         <UppyProvider>
-            <Container layout="grid" picker withTrash />
+            <Container layout="grid" withTrash />
         </UppyProvider>
     ),
 };
@@ -190,7 +170,6 @@ export const Custom = {
             <div style={{ padding: 20, backgroundColor: '#0FF' }}>
                 <Container
                     layout="table"
-                    picker
                     multipleSelection
                     fields={fields}
                     columns={columns}

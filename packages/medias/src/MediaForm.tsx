@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Field, Media } from '@panneau/core';
+import type { Field, Media, MediaType } from '@panneau/core';
 import { useFieldComponent } from '@panneau/core/contexts';
 import { useForm } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
@@ -20,7 +20,7 @@ import styles from './styles.module.css';
 
 type MediaFormPayload = Record<string, unknown>;
 
-interface MediaFormProps {
+export interface MediaFormProps {
     value?: Media | null;
     fields?: Field[] | null;
     onChange?: ((newValue: Media | null) => void) | null;
@@ -132,7 +132,7 @@ function MediaForm({
                             className="w-auto text-nowrap"
                             withButton
                             withoutMedia
-                            types={[type]}
+                            types={[type as MediaType]}
                             outline={false}
                             closeAfterFinish
                             disabled={destroying || updating || replacing}

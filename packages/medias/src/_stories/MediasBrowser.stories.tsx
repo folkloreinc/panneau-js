@@ -4,17 +4,18 @@ import { Modals } from '@panneau/element-modal';
 import withApi from '../../../../.storybook/decorators/withDataProvider';
 import withIntl from '../../../../.storybook/decorators/withIntlProvider';
 import withUppy from '../../../../.storybook/decorators/withUppy';
-import ActionsProvider from '../../../actions';
+import ActionsProvider from '../../../actions/src';
 import { useApi } from '../../../data/src/contexts/ApiContext';
-import DisplaysProvider from '../../../displays';
-import FieldsProvider from '../../../fields';
-import FiltersProvider from '../../../filters';
+import DisplaysProvider from '../../../displays/src';
+import FieldsProvider from '../../../fields/src';
+import FiltersProvider from '../../../filters/src';
 import IntlProvider from '../../../intl/src/IntlProvider';
 import ModalsProvider from '../../../modals/src/ModalsProvider';
 // import ModalsProvider from '../../../modals';
 import { UppyProvider } from '../../../uppy/src/UppyContext';
 import { MediasApiProvider } from '../MediasApiContext';
 import MediasBrowser from '../MediasBrowserContainer';
+import type { MediasBrowserContainerProps } from '../MediasBrowserContainer';
 
 export default {
     title: 'Medias/MediasBrowser',
@@ -25,7 +26,7 @@ export default {
     },
 };
 
-function Container({ ...props } = {}) {
+function Container(props: MediasBrowserContainerProps) {
     const api = useApi();
     return (
         <IntlProvider>
@@ -124,7 +125,6 @@ export const Permissions = {
 const fields = [];
 const columns = [];
 const filters = [];
-const metadatas = { sections: [], displays: [] };
 
 export const Custom = {
     render: () => (
@@ -132,12 +132,10 @@ export const Custom = {
             <Container
                 layout="table"
                 theme="dark"
-                picker
                 multipleSelection
                 fields={fields}
                 columns={columns}
                 filters={filters}
-                metadatas={metadatas}
             />
         </UppyProvider>
     ),

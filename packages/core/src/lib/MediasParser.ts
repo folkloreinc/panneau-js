@@ -124,7 +124,11 @@ class MediasParser {
                       const { type } = screen;
                       const { fields = [] } = this.screensManager?.getDefinition(type) || {};
                       const fieldsPattern = this.getMediaFieldsPattern(fields as Field[]);
-                      return MediasParser.replacePathsWithMedias(screen, medias, fieldsPattern);
+                      return MediasParser.replacePathsWithMedias(
+                          screen,
+                          medias,
+                          fieldsPattern,
+                      ) as Screen;
                   })
                 : components;
 

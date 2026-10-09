@@ -20,7 +20,7 @@ export default {
 const props = {
     baseUrl: 'http://localhost:58800/api', // Should be whatever, /api is for storybook
     uppy: {
-        transport: 'xhr',
+        transport: 'xhr' as const,
         xhr: {
             endpoint: 'https://ondinnok.test:8080/panneau/upload',
             headers: getCSRFHeaders(),

@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import { Tracking as BaseTracking } from '@folklore/tracking';
+import isObject from 'lodash-es/isObject';
 
 interface Screen {
     id?: string | null;
@@ -16,7 +17,7 @@ interface Media {
 }
 
 interface TrackingEventOptions {
-    value?: number | null;
+    value?: string | number | null;
     [key: string]: unknown;
 }
 
@@ -45,12 +46,16 @@ class Tracking extends BaseTracking {
         this.push(data);
     }
 
+    // The options can also be a value, to stay compatible with the base trackEvent signature
     trackEvent(
         category: string,
         action: string,
-        label: string,
-        { value = null, ...opts }: TrackingEventOptions = {},
+        label?: string | null,
+        options: TrackingEventOptions | string | number | null = {},
     ): void {
+        const { value = null, ...opts }: TrackingEventOptions = isObject(options)
+            ? options
+            : { value: options };
         const data = {
             ...opts,
             event: 'eventInteraction',

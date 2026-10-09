@@ -9,7 +9,6 @@ import type {
     FormDefinition,
     PanneauDefinition,
     StatusCode,
-    Uppy,
     User,
 } from '@panneau/core';
 import {
@@ -27,6 +26,7 @@ import { IntlProvider } from '@panneau/intl';
 import ListsProvider from '@panneau/lists';
 import ModalsProvider from '@panneau/modals';
 import { UppyProvider } from '@panneau/uppy';
+import type { UppyProviderConfig } from '@panneau/uppy';
 
 import Routes from './Routes';
 
@@ -39,13 +39,13 @@ const DEFAULT_LOCALES: string[] = [];
 
 interface ContainerProps {
     definition: PanneauDefinition;
-    forms: FormDefinition[];
-    fields: FieldDefinition[];
+    forms?: FormDefinition[] | null;
+    fields?: FieldDefinition[] | null;
     components?: Record<string, ElementType> | Record<string, Record<string, ElementType>> | null;
     user?: User | null;
     memoryRouter?: boolean;
     baseUrl?: string | null;
-    uppy?: Uppy | null;
+    uppy?: UppyProviderConfig | null;
     statusCode?: StatusCode | null;
 }
 

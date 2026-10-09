@@ -18,6 +18,7 @@ export interface Media extends Item {
     thumbnailUrl?: string;
     url?: string;
     provider?: string;
+    deletedAt?: string | null;
     [key: string]: unknown;
     files?: Record<string, MediaFile> | null;
 }

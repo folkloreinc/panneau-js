@@ -1,13 +1,13 @@
 import type { Item } from '../types';
 
-type GetLabelFunction = (item: Item, path: string | null) => string;
+type GetLabelFunction = (item: Item, path: string | string[] | null) => unknown;
 
 function getItemLabel(
     it: Item,
-    path: string | null,
+    path: string | string[] | null,
     getLabel: GetLabelFunction,
     withId: boolean = false,
-): string {
+): unknown {
     const { id = null } = it || {};
     if (withId) {
         const label = getLabel(it, path);

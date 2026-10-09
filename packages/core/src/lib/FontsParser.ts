@@ -117,7 +117,7 @@ class FontsParser {
         return id === 'font-family';
     }
 
-    static valueIsFont({ type = null }: Record<string, unknown>): boolean {
+    static valueIsFont({ type = null }: { type?: unknown }): boolean {
         return type === 'custom' || type === 'google';
     }
 

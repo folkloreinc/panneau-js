@@ -26,8 +26,16 @@ export interface MenuItem {
     id?: number | string;
     label?: Label;
     url?: string;
+    href?: string | null;
     external?: boolean;
     active?: boolean;
+    type?: string;
+    component?: string;
+    className?: string | null;
+    linkClassName?: string | null;
+    onClick?: ((e: MouseEvent) => void) | null;
+    items?: MenuItem[] | null;
+    dropdown?: MenuItem[] | null;
 }
 
 /**
@@ -37,6 +45,7 @@ export interface MenuItem {
 export type ButtonElement = HTMLButtonElement | HTMLAnchorElement;
 export interface Button {
     id?: string;
+    name?: string;
     label?: Label;
     onClick?: (e: MouseEvent<ButtonElement>, button?: Button, index?: number) => void;
     href?: string;

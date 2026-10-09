@@ -112,7 +112,7 @@ interface RequestState {
     error: boolean;
 }
 
-interface UseFormOptions {
+interface UseFormOptions<T extends FieldValue = FieldValue> {
     fields?: FieldInput[];
     action?: string | null;
     postForm?: ((action: string, data: Record<string, unknown>) => Promise<unknown>) | null;
@@ -122,9 +122,9 @@ interface UseFormOptions {
     initialGeneralError?: string | null;
     generalError?: string | null;
     setGeneralError?: ((error: string | null) => void) | null;
-    initialValue?: FieldValue | null;
-    value?: FieldValue | null;
-    setValue?: ((value: FieldValue) => void) | null;
+    initialValue?: T | null;
+    value?: T | null;
+    setValue?: ((value: T) => void) | null;
     withoutDefault?: boolean;
     withoutPropagation?: boolean;
     onComplete?: ((response: unknown) => void) | null;
@@ -132,11 +132,11 @@ interface UseFormOptions {
     locales?: string[];
 }
 
-interface UseFormReturn extends RequestState {
-    value: FieldValue | null;
-    setValue: (value: FieldValue) => void;
+interface UseFormReturn<T extends FieldValue = FieldValue> extends RequestState {
+    value: T | null;
+    setValue: (value: T) => void;
     csrfToken: string | null;
-    submit: (submitValue?: FieldValue | null) => void;
+    submit: (submitValue?: T | null) => void;
     onSubmit: (e: SubmitEvent) => void;
     status: 'loading' | 'success' | 'error' | null;
     response: unknown;
@@ -145,7 +145,9 @@ interface UseFormReturn extends RequestState {
     generalError: string | null;
 }
 
-function useForm(opts: UseFormOptions = {}): UseFormReturn {
+function useForm<T extends FieldValue = FieldValue>(
+    opts: UseFormOptions<T> = {},
+): UseFormReturn<T> {
     const {
         fields = [],
         action = null,
@@ -166,7 +168,7 @@ function useForm(opts: UseFormOptions = {}): UseFormReturn {
         locales = [],
     } = opts;
 
-    const [stateValue, setStateValue] = useState<FieldValue | null>(initialValue || providedValue);
+    const [stateValue, setStateValue] = useState<T | null>(initialValue || providedValue);
     const [stateErrors, setStateErrors] = useState<FieldErrors | null>(
         initialErrors || providedErrors,
     );
@@ -277,7 +279,7 @@ function useForm(opts: UseFormOptions = {}): UseFormReturn {
     );
 
     const submit = useCallback(
-        (submitValue: FieldValue | null = value) => {
+        (submitValue: T | null = value) => {
             setRequestState({
                 success: false,
                 loading: true,

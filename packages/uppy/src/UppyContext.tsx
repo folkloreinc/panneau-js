@@ -1,3 +1,4 @@
+import type { BasePlugin, Meta, PluginOpts } from '@uppy/core';
 import type Uppy from '@uppy/core';
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
@@ -52,14 +53,16 @@ interface UppyBuildOptions {
     [key: string]: unknown;
 }
 
-interface UppyPlugin {
-    [key: string]: unknown;
-}
+type UppyPlugin = typeof BasePlugin<
+    PluginOpts & Record<string, unknown>,
+    Meta,
+    Record<string, never>
+>;
 
-interface UppyTransportPlugin extends UppyPlugin {
+type UppyTransportPlugin = UppyPlugin & {
     COMPANION?: string;
     COMPANION_PATTERN?: string;
-}
+};
 
 type UppyConstructor = new (options: Record<string, unknown>) => Uppy;
 interface UppyContextValue {

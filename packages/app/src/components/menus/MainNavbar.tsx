@@ -4,6 +4,7 @@ import type { ReactElement } from 'react';
 import { useMemo } from 'react';
 
 import { useUser } from '@panneau/auth';
+import type { MenuItem } from '@panneau/core';
 import { usePanneau, usePanneauColorScheme, useUrlGenerator } from '@panneau/core/contexts';
 import Link from '@panneau/element-link';
 import Menu from '@panneau/element-menu';
@@ -81,11 +82,16 @@ function MainNavbar({
                     const lastItem =
                         currentItems.length > 0 ? currentItems[currentItems.length - 1] : null;
 
+                    // Other special items (strings) are not supported, items are menu items here
+                    const menuItem = item as MenuItem;
                     return isArray(lastItem)
-                        ? [...currentItems.slice(0, currentItems.length - 1), [...lastItem, item]]
-                        : [...currentItems, [item]];
+                        ? [
+                              ...currentItems.slice(0, currentItems.length - 1),
+                              [...lastItem, menuItem],
+                          ]
+                        : [...currentItems, [menuItem]];
                 },
-                [] as Array<ReactElement | unknown[]>,
+                [] as Array<ReactElement | MenuItem[]>,
             )
             .map((it, index) =>
                 isArray(it) ? (
@@ -103,13 +109,7 @@ function MainNavbar({
     }, [main, guest, user, navClassNames]);
 
     return (
-        <Navbar
-            theme={background}
-            loading={loading}
-            vertical={vertical}
-            className={className}
-            {...props}
-        >
+        <Navbar theme={background} vertical={vertical} className={className} {...props}>
             {name !== null ? (
                 <Link href={route('home')} className="navbar-brand" withoutTheme>
                     <span

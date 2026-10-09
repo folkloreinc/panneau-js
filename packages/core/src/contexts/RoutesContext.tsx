@@ -7,7 +7,7 @@ export { RoutesContext, useRoutes, useUrlGenerator, RoutesProvider };
 
 export function useRoutePush(): (
     route: string | { pathname?: string | null; search?: string | null },
-    data?: unknown,
+    data?: Record<string, unknown> | null,
     ...args: unknown[]
 ) => void {
     const url = useUrlGenerator();
@@ -15,7 +15,7 @@ export function useRoutePush(): (
     const push = useCallback(
         (
             route: string | { pathname?: string | null; search?: string | null },
-            data?: unknown,
+            data?: Record<string, unknown> | null,
             ...args: unknown[]
         ) => {
             if (isString(route)) {

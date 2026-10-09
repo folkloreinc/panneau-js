@@ -59,7 +59,7 @@ function MainLayout({ fullscreen = false, loading = false, children = null }: Ma
             >
                 {children}
             </div>
-            <Modals theme={theme} />
+            <Modals />
         </div>
     );
 }

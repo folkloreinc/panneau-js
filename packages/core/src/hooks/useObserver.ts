@@ -24,7 +24,7 @@ interface Subscriber<T> {
 interface ObserverWrapper<T> {
     subscribe: (element: Element, callback: (entry: T) => void) => void;
     unsubscribe: (element: Element, callback?: ((entry: T) => void) | null) => void;
-    observer: ReturnType<NonNullable<ObserverConstructor<T>>>;
+    observer: InstanceType<NonNullable<ObserverConstructor<T>>>;
 }
 
 interface ObserverOptions {
@@ -213,7 +213,8 @@ const thresholdArray = buildThresholdArray();
 interface IntersectionObserverEntry {
     target: Element | null;
     time: number | null;
-    isVisible: boolean;
+    // Only in Intersection Observer v2
+    isVisible?: boolean;
     isIntersecting: boolean;
     intersectionRatio: number;
     intersectionRect: DOMRectReadOnly | null;
@@ -245,7 +246,7 @@ export function useIntersectionObserver({
     threshold = thresholdArray,
     disabled = false,
 }: UseIntersectionObserverOptions = {}): UseObserverReturn<IntersectionObserverEntry> {
-    return useObserver(
+    return useObserver<IntersectionObserverEntry>(
         typeof window !== 'undefined' ? IntersectionObserver : null,
         {
             root,
@@ -281,7 +282,7 @@ interface UseResizeObserverOptions {
 export function useResizeObserver({
     disabled = false,
 }: UseResizeObserverOptions = {}): UseObserverReturn<ResizeObserverEntry> {
-    return useObserver(
+    return useObserver<ResizeObserverEntry>(
         typeof window !== 'undefined' ? ResizeObserver : null,
         { disabled },
         resizeObserverInitialEntry,

@@ -5,10 +5,10 @@ import { useApi } from '@panneau/data';
 import { Modals } from '@panneau/element-modal';
 
 import withApi from '../../../../.storybook/decorators/withDataProvider';
-import ActionsProvider from '../../../actions';
-import DisplaysProvider from '../../../displays';
-import FieldsProvider from '../../../fields';
-import FiltersProvider from '../../../filters';
+import ActionsProvider from '../../../actions/src';
+import DisplaysProvider from '../../../displays/src';
+import FieldsProvider from '../../../fields/src';
+import FiltersProvider from '../../../filters/src';
 import IntlProvider from '../../../intl/src/IntlProvider';
 import ModalsProvider from '../../../modals/src/ModalsProvider';
 import { UppyProvider } from '../../../uppy/src/UppyContext';

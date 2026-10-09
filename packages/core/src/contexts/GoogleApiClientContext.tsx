@@ -34,6 +34,13 @@ export function withGoogleApiClient(WrappedComponent: ComponentType<any>) {
     return WithGoogleApiClientComponent;
 }
 
+// Minimal shape of the Google API (gapi) object used here, @folklore/services types it as unknown
+interface GoogleApi {
+    client: {
+        init: (options: { apiKey?: string | null }) => Promise<unknown>;
+    };
+}
+
 interface GoogleApiClientProviderProps {
     children: ReactNode;
 }
@@ -42,7 +49,7 @@ function GoogleApiClientProvider({ children }: GoogleApiClientProviderProps) {
     const { apiKey } = useGoogleKeys();
     const [client, setClient] = useState<any | null>(null);
     useEffect(() => {
-        loadGoogleApi()
+        (loadGoogleApi() as Promise<GoogleApi>)
             .then((gapi) =>
                 gapi.client
                     .init({

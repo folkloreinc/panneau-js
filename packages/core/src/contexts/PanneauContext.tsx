@@ -3,7 +3,7 @@ import isString from 'lodash-es/isString';
 import { createContext, useContext } from 'react';
 import type { ReactNode } from 'react';
 
-import type { PanneauDefinition, Resource } from '../types';
+import type { PanneauAuth, PanneauDefinition, Resource } from '../types';
 
 const PanneauContext = createContext<PanneauDefinition | null>(null);
 
@@ -28,8 +28,8 @@ export function usePanneauResource(id: Resource | string | null): Resource | nul
 
 export function usePanneauColorScheme(): {
     theme: string;
-    background: string | null;
-    text: string | null;
+    background: 'light' | 'dark' | null;
+    text: 'light' | 'dark' | null;
     sidebarPosition?: string | null;
 } {
     const { theme = null } = usePanneau() || {};
@@ -79,7 +79,7 @@ export function usePanneauComponent(namespace: string | null, name: string): str
     return null;
 }
 
-export function usePanneauAuth(): Record<string, unknown> {
+export function usePanneauAuth(): PanneauAuth {
     const { auth = {} } = usePanneau() || {};
     return auth;
 }

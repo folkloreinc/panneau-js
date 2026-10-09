@@ -5,7 +5,7 @@
 import { ElementType } from 'react';
 
 import { Item, PageDefinition, RouteDefinition } from './core';
-import { Field, Form, FormDefinition } from './form';
+import { Field, Form } from './form';
 
 /**
  * Table column definition
@@ -77,14 +77,36 @@ export interface ResourcePages {
     [key: string]: PageDefinition | undefined;
 }
 
-export interface ResourceForms {
-    default: FormDefinition | null;
-    create: FormDefinition | null;
-    edit: FormDefinition | null;
-    delete: FormDefinition | null;
-    modal: FormDefinition | null;
-    [key: string]: FormDefinition | null;
+/**
+ * Form definition of a resource (the id is optional, the form is identified by its key)
+ */
+export interface ResourceForm extends Form {
+    id?: string;
+    component?: string | ElementType;
 }
+
+export interface ResourceForms {
+    default?: ResourceForm | null;
+    create?: ResourceForm | null;
+    edit?: ResourceForm | null;
+    delete?: ResourceForm | null;
+    modal?: ResourceForm | null;
+    [key: string]: ResourceForm | null | undefined;
+}
+
+/**
+ * Resource type (sub-type of a resource, ex: page types)
+ */
+export interface ResourceType {
+    id?: string;
+    name?: string;
+    fields?: Field[];
+    settings?: {
+        canCreate?: boolean;
+        [key: string]: unknown;
+    };
+}
+
 export interface Resource {
     id: string;
     name: string;
@@ -95,6 +117,7 @@ export interface Resource {
     settings?: Record<string, unknown>;
     extraRoutes?: RouteDefinition[];
     pages?: ResourcePages;
+    types?: ResourceType[];
 }
 
 export interface ResourceItem extends Item {

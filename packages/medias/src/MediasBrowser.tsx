@@ -1,10 +1,11 @@
 import classNames from 'classnames';
+import isString from 'lodash-es/isString';
 import uniqBy from 'lodash-es/uniqBy';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Column, Field, Filter, Media, MediaType } from '@panneau/core';
+import type { Field, Filter, Media, MediaType, TableColumn } from '@panneau/core';
 import { useQuery } from '@panneau/core/hooks';
 import Buttons from '@panneau/element-buttons';
 import Grid from '@panneau/element-grid';
@@ -53,7 +54,7 @@ export interface MediasBrowserProps {
         delete?: boolean;
     } | null;
     filters?: Filter[] | null;
-    columns?: Column[] | null;
+    columns?: TableColumn[] | null;
     query?: Record<string, unknown> | null;
     baseUrl?: string | null;
     fields?: Field[] | null;
@@ -310,6 +311,9 @@ function MediasBrowser({
     const partialColumns =
         withTrash && showTrashed
             ? (columns || []).map((column) => {
+                  if (isString(column)) {
+                      return column;
+                  }
                   const { id: columnId = null } = column || {};
                   if (columnId === 'created_at') {
                       return {
@@ -348,6 +352,9 @@ function MediasBrowser({
 
     const finalColumns = (partialColumns || [])
         .map((column) => {
+            if (isString(column)) {
+                return column;
+            }
             const { id: columnId = null } = column || {};
             if (columnId === 'actions') {
                 const { actions = [] } = column || {};

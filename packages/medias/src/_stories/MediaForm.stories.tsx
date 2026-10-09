@@ -1,13 +1,14 @@
 import { useCallback, useState } from 'react';
 
 import withApi from '../../../../.storybook/decorators/withDataProvider';
-import ActionsProvider from '../../../actions';
+import ActionsProvider from '../../../actions/src';
 import { useApi } from '../../../data/src/contexts/ApiContext';
-import DisplaysProvider from '../../../displays';
-import FieldsProvider from '../../../fields';
+import DisplaysProvider from '../../../displays/src';
+import FieldsProvider from '../../../fields/src';
 import IntlProvider from '../../../intl/src/IntlProvider';
 import { UppyProvider } from '../../../uppy/src/UppyContext';
 import MediaForm from '../MediaForm';
+import type { MediaFormProps } from '../MediaForm';
 import { MediasApiProvider } from '../MediasApiContext';
 
 import Media1 from '../../../../.storybook/api/items/medias/1.json';
@@ -23,7 +24,7 @@ export default {
     },
 };
 
-function Container({ value: initialValue, ...props } = {}) {
+function Container({ value: initialValue = null, ...props }: MediaFormProps) {
     const api = useApi();
     const [value, setValue] = useState(initialValue);
     const onChange = useCallback(

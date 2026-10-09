@@ -2,7 +2,7 @@
  * Panneau Definition Types
  * TypeScript interfaces for main Panneau configuration and definitions
  */
-import { PageDefinition, RouteDefinition } from './core';
+import { MenuItem, PageDefinition, RouteDefinition } from './core';
 import { FieldDefinition, FormDefinition } from './form';
 import { Resource, ResourcePages } from './resource';
 
@@ -10,17 +10,17 @@ import { Resource, ResourcePages } from './resource';
  * Panneau route configuration
  */
 export interface Routes {
-    'resources.index': RouteDefinition | string;
-    'resources.create': RouteDefinition | string;
-    'resources.store': RouteDefinition | string;
-    'resources.show': RouteDefinition | string;
-    'resources.edit': RouteDefinition | string;
-    'resources.update': RouteDefinition | string;
-    'resources.delete': RouteDefinition | string;
-    'resources.destroy': RouteDefinition | string;
-    'resources.duplicate': RouteDefinition | string;
-    'resources.clone': RouteDefinition | string;
-    'resources.restore': RouteDefinition | string;
+    'resources.index'?: RouteDefinition | string;
+    'resources.create'?: RouteDefinition | string;
+    'resources.store'?: RouteDefinition | string;
+    'resources.show'?: RouteDefinition | string;
+    'resources.edit'?: RouteDefinition | string;
+    'resources.update'?: RouteDefinition | string;
+    'resources.delete'?: RouteDefinition | string;
+    'resources.destroy'?: RouteDefinition | string;
+    'resources.duplicate'?: RouteDefinition | string;
+    'resources.clone'?: RouteDefinition | string;
+    'resources.restore'?: RouteDefinition | string;
     [key: string]: RouteDefinition | string;
 }
 
@@ -57,6 +57,24 @@ export interface PanneauPages extends ResourcePages {
 }
 
 /**
+ * Menu item in a Panneau menu: a menu item definition or a special item id
+ * (ex: 'resources', 'account', 'separator')
+ */
+export type PanneauMenuItem = MenuItem | string;
+
+export interface PanneauMenus {
+    main?: PanneauMenuItem[] | null;
+    guest?: PanneauMenuItem[] | null;
+    [key: string]: PanneauMenuItem[] | null | undefined;
+}
+
+export interface PanneauAuth {
+    forgotPassword?: boolean;
+    register?: boolean;
+    [key: string]: unknown;
+}
+
+/**
  * Panneau definition (main configuration)
  */
 export interface PanneauDefinition {
@@ -70,6 +88,8 @@ export interface PanneauDefinition {
     settings?: Record<string, unknown>;
     forms?: FormDefinition[];
     fields?: FieldDefinition[];
+    menus?: PanneauMenus;
+    auth?: PanneauAuth;
 }
 
 /**
