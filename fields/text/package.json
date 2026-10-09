@@ -63,7 +63,7 @@
         "@panneau/field-input-group": "^4.0.78",
         "@panneau/themes": "^4.0.78",
         "classnames": "^2.5.1",
-        "lodash": "^4.17.21",
+        "lodash-es": "^4.17.21",
         "uuid": "^9.0.1"
     },
     "devDependencies": {

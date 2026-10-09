@@ -62,7 +62,9 @@
         "@panneau/core": "^4.0.78",
         "@panneau/themes": "^4.0.78",
         "classnames": "^2.5.1",
+        "lodash-es": "^4.17.21",
         "react-color": "^2.19.3",
+        "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0",
         "tinycolor2": "^1.4.2"
     },
     "devDependencies": {

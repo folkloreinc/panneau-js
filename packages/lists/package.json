@@ -61,6 +61,7 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@panneau/core": "^4.0.78",
+        "@panneau/list-calendar": "^4.0.78",
         "@panneau/list-cards": "^4.0.78",
         "@panneau/list-table": "^4.0.78"
     },

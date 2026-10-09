@@ -58,7 +58,7 @@
         "@panneau/modal-resource-form": "^4.0.84",
         "@panneau/modal-resource-items": "^4.0.84",
         "classnames": "^2.5.1",
-        "lodash": "^4.17.21",
+        "lodash-es": "^4.17.21",
         "react-intl": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^10.0.0"
     },
     "devDependencies": {

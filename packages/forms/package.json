@@ -65,7 +65,8 @@
         "@panneau/form-horizontal": "^4.0.78",
         "@panneau/form-inline": "^4.0.78",
         "@panneau/form-normal": "^4.0.84",
-        "@panneau/form-two-pane": "^4.0.84"
+        "@panneau/form-two-pane": "^4.0.84",
+        "lodash-es": "^4.17.21"
     },
     "devDependencies": {
         "react": "^19.2.0",

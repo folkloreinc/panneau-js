@@ -84,7 +84,7 @@
         "@panneau/field-toggles": "^4.0.78",
         "@panneau/field-upload": "^4.0.84",
         "@panneau/field-url": "^4.0.78",
-        "lodash": "^4.17.21"
+        "lodash-es": "^4.17.21"
     },
     "devDependencies": {
         "react": "^19.2.0",
