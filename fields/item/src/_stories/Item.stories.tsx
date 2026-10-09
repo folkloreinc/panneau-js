@@ -51,17 +51,17 @@ export const Multiple = {
 
 export const WithRequestUrl = {
     render: () => (
-        <Container requestUrl="/events/" requestQuery={null} itemLabelPath="title" autoload />
+        <Container requestUrl="/api/events" requestQuery={null} itemLabelPath="title.fr" autoload />
     ),
 };
 
 export const WithValueAndRequestUrl = {
     render: () => (
         <Container
-            requestUrl="/events/"
+            requestUrl="/api/events"
             requestQuery={null}
-            itemLabelPath="title"
-            value={{ id: '1', title: 'Title' }}
+            itemLabelPath="title.fr"
+            value={{ id: '1', title: { fr: 'Soirée d’ouverture' } }}
         />
     ),
 };
@@ -69,12 +69,12 @@ export const WithValueAndRequestUrl = {
 export const WithMultipleValuesAndRequestUrl = {
     render: () => (
         <Container
-            requestUrl="/events/"
+            requestUrl="/api/events"
             requestQuery={null}
-            itemLabelPath="title"
+            itemLabelPath="title.fr"
             value={[
-                { id: '1', title: '1 événement' },
-                { id: '2', title: '2 evt' },
+                { id: '1', title: { fr: 'Soirée d’ouverture' } },
+                { id: '2', title: { fr: 'Les villes de demain' } },
             ]}
             multiple
         />
@@ -83,7 +83,7 @@ export const WithMultipleValuesAndRequestUrl = {
 
 export const MultipleWithRequestUrl = {
     render: () => (
-        <Container requestUrl="/events/" requestQuery={null} itemLabelPath="title" multiple />
+        <Container requestUrl="/api/events" requestQuery={null} itemLabelPath="title.fr" multiple />
     ),
 };
 
@@ -111,10 +111,10 @@ export const CreatableWithRequestUrl = {
         <Container
             creatable
             multiple
-            getNewItem={(title) => ({ title })}
-            requestUrl="/pages/"
+            getNewItem={(title) => ({ title: { fr: title } })}
+            requestUrl="/api/pages"
             requestQuery={null}
-            itemLabelPath="title"
+            itemLabelPath="title.fr"
         />
     ),
 };

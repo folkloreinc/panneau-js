@@ -5,6 +5,9 @@ import ColorField from '../ColorField';
 export default {
     title: 'Fields/Color',
     component: ColorField,
+    parameters: {
+        intl: true,
+    },
 };
 
 function Container(props) {
