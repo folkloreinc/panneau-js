@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import type { MouseEvent, ReactNode } from 'react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import type { DropdownAlign, MenuItem } from '@panneau/core';
 import Dropdown from '@panneau/element-dropdown';
@@ -49,6 +49,9 @@ function Menu({
     dropdownAlign = null,
 }: MenuProps) {
     const [dropdownsVisible, setDropdownsVisible] = useState(items.map(() => false));
+    // The element of each item: a click in it (on the toggle of its dropdown) is not outside its
+    // dropdown
+    const itemsRef = useRef<(HTMLElement | null)[]>([]);
     const ListComponent: any = linkAsItem ? 'div' : tagName;
     return (
         <ListComponent className={className}>
@@ -68,16 +71,19 @@ function Menu({
                           onClick: customOnClick = null,
                           ...itemProps
                       } = it;
+                      // The click goes on to the document: the other open dropdowns, of this menu
+                      // or of another one, see it as a click outside them and close
                       const onClickItem =
                           dropdown !== null
                               ? (e: MouseEvent) => {
                                     e.preventDefault();
-                                    e.stopPropagation();
-                                    setDropdownsVisible([
-                                        ...dropdownsVisible.slice(0, index),
-                                        !(dropdownsVisible[index] || false),
-                                        ...dropdownsVisible.slice(index + 1),
-                                    ]);
+                                    setDropdownsVisible((visibles) =>
+                                        items.map((_item, itemIndex) =>
+                                            itemIndex === index
+                                                ? !(visibles[itemIndex] || false)
+                                                : false,
+                                        ),
+                                    );
                                     if (customOnClick !== null) {
                                         customOnClick(e);
                                     }
@@ -86,11 +92,22 @@ function Menu({
                       const closeDropdown =
                           dropdown !== null
                               ? () => {
-                                    setDropdownsVisible([
-                                        ...dropdownsVisible.slice(0, index),
-                                        false,
-                                        ...dropdownsVisible.slice(index + 1),
-                                    ]);
+                                    setDropdownsVisible((visibles) =>
+                                        items.map((_item, itemIndex) =>
+                                            itemIndex === index
+                                                ? false
+                                                : visibles[itemIndex] || false,
+                                        ),
+                                    );
+                                }
+                              : null;
+                      const onClickOutsideDropdown =
+                          closeDropdown !== null
+                              ? (e: globalThis.MouseEvent) => {
+                                    const element = itemsRef.current[index] || null;
+                                    if (element === null || !element.contains(e.target as Node)) {
+                                        closeDropdown();
+                                    }
                                 }
                               : null;
                       const ItemComponent: any = itemTagName;
@@ -119,6 +136,9 @@ function Menu({
                       ) : (
                           <ItemComponent
                               key={`item-${id || index}`}
+                              ref={(element: HTMLElement | null) => {
+                                  itemsRef.current[index] = element;
+                              }}
                               className={classNames([
                                   {
                                       dropdown: dropdown !== null,
@@ -188,7 +208,7 @@ function Menu({
                                       ])}
                                       align={dropdownAlign}
                                       onClickItem={closeDropdown}
-                                      onClickOutside={closeDropdown}
+                                      onClickOutside={onClickOutsideDropdown}
                                   />
                               ) : null}
                           </ItemComponent>
