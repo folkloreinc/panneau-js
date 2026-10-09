@@ -123,3 +123,40 @@ export const LegacyResourcePageOverride = {
         />
     ),
 };
+
+// The duplicate page is not linked from the list, so the home page links to it
+function DuplicateLinkHomePage() {
+    const route = useUrlGenerator();
+    return (
+        <div className="container py-4">
+            <Link href={route('resources.duplicate', { resource: 'pages', id: '1' })}>
+                Duplicate page #1
+            </Link>
+        </div>
+    );
+}
+
+// The duplicate page should keep its confirmation form even if the edit form has a custom component
+export const DuplicateWithCustomEditForm = {
+    name: 'Duplicate with custom edit form',
+    render: () => (
+        <PanneauContainer
+            definition={{
+                ...panneauDefinition,
+                pages: { home: { component: 'duplicate-link-home-page' } },
+                resources: panneauDefinition.resources.map((resource) =>
+                    resource.id === 'pages'
+                        ? {
+                              ...resource,
+                              forms: { ...resource.forms, edit: { component: 'normal' } },
+                          }
+                        : resource,
+                ),
+            }}
+            components={{ [PAGES_NAMESPACE]: { DuplicateLinkHomePage } }}
+            memoryRouter
+            user={user}
+            {...props}
+        />
+    ),
+};
