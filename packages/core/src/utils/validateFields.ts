@@ -15,8 +15,10 @@ export function validateFields(
             if (field.type === 'fields' && field.fields) {
                 return validateFields(field.fields, value);
             }
-            const val = value && field.name && value[field.name] ? value[field.name] : false;
-            return !(field.required && !val);
+            const val = value && field.name ? value[field.name] : null;
+            // Only null, undefined and empty strings are considered missing (0 and false are valid)
+            const isMissing = val === null || typeof val === 'undefined' || val === '';
+            return !(field.required && isMissing);
         }
         return acc;
     }, true);

@@ -31,8 +31,11 @@ export function useRoutePush(): (
 }
 
 export function useRouteBack(): () => void {
-    const url = useUrlGenerator();
-    const [, navigate] = useLocation();
-    const back = useCallback(() => navigate(-1), [navigate, url]);
+    // wouter's navigate doesn't support history deltas, use the History API directly
+    const back = useCallback(() => {
+        if (typeof window !== 'undefined') {
+            window.history.back();
+        }
+    }, []);
     return back;
 }

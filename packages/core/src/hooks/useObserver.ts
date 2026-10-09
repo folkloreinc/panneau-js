@@ -36,12 +36,21 @@ interface ObserverOptions {
 
 const observersCache = new Map<ObserverConstructor<any>, Record<string, ObserverWrapper<any>>>();
 
-function getOptionsKey({
-    root = null,
-    rootMargin,
-    threshold = null,
-}: ObserverOptions): string {
-    return `root_${root}_rootMargin_${rootMargin || null}_threshold_${threshold}`;
+// Give each root element a unique id so observers with different roots are not shared
+const rootIds = new WeakMap<Element, number>();
+let lastRootId = 0;
+
+function getRootId(root: Element): number {
+    if (!rootIds.has(root)) {
+        lastRootId += 1;
+        rootIds.set(root, lastRootId);
+    }
+    return rootIds.get(root)!;
+}
+
+function getOptionsKey({ root = null, rootMargin, threshold = null }: ObserverOptions): string {
+    const rootKey = root !== null ? getRootId(root) : null;
+    return `root_${rootKey}_rootMargin_${rootMargin || null}_threshold_${threshold}`;
 }
 
 function createObserver<T>(
@@ -167,7 +176,7 @@ export function useObserver<T>(
         const { current: nodeElement } = nodeRef;
         const callback = (newEntry: T) => setEntry(newEntry);
         let unsubscribe: ((element: Element, callback: (entry: T) => void) => void) | null = null;
-        if (nodeElement !== null && Observer !== null) {
+        if (!disabled && nodeElement !== null && Observer !== null) {
             const newOpts: ObserverOptions = {};
             if (root !== null) {
                 newOpts.root = root;

@@ -4,9 +4,11 @@ import { MediasParser } from '../lib';
 
 import { useFieldsManager } from '../contexts';
 
+type Story = Parameters<MediasParser['toPath']>[0];
+
 interface UseMediasParserReturn {
-    toPath: (story: unknown) => string;
-    fromPath: (story: unknown) => unknown;
+    toPath: (story: Story) => Story;
+    fromPath: (story: Story) => Story;
     parser: MediasParser;
 }
 
@@ -23,8 +25,8 @@ function useMediasParser(): UseMediasParserReturn {
             }),
         [fieldsManager],
     );
-    const toPath = useCallback((story: unknown): string => parser.toPath(story), [parser]);
-    const fromPath = useCallback((story: unknown): unknown => parser.fromPath(story), [parser]);
+    const toPath = useCallback((story: Story): Story => parser.toPath(story), [parser]);
+    const fromPath = useCallback((story: Story): Story => parser.fromPath(story), [parser]);
 
     return { toPath, fromPath, parser };
 }

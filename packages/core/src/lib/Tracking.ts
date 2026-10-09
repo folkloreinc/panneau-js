@@ -1,11 +1,6 @@
 /* eslint-disable no-console */
 import { Tracking as BaseTracking } from '@folklore/tracking';
 
-interface TrackingOptions {
-    variables?: Record<string, unknown> | null;
-    [key: string]: unknown;
-}
-
 interface Screen {
     id?: string | null;
     type?: string | null;
@@ -27,15 +22,6 @@ interface TrackingEventOptions {
 
 class Tracking extends BaseTracking {
     variables: Record<string, unknown> | null;
-
-    constructor(opts: TrackingOptions = {}) {
-        super(opts);
-        const { variables = null } = this.options;
-        this.variables = null;
-        if (variables !== null) {
-            this.setVariables(variables);
-        }
-    }
 
     setVariables(variables: Record<string, unknown> | null): void {
         this.variables = variables;

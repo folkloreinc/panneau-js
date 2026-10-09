@@ -25,7 +25,9 @@ export function useComponentsManager(namespace: string | null = null): Component
     const manager = useContext(ComponentsContext);
     const finalManager = useMemo(
         () =>
-            namespace !== null ? new ComponentsManager(manager.getComponents(namespace)) : manager,
+            namespace !== null
+                ? new ComponentsManager(manager?.getComponents(namespace) ?? {})
+                : manager,
         [manager, namespace],
     );
     return finalManager;
@@ -36,7 +38,7 @@ export function useComponents(
     defaultComponents: Record<string, ElementType> = {},
 ): Record<string, ElementType> {
     const manager = useComponentsManager();
-    return manager.getComponents(namespace) || defaultComponents;
+    return manager?.getComponents(namespace) || defaultComponents;
 }
 
 export function useComponent(
@@ -49,7 +51,7 @@ export function useComponent(
         if (!isString(name)) {
             return name || defaultComponent;
         }
-        return manager.getComponent(name) || defaultComponent;
+        return manager?.getComponent(name) || defaultComponent;
     }, [manager, name, defaultComponent]);
 }
 

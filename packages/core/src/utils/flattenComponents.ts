@@ -11,16 +11,18 @@ function flattenComponents(
         return null;
     }
     return Object.keys(components).reduce(
-        (newMap, key) =>
-            isValidElementType(components[key])
+        (newMap, key) => {
+            const path = prefix !== null ? `${prefix}.${key}` : key;
+            return isValidElementType(components[key])
                 ? {
                       ...newMap,
-                      [prefix !== null ? `${prefix}.${key}` : key]: components[key] as ElementType,
+                      [path]: components[key] as ElementType,
                   }
                 : {
                       ...newMap,
-                      ...flattenComponents(components[key] as ComponentMap, key),
-                  },
+                      ...flattenComponents(components[key] as ComponentMap, path),
+                  };
+        },
         {} as Record<string, ElementType>,
     );
 }

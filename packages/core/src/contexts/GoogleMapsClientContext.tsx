@@ -24,7 +24,7 @@ export function withGoogleMapsClient(WrappedComponent: ComponentType<any>) {
     function WithGoogleMapsClientComponent(props: any) {
         return (
             <GoogleMapsClientContext.Consumer>
-                {(client) => <WrappedComponent googleApiClient={client} {...props} />}
+                {(client) => <WrappedComponent googleMapsClient={client} {...props} />}
             </GoogleMapsClientContext.Consumer>
         );
     }

@@ -72,7 +72,7 @@ function PanelsProvider({ children, container: initialContainer = null }: Panels
             setPanels(newPanels);
             panelsRef.current = newPanels;
         },
-        [panels, setPanels],
+        [setPanels],
     );
 
     const unregister = useCallback(
@@ -85,7 +85,7 @@ function PanelsProvider({ children, container: initialContainer = null }: Panels
                 panelsRef.current = newPanels;
             }
         },
-        [panels, setPanels],
+        [setPanels],
     );
 
     const value = useMemo(

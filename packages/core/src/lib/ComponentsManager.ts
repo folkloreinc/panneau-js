@@ -1,7 +1,7 @@
-import { ElementType } from 'react';
+import isObject from 'lodash-es/isObject';
+import type { ElementType } from 'react';
 
 import { flattenComponents, getComponentFromName } from '../utils';
-import { isObject } from 'lodash';
 
 class ComponentsManager {
     components: Record<string, ElementType>;

@@ -7,7 +7,7 @@ interface Manager {
 
 interface MediasParserOptions {
     fieldsManager: Manager;
-    screensManager: Manager;
+    screensManager?: Manager | null;
 }
 
 interface Media {
@@ -40,9 +40,9 @@ interface Story {
 
 class MediasParser {
     fieldsManager: Manager;
-    screensManager: Manager;
+    screensManager: Manager | null;
 
-    constructor({ fieldsManager, screensManager }: MediasParserOptions) {
+    constructor({ fieldsManager, screensManager = null }: MediasParserOptions) {
         this.fieldsManager = fieldsManager;
         this.screensManager = screensManager;
     }
@@ -62,7 +62,7 @@ class MediasParser {
                 screen: Screen,
             ) => {
                 const { type } = screen;
-                const { fields = [] } = this.screensManager.getDefinition(type) || {};
+                const { fields = [] } = this.screensManager?.getDefinition(type) || {};
                 const fieldsPattern = this.getMediaFieldsPattern(fields as Field[]);
                 const { data: newScreen, medias: newMedias } = MediasParser.replaceMediasWithPaths(
                     screen,
@@ -122,7 +122,7 @@ class MediasParser {
             medias !== null
                 ? components.map((screen: Screen) => {
                       const { type } = screen;
-                      const { fields = [] } = this.screensManager.getDefinition(type) || {};
+                      const { fields = [] } = this.screensManager?.getDefinition(type) || {};
                       const fieldsPattern = this.getMediaFieldsPattern(fields as Field[]);
                       return MediasParser.replacePathsWithMedias(screen, medias, fieldsPattern);
                   })
@@ -285,7 +285,7 @@ class MediasParser {
                 };
             },
             {
-                data: null,
+                data: dataIsArray ? [] : {},
                 medias,
             },
         );

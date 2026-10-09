@@ -1,5 +1,5 @@
-import { isString } from 'lodash';
 import isObject from 'lodash-es/isObject';
+import isString from 'lodash-es/isString';
 
 import { usePanneauResources, useResource, useRoutes, useUrlGenerator } from '../contexts';
 import type { Resource } from '../types';

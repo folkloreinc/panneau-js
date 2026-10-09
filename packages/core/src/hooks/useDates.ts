@@ -1,6 +1,5 @@
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import isString from 'lodash-es/isString';
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 
@@ -24,7 +23,7 @@ export function useFormattedDate({
 
     return useCallback(
         (date: string | Date | Dayjs): string => {
-            const dateToFormat = isString(date) ? dayjs(date) : date;
+            const dateToFormat = dayjs(date);
 
             if (showToday && dateToFormat.format('YYYY-MM-DD') === today.format('YYYY-MM-DD')) {
                 return intl.formatMessage({
@@ -33,14 +32,14 @@ export function useFormattedDate({
                 });
             }
 
-            return intl.formatDate(dayjs(date).toDate(), {
+            return intl.formatDate(dateToFormat.toDate(), {
                 year: 'numeric',
                 month: 'long',
                 day: '2-digit',
                 ...format,
             });
         },
-        [today, showToday, format],
+        [intl, today, showToday, format],
     );
 }
 
@@ -54,7 +53,7 @@ export function useFormattedTime({
 
     return useCallback(
         (date: string | Date | Dayjs): string => {
-            const dateToFormat = isString(date) ? dayjs(date) : date;
+            const dateToFormat = dayjs(date);
 
             if (
                 showNow &&
@@ -75,6 +74,6 @@ export function useFormattedTime({
                 ...format,
             });
         },
-        [now, showNow, timeGap, format],
+        [intl, now, showNow, timeGap, format],
     );
 }

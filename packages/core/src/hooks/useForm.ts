@@ -79,7 +79,7 @@ function getFieldsPropsFromFields(
                 ...(isObject(field) ? (field as Field) : null),
                 name,
                 component,
-                value: value !== null && name !== null ? value[name] || null : null,
+                value: value !== null && name !== null ? (value[name] ?? null) : null,
                 errors: finalErrors.length > 0 ? finalErrors : null,
                 onChange: (fieldValue: unknown) => onChange(name as string, fieldValue),
                 fields: fieldFields !== null && isArray(fieldFields) ? getFieldsPropsFromFields(
@@ -306,7 +306,7 @@ function useForm(opts: UseFormOptions = {}): UseFormReturn {
     );
 
     const onSubmit = useCallback(
-        (e: FormEvent) => {
+        (e: SubmitEvent) => {
             if (withoutDefault) {
                 e.preventDefault();
             }

@@ -1,6 +1,6 @@
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
-import uniq from 'lodash-es/uniq';
+import uniqBy from 'lodash-es/uniqBy';
 
 interface Manager {
     getDefinition: (type: string) => Record<string, unknown> | null;
@@ -56,7 +56,7 @@ class FontsParser {
 
         // Extract fonts from screen
         const { theme = null, components = [] } = story || {};
-        const fonts = uniq(
+        const fonts = uniqBy(
             components.reduce((currentFonts: Font[], screen: Screen) => {
                 const { type } = screen;
                 const { fields = [] } = this.screensManager.getDefinition(type) || {};
@@ -74,7 +74,7 @@ class FontsParser {
                 ? {
                       ...story,
                       theme: newTheme,
-                      fonts: uniq([...themeFonts, ...fonts], 'name'),
+                      fonts: uniqBy([...themeFonts, ...fonts], 'name'),
                   }
                 : story;
         }

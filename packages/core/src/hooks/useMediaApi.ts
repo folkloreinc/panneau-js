@@ -218,32 +218,80 @@ function useMediaApi({
         }
     }, [setReady, onCanPlayThough]);
 
+    // Keep the latest handlers in a ref so the listeners (bound once per url) never go stale
+    const handlersRef = useRef({
+        timeupdate: onCustomTimeUpdate,
+        durationchange: onCustomDurationChange,
+        volumechange: onCustomVolumeChange,
+        play: onCustomPlay,
+        pause: onCustomPause,
+        ended: onCustomEnded,
+        seeked: onCustomSeeked,
+        loadstart: onCustomLoadStart,
+        canplaythrough: onCustomCanPlayThrough,
+    });
+    useEffect(() => {
+        handlersRef.current = {
+            timeupdate: onCustomTimeUpdate,
+            durationchange: onCustomDurationChange,
+            volumechange: onCustomVolumeChange,
+            play: onCustomPlay,
+            pause: onCustomPause,
+            ended: onCustomEnded,
+            seeked: onCustomSeeked,
+            loadstart: onCustomLoadStart,
+            canplaythrough: onCustomCanPlayThrough,
+        };
+    }, [
+        onCustomTimeUpdate,
+        onCustomDurationChange,
+        onCustomVolumeChange,
+        onCustomPlay,
+        onCustomPause,
+        onCustomEnded,
+        onCustomSeeked,
+        onCustomLoadStart,
+        onCustomCanPlayThrough,
+    ]);
+
     useEffect(() => {
         const { current: media } = ref;
+        progressStepsReached.current = {};
+
+        // Stable listeners that always call the latest handlers
+        const onMediaTimeUpdate = () => handlersRef.current.timeupdate();
+        const onMediaDurationChange = () => handlersRef.current.durationchange();
+        const onMediaVolumeChange = () => handlersRef.current.volumechange();
+        const onMediaPlay = () => handlersRef.current.play();
+        const onMediaPause = () => handlersRef.current.pause();
+        const onMediaEnded = () => handlersRef.current.ended();
+        const onMediaSeeked = () => handlersRef.current.seeked();
+        const onMediaLoadStart = () => handlersRef.current.loadstart();
+        const onMediaCanPlayThrough = () => handlersRef.current.canplaythrough();
 
         if (media !== null) {
-            media.addEventListener('timeupdate', onCustomTimeUpdate);
-            media.addEventListener('durationchange', onCustomDurationChange);
-            media.addEventListener('volumechange', onCustomVolumeChange);
-            media.addEventListener('play', onCustomPlay);
-            media.addEventListener('pause', onCustomPause);
-            media.addEventListener('ended', onCustomEnded);
-            media.addEventListener('seeked', onCustomSeeked);
-            media.addEventListener('loadstart', onCustomLoadStart);
-            media.addEventListener('canplaythrough', onCustomCanPlayThrough);
+            media.addEventListener('timeupdate', onMediaTimeUpdate);
+            media.addEventListener('durationchange', onMediaDurationChange);
+            media.addEventListener('volumechange', onMediaVolumeChange);
+            media.addEventListener('play', onMediaPlay);
+            media.addEventListener('pause', onMediaPause);
+            media.addEventListener('ended', onMediaEnded);
+            media.addEventListener('seeked', onMediaSeeked);
+            media.addEventListener('loadstart', onMediaLoadStart);
+            media.addEventListener('canplaythrough', onMediaCanPlayThrough);
         }
 
         return () => {
             if (media !== null) {
-                media.removeEventListener('timeupdate', onCustomTimeUpdate);
-                media.removeEventListener('durationchange', onCustomDurationChange);
-                media.removeEventListener('volumechange', onCustomVolumeChange);
-                media.removeEventListener('play', onCustomPlay);
-                media.removeEventListener('pause', onCustomPause);
-                media.removeEventListener('ended', onCustomEnded);
-                media.removeEventListener('seeked', onCustomSeeked);
-                media.removeEventListener('loadstart', onCustomLoadStart);
-                media.removeEventListener('canplaythrough', onCustomCanPlayThrough);
+                media.removeEventListener('timeupdate', onMediaTimeUpdate);
+                media.removeEventListener('durationchange', onMediaDurationChange);
+                media.removeEventListener('volumechange', onMediaVolumeChange);
+                media.removeEventListener('play', onMediaPlay);
+                media.removeEventListener('pause', onMediaPause);
+                media.removeEventListener('ended', onMediaEnded);
+                media.removeEventListener('seeked', onMediaSeeked);
+                media.removeEventListener('loadstart', onMediaLoadStart);
+                media.removeEventListener('canplaythrough', onMediaCanPlayThrough);
             }
         };
     }, [url]);
