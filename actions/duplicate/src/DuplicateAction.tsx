@@ -34,6 +34,8 @@ interface DuplicateActionProps {
     modalComponent?: string;
     withDefaultLabel?: boolean;
     withoutConfirmation?: boolean;
+    /** Link to the duplicate page of the item instead of confirming in a modal */
+    withPage?: boolean;
     onClick?: (() => void) | null;
     className?: string | null;
     reload?: (() => void) | null;
@@ -60,6 +62,7 @@ function DuplicateAction({
     modalComponent = 'confirm',
     withDefaultLabel = false,
     withoutConfirmation = false,
+    withPage = false,
     className = null,
     onClick = null,
     ...props
@@ -80,6 +83,8 @@ function DuplicateAction({
     const finalHref =
         initialHref ||
         (!multiple && isObject(value) && !isArray(value) ? resourceUrl('duplicate', value) : null);
+    // The duplicate page has its own confirmation
+    const linksToPage = withPage && finalHref !== null;
     const ModalComponents = useModalsComponentsManager();
     const ModalComponent = ModalComponents.getComponent(modalComponent);
 
@@ -141,10 +146,10 @@ function DuplicateAction({
                 className={className}
                 label={label}
                 icon={icon}
-                onClick={onClick ?? (withoutConfirmation ? onConfirm : onOpen)}
+                onClick={onClick ?? (linksToPage ? null : withoutConfirmation ? onConfirm : onOpen)}
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
-                href={withoutConfirmation && onConfirm === null ? finalHref : null}
+                href={linksToPage || (withoutConfirmation && onConfirm === null) ? finalHref : null}
                 {...omit(props, ACTIONS_LIST_PROPS)}
             />
             {error !== null ? (

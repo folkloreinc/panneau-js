@@ -12,6 +12,7 @@ import { blocksField } from '../blocks';
  *   "create" button becomes a dropdown (/pages/create?type=home)
  * - localized fields (fr/en), html, image, blocks (items field with block types)
  * - table index with filters (search, select, radios), sortable columns and row actions
+ *   (the duplicate action links to the duplicate page with actionsProps.hasDuplicateRoute)
  */
 
 const pageTypes = [
@@ -134,6 +135,8 @@ const pagesResource: Resource = {
     index: {
         component: 'table',
         striped: true,
+        // The duplicate action links to /pages/:id/duplicate instead of opening a modal
+        actionsProps: { hasDuplicateRoute: true },
         columns: [
             { id: 'id', label: '#', path: 'id', sortable: true },
             { id: 'image', path: 'image', label: '' },

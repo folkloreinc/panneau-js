@@ -36,6 +36,8 @@ export interface UseActionsOptions {
     withoutItemShowUrl?: boolean | null;
     withShowModal?: boolean;
     withoutDuplicateConfirmation?: boolean;
+    /** Link the duplicate action to the duplicate page instead of confirming in a modal */
+    hasDuplicateRoute?: boolean;
     withEditModal?: boolean;
     withoutDeleteConfirmation?: boolean;
     withoutRestoreConfirmation?: boolean;
@@ -83,6 +85,7 @@ function useActions(
         withShowModal = false,
         withEditModal = false,
         withoutDuplicateConfirmation = false,
+        hasDuplicateRoute = false,
         withoutDeleteConfirmation = false,
         withoutRestoreConfirmation = false,
     }: UseActionsOptions = {},
@@ -125,6 +128,7 @@ function useActions(
                             icon: iconsOnly || withIcons ? 'copy' : null,
                             href: duplicateUrl,
                             withoutConfirmation: withoutDuplicateConfirmation,
+                            withPage: hasDuplicateRoute,
                             onClick: onClickDuplicate,
                             ...getDuplicatePropsFromValue?.(value),
                         };
