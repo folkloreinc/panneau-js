@@ -68,6 +68,11 @@ export interface ResourceIndex {
     [key: string]: unknown;
 }
 
+/**
+ * Overrides of the built-in resource pages, ex: `{ show: { component: 'my-page' } }`.
+ * Used on a resource (`resource.pages`) and on the panneau definition (`definition.pages`),
+ * the resource taking precedence.
+ */
 export interface ResourcePages {
     index?: PageDefinition;
     show?: PageDefinition;
@@ -75,6 +80,20 @@ export interface ResourcePages {
     edit?: PageDefinition;
     delete?: PageDefinition;
     duplicate?: PageDefinition;
+    /** @deprecated Legacy resource keys, use `index`, `show`, `create`, etc. */
+    resourceIndexPage?: PageDefinition;
+    resourceShowPage?: PageDefinition;
+    resourceCreatePage?: PageDefinition;
+    resourceEditPage?: PageDefinition;
+    resourceDeletePage?: PageDefinition;
+    resourceDuplicatePage?: PageDefinition;
+    /** @deprecated Legacy panneau keys, use `index`, `show`, `create`, etc. */
+    indexPage?: PageDefinition;
+    showPage?: PageDefinition;
+    createPage?: PageDefinition;
+    editPage?: PageDefinition;
+    deletePage?: PageDefinition;
+    duplicatePage?: PageDefinition;
     [key: string]: PageDefinition | undefined;
 }
 
@@ -91,6 +110,7 @@ export interface ResourceForms {
     create?: ResourceForm | null;
     edit?: ResourceForm | null;
     delete?: ResourceForm | null;
+    duplicate?: ResourceForm | null;
     modal?: ResourceForm | null;
     [key: string]: ResourceForm | null | undefined;
 }

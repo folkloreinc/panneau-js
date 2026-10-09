@@ -72,6 +72,7 @@ function ResourceForm({
         create: createForm = null,
         edit: editForm = null,
         delete: deleteForm = null,
+        duplicate: duplicateForm = null,
         modal: modalForm = null,
     } = forms || {};
 
@@ -180,10 +181,16 @@ function ResourceForm({
         locales,
     });
 
-    const defaultFormName =
-        isDelete || isDuplicate
-            ? component || formComponent || null
-            : component || formComponent || defaultComponent || 'normal';
+    // The duplicate page uses the edit form's fields, but not its component
+    const { component: duplicateFormComponent = null } = (duplicateForm ||
+        {}) as ResourceFormDefinition;
+
+    let defaultFormName = component || formComponent || defaultComponent || 'normal';
+    if (isDelete) {
+        defaultFormName = component || formComponent || null;
+    } else if (isDuplicate) {
+        defaultFormName = component || duplicateFormComponent || null;
+    }
 
     const finalWithContainer =
         withContainer &&
