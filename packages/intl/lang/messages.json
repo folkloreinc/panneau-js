@@ -279,6 +279,10 @@
     "defaultMessage": "Continue",
     "description": "Button label"
   },
+  "QcYViA": {
+    "defaultMessage": "The file could not be read.",
+    "description": "Import field error"
+  },
   "R1HYj0": {
     "defaultMessage": "Save",
     "description": "Button label"
@@ -379,6 +383,10 @@
     "defaultMessage": "Add an item",
     "description": "Button label in items field"
   },
+  "aMycNI": {
+    "defaultMessage": "Missing required columns: {columns}",
+    "description": "Import field error"
+  },
   "bPk79b": {
     "defaultMessage": "Show",
     "description": "Button label"
@@ -427,6 +435,10 @@
     "defaultMessage": "S",
     "description": "Sunday letter"
   },
+  "foZcMI": {
+    "defaultMessage": "{count, plural, =0 {No row found} one {# row found} other {# rows found}}",
+    "description": "Import field summary"
+  },
   "g2CRt5": {
     "defaultMessage": "Size",
     "description": "Field label"
@@ -462,6 +474,10 @@
   "lsBBVh": {
     "defaultMessage": "{count, plural, =0 {no items} one {# item} other {# items}} selected",
     "description": "Checkbox label"
+  },
+  "mBl0hJ": {
+    "defaultMessage": "An error occured and we could not duplicate this item successfully.",
+    "description": "Error message"
   },
   "mCfzkJ": {
     "defaultMessage": "Edit {a_singular}",
@@ -506,6 +522,10 @@
   "qEXR2f": {
     "defaultMessage": "Edit",
     "description": "Action label"
+  },
+  "qY1OIt": {
+    "defaultMessage": "Download template",
+    "description": "Import field button label"
   },
   "rSt+KL": {
     "defaultMessage": "No",

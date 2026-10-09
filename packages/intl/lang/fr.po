@@ -449,6 +449,12 @@ msgctxt "QUAHwy"
 msgid "Continue"
 msgstr "Continuer"
 
+# Import field error
+#: QcYViA
+msgctxt "QcYViA"
+msgid "The file could not be read."
+msgstr "Le fichier n'a pas pu être lu."
+
 # Button label
 #: R1HYj0
 msgctxt "R1HYj0"
@@ -603,6 +609,12 @@ msgctxt "ZxgNge"
 msgid "Add an item"
 msgstr "Ajouter un élément"
 
+# Import field error
+#: aMycNI
+msgctxt "aMycNI"
+msgid "Missing required columns: {columns}"
+msgstr "Colonnes obligatoires manquantes : {columns}"
+
 # Button label
 #: bPk79b
 msgctxt "bPk79b"
@@ -675,6 +687,14 @@ msgctxt "fSfLk8"
 msgid "S"
 msgstr "D"
 
+# Import field summary
+#: foZcMI
+msgctxt "foZcMI"
+msgid "{count, plural, =0 {No row found} one {# row found} other {# rows found}}"
+msgstr ""
+"{count, plural, =0 {Aucune ligne trouvée} one {# ligne trouvée} other {# "
+"lignes trouvées}}"
+
 # Field label
 #: g2CRt5
 msgctxt "g2CRt5"
@@ -730,6 +750,12 @@ msgid "{count, plural, =0 {no items} one {# item} other {# items}} selected"
 msgstr ""
 "{count, plural, =0 {aucun élément} one {# élément} other {# éléments}} "
 "sélectionné(s)"
+
+# Error message
+#: mBl0hJ
+msgctxt "mBl0hJ"
+msgid "An error occured and we could not duplicate this item successfully."
+msgstr "Une erreur est survenue et nous n'avons pas pu dupliquer cet élément."
 
 # Page title
 #: mCfzkJ
@@ -798,6 +824,12 @@ msgstr "Aucun résultat"
 msgctxt "qEXR2f"
 msgid "Edit"
 msgstr "Modifier"
+
+# Import field button label
+#: qY1OIt
+msgctxt "qY1OIt"
+msgid "Download template"
+msgstr "Télécharger le modèle"
 
 # Boolean value
 #: rSt+KL

@@ -209,6 +209,9 @@
     "QUAHwy": {
         "defaultMessage": "Continuer"
     },
+    "QcYViA": {
+        "defaultMessage": "Le fichier n'a pas pu être lu."
+    },
     "R1HYj0": {
         "defaultMessage": "Enregistrer"
     },
@@ -284,6 +287,9 @@
     "ZxgNge": {
         "defaultMessage": "Ajouter un élément"
     },
+    "aMycNI": {
+        "defaultMessage": "Colonnes obligatoires manquantes : {columns}"
+    },
     "bPk79b": {
         "defaultMessage": "Afficher"
     },
@@ -320,6 +326,9 @@
     "fSfLk8": {
         "defaultMessage": "D"
     },
+    "foZcMI": {
+        "defaultMessage": "{count, plural, =0 {Aucune ligne trouvée} one {# ligne trouvée} other {# lignes trouvées}}"
+    },
     "g2CRt5": {
         "defaultMessage": "Taille"
     },
@@ -346,6 +355,9 @@
     },
     "lsBBVh": {
         "defaultMessage": "{count, plural, =0 {aucun élément} one {# élément} other {# éléments}} sélectionné(s)"
+    },
+    "mBl0hJ": {
+        "defaultMessage": "Une erreur est survenue et nous n'avons pas pu dupliquer cet élément."
     },
     "mCfzkJ": {
         "defaultMessage": "Modifier {a_singular}"
@@ -379,6 +391,9 @@
     },
     "qEXR2f": {
         "defaultMessage": "Modifier"
+    },
+    "qY1OIt": {
+        "defaultMessage": "Télécharger le modèle"
     },
     "rSt+KL": {
         "defaultMessage": "Non"

@@ -447,6 +447,12 @@ msgctxt "QUAHwy"
 msgid "Continue"
 msgstr "Continue"
 
+# Import field error
+#: QcYViA
+msgctxt "QcYViA"
+msgid "The file could not be read."
+msgstr "The file could not be read."
+
 # Button label
 #: R1HYj0
 msgctxt "R1HYj0"
@@ -601,6 +607,12 @@ msgctxt "ZxgNge"
 msgid "Add an item"
 msgstr "Add an item"
 
+# Import field error
+#: aMycNI
+msgctxt "aMycNI"
+msgid "Missing required columns: {columns}"
+msgstr "Missing required columns: {columns}"
+
 # Button label
 #: bPk79b
 msgctxt "bPk79b"
@@ -673,6 +685,12 @@ msgctxt "fSfLk8"
 msgid "S"
 msgstr "S"
 
+# Import field summary
+#: foZcMI
+msgctxt "foZcMI"
+msgid "{count, plural, =0 {No row found} one {# row found} other {# rows found}}"
+msgstr "{count, plural, =0 {No row found} one {# row found} other {# rows found}}"
+
 # Field label
 #: g2CRt5
 msgctxt "g2CRt5"
@@ -726,6 +744,12 @@ msgstr "Skip setup"
 msgctxt "lsBBVh"
 msgid "{count, plural, =0 {no items} one {# item} other {# items}} selected"
 msgstr "{count, plural, =0 {no items} one {# item} other {# items}} selected"
+
+# Error message
+#: mBl0hJ
+msgctxt "mBl0hJ"
+msgid "An error occured and we could not duplicate this item successfully."
+msgstr "An error occured and we could not duplicate this item successfully."
 
 # Page title
 #: mCfzkJ
@@ -792,6 +816,12 @@ msgstr "No result"
 msgctxt "qEXR2f"
 msgid "Edit"
 msgstr "Edit"
+
+# Import field button label
+#: qY1OIt
+msgctxt "qY1OIt"
+msgid "Download template"
+msgstr "Download template"
 
 # Boolean value
 #: rSt+KL
