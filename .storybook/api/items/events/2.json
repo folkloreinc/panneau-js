@@ -1,6 +1,72 @@
 {
     "id": "2",
     "type": "event",
-    "title": "2 événement",
-    "email": "2@email.com"
+    "title": {
+        "fr": "Les villes de demain",
+        "en": "Cities of tomorrow"
+    },
+    "category": "conference",
+    "starts_at": "2026-10-16 12:00:00",
+    "ends_at": "2026-10-16 13:30:00",
+    "venue": "Bibliothèque centrale",
+    "price": 0,
+    "description": {
+        "fr": "<p>Une activité de la programmation officielle présentée à Bibliothèque centrale.</p>",
+        "en": "<p>An official program activity presented at Bibliothèque centrale.</p>"
+    },
+    "is_free": true,
+    "registration_url": null,
+    "page": {
+        "id": "3",
+        "type": "page",
+        "title": {
+            "fr": "Programmation",
+            "en": "Program"
+        },
+        "slug": "programmation"
+    },
+    "speakers": [
+        {
+            "id": "5",
+            "name": "Sophie Lavoie",
+            "role": {
+                "fr": "Conférencière invitée",
+                "en": "Guest Speaker"
+            },
+            "photo": {
+                "id": "17",
+                "type": "image",
+                "name": "2015-05-17 11.44.12 HDR.jpg",
+                "created_at": "2022-02-03 01:00:01",
+                "url": "https://urbania-submissions.s3-ca-central-1.amazonaws.com/3d/471243124d49019b837cf7b93cc50f/2015-05-17-11.44.12-HDR.jpg",
+                "thumbnail_url": "https://urbania-submissions.s3-ca-central-1.amazonaws.com/8d/0f6056d9db4d89929e0d198f9d9f28/2015-05-17-11.44.12-HDR.jpg",
+                "metadata": {
+                    "filename": "2015-05-17 11.44.12 HDR.jpg",
+                    "size": 5153935,
+                    "mime": "image/jpeg",
+                    "width": 2448,
+                    "height": 3264
+                }
+            }
+        }
+    ],
+    "image": {
+        "id": "17",
+        "type": "image",
+        "name": "2015-05-17 11.44.12 HDR.jpg",
+        "created_at": "2022-02-03 01:00:01",
+        "url": "https://urbania-submissions.s3-ca-central-1.amazonaws.com/3d/471243124d49019b837cf7b93cc50f/2015-05-17-11.44.12-HDR.jpg",
+        "thumbnail_url": "https://urbania-submissions.s3-ca-central-1.amazonaws.com/8d/0f6056d9db4d89929e0d198f9d9f28/2015-05-17-11.44.12-HDR.jpg",
+        "metadata": {
+            "filename": "2015-05-17 11.44.12 HDR.jpg",
+            "size": 5153935,
+            "mime": "image/jpeg",
+            "width": 2448,
+            "height": 3264
+        }
+    },
+    "featured": false,
+    "published": true,
+    "created_at": "2026-08-15 11:00:00",
+    "updated_at": "2026-09-21 09:15:00"
 }

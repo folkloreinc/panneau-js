@@ -53,12 +53,64 @@ module.exports = () => {
         return value;
     };
 
+    const getSortValue = (item, field) => {
+        const value = _.get(item, field, null);
+        if (_.isPlainObject(value)) {
+            // Localized values: sort on the first locale
+            return getSortValue(value, Object.keys(value)[0]);
+        }
+        if (isString(value) && value.match(/^[0-9]+$/) !== null) {
+            return parseInt(value, 10);
+        }
+        return isString(value) ? _.deburr(value).toLowerCase() : value;
+    };
+
     const sortItems = (items, field = null, direction = 'asc') => {
         if (field === null) {
             return items;
         }
-        const sortedItems = _.sortBy(items, field);
+        const sortedItems = _.sortBy(items, (it) => getSortValue(it, field));
         return direction.toLowerCase() === 'desc' ? _.reverse(sortedItems) : sortedItems;
+    };
+
+    // Collect every string value of an item (including localized values like title.fr)
+    const getSearchableValues = (value) => {
+        if (isString(value)) {
+            return [value];
+        }
+        if (isArray(value)) {
+            return value.reduce((all, it) => [...all, ...getSearchableValues(it)], []);
+        }
+        if (_.isPlainObject(value)) {
+            return Object.keys(value).reduce(
+                (all, key) => [...all, ...getSearchableValues(value[key])],
+                [],
+            );
+        }
+        return [];
+    };
+
+    const matchesSearch = (item, search) => {
+        const normalizedSearch = _.deburr(search).toLowerCase();
+        const { title = null, name = null, slug = null } = item || {};
+        return getSearchableValues([title, name, slug]).some(
+            (value) => _.deburr(value).toLowerCase().indexOf(normalizedSearch) !== -1,
+        );
+    };
+
+    const normalizeFilterValue = (value) => {
+        if (value === 'true') return true;
+        if (value === 'false') return false;
+        return value;
+    };
+
+    // Compare a query value (string, boolean or list of values) to an item value
+    const matchesFilter = (itemValue, queryValue) => {
+        const values = (isArray(queryValue) ? queryValue : [queryValue]).map(normalizeFilterValue);
+        const itemValues = (isArray(itemValue) ? itemValue : [itemValue]).map((it) =>
+            _.isPlainObject(it) && typeof it.id !== 'undefined' ? it.id : it,
+        );
+        return itemValues.some((it) => values.some((value) => `${it}` === `${value}`));
     };
 
     const filterItems = (items, query = null) => {
@@ -66,40 +118,31 @@ module.exports = () => {
             return items;
         }
 
-        // Types is exception for medias so u get results
-        const {
-            source,
-            search = null,
-            types = null,
-            skip = true,
-            ...queryWithoutSource
-        } = query || {};
+        // Express 5 doesn't parse "key[]=value" params as arrays, so normalize the keys
+        const normalizedQuery = Object.keys(query).reduce((all, key) => {
+            const normalizedKey = key.replace(/\[\]$/, '');
+            return { ...all, [normalizedKey]: query[key] };
+        }, {});
 
-        if (search !== null) {
-            return _.values(
-                _.filter(items, (it) =>
-                    it !== null && typeof it.title !== 'undefined' && isString(it.title)
-                        ? it.title.indexOf(search) !== -1
-                        : true,
-                ),
-            );
-        }
+        // "types" is used by the medias browser to filter on the media type
+        const { search = null, q = null, types = null, ...otherFilters } = normalizedQuery;
+        const filters = types !== null ? { ...otherFilters, type: types } : otherFilters;
+        const searchQuery = search || q;
 
-        if (isArray(types) && types !== null) {
-            return _.values(
-                _.filter(items, (it) =>
-                    it !== null && typeof it.type !== 'undefined' && isString(it.type)
-                        ? types.indexOf(it.type) !== -1
-                        : true,
-                ),
-            );
-        }
+        // Only filter on keys that exist on the items, so unknown query params are ignored
+        const activeFilters = Object.keys(filters).filter(
+            (key) =>
+                filters[key] !== null &&
+                filters[key] !== '' &&
+                items.some((it) => it !== null && typeof it[key] !== 'undefined'),
+        );
 
-        if (skip) {
-            return items;
-        }
-
-        return _.values(_.filter(items, _.matches(queryWithoutSource)));
+        return items.filter(
+            (it) =>
+                it !== null &&
+                (searchQuery === null || searchQuery === '' || matchesSearch(it, searchQuery)) &&
+                activeFilters.every((key) => matchesFilter(it[key], filters[key])),
+        );
     };
 
     const getNextId = (items) =>
@@ -116,9 +159,9 @@ module.exports = () => {
         if (typeof updatedResources[resource] === 'undefined') {
             updatedResources[resource] = [];
         }
-        const foundResource =
-            updatedResources[resource].find((it) => it.id === newItem.id) === null;
-        if (foundResource === null) {
+        const alreadyUpdated =
+            updatedResources[resource].find((it) => it.id === newItem.id) || null;
+        if (alreadyUpdated === null) {
             addResourceItem(resource, newItem);
             return;
         }
@@ -167,6 +210,18 @@ module.exports = () => {
     router.get('/csrf-cookie', (req, res) => {
         send(res, 200, null);
         res.end();
+    });
+
+    // Fake upload endpoint (uppy xhr transport): the file is ignored
+    router.post('/upload', (req, res) => {
+        req.resume();
+        req.on('end', () => {
+            send(res, 200, {
+                url: 'https://picsum.photos/id/1015/1200/800',
+                thumbnail_url: 'https://picsum.photos/id/1015/300/200',
+            });
+            res.end();
+        });
     });
 
     router.post('/batch', (req, res) => {

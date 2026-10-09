@@ -5,7 +5,7 @@ import { useApi } from '@panneau/data';
 import { Modals } from '@panneau/element-modal';
 import { MediasApiProvider } from '@panneau/medias';
 
-import panneauDefinition from '../../../../.storybook/data/panneau-definition';
+import panneauDefinition from '../../../../.storybook/data/definition';
 import withDataProvider from '../../../../.storybook/decorators/withDataProvider';
 import withUppy from '../../../../.storybook/decorators/withUppy';
 import { PanneauProvider } from '../../../../packages/core/src/contexts';

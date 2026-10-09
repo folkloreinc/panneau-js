@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 
 import fields from '../../../../.storybook/data/fields';
 import formFields from '../../../../.storybook/data/form-fields';
-import withFormsFields from '../../../../.storybook/decorators/withFormsFields';
 import Form from '../Form';
 
 export default {
@@ -11,7 +10,6 @@ export default {
     parameters: {
         intl: true,
     },
-    decorators: [withFormsFields],
 };
 
 function Container(props) {

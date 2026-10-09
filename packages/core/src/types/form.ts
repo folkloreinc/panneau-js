@@ -27,6 +27,21 @@ export type SelectOption =
     | Record<string, unknown>;
 
 /**
+ * Settings of a field in a resource (the `settings` key of the field)
+ */
+export interface FieldSettings {
+    /** Not shown in the resource forms */
+    hiddenInForm?: boolean;
+    /** Only shown in the create form */
+    createOnly?: boolean;
+    /** Only shown in the edit form (and show page) */
+    updateOnly?: boolean;
+    /** Shown as a column of the index when the resource has no `index.columns` */
+    showInIndex?: boolean;
+    [key: string]: unknown;
+}
+
+/**
  * Field definition
  */
 export interface Field {

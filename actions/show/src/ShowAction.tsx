@@ -1,5 +1,6 @@
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
+import omit from 'lodash-es/omit';
 import { useCallback, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
@@ -7,6 +8,9 @@ import type { ActionValue, ButtonTheme, Resource } from '@panneau/core';
 import { useModalComponent, useResource } from '@panneau/core/contexts';
 import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import Button from '@panneau/element-button';
+
+// Props given by <Actions> to all the actions, not used by this one
+const ACTIONS_LIST_PROPS = ['withoutConfirmation', 'reload', 'updateValue'];
 
 interface ShowActionProps {
     id: string;
@@ -24,6 +28,9 @@ interface ShowActionProps {
     withModal?: boolean;
     withDefaultLabel?: boolean;
     className?: string | null;
+    withoutConfirmation?: boolean;
+    reload?: (() => void) | null;
+    updateValue?: ((value: unknown) => void) | null;
 }
 
 function ShowAction({
@@ -78,10 +85,15 @@ function ShowAction({
                 disabled={disabled}
                 theme={disabled ? 'secondary' : theme}
                 href={!withModal || ModalComponent === null ? finalHref : null}
-                {...props}
+                {...omit(props, ACTIONS_LIST_PROPS)}
             />
             {modalOpen ? (
-                <ModalComponent id={`${id}-modal`} value={value} onClosed={onClosed} {...props} />
+                <ModalComponent
+                    id={`${id}-modal`}
+                    value={value}
+                    onClosed={onClosed}
+                    {...omit(props, ACTIONS_LIST_PROPS)}
+                />
             ) : null}
         </>
     );

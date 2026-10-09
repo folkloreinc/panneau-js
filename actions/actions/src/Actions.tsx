@@ -37,6 +37,17 @@ export interface ActionsProps extends UseActionsOptions {
 
 const DEFAULT_ACTIONS: ActionDefinition[] = ['show', 'edit', 'delete'];
 
+// Props given to the action components that the default button can't receive (they would end
+// up as attributes on the DOM element)
+const ACTION_COMPONENT_ONLY_KEYS = [
+    'resource',
+    'value',
+    'withoutConfirmation',
+    'reload',
+    'updateValue',
+    'onConfirmed',
+];
+
 // Options consumed by useActions that should not be passed down to the action components
 const USE_ACTIONS_OPTIONS_KEYS: (keyof UseActionsOptions)[] = [
     'iconsOnly',
@@ -108,6 +119,13 @@ function Actions({
 
         const actionComponent = actionsComponents.getComponent(component);
         const Component = actionComponent || defaultComponent;
+        const isDefaultButton = actionComponent === null && Component === Button;
+        const actionProps = {
+            value,
+            resource,
+            withoutConfirmation: actionConfirmation || withoutConfirmation,
+            ...componentProps,
+        };
         const actionElement =
             Component !== null ? (
                 <Component
@@ -124,11 +142,10 @@ function Actions({
                     })}
                     label={label}
                     icon={icon}
-                    value={value}
                     size={size}
-                    resource={resource}
-                    withoutConfirmation={actionConfirmation || withoutConfirmation}
-                    {...componentProps}
+                    {...(isDefaultButton
+                        ? omit(actionProps, ACTION_COMPONENT_ONLY_KEYS)
+                        : actionProps)}
                     {...otherProps}
                 />
             ) : null;

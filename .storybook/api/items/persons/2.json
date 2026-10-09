@@ -1,8 +1,31 @@
 {
     "id": "2",
     "type": "person",
-    "title": "Une personne #2 avec un long titre",
-    "name": "Bro 2",
-    "email": "2@email.com",
-    "url": "/url/chose/2"
+    "name": "Olivier Gagnon",
+    "role": {
+        "fr": "Directeur artistique",
+        "en": "Artistic Director"
+    },
+    "email": "olivier.gagnon@example.com",
+    "photo": {
+        "id": "33",
+        "type": "image",
+        "name": "768x1024.png",
+        "url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/768x1024.png",
+        "thumbnail_url": "https://s3.ca-central-1.amazonaws.com/cdn.microdoc.ca/768x1024.png",
+        "metadata": {
+            "filename": "768x1024.png",
+            "size": 158897,
+            "mime": "image/png",
+            "width": 768,
+            "height": 1024
+        }
+    },
+    "bio": {
+        "fr": "<p>Olivier travaille avec l’équipe depuis 2016 et participe à la programmation annuelle.</p>",
+        "en": "<p>Olivier has been working with the team since 2016 and contributes to the yearly program.</p>"
+    },
+    "url": "/equipe/olivier.gagnon",
+    "created_at": "2026-02-12 10:00:00",
+    "updated_at": "2026-09-30 14:30:00"
 }

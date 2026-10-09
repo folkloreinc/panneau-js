@@ -1,0 +1,32 @@
+{
+    "id": "5",
+    "type": "person",
+    "name": "Sophie Lavoie",
+    "role": {
+        "fr": "Conférencière invitée",
+        "en": "Guest Speaker"
+    },
+    "email": "sophie.lavoie@example.com",
+    "photo": {
+        "id": "17",
+        "type": "image",
+        "name": "2015-05-17 11.44.12 HDR.jpg",
+        "created_at": "2022-02-03 01:00:01",
+        "url": "https://urbania-submissions.s3-ca-central-1.amazonaws.com/3d/471243124d49019b837cf7b93cc50f/2015-05-17-11.44.12-HDR.jpg",
+        "thumbnail_url": "https://urbania-submissions.s3-ca-central-1.amazonaws.com/8d/0f6056d9db4d89929e0d198f9d9f28/2015-05-17-11.44.12-HDR.jpg",
+        "metadata": {
+            "filename": "2015-05-17 11.44.12 HDR.jpg",
+            "size": 5153935,
+            "mime": "image/jpeg",
+            "width": 2448,
+            "height": 3264
+        }
+    },
+    "bio": {
+        "fr": "<p>Sophie travaille avec l’équipe depuis 2019 et participe à la programmation annuelle.</p>",
+        "en": "<p>Sophie has been working with the team since 2019 and contributes to the yearly program.</p>"
+    },
+    "url": "/equipe/sophie.lavoie",
+    "created_at": "2026-05-12 10:00:00",
+    "updated_at": "2026-09-30 14:30:00"
+}

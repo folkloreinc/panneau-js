@@ -1,4 +1,4 @@
-import panneauDefinition from '../../../../.storybook/data/panneau-definition';
+import panneauDefinition from '../../../../.storybook/data/definition';
 import withApi from '../../../../.storybook/decorators/withDataProvider';
 import ActionsProvider from '../../../actions/src';
 import { PanneauProvider } from '../../../core/src/contexts';

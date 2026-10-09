@@ -1,4 +1,21 @@
 {
-    "id": "19",
-    "description": "YO"
+    "id": "1",
+    "title": {
+        "fr": "Coordonnateur·rice de production",
+        "en": "Production coordinator"
+    },
+    "details": {
+        "department": "production",
+        "employment_type": "full_time",
+        "location": "Montréal",
+        "remote": false
+    },
+    "deadline": "2026-11-01",
+    "published": true,
+    "description": {
+        "fr": "<p>Nous cherchons une personne passionnée pour se joindre à l’équipe du festival.</p>",
+        "en": "<p>We are looking for a passionate person to join the festival team.</p>"
+    },
+    "created_at": "2026-09-01 08:00:00",
+    "updated_at": "2026-09-15 08:00:00"
 }

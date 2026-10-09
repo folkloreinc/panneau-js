@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import Actions from '@panneau/action-actions';
-import type { ActionDefinition, Item, Resource, ResourceIndex } from '@panneau/core';
+import type { ActionDefinition, FieldSettings, Item, Resource, ResourceIndex } from '@panneau/core';
 import { useListsComponents, usePanneauResource } from '@panneau/core/contexts';
 // import { useResourceUrlGenerator } from '@panneau/core/hooks';
 import { getComponentFromName } from '@panneau/core/utils';
@@ -71,8 +71,24 @@ function ResourceItemsList({
         actions = null,
         batchActions = null,
         actionsProps = null,
-        ...listProps
+        columns = null,
+        ...indexListProps
     } = (resource?.index || {}) as ResourceIndexList;
+
+    // Without columns, show the fields with `settings.showInIndex` and the default row actions
+    const fieldsColumns = useMemo(() => {
+        const names = (resource?.fields || [])
+            .filter(
+                ({ settings = null }) => (settings as FieldSettings | null)?.showInIndex === true,
+            )
+            .map(({ name }) => name);
+        return names.length > 0
+            ? [...names, { id: 'actions', actions: ['show', 'edit', 'delete'] }]
+            : null;
+    }, [resource]);
+    const finalColumns = columns ?? fieldsColumns;
+    const listProps =
+        finalColumns !== null ? { ...indexListProps, columns: finalColumns } : indexListProps;
 
     // const resourceUrlGenerator = useResourceUrlGenerator(
     //     isObject(providedResource) ? resourceId : providedResource,
