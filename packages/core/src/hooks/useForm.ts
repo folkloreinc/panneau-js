@@ -3,7 +3,7 @@ import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
-import type { SubmitEvent } from 'react';
+import type { SyntheticEvent } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 
 import type { Field } from '../types';
@@ -137,7 +137,8 @@ interface UseFormReturn<T extends FieldValue = FieldValue> extends RequestState 
     setValue: (value: T) => void;
     csrfToken: string | null;
     submit: (submitValue?: T | null) => void;
-    onSubmit: (e: SubmitEvent) => void;
+    // Can be used as a form onSubmit or as a button onClick
+    onSubmit: (e: SyntheticEvent) => void;
     status: 'loading' | 'success' | 'error' | null;
     response: unknown;
     fields: ProcessedField[];
@@ -219,10 +220,11 @@ function useForm<T extends FieldValue = FieldValue>(
                 });
             }
 
+            // The field name is one of the form's fields, so the value keeps the shape of T
             setValue({
                 ...(value || {}),
                 [fieldName]: fieldValue,
-            });
+            } as T);
         },
         [value, errors, requestState, setErrors, setValue, ...fields],
     );
@@ -308,7 +310,7 @@ function useForm<T extends FieldValue = FieldValue>(
     );
 
     const onSubmit = useCallback(
-        (e: SubmitEvent) => {
+        (e: SyntheticEvent) => {
             if (withoutDefault) {
                 e.preventDefault();
             }

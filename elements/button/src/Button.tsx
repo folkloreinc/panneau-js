@@ -7,15 +7,17 @@ import type {
     MouseEventHandler,
     ReactNode,
 } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Link } from 'wouter';
 
 import type { ButtonElement, ButtonSize, ButtonTheme, Label } from '@panneau/core';
+import { isMessage } from '@panneau/core/utils';
 import Icon from '@panneau/element-icon';
 
 import styles from './styles.module.css';
 
 interface ButtonProps extends Omit<
-    ButtonHTMLAttributes<HTMLButtonElement> & AnchorHTMLAttributes<HTMLAnchorElement>,
+    ButtonHTMLAttributes<ButtonElement> & AnchorHTMLAttributes<ButtonElement>,
     'onClick' | 'children'
 > {
     type?: 'button' | 'submit' | 'reset';
@@ -76,7 +78,11 @@ function Button({
     ...props
 }: ButtonProps) {
     const finalLabel = label || children;
-    const text = finalLabel !== null ? finalLabel : null;
+    const text: ReactNode = isMessage(finalLabel) ? (
+        <FormattedMessage {...finalLabel} />
+    ) : (
+        finalLabel
+    );
     const hasChildren = label !== null && children !== null;
     const hasIcon = icon !== null;
     const hasInlineIcon = hasIcon && (iconPosition === 'inline' || text === null);
@@ -115,7 +121,13 @@ function Button({
                 </>
             ) : null}
             {!hasIcon ? text : null}
-            {hasChildren ? children : null}
+            {hasChildren ? (
+                isMessage(children) ? (
+                    <FormattedMessage {...children} />
+                ) : (
+                    children
+                )
+            ) : null}
         </>
     );
 

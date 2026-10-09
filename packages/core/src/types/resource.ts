@@ -4,7 +4,7 @@
  */
 import { ElementType } from 'react';
 
-import { Item, PageDefinition, RouteDefinition } from './core';
+import { Item, MessageValue, PageDefinition, RouteDefinition } from './core';
 import { Field, Form } from './form';
 
 /**
@@ -14,6 +14,7 @@ export type TableColumn = string | Column;
 
 export interface Column extends Record<string, unknown> {
     id?: string | null;
+    name?: string | null;
     label?: unknown;
     path?: string;
     valueKey?: string;
@@ -44,7 +45,7 @@ export type ActionValue = Item | Item[] | null;
 export interface ResourceIntlValues {
     a_singular?: string;
     a_plural?: string;
-    [key: string]: unknown;
+    [key: string]: MessageValue;
 }
 
 /**

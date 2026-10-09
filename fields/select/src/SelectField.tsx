@@ -4,11 +4,7 @@ import { type ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 
 import { getPathValue } from '@panneau/core/utils';
 import Select from '@panneau/element-select';
-
-interface SelectOption {
-    value?: any;
-    label?: ReactNode;
-}
+import type { SelectOption } from '@panneau/element-select';
 
 interface SelectFieldProps {
     value?: unknown;
@@ -57,7 +53,7 @@ function SelectField({
         () =>
             customGetOptionLabel ||
             (optionLabelPath !== null
-                ? (option: unknown) => getPathValue(option, optionLabelPath)
+                ? (option: unknown) => getPathValue(option, optionLabelPath) as ReactNode
                 : null),
         [customGetOptionLabel, optionLabelPath],
     );

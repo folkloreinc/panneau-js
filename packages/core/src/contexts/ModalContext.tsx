@@ -8,10 +8,13 @@ export interface ModalData {
     [key: string]: unknown;
 }
 
+// DOM node in which modals are portaled
+export type ModalContainer = Element | DocumentFragment;
+
 export interface ModalContextValue {
     modals: ModalData[];
-    container: unknown | null;
-    setContainer: (container: unknown) => void;
+    container: ModalContainer | null;
+    setContainer: (container: ModalContainer | null) => void;
     register: (id: string, data?: Record<string, unknown> | null) => void;
     unregister: (id?: string | null) => void;
     closeModal: (id: string) => void;
@@ -27,13 +30,13 @@ export function useModal(): ModalContextValue {
 
 interface ModalProviderProps {
     children: ReactNode;
-    container?: unknown | null;
+    container?: ModalContainer | null;
 }
 
 const DEFAULT_MODALS: ModalData[] = [];
 
 function ModalProvider({ children, container: initialContainer = null }: ModalProviderProps) {
-    const [container, setContainer] = useState(initialContainer);
+    const [container, setContainer] = useState<ModalContainer | null>(initialContainer);
     const [modals, setModals] = useState<ModalData[]>(DEFAULT_MODALS);
     const modalsRef = useRef(modals);
 

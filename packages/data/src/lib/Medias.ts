@@ -1,3 +1,7 @@
+import type { Media } from '@panneau/core';
+
+import type { UseItemsResponse } from '../hooks/useItems';
+
 import Base from './Base';
 
 class MediasApi extends Base {
@@ -20,8 +24,8 @@ class MediasApi extends Base {
         });
     }
 
-    find(id) {
-        return this.requestGet(
+    find(id: string) {
+        return this.requestGet<Media>(
             this.route('show', {
                 media: id,
             }),
@@ -38,7 +42,7 @@ class MediasApi extends Base {
         if (count !== null) {
             finalQuery.count = count;
         }
-        return this.requestGet(this.route('index'), finalQuery);
+        return this.requestGet<UseItemsResponse<Media>>(this.route('index'), finalQuery);
     }
 
     getTrashed(
@@ -60,11 +64,11 @@ class MediasApi extends Base {
     }
 
     create(data: Record<string, unknown>) {
-        return this.requestPost(this.route('store'), data);
+        return this.requestPost<Media>(this.route('store'), data);
     }
 
     update(id: string, data: Record<string, unknown>) {
-        return this.requestPut(
+        return this.requestPut<Media>(
             this.route('update', {
                 media: id,
             }),
@@ -81,7 +85,7 @@ class MediasApi extends Base {
     }
 
     restore(id: string) {
-        return this.requestPost(
+        return this.requestPost<Media>(
             this.route('restore', {
                 media: id,
             }),
@@ -97,7 +101,7 @@ class MediasApi extends Base {
     }
 
     replace(id: string, data: Record<string, unknown>) {
-        return this.requestPost(
+        return this.requestPost<Media>(
             this.route('replace', {
                 media: id,
             }),

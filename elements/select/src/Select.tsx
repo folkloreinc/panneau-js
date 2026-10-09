@@ -11,9 +11,11 @@ import CreatableSelect from 'react-select/creatable';
 
 import type { Label } from '@panneau/core';
 
+// Options can be any object when `getOptionValue` / `getOptionLabel` are provided
 export interface SelectOption {
     value?: any;
     label?: ReactNode;
+    [key: string]: unknown;
 }
 
 // Scalar options are converted to { value, label } objects
@@ -81,16 +83,18 @@ function SelectElement({
     ...props
 }: SelectElementProps) {
     const shouldConvertValue = !valueIsOption;
-    const safeOptions = useMemo(
+    const safeOptions = useMemo<SelectOption[] | null>(
         () =>
             options !== null
                 ? (options || [])
-                      .map((it: any) => (!isObject(it) ? { value: it, label: it } : it))
+                      .map((it: SelectOptionInput) =>
+                          !isObject(it) ? { value: it, label: it } : it,
+                      )
                       .filter((it) => it !== null)
                 : null,
         [options],
     );
-    const [allOptions, setAllOptions] = useState(safeOptions || []);
+    const [allOptions, setAllOptions] = useState<SelectOption[]>(safeOptions || []);
     const addOptions = useCallback(
         (newOptions: SelectOption[]) =>
             setAllOptions(

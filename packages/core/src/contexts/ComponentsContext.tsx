@@ -4,6 +4,8 @@ import type { ElementType, ReactNode } from 'react';
 
 import { ComponentsManager } from '../lib';
 
+import type { ComponentsMap } from '../types';
+
 export const MODALS_NAMESPACE = 'modals';
 export const FIELDS_NAMESPACE = 'fields';
 export const FORMS_NAMESPACE = 'forms';
@@ -227,7 +229,7 @@ interface ComponentsProviderProps {
     children: ReactNode;
     namespace?: string | null;
     manager?: ComponentsManager | null;
-    components?: Record<string, ElementType>;
+    components?: ComponentsMap;
 }
 
 const DEFAULT_COMPONENTS = {};

@@ -1,10 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading, formatjs/enforce-default-message */
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import type { MessageValues } from '@panneau/core';
 import { useResource } from '@panneau/core/contexts';
 
 interface ResourceIntlConfig {
-    values?: Record<string, unknown>;
+    values?: MessageValues;
 }
 
 interface ResourceConfig {
@@ -15,7 +16,7 @@ interface ResourceConfig {
 
 interface ResourceMessageProps {
     resource?: ResourceConfig | null;
-    values?: Record<string, unknown> | null;
+    values?: MessageValues | null;
     id: string;
     defaultMessage?: string | null;
     description?: string | null;

@@ -1,6 +1,8 @@
+import type { ComponentProps } from 'react';
 import { useState } from 'react';
 
 import ImportField from '../ImportField';
+import type { ImportResult } from '../ImportField';
 
 export default {
     title: 'Fields/Import',
@@ -26,9 +28,14 @@ const template = {
     ],
 };
 
-function Container({ value: initialValue = null, ...props }) {
-    const [value, setValue] = useState(initialValue);
-    return <ImportField template={template} {...props} value={value} onChange={setValue} />;
+function Container(props: ComponentProps<typeof ImportField>) {
+    const [value, setValue] = useState<ImportResult | null>(null);
+    return (
+        <>
+            <ImportField template={template} {...props} onChange={setValue} />
+            {value !== null ? <pre className="mt-4">{JSON.stringify(value, null, 4)}</pre> : null}
+        </>
+    );
 }
 
 export const Normal = {

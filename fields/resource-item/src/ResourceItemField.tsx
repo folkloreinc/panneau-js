@@ -100,12 +100,13 @@ function ResourceItemField({
     const intl = useIntl();
     const resource = usePanneauResource(resourceId);
     const resourceValues = useResourceValues(resource);
-    const defaultPage = useMemo(
-        () => initialPage || (paginated ? 1 : null),
+    // Page and count can be passed as strings (ex: from a query), parse them as numbers
+    const defaultPage = useMemo<number | null>(
+        () => (initialPage !== null ? Number(initialPage) : null) || (paginated ? 1 : null),
         [initialPage, paginated],
     );
-    const defaultCount = useMemo(
-        () => initialCount || (paginated ? 8 : null),
+    const defaultCount = useMemo<number | null>(
+        () => (initialCount !== null ? Number(initialCount) : null) || (paginated ? 8 : null),
         [initialCount, paginated],
     );
     const hasValue = value !== null && !isEmpty(value);
@@ -117,8 +118,8 @@ function ResourceItemField({
 
     // TODO: list state controls?
     const [query, setQuery] = useState(initialQuery || initialRequestQuery || {});
-    const [page, setPage] = useState<number | string | null>(defaultPage);
-    const [count, setCount] = useState<number | string | null>(defaultCount);
+    const [page, setPage] = useState<number | null>(defaultPage);
+    const [count, setCount] = useState<number | null>(defaultCount);
     const [resourceOptions, setOptions] = useState(initialOptions);
 
     // The text input search query
@@ -336,8 +337,7 @@ function ResourceItemField({
                                 name={name}
                                 value={finalValue}
                                 options={options}
-                                isClearable
-                                isSearchable
+                                searchable
                                 placeholder={
                                     isMessage(placeholder) ? (
                                         intl.formatMessage(placeholder as Message)

@@ -78,9 +78,10 @@ function ResourceItemsList({
     //     isObject(providedResource) ? resourceId : providedResource,
     // );
 
-    const [page, queryWithoutPage] = useMemo(() => {
+    const [page, queryWithoutPage] = useMemo<[number, Record<string, unknown>]>(() => {
         const { page: currentPage = 1, ...rest } = query || {};
-        return [currentPage, rest];
+        // The page can be a string when it comes from the url query
+        return [parseInt(String(currentPage), 10), rest];
     }, [query]);
 
     const {
@@ -91,7 +92,7 @@ function ResourceItemsList({
         updateItem = null,
         reload = null,
         pages = null,
-    } = useResourceItems(resource, queryWithoutPage, paginated ? parseInt(String(page), 10) : null);
+    } = useResourceItems(resource, queryWithoutPage, paginated ? page : null);
 
     const { lastPage = 0, total = 0 } = pagination || {};
 

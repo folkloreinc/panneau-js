@@ -1,15 +1,15 @@
 import { FormattedMessage } from 'react-intl';
 
-import type { Label as LabelType } from '@panneau/core';
+import type { Label as LabelType, MessageValues } from '@panneau/core';
 import { isMessage } from '@panneau/core/utils';
 
 interface LabelProps {
     children: LabelType;
     isHtml?: boolean;
-    values?: Record<string, unknown>;
+    values?: MessageValues;
 }
 
-const DEFAULT_VALUES = {};
+const DEFAULT_VALUES: MessageValues = {};
 
 function Label({ children, isHtml = false, values = DEFAULT_VALUES }: LabelProps) {
     const Message = isHtml ? FormattedMessage : FormattedMessage;

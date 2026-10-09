@@ -1,8 +1,8 @@
 /**
  * Core UI Types
  */
-import type { ElementType, MouseEvent, ReactNode } from 'react';
-import type { MessageDescriptor } from 'react-intl';
+import type { ComponentProps, ElementType, MouseEvent, ReactNode } from 'react';
+import type { FormattedMessage, MessageDescriptor } from 'react-intl';
 
 /**
  * Internationalization message definition
@@ -10,9 +10,23 @@ import type { MessageDescriptor } from 'react-intl';
 export type Message = MessageDescriptor;
 
 /**
+ * Values that can be interpolated in an internationalization message
+ * (the `values` prop of FormattedMessage)
+ */
+export type MessageValues = NonNullable<ComponentProps<typeof FormattedMessage>['values']>;
+export type MessageValue = MessageValues[string];
+
+/**
  * Label can be either a message object or any React node
  */
 export type Label = Message | ReactNode;
+
+/**
+ * Map of components, can be nested by namespace (ex: { fields: { text: TextField } })
+ */
+export interface ComponentsMap {
+    [name: string]: ElementType | ComponentsMap;
+}
 
 /**
  * HTTP status code (number or string)

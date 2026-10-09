@@ -10,7 +10,7 @@ interface UseIsVisibleOptions {
 }
 
 interface UseIsVisibleResult {
-    ref: RefObject<HTMLElement>;
+    ref: RefObject<Element>;
     visible: boolean;
 }
 

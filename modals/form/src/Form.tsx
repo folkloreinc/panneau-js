@@ -5,7 +5,8 @@ import { mergeRefs } from '@panneau/core/utils';
 import Form, { FormProps } from '@panneau/form';
 import Dialog, { DialogModalProps } from '@panneau/modal-dialog';
 
-export interface FormModalProps extends Omit<FormProps, 'id' | 'title'>, DialogModalProps {
+// The size is the dialog's size, it is not passed to the form
+export interface FormModalProps extends Omit<FormProps, 'id' | 'title' | 'size'>, DialogModalProps {
     withoutCloseOnComplete?: boolean;
     formRef?: ForwardedRef<HTMLFormElement> | null;
 }

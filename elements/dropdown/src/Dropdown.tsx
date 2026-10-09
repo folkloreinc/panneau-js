@@ -46,7 +46,11 @@ function Dropdown({
     onClickItem = null,
     onClickOutside = null,
 }: DropdownProps) {
-    const refContainer = useRef<HTMLDivElement>(null);
+    const refContainer = useRef<HTMLElement | null>(null);
+    // Callback ref so it can be applied to either the div or the ul menu element
+    const setContainerRef = useCallback((element: HTMLElement | null) => {
+        refContainer.current = element;
+    }, []);
     const onDocumentClick = useCallback(
         (e: globalThis.MouseEvent) => {
             if (
@@ -83,7 +87,7 @@ function Dropdown({
                     bottom: dropup ? '100%' : 'auto',
                 }
             }
-            ref={refContainer}
+            ref={setContainerRef}
         >
             {children !== null
                 ? children

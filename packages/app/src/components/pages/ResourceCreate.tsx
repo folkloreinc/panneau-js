@@ -1,3 +1,4 @@
+import isString from 'lodash-es/isString';
 import queryString from 'query-string';
 import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -21,10 +22,12 @@ function ResourceCreatePage({ resource }: ResourceCreatePageProps) {
     const search = useSearch();
     const resourceRoute = useResourceUrlGenerator(resource);
 
-    const { type = null } = useMemo(
+    const { type: queryType = null } = useMemo(
         () => queryString.parse(search, { arrayFormat: 'bracket' }),
         [search],
     );
+    // Only a single type is supported
+    const type = isString(queryType) ? queryType : null;
     const resourceValues = useResourceValues(resource);
     const typeName = useResourceTypeName(resource, type);
 

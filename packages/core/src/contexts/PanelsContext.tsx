@@ -25,7 +25,7 @@ export const PanelsContext = createContext<PanelsContextValue>({
 });
 
 export function usePanels(): PanelsContextValue {
-    return useContext(PanelsContext) || {};
+    return useContext(PanelsContext);
 }
 
 export function withPanels(WrappedComponent: ComponentType<any>) {

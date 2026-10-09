@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import type { Field, Label } from '@panneau/core';
@@ -8,7 +9,7 @@ interface TwoFactorEnableProps {
     action?: string;
     fields?: Field[] | null;
     size?: string;
-    explainationLabel?: Label | null;
+    explainationLabel?: ReactNode;
     submitButtonLabel?: Label | null;
     withSkipLink?: boolean;
     skipLink?: string;

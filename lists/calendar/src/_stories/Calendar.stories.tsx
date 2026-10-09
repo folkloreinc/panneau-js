@@ -19,11 +19,11 @@ function CalendarContainer(props = null) {
 
     const onDateChange = useCallback((newDate) => {
         console.log('onDateChange', newDate);
-    });
+    }, []);
 
     const onPeriodChange = useCallback((newMonth) => {
         console.log('onPeriodChange', newMonth);
-    });
+    }, []);
 
     return (
         <RoutesProvider

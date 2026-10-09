@@ -1,4 +1,4 @@
-import type { BasePlugin, Meta, PluginOpts } from '@uppy/core';
+import type { BasePlugin, Body, Meta, PluginOpts, UppyFile } from '@uppy/core';
 import type Uppy from '@uppy/core';
 import isArray from 'lodash-es/isArray';
 import isObject from 'lodash-es/isObject';
@@ -17,10 +17,10 @@ import useUppyTransport from './useUppyTransport';
 type UppyTransportType = 'xhr' | 'transloadit' | 'tus';
 type UppySourceId = 'webcam' | 'facebook' | 'instagram' | 'dropbox' | 'google-drive';
 
+// Minimal file shape used by the default file name generators
 interface UppyFileLike {
     name?: string;
     extension?: string | null;
-    [key: string]: unknown;
 }
 
 interface UppyCompleteResponse {
@@ -85,8 +85,8 @@ export interface UseUppyOptions {
     sources?: UppySourceId[] | null;
     onComplete?: ((successful: unknown[]) => void) | null;
     onFail?: ((failed: unknown) => void) | null;
-    getFileName?: (file: UppyFileLike) => string | null;
-    getFileNameWithUUID?: (file: UppyFileLike) => string | null;
+    getFileName?: (file: UppyFile<Meta, Body>) => string | null;
+    getFileNameWithUUID?: (file: UppyFile<Meta, Body>) => string | null;
     withUUID?: boolean;
     meta?: Record<string, unknown> | null;
     allowMultipleUploads?: boolean;
@@ -201,13 +201,12 @@ export function useUppy({
         if (uppy === null) {
             return () => {};
         }
-        function onUpload({ fileIDs: ids = [] }: { fileIDs?: string[] }) {
-            ids.forEach((id) => {
-                const file = uppy.getFile(id);
-                // console.log('file', id, file);
+        // Uppy 5 calls the upload listener with the upload id and the files
+        function onUpload(_uploadID: string, files: UppyFile<Meta, Record<string, never>>[]) {
+            (files || []).forEach((file) => {
                 const newName = withUUID ? getFileNameWithUUID(file) : getFileName(file);
                 if (newName !== null) {
-                    uppy.setFileMeta(id, {
+                    uppy.setFileMeta(file.id, {
                         name: newName,
                     });
                 }
@@ -297,7 +296,7 @@ export function UppyProvider({
     const xhr = providedXhr || contextXhr;
 
     const Uppy = useUppyCore() as UppyConstructor | null;
-    const uppyTransport = useUppyTransport(transport);
+    const uppyTransport = useUppyTransport(transport) as UppyTransportPlugin | null;
     const uppySources = useUppySources(sources) as Record<string, UppyPlugin> | null;
     const uppyLocale = useUppyLocale(locale || intlLocale) as Record<string, unknown> | null;
 

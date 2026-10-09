@@ -1,8 +1,7 @@
 import classNames from 'classnames';
+import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-
-import type { Label } from '@panneau/core';
 
 interface LoadingProps {
     theme?: string | null;
@@ -10,7 +9,7 @@ interface LoadingProps {
     withDelay?: boolean;
     withoutCard?: boolean;
     className?: string | null;
-    children?: Label | null;
+    children?: ReactNode;
 }
 
 function Loading({

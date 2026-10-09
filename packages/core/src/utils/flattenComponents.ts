@@ -1,10 +1,10 @@
 import type { ElementType } from 'react';
 import { isValidElementType } from 'react-is';
 
-type ComponentMap = Record<string, ElementType | Record<string, unknown>>;
+import type { ComponentsMap } from '../types';
 
 function flattenComponents(
-    components: ComponentMap | null,
+    components: ComponentsMap | null,
     prefix: string | null = null,
 ): Record<string, ElementType> | null {
     if (components === null) {
@@ -20,7 +20,7 @@ function flattenComponents(
                   }
                 : {
                       ...newMap,
-                      ...flattenComponents(components[key] as ComponentMap, path),
+                      ...flattenComponents(components[key] as ComponentsMap, path),
                   };
         },
         {} as Record<string, ElementType>,

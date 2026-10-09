@@ -91,7 +91,7 @@ function FormGroup({
     const innerLabel = isCollapsible ? label || null : label || null;
 
     const outerLabel = isCollapsible ? (
-        <Button htmlFor={name || undefined} className={labelClassNames} onClick={toggleCollapsed}>
+        <Button className={labelClassNames} onClick={toggleCollapsed}>
             {isMessage(innerLabel) ? intl.formatMessage(innerLabel) : innerLabel}
             <FontAwesomeIcon
                 style={{ width: 20 }}

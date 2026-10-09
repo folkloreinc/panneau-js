@@ -1,4 +1,5 @@
 import { format as formatDate } from 'date-fns/format';
+import type { Locale } from 'date-fns/locale';
 import { parse } from 'date-fns/parse';
 import { parseISO } from 'date-fns/parseISO';
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
@@ -12,31 +13,36 @@ interface DateDisplayProps {
     format?: string;
     parseFormat?: string | null;
     locale?: string | null;
-    localeLoaders?: Record<string, () => Promise<{ default: unknown }>>;
+    localeLoaders?: Record<string, () => Promise<{ default: Locale }>>;
 }
 
-// date-fns locale typings only declare named exports, so expose them as `default`
-// (the shape also expected by other loaders sharing the same loadPackage cache key)
-const DEFAULT_LOADERS: Record<string, () => Promise<{ default: unknown }>> = {
+// date-fns locale typings only declare named exports, so expose them as `default`.
+// The module itself is cached by loadPackage since other loaders (ex: DateTimeField) share
+// the same cache key and expect the module namespace.
+const DEFAULT_LOADERS: Record<string, () => Promise<{ default: Locale }>> = {
     fr: () =>
-        loadPackage('date-fns/locale/fr-CA', () =>
-            import('date-fns/locale/fr-CA').then(({ frCA }) => ({ default: frCA })),
+        loadPackage('date-fns/locale/fr-CA', () => import('date-fns/locale/fr-CA')).then(
+            ({ frCA }) => ({
+                default: frCA,
+            }),
         ),
     de: () =>
-        loadPackage('date-fns/locale/de', () =>
-            import('date-fns/locale/de').then(({ de }) => ({ default: de })),
-        ),
+        loadPackage('date-fns/locale/de', () => import('date-fns/locale/de')).then(({ de }) => ({
+            default: de,
+        })),
     ja: () =>
-        loadPackage('date-fns/locale/ja', () =>
-            import('date-fns/locale/ja').then(({ ja }) => ({ default: ja })),
-        ),
+        loadPackage('date-fns/locale/ja', () => import('date-fns/locale/ja')).then(({ ja }) => ({
+            default: ja,
+        })),
     es: () =>
-        loadPackage('date-fns/locale/es', () =>
-            import('date-fns/locale/es').then(({ es }) => ({ default: es })),
-        ),
+        loadPackage('date-fns/locale/es', () => import('date-fns/locale/es')).then(({ es }) => ({
+            default: es,
+        })),
     en: () =>
-        loadPackage('date-fns/locale/en-US', () =>
-            import('date-fns/locale/en-US').then(({ enUS }) => ({ default: enUS })),
+        loadPackage('date-fns/locale/en-US', () => import('date-fns/locale/en-US')).then(
+            ({ enUS }) => ({
+                default: enUS,
+            }),
         ),
 };
 
@@ -50,7 +56,7 @@ function DateDisplay({
 }: DateDisplayProps) {
     const { locale: defaultLocale } = useIntl();
     const finalLocale = locale || defaultLocale;
-    const [localePackage, setLocalePackage] = useState<unknown>(null);
+    const [localePackage, setLocalePackage] = useState<Locale | null>(null);
     useEffect(() => {
         if (typeof localeLoaders[finalLocale] !== 'undefined') {
             localeLoaders[finalLocale]().then(({ default: newLocalePackage }) =>

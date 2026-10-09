@@ -257,7 +257,7 @@ function ItemsField({
                 const emptyIndex = emptyItems.findIndex(({ id = '' }) => it.id === id);
 
                 if (emptyIndex === -1) {
-                    const { valueIndex = undefined, ...otherProps } = it || {};
+                    const { valueIndex = undefined, ...otherProps } = it;
                     setEmptyItems([...emptyItems, { ...otherProps, empty: true }]);
 
                     if (onChange !== null) {
@@ -403,7 +403,8 @@ function ItemsField({
                 </span>
             );
 
-        const labelPathValue = itemLabelPath !== null ? getPathValue(it, itemLabelPath) : null;
+        const labelPathValue =
+            itemLabelPath !== null ? (getPathValue(it, itemLabelPath) as ReactNode) : null;
         const finalItemLabel = labelPathValue !== null ? labelPathValue : defaultItemLabel;
         const finalRenderedItemLabel =
             renderedItemLabel !== null ? renderedItemLabel : finalItemLabel;

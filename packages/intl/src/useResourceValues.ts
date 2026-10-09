@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
-import type { Resource, ResourceIntlValues } from '@panneau/core';
+import type { MessageValues, Resource, ResourceIntlValues } from '@panneau/core';
 import { useResource } from '@panneau/core/contexts';
 
 function useResourceValues(
     resource: Resource | null,
-    values: Record<string, unknown> = null,
+    values: MessageValues | null = null,
 ): ResourceIntlValues {
     const contextResource = useResource();
     const allValues = useMemo(() => {

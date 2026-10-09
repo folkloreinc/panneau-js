@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import type { FormEvent } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Field, FormStatus, Resource } from '@panneau/core';
+import type { Field, FormStatus, Item, Resource } from '@panneau/core';
 import Button from '@panneau/element-button';
 import Form from '@panneau/element-form';
 import { useResourceValues } from '@panneau/intl';
@@ -12,7 +12,7 @@ interface DeleteFormProps {
     action?: string | null;
     previous?: string | null;
     fields: Field[];
-    value?: Record<string, unknown> | null;
+    value?: Partial<Item> | null;
     onChange: (value: Record<string, unknown>) => void;
     onSubmit?: ((e: FormEvent) => void) | null;
     status?: FormStatus | null;
@@ -33,6 +33,11 @@ function DeleteForm({
     errors = null,
     generalError = null,
     className = null,
+    // Not used by this form, they should not be passed to the <form> element
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    fields: _fields = null,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onChange: _onChange = null,
     ...props
 }: DeleteFormProps) {
     const { id = null } = value || {};

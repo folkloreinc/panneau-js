@@ -24,7 +24,8 @@ interface PaginationProps {
     size?: ControlSize;
     previousLabel?: ReactNode | null;
     nextLabel?: ReactNode | null;
-    countLabel?: ReactNode | null;
+    // Cloned with a `values.count` prop, so it should be a <FormattedMessage /> like element
+    countLabel?: ReactElement<{ values?: Record<string, ReactNode> }> | null;
     alwaysShowButtons?: boolean;
     selectable?: boolean;
     selectedItems?: Item[] | null;
@@ -118,7 +119,7 @@ function Pagination({
 
     const pages = strippedPages.length > 0 ? strippedPages : [1];
 
-    const element = cloneElement(countLabel as ReactElement, {
+    const element = cloneElement(countLabel, {
         values: { count: total },
     });
 

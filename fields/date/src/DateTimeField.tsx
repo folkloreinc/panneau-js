@@ -53,7 +53,7 @@ function DateTimeField({
     className = null,
 }: DateTimeFieldProps) {
     const { locale, formatMessage } = useIntl();
-    const timeCaption =
+    const timeCaption: Message | string =
         initialTimeCaption ||
         defineMessage({
             defaultMessage: 'Time',

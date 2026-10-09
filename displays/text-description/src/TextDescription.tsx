@@ -5,7 +5,7 @@ import { type ReactNode, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 
 interface TextDescriptionProps {
-    value?: string | Record<string, unknown> | null;
+    value?: string | Record<string, string | null> | null;
     placeholder?: ReactNode | null;
     item?: { id: string | number; [key: string]: unknown } | null;
     descriptionPath?: string | null;
@@ -29,8 +29,8 @@ function TextDescription({
 
     const { value, label } = useMemo(() => {
         const partialValue =
-            initialValue !== null && isObject(initialValue)
-                ? initialValue[parentLocale || locale] || null
+            typeof initialValue === 'object'
+                ? initialValue?.[parentLocale || locale] || null
                 : initialValue;
 
         const labelValue = get(item, descriptionPath, null) ?? null;

@@ -25,5 +25,5 @@ function Container() {
 }
 
 export const Normal = {
-    render: () => <Container fields={fields} />,
+    render: () => <Container />,
 };

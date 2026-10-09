@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import get from 'lodash-es/get';
+import isString from 'lodash-es/isString';
 import { type ReactNode, useMemo } from 'react';
 
 import type { Item, Resource, TableColumn } from '@panneau/core';
@@ -124,7 +125,11 @@ function CardsList({
                                       } else if (name !== null) {
                                           displayValue = get(it, name, null);
                                       } else if (field !== null) {
-                                          displayValue = get(it, field.name, null);
+                                          displayValue = get(
+                                              it,
+                                              isString(field) ? field : field.name,
+                                              null,
+                                          );
                                       }
 
                                       return (

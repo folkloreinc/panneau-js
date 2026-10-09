@@ -1,10 +1,11 @@
 import { createPathToRegexpParser, useMemoryRouter } from '@folklore/routes';
-import { ElementType, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Router } from 'wouter';
 
 import ActionsProvider from '@panneau/actions';
 import { AuthProvider } from '@panneau/auth';
 import type {
+    ComponentsMap,
     FieldDefinition,
     FormDefinition,
     PanneauDefinition,
@@ -41,7 +42,7 @@ interface ContainerProps {
     definition: PanneauDefinition;
     forms?: FormDefinition[] | null;
     fields?: FieldDefinition[] | null;
-    components?: Record<string, ElementType> | Record<string, Record<string, ElementType>> | null;
+    components?: ComponentsMap | null;
     user?: User | null;
     memoryRouter?: boolean;
     baseUrl?: string | null;

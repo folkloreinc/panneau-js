@@ -9,11 +9,12 @@ import styles from './styles.module.css';
 
 interface CheckboxesFieldProps {
     name?: string | null;
-    value?: string[] | null;
+    // Selected option values (options may have any value type)
+    value?: unknown[] | null;
     options?: SelectOption[];
     disabled?: boolean;
     className?: string | null;
-    onChange?: ((value: string[]) => void) | null;
+    onChange?: ((value: unknown[]) => void) | null;
 }
 
 const DEFAULT_OPTIONS: SelectOption[] = [];
@@ -56,7 +57,7 @@ function Checkboxes({
                         className={classNames(['btn-check', styles.btnCheck])}
                         name={`${name}[]`}
                         autoComplete="off"
-                        value={optionValue}
+                        value={optionValue as string | number}
                         disabled={disabled}
                         onChange={(e) => {
                             const newValue = e.currentTarget.checked

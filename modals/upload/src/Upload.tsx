@@ -42,14 +42,11 @@ function UploadModal({
         >
             {uppy !== null ? (
                 <Dashboard
-                    inline
                     width="100%"
                     height="350px"
-                    showAddFilesPanel
                     proudlyDisplayPoweredByUppy={false}
                     {...props}
                     uppy={uppy}
-                    onRequestClose={requestClose}
                     plugins={plugins}
                 />
             ) : null}

@@ -68,7 +68,6 @@ function TwoPaneForm({
                 status={status}
                 buttons={buttons}
                 onSubmit={onSubmit}
-                errors={errors}
                 ref={ref}
                 {...props}
             >

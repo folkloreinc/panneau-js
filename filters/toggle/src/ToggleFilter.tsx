@@ -1,9 +1,16 @@
 import classNames from 'classnames';
-import Switch from 'rc-switch';
+import RcSwitch from 'rc-switch';
+import type { ButtonHTMLAttributes, ComponentProps, ComponentType } from 'react';
 import { useCallback } from 'react';
 
 import styles from './styles.module.css';
 import 'rc-switch/assets/index.css';
+
+// rc-switch spreads extra props on its <button> element, but its typings omit button
+// specific attributes such as `name`
+const Switch = RcSwitch as ComponentType<
+    ComponentProps<typeof RcSwitch> & Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'name'>
+>;
 
 interface ToggleFilterProps {
     onChange: (value: boolean) => void;

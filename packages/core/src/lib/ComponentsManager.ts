@@ -3,10 +3,13 @@ import type { ElementType } from 'react';
 
 import { flattenComponents, getComponentFromName } from '../utils';
 
+import type { ComponentsMap } from '../types';
+
 class ComponentsManager {
     components: Record<string, ElementType>;
 
-    constructor(components: Record<string, ElementType> = {}) {
+    // Nested components maps are flattened with their key as namespace
+    constructor(components: ComponentsMap = {}) {
         this.components = flattenComponents(components);
     }
 
