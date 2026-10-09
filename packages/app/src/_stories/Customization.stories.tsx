@@ -1,3 +1,5 @@
+import type { Resource } from '@panneau/core';
+
 import { resourceValues } from '../../../../.storybook/data/utils';
 
 import definition from '../../../../.storybook/data/definition';
@@ -40,21 +42,54 @@ export const CustomRoute = {
     render: () => <AppStory path="/statistiques" />,
 };
 
-/** On the resource: pages: { resourceShowPage: { component: 'event-show-page' } } */
+function withEventsPages(pages: Resource['pages']) {
+    return {
+        ...definition,
+        resources: definition.resources.map((resource) =>
+            resource.id === eventsResource.id ? { ...resource, pages } : resource,
+        ),
+    };
+}
+
+/** On the resource: pages: { show: { component: 'event-show-page' } } */
 export const ResourcePageOverride = {
     name: 'Resource page override',
     render: () => (
         <AppStory
             path="/events/1"
+            definition={withEventsPages({
+                show: { component: 'event-show-page' },
+            })}
+        />
+    ),
+};
+
+/** The legacy keys still work: pages: { resourceShowPage: { component: 'event-show-page' } } */
+export const ResourcePageOverrideLegacy = {
+    name: 'Resource page override (legacy keys)',
+    render: () => (
+        <AppStory
+            path="/events/1"
+            definition={withEventsPages({
+                resourceShowPage: { component: 'event-show-page' },
+            })}
+        />
+    ),
+};
+
+/** forms: { edit: { component: 'normal' } } does not replace the duplicate confirmation */
+export const DuplicateWithCustomEditForm = {
+    name: 'Duplicate with custom edit form',
+    render: () => (
+        <AppStory
+            path="/pages/1/duplicate"
             definition={{
                 ...definition,
                 resources: definition.resources.map((resource) =>
-                    resource.id === eventsResource.id
+                    resource.id === 'pages'
                         ? {
                               ...resource,
-                              pages: {
-                                  resourceShowPage: { component: 'event-show-page' },
-                              },
+                              forms: { ...resource.forms, edit: { component: 'normal' } },
                           }
                         : resource,
                 ),

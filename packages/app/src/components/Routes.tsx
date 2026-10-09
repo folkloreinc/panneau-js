@@ -46,6 +46,7 @@ function PanneauRoutes({ statusCode: initialStatusCode = null }: PanneauRoutesPr
 
     // Custom Pages
     const { pages = null, routes: routesDefinition = null } = usePanneau() || {};
+    // Resource page overrides (typed and legacy keys) are handled by createResourceRoutes
     const builtinPages = [
         'home',
         'login',
@@ -57,6 +58,12 @@ function PanneauRoutes({ statusCode: initialStatusCode = null }: PanneauRoutesPr
         'edit',
         'delete',
         'duplicate',
+        'indexPage',
+        'showPage',
+        'createPage',
+        'editPage',
+        'deletePage',
+        'duplicatePage',
     ];
     const otherPages = Object.keys(pages || {})
         .filter((key) => builtinPages.indexOf(key) === -1)

@@ -75,6 +75,7 @@ const USE_ACTIONS_OPTIONS_KEYS: (keyof UseActionsOptions)[] = [
     'withoutItemShowUrl',
     'withShowModal',
     'withoutDuplicateConfirmation',
+    'hasDuplicateRoute',
     'withEditModal',
     'withoutDeleteConfirmation',
     'withoutRestoreConfirmation',

@@ -13,7 +13,8 @@ const send = require('@polka/send-type');
 module.exports = () => {
     const router = express.Router();
 
-    router.use(express.json());
+    // Not strict: actions without data (ex: clone) send a `null` body
+    router.use(express.json({ strict: false }));
     router.use(express.urlencoded());
 
     const dataPath = path.join(__dirname, '/items');
@@ -145,8 +146,9 @@ module.exports = () => {
         );
     };
 
+    // The items are not sorted by id (ex: 1, 10, 11, 2...), so take the highest id
     const getNextId = (items) =>
-        items.reduce((nextId, { id }) => (parseInt(id, 10) >= nextId ? nextId + 1 : nextId), 1);
+        items.reduce((maxId, { id }) => Math.max(maxId, parseInt(id, 10) || 0), 0) + 1;
 
     const addResourceItem = (resource, item) => {
         if (typeof updatedResources[resource] === 'undefined') {
@@ -450,6 +452,35 @@ module.exports = () => {
         } else {
             updateResource(req, res);
         }
+    });
+
+    /**
+     * Resource clone (duplicate)
+     */
+    router.post('/:resource/:id/clone', (req, res) => {
+        const { resource, id } = req.params;
+        if (!resourceExists(resource)) {
+            send(res, 404);
+            res.end();
+            return;
+        }
+        const currentItems = getResourceItems(resource);
+        const currentItem = currentItems.find((it) => it.id === id) || null;
+        if (currentItem === null) {
+            send(res, 404);
+            res.end();
+            return;
+        }
+        const now = dayjs().format('YYYY-MM-DD HH:mm:ss');
+        const newItem = {
+            ...currentItem,
+            id: `${getNextId(currentItems)}`,
+            created_at: now,
+            updated_at: now,
+        };
+        addResourceItem(resource, newItem);
+        send(res, 200, newItem);
+        res.end();
     });
 
     /**
