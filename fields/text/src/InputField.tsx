@@ -4,6 +4,8 @@ import {
     type CSSProperties,
     type ChangeEvent,
     type FocusEventHandler,
+    type KeyboardEventHandler,
+    type MouseEventHandler,
     type ReactNode,
     type Ref,
     useMemo,
@@ -20,6 +22,8 @@ type Size = null | 'lg' | 'sm';
 type Align = 'left' | 'center' | 'right';
 
 interface InputFieldProps {
+    id?: string | null;
+    name?: string | null;
     feedback?: Feedback | null;
     value?: string | null;
     errors?: string | string[] | null;
@@ -34,6 +38,8 @@ interface InputFieldProps {
     onChange?: ((value: string | null) => void) | null;
     onFocus?: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement> | null;
     onBlur?: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement> | null;
+    onClick?: MouseEventHandler<HTMLInputElement | HTMLTextAreaElement> | null;
+    onKeyDown?: KeyboardEventHandler<HTMLInputElement | HTMLTextAreaElement> | null;
     align?: Align | null;
     size?: Size;
     maxLength?: number | null;
@@ -41,6 +47,9 @@ interface InputFieldProps {
     append?: ReactNode | null;
     min?: number | null;
     max?: number | null;
+    step?: number | string | null;
+    autoComplete?: string | null;
+    autoFocus?: boolean;
     dataList?: string[] | null;
     inputRef?: Ref<HTMLInputElement | HTMLTextAreaElement> | null;
     style?: CSSProperties | null;
@@ -48,6 +57,8 @@ interface InputFieldProps {
 }
 
 function InputField({
+    id = null,
+    name = null,
     feedback = null,
     value = null,
     errors = null,
@@ -62,6 +73,8 @@ function InputField({
     onChange = null,
     onFocus = null,
     onBlur = null,
+    onClick = null,
+    onKeyDown = null,
     align = null,
     size = null,
     maxLength = null,
@@ -69,6 +82,9 @@ function InputField({
     append = null,
     min = null,
     max = null,
+    step = null,
+    autoComplete = null,
+    autoFocus = false,
     dataList = null,
     inputRef = null,
     style = null,
@@ -78,6 +94,8 @@ function InputField({
 
     const elProps = {
         ref: inputRef,
+        id: id || undefined,
+        name: name || undefined,
         className: classNames([
             styles.inputElement,
             'form-control',
@@ -90,13 +108,18 @@ function InputField({
         ]),
         onFocus,
         onBlur,
+        onClick: onClick || undefined,
+        onKeyDown: onKeyDown || undefined,
         value: value !== null ? value : '',
         style: { textAlign: align || undefined },
         placeholder: placeholder || undefined,
         type: type || undefined,
         maxLength: maxLength || undefined,
-        min: min || undefined,
-        max: max || undefined,
+        min: min ?? undefined,
+        max: max ?? undefined,
+        step: step ?? undefined,
+        autoComplete: autoComplete || undefined,
+        autoFocus,
         required,
         disabled,
         readOnly,
@@ -111,12 +134,11 @@ function InputField({
                   onChange !== null ? onChange(!isEmpty(newValue) ? newValue : null) : null,
     };
 
-    const { horizontal, ...cleanProps } = elProps as any;
     const inputElement =
         type !== 'textarea' ? (
-            <input {...cleanProps} style={style || undefined} />
+            <input {...(elProps as any)} style={style || undefined} />
         ) : (
-            <textarea style={style || undefined} {...cleanProps} />
+            <textarea {...(elProps as any)} style={style || undefined} />
         );
     const withInputGroup = prepend !== null || append !== null;
 

@@ -5,8 +5,8 @@ interface DateFieldProps {
     [key: string]: unknown;
 }
 
-function TimeField({ dateFormat = 'yyyy-MM-dd', ...props }: DateFieldProps) {
+function DateField({ dateFormat = 'yyyy-MM-dd', ...props }: DateFieldProps) {
     return <DateTimeField {...props} withoutTime dateFormat={dateFormat} />;
 }
 
-export default TimeField;
+export default DateField;

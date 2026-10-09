@@ -116,15 +116,15 @@ function LocalizedField({
                 .filter((locale) => locale === currentLocale)
                 .map((locale) => {
                     const {
-                        name: propertyName = locale,
+                        name: propertyName = null,
                         component,
                         ...property
                     } = properties[locale] || {};
                     const FieldComponent =
                         providedFieldComponent ||
                         getComponentFromName(component || componentName, Components);
-                    const fieldName = `${name}[${componentName}]`;
-                    const fieldValue = value !== null ? value[locale] || null : null;
+                    const fieldName = `${name}[${locale}]`;
+                    const fieldValue = value?.[locale] ?? null;
                     return (
                         <div key={`field-${locale}`}>
                             <FieldComponent

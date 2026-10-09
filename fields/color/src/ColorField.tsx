@@ -77,13 +77,17 @@ function ColorPickerField({
     const onInputChange = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
             if (onChange !== null) {
-                onChange({
-                    color: e.target.value,
-                    alpha: 1,
-                });
+                onChange(
+                    withAlpha
+                        ? {
+                              color: e.target.value,
+                              alpha: 1,
+                          }
+                        : e.target.value,
+                );
             }
         },
-        [onChange],
+        [onChange, withAlpha],
     );
 
     const onInputClick = useCallback(

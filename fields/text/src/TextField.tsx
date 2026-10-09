@@ -5,7 +5,7 @@ interface TextFieldProps {
 }
 
 function TextField(props: TextFieldProps) {
-    return <InputField {...props} type="text" />;
+    return <InputField type="text" {...props} />;
 }
 
 export default TextField;

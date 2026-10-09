@@ -1,13 +1,13 @@
 import { getCSRFHeaders, getJSON } from '@folklore/fetch';
 import queryString from 'query-string';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 
 import { getPathValue } from '@panneau/core/utils';
 import Select from '@panneau/element-select';
 
 interface SelectOption {
     value?: any;
-    label?: React.ReactNode;
+    label?: ReactNode;
 }
 
 interface SelectFieldProps {

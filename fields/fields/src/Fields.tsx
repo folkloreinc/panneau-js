@@ -111,12 +111,16 @@ function Fields({
 
         let fieldValue: unknown; // To detect if it's truly empty and not null
         if (value !== null && name !== null) {
-            fieldValue = get(value, name, null);
+            fieldValue = get(value, name);
         } else if (name === null) {
             fieldValue = value;
         }
 
-        if (name !== null && fieldValue === null && hideWithoutValue) {
+        if (
+            name !== null &&
+            (fieldValue === null || fieldValue === undefined) &&
+            hideWithoutValue
+        ) {
             return null;
         }
 
@@ -163,7 +167,14 @@ function Fields({
                     fieldElement
                 )}
                 {siblingFields !== null && siblingFields.length > 0 ? (
-                    <Fields fields={siblingFields} value={value} onChange={onChange} />
+                    <Fields
+                        fields={siblingFields}
+                        value={value}
+                        onChange={onChange}
+                        components={providedComponents}
+                        disabled={disabled}
+                        size={size}
+                    />
                 ) : null}
             </Fragment>
         );

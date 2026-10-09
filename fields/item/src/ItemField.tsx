@@ -202,7 +202,7 @@ function ItemField({
                                 'py-1',
                                 'shadow-none',
                                 {
-                                    [disabled]: disabled,
+                                    disabled,
                                     'is-invalid': errors !== null,
                                     [`form-control`]: size !== null,
                                     [`form-control-${size}`]: size !== null,

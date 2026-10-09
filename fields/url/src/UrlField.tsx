@@ -121,7 +121,7 @@ function UrlField({
                         },
                     ])}
                     type="button"
-                    aria-expanded={open ? 'false' : 'true'}
+                    aria-expanded={open ? 'true' : 'false'}
                     onClick={!disabled && !empty ? onClickOpen : undefined}
                     disabled={disabled || undefined}
                 >
@@ -152,7 +152,7 @@ function UrlField({
     const partialAppend = preview ? (
         // eslint-disable-next-line jsx-a11y/control-has-associated-label
         <a
-            href={value !== null ? `${finalPrepend}${valueWithoutScheme}` : undefined}
+            href={value !== null ? value : undefined}
             className="input-group-text"
             target="_blank"
             rel="noopener noreferrer"

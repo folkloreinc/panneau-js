@@ -44,9 +44,6 @@ function NumberField({
     const parseValue = useCallback(
         (newValue: string | number | null): number | string | null => {
             if (newValue !== null) {
-                if (float) {
-                    return newValue;
-                }
                 if (isNumber(newValue)) {
                     return newValue;
                 }
@@ -64,15 +61,10 @@ function NumberField({
     const onInputChange = useCallback(
         (val: string | null) => {
             if (onChange !== null) {
-                if (float) {
-                    onChange(val !== null && val.length > 0 ? val : null);
-                } else {
-                    onChange(val !== null && val.length > 0 ? parseValue(val) : null);
-                }
                 onChange(val !== null && val.length > 0 ? parseValue(val) : null);
             }
         },
-        [onChange, float, parseValue],
+        [onChange, parseValue],
     );
 
     // Datalist

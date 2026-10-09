@@ -12,6 +12,7 @@ import { useResourceItems } from '@panneau/data';
 import Button from '@panneau/element-button';
 import ResourceCard from '@panneau/element-resource-card';
 import Select from '@panneau/element-select';
+import ResourceForm from '@panneau/form-resource';
 import { useResourceValues } from '@panneau/intl';
 import ModalResourceForm from '@panneau/modal-resource-form';
 import ModalResourceItems from '@panneau/modal-resource-items';
@@ -266,7 +267,7 @@ function ResourceItemField({
                 setListOpen(false);
             }
         },
-        [onChange, setListOpen],
+        [onChange, setListOpen, multiple],
     );
 
     // If empty try to fetch
@@ -305,7 +306,7 @@ function ResourceItemField({
                             itemDescriptionPath={itemDescriptionPath}
                             itemImagePath={itemImagePath}
                             itemLabelWithId={itemLabelWithId}
-                            disable={disabled}
+                            disabled={disabled}
                             onClickEdit={canEdit && !multiple ? onOpenForm : null}
                             onClickRemove={onClickRemove}
                             editButtonLabel={editButtonLabel}
@@ -378,12 +379,18 @@ function ResourceItemField({
             )}
             {formOpen ? (
                 withoutModal ? (
-                    <div className="card mt-4 p-4">{form}</div>
+                    <div className="card mt-4 p-4">
+                        <ResourceForm
+                            resource={resource}
+                            item={!multiple ? value : null}
+                            onComplete={onFormSuccess}
+                        />
+                    </div>
                 ) : (
                     <ModalResourceForm
                         resource={resource}
                         item={!multiple ? value : null}
-                        isCreate
+                        isCreate={multiple || !hasValue}
                         onClosed={onClosedForm}
                         onComplete={onFormSuccess}
                     />

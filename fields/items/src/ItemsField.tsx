@@ -161,8 +161,23 @@ function ItemsField({
             const diff = allItemsCount - idsCount;
             const extraItems = [...Array(diff).keys()].map(() => uuid());
             setItemIds([...itemIds, ...extraItems]);
+        } else if (allItemsCount < idsCount) {
+            // Value was shortened from outside (ex: form reset), drop the extra ids
+            let remainingValues = (value || []).length;
+            const keptIndexes = itemIds.reduce<number[]>((indexes, id, index) => {
+                const isEmptyItem = emptyItems.some(({ id: emptyId = '' }) => emptyId === id);
+                if (isEmptyItem || remainingValues > 0) {
+                    if (!isEmptyItem) {
+                        remainingValues -= 1;
+                    }
+                    return [...indexes, index];
+                }
+                return indexes;
+            }, []);
+            setItemIds(keptIndexes.map((index) => itemIds[index]));
+            setCollapsed(keptIndexes.map((index) => collapsed[index] ?? true));
         }
-    }, [allItemsCount, idsCount, setItemIds, itemIds]);
+    }, [allItemsCount, idsCount, setItemIds, itemIds, value, emptyItems, collapsed]);
 
     const itemsCount = items ? items.length : 0;
     const isAddItemDisabled =
@@ -263,13 +278,16 @@ function ItemsField({
             setEmptyItems((emptyItems || []).filter(({ id = '' }) => it.id !== id));
 
             const emptyIndex = emptyItems.findIndex(({ id = '' }) => it.id === id);
-            const idIndex = itemIds.indexOf(it.id);
+            // Position in value is the number of non-empty items before this one
+            const insertIndex = itemIds
+                .slice(0, Math.max(itemIds.indexOf(it.id), 0))
+                .filter((id) => !emptyItems.some(({ id: emptyId = '' }) => emptyId === id)).length;
             const finalValue =
                 emptyIndex !== -1
                     ? [
-                          ...(value || []).slice(0, idIndex),
+                          ...(value || []).slice(0, insertIndex),
                           newValue,
-                          ...(value || []).slice(idIndex),
+                          ...(value || []).slice(insertIndex),
                       ]
                     : (value || []).map((prevItem, prevIndex) =>
                           prevIndex !== it.valueIndex ? prevItem : newValue,
@@ -681,7 +699,7 @@ function ItemsField({
             </div>
             {renderBefore !== null ? renderBefore() : null}
             <div className="d-flex flex-column mb-3">
-                {value !== null && value.length > 0 ? (
+                {items.length > 0 ? (
                     <div
                         className={classNames([
                             {

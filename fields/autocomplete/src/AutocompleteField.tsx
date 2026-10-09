@@ -1,15 +1,7 @@
 import classNames from 'classnames';
 import isObject from 'lodash-es/isObject';
 import isString from 'lodash-es/isString';
-import {
-    type MouseEvent,
-    type ReactNode,
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from 'react';
+import { type MouseEvent, type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import Button from '@panneau/element-button';
 import TextField from '@panneau/field-text';
@@ -85,7 +77,6 @@ function AutocompleteField({
     onTextChange = null,
     children = null,
 }: AutocompleteFieldProps) {
-    const fuse = useRef<Fuse<AutocompleteItem> | null>(null);
     const [open, setOpen] = useState(false);
     const [focused, setFocused] = useState(false);
     const [showListIcon, setShowListIcon] = useState(false);
@@ -93,30 +84,35 @@ function AutocompleteField({
     const { label: partialValue = null } = isObject(providedValue) ? providedValue : {};
     const value = isString(providedValue) ? providedValue : partialValue || null;
 
-    const [textValue, setTextValue] = useState(providedTextValue);
+    const [localTextValue, setTextValue] = useState(providedTextValue);
+    // When the parent handles the text value, it is controlled
+    const textValue = onTextChange !== null ? providedTextValue : localTextValue;
 
-    const items = providedItems || [];
+    const items = providedItems || DEFAULT_ITEMS;
 
-    useEffect(() => {
-        const options = {
-            isCaseSensitive: false,
-            includeScore: true,
-            includeMatches: true,
-            minMatchCharLength: 1,
-            shouldSort: true,
-            ...searchOptions,
-        };
-        fuse.current = !withoutMatch ? new Fuse(items, options) : null;
-    }, [items, searchOptions, withoutMatch]);
+    const fuse = useMemo(
+        () =>
+            !withoutMatch
+                ? new Fuse(items, {
+                      isCaseSensitive: false,
+                      includeScore: true,
+                      includeMatches: true,
+                      minMatchCharLength: 1,
+                      shouldSort: true,
+                      ...searchOptions,
+                  })
+                : null,
+        [items, searchOptions, withoutMatch],
+    );
 
     const list = useMemo(
         () =>
-            textValue && fuse.current !== null
-                ? fuse.current.search(textValue)
+            textValue && fuse !== null
+                ? fuse.search(textValue)
                 : items.map((item) => ({
                       item,
                   })), // Wrapped to match fuse results
-        [textValue, items],
+        [textValue, items, fuse],
     );
 
     const maxedList = maxResults !== null && maxResults > 0 ? list.slice(0, maxResults) : list;
@@ -161,8 +157,14 @@ function AutocompleteField({
             e.stopPropagation();
             setTextValue(null);
             setOpen(false);
+            if (onChange !== null) {
+                onChange(null);
+            }
+            if (onTextChange !== null) {
+                onTextChange(null);
+            }
         },
-        [setTextValue],
+        [setTextValue, onChange, onTextChange],
     );
 
     const onInputChange = useCallback(

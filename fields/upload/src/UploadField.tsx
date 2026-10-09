@@ -113,6 +113,12 @@ function UploadField({
         return newValue;
     }, []);
 
+    // Kept in a ref so that uppy is not rebuilt each time the value changes
+    const valueRef = useRef(value);
+    useEffect(() => {
+        valueRef.current = value;
+    }, [value]);
+
     const onComplete = useCallback(
         (response: any) => {
             let newValue: Media | Media[] | null = null;
@@ -132,6 +138,14 @@ function UploadField({
                 newValue = newValue.map((val) => mergeData(val));
             } else if (newValue !== null) {
                 newValue = mergeData(newValue);
+            }
+
+            // Append new uploads to the existing medias
+            if (multiple && newValue !== null) {
+                newValue = [
+                    ...(isArray(valueRef.current) ? valueRef.current : []),
+                    ...(isArray(newValue) ? newValue : [newValue]),
+                ];
             }
 
             if (onChange !== null) {
