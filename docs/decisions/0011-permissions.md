@@ -9,7 +9,7 @@ v1 has no authorization per resource. Its form requests only check that a user i
 
 ## Decision
 
-- **The backend decides.** In `laravel-panneau`, every resource operation goes through the model's Policy. A resource without a policy is denied, unless the project explicitly allows it.
+- **The backend decides.** In `laravel-panneau`, every resource operation goes through the Policy of the item (an Entity contract or a model). A resource without a policy is denied, unless the project explicitly allows it.
 - **Abilities are sent to the UI:**
     - per resource in the definition (`viewAny`, `create`);
     - per item in API responses (`update`, `delete`, custom actions).

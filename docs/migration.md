@@ -33,18 +33,18 @@ These steps can be done on the current lines and make the move smaller:
 
 ## Mapping: Laravel
 
-| v1                                                                                                       | 5                                                                                                                       |
-| -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `config('panneau.resources')` and static props on `Resource` (`$repository`, `$jsonResource`, `$types`…) | Resources registered in a service provider; instance methods (`model()`, `fields()`, `layout()`, `list()`, `actions()`) |
-| `Repository` contract and `ResourceItem`                                                                 | Eloquent models directly; a custom `ResourceRepository` when needed                                                     |
-| `JsonResource` per resource                                                                              | `toItem()` on the resource, or keep a `JsonResource`                                                                    |
-| `TextLocalized`, `MediaLocalized`…                                                                       | `Text::make('title')->localized()`                                                                                      |
-| `Upload`, `Image`, `ImageUpload`…                                                                        | `Media::make('image')->accept('image/*')`                                                                               |
-| `Item`, `Items`, `ResourceItem(s)`                                                                       | `Relation`, `Repeater`, `Group`                                                                                         |
-| Custom `ResourceController` subclasses                                                                   | Resource hooks (`query()`, `creating()`, `saved()`) and resource actions                                                |
-| `routes/panneau.php` with custom routes                                                                  | Resource actions; custom pages through plugins and `pages`                                                              |
-| Generated `HomeController`, `AccountController`, `UploadController`, `PanneauPolicy`, views              | Provided by the package, installed by `panneau:install`                                                                 |
-| `Panneau::resource()` gate on `Panneau::class`                                                           | Policies per model, plus the `viewPanneau` gate                                                                         |
+| v1                                                                                                       | 5                                                                                                                                         |
+| -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `config('panneau.resources')` and static props on `Resource` (`$repository`, `$jsonResource`, `$types`…) | Resources registered in a service provider; instance methods (`repository()` or `model()`, `fields()`, `layout()`, `list()`, `actions()`) |
+| `Repository` contract and `ResourceItem`                                                                 | `ResourceRepository`, with adapters: Folklore entities and repositories stay as they are; `model()` for Eloquent-only projects            |
+| `JsonResource` per resource                                                                              | `toItem()` on the resource, or keep a `JsonResource`                                                                                      |
+| `TextLocalized`, `MediaLocalized`…                                                                       | `Text::make('title')->localized()`                                                                                                        |
+| `Upload`, `Image`, `ImageUpload`…                                                                        | `Media::make('image')->accept('image/*')`                                                                                                 |
+| `Item`, `Items`, `ResourceItem(s)`                                                                       | `Relation`, `Repeater`, `Group`                                                                                                           |
+| Custom `ResourceController` subclasses                                                                   | Resource hooks (`query()`, `creating()`, `saved()`) and resource actions                                                                  |
+| `routes/panneau.php` with custom routes                                                                  | Resource actions; custom pages through plugins and `pages`                                                                                |
+| Generated `HomeController`, `AccountController`, `UploadController`, `PanneauPolicy`, views              | Provided by the package, installed by `panneau:install`                                                                                   |
+| `Panneau::resource()` gate on `Panneau::class`                                                           | Policies per item class (Entity contract or model), plus the `viewPanneau` gate                                                           |
 
 Rector rules will cover the mechanical parts: field class renames, `localized()`, and static properties to methods.
 
