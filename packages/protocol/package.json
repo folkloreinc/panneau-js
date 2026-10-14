@@ -15,16 +15,30 @@
             "types": "./dist/index.d.ts",
             "default": "./dist/index.js"
         },
+        "./mock": {
+            "types": "./dist/mock/index.d.ts",
+            "default": "./dist/mock/index.js"
+        },
+        "./conformance": {
+            "types": "./dist/conformance/index.d.ts",
+            "default": "./dist/conformance/index.js"
+        },
+        "./definition.schema.json": "./schema/definition.schema.json",
+        "./openapi.json": "./schema/openapi.json",
         "./package.json": "./package.json"
     },
     "files": [
-        "dist"
+        "dist",
+        "schema"
     ],
     "scripts": {
-        "build": "vite build && tsc -p tsconfig.build.json",
+        "build": "vite build && tsc -p tsconfig.build.json && node scripts/generate-schemas.js",
         "typecheck": "tsc --noEmit"
     },
     "publishConfig": {
         "access": "public"
+    },
+    "dependencies": {
+        "zod": "^4.6.7"
     }
 }

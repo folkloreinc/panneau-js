@@ -1,6 +1,11 @@
-# Protocol (draft)
+# Protocol
 
-Status: draft. This document describes the intent and the main conventions. The normative version will be the JSON Schema and OpenAPI files published in `@panneau/protocol`, written in Phase 0 (see [roadmap.md](roadmap.md)). When they disagree, the files win.
+Version 1. This document explains the protocol and its conventions. The normative version is the `@panneau/protocol` package ([`packages/protocol`](../packages/protocol)):
+
+- its schemas, in `src/schemas`;
+- the files generated from them: `schema/definition.schema.json` and `schema/openapi.json`.
+
+When this document and the package disagree, the package wins.
 
 The protocol is the only contract between a Panneau frontend and its backend. It doesn't assume Laravel, Eloquent or numeric ids. `laravel-panneau` is the reference implementation, and it runs the conformance kit in its CI.
 
@@ -244,8 +249,9 @@ All paths are relative to `api.baseUrl`.
 **Items:**
 
 - Every item has `id`, `version` and `abilities`. `abilities` includes the ids of the actions allowed on that item (`"publish": true`).
-- `version` is also sent as an `ETag` header on single-item responses.
-- An update with a stale `If-Match` returns `412 Precondition Failed`, with the current item in the body.
+- **Single items.** Show, create and update return `{ "data": Item }`. They also send `version` as a quoted `ETag` header (`"3"`).
+- **Version conflicts.** An update with a stale `If-Match` returns `412 Precondition Failed`. The current item is in `current`.
+- **`version: null`.** The backend has no versions: it sends no `ETag`, and it ignores `If-Match`.
 
 ### Actions
 
@@ -335,6 +341,13 @@ Errors use [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) `application/probl
 ```
 
 - **`errors` keys** are dot paths into the submitted value. Localized values use the locale as a segment, and arrays use the index.
+- **`type`:**
+    - `urn:panneau:problem:validation` for `422`;
+    - `urn:panneau:problem:version-conflict` for `412`;
+    - `about:blank` when the status says it all.
+
+    Clients rely on the status, not on `type`.
+
 - **Status codes:**
 
     | Status | Meaning                  |
@@ -396,8 +409,26 @@ With `auth.mode = "external"`, the frontend only calls `GET /auth/session` and s
 
 `@panneau/protocol` ships:
 
-- **TypeScript types**, generated from the schemas;
-- **the files**: `definition.schema.json` and `openapi.yaml`;
-- **a conformance kit**: fixtures and a runner that calls a live backend and validates every response against the spec.
+- **schemas and TypeScript types**. `Definition` is a definition after parsing, with defaults applied; `DefinitionInput` is a definition as a backend writes it.
+- **validation helpers**:
+    - `validateDefinition()` checks the schema, then the references between parts;
+    - `lintDefinition()` checks those references alone: layout nodes and columns that name a field, relations that name a resource, unique names.
+- **the portable rules**: `checkValues()` is the reference implementation.
+- **generated files**: `@panneau/protocol/definition.schema.json` (JSON Schema 2020-12) and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
+- **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes.
+- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas.
 
-`laravel-panneau` validates its responses against `openapi.yaml` in its feature tests.
+```ts
+import { formatReport, runConformance } from '@panneau/protocol/conformance';
+
+const report = await runConformance({
+    baseUrl: 'http://localhost:8000/panneau/api',
+    init: { headers: { Authorization: `Bearer ${token}` } },
+    resource: 'pages',
+    // Optional: also checks create, update (with If-Match), conflicts and delete.
+    writes: { create: { title: { fr: 'Test' } }, update: { title: { fr: 'Test 2' } } },
+});
+console.log(formatReport(report));
+```
+
+`laravel-panneau` validates its responses against `openapi.json` in its feature tests.
