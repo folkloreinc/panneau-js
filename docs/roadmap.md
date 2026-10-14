@@ -66,6 +66,11 @@ Goal: a complete admin panel, ready for client projects.
     - sorting, filters (with active filter chips), column choice;
     - inline editing, layouts (table, cards, gallery, calendar), bulk actions;
     - remembered view per user.
+- **Actions:**
+    - built-in and custom actions, with parameters and confirmation;
+    - selection by query (every matching item);
+    - per-item results;
+    - queued runs with progress and a notification area.
 - **Rich text:** TipTap 3 field (HTML storage by default, ProseMirror JSON as an option).
 - **Media:** media fields and a basic library on the protocol's media API; `laravel-mediatheque` adapter.
 - **Folklore plugin:** Pages, Blocks and PageSlug fields with their JS, shipped by `laravel-folklore`.

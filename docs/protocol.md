@@ -50,7 +50,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
         "perPage": 20,
         "inlineEdit": [ "title", "status" ]
     },
-    "actions": [ { "id": "publish", "label": "Publier", "scope": ["item", "bulk"], "confirm": true } ],
+    "actions": [ /* Action */ ],
     "abilities": { "viewAny": true, "create": true },
     "features": { "drafts": false, "revisions": false, "preview": null, "search": true },
     "types": [ { "id": "home", "label": "Accueil", "fields": [...] } ]
@@ -133,6 +133,59 @@ Node types:
 
 Any node can have `visibleWhen`.
 
+### Actions
+
+An action is an operation applied to one item, a selection, or the whole resource (see [decisions/0017](decisions/0017-actions.md)).
+
+```jsonc
+{
+    "id": "publish",
+    "label": "Publier",
+    "icon": "send",
+    "kind": "server", // "server" | "link" | "client"
+    "scope": ["item", "selection"], // and/or "resource"
+    "placement": ["row", "toolbar", "form"],
+    "destructive": false,
+    "confirm": {
+        "title": "Publier les pages",
+        "message": "Publier {count, plural, one {# page} other {# pages}} ?",
+        "confirmLabel": "Publier",
+    },
+    "fields": [/* Field */], // parameters, shown in a modal
+    "layout": [/* LayoutNode */],
+    "queued": false, // true: always answers 202 with a run
+    "abilities": { "run": true },
+}
+```
+
+- **`kind`:**
+    - `server` actions call the action endpoint;
+    - `link` actions have a `url` template (`/pages/{id}/edit`) or a `route` name from `routes`;
+    - `client` actions name a plugin handler in `component`.
+- **`scope`:**
+    - `item`: one item, from a row or a form;
+    - `selection`: the selected items, or every item matching the list query;
+    - `resource`: no items, such as import or export of everything.
+- **`placement`:** where the action appears.
+    - `row`: on each list row;
+    - `toolbar`: on the list, for selections and resource actions;
+    - `form`: in the item form header;
+    - `menu`: in an overflow menu.
+- **`confirm`:** `true` uses a default message. Its `message` can use `{count}`.
+- **`destructive`:** styles the action and its confirmation as dangerous.
+
+Built-in actions use reserved ids:
+
+| Id                  | Kind     | Scope                   |
+| ------------------- | -------- | ----------------------- |
+| `show`, `edit`      | `link`   | `item`                  |
+| `duplicate`         | `server` | `item`                  |
+| `delete`, `restore` | `server` | `item`, `selection`     |
+| `export`            | `server` | `selection`, `resource` |
+| `import`            | `server` | `resource`              |
+
+A resource lists the built-in actions it enables, possibly with overrides (label, placement, confirm).
+
 ### Auth
 
 ```jsonc
@@ -154,15 +207,15 @@ All paths are relative to `api.baseUrl`.
 
 ### Resources
 
-| Operation   | Request                                                                                |
-| ----------- | -------------------------------------------------------------------------------------- |
-| List        | `GET /resources/{resource}`                                                            |
-| Show        | `GET /resources/{resource}/{id}`                                                       |
-| Create      | `POST /resources/{resource}`                                                           |
-| Update      | `PATCH /resources/{resource}/{id}` (partial, with `If-Match`)                          |
-| Delete      | `DELETE /resources/{resource}/{id}`                                                    |
-| Action      | `POST /resources/{resource}/actions/{action}` with `{ "ids": [...], "values": {...} }` |
-| Inline edit | `PATCH /resources/{resource}/{id}` with a single field                                 |
+| Operation   | Request                                                                   |
+| ----------- | ------------------------------------------------------------------------- |
+| List        | `GET /resources/{resource}`                                               |
+| Show        | `GET /resources/{resource}/{id}`                                          |
+| Create      | `POST /resources/{resource}`                                              |
+| Update      | `PATCH /resources/{resource}/{id}` (partial, with `If-Match`)             |
+| Delete      | `DELETE /resources/{resource}/{id}`                                       |
+| Action      | `POST /resources/{resource}/actions/{action}` (see [Actions](#actions-1)) |
+| Inline edit | `PATCH /resources/{resource}/{id}` with a single field                    |
 
 **List query parameters:**
 
@@ -190,9 +243,80 @@ All paths are relative to `api.baseUrl`.
 
 **Items:**
 
-- Every item has `id`, `version` and `abilities`.
+- Every item has `id`, `version` and `abilities`. `abilities` includes the ids of the actions allowed on that item (`"publish": true`).
 - `version` is also sent as an `ETag` header on single-item responses.
 - An update with a stale `If-Match` returns `412 Precondition Failed`, with the current item in the body.
+
+### Actions
+
+**Request.** `POST /resources/{resource}/actions/{action}` sends the selection and the parameter values:
+
+```jsonc
+// Selected items
+{ "selection": { "ids": ["12", "13"] }, "values": { "notify": true } }
+
+// Every item matching the list query, except some
+{ "selection": { "query": { "filter": { "status": "draft" }, "q": "été" }, "except": ["14"] }, "values": {} }
+
+// Resource scope: no selection
+{ "values": { "format": "csv" } }
+```
+
+- **Query selection.** The backend applies the same scoping, filters and search as the list endpoint.
+- **Files.** Parameters that include files (import) use `multipart/form-data`, with `values[...]` keys.
+- **Validation.** Invalid values return `422`, with `errors` keyed by paths inside `values`.
+
+**Response.** `200` with an action result:
+
+```json
+{
+    "message": "12 pages publiées.",
+    "summary": { "succeeded": 12, "failed": 1, "skipped": 2 },
+    "results": [
+        { "id": "14", "status": "failed", "message": "Le titre est obligatoire." },
+        { "id": "15", "status": "skipped", "reason": "forbidden" }
+    ],
+    "refresh": "items",
+    "redirect": null,
+    "download": {
+        "url": "https://…/exports/pages.csv?signature=…",
+        "filename": "pages.csv",
+        "expiresAt": "2026-10-14T18:00:00Z"
+    }
+}
+```
+
+- **`results`** only lists the items that didn't succeed.
+- **`reason`** for skipped items is `forbidden`, `not_found` or `unchanged`.
+- **`refresh`:**
+    - `none`;
+    - `items`: refetch the affected items;
+    - `list`: refetch the list and the counts.
+- **`redirect`:** a path or a `{ "route": "…", "params": {} }` object.
+- **`download`:** a short-lived URL that the UI opens.
+
+**Single item.** A `403` or `404` on the only item of an `item` action is returned as an error, not as a skipped result.
+
+**Long-running actions.** A queued action, or a selection above the backend's synchronous limit, answers `202 Accepted`:
+
+```json
+{
+    "run": {
+        "id": "run_01JA…",
+        "action": "export",
+        "resource": "pages",
+        "status": "queued",
+        "progress": 0,
+        "total": 2400
+    }
+}
+```
+
+| Endpoint                     | Purpose                                                                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `GET /actions/runs/{run}`    | status (`queued`, `running`, `succeeded`, `partial`, `failed`), `progress`, `total`, and the action result once finished |
+| `GET /actions/runs`          | the current user's recent runs, for the notification area                                                                |
+| `DELETE /actions/runs/{run}` | cancel a run that hasn't finished, when the action allows it                                                             |
 
 ### Errors
 

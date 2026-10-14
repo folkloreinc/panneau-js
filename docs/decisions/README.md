@@ -22,3 +22,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0014](0014-testing.md)                  | Testing strategy                                                 | Accepted |
 | [0015](0015-dashboards-and-search.md)    | Dashboards and global search                                     | Accepted |
 | [0016](0016-migration-strategy.md)       | Clean break, maintained old lines, Niche as pilot                | Accepted |
+| [0017](0017-actions.md)                  | Actions on items, selections and resources                       | Accepted |
