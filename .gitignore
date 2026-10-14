@@ -40,6 +40,8 @@ node_modules
 
 .env
 .eslintcache
+/packages/*/dist
+/packages/*/temp
 /*/*/dist
 /*/*/es
 /*/*/lib
