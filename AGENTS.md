@@ -6,6 +6,10 @@ This file provides guidance for coding agents when working with code in this rep
 
 Panneau-JS is a comprehensive React UI component library for building data-centric admin panels and dashboards. It's a Lerna-managed monorepo with 97+ packages organized by category (actions, displays, fields, forms, elements, lists, filters, modals, and core utilities). Published under the `@panneau/` npm scope, it supports React 19+ and uses ESM-first architecture.
 
+## Panneau 5
+
+The `v5.x` branch is the next major version. Its architecture, protocol, decisions and roadmap are in [`docs/`](docs/README.md): read them before changing anything on `v5.x`. The rest of this file describes v4.
+
 ## Main sections
 
 The `actions` folder contains general actions one can add to resources (ex: edit/delete buttons in list).
