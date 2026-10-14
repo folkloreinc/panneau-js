@@ -47,6 +47,12 @@ jobs:
             - name: Build
               run: npm run build
 
+            - name: Check the API reports
+              run: npm run api:check
+
+            - name: Check the package template
+              run: npm run test:create-package
+
             - name: Check for a changeset
               if: github.event_name == 'pull_request'
               run: npx changeset status --since=origin/${{ github.base_ref }}

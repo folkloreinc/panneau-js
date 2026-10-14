@@ -6,3 +6,4 @@ package-lock.json
 CHANGELOG.md
 .changeset/*.md
 packages/*/schema/
+packages/*/api/

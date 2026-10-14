@@ -17,6 +17,10 @@
     "scripts": {
         "build": "npm run build --workspaces --if-present",
         "typecheck": "npm run typecheck --workspaces --if-present",
+        "api": "npm run api --workspaces --if-present",
+        "api:check": "npm run api --workspaces --if-present -- --check",
+        "create-package": "node scripts/create-package.js",
+        "test:create-package": "node scripts/check-create-package.js",
         "lint": "eslint .",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
@@ -30,6 +34,7 @@
         "@babel/core": "^8.0.7",
         "@changesets/cli": "^3.0.3",
         "@eslint/js": "^10.0.1",
+        "@microsoft/api-extractor": "^7.59.4",
         "@rolldown/plugin-babel": "^0.2.4",
         "@testing-library/jest-dom": "^7.0.1",
         "@testing-library/react": "^16.3.3",
