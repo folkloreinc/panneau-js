@@ -115,7 +115,7 @@ import { TextField } from '@panneau/fields/text';
 import { Form } from '@panneau/forms';
 ```
 
-Anything not reachable from a package's `exports` map is internal. See [decisions/0003](decisions/0003-layers-and-packages.md).
+Anything not reachable from a package's `exports` map is internal. See [decisions/0003](decisions/0003-layers-and-packages.md). The target list of packages, with the allowed dependencies of each, is in [packages.md](packages.md).
 
 ## Definitions
 

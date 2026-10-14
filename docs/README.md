@@ -39,6 +39,7 @@ It must also serve two kinds of projects:
 | [current-state.md](current-state.md) | Audit of `panneau-js` v4 and of how projects use Panneau today              |
 | [architecture.md](architecture.md)   | Layers, packages, extension points, and how projects use them               |
 | [protocol.md](protocol.md)           | The definition format and the HTTP API between frontend and backend (draft) |
+| [packages.md](packages.md)           | Target packages, package template, API reports, porting from `legacy/`      |
 | [roadmap.md](roadmap.md)             | Phases, what ships in 5.0 and what comes in 5.x, open questions             |
 | [migration.md](migration.md)         | Migration strategy and order for current projects                           |
 | [decisions/](decisions/)             | Architecture decision records                                               |
