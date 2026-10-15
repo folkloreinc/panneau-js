@@ -93,6 +93,12 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     { "resource": "authors", "multiple": true }
     ```
 
+- **`relation` values:**
+    - In items, a value is a reference to the related item, `{ "id": "12", "label": "Ada" }`, where `label` is the value of the related resource's `itemTitle`. With `multiple`, it is a list of references. Lists can show related items without fetching them.
+    - In requests, the client sends ids: `"12"`, or `["12", "13"]`. A backend also accepts the references it sent, and reads their `id`. It refuses ids that don't exist within the related resource's scope.
+- **`media` values:**
+    - In items, a value is a [media item](#media), or a list of them with `multiple`.
+    - In requests, the client sends media ids, or the media items; the backend reads their `id`. `accept` and `maxSize` are checked on the `mime` and `size` of media items.
 - **`rules`** use the portable rules below. A backend can also enforce rules that it doesn't expose.
 
 ### Portable validation rules
