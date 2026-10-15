@@ -74,3 +74,17 @@ describe('TextField', () => {
         expect(input).toHaveAccessibleDescription('In search results. 2 / 60 characters');
     });
 });
+
+describe('TextFieldEntry without a label', () => {
+    it('is labelled with the name of the field', () => {
+        renderField(
+            <DefinitionField
+                field={{ name: 'meta_title', type: 'text' }}
+                path="meta_title"
+                value={null}
+                onChange={() => undefined}
+            />,
+        );
+        expect(screen.getByRole('textbox', { name: 'meta_title' })).toBeInTheDocument();
+    });
+});

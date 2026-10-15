@@ -31,8 +31,9 @@ export const isNumber = (value: unknown): value is number =>
     typeof value === 'number' && !Number.isNaN(value);
 
 /**
- * The props that every field takes, from a registry entry's props: label, help, required mark,
- * read-only, errors and handlers. Plugins use it to write their own entries.
+ * The props that every field takes, from a registry entry's props: label (the field's name
+ * without one), help, required mark, read-only, errors and handlers. Plugins use it to write their
+ * own entries.
  */
 export function getFieldProps(
     props: FieldEntryProps,
@@ -40,7 +41,8 @@ export function getFieldProps(
     const { field } = props;
     return {
         name: props.path,
-        label: field.label,
+        // A field always has a label: its name when the definition gives none.
+        label: field.label ?? field.name,
         description: field.help,
         ...(field.placeholder !== undefined ? { placeholder: field.placeholder } : {}),
         required: isRequired(field),
