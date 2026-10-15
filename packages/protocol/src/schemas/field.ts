@@ -88,7 +88,8 @@ export const BlockType = z.looseObject({
     id: z.string().min(1),
     label: z.string(),
     icon: z.string().optional(),
-    get fields() {
+    // Return types are written out so that declaration files keep the recursion.
+    get fields(): z.ZodArray<typeof Field> {
         return z.array(Field);
     },
 });
@@ -133,13 +134,13 @@ export const Field = z
         display: z.string().optional().meta({
             description: 'Display used in lists, when it differs from the default one of the type.',
         }),
-        get fields() {
+        get fields(): z.ZodOptional<z.ZodArray<typeof Field>> {
             return z
                 .array(Field)
                 .optional()
                 .meta({ description: '`group` and `repeater`: the nested fields.' });
         },
-        get types() {
+        get types(): z.ZodOptional<z.ZodArray<typeof BlockType>> {
             return z
                 .array(BlockType)
                 .optional()

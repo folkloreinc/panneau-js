@@ -22,10 +22,11 @@ export const Condition = z
         in: z.array(z.unknown()).optional(),
         notIn: z.array(z.unknown()).optional(),
         filled: z.boolean().optional(),
-        get all() {
+        // Return types are written out so that declaration files keep the recursion.
+        get all(): z.ZodOptional<z.ZodArray<typeof Condition>> {
             return z.array(Condition).optional();
         },
-        get any() {
+        get any(): z.ZodOptional<z.ZodArray<typeof Condition>> {
             return z.array(Condition).optional();
         },
     })

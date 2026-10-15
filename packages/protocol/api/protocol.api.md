@@ -18,8 +18,8 @@ export const Action: z.ZodObject<{
     label: z.ZodString;
     icon: z.ZodOptional<z.ZodString>;
     kind: z.ZodDefault<z.ZodEnum<{
-        server: "server";
         link: "link";
+        server: "server";
         client: "client";
     }>>;
     scope: z.ZodArray<z.ZodEnum<{
@@ -103,8 +103,8 @@ export const Action: z.ZodObject<{
             in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
             notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
             filled: z.ZodOptional<z.ZodBoolean>;
-            all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+            all: z.ZodOptional<z.ZodArray<Condition>>;
+            any: z.ZodOptional<z.ZodArray<Condition>>;
         }, z.core.$loose>>;
         options: z.ZodOptional<z.ZodArray<z.ZodObject<{
             value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -117,13 +117,8 @@ export const Action: z.ZodObject<{
         accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
         from: z.ZodOptional<z.ZodString>;
         display: z.ZodOptional<z.ZodString>;
-        fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-        types: z.ZodOptional<z.ZodArray<z.ZodObject<{
-            id: z.ZodString;
-            label: z.ZodString;
-            icon: z.ZodOptional<z.ZodString>;
-            fields: z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>;
-        }, z.core.$loose>>>;
+        fields: z.ZodOptional<z.ZodArray<typeof Field>>;
+        types: z.ZodOptional<z.ZodArray<BlockType>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>>>;
     layout: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -143,10 +138,10 @@ export const Action: z.ZodObject<{
             in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
             notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
             filled: z.ZodOptional<z.ZodBoolean>;
-            all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+            all: z.ZodOptional<z.ZodArray<Condition>>;
+            any: z.ZodOptional<z.ZodArray<Condition>>;
         }, z.core.$loose>>;
-        children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+        children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
     }, z.core.$loose>>>;
     queued: z.ZodOptional<z.ZodBoolean>;
     url: z.ZodOptional<z.ZodString>;
@@ -371,8 +366,8 @@ export type ActionScope = z.infer<typeof ActionScope>;
 // @public (undocumented)
 export const Auth: z.ZodObject<{
     mode: z.ZodEnum<{
-        panneau: "panneau";
         external: "external";
+        panneau: "panneau";
     }>;
     loginUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     password: z.ZodOptional<z.ZodBoolean>;
@@ -407,87 +402,7 @@ export const BlockType: z.ZodObject<{
     id: z.ZodString;
     label: z.ZodString;
     icon: z.ZodOptional<z.ZodString>;
-    fields: z.ZodArray<z.ZodObject<{
-        name: z.ZodString;
-        type: z.ZodString;
-        label: z.ZodOptional<z.ZodString>;
-        help: z.ZodOptional<z.ZodString>;
-        placeholder: z.ZodOptional<z.ZodString>;
-        default: z.ZodOptional<z.ZodUnknown>;
-        localized: z.ZodOptional<z.ZodBoolean>;
-        readOnly: z.ZodOptional<z.ZodBoolean>;
-        createOnly: z.ZodOptional<z.ZodBoolean>;
-        updateOnly: z.ZodOptional<z.ZodBoolean>;
-        rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-            rule: z.ZodLiteral<"required">;
-            message: z.ZodOptional<z.ZodString>;
-        }, z.core.$loose>, z.ZodObject<{
-            rule: z.ZodEnum<{
-                min: "min";
-                max: "max";
-            }>;
-            value: z.ZodNumber;
-            message: z.ZodOptional<z.ZodString>;
-        }, z.core.$loose>, z.ZodObject<{
-            rule: z.ZodLiteral<"pattern">;
-            value: z.ZodString;
-            flags: z.ZodOptional<z.ZodString>;
-            message: z.ZodOptional<z.ZodString>;
-        }, z.core.$loose>, z.ZodObject<{
-            rule: z.ZodEnum<{
-                email: "email";
-                url: "url";
-            }>;
-            message: z.ZodOptional<z.ZodString>;
-        }, z.core.$loose>, z.ZodObject<{
-            rule: z.ZodLiteral<"in">;
-            value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
-            message: z.ZodOptional<z.ZodString>;
-        }, z.core.$loose>, z.ZodObject<{
-            rule: z.ZodLiteral<"accept">;
-            value: z.ZodArray<z.ZodString>;
-            message: z.ZodOptional<z.ZodString>;
-        }, z.core.$loose>, z.ZodObject<{
-            rule: z.ZodLiteral<"maxSize">;
-            value: z.ZodNumber;
-            message: z.ZodOptional<z.ZodString>;
-        }, z.core.$loose>, z.ZodObject<{
-            rule: z.ZodEnum<{
-                before: "before";
-                after: "after";
-            }>;
-            value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
-                field: z.ZodString;
-            }, z.core.$loose>]>;
-            message: z.ZodOptional<z.ZodString>;
-        }, z.core.$loose>, z.ZodObject<{
-            rule: z.ZodString;
-            message: z.ZodOptional<z.ZodString>;
-        }, z.core.$loose>]>>>;
-        visibleWhen: z.ZodOptional<z.ZodObject<{
-            field: z.ZodOptional<z.ZodString>;
-            equals: z.ZodOptional<z.ZodUnknown>;
-            in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
-            notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
-            filled: z.ZodOptional<z.ZodBoolean>;
-            all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-        }, z.core.$loose>>;
-        options: z.ZodOptional<z.ZodArray<z.ZodObject<{
-            value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
-            label: z.ZodString;
-            description: z.ZodOptional<z.ZodString>;
-            disabled: z.ZodOptional<z.ZodBoolean>;
-        }, z.core.$loose>>>;
-        multiple: z.ZodOptional<z.ZodBoolean>;
-        resource: z.ZodOptional<z.ZodString>;
-        accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
-        from: z.ZodOptional<z.ZodString>;
-        display: z.ZodOptional<z.ZodString>;
-        fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-        types: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-        settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
-    }, z.core.$loose>>;
+    fields: z.ZodArray<typeof Field>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -555,8 +470,8 @@ export const Condition: z.ZodObject<{
     in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
     notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
     filled: z.ZodOptional<z.ZodBoolean>;
-    all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-    any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+    all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+    any: z.ZodOptional<z.ZodArray<typeof Condition>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -659,8 +574,8 @@ export const Definition: z.ZodObject<{
                 in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 filled: z.ZodOptional<z.ZodBoolean>;
-                all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                all: z.ZodOptional<z.ZodArray<Condition>>;
+                any: z.ZodOptional<z.ZodArray<Condition>>;
             }, z.core.$loose>>;
             options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -673,13 +588,8 @@ export const Definition: z.ZodObject<{
             accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
             from: z.ZodOptional<z.ZodString>;
             display: z.ZodOptional<z.ZodString>;
-            fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            types: z.ZodOptional<z.ZodArray<z.ZodObject<{
-                id: z.ZodString;
-                label: z.ZodString;
-                icon: z.ZodOptional<z.ZodString>;
-                fields: z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>;
-            }, z.core.$loose>>>;
+            fields: z.ZodOptional<z.ZodArray<Field>>;
+            types: z.ZodOptional<z.ZodArray<BlockType>>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>;
         form: z.ZodOptional<z.ZodObject<{
@@ -700,10 +610,10 @@ export const Definition: z.ZodObject<{
                     in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     filled: z.ZodOptional<z.ZodBoolean>;
-                    all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                    any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                    all: z.ZodOptional<z.ZodArray<Condition>>;
+                    any: z.ZodOptional<z.ZodArray<Condition>>;
                 }, z.core.$loose>>;
-                children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                children: z.ZodOptional<z.ZodArray<LayoutNode>>;
             }, z.core.$loose>>>;
         }, z.core.$loose>>;
         list: z.ZodOptional<z.ZodObject<{
@@ -748,8 +658,8 @@ export const Definition: z.ZodObject<{
             label: z.ZodString;
             icon: z.ZodOptional<z.ZodString>;
             kind: z.ZodDefault<z.ZodEnum<{
-                server: "server";
                 link: "link";
+                server: "server";
                 client: "client";
             }>>;
             scope: z.ZodArray<z.ZodEnum<{
@@ -833,8 +743,8 @@ export const Definition: z.ZodObject<{
                     in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     filled: z.ZodOptional<z.ZodBoolean>;
-                    all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                    any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                    all: z.ZodOptional<z.ZodArray<Condition>>;
+                    any: z.ZodOptional<z.ZodArray<Condition>>;
                 }, z.core.$loose>>;
                 options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                     value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -847,13 +757,8 @@ export const Definition: z.ZodObject<{
                 accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 from: z.ZodOptional<z.ZodString>;
                 display: z.ZodOptional<z.ZodString>;
-                fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                types: z.ZodOptional<z.ZodArray<z.ZodObject<{
-                    id: z.ZodString;
-                    label: z.ZodString;
-                    icon: z.ZodOptional<z.ZodString>;
-                    fields: z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>;
-                }, z.core.$loose>>>;
+                fields: z.ZodOptional<z.ZodArray<Field>>;
+                types: z.ZodOptional<z.ZodArray<BlockType>>;
                 settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             }, z.core.$loose>>>;
             layout: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -873,10 +778,10 @@ export const Definition: z.ZodObject<{
                     in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     filled: z.ZodOptional<z.ZodBoolean>;
-                    all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                    any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                    all: z.ZodOptional<z.ZodArray<Condition>>;
+                    any: z.ZodOptional<z.ZodArray<Condition>>;
                 }, z.core.$loose>>;
-                children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                children: z.ZodOptional<z.ZodArray<LayoutNode>>;
             }, z.core.$loose>>>;
             queued: z.ZodOptional<z.ZodBoolean>;
             url: z.ZodOptional<z.ZodString>;
@@ -901,87 +806,7 @@ export const Definition: z.ZodObject<{
             id: z.ZodString;
             label: z.ZodString;
             icon: z.ZodOptional<z.ZodString>;
-            fields: z.ZodArray<z.ZodObject<{
-                name: z.ZodString;
-                type: z.ZodString;
-                label: z.ZodOptional<z.ZodString>;
-                help: z.ZodOptional<z.ZodString>;
-                placeholder: z.ZodOptional<z.ZodString>;
-                default: z.ZodOptional<z.ZodUnknown>;
-                localized: z.ZodOptional<z.ZodBoolean>;
-                readOnly: z.ZodOptional<z.ZodBoolean>;
-                createOnly: z.ZodOptional<z.ZodBoolean>;
-                updateOnly: z.ZodOptional<z.ZodBoolean>;
-                rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                    rule: z.ZodLiteral<"required">;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodEnum<{
-                        min: "min";
-                        max: "max";
-                    }>;
-                    value: z.ZodNumber;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodLiteral<"pattern">;
-                    value: z.ZodString;
-                    flags: z.ZodOptional<z.ZodString>;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodEnum<{
-                        email: "email";
-                        url: "url";
-                    }>;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodLiteral<"in">;
-                    value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodLiteral<"accept">;
-                    value: z.ZodArray<z.ZodString>;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodLiteral<"maxSize">;
-                    value: z.ZodNumber;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodEnum<{
-                        before: "before";
-                        after: "after";
-                    }>;
-                    value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
-                        field: z.ZodString;
-                    }, z.core.$loose>]>;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodString;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>]>>>;
-                visibleWhen: z.ZodOptional<z.ZodObject<{
-                    field: z.ZodOptional<z.ZodString>;
-                    equals: z.ZodOptional<z.ZodUnknown>;
-                    in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
-                    notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
-                    filled: z.ZodOptional<z.ZodBoolean>;
-                    all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                    any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                }, z.core.$loose>>;
-                options: z.ZodOptional<z.ZodArray<z.ZodObject<{
-                    value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
-                    label: z.ZodString;
-                    description: z.ZodOptional<z.ZodString>;
-                    disabled: z.ZodOptional<z.ZodBoolean>;
-                }, z.core.$loose>>>;
-                multiple: z.ZodOptional<z.ZodBoolean>;
-                resource: z.ZodOptional<z.ZodString>;
-                accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
-                from: z.ZodOptional<z.ZodString>;
-                display: z.ZodOptional<z.ZodString>;
-                fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                types: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
-            }, z.core.$loose>>;
+            fields: z.ZodArray<Field>;
         }, z.core.$loose>>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>>;
@@ -999,13 +824,13 @@ export const Definition: z.ZodObject<{
         page: z.ZodOptional<z.ZodString>;
         url: z.ZodOptional<z.ZodString>;
         external: z.ZodOptional<z.ZodBoolean>;
-        children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+        children: z.ZodOptional<z.ZodArray<typeof MenuItem>>;
     }, z.core.$loose>>>>;
     routes: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
     auth: z.ZodOptional<z.ZodObject<{
         mode: z.ZodEnum<{
-            panneau: "panneau";
             external: "external";
+            panneau: "panneau";
         }>;
         loginUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         password: z.ZodOptional<z.ZodBoolean>;
@@ -1130,8 +955,8 @@ export const Field: z.ZodObject<{
         in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
         notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
         filled: z.ZodOptional<z.ZodBoolean>;
-        all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-        any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+        all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+        any: z.ZodOptional<z.ZodArray<typeof Condition>>;
     }, z.core.$loose>>;
     options: z.ZodOptional<z.ZodArray<z.ZodObject<{
         value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -1144,13 +969,8 @@ export const Field: z.ZodObject<{
     accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
     from: z.ZodOptional<z.ZodString>;
     display: z.ZodOptional<z.ZodString>;
-    fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-    types: z.ZodOptional<z.ZodArray<z.ZodObject<{
-        id: z.ZodString;
-        label: z.ZodString;
-        icon: z.ZodOptional<z.ZodString>;
-        fields: z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>;
-    }, z.core.$loose>>>;
+    fields: z.ZodOptional<z.ZodArray<typeof Field>>;
+    types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
     settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
 }, z.core.$loose>;
 
@@ -1237,10 +1057,10 @@ export const LayoutNode: z.ZodObject<{
         in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
         notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
         filled: z.ZodOptional<z.ZodBoolean>;
-        all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-        any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+        all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+        any: z.ZodOptional<z.ZodArray<typeof Condition>>;
     }, z.core.$loose>>;
-    children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+    children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -1476,7 +1296,7 @@ export const MenuItem: z.ZodObject<{
     page: z.ZodOptional<z.ZodString>;
     url: z.ZodOptional<z.ZodString>;
     external: z.ZodOptional<z.ZodBoolean>;
-    children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+    children: z.ZodOptional<z.ZodArray<typeof MenuItem>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -1496,8 +1316,8 @@ export const namedSchemas: {
         in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
         notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
         filled: z.ZodOptional<z.ZodBoolean>;
-        all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-        any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+        all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+        any: z.ZodOptional<z.ZodArray<typeof Condition>>;
     }, z.core.$loose>;
     Option: z.ZodObject<{
         value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -1555,87 +1375,7 @@ export const namedSchemas: {
         id: z.ZodString;
         label: z.ZodString;
         icon: z.ZodOptional<z.ZodString>;
-        fields: z.ZodArray<z.ZodObject<{
-            name: z.ZodString;
-            type: z.ZodString;
-            label: z.ZodOptional<z.ZodString>;
-            help: z.ZodOptional<z.ZodString>;
-            placeholder: z.ZodOptional<z.ZodString>;
-            default: z.ZodOptional<z.ZodUnknown>;
-            localized: z.ZodOptional<z.ZodBoolean>;
-            readOnly: z.ZodOptional<z.ZodBoolean>;
-            createOnly: z.ZodOptional<z.ZodBoolean>;
-            updateOnly: z.ZodOptional<z.ZodBoolean>;
-            rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                rule: z.ZodLiteral<"required">;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodEnum<{
-                    min: "min";
-                    max: "max";
-                }>;
-                value: z.ZodNumber;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodLiteral<"pattern">;
-                value: z.ZodString;
-                flags: z.ZodOptional<z.ZodString>;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodEnum<{
-                    email: "email";
-                    url: "url";
-                }>;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodLiteral<"in">;
-                value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodLiteral<"accept">;
-                value: z.ZodArray<z.ZodString>;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodLiteral<"maxSize">;
-                value: z.ZodNumber;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodEnum<{
-                    before: "before";
-                    after: "after";
-                }>;
-                value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
-                    field: z.ZodString;
-                }, z.core.$loose>]>;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodString;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>]>>>;
-            visibleWhen: z.ZodOptional<z.ZodObject<{
-                field: z.ZodOptional<z.ZodString>;
-                equals: z.ZodOptional<z.ZodUnknown>;
-                in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
-                notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
-                filled: z.ZodOptional<z.ZodBoolean>;
-                all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            }, z.core.$loose>>;
-            options: z.ZodOptional<z.ZodArray<z.ZodObject<{
-                value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
-                label: z.ZodString;
-                description: z.ZodOptional<z.ZodString>;
-                disabled: z.ZodOptional<z.ZodBoolean>;
-            }, z.core.$loose>>>;
-            multiple: z.ZodOptional<z.ZodBoolean>;
-            resource: z.ZodOptional<z.ZodString>;
-            accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
-            from: z.ZodOptional<z.ZodString>;
-            display: z.ZodOptional<z.ZodString>;
-            fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            types: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
-        }, z.core.$loose>>;
+        fields: z.ZodArray<typeof Field>;
     }, z.core.$loose>;
     Field: z.ZodObject<{
         name: z.ZodString;
@@ -1700,8 +1440,8 @@ export const namedSchemas: {
             in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
             notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
             filled: z.ZodOptional<z.ZodBoolean>;
-            all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+            all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+            any: z.ZodOptional<z.ZodArray<typeof Condition>>;
         }, z.core.$loose>>;
         options: z.ZodOptional<z.ZodArray<z.ZodObject<{
             value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -1714,13 +1454,8 @@ export const namedSchemas: {
         accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
         from: z.ZodOptional<z.ZodString>;
         display: z.ZodOptional<z.ZodString>;
-        fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-        types: z.ZodOptional<z.ZodArray<z.ZodObject<{
-            id: z.ZodString;
-            label: z.ZodString;
-            icon: z.ZodOptional<z.ZodString>;
-            fields: z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>;
-        }, z.core.$loose>>>;
+        fields: z.ZodOptional<z.ZodArray<typeof Field>>;
+        types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>;
     LayoutNode: z.ZodObject<{
@@ -1740,10 +1475,10 @@ export const namedSchemas: {
             in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
             notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
             filled: z.ZodOptional<z.ZodBoolean>;
-            all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+            all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+            any: z.ZodOptional<z.ZodArray<typeof Condition>>;
         }, z.core.$loose>>;
-        children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+        children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
     }, z.core.$loose>;
     Column: z.ZodObject<{
         field: z.ZodOptional<z.ZodString>;
@@ -1831,8 +1566,8 @@ export const namedSchemas: {
         label: z.ZodString;
         icon: z.ZodOptional<z.ZodString>;
         kind: z.ZodDefault<z.ZodEnum<{
-            server: "server";
             link: "link";
+            server: "server";
             client: "client";
         }>>;
         scope: z.ZodArray<z.ZodEnum<{
@@ -1916,8 +1651,8 @@ export const namedSchemas: {
                 in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 filled: z.ZodOptional<z.ZodBoolean>;
-                all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+                any: z.ZodOptional<z.ZodArray<typeof Condition>>;
             }, z.core.$loose>>;
             options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -1930,13 +1665,8 @@ export const namedSchemas: {
             accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
             from: z.ZodOptional<z.ZodString>;
             display: z.ZodOptional<z.ZodString>;
-            fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            types: z.ZodOptional<z.ZodArray<z.ZodObject<{
-                id: z.ZodString;
-                label: z.ZodString;
-                icon: z.ZodOptional<z.ZodString>;
-                fields: z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>;
-            }, z.core.$loose>>>;
+            fields: z.ZodOptional<z.ZodArray<typeof Field>>;
+            types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>>;
         layout: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -1956,10 +1686,10 @@ export const namedSchemas: {
                 in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 filled: z.ZodOptional<z.ZodBoolean>;
-                all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+                any: z.ZodOptional<z.ZodArray<typeof Condition>>;
             }, z.core.$loose>>;
-            children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+            children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
         }, z.core.$loose>>>;
         queued: z.ZodOptional<z.ZodBoolean>;
         url: z.ZodOptional<z.ZodString>;
@@ -2051,8 +1781,8 @@ export const namedSchemas: {
                 in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 filled: z.ZodOptional<z.ZodBoolean>;
-                all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+                any: z.ZodOptional<z.ZodArray<typeof Condition>>;
             }, z.core.$loose>>;
             options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -2065,13 +1795,8 @@ export const namedSchemas: {
             accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
             from: z.ZodOptional<z.ZodString>;
             display: z.ZodOptional<z.ZodString>;
-            fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            types: z.ZodOptional<z.ZodArray<z.ZodObject<{
-                id: z.ZodString;
-                label: z.ZodString;
-                icon: z.ZodOptional<z.ZodString>;
-                fields: z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>;
-            }, z.core.$loose>>>;
+            fields: z.ZodOptional<z.ZodArray<typeof Field>>;
+            types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>;
         form: z.ZodOptional<z.ZodObject<{
@@ -2092,10 +1817,10 @@ export const namedSchemas: {
                     in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     filled: z.ZodOptional<z.ZodBoolean>;
-                    all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                    any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                    all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+                    any: z.ZodOptional<z.ZodArray<typeof Condition>>;
                 }, z.core.$loose>>;
-                children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
             }, z.core.$loose>>>;
         }, z.core.$loose>>;
         list: z.ZodOptional<z.ZodObject<{
@@ -2140,8 +1865,8 @@ export const namedSchemas: {
             label: z.ZodString;
             icon: z.ZodOptional<z.ZodString>;
             kind: z.ZodDefault<z.ZodEnum<{
-                server: "server";
                 link: "link";
+                server: "server";
                 client: "client";
             }>>;
             scope: z.ZodArray<z.ZodEnum<{
@@ -2225,8 +1950,8 @@ export const namedSchemas: {
                     in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     filled: z.ZodOptional<z.ZodBoolean>;
-                    all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                    any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                    all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+                    any: z.ZodOptional<z.ZodArray<typeof Condition>>;
                 }, z.core.$loose>>;
                 options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                     value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -2239,13 +1964,8 @@ export const namedSchemas: {
                 accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 from: z.ZodOptional<z.ZodString>;
                 display: z.ZodOptional<z.ZodString>;
-                fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                types: z.ZodOptional<z.ZodArray<z.ZodObject<{
-                    id: z.ZodString;
-                    label: z.ZodString;
-                    icon: z.ZodOptional<z.ZodString>;
-                    fields: z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>;
-                }, z.core.$loose>>>;
+                fields: z.ZodOptional<z.ZodArray<typeof Field>>;
+                types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
                 settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             }, z.core.$loose>>>;
             layout: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -2265,10 +1985,10 @@ export const namedSchemas: {
                     in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     filled: z.ZodOptional<z.ZodBoolean>;
-                    all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                    any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                    all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+                    any: z.ZodOptional<z.ZodArray<typeof Condition>>;
                 }, z.core.$loose>>;
-                children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
             }, z.core.$loose>>>;
             queued: z.ZodOptional<z.ZodBoolean>;
             url: z.ZodOptional<z.ZodString>;
@@ -2293,87 +2013,7 @@ export const namedSchemas: {
             id: z.ZodString;
             label: z.ZodString;
             icon: z.ZodOptional<z.ZodString>;
-            fields: z.ZodArray<z.ZodObject<{
-                name: z.ZodString;
-                type: z.ZodString;
-                label: z.ZodOptional<z.ZodString>;
-                help: z.ZodOptional<z.ZodString>;
-                placeholder: z.ZodOptional<z.ZodString>;
-                default: z.ZodOptional<z.ZodUnknown>;
-                localized: z.ZodOptional<z.ZodBoolean>;
-                readOnly: z.ZodOptional<z.ZodBoolean>;
-                createOnly: z.ZodOptional<z.ZodBoolean>;
-                updateOnly: z.ZodOptional<z.ZodBoolean>;
-                rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                    rule: z.ZodLiteral<"required">;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodEnum<{
-                        min: "min";
-                        max: "max";
-                    }>;
-                    value: z.ZodNumber;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodLiteral<"pattern">;
-                    value: z.ZodString;
-                    flags: z.ZodOptional<z.ZodString>;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodEnum<{
-                        email: "email";
-                        url: "url";
-                    }>;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodLiteral<"in">;
-                    value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodLiteral<"accept">;
-                    value: z.ZodArray<z.ZodString>;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodLiteral<"maxSize">;
-                    value: z.ZodNumber;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodEnum<{
-                        before: "before";
-                        after: "after";
-                    }>;
-                    value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
-                        field: z.ZodString;
-                    }, z.core.$loose>]>;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>, z.ZodObject<{
-                    rule: z.ZodString;
-                    message: z.ZodOptional<z.ZodString>;
-                }, z.core.$loose>]>>>;
-                visibleWhen: z.ZodOptional<z.ZodObject<{
-                    field: z.ZodOptional<z.ZodString>;
-                    equals: z.ZodOptional<z.ZodUnknown>;
-                    in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
-                    notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
-                    filled: z.ZodOptional<z.ZodBoolean>;
-                    all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                    any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                }, z.core.$loose>>;
-                options: z.ZodOptional<z.ZodArray<z.ZodObject<{
-                    value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
-                    label: z.ZodString;
-                    description: z.ZodOptional<z.ZodString>;
-                    disabled: z.ZodOptional<z.ZodBoolean>;
-                }, z.core.$loose>>>;
-                multiple: z.ZodOptional<z.ZodBoolean>;
-                resource: z.ZodOptional<z.ZodString>;
-                accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
-                from: z.ZodOptional<z.ZodString>;
-                display: z.ZodOptional<z.ZodString>;
-                fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                types: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
-            }, z.core.$loose>>;
+            fields: z.ZodArray<typeof Field>;
         }, z.core.$loose>>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>;
@@ -2392,8 +2032,8 @@ export const namedSchemas: {
     }, z.core.$loose>;
     Auth: z.ZodObject<{
         mode: z.ZodEnum<{
-            panneau: "panneau";
             external: "external";
+            panneau: "panneau";
         }>;
         loginUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         password: z.ZodOptional<z.ZodBoolean>;
@@ -2416,7 +2056,7 @@ export const namedSchemas: {
         page: z.ZodOptional<z.ZodString>;
         url: z.ZodOptional<z.ZodString>;
         external: z.ZodOptional<z.ZodBoolean>;
-        children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+        children: z.ZodOptional<z.ZodArray<typeof MenuItem>>;
     }, z.core.$loose>;
     Page: z.ZodObject<{
         component: z.ZodString;
@@ -2520,8 +2160,8 @@ export const namedSchemas: {
                     in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                     filled: z.ZodOptional<z.ZodBoolean>;
-                    all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                    any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                    all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+                    any: z.ZodOptional<z.ZodArray<typeof Condition>>;
                 }, z.core.$loose>>;
                 options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                     value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -2534,13 +2174,8 @@ export const namedSchemas: {
                 accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 from: z.ZodOptional<z.ZodString>;
                 display: z.ZodOptional<z.ZodString>;
-                fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                types: z.ZodOptional<z.ZodArray<z.ZodObject<{
-                    id: z.ZodString;
-                    label: z.ZodString;
-                    icon: z.ZodOptional<z.ZodString>;
-                    fields: z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>;
-                }, z.core.$loose>>>;
+                fields: z.ZodOptional<z.ZodArray<typeof Field>>;
+                types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
                 settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             }, z.core.$loose>>;
             form: z.ZodOptional<z.ZodObject<{
@@ -2561,10 +2196,10 @@ export const namedSchemas: {
                         in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                         notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                         filled: z.ZodOptional<z.ZodBoolean>;
-                        all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                        any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                        all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+                        any: z.ZodOptional<z.ZodArray<typeof Condition>>;
                     }, z.core.$loose>>;
-                    children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                    children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
                 }, z.core.$loose>>>;
             }, z.core.$loose>>;
             list: z.ZodOptional<z.ZodObject<{
@@ -2609,8 +2244,8 @@ export const namedSchemas: {
                 label: z.ZodString;
                 icon: z.ZodOptional<z.ZodString>;
                 kind: z.ZodDefault<z.ZodEnum<{
-                    server: "server";
                     link: "link";
+                    server: "server";
                     client: "client";
                 }>>;
                 scope: z.ZodArray<z.ZodEnum<{
@@ -2694,8 +2329,8 @@ export const namedSchemas: {
                         in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                         notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                         filled: z.ZodOptional<z.ZodBoolean>;
-                        all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                        any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                        all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+                        any: z.ZodOptional<z.ZodArray<typeof Condition>>;
                     }, z.core.$loose>>;
                     options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                         value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -2708,13 +2343,8 @@ export const namedSchemas: {
                     accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
                     from: z.ZodOptional<z.ZodString>;
                     display: z.ZodOptional<z.ZodString>;
-                    fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                    types: z.ZodOptional<z.ZodArray<z.ZodObject<{
-                        id: z.ZodString;
-                        label: z.ZodString;
-                        icon: z.ZodOptional<z.ZodString>;
-                        fields: z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>;
-                    }, z.core.$loose>>>;
+                    fields: z.ZodOptional<z.ZodArray<typeof Field>>;
+                    types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
                     settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
                 }, z.core.$loose>>>;
                 layout: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -2734,10 +2364,10 @@ export const namedSchemas: {
                         in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                         notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                         filled: z.ZodOptional<z.ZodBoolean>;
-                        all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                        any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                        all: z.ZodOptional<z.ZodArray<typeof Condition>>;
+                        any: z.ZodOptional<z.ZodArray<typeof Condition>>;
                     }, z.core.$loose>>;
-                    children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                    children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
                 }, z.core.$loose>>>;
                 queued: z.ZodOptional<z.ZodBoolean>;
                 url: z.ZodOptional<z.ZodString>;
@@ -2762,87 +2392,7 @@ export const namedSchemas: {
                 id: z.ZodString;
                 label: z.ZodString;
                 icon: z.ZodOptional<z.ZodString>;
-                fields: z.ZodArray<z.ZodObject<{
-                    name: z.ZodString;
-                    type: z.ZodString;
-                    label: z.ZodOptional<z.ZodString>;
-                    help: z.ZodOptional<z.ZodString>;
-                    placeholder: z.ZodOptional<z.ZodString>;
-                    default: z.ZodOptional<z.ZodUnknown>;
-                    localized: z.ZodOptional<z.ZodBoolean>;
-                    readOnly: z.ZodOptional<z.ZodBoolean>;
-                    createOnly: z.ZodOptional<z.ZodBoolean>;
-                    updateOnly: z.ZodOptional<z.ZodBoolean>;
-                    rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                        rule: z.ZodLiteral<"required">;
-                        message: z.ZodOptional<z.ZodString>;
-                    }, z.core.$loose>, z.ZodObject<{
-                        rule: z.ZodEnum<{
-                            min: "min";
-                            max: "max";
-                        }>;
-                        value: z.ZodNumber;
-                        message: z.ZodOptional<z.ZodString>;
-                    }, z.core.$loose>, z.ZodObject<{
-                        rule: z.ZodLiteral<"pattern">;
-                        value: z.ZodString;
-                        flags: z.ZodOptional<z.ZodString>;
-                        message: z.ZodOptional<z.ZodString>;
-                    }, z.core.$loose>, z.ZodObject<{
-                        rule: z.ZodEnum<{
-                            email: "email";
-                            url: "url";
-                        }>;
-                        message: z.ZodOptional<z.ZodString>;
-                    }, z.core.$loose>, z.ZodObject<{
-                        rule: z.ZodLiteral<"in">;
-                        value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
-                        message: z.ZodOptional<z.ZodString>;
-                    }, z.core.$loose>, z.ZodObject<{
-                        rule: z.ZodLiteral<"accept">;
-                        value: z.ZodArray<z.ZodString>;
-                        message: z.ZodOptional<z.ZodString>;
-                    }, z.core.$loose>, z.ZodObject<{
-                        rule: z.ZodLiteral<"maxSize">;
-                        value: z.ZodNumber;
-                        message: z.ZodOptional<z.ZodString>;
-                    }, z.core.$loose>, z.ZodObject<{
-                        rule: z.ZodEnum<{
-                            before: "before";
-                            after: "after";
-                        }>;
-                        value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
-                            field: z.ZodString;
-                        }, z.core.$loose>]>;
-                        message: z.ZodOptional<z.ZodString>;
-                    }, z.core.$loose>, z.ZodObject<{
-                        rule: z.ZodString;
-                        message: z.ZodOptional<z.ZodString>;
-                    }, z.core.$loose>]>>>;
-                    visibleWhen: z.ZodOptional<z.ZodObject<{
-                        field: z.ZodOptional<z.ZodString>;
-                        equals: z.ZodOptional<z.ZodUnknown>;
-                        in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
-                        notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
-                        filled: z.ZodOptional<z.ZodBoolean>;
-                        all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                        any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                    }, z.core.$loose>>;
-                    options: z.ZodOptional<z.ZodArray<z.ZodObject<{
-                        value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
-                        label: z.ZodString;
-                        description: z.ZodOptional<z.ZodString>;
-                        disabled: z.ZodOptional<z.ZodBoolean>;
-                    }, z.core.$loose>>>;
-                    multiple: z.ZodOptional<z.ZodBoolean>;
-                    resource: z.ZodOptional<z.ZodString>;
-                    accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
-                    from: z.ZodOptional<z.ZodString>;
-                    display: z.ZodOptional<z.ZodString>;
-                    fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                    types: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                    settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
-                }, z.core.$loose>>;
+                fields: z.ZodArray<typeof Field>;
             }, z.core.$loose>>>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>;
@@ -2860,13 +2410,13 @@ export const namedSchemas: {
             page: z.ZodOptional<z.ZodString>;
             url: z.ZodOptional<z.ZodString>;
             external: z.ZodOptional<z.ZodBoolean>;
-            children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+            children: z.ZodOptional<z.ZodArray<typeof MenuItem>>;
         }, z.core.$loose>>>>;
         routes: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
         auth: z.ZodOptional<z.ZodObject<{
             mode: z.ZodEnum<{
-                panneau: "panneau";
                 external: "external";
+                panneau: "panneau";
             }>;
             loginUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
             password: z.ZodOptional<z.ZodBoolean>;
@@ -3416,8 +2966,8 @@ export const Resource: z.ZodObject<{
             in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
             notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
             filled: z.ZodOptional<z.ZodBoolean>;
-            all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+            all: z.ZodOptional<z.ZodArray<Condition>>;
+            any: z.ZodOptional<z.ZodArray<Condition>>;
         }, z.core.$loose>>;
         options: z.ZodOptional<z.ZodArray<z.ZodObject<{
             value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -3430,13 +2980,8 @@ export const Resource: z.ZodObject<{
         accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
         from: z.ZodOptional<z.ZodString>;
         display: z.ZodOptional<z.ZodString>;
-        fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-        types: z.ZodOptional<z.ZodArray<z.ZodObject<{
-            id: z.ZodString;
-            label: z.ZodString;
-            icon: z.ZodOptional<z.ZodString>;
-            fields: z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>;
-        }, z.core.$loose>>>;
+        fields: z.ZodOptional<z.ZodArray<typeof Field>>;
+        types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>>;
     form: z.ZodOptional<z.ZodObject<{
@@ -3457,10 +3002,10 @@ export const Resource: z.ZodObject<{
                 in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 filled: z.ZodOptional<z.ZodBoolean>;
-                all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                all: z.ZodOptional<z.ZodArray<Condition>>;
+                any: z.ZodOptional<z.ZodArray<Condition>>;
             }, z.core.$loose>>;
-            children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+            children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
         }, z.core.$loose>>>;
     }, z.core.$loose>>;
     list: z.ZodOptional<z.ZodObject<{
@@ -3505,8 +3050,8 @@ export const Resource: z.ZodObject<{
         label: z.ZodString;
         icon: z.ZodOptional<z.ZodString>;
         kind: z.ZodDefault<z.ZodEnum<{
-            server: "server";
             link: "link";
+            server: "server";
             client: "client";
         }>>;
         scope: z.ZodArray<z.ZodEnum<{
@@ -3590,8 +3135,8 @@ export const Resource: z.ZodObject<{
                 in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 filled: z.ZodOptional<z.ZodBoolean>;
-                all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                all: z.ZodOptional<z.ZodArray<Condition>>;
+                any: z.ZodOptional<z.ZodArray<Condition>>;
             }, z.core.$loose>>;
             options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -3604,13 +3149,8 @@ export const Resource: z.ZodObject<{
             accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
             from: z.ZodOptional<z.ZodString>;
             display: z.ZodOptional<z.ZodString>;
-            fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            types: z.ZodOptional<z.ZodArray<z.ZodObject<{
-                id: z.ZodString;
-                label: z.ZodString;
-                icon: z.ZodOptional<z.ZodString>;
-                fields: z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>;
-            }, z.core.$loose>>>;
+            fields: z.ZodOptional<z.ZodArray<typeof Field>>;
+            types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>>;
         layout: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -3630,10 +3170,10 @@ export const Resource: z.ZodObject<{
                 in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
                 filled: z.ZodOptional<z.ZodBoolean>;
-                all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+                all: z.ZodOptional<z.ZodArray<Condition>>;
+                any: z.ZodOptional<z.ZodArray<Condition>>;
             }, z.core.$loose>>;
-            children: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
+            children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
         }, z.core.$loose>>>;
         queued: z.ZodOptional<z.ZodBoolean>;
         url: z.ZodOptional<z.ZodString>;
@@ -3658,87 +3198,7 @@ export const Resource: z.ZodObject<{
         id: z.ZodString;
         label: z.ZodString;
         icon: z.ZodOptional<z.ZodString>;
-        fields: z.ZodArray<z.ZodObject<{
-            name: z.ZodString;
-            type: z.ZodString;
-            label: z.ZodOptional<z.ZodString>;
-            help: z.ZodOptional<z.ZodString>;
-            placeholder: z.ZodOptional<z.ZodString>;
-            default: z.ZodOptional<z.ZodUnknown>;
-            localized: z.ZodOptional<z.ZodBoolean>;
-            readOnly: z.ZodOptional<z.ZodBoolean>;
-            createOnly: z.ZodOptional<z.ZodBoolean>;
-            updateOnly: z.ZodOptional<z.ZodBoolean>;
-            rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                rule: z.ZodLiteral<"required">;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodEnum<{
-                    min: "min";
-                    max: "max";
-                }>;
-                value: z.ZodNumber;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodLiteral<"pattern">;
-                value: z.ZodString;
-                flags: z.ZodOptional<z.ZodString>;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodEnum<{
-                    email: "email";
-                    url: "url";
-                }>;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodLiteral<"in">;
-                value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodLiteral<"accept">;
-                value: z.ZodArray<z.ZodString>;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodLiteral<"maxSize">;
-                value: z.ZodNumber;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodEnum<{
-                    before: "before";
-                    after: "after";
-                }>;
-                value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
-                    field: z.ZodString;
-                }, z.core.$loose>]>;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>, z.ZodObject<{
-                rule: z.ZodString;
-                message: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>]>>>;
-            visibleWhen: z.ZodOptional<z.ZodObject<{
-                field: z.ZodOptional<z.ZodString>;
-                equals: z.ZodOptional<z.ZodUnknown>;
-                in: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
-                notIn: z.ZodOptional<z.ZodArray<z.ZodUnknown>>;
-                filled: z.ZodOptional<z.ZodBoolean>;
-                all: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-                any: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            }, z.core.$loose>>;
-            options: z.ZodOptional<z.ZodArray<z.ZodObject<{
-                value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
-                label: z.ZodString;
-                description: z.ZodOptional<z.ZodString>;
-                disabled: z.ZodOptional<z.ZodBoolean>;
-            }, z.core.$loose>>>;
-            multiple: z.ZodOptional<z.ZodBoolean>;
-            resource: z.ZodOptional<z.ZodString>;
-            accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
-            from: z.ZodOptional<z.ZodString>;
-            display: z.ZodOptional<z.ZodString>;
-            fields: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            types: z.ZodOptional<z.ZodArray<z.ZodObject</*elided*/ any, z.core.$loose>>>;
-            settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
-        }, z.core.$loose>>;
+        fields: z.ZodArray<typeof Field>;
     }, z.core.$loose>>>;
     settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
 }, z.core.$loose>;

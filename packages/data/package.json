@@ -53,5 +53,8 @@
         "react": {
             "optional": true
         }
+    },
+    "devDependencies": {
+        "@panneau/core": "5.0.0-alpha.0"
     }
 }

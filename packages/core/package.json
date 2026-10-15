@@ -1,0 +1,38 @@
+{
+    "name": "@panneau/core",
+    "version": "5.0.0-alpha.0",
+    "description": "The engine of Panneau: plugin registry, definition to forms and lists, form and list state, with React hooks. No UI.",
+    "type": "module",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git",
+        "directory": "packages/core"
+    },
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "@panneau/source": "./src/index.ts",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "vite build && tsc -p tsconfig.build.json",
+        "typecheck": "tsc --noEmit",
+        "api": "tsc -p tsconfig.build.json && node ../../scripts/api-report.js"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "peerDependencies": {
+        "react": "^19.2.0"
+    },
+    "dependencies": {
+        "@panneau/protocol": "5.0.0-alpha.0"
+    }
+}
