@@ -1,11 +1,11 @@
-import { screen } from '@testing-library/react';
+import { act, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Controlled, renderField } from '../__fixtures__/render';
 import { DefinitionField } from '../shared/DefinitionField';
 import type { RelationReference, RelationSource } from '../shared/relation';
-import { RelationField } from './RelationField';
+import { RelationField, useRelationSearch } from './RelationField';
 
 const AUTHORS: RelationReference[] = [
     { id: '1', label: 'Ada Lovelace' },
@@ -35,14 +35,8 @@ describe('RelationField', () => {
         await userEvent.type(screen.getByRole('combobox', { name: 'Author' }), 'grace');
         await userEvent.click(await screen.findByRole('option', { name: 'Grace Hopper' }));
         expect(onChange).toHaveBeenCalledWith({ id: '2', label: 'Grace Hopper' });
-        // The search is debounced while typing: on a slow machine, the option can come from
-        // the search of a prefix (`gra`) before the whole text is searched.
-        expect(
-            search.mock.calls.some(
-                ([resource, query]) =>
-                    resource === 'authors' && query !== '' && 'grace'.startsWith(query),
-            ),
-        ).toBe(true);
+        // Which searches ran depends on timing (see the tests of `useRelationSearch`).
+        expect(search).toHaveBeenCalledWith('authors', expect.any(String), expect.anything());
     });
 
     it('shows the label of the selected reference, and clears it', async () => {
@@ -121,5 +115,67 @@ describe('RelationField', () => {
         expect(screen.getByText('7')).toBeInTheDocument();
         expect(screen.getByText('Grace Hopper')).toBeInTheDocument();
         expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+    });
+});
+
+describe('useRelationSearch', () => {
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    it('searches once typing pauses, with the latest text', async () => {
+        vi.useFakeTimers();
+        const { source, search } = createSource();
+        const { result, rerender } = renderHook(
+            ({ query }) => useRelationSearch(source, 'authors', query),
+            { initialProps: { query: 'g' } },
+        );
+        rerender({ query: 'gr' });
+        rerender({ query: 'grace' });
+        expect(result.current.isLoading).toBe(true);
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(250);
+        });
+        expect(search).toHaveBeenCalledTimes(1);
+        expect(search).toHaveBeenCalledWith('authors', 'grace', expect.anything());
+        expect(result.current).toEqual({
+            items: [{ id: '2', label: 'Grace Hopper' }],
+            isLoading: false,
+        });
+    });
+
+    it('ignores the results of a search that a newer one replaced', async () => {
+        vi.useFakeTimers();
+        let resolveFirst: (items: RelationReference[]) => void = () => undefined;
+        const search = vi
+            .fn()
+            .mockImplementationOnce(
+                () =>
+                    new Promise<RelationReference[]>((resolve) => {
+                        resolveFirst = resolve;
+                    }),
+            )
+            .mockResolvedValueOnce([{ id: '3', label: 'Margaret Hamilton' }]);
+        const source: RelationSource = { search };
+        const { result, rerender } = renderHook(
+            ({ query }) => useRelationSearch(source, 'authors', query),
+            { initialProps: { query: 'a' } },
+        );
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(250);
+        });
+        rerender({ query: 'mar' });
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(250);
+        });
+        await act(async () => {
+            resolveFirst([{ id: '1', label: 'Ada Lovelace' }]);
+        });
+        expect(result.current.items).toEqual([{ id: '3', label: 'Margaret Hamilton' }]);
+    });
+
+    it('does nothing without a source', () => {
+        const { result } = renderHook(() => useRelationSearch(null, 'authors', 'a'));
+        expect(result.current.items).toEqual([]);
     });
 });
