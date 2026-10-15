@@ -45,6 +45,7 @@ export * from './action';
 export * from './resource';
 export * from './definition';
 export * from './api';
+export * from './boot';
 
 /** The named schemas of the protocol, as they appear in the generated JSON Schema and OpenAPI files. */
 export const namedSchemas = {

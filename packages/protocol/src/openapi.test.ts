@@ -2,7 +2,11 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-import { createDefinitionJsonSchema, createOpenApiDocument } from './openapi';
+import {
+    createBootConfigJsonSchema,
+    createDefinitionJsonSchema,
+    createOpenApiDocument,
+} from './openapi';
 
 function collectRefs(value: unknown, refs: Set<string> = new Set()): Set<string> {
     if (Array.isArray(value)) {
@@ -61,5 +65,6 @@ describe('generated files', () => {
     it('are up to date (run `npm run build` in packages/protocol)', () => {
         expect(read('definition.schema.json')).toEqual(createDefinitionJsonSchema());
         expect(read('openapi.json')).toEqual(createOpenApiDocument());
+        expect(read('boot.schema.json')).toEqual(createBootConfigJsonSchema());
     });
 });

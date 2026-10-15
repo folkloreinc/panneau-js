@@ -2,7 +2,11 @@
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-import { createDefinitionJsonSchema, createOpenApiDocument } from '../dist/index.js';
+import {
+    createBootConfigJsonSchema,
+    createDefinitionJsonSchema,
+    createOpenApiDocument,
+} from '../dist/index.js';
 
 const directory = resolve(import.meta.dirname, '../schema');
 const write = (name, value) =>
@@ -10,3 +14,4 @@ const write = (name, value) =>
 
 write('definition.schema.json', createDefinitionJsonSchema());
 write('openapi.json', createOpenApiDocument());
+write('boot.schema.json', createBootConfigJsonSchema());

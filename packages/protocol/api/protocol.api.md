@@ -409,6 +409,25 @@ export const BlockType: z.ZodObject<{
 export type BlockType = z.infer<typeof BlockType>;
 
 // @public
+export const BOOT_CONFIG_ELEMENT_ID = "panneau-boot";
+
+// @public (undocumented)
+export const BootConfig: z.ZodObject<{
+    protocol: z.ZodLiteral<1>;
+    apiBaseUrl: z.ZodString;
+    basePath: z.ZodString;
+    locale: z.ZodString;
+    definition: z.ZodOptional<typeof Definition>;
+    loginUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type BootConfig = z.infer<typeof BootConfig>;
+
+// @public
+export type BootConfigInput = z.input<typeof BootConfig>;
+
+// @public
 export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", "restore", "export", "import"];
 
 // @public
@@ -479,6 +498,9 @@ export type Condition = z.infer<typeof Condition>;
 
 // Warning: (ae-forgotten-export) The symbol "JsonObject" needs to be exported by the entry point index.d.ts
 //
+// @public
+export function createBootConfigJsonSchema(): JsonObject;
+
 // @public
 export function createComponentSchemas(): Record<string, JsonObject>;
 
@@ -3370,6 +3392,9 @@ export type User = z.infer<typeof User>;
 
 // @public
 export function validate<T extends z.ZodType>(schema: T, input: unknown): ValidationResult<z.infer<T>>;
+
+// @public
+export function validateBootConfig(input: unknown): ValidationResult<BootConfig>;
 
 // @public
 export function validateDefinition(input: unknown): ValidationResult<Definition>;
