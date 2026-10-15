@@ -41,7 +41,7 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 
 ## From a definition
 
-Each subpath also exports the **registry entry** of its type (`TextFieldEntry`…): a component that renders a protocol `Field`. `@panneau/fields` exports them all as `builtInFields`, and as `fieldsPlugin` for `@panneau/core`.
+Each subpath also exports the **registry entry** of its type (`TextFieldEntry`…): a component that renders a protocol `Field`. `@panneau/fields` exports them all as `builtInFields`, and as `fieldsPlugin` for `@panneau/core`. `DefinitionField` uses them without a provider; `FieldsProvider` adds or overrides entries.
 
 ```tsx
 import {

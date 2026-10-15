@@ -1,9 +1,11 @@
 import { type Field, evaluateCondition } from '@panneau/protocol';
 
-// Localized values render nested fields, which render through `DefinitionField`: the modules
-// import each other, which is fine since they only use each other while rendering.
+// Groups, repeaters and localized values render nested fields, which render through
+// `DefinitionField`: the modules import each other, which is fine since they only use each other
+// while rendering.
 import { LocalizedFieldEntry } from '../localized/LocalizedField';
 import { MissingFieldEntry } from '../missing/MissingField';
+import { builtInFields } from './builtIn';
 import { getParentPath, useFieldsContext } from './context';
 import type { FieldEntryProps } from './types';
 
@@ -76,9 +78,9 @@ export function NestedField({
 }
 
 /**
- * Renders a field of the definition with the entry of its type, from the fields context. A
- * localized field renders an input per locale. A type without an entry renders a placeholder
- * that names the missing plugin.
+ * Renders a field of the definition with the entry of its type: from the fields context, or a
+ * built-in one. A localized field renders an input per locale. A type without an entry renders a
+ * placeholder that names the missing plugin.
  */
 export function DefinitionField(props: FieldEntryProps) {
     const { components } = useFieldsContext();
@@ -86,6 +88,6 @@ export function DefinitionField(props: FieldEntryProps) {
     if (field.localized === true) {
         return <LocalizedFieldEntry {...props} />;
     }
-    const Entry = components[field.type] ?? MissingFieldEntry;
+    const Entry = components[field.type] ?? builtInFields[field.type] ?? MissingFieldEntry;
     return <Entry {...props} />;
 }

@@ -32,7 +32,7 @@ export interface FieldBindingProps {
 export type FieldBinding = ComponentType<FieldBindingProps>;
 
 export interface FieldsContextValue {
-    /** Registry entries, by field type. */
+    /** Registry entries, by field type, over the built-in ones. */
     components: Readonly<Record<string, FieldEntry>>;
     /** Locales of localized values, in order. */
     locales: readonly string[];

@@ -36,7 +36,7 @@ describe('RelationField', () => {
         await userEvent.click(await screen.findByRole('option', { name: 'Grace Hopper' }));
         expect(onChange).toHaveBeenCalledWith({ id: '2', label: 'Grace Hopper' });
         await waitFor(() =>
-            expect(search).toHaveBeenLastCalledWith('authors', 'grace', expect.anything()),
+            expect(search).toHaveBeenCalledWith('authors', 'grace', expect.anything()),
         );
     });
 

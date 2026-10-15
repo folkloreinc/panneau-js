@@ -67,3 +67,13 @@ describe('GroupField', () => {
         expect(screen.getByRole('textbox', { name: 'Share title' })).toHaveAttribute('readonly');
     });
 });
+
+describe('GroupField without a provider', () => {
+    it('renders its fields with the built-in entries', async () => {
+        const { render, screen: view } = await import('@testing-library/react');
+        render(
+            <GroupField label="Sharing" name="sharing" fields={FIELDS} value={{ title: 'A' }} />,
+        );
+        expect(view.getByRole('textbox', { name: 'Share title' })).toHaveValue('A');
+    });
+});
