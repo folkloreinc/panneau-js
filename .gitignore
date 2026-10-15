@@ -54,3 +54,4 @@ node_modules
 /notes
 
 .claude
+/storybook-static

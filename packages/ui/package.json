@@ -1,0 +1,48 @@
+{
+    "name": "@panneau/ui",
+    "version": "5.0.0-alpha.0",
+    "description": "Design tokens, themes and accessible primitives of Panneau, built on React Aria Components.",
+    "type": "module",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git",
+        "directory": "packages/ui"
+    },
+    "sideEffects": [
+        "*.css"
+    ],
+    "exports": {
+        ".": {
+            "@panneau/source": "./src/index.ts",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./locales": {
+            "@panneau/source": "./src/locales/index.ts",
+            "types": "./dist/locales/index.d.ts",
+            "default": "./dist/locales/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "vite build && tsc -p tsconfig.build.json",
+        "typecheck": "tsc --noEmit",
+        "api": "tsc -p tsconfig.build.json && node ../../scripts/api-report.js"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "peerDependencies": {
+        "react": "^19.2.0",
+        "react-dom": "^19.2.0",
+        "react-aria-components": "^1.22.0",
+        "react-intl": "^12.0.0"
+    },
+    "dependencies": {
+        "lucide-react": "^1.57.0"
+    }
+}

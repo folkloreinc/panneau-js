@@ -1,0 +1,79 @@
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+    min-width: 0;
+}
+
+.checkbox {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--panneau-space-2);
+    min-height: 1.5rem;
+    font-size: var(--panneau-font-size-md);
+    color: var(--panneau-color-text);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.checkbox[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.box {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin-top: 0.125rem;
+    color: var(--panneau-color-accent-text);
+    background-color: var(--panneau-color-surface);
+    border: var(--panneau-border-width) solid var(--panneau-color-border-control);
+    border-radius: var(--panneau-radius-sm);
+    transition:
+        background-color var(--panneau-duration),
+        border-color var(--panneau-duration);
+}
+
+.checkbox[data-hovered] .box {
+    border-color: var(--panneau-color-text-muted);
+}
+
+.checkbox[data-selected] .box,
+.checkbox[data-indeterminate] .box {
+    background-color: var(--panneau-color-accent);
+    border-color: var(--panneau-color-accent);
+}
+
+.checkbox[data-invalid] .box {
+    border-color: var(--panneau-color-danger);
+}
+
+.checkbox[data-focus-visible] .box {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.checkbox[data-readonly] {
+    cursor: default;
+}
+
+.label {
+    line-height: var(--panneau-line-height);
+    overflow-wrap: anywhere;
+}
+
+/* Touch screens: a taller row, so the whole label is an easy target. */
+@media (pointer: coarse) {
+    .checkbox {
+        min-height: 2.75rem;
+        align-items: center;
+    }
+
+    .box {
+        margin-top: 0;
+    }
+}

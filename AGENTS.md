@@ -39,6 +39,8 @@ Other branches (`master`, `v2.0`, `v0.x`, `feature/*`) are not maintained.
 - TypeScript 6, `strict` with `noUncheckedIndexedAccess` (`tsconfig.base.json`).
 - Builds use Vite in library mode: ESM only, one file per module, with `.d.ts` files from `tsc`. Use the shared config in `config/vite.package.ts`.
 - Tests use Vitest, plus Testing Library for components (`environment: 'jsdom'`). Test files sit next to the code: `*.test.ts(x)`.
+- Every component has stories next to it (`*.stories.tsx`), with play functions for its interactions. Storybook 10 runs them as tests in Chromium through its Vitest addon, with axe checks: an accessibility violation fails CI.
+- Components style themselves with CSS Modules that read the `--panneau-*` tokens ([decision 0020](docs/decisions/0020-default-theme-and-icons.md)), and render inside `PanneauRoot`. Icons come from Lucide only.
 - Lint with ESLint (flat config, typescript-eslint `strict`, React Hooks). Format with Prettier.
 
 ## Commands
@@ -52,6 +54,8 @@ npm run build       # build every package
 npm run api         # update the API reports (packages/*/api/), after a public API change
 npm run api:check   # fail if an API report is out of date
 npm run format      # Prettier
+npm run storybook   # Storybook, on http://localhost:6006
+npm run test:storybook  # every story as a test in Chromium: play functions and axe checks
 npx changeset       # describe a change for the changelog
 
 npm run create-package -- <name> [--react]   # create packages/<name> from the template

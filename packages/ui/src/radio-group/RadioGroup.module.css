@@ -1,0 +1,83 @@
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+}
+
+.horizontal .options {
+    flex-flow: row wrap;
+    gap: var(--panneau-space-1) var(--panneau-space-4);
+}
+
+.radio {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--panneau-space-2);
+    min-height: 1.5rem;
+    font-size: var(--panneau-font-size-md);
+    color: var(--panneau-color-text);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.radio[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.radio[data-readonly] {
+    cursor: default;
+}
+
+.circle {
+    flex: 0 0 auto;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin-top: 0.125rem;
+    background-color: var(--panneau-color-surface);
+    border: var(--panneau-border-width) solid var(--panneau-color-border-control);
+    border-radius: var(--panneau-radius-full);
+    transition:
+        border-color var(--panneau-duration),
+        border-width var(--panneau-duration);
+}
+
+.radio[data-hovered] .circle {
+    border-color: var(--panneau-color-text-muted);
+}
+
+.radio[data-selected] .circle {
+    border-color: var(--panneau-color-accent);
+    border-width: 0.3125rem;
+}
+
+.radio[data-invalid] .circle {
+    border-color: var(--panneau-color-danger);
+}
+
+.radio[data-focus-visible] .circle {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.description {
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+}
+
+@media (pointer: coarse) {
+    .radio {
+        min-height: 2.75rem;
+        align-items: center;
+    }
+
+    .circle {
+        margin-top: 0;
+    }
+}

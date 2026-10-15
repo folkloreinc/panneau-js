@@ -2,7 +2,9 @@
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "noEmit": true,
-        "types": ["node"]
+        "types": ["node"],
+        "customConditions": ["@panneau/source"],
+        "allowImportingTsExtensions": true
     },
-    "include": ["*.ts", "config/**/*.ts"]
+    "include": ["*.ts", "config/**/*.ts", ".storybook/**/*.ts", ".storybook/**/*.tsx"]
 }
