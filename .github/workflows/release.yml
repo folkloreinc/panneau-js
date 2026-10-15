@@ -1,0 +1,42 @@
+name: Release
+
+# Run by a maintainer from the Actions tab. With pending changesets, it opens (or updates) the
+# "Version packages" pull request. Once that pull request is merged, running it again publishes
+# the new versions to npm and tags them.
+on:
+    workflow_dispatch:
+
+concurrency:
+    group: ${{ github.workflow }}
+
+permissions:
+    contents: write
+    pull-requests: write
+    id-token: write
+
+jobs:
+    release:
+        name: Version or publish
+        if: github.ref == 'refs/heads/v5.x'
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v5
+
+            - uses: actions/setup-node@v5
+              with:
+                  node-version-file: .nvmrc
+                  cache: npm
+                  registry-url: https://registry.npmjs.org
+
+            - name: Install dependencies
+              run: npm ci
+
+            - uses: changesets/action@v1
+              with:
+                  version: npm run version-packages
+                  publish: npm run release
+                  title: Version packages
+                  commit: Version packages
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  NPM_CONFIG_PROVENANCE: true

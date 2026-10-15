@@ -1,0 +1,11 @@
+{
+    "$schema": "https://unpkg.com/@changesets/config@4.0.1/schema.json",
+    "changelog": "@changesets/cli/changelog",
+    "commit": false,
+    "fixed": [["@panneau/*"]],
+    "linked": [],
+    "access": "public",
+    "baseBranch": "v5.x",
+    "updateInternalDependencies": "patch",
+    "ignore": []
+}

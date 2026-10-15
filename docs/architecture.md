@@ -168,3 +168,10 @@ Plugins are passed to the app (`<Panneau plugins={[...]}>`) or to `PanneauProvid
     - TanStack Query v5 as a peer dependency, declared explicitly;
     - routing stays `wouter`, behind a small router interface, so the app can run inside a host router.
 - **Tests:** Vitest and Testing Library for units; Storybook 10 with interaction and a11y tests; Playwright against the Laravel reference app. See [decisions/0014](decisions/0014-testing.md).
+- **Build and tooling:**
+    - TypeScript 6, until typescript-eslint supports TypeScript 7.
+    - Vite in library mode (one file per module, ESM), with the React Compiler through Babel.
+    - ESLint with typescript-eslint `strict`, and Prettier.
+    - Changesets with one shared version.
+
+    The shared build config is `config/vite.package.ts`. See [decisions/0018](decisions/0018-new-packages-next-to-v4.md) for how v5 packages live next to the v4 code.
