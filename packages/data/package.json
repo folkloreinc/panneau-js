@@ -1,0 +1,57 @@
+{
+    "name": "@panneau/data",
+    "version": "5.0.0-alpha.0",
+    "description": "The data layer of Panneau: the DataAdapter interface, the REST adapter of the protocol, its Laravel preset and TanStack Query hooks.",
+    "type": "module",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git",
+        "directory": "packages/data"
+    },
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "@panneau/source": "./src/index.ts",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./laravel": {
+            "@panneau/source": "./src/laravel/index.ts",
+            "types": "./dist/laravel/index.d.ts",
+            "default": "./dist/laravel/index.js"
+        },
+        "./query": {
+            "@panneau/source": "./src/query/index.ts",
+            "types": "./dist/query/index.d.ts",
+            "default": "./dist/query/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "vite build && tsc -p tsconfig.build.json",
+        "typecheck": "tsc --noEmit",
+        "api": "tsc -p tsconfig.build.json && node ../../scripts/api-report.js"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "peerDependencies": {
+        "@tanstack/react-query": "^5.0.0",
+        "react": "^19.2.0"
+    },
+    "dependencies": {
+        "@panneau/protocol": "5.0.0-alpha.0"
+    },
+    "peerDependenciesMeta": {
+        "@tanstack/react-query": {
+            "optional": true
+        },
+        "react": {
+            "optional": true
+        }
+    }
+}

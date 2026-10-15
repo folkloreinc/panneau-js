@@ -2,7 +2,7 @@ import babel from '@rolldown/plugin-babel';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import type { UserConfig } from 'vite';
+import { type UserConfig, defaultClientConditions, defaultServerConditions } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 interface PackageConfigOptions {
@@ -15,6 +15,12 @@ interface PackageConfigOptions {
     /** Test environment: `node` (default) or `jsdom` for components. */
     environment?: 'node' | 'jsdom';
 }
+
+/**
+ * Export condition that points a workspace package to its sources, so that tests and typechecks
+ * use the other packages without building them first. Packages list it first in their `exports`.
+ */
+export const SOURCE_CONDITION = '@panneau/source';
 
 interface PackageJson {
     dependencies?: Record<string, string>;
@@ -40,6 +46,9 @@ export function definePackageConfig({
     return defineConfig({
         root,
         plugins: withReact ? [react(), babel({ presets: [reactCompilerPreset()] })] : [],
+        // Dependencies stay external in builds, so this only applies to tests.
+        resolve: { conditions: [SOURCE_CONDITION, ...defaultClientConditions] },
+        ssr: { resolve: { conditions: [SOURCE_CONDITION, ...defaultServerConditions] } },
         build: {
             outDir: 'dist',
             emptyOutDir: true,

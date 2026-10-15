@@ -65,8 +65,11 @@ const packageJson = {
     },
     // Component styles are CSS files that consumers must not tree-shake away.
     sideEffects: react ? ['*.css'] : false,
+    // `@panneau/source` points the other workspace packages to the sources, for tests and
+    // typechecks (see docs/packages.md). Published consumers use `types` and `default`.
     exports: {
         '.': {
+            '@panneau/source': './src/index.ts',
             types: './dist/index.d.ts',
             default: './dist/index.js',
         },
@@ -88,6 +91,7 @@ const tsconfig = {
     extends: `${toRoot}/tsconfig.base.json`,
     compilerOptions: {
         types: react ? ['node', '@testing-library/jest-dom/vitest'] : ['node'],
+        customConditions: ['@panneau/source'],
         allowImportingTsExtensions: true,
         noEmit: true,
     },

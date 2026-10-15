@@ -12,14 +12,17 @@
     "sideEffects": false,
     "exports": {
         ".": {
+            "@panneau/source": "./src/index.ts",
             "types": "./dist/index.d.ts",
             "default": "./dist/index.js"
         },
         "./mock": {
+            "@panneau/source": "./src/mock/index.ts",
             "types": "./dist/mock/index.d.ts",
             "default": "./dist/mock/index.js"
         },
         "./conformance": {
+            "@panneau/source": "./src/conformance/index.ts",
             "types": "./dist/conformance/index.d.ts",
             "default": "./dist/conformance/index.js"
         },

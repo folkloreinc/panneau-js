@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "types": ["node"],
+        "customConditions": ["@panneau/source"],
         "allowImportingTsExtensions": true,
         "noEmit": true
     },

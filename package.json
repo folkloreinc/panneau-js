@@ -15,10 +15,10 @@
         "packages/*"
     ],
     "scripts": {
-        "build": "npm run build --workspaces --if-present",
-        "typecheck": "npm run typecheck --workspaces --if-present",
-        "api": "npm run api --workspaces --if-present",
-        "api:check": "npm run api --workspaces --if-present -- --check",
+        "build": "node scripts/workspaces.js build",
+        "typecheck": "node scripts/workspaces.js typecheck",
+        "api": "node scripts/workspaces.js api",
+        "api:check": "node scripts/workspaces.js api -- --check",
         "create-package": "node scripts/create-package.js",
         "test:create-package": "node scripts/check-create-package.js",
         "lint": "eslint .",
@@ -36,6 +36,7 @@
         "@eslint/js": "^10.0.1",
         "@microsoft/api-extractor": "^7.59.4",
         "@rolldown/plugin-babel": "^0.2.4",
+        "@tanstack/react-query": "^5.104.3",
         "@testing-library/jest-dom": "^7.0.1",
         "@testing-library/react": "^16.3.3",
         "@testing-library/user-event": "^14.6.8",
