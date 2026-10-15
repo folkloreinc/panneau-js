@@ -1,0 +1,40 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+    "mainEntryPointFilePath": "<projectFolder>/dist/index.d.ts",
+    "newlineKind": "lf",
+    "compiler": {
+        "overrideTsconfig": {
+            "compilerOptions": {
+                "target": "ES2022",
+                "lib": ["ES2023", "DOM", "DOM.Iterable"],
+                "module": "ESNext",
+                "moduleResolution": "Bundler",
+                "jsx": "react-jsx",
+                "strict": true,
+                "types": []
+            }
+        },
+        "skipLibCheck": false
+    },
+    "apiReport": {
+        "enabled": true,
+        "reportFolder": "<projectFolder>/api/",
+        "reportTempFolder": "<projectFolder>/temp/"
+    },
+    "docModel": { "enabled": false },
+    "dtsRollup": { "enabled": false },
+    "tsdocMetadata": { "enabled": false },
+    "messages": {
+        "compilerMessageReporting": {
+            "default": { "logLevel": "error" }
+        },
+        "extractorMessageReporting": {
+            "default": { "logLevel": "warning", "addToApiReportFile": true },
+            "ae-missing-release-tag": { "logLevel": "none" },
+            "ae-wrong-input-file-type": { "logLevel": "error" }
+        },
+        "tsdocMessageReporting": {
+            "default": { "logLevel": "warning", "addToApiReportFile": true }
+        }
+    }
+}

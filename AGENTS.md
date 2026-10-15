@@ -20,14 +20,15 @@ Other branches (`master`, `v2.0`, `v0.x`, `feature/*`) are not maintained.
 - **Architecture:** [`docs/architecture.md`](docs/architecture.md), [`docs/protocol.md`](docs/protocol.md) and [`docs/decisions/`](docs/decisions/). Follow the decisions; changing one means a new decision record.
 - **New packages next to v4** (see [decision 0018](docs/decisions/0018-new-packages-next-to-v4.md)):
     - v5 packages live in `packages/`.
-    - The v4 code is in `legacy/`, outside the workspaces. It is not built, linted or tested. Use it as a reference when porting a component, then delete what was ported.
+    - The v4 code is in `legacy/`, outside the workspaces. It is not built, linted or tested. Use it as a reference when porting a component, then delete what was ported (steps in [`docs/packages.md`](docs/packages.md#porting-a-component-from-legacy)).
     - Never import from `legacy/`.
+- **Packages:** the target list, with the layer and allowed dependencies of each, is in [`docs/packages.md`](docs/packages.md). Create a package with `npm run create-package` when its work starts, not before.
 
 ## Rules for v5
 
 1. **The protocol is the contract.** Frontend code only relies on `@panneau/protocol`. Laravel specifics (CSRF, `419`) live in the Laravel preset of the REST adapter.
 2. **Layers.** A package only depends on the layers below it: protocol → UI primitives → engine → data → app (see [`docs/architecture.md`](docs/architecture.md)). Fields, forms and lists work without a definition, a router or a network.
-3. **Public API.** Only what a package's `exports` map exposes is public. Anything else is internal. No deep imports between packages.
+3. **Public API.** Only what a package's `exports` map exposes is public. Anything else is internal. No deep imports between packages. Each entry point has an API report in the package's `api/` folder: a change to the public API updates it (`npm run api`) in the same pull request.
 4. **No global CSS.** Components use CSS Modules and design tokens (CSS variables).
 5. **Controlled components.** Fields never keep their value in their own state.
 
@@ -48,9 +49,16 @@ npm test            # Vitest, every package
 npm run lint        # ESLint
 npm run typecheck   # tsc in every package
 npm run build       # build every package
+npm run api         # update the API reports (packages/*/api/), after a public API change
+npm run api:check   # fail if an API report is out of date
 npm run format      # Prettier
 npx changeset       # describe a change for the changelog
+
+npm run create-package -- <name> [--react]   # create packages/<name> from the template
+npm run test:create-package                  # check the template: create, lint, typecheck, test, build
 ```
+
+[`docs/packages.md`](docs/packages.md) explains the package layout, the template and the API reports.
 
 ## Workflow
 

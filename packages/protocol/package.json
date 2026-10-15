@@ -33,7 +33,8 @@
     ],
     "scripts": {
         "build": "vite build && tsc -p tsconfig.build.json && node scripts/generate-schemas.js",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "api": "tsc -p tsconfig.build.json && node ../../scripts/api-report.js"
     },
     "publishConfig": {
         "access": "public"

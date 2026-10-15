@@ -18,6 +18,7 @@ npm test
 npm run lint
 npm run typecheck
 npm run build
+npm run api:check
 ```
 
 See [`AGENTS.md`](AGENTS.md) for the rules of the repository.
