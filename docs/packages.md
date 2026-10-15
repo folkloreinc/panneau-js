@@ -19,7 +19,7 @@ Packages are created when their work starts, not as empty shells ([decisions/001
 | `@panneau/data`     | Data          | `DataAdapter` interface, REST adapter and its Laravel preset, query hooks       | `protocol`, `core`                 |
 | `@panneau/media`    | Data          | Media library, upload (Uppy), image editing                                     | the packages above                 |
 | `@panneau/auth`     | Data          | Auth forms and flows: login, OAuth, password reset, 2FA, passkeys, verification | the packages above, except `media` |
-| `@panneau/app`      | App           | The complete admin panel: routes, layout, menus, resource pages, dashboard      | every package above                |
+| `@panneau/app`      | App           | The app entry (`createPanneauApp`) and the admin panel: routes, layout, pages   | every package above                |
 | `@panneau/collab`   | Engine (5.x)  | Presence and realtime collaboration through Yjs, as a store for `core`          | `protocol`, `core`                 |
 
 Notes:
@@ -27,6 +27,7 @@ Notes:
 - **Fields, forms and lists** work without a definition, a router or a network. They never depend on `core` or `data`.
 - **`core` renders no UI.** It may import the UI primitives for their types and to map field types to components.
 - **`data`** only needs `protocol` to start with. It sits above `core` so that query hooks can use the engine's list state.
+- **`app`** starts from the entry contract of [decisions/0019](decisions/0019-app-entry.md): the boot config, `createPanneauApp()` and the client routes. Its shell is a placeholder until Phase 2.
 - **Feature packages** (`editor`, `media`, `auth`, `intl`, `collab`) sit at the layer of what they need, so a project only loads the features it uses. `app` adds them through plugins.
 - Internal dependencies are `dependencies` with the shared version. React and other libraries the host app shares (TanStack Query, React Aria) are `peerDependencies`.
 

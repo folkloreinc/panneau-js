@@ -28,6 +28,7 @@
         },
         "./definition.schema.json": "./schema/definition.schema.json",
         "./openapi.json": "./schema/openapi.json",
+        "./boot.schema.json": "./schema/boot.schema.json",
         "./package.json": "./package.json"
     },
     "files": [

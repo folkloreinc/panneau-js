@@ -2,6 +2,7 @@ import type { z } from 'zod';
 
 import { lintDefinition } from './lint';
 import { Problem } from './schemas/api';
+import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
 
 export interface ValidationIssue {
@@ -41,6 +42,22 @@ export function validateDefinition(input: unknown): ValidationResult<Definition>
         return result;
     }
     const issues = lintDefinition(result.data);
+    return issues.length > 0 ? { success: false, issues } : result;
+}
+
+/**
+ * Validates a boot config, as a server writes it in the page: against the schema, then the
+ * references between the parts of its inlined definition, if any.
+ */
+export function validateBootConfig(input: unknown): ValidationResult<BootConfig> {
+    const result = validate(BootConfig, input);
+    if (!result.success || result.data.definition === undefined) {
+        return result;
+    }
+    const issues = lintDefinition(result.data.definition).map((issue) => ({
+        ...issue,
+        path: issue.path === '' ? 'definition' : `definition.${issue.path}`,
+    }));
     return issues.length > 0 ? { success: false, issues } : result;
 }
 

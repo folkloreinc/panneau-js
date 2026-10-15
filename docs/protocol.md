@@ -212,6 +212,35 @@ A resource lists the built-in actions it enables, possibly with overrides (label
 }
 ```
 
+## Boot config
+
+The page of the app carries a **boot config**: what the app needs before it can call the API. The server writes it as JSON in an element with the id `panneau-boot` (`BOOT_CONFIG_ELEMENT_ID`), next to the root element of the app:
+
+```html
+<div id="panneau"></div>
+<script type="application/json" id="panneau-boot">
+    { "protocol": 1, "apiBaseUrl": "/panneau/api", "basePath": "/panneau", "locale": "fr" }
+</script>
+```
+
+```jsonc
+{
+    "protocol": 1,
+    "apiBaseUrl": "/panneau/api", // the app fetches {apiBaseUrl}/definition, and makes every call there
+    "basePath": "/panneau", // path of the app; client routes are under it ("/" on its own domain)
+    "locale": "fr", // locale of the UI before the definition loads
+    "definition": {/* Definition */}, // optional: inlined for the first render
+    "loginUrl": "/login", // optional: where to send users when GET /definition answers 401
+}
+```
+
+- **`definition`** is the response of `GET /definition` for the current user ([decisions/0004](decisions/0004-definitions-are-data.md)). With it, the app skips that request on load.
+- **`loginUrl`** is only used before the definition is known. Afterwards, the app uses `auth.loginUrl` of the definition.
+- **Escaping.** The server escapes `<`, `>` and `&` in the JSON, so its content can't close the `<script>` element.
+- Like the definition, the boot config keeps properties it doesn't know.
+
+`validateBootConfig()` checks a boot config, including the references of its inlined definition. `@panneau/protocol/boot.schema.json` is its JSON Schema, for backends in other languages. The client routes under `basePath` and the handling of `401` are part of the app's entry contract: see [decisions/0019](decisions/0019-app-entry.md).
+
 ## HTTP API
 
 All paths are relative to `api.baseUrl`.
@@ -418,9 +447,10 @@ With `auth.mode = "external"`, the frontend only calls `GET /auth/session` and s
 - **schemas and TypeScript types**. `Definition` is a definition after parsing, with defaults applied; `DefinitionInput` is a definition as a backend writes it.
 - **validation helpers**:
     - `validateDefinition()` checks the schema, then the references between parts;
-    - `lintDefinition()` checks those references alone: layout nodes and columns that name a field, relations that name a resource, unique names.
+    - `lintDefinition()` checks those references alone: layout nodes and columns that name a field, relations that name a resource, unique names;
+    - `validateBootConfig()` checks a [boot config](#boot-config).
 - **the portable rules**: `checkValues()` is the reference implementation.
-- **generated files**: `@panneau/protocol/definition.schema.json` (JSON Schema 2020-12) and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
+- **generated files**: `@panneau/protocol/definition.schema.json` and `@panneau/protocol/boot.schema.json` (JSON Schema 2020-12), and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
 - **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes.
 - **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas.
 
@@ -437,4 +467,4 @@ const report = await runConformance({
 console.log(formatReport(report));
 ```
 
-`laravel-panneau` validates its responses against `openapi.json` in its feature tests.
+`laravel-panneau` validates its responses against `openapi.json`, and the page of the app against `boot.schema.json`, in its feature tests.

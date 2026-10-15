@@ -24,3 +24,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0016](0016-migration-strategy.md)       | Clean break, maintained old lines, Niche as pilot                | Accepted |
 | [0017](0017-actions.md)                  | Actions on items, selections and resources                       | Accepted |
 | [0018](0018-new-packages-next-to-v4.md)  | New packages next to the v4 code, which moves to `legacy/`       | Accepted |
+| [0019](0019-app-entry.md)                | The app entry: boot config, mount function and client routes     | Accepted |

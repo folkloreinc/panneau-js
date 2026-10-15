@@ -5,6 +5,7 @@ export {
     type ValidationResult,
     isProblem,
     validate,
+    validateBootConfig,
     validateDefinition,
 } from './validate';
 export { type CheckOptions, type RuleFailure, checkRules, checkValues } from './rules';
@@ -13,6 +14,7 @@ export { lintDefinition } from './lint';
 export { type FilterValue, type ListQuery, fromSearchParams, toSearchParams } from './query';
 export { getValue, isFilled } from './values';
 export {
+    createBootConfigJsonSchema,
     createComponentSchemas,
     createDefinitionJsonSchema,
     createOpenApiDocument,
