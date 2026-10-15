@@ -1,0 +1,104 @@
+/* Options of selects, combo boxes and menus. */
+
+.listBox {
+    display: flex;
+    flex-direction: column;
+    max-height: inherit;
+    padding: var(--panneau-space-1);
+    overflow: auto;
+    outline: none;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-height: var(--panneau-control-height-sm);
+    padding: var(--panneau-space-1) var(--panneau-space-2);
+    font-size: var(--panneau-font-size-control);
+    line-height: var(--panneau-line-height-tight);
+    color: var(--panneau-color-text);
+    cursor: default;
+    border-radius: var(--panneau-radius-sm);
+    outline: none;
+}
+
+.item[data-focused],
+.item[data-hovered] {
+    background-color: var(--panneau-color-hover);
+}
+
+.item[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: -2px;
+}
+
+.item[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.item[data-danger] {
+    color: var(--panneau-color-danger);
+}
+
+.itemText {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.itemLabel {
+    overflow-wrap: anywhere;
+}
+
+.itemDescription {
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+}
+
+.check {
+    flex: 0 0 auto;
+    width: 1rem;
+    color: var(--panneau-color-text);
+}
+
+.placeholder {
+    color: var(--panneau-color-text-muted);
+}
+
+.empty {
+    padding: var(--panneau-space-2);
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+}
+
+.separator {
+    height: 1px;
+    margin: var(--panneau-space-1) 0;
+    background-color: var(--panneau-color-border);
+}
+
+.trigger {
+    justify-content: space-between;
+    gap: var(--panneau-space-2);
+    text-align: start;
+    cursor: pointer;
+}
+
+.value {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.value[data-placeholder] {
+    color: var(--panneau-color-text-muted);
+}
+
+.chevron {
+    color: var(--panneau-color-text-muted);
+}

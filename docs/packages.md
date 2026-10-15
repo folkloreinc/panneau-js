@@ -67,6 +67,16 @@ A package depends on another one with the shared version in `dependencies` (`"@p
 - **Tests and typechecks use the sources.** Each entry of `exports` has a `@panneau/source` condition that points to its source file. The package's `tsconfig.json` (`customConditions`) and the shared Vite config (`resolve.conditions`) use it, so `npm test` and `npm run typecheck` work without building the other packages first. Published consumers don't use this condition: they get `types` and `default`.
 - **Builds use the declarations.** `tsconfig.build.json` doesn't use the condition, so a package's declarations and API report need the declarations of its dependencies. `npm run build` and `npm run api` run through `scripts/workspaces.js`, which runs the packages in dependency order.
 
+## Styles in builds
+
+Components use CSS Modules (`Button.module.css`) that read the design tokens. The shared build (`config/vite.package.ts`):
+
+- scopes their class names (`panneau-button-x7Yz3a`);
+- writes the CSS of each module next to it as a plain `.css` file (`dist/button/Button.css`), since its classes are already scoped;
+- imports that file from the built module (`import './Button.css'`).
+
+So any bundler, Vite or webpack, only includes the CSS of the components a project imports, and needs no CSS Modules support. `sideEffects: ["*.css"]` keeps these imports from being tree-shaken. A package that ships CSS adds `*.module.css` declarations to `src/env.d.ts`, as `@panneau/ui` does.
+
 ## API reports
 
 Each package keeps a report of its public API in `api/`, generated with [API Extractor](https://api-extractor.com/) from its type declarations. A change to the public API changes a report, so it shows up in review.

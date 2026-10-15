@@ -1,0 +1,8 @@
+/* Doubled class: overrides the shared control, whatever the CSS order. */
+.textArea.textArea {
+    display: block;
+    min-height: calc(var(--panneau-control-height) * 2);
+    padding: var(--panneau-space-2) var(--panneau-space-3);
+    line-height: var(--panneau-line-height);
+    resize: vertical;
+}

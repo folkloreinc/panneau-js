@@ -1,0 +1,58 @@
+import type { Theme } from './theme';
+
+/**
+ * Maps Panneau's tokens to the CSS variables of Bootstrap 5.3, for sites that use Bootstrap: Panneau
+ * then follows the site's colors, fonts and radii, and its color mode (`data-bs-theme`), without
+ * using any Bootstrap class. Bootstrap's CSS must be loaded by the site.
+ */
+export const bootstrapTheme: Theme = {
+    label: 'Bootstrap',
+    tokens: {
+        'panneau-color-bg': 'var(--bs-body-bg)',
+        'panneau-color-surface': 'var(--bs-body-bg)',
+        'panneau-color-surface-sunken': 'var(--bs-tertiary-bg)',
+        'panneau-color-surface-raised': 'var(--bs-body-bg)',
+        'panneau-color-hover': 'rgba(var(--bs-emphasis-color-rgb), 0.06)',
+        'panneau-color-pressed': 'rgba(var(--bs-emphasis-color-rgb), 0.1)',
+        'panneau-color-text': 'var(--bs-body-color)',
+        'panneau-color-text-muted': 'var(--bs-secondary-color)',
+        'panneau-color-link': 'var(--bs-link-color)',
+        'panneau-color-border': 'var(--bs-border-color)',
+        'panneau-color-border-control': 'var(--bs-border-color)',
+        'panneau-color-accent': 'var(--bs-primary)',
+        'panneau-color-accent-hover': 'color-mix(in srgb, var(--bs-primary), #000 15%)',
+        'panneau-color-accent-text': 'var(--bs-white)',
+        'panneau-color-accent-subtle': 'var(--bs-primary-bg-subtle)',
+        'panneau-color-focus': 'rgba(var(--bs-primary-rgb), 0.5)',
+        'panneau-color-danger': 'var(--bs-danger-text-emphasis)',
+        'panneau-color-danger-subtle': 'var(--bs-danger-bg-subtle)',
+        'panneau-color-danger-border': 'var(--bs-danger-border-subtle)',
+        'panneau-color-danger-solid': 'var(--bs-danger)',
+        'panneau-color-danger-solid-hover': 'color-mix(in srgb, var(--bs-danger), #000 15%)',
+        'panneau-color-danger-solid-text': 'var(--bs-white)',
+        'panneau-color-success': 'var(--bs-success-text-emphasis)',
+        'panneau-color-success-subtle': 'var(--bs-success-bg-subtle)',
+        'panneau-color-success-border': 'var(--bs-success-border-subtle)',
+        'panneau-color-warning': 'var(--bs-warning-text-emphasis)',
+        'panneau-color-warning-subtle': 'var(--bs-warning-bg-subtle)',
+        'panneau-color-warning-border': 'var(--bs-warning-border-subtle)',
+        'panneau-color-info': 'var(--bs-info-text-emphasis)',
+        'panneau-color-info-subtle': 'var(--bs-info-bg-subtle)',
+        'panneau-color-info-border': 'var(--bs-info-border-subtle)',
+        'panneau-font-family': 'var(--bs-body-font-family)',
+        'panneau-font-family-mono': 'var(--bs-font-monospace)',
+        'panneau-font-size-md': 'var(--bs-body-font-size)',
+        'panneau-font-size-control': 'var(--bs-body-font-size)',
+        'panneau-line-height': 'var(--bs-body-line-height)',
+        'panneau-radius-sm': 'var(--bs-border-radius-sm)',
+        'panneau-radius-md': 'var(--bs-border-radius)',
+        'panneau-radius-lg': 'var(--bs-border-radius-lg)',
+        'panneau-radius-full': 'var(--bs-border-radius-pill)',
+        'panneau-border-width': 'var(--bs-border-width)',
+        'panneau-shadow-sm': 'var(--bs-box-shadow-sm)',
+        'panneau-shadow-md': 'var(--bs-box-shadow)',
+        'panneau-shadow-lg': 'var(--bs-box-shadow-lg)',
+        'panneau-control-height': 'calc(1.5em + 0.75rem + 2 * var(--bs-border-width))',
+        'panneau-control-height-sm': 'calc(1.5em + 0.5rem + 2 * var(--bs-border-width))',
+    },
+};

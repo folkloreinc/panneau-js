@@ -1,0 +1,26 @@
+.control.control {
+    padding-inline-end: 0;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    width: 2rem;
+    padding: 0;
+    color: var(--panneau-color-text-muted);
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+}
+
+.button[data-hovered] {
+    color: var(--panneau-color-text);
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    padding-inline: var(--panneau-space-1);
+}

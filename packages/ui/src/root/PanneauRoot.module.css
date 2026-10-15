@@ -1,0 +1,251 @@
+/*
+ * Design tokens of the default theme, and the base stylesheet of Panneau. Everything is scoped to
+ * the root element: nothing here applies outside of it (decision 0005).
+ *
+ * Defaults are wrapped in :where() so that they have no specificity: a theme, or a project's own
+ * class on the root, overrides any token without fighting the cascade.
+ */
+
+:where(.root) {
+    /* Surfaces */
+    --panneau-color-bg: #ffffff;
+    --panneau-color-surface: #ffffff;
+    --panneau-color-surface-sunken: #f4f4f5;
+    --panneau-color-surface-raised: #ffffff;
+    --panneau-color-hover: rgb(24 24 27 / 0.06);
+    --panneau-color-pressed: rgb(24 24 27 / 0.1);
+    --panneau-color-backdrop: rgb(9 9 11 / 0.45);
+
+    /* Text */
+    --panneau-color-text: #18181b;
+    --panneau-color-text-muted: #52525b;
+    --panneau-color-link: #1d4ed8;
+
+    /* Borders: separators, and the outline of controls (3:1 against the surface) */
+    --panneau-color-border: #e4e4e7;
+    --panneau-color-border-control: #8b8b94;
+
+    /* Accent: primary buttons, checked controls, selection */
+    --panneau-color-accent: #18181b;
+    --panneau-color-accent-hover: #3f3f46;
+    --panneau-color-accent-text: #ffffff;
+    --panneau-color-accent-subtle: #f4f4f5;
+    --panneau-color-focus: #2563eb;
+
+    /* Tones: text on surfaces, subtle backgrounds, borders */
+    --panneau-color-danger: #b91c1c;
+    --panneau-color-danger-subtle: #fef2f2;
+    --panneau-color-danger-border: #fca5a5;
+    --panneau-color-danger-solid: #b91c1c;
+    --panneau-color-danger-solid-hover: #991b1b;
+    --panneau-color-danger-solid-text: #ffffff;
+    --panneau-color-success: #15803d;
+    --panneau-color-success-subtle: #f0fdf4;
+    --panneau-color-success-border: #86efac;
+    --panneau-color-warning: #a16207;
+    --panneau-color-warning-subtle: #fefce8;
+    --panneau-color-warning-border: #fcd34d;
+    --panneau-color-info: #1d4ed8;
+    --panneau-color-info-subtle: #eff6ff;
+    --panneau-color-info-border: #93c5fd;
+
+    /* Typography */
+    --panneau-font-family:
+        system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --panneau-font-family-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --panneau-font-size-xs: 0.75rem;
+    --panneau-font-size-sm: 0.8125rem;
+    --panneau-font-size-md: 0.875rem;
+    --panneau-font-size-lg: 1rem;
+    --panneau-font-size-xl: 1.25rem;
+    --panneau-font-size-control: 0.875rem;
+    --panneau-line-height: 1.5;
+    --panneau-line-height-tight: 1.25;
+    --panneau-font-weight-normal: 400;
+    --panneau-font-weight-medium: 500;
+    --panneau-font-weight-bold: 600;
+
+    /* Spacing, on a 4px scale */
+    --panneau-space-1: 0.25rem;
+    --panneau-space-2: 0.5rem;
+    --panneau-space-3: 0.75rem;
+    --panneau-space-4: 1rem;
+    --panneau-space-5: 1.25rem;
+    --panneau-space-6: 1.5rem;
+    --panneau-space-8: 2rem;
+    --panneau-space-10: 2.5rem;
+
+    /* Shapes */
+    --panneau-radius-sm: 0.25rem;
+    --panneau-radius-md: 0.375rem;
+    --panneau-radius-lg: 0.5rem;
+    --panneau-radius-full: 9999px;
+    --panneau-border-width: 1px;
+    --panneau-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
+    --panneau-shadow-md: 0 1px 3px rgb(0 0 0 / 0.08), 0 4px 12px rgb(0 0 0 / 0.08);
+    --panneau-shadow-lg: 0 4px 8px rgb(0 0 0 / 0.08), 0 16px 40px rgb(0 0 0 / 0.16);
+
+    /* Controls */
+    --panneau-control-height: 2.25rem;
+    --panneau-control-height-sm: 1.875rem;
+    --panneau-focus-width: 2px;
+
+    /* Motion and layers */
+    --panneau-duration: 150ms;
+    --panneau-z-overlay: 1000;
+    --panneau-z-toast: 1100;
+
+    color-scheme: light;
+}
+
+:where(.root[data-color-scheme='dark']) {
+    --panneau-color-bg: #09090b;
+    --panneau-color-surface: #18181b;
+    --panneau-color-surface-sunken: #111113;
+    --panneau-color-surface-raised: #232326;
+    --panneau-color-hover: rgb(255 255 255 / 0.07);
+    --panneau-color-pressed: rgb(255 255 255 / 0.12);
+    --panneau-color-backdrop: rgb(0 0 0 / 0.6);
+    --panneau-color-text: #fafafa;
+    --panneau-color-text-muted: #a1a1aa;
+    --panneau-color-link: #93c5fd;
+    --panneau-color-border: #2e2e33;
+    --panneau-color-border-control: #71717a;
+    --panneau-color-accent: #fafafa;
+    --panneau-color-accent-hover: #d4d4d8;
+    --panneau-color-accent-text: #18181b;
+    --panneau-color-accent-subtle: #2e2e33;
+    --panneau-color-focus: #60a5fa;
+    --panneau-color-danger: #fca5a5;
+    --panneau-color-danger-subtle: rgb(127 29 29 / 0.35);
+    --panneau-color-danger-border: #b91c1c;
+    --panneau-color-danger-solid: #dc2626;
+    --panneau-color-danger-solid-hover: #b91c1c;
+    --panneau-color-danger-solid-text: #ffffff;
+    --panneau-color-success: #86efac;
+    --panneau-color-success-subtle: rgb(20 83 45 / 0.35);
+    --panneau-color-success-border: #15803d;
+    --panneau-color-warning: #fcd34d;
+    --panneau-color-warning-subtle: rgb(113 63 18 / 0.35);
+    --panneau-color-warning-border: #a16207;
+    --panneau-color-info: #93c5fd;
+    --panneau-color-info-subtle: rgb(30 58 138 / 0.35);
+    --panneau-color-info-border: #1d4ed8;
+    --panneau-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --panneau-shadow-md: 0 1px 3px rgb(0 0 0 / 0.4), 0 4px 12px rgb(0 0 0 / 0.4);
+    --panneau-shadow-lg: 0 4px 8px rgb(0 0 0 / 0.4), 0 16px 40px rgb(0 0 0 / 0.5);
+
+    color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+    :where(.root[data-color-scheme='auto']) {
+        --panneau-color-bg: #09090b;
+        --panneau-color-surface: #18181b;
+        --panneau-color-surface-sunken: #111113;
+        --panneau-color-surface-raised: #232326;
+        --panneau-color-hover: rgb(255 255 255 / 0.07);
+        --panneau-color-pressed: rgb(255 255 255 / 0.12);
+        --panneau-color-backdrop: rgb(0 0 0 / 0.6);
+        --panneau-color-text: #fafafa;
+        --panneau-color-text-muted: #a1a1aa;
+        --panneau-color-link: #93c5fd;
+        --panneau-color-border: #2e2e33;
+        --panneau-color-border-control: #71717a;
+        --panneau-color-accent: #fafafa;
+        --panneau-color-accent-hover: #d4d4d8;
+        --panneau-color-accent-text: #18181b;
+        --panneau-color-accent-subtle: #2e2e33;
+        --panneau-color-focus: #60a5fa;
+        --panneau-color-danger: #fca5a5;
+        --panneau-color-danger-subtle: rgb(127 29 29 / 0.35);
+        --panneau-color-danger-border: #b91c1c;
+        --panneau-color-danger-solid: #dc2626;
+        --panneau-color-danger-solid-hover: #b91c1c;
+        --panneau-color-danger-solid-text: #ffffff;
+        --panneau-color-success: #86efac;
+        --panneau-color-success-subtle: rgb(20 83 45 / 0.35);
+        --panneau-color-success-border: #15803d;
+        --panneau-color-warning: #fcd34d;
+        --panneau-color-warning-subtle: rgb(113 63 18 / 0.35);
+        --panneau-color-warning-border: #a16207;
+        --panneau-color-info: #93c5fd;
+        --panneau-color-info-subtle: rgb(30 58 138 / 0.35);
+        --panneau-color-info-border: #1d4ed8;
+        --panneau-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+        --panneau-shadow-md: 0 1px 3px rgb(0 0 0 / 0.4), 0 4px 12px rgb(0 0 0 / 0.4);
+        --panneau-shadow-lg: 0 4px 8px rgb(0 0 0 / 0.4), 0 16px 40px rgb(0 0 0 / 0.5);
+
+        color-scheme: dark;
+    }
+}
+
+/* Touch screens: larger targets, and 16px text in inputs so that iOS doesn't zoom on focus. */
+@media (pointer: coarse) {
+    :where(.root) {
+        --panneau-control-height: 2.75rem;
+        --panneau-control-height-sm: 2.25rem;
+        --panneau-font-size-control: 1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where(.root) {
+        --panneau-duration: 0ms;
+    }
+}
+
+/* Base stylesheet, scoped to the root, without specificity: components and projects override it. */
+
+.root {
+    /* The class is mostly a hook for the rules below, which use :where(). */
+    display: block;
+}
+
+:where(.root) {
+    font-family: var(--panneau-font-family);
+    font-size: var(--panneau-font-size-md);
+    line-height: var(--panneau-line-height);
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-color-bg);
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+:where(.root) :where(*, *::before, *::after) {
+    box-sizing: border-box;
+}
+
+:where(.root) :where(h1, h2, h3, h4, h5, h6, p, ul, ol, dl, figure, fieldset, legend) {
+    margin: 0;
+    padding: 0;
+}
+
+:where(.root) :where(fieldset) {
+    border: 0;
+    min-width: 0;
+}
+
+:where(.root) :where(button, input, select, textarea) {
+    font: inherit;
+    color: inherit;
+}
+
+:where(.root) :where(a) {
+    color: var(--panneau-color-link);
+}
+
+:where(.root) :where(img, svg, video) {
+    max-width: 100%;
+}
+
+:where(.root) :where(:focus-visible) {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+/* Overlays (dialogs, popovers, menus, tooltips) render here, so that they get the tokens. */
+.portal {
+    display: contents;
+}

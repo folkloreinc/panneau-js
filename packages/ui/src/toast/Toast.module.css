@@ -1,0 +1,109 @@
+/* The region carries the root's class (tokens), since React Aria renders it in the body. */
+.region.region {
+    position: fixed;
+    inset-block-end: var(--panneau-space-4);
+    inset-inline-end: var(--panneau-space-4);
+    z-index: var(--panneau-z-toast);
+    display: flex;
+    flex-direction: column-reverse;
+    gap: var(--panneau-space-2);
+    width: min(24rem, calc(100vw - 2 * var(--panneau-space-4)));
+    background: transparent;
+    outline: none;
+}
+
+.region[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 4px;
+}
+
+@media (max-width: 30rem) {
+    .region.region {
+        inset-inline: var(--panneau-space-2);
+        inset-block-end: var(--panneau-space-2);
+        width: auto;
+    }
+}
+
+.toast {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--panneau-space-3);
+    padding: var(--panneau-space-3) var(--panneau-space-3) var(--panneau-space-3)
+        var(--panneau-space-4);
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-color-surface-raised);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-inline-start-width: 4px;
+    border-radius: var(--panneau-radius-lg);
+    box-shadow: var(--panneau-shadow-lg);
+    outline: none;
+}
+
+.toast[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.success {
+    border-inline-start-color: var(--panneau-color-success);
+}
+
+.danger {
+    border-inline-start-color: var(--panneau-color-danger);
+}
+
+.warning {
+    border-inline-start-color: var(--panneau-color-warning);
+}
+
+.info {
+    border-inline-start-color: var(--panneau-color-info);
+}
+
+.icon {
+    margin-top: 0.125rem;
+}
+
+.success .icon {
+    color: var(--panneau-color-success);
+}
+
+.danger .icon {
+    color: var(--panneau-color-danger);
+}
+
+.warning .icon {
+    color: var(--panneau-color-warning);
+}
+
+.info .icon {
+    color: var(--panneau-color-info);
+}
+
+.content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+    min-width: 0;
+    padding-top: 0.125rem;
+}
+
+.title {
+    font-weight: var(--panneau-font-weight-medium);
+    overflow-wrap: anywhere;
+}
+
+.description {
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+    overflow-wrap: anywhere;
+}
+
+.actions {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--panneau-space-1);
+}

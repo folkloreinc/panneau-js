@@ -1,0 +1,57 @@
+.control.control {
+    padding-inline-end: 0;
+    overflow: hidden;
+}
+
+.input {
+    font-variant-numeric: tabular-nums;
+}
+
+.steppers {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    border-inline-start: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.stepper {
+    display: flex;
+    flex: 1 1 0;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    padding: 0;
+    color: var(--panneau-color-text-muted);
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+}
+
+.stepper + .stepper {
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.stepper[data-hovered] {
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-color-hover);
+}
+
+.stepper[data-pressed] {
+    background-color: var(--panneau-color-pressed);
+}
+
+.stepper[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Touch screens have their own keyboard for numbers: the steppers would be too small. */
+@media (pointer: coarse) {
+    .steppers {
+        display: none;
+    }
+
+    .control.control {
+        padding-inline-end: var(--panneau-space-3);
+    }
+}

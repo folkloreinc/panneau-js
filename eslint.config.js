@@ -6,7 +6,15 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig([
-    globalIgnores(['legacy/', '.tmp/', '**/dist/', '**/node_modules/', '**/temp/', 'coverage/']),
+    globalIgnores([
+        'legacy/',
+        '.tmp/',
+        '**/dist/',
+        '**/node_modules/',
+        '**/temp/',
+        'coverage/',
+        'storybook-static/',
+    ]),
     js.configs.recommended,
     tseslint.configs.strict,
     reactHooks.configs.flat.recommended,

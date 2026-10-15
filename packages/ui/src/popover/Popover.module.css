@@ -1,0 +1,32 @@
+.popover {
+    min-width: var(--trigger-width, 10rem);
+    max-width: calc(100vw - 2 * var(--panneau-space-4));
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-color-surface-raised);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-lg);
+    box-shadow: var(--panneau-shadow-lg);
+    outline: none;
+    overflow: auto;
+    z-index: var(--panneau-z-overlay);
+}
+
+.popover[data-entering] {
+    animation: pop var(--panneau-duration) ease-out;
+}
+
+.popover[data-exiting] {
+    animation: pop var(--panneau-duration) ease-in reverse;
+}
+
+.dialog {
+    padding: var(--panneau-space-3);
+    outline: none;
+}
+
+@keyframes pop {
+    from {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+}

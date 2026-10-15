@@ -1,0 +1,9 @@
+/* Doubled classes: more specific than the button's own padding, whatever the CSS order. */
+.iconButton.iconButton {
+    width: var(--panneau-control-height);
+    padding: 0;
+}
+
+.iconButton.sm {
+    width: var(--panneau-control-height-sm);
+}

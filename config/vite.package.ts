@@ -1,8 +1,14 @@
 import babel from '@rolldown/plugin-babel';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import MagicString from 'magic-string';
 import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { type UserConfig, defaultClientConditions, defaultServerConditions } from 'vite';
+import { dirname, relative, resolve } from 'node:path';
+import {
+    type Plugin,
+    type UserConfig,
+    defaultClientConditions,
+    defaultServerConditions,
+} from 'vite';
 import { defineConfig } from 'vitest/config';
 
 interface PackageConfigOptions {
@@ -28,6 +34,42 @@ interface PackageJson {
 }
 
 /**
+ * Class names of CSS Modules in builds: readable and scoped. Consumers get plain CSS files whose
+ * classes are already scoped, so their bundler needs no CSS Modules support.
+ */
+const SCOPED_NAME = 'panneau-[local]-[hash:base64:6]';
+
+/**
+ * Keeps the CSS of each module next to it, imported by the module (`import './Button.css'`), so
+ * that any bundler (Vite, webpack) includes the CSS of the modules a project uses, and only those
+ * (decisions 0005 and 0019). Vite's library mode otherwise bundles every style into one file that
+ * nothing imports.
+ */
+function importCss(): Plugin {
+    return {
+        name: 'panneau:import-css',
+        apply: 'build',
+        enforce: 'post',
+        renderChunk(code, chunk) {
+            const css = [...(chunk.viteMetadata?.importedCss ?? [])];
+            if (css.length === 0) {
+                return null;
+            }
+            const from = dirname(chunk.fileName);
+            const imports = css
+                .map((file) => {
+                    const path = relative(from, file).split('\\').join('/');
+                    return `import '${path.startsWith('.') ? path : `./${path}`}';\n`;
+                })
+                .join('');
+            const output = new MagicString(code);
+            output.prepend(imports);
+            return { code: output.toString(), map: output.generateMap({ hires: 'boundary' }) };
+        },
+    };
+}
+
+/**
  * Shared build and test config of the `@panneau/*` packages: an ESM library build where every
  * dependency and peer dependency stays external, and a Vitest project.
  */
@@ -45,15 +87,20 @@ export function definePackageConfig({
 
     return defineConfig({
         root,
-        plugins: withReact ? [react(), babel({ presets: [reactCompilerPreset()] })] : [],
+        plugins: [
+            ...(withReact ? [react(), babel({ presets: [reactCompilerPreset()] })] : []),
+            importCss(),
+        ],
         // Dependencies stay external in builds, so this only applies to tests.
         resolve: { conditions: [SOURCE_CONDITION, ...defaultClientConditions] },
         ssr: { resolve: { conditions: [SOURCE_CONDITION, ...defaultServerConditions] } },
+        css: { modules: { generateScopedName: SCOPED_NAME } },
         build: {
             outDir: 'dist',
             emptyOutDir: true,
             sourcemap: true,
             minify: false,
+            cssCodeSplit: true,
             lib: {
                 entry: Object.fromEntries(
                     Object.entries(entries).map(([name, path]) => [name, resolve(root, path)]),
@@ -68,6 +115,10 @@ export function definePackageConfig({
                     preserveModules: true,
                     preserveModulesRoot: resolve(root, 'src'),
                     entryFileNames: '[name].js',
+                    // `Button.module.css` becomes `Button.css`: its classes are already scoped,
+                    // and bundlers would scope them again as a CSS Module.
+                    assetFileNames: (asset) =>
+                        (asset.names[0] ?? '[name][extname]').replace(/\.module\.css$/, '.css'),
                 },
             },
         },

@@ -1,0 +1,145 @@
+/* Shared look of labelled controls: label, description, errors and the control itself. */
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+    min-width: 0;
+}
+
+.label {
+    font-size: var(--panneau-font-size-md);
+    font-weight: var(--panneau-font-weight-medium);
+    line-height: var(--panneau-line-height-tight);
+    color: var(--panneau-color-text);
+    overflow-wrap: anywhere;
+}
+
+.required {
+    margin-inline-start: 0.2em;
+    color: var(--panneau-color-danger);
+}
+
+.description {
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+}
+
+.errors {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-danger);
+}
+
+.error {
+    display: block;
+}
+
+.control {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    min-height: var(--panneau-control-height);
+    padding: 0 var(--panneau-space-3);
+    font-size: var(--panneau-font-size-control);
+    line-height: var(--panneau-line-height-tight);
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-color-surface);
+    border: var(--panneau-border-width) solid var(--panneau-color-border-control);
+    border-radius: var(--panneau-radius-md);
+    transition:
+        border-color var(--panneau-duration),
+        box-shadow var(--panneau-duration);
+}
+
+.control::placeholder {
+    color: var(--panneau-color-text-muted);
+    opacity: 1;
+}
+
+.control[data-hovered],
+.control:hover {
+    border-color: var(--panneau-color-text-muted);
+}
+
+.control[data-focused],
+.control[data-focus-within],
+.control[data-focus-visible],
+.control:focus-within {
+    border-color: var(--panneau-color-focus);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--panneau-color-focus);
+}
+
+.control[data-invalid] {
+    border-color: var(--panneau-color-danger);
+}
+
+.control[data-invalid][data-focused],
+.control[data-invalid][data-focus-within],
+.control[data-invalid]:focus-within {
+    box-shadow: 0 0 0 1px var(--panneau-color-danger);
+}
+
+.control[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+    background-color: var(--panneau-color-surface-sunken);
+}
+
+.control[data-readonly],
+.control[readonly] {
+    background-color: var(--panneau-color-surface-sunken);
+}
+
+/* An input inside a control (with adornments, segments or buttons): the control draws the box. */
+.bare {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+    min-height: calc(var(--panneau-control-height) - 2 * var(--panneau-border-width));
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    outline: none;
+}
+
+.bare::placeholder {
+    color: var(--panneau-color-text-muted);
+    opacity: 1;
+}
+
+.adornment {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--panneau-space-1);
+    color: var(--panneau-color-text-muted);
+    white-space: nowrap;
+}
+
+.adornment:first-child {
+    margin-inline-end: var(--panneau-space-2);
+}
+
+.adornment:last-child {
+    margin-inline-start: var(--panneau-space-2);
+}
+
+.fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+    min-width: 0;
+}
+
+.legend {
+    display: block;
+    width: 100%;
+    margin-bottom: var(--panneau-space-1);
+}
