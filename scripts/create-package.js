@@ -106,7 +106,7 @@ const tsconfigBuild = {
         emitDeclarationOnly: true,
     },
     include: ['src'],
-    exclude: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'src/__fixtures__'],
+    exclude: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'src/**/*.stories.tsx', 'src/__fixtures__'],
 };
 
 const viteConfig = `
