@@ -3,10 +3,11 @@ import type { Decorator, Preview } from '@storybook/react-vite';
 import bootstrapCss from 'bootstrap/dist/css/bootstrap.min.css?inline';
 import { IntlProvider } from 'react-intl';
 
+import { fr as fieldsFr } from '@panneau/fields/locales';
 import { type ColorScheme, PanneauRoot, bootstrapTheme } from '@panneau/ui';
 import { fr as uiFr } from '@panneau/ui/locales';
 
-const MESSAGES: Record<string, Record<string, string>> = { en: {}, fr: { ...uiFr } };
+const MESSAGES: Record<string, Record<string, string>> = { en: {}, fr: { ...uiFr, ...fieldsFr } };
 
 /** Every story renders in a PanneauRoot, with the locale, color scheme and theme of the toolbar. */
 const withPanneau: Decorator = (Story, { globals }) => {

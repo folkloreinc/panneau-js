@@ -1,0 +1,20 @@
+/** The French messages of `@panneau/fields`, by id. */
+export const fr: Record<string, string> = {
+    'panneau.fields.add': 'Ajouter',
+    'panneau.fields.addType': 'Ajouter : {type}',
+    'panneau.fields.remove': 'Retirer',
+    'panneau.fields.removeItem': 'Retirer l’élément {index}',
+    'panneau.fields.moveUp': 'Monter l’élément {index}',
+    'panneau.fields.moveDown': 'Descendre l’élément {index}',
+    'panneau.fields.item': 'Élément {index}',
+    'panneau.fields.noItems': 'Aucun élément pour l’instant.',
+    'panneau.fields.characterCount': '{count, number} / {max, number} caractères',
+    'panneau.fields.openLink': 'Ouvrir le lien',
+    'panneau.fields.pickColor': 'Choisir une couleur',
+    'panneau.fields.generateSlug': 'Générer à partir de {field}',
+    'panneau.fields.search': 'Rechercher…',
+    'panneau.fields.noRelation': 'Aucun',
+    'panneau.fields.noResults': 'Aucun résultat',
+    'panneau.fields.relationUnavailable': 'Impossible de chercher des éléments ici.',
+    'panneau.fields.missingPlugin': 'Ce champ a besoin d’un plugin pour le type « {type} ».',
+};

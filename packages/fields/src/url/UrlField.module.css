@@ -1,0 +1,11 @@
+.open {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--panneau-space-1);
+    color: var(--panneau-color-text-muted);
+    border-radius: var(--panneau-radius-sm);
+}
+
+.open:hover {
+    color: var(--panneau-color-text);
+}

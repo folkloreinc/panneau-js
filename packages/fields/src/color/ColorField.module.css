@@ -1,0 +1,33 @@
+.swatch {
+    position: relative;
+    display: inline-flex;
+    width: 1.5rem;
+    height: 1.5rem;
+    overflow: hidden;
+    border: var(--panneau-border-width) solid var(--panneau-color-border-control);
+    border-radius: var(--panneau-radius-sm);
+}
+
+.swatch:focus-within {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.picker {
+    position: absolute;
+    inset: -0.5rem;
+    width: calc(100% + 1rem);
+    height: calc(100% + 1rem);
+    padding: 0;
+    cursor: pointer;
+    background: none;
+    border: 0;
+}
+
+.picker:disabled {
+    cursor: not-allowed;
+}
+
+.input {
+    font-family: var(--panneau-font-family-mono);
+}
