@@ -40,7 +40,8 @@ export const LayoutNode = z
         collapsible: z.boolean().optional(),
         collapsed: z.boolean().optional(),
         visibleWhen: Condition.optional(),
-        get children() {
+        // The return type is written out so that declaration files keep the recursion.
+        get children(): z.ZodOptional<z.ZodArray<typeof LayoutNode>> {
             return z.array(LayoutNode).optional();
         },
     })

@@ -47,7 +47,8 @@ export const MenuItem = z
         page: z.string().optional(),
         url: z.string().optional(),
         external: z.boolean().optional(),
-        get children() {
+        // The return type is written out so that declaration files keep the recursion.
+        get children(): z.ZodOptional<z.ZodArray<typeof MenuItem>> {
             return z.array(MenuItem).optional();
         },
     })
