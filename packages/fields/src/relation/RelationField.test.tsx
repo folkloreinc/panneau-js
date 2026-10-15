@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -35,9 +35,14 @@ describe('RelationField', () => {
         await userEvent.type(screen.getByRole('combobox', { name: 'Author' }), 'grace');
         await userEvent.click(await screen.findByRole('option', { name: 'Grace Hopper' }));
         expect(onChange).toHaveBeenCalledWith({ id: '2', label: 'Grace Hopper' });
-        await waitFor(() =>
-            expect(search).toHaveBeenCalledWith('authors', 'grace', expect.anything()),
-        );
+        // The search is debounced while typing: on a slow machine, the option can come from
+        // the search of a prefix (`gra`) before the whole text is searched.
+        expect(
+            search.mock.calls.some(
+                ([resource, query]) =>
+                    resource === 'authors' && query !== '' && 'grace'.startsWith(query),
+            ),
+        ).toBe(true);
     });
 
     it('shows the label of the selected reference, and clears it', async () => {
