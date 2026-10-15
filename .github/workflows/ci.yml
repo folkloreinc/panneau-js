@@ -79,3 +79,26 @@ jobs:
 
             - name: Build Storybook
               run: npm run build-storybook -- --quiet
+
+    smoke-webpack:
+        name: Smoke test (packed packages in a webpack app)
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v5
+
+            - uses: actions/setup-node@v5
+              with:
+                  node-version-file: .nvmrc
+                  cache: npm
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Install Chromium
+              run: npx playwright install --with-deps chromium
+
+            - name: Build the packages
+              run: npm run build
+
+            - name: Pack, install and build with flklr (webpack), then render in Chromium
+              run: npm run test:smoke

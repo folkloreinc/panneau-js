@@ -123,3 +123,11 @@ describe('createMockBackend', () => {
         expect(response.headers.get('Content-Type')).toBe('application/problem+json');
     });
 });
+
+describe('createExampleDefinition', () => {
+    it('is a valid definition', async () => {
+        const { validateDefinition } = await import('../validate');
+        const { createExampleDefinition } = await import('.');
+        expect(validateDefinition(createExampleDefinition()).success).toBe(true);
+    });
+});

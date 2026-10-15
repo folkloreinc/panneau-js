@@ -56,6 +56,7 @@ npm run api:check   # fail if an API report is out of date
 npm run format      # Prettier
 npm run storybook   # Storybook, on http://localhost:6006
 npm run test:storybook  # every story as a test in Chromium: play functions and axe checks
+npm run test:smoke  # after a build: the packed packages in a webpack app (flklr), rendered in Chromium
 npx changeset       # describe a change for the changelog
 
 npm run create-package -- <name> [--react]   # create packages/<name> from the template

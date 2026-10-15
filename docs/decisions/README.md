@@ -26,3 +26,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0018](0018-new-packages-next-to-v4.md)  | New packages next to the v4 code, which moves to `legacy/`       | Accepted |
 | [0019](0019-app-entry.md)                | The app entry: boot config, mount function and client routes     | Accepted |
 | [0020](0020-default-theme-and-icons.md)  | A sober default theme, and Lucide as the only icon set           | Accepted |
+| [0021](0021-forms-render-core-state.md)  | Forms render the form state of the engine                        | Accepted |

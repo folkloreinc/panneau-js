@@ -348,3 +348,5 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
         items: (resource) => [...(store.get(resource) ?? [])],
     };
 }
+
+export { createExampleDefinition } from './example';

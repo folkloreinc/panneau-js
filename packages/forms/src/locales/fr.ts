@@ -1,0 +1,51 @@
+/** The French messages of `@panneau/forms`, by id. */
+export const fr: Record<string, string> = {
+    'panneau.forms.save': 'Enregistrer',
+    'panneau.forms.saved': 'Enregistré',
+    'panneau.forms.unsaved': 'Modifications non enregistrées',
+    'panneau.forms.errorCount': '{count, plural, one {# erreur} other {# erreurs}}',
+    'panneau.forms.summaryTitle':
+        '{count, plural, one {# erreur empêche l’enregistrement} other {# erreurs empêchent l’enregistrement}}',
+    'panneau.forms.goToField': 'Aller à {field}',
+    'panneau.forms.saveFailed': 'Les modifications n’ont pas pu être enregistrées.',
+    'panneau.forms.retry': 'Réessayer',
+    'panneau.forms.fieldCrashed': 'Le champ « {field} » ne peut pas être affiché.',
+    'panneau.forms.conflictTitle': 'Quelqu’un d’autre a enregistré cet élément',
+    'panneau.forms.conflictMessage':
+        'Il a changé depuis que vous l’avez ouvert. Chargez la version actuelle, ou enregistrez la vôtre par-dessus.',
+    'panneau.forms.conflictChanges': 'Valeurs différentes',
+    'panneau.forms.conflictUnknown':
+        'La version actuelle n’a pas été envoyée : chargez-la pour voir ce qui a changé.',
+    'panneau.forms.yours': 'La vôtre',
+    'panneau.forms.current': 'Actuelle',
+    'panneau.forms.empty': '(vide)',
+    'panneau.forms.itemCount': '{count, plural, one {# élément} other {# éléments}}',
+    'panneau.forms.yes': 'Oui',
+    'panneau.forms.no': 'Non',
+    'panneau.forms.loadCurrent': 'Charger la version actuelle',
+    'panneau.forms.overwrite': 'Enregistrer la mienne quand même',
+    'panneau.forms.leaveTitle': 'Quitter sans enregistrer?',
+    'panneau.forms.leaveMessage': 'Vos modifications seront perdues.',
+    'panneau.forms.stay': 'Rester',
+    'panneau.forms.leave': 'Quitter',
+    'panneau.forms.rule.required': 'Ce champ est obligatoire.',
+    'panneau.forms.rule.min': 'Cette valeur doit être d’au moins {value, number}.',
+    'panneau.forms.rule.max': 'Cette valeur doit être d’au plus {value, number}.',
+    'panneau.forms.rule.minLength':
+        '{value, plural, one {Au moins # caractère.} other {Au moins # caractères.}}',
+    'panneau.forms.rule.maxLength':
+        '{value, plural, one {Au plus # caractère.} other {Au plus # caractères.}}',
+    'panneau.forms.rule.minItems':
+        '{value, plural, one {Au moins # élément.} other {Au moins # éléments.}}',
+    'panneau.forms.rule.maxItems':
+        '{value, plural, one {Au plus # élément.} other {Au plus # éléments.}}',
+    'panneau.forms.rule.pattern': 'Cette valeur n’a pas le bon format.',
+    'panneau.forms.rule.email': 'Cette valeur doit être une adresse courriel.',
+    'panneau.forms.rule.url': 'Cette valeur doit être une URL.',
+    'panneau.forms.rule.in': 'Cette valeur ne fait pas partie des choix.',
+    'panneau.forms.rule.accept': 'Ce type de fichier n’est pas accepté.',
+    'panneau.forms.rule.maxSize': 'Ce fichier est trop lourd.',
+    'panneau.forms.rule.before': 'Cette date est trop tardive.',
+    'panneau.forms.rule.after': 'Cette date est trop hâtive.',
+    'panneau.forms.rule.invalid': 'Cette valeur n’est pas valide.',
+};
