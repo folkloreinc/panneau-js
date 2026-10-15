@@ -41,23 +41,30 @@ npm install
 
 The script writes `packages/<name>`:
 
-| File                  | Content                                                                                                                                                                                                                                                              |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `package.json`        | `@panneau/<name>` at the shared version, ESM, an `exports` map with `types` and `default`, `sideEffects` (`false`, or CSS files for React packages), `files`, public access, React 19.2 as a peer for React packages, and the `build`, `typecheck` and `api` scripts |
-| `tsconfig.json`       | Typecheck of `src` and `vite.config.ts`, extending `tsconfig.base.json`                                                                                                                                                                                              |
-| `tsconfig.build.json` | Type declarations in `dist/`, without the tests                                                                                                                                                                                                                      |
-| `vite.config.ts`      | `definePackageConfig()` from `config/vite.package.ts`: library build and Vitest project (`jsdom` and the React Compiler with `--react`)                                                                                                                              |
-| `src/`                | A placeholder module (or component) with its test, to replace with the first real one                                                                                                                                                                                |
-| `README.md`           | Title, description, an import example and the table of entry points to fill in                                                                                                                                                                                       |
+| File                  | Content                                                                                                                                                                                                                                                                                 |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `package.json`        | `@panneau/<name>` at the shared version, ESM, an `exports` map with `@panneau/source`, `types` and `default`, `sideEffects` (`false`, or CSS files for React packages), `files`, public access, React 19.2 as a peer for React packages, and the `build`, `typecheck` and `api` scripts |
+| `tsconfig.json`       | Typecheck of `src` and `vite.config.ts`, extending `tsconfig.base.json`, with the `@panneau/source` condition                                                                                                                                                                           |
+| `tsconfig.build.json` | Type declarations in `dist/`, without the tests                                                                                                                                                                                                                                         |
+| `vite.config.ts`      | `definePackageConfig()` from `config/vite.package.ts`: library build and Vitest project (`jsdom` and the React Compiler with `--react`)                                                                                                                                                 |
+| `src/`                | A placeholder module (or component) with its test, to replace with the first real one                                                                                                                                                                                                   |
+| `README.md`           | Title, description, an import example and the table of entry points to fill in                                                                                                                                                                                                          |
 
 Then:
 
 1. Replace the placeholder in `src/` with the first real module, with tests.
-2. Add an entry point for each subpath, as `@panneau/protocol` does for `./mock`: `'text/index': 'src/text/index.ts'` in `entries` in `vite.config.ts` builds `dist/text/index.js`, and `./text` in `exports` points `types` and `default` to `./dist/text/index.d.ts` and `./dist/text/index.js`. No patterns (`./*`) in `exports`: each subpath is listed, so that each one has an API report.
+2. Add an entry point for each subpath, as `@panneau/protocol` does for `./mock`: `'text/index': 'src/text/index.ts'` in `entries` in `vite.config.ts` builds `dist/text/index.js`, and `./text` in `exports` points `@panneau/source` to `./src/text/index.ts`, and `types` and `default` to `./dist/text/index.d.ts` and `./dist/text/index.js`. No patterns (`./*`) in `exports`: each subpath is listed, so that each one has an API report.
 3. Run `npm run api -w @panneau/<name>` and commit `api/`.
 4. Add a changeset: `Add @panneau/<name>.`
 
 `npm run test:create-package` (run in CI) creates a package and a React package in `.tmp/`, and checks that they pass lint, formatting, typecheck, tests, build and API reports. Run it after changing `scripts/create-package.js` or the shared configs.
+
+## Dependencies between packages
+
+A package depends on another one with the shared version in `dependencies` (`"@panneau/protocol": "5.0.0-alpha.0"`), and imports it through its public entry points only.
+
+- **Tests and typechecks use the sources.** Each entry of `exports` has a `@panneau/source` condition that points to its source file. The package's `tsconfig.json` (`customConditions`) and the shared Vite config (`resolve.conditions`) use it, so `npm test` and `npm run typecheck` work without building the other packages first. Published consumers don't use this condition: they get `types` and `default`.
+- **Builds use the declarations.** `tsconfig.build.json` doesn't use the condition, so a package's declarations and API report need the declarations of its dependencies. `npm run build` and `npm run api` run through `scripts/workspaces.js`, which runs the packages in dependency order.
 
 ## API reports
 
