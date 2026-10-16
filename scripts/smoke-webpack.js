@@ -2,11 +2,10 @@
 //
 //     npm run build && npm run test:smoke
 //
-// It packs the `@panneau/*` packages a form, a list and the action runner need (`npm pack`), installs the tarballs into a copy
+// It packs the `@panneau/*` packages a form and a list need (`npm pack`), installs the tarballs into a copy
 // of smoke/webpack (with their peer dependencies, as a project lists them), builds the app with
 // `flklr` (`@folklore/cli`, webpack), and renders it in Chromium: the form must render with its
-// styles, show a validation error, and submit; the list must render, sort, and run an action through
-// the runner of `@panneau/actions`.
+// styles, show a validation error, and submit; the list must render, sort and run an action.
 import { execFileSync } from 'node:child_process';
 import {
     cpSync,
@@ -26,7 +25,7 @@ const work = resolve(root, '.tmp/smoke-webpack');
 const tarballs = resolve(work, 'tarballs');
 const app = resolve(work, 'app');
 
-/** The packages the app imports, and the ones they depend on. */
+/** The packages the app imports (a form, a list and the action runner), and their dependencies. */
 const PACKAGES = ['protocol', 'intl', 'ui', 'fields', 'core', 'forms', 'lists', 'data', 'actions'];
 /** Peer dependencies, at the versions the workspace uses. */
 const PEERS = ['react', 'react-dom', 'react-aria-components', 'react-intl'];
