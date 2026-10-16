@@ -13,7 +13,7 @@ export default defineConfig({
         browser: {
             enabled: true,
             headless: true,
-            provider: playwright(),
+            provider: playwright({ launchOptions: { args: ['--disable-dev-shm-usage'] } }),
             instances: [{ browser: 'chromium' }],
         },
     },
