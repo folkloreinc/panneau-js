@@ -1,6 +1,6 @@
 {
     "name": "@panneau/forms",
-    "version": "5.0.0-alpha.0",
+    "version": "5.0.0-alpha.1",
     "description": "Forms of Panneau: fields in a layout, driven by the form state of @panneau/core, with errors, unsaved changes and version conflicts.",
     "type": "module",
     "license": "MIT",
@@ -41,13 +41,13 @@
         "react-intl": "^12.0.0"
     },
     "dependencies": {
-        "@panneau/core": "5.0.0-alpha.0",
-        "@panneau/fields": "5.0.0-alpha.0",
-        "@panneau/intl": "5.0.0-alpha.0",
-        "@panneau/protocol": "5.0.0-alpha.0",
-        "@panneau/ui": "5.0.0-alpha.0"
+        "@panneau/core": "5.0.0-alpha.1",
+        "@panneau/fields": "5.0.0-alpha.1",
+        "@panneau/intl": "5.0.0-alpha.1",
+        "@panneau/protocol": "5.0.0-alpha.1",
+        "@panneau/ui": "5.0.0-alpha.1"
     },
     "devDependencies": {
-        "@panneau/data": "5.0.0-alpha.0"
+        "@panneau/data": "5.0.0-alpha.1"
     }
 }

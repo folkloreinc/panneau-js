@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "5.0.0-alpha.0",
+    "version": "5.0.0-alpha.1",
     "description": "The Panneau admin panel: the app entry (createPanneauApp), and the shell, routes and pages to come.",
     "type": "module",
     "license": "MIT",
@@ -37,8 +37,8 @@
         "react-dom": "^19.2.0"
     },
     "dependencies": {
-        "@panneau/core": "5.0.0-alpha.0",
-        "@panneau/data": "5.0.0-alpha.0",
-        "@panneau/protocol": "5.0.0-alpha.0"
+        "@panneau/core": "5.0.0-alpha.1",
+        "@panneau/data": "5.0.0-alpha.1",
+        "@panneau/protocol": "5.0.0-alpha.1"
     }
 }
