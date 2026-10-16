@@ -31,7 +31,8 @@
         "release": "npm run build && changeset publish",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
-        "test:storybook": "vitest run --config vitest.storybook.config.ts"
+        "test:storybook": "vitest run --config vitest.storybook.config.ts",
+        "test:smoke": "node scripts/smoke-webpack.js"
     },
     "devDependencies": {
         "@babel/core": "^8.0.7",

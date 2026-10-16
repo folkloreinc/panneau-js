@@ -6,6 +6,11 @@
 
 import { z } from 'zod';
 
+// Warning: (ae-forgotten-export) The symbol "DefinitionInput" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function createExampleDefinition(): DefinitionInput;
+
 // @public
 export function createMockBackend(input: MockBackendOptions): MockBackend;
 
@@ -18,7 +23,6 @@ export interface MockBackend {
 
 // @public (undocumented)
 export interface MockBackendOptions {
-    // Warning: (ae-forgotten-export) The symbol "DefinitionInput" needs to be exported by the entry point index.d.ts
     definition: DefinitionInput;
     // Warning: (ae-forgotten-export) The symbol "Values" needs to be exported by the entry point index.d.ts
     items?: Record<string, Values[]>;

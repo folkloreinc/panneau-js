@@ -1,0 +1,52 @@
+{
+    "name": "@panneau/forms",
+    "version": "5.0.0-alpha.0",
+    "description": "Forms of Panneau: fields in a layout, driven by the form state of @panneau/core, with errors, unsaved changes and version conflicts.",
+    "type": "module",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git",
+        "directory": "packages/forms"
+    },
+    "sideEffects": [
+        "*.css"
+    ],
+    "exports": {
+        ".": {
+            "@panneau/source": "./src/index.ts",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./locales": {
+            "@panneau/source": "./src/locales/index.ts",
+            "types": "./dist/locales/index.d.ts",
+            "default": "./dist/locales/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "vite build && tsc -p tsconfig.build.json",
+        "typecheck": "tsc --noEmit",
+        "api": "tsc -p tsconfig.build.json && node ../../scripts/api-report.js"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "peerDependencies": {
+        "react": "^19.2.0",
+        "react-intl": "^12.0.0"
+    },
+    "dependencies": {
+        "@panneau/core": "5.0.0-alpha.0",
+        "@panneau/fields": "5.0.0-alpha.0",
+        "@panneau/protocol": "5.0.0-alpha.0",
+        "@panneau/ui": "5.0.0-alpha.0"
+    },
+    "devDependencies": {
+        "@panneau/data": "5.0.0-alpha.0"
+    }
+}
