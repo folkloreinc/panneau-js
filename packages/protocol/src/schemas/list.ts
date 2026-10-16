@@ -23,7 +23,8 @@ export const Column = z
 export const Filter = z.looseObject({
     id: z.string().min(1).meta({ description: 'Sent as `filter[id]`.' }),
     type: z.string().min(1).meta({
-        description: 'Built-in: `text`, `select`, `toggle`, `date`, `date-range`, `relation`.',
+        description:
+            'Built-in: `text`, `select`, `toggle`, `date`, `date-range`, `relation`. A `date-range` value is the bounds of a range: `filter[id][from]` and `filter[id][to]`, days (`2026-01-31`), both inclusive and both optional.',
     }),
     label: z.string().optional(),
     options: z.array(Option).optional(),

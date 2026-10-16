@@ -90,8 +90,10 @@ describe('@panneau/protocol/runtime', () => {
             'fromSearchParams',
             'getValue',
             'isFilled',
+            'isFilterRange',
             'isProblem',
             'lintDefinition',
+            'matchesFilterRange',
             'toSearchParams',
         ]);
     });

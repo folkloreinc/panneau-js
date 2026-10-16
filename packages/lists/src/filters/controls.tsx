@@ -1,6 +1,7 @@
 import { DateField } from '@panneau/fields/date';
 import { RelationField } from '@panneau/fields/relation';
 import type { FilterValue } from '@panneau/protocol';
+import { isFilterRange } from '@panneau/protocol/runtime';
 import { Fieldset, type OptionValue, Select, Switch, TextInput, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
@@ -9,6 +10,9 @@ import { useDraft } from '../useDraft';
 import styles from './Filters.module.css';
 
 function asStrings(value: unknown): string[] {
+    if (isFilterRange(value)) {
+        return [];
+    }
     if (Array.isArray(value)) {
         return value.map(String);
     }
@@ -98,14 +102,23 @@ export function DateFilter({ label, value, onChange }: FilterControlProps) {
 }
 
 /**
- * A range of days, sent as `[from, to]` (`filter[published_at][]=2026-01-01&…`). An open end is an
- * empty string.
+ * A range of days, sent as its bounds (`filter[published_at][from]=2026-01-01&…[to]=…`). Either end
+ * can be open: it is left out.
  */
 export function DateRangeFilter({ label, value, onChange }: FilterControlProps) {
     const intl = usePanneauIntl();
-    const [from = '', to = ''] = asStrings(value);
+    const range = isFilterRange(value) ? value : {};
+    const from = range.from !== undefined ? String(range.from) : '';
+    const to = range.to !== undefined ? String(range.to) : '';
     const set = (nextFrom: string, nextTo: string) =>
-        onChange(nextFrom === '' && nextTo === '' ? undefined : [nextFrom, nextTo]);
+        onChange(
+            nextFrom === '' && nextTo === ''
+                ? undefined
+                : {
+                      ...(nextFrom !== '' ? { from: nextFrom } : {}),
+                      ...(nextTo !== '' ? { to: nextTo } : {}),
+                  },
+        );
     return (
         <Fieldset legend={label} className={styles.range}>
             <DateField

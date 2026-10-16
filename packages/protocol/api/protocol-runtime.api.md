@@ -55,8 +55,16 @@ export function checkValues(fields: Field[], values: Record<string, unknown>, op
 // @public
 export function evaluateCondition(condition: Condition, values: unknown): boolean;
 
-// @public (undocumented)
-export type FilterValue = string | number | boolean | Array<string | number | boolean>;
+// @public
+export interface FilterRange {
+    // (undocumented)
+    from?: string | number;
+    // (undocumented)
+    to?: string | number;
+}
+
+// @public
+export type FilterValue = string | number | boolean | Array<string | number | boolean> | FilterRange;
 
 // @public
 export function fromSearchParams(params: URLSearchParams): ListQuery;
@@ -66,6 +74,9 @@ export function getValue(values: unknown, path: string): unknown;
 
 // @public
 export function isFilled(value: unknown): boolean;
+
+// @public
+export function isFilterRange(value: unknown): value is FilterRange;
 
 // Warning: (ae-forgotten-export) The symbol "Problem" needs to be exported by the entry point index.d.ts
 //
@@ -90,6 +101,9 @@ export interface ListQuery {
     q?: string;
     sort?: string[];
 }
+
+// @public
+export function matchesFilterRange(value: unknown, range: FilterRange): boolean;
 
 // @public
 export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "in", "accept", "maxSize", "before", "after"];

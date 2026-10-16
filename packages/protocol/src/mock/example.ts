@@ -106,7 +106,10 @@ export function createExampleDefinition(): DefinitionInput {
                         { field: 'status' },
                         { id: 'updated' },
                     ],
-                    filters: [{ id: 'status', type: 'select' }],
+                    filters: [
+                        { id: 'status', type: 'select' },
+                        { id: 'published_at', type: 'date-range', label: 'Publication' },
+                    ],
                     sorts: ['title', 'published_at'],
                     defaultSort: 'title',
                     perPage: 20,

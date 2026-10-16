@@ -1,5 +1,5 @@
 import type { FilterValue, ListQuery, Selection } from '@panneau/protocol';
-import { fromSearchParams, toSearchParams } from '@panneau/protocol/runtime';
+import { fromSearchParams, isFilterRange, toSearchParams } from '@panneau/protocol/runtime';
 
 import type { ResolvedList } from '../definition/list';
 import { isEqual } from '../values';
@@ -84,7 +84,10 @@ function normalize(query: ListQuery, defaults: Required<ListDefaults>): ListQuer
     }
     const filter = Object.fromEntries(
         Object.entries(query.filter ?? {}).filter(
-            ([, value]) => value !== '' && !(Array.isArray(value) && value.length === 0),
+            ([, value]) =>
+                value !== '' &&
+                !(Array.isArray(value) && value.length === 0) &&
+                !(isFilterRange(value) && Object.keys(value).length === 0),
         ),
     );
     if (Object.keys(filter).length > 0) {

@@ -159,6 +159,39 @@ export const Default: Story = {
     },
 };
 
+/** A `date-range` filter: its bounds are sent as `filter[joined_on][from]` and `[to]`. */
+export const DateRange: Story = {
+    args: {
+        filters: [{ id: 'joined_on', type: 'date-range', label: 'Joined' }],
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const range = canvas.getByRole('group', { name: 'Joined' });
+        const segments = (name: string) =>
+            within(within(range).getByRole('group', { name })).getAllByRole('spinbutton');
+        const type = async (name: string, parts: string[]) => {
+            for (const [index, part] of parts.entries()) {
+                await userEvent.click(segments(name)[index] as HTMLElement);
+                await userEvent.keyboard(part);
+            }
+        };
+        await type('To', ['1', '31', '2026']);
+        await expect(canvas.getByRole('list', { name: 'Active filters' })).toHaveTextContent(
+            'Joined: … – Jan 31, 2026',
+        );
+        await expect(canvas.getByRole('navigation', { name: 'Pagination' })).toHaveTextContent(
+            '1–3 of 3',
+        );
+        await type('From', ['1', '15', '2026']);
+        await expect(canvas.getByRole('list', { name: 'Active filters' })).toHaveTextContent(
+            'Joined: Jan 15, 2026 – Jan 31, 2026',
+        );
+        await expect(canvas.getByRole('navigation', { name: 'Pagination' })).toHaveTextContent(
+            '1–1 of 1',
+        );
+    },
+};
+
 export const Cards: Story = {
     args: { layouts: ['cards', 'table'] },
     play: async ({ canvasElement }) => {

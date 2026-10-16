@@ -68,7 +68,8 @@ const listParameters = [
         required: false,
         style: 'deepObject',
         explode: true,
-        description: '`filter[status]=published`, `filter[tags][]=a`.',
+        description:
+            '`filter[status]=published`; `filter[tags][]=a&filter[tags][]=b` for any of several values; `filter[published_at][from]=2026-01-01&filter[published_at][to]=2026-01-31` for the inclusive bounds of a range filter (`date-range`), without the open end.',
         schema: { type: 'object', additionalProperties: true },
     },
     queryParameter('q', 'Search.', { type: 'string' }),

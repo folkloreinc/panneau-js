@@ -1,6 +1,7 @@
 import type { IntlShape } from 'react-intl';
 
 import type { Field, Filter, Option } from '@panneau/protocol';
+import { isFilterRange } from '@panneau/protocol/runtime';
 
 import { messages } from '../messages';
 import type { ListColumn } from '../types';
@@ -74,7 +75,9 @@ export function formatFilterValue(
         case 'date':
             return formatDay(String(value), intl);
         case 'date-range': {
-            const [from = '', to = ''] = values.map(String);
+            const range = isFilterRange(value) ? value : {};
+            const from = range.from !== undefined ? String(range.from) : '';
+            const to = range.to !== undefined ? String(range.to) : '';
             return intl.formatMessage(messages.dateRange, {
                 from: from !== '' ? formatDay(from, intl) : '…',
                 to: to !== '' ? formatDay(to, intl) : '…',

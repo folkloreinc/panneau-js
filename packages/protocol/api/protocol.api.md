@@ -1018,8 +1018,16 @@ export const Filter: z.ZodObject<{
 // @public (undocumented)
 export type Filter = z.infer<typeof Filter>;
 
-// @public (undocumented)
-export type FilterValue = string | number | boolean | Array<string | number | boolean>;
+// @public
+export interface FilterRange {
+    // (undocumented)
+    from?: string | number;
+    // (undocumented)
+    to?: string | number;
+}
+
+// @public
+export type FilterValue = string | number | boolean | Array<string | number | boolean> | FilterRange;
 
 // @public
 export function fromSearchParams(params: URLSearchParams): ListQuery;
@@ -1035,6 +1043,9 @@ export type Id = z.infer<typeof Id>;
 
 // @public
 export function isFilled(value: unknown): boolean;
+
+// @public
+export function isFilterRange(value: unknown): value is FilterRange;
 
 // @public
 export function isProblem(value: unknown): value is Problem;
@@ -1164,6 +1175,9 @@ export const ListResponse: z.ZodObject<{
 
 // @public (undocumented)
 export type ListResponse = z.infer<typeof ListResponse>;
+
+// @public
+export function matchesFilterRange(value: unknown, range: FilterRange): boolean;
 
 // @public (undocumented)
 export const Media: z.ZodObject<{

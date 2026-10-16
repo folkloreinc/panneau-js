@@ -7,7 +7,16 @@ import { formatReport, runConformance } from './index';
 function createBackend() {
     return createMockBackend({
         definition: createDefinition(),
-        items: { pages: [{ title: { fr: 'Accueil', en: 'Home' }, status: 'draft' }] },
+        items: {
+            pages: [
+                {
+                    title: { fr: 'Accueil', en: 'Home' },
+                    status: 'published',
+                    published_at: '2026-10-01T12:00:00Z',
+                },
+                { title: { fr: 'Contact', en: 'Contact' }, status: 'draft', published_at: null },
+            ],
+        },
     });
 }
 
@@ -76,5 +85,44 @@ describe('runConformance', () => {
         expect(formatReport(report)).toContain(
             'Expected content type application/problem+json, got "text/html".',
         );
+    });
+
+    it('reports a backend that ignores the bounds of a range filter', async () => {
+        const backend = createBackend();
+        // A backend that only knows `filter[id]` and `filter[id][]`.
+        const withoutRanges = (input: string, init?: RequestInit) => {
+            const url = new URL(input);
+            [...url.searchParams.keys()]
+                .filter((key) => /\]\[(from|to)\]$/.test(key))
+                .forEach((key) => url.searchParams.delete(key));
+            return backend.fetch(url.toString(), init);
+        };
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: withoutRanges,
+        });
+        const range = report.checks.find((check) => check.id === 'list.filter-range');
+        expect(range?.status).toBe('failed');
+        expect(range?.issues).toEqual([
+            'Filtered from 9999-12-31, the list has 2 items, expected 0.',
+        ]);
+    });
+
+    it('skips the range check when the resource has no date-range filter', async () => {
+        const definition = createDefinition();
+        definition.resources.forEach((resource) => {
+            if (resource.list !== undefined) {
+                resource.list.filters = [];
+            }
+        });
+        const backend = createMockBackend({ definition });
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: backend.fetch,
+        });
+        expect(report.checks.find((check) => check.id === 'list.filter-range')).toMatchObject({
+            status: 'skipped',
+            issues: ['The resource declares no date-range filter.'],
+        });
     });
 });

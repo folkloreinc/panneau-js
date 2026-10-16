@@ -1,7 +1,9 @@
 import type { z } from 'zod';
 
+import { type FilterRange, toSearchParams } from '../query';
 import { Definition, type Resource } from '../schemas';
 import { ItemResponse, ListResponse, Problem } from '../schemas/api';
+import { isFilled } from '../values';
 import { PROBLEM_CONTENT_TYPE } from '../version';
 
 export interface ConformanceOptions {
@@ -233,6 +235,55 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             check.expectSchema(ListResponse, reply.body, 'The sorted list');
         }
     });
+
+    await run(
+        'list.filter-range',
+        'GET /resources/{resource} reads the bounds of a range filter',
+        async (check) => {
+            const filter = (resource as Resource | null)?.list?.filters?.find(
+                (candidate) => candidate.type === 'date-range',
+            );
+            if (filter === undefined) {
+                check.skip('The resource declares no date-range filter.');
+                return;
+            }
+            const list = async (range: FilterRange | null, label: string) => {
+                const query =
+                    range !== null ? `?${toSearchParams({ filter: { [filter.id]: range } })}` : '';
+                const reply = await request(`${resourcePath()}${query}`);
+                if (!check.expectStatus(reply, 200)) {
+                    return null;
+                }
+                return check.expectSchema(ListResponse, reply.body, label);
+            };
+            const all = await list(null, 'The list');
+            if (all === null) {
+                return;
+            }
+            // Items of the first page with a value: a range that covers every day includes them.
+            const dated = all.data.filter((item) => isFilled(item[filter.id])).length;
+            const ranges: [FilterRange, string][] = [
+                [{ from: '0001-01-01', to: '9999-12-31' }, 'from 0001-01-01 to 9999-12-31'],
+                [{ to: '9999-12-31' }, 'up to 9999-12-31 (an open start)'],
+            ];
+            for (const [range, label] of ranges) {
+                const reply = await list(range, `The list filtered ${label}`);
+                if (reply !== null) {
+                    check.expect(
+                        reply.meta.total >= dated,
+                        `Filtered ${label}, the list has ${reply.meta.total} items; the first page alone has ${dated} with a ${filter.id}.`,
+                    );
+                }
+            }
+            const future = await list({ from: '9999-12-31' }, 'The list filtered from 9999-12-31');
+            if (future !== null) {
+                check.expect(
+                    future.meta.total === 0,
+                    `Filtered from 9999-12-31, the list has ${future.meta.total} items, expected 0.`,
+                );
+            }
+        },
+    );
 
     await run('list.unknown-resource', 'An unknown resource is a 404 problem', async (check) => {
         check.expectProblem(await request(`/resources/${UNKNOWN}`), 404);

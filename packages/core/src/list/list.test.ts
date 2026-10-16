@@ -121,6 +121,21 @@ describe('createList', () => {
         expect(router.getSearch()).toBe('tab=2');
     });
 
+    it('keeps the bounds of a range in the URL, and drops an empty range', () => {
+        const router = createMemoryRouter(
+            'filter%5Bpublished_at%5D%5Bfrom%5D=2026-01-01&filter%5Bpublished_at%5D%5Bto%5D=2026-01-31',
+        );
+        const list = createList({ list: pages, router });
+        expect(list.getState().query.filter).toEqual({
+            published_at: { from: '2026-01-01', to: '2026-01-31' },
+        });
+        list.setFilter('published_at', { from: '2026-02-01' });
+        expect(router.getSearch()).toBe('filter%5Bpublished_at%5D%5Bfrom%5D=2026-02-01');
+        list.setFilter('published_at', {});
+        expect(router.getSearch()).toBe('');
+        expect(list.getState().query.filter).toBeUndefined();
+    });
+
     it('follows the URL when it changes (back and forward)', () => {
         const router = createMemoryRouter();
         const list = createList({ list: pages, router });

@@ -1,4 +1,48 @@
-export type FilterValue = string | number | boolean | Array<string | number | boolean>;
+/**
+ * The bounds of a range filter (`date-range`), both inclusive. An open end is left out. Sent as
+ * `filter[published_at][from]=2026-01-01&filter[published_at][to]=2026-01-31`.
+ */
+export interface FilterRange {
+    from?: string | number;
+    to?: string | number;
+}
+
+/**
+ * The value of a filter: one value (`filter[status]=draft`), a list that matches any of its values
+ * (`filter[tags][]=a&filter[tags][]=b`), or the bounds of a range.
+ */
+export type FilterValue =
+    string | number | boolean | Array<string | number | boolean> | FilterRange;
+
+/** Whether a filter value is the bounds of a range, and not one value or a list of values. */
+export function isFilterRange(value: unknown): value is FilterRange {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+const RANGE_BOUNDS = ['from', 'to'] as const;
+
+/**
+ * Whether a value is within the bounds of a range filter, both inclusive: the reference of how a
+ * backend reads them. Numbers compare as numbers. Other values compare as strings, on the length of
+ * the bound, so that a day (`2026-01-31`) includes the times of that day (`2026-01-31T18:00:00Z`).
+ * An empty value is never in a range.
+ */
+export function matchesFilterRange(value: unknown, range: FilterRange): boolean {
+    if (value === null || value === undefined || value === '') {
+        return false;
+    }
+    const compare = (bound: string | number): number => {
+        if (typeof value === 'number' || typeof bound === 'number') {
+            return Number(value) - Number(bound);
+        }
+        const prefix = String(value).slice(0, bound.length);
+        return prefix < bound ? -1 : prefix > bound ? 1 : 0;
+    };
+    return (
+        (range.from === undefined || range.from === '' || compare(range.from) >= 0) &&
+        (range.to === undefined || range.to === '' || compare(range.to) <= 0)
+    );
+}
 
 /** Query of a list request (`GET /resources/{resource}`). */
 export interface ListQuery {
@@ -27,6 +71,13 @@ export function toSearchParams(query: ListQuery): URLSearchParams {
     Object.entries(query.filter ?? {}).forEach(([key, value]) => {
         if (Array.isArray(value)) {
             value.forEach((item) => params.append(`filter[${key}][]`, String(item)));
+        } else if (isFilterRange(value)) {
+            RANGE_BOUNDS.forEach((bound) => {
+                const limit = value[bound];
+                if (limit !== undefined && limit !== '') {
+                    params.set(`filter[${key}][${bound}]`, String(limit));
+                }
+            });
         } else {
             params.set(`filter[${key}]`, String(value));
         }
@@ -40,9 +91,12 @@ export function toSearchParams(query: ListQuery): URLSearchParams {
     return params;
 }
 
-const FILTER_KEY = /^filter\[([^\]]+)\](\[\])?$/;
+const FILTER_KEY = /^filter\[([^\]]+)\](?:\[(|from|to)\])?$/;
 
-/** Parses a list query from the protocol's query string format. Filter values stay strings. */
+/**
+ * Parses a list query from the protocol's query string format. Filter values stay strings, and the
+ * bounds of a range (`filter[id][from]`, `filter[id][to]`) become a `FilterRange`.
+ */
 export function fromSearchParams(params: URLSearchParams): ListQuery {
     const query: ListQuery = {};
     const integer = (value: string | null): number | undefined => {
@@ -78,9 +132,16 @@ export function fromSearchParams(params: URLSearchParams): ListQuery {
         }
         query.filter ??= {};
         const name = match[1];
-        if (match[2] !== undefined) {
-            const current = query.filter[name];
+        const current = query.filter[name];
+        if (match[2] === '') {
             query.filter[name] = [...(Array.isArray(current) ? current : []), value];
+        } else if (match[2] !== undefined) {
+            if (value !== '') {
+                query.filter[name] = {
+                    ...(isFilterRange(current) ? current : {}),
+                    [match[2]]: value,
+                };
+            }
         } else {
             query.filter[name] = value;
         }
