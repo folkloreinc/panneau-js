@@ -1,4 +1,5 @@
-import { type Field, evaluateCondition } from '@panneau/protocol';
+import type { Field } from '@panneau/protocol';
+import { evaluateCondition } from '@panneau/protocol/runtime';
 
 // Groups, repeaters and localized values render nested fields, which render through
 // `DefinitionField`: the modules import each other, which is fine since they only use each other

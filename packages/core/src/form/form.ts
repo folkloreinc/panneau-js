@@ -1,11 +1,5 @@
-import {
-    type Condition,
-    type Field,
-    type Item,
-    type RuleFailure,
-    checkValues,
-    getValue,
-} from '@panneau/protocol';
+import type { Condition, Field, Item, RuleFailure } from '@panneau/protocol';
+import { checkValues, getValue } from '@panneau/protocol/runtime';
 
 import type { FormMode } from '../definition/form';
 import { type Values, isEqual, isPathWithin } from '../values';

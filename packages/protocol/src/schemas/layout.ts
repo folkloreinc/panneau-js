@@ -2,19 +2,6 @@ import { z } from 'zod';
 
 import { Condition } from './common';
 
-/** Layout node types every Panneau frontend renders. */
-export const BUILT_IN_LAYOUT_NODE_TYPES = [
-    'row',
-    'column',
-    'section',
-    'tabs',
-    'tab',
-    'sidebar',
-    'field',
-    'text',
-    'component',
-] as const;
-
 export const LayoutNode = z
     .looseObject({
         type: z
@@ -50,5 +37,4 @@ export const LayoutNode = z
             'A node of a form layout. Containers (`row`, `column`, `section`, `tabs`, `tab`, `sidebar`) have `children`. Fields that no node references are appended at the end of the form.',
     });
 
-export type BuiltInLayoutNodeType = (typeof BUILT_IN_LAYOUT_NODE_TYPES)[number];
 export type LayoutNode = z.infer<typeof LayoutNode>;

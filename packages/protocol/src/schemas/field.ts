@@ -1,42 +1,7 @@
 import { z } from 'zod';
 
+import { PORTABLE_RULES } from '../constants';
 import { Condition, Option } from './common';
-
-/** Field types every Panneau frontend renders. Plugins add others. */
-export const BUILT_IN_FIELD_TYPES = [
-    'text',
-    'textarea',
-    'richtext',
-    'number',
-    'boolean',
-    'date',
-    'datetime',
-    'time',
-    'select',
-    'email',
-    'url',
-    'color',
-    'media',
-    'relation',
-    'group',
-    'repeater',
-    'slug',
-] as const;
-
-/** Validation rules that both frontends and backends check. */
-export const PORTABLE_RULES = [
-    'required',
-    'min',
-    'max',
-    'pattern',
-    'email',
-    'url',
-    'in',
-    'accept',
-    'maxSize',
-    'before',
-    'after',
-] as const;
 
 const message = z
     .string()
@@ -150,8 +115,6 @@ export const Field = z
     })
     .meta({ description: 'A field of a form.' });
 
-export type BuiltInFieldType = (typeof BUILT_IN_FIELD_TYPES)[number];
-export type PortableRule = (typeof PORTABLE_RULES)[number];
 export type Rule = z.infer<typeof Rule>;
 export type BlockType = z.infer<typeof BlockType>;
 export type Field = z.infer<typeof Field>;

@@ -8,20 +8,20 @@ import type { Abilities } from '@panneau/protocol';
 import type { Action } from '@panneau/protocol';
 import type { ActionPlacement } from '@panneau/protocol';
 import type { ComponentType } from 'react';
-import { Condition } from '@panneau/protocol';
+import type { Condition } from '@panneau/protocol';
 import type { Definition } from '@panneau/protocol';
-import { Field } from '@panneau/protocol';
+import type { Field } from '@panneau/protocol';
 import type { Filter } from '@panneau/protocol';
-import { FilterValue } from '@panneau/protocol';
-import { Item } from '@panneau/protocol';
+import type { FilterValue } from '@panneau/protocol';
+import type { Item } from '@panneau/protocol';
 import { JSX } from 'react';
 import type { LayoutNode } from '@panneau/protocol';
-import { ListQuery } from '@panneau/protocol';
-import { Problem } from '@panneau/protocol';
+import type { ListQuery } from '@panneau/protocol';
+import type { Problem } from '@panneau/protocol';
 import { ReactNode } from 'react';
 import type { Resource } from '@panneau/protocol';
-import { RuleFailure } from '@panneau/protocol';
-import { Selection as Selection_2 } from '@panneau/protocol';
+import type { RuleFailure } from '@panneau/protocol';
+import type { Selection as Selection_2 } from '@panneau/protocol';
 
 // @public
 export function can(abilities: Abilities | undefined, ability: string): boolean;

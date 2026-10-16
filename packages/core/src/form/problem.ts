@@ -1,4 +1,5 @@
-import { type Item, type Problem, isProblem } from '@panneau/protocol';
+import type { Item, Problem } from '@panneau/protocol';
+import { isProblem } from '@panneau/protocol/runtime';
 
 import type { Values } from '../values';
 

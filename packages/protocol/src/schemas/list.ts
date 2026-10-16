@@ -2,9 +2,6 @@ import { z } from 'zod';
 
 import { Option } from './common';
 
-/** List layouts every Panneau frontend renders. Plugins add others. */
-export const BUILT_IN_LIST_LAYOUTS = ['table', 'cards', 'gallery', 'calendar'] as const;
-
 export const Column = z
     .looseObject({
         field: z.string().min(1).optional().meta({ description: 'The field shown in the column.' }),
@@ -57,7 +54,6 @@ export const ListDefinition = z.looseObject({
     selectable: z.boolean().optional(),
 });
 
-export type BuiltInListLayout = (typeof BUILT_IN_LIST_LAYOUTS)[number];
 export type Column = z.infer<typeof Column>;
 export type Filter = z.infer<typeof Filter>;
 export type ListDefinition = z.infer<typeof ListDefinition>;

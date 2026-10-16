@@ -6,7 +6,7 @@
 
 import { ComponentType } from 'react';
 import type { Definition } from '@panneau/protocol';
-import { Field } from '@panneau/protocol';
+import type { Field } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';
 import { JSX } from 'react';
 import type { ListQuery } from '@panneau/protocol';

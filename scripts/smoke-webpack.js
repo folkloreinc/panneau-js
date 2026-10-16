@@ -4,8 +4,9 @@
 //
 // It packs the `@panneau/*` packages a form and a list need (`npm pack`), installs the tarballs into a copy
 // of smoke/webpack (with their peer dependencies, as a project lists them), builds the app with
-// `flklr` (`@folklore/cli`, webpack), and renders it in Chromium: the form must render with its
-// styles, show a validation error, and submit; the list must render, sort and run an action.
+// `flklr` (`@folklore/cli`, webpack), checks that the bundle has no zod, and renders it in
+// Chromium: the form must render with its styles, show a validation error, and submit; the list
+// must render, sort and run an action.
 import { execFileSync } from 'node:child_process';
 import {
     cpSync,
@@ -14,6 +15,7 @@ import {
     readFileSync,
     readdirSync,
     rmSync,
+    statSync,
     writeFileSync,
 } from 'node:fs';
 import { createServer } from 'node:http';
@@ -106,6 +108,19 @@ run(
 );
 
 const dist = resolve(app, 'dist');
+
+// The bundle: forms and lists use the runtime helpers of the protocol, never its zod schemas (#27).
+const scripts = readdirSync(dist, { recursive: true }).filter((file) => file.endsWith('.js'));
+const sizes = scripts.map((file) => [file, statSync(join(dist, file)).size]);
+sizes.forEach(([file, size]) => console.log(`${file}: ${(size / 1024).toFixed(1)} KB`));
+console.log(
+    `JavaScript: ${(sizes.reduce((total, [, size]) => total + size, 0) / 1024).toFixed(1)} KB`,
+);
+const withZod = scripts.filter((file) => /\$Zod[A-Z]/.test(readFileSync(join(dist, file), 'utf8')));
+if (withZod.length > 0) {
+    throw new Error(`zod is in the bundle (${withZod.join(', ')}): a UI package imports a schema.`);
+}
+
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
 const server = createServer((request, response) => {
     const path = new URL(request.url ?? '/', 'http://localhost').pathname;
