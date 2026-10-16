@@ -5,8 +5,7 @@
 // It packs the `@panneau/*` packages a form and a list need (`npm pack`), installs the tarballs into a copy
 // of smoke/webpack (with their peer dependencies, as a project lists them), builds the app with
 // `flklr` (`@folklore/cli`, webpack), and renders it in Chromium: the form must render with its
-// styles, show a validation error, and submit; the list must render, sort, load the icon an action
-// names, and run the action.
+// styles, show a validation error, and submit; the list must render, sort and run an action.
 import { execFileSync } from 'node:child_process';
 import {
     cpSync,
