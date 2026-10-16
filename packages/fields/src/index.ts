@@ -18,6 +18,7 @@ export {
     type RelationSourceOptions,
     createRelationSource,
     toReferences,
+    useRelationReferences,
 } from './shared/relation';
 export type { FieldEntry, FieldEntryProps, FieldProps } from './shared/types';
 export { MissingFieldEntry } from './missing/MissingField';

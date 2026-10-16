@@ -105,4 +105,28 @@ describe('filters', () => {
         const chips = screen.getByRole('list', { name: 'Active filters' });
         expect(within(chips).getByText('Ada Lovelace')).toBeInTheDocument();
     });
+
+    it('resolves the labels of related ids from the query, for the chip and the picker', async () => {
+        const source: RelationSource = {
+            search: () => Promise.resolve([]),
+            resolve: (_resource, ids) =>
+                Promise.resolve(ids.includes('7') ? [{ id: '7', label: 'Ada Lovelace' }] : []),
+        };
+        const list = createList({ query: { filter: { author: '7' } } });
+        renderList(
+            <FieldsProvider relationSource={source}>
+                <ListView
+                    list={list}
+                    columns={columns}
+                    items={items}
+                    filters={[
+                        { id: 'author', type: 'relation', resource: 'authors', label: 'Author' },
+                    ]}
+                />
+            </FieldsProvider>,
+        );
+        const chips = screen.getByRole('list', { name: 'Active filters' });
+        await waitFor(() => expect(chips).toHaveTextContent('Author: Ada Lovelace'));
+        expect(screen.getByRole('combobox', { name: 'Author' })).toHaveValue('Ada Lovelace');
+    });
 });

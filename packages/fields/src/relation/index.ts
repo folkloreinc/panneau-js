@@ -13,4 +13,5 @@ export {
     type RelationSource,
     type RelationSourceOptions,
     createRelationSource,
+    useRelationReferences,
 } from '../shared/relation';

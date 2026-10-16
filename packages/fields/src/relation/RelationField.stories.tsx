@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
-import { exampleRelationSource } from '../__fixtures__/fields';
+import { createEditableRelationSource, exampleRelationSource } from '../__fixtures__/fields';
 import type { RelationReference } from '../shared/relation';
 import { RelationField } from './RelationField';
 
@@ -67,4 +67,55 @@ export const WithoutSource: Story = {
             value={{ id: '1', label: 'Ada Lovelace' }}
         />
     ),
+};
+
+/** Values that are only ids, as a product's own API gives them: the source resolves their labels. */
+export const PlainIds: Story = {
+    args: { source: createEditableRelationSource() },
+    render: (args) => (
+        <RelationField
+            resource="authors"
+            source={args.source ?? null}
+            label="Guests"
+            multiple
+            value={[
+                { id: '1', label: '1' },
+                { id: '2', label: '2' },
+            ]}
+        />
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(await canvas.findByText('Ada Lovelace')).toBeVisible();
+        await expect(canvas.getByText('Grace Hopper')).toBeVisible();
+    },
+};
+
+/** "Create “…”" in the picker, when the source can create items. */
+export const CreateFromThePicker: Story = {
+    args: { source: createEditableRelationSource() },
+    render: function Render(args) {
+        const [value, setValue] = useState<RelationReference[] | null>(null);
+        return (
+            <RelationField
+                resource="authors"
+                source={args.source ?? null}
+                label="Guests"
+                multiple
+                value={value}
+                onChange={setValue}
+            />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.type(canvas.getByRole('combobox', { name: 'Guests' }), 'Hedy Lamarr');
+        await userEvent.click(await canvas.findByRole('option', { name: 'Create “Hedy Lamarr”' }));
+        await waitFor(() => expect(canvas.getByText('Hedy Lamarr')).toBeVisible());
+        // The picker stays open to add more: close it.
+        await userEvent.keyboard('{Escape}');
+        await expect(
+            await canvas.findByRole('button', { name: 'Remove Hedy Lamarr' }),
+        ).toBeVisible();
+    },
 };

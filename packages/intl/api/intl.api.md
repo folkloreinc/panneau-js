@@ -99,6 +99,12 @@ export const fieldsMessages: {
     search: PanneauMessage<Record<never, never>>;
     noRelation: PanneauMessage<Record<never, never>>;
     noResults: PanneauMessage<Record<never, never>>;
+    createRelation: PanneauMessage<    {
+    text: string;
+    }>;
+    createRelationFailed: PanneauMessage<    {
+    text: string;
+    }>;
     relationUnavailable: PanneauMessage<Record<never, never>>;
     missingPlugin: PanneauMessage<    {
     type: string;

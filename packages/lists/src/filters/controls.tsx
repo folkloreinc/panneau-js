@@ -1,5 +1,8 @@
+import { useEffect } from 'react';
+
+import { useFieldsContext } from '@panneau/fields';
 import { DateField } from '@panneau/fields/date';
-import { RelationField } from '@panneau/fields/relation';
+import { RelationField, useRelationReferences } from '@panneau/fields/relation';
 import type { FilterValue } from '@panneau/protocol';
 import { isFilterRange } from '@panneau/protocol/runtime';
 import { Fieldset, type OptionValue, Select, Switch, TextInput, usePanneauIntl } from '@panneau/ui';
@@ -148,15 +151,26 @@ export function RelationFilter({
     onLabel,
     getValueLabel,
 }: FilterControlProps) {
-    const references = asStrings(value).map((id) => ({ id, label: getValueLabel(id) ?? id }));
+    const resource = filter.resource ?? filter.id;
+    // Ids from the URL have no label: the relation source resolves them, for the picker and chips.
+    const references = useRelationReferences(
+        useFieldsContext().relationSource,
+        resource,
+        asStrings(value).map((id) => ({ id, label: getValueLabel(id) ?? id })),
+    );
     const remember = (next: readonly { id: string; label: string }[]) =>
         next.forEach((reference) => onLabel(reference.id, reference.label));
+    useEffect(() => {
+        references
+            .filter((reference) => reference.label !== reference.id)
+            .forEach((reference) => onLabel(reference.id, reference.label));
+    }, [references, onLabel]);
     if (filter.multiple === true) {
         return (
             <RelationField
                 multiple
                 label={label}
-                resource={filter.resource ?? filter.id}
+                resource={resource}
                 value={references}
                 onChange={(next) => {
                     remember(next ?? []);
@@ -173,7 +187,7 @@ export function RelationFilter({
     return (
         <RelationField
             label={label}
-            resource={filter.resource ?? filter.id}
+            resource={resource}
             value={references[0] ?? null}
             onChange={(next) => {
                 remember(next !== null ? [next] : []);
