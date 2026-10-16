@@ -126,6 +126,95 @@ export function getDefaultMessages(group: object): MessageCatalog;
 export function getPanneauMessages(locale: string): MessageCatalog;
 
 // @public
+export const listsMessages: {
+    list: PanneauMessage<Record<never, never>>;
+    search: PanneauMessage<Record<never, never>>;
+    searchPlaceholder: PanneauMessage<Record<never, never>>;
+    filters: PanneauMessage<Record<never, never>>;
+    activeFilters: PanneauMessage<Record<never, never>>;
+    removeFilter: PanneauMessage<    {
+    filter: string;
+    }>;
+    searchChip: PanneauMessage<    {
+    q: string;
+    }>;
+    clearFilters: PanneauMessage<Record<never, never>>;
+    any: PanneauMessage<Record<never, never>>;
+    from: PanneauMessage<Record<never, never>>;
+    to: PanneauMessage<Record<never, never>>;
+    dateRange: PanneauMessage<    {
+    from: string;
+    to: string;
+    }>;
+    yes: PanneauMessage<Record<never, never>>;
+    no: PanneauMessage<Record<never, never>>;
+    sortBy: PanneauMessage<Record<never, never>>;
+    defaultSort: PanneauMessage<Record<never, never>>;
+    sortAscending: PanneauMessage<    {
+    column: string;
+    }>;
+    sortDescending: PanneauMessage<    {
+    column: string;
+    }>;
+    layout: PanneauMessage<Record<never, never>>;
+    layoutTable: PanneauMessage<Record<never, never>>;
+    layoutCards: PanneauMessage<Record<never, never>>;
+    selectItem: PanneauMessage<    {
+    item: string;
+    }>;
+    selectPage: PanneauMessage<Record<never, never>>;
+    selectedCount: PanneauMessage<    {
+    count: number;
+    }>;
+    selectAllMatching: PanneauMessage<    {
+    total: number;
+    }>;
+    allMatchingSelected: PanneauMessage<    {
+    total: number;
+    }>;
+    clearSelection: PanneauMessage<Record<never, never>>;
+    actions: PanneauMessage<Record<never, never>>;
+    actionOnItem: PanneauMessage<    {
+    action: string;
+    item: string;
+    }>;
+    itemActions: PanneauMessage<    {
+    item: string;
+    }>;
+    confirmTitle: PanneauMessage<    {
+    action: string;
+    }>;
+    confirmMessage: PanneauMessage<    {
+    count: number;
+    action: string;
+    }>;
+    confirmSkipped: PanneauMessage<    {
+    count: number;
+    }>;
+    cancel: PanneauMessage<Record<never, never>>;
+    actionFailed: PanneauMessage<    {
+    action: string;
+    }>;
+    empty: PanneauMessage<Record<never, never>>;
+    noResults: PanneauMessage<Record<never, never>>;
+    loadFailed: PanneauMessage<Record<never, never>>;
+    retry: PanneauMessage<Record<never, never>>;
+    pagination: PanneauMessage<Record<never, never>>;
+    range: PanneauMessage<    {
+    start: number;
+    end: number;
+    total: number;
+    }>;
+    pageOf: PanneauMessage<    {
+    page: number;
+    lastPage: number;
+    }>;
+    previousPage: PanneauMessage<Record<never, never>>;
+    nextPage: PanneauMessage<Record<never, never>>;
+    perPage: PanneauMessage<Record<never, never>>;
+};
+
+// @public
 export type MessageCatalog = Record<string, string>;
 
 // @public

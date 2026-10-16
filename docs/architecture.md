@@ -54,7 +54,7 @@ Components that work without a definition, a router or a network.
 
 - **Fields** are controlled components: `value`, `onChange`, `errors`, `disabled`, plus field-specific props. Any React app can use `<TextField>` or `<MediaField>` directly.
 - **Forms** render a list of fields and a layout tree, and handle values, errors and dirty state. They don't save anything themselves; the caller passes `onSubmit`.
-- **Lists** render items with columns, layouts (table, cards, gallery, calendar), selection, sorting and filter controls. Items and query state come from props.
+- **Lists** render items with columns, layouts (table, cards, gallery, calendar), selection, sorting and filter controls. Items come from props, and the query and selection from the list state of the engine ([decisions/0022](decisions/0022-lists-render-core-state.md)).
 - **UI** provides the design tokens and accessible primitives (buttons, dialogs, menus, popovers, tabs, toasts), built on React Aria. Components ship CSS Modules and read CSS variables. They don't import any global CSS (see [decisions/0005](decisions/0005-styling-and-theming.md)).
 
 ### Engine (`@panneau/core`)

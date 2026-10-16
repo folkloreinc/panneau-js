@@ -1,0 +1,177 @@
+.scroller {
+    overflow-x: auto;
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-lg);
+    background-color: var(--panneau-color-surface);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--panneau-font-size-md);
+}
+
+.table th,
+.table td {
+    padding: var(--panneau-space-2) var(--panneau-space-3);
+    text-align: start;
+    vertical-align: middle;
+    border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.table th {
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-medium);
+    color: var(--panneau-color-text-muted);
+    white-space: nowrap;
+    background-color: var(--panneau-color-surface-sunken);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.table tbody tr[data-selected] {
+    background-color: var(--panneau-color-accent-subtle);
+}
+
+.center {
+    text-align: center !important;
+}
+
+.end {
+    text-align: end !important;
+}
+
+.check {
+    width: 1px;
+}
+
+.actionsCell {
+    width: 1px;
+    text-align: end !important;
+    white-space: nowrap;
+}
+
+.sort {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+    margin: calc(-1 * var(--panneau-space-1)) calc(-1 * var(--panneau-space-2));
+    padding: var(--panneau-space-1) var(--panneau-space-2);
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    border-radius: var(--panneau-radius-sm);
+    cursor: pointer;
+}
+
+.sort:hover {
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-color-hover);
+}
+
+.sort:focus-visible {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 1px;
+}
+
+.sortIcon {
+    opacity: 0.5;
+}
+
+.sorted .sortIcon {
+    opacity: 1;
+}
+
+.cellLabel {
+    display: none;
+}
+
+.visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* Narrow lists (phones): each row is a block, with the label of each value next to it. */
+@container panneau-list (max-width: 40rem) {
+    .scroller {
+        overflow: visible;
+        background: none;
+        border: 0;
+    }
+
+    /* The labels of the cells replace the headers, and the list's sort select their buttons. */
+    .table thead {
+        display: none;
+    }
+
+    .table,
+    .table tbody,
+    .table tr,
+    .table td {
+        display: block;
+    }
+
+    .table tbody {
+        display: grid;
+        gap: var(--panneau-space-2);
+    }
+
+    .table tr {
+        position: relative;
+        padding: var(--panneau-space-2) 0;
+        background-color: var(--panneau-color-surface);
+        border: var(--panneau-border-width) solid var(--panneau-color-border);
+        border-radius: var(--panneau-radius-lg);
+    }
+
+    .table td {
+        display: grid;
+        grid-template-columns: minmax(5rem, 35%) 1fr;
+        gap: var(--panneau-space-2);
+        padding: var(--panneau-space-1) var(--panneau-space-3);
+        text-align: start !important;
+        border: 0;
+    }
+
+    .table td.check,
+    .table td.actionsCell {
+        display: flex;
+        width: auto;
+    }
+
+    .table td.check {
+        position: absolute;
+        top: var(--panneau-space-2);
+        inset-inline-end: var(--panneau-space-2);
+        padding: 0;
+    }
+
+    .table td.actionsCell {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        padding-top: var(--panneau-space-2);
+    }
+
+    .table td.title {
+        display: block;
+        padding-inline-end: var(--panneau-space-10);
+        font-weight: var(--panneau-font-weight-medium);
+    }
+
+    .table td.title .cellLabel {
+        display: none;
+    }
+
+    .cellLabel {
+        display: block;
+        font-size: var(--panneau-font-size-sm);
+        color: var(--panneau-color-text-muted);
+    }
+}

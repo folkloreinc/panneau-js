@@ -27,3 +27,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0019](0019-app-entry.md)                | The app entry: boot config, mount function and client routes     | Accepted |
 | [0020](0020-default-theme-and-icons.md)  | A sober default theme, and Lucide as the only icon set           | Accepted |
 | [0021](0021-forms-render-core-state.md)  | Forms render the form state of the engine                        | Accepted |
+| [0022](0022-lists-render-core-state.md)  | Lists render the list state of the engine                        | Accepted |

@@ -18,7 +18,7 @@ import { withPanneauMessages } from '@panneau/intl';
 
 ## Messages of every package
 
-The messages of `@panneau/ui`, `@panneau/fields` and `@panneau/forms` live here, so an app adds one import, whichever packages it uses:
+The messages of `@panneau/ui`, `@panneau/fields`, `@panneau/forms` and `@panneau/lists` live here, so an app adds one import, whichever packages it uses:
 
 - **`withPanneauMessages(locale, messages)`** merges the messages of every package for a locale with the app's. The app's win, so it can reword a Panneau message by its id (`'panneau.forms.save'`).
 - **`getPanneauMessages(locale)`** returns the messages of every package for a locale. A regional locale (`fr-CA`) gets those of its language. A locale Panneau doesn't translate gets none, and components fall back to their English defaults.
@@ -30,7 +30,7 @@ With `@panneau/core` plugins, `fieldsPlugin` (from `@panneau/fields`) carries `f
 
 ## Descriptors
 
-`uiMessages`, `fieldsMessages` and `formsMessages` are the message descriptors the components format, with their ids and English text. Their type, `PanneauMessage<Values>`, gives react-intl the values each message takes, so `formatMessage()` checks them.
+`uiMessages`, `fieldsMessages`, `formsMessages` and `listsMessages` are the message descriptors the components format, with their ids and English text. Their type, `PanneauMessage<Values>`, gives react-intl the values each message takes, so `formatMessage()` checks them.
 
 Message ids are part of the public API: renaming one breaks the apps that override it. Ids start with `panneau.<package>.`.
 

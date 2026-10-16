@@ -1,9 +1,11 @@
 import { fieldsFr } from './fr/fields';
 import { formsFr } from './fr/forms';
+import { listsFr } from './fr/lists';
 import { uiFr } from './fr/ui';
 import type { PanneauMessage } from './message';
 import { fieldsMessages } from './messages/fields';
 import { formsMessages } from './messages/forms';
+import { listsMessages } from './messages/lists';
 import { uiMessages } from './messages/ui';
 
 /** Messages by id, as react-intl's `IntlProvider` takes them. */
@@ -31,10 +33,11 @@ export const en: MessageCatalog = {
     ...getDefaultMessages(uiMessages),
     ...getDefaultMessages(fieldsMessages),
     ...getDefaultMessages(formsMessages),
+    ...getDefaultMessages(listsMessages),
 };
 
 /** The French messages of every Panneau package, by id. */
-export const fr: MessageCatalog = { ...uiFr, ...fieldsFr, ...formsFr };
+export const fr: MessageCatalog = { ...uiFr, ...fieldsFr, ...formsFr, ...listsFr };
 
 /** The messages of every Panneau package, by locale. */
 export const panneauMessages: Readonly<Record<string, MessageCatalog>> = { en, fr };

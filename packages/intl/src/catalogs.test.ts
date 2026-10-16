@@ -8,9 +8,15 @@ import { describe, expect, it } from 'vitest';
 import { en, fr, getDescriptors } from './catalogs';
 import { fieldsMessages } from './messages/fields';
 import { formsMessages } from './messages/forms';
+import { listsMessages } from './messages/lists';
 import { uiMessages } from './messages/ui';
 
-const GROUPS = { ui: uiMessages, fields: fieldsMessages, forms: formsMessages };
+const GROUPS = {
+    ui: uiMessages,
+    fields: fieldsMessages,
+    forms: formsMessages,
+    lists: listsMessages,
+};
 
 /** The names of the arguments of an ICU message (`{count, plural, …}` gives `count`). */
 function getArguments(elements: MessageFormatElement[]): string[] {

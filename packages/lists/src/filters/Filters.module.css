@@ -1,0 +1,71 @@
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--panneau-space-3);
+}
+
+.control {
+    width: 12rem;
+    max-width: 100%;
+}
+
+.toggle {
+    align-self: center;
+    min-height: var(--panneau-control-height);
+    display: flex;
+    align-items: center;
+}
+
+.range {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-2);
+    max-width: 100%;
+}
+
+.range > :not(legend) {
+    width: 11rem;
+    max-width: 100%;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+    max-width: 100%;
+    padding-inline-start: var(--panneau-space-3);
+    font-size: var(--panneau-font-size-sm);
+    background-color: var(--panneau-color-surface-sunken);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-full);
+}
+
+.chipText {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chipLabel {
+    color: var(--panneau-color-text-muted);
+}
+
+@container panneau-list (max-width: 40rem) {
+    .filters,
+    .control,
+    .range,
+    .range > :not(legend) {
+        width: 100%;
+    }
+}
