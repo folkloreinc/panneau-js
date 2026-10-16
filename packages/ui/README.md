@@ -40,7 +40,10 @@ The default theme and the icon set are explained in [decision 0020](../../docs/d
 
 ## Messages
 
-Strings go through react-intl, with English defaults. Without an `IntlProvider`, components render in English. With one, add the messages of every Panneau package to the app's with [`@panneau/intl`](../intl):
+Strings go through react-intl, with English defaults.
+
+- **Without an `IntlProvider`**, `PanneauRoot` provides one, with the messages of every Panneau package in its `locale`: `<PanneauRoot locale="fr">` renders in French. Without a `locale`, or with one that Panneau doesn't translate, it renders in English.
+- **With an `IntlProvider`** (an app that uses react-intl for its own strings), the root keeps it and adds nothing. Add the messages of every Panneau package to the app's with [`@panneau/intl`](../intl):
 
 ```tsx
 import { withPanneauMessages } from '@panneau/intl';
