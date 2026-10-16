@@ -225,8 +225,9 @@ export function ListView({
         setConfirming(null);
         setPending(keyOf(event.action, event.item));
         try {
-            await onAction?.(event);
-            if (event.scope === 'selection') {
+            const outcome = await onAction?.(event);
+            // `false`: the action didn't run (its parameters were cancelled).
+            if (event.scope === 'selection' && outcome !== false) {
                 list.clearSelection();
             }
         } catch (caught) {
@@ -309,7 +310,12 @@ export function ListView({
 
     const sortable = columns.some((column) => column.sortable === true);
     const showToolbar =
-        search || filters.length > 0 || sortable || layouts.length > 1 || toolbar !== undefined;
+        search ||
+        filters.length > 0 ||
+        sortable ||
+        layouts.length > 1 ||
+        resourceActions.length > 0 ||
+        toolbar !== undefined;
 
     const body = (() => {
         if (error !== null) {

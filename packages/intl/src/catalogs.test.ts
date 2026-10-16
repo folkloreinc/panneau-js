@@ -6,6 +6,7 @@ import { type MessageFormatElement, TYPE, parse } from '@formatjs/icu-messagefor
 import { describe, expect, it } from 'vitest';
 
 import { en, fr, getDescriptors } from './catalogs';
+import { actionsMessages } from './messages/actions';
 import { fieldsMessages } from './messages/fields';
 import { formsMessages } from './messages/forms';
 import { listsMessages } from './messages/lists';
@@ -16,6 +17,7 @@ const GROUPS = {
     fields: fieldsMessages,
     forms: formsMessages,
     lists: listsMessages,
+    actions: actionsMessages,
 };
 
 /** The names of the arguments of an ICU message (`{count, plural, …}` gives `count`). */

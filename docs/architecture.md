@@ -97,13 +97,14 @@ Every page can be replaced through a plugin, and the building blocks (layout, pa
 
 Heavier features live in their own packages, so projects only load what they use:
 
-| Package           | Content                                                                                         |
-| ----------------- | ----------------------------------------------------------------------------------------------- |
-| `@panneau/editor` | Rich text field built on TipTap 3                                                               |
-| `@panneau/media`  | Media library, upload (Uppy), image editing (crop, rotate, focal point)                         |
-| `@panneau/auth`   | Auth forms and flows: login, OAuth providers, password reset, 2FA, passkeys, email verification |
-| `@panneau/intl`   | UI translations (French, English) and the locale loading helpers                                |
-| `@panneau/collab` | (5.x) Presence and realtime collaboration through Yjs                                           |
+| Package            | Content                                                                                                                                            |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@panneau/actions` | Runs actions: parameters in a dialog, the request through the adapter, results and queued runs ([decisions/0023](decisions/0023-action-runner.md)) |
+| `@panneau/editor`  | Rich text field built on TipTap 3                                                                                                                  |
+| `@panneau/media`   | Media library, upload (Uppy), image editing (crop, rotate, focal point)                                                                            |
+| `@panneau/auth`    | Auth forms and flows: login, OAuth providers, password reset, 2FA, passkeys, email verification                                                    |
+| `@panneau/intl`    | UI translations (French, English) and the locale loading helpers                                                                                   |
+| `@panneau/collab`  | (5.x) Presence and realtime collaboration through Yjs                                                                                              |
 
 ## Packages
 
