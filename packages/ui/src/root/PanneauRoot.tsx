@@ -1,6 +1,8 @@
 import { type HTMLAttributes, type ReactNode, createContext, use, useState } from 'react';
 import { I18nProvider } from 'react-aria-components';
-import { IntlContext, type IntlShape } from 'react-intl';
+import { IntlContext, IntlProvider, type IntlShape } from 'react-intl';
+
+import { getPanneauMessages } from '@panneau/intl';
 
 import { type ColorScheme, type Theme, getThemeCss, hashString } from '../theme/theme';
 import { ToastProvider } from '../toast/Toast';
@@ -15,6 +17,11 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
     /**
      * Locale of dates and numbers in React Aria components. Defaults to the react-intl locale, or
      * to the browser's without an `IntlProvider`.
+     *
+     * Without an `IntlProvider` above it, the root provides one, with the messages of every Panneau
+     * package in this locale (English without a locale, or for a locale Panneau doesn't translate).
+     * An app with its own `IntlProvider` adds them with `withPanneauMessages()` from
+     * `@panneau/intl`.
      */
     locale?: string;
     children?: ReactNode;
@@ -33,10 +40,36 @@ export function usePortalContainer(): Element | null | undefined {
 }
 
 /**
+ * An `IntlProvider` with Panneau's messages in a locale, for a root without one above it. A locale
+ * Panneau doesn't translate gets English, so that react-intl doesn't report every message as
+ * missing.
+ */
+function PanneauIntlProvider({
+    locale = 'en',
+    children,
+}: {
+    locale?: string;
+    children: ReactNode;
+}) {
+    const messages = getPanneauMessages(locale);
+    const translated = Object.keys(messages).length > 0;
+    return (
+        <IntlProvider
+            locale={translated ? locale : 'en'}
+            defaultLocale="en"
+            messages={translated ? messages : getPanneauMessages('en')}
+        >
+            {children}
+        </IntlProvider>
+    );
+}
+
+/**
  * The root of every Panneau interface. It scopes the base stylesheet and the design tokens to its
  * element (no global CSS), applies a theme and a color scheme, and hosts overlays and toasts so
  * that they get the tokens too. Panneau components must render inside one. A project can override
- * any token with its own class on the root.
+ * any token with its own class on the root. Without an `IntlProvider` above it, it provides one
+ * with Panneau's messages in its `locale`.
  */
 export function PanneauRoot({
     theme = null,
@@ -50,7 +83,7 @@ export function PanneauRoot({
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const css = theme !== null ? getThemeCss(theme, '§') : '';
     const scope = css !== '' ? hashString(css) : undefined;
-    return (
+    const root = (
         <div
             {...props}
             className={cx(styles.root, className)}
@@ -78,4 +111,8 @@ export function PanneauRoot({
             </I18nProvider>
         </div>
     );
+    if (intl === null || intl === undefined) {
+        return <PanneauIntlProvider locale={locale}>{root}</PanneauIntlProvider>;
+    }
+    return root;
 }

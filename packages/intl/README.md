@@ -24,7 +24,7 @@ The messages of `@panneau/ui`, `@panneau/fields` and `@panneau/forms` live here,
 - **`getPanneauMessages(locale)`** returns the messages of every package for a locale. A regional locale (`fr-CA`) gets those of its language. A locale Panneau doesn't translate gets none, and components fall back to their English defaults.
 - **`en`** and **`fr`** are the catalogs, by id, and **`panneauMessages`** has them by locale.
 
-English is also the default text of every message (`defaultMessage`), so components render in English without any of these, and without an `IntlProvider`.
+English is also the default text of every message (`defaultMessage`), so components render in English without any of these. Without an `IntlProvider`, `PanneauRoot` (from `@panneau/ui`) provides one with `getPanneauMessages()` in its `locale`.
 
 With `@panneau/core` plugins, `fieldsPlugin` (from `@panneau/fields`) carries `fr`, and `loadMessages(registry, locale)` returns it.
 
