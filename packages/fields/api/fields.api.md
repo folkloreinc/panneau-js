@@ -179,6 +179,10 @@ export interface NestedFieldProps {
 
 // @public
 export interface RelationListAdapter {
+    create?(resource: string, values: Record<string, unknown>): Promise<Item>;
+    get?(resource: string, id: string, options?: {
+        signal?: AbortSignal;
+    }): Promise<Item>;
     // (undocumented)
     list(resource: string, query?: ListQuery, options?: {
         signal?: AbortSignal;
@@ -197,6 +201,11 @@ export interface RelationReference {
 
 // @public
 export interface RelationSource {
+    canCreate?(resource: string): boolean;
+    create?(resource: string, text: string): Promise<RelationReference | null>;
+    resolve?(resource: string, ids: readonly string[], options: {
+        signal: AbortSignal;
+    }): Promise<RelationReference[]>;
     search(resource: string, query: string, options: {
         signal: AbortSignal;
     }): Promise<RelationReference[]>;
@@ -204,7 +213,8 @@ export interface RelationSource {
 
 // @public (undocumented)
 export interface RelationSourceOptions {
-    definition?: Pick<Definition, 'resources'> | null;
+    create?: boolean | ((text: string, resource: string) => Record<string, unknown> | null);
+    definition?: (Pick<Definition, 'resources'> & Partial<Pick<Definition, 'locales'>>) | null;
     getLabel?: (item: Item, resource: string) => string;
     perPage?: number;
 }
@@ -214,6 +224,9 @@ export function toReferences(value: unknown): RelationReference[];
 
 // @public
 export function useFieldsContext(): FieldsContextValue;
+
+// @public
+export function useRelationReferences(source: RelationSource | null, resource: string, references: readonly RelationReference[]): RelationReference[];
 
 // (No @packageDocumentation comment for this package)
 

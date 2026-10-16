@@ -77,17 +77,17 @@ const { data, isFetching, error } = useResourceList('pages', query); // @panneau
 
 ## What a list does
 
-| Feature    | How                                                                                                                                                                          |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Columns    | `item[id]` shown with a display: the column's `display`, else text. Localized values in the UI's locale. `render` for a cell of its own                                      |
-| Displays   | `text`, `textarea`, `slug`, `richtext`, `number`, `boolean`, `date`, `datetime`, `time`, `select`, `relation`, `url`, `email`, `color`, `media`                              |
-| Layouts    | `table` and `cards` (`layouts`, the first is the default). On narrow lists, table rows stack and show the label of each value                                                |
-| Sorting    | Sortable column headers (`aria-sort`), and a select for cards and phones                                                                                                     |
-| Filters    | `text`, `select`, `toggle`, `date`, `date-range`, `relation`, with chips for the active filters and the search                                                               |
-| Pagination | With `total`: the range, previous and next pages, and the page size (`perPageOptions`)                                                                                       |
-| Selection  | Checkboxes, the page, then "select all N items", which selects every item matching the query, with exceptions                                                                |
-| Actions    | `row` (buttons), `menu` (the row's menu), `toolbar` (selection and resource actions), with `confirm`, hidden by abilities ([0011](../../docs/decisions/0011-permissions.md)) |
-| States     | A spinner, an error with a retry, an empty message, and "no results" with a button that clears the filters                                                                   |
+| Feature    | How                                                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Columns    | `item[id]` shown with a display: the column's `display`, else text. Localized values in the UI's locale. `render` for a cell of its own                                               |
+| Displays   | `text`, `textarea`, `slug`, `richtext`, `number`, `boolean`, `date`, `datetime`, `time`, `select`, `relation`, `url`, `email`, `color`, `media`                                       |
+| Layouts    | `table` and `cards` (`layouts`, the first is the default). On narrow lists, table rows stack and show the label of each value                                                         |
+| Sorting    | Sortable column headers (`aria-sort`), and a select for cards and phones                                                                                                              |
+| Filters    | `text`, `select`, `toggle`, `date`, `date-range`, `relation` (labels of ids from the URL through the relation source's `resolve()`), with chips for the active filters and the search |
+| Pagination | With `total`: the range, previous and next pages, and the page size (`perPageOptions`)                                                                                                |
+| Selection  | Checkboxes, the page, then "select all N items", which selects every item matching the query, with exceptions                                                                         |
+| Actions    | `row` (buttons), `menu` (the row's menu), `toolbar` (selection and resource actions), with `confirm`, hidden by abilities ([0011](../../docs/decisions/0011-permissions.md))          |
+| States     | A spinner, an error with a retry, an empty message, and "no results" with a button that clears the filters                                                                            |
 
 Lists confirm an action when it has `confirm` (its title and message are ICU messages with `{count}`), or when some selected items don't allow it, then call `onAction` with the action, its scope, the item or the `Selection` of the protocol, the count and the skipped items. A promise shows the action as pending; when it rejects, a toast says that it failed. After a selection action, the selection is cleared.
 

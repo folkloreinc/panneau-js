@@ -7,9 +7,17 @@ import { useFieldsContext } from '../shared/context';
 import { cx } from '../shared/cx';
 import { getFieldProps } from '../shared/entry';
 import { messages } from '../shared/messages';
-import { type RelationReference, type RelationSource, toReferences } from '../shared/relation';
+import {
+    type RelationReference,
+    type RelationSource,
+    toReferences,
+    useRelationReferences,
+} from '../shared/relation';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
 import styles from './RelationField.module.css';
+
+/** The id of the "Create “…”" option of the picker. */
+const CREATE_ID = '\u0000create';
 
 /** Results of a search in a relation source, as it types. */
 export function useRelationSearch(
@@ -60,6 +68,12 @@ export interface RelationFieldBaseProps extends Omit<FieldProps<never>, 'value' 
     resource: string;
     /** Where to search. Defaults to the fields context's. Without one, the field is read-only. */
     source?: RelationSource | null;
+    /**
+     * Creates an item from the typed text, offered as "Create “…”" in the picker: it can open a
+     * dialog, and resolves with the new reference, or `null` when nothing was created. Defaults to
+     * the source's `create()`. `null` turns creating off.
+     */
+    onCreate?: ((text: string) => Promise<RelationReference | null>) | null;
     placeholder?: string;
     controlClassName?: string;
 }
@@ -110,8 +124,10 @@ function References({
 
 /**
  * A reference to an item of another resource, or several with `multiple`, picked by searching a
- * `RelationSource`. Values are references (`{ id, label }`), as items carry them. Without a
- * source, the field shows its references and can't change them.
+ * `RelationSource`. Values are references (`{ id, label }`), as items carry them; plain ids get
+ * their labels from the source's `resolve()`. When the source can `create()` (or with `onCreate`),
+ * the picker offers to create an item from the typed text. Without a source, the field shows its
+ * references and can't change them.
  */
 export function RelationField(props: RelationFieldProps) {
     const intl = usePanneauIntl();
@@ -135,17 +151,65 @@ export function RelationField(props: RelationFieldProps) {
         errorsClassName,
         controlClassName,
     } = props;
-    const selected = toReferences(props.value);
+    const selected = useRelationReferences(source, resource, toReferences(props.value));
     const [query, setQuery] = useState<string | null>(null);
+    const [creating, setCreating] = useState(false);
+    const [createError, setCreateError] = useState<string | null>(null);
     const editable = source !== null && disabled !== true && readOnly !== true;
-    const { items, isLoading } = useRelationSearch(source, resource, query ?? '', {
-        enabled: editable,
-    });
+    const { items: found, isLoading: searching } = useRelationSearch(
+        source,
+        resource,
+        query ?? '',
+        { enabled: editable },
+    );
+    const sourceCreate = source?.create;
+    const create =
+        props.onCreate !== undefined
+            ? props.onCreate
+            : sourceCreate !== undefined && source?.canCreate?.(resource) !== false
+              ? (text: string) => sourceCreate.call(source, resource, text)
+              : null;
+    const text = (query ?? '').trim();
+    const offersCreate =
+        create !== null &&
+        text !== '' &&
+        !searching &&
+        ![...found, ...selected].some(
+            (item) =>
+                item.label.toLocaleLowerCase(intl.locale) === text.toLocaleLowerCase(intl.locale),
+        );
+    const items = offersCreate
+        ? [
+              ...found,
+              { id: CREATE_ID, label: intl.formatMessage(messages.createRelation, { text }) },
+          ]
+        : found;
+    const isLoading = searching || creating;
+    const allErrors = createError !== null ? [...(errors ?? []), createError] : errors;
+    /** Creates an item from the text, then adds its reference with `add`. */
+    const createFrom = (add: (reference: RelationReference) => void) => {
+        if (create === null) {
+            return;
+        }
+        setCreating(true);
+        setCreateError(null);
+        create(text)
+            .then((reference) => {
+                if (reference !== null) {
+                    add(reference);
+                    setQuery(null);
+                }
+            })
+            .catch(() =>
+                setCreateError(intl.formatMessage(messages.createRelationFailed, { text })),
+            )
+            .finally(() => setCreating(false));
+    };
     const removeLabel = (reference: RelationReference) =>
         `${intl.formatMessage(messages.remove)} ${reference.label}`;
     const chrome = {
         legend: label,
-        errors,
+        errors: allErrors,
         isRequired: required,
         className,
         legendClassName: labelClassName,
@@ -202,7 +266,11 @@ export function RelationField(props: RelationFieldProps) {
                         inputValue={query ?? ''}
                         onInputChange={setQuery}
                         onChange={(itemId) => {
-                            const reference = items.find((item) => item.id === itemId);
+                            if (itemId === CREATE_ID) {
+                                createFrom((reference) => set([...selected, reference]));
+                                return;
+                            }
+                            const reference = found.find((item) => item.id === itemId);
                             if (reference !== undefined) {
                                 set([...selected, reference]);
                                 setQuery(null);
@@ -232,7 +300,7 @@ export function RelationField(props: RelationFieldProps) {
         <ComboBox
             label={label}
             description={description}
-            errors={errors}
+            errors={allErrors}
             isRequired={required}
             className={className}
             labelClassName={labelClassName}
@@ -250,6 +318,10 @@ export function RelationField(props: RelationFieldProps) {
                 }
             }}
             onChange={(itemId) => {
+                if (itemId === CREATE_ID) {
+                    createFrom((reference) => onChange?.(reference));
+                    return;
+                }
                 setQuery(null);
                 if (itemId === null) {
                     return;

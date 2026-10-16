@@ -15,6 +15,8 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.search': 'Rechercher…',
     'panneau.fields.noRelation': 'Aucun',
     'panneau.fields.noResults': 'Aucun résultat',
+    'panneau.fields.createRelation': 'Créer « {text} »',
+    'panneau.fields.createRelationFailed': '« {text} » n’a pas pu être créé.',
     'panneau.fields.relationUnavailable': 'Impossible de chercher des éléments ici.',
     'panneau.fields.missingPlugin': 'Ce champ a besoin d’un plugin pour le type « {type} ».',
 };

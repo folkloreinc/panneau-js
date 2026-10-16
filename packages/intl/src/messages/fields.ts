@@ -41,6 +41,14 @@ export const fieldsMessages = {
     search: defineMessage({ id: 'panneau.fields.search', defaultMessage: 'Search…' }),
     noRelation: defineMessage({ id: 'panneau.fields.noRelation', defaultMessage: 'None' }),
     noResults: defineMessage({ id: 'panneau.fields.noResults', defaultMessage: 'No results' }),
+    createRelation: defineMessage<{ text: string }>({
+        id: 'panneau.fields.createRelation',
+        defaultMessage: 'Create “{text}”',
+    }),
+    createRelationFailed: defineMessage<{ text: string }>({
+        id: 'panneau.fields.createRelationFailed',
+        defaultMessage: '“{text}” couldn’t be created.',
+    }),
     relationUnavailable: defineMessage({
         id: 'panneau.fields.relationUnavailable',
         defaultMessage: 'Items can’t be searched here.',

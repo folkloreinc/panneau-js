@@ -32,6 +32,7 @@ export function RelationField(props: RelationFieldProps): JSX.Element;
 export interface RelationFieldBaseProps extends Omit<FieldProps<never>, 'value' | 'onChange'> {
     // (undocumented)
     controlClassName?: string;
+    onCreate?: ((text: string) => Promise<RelationReference | null>) | null;
     // (undocumented)
     placeholder?: string;
     resource: string;
@@ -48,6 +49,10 @@ export type RelationFieldProps = SingleRelationFieldProps | MultipleRelationFiel
 
 // @public
 export interface RelationListAdapter {
+    create?(resource: string, values: Record<string, unknown>): Promise<Item>;
+    get?(resource: string, id: string, options?: {
+        signal?: AbortSignal;
+    }): Promise<Item>;
     // (undocumented)
     list(resource: string, query?: ListQuery, options?: {
         signal?: AbortSignal;
@@ -66,6 +71,11 @@ export interface RelationReference {
 
 // @public
 export interface RelationSource {
+    canCreate?(resource: string): boolean;
+    create?(resource: string, text: string): Promise<RelationReference | null>;
+    resolve?(resource: string, ids: readonly string[], options: {
+        signal: AbortSignal;
+    }): Promise<RelationReference[]>;
     search(resource: string, query: string, options: {
         signal: AbortSignal;
     }): Promise<RelationReference[]>;
@@ -73,7 +83,8 @@ export interface RelationSource {
 
 // @public (undocumented)
 export interface RelationSourceOptions {
-    definition?: Pick<Definition, 'resources'> | null;
+    create?: boolean | ((text: string, resource: string) => Record<string, unknown> | null);
+    definition?: (Pick<Definition, 'resources'> & Partial<Pick<Definition, 'locales'>>) | null;
     getLabel?: (item: Item, resource: string) => string;
     perPage?: number;
 }
@@ -87,6 +98,9 @@ export interface SingleRelationFieldProps extends RelationFieldBaseProps {
     // (undocumented)
     value?: RelationReference | null;
 }
+
+// @public
+export function useRelationReferences(source: RelationSource | null, resource: string, references: readonly RelationReference[]): RelationReference[];
 
 // @public
 export function useRelationSearch(source: RelationSource | null, resource: string, query: string, input?: {

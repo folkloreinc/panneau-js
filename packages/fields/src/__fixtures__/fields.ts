@@ -132,3 +132,31 @@ export const exampleRelationSource: RelationSource = {
         return AUTHORS.filter((author) => author.label.toLowerCase().includes(query.toLowerCase()));
     },
 };
+
+/**
+ * A relation source that also resolves ids (`resolve()`) and creates authors from the picker
+ * (`create()`), in memory.
+ */
+export function createEditableRelationSource(): RelationSource {
+    const authors = [...AUTHORS];
+    return {
+        ...exampleRelationSource,
+        async search(_resource, query, { signal }) {
+            await new Promise((resolve) => setTimeout(resolve, 150));
+            signal.throwIfAborted();
+            return authors.filter((author) =>
+                author.label.toLowerCase().includes(query.toLowerCase()),
+            );
+        },
+        async resolve(_resource, ids) {
+            await new Promise((resolve) => setTimeout(resolve, 150));
+            return authors.filter((author) => ids.includes(author.id));
+        },
+        async create(_resource, text) {
+            await new Promise((resolve) => setTimeout(resolve, 150));
+            const author = { id: String(authors.length + 1), label: text };
+            authors.push(author);
+            return author;
+        },
+    };
+}
