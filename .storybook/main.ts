@@ -32,11 +32,13 @@ const config: StorybookConfig = {
                     'react-aria-components',
                     'react-intl',
                     'lucide-react',
-                    // The names of `getNamedIcon()` of @panneau/ui.
-                    'lucide-react/dynamicIconImports.mjs',
                     '@internationalized/date',
                     '@tanstack/react-query',
                 ],
+                // The names of `getNamedIcon()` of @panneau/ui, served as they are. Optimized with
+                // `lucide-react`, they would split it into one chunk per icon, which every story
+                // then loads: Chromium gives up after a few dozen story files.
+                exclude: ['lucide-react/dynamicIconImports.mjs'],
             },
         });
     },

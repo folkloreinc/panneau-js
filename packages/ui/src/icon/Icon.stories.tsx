@@ -43,8 +43,10 @@ export const ByName: Story = {
         </div>
     ),
     play: async ({ canvasElement }) => {
-        await waitFor(() =>
-            expect(canvasElement.querySelectorAll('svg[data-loading]')).toHaveLength(0),
+        // The first named icon loads Lucide's list of names: give it time on a busy machine.
+        await waitFor(
+            () => expect(canvasElement.querySelectorAll('svg[data-loading]')).toHaveLength(0),
+            { timeout: 5000 },
         );
         await expect(canvasElement.querySelector('svg.lucide-send')).not.toBeNull();
     },

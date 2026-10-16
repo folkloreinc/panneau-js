@@ -53,6 +53,7 @@ import { Button, getNamedIcon } from '@panneau/ui';
 - It loads that one icon the first time it renders, through Lucide's dynamic imports, and renders an empty space of the same size until then. The list of names is loaded on demand too: the whole set is never in the bundle, but bundlers emit one small chunk per icon.
 - It returns the same component for the same name. A name Lucide doesn't have renders nothing, with a warning in the console.
 - `loadNamedIcon(name)` loads an icon ahead of time, and resolves with its component (or `null`).
+- **Vite apps, in development:** add `optimizeDeps: { exclude: ['lucide-react/dynamicIconImports.mjs'] }` to the Vite config. When Vite optimizes it together with `lucide-react`, it splits `lucide-react` into one chunk per icon (about 1,900 requests on every page load). Production builds are not affected.
 
 ## Messages
 
