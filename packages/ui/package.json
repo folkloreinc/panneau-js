@@ -1,6 +1,6 @@
 {
     "name": "@panneau/ui",
-    "version": "5.0.0-alpha.0",
+    "version": "5.0.0-alpha.1",
     "description": "Design tokens, themes and accessible primitives of Panneau, built on React Aria Components.",
     "type": "module",
     "license": "MIT",
@@ -43,7 +43,7 @@
         "react-intl": "^12.0.0"
     },
     "dependencies": {
-        "@panneau/intl": "5.0.0-alpha.0",
+        "@panneau/intl": "5.0.0-alpha.1",
         "lucide-react": "^1.57.0"
     }
 }

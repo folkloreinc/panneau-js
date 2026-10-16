@@ -1,6 +1,6 @@
 {
     "name": "@panneau/actions",
-    "version": "5.0.0-alpha.0",
+    "version": "5.0.0-alpha.1",
     "description": "Runs the actions of lists and forms: parameters in a dialog, the action through a data adapter, its result, and queued runs.",
     "type": "module",
     "license": "MIT",
@@ -37,15 +37,15 @@
         "react-intl": "^12.0.0"
     },
     "dependencies": {
-        "@panneau/core": "5.0.0-alpha.0",
-        "@panneau/data": "5.0.0-alpha.0",
-        "@panneau/forms": "5.0.0-alpha.0",
-        "@panneau/intl": "5.0.0-alpha.0",
-        "@panneau/protocol": "5.0.0-alpha.0",
-        "@panneau/ui": "5.0.0-alpha.0",
+        "@panneau/core": "5.0.0-alpha.1",
+        "@panneau/data": "5.0.0-alpha.1",
+        "@panneau/forms": "5.0.0-alpha.1",
+        "@panneau/intl": "5.0.0-alpha.1",
+        "@panneau/protocol": "5.0.0-alpha.1",
+        "@panneau/ui": "5.0.0-alpha.1",
         "lucide-react": "^1.57.0"
     },
     "devDependencies": {
-        "@panneau/lists": "5.0.0-alpha.0"
+        "@panneau/lists": "5.0.0-alpha.1"
     }
 }
