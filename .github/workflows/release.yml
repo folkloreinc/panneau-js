@@ -1,13 +1,20 @@
 name: Release
 
-# Run by a maintainer from the Actions tab. With pending changesets, it opens (or updates) the
-# "Version packages" pull request. Once that pull request is merged, running it again publishes
-# the new versions to npm and tags them.
+# Runs on every push to v5.x:
+# - with pending changesets, it opens (or updates) the "Version packages" pull request, and
+#   publishes nothing;
+# - without pending changesets, which is the case right after that pull request is merged, it
+#   publishes the versions that are not on npm yet (dist-tag `alpha` while v5.x is in pre-release
+#   mode) and tags them. When everything is already published, it does nothing.
+# Merging the "Version packages" pull request is what releases.
 on:
+    push:
+        branches: [v5.x]
     workflow_dispatch:
 
 concurrency:
     group: ${{ github.workflow }}
+    cancel-in-progress: false
 
 permissions:
     contents: write
@@ -17,7 +24,7 @@ permissions:
 jobs:
     release:
         name: Version or publish
-        if: github.ref == 'refs/heads/v5.x'
+        if: github.repository == 'folkloreinc/panneau-js' && github.ref == 'refs/heads/v5.x'
         runs-on: ubuntu-24.04
         steps:
             - uses: actions/checkout@v5
