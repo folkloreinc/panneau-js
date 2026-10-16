@@ -16,6 +16,7 @@ import {
     getItemValues,
     getLayoutFieldNames,
     resolveForm,
+    selectVisible,
     useForm,
     useFormField,
     useList,
@@ -93,7 +94,7 @@ function PageForm({ item }: { item: Item }) {
     const { fields, fieldsByName, layout } = resolveForm(resource, { mode: 'update' });
     const update = useUpdateItem('pages');
     const locales = definition?.locales ?? [];
-    const { form, status, conflict, version } = useForm({
+    const state = useForm({
         fields,
         values: getItemValues(
             item,
@@ -105,6 +106,7 @@ function PageForm({ item }: { item: Item }) {
         onSubmit: (_values, context) =>
             update.mutateAsync({ id: item.id, values: context.changes, version: context.version }),
     });
+    const { form, status, conflict, version } = state;
     return (
         <form
             aria-label="Edit page"
@@ -115,7 +117,7 @@ function PageForm({ item }: { item: Item }) {
         >
             {getLayoutFieldNames(layout).map((name) => {
                 const field = fieldsByName.get(name);
-                if (field === undefined || !form.isVisible(field)) {
+                if (field === undefined || !selectVisible(state, field)) {
                     return null;
                 }
                 const paths =

@@ -63,7 +63,6 @@ export interface Form {
     getErrors(path: string, options?: GetErrorsOptions): string[];
     // (undocumented)
     getState(): FormState;
-    // (undocumented)
     getValue(path: string): unknown;
     isVisible(target: {
         visibleWhen?: Condition | undefined;
@@ -395,6 +394,20 @@ export interface Router {
     }): void;
     subscribe(listener: () => void): () => void;
 }
+
+// @public
+export function selectErrorCount(state: FormState, paths: readonly string[]): number;
+
+// @public
+export function selectErrors(state: FormState, path: string, options?: GetErrorsOptions): string[];
+
+// @public
+export function selectValue(state: FormState, path: string): unknown;
+
+// @public
+export function selectVisible(state: FormState, target: {
+    visibleWhen?: Condition | undefined;
+}, parentPath?: string): boolean;
 
 // @public
 export function setValue<T extends Values>(values: T, path: string, value: unknown): T;

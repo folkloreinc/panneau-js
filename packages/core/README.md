@@ -46,10 +46,31 @@ function EditPage({ item, onSave }) {
 - **Values**, nested and localized, set by dot path (`form.setValue('title.fr', 'Accueil')`), and whether they changed (`dirty`).
 - **Client validation** with the portable rules (`checkValues()`): errors of a field show once it was blurred (`form.blur(path)`), and every error shows after a submit. Messages are English by default; `formatError` translates them.
 - **Server errors**, by dot path, from a `422`. They go away when their value changes.
-- **Visibility:** `form.isVisible(field)` evaluates `visibleWhen`. Hidden fields are not validated.
+- **Visibility:** `selectVisible(state, field)` evaluates `visibleWhen`. Hidden fields are not validated.
 - **Submit:** `onSubmit(values, { version, changes, mode })`. When it returns an item, the form continues from it, with its new version. When it throws an error that carries problem details (the errors of `@panneau/data` do), a `412` puts the form in the `conflict` status with the current item. `form.resolveConflict('reload')` takes their version; `'overwrite'` submits the local changes again over it.
 
 Values live in a `FormStore`. The default one is local; a shared store (Yjs) can replace it without changing the fields. `useFormField(form, path)` gives the props of a controlled field.
+
+### Reading the state in components
+
+Components read the state they subscribed to (what `useForm()` returns, or `useSyncExternalStore(form.subscribe, form.getState)`) with pure selectors:
+
+| Selector                                   | Returns                                                                                             |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `selectValue(state, path)`                 | The value at a dot path                                                                             |
+| `selectErrors(state, path, { nested })`    | The errors at a path, and with `nested` those of the paths inside it (`title.fr` for `title`)       |
+| `selectErrorCount(state, paths)`           | The number of paths with errors within some paths, for counts on tabs and sections                  |
+| `selectVisible(state, target, parentPath)` | Whether a field or layout node is visible; conditions of nested fields are relative to `parentPath` |
+
+```tsx
+function TitleField({ form }: { form: Form }) {
+    const state = useSyncExternalStore(form.subscribe, form.getState, form.getState);
+    const errors = selectErrors(state, 'title', { nested: true });
+    // …
+}
+```
+
+The form's methods that read the state (`form.getValue()`, `form.getErrors()`, `form.countErrors()`, `form.isVisible()`) are **not React APIs**: the React Compiler memoizes calls by their arguments, and these arguments don't change when the state does, so the results go stale (the error of a field doesn't show after a blur). Use them outside of components: in event handlers, effects, tests or plain scripts.
 
 ## Lists
 

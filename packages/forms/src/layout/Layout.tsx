@@ -8,19 +8,19 @@ import {
     useState,
 } from 'react';
 
-import { type Form, getLayoutFieldNames, usePlugins } from '@panneau/core';
+import {
+    type Form,
+    getLayoutFieldNames,
+    selectErrorCount,
+    selectVisible,
+    usePlugins,
+} from '@panneau/core';
 import { NestedField } from '@panneau/fields';
 import type { Field, LayoutNode } from '@panneau/protocol';
 import { Badge, Disclosure, Tab, TabList, TabPanel, Tabs, usePanneauIntl } from '@panneau/ui';
 
 import styles from '../Form.module.css';
-import {
-    RevealContext,
-    selectErrorCount,
-    selectVisible,
-    useFormContext,
-    useFormState,
-} from '../context';
+import { RevealContext, useFormContext, useFormState } from '../context';
 import { messages } from '../messages';
 
 export interface LayoutProps {

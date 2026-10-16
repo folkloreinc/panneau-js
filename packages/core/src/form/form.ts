@@ -4,7 +4,6 @@ import {
     type Item,
     type RuleFailure,
     checkValues,
-    evaluateCondition,
     getValue,
 } from '@panneau/protocol';
 
@@ -12,6 +11,7 @@ import type { FormMode } from '../definition/form';
 import { type Values, isEqual, isPathWithin } from '../values';
 import { formatRuleFailure } from './messages';
 import { getItemValues, getProblem, isItem } from './problem';
+import { selectErrorCount, selectErrors, selectValue, selectVisible } from './selectors';
 import { type FormStore, createLocalStore } from './store';
 
 /**
@@ -101,23 +101,41 @@ export interface GetErrorsOptions {
     nested?: boolean;
 }
 
-/** A headless form: values, errors, visibility and submit. React components use `useForm()`. */
+/**
+ * A headless form: values, errors, visibility and submit. React components use `useForm()`.
+ *
+ * The methods that read the state (`getValue()`, `getErrors()`, `countErrors()`, `isVisible()`)
+ * are not React APIs: the React Compiler memoizes their calls by their arguments, so they return
+ * stale results in components. Components read the state they subscribed to with the selectors
+ * (`selectValue()`, `selectErrors()`, `selectErrorCount()`, `selectVisible()`).
+ */
 export interface Form {
     getState(): FormState;
     subscribe(listener: () => void): () => void;
     /** Updates the options that can change between renders. */
     setOptions(options: Partial<UpdatableFormOptions>): void;
+    /**
+     * The value at a dot path. Not a React API: components use `selectValue(state, path)` (see
+     * {@link Form}).
+     */
     getValue(path: string): unknown;
     setValue(path: string, value: unknown): void;
     /** Marks a field as touched, which shows its client errors. */
     blur(path: string): void;
-    /** Errors at a path. */
+    /**
+     * Errors at a path. Not a React API: components use `selectErrors(state, path, options)` (see
+     * {@link Form}).
+     */
     getErrors(path: string, options?: GetErrorsOptions): string[];
-    /** The number of paths with errors within the given paths, for counts on tabs and sections. */
+    /**
+     * The number of paths with errors within the given paths, for counts on tabs and sections. Not
+     * a React API: components use `selectErrorCount(state, paths)` (see {@link Form}).
+     */
     countErrors(paths: readonly string[]): number;
     /**
      * Whether a field or a layout node is visible, from its `visibleWhen`. For nested fields, pass
-     * the path of the object they belong to (`blocks.2`): conditions are relative to it.
+     * the path of the object they belong to (`blocks.2`): conditions are relative to it. Not a
+     * React API: components use `selectVisible(state, target, parentPath)` (see {@link Form}).
      */
     isVisible(target: { visibleWhen?: Condition | undefined }, parentPath?: string): boolean;
     /** Checks every value with the portable rules and shows every error. Returns whether valid. */
@@ -367,7 +385,7 @@ export function createForm(options: FormOptions): Form {
                 update();
             }
         },
-        getValue: (path) => getValue(store.getValues(), path),
+        getValue: (path) => selectValue(form.getState(), path),
         setValue(path, value) {
             store.setValue(path, value);
             if (unsubscribeStore === null) {
@@ -381,22 +399,10 @@ export function createForm(options: FormOptions): Form {
             touched = new Set([...touched, path]);
             update();
         },
-        getErrors(path, { nested = false } = {}) {
-            return Object.entries(form.getState().errors).flatMap(([key, messages]) =>
-                key === path || (nested && isPathWithin(key, path)) ? messages : [],
-            );
-        },
-        countErrors(paths) {
-            return Object.keys(form.getState().errors).filter((key) =>
-                paths.some((path) => isPathWithin(key, path)),
-            ).length;
-        },
-        isVisible(target, parentPath = '') {
-            if (target.visibleWhen === undefined) {
-                return true;
-            }
-            return evaluateCondition(target.visibleWhen, getValue(store.getValues(), parentPath));
-        },
+        getErrors: (path, getErrorsOptions) =>
+            selectErrors(form.getState(), path, getErrorsOptions),
+        countErrors: (paths) => selectErrorCount(form.getState(), paths),
+        isVisible: (target, parentPath) => selectVisible(form.getState(), target, parentPath),
         validate() {
             submitCount = Math.max(submitCount, 1);
             update();
