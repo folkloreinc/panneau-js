@@ -1,10 +1,10 @@
+import { selectErrors, selectValue, selectVisible } from '@panneau/core';
 import type { FieldBindingProps } from '@panneau/fields';
-import { getValue } from '@panneau/protocol';
 import { Alert, Button, usePanneauIntl } from '@panneau/ui';
 
 import { FieldErrorBoundary } from './FieldErrorBoundary';
 import styles from './Form.module.css';
-import { selectErrors, selectVisible, useFormContext, useFormState } from './context';
+import { useFormContext, useFormState } from './context';
 import { messages } from './messages';
 
 /** Fields that show the errors of their nested fields themselves. */
@@ -24,7 +24,7 @@ export function FormBinding({ field, path, parentPath, render }: FieldBindingPro
     if (!selectVisible(state, field, parentPath)) {
         return null;
     }
-    const errors = selectErrors(state, path, !rendersNestedFields(field));
+    const errors = selectErrors(state, path, { nested: !rendersNestedFields(field) });
     return (
         <div className={styles.field} data-panneau-path={path}>
             <FieldErrorBoundary
@@ -44,7 +44,7 @@ export function FormBinding({ field, path, parentPath, render }: FieldBindingPro
                 )}
             >
                 {render({
-                    value: getValue(state.values, path),
+                    value: selectValue(state, path),
                     onChange: (value) => form.setValue(path, value),
                     onBlur: () => form.blur(path),
                     errors,
