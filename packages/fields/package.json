@@ -1,0 +1,129 @@
+{
+    "name": "@panneau/fields",
+    "version": "5.0.0-alpha.0",
+    "description": "Controlled field components of Panneau for the protocol's built-in field types, one subpath per field.",
+    "type": "module",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git",
+        "directory": "packages/fields"
+    },
+    "sideEffects": [
+        "*.css"
+    ],
+    "exports": {
+        ".": {
+            "@panneau/source": "./src/index.ts",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./text": {
+            "@panneau/source": "./src/text/index.ts",
+            "types": "./dist/text/index.d.ts",
+            "default": "./dist/text/index.js"
+        },
+        "./textarea": {
+            "@panneau/source": "./src/textarea/index.ts",
+            "types": "./dist/textarea/index.d.ts",
+            "default": "./dist/textarea/index.js"
+        },
+        "./number": {
+            "@panneau/source": "./src/number/index.ts",
+            "types": "./dist/number/index.d.ts",
+            "default": "./dist/number/index.js"
+        },
+        "./boolean": {
+            "@panneau/source": "./src/boolean/index.ts",
+            "types": "./dist/boolean/index.d.ts",
+            "default": "./dist/boolean/index.js"
+        },
+        "./date": {
+            "@panneau/source": "./src/date/index.ts",
+            "types": "./dist/date/index.d.ts",
+            "default": "./dist/date/index.js"
+        },
+        "./datetime": {
+            "@panneau/source": "./src/datetime/index.ts",
+            "types": "./dist/datetime/index.d.ts",
+            "default": "./dist/datetime/index.js"
+        },
+        "./time": {
+            "@panneau/source": "./src/time/index.ts",
+            "types": "./dist/time/index.d.ts",
+            "default": "./dist/time/index.js"
+        },
+        "./select": {
+            "@panneau/source": "./src/select/index.ts",
+            "types": "./dist/select/index.d.ts",
+            "default": "./dist/select/index.js"
+        },
+        "./email": {
+            "@panneau/source": "./src/email/index.ts",
+            "types": "./dist/email/index.d.ts",
+            "default": "./dist/email/index.js"
+        },
+        "./url": {
+            "@panneau/source": "./src/url/index.ts",
+            "types": "./dist/url/index.d.ts",
+            "default": "./dist/url/index.js"
+        },
+        "./color": {
+            "@panneau/source": "./src/color/index.ts",
+            "types": "./dist/color/index.d.ts",
+            "default": "./dist/color/index.js"
+        },
+        "./slug": {
+            "@panneau/source": "./src/slug/index.ts",
+            "types": "./dist/slug/index.d.ts",
+            "default": "./dist/slug/index.js"
+        },
+        "./localized": {
+            "@panneau/source": "./src/localized/index.ts",
+            "types": "./dist/localized/index.d.ts",
+            "default": "./dist/localized/index.js"
+        },
+        "./group": {
+            "@panneau/source": "./src/group/index.ts",
+            "types": "./dist/group/index.d.ts",
+            "default": "./dist/group/index.js"
+        },
+        "./repeater": {
+            "@panneau/source": "./src/repeater/index.ts",
+            "types": "./dist/repeater/index.d.ts",
+            "default": "./dist/repeater/index.js"
+        },
+        "./relation": {
+            "@panneau/source": "./src/relation/index.ts",
+            "types": "./dist/relation/index.d.ts",
+            "default": "./dist/relation/index.js"
+        },
+        "./locales": {
+            "@panneau/source": "./src/locales/index.ts",
+            "types": "./dist/locales/index.d.ts",
+            "default": "./dist/locales/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "vite build && tsc -p tsconfig.build.json",
+        "typecheck": "tsc --noEmit",
+        "api": "tsc -p tsconfig.build.json && node ../../scripts/api-report.js"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "peerDependencies": {
+        "react": "^19.2.0",
+        "react-intl": "^12.0.0"
+    },
+    "dependencies": {
+        "@internationalized/date": "^3.12.4",
+        "@panneau/protocol": "5.0.0-alpha.0",
+        "@panneau/ui": "5.0.0-alpha.0",
+        "lucide-react": "^1.57.0"
+    }
+}

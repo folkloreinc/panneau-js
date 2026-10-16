@@ -1,0 +1,9 @@
+.locales {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-3);
+}
+
+.locale {
+    min-width: 0;
+}

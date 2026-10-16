@@ -45,7 +45,7 @@ export function Disclosure({
                 <Button slot="trigger" className={cx(styles.trigger, triggerClassName)}>
                     <Icon icon={ChevronRight} className={styles.chevron} />
                     <span className={styles.title}>{title}</span>
-                    {titleEnd}
+                    {titleEnd !== undefined ? <> {titleEnd}</> : null}
                 </Button>
             </Heading>
             <DisclosurePanel className={cx(styles.panel, panelClassName)}>
