@@ -122,6 +122,7 @@
     },
     "dependencies": {
         "@internationalized/date": "^3.12.4",
+        "@panneau/intl": "5.0.0-alpha.0",
         "@panneau/protocol": "5.0.0-alpha.0",
         "@panneau/ui": "5.0.0-alpha.0",
         "lucide-react": "^1.57.0"

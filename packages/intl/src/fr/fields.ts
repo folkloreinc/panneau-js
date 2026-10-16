@@ -1,5 +1,5 @@
 /** The French messages of `@panneau/fields`, by id. */
-export const fr: Record<string, string> = {
+export const fieldsFr: Record<string, string> = {
     'panneau.fields.add': 'Ajouter',
     'panneau.fields.addType': 'Ajouter : {type}',
     'panneau.fields.remove': 'Retirer',

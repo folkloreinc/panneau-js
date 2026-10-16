@@ -1,5 +1,5 @@
 /** The French messages of `@panneau/forms`, by id. */
-export const fr: Record<string, string> = {
+export const formsFr: Record<string, string> = {
     'panneau.forms.save': 'Enregistrer',
     'panneau.forms.saved': 'Enregistré',
     'panneau.forms.unsaved': 'Modifications non enregistrées',

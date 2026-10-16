@@ -3,16 +3,8 @@ import type { Decorator, Preview } from '@storybook/react-vite';
 import bootstrapCss from 'bootstrap/dist/css/bootstrap.min.css?inline';
 import { IntlProvider } from 'react-intl';
 
-import { fr as fieldsFr } from '@panneau/fields/locales';
-import { fr as formsFr } from '@panneau/forms/locales';
-import { fr as listsFr } from '@panneau/lists/locales';
+import { panneauMessages } from '@panneau/intl';
 import { type ColorScheme, PanneauRoot, bootstrapTheme } from '@panneau/ui';
-import { fr as uiFr } from '@panneau/ui/locales';
-
-const MESSAGES: Record<string, Record<string, string>> = {
-    en: {},
-    fr: { ...uiFr, ...fieldsFr, ...formsFr, ...listsFr },
-};
 
 /** Every story renders in a PanneauRoot, with the locale, color scheme and theme of the toolbar. */
 const withPanneau: Decorator = (Story, { globals }) => {
@@ -20,7 +12,7 @@ const withPanneau: Decorator = (Story, { globals }) => {
     const colorScheme = (globals.colorScheme as ColorScheme | undefined) ?? 'light';
     const theme = globals.theme === 'bootstrap' ? bootstrapTheme : null;
     return (
-        <IntlProvider locale={locale} messages={MESSAGES[locale]} defaultLocale="en">
+        <IntlProvider locale={locale} messages={panneauMessages[locale]} defaultLocale="en">
             {theme !== null ? <style>{bootstrapCss}</style> : null}
             <PanneauRoot
                 data-bs-theme={theme !== null && colorScheme !== 'auto' ? colorScheme : undefined}

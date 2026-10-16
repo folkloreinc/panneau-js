@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import { PanneauProvider, createList, createMemoryRouter, definePlugin } from '@panneau/core';
+import { fr } from '@panneau/intl';
 import { PanneauRoot } from '@panneau/ui';
 
 import { List } from './List';
@@ -18,7 +19,6 @@ import {
     statusField,
 } from './__fixtures__/pages';
 import { renderList } from './__fixtures__/render';
-import { fr } from './locales';
 import type { DisplayProps } from './types';
 
 function rowTitles() {

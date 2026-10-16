@@ -6,6 +6,7 @@ import {
     getLayoutFieldNames,
     getProblem,
     resolveFields,
+    selectVisible,
     usePanneau,
     usePlugins,
 } from '@panneau/core';
@@ -22,13 +23,7 @@ import { ConflictDialog } from './ConflictDialog';
 import { ErrorSummary } from './ErrorSummary';
 import styles from './Form.module.css';
 import { FormBinding } from './FormBinding';
-import {
-    FormContext,
-    RevealContext,
-    createRevealRegistry,
-    selectVisible,
-    useFormState,
-} from './context';
+import { FormContext, RevealContext, createRevealRegistry, useFormState } from './context';
 import { cx } from './cx';
 import { LayoutNodes } from './layout/Layout';
 import { messages } from './messages';

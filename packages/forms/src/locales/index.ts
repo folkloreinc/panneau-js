@@ -1,17 +1,21 @@
-import type { MessageDescriptor } from 'react-intl';
+import { fr as allFr, getDefaultMessages } from '@panneau/intl';
 
 import { messages } from '../messages';
-import { fr } from './fr';
 
-function flatten(entries: object): MessageDescriptor[] {
-    return Object.values(entries).flatMap((entry: MessageDescriptor | object) =>
-        'id' in entry ? [entry as MessageDescriptor] : flatten(entry),
-    );
-}
+/**
+ * The English messages of `@panneau/forms`, by id. They are also the default messages.
+ *
+ * @deprecated Use `en`, or `withPanneauMessages()`, from `@panneau/intl`: they have the messages
+ * of every package.
+ */
+export const en: Record<string, string> = getDefaultMessages(messages);
 
-/** The English messages of `@panneau/forms`, by id. They are also the default messages. */
-export const en: Record<string, string> = Object.fromEntries(
-    flatten(messages).map(({ id, defaultMessage }) => [String(id), String(defaultMessage)]),
+/**
+ * The French messages of `@panneau/forms`, by id.
+ *
+ * @deprecated Use `fr`, or `withPanneauMessages()`, from `@panneau/intl`: they have the messages
+ * of every package.
+ */
+export const fr: Record<string, string> = Object.fromEntries(
+    Object.entries(allFr).filter(([id]) => id in en),
 );
-
-export { fr };

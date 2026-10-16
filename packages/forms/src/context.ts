@@ -1,7 +1,6 @@
 import { createContext, use, useSyncExternalStore } from 'react';
 
 import type { Form, FormState } from '@panneau/core';
-import { type Condition, evaluateCondition, getValue } from '@panneau/protocol';
 
 export const FormContext = createContext<Form | null>(null);
 
@@ -43,39 +42,3 @@ export function createRevealRegistry(): RevealRegistry {
 }
 
 export const RevealContext = createContext<RevealRegistry>(createRevealRegistry());
-
-/*
- * Reads of the form state. Components read the state they subscribed to, never the form's
- * methods: the React Compiler memoizes method calls by their arguments, so a method that reads
- * the store would return stale results.
- */
-
-/** Whether a path is a path or inside it (`title.fr` is inside `title`). */
-function isWithin(path: string, parent: string): boolean {
-    return parent === '' || path === parent || path.startsWith(`${parent}.`);
-}
-
-/** Errors at a path, and with `nested` at the paths inside it. */
-export function selectErrors(state: FormState, path: string, nested = false): string[] {
-    return Object.entries(state.errors).flatMap(([key, messages]) =>
-        key === path || (nested && isWithin(key, path)) ? messages : [],
-    );
-}
-
-/** The number of paths with errors within the given paths. */
-export function selectErrorCount(state: FormState, paths: readonly string[]): number {
-    return Object.keys(state.errors).filter((key) => paths.some((path) => isWithin(key, path)))
-        .length;
-}
-
-/** Whether a field or a node is visible, from its `visibleWhen` on the values at `parentPath`. */
-export function selectVisible(
-    state: FormState,
-    target: { visibleWhen?: Condition | undefined },
-    parentPath = '',
-): boolean {
-    return (
-        target.visibleWhen === undefined ||
-        evaluateCondition(target.visibleWhen, getValue(state.values, parentPath))
-    );
-}

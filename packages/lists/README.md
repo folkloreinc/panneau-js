@@ -103,11 +103,10 @@ A display gets `{ value, item, column, field }`. A layout gets the items, the co
 
 ## Messages
 
-Strings go through react-intl, with English defaults. Add `fr` from `@panneau/lists/locales` (and those of `@panneau/ui` and `@panneau/fields`) to the app's messages, or pass `listsPlugin`, which has all three.
+Strings go through react-intl, with English defaults. Their descriptors and their French text live in [`@panneau/intl`](../intl) (`listsMessages`), with those of the other packages: give the app's `IntlProvider` `withPanneauMessages(locale, appMessages)`, or pass `listsPlugin`, which carries them.
 
-| Export                   | Content                                                               |
-| ------------------------ | --------------------------------------------------------------------- |
-| `@panneau/lists`         | `ListView`, `List`, displays, layouts, filter controls, `listsPlugin` |
-| `@panneau/lists/locales` | `en` and `fr` messages                                                |
+| Export           | Content                                                               |
+| ---------------- | --------------------------------------------------------------------- |
+| `@panneau/lists` | `ListView`, `List`, displays, layouts, filter controls, `listsPlugin` |
 
 The package layout, scripts and API reports are explained in [`docs/packages.md`](../../docs/packages.md).

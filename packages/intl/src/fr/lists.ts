@@ -1,5 +1,5 @@
 /** The French messages of `@panneau/lists`, by id. */
-export const fr: Record<string, string> = {
+export const listsFr: Record<string, string> = {
     'panneau.lists.list': 'Éléments',
     'panneau.lists.search': 'Rechercher',
     'panneau.lists.searchPlaceholder': 'Rechercher…',

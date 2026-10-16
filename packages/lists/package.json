@@ -18,11 +18,6 @@
             "types": "./dist/index.d.ts",
             "default": "./dist/index.js"
         },
-        "./locales": {
-            "@panneau/source": "./src/locales/index.ts",
-            "types": "./dist/locales/index.d.ts",
-            "default": "./dist/locales/index.js"
-        },
         "./package.json": "./package.json"
     },
     "files": [
@@ -44,6 +39,7 @@
     "dependencies": {
         "@panneau/core": "5.0.0-alpha.0",
         "@panneau/fields": "5.0.0-alpha.0",
+        "@panneau/intl": "5.0.0-alpha.0",
         "@panneau/protocol": "5.0.0-alpha.0",
         "@panneau/ui": "5.0.0-alpha.0",
         "lucide-react": "^1.57.0"

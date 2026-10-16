@@ -25,6 +25,7 @@ Packages are created when their work starts, not as empty shells ([decisions/001
 Notes:
 
 - **Fields, forms and lists** work without a definition, a router or a network. They never depend on `data`. Forms and lists render the form and list state of `core`, which needs neither ([decisions/0021](decisions/0021-forms-render-core-state.md), [decisions/0022](decisions/0022-lists-render-core-state.md)); fields don't depend on `core`.
+- **Messages** of the UI packages live in `intl`: their descriptors, with the English text, and their translations. The packages format them, and an app gets all of them with one import (`withPanneauMessages()`). A new UI package adds its messages there, with their French text.
 - **`core` renders no UI,** and never imports the UI packages: it sits below `forms` and `lists` ([decisions/0021](decisions/0021-forms-render-core-state.md), [decisions/0022](decisions/0022-lists-render-core-state.md)).
 - **`data`** only needs `protocol` to start with. It sits above `core` so that query hooks can use the engine's list state.
 - **`app`** starts from the entry contract of [decisions/0019](decisions/0019-app-entry.md): the boot config, `createPanneauApp()` and the client routes. Its shell is a placeholder until Phase 2.

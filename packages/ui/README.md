@@ -18,7 +18,7 @@ import { Button, PanneauRoot, TextInput, bootstrapTheme } from '@panneau/ui';
 | Export                | Content                                                                         |
 | --------------------- | ------------------------------------------------------------------------------- |
 | `@panneau/ui`         | `PanneauRoot`, themes, the primitives, `Icon`, `useToast()`, `usePanneauIntl()` |
-| `@panneau/ui/locales` | The UI messages by locale: `en` and `fr`                                        |
+| `@panneau/ui/locales` | Deprecated: the UI messages by locale, `en` and `fr`. Use `@panneau/intl`       |
 
 ## Root, tokens and themes
 
@@ -40,12 +40,12 @@ The default theme and the icon set are explained in [decision 0020](../../docs/d
 
 ## Messages
 
-Strings go through react-intl, with English defaults. Without an `IntlProvider`, components render in English. With one, add Panneau's messages to the app's:
+Strings go through react-intl, with English defaults. Without an `IntlProvider`, components render in English. With one, add the messages of every Panneau package to the app's with [`@panneau/intl`](../intl):
 
 ```tsx
-import { fr } from '@panneau/ui/locales';
+import { withPanneauMessages } from '@panneau/intl';
 
-<IntlProvider locale="fr" messages={{ ...fr, ...appMessages }}>
+<IntlProvider locale="fr" messages={withPanneauMessages('fr', appMessages)}>
 ```
 
 ## Peer dependencies
