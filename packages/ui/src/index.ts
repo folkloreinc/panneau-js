@@ -11,6 +11,7 @@ export { Disclosure, type DisclosureProps } from './disclosure/Disclosure';
 export { type FieldChromeProps } from './field/FieldParts';
 export { Fieldset, type FieldsetProps } from './field/Fieldset';
 export { Icon, type IconComponent, type IconProps, type IconSize } from './icon/Icon';
+export { getNamedIcon, loadNamedIcon } from './icon/namedIcons';
 export { IconButton, type IconButtonProps } from './icon-button/IconButton';
 export { usePanneauIntl } from './intl/usePanneauIntl';
 export {

@@ -15,10 +15,10 @@ import { Button, PanneauRoot, TextInput, bootstrapTheme } from '@panneau/ui';
 </PanneauRoot>;
 ```
 
-| Export                | Content                                                                         |
-| --------------------- | ------------------------------------------------------------------------------- |
-| `@panneau/ui`         | `PanneauRoot`, themes, the primitives, `Icon`, `useToast()`, `usePanneauIntl()` |
-| `@panneau/ui/locales` | Deprecated: the UI messages by locale, `en` and `fr`. Use `@panneau/intl`       |
+| Export                | Content                                                                                           |
+| --------------------- | ------------------------------------------------------------------------------------------------- |
+| `@panneau/ui`         | `PanneauRoot`, themes, the primitives, `Icon`, `getNamedIcon()`, `useToast()`, `usePanneauIntl()` |
+| `@panneau/ui/locales` | Deprecated: the UI messages by locale, `en` and `fr`. Use `@panneau/intl`                         |
 
 ## Root, tokens and themes
 
@@ -37,6 +37,22 @@ The default theme and the icon set are explained in [decision 0020](../../docs/d
 - Every component accepts `className`, and `xxxClassName` props for its inner elements (`labelClassName`, `inputClassName`…).
 - Labelled controls take `label`, `description` and `errors` (a list of messages: any message makes the control invalid and describes it).
 - They work on phones: larger touch targets on touch screens, dialogs as bottom sheets, scrolling tabs.
+
+## Icons
+
+Components take icons as components: any Lucide icon (`icon={Pencil}`), or a component with the same props.
+
+Definitions name their icons (`"icon": "send"`, a name of [lucide.dev/icons](https://lucide.dev/icons)). `getNamedIcon(name)` turns a name into an icon component that goes wherever an icon component goes:
+
+```tsx
+import { Button, getNamedIcon } from '@panneau/ui';
+
+<Button icon={getNamedIcon('send')}>Send</Button>;
+```
+
+- It loads that one icon the first time it renders, through Lucide's dynamic imports, and renders an empty space of the same size until then. The list of names is loaded on demand too: the whole set is never in the bundle, but bundlers emit one small chunk per icon.
+- It returns the same component for the same name. A name Lucide doesn't have renders nothing, with a warning in the console.
+- `loadNamedIcon(name)` loads an icon ahead of time, and resolves with its component (or `null`).
 
 ## Messages
 

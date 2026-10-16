@@ -5,7 +5,8 @@
 // It packs the `@panneau/*` packages a form and a list need (`npm pack`), installs the tarballs into a copy
 // of smoke/webpack (with their peer dependencies, as a project lists them), builds the app with
 // `flklr` (`@folklore/cli`, webpack), and renders it in Chromium: the form must render with its
-// styles, show a validation error, and submit; the list must render, sort and run an action.
+// styles, show a validation error, and submit; the list must render, sort, load the icon an action
+// names, and run the action.
 import { execFileSync } from 'node:child_process';
 import {
     cpSync,
@@ -189,6 +190,11 @@ try {
     if (sorted.join(',') !== 'À propos,Accueil,Contact') {
         throw new Error(`The list is not sorted by title: ${JSON.stringify(sorted)}`);
     }
+    // The icon named by the action, loaded on demand by webpack.
+    await page
+        .getByRole('button', { name: 'Archiver : Contact' })
+        .locator('svg.lucide-archive')
+        .waitFor({ timeout: 5000 });
     await page.getByRole('button', { name: 'Archiver : Contact' }).click();
     await page.waitForFunction(() => document.body.dataset.action === '2', null, {
         timeout: 5000,

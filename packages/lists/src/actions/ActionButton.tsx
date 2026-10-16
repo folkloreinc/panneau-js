@@ -5,10 +5,12 @@ import { Button, Icon } from '@panneau/ui';
 
 import { cx } from '../cx';
 import styles from './Actions.module.css';
-import { getActionIcon } from './icons';
+import { type ActionIcons, getActionIcon } from './icons';
 
 export interface ActionButtonProps {
     action: Action;
+    /** Icons of actions by id, over the icon the action names. */
+    icons?: ActionIcons | undefined;
     /** The link of a `link` action. Links go through React Aria, so an app's router handles them. */
     href: string | null;
     onPress: () => void;
@@ -22,6 +24,7 @@ export interface ActionButtonProps {
 /** An action as a button, or as a link for a `link` action with a URL. */
 export function ActionButton({
     action,
+    icons,
     href,
     onPress,
     isPending = false,
@@ -29,7 +32,7 @@ export function ActionButton({
     size = 'sm',
     'aria-label': ariaLabel,
 }: ActionButtonProps) {
-    const icon = getActionIcon(action);
+    const icon = getActionIcon(action, icons);
     if (href !== null) {
         return (
             <Link

@@ -32,6 +32,8 @@ const config: StorybookConfig = {
                     'react-aria-components',
                     'react-intl',
                     'lucide-react',
+                    // The names of `getNamedIcon()` of @panneau/ui.
+                    'lucide-react/dynamicIconImports.mjs',
                     '@internationalized/date',
                     '@tanstack/react-query',
                 ],

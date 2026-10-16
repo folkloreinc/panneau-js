@@ -292,6 +292,9 @@ export interface FieldsetProps {
 }
 
 // @public
+export function getNamedIcon(name: string): IconComponent;
+
+// @public
 export function Icon(input: IconProps): JSX.Element;
 
 // @public
@@ -332,6 +335,9 @@ export interface IconProps {
 
 // @public (undocumented)
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
+// @public
+export function loadNamedIcon(name: string): Promise<IconComponent | null>;
 
 // @public
 export function Menu<T extends object>(input: MenuProps<T>): JSX.Element;

@@ -89,6 +89,8 @@ const { data, isFetching, error } = useResourceList('pages', query); // @panneau
 | Actions    | `row` (buttons), `menu` (the row's menu), `toolbar` (selection and resource actions), with `confirm`, hidden by abilities ([0011](../../docs/decisions/0011-permissions.md)) |
 | States     | A spinner, an error with a retry, an empty message, and "no results" with a button that clears the filters                                                                   |
 
+An action shows the Lucide icon it names (`"icon": "send"`, through `getNamedIcon()` of `@panneau/ui`), or the icon of a built-in action (`edit`, `delete`…). Actions written in code can get icon components by id instead, which win over names: `actionIcons={{ archive: Archive }}`.
+
 Lists confirm an action when it has `confirm` (its title and message are ICU messages with `{count}`), or when some selected items don't allow it, then call `onAction` with the action, its scope, the item or the `Selection` of the protocol, the count and the skipped items. A promise shows the action as pending; when it rejects, a toast says that it failed. After a selection action, the selection is cleared.
 
 ## Plugins

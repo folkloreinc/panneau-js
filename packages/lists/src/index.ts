@@ -1,5 +1,6 @@
 export { type ListActions, getActionHref, groupListActions, isAllowedOn } from './actions/actions';
 export { ConfirmDialog, type ConfirmDialogProps } from './actions/ConfirmDialog';
+export { type ActionIcons, getActionIcon } from './actions/icons';
 export {
     BooleanDisplay,
     ColorDisplay,

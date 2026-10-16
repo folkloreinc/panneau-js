@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Bell, Check, Pencil, Search, Trash } from 'lucide-react';
+import { expect, waitFor } from 'storybook/test';
 
 import { Icon } from './Icon';
+import { getNamedIcon } from './namedIcons';
 
 const meta = {
     title: 'UI/Icon',
@@ -26,4 +28,24 @@ export const Sizes: Story = {
             <Icon icon={Trash} size="xl" />
         </div>
     ),
+};
+
+/**
+ * Icons by their Lucide name, as definitions give them (`"icon": "send"`). Each one is loaded the
+ * first time it renders, with an empty space of the same size until then.
+ */
+export const ByName: Story = {
+    render: () => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <Icon icon={getNamedIcon('send')} size="lg" />
+            <Icon icon={getNamedIcon('calendar-days')} size="lg" />
+            <Icon icon={getNamedIcon('archive')} size="lg" label="Archive" />
+        </div>
+    ),
+    play: async ({ canvasElement }) => {
+        await waitFor(() =>
+            expect(canvasElement.querySelectorAll('svg[data-loading]')).toHaveLength(0),
+        );
+        await expect(canvasElement.querySelector('svg.lucide-send')).not.toBeNull();
+    },
 };

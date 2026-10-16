@@ -12,6 +12,7 @@ import type { ComponentType } from 'react';
 import type { Field } from '@panneau/protocol';
 import type { Filter } from '@panneau/protocol';
 import type { FilterValue } from '@panneau/protocol';
+import { IconComponent } from '@panneau/ui';
 import { JSX } from 'react';
 import type { List as List_2 } from '@panneau/core';
 import { ListOptions } from '@panneau/core';
@@ -21,6 +22,9 @@ import type { ListState } from '@panneau/core';
 import type { Option as Option_2 } from '@panneau/protocol';
 import { ReactNode } from 'react';
 import type { Selection as Selection_2 } from '@panneau/protocol';
+
+// @public
+export type ActionIcons = Readonly<Record<string, IconComponent>>;
 
 // @public
 export function applyListQuery<T extends ListItem>(items: readonly T[], query: ListQuery, options?: LocalQueryOptions): LocalQueryResult<T>;
@@ -109,6 +113,9 @@ export type FilterEntry = ComponentType<FilterControlProps>;
 
 // @public
 export function getActionHref(action: Action, item?: ListItem): string | null;
+
+// @public
+export function getActionIcon(action: Action, icons?: ActionIcons): IconComponent | undefined;
 
 // @public
 export function getLocalizedValue(value: unknown, locale: string): unknown;
@@ -217,6 +224,7 @@ export function ListView(input: ListViewProps): JSX.Element;
 // @public (undocumented)
 export interface ListViewProps {
     'aria-label'?: string;
+    actionIcons?: ActionIcons;
     actions?: ListActions;
     // (undocumented)
     className?: string;
