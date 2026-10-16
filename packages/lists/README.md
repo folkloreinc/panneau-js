@@ -83,7 +83,7 @@ const { data, isFetching, error } = useResourceList('pages', query); // @panneau
 | Displays   | `text`, `textarea`, `slug`, `richtext`, `number`, `boolean`, `date`, `datetime`, `time`, `select`, `relation`, `url`, `email`, `color`, `media`                              |
 | Layouts    | `table` and `cards` (`layouts`, the first is the default). On narrow lists, table rows stack and show the label of each value                                                |
 | Sorting    | Sortable column headers (`aria-sort`), and a select for cards and phones                                                                                                     |
-| Filters    | `text`, `select`, `toggle`, `date`, `date-range`, `relation`, with chips for the active filters and the search                                                               |
+| Filters    | `text`, `select`, `toggle`, `date`, `date-range` (sent as bounds: `filter[id][from]`, `filter[id][to]`), `relation`, with chips for the active filters and the search        |
 | Pagination | With `total`: the range, previous and next pages, and the page size (`perPageOptions`)                                                                                       |
 | Selection  | Checkboxes, the page, then "select all N items", which selects every item matching the query, with exceptions                                                                |
 | Actions    | `row` (buttons), `menu` (the row's menu), `toolbar` (selection and resource actions), with `confirm`, hidden by abilities ([0011](../../docs/decisions/0011-permissions.md)) |

@@ -8,6 +8,14 @@ export { type CheckOptions, type RuleFailure, checkRules, checkValues } from '..
 export { evaluateCondition } from '../conditions';
 export { lintDefinition } from '../lint';
 export type { ValidationIssue } from '../validate';
-export { type FilterValue, type ListQuery, fromSearchParams, toSearchParams } from '../query';
+export {
+    type FilterRange,
+    type FilterValue,
+    type ListQuery,
+    fromSearchParams,
+    isFilterRange,
+    matchesFilterRange,
+    toSearchParams,
+} from '../query';
 export { getValue, isFilled } from '../values';
 export { isProblem } from '../problem';

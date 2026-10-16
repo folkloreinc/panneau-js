@@ -18,6 +18,22 @@ describe('applyListQuery', () => {
         expect(applyListQuery(items, { filter: { author: ['8', '9'] } }).items).toEqual([items[1]]);
     });
 
+    it('filters by the bounds of a range, both inclusive', () => {
+        const items = [
+            { id: '1', published_on: '2026-01-01' },
+            { id: '2', published_on: '2026-01-31T18:00:00Z' },
+            { id: '3', published_on: '2026-02-01' },
+            { id: '4', published_on: null },
+        ];
+        const ids = (from?: string, to?: string) =>
+            applyListQuery(items, {
+                filter: { published_on: { ...(from && { from }), ...(to && { to }) } },
+            }).items.map((item) => item.id);
+        expect(ids('2026-01-01', '2026-01-31')).toEqual(['1', '2']);
+        expect(ids('2026-01-31')).toEqual(['2', '3']);
+        expect(ids(undefined, '2026-01-01')).toEqual(['1']);
+    });
+
     it('searches every text value, in the locale of localized values', () => {
         expect(applyListQuery(pages, { q: 'propos' }, { columns, locale: 'fr' }).total).toBe(1);
         expect(applyListQuery(pages, { q: 'propos' }, { columns, locale: 'en' }).total).toBe(0);

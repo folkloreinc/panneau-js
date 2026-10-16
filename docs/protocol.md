@@ -261,7 +261,13 @@ All paths are relative to `api.baseUrl`.
 
 - `page`, `perPage`
 - `sort=-published_at,title`: comma-separated, `-` for descending
-- `filter[status]=published`, `filter[tags][]=a`
+- `filter[{id}]`: the value of a filter of the list's definition, keyed by its `id`:
+    - one value: `filter[status]=published`;
+    - any of several values: `filter[tags][]=a&filter[tags][]=b`;
+    - the bounds of a range filter (`date-range`): `filter[published_at][from]=2026-01-01&filter[published_at][to]=2026-01-31`. Both bounds are inclusive, and either can be left out for an open end. A `date-range` has days as bounds (`YYYY-MM-DD`): `to` includes the whole day, so a date-time on `2026-01-31` is in the range above.
+
+    A backend ignores the filters it doesn't declare. In an action's query selection, the same values are JSON: `"filter": { "published_at": { "from": "2026-01-01" } }`.
+
 - `q`: search
 - `fields`: requested fields, so lists can ask for less
 
@@ -450,10 +456,11 @@ With `auth.mode = "external"`, the frontend only calls `GET /auth/session` and s
     - `lintDefinition()` checks those references alone: layout nodes and columns that name a field, relations that name a resource, unique names;
     - `validateBootConfig()` checks a [boot config](#boot-config).
 - **the portable rules**: `checkValues()` is the reference implementation.
+- **range filters**: `matchesFilterRange()` is the reference of how a backend reads the bounds of a range.
 - **a light entry point for browsers** (`@panneau/protocol/runtime`): the constants and the helpers above that don't need the schemas (`checkValues()`, `evaluateCondition()`, `lintDefinition()`, the list query helpers, `isProblem()`), without loading zod. UI packages import them from there, and only types from the main entry point.
 - **generated files**: `@panneau/protocol/definition.schema.json` and `@panneau/protocol/boot.schema.json` (JSON Schema 2020-12), and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
 - **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes.
-- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas.
+- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one.
 
 ```ts
 import { formatReport, runConformance } from '@panneau/protocol/conformance';

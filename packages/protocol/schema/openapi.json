@@ -94,7 +94,7 @@
                         "required": false,
                         "style": "deepObject",
                         "explode": true,
-                        "description": "`filter[status]=published`, `filter[tags][]=a`.",
+                        "description": "`filter[status]=published`; `filter[tags][]=a&filter[tags][]=b` for any of several values; `filter[published_at][from]=2026-01-01&filter[published_at][to]=2026-01-31` for the inclusive bounds of a range filter (`date-range`), without the open end.",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -860,7 +860,7 @@
                         "required": false,
                         "style": "deepObject",
                         "explode": true,
-                        "description": "`filter[status]=published`, `filter[tags][]=a`.",
+                        "description": "`filter[status]=published`; `filter[tags][]=a&filter[tags][]=b` for any of several values; `filter[published_at][from]=2026-01-01&filter[published_at][to]=2026-01-31` for the inclusive bounds of a range filter (`date-range`), without the open end.",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -2452,7 +2452,7 @@
                     "type": {
                         "type": "string",
                         "minLength": 1,
-                        "description": "Built-in: `text`, `select`, `toggle`, `date`, `date-range`, `relation`."
+                        "description": "Built-in: `text`, `select`, `toggle`, `date`, `date-range`, `relation`. A `date-range` value is the bounds of a range: `filter[id][from]` and `filter[id][to]`, days (`2026-01-31`), both inclusive and both optional."
                     },
                     "label": {
                         "type": "string"
@@ -3323,6 +3323,7 @@
                                 "type": "object",
                                 "properties": {
                                     "filter": {
+                                        "description": "The `filter` of the list query, by filter id: a value, a list of values, or the bounds of a range (`{ \"from\": \"2026-01-01\", \"to\": \"2026-01-31\" }`).",
                                         "type": "object",
                                         "propertyNames": {
                                             "type": "string"

@@ -1,4 +1,5 @@
 import type { ListQuery } from '@panneau/protocol';
+import { isFilterRange, matchesFilterRange } from '@panneau/protocol/runtime';
 
 import type { ListColumn, ListItem } from './types';
 import { getColumnValue, toText } from './values';
@@ -24,8 +25,8 @@ function valueOf(item: ListItem, key: string, options: LocalQueryOptions): unkno
 
 /**
  * Applies a list query to items in memory, as a backend would: filters (the value, or one of the
- * values, matches as a string), search in every text value, sort, then the page. For a product
- * that has every item at hand.
+ * values, matches as a string; a range matches the values within its bounds), search in every text
+ * value, sort, then the page. For a product that has every item at hand.
  */
 export function applyListQuery<T extends ListItem>(
     items: readonly T[],
@@ -35,6 +36,12 @@ export function applyListQuery<T extends ListItem>(
     const locale = options.locale ?? 'en';
     let result = [...items];
     Object.entries(query.filter ?? {}).forEach(([key, expected]) => {
+        if (isFilterRange(expected)) {
+            result = result.filter((item) =>
+                matchesFilterRange(valueOf(item, key, options), expected),
+            );
+            return;
+        }
         const accepted = (Array.isArray(expected) ? expected : [expected]).map(String);
         result = result.filter((item) => {
             const value = valueOf(item, key, options);

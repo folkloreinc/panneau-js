@@ -1,4 +1,4 @@
-import { type ListQuery, fromSearchParams } from '../query';
+import { type ListQuery, fromSearchParams, isFilterRange, matchesFilterRange } from '../query';
 import { type RuleFailure, checkValues } from '../rules';
 import type { DefinitionInput, ResourceInput } from '../schemas';
 import type { ActionResult, Item, Problem, Selection } from '../schemas/api';
@@ -92,6 +92,10 @@ function compare(a: unknown, b: unknown): number {
 function applyQuery(items: Item[], query: Pick<ListQuery, 'filter' | 'q' | 'sort'>): Item[] {
     let result = items;
     Object.entries(query.filter ?? {}).forEach(([key, expected]) => {
+        if (isFilterRange(expected)) {
+            result = result.filter((item) => matchesFilterRange(item[key], expected));
+            return;
+        }
         const accepted = (Array.isArray(expected) ? expected : [expected]).map(String);
         result = result.filter((item) => {
             const value = item[key];

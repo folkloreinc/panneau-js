@@ -55,6 +55,33 @@ describe('createMockBackend', () => {
         });
     });
 
+    it('filters by the bounds of a range, both inclusive and both optional', async () => {
+        const backend = createMockBackend({
+            definition: createDefinition(),
+            items: {
+                pages: [
+                    { title: { fr: 'Un' }, published_at: '2026-01-01T09:00:00Z', views: 5 },
+                    { title: { fr: 'Deux' }, published_at: '2026-01-31T23:00:00Z', views: 50 },
+                    { title: { fr: 'Trois' }, published_at: '2026-02-01T00:00:00Z', views: 500 },
+                    { title: { fr: 'Quatre' }, published_at: null, views: null },
+                ],
+            },
+        });
+        const ids = async (query: string) => {
+            const response = await backend.fetch(`/panneau/api/resources/pages?${query}`);
+            return ((await response.json()) as { data: { id: string }[] }).data
+                .map((item) => item.id)
+                .sort();
+        };
+        const range = 'filter[published_at]';
+        expect(await ids(`${range}[from]=2026-01-01&${range}[to]=2026-01-31`)).toEqual(['1', '2']);
+        expect(await ids(`${range}[from]=2026-01-31`)).toEqual(['2', '3']);
+        expect(await ids(`${range}[to]=2026-01-01`)).toEqual(['1']);
+        expect(await ids(`${range}[from]=2027-01-01`)).toEqual([]);
+        // Numbers compare as numbers, not as strings.
+        expect(await ids('filter[views][from]=10&filter[views][to]=100')).toEqual(['2']);
+    });
+
     it('validates values with the portable rules', async () => {
         const response = await createBackend().fetch(
             '/panneau/api/resources/pages',

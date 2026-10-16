@@ -30,8 +30,8 @@ describe('filters', () => {
         );
     });
 
-    it('shows a date range from the query, with open ends', () => {
-        const list = createList({ query: { filter: { published_at: ['2026-01-05', ''] } } });
+    it('shows a date range from the query, with an open end', () => {
+        const list = createList({ query: { filter: { published_at: { from: '2026-01-05' } } } });
         renderList(
             <ListView
                 list={list}
@@ -43,6 +43,41 @@ describe('filters', () => {
         expect(screen.getByRole('group', { name: 'Published' })).toBeInTheDocument();
         expect(screen.getByRole('list', { name: 'Active filters' })).toHaveTextContent(
             'Published: Jan 5, 2026 – …',
+        );
+    });
+
+    it('sets the bounds of a date range, and leaves an open end out', async () => {
+        const user = userEvent.setup();
+        const list = createList({ query: { filter: { published_at: { to: '2026-01-31' } } } });
+        renderList(
+            <ListView
+                list={list}
+                columns={columns}
+                items={items}
+                filters={[{ id: 'published_at', type: 'date-range', label: 'Published' }]}
+            />,
+        );
+        const range = screen.getByRole('group', { name: 'Published' });
+        const to = within(within(range).getByRole('group', { name: 'To' })).getAllByRole(
+            'spinbutton',
+        );
+        await user.click(to[1] as HTMLElement);
+        await user.keyboard('{ArrowDown}');
+        expect(list.getState().query.filter).toEqual({ published_at: { to: '2026-01-30' } });
+        const from = within(within(range).getByRole('group', { name: 'From' })).getAllByRole(
+            'spinbutton',
+        );
+        await user.click(from[0] as HTMLElement);
+        await user.keyboard('1');
+        await user.click(from[1] as HTMLElement);
+        await user.keyboard('5');
+        await user.click(from[2] as HTMLElement);
+        await user.keyboard('2026');
+        expect(list.getState().query.filter).toEqual({
+            published_at: { from: '2026-01-05', to: '2026-01-30' },
+        });
+        expect(screen.getByRole('list', { name: 'Active filters' })).toHaveTextContent(
+            'Published: Jan 5, 2026 – Jan 30, 2026',
         );
     });
 

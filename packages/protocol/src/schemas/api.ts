@@ -45,7 +45,10 @@ export const Selection = z.union([
     z.looseObject({ ids: z.array(Id).min(1) }),
     z.looseObject({
         query: z.looseObject({
-            filter: z.record(z.string(), z.unknown()).optional(),
+            filter: z.record(z.string(), z.unknown()).optional().meta({
+                description:
+                    'The `filter` of the list query, by filter id: a value, a list of values, or the bounds of a range (`{ "from": "2026-01-01", "to": "2026-01-31" }`).',
+            }),
             q: z.string().optional(),
         }),
         except: z.array(Id).optional(),
