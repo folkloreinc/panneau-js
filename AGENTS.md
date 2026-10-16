@@ -71,4 +71,10 @@ npm run test:create-package                  # check the template: create, lint,
 - **Every change to a package comes with a changeset** (`npx changeset`) that says what changed for users. CI checks it on pull requests. All `@panneau/*` packages share one version.
 - **Every change comes with tests.** A bug fix adds a regression test that fails without the fix.
 - Open a pull request to `v5.x` with `Closes #<issue>` or `Part of #<issue>` and the checks you ran. **Merge only when CI is green.**
-- **Releases** are only published by the Release workflow (Actions tab, on `v5.x`). It opens a "Version packages" pull request, and publishes once that pull request is merged. `v5.x` is in pre-release mode (`alpha`) until 5.0.0.
+- **Releases** are only published by the Release workflow (`.github/workflows/release.yml`), which runs on every push to `v5.x`:
+    - while changesets are pending, it opens or updates the "Version packages" pull request, and publishes nothing;
+    - **merging that pull request releases**: the next run publishes the new versions to npm and tags them.
+
+    `v5.x` is in pre-release mode (`alpha`) until 5.0.0.
+    - Never change a package version by hand: it would be published on the next push.
+    - A new package needs a first manual publish, then trusted publishing configured on npm for this repository and `release.yml`, before the workflow can publish it.
