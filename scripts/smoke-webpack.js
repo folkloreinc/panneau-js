@@ -26,7 +26,7 @@ const tarballs = resolve(work, 'tarballs');
 const app = resolve(work, 'app');
 
 /** The packages the app imports, and the ones they depend on. */
-const PACKAGES = ['protocol', 'ui', 'fields', 'core', 'forms'];
+const PACKAGES = ['protocol', 'intl', 'ui', 'fields', 'core', 'forms'];
 /** Peer dependencies, at the versions the workspace uses. */
 const PEERS = ['react', 'react-dom', 'react-aria-components', 'react-intl'];
 const FLKLR_VERSION = '0.1.54';

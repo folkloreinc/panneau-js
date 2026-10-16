@@ -53,7 +53,7 @@ describe('NestedField', () => {
 });
 
 describe('fieldsPlugin', () => {
-    it('provides the built-in types and the French messages', () => {
+    it('provides the built-in types and the French messages of every package', () => {
         expect(Object.keys(builtInFields).sort()).toEqual(
             [
                 'boolean',
@@ -76,5 +76,6 @@ describe('fieldsPlugin', () => {
         expect(fieldsPlugin.fields).toBe(builtInFields);
         expect(fieldsPlugin.locales.fr?.['panneau.fields.add']).toBe('Ajouter');
         expect(fieldsPlugin.locales.fr?.['panneau.ui.close']).toBe('Fermer');
+        expect(fieldsPlugin.locales.fr?.['panneau.forms.save']).toBe('Enregistrer');
     });
 });

@@ -2,7 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { IntlProvider } from 'react-intl';
 import { describe, expect, it } from 'vitest';
 
-import { fr } from '../locales';
+import { fr } from '@panneau/intl';
+
 import { messages } from './messages';
 import { usePanneauIntl } from './usePanneauIntl';
 

@@ -1,4 +1,4 @@
-import { fr as uiFr } from '@panneau/ui/locales';
+import { fr } from '@panneau/intl';
 
 import { BooleanFieldEntry } from '../boolean/BooleanField';
 import { ColorFieldEntry } from '../color/ColorField';
@@ -6,7 +6,6 @@ import { DateFieldEntry } from '../date/DateField';
 import { DateTimeFieldEntry } from '../datetime/DateTimeField';
 import { EmailFieldEntry } from '../email/EmailField';
 import { GroupFieldEntry } from '../group/GroupField';
-import { fr as fieldsFr } from '../locales/fr';
 import { NumberFieldEntry } from '../number/NumberField';
 import { RelationFieldEntry } from '../relation/RelationField';
 import { RepeaterFieldEntry } from '../repeater/RepeaterField';
@@ -42,7 +41,8 @@ export const builtInFields: Readonly<Record<string, FieldEntry>> = {
 
 /**
  * The built-in fields as a `@panneau/core` plugin: their entries, and the French messages of
- * `@panneau/ui` and `@panneau/fields`. Pass it before the plugins that override a type.
+ * every Panneau package (`@panneau/ui`, `@panneau/fields`, `@panneau/forms`…, from
+ * `@panneau/intl`). Pass it before the plugins that override a type.
  */
 export const fieldsPlugin: {
     id: string;
@@ -51,5 +51,5 @@ export const fieldsPlugin: {
 } = {
     id: 'panneau-fields',
     fields: builtInFields,
-    locales: { fr: { ...uiFr, ...fieldsFr } },
+    locales: { fr },
 };
