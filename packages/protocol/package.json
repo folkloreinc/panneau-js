@@ -16,6 +16,11 @@
             "types": "./dist/index.d.ts",
             "default": "./dist/index.js"
         },
+        "./runtime": {
+            "@panneau/source": "./src/runtime/index.ts",
+            "types": "./dist/runtime/index.d.ts",
+            "default": "./dist/runtime/index.js"
+        },
         "./mock": {
             "@panneau/source": "./src/mock/index.ts",
             "types": "./dist/mock/index.d.ts",

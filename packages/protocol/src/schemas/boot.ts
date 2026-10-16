@@ -3,12 +3,6 @@ import { z } from 'zod';
 import { PROTOCOL_VERSION } from '../version';
 import { Definition } from './definition';
 
-/**
- * Id of the element that holds the boot config in the page: a
- * `<script type="application/json" id="panneau-boot">` element whose text is the JSON object.
- */
-export const BOOT_CONFIG_ELEMENT_ID = 'panneau-boot';
-
 export const BootConfig = z
     .looseObject({
         protocol: z.literal(PROTOCOL_VERSION),

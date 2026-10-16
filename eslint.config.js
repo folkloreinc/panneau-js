@@ -31,5 +31,27 @@ export default defineConfig([
             ],
         },
     },
+    {
+        // UI packages and the engine end up in product bundles: they take the protocol's runtime
+        // helpers from `@panneau/protocol/runtime`, which doesn't load zod, and only types from
+        // the main entry point.
+        files: ['packages/{core,fields,forms,intl,lists,ui}/src/**/*.{ts,tsx}'],
+        ignores: ['**/*.test.{ts,tsx}', '**/*.stories.{ts,tsx}', '**/__fixtures__/**'],
+        rules: {
+            '@typescript-eslint/no-restricted-imports': [
+                'error',
+                {
+                    paths: [
+                        {
+                            name: '@panneau/protocol',
+                            allowTypeImports: true,
+                            message:
+                                'Import values from @panneau/protocol/runtime: the main entry point loads zod and its schemas.',
+                        },
+                    ],
+                },
+            ],
+        },
+    },
     prettier,
 ]);

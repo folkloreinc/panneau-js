@@ -450,6 +450,7 @@ With `auth.mode = "external"`, the frontend only calls `GET /auth/session` and s
     - `lintDefinition()` checks those references alone: layout nodes and columns that name a field, relations that name a resource, unique names;
     - `validateBootConfig()` checks a [boot config](#boot-config).
 - **the portable rules**: `checkValues()` is the reference implementation.
+- **a light entry point for browsers** (`@panneau/protocol/runtime`): the constants and the helpers above that don't need the schemas (`checkValues()`, `evaluateCondition()`, `lintDefinition()`, the list query helpers, `isProblem()`), without loading zod. UI packages import them from there, and only types from the main entry point.
 - **generated files**: `@panneau/protocol/definition.schema.json` and `@panneau/protocol/boot.schema.json` (JSON Schema 2020-12), and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
 - **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes.
 - **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas.

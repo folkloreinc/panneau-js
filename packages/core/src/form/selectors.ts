@@ -5,7 +5,8 @@
  * `form.getErrors(path)` reads the store, so its memoized result goes stale. A selector takes the
  * state as an argument, so the compiler calls it again when the state changes.
  */
-import { type Condition, evaluateCondition, getValue } from '@panneau/protocol';
+import type { Condition } from '@panneau/protocol';
+import { evaluateCondition, getValue } from '@panneau/protocol/runtime';
 
 import { isPathWithin } from '../values';
 import type { FormState, GetErrorsOptions } from './form';

@@ -1,10 +1,5 @@
-import {
-    type FilterValue,
-    type ListQuery,
-    type Selection,
-    fromSearchParams,
-    toSearchParams,
-} from '@panneau/protocol';
+import type { FilterValue, ListQuery, Selection } from '@panneau/protocol';
+import { fromSearchParams, toSearchParams } from '@panneau/protocol/runtime';
 
 import type { ResolvedList } from '../definition/list';
 import { isEqual } from '../values';

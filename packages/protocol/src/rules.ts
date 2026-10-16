@@ -1,6 +1,6 @@
 import { evaluateCondition } from './conditions';
+import { PORTABLE_RULES } from './constants';
 import type { Field, Rule } from './schemas/field';
-import { PORTABLE_RULES } from './schemas/field';
 import { getValue, isFilled, isRecord } from './values';
 
 /** A rule that a value doesn't satisfy. */

@@ -1,7 +1,6 @@
 import type { z } from 'zod';
 
 import { lintDefinition } from './lint';
-import { Problem } from './schemas/api';
 import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
 
@@ -59,9 +58,4 @@ export function validateBootConfig(input: unknown): ValidationResult<BootConfig>
         path: issue.path === '' ? 'definition' : `definition.${issue.path}`,
     }));
     return issues.length > 0 ? { success: false, issues } : result;
-}
-
-/** Whether a value is a problem details object (an API error). */
-export function isProblem(value: unknown): value is Problem {
-    return Problem.safeParse(value).success;
 }

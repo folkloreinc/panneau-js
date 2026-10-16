@@ -4,17 +4,6 @@ import { Abilities } from './common';
 import { Field } from './field';
 import { LayoutNode } from './layout';
 
-/** Built-in action ids. */
-export const BUILT_IN_ACTIONS = [
-    'show',
-    'edit',
-    'duplicate',
-    'delete',
-    'restore',
-    'export',
-    'import',
-] as const;
-
 export const ActionScope = z.enum(['item', 'selection', 'resource']);
 
 export const ActionPlacement = z.enum(['row', 'toolbar', 'form', 'menu']);
@@ -77,7 +66,6 @@ export const Action = z
     })
     .meta({ description: 'An operation on one item, a selection, or the whole resource.' });
 
-export type BuiltInAction = (typeof BUILT_IN_ACTIONS)[number];
 export type ActionScope = z.infer<typeof ActionScope>;
 export type ActionPlacement = z.infer<typeof ActionPlacement>;
 export type ActionConfirm = z.infer<typeof ActionConfirm>;
