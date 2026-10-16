@@ -53,8 +53,14 @@ jobs:
             - name: Check the package template
               run: npm run test:create-package
 
+            # "Version packages" pull requests consume the changesets instead of adding one: the
+            # Release workflow opens them from changeset-release/* branches, and a maintainer may
+            # open one by hand with that title.
             - name: Check for a changeset
-              if: github.event_name == 'pull_request'
+              if: >-
+                  github.event_name == 'pull_request' &&
+                  !startsWith(github.head_ref, 'changeset-release/') &&
+                  !startsWith(github.event.pull_request.title, 'Version packages')
               run: npx changeset status --since=origin/${{ github.base_ref }}
 
     storybook:
