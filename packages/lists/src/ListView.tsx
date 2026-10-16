@@ -16,6 +16,7 @@ import {
     hasScope,
     isAllowedOn,
 } from './actions/actions';
+import type { ActionIcons } from './actions/icons';
 import { cx } from './cx';
 import { builtInDisplays } from './displays/displays';
 import { FilterChips, FilterControls, useFilterLabels } from './filters/Filters';
@@ -76,6 +77,11 @@ export interface ListViewProps {
     actions?: ListActions;
     /** Runs an action, after its confirmation. */
     onAction?: ListActionHandler;
+    /**
+     * Icons of actions by action id (`{ archive: Archive }`), for actions written in code. They
+     * win over the Lucide icon an action names (`"icon": "archive"`).
+     */
+    actionIcons?: ActionIcons;
     /** The field that titles items, for their label (`itemTitle` of the resource). */
     itemTitle?: string;
     /** The label of an item, for checkboxes and actions. Defaults to its title, then its id. */
@@ -124,6 +130,7 @@ export function ListView({
     selectable: selectableProp,
     actions: actionsProp,
     onAction,
+    actionIcons,
     itemTitle,
     getItemLabel: getItemLabelProp,
     getItemHref,
@@ -286,6 +293,7 @@ export function ListView({
                 menu={menu}
                 pending={running ?? null}
                 onRun={(action) => runOnItem(action, item)}
+                icons={actionIcons}
             />
         );
     };
@@ -430,6 +438,7 @@ export function ListView({
                                 <ActionButton
                                     key={action.id}
                                     action={action}
+                                    icons={actionIcons}
                                     size="md"
                                     href={getActionHref(action)}
                                     isPending={pending === keyOf(action)}
@@ -480,6 +489,7 @@ export function ListView({
                                     <ActionButton
                                         key={action.id}
                                         action={action}
+                                        icons={actionIcons}
                                         size="md"
                                         href={null}
                                         isPending={pending === keyOf(action)}

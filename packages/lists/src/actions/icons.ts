@@ -10,11 +10,12 @@ import {
 } from 'lucide-react';
 
 import type { Action } from '@panneau/protocol';
+import { type IconComponent, getNamedIcon } from '@panneau/ui';
 
-/**
- * Icons of the built-in actions. Icons named in definitions (`"icon": "send"`) need a lookup by
- * name, which comes with the actions of Phase 2 (decision 0020).
- */
+/** Icons of actions by action id, for actions written in code (`{ archive: Archive }`). */
+export type ActionIcons = Readonly<Record<string, IconComponent>>;
+
+/** Icons of the built-in actions, when they don't name one. */
 const BUILT_IN_ICONS: Record<string, LucideIcon> = {
     show: Eye,
     edit: Pencil,
@@ -25,7 +26,18 @@ const BUILT_IN_ICONS: Record<string, LucideIcon> = {
     import: Upload,
 };
 
-/** The icon of an action, for the built-in ones. */
-export function getActionIcon(action: Action): LucideIcon | undefined {
-    return BUILT_IN_ICONS[action.id];
+/**
+ * The icon of an action: the one given for its id in `icons`, then the Lucide icon its `icon`
+ * names (`"send"`, loaded when it first renders), then the icon of a built-in action.
+ */
+export function getActionIcon(action: Action, icons?: ActionIcons): IconComponent | undefined {
+    const given =
+        icons !== undefined && Object.hasOwn(icons, action.id) ? icons[action.id] : undefined;
+    if (given !== undefined) {
+        return given;
+    }
+    if (action.icon !== undefined && action.icon !== '') {
+        return getNamedIcon(action.icon);
+    }
+    return Object.hasOwn(BUILT_IN_ICONS, action.id) ? BUILT_IN_ICONS[action.id] : undefined;
 }

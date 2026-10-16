@@ -8,7 +8,7 @@ import type { ListItem } from '../types';
 import { ActionButton } from './ActionButton';
 import styles from './Actions.module.css';
 import { getActionHref } from './actions';
-import { getActionIcon } from './icons';
+import { type ActionIcons, getActionIcon } from './icons';
 
 export interface RowActionsProps {
     item: ListItem;
@@ -21,10 +21,20 @@ export interface RowActionsProps {
     /** Id of the action that is running on this item, if any. */
     pending: string | null;
     onRun: (action: Action) => void;
+    /** Icons of actions by id, over the icon the action names. */
+    icons?: ActionIcons | undefined;
 }
 
 /** The actions of a row: buttons, then an overflow menu. */
-export function RowActions({ item, itemLabel, actions, menu, pending, onRun }: RowActionsProps) {
+export function RowActions({
+    item,
+    itemLabel,
+    actions,
+    menu,
+    pending,
+    onRun,
+    icons,
+}: RowActionsProps) {
     const intl = usePanneauIntl();
     return (
         <div className={styles.row}>
@@ -32,6 +42,7 @@ export function RowActions({ item, itemLabel, actions, menu, pending, onRun }: R
                 <ActionButton
                     key={action.id}
                     action={action}
+                    icons={icons}
                     href={getActionHref(action, item)}
                     isPending={pending === action.id}
                     isDisabled={pending !== null && pending !== action.id}
@@ -61,7 +72,7 @@ export function RowActions({ item, itemLabel, actions, menu, pending, onRun }: R
                     >
                         {menu.map((action) => {
                             const href = getActionHref(action, item);
-                            const icon = getActionIcon(action);
+                            const icon = getActionIcon(action, icons);
                             return (
                                 <MenuItem
                                     key={action.id}

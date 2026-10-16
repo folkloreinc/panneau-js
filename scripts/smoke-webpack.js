@@ -204,6 +204,11 @@ try {
     if (sorted.join(',') !== 'À propos,Accueil,Contact') {
         throw new Error(`The list is not sorted by title: ${JSON.stringify(sorted)}`);
     }
+    // The icon named by the action, loaded on demand by webpack.
+    await page
+        .getByRole('button', { name: 'Archiver : Contact' })
+        .locator('svg.lucide-archive')
+        .waitFor({ timeout: 5000 });
     await page.getByRole('button', { name: 'Archiver : Contact' }).click();
     await page.waitForFunction(() => document.body.dataset.action === '2', null, {
         timeout: 5000,

@@ -1,5 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Archive } from 'lucide-react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { PanneauProvider, createList, createMemoryRouter, definePlugin } from '@panneau/core';
@@ -347,6 +348,28 @@ describe('ListView', () => {
         expect(onAction).toHaveBeenCalledWith(
             expect.objectContaining({ scope: 'resource', count: 3 }),
         );
+    });
+
+    it('shows the icons that actions name, and those given by action id', async () => {
+        const user = userEvent.setup();
+        renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                total={3}
+                actions={[{ ...exportAction, icon: 'file-down' }, remove]}
+                actionIcons={{ delete: Archive }}
+            />,
+        );
+        await waitFor(() =>
+            expect(screen.getByRole('button', { name: 'Export' }).querySelector('svg')).toHaveClass(
+                'lucide-file-down',
+            ),
+        );
+        await user.click(screen.getByRole('button', { name: 'Actions for Contact' }));
+        const item = await screen.findByRole('menuitem', { name: 'Delete' });
+        expect(item.querySelector('svg')).toHaveClass('lucide-archive');
     });
 
     it('hides the actions the user can’t run', () => {

@@ -33,7 +33,10 @@ const items = [
     { id: '2', title: 'Contact', status: 'draft', published_on: null },
     { id: '3', title: 'À propos', status: 'published', published_on: '2026-09-15' },
 ];
-const actions = [{ id: 'archive', label: 'Archiver', kind: 'server', scope: ['item'] }];
+// Its icon is a Lucide name, loaded on demand.
+const actions = [
+    { id: 'archive', label: 'Archiver', icon: 'archive', kind: 'server', scope: ['item'] },
+];
 
 function App() {
     return (

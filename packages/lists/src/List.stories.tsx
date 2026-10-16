@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { UserMinus } from 'lucide-react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { createList } from '@panneau/core';
@@ -81,6 +82,8 @@ const actions: Action[] = [
     {
         id: 'resend',
         label: 'Resend the invitation',
+        // A Lucide icon by name, as definitions give it.
+        icon: 'mail',
         kind: 'server',
         scope: ['item', 'selection'],
         placement: ['menu', 'toolbar'],
@@ -222,7 +225,13 @@ export const OnAPhone: Story = {
 };
 
 export const SelectionAndActions: Story = {
-    args: { actions, onAction: fn(), getItemHref: (item: ListItem) => `#/members/${item.id}` },
+    args: {
+        actions,
+        // An icon component, for an action written in code.
+        actionIcons: { remove: UserMinus },
+        onAction: fn(),
+        getItemHref: (item: ListItem) => `#/members/${item.id}`,
+    },
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
@@ -254,7 +263,12 @@ export const SelectionAndActions: Story = {
         await waitFor(() => expect(canvas.queryByText(/selected/)).not.toBeInTheDocument());
 
         await userEvent.click(canvas.getByRole('button', { name: 'Actions for Grace Hopper' }));
-        await userEvent.click(await body.findByRole('menuitem', { name: 'Resend the invitation' }));
+        const resend = await body.findByRole('menuitem', { name: 'Resend the invitation' });
+        await waitFor(() => expect(resend.querySelector('svg')).toHaveClass('lucide-mail'));
+        await expect(
+            body.getByRole('menuitem', { name: 'Remove' }).querySelector('svg'),
+        ).toHaveClass('lucide-user-minus');
+        await userEvent.click(resend);
         await expect(args.onAction).toHaveBeenLastCalledWith(
             expect.objectContaining({ scope: 'item', count: 1 }),
         );
