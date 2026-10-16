@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "types": ["node", "@testing-library/jest-dom/vitest"],
+        "customConditions": ["@panneau/source"],
+        "allowImportingTsExtensions": true,
+        "noEmit": true
+    },
+    "include": ["src", "vite.config.ts"]
+}

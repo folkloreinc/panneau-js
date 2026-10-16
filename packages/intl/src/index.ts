@@ -1,5 +1,6 @@
 export { type MessageCatalog, en, fr, getDefaultMessages, panneauMessages } from './catalogs';
 export { type PanneauMessage, type PanneauMessageValues } from './message';
+export { actionsMessages } from './messages/actions';
 export { fieldsMessages } from './messages/fields';
 export { formsMessages } from './messages/forms';
 export { listsMessages } from './messages/lists';

@@ -1,0 +1,6 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "rootDir": "src", "outDir": "dist", "emitDeclarationOnly": true },
+    "include": ["src"],
+    "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.stories.tsx", "src/__fixtures__"]
+}

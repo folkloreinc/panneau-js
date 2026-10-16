@@ -7,6 +7,64 @@
 import type { TypedMessageDescriptor } from 'react-intl';
 
 // @public
+export const actionsMessages: {
+    cancel: PanneauMessage<Record<never, never>>;
+    done: PanneauMessage<    {
+    action: string;
+    }>;
+    failed: PanneauMessage<    {
+    action: string;
+    }>;
+    cancelled: PanneauMessage<    {
+    action: string;
+    }>;
+    succeededCount: PanneauMessage<    {
+    count: number;
+    }>;
+    failedCount: PanneauMessage<    {
+    count: number;
+    }>;
+    skippedCount: PanneauMessage<    {
+    count: number;
+    }>;
+    details: PanneauMessage<Record<never, never>>;
+    download: PanneauMessage<Record<never, never>>;
+    resultsTitle: PanneauMessage<    {
+    action: string;
+    }>;
+    close: PanneauMessage<Record<never, never>>;
+    item: PanneauMessage<    {
+    id: string;
+    }>;
+    statusFailed: PanneauMessage<Record<never, never>>;
+    statusSkipped: PanneauMessage<Record<never, never>>;
+    reasonForbidden: PanneauMessage<Record<never, never>>;
+    reasonNotFound: PanneauMessage<Record<never, never>>;
+    reasonUnchanged: PanneauMessage<Record<never, never>>;
+    queued: PanneauMessage<    {
+    action: string;
+    }>;
+    queuedDescription: PanneauMessage<Record<never, never>>;
+    runs: PanneauMessage<Record<never, never>>;
+    progress: PanneauMessage<    {
+    progress: number;
+    total: number;
+    }>;
+    runQueued: PanneauMessage<Record<never, never>>;
+    runRunning: PanneauMessage<Record<never, never>>;
+    runSucceeded: PanneauMessage<Record<never, never>>;
+    runPartial: PanneauMessage<Record<never, never>>;
+    runFailed: PanneauMessage<Record<never, never>>;
+    runCancelled: PanneauMessage<Record<never, never>>;
+    cancelRun: PanneauMessage<    {
+    action: string;
+    }>;
+    dismissRun: PanneauMessage<    {
+    action: string;
+    }>;
+};
+
+// @public
 export const en: MessageCatalog;
 
 // @public

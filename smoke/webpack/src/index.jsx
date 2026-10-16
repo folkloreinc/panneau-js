@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { IntlProvider } from 'react-intl';
 
+import { ActionRunnerProvider, useActionRunner } from '@panneau/actions';
 import { TextField } from '@panneau/fields/text';
 import { Form } from '@panneau/forms';
 import { withPanneauMessages } from '@panneau/intl';
@@ -38,6 +39,30 @@ const actions = [
     { id: 'archive', label: 'Archiver', icon: 'archive', kind: 'server', scope: ['item'] },
 ];
 
+// The action part of a data adapter, as a product with its own API writes it.
+const adapter = {
+    runAction: (resource, action, request) => {
+        document.body.dataset.action = request.selection.ids[0];
+        return Promise.resolve({ result: { message: 'Page archivée.' } });
+    },
+    getActionRun: () => Promise.reject(new Error('No queued runs here.')),
+};
+
+function Pages() {
+    const runAction = useActionRunner('pages');
+    return (
+        <List
+            aria-label="Pages"
+            columns={columns}
+            items={items}
+            search
+            actions={actions}
+            onAction={runAction}
+            router={null}
+        />
+    );
+}
+
 function App() {
     return (
         <IntlProvider locale="fr" messages={withPanneauMessages('fr')}>
@@ -50,17 +75,9 @@ function App() {
                         document.body.dataset.submitted = JSON.stringify(values);
                     }}
                 />
-                <List
-                    aria-label="Pages"
-                    columns={columns}
-                    items={items}
-                    search
-                    actions={actions}
-                    onAction={({ item }) => {
-                        document.body.dataset.action = item.id;
-                    }}
-                    router={null}
-                />
+                <ActionRunnerProvider adapter={adapter}>
+                    <Pages />
+                </ActionRunnerProvider>
             </PanneauRoot>
         </IntlProvider>
     );

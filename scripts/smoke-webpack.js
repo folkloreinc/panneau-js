@@ -27,8 +27,8 @@ const work = resolve(root, '.tmp/smoke-webpack');
 const tarballs = resolve(work, 'tarballs');
 const app = resolve(work, 'app');
 
-/** The packages the app imports, and the ones they depend on. */
-const PACKAGES = ['protocol', 'intl', 'ui', 'fields', 'core', 'forms', 'lists'];
+/** The packages the app imports (a form, a list and the action runner), and their dependencies. */
+const PACKAGES = ['protocol', 'intl', 'ui', 'fields', 'core', 'forms', 'lists', 'data', 'actions'];
 /** Peer dependencies, at the versions the workspace uses. */
 const PEERS = ['react', 'react-dom', 'react-aria-components', 'react-intl'];
 const FLKLR_VERSION = '0.1.54';
@@ -213,6 +213,8 @@ try {
     await page.waitForFunction(() => document.body.dataset.action === '2', null, {
         timeout: 5000,
     });
+    // The action ran through the runner of @panneau/actions, which shows its result.
+    await page.getByText('Page archivée.').waitFor({ timeout: 5000 });
     if (errors.length > 0) {
         throw new Error(`Errors in the page:\n${errors.join('\n')}`);
     }

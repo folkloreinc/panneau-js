@@ -71,7 +71,8 @@ export interface ListActionEvent {
 /**
  * Runs an action. Lists ask for confirmation first when the action has `confirm`. A returned
  * promise shows the action as pending until it settles; after a selection action succeeds, the
- * selection is cleared.
+ * selection is cleared, unless the handler gives `false` (the action didn't run, as when the user
+ * cancels its parameters). `useActionRunner()` of `@panneau/actions` is such a handler.
  */
 export type ListActionHandler = (event: ListActionEvent) => unknown;
 

@@ -1,8 +1,10 @@
+import { actionsFr } from './fr/actions';
 import { fieldsFr } from './fr/fields';
 import { formsFr } from './fr/forms';
 import { listsFr } from './fr/lists';
 import { uiFr } from './fr/ui';
 import type { PanneauMessage } from './message';
+import { actionsMessages } from './messages/actions';
 import { fieldsMessages } from './messages/fields';
 import { formsMessages } from './messages/forms';
 import { listsMessages } from './messages/lists';
@@ -34,10 +36,11 @@ export const en: MessageCatalog = {
     ...getDefaultMessages(fieldsMessages),
     ...getDefaultMessages(formsMessages),
     ...getDefaultMessages(listsMessages),
+    ...getDefaultMessages(actionsMessages),
 };
 
 /** The French messages of every Panneau package, by id. */
-export const fr: MessageCatalog = { ...uiFr, ...fieldsFr, ...formsFr, ...listsFr };
+export const fr: MessageCatalog = { ...uiFr, ...fieldsFr, ...formsFr, ...listsFr, ...actionsFr };
 
 /** The messages of every Panneau package, by locale. */
 export const panneauMessages: Readonly<Record<string, MessageCatalog>> = { en, fr };

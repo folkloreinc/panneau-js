@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Archive } from 'lucide-react';
 import { describe, expect, it, vi } from 'vitest';
@@ -267,6 +267,26 @@ describe('ListView', () => {
         await waitFor(() => expect(screen.queryByText(/selected/)).not.toBeInTheDocument());
     });
 
+    it('keeps the selection when the action handler gives false', async () => {
+        const user = userEvent.setup();
+        const list = createList();
+        const onAction = vi.fn(() => Promise.resolve(false));
+        renderList(
+            <ListView
+                list={list}
+                columns={columns}
+                items={pages}
+                actions={[{ ...remove, placement: ['toolbar'] }]}
+                onAction={onAction}
+            />,
+        );
+        await user.click(screen.getByRole('checkbox', { name: 'Select Contact' }));
+        await user.click(screen.getByRole('button', { name: 'Delete' }));
+        await waitFor(() => expect(onAction).toHaveBeenCalled());
+        await act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+        expect(list.getState().selection).toEqual({ mode: 'ids', ids: ['2'] });
+    });
+
     it('says how many selected items an action skips', async () => {
         const user = userEvent.setup();
         renderList(
@@ -410,6 +430,18 @@ describe('ListView toolbar', () => {
 });
 
 describe('ListView layouts', () => {
+    it('shows resource actions without search, filters, sorting or layouts', () => {
+        renderList(
+            <ListView
+                list={createList()}
+                columns={[{ id: 'status', label: 'Status' }]}
+                items={pages}
+                actions={[exportAction]}
+            />,
+        );
+        expect(screen.getByRole('button', { name: 'Export' })).toBeInTheDocument();
+    });
+
     it('leaves out layouts without a component', () => {
         renderList(
             <ListView
