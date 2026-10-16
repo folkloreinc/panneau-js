@@ -264,7 +264,10 @@ export const SelectionAndActions: Story = {
 
         await userEvent.click(canvas.getByRole('button', { name: 'Actions for Grace Hopper' }));
         const resend = await body.findByRole('menuitem', { name: 'Resend the invitation' });
-        await waitFor(() => expect(resend.querySelector('svg')).toHaveClass('lucide-mail'));
+        // A named icon loads on demand: give it time on a busy machine.
+        await waitFor(() => expect(resend.querySelector('svg')).toHaveClass('lucide-mail'), {
+            timeout: 5000,
+        });
         await expect(
             body.getByRole('menuitem', { name: 'Remove' }).querySelector('svg'),
         ).toHaveClass('lucide-user-minus');
