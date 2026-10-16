@@ -1,0 +1,72 @@
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
+    gap: var(--panneau-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+    padding: var(--panneau-space-3);
+    background-color: var(--panneau-color-surface);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-lg);
+}
+
+.card[data-selected] {
+    background-color: var(--panneau-color-accent-subtle);
+    border-color: var(--panneau-color-border-control);
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--panneau-space-2);
+}
+
+.title {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: var(--panneau-font-size-lg);
+    font-weight: var(--panneau-font-weight-medium);
+    line-height: var(--panneau-line-height-tight);
+}
+
+.values {
+    display: grid;
+    gap: var(--panneau-space-1);
+    margin: 0;
+    font-size: var(--panneau-font-size-md);
+}
+
+.value {
+    display: grid;
+    grid-template-columns: minmax(5rem, 40%) 1fr;
+    gap: var(--panneau-space-2);
+}
+
+.value dt {
+    color: var(--panneau-color-text-muted);
+}
+
+.value dd {
+    margin: 0;
+    min-width: 0;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-1);
+    margin-top: auto;
+    padding-top: var(--panneau-space-1);
+}
+
+.pageSelection {
+    margin-bottom: var(--panneau-space-2);
+}

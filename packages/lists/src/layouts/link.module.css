@@ -1,0 +1,16 @@
+.link {
+    color: inherit;
+    font-weight: var(--panneau-font-weight-medium);
+    text-decoration: none;
+    border-radius: var(--panneau-radius-sm);
+    cursor: pointer;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.link[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}

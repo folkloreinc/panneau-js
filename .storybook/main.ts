@@ -33,6 +33,7 @@ const config: StorybookConfig = {
                     'react-intl',
                     'lucide-react',
                     '@internationalized/date',
+                    '@tanstack/react-query',
                 ],
             },
         });

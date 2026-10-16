@@ -5,12 +5,13 @@ import { IntlProvider } from 'react-intl';
 
 import { fr as fieldsFr } from '@panneau/fields/locales';
 import { fr as formsFr } from '@panneau/forms/locales';
+import { fr as listsFr } from '@panneau/lists/locales';
 import { type ColorScheme, PanneauRoot, bootstrapTheme } from '@panneau/ui';
 import { fr as uiFr } from '@panneau/ui/locales';
 
 const MESSAGES: Record<string, Record<string, string>> = {
     en: {},
-    fr: { ...uiFr, ...fieldsFr, ...formsFr },
+    fr: { ...uiFr, ...fieldsFr, ...formsFr, ...listsFr },
 };
 
 /** Every story renders in a PanneauRoot, with the locale, color scheme and theme of the toolbar. */

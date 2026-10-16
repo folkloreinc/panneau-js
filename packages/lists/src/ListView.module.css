@@ -1,0 +1,101 @@
+.list {
+    container: panneau-list / inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-3);
+    min-width: 0;
+}
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--panneau-space-3);
+}
+
+.toolbarStart {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--panneau-space-3);
+    min-width: 0;
+}
+
+.toolbarEnd {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--panneau-space-2);
+    margin-inline-start: auto;
+}
+
+/* With the table layout, the column headers sort, until the list is too narrow to show them. */
+.tableSort {
+    display: none;
+}
+
+.selection {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-2) var(--panneau-space-3);
+    padding: var(--panneau-space-2) var(--panneau-space-3);
+    font-size: var(--panneau-font-size-sm);
+    background-color: var(--panneau-color-accent-subtle);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-lg);
+}
+
+.selectionCount {
+    font-weight: var(--panneau-font-weight-medium);
+}
+
+.selectionActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-2);
+    margin-inline-start: auto;
+}
+
+.body[aria-busy='true'] {
+    opacity: 0.6;
+    transition: opacity var(--panneau-duration);
+}
+
+.state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--panneau-space-3);
+    padding: var(--panneau-space-10) var(--panneau-space-4);
+    color: var(--panneau-color-text-muted);
+    text-align: center;
+    background-color: var(--panneau-color-surface);
+    border: var(--panneau-border-width) dashed var(--panneau-color-border);
+    border-radius: var(--panneau-radius-lg);
+}
+
+.state p {
+    margin: 0;
+}
+
+@container panneau-list (max-width: 40rem) {
+    .toolbarStart,
+    .toolbarEnd {
+        flex-basis: 100%;
+    }
+
+    .toolbarEnd {
+        margin-inline-start: 0;
+    }
+
+    .tableSort {
+        display: block;
+        width: 100%;
+    }
+
+    .selectionActions {
+        margin-inline-start: 0;
+    }
+}
