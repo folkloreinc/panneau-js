@@ -1,12 +1,10 @@
 import { createRoot } from 'react-dom/client';
 import { IntlProvider } from 'react-intl';
 
-import { fr as fieldsFr } from '@panneau/fields/locales';
 import { TextField } from '@panneau/fields/text';
 import { Form } from '@panneau/forms';
-import { fr as formsFr } from '@panneau/forms/locales';
+import { withPanneauMessages } from '@panneau/intl';
 import { PanneauRoot } from '@panneau/ui';
-import { fr as uiFr } from '@panneau/ui/locales';
 
 // A form as a product without a Panneau definition uses it: a list of fields and an `onSubmit`.
 const fields = [
@@ -25,7 +23,7 @@ const fields = [
 
 function App() {
     return (
-        <IntlProvider locale="fr" messages={{ ...uiFr, ...fieldsFr, ...formsFr }}>
+        <IntlProvider locale="fr" messages={withPanneauMessages('fr')}>
             <PanneauRoot id="root-element">
                 <TextField label="Champ seul" value="Une valeur" />
                 <Form

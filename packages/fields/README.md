@@ -37,7 +37,7 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 | `@panneau/fields/group`     | `GroupField`                                 | an object                                      |
 | `@panneau/fields/repeater`  | `RepeaterField` (items or typed blocks)      | a list of objects; blocks have a `type`        |
 | `@panneau/fields/relation`  | `RelationField`, `createRelationSource()`    | `{ id, label }`, or a list with `multiple`     |
-| `@panneau/fields/locales`   | `en`, `fr`                                   | the UI messages                                |
+| `@panneau/fields/locales`   | `en`, `fr`                                   | deprecated: use `@panneau/intl`                |
 
 ## From a definition
 
@@ -67,6 +67,6 @@ import {
 
 ## Messages
 
-Strings go through react-intl, with English defaults. Add `fr` from `@panneau/fields/locales` and `@panneau/ui/locales` to the app's messages, or use `fieldsPlugin`, which carries both.
+Strings go through react-intl, with English defaults. Add the messages of every Panneau package to the app's with `withPanneauMessages()` from [`@panneau/intl`](../intl), or use `fieldsPlugin`, which carries the French messages of every package (`ui`, `fields` and `forms`).
 
 The package layout, scripts and API reports are explained in [`docs/packages.md`](../../docs/packages.md).

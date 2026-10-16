@@ -2,13 +2,11 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
-import { fr as fieldsFr } from '@panneau/fields/locales';
+import { withPanneauMessages } from '@panneau/intl';
 import type { Field } from '@panneau/protocol';
-import { fr as uiFr } from '@panneau/ui/locales';
 
 import { Form } from './Form';
 import { problemError, renderForm } from './__fixtures__/render';
-import { fr } from './locales';
 
 const FIELDS: Field[] = [
     { name: 'name', type: 'text', label: 'Name', rules: [{ rule: 'required' }] },
@@ -123,7 +121,7 @@ describe('Form without a definition', () => {
     it('translates rule messages and the UI', async () => {
         renderForm(<Form fields={FIELDS} />, {
             locale: 'fr',
-            messages: { ...uiFr, ...fieldsFr, ...fr },
+            messages: withPanneauMessages('fr'),
         });
         await userEvent.click(screen.getByRole('button', { name: 'Enregistrer' }));
         expect(await screen.findByRole('alert')).toHaveTextContent(

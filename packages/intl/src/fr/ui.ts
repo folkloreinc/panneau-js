@@ -1,5 +1,5 @@
 /** The French messages of `@panneau/ui`, by id. */
-export const fr: Record<string, string> = {
+export const uiFr: Record<string, string> = {
     'panneau.ui.close': 'Fermer',
     'panneau.ui.loading': 'Chargement…',
     'panneau.ui.notifications': 'Notifications',

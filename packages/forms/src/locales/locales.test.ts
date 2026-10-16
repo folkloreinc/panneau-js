@@ -1,13 +1,18 @@
 import { describe, expect, it } from 'vitest';
 
+import { en as allEn, fr as allFr } from '@panneau/intl';
+
 import { en, fr } from '.';
 
-describe('locales', () => {
-    it('translates every message in French', () => {
+// The checks of the translations are in `@panneau/intl`, across packages.
+describe('the deprecated locales of @panneau/forms', () => {
+    it('has the messages of the package, from @panneau/intl', () => {
+        expect(Object.keys(en).length).toBeGreaterThan(0);
+        expect(Object.keys(en).every((id) => id.startsWith('panneau.forms.'))).toBe(true);
         expect(Object.keys(fr).sort()).toEqual(Object.keys(en).sort());
-    });
-
-    it('has the default messages in English', () => {
-        expect(en['panneau.forms.save']).toBe('Save');
+        Object.keys(en).forEach((id) => {
+            expect(en[id]).toBe(allEn[id]);
+            expect(fr[id]).toBe(allFr[id]);
+        });
     });
 });

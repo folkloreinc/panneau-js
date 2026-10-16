@@ -4,10 +4,10 @@
 
 ```ts
 
-// @public
+// @public @deprecated
 export const en: Record<string, string>;
 
-// @public
+// @public @deprecated
 export const fr: Record<string, string>;
 
 // (No @packageDocumentation comment for this package)
