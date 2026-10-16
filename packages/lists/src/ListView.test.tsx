@@ -369,18 +369,6 @@ describe('ListView', () => {
         );
     });
 
-    it('shows resource actions without search, filters, sorting or layouts', () => {
-        renderList(
-            <ListView
-                list={createList()}
-                columns={[{ id: 'status', label: 'Status' }]}
-                items={pages}
-                actions={[exportAction]}
-            />,
-        );
-        expect(screen.getByRole('button', { name: 'Export' })).toBeInTheDocument();
-    });
-
     it('hides the actions the user can’t run', () => {
         renderList(
             <ListView
@@ -419,6 +407,18 @@ describe('ListView toolbar', () => {
 });
 
 describe('ListView layouts', () => {
+    it('shows resource actions without search, filters, sorting or layouts', () => {
+        renderList(
+            <ListView
+                list={createList()}
+                columns={[{ id: 'status', label: 'Status' }]}
+                items={pages}
+                actions={[exportAction]}
+            />,
+        );
+        expect(screen.getByRole('button', { name: 'Export' })).toBeInTheDocument();
+    });
+
     it('leaves out layouts without a component', () => {
         renderList(
             <ListView
