@@ -10,6 +10,7 @@ import type { ActionPlacement } from '@panneau/protocol';
 import type { ComponentType } from 'react';
 import type { Condition } from '@panneau/protocol';
 import type { Definition } from '@panneau/protocol';
+import type { DefinitionTheme } from '@panneau/protocol';
 import type { Field } from '@panneau/protocol';
 import type { Filter } from '@panneau/protocol';
 import type { FilterValue } from '@panneau/protocol';
@@ -22,6 +23,7 @@ import { ReactNode } from 'react';
 import type { Resource } from '@panneau/protocol';
 import type { RuleFailure } from '@panneau/protocol';
 import type { Selection as Selection_2 } from '@panneau/protocol';
+import type { Theme } from '@panneau/protocol';
 
 // @public
 export function can(abilities: Abilities | undefined, ability: string): boolean;
@@ -379,6 +381,9 @@ export function resolveList(resource: Resource): ResolvedList;
 export function resolveResource(resource: Resource, formOptions?: ResolveFormOptions): ResolvedResource;
 
 // @public
+export function resolveTheme(theme: DefinitionTheme | undefined, themes: ReadonlyMap<string, Theme>): Theme;
+
+// @public
 export interface ResourceAbilities {
     // (undocumented)
     create: boolean;
@@ -435,13 +440,7 @@ export type SubmitResult = {
     error: unknown;
 };
 
-// @public
-export interface Theme {
-    dark?: Record<string, string>;
-    // (undocumented)
-    label?: string;
-    tokens: Record<string, string>;
-}
+export { Theme }
 
 // @public
 export type UpdatableFormOptions = Pick<FormOptions, 'fields' | 'locales' | 'formatError' | 'onSubmit'>;

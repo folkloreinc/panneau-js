@@ -36,6 +36,7 @@ import { BlockType, Field, Rule } from './field';
 import { LayoutNode } from './layout';
 import { Column, Filter, ListDefinition } from './list';
 import { Resource, ResourceFeatures } from './resource';
+import { DefinitionTheme, Theme, ThemeTokens, ToneInput, ToneValues } from './theme';
 
 export * from './common';
 export * from './field';
@@ -43,6 +44,7 @@ export * from './layout';
 export * from './list';
 export * from './action';
 export * from './resource';
+export * from './theme';
 export * from './definition';
 export * from './api';
 export * from './boot';
@@ -74,6 +76,11 @@ export const namedSchemas = {
     Page,
     Widget,
     Uploads,
+    ThemeTokens,
+    ToneValues,
+    ToneInput,
+    Theme,
+    DefinitionTheme,
     Definition,
     Item,
     Pagination,

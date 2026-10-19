@@ -25,7 +25,7 @@ import { Button, PanneauRoot, TextInput, bootstrapTheme } from '@panneau/ui';
 Every Panneau interface renders inside a `PanneauRoot`. It scopes the base stylesheet and the design tokens (`--panneau-*` CSS variables) to its element: Panneau adds no global CSS to the page. Overlays (dialogs, popovers, menus, tooltips) and toasts render inside it too.
 
 - `colorScheme`: `light` (default), `dark`, or `auto`, which follows the system.
-- `theme`: tokens that override the default theme. `bootstrapTheme` follows a site's Bootstrap 5.3 variables and color mode.
+- `theme`: tokens, tones and variants that override the default theme (see [Defining themes](#defining-themes)). `bootstrapTheme` follows a site's Bootstrap 5.3 variables and color mode.
 - A project can also override any token with its own class on the root: `.my-panneau { --panneau-color-accent: #0a58ca; }`.
 
 The default theme and the icon set are explained in [decision 0020](../../docs/decisions/0020-default-theme-and-icons.md).
@@ -67,13 +67,12 @@ The `variant` values of `Button` (`primary`, `secondary`, `ghost`, `danger`) are
 A theme adds tones, from one color (Panneau derives a readable text color, the hover, the subtle background and the border) or with every value, and named variants of components:
 
 ```tsx
-const theme: Theme = {
-    tokens: {},
+const theme = defineTheme({
     tones: { signal: '#f25c05' },
     components: {
         badge: { variants: { tag: { 'panneau-badge-radius': 'var(--panneau-radius-sm)' } } },
     },
-};
+});
 
 declare module '@panneau/ui' {
     interface PanneauTones {
@@ -89,7 +88,46 @@ declare module '@panneau/ui' {
 </Badge>;
 ```
 
-`checkTheme(theme)` reports the colors of a theme that miss their contrast ratio (4.5:1 for text, 3:1 for control borders), like Bootstrap's `$min-contrast-ratio`.
+`checkTheme(theme)` reports the colors of a theme that miss their contrast ratio (4.5:1 for text, 3:1 for control borders), like Bootstrap's `$min-contrast-ratio`. It follows references to the theme's palette and tokens.
+
+### Defining themes
+
+`defineTheme()` declares a theme. TypeScript checks the name of every token, semantic or component, and the console reports unknown names in Panneau's namespaces (`panneau-color-txt`), such as typos in a theme loaded from JSON. A theme can name its raw colors once in a `palette`, written as `--panneau-palette-<name>`, and build on other themes with `extends`:
+
+```ts
+import { bootstrapTheme, defineTheme } from '@panneau/ui';
+
+const brand = defineTheme({
+    label: 'Brand',
+    palette: { orange: '#f25c05', ink: '#1c1917' },
+    tokens: {
+        'panneau-color-accent': 'var(--panneau-palette-ink)',
+        'panneau-button-radius': '0',
+    },
+    dark: { 'panneau-color-accent': '#fafaf9' },
+    tones: { signal: 'var(--panneau-palette-orange)' },
+});
+
+// A variation: the same theme, more compact.
+const compact = defineTheme({ extends: brand, tokens: { 'panneau-control-height': '2rem' } });
+
+// The brand theme, on a site that uses Bootstrap.
+const onBootstrap = defineTheme({ extends: [bootstrapTheme, brand] });
+```
+
+Values merge in this order, each overriding the ones before: the default theme, the themes a theme `extends` (in order), the theme itself, then a project's own class on the root. A token set in `tokens` but not in `dark` applies to both schemes, so it also replaces the dark value of the themes it extends. `mergeThemes()` merges themes the same way.
+
+`defineTheme()` returns a plain `Theme`: themes are data. They can be written as JSON files, with the [`theme.schema.json`](../protocol/schema/theme.schema.json) of `@panneau/protocol`, registered by plugins of `@panneau/core`, and carried by the definition, whose `theme` extends themes of plugins by id. Tokens of a project's own components are declared in `PanneauTokens`:
+
+```ts
+declare module '@panneau/ui' {
+    interface PanneauTokens {
+        'panneau-map-marker-color': true;
+    }
+}
+```
+
+`SEMANTIC_TOKENS` lists the semantic tokens, `componentTokens` the component tokens.
 
 ### Classes
 

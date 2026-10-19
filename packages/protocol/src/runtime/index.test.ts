@@ -94,6 +94,7 @@ describe('@panneau/protocol/runtime', () => {
             'isProblem',
             'lintDefinition',
             'matchesFilterRange',
+            'mergeThemes',
             'toSearchParams',
         ]);
     });

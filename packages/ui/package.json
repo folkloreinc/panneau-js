@@ -45,5 +45,8 @@
     "dependencies": {
         "@panneau/intl": "5.0.0-alpha.1",
         "lucide-react": "^1.57.0"
+    },
+    "devDependencies": {
+        "@panneau/protocol": "5.0.0-alpha.1"
     }
 }

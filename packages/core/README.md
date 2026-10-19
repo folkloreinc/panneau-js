@@ -30,6 +30,8 @@ function EditPage({ item, onSave }) {
 
 `definePlugin()` declares what a plugin adds, keyed by the names the definition uses: `fields`, `displays`, `listLayouts`, `actions` (handlers of `client` actions), `pages`, `widgets`, `components` (layout nodes), `locales` and `themes`.
 
+`resolveTheme(definition.theme, registry.themes)` returns the theme of the admin: the themes of plugins that the definition's theme `extends`, by id, then its own tokens, tones and variants. `Theme` is the theme of `@panneau/ui` as plain data, the `Theme` schema of `@panneau/protocol`.
+
 `PanneauProvider` takes plugins, the definition and a router. Nested providers add their plugins to those of their parent, and later plugins override earlier ones, so a project can replace a built-in field. `usePlugins()` returns the merged registry, and `loadMessages(registry, locale)` the merged messages of a locale.
 
 ## Definition engine

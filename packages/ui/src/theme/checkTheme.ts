@@ -1,5 +1,5 @@
 import { type Rgb, WHITE, contrastRatio, mixColors, parseColor } from './color';
-import type { Theme } from './theme';
+import { type Theme, paletteVariables, resolveReference } from './theme';
 import { MIN_CONTRAST_RATIO, SUBTLE_AMOUNTS, resolveTone } from './tones';
 
 /** A pair of colors that a theme must keep readable. */
@@ -61,13 +61,24 @@ const TOKEN_PAIRS: [name: string, foreground: string, background: string, minimu
  * tokens against backgrounds (4.5:1), control borders (3:1), and every tone of the theme (its text
  * on the surface, its solid text on the solid background and its hover). Pairs where a color comes
  * from the default theme and is not set by the theme are skipped, except the surface, which falls
- * back to the default one. Colors Panneau can't read are listed as unchecked.
+ * back to the default one. Values that refer to the theme's palette or tokens with `var()` are
+ * checked as what they refer to; colors Panneau can't read are listed as unchecked.
  */
 export function checkTheme(theme: Theme): ThemeReport {
     const checks: ThemeContrastCheck[] = [];
+    const palette = paletteVariables(theme.palette);
     (['light', 'dark'] as const).forEach((scheme) => {
-        const tokens =
-            scheme === 'light' ? theme.tokens : { ...theme.tokens, ...(theme.dark ?? {}) };
+        const variables = {
+            ...palette,
+            ...theme.tokens,
+            ...(scheme === 'dark' ? theme.dark : undefined),
+        };
+        const tokens = Object.fromEntries(
+            Object.entries(variables).map(([name, value]) => [
+                name,
+                resolveReference(value, variables),
+            ]),
+        );
         const surface = tokens['panneau-color-surface'];
         const surfaceColor = surface !== undefined ? parseColor(surface) : DEFAULT_SURFACES[scheme];
         const add = (
@@ -97,7 +108,9 @@ export function checkTheme(theme: Theme): ThemeReport {
                 add(`tokens: ${name}`, foregroundValue, backgroundValue, minimum);
             }
         });
-        Object.entries(theme.tones ?? {}).forEach(([tone, input]) => {
+        Object.entries(theme.tones ?? {}).forEach(([tone, toneInput]) => {
+            const input =
+                typeof toneInput === 'string' ? resolveReference(toneInput, palette) : toneInput;
             const values = resolveTone(input)[scheme];
             add(
                 `tone ${tone}: text on surface`,

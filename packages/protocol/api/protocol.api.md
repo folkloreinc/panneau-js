@@ -515,6 +515,9 @@ export function createSchemaRegistry(): z.core.$ZodRegistry<{
     id: string;
 }, z.core.$ZodType<unknown, unknown, z.core.$ZodTypeInternals<unknown, unknown>>>;
 
+// @public
+export function createThemeJsonSchema(): JsonObject;
+
 // @public (undocumented)
 export const Definition: z.ZodObject<{
     protocol: z.ZodLiteral<1>;
@@ -889,11 +892,37 @@ export const Definition: z.ZodObject<{
         maxSize: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>>;
     theme: z.ZodOptional<z.ZodObject<{
+        tokens: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
         colorScheme: z.ZodOptional<z.ZodEnum<{
-            light: "light";
             dark: "dark";
+            light: "light";
             auto: "auto";
         }>>;
+        extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+        label: z.ZodOptional<z.ZodString>;
+        dark: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        palette: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        tones: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+            text: z.ZodString;
+            subtle: z.ZodString;
+            border: z.ZodString;
+            outline: z.ZodString;
+            solid: z.ZodString;
+            solidHover: z.ZodString;
+            solidText: z.ZodString;
+            dark: z.ZodOptional<z.ZodObject<{
+                text: z.ZodOptional<z.ZodString>;
+                subtle: z.ZodOptional<z.ZodString>;
+                border: z.ZodOptional<z.ZodString>;
+                outline: z.ZodOptional<z.ZodString>;
+                solid: z.ZodOptional<z.ZodString>;
+                solidHover: z.ZodOptional<z.ZodString>;
+                solidText: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>]>>>;
+        components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
+            variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
+        }, z.core.$loose>>>;
     }, z.core.$loose>>;
     user: z.ZodOptional<z.ZodNullable<z.ZodObject<{
         id: z.ZodString;
@@ -909,6 +938,44 @@ export type Definition = z.infer<typeof Definition>;
 
 // @public
 export type DefinitionInput = z.input<typeof Definition>;
+
+// @public (undocumented)
+export const DefinitionTheme: z.ZodObject<{
+    tokens: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+    colorScheme: z.ZodOptional<z.ZodEnum<{
+        dark: "dark";
+        light: "light";
+        auto: "auto";
+    }>>;
+    extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+    label: z.ZodOptional<z.ZodString>;
+    dark: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+    palette: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+    tones: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+        text: z.ZodString;
+        subtle: z.ZodString;
+        border: z.ZodString;
+        outline: z.ZodString;
+        solid: z.ZodString;
+        solidHover: z.ZodString;
+        solidText: z.ZodString;
+        dark: z.ZodOptional<z.ZodObject<{
+            text: z.ZodOptional<z.ZodString>;
+            subtle: z.ZodOptional<z.ZodString>;
+            border: z.ZodOptional<z.ZodString>;
+            outline: z.ZodOptional<z.ZodString>;
+            solid: z.ZodOptional<z.ZodString>;
+            solidHover: z.ZodOptional<z.ZodString>;
+            solidText: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>]>>>;
+    components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
+        variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
+    }, z.core.$loose>>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type DefinitionTheme = z.infer<typeof DefinitionTheme>;
 
 // @public
 export function evaluateCondition(condition: Condition, values: unknown): boolean;
@@ -1337,6 +1404,9 @@ export const MenuItem: z.ZodObject<{
 
 // @public (undocumented)
 export type MenuItem = z.infer<typeof MenuItem>;
+
+// @public
+export function mergeThemes(...themes: readonly PartialTheme[]): Theme;
 
 // @public
 export const namedSchemas: {
@@ -2116,6 +2186,94 @@ export const namedSchemas: {
         endpoint: z.ZodOptional<z.ZodString>;
         maxSize: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>;
+    ThemeTokens: z.ZodRecord<z.ZodString, z.ZodString>;
+    ToneValues: z.ZodObject<{
+        text: z.ZodString;
+        subtle: z.ZodString;
+        border: z.ZodString;
+        outline: z.ZodString;
+        solid: z.ZodString;
+        solidHover: z.ZodString;
+        solidText: z.ZodString;
+    }, z.core.$loose>;
+    ToneInput: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+        text: z.ZodString;
+        subtle: z.ZodString;
+        border: z.ZodString;
+        outline: z.ZodString;
+        solid: z.ZodString;
+        solidHover: z.ZodString;
+        solidText: z.ZodString;
+        dark: z.ZodOptional<z.ZodObject<{
+            text: z.ZodOptional<z.ZodString>;
+            subtle: z.ZodOptional<z.ZodString>;
+            border: z.ZodOptional<z.ZodString>;
+            outline: z.ZodOptional<z.ZodString>;
+            solid: z.ZodOptional<z.ZodString>;
+            solidHover: z.ZodOptional<z.ZodString>;
+            solidText: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>]>;
+    Theme: z.ZodObject<{
+        label: z.ZodOptional<z.ZodString>;
+        tokens: z.ZodRecord<z.ZodString, z.ZodString>;
+        dark: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        palette: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        tones: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+            text: z.ZodString;
+            subtle: z.ZodString;
+            border: z.ZodString;
+            outline: z.ZodString;
+            solid: z.ZodString;
+            solidHover: z.ZodString;
+            solidText: z.ZodString;
+            dark: z.ZodOptional<z.ZodObject<{
+                text: z.ZodOptional<z.ZodString>;
+                subtle: z.ZodOptional<z.ZodString>;
+                border: z.ZodOptional<z.ZodString>;
+                outline: z.ZodOptional<z.ZodString>;
+                solid: z.ZodOptional<z.ZodString>;
+                solidHover: z.ZodOptional<z.ZodString>;
+                solidText: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>]>>>;
+        components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
+            variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
+        }, z.core.$loose>>>;
+    }, z.core.$loose>;
+    DefinitionTheme: z.ZodObject<{
+        tokens: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        colorScheme: z.ZodOptional<z.ZodEnum<{
+            dark: "dark";
+            light: "light";
+            auto: "auto";
+        }>>;
+        extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+        label: z.ZodOptional<z.ZodString>;
+        dark: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        palette: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        tones: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+            text: z.ZodString;
+            subtle: z.ZodString;
+            border: z.ZodString;
+            outline: z.ZodString;
+            solid: z.ZodString;
+            solidHover: z.ZodString;
+            solidText: z.ZodString;
+            dark: z.ZodOptional<z.ZodObject<{
+                text: z.ZodOptional<z.ZodString>;
+                subtle: z.ZodOptional<z.ZodString>;
+                border: z.ZodOptional<z.ZodString>;
+                outline: z.ZodOptional<z.ZodString>;
+                solid: z.ZodOptional<z.ZodString>;
+                solidHover: z.ZodOptional<z.ZodString>;
+                solidText: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>]>>>;
+        components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
+            variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
+        }, z.core.$loose>>>;
+    }, z.core.$loose>;
     Definition: z.ZodObject<{
         protocol: z.ZodLiteral<1>;
         name: z.ZodString;
@@ -2489,11 +2647,37 @@ export const namedSchemas: {
             maxSize: z.ZodOptional<z.ZodNumber>;
         }, z.core.$loose>>;
         theme: z.ZodOptional<z.ZodObject<{
+            tokens: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
             colorScheme: z.ZodOptional<z.ZodEnum<{
-                light: "light";
                 dark: "dark";
+                light: "light";
                 auto: "auto";
             }>>;
+            extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+            label: z.ZodOptional<z.ZodString>;
+            dark: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+            palette: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+            tones: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+                text: z.ZodString;
+                subtle: z.ZodString;
+                border: z.ZodString;
+                outline: z.ZodString;
+                solid: z.ZodString;
+                solidHover: z.ZodString;
+                solidText: z.ZodString;
+                dark: z.ZodOptional<z.ZodObject<{
+                    text: z.ZodOptional<z.ZodString>;
+                    subtle: z.ZodOptional<z.ZodString>;
+                    border: z.ZodOptional<z.ZodString>;
+                    outline: z.ZodOptional<z.ZodString>;
+                    solid: z.ZodOptional<z.ZodString>;
+                    solidHover: z.ZodOptional<z.ZodString>;
+                    solidText: z.ZodOptional<z.ZodString>;
+                }, z.core.$loose>>;
+            }, z.core.$loose>]>>>;
+            components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
+                variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
+            }, z.core.$loose>>>;
         }, z.core.$loose>>;
         user: z.ZodOptional<z.ZodNullable<z.ZodObject<{
             id: z.ZodString;
@@ -2889,6 +3073,9 @@ export const Pagination: z.ZodObject<{
 
 // @public (undocumented)
 export type Pagination = z.infer<typeof Pagination>;
+
+// @public
+export type PartialTheme = Partial<Theme>;
 
 // @public
 export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "in", "accept", "maxSize", "before", "after"];
@@ -3374,6 +3561,81 @@ export const Session: z.ZodObject<{
 
 // @public (undocumented)
 export type Session = z.infer<typeof Session>;
+
+// @public (undocumented)
+export const Theme: z.ZodObject<{
+    label: z.ZodOptional<z.ZodString>;
+    tokens: z.ZodRecord<z.ZodString, z.ZodString>;
+    dark: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+    palette: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+    tones: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+        text: z.ZodString;
+        subtle: z.ZodString;
+        border: z.ZodString;
+        outline: z.ZodString;
+        solid: z.ZodString;
+        solidHover: z.ZodString;
+        solidText: z.ZodString;
+        dark: z.ZodOptional<z.ZodObject<{
+            text: z.ZodOptional<z.ZodString>;
+            subtle: z.ZodOptional<z.ZodString>;
+            border: z.ZodOptional<z.ZodString>;
+            outline: z.ZodOptional<z.ZodString>;
+            solid: z.ZodOptional<z.ZodString>;
+            solidHover: z.ZodOptional<z.ZodString>;
+            solidText: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>]>>>;
+    components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
+        variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
+    }, z.core.$loose>>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type Theme = z.infer<typeof Theme>;
+
+// @public (undocumented)
+export const ThemeTokens: z.ZodRecord<z.ZodString, z.ZodString>;
+
+// @public (undocumented)
+export type ThemeTokens = z.infer<typeof ThemeTokens>;
+
+// @public (undocumented)
+export const ToneInput: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+    text: z.ZodString;
+    subtle: z.ZodString;
+    border: z.ZodString;
+    outline: z.ZodString;
+    solid: z.ZodString;
+    solidHover: z.ZodString;
+    solidText: z.ZodString;
+    dark: z.ZodOptional<z.ZodObject<{
+        text: z.ZodOptional<z.ZodString>;
+        subtle: z.ZodOptional<z.ZodString>;
+        border: z.ZodOptional<z.ZodString>;
+        outline: z.ZodOptional<z.ZodString>;
+        solid: z.ZodOptional<z.ZodString>;
+        solidHover: z.ZodOptional<z.ZodString>;
+        solidText: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>>;
+}, z.core.$loose>]>;
+
+// @public (undocumented)
+export type ToneInput = z.infer<typeof ToneInput>;
+
+// @public (undocumented)
+export const ToneValues: z.ZodObject<{
+    text: z.ZodString;
+    subtle: z.ZodString;
+    border: z.ZodString;
+    outline: z.ZodString;
+    solid: z.ZodString;
+    solidHover: z.ZodString;
+    solidText: z.ZodString;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ToneValues = z.infer<typeof ToneValues>;
 
 // @public
 export function toSearchParams(query: ListQuery): URLSearchParams;

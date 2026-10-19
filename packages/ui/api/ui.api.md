@@ -270,6 +270,9 @@ export interface DatePickerProps extends Omit<DatePickerProps_2<DateValue>, 'cla
 export function defineComponentTokens<const Component extends string, const Tokens extends Record<string, string>>(component: Component, tokens: Tokens): ComponentTokens<Component, `panneau-${Component}-${keyof Tokens & string}`>;
 
 // @public
+export function defineTheme(definition: ThemeDefinition): Theme;
+
+// @public
 export function deriveTone(color: string): {
     light: ToneValues;
     dark: ToneValues;
@@ -368,6 +371,9 @@ export interface FieldsetProps {
 }
 
 // @public
+export function findUnknownTokens(theme: Theme): string[];
+
+// @public
 export function getNamedIcon(name: string): IconComponent;
 
 // @public
@@ -449,6 +455,9 @@ export function MenuSeparator(): JSX.Element;
 
 export { MenuTrigger }
 
+// @public
+export function mergeThemes(...themes: readonly Partial<Theme>[]): Theme;
+
 // @public (undocumented)
 export interface MultipleSelectProps extends SelectBaseProps {
     multiple: true;
@@ -480,6 +489,9 @@ export interface NumberInputProps extends Omit<NumberFieldProps, 'className' | '
 export type OptionValue = string | number | boolean;
 
 // @public
+export type PaletteTokenName = `panneau-palette-${string}`;
+
+// @public
 export function PanneauRoot(input: PanneauRootProps): JSX.Element;
 
 // @public (undocumented)
@@ -489,6 +501,10 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
     colorScheme?: ColorScheme;
     locale?: string;
     theme?: Theme | null;
+}
+
+// @public
+export interface PanneauTokens {
 }
 
 // @public
@@ -577,6 +593,12 @@ export interface SelectOption {
 
 // @public (undocumented)
 export type SelectProps = SingleSelectProps | MultipleSelectProps;
+
+// @public
+export const SEMANTIC_TOKENS: readonly ["panneau-color-bg", "panneau-color-surface", "panneau-color-surface-sunken", "panneau-color-surface-raised", "panneau-color-hover", "panneau-color-pressed", "panneau-color-backdrop", "panneau-color-text", "panneau-color-text-muted", "panneau-color-link", "panneau-color-border", "panneau-color-border-control", "panneau-color-accent", "panneau-color-accent-hover", "panneau-color-accent-text", "panneau-color-accent-subtle", "panneau-color-focus", "panneau-color-danger", "panneau-color-danger-subtle", "panneau-color-danger-border", "panneau-color-danger-solid", "panneau-color-danger-solid-hover", "panneau-color-danger-solid-text", "panneau-color-success", "panneau-color-success-subtle", "panneau-color-success-border", "panneau-color-success-solid", "panneau-color-success-solid-hover", "panneau-color-success-solid-text", "panneau-color-warning", "panneau-color-warning-subtle", "panneau-color-warning-border", "panneau-color-warning-solid", "panneau-color-warning-solid-hover", "panneau-color-warning-solid-text", "panneau-color-info", "panneau-color-info-subtle", "panneau-color-info-border", "panneau-color-info-solid", "panneau-color-info-solid-hover", "panneau-color-info-solid-text", "panneau-font-family", "panneau-font-family-mono", "panneau-font-size-xs", "panneau-font-size-sm", "panneau-font-size-md", "panneau-font-size-lg", "panneau-font-size-xl", "panneau-font-size-control", "panneau-line-height", "panneau-line-height-tight", "panneau-font-weight-normal", "panneau-font-weight-medium", "panneau-font-weight-bold", "panneau-space-1", "panneau-space-2", "panneau-space-3", "panneau-space-4", "panneau-space-5", "panneau-space-6", "panneau-space-8", "panneau-space-10", "panneau-radius-sm", "panneau-radius-md", "panneau-radius-lg", "panneau-radius-full", "panneau-border-width", "panneau-shadow-sm", "panneau-shadow-md", "panneau-shadow-lg", "panneau-control-height", "panneau-control-height-sm", "panneau-focus-width", "panneau-duration", "panneau-z-overlay", "panneau-z-toast"];
+
+// @public
+export type SemanticTokenName = (typeof SEMANTIC_TOKENS)[number];
 
 // @public (undocumented)
 export interface SingleSelectProps extends SelectBaseProps {
@@ -677,16 +699,16 @@ export interface TextInputProps extends Omit<TextFieldProps, 'className' | 'styl
 }
 
 // @public
-export interface Theme {
+export type Theme = {
+    label?: string;
+    tokens: Record<string, string>;
+    dark?: Record<string, string>;
+    palette?: Record<string, string>;
+    tones?: Record<string, ToneInput>;
     components?: Record<string, {
         variants?: Record<string, Record<string, string>>;
     }>;
-    dark?: Record<string, string>;
-    // (undocumented)
-    label?: string;
-    tokens: Record<string, string>;
-    tones?: Record<string, ToneInput>;
-}
+};
 
 // @public
 export interface ThemeContrastCheck {
@@ -702,12 +724,32 @@ export interface ThemeContrastCheck {
     scheme: 'light' | 'dark';
 }
 
+// @public
+export interface ThemeDefinition {
+    components?: Record<string, {
+        variants?: Record<string, ThemeTokens>;
+    }>;
+    dark?: ThemeTokens;
+    extends?: Theme | readonly Theme[];
+    label?: string;
+    palette?: Record<string, string>;
+    tokens?: ThemeTokens;
+    tones?: Record<string, ToneInput>;
+}
+
 // @public (undocumented)
 export interface ThemeReport {
     checks: ThemeContrastCheck[];
     failures: ThemeContrastCheck[];
     unchecked: ThemeContrastCheck[];
 }
+
+// @public
+export type ThemeTokens = {
+    [Name in SemanticTokenName | ComponentTokenName | (keyof PanneauTokens & string)]?: string;
+} & {
+    [Name in PaletteTokenName]?: string;
+};
 
 // @public
 export function TimeInput(input: TimeInputProps): JSX.Element;
@@ -748,6 +790,9 @@ export interface Toasts {
 export type ToastTone = Tone;
 
 // @public
+export type TokenName = SemanticTokenName | ComponentTokenName | PaletteTokenName | (keyof PanneauTokens & string);
+
+// @public
 export type Tone = keyof PanneauTones & string;
 
 // @public
@@ -759,15 +804,15 @@ export type ToneInput = string | (ToneValues & {
 });
 
 // @public
-export interface ToneValues {
+export type ToneValues = {
+    text: string;
+    subtle: string;
     border: string;
     outline: string;
     solid: string;
     solidHover: string;
     solidText: string;
-    subtle: string;
-    text: string;
-}
+};
 
 // @public
 export function Tooltip(input: TooltipProps): JSX.Element;

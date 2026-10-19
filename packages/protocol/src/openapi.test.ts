@@ -6,6 +6,7 @@ import {
     createBootConfigJsonSchema,
     createDefinitionJsonSchema,
     createOpenApiDocument,
+    createThemeJsonSchema,
 } from './openapi';
 
 function collectRefs(value: unknown, refs: Set<string> = new Set()): Set<string> {
@@ -66,5 +67,6 @@ describe('generated files', () => {
         expect(read('definition.schema.json')).toEqual(createDefinitionJsonSchema());
         expect(read('openapi.json')).toEqual(createOpenApiDocument());
         expect(read('boot.schema.json')).toEqual(createBootConfigJsonSchema());
+        expect(read('theme.schema.json')).toEqual(createThemeJsonSchema());
     });
 });
