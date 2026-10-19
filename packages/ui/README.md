@@ -164,6 +164,34 @@ const editorial = defineTheme({
 });
 ```
 
+### Layout
+
+Five primitives lay out content with the space scale of the theme, without utility classes:
+
+- `Stack`: items one under the other, like Bootstrap's `.vstack`;
+- `Inline`: items side by side, wrapping when they don't fit, like `.hstack`;
+- `Grid` and `GridItem`: equal columns (`columns`), or as many as fit (`minItemWidth="16rem"`), and cells that span several columns (`span`, or `span="full"`);
+- `Container`: a centered column with a maximum width (`size`: `sm`, `md`, `lg` by default, `xl` or `full`);
+- `Divider`: a line between groups, horizontal or vertical.
+
+`gap` takes a step of the space scale (`gap={2}` is `--panneau-space-2`), and `align` and `justify` the alignment of the items. These props, `columns` and `span` are **responsive**: a value, or values by breakpoint, each applying from its breakpoint up.
+
+```tsx
+<Container>
+    <Grid columns={{ base: 1, md: 2, lg: 3 }} gap={{ base: 3, lg: 4 }}>
+        <GridItem span={{ base: 1, lg: 'full' }}>
+            <Card title="Summary" />
+        </GridItem>
+        <Card title="Pages" />
+        <Card title="Articles" />
+    </Grid>
+</Container>
+```
+
+Breakpoints (`BREAKPOINTS`) are `sm` 40rem, `md` 48rem, `lg` 64rem and `xl` 80rem, like `$grid-breakpoints`. They are widths of the nearest **size container**, not of the viewport, so that a grid in a narrow sidebar behaves as on a phone. `PanneauRoot` and `Container` are size containers, as are forms and lists. A size container takes its width from its parent, never from its content: in a flex row or a float, give the root a width, or it collapses.
+
+Responsive values are inline CSS variables, read by static rules in each container query: no styles are generated per instance.
+
 ### Classes
 
 Class names are stable and readable, without a hash, like Bootstrap's: target them in a project's CSS.
@@ -188,7 +216,7 @@ The theme model is described in [decision 0024](../../docs/decisions/0024-theme-
 
 ## Primitives
 
-`Heading`, `Text`, `Prose`, `Button`, `IconButton`, `TextInput`, `TextArea`, `NumberInput`, `Select` (single or multiple), `ComboBox`, `Checkbox`, `Switch`, `RadioGroup`, `DatePicker`, `TimeInput`, `Fieldset`, `Dialog`, `Popover`, `Menu`, `Tabs`, `Tooltip`, toasts (`useToast()`), `Alert`, `Badge`, `Spinner`, `Card`, `Disclosure` and `Icon`.
+`Heading`, `Text`, `Prose`, `Stack`, `Inline`, `Grid`, `Container`, `Divider`, `Button`, `IconButton`, `TextInput`, `TextArea`, `NumberInput`, `Select` (single or multiple), `ComboBox`, `Checkbox`, `Switch`, `RadioGroup`, `DatePicker`, `TimeInput`, `Fieldset`, `Dialog`, `Popover`, `Menu`, `Tabs`, `Tooltip`, toasts (`useToast()`), `Alert`, `Badge`, `Spinner`, `Card`, `Disclosure` and `Icon`.
 
 - Every component accepts `className`, and `xxxClassName` props for its inner elements (`labelClassName`, `inputClassName`…).
 - Labelled controls take `label`, `description` and `errors` (a list of messages: any message makes the control invalid and describes it).

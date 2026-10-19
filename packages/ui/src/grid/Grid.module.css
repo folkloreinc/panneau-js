@@ -1,0 +1,174 @@
+/* A grid: each prop can change at the breakpoints of the nearest container. */
+
+.grid {
+    display: grid;
+    min-width: 0;
+}
+/* Responsive values are set inline; children reset them so that they aren't inherited. */
+.grid > * {
+    --_panneau-grid-columns-base: initial;
+    --_panneau-grid-columns-sm: initial;
+    --_panneau-grid-columns-md: initial;
+    --_panneau-grid-columns-lg: initial;
+    --_panneau-grid-columns-xl: initial;
+    --_panneau-grid-gap-base: initial;
+    --_panneau-grid-gap-sm: initial;
+    --_panneau-grid-gap-md: initial;
+    --_panneau-grid-gap-lg: initial;
+    --_panneau-grid-gap-xl: initial;
+    --_panneau-grid-align-base: initial;
+    --_panneau-grid-align-sm: initial;
+    --_panneau-grid-align-md: initial;
+    --_panneau-grid-align-lg: initial;
+    --_panneau-grid-align-xl: initial;
+}
+
+.grid {
+    gap: var(--_panneau-grid-gap-base, var(--panneau-grid-gap, var(--panneau-space-4)));
+    align-items: var(--_panneau-grid-align-base, stretch);
+}
+
+@container (min-width: 40rem) {
+    .grid {
+        gap: var(
+            --_panneau-grid-gap-sm,
+            var(--_panneau-grid-gap-base, var(--panneau-grid-gap, var(--panneau-space-4)))
+        );
+        align-items: var(--_panneau-grid-align-sm, var(--_panneau-grid-align-base, stretch));
+    }
+}
+
+@container (min-width: 48rem) {
+    .grid {
+        gap: var(
+            --_panneau-grid-gap-md,
+            var(
+                --_panneau-grid-gap-sm,
+                var(--_panneau-grid-gap-base, var(--panneau-grid-gap, var(--panneau-space-4)))
+            )
+        );
+        align-items: var(
+            --_panneau-grid-align-md,
+            var(--_panneau-grid-align-sm, var(--_panneau-grid-align-base, stretch))
+        );
+    }
+}
+
+@container (min-width: 64rem) {
+    .grid {
+        gap: var(
+            --_panneau-grid-gap-lg,
+            var(
+                --_panneau-grid-gap-md,
+                var(
+                    --_panneau-grid-gap-sm,
+                    var(--_panneau-grid-gap-base, var(--panneau-grid-gap, var(--panneau-space-4)))
+                )
+            )
+        );
+        align-items: var(
+            --_panneau-grid-align-lg,
+            var(
+                --_panneau-grid-align-md,
+                var(--_panneau-grid-align-sm, var(--_panneau-grid-align-base, stretch))
+            )
+        );
+    }
+}
+
+@container (min-width: 80rem) {
+    .grid {
+        gap: var(
+            --_panneau-grid-gap-xl,
+            var(
+                --_panneau-grid-gap-lg,
+                var(
+                    --_panneau-grid-gap-md,
+                    var(
+                        --_panneau-grid-gap-sm,
+                        var(
+                            --_panneau-grid-gap-base,
+                            var(--panneau-grid-gap, var(--panneau-space-4))
+                        )
+                    )
+                )
+            )
+        );
+        align-items: var(
+            --_panneau-grid-align-xl,
+            var(
+                --_panneau-grid-align-lg,
+                var(
+                    --_panneau-grid-align-md,
+                    var(--_panneau-grid-align-sm, var(--_panneau-grid-align-base, stretch))
+                )
+            )
+        );
+    }
+}
+
+.grid:not(.auto) {
+    grid-template-columns: repeat(var(--_panneau-grid-columns-base, 1), minmax(0, 1fr));
+}
+
+@container (min-width: 40rem) {
+    .grid:not(.auto) {
+        grid-template-columns: repeat(
+            var(--_panneau-grid-columns-sm, var(--_panneau-grid-columns-base, 1)),
+            minmax(0, 1fr)
+        );
+    }
+}
+
+@container (min-width: 48rem) {
+    .grid:not(.auto) {
+        grid-template-columns: repeat(
+            var(
+                --_panneau-grid-columns-md,
+                var(--_panneau-grid-columns-sm, var(--_panneau-grid-columns-base, 1))
+            ),
+            minmax(0, 1fr)
+        );
+    }
+}
+
+@container (min-width: 64rem) {
+    .grid:not(.auto) {
+        grid-template-columns: repeat(
+            var(
+                --_panneau-grid-columns-lg,
+                var(
+                    --_panneau-grid-columns-md,
+                    var(--_panneau-grid-columns-sm, var(--_panneau-grid-columns-base, 1))
+                )
+            ),
+            minmax(0, 1fr)
+        );
+    }
+}
+
+@container (min-width: 80rem) {
+    .grid:not(.auto) {
+        grid-template-columns: repeat(
+            var(
+                --_panneau-grid-columns-xl,
+                var(
+                    --_panneau-grid-columns-lg,
+                    var(
+                        --_panneau-grid-columns-md,
+                        var(--_panneau-grid-columns-sm, var(--_panneau-grid-columns-base, 1))
+                    )
+                )
+            ),
+            minmax(0, 1fr)
+        );
+    }
+}
+
+/* Columns of at least a width, as many as fit: repeat(auto-fit, minmax(...)). */
+.auto {
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(var(--_panneau-grid-min-item-width), 100%), 1fr)
+    );
+}

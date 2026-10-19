@@ -20,6 +20,9 @@ export {
     type ButtonVariants,
 } from './button/Button';
 export { Card, type CardProps } from './card/Card';
+export { Container, type ContainerProps } from './container/Container';
+export { Divider, type DividerProps } from './divider/Divider';
+export { Grid, GridItem, type GridItemProps, type GridProps } from './grid/Grid';
 export { Heading, type HeadingLevel, type HeadingProps, type HeadingSize } from './heading/Heading';
 export { Checkbox, type CheckboxProps } from './checkbox/Checkbox';
 export { type ChoiceChromeProps } from './checkbox/ChoiceChrome';
@@ -54,8 +57,17 @@ export {
     type SelectProps,
     type SingleSelectProps,
 } from './select/Select';
+export { Inline, type InlineProps } from './inline/Inline';
+export {
+    BREAKPOINTS,
+    type Breakpoint,
+    type Justification,
+    type Responsive,
+    type Space,
+} from './layout/responsive';
 export { Prose, type ProseProps } from './prose/Prose';
 export { Spinner, type SpinnerProps } from './spinner/Spinner';
+export { Stack, type StackProps } from './stack/Stack';
 export { Switch, type SwitchProps } from './switch/Switch';
 export {
     Tab,

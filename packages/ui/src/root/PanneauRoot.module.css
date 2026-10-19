@@ -217,6 +217,15 @@
     display: block;
 }
 
+/*
+ * The root is a size container, so that the responsive props of layout primitives follow its width
+ * rather than the viewport's. Like any size container, its width can't come from its content: in a
+ * flex row or a float, give it a width. Toast regions share the tokens of .root, not this.
+ */
+.container {
+    container: panneau-root / inline-size;
+}
+
 :where(.root) {
     font-family: var(--panneau-font-family);
     font-size: var(--panneau-font-size-md);

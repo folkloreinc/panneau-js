@@ -1,0 +1,142 @@
+/* A horizontal row that wraps: each prop can change at the breakpoints of the nearest container. */
+
+.inline {
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.nowrap {
+    flex-wrap: nowrap;
+}
+/* Responsive values are set inline; children reset them so that they aren't inherited. */
+.inline > * {
+    --_panneau-inline-gap-base: initial;
+    --_panneau-inline-gap-sm: initial;
+    --_panneau-inline-gap-md: initial;
+    --_panneau-inline-gap-lg: initial;
+    --_panneau-inline-gap-xl: initial;
+    --_panneau-inline-align-base: initial;
+    --_panneau-inline-align-sm: initial;
+    --_panneau-inline-align-md: initial;
+    --_panneau-inline-align-lg: initial;
+    --_panneau-inline-align-xl: initial;
+    --_panneau-inline-justify-base: initial;
+    --_panneau-inline-justify-sm: initial;
+    --_panneau-inline-justify-md: initial;
+    --_panneau-inline-justify-lg: initial;
+    --_panneau-inline-justify-xl: initial;
+}
+
+.inline {
+    gap: var(--_panneau-inline-gap-base, var(--panneau-inline-gap, var(--panneau-space-2)));
+    align-items: var(--_panneau-inline-align-base, center);
+    justify-content: var(--_panneau-inline-justify-base, start);
+}
+
+@container (min-width: 40rem) {
+    .inline {
+        gap: var(
+            --_panneau-inline-gap-sm,
+            var(--_panneau-inline-gap-base, var(--panneau-inline-gap, var(--panneau-space-2)))
+        );
+        align-items: var(--_panneau-inline-align-sm, var(--_panneau-inline-align-base, center));
+        justify-content: var(
+            --_panneau-inline-justify-sm,
+            var(--_panneau-inline-justify-base, start)
+        );
+    }
+}
+
+@container (min-width: 48rem) {
+    .inline {
+        gap: var(
+            --_panneau-inline-gap-md,
+            var(
+                --_panneau-inline-gap-sm,
+                var(--_panneau-inline-gap-base, var(--panneau-inline-gap, var(--panneau-space-2)))
+            )
+        );
+        align-items: var(
+            --_panneau-inline-align-md,
+            var(--_panneau-inline-align-sm, var(--_panneau-inline-align-base, center))
+        );
+        justify-content: var(
+            --_panneau-inline-justify-md,
+            var(--_panneau-inline-justify-sm, var(--_panneau-inline-justify-base, start))
+        );
+    }
+}
+
+@container (min-width: 64rem) {
+    .inline {
+        gap: var(
+            --_panneau-inline-gap-lg,
+            var(
+                --_panneau-inline-gap-md,
+                var(
+                    --_panneau-inline-gap-sm,
+                    var(
+                        --_panneau-inline-gap-base,
+                        var(--panneau-inline-gap, var(--panneau-space-2))
+                    )
+                )
+            )
+        );
+        align-items: var(
+            --_panneau-inline-align-lg,
+            var(
+                --_panneau-inline-align-md,
+                var(--_panneau-inline-align-sm, var(--_panneau-inline-align-base, center))
+            )
+        );
+        justify-content: var(
+            --_panneau-inline-justify-lg,
+            var(
+                --_panneau-inline-justify-md,
+                var(--_panneau-inline-justify-sm, var(--_panneau-inline-justify-base, start))
+            )
+        );
+    }
+}
+
+@container (min-width: 80rem) {
+    .inline {
+        gap: var(
+            --_panneau-inline-gap-xl,
+            var(
+                --_panneau-inline-gap-lg,
+                var(
+                    --_panneau-inline-gap-md,
+                    var(
+                        --_panneau-inline-gap-sm,
+                        var(
+                            --_panneau-inline-gap-base,
+                            var(--panneau-inline-gap, var(--panneau-space-2))
+                        )
+                    )
+                )
+            )
+        );
+        align-items: var(
+            --_panneau-inline-align-xl,
+            var(
+                --_panneau-inline-align-lg,
+                var(
+                    --_panneau-inline-align-md,
+                    var(--_panneau-inline-align-sm, var(--_panneau-inline-align-base, center))
+                )
+            )
+        );
+        justify-content: var(
+            --_panneau-inline-justify-xl,
+            var(
+                --_panneau-inline-justify-lg,
+                var(
+                    --_panneau-inline-justify-md,
+                    var(--_panneau-inline-justify-sm, var(--_panneau-inline-justify-base, start))
+                )
+            )
+        );
+    }
+}

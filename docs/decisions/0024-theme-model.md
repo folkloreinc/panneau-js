@@ -78,6 +78,13 @@ As built:
 - **Breakpoints:** `sm` 40rem, `md` 48rem, `lg` 64rem and `xl` 80rem, as constants of the package.
 - **Responsive props** (`columns={{ base: 1, md: 2 }}`) use **inline CSS variables read by static rules per breakpoint**, with container queries first. No styles are generated per instance at runtime.
 
+As built:
+
+- `PanneauRoot` is a size container (`container: panneau-root / inline-size`), and so is `Container`. The queries of the primitives have no name, so they follow the nearest size container: the root, a `Container`, a form or a list. The price is that of any size container: its width can't come from its content, so a root in a flex row or a float needs a width. Positioned overlays are not affected: `container-type` applies no layout containment, so `position: fixed` stays relative to the viewport. Toast regions, which share the tokens of the root, are not containers.
+- A responsive prop sets one inline variable per breakpoint given, `--_panneau-<component>-<prop>-<breakpoint>`. The static rule of each breakpoint reads its variable with the smaller breakpoints as fallbacks, down to the component token. These private variables start with `_`: they are not tokens.
+- Custom properties inherit, so a nested stack would get the values of the stack around it. Each primitive resets its private variables to `initial` on its children, so that only the element that sets them uses them.
+- `GridItem` spans columns (`span={{ base: 'full', md: 2 }}`), for the dashboard grid.
+
 ### 5. Density
 
 `compact | comfortable | touch | auto` on the root and on scopes. Each density is a set of tokens, which a theme can redefine.

@@ -1,0 +1,59 @@
+/* A cell of a Grid that spans several columns, per breakpoint. */
+
+.grid-item {
+    min-width: 0;
+}
+/* Responsive values are set inline; children reset them so that they aren't inherited. */
+.grid-item > * {
+    --_panneau-grid-item-span-base: initial;
+    --_panneau-grid-item-span-sm: initial;
+    --_panneau-grid-item-span-md: initial;
+    --_panneau-grid-item-span-lg: initial;
+    --_panneau-grid-item-span-xl: initial;
+}
+
+.grid-item {
+    grid-column: var(--_panneau-grid-item-span-base, auto);
+}
+
+@container (min-width: 40rem) {
+    .grid-item {
+        grid-column: var(--_panneau-grid-item-span-sm, var(--_panneau-grid-item-span-base, auto));
+    }
+}
+
+@container (min-width: 48rem) {
+    .grid-item {
+        grid-column: var(
+            --_panneau-grid-item-span-md,
+            var(--_panneau-grid-item-span-sm, var(--_panneau-grid-item-span-base, auto))
+        );
+    }
+}
+
+@container (min-width: 64rem) {
+    .grid-item {
+        grid-column: var(
+            --_panneau-grid-item-span-lg,
+            var(
+                --_panneau-grid-item-span-md,
+                var(--_panneau-grid-item-span-sm, var(--_panneau-grid-item-span-base, auto))
+            )
+        );
+    }
+}
+
+@container (min-width: 80rem) {
+    .grid-item {
+        grid-column: var(
+            --_panneau-grid-item-span-xl,
+            var(
+                --_panneau-grid-item-span-lg,
+                var(
+                    --_panneau-grid-item-span-md,
+                    var(--_panneau-grid-item-span-sm, var(--_panneau-grid-item-span-base, auto))
+                )
+            )
+        );
+    }
+}
