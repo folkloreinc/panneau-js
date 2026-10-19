@@ -127,6 +127,9 @@ export function definePackageConfig({
         },
         test: {
             environment,
+            // Each test file still gets its own context, but the environment (jsdom) is created
+            // once per worker instead of once per file, which took over a third of the test time.
+            pool: 'vmThreads',
             include: ['src/**/*.test.{ts,tsx}'],
             setupFiles:
                 environment === 'jsdom' ? [resolve(import.meta.dirname, 'vitest.setup.ts')] : [],

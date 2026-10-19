@@ -5,19 +5,39 @@
 //     node ../../scripts/api-report.js           update the reports in api/
 //     node ../../scripts/api-report.js --check   fail if a report is out of date
 //
+// Or, from the root, for every package that has an `api` script, at the same time, with the
+// declarations that `npm run build` wrote (CI and `npm run verify`, which build first):
+//
+//     node scripts/api-report.js --workspaces [--check]
+//
 // API Extractor reads one entry point at a time, so every subpath of the `exports` map that has
-// `types` gets its own report: `.` → api/<name>.api.md, `./mock` → api/<name>-mock.api.md.
+// `types` gets its own report: `.` → api/<name>.api.md, `./mock` → api/<name>-mock.api.md. The
+// entry points of a package share one TypeScript program: building one for each entry point made
+// the check of @panneau/fields (18 entry points) about ten times slower.
 //
 // Packages with CSS Modules also get api/<name>.classes.md: the stable class names their
 // stylesheets produce (decision 0024), which projects can target, so renaming one shows in review.
-import { Extractor, ExtractorConfig } from '@microsoft/api-extractor';
+import { CompilerState, Extractor, ExtractorConfig } from '@microsoft/api-extractor';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 
 import { stableClassName } from '../config/class-names.ts';
+import { readWorkspacePackages, runInPackages } from './workspaces.js';
 
-const { values: options } = parseArgs({ options: { check: { type: 'boolean', default: false } } });
+const { values: options } = parseArgs({
+    options: {
+        check: { type: 'boolean', default: false },
+        workspaces: { type: 'boolean', default: false },
+    },
+});
+
+if (options.workspaces) {
+    const packages = readWorkspacePackages().filter((pkg) => pkg.scripts?.api !== undefined);
+    const args = [import.meta.filename, ...(options.check ? ['--check'] : [])];
+    const succeeded = await runInPackages(packages, process.execPath, args, { ordered: false });
+    process.exit(succeeded ? 0 : 1);
+}
 
 const configPath = resolve(import.meta.dirname, '../api-extractor.json');
 const packageFolder = process.cwd();
@@ -51,12 +71,16 @@ if (!options.check) {
     mkdirSync(reportFolder, { recursive: true });
 }
 
-for (const { types, report } of entryPoints) {
+for (const { types } of entryPoints) {
     if (!existsSync(types)) {
         throw new Error(
             `${pkg.name}: ${relative(packageFolder, types)} is missing. Build the declarations first.`,
         );
     }
+}
+/** One TypeScript program for every entry point of the package. */
+let compilerState;
+for (const { types, report } of entryPoints) {
     const config = ExtractorConfig.prepare({
         configObject: {
             ...baseConfig,
@@ -67,7 +91,11 @@ for (const { types, report } of entryPoints) {
         configObjectFullPath: configPath,
         packageJsonFullPath: packageJsonPath,
     });
+    compilerState ??= CompilerState.create(config, {
+        additionalEntryPoints: entryPoints.map((entry) => entry.types),
+    });
     const result = Extractor.invoke(config, {
+        compilerState,
         localBuild: !options.check,
         messageCallback: (message) => {
             // API Extractor bundles its own TypeScript (see docs/packages.md). Say it once.

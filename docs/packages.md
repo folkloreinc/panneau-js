@@ -68,7 +68,7 @@ Then:
 A package depends on another one with the shared version in `dependencies` (`"@panneau/protocol": "5.0.0-alpha.0"`), and imports it through its public entry points only.
 
 - **Tests and typechecks use the sources.** Each entry of `exports` has a `@panneau/source` condition that points to its source file. The package's `tsconfig.json` (`customConditions`) and the shared Vite config (`resolve.conditions`) use it, so `npm test` and `npm run typecheck` work without building the other packages first. Published consumers don't use this condition: they get `types` and `default`.
-- **Builds use the declarations.** `tsconfig.build.json` doesn't use the condition, so a package's declarations and API report need the declarations of its dependencies. `npm run build` and `npm run api` run through `scripts/workspaces.js`, which runs the packages in dependency order.
+- **Builds use the declarations.** `tsconfig.build.json` doesn't use the condition, so a package's declarations and API report need the declarations of its dependencies. `npm run build` and `npm run api` run through `scripts/workspaces.js --parallel`, which runs the packages at the same time, each one once the packages it depends on are done. `npm run typecheck` uses `--any-order`: it reads sources, so it doesn't wait.
 
 ## Styles in builds
 
@@ -87,11 +87,12 @@ Each package keeps a report of its public API in `api/`, generated with [API Ext
 ```bash
 npm run api                  # update the reports of every package
 npm run api -w @panneau/ui   # update one package
-npm run api:check            # fail if a report is out of date (run in CI)
+npm run api:check            # fail if a report is out of date
+node scripts/api-report.js --workspaces --check   # the same, with the declarations of a build (CI)
 ```
 
 - The shared config is [`api-extractor.json`](../api-extractor.json) at the root. Each package runs it through `scripts/api-report.js` in its `api` script, after emitting its declarations with `tsc -p tsconfig.build.json`.
-- **One report per entry point.** API Extractor reads one entry point at a time, so the script runs it for every subpath of `exports` that has `types`: `.` writes `api/<name>.api.md` and `./mock` writes `api/<name>-mock.api.md` (`./text` in `@panneau/fields` would write `api/fields-text.api.md`). Reports of removed entry points are deleted by `npm run api`, and fail `npm run api:check`.
+- **One report per entry point.** API Extractor reads one entry point at a time, so the script runs it for every subpath of `exports` that has `types`, with one TypeScript program for all of them: `.` writes `api/<name>.api.md` and `./mock` writes `api/<name>-mock.api.md` (`./text` in `@panneau/fields` would write `api/fields-text.api.md`). Reports of removed entry points are deleted by `npm run api`, and fail `npm run api:check`.
 - Other exports (JSON files, `./package.json`) have no report. `@panneau/protocol` checks its generated JSON files with its own tests.
 - Compiler errors in the declarations fail the run. Other API Extractor and TSDoc messages are written into the report, as `// Warning:` comments, so that they are reviewed with the API.
 - Release tags (`@public`, `@beta`…) are not used: everything an entry point exports is public.

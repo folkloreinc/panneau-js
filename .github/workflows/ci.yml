@@ -1,5 +1,7 @@
 name: CI
 
+# Every check runs on every pull request, in parallel jobs, so that the wait is the longest job
+# rather than the sum of them. `npm run verify` runs the same checks locally.
 on:
     push:
         branches: [v5.x]
@@ -14,44 +16,21 @@ permissions:
     contents: read
 
 jobs:
-    ci:
-        name: Lint, typecheck, test and build
+    lint:
+        name: Format, lint and changeset
         runs-on: ubuntu-24.04
         steps:
             - uses: actions/checkout@v5
               with:
                   fetch-depth: 0
 
-            - uses: actions/setup-node@v5
-              with:
-                  node-version-file: .nvmrc
-                  cache: npm
-
-            - name: Install dependencies
-              run: npm ci
+            - uses: ./.github/actions/setup
 
             - name: Check formatting
               run: npm run format:check
 
             - name: Lint
               run: npm run lint
-
-            - name: Typecheck
-              run: |
-                  npx tsc -p tsconfig.json
-                  npm run typecheck
-
-            - name: Test
-              run: npm test
-
-            - name: Build
-              run: npm run build
-
-            - name: Check the API reports
-              run: npm run api:check
-
-            - name: Check the package template
-              run: npm run test:create-package
 
             # "Version packages" pull requests consume the changesets instead of adding one: the
             # Release workflow opens them from changeset-release/* branches, and a maintainer may
@@ -63,22 +42,66 @@ jobs:
                   !startsWith(github.event.pull_request.title, 'Version packages')
               run: npx changeset status --since=origin/${{ github.base_ref }}
 
+    typecheck:
+        name: Typecheck
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v5
+
+            - uses: ./.github/actions/setup
+
+            - name: Typecheck
+              run: |
+                  npx tsc -p tsconfig.json
+                  npm run typecheck
+
+    test:
+        name: Test
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v5
+
+            - uses: ./.github/actions/setup
+
+            - name: Test
+              run: npm test
+
+    build:
+        name: Build and API reports
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v5
+
+            - uses: ./.github/actions/setup
+
+            - name: Build
+              run: npm run build
+
+            # With the declarations of the build, rather than `npm run api:check`, which emits
+            # them again.
+            - name: Check the API reports
+              run: node scripts/api-report.js --workspaces --check
+
+    template:
+        name: Package template
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v5
+
+            - uses: ./.github/actions/setup
+
+            - name: Check the package template
+              run: npm run test:create-package
+
     storybook:
         name: Storybook (interactions and accessibility)
         runs-on: ubuntu-24.04
         steps:
             - uses: actions/checkout@v5
 
-            - uses: actions/setup-node@v5
+            - uses: ./.github/actions/setup
               with:
-                  node-version-file: .nvmrc
-                  cache: npm
-
-            - name: Install dependencies
-              run: npm ci
-
-            - name: Install Chromium
-              run: npx playwright install --with-deps chromium
+                  chromium: true
 
             - name: Run the stories as tests, with axe checks
               run: npm run test:storybook
@@ -92,16 +115,9 @@ jobs:
         steps:
             - uses: actions/checkout@v5
 
-            - uses: actions/setup-node@v5
+            - uses: ./.github/actions/setup
               with:
-                  node-version-file: .nvmrc
-                  cache: npm
-
-            - name: Install dependencies
-              run: npm ci
-
-            - name: Install Chromium
-              run: npx playwright install --with-deps chromium
+                  chromium: true
 
             - name: Build the packages
               run: npm run build

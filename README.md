@@ -19,6 +19,7 @@ npm run lint
 npm run typecheck
 npm run build
 npm run api:check
+npm run verify    # every check of CI, locally
 ```
 
 See [`AGENTS.md`](AGENTS.md) for the rules of the repository.
