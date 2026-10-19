@@ -171,6 +171,23 @@ export interface CardProps {
 }
 
 // @public
+export const CHART_CATEGORICAL_COUNT = 8;
+
+// @public
+export const CHART_SEQUENTIAL_COUNT = 5;
+
+// @public
+export const chartColors: Readonly<{
+    categorical: (index: number) => string;
+    sequential: (step: 1 | 2 | 3 | 4 | 5) => string;
+    diverging: Readonly<{
+        negative: "var(--panneau-chart-diverging-negative)";
+        neutral: "var(--panneau-chart-diverging-neutral)";
+        positive: "var(--panneau-chart-diverging-positive)";
+    }>;
+}>;
+
+// @public
 export function Checkbox(input: CheckboxProps): JSX.Element;
 
 // @public (undocumented)
@@ -179,6 +196,9 @@ export interface CheckboxProps extends Omit<CheckboxProps_2, 'className' | 'styl
     checkboxClassName?: string;
     children?: ReactNode;
 }
+
+// @public
+export function checkColorDifferences(colors: readonly string[], minimum?: number): ColorDifferenceCheck[];
 
 // @public
 export function checkTheme(theme: Theme): ThemeReport;
@@ -197,7 +217,24 @@ export interface ChoiceChromeProps {
 }
 
 // @public
+export interface ColorDifferenceCheck {
+    // (undocumented)
+    difference: number;
+    // (undocumented)
+    first: string;
+    // (undocumented)
+    minimum: number;
+    // (undocumented)
+    second: string;
+    // (undocumented)
+    vision: 'typical' | ColorVisionDeficiency;
+}
+
+// @public
 export type ColorScheme = 'light' | 'dark' | 'auto';
+
+// @public
+export type ColorVisionDeficiency = 'protanopia' | 'deuteranopia' | 'tritanopia';
 
 // @public
 export function ComboBox(input: ComboBoxProps): JSX.Element;
@@ -698,7 +735,7 @@ export interface SelectOption {
 export type SelectProps = SingleSelectProps | MultipleSelectProps;
 
 // @public
-export const SEMANTIC_TOKENS: readonly ["panneau-color-bg", "panneau-color-surface", "panneau-color-surface-sunken", "panneau-color-surface-raised", "panneau-color-hover", "panneau-color-pressed", "panneau-color-backdrop", "panneau-color-text", "panneau-color-text-muted", "panneau-color-link", "panneau-color-border", "panneau-color-border-control", "panneau-color-accent", "panneau-color-accent-hover", "panneau-color-accent-text", "panneau-color-accent-subtle", "panneau-color-focus", "panneau-color-danger", "panneau-color-danger-subtle", "panneau-color-danger-border", "panneau-color-danger-solid", "panneau-color-danger-solid-hover", "panneau-color-danger-solid-text", "panneau-color-success", "panneau-color-success-subtle", "panneau-color-success-border", "panneau-color-success-solid", "panneau-color-success-solid-hover", "panneau-color-success-solid-text", "panneau-color-warning", "panneau-color-warning-subtle", "panneau-color-warning-border", "panneau-color-warning-solid", "panneau-color-warning-solid-hover", "panneau-color-warning-solid-text", "panneau-color-info", "panneau-color-info-subtle", "panneau-color-info-border", "panneau-color-info-solid", "panneau-color-info-solid-hover", "panneau-color-info-solid-text", "panneau-font-family-body", "panneau-font-family-heading", "panneau-font-family-display", "panneau-font-family-mono", "panneau-font-family", "panneau-font-numeric", "panneau-font-size-xs", "panneau-font-size-sm", "panneau-font-size-md", "panneau-font-size-lg", "panneau-font-size-xl", "panneau-font-size-control", "panneau-line-height", "panneau-line-height-tight", "panneau-font-weight-normal", "panneau-font-weight-medium", "panneau-font-weight-bold", "panneau-space-1", "panneau-space-2", "panneau-space-3", "panneau-space-4", "panneau-space-5", "panneau-space-6", "panneau-space-8", "panneau-space-10", "panneau-radius-sm", "panneau-radius-md", "panneau-radius-lg", "panneau-radius-full", "panneau-border-width", "panneau-shadow-sm", "panneau-shadow-md", "panneau-shadow-lg", "panneau-control-height", "panneau-control-height-sm", "panneau-control-padding-x", "panneau-row-padding-y", "panneau-focus-width", "panneau-duration", "panneau-z-overlay", "panneau-z-toast"];
+export const SEMANTIC_TOKENS: readonly ["panneau-color-bg", "panneau-color-surface", "panneau-color-surface-sunken", "panneau-color-surface-raised", "panneau-color-hover", "panneau-color-pressed", "panneau-color-backdrop", "panneau-color-text", "panneau-color-text-muted", "panneau-color-link", "panneau-color-border", "panneau-color-border-control", "panneau-color-accent", "panneau-color-accent-hover", "panneau-color-accent-text", "panneau-color-accent-subtle", "panneau-color-focus", "panneau-color-danger", "panneau-color-danger-subtle", "panneau-color-danger-border", "panneau-color-danger-solid", "panneau-color-danger-solid-hover", "panneau-color-danger-solid-text", "panneau-color-success", "panneau-color-success-subtle", "panneau-color-success-border", "panneau-color-success-solid", "panneau-color-success-solid-hover", "panneau-color-success-solid-text", "panneau-color-warning", "panneau-color-warning-subtle", "panneau-color-warning-border", "panneau-color-warning-solid", "panneau-color-warning-solid-hover", "panneau-color-warning-solid-text", "panneau-color-info", "panneau-color-info-subtle", "panneau-color-info-border", "panneau-color-info-solid", "panneau-color-info-solid-hover", "panneau-color-info-solid-text", "panneau-chart-categorical-1", "panneau-chart-categorical-2", "panneau-chart-categorical-3", "panneau-chart-categorical-4", "panneau-chart-categorical-5", "panneau-chart-categorical-6", "panneau-chart-categorical-7", "panneau-chart-categorical-8", "panneau-chart-sequential-1", "panneau-chart-sequential-2", "panneau-chart-sequential-3", "panneau-chart-sequential-4", "panneau-chart-sequential-5", "panneau-chart-diverging-negative", "panneau-chart-diverging-neutral", "panneau-chart-diverging-positive", "panneau-font-family-body", "panneau-font-family-heading", "panneau-font-family-display", "panneau-font-family-mono", "panneau-font-family", "panneau-font-numeric", "panneau-font-size-xs", "panneau-font-size-sm", "panneau-font-size-md", "panneau-font-size-lg", "panneau-font-size-xl", "panneau-font-size-control", "panneau-line-height", "panneau-line-height-tight", "panneau-font-weight-normal", "panneau-font-weight-medium", "panneau-font-weight-bold", "panneau-space-1", "panneau-space-2", "panneau-space-3", "panneau-space-4", "panneau-space-5", "panneau-space-6", "panneau-space-8", "panneau-space-10", "panneau-radius-sm", "panneau-radius-md", "panneau-radius-lg", "panneau-radius-full", "panneau-border-width", "panneau-shadow-sm", "panneau-shadow-md", "panneau-shadow-lg", "panneau-control-height", "panneau-control-height-sm", "panneau-control-padding-x", "panneau-row-padding-y", "panneau-focus-width", "panneau-duration", "panneau-z-overlay", "panneau-z-toast"];
 
 // @public
 export type SemanticTokenName = (typeof SEMANTIC_TOKENS)[number];
@@ -901,6 +938,9 @@ export type ThemeFontStylesheet = {
 // @public (undocumented)
 export interface ThemeReport {
     checks: ThemeContrastCheck[];
+    colorDifferences: (ColorDifferenceCheck & {
+        scheme: 'light' | 'dark';
+    })[];
     failures: ThemeContrastCheck[];
     unchecked: ThemeContrastCheck[];
 }

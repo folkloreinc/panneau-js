@@ -58,6 +58,28 @@
     --panneau-color-info-solid-hover: #1e40af;
     --panneau-color-info-solid-text: #ffffff;
 
+    /*
+     * Data visualization: 8 categorical colors in a fixed order, a sequential ramp from low to high,
+     * and a diverging pair around a neutral midpoint. Each categorical color reaches 3:1 against
+     * the surface, and stays distinct under the common color vision deficiencies (chartColors.test).
+     */
+    --panneau-chart-categorical-1: #1c6cbb;
+    --panneau-chart-categorical-2: #c47713;
+    --panneau-chart-categorical-3: #d12f74;
+    --panneau-chart-categorical-4: #515922;
+    --panneau-chart-categorical-5: #2b9c52;
+    --panneau-chart-categorical-6: #a977b3;
+    --panneau-chart-categorical-7: #8f2786;
+    --panneau-chart-categorical-8: #9176e8;
+    --panneau-chart-sequential-1: #dbe8f6;
+    --panneau-chart-sequential-2: #a3c6e9;
+    --panneau-chart-sequential-3: #5f9bd6;
+    --panneau-chart-sequential-4: #2c6cb0;
+    --panneau-chart-sequential-5: #1a4475;
+    --panneau-chart-diverging-negative: #b4501a;
+    --panneau-chart-diverging-neutral: #e4e4e7;
+    --panneau-chart-diverging-positive: #1c6cbb;
+
     /* Typography: font roles. Headings and display text follow the body unless a theme sets them. */
     --panneau-font-family-body:
         system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -120,6 +142,22 @@
  * around it may be dark. Scopes without one inherit the colors of their parent.
  */
 :where(.scheme[data-color-scheme='light'], .scheme[data-color-scheme='auto']) {
+    --panneau-chart-categorical-1: #1c6cbb;
+    --panneau-chart-categorical-2: #c47713;
+    --panneau-chart-categorical-3: #d12f74;
+    --panneau-chart-categorical-4: #515922;
+    --panneau-chart-categorical-5: #2b9c52;
+    --panneau-chart-categorical-6: #a977b3;
+    --panneau-chart-categorical-7: #8f2786;
+    --panneau-chart-categorical-8: #9176e8;
+    --panneau-chart-sequential-1: #dbe8f6;
+    --panneau-chart-sequential-2: #a3c6e9;
+    --panneau-chart-sequential-3: #5f9bd6;
+    --panneau-chart-sequential-4: #2c6cb0;
+    --panneau-chart-sequential-5: #1a4475;
+    --panneau-chart-diverging-negative: #b4501a;
+    --panneau-chart-diverging-neutral: #e4e4e7;
+    --panneau-chart-diverging-positive: #1c6cbb;
     --panneau-color-bg: #ffffff;
     --panneau-color-surface: #ffffff;
     --panneau-color-surface-sunken: #f4f4f5;
@@ -160,6 +198,22 @@
 }
 
 :where(.root[data-color-scheme='dark'], .scheme[data-color-scheme='dark']) {
+    --panneau-chart-categorical-1: #61a9e3;
+    --panneau-chart-categorical-2: #e5c040;
+    --panneau-chart-categorical-3: #d9456a;
+    --panneau-chart-categorical-4: #a1da9e;
+    --panneau-chart-categorical-5: #bb6528;
+    --panneau-chart-categorical-6: #a06a9b;
+    --panneau-chart-categorical-7: #8c71e2;
+    --panneau-chart-categorical-8: #56dfe1;
+    --panneau-chart-sequential-1: #1d3550;
+    --panneau-chart-sequential-2: #285684;
+    --panneau-chart-sequential-3: #3d7fc2;
+    --panneau-chart-sequential-4: #74abe0;
+    --panneau-chart-sequential-5: #b8d6f2;
+    --panneau-chart-diverging-negative: #f0884a;
+    --panneau-chart-diverging-neutral: #3f3f46;
+    --panneau-chart-diverging-positive: #61a9e3;
     --panneau-color-bg: #09090b;
     --panneau-color-surface: #18181b;
     --panneau-color-surface-sunken: #111113;
@@ -201,6 +255,22 @@
 
 @media (prefers-color-scheme: dark) {
     :where(.root[data-color-scheme='auto'], .scheme[data-color-scheme='auto']) {
+        --panneau-chart-categorical-1: #61a9e3;
+        --panneau-chart-categorical-2: #e5c040;
+        --panneau-chart-categorical-3: #d9456a;
+        --panneau-chart-categorical-4: #a1da9e;
+        --panneau-chart-categorical-5: #bb6528;
+        --panneau-chart-categorical-6: #a06a9b;
+        --panneau-chart-categorical-7: #8c71e2;
+        --panneau-chart-categorical-8: #56dfe1;
+        --panneau-chart-sequential-1: #1d3550;
+        --panneau-chart-sequential-2: #285684;
+        --panneau-chart-sequential-3: #3d7fc2;
+        --panneau-chart-sequential-4: #74abe0;
+        --panneau-chart-sequential-5: #b8d6f2;
+        --panneau-chart-diverging-negative: #f0884a;
+        --panneau-chart-diverging-neutral: #3f3f46;
+        --panneau-chart-diverging-positive: #61a9e3;
         --panneau-color-bg: #09090b;
         --panneau-color-surface: #18181b;
         --panneau-color-surface-sunken: #111113;
