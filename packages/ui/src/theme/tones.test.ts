@@ -16,6 +16,9 @@ describe('deriveTone', () => {
         );
         expect(ratio(light.text, '#ffffff')).toBeGreaterThanOrEqual(4.5);
         expect(ratio(dark.text, '#18181b')).toBeGreaterThanOrEqual(4.5);
+        // On the tinted subtle backgrounds too (12% and 22% of the color, as axe measured them).
+        expect(ratio(light.text, '#fdebe1')).toBeGreaterThanOrEqual(4.5);
+        expect(ratio(dark.text, '#482716')).toBeGreaterThanOrEqual(4.5);
         expect(light.subtle).toBe('color-mix(in srgb, #f25c05 12%, var(--panneau-color-surface))');
     });
 

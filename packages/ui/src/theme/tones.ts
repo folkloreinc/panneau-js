@@ -85,6 +85,9 @@ export function toneClassName(tone: string): string {
 /** Surfaces text must be readable on, in each scheme of the default theme. */
 const SURFACES = { light: WHITE, dark: { r: 24, g: 24, b: 27 } };
 
+/** How much of the tone's color the subtle background mixes into the surface, per scheme. */
+export const SUBTLE_AMOUNTS = { light: 0.12, dark: 0.22 };
+
 /** Text must reach this contrast ratio (WCAG AA for normal text). */
 export const MIN_CONTRAST_RATIO = 4.5;
 
@@ -95,7 +98,7 @@ export const MIN_CONTRAST_RATIO = 4.5;
  * - The solid background is the color, with white or black text, whichever reads better, and a
  *   hover 15% darker (or lighter, when the text is black and darker would hurt it).
  * - The text color is the color, darkened (light scheme) or lightened (dark scheme) until it
- *   reaches 4.5:1 against the surface.
+ *   reaches 4.5:1 against the subtle background, which is tinted, and so against the surface too.
  * - The subtle background and the border are mixed with the surface in CSS, so they follow the
  *   surface of any theme.
  *
@@ -109,14 +112,14 @@ export function deriveTone(color: string): { light: ToneValues; dark: ToneValues
     if (parsed === null) {
         const values: ToneValues = {
             text: color,
-            subtle: subtle(12),
+            subtle: subtle(SUBTLE_AMOUNTS.light * 100),
             border: subtle(45),
             outline: color,
             solid: color,
             solidHover: `color-mix(in srgb, ${color}, #000 15%)`,
             solidText: '#fff',
         };
-        return { light: values, dark: { ...values, subtle: subtle(22) } };
+        return { light: values, dark: { ...values, subtle: subtle(SUBTLE_AMOUNTS.dark * 100) } };
     }
     const solidText = readableTextColor(parsed);
     const darker = mixColors(parsed, { r: 0, g: 0, b: 0 }, 0.15);
@@ -130,21 +133,30 @@ export function deriveTone(color: string): { light: ToneValues; dark: ToneValues
         solidHover: toHex(hover),
         solidText: toHex(solidText),
     };
-    const light = toHex(ensureContrast(parsed, SURFACES.light, MIN_CONTRAST_RATIO));
-    const dark = toHex(ensureContrast(parsed, SURFACES.dark, MIN_CONTRAST_RATIO));
+    // Readable on the subtle background, which is closer to the text color than the surface.
+    const readable = (scheme: 'light' | 'dark') =>
+        toHex(
+            ensureContrast(
+                parsed,
+                mixColors(SURFACES[scheme], parsed, SUBTLE_AMOUNTS[scheme]),
+                MIN_CONTRAST_RATIO,
+            ),
+        );
+    const light = readable('light');
+    const dark = readable('dark');
     return {
         light: {
             ...shared,
             text: light,
             outline: light,
-            subtle: subtle(12),
+            subtle: subtle(SUBTLE_AMOUNTS.light * 100),
             border: subtle(45),
         },
         dark: {
             ...shared,
             text: dark,
             outline: dark,
-            subtle: subtle(22),
+            subtle: subtle(SUBTLE_AMOUNTS.dark * 100),
             border: subtle(55),
         },
     };

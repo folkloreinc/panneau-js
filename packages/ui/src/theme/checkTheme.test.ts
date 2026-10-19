@@ -20,7 +20,7 @@ describe('checkTheme', () => {
 
     it('passes the tones it derives', () => {
         const report = checkTheme({ tokens: {}, tones: { signal: '#f25c05', calm: '#38bdf8' } });
-        expect(report.checks).toHaveLength(12);
+        expect(report.checks).toHaveLength(16);
         expect(report.failures).toEqual([]);
     });
 
@@ -41,8 +41,10 @@ describe('checkTheme', () => {
         });
         expect(report.failures.map((check) => `${check.scheme} ${check.name}`)).toEqual([
             'light tone pale: text on surface',
+            'light tone pale: text on subtle',
             'light tone pale: solid text on solid',
             'light tone pale: solid text on hover',
+            'dark tone pale: text on subtle',
             'dark tone pale: solid text on solid',
             'dark tone pale: solid text on hover',
         ]);

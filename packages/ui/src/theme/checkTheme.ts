@@ -1,6 +1,6 @@
-import { type Rgb, WHITE, contrastRatio, parseColor } from './color';
+import { type Rgb, WHITE, contrastRatio, mixColors, parseColor } from './color';
 import type { Theme } from './theme';
-import { MIN_CONTRAST_RATIO, resolveTone } from './tones';
+import { MIN_CONTRAST_RATIO, SUBTLE_AMOUNTS, resolveTone } from './tones';
 
 /** A pair of colors that a theme must keep readable. */
 export interface ThemeContrastCheck {
@@ -105,6 +105,21 @@ export function checkTheme(theme: Theme): ThemeReport {
                 surface ?? (scheme === 'light' ? '#ffffff' : '#18181b'),
                 MIN_CONTRAST_RATIO,
                 surfaceColor,
+            );
+            // The subtle background of a tone is often mixed with the surface in CSS: compute it
+            // against the surface of the scheme when it can't be read directly.
+            const color = typeof input === 'string' ? parseColor(input) : null;
+            const subtleColor =
+                parseColor(values.subtle) ??
+                (color !== null && surfaceColor !== null
+                    ? mixColors(surfaceColor, color, SUBTLE_AMOUNTS[scheme])
+                    : null);
+            add(
+                `tone ${tone}: text on subtle`,
+                values.text,
+                values.subtle,
+                MIN_CONTRAST_RATIO,
+                subtleColor,
             );
             add(
                 `tone ${tone}: solid text on solid`,
