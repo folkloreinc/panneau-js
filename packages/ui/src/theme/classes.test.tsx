@@ -23,6 +23,7 @@ import { NumberInput } from '../number-input/NumberInput';
 import { Prose } from '../prose/Prose';
 import { RadioGroup } from '../radio-group/RadioGroup';
 import { PanneauRoot } from '../root/PanneauRoot';
+import { ThemeScope } from '../root/ThemeScope';
 import { Select } from '../select/Select';
 import { Spinner } from '../spinner/Spinner';
 import { Stack } from '../stack/Stack';
@@ -73,6 +74,7 @@ const cases: [string, ReactNode][] = [
             <TabPanel id="one">Panel</TabPanel>
         </Tabs>,
     ],
+    ['theme-scope', <ThemeScope key="theme-scope" />],
     ['text', <Text key="text">Body</Text>],
     ['text-area', <TextArea key="text-area" label="Notes" />],
     ['text-input', <TextInput key="text-input" label="Title" />],

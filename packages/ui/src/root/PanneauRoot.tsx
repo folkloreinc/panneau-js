@@ -45,8 +45,48 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
 /** `undefined` outside of a root, `null` while the root's container isn't mounted yet. */
 const PortalContext = createContext<Element | null | undefined>(undefined);
 
+/** The color scheme and density in effect, which a `ThemeScope` inherits when it doesn't set them. */
+export const ScopeContext = createContext<{ colorScheme: ColorScheme; density: Density }>({
+    colorScheme: 'light',
+    density: 'auto',
+});
+
+/** Gives overlays a container: that of a root, or of a scope. */
+export const PortalProvider = PortalContext.Provider;
+
 /**
- * The element overlays render into: the closest `PanneauRoot`'s, or `undefined` for the body
+ * The `<style>` and `<link>` elements of a theme: its CSS, scoped to `data-panneau-theme`, and its
+ * fonts. React hoists them to the head and adds each once, however many roots or scopes use it.
+ * Returns the scope of the theme too, for `data-panneau-theme`.
+ */
+export function useThemeStyles(theme: Theme | null): { scope?: string; styles: ReactNode } {
+    const css = theme !== null ? getThemeCss(theme, '§') : '';
+    const scope = css !== '' ? hashString(css) : undefined;
+    const fontCss = getFontFaceCss(theme?.fonts);
+    return {
+        scope,
+        styles: (
+            <>
+                {scope !== undefined ? (
+                    <style href={`panneau-theme-${scope}`} precedence="panneau">
+                        {css.replaceAll('§', scope)}
+                    </style>
+                ) : null}
+                {fontCss !== '' ? (
+                    <style href={`panneau-fonts-${hashString(fontCss)}`} precedence="panneau">
+                        {fontCss}
+                    </style>
+                ) : null}
+                {getFontStylesheets(theme?.fonts).map((href) => (
+                    <link key={href} rel="stylesheet" href={href} precedence="panneau" />
+                ))}
+            </>
+        ),
+    };
+}
+
+/**
+ * The element overlays render into: the closest `PanneauRoot`'s or `ThemeScope`'s, or `undefined` for the body
  * without a root. It is `null` during the first render of a root: overlays wait for it, since
  * React Aria hides everything outside of a modal from assistive technologies when it opens.
  */
@@ -97,9 +137,7 @@ export function PanneauRoot({
 }: PanneauRootProps) {
     const intl = use(IntlContext) as IntlShape | null | undefined;
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
-    const css = theme !== null ? getThemeCss(theme, '§') : '';
-    const scope = css !== '' ? hashString(css) : undefined;
-    const fontCss = getFontFaceCss(theme?.fonts);
+    const { scope, styles: themeStyles } = useThemeStyles(theme);
     const root = (
         <div
             {...props}
@@ -108,32 +146,22 @@ export function PanneauRoot({
             data-density={density}
             data-panneau-theme={scope}
         >
-            {scope !== undefined ? (
-                <style href={`panneau-theme-${scope}`} precedence="panneau">
-                    {css.replaceAll('§', scope)}
-                </style>
-            ) : null}
-            {fontCss !== '' ? (
-                <style href={`panneau-fonts-${hashString(fontCss)}`} precedence="panneau">
-                    {fontCss}
-                </style>
-            ) : null}
-            {getFontStylesheets(theme?.fonts).map((href) => (
-                <link key={href} rel="stylesheet" href={href} precedence="panneau" />
-            ))}
+            {themeStyles}
             <I18nProvider locale={locale ?? intl?.locale}>
-                <PortalContext value={container}>
-                    <ToastProvider
-                        regionClassName={styles.root}
-                        regionProps={{
-                            'data-color-scheme': colorScheme,
-                            'data-density': density,
-                            'data-panneau-theme': scope,
-                        }}
-                    >
-                        {children}
-                    </ToastProvider>
-                </PortalContext>
+                <ScopeContext value={{ colorScheme, density }}>
+                    <PortalContext value={container}>
+                        <ToastProvider
+                            regionClassName={styles.root}
+                            regionProps={{
+                                'data-color-scheme': colorScheme,
+                                'data-density': density,
+                                'data-panneau-theme': scope,
+                            }}
+                        >
+                            {children}
+                        </ToastProvider>
+                    </PortalContext>
+                </ScopeContext>
                 <div ref={setContainer} className={styles.portal} />
             </I18nProvider>
         </div>

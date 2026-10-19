@@ -31,6 +31,23 @@ Every Panneau interface renders inside a `PanneauRoot`. It scopes the base style
 
 The default theme and the icon set are explained in [decision 0020](../../docs/decisions/0020-default-theme-and-icons.md).
 
+### Scopes
+
+`ThemeScope` applies a theme, a color scheme or a density to part of the page, like `data-bs-theme` on any element, without a new root:
+
+```tsx
+<PanneauRoot theme={brand}>
+    <ThemeScope as="aside" colorScheme="dark">
+        <Navigation />
+    </ThemeScope>
+    <ThemeScope density="compact">
+        <ListView />
+    </ThemeScope>
+</PanneauRoot>
+```
+
+What a scope doesn't set comes from around it: a scope with only a density keeps the colors of the root's theme. Overlays opened inside a scope (dialogs, popovers, menus) render in its own container and keep its tokens. Custom color schemes, beyond light and dark, are themes applied to a scope.
+
 ### Component tokens
 
 Every component reads its own tokens, `--panneau-<component>-<token>`, which default to semantic tokens. Set one to restyle a single component, in a theme, on the root, or on any element around the components:
