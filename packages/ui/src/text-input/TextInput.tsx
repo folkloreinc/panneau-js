@@ -60,7 +60,7 @@ export function TextInput({
             isReadOnly={isReadOnly}
             isInvalid={invalid}
             validationBehavior="aria"
-            className={cx(styles.field, className)}
+            className={cx('panneau-text-input', styles.field, className)}
         >
             <FieldLabel isRequired={isRequired} className={labelClassName}>
                 {label}

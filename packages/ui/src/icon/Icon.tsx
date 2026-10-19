@@ -43,7 +43,7 @@ export function Icon({ icon: Component, size = 'md', label, className }: IconPro
             size={pixels}
             strokeWidth={2}
             absoluteStrokeWidth={pixels < 16}
-            className={cx(styles.icon, className)}
+            className={cx('panneau-icon', styles.icon, className)}
             aria-hidden={label === undefined ? 'true' : undefined}
             aria-label={label}
             role={label !== undefined ? 'img' : undefined}

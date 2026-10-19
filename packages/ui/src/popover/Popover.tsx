@@ -40,7 +40,7 @@ export function Popover({
         <AriaPopover
             {...props}
             offset={offset}
-            className={cx(styles.popover, className)}
+            className={cx('panneau-popover', styles.popover, className)}
             UNSTABLE_portalContainer={container}
         >
             <Dialog aria-label={ariaLabel} className={cx(styles.dialog, dialogClassName)}>
@@ -65,7 +65,7 @@ export function PopoverSurface({
         <AriaPopover
             {...props}
             offset={offset}
-            className={cx(styles.popover, className)}
+            className={cx('panneau-popover', styles.popover, className)}
             UNSTABLE_portalContainer={container}
         >
             {children}

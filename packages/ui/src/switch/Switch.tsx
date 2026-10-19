@@ -25,6 +25,7 @@ export function Switch({
 }: SwitchProps) {
     return (
         <ChoiceChrome
+            component="switch"
             description={description}
             errors={errors}
             className={className}

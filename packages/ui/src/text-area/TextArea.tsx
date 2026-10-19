@@ -45,7 +45,7 @@ export function TextArea({
             isRequired={isRequired}
             isInvalid={errors.length > 0}
             validationBehavior="aria"
-            className={cx(fieldStyles.field, className)}
+            className={cx('panneau-text-area', fieldStyles.field, className)}
         >
             <FieldLabel isRequired={isRequired} className={labelClassName}>
                 {label}

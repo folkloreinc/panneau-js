@@ -7,7 +7,7 @@
     justify-content: center;
     min-height: 100dvh;
     padding: var(--panneau-space-4);
-    background-color: var(--panneau-color-backdrop);
+    background-color: var(--panneau-dialog-backdrop, var(--panneau-color-backdrop));
 }
 
 .overlay[data-entering] {
@@ -21,17 +21,17 @@
 .modal {
     display: flex;
     width: 100%;
-    max-width: 32rem;
+    max-width: var(--panneau-dialog-width, 32rem);
     max-height: calc(100dvh - 2 * var(--panneau-space-4));
     outline: none;
 }
 
 .sm {
-    max-width: 24rem;
+    max-width: var(--panneau-dialog-width-sm, 24rem);
 }
 
 .lg {
-    max-width: 48rem;
+    max-width: var(--panneau-dialog-width-lg, 48rem);
 }
 
 .modal[data-entering] {
@@ -44,9 +44,9 @@
     width: 100%;
     max-height: inherit;
     color: var(--panneau-color-text);
-    background-color: var(--panneau-color-surface-raised);
-    border-radius: var(--panneau-radius-lg);
-    box-shadow: var(--panneau-shadow-lg);
+    background-color: var(--panneau-dialog-bg, var(--panneau-color-surface-raised));
+    border-radius: var(--panneau-dialog-radius, var(--panneau-radius-lg));
+    box-shadow: var(--panneau-dialog-shadow, var(--panneau-shadow-lg));
     outline: none;
 }
 
@@ -54,15 +54,16 @@
     display: flex;
     align-items: flex-start;
     gap: var(--panneau-space-3);
-    padding: var(--panneau-space-4) var(--panneau-space-4) 0 var(--panneau-space-5);
+    padding: var(--panneau-space-4) var(--panneau-space-4) 0
+        var(--panneau-dialog-padding-x, var(--panneau-space-5));
 }
 
 .title {
     flex: 1 1 auto;
     min-width: 0;
     padding-top: var(--panneau-space-1);
-    font-size: var(--panneau-font-size-lg);
-    font-weight: var(--panneau-font-weight-bold);
+    font-size: var(--panneau-dialog-title-font-size, var(--panneau-font-size-lg));
+    font-weight: var(--panneau-dialog-title-font-weight, var(--panneau-font-weight-bold));
     line-height: var(--panneau-line-height-tight);
     overflow-wrap: anywhere;
 }
@@ -70,7 +71,8 @@
 .body {
     flex: 1 1 auto;
     min-height: 0;
-    padding: var(--panneau-space-3) var(--panneau-space-5) var(--panneau-space-4);
+    padding: var(--panneau-space-3) var(--panneau-dialog-padding-x, var(--panneau-space-5))
+        var(--panneau-space-4);
     overflow-y: auto;
 }
 
@@ -79,7 +81,8 @@
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: var(--panneau-space-2);
-    padding: var(--panneau-space-3) var(--panneau-space-5) var(--panneau-space-4);
+    padding: var(--panneau-space-3) var(--panneau-dialog-padding-x, var(--panneau-space-5))
+        var(--panneau-space-4);
     border-top: var(--panneau-border-width) solid var(--panneau-color-border);
 }
 

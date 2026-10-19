@@ -19,7 +19,7 @@ export interface BadgeProps {
 /** A short status or a count. */
 export function Badge({ tone = 'neutral', children, label, className }: BadgeProps) {
     return (
-        <span className={cx(styles.badge, styles[tone], className)}>
+        <span className={cx('panneau-badge', styles.badge, styles[tone], className)}>
             {label !== undefined ? (
                 <>
                     <span aria-hidden="true">{children}</span>

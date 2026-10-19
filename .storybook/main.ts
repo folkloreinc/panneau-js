@@ -3,7 +3,7 @@ import type { StorybookConfig } from '@storybook/react-vite';
 import { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defaultClientConditions } from 'vite';
 
-import { SOURCE_CONDITION } from '../config/vite.package.ts';
+import { SOURCE_CONDITION, cssModules } from '../config/vite.package.ts';
 
 /**
  * Storybook for the v5 packages: the stories next to each component, built from the sources (the
@@ -19,6 +19,7 @@ const config: StorybookConfig = {
         return mergeConfig(viteConfig, {
             plugins: [babel({ presets: [reactCompilerPreset()] })],
             resolve: { conditions: [SOURCE_CONDITION, ...defaultClientConditions] },
+            css: { modules: cssModules },
             // Optimized up front: discovering them during a test run reloads the page, and the
             // tests then fail with two copies of React.
             optimizeDeps: {

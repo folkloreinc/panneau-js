@@ -1,11 +1,12 @@
 .tooltip {
     max-width: min(20rem, calc(100vw - 2 * var(--panneau-space-4)));
-    padding: var(--panneau-space-1) var(--panneau-space-2);
-    font-size: var(--panneau-font-size-sm);
+    padding: var(--panneau-tooltip-padding-y, var(--panneau-space-1))
+        var(--panneau-tooltip-padding-x, var(--panneau-space-2));
+    font-size: var(--panneau-tooltip-font-size, var(--panneau-font-size-sm));
     line-height: var(--panneau-line-height-tight);
-    color: var(--panneau-color-bg);
-    background-color: var(--panneau-color-text);
-    border-radius: var(--panneau-radius-sm);
+    color: var(--panneau-tooltip-color, var(--panneau-color-bg));
+    background-color: var(--panneau-tooltip-bg, var(--panneau-color-text));
+    border-radius: var(--panneau-tooltip-radius, var(--panneau-radius-sm));
     box-shadow: var(--panneau-shadow-md);
     z-index: var(--panneau-z-overlay);
 }

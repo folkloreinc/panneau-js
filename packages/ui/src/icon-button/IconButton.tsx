@@ -36,7 +36,12 @@ export function IconButton({
             size={size}
             icon={icon}
             aria-label={label}
-            className={cx(styles.iconButton, size === 'sm' && styles.sm, className)}
+            className={cx(
+                'panneau-icon-button',
+                styles.iconButton,
+                size === 'sm' && styles.sm,
+                className,
+            )}
         />
     );
     if (!showTooltip) {

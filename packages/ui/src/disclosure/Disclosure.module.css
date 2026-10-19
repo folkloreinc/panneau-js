@@ -11,8 +11,8 @@
     width: 100%;
     min-height: var(--panneau-control-height);
     padding: 0;
-    font-size: var(--panneau-font-size-lg);
-    font-weight: var(--panneau-font-weight-bold);
+    font-size: var(--panneau-disclosure-title-font-size, var(--panneau-font-size-lg));
+    font-weight: var(--panneau-disclosure-title-font-weight, var(--panneau-font-weight-bold));
     text-align: start;
     color: var(--panneau-color-text);
     cursor: pointer;
@@ -45,7 +45,7 @@
 }
 
 .panelContent {
-    padding-top: var(--panneau-space-3);
+    padding-top: var(--panneau-disclosure-gap, var(--panneau-space-3));
 }
 
 .heading {

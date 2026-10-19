@@ -39,7 +39,7 @@ export function Card({
     const Heading = `h${headingLevel}` as const;
     return (
         <Element
-            className={cx(styles.card, className)}
+            className={cx('panneau-card', styles.card, className)}
             aria-labelledby={hasTitle && Element !== 'div' ? titleId : undefined}
         >
             {hasTitle || (actions !== undefined && actions !== null) ? (

@@ -41,7 +41,7 @@ export function Fieldset({
     const describedBy = [descriptionId, errorsId].filter(Boolean).join(' ');
     return (
         <fieldset
-            className={cx(styles.fieldset, className)}
+            className={cx('panneau-fieldset', styles.fieldset, className)}
             aria-describedby={describedBy !== '' ? describedBy : undefined}
             aria-invalid={errors.length > 0 ? true : undefined}
             disabled={isDisabled}

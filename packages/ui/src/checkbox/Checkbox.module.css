@@ -26,13 +26,14 @@
     flex: 0 0 auto;
     align-items: center;
     justify-content: center;
-    width: 1.125rem;
-    height: 1.125rem;
+    width: var(--panneau-checkbox-size, 1.125rem);
+    height: var(--panneau-checkbox-size, 1.125rem);
     margin-top: 0.125rem;
-    color: var(--panneau-color-accent-text);
-    background-color: var(--panneau-color-surface);
-    border: var(--panneau-border-width) solid var(--panneau-color-border-control);
-    border-radius: var(--panneau-radius-sm);
+    color: var(--panneau-checkbox-checked-color, var(--panneau-color-accent-text));
+    background-color: var(--panneau-checkbox-bg, var(--panneau-color-surface));
+    border: var(--panneau-border-width) solid
+        var(--panneau-checkbox-border-color, var(--panneau-color-border-control));
+    border-radius: var(--panneau-checkbox-radius, var(--panneau-radius-sm));
     transition:
         background-color var(--panneau-duration),
         border-color var(--panneau-duration);
@@ -44,8 +45,8 @@
 
 .checkbox[data-selected] .box,
 .checkbox[data-indeterminate] .box {
-    background-color: var(--panneau-color-accent);
-    border-color: var(--panneau-color-accent);
+    background-color: var(--panneau-checkbox-checked-bg, var(--panneau-color-accent));
+    border-color: var(--panneau-checkbox-checked-bg, var(--panneau-color-accent));
 }
 
 .checkbox[data-invalid] .box {

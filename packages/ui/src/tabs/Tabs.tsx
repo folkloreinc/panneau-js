@@ -19,7 +19,7 @@ export interface TabsProps extends Omit<AriaTabsProps, 'className' | 'style'> {
 
 /** Tabs: a `TabList` of `Tab`s, then a `TabPanel` per tab, matched by `id`. */
 export function Tabs({ className, ...props }: TabsProps) {
-    return <AriaTabs {...props} className={cx(styles.tabs, className)} />;
+    return <AriaTabs {...props} className={cx('panneau-tabs', styles.tabs, className)} />;
 }
 
 export interface TabListProps<T extends object> extends Omit<
@@ -31,7 +31,7 @@ export interface TabListProps<T extends object> extends Omit<
 
 /** The row of tabs. It scrolls sideways when the tabs don't fit, on phones. */
 export function TabList<T extends object>({ className, ...props }: TabListProps<T>) {
-    return <AriaTabList {...props} className={cx(styles.list, className)} />;
+    return <AriaTabList {...props} className={cx('panneau-tab-list', styles.list, className)} />;
 }
 
 export interface TabProps extends Omit<AriaTabProps, 'className' | 'style' | 'children'> {
@@ -41,7 +41,7 @@ export interface TabProps extends Omit<AriaTabProps, 'className' | 'style' | 'ch
 
 /** A tab. Put a `Badge` in it for a count, such as the errors of the panel. */
 export function Tab({ className, ...props }: TabProps) {
-    return <AriaTab {...props} className={cx(styles.tab, className)} />;
+    return <AriaTab {...props} className={cx('panneau-tab', styles.tab, className)} />;
 }
 
 export interface TabPanelProps extends Omit<AriaTabPanelProps, 'className' | 'style'> {
@@ -53,5 +53,5 @@ export interface TabPanelProps extends Omit<AriaTabPanelProps, 'className' | 'st
  * tab is selected, which keeps the state of its fields.
  */
 export function TabPanel({ className, ...props }: TabPanelProps) {
-    return <AriaTabPanel {...props} className={cx(styles.panel, className)} />;
+    return <AriaTabPanel {...props} className={cx('panneau-tab-panel', styles.panel, className)} />;
 }

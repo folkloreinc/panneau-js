@@ -144,6 +144,7 @@ export interface CheckboxProps extends Omit<CheckboxProps_2, 'className' | 'styl
 export interface ChoiceChromeProps {
     // (undocumented)
     className?: string;
+    component?: string;
     description?: ReactNode;
     // (undocumented)
     descriptionClassName?: string;
@@ -189,6 +190,40 @@ export interface ComboBoxProps extends Omit<ComboBoxProps_2<ComboBoxItem>, 'clas
 }
 
 // @public
+export type ComponentTokenName = {
+    [Component in keyof typeof componentTokens]: keyof (typeof componentTokens)[Component];
+}[keyof typeof componentTokens];
+
+// @public
+export interface ComponentTokens<Component extends string = string, Name extends string = string> {
+    readonly component: Component;
+    readonly tokens: Readonly<Record<Name, string>>;
+}
+
+// @public
+export const componentTokens: Readonly<{
+    alert: Readonly<Record<"panneau-alert-radius" | "panneau-alert-gap" | "panneau-alert-padding-y" | "panneau-alert-padding-x" | "panneau-alert-border-width" | "panneau-alert-title-font-weight", string>>;
+    badge: Readonly<Record<"panneau-badge-height" | "panneau-badge-radius" | "panneau-badge-gap" | "panneau-badge-padding-x" | "panneau-badge-border-width" | "panneau-badge-font-size" | "panneau-badge-font-weight", string>>;
+    button: Readonly<Record<"panneau-button-radius" | "panneau-button-gap" | "panneau-button-padding-x" | "panneau-button-border-width" | "panneau-button-font-size" | "panneau-button-font-weight" | "panneau-button-padding-x-sm" | "panneau-button-font-size-sm", string>>;
+    calendar: Readonly<Record<"panneau-calendar-cell-size" | "panneau-calendar-cell-radius" | "panneau-calendar-selected-color" | "panneau-calendar-selected-bg", string>>;
+    card: Readonly<Record<"panneau-card-radius" | "panneau-card-gap" | "panneau-card-padding-y" | "panneau-card-padding-x" | "panneau-card-border-width" | "panneau-card-title-font-weight" | "panneau-card-bg" | "panneau-card-border-color" | "panneau-card-shadow" | "panneau-card-header-padding-y" | "panneau-card-title-font-size", string>>;
+    checkbox: Readonly<Record<"panneau-checkbox-size" | "panneau-checkbox-radius" | "panneau-checkbox-bg" | "panneau-checkbox-border-color" | "panneau-checkbox-checked-color" | "panneau-checkbox-checked-bg", string>>;
+    dialog: Readonly<Record<"panneau-dialog-width" | "panneau-dialog-radius" | "panneau-dialog-padding-x" | "panneau-dialog-title-font-weight" | "panneau-dialog-bg" | "panneau-dialog-shadow" | "panneau-dialog-title-font-size" | "panneau-dialog-backdrop" | "panneau-dialog-width-sm" | "panneau-dialog-width-lg", string>>;
+    disclosure: Readonly<Record<"panneau-disclosure-gap" | "panneau-disclosure-title-font-weight" | "panneau-disclosure-title-font-size", string>>;
+    field: Readonly<Record<"panneau-field-gap" | "panneau-field-label-font-size" | "panneau-field-label-font-weight", string>>;
+    input: Readonly<Record<"panneau-input-radius" | "panneau-input-padding-x" | "panneau-input-border-width" | "panneau-input-bg" | "panneau-input-border-color" | "panneau-input-border-color-hover", string>>;
+    'list-box': Readonly<Record<"panneau-list-box-padding" | "panneau-list-box-item-padding-y" | "panneau-list-box-item-padding-x" | "panneau-list-box-item-radius" | "panneau-list-box-item-bg-hover", string>>;
+    'number-input': Readonly<Record<"panneau-number-input-stepper-width", string>>;
+    popover: Readonly<Record<"panneau-popover-radius" | "panneau-popover-bg" | "panneau-popover-border-color" | "panneau-popover-shadow" | "panneau-popover-padding", string>>;
+    radio: Readonly<Record<"panneau-radio-size" | "panneau-radio-bg" | "panneau-radio-border-color" | "panneau-radio-checked-color" | "panneau-radio-checked-border-width", string>>;
+    spinner: Readonly<Record<"panneau-spinner-border-width", string>>;
+    switch: Readonly<Record<"panneau-switch-height" | "panneau-switch-width" | "panneau-switch-radius" | "panneau-switch-checked-bg" | "panneau-switch-track-bg" | "panneau-switch-thumb-size" | "panneau-switch-thumb-bg" | "panneau-switch-checked-thumb-bg", string>>;
+    tabs: Readonly<Record<"panneau-tabs-gap" | "panneau-tabs-border-color" | "panneau-tabs-tab-padding-x" | "panneau-tabs-tab-font-weight" | "panneau-tabs-tab-color" | "panneau-tabs-indicator-height" | "panneau-tabs-tab-color-selected" | "panneau-tabs-indicator-color", string>>;
+    toast: Readonly<Record<"panneau-toast-width" | "panneau-toast-radius" | "panneau-toast-bg" | "panneau-toast-border-color" | "panneau-toast-shadow" | "panneau-toast-tone-width", string>>;
+    tooltip: Readonly<Record<"panneau-tooltip-color" | "panneau-tooltip-radius" | "panneau-tooltip-padding-y" | "panneau-tooltip-padding-x" | "panneau-tooltip-font-size" | "panneau-tooltip-bg", string>>;
+}>;
+
+// @public
 export function DatePicker(input: DatePickerProps): JSX.Element;
 
 // @public (undocumented)
@@ -198,6 +233,9 @@ export interface DatePickerProps extends Omit<DatePickerProps_2<DateValue>, 'cla
     // (undocumented)
     popoverClassName?: string;
 }
+
+// @public
+export function defineComponentTokens<const Component extends string, const Tokens extends Record<string, string>>(component: Component, tokens: Tokens): ComponentTokens<Component, `panneau-${Component}-${keyof Tokens & string}`>;
 
 // @public
 export function Dialog(input: DialogProps): JSX.Element | null;

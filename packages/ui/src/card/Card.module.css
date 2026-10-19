@@ -3,10 +3,11 @@
     flex-direction: column;
     min-width: 0;
     color: var(--panneau-color-text);
-    background-color: var(--panneau-color-surface);
-    border: var(--panneau-border-width) solid var(--panneau-color-border);
-    border-radius: var(--panneau-radius-lg);
-    box-shadow: var(--panneau-shadow-sm);
+    background-color: var(--panneau-card-bg, var(--panneau-color-surface));
+    border: var(--panneau-card-border-width, var(--panneau-border-width)) solid
+        var(--panneau-card-border-color, var(--panneau-color-border));
+    border-radius: var(--panneau-card-radius, var(--panneau-radius-lg));
+    box-shadow: var(--panneau-card-shadow, var(--panneau-shadow-sm));
 }
 
 .header {
@@ -15,21 +16,24 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--panneau-space-2);
-    padding: var(--panneau-space-3) var(--panneau-space-4);
-    border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);
+    padding: var(--panneau-card-header-padding-y, var(--panneau-space-3))
+        var(--panneau-card-padding-x, var(--panneau-space-4));
+    border-bottom: var(--panneau-card-border-width, var(--panneau-border-width)) solid
+        var(--panneau-card-border-color, var(--panneau-color-border));
 }
 
 .title {
-    font-size: var(--panneau-font-size-lg);
-    font-weight: var(--panneau-font-weight-bold);
+    font-size: var(--panneau-card-title-font-size, var(--panneau-font-size-lg));
+    font-weight: var(--panneau-card-title-font-weight, var(--panneau-font-weight-bold));
     line-height: var(--panneau-line-height-tight);
 }
 
 .body {
     display: flex;
     flex-direction: column;
-    gap: var(--panneau-space-4);
-    padding: var(--panneau-space-4);
+    gap: var(--panneau-card-gap, var(--panneau-space-4));
+    padding: var(--panneau-card-padding-y, var(--panneau-space-4))
+        var(--panneau-card-padding-x, var(--panneau-space-4));
 }
 
 .footer {
@@ -37,8 +41,10 @@
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: var(--panneau-space-2);
-    padding: var(--panneau-space-3) var(--panneau-space-4);
-    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+    padding: var(--panneau-card-header-padding-y, var(--panneau-space-3))
+        var(--panneau-card-padding-x, var(--panneau-space-4));
+    border-top: var(--panneau-card-border-width, var(--panneau-border-width)) solid
+        var(--panneau-card-border-color, var(--panneau-color-border));
 }
 
 @media (max-width: 30rem) {

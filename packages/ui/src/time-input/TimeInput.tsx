@@ -47,7 +47,7 @@ export function TimeInput({
             isReadOnly={isReadOnly}
             isInvalid={errors.length > 0}
             validationBehavior="aria"
-            className={cx(fieldStyles.field, className)}
+            className={cx('panneau-time-input', fieldStyles.field, className)}
         >
             <FieldLabel isRequired={isRequired} className={labelClassName}>
                 {label}

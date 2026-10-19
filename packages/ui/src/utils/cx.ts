@@ -1,4 +1,10 @@
-/** Joins class names, skipping empty ones. */
+/** Joins class names, skipping empty and repeated ones. */
 export function cx(...classNames: (string | false | null | undefined)[]): string {
-    return classNames.filter(Boolean).join(' ');
+    return [
+        ...new Set(
+            classNames.flatMap((className) =>
+                typeof className === 'string' ? className.split(/\s+/).filter(Boolean) : [],
+            ),
+        ),
+    ].join(' ');
 }

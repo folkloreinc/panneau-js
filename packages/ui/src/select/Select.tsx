@@ -122,7 +122,7 @@ export function Select(props: SelectProps) {
         validationBehavior: 'aria' as const,
         onBlur: onBlur !== undefined ? () => onBlur() : undefined,
         disabledKeys: items.filter((item) => item.disabled === true).map((item) => item.key),
-        className: cx(fieldStyles.field, className),
+        className: cx('panneau-select', fieldStyles.field, className),
     };
 
     const content = (

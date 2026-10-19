@@ -32,6 +32,7 @@ export function Checkbox({
 }: CheckboxProps) {
     return (
         <ChoiceChrome
+            component="checkbox"
             description={description}
             errors={errors}
             className={className}

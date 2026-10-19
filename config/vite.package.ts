@@ -11,6 +11,8 @@ import {
 } from 'vite';
 import { defineConfig } from 'vitest/config';
 
+import { stableClassName } from './class-names.ts';
+
 interface PackageConfigOptions {
     /** Package directory (pass `import.meta.dirname`). */
     root: string;
@@ -34,10 +36,11 @@ interface PackageJson {
 }
 
 /**
- * Class names of CSS Modules in builds: readable and scoped. Consumers get plain CSS files whose
- * classes are already scoped, so their bundler needs no CSS Modules support.
+ * Class names of CSS Modules: stable and readable (`panneau-card-header`), the same in builds,
+ * tests and Storybook (decision 0024). Consumers get plain CSS files whose classes are already
+ * named, so their bundler needs no CSS Modules support.
  */
-const SCOPED_NAME = 'panneau-[local]-[hash:base64:6]';
+export const cssModules = { generateScopedName: stableClassName };
 
 /**
  * Keeps the CSS of each module next to it, imported by the module (`import './Button.css'`), so
@@ -94,7 +97,7 @@ export function definePackageConfig({
         // Dependencies stay external in builds, so this only applies to tests.
         resolve: { conditions: [SOURCE_CONDITION, ...defaultClientConditions] },
         ssr: { resolve: { conditions: [SOURCE_CONDITION, ...defaultServerConditions] } },
-        css: { modules: { generateScopedName: SCOPED_NAME } },
+        css: { modules: cssModules },
         build: {
             outDir: 'dist',
             emptyOutDir: true,

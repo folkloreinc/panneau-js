@@ -31,11 +31,12 @@
 
 .circle {
     flex: 0 0 auto;
-    width: 1.125rem;
-    height: 1.125rem;
+    width: var(--panneau-radio-size, 1.125rem);
+    height: var(--panneau-radio-size, 1.125rem);
     margin-top: 0.125rem;
-    background-color: var(--panneau-color-surface);
-    border: var(--panneau-border-width) solid var(--panneau-color-border-control);
+    background-color: var(--panneau-radio-bg, var(--panneau-color-surface));
+    border: var(--panneau-border-width) solid
+        var(--panneau-radio-border-color, var(--panneau-color-border-control));
     border-radius: var(--panneau-radius-full);
     transition:
         border-color var(--panneau-duration),
@@ -47,8 +48,8 @@
 }
 
 .radio[data-selected] .circle {
-    border-color: var(--panneau-color-accent);
-    border-width: 0.3125rem;
+    border-color: var(--panneau-radio-checked-color, var(--panneau-color-accent));
+    border-width: var(--panneau-radio-checked-border-width, 0.3125rem);
 }
 
 .radio[data-invalid] .circle {

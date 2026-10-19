@@ -50,6 +50,8 @@ export {
 export { TextArea, type TextAreaProps } from './text-area/TextArea';
 export { TextInput, type TextInputProps } from './text-input/TextInput';
 export { bootstrapTheme } from './theme/bootstrap';
+export { type ComponentTokens, defineComponentTokens } from './theme/componentTokens';
+export { type ComponentTokenName, componentTokens } from './theme/components';
 export { type ColorScheme, type Theme } from './theme/theme';
 export { TimeInput, type TimeInputProps } from './time-input/TimeInput';
 export {

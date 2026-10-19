@@ -67,7 +67,7 @@ export function Alert({
             id={id}
             role={role}
             tabIndex={tabIndex}
-            className={cx(styles.alert, styles[tone], className)}
+            className={cx('panneau-alert', styles.alert, styles[tone], className)}
         >
             {shown !== null ? <Icon icon={shown} size="lg" className={styles.icon} /> : null}
             <div className={styles.content}>
