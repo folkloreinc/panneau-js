@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { PROTOCOL_VERSION } from '../version';
 import { Abilities, Id } from './common';
 import { Resource } from './resource';
+import { DefinitionTheme } from './theme';
 
 export const User = z.looseObject({
     id: Id,
@@ -103,9 +104,7 @@ export const Definition = z
         dashboard: z.looseObject({ widgets: z.array(Widget) }).optional(),
         search: z.looseObject({ enabled: z.boolean() }).optional(),
         uploads: Uploads.optional(),
-        theme: z
-            .looseObject({ colorScheme: z.enum(['light', 'dark', 'auto']).optional() })
-            .optional(),
+        theme: DefinitionTheme.optional(),
         user: User.nullable().optional(),
     })
     .superRefine((definition, context) => {

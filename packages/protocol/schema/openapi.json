@@ -3021,6 +3021,302 @@
                 ],
                 "additionalProperties": {}
             },
+            "ThemeTokens": {
+                "type": "object",
+                "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9_-]+$"
+                },
+                "additionalProperties": {
+                    "type": "string",
+                    "pattern": "^[^{};<]*$"
+                },
+                "description": "CSS variables without the leading `--`, and their values: `{ \"panneau-color-accent\": \"#05f\" }`. Values cannot contain `{`, `}`, `;` or `<`."
+            },
+            "ToneValues": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "Text and icons on surfaces."
+                    },
+                    "subtle": {
+                        "type": "string",
+                        "description": "Background of the subtle appearance."
+                    },
+                    "border": {
+                        "type": "string",
+                        "description": "Border of the subtle appearance."
+                    },
+                    "outline": {
+                        "type": "string",
+                        "description": "Border of the outline appearance."
+                    },
+                    "solid": {
+                        "type": "string",
+                        "description": "Background of the solid appearance."
+                    },
+                    "solidHover": {
+                        "type": "string",
+                        "description": "Background of the solid appearance on hover."
+                    },
+                    "solidText": {
+                        "type": "string",
+                        "description": "Text on the solid appearance."
+                    }
+                },
+                "required": [
+                    "text",
+                    "subtle",
+                    "border",
+                    "outline",
+                    "solid",
+                    "solidHover",
+                    "solidText"
+                ],
+                "additionalProperties": {}
+            },
+            "ToneInput": {
+                "anyOf": [
+                    {
+                        "type": "string",
+                        "description": "One color, from which Panneau derives the others."
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "string",
+                                "description": "Text and icons on surfaces."
+                            },
+                            "subtle": {
+                                "type": "string",
+                                "description": "Background of the subtle appearance."
+                            },
+                            "border": {
+                                "type": "string",
+                                "description": "Border of the subtle appearance."
+                            },
+                            "outline": {
+                                "type": "string",
+                                "description": "Border of the outline appearance."
+                            },
+                            "solid": {
+                                "type": "string",
+                                "description": "Background of the solid appearance."
+                            },
+                            "solidHover": {
+                                "type": "string",
+                                "description": "Background of the solid appearance on hover."
+                            },
+                            "solidText": {
+                                "type": "string",
+                                "description": "Text on the solid appearance."
+                            },
+                            "dark": {
+                                "type": "object",
+                                "properties": {
+                                    "text": {
+                                        "type": "string",
+                                        "description": "Text and icons on surfaces."
+                                    },
+                                    "subtle": {
+                                        "type": "string",
+                                        "description": "Background of the subtle appearance."
+                                    },
+                                    "border": {
+                                        "type": "string",
+                                        "description": "Border of the subtle appearance."
+                                    },
+                                    "outline": {
+                                        "type": "string",
+                                        "description": "Border of the outline appearance."
+                                    },
+                                    "solid": {
+                                        "type": "string",
+                                        "description": "Background of the solid appearance."
+                                    },
+                                    "solidHover": {
+                                        "type": "string",
+                                        "description": "Background of the solid appearance on hover."
+                                    },
+                                    "solidText": {
+                                        "type": "string",
+                                        "description": "Text on the solid appearance."
+                                    }
+                                },
+                                "additionalProperties": {}
+                            }
+                        },
+                        "required": [
+                            "text",
+                            "subtle",
+                            "border",
+                            "outline",
+                            "solid",
+                            "solidHover",
+                            "solidText"
+                        ],
+                        "additionalProperties": {}
+                    }
+                ],
+                "description": "A tone: one color, or every value with dark scheme overrides."
+            },
+            "Theme": {
+                "type": "object",
+                "properties": {
+                    "label": {
+                        "type": "string"
+                    },
+                    "tokens": {
+                        "description": "Tokens of the light scheme, or of both schemes when `dark` does not set them.",
+                        "$ref": "#/components/schemas/ThemeTokens"
+                    },
+                    "dark": {
+                        "description": "Tokens that change in the dark scheme.",
+                        "$ref": "#/components/schemas/ThemeTokens"
+                    },
+                    "palette": {
+                        "description": "Raw colors, written as `--panneau-palette-<name>`: tokens and tones use them with `var(--panneau-palette-<name>)`.",
+                        "type": "object",
+                        "propertyNames": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9-]+$"
+                        },
+                        "additionalProperties": {
+                            "type": "string",
+                            "pattern": "^[^{};<]*$"
+                        }
+                    },
+                    "tones": {
+                        "description": "Tones added or redefined by the theme, applied by `panneau-tone-<name>`.",
+                        "type": "object",
+                        "propertyNames": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9-]+$"
+                        },
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/ToneInput"
+                        }
+                    },
+                    "components": {
+                        "description": "Named variants of components: tokens applied by `panneau-<component>-variant-<name>`.",
+                        "type": "object",
+                        "propertyNames": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9-]+$"
+                        },
+                        "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                                "variants": {
+                                    "type": "object",
+                                    "propertyNames": {
+                                        "type": "string",
+                                        "pattern": "^[a-z0-9-]+$"
+                                    },
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/ThemeTokens"
+                                    }
+                                }
+                            },
+                            "additionalProperties": {}
+                        }
+                    }
+                },
+                "required": [
+                    "tokens"
+                ],
+                "additionalProperties": {},
+                "description": "A theme of `@panneau/ui`, as plain data (decision 0024)."
+            },
+            "DefinitionTheme": {
+                "type": "object",
+                "properties": {
+                    "label": {
+                        "type": "string"
+                    },
+                    "tokens": {
+                        "description": "Tokens of the light scheme, or of both schemes when `dark` does not set them.",
+                        "$ref": "#/components/schemas/ThemeTokens"
+                    },
+                    "dark": {
+                        "description": "Tokens that change in the dark scheme.",
+                        "$ref": "#/components/schemas/ThemeTokens"
+                    },
+                    "palette": {
+                        "description": "Raw colors, written as `--panneau-palette-<name>`: tokens and tones use them with `var(--panneau-palette-<name>)`.",
+                        "type": "object",
+                        "propertyNames": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9-]+$"
+                        },
+                        "additionalProperties": {
+                            "type": "string",
+                            "pattern": "^[^{};<]*$"
+                        }
+                    },
+                    "tones": {
+                        "description": "Tones added or redefined by the theme, applied by `panneau-tone-<name>`.",
+                        "type": "object",
+                        "propertyNames": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9-]+$"
+                        },
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/ToneInput"
+                        }
+                    },
+                    "components": {
+                        "description": "Named variants of components: tokens applied by `panneau-<component>-variant-<name>`.",
+                        "type": "object",
+                        "propertyNames": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9-]+$"
+                        },
+                        "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                                "variants": {
+                                    "type": "object",
+                                    "propertyNames": {
+                                        "type": "string",
+                                        "pattern": "^[a-z0-9-]+$"
+                                    },
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/ThemeTokens"
+                                    }
+                                }
+                            },
+                            "additionalProperties": {}
+                        }
+                    },
+                    "colorScheme": {
+                        "type": "string",
+                        "enum": [
+                            "light",
+                            "dark",
+                            "auto"
+                        ]
+                    },
+                    "extends": {
+                        "description": "Themes registered by plugins, by id, that this theme builds on, in order: its own values override theirs.",
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "additionalProperties": {},
+                "description": "The theme of the admin: a theme, built on themes of plugins."
+            },
             "Definition": {
                 "type": "object",
                 "properties": {
@@ -3128,18 +3424,7 @@
                         "$ref": "#/components/schemas/Uploads"
                     },
                     "theme": {
-                        "type": "object",
-                        "properties": {
-                            "colorScheme": {
-                                "type": "string",
-                                "enum": [
-                                    "light",
-                                    "dark",
-                                    "auto"
-                                ]
-                            }
-                        },
-                        "additionalProperties": {}
+                        "$ref": "#/components/schemas/DefinitionTheme"
                     },
                     "user": {
                         "anyOf": [

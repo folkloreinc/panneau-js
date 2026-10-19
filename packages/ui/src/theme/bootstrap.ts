@@ -1,3 +1,4 @@
+import type { ThemeDefinition } from './defineTheme';
 import type { Theme } from './theme';
 
 /**
@@ -65,4 +66,4 @@ export const bootstrapTheme: Theme = {
         'panneau-control-height': 'calc(1.5em + 0.75rem + 2 * var(--bs-border-width))',
         'panneau-control-height-sm': 'calc(1.5em + 0.5rem + 2 * var(--bs-border-width))',
     },
-};
+} satisfies ThemeDefinition;

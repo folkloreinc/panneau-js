@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { bootstrapTheme } from './bootstrap';
-import { getThemeCss, hashString } from './theme';
+import { getThemeCss, hashString, resolveReference } from './theme';
 
 describe('getThemeCss', () => {
     it('scopes the tokens of a theme, with dark overrides', () => {
@@ -68,8 +68,40 @@ describe('getThemeCss', () => {
         );
     });
 
+    it('writes the palette as variables, and derives tones from palette colors', () => {
+        const css = getThemeCss(
+            {
+                palette: { orange: '#f25c05', 'bad name': 'red' },
+                tokens: { 'panneau-color-accent': 'var(--panneau-palette-orange)' },
+                tones: { signal: 'var(--panneau-palette-orange)' },
+            },
+            'abc',
+        );
+        expect(css).toContain(
+            '[data-panneau-theme="abc"]{--panneau-palette-orange:#f25c05;--panneau-color-accent:var(--panneau-palette-orange);}',
+        );
+        expect(css).toContain('--panneau-tone-solid:#f25c05;');
+    });
+
     it('returns nothing for an empty theme', () => {
         expect(getThemeCss({ tokens: {} }, 'abc')).toBe('');
+    });
+});
+
+describe('resolveReference', () => {
+    it('follows var() references through the given variables', () => {
+        const variables = {
+            'panneau-palette-orange': '#f25c05',
+            'panneau-color-accent': 'var(--panneau-palette-orange)',
+        };
+        expect(resolveReference('var(--panneau-color-accent)', variables)).toBe('#f25c05');
+        expect(resolveReference('var(--bs-primary)', variables)).toBe('var(--bs-primary)');
+        expect(resolveReference('var(--constructor)', variables)).toBe('var(--constructor)');
+        expect(resolveReference('#000', variables)).toBe('#000');
+    });
+
+    it('stops on circular references', () => {
+        expect(resolveReference('var(--a)', { a: 'var(--b)', b: 'var(--a)' })).toMatch(/^var/);
     });
 });
 

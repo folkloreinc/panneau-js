@@ -6,6 +6,7 @@ import {
     createBootConfigJsonSchema,
     createDefinitionJsonSchema,
     createOpenApiDocument,
+    createThemeJsonSchema,
 } from '../dist/index.js';
 
 const directory = resolve(import.meta.dirname, '../schema');
@@ -15,3 +16,4 @@ const write = (name, value) =>
 write('definition.schema.json', createDefinitionJsonSchema());
 write('openapi.json', createOpenApiDocument());
 write('boot.schema.json', createBootConfigJsonSchema());
+write('theme.schema.json', createThemeJsonSchema());

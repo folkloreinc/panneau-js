@@ -12,4 +12,5 @@ export {
     createComponentSchemas,
     createDefinitionJsonSchema,
     createOpenApiDocument,
+    createThemeJsonSchema,
 } from './openapi';

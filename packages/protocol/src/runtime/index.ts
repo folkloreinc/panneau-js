@@ -19,3 +19,4 @@ export {
 } from '../query';
 export { getValue, isFilled } from '../values';
 export { isProblem } from '../problem';
+export { type PartialTheme, mergeThemes } from '../themes';

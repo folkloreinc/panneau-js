@@ -43,7 +43,7 @@ export const BUILT_IN_TONES = [
 ] as const;
 
 /** The colors of a tone, as CSS values. */
-export interface ToneValues {
+export type ToneValues = {
     /** Text and icons on surfaces: the outline, subtle and ghost appearances. */
     text: string;
     /** Background of the subtle appearance. */
@@ -58,7 +58,7 @@ export interface ToneValues {
     solidHover: string;
     /** Text on the solid appearance. */
     solidText: string;
-}
+};
 
 /**
  * A tone of a theme: one color, from which Panneau derives the others (`'#f25c05'`), or every

@@ -1,0 +1,150 @@
+{
+    "$id": "https://github.com/folkloreinc/panneau-js/blob/v5.x/packages/protocol/schema/theme.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$ref": "#/$defs/Theme",
+    "$defs": {
+        "Theme": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "tokens": {
+                    "$ref": "#/$defs/ThemeTokens"
+                },
+                "dark": {
+                    "$ref": "#/$defs/ThemeTokens"
+                },
+                "palette": {
+                    "type": "object",
+                    "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9-]+$"
+                    },
+                    "additionalProperties": {
+                        "type": "string",
+                        "pattern": "^[^{};<]*$"
+                    }
+                },
+                "tones": {
+                    "type": "object",
+                    "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9-]+$"
+                    },
+                    "additionalProperties": {
+                        "$ref": "#/$defs/ToneInput"
+                    }
+                },
+                "components": {
+                    "type": "object",
+                    "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9-]+$"
+                    },
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                            "variants": {
+                                "type": "object",
+                                "propertyNames": {
+                                    "type": "string",
+                                    "pattern": "^[a-z0-9-]+$"
+                                },
+                                "additionalProperties": {
+                                    "$ref": "#/$defs/ThemeTokens"
+                                }
+                            }
+                        },
+                        "additionalProperties": {}
+                    }
+                }
+            },
+            "required": [
+                "tokens"
+            ],
+            "additionalProperties": {}
+        },
+        "ThemeTokens": {
+            "type": "object",
+            "propertyNames": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]+$"
+            },
+            "additionalProperties": {
+                "type": "string",
+                "pattern": "^[^{};<]*$"
+            }
+        },
+        "ToneInput": {
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "text": {
+                            "type": "string"
+                        },
+                        "subtle": {
+                            "type": "string"
+                        },
+                        "border": {
+                            "type": "string"
+                        },
+                        "outline": {
+                            "type": "string"
+                        },
+                        "solid": {
+                            "type": "string"
+                        },
+                        "solidHover": {
+                            "type": "string"
+                        },
+                        "solidText": {
+                            "type": "string"
+                        },
+                        "dark": {
+                            "type": "object",
+                            "properties": {
+                                "text": {
+                                    "type": "string"
+                                },
+                                "subtle": {
+                                    "type": "string"
+                                },
+                                "border": {
+                                    "type": "string"
+                                },
+                                "outline": {
+                                    "type": "string"
+                                },
+                                "solid": {
+                                    "type": "string"
+                                },
+                                "solidHover": {
+                                    "type": "string"
+                                },
+                                "solidText": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": {}
+                        }
+                    },
+                    "required": [
+                        "text",
+                        "subtle",
+                        "border",
+                        "outline",
+                        "solid",
+                        "solidHover",
+                        "solidText"
+                    ],
+                    "additionalProperties": {}
+                }
+            ]
+        }
+    }
+}

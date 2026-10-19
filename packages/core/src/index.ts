@@ -68,6 +68,7 @@ export {
     createPluginRegistry,
     definePlugin,
     loadMessages,
+    resolveTheme,
 } from './plugins';
 export {
     PanneauProvider,

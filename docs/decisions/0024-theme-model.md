@@ -77,9 +77,10 @@ A token can also style a part shared by several components: `input` (the box of 
 
 ### 6. Typed, composable themes as data
 
-- `defineTheme()` with typed token names, and a warning in development for an unknown token.
-- `extends` and variations, merged in a documented order.
-- Themes stay plain data, with a JSON Schema in `@panneau/protocol`, so that `definition.theme` can carry a theme.
+- `defineTheme()` with typed token names (semantic, component, palette, and `PanneauTokens` for a project's own), and a console warning for an unknown token in Panneau's namespaces (`panneau-color-*`, `panneau-button-*`…), such as a typo in a theme loaded from JSON. The warning is not limited to development: a theme is defined once, and a typo in production is worth reporting.
+- `extends` and variations, merged in this order: default theme < extended themes, in order < the theme < a project's overrides on the root. A token set in `tokens` but not in `dark` applies to both schemes, so it also replaces the dark value of the themes it extends. Variants merge token by token; tones are replaced whole.
+- The palette is a `palette` of the theme, written as `--panneau-palette-<name>`. A tone given as `var(--panneau-palette-<name>)` derives from the palette color, and `checkTheme()` follows references to the palette and to tokens.
+- Themes stay plain data. The `Theme` schema of `@panneau/protocol` validates them (`theme.schema.json`), `@panneau/core` plugins register them, and `definition.theme` carries one: its own tokens, tones and variants, `extends` with ids of themes registered by plugins, and the color scheme. `resolveTheme()` of `@panneau/core` merges it. `@panneau/ui` and `@panneau/protocol` each have `mergeThemes()`, with the same rules, so that `@panneau/ui` doesn't depend on the protocol.
 
 ### 7. Scopes
 

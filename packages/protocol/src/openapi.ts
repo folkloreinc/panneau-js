@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { createSchemaRegistry } from './schemas';
 import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
+import { Theme } from './schemas/theme';
 import { PROBLEM_CONTENT_TYPE, PROTOCOL_VERSION } from './version';
 
 type JsonObject = Record<string, unknown>;
@@ -99,6 +100,17 @@ export function createDefinitionJsonSchema(): JsonObject {
     return {
         $id: 'https://github.com/folkloreinc/panneau-js/blob/v5.x/packages/protocol/schema/definition.schema.json',
         ...(z.toJSONSchema(Definition, {
+            io: 'input',
+            metadata: createSchemaRegistry(),
+        }) as JsonObject),
+    };
+}
+
+/** The JSON Schema of a theme, for themes written as JSON files. */
+export function createThemeJsonSchema(): JsonObject {
+    return {
+        $id: 'https://github.com/folkloreinc/panneau-js/blob/v5.x/packages/protocol/schema/theme.schema.json',
+        ...(z.toJSONSchema(Theme, {
             io: 'input',
             metadata: createSchemaRegistry(),
         }) as JsonObject),

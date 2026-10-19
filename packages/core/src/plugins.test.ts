@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import { createPluginRegistry, definePlugin, loadMessages } from './plugins';
+import { createPluginRegistry, definePlugin, loadMessages, resolveTheme } from './plugins';
 
 const Text = () => null;
 const CustomText = () => null;
@@ -52,5 +52,52 @@ describe('plugins', () => {
             cancel: 'Canceller',
         });
         expect(await loadMessages(registry, 'de')).toEqual({});
+    });
+});
+
+describe('resolveTheme', () => {
+    const registry = createPluginRegistry([
+        definePlugin({
+            id: 'brand',
+            themes: {
+                brand: {
+                    label: 'Brand',
+                    tokens: { 'panneau-color-accent': '#f25c05', 'panneau-radius-md': '0' },
+                    tones: { signal: '#f25c05' },
+                },
+                compact: { tokens: { 'panneau-control-height': '2rem' } },
+            },
+        }),
+    ]);
+
+    it('merges the extended themes of plugins, then the theme of the definition', () => {
+        const theme = resolveTheme(
+            {
+                colorScheme: 'auto',
+                extends: ['brand', 'compact'],
+                tokens: { 'panneau-color-accent': '#05f' },
+            },
+            registry.themes,
+        );
+        expect(theme).toEqual({
+            label: 'Brand',
+            tokens: {
+                'panneau-color-accent': '#05f',
+                'panneau-radius-md': '0',
+                'panneau-control-height': '2rem',
+            },
+            tones: { signal: '#f25c05' },
+        });
+    });
+
+    it('skips themes no plugin registers, with a warning', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        expect(resolveTheme({ extends: 'missing' }, registry.themes)).toEqual({ tokens: {} });
+        expect(warn).toHaveBeenCalledWith('[panneau] No plugin registers the theme "missing".');
+        warn.mockRestore();
+    });
+
+    it('is empty without a theme in the definition', () => {
+        expect(resolveTheme(undefined, registry.themes)).toEqual({ tokens: {} });
     });
 });

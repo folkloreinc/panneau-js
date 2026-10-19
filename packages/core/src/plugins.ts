@@ -1,5 +1,11 @@
 import type { ComponentType } from 'react';
 
+import type { DefinitionTheme, Theme } from '@panneau/protocol';
+import { mergeThemes } from '@panneau/protocol/runtime';
+
+/** A theme of `@panneau/ui`, as plain data: what plugins register (decision 0024). */
+export type { Theme };
+
 /**
  * A component provided by a plugin. Its props are defined by the package that renders it (fields,
  * lists, app), so the registry stores it as given.
@@ -12,15 +18,6 @@ export type Messages = Record<string, string>;
 
 /** Messages, or a function that loads them (`() => import('./lang/fr.json')`). */
 export type MessagesLoader = Messages | (() => Promise<Messages | { default: Messages }>);
-
-/** A theme: design tokens (CSS variables without `--`), with optional dark scheme overrides. */
-export interface Theme {
-    label?: string;
-    /** Tokens of the light scheme, or of both schemes without `dark`: `{ 'panneau-color-accent': '#05f' }`. */
-    tokens: Record<string, string>;
-    /** Tokens that change in the dark scheme. */
-    dark?: Record<string, string>;
-}
 
 /** What a plugin adds to Panneau. Every part is keyed by the name the definition uses. */
 export interface PanneauPlugin {
@@ -42,7 +39,7 @@ export interface PanneauPlugin {
     components?: Record<string, PluginComponent>;
     /** UI messages, by locale. Messages of later plugins override earlier ones. */
     locales?: Record<string, MessagesLoader>;
-    /** Themes, by id. */
+    /** Themes, by id, that the theme of the definition can extend. */
     themes?: Record<string, Theme>;
 }
 
@@ -135,4 +132,25 @@ export async function loadMessages(registry: PluginRegistry, locale: string): Pr
         }),
     );
     return Object.assign({}, ...loaded) as Messages;
+}
+
+/**
+ * The theme of the admin: the themes of plugins that the definition's theme extends, in order, then
+ * the definition's own tokens, tones and variants. An id no plugin registers is skipped, with a
+ * warning.
+ */
+export function resolveTheme(
+    theme: DefinitionTheme | undefined,
+    themes: ReadonlyMap<string, Theme>,
+): Theme {
+    const { colorScheme: _colorScheme, extends: ids, ...own } = theme ?? {};
+    const extended = (typeof ids === 'string' ? [ids] : (ids ?? [])).flatMap((id) => {
+        const found = themes.get(id);
+        if (found === undefined) {
+            console.warn(`[panneau] No plugin registers the theme "${id}".`);
+            return [];
+        }
+        return [found];
+    });
+    return mergeThemes(...extended, own);
 }

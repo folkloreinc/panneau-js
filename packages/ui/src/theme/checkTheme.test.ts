@@ -50,6 +50,21 @@ describe('checkTheme', () => {
         ]);
     });
 
+    it('checks values that refer to the palette or to other tokens', () => {
+        const report = checkTheme({
+            palette: { gray: '#aaaaaa' },
+            tokens: {
+                'panneau-color-surface': '#ffffff',
+                'panneau-color-text-muted': 'var(--panneau-palette-gray)',
+            },
+            tones: { signal: 'var(--panneau-palette-gray)' },
+        });
+        expect(report.failures.map((check) => check.name)).toContain(
+            'tokens: muted text on surface',
+        );
+        expect(report.unchecked.filter((check) => check.name.startsWith('tone'))).toEqual([]);
+    });
+
     it('lists colors it can not read as unchecked', () => {
         const report = checkTheme(bootstrapTheme);
         expect(report.failures).toEqual([]);

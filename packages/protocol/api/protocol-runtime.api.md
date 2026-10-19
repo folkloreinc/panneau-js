@@ -105,6 +105,14 @@ export interface ListQuery {
 // @public
 export function matchesFilterRange(value: unknown, range: FilterRange): boolean;
 
+// Warning: (ae-forgotten-export) The symbol "Theme" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function mergeThemes(...themes: readonly PartialTheme[]): Theme;
+
+// @public
+export type PartialTheme = Partial<Theme>;
+
 // @public
 export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "in", "accept", "maxSize", "before", "after"];
 

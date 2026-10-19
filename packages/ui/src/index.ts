@@ -71,6 +71,17 @@ export { bootstrapTheme } from './theme/bootstrap';
 export { type ThemeContrastCheck, type ThemeReport, checkTheme } from './theme/checkTheme';
 export { type ComponentTokens, defineComponentTokens } from './theme/componentTokens';
 export { type ComponentTokenName, componentTokens } from './theme/components';
+export {
+    type PaletteTokenName,
+    type PanneauTokens,
+    type ThemeDefinition,
+    type ThemeTokens,
+    type TokenName,
+    defineTheme,
+    findUnknownTokens,
+    mergeThemes,
+} from './theme/defineTheme';
+export { SEMANTIC_TOKENS, type SemanticTokenName } from './theme/semanticTokens';
 export { type ColorScheme, type Theme } from './theme/theme';
 export {
     BUILT_IN_TONES,

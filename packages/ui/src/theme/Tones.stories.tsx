@@ -6,7 +6,8 @@ import { Alert } from '../alert/Alert';
 import { Badge } from '../badge/Badge';
 import { Button, type ButtonAppearance } from '../button/Button';
 import { PanneauRoot } from '../root/PanneauRoot';
-import type { ColorScheme, Theme } from './theme';
+import { defineTheme } from './defineTheme';
+import type { ColorScheme } from './theme';
 import { BUILT_IN_TONES, type Tone } from './tones';
 
 declare module './tones' {
@@ -22,11 +23,14 @@ declare module '../badge/Badge' {
     }
 }
 
-/** A theme that adds a derived tone, a tone with every value, and a named badge variant. */
-const theme: Theme = {
-    tokens: {},
+/**
+ * A theme that adds a tone derived from a palette color, a tone with every value, and a named badge
+ * variant.
+ */
+const theme = defineTheme({
+    palette: { orange: '#f25c05' },
     tones: {
-        signal: '#f25c05',
+        signal: 'var(--panneau-palette-orange)',
         members: {
             text: '#2f5d46',
             subtle: '#e3ede5',
@@ -41,7 +45,7 @@ const theme: Theme = {
     components: {
         badge: { variants: { tag: { 'panneau-badge-radius': 'var(--panneau-radius-sm)' } } },
     },
-};
+});
 
 const TONES: Tone[] = [...BUILT_IN_TONES, 'signal', 'members'];
 const APPEARANCES: ButtonAppearance[] = ['solid', 'outline', 'subtle', 'ghost'];
