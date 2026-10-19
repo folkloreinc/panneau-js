@@ -1,0 +1,27 @@
+name: Set up
+description: Node from .nvmrc and the dependencies (npm ci), after actions/checkout.
+
+inputs:
+    chromium:
+        description: Also install Chromium for Playwright (Storybook tests, smoke test).
+        default: 'false'
+
+runs:
+    using: composite
+    steps:
+        - uses: actions/setup-node@v5
+          with:
+              node-version-file: .nvmrc
+              cache: npm
+
+        - name: Install dependencies
+          shell: bash
+          run: npm ci
+
+        # Only the headless shell, which headless Chromium uses, and no system packages: the
+        # runner image already has what it needs, and installing them (`--with-deps`) took most of
+        # this step.
+        - name: Install Chromium
+          if: inputs.chromium == 'true'
+          shell: bash
+          run: npx playwright install --only-shell chromium

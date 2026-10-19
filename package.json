@@ -15,10 +15,10 @@
         "packages/*"
     ],
     "scripts": {
-        "build": "node scripts/workspaces.js build",
-        "typecheck": "node scripts/workspaces.js typecheck",
-        "api": "node scripts/workspaces.js api",
-        "api:check": "node scripts/workspaces.js api -- --check",
+        "build": "node scripts/workspaces.js build --parallel",
+        "typecheck": "node scripts/workspaces.js typecheck --any-order",
+        "api": "node scripts/workspaces.js api --parallel",
+        "api:check": "node scripts/workspaces.js api --parallel -- --check",
         "create-package": "node scripts/create-package.js",
         "test:create-package": "node scripts/check-create-package.js",
         "lint": "eslint .",
@@ -32,7 +32,8 @@
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
         "test:storybook": "vitest run --config vitest.storybook.config.ts",
-        "test:smoke": "node scripts/smoke-webpack.js"
+        "test:smoke": "node scripts/smoke-webpack.js",
+        "verify": "node scripts/verify.js"
     },
     "devDependencies": {
         "@babel/core": "^8.0.7",
