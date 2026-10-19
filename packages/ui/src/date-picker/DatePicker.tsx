@@ -62,13 +62,12 @@ export function DatePicker({
     const invalid = errors.length > 0;
     return (
         <AriaDatePicker
-            data-panneau="date-picker"
             {...props}
             isRequired={isRequired}
             isReadOnly={isReadOnly}
             isInvalid={invalid}
             validationBehavior="aria"
-            className={cx(fieldStyles.field, className)}
+            className={cx('panneau-date-picker', fieldStyles.field, className)}
         >
             <FieldLabel isRequired={isRequired} className={labelClassName}>
                 {label}

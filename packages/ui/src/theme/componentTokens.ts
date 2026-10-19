@@ -4,8 +4,8 @@
  */
 export interface ComponentTokens<Component extends string = string, Name extends string = string> {
     /**
-     * The component or the part it styles: a `data-panneau` hook (`button`, `badge`), or a part
-     * shared by several components (`input`, `field`, `list-box`, `calendar`).
+     * The component or the part it styles, as in its `panneau-<component>` class (`button`,
+     * `badge`), or a part shared by several components (`input`, `field`, `list-box`, `calendar`).
      */
     readonly component: Component;
     /** Default values, keyed by token name without the leading `--`: `panneau-button-radius`. */

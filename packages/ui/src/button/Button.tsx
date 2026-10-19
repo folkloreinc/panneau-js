@@ -40,10 +40,10 @@ export function Button({
 }: ButtonProps) {
     return (
         <AriaButton
-            data-panneau="button"
             {...props}
             isPending={isPending}
             className={cx(
+                'panneau-button',
                 styles.button,
                 styles[variant],
                 size === 'sm' && styles.sm,

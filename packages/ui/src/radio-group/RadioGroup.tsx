@@ -55,7 +55,6 @@ export function RadioGroup({
     const index = value === undefined ? undefined : options.findIndex((o) => o.value === value);
     return (
         <AriaRadioGroup
-            data-panneau="radio-group"
             {...props}
             orientation={orientation}
             isRequired={isRequired}
@@ -69,6 +68,7 @@ export function RadioGroup({
             isInvalid={errors.length > 0}
             validationBehavior="aria"
             className={cx(
+                'panneau-radio-group',
                 fieldStyles.field,
                 orientation === 'horizontal' && styles.horizontal,
                 className,
@@ -80,11 +80,10 @@ export function RadioGroup({
             <div className={styles.options}>
                 {options.map((option, position) => (
                     <Radio
-                        data-panneau="radio"
                         key={position}
                         value={String(position)}
                         isDisabled={option.disabled}
-                        className={cx(styles.radio, radioClassName)}
+                        className={cx('panneau-radio', styles.radio, radioClassName)}
                     >
                         <span className={styles.circle} aria-hidden="true" />
                         <span className={styles.text}>

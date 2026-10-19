@@ -51,17 +51,25 @@ Every component reads its own tokens, `--panneau-<component>-<token>`, which def
 - `list-box`: options of selects, combo boxes and menus;
 - `calendar`.
 
-### Hooks
+### Classes
 
-The root element of every component carries `data-panneau="<component>"` (`button`, `badge`, `text-input`…), a public hook for a project's CSS:
+Class names are stable and readable, without a hash, like Bootstrap's: target them in a project's CSS.
+
+- The root of every component has `panneau-<component>`: `.panneau-button`, `.panneau-badge`, `.panneau-text-input`, `.panneau-card`.
+- Its parts and modifiers are `panneau-<component>-<name>`: `.panneau-card-header`, `.panneau-button-sm`.
+- States use standard attributes: ARIA (`[aria-invalid]`, `[aria-expanded]`, `[aria-selected]`…) and the state attributes of React Aria Components (`[data-hovered]`, `[data-focus-visible]`…).
 
 ```css
-.my-panneau [data-panneau='badge'] {
+.my-panneau .panneau-badge {
     letter-spacing: 0.02em;
+}
+
+.my-panneau .panneau-text-input [aria-invalid='true'] {
+    background-color: #fff5f5;
 }
 ```
 
-Class names are hashed CSS Modules and can change in any release: target `data-panneau` hooks instead.
+[`api/ui.classes.md`](api/ui.classes.md) lists every class. They are public API: a rename is a breaking change.
 
 The theme model is described in [decision 0024](../../docs/decisions/0024-theme-model.md).
 

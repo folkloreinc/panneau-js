@@ -62,13 +62,13 @@ const cases: [string, ReactNode][] = [
     ['time-input', <TimeInput key="time-input" label="Time" />],
 ];
 
-describe('data-panneau hooks', () => {
-    it.each(cases)('marks the root of %s', (hook, element) => {
+describe('component classes', () => {
+    it.each(cases)('gives the root of %s its panneau-* class', (component, element) => {
         const { container } = render(<PanneauRoot>{element}</PanneauRoot>);
-        expect(container.querySelector(`[data-panneau="${hook}"]`)).not.toBeNull();
+        expect(container.querySelector(`.panneau-${component}`)).not.toBeNull();
     });
 
-    it('marks the root, and the parts of tabs', () => {
+    it('gives the root and the parts of tabs their classes', () => {
         const { container } = render(
             <PanneauRoot>
                 <Tabs>
@@ -79,17 +79,20 @@ describe('data-panneau hooks', () => {
                 </Tabs>
             </PanneauRoot>,
         );
-        for (const hook of ['root', 'tab-list', 'tab', 'tab-panel']) {
-            expect(container.querySelector(`[data-panneau="${hook}"]`)).not.toBeNull();
+        for (const component of ['root', 'tab-list', 'tab', 'tab-panel']) {
+            expect(container.querySelector(`.panneau-${component}`)).not.toBeNull();
         }
     });
 
-    it('lets IconButton replace the hook of Button', () => {
+    it('gives IconButton the classes of a button and of an icon button', () => {
         const { container } = render(
             <PanneauRoot>
                 <IconButton icon={Plus} label="Add" showTooltip={false} />
             </PanneauRoot>,
         );
-        expect(container.querySelector('button')).toHaveAttribute('data-panneau', 'icon-button');
+        expect(container.querySelector('button')).toHaveClass(
+            'panneau-button',
+            'panneau-icon-button',
+        );
     });
 });

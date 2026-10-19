@@ -72,11 +72,7 @@ export function Dialog({
             UNSTABLE_portalContainer={container}
         >
             <Modal className={cx(styles.modal, styles[size])}>
-                <AriaDialog
-                    data-panneau="dialog"
-                    role={role}
-                    className={cx(styles.dialog, className)}
-                >
+                <AriaDialog role={role} className={cx('panneau-dialog', styles.dialog, className)}>
                     {({ close }) => (
                         <>
                             <div className={cx(styles.header, headerClassName)}>

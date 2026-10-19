@@ -41,10 +41,9 @@ export function Tooltip({
         <TooltipTrigger delay={delay} isDisabled={isDisabled}>
             {children}
             <AriaTooltip
-                data-panneau="tooltip"
                 placement={placement}
                 offset={6}
-                className={cx(styles.tooltip, className)}
+                className={cx('panneau-tooltip', styles.tooltip, className)}
                 UNSTABLE_portalContainer={container}
             >
                 {content}

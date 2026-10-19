@@ -90,10 +90,9 @@ export function ToastProvider({ children, regionClassName, regionProps }: ToastP
         <ToastContext value={toasts}>
             {children}
             <AriaToastRegion
-                data-panneau="toast-region"
                 queue={queue}
                 aria-label={intl.formatMessage(messages.notifications)}
-                className={cx(regionClassName, styles.region)}
+                className={cx('panneau-toast-region', regionClassName, styles.region)}
                 {...regionProps}
             >
                 {({ toast }) => {
@@ -102,9 +101,8 @@ export function ToastProvider({ children, regionClassName, regionProps }: ToastP
                     const { action } = toast.content;
                     return (
                         <AriaToast
-                            data-panneau="toast"
                             toast={toast}
-                            className={cx(styles.toast, styles[tone])}
+                            className={cx('panneau-toast', styles.toast, styles[tone])}
                         >
                             {icon !== null ? (
                                 <Icon icon={icon} size="lg" className={styles.icon} />

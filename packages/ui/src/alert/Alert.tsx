@@ -63,12 +63,11 @@ export function Alert({
     const shown = icon === undefined ? TONE_ICONS[tone] : icon;
     return (
         <div
-            data-panneau="alert"
             ref={ref}
             id={id}
             role={role}
             tabIndex={tabIndex}
-            className={cx(styles.alert, styles[tone], className)}
+            className={cx('panneau-alert', styles.alert, styles[tone], className)}
         >
             {shown !== null ? <Icon icon={shown} size="lg" className={styles.icon} /> : null}
             <div className={styles.content}>

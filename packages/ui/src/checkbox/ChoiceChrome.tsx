@@ -5,7 +5,7 @@ import { cx } from '../utils/cx';
 import styles from './Checkbox.module.css';
 
 export interface ChoiceChromeProps {
-    /** The `data-panneau` hook of the component: `checkbox` or `switch`. */
+    /** The component, for its `panneau-<component>` class: `checkbox` or `switch`. */
     component?: string;
     /** Help text under the control. */
     description?: ReactNode;
@@ -32,7 +32,13 @@ export function ChoiceChrome({
     const errorsId = errors.length > 0 ? `${id}-errors` : null;
     const describedBy = [descriptionId, errorsId].filter(Boolean).join(' ');
     return (
-        <div data-panneau={component} className={cx(styles.field, className)}>
+        <div
+            className={cx(
+                component !== undefined && `panneau-${component}`,
+                styles.field,
+                className,
+            )}
+        >
             {children(describedBy !== '' ? describedBy : undefined)}
             {descriptionId !== null ? (
                 <div

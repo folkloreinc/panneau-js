@@ -97,7 +97,6 @@ export function ComboBox({
     const invalid = errors.length > 0;
     return (
         <AriaComboBox
-            data-panneau="combo-box"
             {...props}
             items={items}
             selectedKey={value}
@@ -112,7 +111,7 @@ export function ComboBox({
             isRequired={isRequired}
             isInvalid={invalid}
             validationBehavior="aria"
-            className={cx(fieldStyles.field, className)}
+            className={cx('panneau-combo-box', fieldStyles.field, className)}
         >
             <FieldLabel isRequired={isRequired} className={labelClassName}>
                 {label}

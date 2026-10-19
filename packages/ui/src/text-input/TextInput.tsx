@@ -55,13 +55,12 @@ export function TextInput({
     const adorned = prefix !== undefined || suffix !== undefined;
     return (
         <TextField
-            data-panneau="text-input"
             {...props}
             isRequired={isRequired}
             isReadOnly={isReadOnly}
             isInvalid={invalid}
             validationBehavior="aria"
-            className={cx(styles.field, className)}
+            className={cx('panneau-text-input', styles.field, className)}
         >
             <FieldLabel isRequired={isRequired} className={labelClassName}>
                 {label}

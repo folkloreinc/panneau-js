@@ -42,13 +42,12 @@ export function TimeInput({
 }: TimeInputProps) {
     return (
         <TimeField
-            data-panneau="time-input"
             {...props}
             isRequired={isRequired}
             isReadOnly={isReadOnly}
             isInvalid={errors.length > 0}
             validationBehavior="aria"
-            className={cx(fieldStyles.field, className)}
+            className={cx('panneau-time-input', fieldStyles.field, className)}
         >
             <FieldLabel isRequired={isRequired} className={labelClassName}>
                 {label}

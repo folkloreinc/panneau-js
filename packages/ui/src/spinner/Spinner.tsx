@@ -20,10 +20,9 @@ export function Spinner({ label, showLabel = false, size = 'md', className }: Sp
     const text = label ?? intl.formatMessage(messages.loading);
     return (
         <ProgressBar
-            data-panneau="spinner"
             isIndeterminate
             aria-label={text}
-            className={cx(styles.spinner, styles[size], className)}
+            className={cx('panneau-spinner', styles.spinner, styles[size], className)}
         >
             <span className={styles.circle} aria-hidden="true" />
             {showLabel ? <span>{text}</span> : null}

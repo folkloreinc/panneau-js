@@ -75,7 +75,6 @@ export function NumberInput({
     const invalid = errors.length > 0;
     return (
         <NumberField
-            data-panneau="number-input"
             {...props}
             value={toAria(value)}
             defaultValue={toAria(defaultValue)}
@@ -84,7 +83,7 @@ export function NumberInput({
             isReadOnly={isReadOnly}
             isInvalid={invalid}
             validationBehavior="aria"
-            className={cx(fieldStyles.field, className)}
+            className={cx('panneau-number-input', fieldStyles.field, className)}
         >
             <FieldLabel isRequired={isRequired} className={labelClassName}>
                 {label}
