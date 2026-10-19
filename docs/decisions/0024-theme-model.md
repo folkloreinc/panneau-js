@@ -89,6 +89,13 @@ As built:
 
 `compact | comfortable | touch | auto` on the root and on scopes. Each density is a set of tokens, which a theme can redefine.
 
+As built:
+
+- The density tokens are `--panneau-control-height`, `--panneau-control-height-sm`, `--panneau-font-size-control`, `--panneau-control-padding-x` and `--panneau-row-padding-y`. Component tokens for paddings default to them: the horizontal padding of inputs and small buttons, buttons with one more step, and options of list boxes with half the row padding.
+- `PanneauRoot` takes `density`, written as `data-density` like `data-color-scheme`. `auto` is the default and keeps the previous behavior: touch on coarse pointers, comfortable otherwise. The definition's `theme.density` carries it from a backend.
+- A theme sets the tokens of each density in `densities`. For `auto`, `getThemeCss()` writes the comfortable values under `not (pointer: coarse)` and the touch values under `(pointer: coarse)`. Density tokens in `tokens` would apply to every density, so `bootstrapTheme` now sets Bootstrap's control sizes for the comfortable density only.
+- Densities on scopes come with `ThemeScope` (point 7).
+
 ### 6. Typed, composable themes as data
 
 - `defineTheme()` with typed token names (semantic, component, palette, and `PanneauTokens` for a project's own), and a console warning for an unknown token in Panneau's namespaces (`panneau-color-*`, `panneau-button-*`…), such as a typo in a theme loaded from JSON. The warning is not limited to development: a theme is defined once, and a typo in production is worth reporting.

@@ -14,7 +14,7 @@
     align-items: center;
     gap: var(--panneau-space-2);
     min-height: var(--panneau-control-height-sm);
-    padding: var(--panneau-list-box-item-padding-y, var(--panneau-space-1))
+    padding: var(--panneau-list-box-item-padding-y, calc(var(--panneau-row-padding-y) / 2))
         var(--panneau-list-box-item-padding-x, var(--panneau-space-2));
     font-size: var(--panneau-font-size-control);
     line-height: var(--panneau-line-height-tight);

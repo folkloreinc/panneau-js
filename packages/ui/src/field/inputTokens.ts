@@ -3,7 +3,7 @@ import { defineComponentTokens } from '../theme/componentTokens';
 /** Tokens of the input box of text inputs, text areas, selects, combo boxes, number inputs, date pickers and time inputs. */
 export const inputTokens = defineComponentTokens('input', {
     /** Horizontal padding. */
-    'padding-x': 'var(--panneau-space-3)',
+    'padding-x': 'var(--panneau-control-padding-x)',
     /** Background. */
     bg: 'var(--panneau-color-surface)',
     /** Width of the border. */

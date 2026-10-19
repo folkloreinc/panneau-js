@@ -36,13 +36,19 @@ describe('PanneauRoot', () => {
         );
         const root = screen.getByTestId('root');
         expect(root).toHaveAttribute('data-color-scheme', 'light');
+        expect(root).toHaveAttribute('data-density', 'auto');
         expect(root).toHaveClass('project');
         expect(screen.getByText('Hello')).toBeInTheDocument();
     });
 
     it('applies a theme through a scoped style', () => {
         render(
-            <PanneauRoot data-testid="root" theme={bootstrapTheme} colorScheme="auto">
+            <PanneauRoot
+                data-testid="root"
+                theme={bootstrapTheme}
+                colorScheme="auto"
+                density="compact"
+            >
                 <p>Hello</p>
             </PanneauRoot>,
         );
@@ -54,6 +60,7 @@ describe('PanneauRoot', () => {
             `[data-panneau-theme="${String(scope)}"]{--panneau-color-bg:var(--bs-body-bg);`,
         );
         expect(root).toHaveAttribute('data-color-scheme', 'auto');
+        expect(root).toHaveAttribute('data-density', 'compact');
     });
 
     it('adds the fonts of a theme to the page', () => {

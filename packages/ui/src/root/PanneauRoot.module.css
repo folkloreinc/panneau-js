@@ -100,9 +100,11 @@
     --panneau-shadow-md: 0 1px 3px rgb(0 0 0 / 0.08), 0 4px 12px rgb(0 0 0 / 0.08);
     --panneau-shadow-lg: 0 4px 8px rgb(0 0 0 / 0.08), 0 16px 40px rgb(0 0 0 / 0.16);
 
-    /* Controls */
+    /* Controls and rows: the comfortable density. Other densities redefine these tokens. */
     --panneau-control-height: 2.25rem;
     --panneau-control-height-sm: 1.875rem;
+    --panneau-control-padding-x: 0.75rem;
+    --panneau-row-padding-y: 0.5rem;
     --panneau-focus-width: 2px;
 
     /* Motion and layers */
@@ -195,12 +197,34 @@
     }
 }
 
-/* Touch screens: larger targets, and 16px text in inputs so that iOS doesn't zoom on focus. */
+/*
+ * Densities: compact, comfortable (the tokens above) and touch, with larger targets and 16px text in
+ * inputs so that iOS doesn't zoom on focus. `auto`, the default, is touch on coarse pointers (touch
+ * screens) and comfortable otherwise.
+ */
+:where(.root[data-density='compact']) {
+    --panneau-control-height: 2rem;
+    --panneau-control-height-sm: 1.625rem;
+    --panneau-font-size-control: 0.8125rem;
+    --panneau-control-padding-x: 0.5rem;
+    --panneau-row-padding-y: 0.25rem;
+}
+
+:where(.root[data-density='touch']) {
+    --panneau-control-height: 2.75rem;
+    --panneau-control-height-sm: 2.25rem;
+    --panneau-font-size-control: 1rem;
+    --panneau-control-padding-x: 0.75rem;
+    --panneau-row-padding-y: 0.75rem;
+}
+
 @media (pointer: coarse) {
-    :where(.root) {
+    :where(.root[data-density='auto']) {
         --panneau-control-height: 2.75rem;
         --panneau-control-height-sm: 2.25rem;
         --panneau-font-size-control: 1rem;
+        --panneau-control-padding-x: 0.75rem;
+        --panneau-row-padding-y: 0.75rem;
     }
 }
 

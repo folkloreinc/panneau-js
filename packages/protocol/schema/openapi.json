@@ -3289,6 +3289,22 @@
                             "additionalProperties": {}
                         }
                     },
+                    "densities": {
+                        "description": "Tokens of each density (`panneau-control-height`…), which change with the density of the root.",
+                        "type": "object",
+                        "properties": {
+                            "compact": {
+                                "$ref": "#/components/schemas/ThemeTokens"
+                            },
+                            "comfortable": {
+                                "$ref": "#/components/schemas/ThemeTokens"
+                            },
+                            "touch": {
+                                "$ref": "#/components/schemas/ThemeTokens"
+                            }
+                        },
+                        "additionalProperties": {}
+                    },
                     "fonts": {
                         "description": "Font faces and font stylesheets, added to the page once.",
                         "type": "array",
@@ -3364,6 +3380,22 @@
                             "additionalProperties": {}
                         }
                     },
+                    "densities": {
+                        "description": "Tokens of each density (`panneau-control-height`…), which change with the density of the root.",
+                        "type": "object",
+                        "properties": {
+                            "compact": {
+                                "$ref": "#/components/schemas/ThemeTokens"
+                            },
+                            "comfortable": {
+                                "$ref": "#/components/schemas/ThemeTokens"
+                            },
+                            "touch": {
+                                "$ref": "#/components/schemas/ThemeTokens"
+                            }
+                        },
+                        "additionalProperties": {}
+                    },
                     "fonts": {
                         "description": "Font faces and font stylesheets, added to the page once.",
                         "type": "array",
@@ -3376,6 +3408,15 @@
                         "enum": [
                             "light",
                             "dark",
+                            "auto"
+                        ]
+                    },
+                    "density": {
+                        "type": "string",
+                        "enum": [
+                            "compact",
+                            "comfortable",
+                            "touch",
                             "auto"
                         ]
                     },

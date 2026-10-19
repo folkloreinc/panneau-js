@@ -1,7 +1,7 @@
 import { type ComponentTokenName, componentTokens } from './components';
 import type { ThemeFont } from './fonts';
 import { SEMANTIC_TOKENS, type SemanticTokenName } from './semanticTokens';
-import type { Theme } from './theme';
+import type { Density, Theme } from './theme';
 import type { ToneInput } from './tones';
 
 /**
@@ -50,6 +50,8 @@ export interface ThemeDefinition {
     tones?: Record<string, ToneInput>;
     /** Named variants of components. Declare them in `BadgeVariants` (and the like). */
     components?: Record<string, { variants?: Record<string, ThemeTokens> }>;
+    /** Tokens of each density, which change with the density of the root. */
+    densities?: Partial<Record<Exclude<Density, 'auto'>, ThemeTokens>>;
     /** Font faces and font stylesheets. */
     fonts?: ThemeFont[];
 }
@@ -93,6 +95,21 @@ function mergeComponents(
     );
 }
 
+const DENSITIES = ['compact', 'comfortable', 'touch'] as const;
+
+function mergeDensities(first: Theme['densities'], second: Theme['densities']): Theme['densities'] {
+    if (first === undefined && second === undefined) {
+        return undefined;
+    }
+    const densities = { ...first, ...second };
+    DENSITIES.forEach((density) => {
+        if (first?.[density] !== undefined && second?.[density] !== undefined) {
+            densities[density] = { ...first[density], ...second[density] };
+        }
+    });
+    return densities;
+}
+
 function mergeFonts(first: Theme['fonts'], second: Theme['fonts']): Theme['fonts'] {
     if (first === undefined && second === undefined) {
         return undefined;
@@ -108,7 +125,7 @@ function mergeFonts(first: Theme['fonts'], second: Theme['fonts']): Theme['fonts
  * Merges themes, in order: each one overrides the tokens, palette colors, tones and variants of
  * those before it. A token a theme sets in `tokens` but not in `dark` applies to both schemes, so it
  * also replaces the dark value of earlier themes. Variants merge token by token; tones are replaced
- * whole; fonts add up. The label is the last one set. Same as `mergeThemes()` of `@panneau/protocol`.
+ * whole; densities merge token by token; fonts add up. The label is the last one set. Same as `mergeThemes()` of `@panneau/protocol`.
  */
 export function mergeThemes(...themes: readonly Partial<Theme>[]): Theme {
     return themes.reduce<Theme>(
@@ -133,6 +150,7 @@ export function mergeThemes(...themes: readonly Partial<Theme>[]): Theme {
                 palette: mergeRecords(merged.palette, theme.palette),
                 tones: mergeRecords(merged.tones, theme.tones),
                 components: mergeComponents(merged.components, theme.components),
+                densities: mergeDensities(merged.densities, theme.densities),
                 fonts: mergeFonts(merged.fonts, theme.fonts),
             };
             return Object.fromEntries(
@@ -158,7 +176,7 @@ const KNOWN_TOKENS = new Set<string>([
 ]);
 
 /**
- * Tokens of a theme that Panneau doesn't know although they are in its namespaces
+ * Tokens of a theme (in its tokens, dark tokens, densities and variants) that Panneau doesn't know although they are in its namespaces
  * (`panneau-color-*`, `panneau-button-*`…): most likely typos. Tokens of a project's own components
  * are outside these namespaces, and palette colors are always accepted.
  */
@@ -166,6 +184,7 @@ export function findUnknownTokens(theme: Theme): string[] {
     const names = [
         ...Object.keys(theme.tokens),
         ...Object.keys(theme.dark ?? {}),
+        ...Object.values(theme.densities ?? {}).flatMap((tokens) => Object.keys(tokens)),
         ...Object.values(theme.components ?? {}).flatMap(({ variants = {} }) =>
             Object.values(variants).flatMap((tokens) => Object.keys(tokens)),
         ),

@@ -302,6 +302,9 @@ export function defineComponentTokens<const Component extends string, const Toke
 export function defineTheme(definition: ThemeDefinition): Theme;
 
 // @public
+export type Density = 'compact' | 'comfortable' | 'touch' | 'auto';
+
+// @public
 export function deriveTone(color: string): {
     light: ToneValues;
     dark: ToneValues;
@@ -587,6 +590,7 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
     // (undocumented)
     children?: ReactNode;
     colorScheme?: ColorScheme;
+    density?: Density;
     locale?: string;
     theme?: Theme | null;
 }
@@ -694,7 +698,7 @@ export interface SelectOption {
 export type SelectProps = SingleSelectProps | MultipleSelectProps;
 
 // @public
-export const SEMANTIC_TOKENS: readonly ["panneau-color-bg", "panneau-color-surface", "panneau-color-surface-sunken", "panneau-color-surface-raised", "panneau-color-hover", "panneau-color-pressed", "panneau-color-backdrop", "panneau-color-text", "panneau-color-text-muted", "panneau-color-link", "panneau-color-border", "panneau-color-border-control", "panneau-color-accent", "panneau-color-accent-hover", "panneau-color-accent-text", "panneau-color-accent-subtle", "panneau-color-focus", "panneau-color-danger", "panneau-color-danger-subtle", "panneau-color-danger-border", "panneau-color-danger-solid", "panneau-color-danger-solid-hover", "panneau-color-danger-solid-text", "panneau-color-success", "panneau-color-success-subtle", "panneau-color-success-border", "panneau-color-success-solid", "panneau-color-success-solid-hover", "panneau-color-success-solid-text", "panneau-color-warning", "panneau-color-warning-subtle", "panneau-color-warning-border", "panneau-color-warning-solid", "panneau-color-warning-solid-hover", "panneau-color-warning-solid-text", "panneau-color-info", "panneau-color-info-subtle", "panneau-color-info-border", "panneau-color-info-solid", "panneau-color-info-solid-hover", "panneau-color-info-solid-text", "panneau-font-family-body", "panneau-font-family-heading", "panneau-font-family-display", "panneau-font-family-mono", "panneau-font-family", "panneau-font-numeric", "panneau-font-size-xs", "panneau-font-size-sm", "panneau-font-size-md", "panneau-font-size-lg", "panneau-font-size-xl", "panneau-font-size-control", "panneau-line-height", "panneau-line-height-tight", "panneau-font-weight-normal", "panneau-font-weight-medium", "panneau-font-weight-bold", "panneau-space-1", "panneau-space-2", "panneau-space-3", "panneau-space-4", "panneau-space-5", "panneau-space-6", "panneau-space-8", "panneau-space-10", "panneau-radius-sm", "panneau-radius-md", "panneau-radius-lg", "panneau-radius-full", "panneau-border-width", "panneau-shadow-sm", "panneau-shadow-md", "panneau-shadow-lg", "panneau-control-height", "panneau-control-height-sm", "panneau-focus-width", "panneau-duration", "panneau-z-overlay", "panneau-z-toast"];
+export const SEMANTIC_TOKENS: readonly ["panneau-color-bg", "panneau-color-surface", "panneau-color-surface-sunken", "panneau-color-surface-raised", "panneau-color-hover", "panneau-color-pressed", "panneau-color-backdrop", "panneau-color-text", "panneau-color-text-muted", "panneau-color-link", "panneau-color-border", "panneau-color-border-control", "panneau-color-accent", "panneau-color-accent-hover", "panneau-color-accent-text", "panneau-color-accent-subtle", "panneau-color-focus", "panneau-color-danger", "panneau-color-danger-subtle", "panneau-color-danger-border", "panneau-color-danger-solid", "panneau-color-danger-solid-hover", "panneau-color-danger-solid-text", "panneau-color-success", "panneau-color-success-subtle", "panneau-color-success-border", "panneau-color-success-solid", "panneau-color-success-solid-hover", "panneau-color-success-solid-text", "panneau-color-warning", "panneau-color-warning-subtle", "panneau-color-warning-border", "panneau-color-warning-solid", "panneau-color-warning-solid-hover", "panneau-color-warning-solid-text", "panneau-color-info", "panneau-color-info-subtle", "panneau-color-info-border", "panneau-color-info-solid", "panneau-color-info-solid-hover", "panneau-color-info-solid-text", "panneau-font-family-body", "panneau-font-family-heading", "panneau-font-family-display", "panneau-font-family-mono", "panneau-font-family", "panneau-font-numeric", "panneau-font-size-xs", "panneau-font-size-sm", "panneau-font-size-md", "panneau-font-size-lg", "panneau-font-size-xl", "panneau-font-size-control", "panneau-line-height", "panneau-line-height-tight", "panneau-font-weight-normal", "panneau-font-weight-medium", "panneau-font-weight-bold", "panneau-space-1", "panneau-space-2", "panneau-space-3", "panneau-space-4", "panneau-space-5", "panneau-space-6", "panneau-space-8", "panneau-space-10", "panneau-radius-sm", "panneau-radius-md", "panneau-radius-lg", "panneau-radius-full", "panneau-border-width", "panneau-shadow-sm", "panneau-shadow-md", "panneau-shadow-lg", "panneau-control-height", "panneau-control-height-sm", "panneau-control-padding-x", "panneau-row-padding-y", "panneau-focus-width", "panneau-duration", "panneau-z-overlay", "panneau-z-toast"];
 
 // @public
 export type SemanticTokenName = (typeof SEMANTIC_TOKENS)[number];
@@ -843,6 +847,7 @@ export type Theme = {
     components?: Record<string, {
         variants?: Record<string, Record<string, string>>;
     }>;
+    densities?: Partial<Record<Exclude<Density, 'auto'>, Record<string, string>>>;
     fonts?: ThemeFont[];
 };
 
@@ -866,6 +871,7 @@ export interface ThemeDefinition {
         variants?: Record<string, ThemeTokens>;
     }>;
     dark?: ThemeTokens;
+    densities?: Partial<Record<Exclude<Density, 'auto'>, ThemeTokens>>;
     extends?: Theme | readonly Theme[];
     fonts?: ThemeFont[];
     label?: string;

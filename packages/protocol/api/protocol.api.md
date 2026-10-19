@@ -898,6 +898,12 @@ export const Definition: z.ZodObject<{
             auto: "auto";
             light: "light";
         }>>;
+        density: z.ZodOptional<z.ZodEnum<{
+            auto: "auto";
+            compact: "compact";
+            comfortable: "comfortable";
+            touch: "touch";
+        }>>;
         extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         label: z.ZodOptional<z.ZodString>;
         dark: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
@@ -923,6 +929,11 @@ export const Definition: z.ZodObject<{
         components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
             variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
         }, z.core.$loose>>>;
+        densities: z.ZodOptional<z.ZodObject<{
+            compact: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+            comfortable: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+            touch: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        }, z.core.$loose>>;
         fonts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
             family: z.ZodString;
             src: z.ZodString;
@@ -963,6 +974,12 @@ export const DefinitionTheme: z.ZodObject<{
         auto: "auto";
         light: "light";
     }>>;
+    density: z.ZodOptional<z.ZodEnum<{
+        auto: "auto";
+        compact: "compact";
+        comfortable: "comfortable";
+        touch: "touch";
+    }>>;
     extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
     label: z.ZodOptional<z.ZodString>;
     dark: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
@@ -988,6 +1005,11 @@ export const DefinitionTheme: z.ZodObject<{
     components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
         variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
     }, z.core.$loose>>>;
+    densities: z.ZodOptional<z.ZodObject<{
+        compact: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        comfortable: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        touch: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+    }, z.core.$loose>>;
     fonts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
         family: z.ZodString;
         src: z.ZodString;
@@ -2305,6 +2327,11 @@ export const namedSchemas: {
         components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
             variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
         }, z.core.$loose>>>;
+        densities: z.ZodOptional<z.ZodObject<{
+            compact: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+            comfortable: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+            touch: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        }, z.core.$loose>>;
         fonts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
             family: z.ZodString;
             src: z.ZodString;
@@ -2328,6 +2355,12 @@ export const namedSchemas: {
             dark: "dark";
             auto: "auto";
             light: "light";
+        }>>;
+        density: z.ZodOptional<z.ZodEnum<{
+            auto: "auto";
+            compact: "compact";
+            comfortable: "comfortable";
+            touch: "touch";
         }>>;
         extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         label: z.ZodOptional<z.ZodString>;
@@ -2354,6 +2387,11 @@ export const namedSchemas: {
         components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
             variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
         }, z.core.$loose>>>;
+        densities: z.ZodOptional<z.ZodObject<{
+            compact: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+            comfortable: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+            touch: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        }, z.core.$loose>>;
         fonts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
             family: z.ZodString;
             src: z.ZodString;
@@ -2750,6 +2788,12 @@ export const namedSchemas: {
                 auto: "auto";
                 light: "light";
             }>>;
+            density: z.ZodOptional<z.ZodEnum<{
+                auto: "auto";
+                compact: "compact";
+                comfortable: "comfortable";
+                touch: "touch";
+            }>>;
             extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             label: z.ZodOptional<z.ZodString>;
             dark: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
@@ -2775,6 +2819,11 @@ export const namedSchemas: {
             components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
                 variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
             }, z.core.$loose>>>;
+            densities: z.ZodOptional<z.ZodObject<{
+                compact: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+                comfortable: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+                touch: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+            }, z.core.$loose>>;
             fonts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                 family: z.ZodString;
                 src: z.ZodString;
@@ -3702,6 +3751,11 @@ export const Theme: z.ZodObject<{
     components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
         variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
     }, z.core.$loose>>>;
+    densities: z.ZodOptional<z.ZodObject<{
+        compact: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        comfortable: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        touch: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+    }, z.core.$loose>>;
     fonts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
         family: z.ZodString;
         src: z.ZodString;

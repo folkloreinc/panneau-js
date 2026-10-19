@@ -13,7 +13,7 @@
 
 .table th,
 .table td {
-    padding: var(--panneau-space-2) var(--panneau-space-3);
+    padding: var(--panneau-row-padding-y) var(--panneau-space-3);
     text-align: start;
     vertical-align: middle;
     border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);

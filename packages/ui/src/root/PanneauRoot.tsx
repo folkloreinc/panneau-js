@@ -5,7 +5,13 @@ import { IntlContext, IntlProvider, type IntlShape } from 'react-intl';
 import { getPanneauMessages } from '@panneau/intl';
 
 import { getFontFaceCss, getFontStylesheets } from '../theme/fonts';
-import { type ColorScheme, type Theme, getThemeCss, hashString } from '../theme/theme';
+import {
+    type ColorScheme,
+    type Density,
+    type Theme,
+    getThemeCss,
+    hashString,
+} from '../theme/theme';
 import { ToastProvider } from '../toast/Toast';
 import { cx } from '../utils/cx';
 import styles from './PanneauRoot.module.css';
@@ -18,6 +24,11 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
     theme?: Theme | null;
     /** Defaults to `light`. `auto` follows the system setting. */
     colorScheme?: ColorScheme;
+    /**
+     * How much room controls and rows take: `compact`, `comfortable` or `touch`. Defaults to
+     * `auto`: `touch` on touch screens, `comfortable` otherwise.
+     */
+    density?: Density;
     /**
      * Locale of dates and numbers in React Aria components. Defaults to the react-intl locale, or
      * to the browser's without an `IntlProvider`.
@@ -78,6 +89,7 @@ function PanneauIntlProvider({
 export function PanneauRoot({
     theme = null,
     colorScheme = 'light',
+    density = 'auto',
     locale,
     className,
     children,
@@ -93,6 +105,7 @@ export function PanneauRoot({
             {...props}
             className={cx('panneau-root', styles.root, styles.container, className)}
             data-color-scheme={colorScheme}
+            data-density={density}
             data-panneau-theme={scope}
         >
             {scope !== undefined ? (
@@ -114,6 +127,7 @@ export function PanneauRoot({
                         regionClassName={styles.root}
                         regionProps={{
                             'data-color-scheme': colorScheme,
+                            'data-density': density,
                             'data-panneau-theme': scope,
                         }}
                     >

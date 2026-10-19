@@ -86,9 +86,15 @@ describe('findUnknownTokens', () => {
             findUnknownTokens({
                 tokens: { 'panneau-space-7': '1.75rem', 'my-token': '1px' },
                 dark: { 'panneau-tone-text': '#fff' },
+                densities: { compact: { 'panneau-control-heigth': '2rem' } },
                 components: { badge: { variants: { tag: { 'panneau-badge-colour': 'red' } } } },
             }),
-        ).toEqual(['panneau-space-7', 'panneau-tone-text', 'panneau-badge-colour']);
+        ).toEqual([
+            'panneau-space-7',
+            'panneau-tone-text',
+            'panneau-control-heigth',
+            'panneau-badge-colour',
+        ]);
     });
 
     it('accepts the tokens of the Bootstrap theme', () => {
@@ -97,6 +103,33 @@ describe('findUnknownTokens', () => {
 });
 
 describe('mergeThemes', () => {
+    it('merges densities token by token', () => {
+        expect(
+            mergeThemes(
+                {
+                    tokens: {},
+                    densities: {
+                        compact: { 'panneau-control-height': '1.75rem' },
+                        touch: { 'panneau-control-height': '3rem' },
+                    },
+                },
+                {
+                    densities: {
+                        compact: { 'panneau-control-padding-x': '0.375rem' },
+                        comfortable: { 'panneau-control-height': '2.5rem' },
+                    },
+                },
+            ).densities,
+        ).toEqual({
+            compact: {
+                'panneau-control-height': '1.75rem',
+                'panneau-control-padding-x': '0.375rem',
+            },
+            comfortable: { 'panneau-control-height': '2.5rem' },
+            touch: { 'panneau-control-height': '3rem' },
+        });
+    });
+
     it('adds up fonts, once each', () => {
         const geist = { family: 'Geist', src: 'local(Geist)' };
         const inter = { stylesheet: 'https://fonts.example.com/inter.css' };

@@ -59,6 +59,21 @@
                         "additionalProperties": {}
                     }
                 },
+                "densities": {
+                    "type": "object",
+                    "properties": {
+                        "compact": {
+                            "$ref": "#/$defs/ThemeTokens"
+                        },
+                        "comfortable": {
+                            "$ref": "#/$defs/ThemeTokens"
+                        },
+                        "touch": {
+                            "$ref": "#/$defs/ThemeTokens"
+                        }
+                    },
+                    "additionalProperties": {}
+                },
                 "fonts": {
                     "type": "array",
                     "items": {
