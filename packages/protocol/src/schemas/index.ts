@@ -36,7 +36,16 @@ import { BlockType, Field, Rule } from './field';
 import { LayoutNode } from './layout';
 import { Column, Filter, ListDefinition } from './list';
 import { Resource, ResourceFeatures } from './resource';
-import { DefinitionTheme, Theme, ThemeTokens, ToneInput, ToneValues } from './theme';
+import {
+    DefinitionTheme,
+    Theme,
+    ThemeFont,
+    ThemeFontFace,
+    ThemeFontStylesheet,
+    ThemeTokens,
+    ToneInput,
+    ToneValues,
+} from './theme';
 
 export * from './common';
 export * from './field';
@@ -79,6 +88,9 @@ export const namedSchemas = {
     ThemeTokens,
     ToneValues,
     ToneInput,
+    ThemeFontFace,
+    ThemeFontStylesheet,
+    ThemeFont,
     Theme,
     DefinitionTheme,
     Definition,

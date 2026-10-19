@@ -12,9 +12,11 @@ import { ComboBox } from '../combo-box/ComboBox';
 import { DatePicker } from '../date-picker/DatePicker';
 import { Disclosure } from '../disclosure/Disclosure';
 import { Fieldset } from '../field/Fieldset';
+import { Heading } from '../heading/Heading';
 import { IconButton } from '../icon-button/IconButton';
 import { Icon } from '../icon/Icon';
 import { NumberInput } from '../number-input/NumberInput';
+import { Prose } from '../prose/Prose';
 import { RadioGroup } from '../radio-group/RadioGroup';
 import { PanneauRoot } from '../root/PanneauRoot';
 import { Select } from '../select/Select';
@@ -23,6 +25,7 @@ import { Switch } from '../switch/Switch';
 import { Tab, TabList, TabPanel, Tabs } from '../tabs/Tabs';
 import { TextArea } from '../text-area/TextArea';
 import { TextInput } from '../text-input/TextInput';
+import { Text } from '../text/Text';
 import { TimeInput } from '../time-input/TimeInput';
 
 const options = [
@@ -40,9 +43,11 @@ const cases: [string, ReactNode][] = [
     ['date-picker', <DatePicker key="date-picker" label="Date" />],
     ['disclosure', <Disclosure key="disclosure" title="More" />],
     ['fieldset', <Fieldset key="fieldset" legend="Group" />],
+    ['heading', <Heading key="heading">Title</Heading>],
     ['icon', <Icon key="icon" icon={Plus} />],
     ['icon-button', <IconButton key="icon-button" icon={Plus} label="Add" showTooltip={false} />],
     ['number-input', <NumberInput key="number-input" label="Count" />],
+    ['prose', <Prose key="prose" />],
     ['radio-group', <RadioGroup key="radio-group" label="Choice" options={options} />],
     ['radio', <RadioGroup key="radio" label="Choice" options={options} />],
     ['select', <Select key="select" label="Choice" options={options} />],
@@ -57,6 +62,7 @@ const cases: [string, ReactNode][] = [
             <TabPanel id="one">Panel</TabPanel>
         </Tabs>,
     ],
+    ['text', <Text key="text">Body</Text>],
     ['text-area', <TextArea key="text-area" label="Notes" />],
     ['text-input', <TextInput key="text-input" label="Title" />],
     ['time-input', <TimeInput key="time-input" label="Time" />],

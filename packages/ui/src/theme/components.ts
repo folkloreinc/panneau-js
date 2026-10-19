@@ -8,13 +8,16 @@ import { dialogTokens } from '../dialog/tokens';
 import { disclosureTokens } from '../disclosure/tokens';
 import { inputTokens } from '../field/inputTokens';
 import { fieldTokens } from '../field/tokens';
+import { headingTokens } from '../heading/tokens';
 import { numberInputTokens } from '../number-input/tokens';
 import { popoverTokens } from '../popover/tokens';
+import { proseTokens } from '../prose/tokens';
 import { radioTokens } from '../radio-group/tokens';
 import { listBoxTokens } from '../select/listBoxTokens';
 import { spinnerTokens } from '../spinner/tokens';
 import { switchTokens } from '../switch/tokens';
 import { tabsTokens } from '../tabs/tokens';
+import { textTokens } from '../text/tokens';
 import { toastTokens } from '../toast/tokens';
 import { tooltipTokens } from '../tooltip/tokens';
 
@@ -32,14 +35,17 @@ export const componentTokens = Object.freeze({
     dialog: dialogTokens.tokens,
     disclosure: disclosureTokens.tokens,
     field: fieldTokens.tokens,
+    heading: headingTokens.tokens,
     input: inputTokens.tokens,
     'list-box': listBoxTokens.tokens,
     'number-input': numberInputTokens.tokens,
     popover: popoverTokens.tokens,
+    prose: proseTokens.tokens,
     radio: radioTokens.tokens,
     spinner: spinnerTokens.tokens,
     switch: switchTokens.tokens,
     tabs: tabsTokens.tokens,
+    text: textTokens.tokens,
     toast: toastTokens.tokens,
     tooltip: tooltipTokens.tokens,
 });

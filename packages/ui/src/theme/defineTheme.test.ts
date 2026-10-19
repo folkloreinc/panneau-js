@@ -97,6 +97,14 @@ describe('findUnknownTokens', () => {
 });
 
 describe('mergeThemes', () => {
+    it('adds up fonts, once each', () => {
+        const geist = { family: 'Geist', src: 'local(Geist)' };
+        const inter = { stylesheet: 'https://fonts.example.com/inter.css' };
+        expect(
+            mergeThemes({ tokens: {}, fonts: [geist] }, { fonts: [{ ...geist }, inter] }).fonts,
+        ).toEqual([geist, inter]);
+    });
+
     it('drops the dark value of a token that a later theme sets for both schemes', () => {
         const theme = mergeThemes(
             {

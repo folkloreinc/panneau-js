@@ -36,6 +36,17 @@ describe('Theme', () => {
         expect(Theme.safeParse({ tokens: {}, tones: { Signal: 'red' } }).success).toBe(false);
     });
 
+    it('accepts fonts, and refuses font faces that would break out of the rule', () => {
+        const fonts = [
+            { family: 'Geist', src: 'url(data:font/woff2;base64,AAAA)', display: 'swap' },
+            { stylesheet: 'https://fonts.example.com/inter.css' },
+        ];
+        expect(Theme.safeParse({ tokens: {}, fonts }).success).toBe(true);
+        expect(
+            Theme.safeParse({ tokens: {}, fonts: [{ family: 'A"}', src: 'local(a)' }] }).success,
+        ).toBe(false);
+    });
+
     it('lets the theme of a definition extend themes of plugins, without its own tokens', () => {
         const result = DefinitionTheme.safeParse({ colorScheme: 'auto', extends: ['brand'] });
         expect(result.success).toBe(true);
@@ -104,6 +115,15 @@ describe('mergeThemes', () => {
             },
             button: { variants: { cta: { 'panneau-button-radius': '99px' } } },
         });
+    });
+
+    it('adds up fonts, once each', () => {
+        const geist = { family: 'Geist', src: 'local(Geist)' };
+        const inter = { stylesheet: 'https://fonts.example.com/inter.css' };
+        expect(mergeThemes({ fonts: [geist] }, { fonts: [{ ...geist }, inter] }).fonts).toEqual([
+            geist,
+            inter,
+        ]);
     });
 
     it('returns an empty theme without themes', () => {

@@ -42,11 +42,22 @@ function mergeComponents(
     );
 }
 
+function mergeFonts(first: Theme['fonts'], second: Theme['fonts']): Theme['fonts'] {
+    if (first === undefined && second === undefined) {
+        return undefined;
+    }
+    const fonts = [...(first ?? []), ...(second ?? [])];
+    return fonts.filter(
+        (font, index) =>
+            fonts.findIndex((other) => JSON.stringify(other) === JSON.stringify(font)) === index,
+    );
+}
+
 /**
  * Merges themes, in order: each one overrides the tokens, palette colors, tones and variants of
  * those before it. A token a theme sets in `tokens` but not in `dark` applies to both schemes, so it
  * also replaces the dark value of earlier themes. Variants merge token by token; tones are replaced
- * whole. The label is the last one set. `defineTheme()` of `@panneau/ui` merges the same way.
+ * whole; fonts add up. The label is the last one set. `defineTheme()` of `@panneau/ui` merges the same way.
  */
 export function mergeThemes(...themes: readonly PartialTheme[]): Theme {
     return themes.reduce<Theme>(
@@ -71,6 +82,7 @@ export function mergeThemes(...themes: readonly PartialTheme[]): Theme {
                 palette: mergeRecords(merged.palette, theme.palette),
                 tones: mergeRecords(merged.tones, theme.tones),
                 components: mergeComponents(merged.components, theme.components),
+                fonts: mergeFonts(merged.fonts, theme.fonts),
             };
             return Object.fromEntries(
                 Object.entries(result).filter(([, value]) => value !== undefined),

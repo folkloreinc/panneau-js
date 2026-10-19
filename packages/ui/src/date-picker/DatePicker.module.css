@@ -9,7 +9,7 @@
     min-width: 0;
     overflow-x: auto;
     white-space: nowrap;
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: var(--panneau-font-numeric);
 }
 
 .segment {
@@ -95,7 +95,7 @@
     width: var(--panneau-calendar-cell-size, 2.25rem);
     height: var(--panneau-calendar-cell-size, 2.25rem);
     font-size: var(--panneau-font-size-md);
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: var(--panneau-font-numeric);
     cursor: pointer;
     border-radius: var(--panneau-calendar-cell-radius, var(--panneau-radius-md));
     outline: none;

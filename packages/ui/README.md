@@ -129,6 +129,41 @@ declare module '@panneau/ui' {
 
 `SEMANTIC_TOKENS` lists the semantic tokens, `componentTokens` the component tokens.
 
+### Typography and fonts
+
+The theme has four font roles: `--panneau-font-family-body`, `-heading` (the body's by default), `-display` (the heading's by default) and `-mono`. `--panneau-font-family` is a deprecated alias of the body family: set `-body` instead, so that headings follow it. `--panneau-font-numeric` (`tabular-nums`) lines up digits in stats, dates and tables.
+
+Panneau styles no element beyond its reset, since it is often embedded in someone else's page. Three components apply the typography of the theme:
+
+- `Heading`: a `level` (`h1`–`h6`, 2 by default) and a visual `size`, independent of it: `1` to `4`, `display-1` and `display-2`, like Bootstrap's `.h1` and `.display-1`. Its tokens (`--panneau-heading-1-font-size`, `--panneau-heading-display-1-font-weight`…) set the size, weight, line height and letter spacing of each size.
+- `Text`: `size` (`xs` to `xl`), `weight`, `family` (a font role), `tone`, `muted`, `numeric` and `truncate`, as a `p` by default (`as="span"`).
+- `Prose`: styles the elements of rich content inside it (headings, lists, links, quotes, code, tables), such as the output of an editor or Markdown.
+
+```tsx
+<Heading level={1} size="display-2">
+    1,204 pages
+</Heading>
+<Text muted size="sm">
+    Updated today
+</Text>
+<Prose dangerouslySetInnerHTML={{ __html: page.body }} />
+```
+
+A theme declares its fonts: font faces, written as `@font-face` rules, or a hosted stylesheet. `PanneauRoot` adds them to the page once, however many roots use the theme.
+
+```ts
+const editorial = defineTheme({
+    fonts: [
+        { family: 'Geist', src: "url(/fonts/geist.woff2) format('woff2')", weight: '100 900' },
+        { stylesheet: 'https://fonts.googleapis.com/css2?family=Fraunces:wght@600&display=swap' },
+    ],
+    tokens: {
+        'panneau-font-family-body': 'Geist, system-ui, sans-serif',
+        'panneau-font-family-heading': 'Fraunces, Georgia, serif',
+    },
+});
+```
+
 ### Classes
 
 Class names are stable and readable, without a hash, like Bootstrap's: target them in a project's CSS.
@@ -153,7 +188,7 @@ The theme model is described in [decision 0024](../../docs/decisions/0024-theme-
 
 ## Primitives
 
-`Button`, `IconButton`, `TextInput`, `TextArea`, `NumberInput`, `Select` (single or multiple), `ComboBox`, `Checkbox`, `Switch`, `RadioGroup`, `DatePicker`, `TimeInput`, `Fieldset`, `Dialog`, `Popover`, `Menu`, `Tabs`, `Tooltip`, toasts (`useToast()`), `Alert`, `Badge`, `Spinner`, `Card`, `Disclosure` and `Icon`.
+`Heading`, `Text`, `Prose`, `Button`, `IconButton`, `TextInput`, `TextArea`, `NumberInput`, `Select` (single or multiple), `ComboBox`, `Checkbox`, `Switch`, `RadioGroup`, `DatePicker`, `TimeInput`, `Fieldset`, `Dialog`, `Popover`, `Menu`, `Tabs`, `Tooltip`, toasts (`useToast()`), `Alert`, `Badge`, `Spinner`, `Card`, `Disclosure` and `Icon`.
 
 - Every component accepts `className`, and `xxxClassName` props for its inner elements (`labelClassName`, `inputClassName`…).
 - Labelled controls take `label`, `description` and `errors` (a list of messages: any message makes the control invalid and describes it).

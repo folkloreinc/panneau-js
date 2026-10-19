@@ -1,3 +1,4 @@
+import type { ThemeFont } from './fonts';
 import {
     TONE_VARIABLES,
     type ToneInput,
@@ -37,6 +38,11 @@ export type Theme = {
      * its `panneau-badge-variant-tag` class. Declare them in `BadgeVariants` (and the like).
      */
     components?: Record<string, { variants?: Record<string, Record<string, string>> }>;
+    /**
+     * Font faces and font stylesheets, which `PanneauRoot` adds to the page once. Font tokens
+     * (`panneau-font-family-heading`) then use their families.
+     */
+    fonts?: ThemeFont[];
 };
 
 /** `auto` follows the system setting (`prefers-color-scheme`). */

@@ -27,6 +27,14 @@ describe('themes as data', () => {
                 },
             },
             components: { badge: { variants: { tag: { 'panneau-badge-radius': '0' } } } },
+            fonts: [
+                {
+                    family: 'Geist',
+                    src: "url(/fonts/geist.woff2) format('woff2')",
+                    weight: '100 900',
+                },
+                { stylesheet: 'https://fonts.example.com/inter.css' },
+            ],
         });
         expect(ThemeSchema.safeParse(bootstrapTheme).success).toBe(true);
         expect(ThemeSchema.safeParse(theme).success).toBe(true);
