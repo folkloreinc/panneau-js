@@ -46,40 +46,17 @@
     outline-offset: 2px;
 }
 
-.success {
-    border-inline-start-color: var(--panneau-color-success);
-}
-
-.danger {
-    border-inline-start-color: var(--panneau-color-danger);
-}
-
-.warning {
-    border-inline-start-color: var(--panneau-color-warning);
-}
-
-.info {
-    border-inline-start-color: var(--panneau-color-info);
-}
-
 .icon {
     margin-top: 0.125rem;
 }
 
-.success .icon {
-    color: var(--panneau-color-success);
+/* A toast with a tone other than neutral: a colored edge and icon, from its tone class. */
+.toned {
+    border-inline-start-color: var(--panneau-tone-text);
 }
 
-.danger .icon {
-    color: var(--panneau-color-danger);
-}
-
-.warning .icon {
-    color: var(--panneau-color-warning);
-}
-
-.info .icon {
-    color: var(--panneau-color-info);
+.toned .icon {
+    color: var(--panneau-tone-text);
 }
 
 .content {

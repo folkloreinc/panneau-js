@@ -11,41 +11,28 @@
     font-variant-numeric: tabular-nums;
     line-height: 1;
     white-space: nowrap;
-    color: var(--panneau-color-text);
-    background-color: var(--panneau-color-surface-sunken);
-    border: var(--panneau-badge-border-width, var(--panneau-border-width)) solid
-        var(--panneau-color-border);
+    border: var(--panneau-badge-border-width, var(--panneau-border-width)) solid transparent;
     border-radius: var(--panneau-badge-radius, var(--panneau-radius-full));
 }
 
-.success {
-    color: var(--panneau-color-success);
-    background-color: var(--panneau-color-success-subtle);
-    border-color: var(--panneau-color-success-border);
+/* Appearances: they read the --panneau-tone-* variables of the tone class (decision 0024). */
+
+.subtle {
+    color: var(--panneau-tone-text);
+    background-color: var(--panneau-tone-subtle);
+    border-color: var(--panneau-tone-border);
 }
 
-.danger {
-    color: var(--panneau-color-danger);
-    background-color: var(--panneau-color-danger-subtle);
-    border-color: var(--panneau-color-danger-border);
+.solid {
+    color: var(--panneau-tone-solid-text);
+    background-color: var(--panneau-tone-solid);
+    border-color: var(--panneau-tone-solid);
 }
 
-.warning {
-    color: var(--panneau-color-warning);
-    background-color: var(--panneau-color-warning-subtle);
-    border-color: var(--panneau-color-warning-border);
-}
-
-.info {
-    color: var(--panneau-color-info);
-    background-color: var(--panneau-color-info-subtle);
-    border-color: var(--panneau-color-info-border);
-}
-
-.accent {
-    color: var(--panneau-color-accent-text);
-    background-color: var(--panneau-color-accent);
-    border-color: var(--panneau-color-accent);
+.outline {
+    color: var(--panneau-tone-text);
+    background-color: transparent;
+    border-color: var(--panneau-tone-outline);
 }
 
 .visuallyHidden {

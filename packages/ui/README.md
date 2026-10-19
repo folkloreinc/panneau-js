@@ -51,6 +51,46 @@ Every component reads its own tokens, `--panneau-<component>-<token>`, which def
 - `list-box`: options of selects, combo boxes and menus;
 - `calendar`.
 
+### Tones and appearances
+
+Components with a color take a `tone`, like Bootstrap's theme colors: `neutral`, `accent`, `success`, `warning`, `danger` and `info` are built in. `Button`, `Badge` and `Alert` also take an `appearance` (`solid`, `outline`, `subtle`, and `ghost` for buttons):
+
+```tsx
+<Button tone="accent">Save</Button>
+<Button tone="danger" appearance="outline">Remove</Button>
+<Badge tone="success">Published</Badge>
+<Alert tone="warning" appearance="solid" title="Scheduled" />
+```
+
+The `variant` values of `Button` (`primary`, `secondary`, `ghost`, `danger`) are deprecated aliases of a tone and an appearance.
+
+A theme adds tones, from one color (Panneau derives a readable text color, the hover, the subtle background and the border) or with every value, and named variants of components:
+
+```tsx
+const theme: Theme = {
+    tokens: {},
+    tones: { signal: '#f25c05' },
+    components: {
+        badge: { variants: { tag: { 'panneau-badge-radius': 'var(--panneau-radius-sm)' } } },
+    },
+};
+
+declare module '@panneau/ui' {
+    interface PanneauTones {
+        signal: true;
+    }
+    interface BadgeVariants {
+        tag: true;
+    }
+}
+
+<Badge tone="signal" variant="tag">
+    Live
+</Badge>;
+```
+
+`checkTheme(theme)` reports the colors of a theme that miss their contrast ratio (4.5:1 for text, 3:1 for control borders), like Bootstrap's `$min-contrast-ratio`.
+
 ### Classes
 
 Class names are stable and readable, without a hash, like Bootstrap's: target them in a project's CSS.

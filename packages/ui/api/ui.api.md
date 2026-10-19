@@ -38,9 +38,13 @@ import { TooltipProps as TooltipProps_2 } from 'react-aria-components';
 // @public
 export function Alert(input: AlertProps): JSX.Element;
 
+// @public
+export type AlertAppearance = 'subtle' | 'outline' | 'solid';
+
 // @public (undocumented)
 export interface AlertProps {
     actions?: ReactNode;
+    appearance?: AlertAppearance;
     // (undocumented)
     bodyClassName?: string;
     // (undocumented)
@@ -59,37 +63,57 @@ export interface AlertProps {
     title?: ReactNode;
     // (undocumented)
     titleClassName?: string;
-    tone?: AlertTone;
+    tone?: Tone;
+    variant?: keyof AlertVariants & string;
 }
 
-// @public (undocumented)
-export type AlertTone = 'neutral' | 'success' | 'danger' | 'warning' | 'info';
+// @public @deprecated (undocumented)
+export type AlertTone = Tone;
+
+// @public
+export interface AlertVariants {
+}
 
 // @public
 export function Badge(input: BadgeProps): JSX.Element;
 
+// @public
+export type BadgeAppearance = 'subtle' | 'solid' | 'outline';
+
 // @public (undocumented)
 export interface BadgeProps {
+    appearance?: BadgeAppearance;
     // (undocumented)
     children?: ReactNode;
     // (undocumented)
     className?: string;
     label?: string;
-    // (undocumented)
-    tone?: BadgeTone;
+    tone?: Tone;
+    variant?: keyof BadgeVariants & string;
 }
 
-// @public (undocumented)
-export type BadgeTone = 'neutral' | 'accent' | 'success' | 'danger' | 'warning' | 'info';
+// @public @deprecated (undocumented)
+export type BadgeTone = Tone;
+
+// @public
+export interface BadgeVariants {
+}
 
 // @public
 export const bootstrapTheme: Theme;
 
 // @public
+export const BUILT_IN_TONES: readonly ["neutral", "accent", "success", "warning", "danger", "info"];
+
+// @public
 export function Button(input: ButtonProps): JSX.Element;
+
+// @public
+export type ButtonAppearance = 'solid' | 'outline' | 'subtle' | 'ghost';
 
 // @public (undocumented)
 export interface ButtonProps extends Omit<ButtonProps_2, 'className' | 'style' | 'children'> {
+    appearance?: ButtonAppearance;
     // (undocumented)
     children?: ReactNode;
     // (undocumented)
@@ -101,11 +125,16 @@ export interface ButtonProps extends Omit<ButtonProps_2, 'className' | 'style' |
     size?: 'sm' | 'md';
     // (undocumented)
     style?: CSSProperties;
-    variant?: ButtonVariant;
+    tone?: Tone;
+    variant?: ButtonVariant | (keyof ButtonVariants & string);
 }
 
-// @public (undocumented)
+// @public @deprecated
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
+
+// @public
+export interface ButtonVariants {
+}
 
 // @public
 export function Card(input: CardProps): JSX.Element;
@@ -139,6 +168,9 @@ export interface CheckboxProps extends Omit<CheckboxProps_2, 'className' | 'styl
     checkboxClassName?: string;
     children?: ReactNode;
 }
+
+// @public
+export function checkTheme(theme: Theme): ThemeReport;
 
 // @public (undocumented)
 export interface ChoiceChromeProps {
@@ -236,6 +268,12 @@ export interface DatePickerProps extends Omit<DatePickerProps_2<DateValue>, 'cla
 
 // @public
 export function defineComponentTokens<const Component extends string, const Tokens extends Record<string, string>>(component: Component, tokens: Tokens): ComponentTokens<Component, `panneau-${Component}-${keyof Tokens & string}`>;
+
+// @public
+export function deriveTone(color: string): {
+    light: ToneValues;
+    dark: ToneValues;
+};
 
 // @public
 export function Dialog(input: DialogProps): JSX.Element | null;
@@ -454,6 +492,22 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 // @public
+export interface PanneauTones {
+    // (undocumented)
+    accent: true;
+    // (undocumented)
+    danger: true;
+    // (undocumented)
+    info: true;
+    // (undocumented)
+    neutral: true;
+    // (undocumented)
+    success: true;
+    // (undocumented)
+    warning: true;
+}
+
+// @public
 export function Popover(input: PopoverProps): JSX.Element | null;
 
 // @public (undocumented)
@@ -624,10 +678,35 @@ export interface TextInputProps extends Omit<TextFieldProps, 'className' | 'styl
 
 // @public
 export interface Theme {
+    components?: Record<string, {
+        variants?: Record<string, Record<string, string>>;
+    }>;
     dark?: Record<string, string>;
     // (undocumented)
     label?: string;
     tokens: Record<string, string>;
+    tones?: Record<string, ToneInput>;
+}
+
+// @public
+export interface ThemeContrastCheck {
+    // (undocumented)
+    background: string;
+    // (undocumented)
+    foreground: string;
+    // (undocumented)
+    minimum: number;
+    name: string;
+    ratio: number | null;
+    // (undocumented)
+    scheme: 'light' | 'dark';
+}
+
+// @public (undocumented)
+export interface ThemeReport {
+    checks: ThemeContrastCheck[];
+    failures: ThemeContrastCheck[];
+    unchecked: ThemeContrastCheck[];
 }
 
 // @public
@@ -649,7 +728,7 @@ export interface ToastContent {
     description?: string;
     // (undocumented)
     title: string;
-    tone?: ToastTone;
+    tone?: Tone;
 }
 
 // @public (undocumented)
@@ -665,8 +744,30 @@ export interface Toasts {
     show(content: ToastContent, options?: ToastOptions): string;
 }
 
-// @public (undocumented)
-export type ToastTone = 'neutral' | 'success' | 'danger' | 'warning' | 'info';
+// @public @deprecated (undocumented)
+export type ToastTone = Tone;
+
+// @public
+export type Tone = keyof PanneauTones & string;
+
+// @public
+export function toneClassName(tone: string): string;
+
+// @public
+export type ToneInput = string | (ToneValues & {
+    dark?: Partial<ToneValues>;
+});
+
+// @public
+export interface ToneValues {
+    border: string;
+    outline: string;
+    solid: string;
+    solidHover: string;
+    solidText: string;
+    subtle: string;
+    text: string;
+}
 
 // @public
 export function Tooltip(input: TooltipProps): JSX.Element;

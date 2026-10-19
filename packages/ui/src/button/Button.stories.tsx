@@ -20,6 +20,7 @@ export const Secondary: Story = {
     },
 };
 
+/** The deprecated `variant` aliases, kept during the alpha: see the Tones stories for tone × appearance. */
 export const Variants: Story = {
     render: (args) => (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -40,6 +41,29 @@ export const Variants: Story = {
             </Button>
             <Button {...args} variant="primary" size="sm">
                 Small
+            </Button>
+        </div>
+    ),
+};
+
+export const TonesAndAppearances: Story = {
+    render: (args) => (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+            <Button {...args} tone="accent" icon={Plus}>
+                Create
+            </Button>
+            <Button {...args}>Cancel</Button>
+            <Button {...args} appearance="ghost" iconEnd={ArrowRight}>
+                Next
+            </Button>
+            <Button {...args} tone="danger" icon={Trash}>
+                Delete
+            </Button>
+            <Button {...args} tone="danger" appearance="outline">
+                Remove
+            </Button>
+            <Button {...args} tone="success" appearance="subtle">
+                Approve
             </Button>
         </div>
     ),

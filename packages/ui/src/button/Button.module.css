@@ -44,51 +44,63 @@
     width: 100%;
 }
 
-.primary {
-    color: var(--panneau-color-accent-text);
-    background-color: var(--panneau-color-accent);
+/*
+ * Appearances (decision 0024): each one reads the --panneau-tone-* variables of the tone class on
+ * the same element, so every tone, built-in or added by a theme, works with every appearance.
+ */
+
+.solid {
+    color: var(--panneau-tone-solid-text);
+    background-color: var(--panneau-tone-solid);
 }
 
-.primary[data-hovered],
-.primary[data-pressed] {
-    background-color: var(--panneau-color-accent-hover);
+.solid[data-hovered],
+.solid[data-pressed] {
+    background-color: var(--panneau-tone-solid-hover);
 }
 
-.secondary {
-    color: var(--panneau-color-text);
+.outline {
+    color: var(--panneau-tone-text);
     background-color: var(--panneau-color-surface);
-    border-color: var(--panneau-color-border-control);
+    border-color: var(--panneau-tone-outline);
 }
 
-.secondary[data-hovered] {
-    background-color: var(--panneau-color-hover);
+.outline[data-hovered] {
+    background-color: color-mix(in srgb, var(--panneau-tone-text) 6%, var(--panneau-color-surface));
 }
 
-.secondary[data-pressed] {
-    background-color: var(--panneau-color-pressed);
+.outline[data-pressed] {
+    background-color: color-mix(
+        in srgb,
+        var(--panneau-tone-text) 10%,
+        var(--panneau-color-surface)
+    );
+}
+
+.subtle {
+    color: var(--panneau-tone-text);
+    background-color: var(--panneau-tone-subtle);
+}
+
+.subtle[data-hovered] {
+    background-color: color-mix(in srgb, var(--panneau-tone-text) 8%, var(--panneau-tone-subtle));
+}
+
+.subtle[data-pressed] {
+    background-color: color-mix(in srgb, var(--panneau-tone-text) 14%, var(--panneau-tone-subtle));
 }
 
 .ghost {
-    color: var(--panneau-color-text);
+    color: var(--panneau-tone-text);
     background-color: transparent;
 }
 
 .ghost[data-hovered] {
-    background-color: var(--panneau-color-hover);
+    background-color: color-mix(in srgb, var(--panneau-tone-text) 6%, transparent);
 }
 
 .ghost[data-pressed] {
-    background-color: var(--panneau-color-pressed);
-}
-
-.danger {
-    color: var(--panneau-color-danger-solid-text);
-    background-color: var(--panneau-color-danger-solid);
-}
-
-.danger[data-hovered],
-.danger[data-pressed] {
-    background-color: var(--panneau-color-danger-solid-hover);
+    background-color: color-mix(in srgb, var(--panneau-tone-text) 10%, transparent);
 }
 
 .content {

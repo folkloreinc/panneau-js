@@ -5,12 +5,25 @@ import { IconButton } from '../icon-button/IconButton';
 import { Icon, type IconComponent } from '../icon/Icon';
 import { messages } from '../intl/messages';
 import { usePanneauIntl } from '../intl/usePanneauIntl';
+import { toneClass } from '../theme/toneClass';
+import type { Tone } from '../theme/tones';
 import { cx } from '../utils/cx';
 import styles from './Alert.module.css';
 
-export type AlertTone = 'neutral' | 'success' | 'danger' | 'warning' | 'info';
+/** @deprecated Use `Tone`. */
+export type AlertTone = Tone;
 
-const TONE_ICONS: Record<AlertTone, IconComponent> = {
+/** How an alert uses its tone. */
+export type AlertAppearance = 'subtle' | 'outline' | 'solid';
+
+/**
+ * Named variants of `Alert`, registered by a theme (`components.alert.variants`). Declare them
+ * here so that `variant="banner"` type-checks.
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- extended by projects
+export interface AlertVariants {}
+
+const TONE_ICONS: Partial<Record<Tone, IconComponent>> = {
     neutral: Info,
     success: CircleCheck,
     danger: CircleAlert,
@@ -20,10 +33,14 @@ const TONE_ICONS: Record<AlertTone, IconComponent> = {
 
 export interface AlertProps {
     /** Defaults to `neutral`. */
-    tone?: AlertTone;
+    tone?: Tone;
+    /** Defaults to `subtle`. */
+    appearance?: AlertAppearance;
+    /** A named variant of the theme. */
+    variant?: keyof AlertVariants & string;
     title?: ReactNode;
     children?: ReactNode;
-    /** Replaces the icon of the tone. `null` hides it. */
+    /** Replaces the icon of the tone (an info icon for tones added by a theme). `null` hides it. */
     icon?: IconComponent | null;
     /** Buttons under the message. */
     actions?: ReactNode;
@@ -46,6 +63,8 @@ export interface AlertProps {
 /** A message inside the page: an error summary, a warning, a confirmation. */
 export function Alert({
     tone = 'neutral',
+    appearance = 'subtle',
+    variant,
     title,
     children,
     icon,
@@ -60,14 +79,21 @@ export function Alert({
     bodyClassName,
 }: AlertProps) {
     const intl = usePanneauIntl();
-    const shown = icon === undefined ? TONE_ICONS[tone] : icon;
+    const shown = icon === undefined ? (TONE_ICONS[tone] ?? Info) : icon;
     return (
         <div
             ref={ref}
             id={id}
             role={role}
             tabIndex={tabIndex}
-            className={cx('panneau-alert', styles.alert, styles[tone], className)}
+            className={cx(
+                'panneau-alert',
+                styles.alert,
+                toneClass(tone),
+                styles[appearance],
+                variant !== undefined && `panneau-alert-variant-${variant}`,
+                className,
+            )}
         >
             {shown !== null ? <Icon icon={shown} size="lg" className={styles.icon} /> : null}
             <div className={styles.content}>

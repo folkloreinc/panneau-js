@@ -33,6 +33,41 @@ describe('getThemeCss', () => {
         expect(css).toBe('[data-panneau-theme="abc"]{--panneau-color-text:#000;}');
     });
 
+    it('writes the tones of a theme, in both schemes', () => {
+        const css = getThemeCss(
+            { tokens: {}, tones: { signal: '#f25c05', 'bad name': 'red' } },
+            'abc',
+        );
+        expect(css).toContain(
+            '[data-panneau-theme="abc"] .panneau-tone-signal{--panneau-tone-text:',
+        );
+        expect(css).toContain(
+            '[data-panneau-theme="abc"][data-color-scheme="dark"] .panneau-tone-signal{',
+        );
+        expect(css).toContain(
+            '@media (prefers-color-scheme: dark){[data-panneau-theme="abc"][data-color-scheme="auto"] .panneau-tone-signal{',
+        );
+        expect(css).toContain('--panneau-tone-solid:#f25c05;');
+        expect(css).not.toContain('bad name');
+    });
+
+    it('writes the named variants of components', () => {
+        const css = getThemeCss(
+            {
+                tokens: {},
+                components: {
+                    badge: {
+                        variants: { tag: { 'panneau-badge-radius': 'var(--panneau-radius-sm)' } },
+                    },
+                },
+            },
+            'abc',
+        );
+        expect(css).toBe(
+            '[data-panneau-theme="abc"] .panneau-badge-variant-tag{--panneau-badge-radius:var(--panneau-radius-sm);}',
+        );
+    });
+
     it('returns nothing for an empty theme', () => {
         expect(getThemeCss({ tokens: {} }, 'abc')).toBe('');
     });
