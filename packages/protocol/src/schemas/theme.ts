@@ -82,6 +82,17 @@ const themeShape = {
             description:
                 'Named variants of components: tokens applied by `panneau-<component>-variant-<name>`.',
         }),
+    densities: z
+        .looseObject({
+            compact: ThemeTokens.optional(),
+            comfortable: ThemeTokens.optional(),
+            touch: ThemeTokens.optional(),
+        })
+        .optional()
+        .meta({
+            description:
+                'Tokens of each density (`panneau-control-height`…), which change with the density of the root.',
+        }),
     fonts: z.array(ThemeFont).optional().meta({
         description: 'Font faces and font stylesheets, added to the page once.',
     }),
@@ -96,6 +107,7 @@ export const DefinitionTheme = z
         ...themeShape,
         tokens: themeShape.tokens.optional(),
         colorScheme: z.enum(['light', 'dark', 'auto']).optional(),
+        density: z.enum(['compact', 'comfortable', 'touch', 'auto']).optional(),
         extends: z
             .union([z.string(), z.array(z.string())])
             .optional()

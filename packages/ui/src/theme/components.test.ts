@@ -19,7 +19,7 @@ function cssModules(directory: string): string[] {
 /** Every `var(--<name>, <fallback>)` of a stylesheet, with its balanced fallback. */
 function readVars(css: string): { name: string; fallback: string | null }[] {
     const found: { name: string; fallback: string | null }[] = [];
-    const start = /var\(--([a-z0-9-]+)\s*(,|\))/g;
+    const start = /var\(\s*--([a-z0-9-]+)\s*(,|\))/g;
     for (const match of css.matchAll(start)) {
         const name = match[1] ?? '';
         if (match[2] === ')') {

@@ -83,6 +83,25 @@ describe('getThemeCss', () => {
         expect(css).toContain('--panneau-tone-solid:#f25c05;');
     });
 
+    it('writes the tokens of each density, with auto following the pointer', () => {
+        const css = getThemeCss(
+            {
+                tokens: {},
+                densities: {
+                    comfortable: { 'panneau-control-height': '2.5rem' },
+                    touch: { 'panneau-control-height': '3rem' },
+                },
+            },
+            'abc',
+        );
+        expect(css).toBe(
+            '[data-panneau-theme="abc"][data-density="comfortable"]{--panneau-control-height:2.5rem;}' +
+                '@media not (pointer: coarse){[data-panneau-theme="abc"][data-density="auto"]{--panneau-control-height:2.5rem;}}' +
+                '[data-panneau-theme="abc"][data-density="touch"]{--panneau-control-height:3rem;}' +
+                '@media (pointer: coarse){[data-panneau-theme="abc"][data-density="auto"]{--panneau-control-height:3rem;}}',
+        );
+    });
+
     it('returns nothing for an empty theme', () => {
         expect(getThemeCss({ tokens: {} }, 'abc')).toBe('');
     });

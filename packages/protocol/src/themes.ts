@@ -42,6 +42,21 @@ function mergeComponents(
     );
 }
 
+const DENSITIES = ['compact', 'comfortable', 'touch'] as const;
+
+function mergeDensities(first: Theme['densities'], second: Theme['densities']): Theme['densities'] {
+    if (first === undefined && second === undefined) {
+        return undefined;
+    }
+    const densities = { ...first, ...second };
+    DENSITIES.forEach((density) => {
+        if (first?.[density] !== undefined && second?.[density] !== undefined) {
+            densities[density] = { ...first[density], ...second[density] };
+        }
+    });
+    return densities;
+}
+
 function mergeFonts(first: Theme['fonts'], second: Theme['fonts']): Theme['fonts'] {
     if (first === undefined && second === undefined) {
         return undefined;
@@ -57,7 +72,7 @@ function mergeFonts(first: Theme['fonts'], second: Theme['fonts']): Theme['fonts
  * Merges themes, in order: each one overrides the tokens, palette colors, tones and variants of
  * those before it. A token a theme sets in `tokens` but not in `dark` applies to both schemes, so it
  * also replaces the dark value of earlier themes. Variants merge token by token; tones are replaced
- * whole; fonts add up. The label is the last one set. `defineTheme()` of `@panneau/ui` merges the same way.
+ * whole; densities merge token by token; fonts add up. The label is the last one set. `defineTheme()` of `@panneau/ui` merges the same way.
  */
 export function mergeThemes(...themes: readonly PartialTheme[]): Theme {
     return themes.reduce<Theme>(
@@ -82,6 +97,7 @@ export function mergeThemes(...themes: readonly PartialTheme[]): Theme {
                 palette: mergeRecords(merged.palette, theme.palette),
                 tones: mergeRecords(merged.tones, theme.tones),
                 components: mergeComponents(merged.components, theme.components),
+                densities: mergeDensities(merged.densities, theme.densities),
                 fonts: mergeFonts(merged.fonts, theme.fonts),
             };
             return Object.fromEntries(

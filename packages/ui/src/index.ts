@@ -98,7 +98,7 @@ export {
 } from './theme/defineTheme';
 export { SEMANTIC_TOKENS, type SemanticTokenName } from './theme/semanticTokens';
 export { type ThemeFont, type ThemeFontFace, type ThemeFontStylesheet } from './theme/fonts';
-export { type ColorScheme, type Theme } from './theme/theme';
+export { type ColorScheme, type Density, type Theme } from './theme/theme';
 export {
     BUILT_IN_TONES,
     type PanneauTones,

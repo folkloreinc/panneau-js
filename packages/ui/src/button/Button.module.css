@@ -6,7 +6,11 @@
     justify-content: center;
     gap: var(--panneau-button-gap, var(--panneau-space-2));
     min-height: var(--panneau-control-height);
-    padding: 0 var(--panneau-button-padding-x, var(--panneau-space-4));
+    padding: 0
+        var(
+            --panneau-button-padding-x,
+            calc(var(--panneau-control-padding-x) + var(--panneau-space-1))
+        );
     font-size: var(--panneau-button-font-size, var(--panneau-font-size-md));
     font-weight: var(--panneau-button-font-weight, var(--panneau-font-weight-medium));
     line-height: var(--panneau-line-height-tight);
@@ -35,7 +39,7 @@
 
 .sm {
     min-height: var(--panneau-control-height-sm);
-    padding: 0 var(--panneau-button-padding-x-sm, var(--panneau-space-3));
+    padding: 0 var(--panneau-button-padding-x-sm, var(--panneau-control-padding-x));
     font-size: var(--panneau-button-font-size-sm, var(--panneau-font-size-sm));
 }
 

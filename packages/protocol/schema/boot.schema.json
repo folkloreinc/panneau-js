@@ -1241,6 +1241,21 @@
                         "additionalProperties": {}
                     }
                 },
+                "densities": {
+                    "type": "object",
+                    "properties": {
+                        "compact": {
+                            "$ref": "#/$defs/ThemeTokens"
+                        },
+                        "comfortable": {
+                            "$ref": "#/$defs/ThemeTokens"
+                        },
+                        "touch": {
+                            "$ref": "#/$defs/ThemeTokens"
+                        }
+                    },
+                    "additionalProperties": {}
+                },
                 "fonts": {
                     "type": "array",
                     "items": {
@@ -1252,6 +1267,15 @@
                     "enum": [
                         "light",
                         "dark",
+                        "auto"
+                    ]
+                },
+                "density": {
+                    "type": "string",
+                    "enum": [
+                        "compact",
+                        "comfortable",
+                        "touch",
                         "auto"
                     ]
                 },

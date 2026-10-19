@@ -47,6 +47,17 @@ describe('Theme', () => {
         ).toBe(false);
     });
 
+    it('accepts the tokens of each density, and a density in the definition', () => {
+        expect(
+            Theme.safeParse({
+                tokens: {},
+                densities: { compact: { 'panneau-control-height': '2rem' } },
+            }).success,
+        ).toBe(true);
+        expect(DefinitionTheme.safeParse({ density: 'compact' }).success).toBe(true);
+        expect(DefinitionTheme.safeParse({ density: 'dense' }).success).toBe(false);
+    });
+
     it('lets the theme of a definition extend themes of plugins, without its own tokens', () => {
         const result = DefinitionTheme.safeParse({ colorScheme: 'auto', extends: ['brand'] });
         expect(result.success).toBe(true);
@@ -124,6 +135,22 @@ describe('mergeThemes', () => {
             geist,
             inter,
         ]);
+    });
+
+    it('merges densities token by token', () => {
+        const theme = mergeThemes(
+            { densities: { compact: { 'panneau-control-height': '1.75rem' } } },
+            {
+                densities: {
+                    compact: { 'panneau-row-padding-y': '0.125rem' },
+                    touch: { 'panneau-control-height': '3rem' },
+                },
+            },
+        );
+        expect(theme.densities).toEqual({
+            compact: { 'panneau-control-height': '1.75rem', 'panneau-row-padding-y': '0.125rem' },
+            touch: { 'panneau-control-height': '3rem' },
+        });
     });
 
     it('returns an empty theme without themes', () => {

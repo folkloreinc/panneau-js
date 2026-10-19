@@ -25,6 +25,7 @@ import { Button, PanneauRoot, TextInput, bootstrapTheme } from '@panneau/ui';
 Every Panneau interface renders inside a `PanneauRoot`. It scopes the base stylesheet and the design tokens (`--panneau-*` CSS variables) to its element: Panneau adds no global CSS to the page. Overlays (dialogs, popovers, menus, tooltips) and toasts render inside it too.
 
 - `colorScheme`: `light` (default), `dark`, or `auto`, which follows the system.
+- `density`: `compact`, `comfortable`, `touch`, or `auto` (default), which is `touch` on touch screens and `comfortable` otherwise. See [Density](#density).
 - `theme`: tokens, tones and variants that override the default theme (see [Defining themes](#defining-themes)). `bootstrapTheme` follows a site's Bootstrap 5.3 variables and color mode.
 - A project can also override any token with its own class on the root: `.my-panneau { --panneau-color-accent: #0a58ca; }`.
 
@@ -191,6 +192,21 @@ Five primitives lay out content with the space scale of the theme, without utili
 Breakpoints (`BREAKPOINTS`) are `sm` 40rem, `md` 48rem, `lg` 64rem and `xl` 80rem, like `$grid-breakpoints`. They are widths of the nearest **size container**, not of the viewport, so that a grid in a narrow sidebar behaves as on a phone. `PanneauRoot` and `Container` are size containers, as are forms and lists. A size container takes its width from its parent, never from its content: in a flex row or a float, give the root a width, or it collapses.
 
 Responsive values are inline CSS variables, read by static rules in each container query: no styles are generated per instance.
+
+### Density
+
+A density is a set of tokens: `--panneau-control-height` and `-sm`, `--panneau-font-size-control`, `--panneau-control-padding-x` (inputs and buttons) and `--panneau-row-padding-y` (rows of tables, options of lists). The `density` of the root picks one, and the `size` props of components (`size="sm"`) stay relative to it.
+
+A theme redefines a density in `densities`. Density tokens set in `tokens` instead apply to every density, which then no longer changes them.
+
+```ts
+const roomy = defineTheme({
+    densities: {
+        comfortable: { 'panneau-control-height': '2.5rem' },
+        compact: { 'panneau-row-padding-y': '0.125rem' },
+    },
+});
+```
 
 ### Classes
 

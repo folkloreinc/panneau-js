@@ -4,12 +4,13 @@ import bootstrapCss from 'bootstrap/dist/css/bootstrap.min.css?inline';
 import { IntlProvider } from 'react-intl';
 
 import { panneauMessages } from '@panneau/intl';
-import { type ColorScheme, PanneauRoot, bootstrapTheme } from '@panneau/ui';
+import { type ColorScheme, type Density, PanneauRoot, bootstrapTheme } from '@panneau/ui';
 
 /** Every story renders in a PanneauRoot, with the locale, color scheme and theme of the toolbar. */
 const withPanneau: Decorator = (Story, { globals }) => {
     const locale = String(globals.locale ?? 'en');
     const colorScheme = (globals.colorScheme as ColorScheme | undefined) ?? 'light';
+    const density = (globals.density as Density | undefined) ?? 'auto';
     const theme = globals.theme === 'bootstrap' ? bootstrapTheme : null;
     return (
         <IntlProvider locale={locale} messages={panneauMessages[locale]} defaultLocale="en">
@@ -17,6 +18,7 @@ const withPanneau: Decorator = (Story, { globals }) => {
             <PanneauRoot
                 data-bs-theme={theme !== null && colorScheme !== 'auto' ? colorScheme : undefined}
                 colorScheme={colorScheme}
+                density={density}
                 theme={theme}
                 style={{ padding: '1rem', minHeight: '100vh' }}
             >
@@ -50,6 +52,15 @@ const preview: Preview = {
                 dynamicTitle: true,
             },
         },
+        density: {
+            description: 'Density',
+            toolbar: {
+                title: 'Density',
+                icon: 'component',
+                items: ['auto', 'compact', 'comfortable', 'touch'],
+                dynamicTitle: true,
+            },
+        },
         theme: {
             description: 'Theme',
             toolbar: {
@@ -63,7 +74,7 @@ const preview: Preview = {
             },
         },
     },
-    initialGlobals: { locale: 'en', colorScheme: 'light', theme: 'default' },
+    initialGlobals: { locale: 'en', colorScheme: 'light', density: 'auto', theme: 'default' },
     parameters: {
         layout: 'fullscreen',
         controls: { expanded: true },

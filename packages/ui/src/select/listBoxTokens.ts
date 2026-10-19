@@ -5,7 +5,7 @@ export const listBoxTokens = defineComponentTokens('list-box', {
     /** Padding around the options. */
     padding: 'var(--panneau-space-1)',
     /** Vertical padding of an option. */
-    'item-padding-y': 'var(--panneau-space-1)',
+    'item-padding-y': 'calc(var(--panneau-row-padding-y) / 2)',
     /** Horizontal padding of an option. */
     'item-padding-x': 'var(--panneau-space-2)',
     /** Corner radius of an option. */

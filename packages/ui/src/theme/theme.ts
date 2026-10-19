@@ -39,6 +39,11 @@ export type Theme = {
      */
     components?: Record<string, { variants?: Record<string, Record<string, string>> }>;
     /**
+     * Tokens of each density, such as `panneau-control-height`: tokens set here change with the
+     * density of the root, while the same tokens in `tokens` would apply to every density.
+     */
+    densities?: Partial<Record<Exclude<Density, 'auto'>, Record<string, string>>>;
+    /**
      * Font faces and font stylesheets, which `PanneauRoot` adds to the page once. Font tokens
      * (`panneau-font-family-heading`) then use their families.
      */
@@ -47,6 +52,12 @@ export type Theme = {
 
 /** `auto` follows the system setting (`prefers-color-scheme`). */
 export type ColorScheme = 'light' | 'dark' | 'auto';
+
+/**
+ * How much room controls and rows take: `compact`, `comfortable`, or `touch`, with larger targets.
+ * `auto` is `touch` on coarse pointers (touch screens) and `comfortable` otherwise.
+ */
+export type Density = 'compact' | 'comfortable' | 'touch' | 'auto';
 
 function declarations(tokens: Record<string, string>): string {
     return Object.entries(tokens)
@@ -111,8 +122,26 @@ function toneDeclarations(values: ToneValues): string {
 }
 
 /**
+ * The rules of the densities of a theme. `auto` takes the comfortable values on fine pointers and
+ * the touch ones on coarse pointers, like the default theme.
+ */
+function densityCss(root: string, densities: Theme['densities'] = {}): string {
+    const body = (density: Exclude<Density, 'auto'>) => declarations(densities[density] ?? {});
+    const rule = (selector: string, css: string) => (css !== '' ? `${selector}{${css}}` : '');
+    const media = (query: string, css: string) => (css !== '' ? `@media ${query}{${css}}` : '');
+    const selector = (density: Density) => `${root}[data-density="${density}"]`;
+    return [
+        rule(selector('compact'), body('compact')),
+        rule(selector('comfortable'), body('comfortable')),
+        media('not (pointer: coarse)', rule(selector('auto'), body('comfortable'))),
+        rule(selector('touch'), body('touch')),
+        media('(pointer: coarse)', rule(selector('auto'), body('touch'))),
+    ].join('');
+}
+
+/**
  * The CSS of a theme, scoped to the roots that carry `data-panneau-theme="<scope>"`: its palette and
- * tokens, its tones and the variants of components. Its rules are more specific than the default
+ * tokens, its densities, its tones and the variants of components. Its rules are more specific than the default
  * tokens and the built-in tones, and dark overrides more specific than light ones. Token, tone,
  * component and variant names must be plain identifiers, and values can't contain `{`, `}`, `;` or
  * `<`: other entries are ignored.
@@ -127,6 +156,7 @@ export function getThemeCss(theme: Theme, scope: string): string {
 
     const palette = paletteVariables(theme.palette);
     light.push(rule(root, declarations({ ...palette, ...theme.tokens })));
+    light.push(densityCss(root, theme.densities));
     if (theme.dark !== undefined) {
         darkRules.push(rule('§', declarations(theme.dark)));
     }

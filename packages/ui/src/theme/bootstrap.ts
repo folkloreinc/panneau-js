@@ -53,7 +53,6 @@ export const bootstrapTheme: Theme = {
         'panneau-font-family-body': 'var(--bs-body-font-family)',
         'panneau-font-family-mono': 'var(--bs-font-monospace)',
         'panneau-font-size-md': 'var(--bs-body-font-size)',
-        'panneau-font-size-control': 'var(--bs-body-font-size)',
         'panneau-line-height': 'var(--bs-body-line-height)',
         'panneau-radius-sm': 'var(--bs-border-radius-sm)',
         'panneau-radius-md': 'var(--bs-border-radius)',
@@ -63,7 +62,14 @@ export const bootstrapTheme: Theme = {
         'panneau-shadow-sm': 'var(--bs-box-shadow-sm)',
         'panneau-shadow-md': 'var(--bs-box-shadow)',
         'panneau-shadow-lg': 'var(--bs-box-shadow-lg)',
-        'panneau-control-height': 'calc(1.5em + 0.75rem + 2 * var(--bs-border-width))',
-        'panneau-control-height-sm': 'calc(1.5em + 0.5rem + 2 * var(--bs-border-width))',
+    },
+    // Bootstrap's sizes of controls are those of the comfortable density: the others keep Panneau's.
+    densities: {
+        comfortable: {
+            'panneau-font-size-control': 'var(--bs-body-font-size)',
+            'panneau-control-height': 'calc(1.5em + 0.75rem + 2 * var(--bs-border-width))',
+            'panneau-control-height-sm': 'calc(1.5em + 0.5rem + 2 * var(--bs-border-width))',
+            'panneau-control-padding-x': '0.75rem',
+        },
     },
 } satisfies ThemeDefinition;
