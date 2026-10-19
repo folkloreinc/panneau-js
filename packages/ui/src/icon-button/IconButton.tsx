@@ -23,7 +23,7 @@ export interface IconButtonProps extends Omit<
 export function IconButton({
     icon,
     label,
-    variant = 'ghost',
+    appearance = 'ghost',
     size = 'md',
     showTooltip = true,
     className,
@@ -32,7 +32,7 @@ export function IconButton({
     const button = (
         <Button
             {...props}
-            variant={variant}
+            appearance={appearance}
             size={size}
             icon={icon}
             aria-label={label}

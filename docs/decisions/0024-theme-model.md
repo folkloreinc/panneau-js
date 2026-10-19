@@ -44,10 +44,16 @@ A token can also style a part shared by several components: `input` (the box of 
 ### 2. Open tones, derived colors, and variants as tone × appearance
 
 - **Tones form an open registry**, like `$theme-colors`. `neutral`, `accent`, `success`, `warning`, `danger` and `info` are built in, and a theme adds its own.
-    - A tone is either one color, from which `defineTheme()` derives the rest (subtle background, border, hover, and a text color that passes 4.5:1), or a full set of values.
+    - A tone has seven values: `text`, `subtle`, `border`, `outline`, `solid`, `solid-hover` and `solid-text`.
+    - A theme gives either one color, from which Panneau derives the rest, or every value (with optional dark overrides). The derivation follows Bootstrap's `button-variant()` and `color-contrast()`:
+        - the solid background is the color, with white or black text, whichever reads better;
+        - the hover is 15% darker;
+        - the text color is darkened (light scheme) or lightened (dark scheme) until it reaches 4.5:1 against the surface;
+        - the subtle background and the border are mixed with `--panneau-color-surface` in CSS, so they follow the theme's surfaces.
+    - The built-in tones read the semantic tokens (`--panneau-color-success`, `-success-subtle`, `-success-solid`…), so a theme that changes those changes the tones.
     - Components read only local `--panneau-tone-*` variables, set by `.panneau-tone-<name>` rules. A new tone therefore works in every component that takes `tone`.
     - Tone names are typed through module augmentation.
-- **Variants become tone × appearance** (`solid | outline | subtle | ghost`). The current `variant` values stay as aliases during the alpha.
+- **Variants become tone × appearance** (`solid | outline | subtle | ghost`), each appearance being a class of the component (`.panneau-button-outline`), like `.btn-outline-*`. The `variant` values of `Button` stay as deprecated aliases during the alpha: `primary` is accent solid, `secondary` neutral outline, `ghost` neutral ghost, `danger` danger solid.
 - **Named variants per component:** a theme registers token overrides under `components.<component>.variants.<name>`, and they apply through a `.panneau-<component>-variant-<name>` class.
 
 ### 3. Typography roles and declared fonts
@@ -96,7 +102,7 @@ Projects target components with **stable, readable class names**, like Bootstrap
 
     ARIA describes semantics, not components or variants: `Button`, `IconButton` and a tab share roles, `Badge` and `Card` have none. So ARIA is only used for states, and never to identify a component.
 
-- **Tones, appearances and sizes are modifier classes** (step 2), like `.btn-primary` and `.btn-outline-*`: `.panneau-tone-<name>`, `.panneau-appearance-<name>`. A theme's own tones get their own class rules.
+- **Tones, appearances and sizes are modifier classes**, like `.btn-primary` and `.btn-outline-*`: `.panneau-tone-<name>`, and the appearance or size as a class of the component (`.panneau-button-outline`, `.panneau-button-sm`). A theme's own tones get their own class rules.
 
 The first version of this decision used `data-panneau` attributes. The maintainers preferred stable class names, which are the usual way to target a component, and need no Panneau-specific attribute.
 

@@ -42,12 +42,21 @@
     --panneau-color-success: #15803d;
     --panneau-color-success-subtle: #f0fdf4;
     --panneau-color-success-border: #86efac;
+    --panneau-color-success-solid: #15803d;
+    --panneau-color-success-solid-hover: #166534;
+    --panneau-color-success-solid-text: #ffffff;
     --panneau-color-warning: #a16207;
     --panneau-color-warning-subtle: #fefce8;
     --panneau-color-warning-border: #fcd34d;
+    --panneau-color-warning-solid: #a16207;
+    --panneau-color-warning-solid-hover: #854d0e;
+    --panneau-color-warning-solid-text: #ffffff;
     --panneau-color-info: #1d4ed8;
     --panneau-color-info-subtle: #eff6ff;
     --panneau-color-info-border: #93c5fd;
+    --panneau-color-info-solid: #1d4ed8;
+    --panneau-color-info-solid-hover: #1e40af;
+    --panneau-color-info-solid-text: #ffffff;
 
     /* Typography */
     --panneau-font-family:

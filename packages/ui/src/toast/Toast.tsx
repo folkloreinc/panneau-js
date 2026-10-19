@@ -13,17 +13,20 @@ import { IconButton } from '../icon-button/IconButton';
 import { Icon, type IconComponent } from '../icon/Icon';
 import { messages } from '../intl/messages';
 import { usePanneauIntl } from '../intl/usePanneauIntl';
+import { toneClass } from '../theme/toneClass';
+import type { Tone } from '../theme/tones';
 import { cx } from '../utils/cx';
 import styles from './Toast.module.css';
 
-export type ToastTone = 'neutral' | 'success' | 'danger' | 'warning' | 'info';
+/** @deprecated Use `Tone`. */
+export type ToastTone = Tone;
 
 /** What a toast says. */
 export interface ToastContent {
     title: string;
     description?: string;
-    /** Defaults to `neutral`. */
-    tone?: ToastTone;
+    /** Defaults to `neutral`. Any tone other than neutral colors the edge and the icon. */
+    tone?: Tone;
     /** A button in the toast, such as "Retry" or "Undo". The toast closes when it is pressed. */
     action?: { label: string; onAction: () => void };
 }
@@ -44,7 +47,7 @@ export interface Toasts {
     close(key: string): void;
 }
 
-const TONE_ICONS: Record<ToastTone, IconComponent | null> = {
+const TONE_ICONS: Partial<Record<Tone, IconComponent | null>> = {
     neutral: null,
     success: CircleCheck,
     danger: CircleAlert,
@@ -97,12 +100,17 @@ export function ToastProvider({ children, regionClassName, regionProps }: ToastP
             >
                 {({ toast }) => {
                     const tone = toast.content.tone ?? 'neutral';
-                    const icon = TONE_ICONS[tone];
+                    const icon = TONE_ICONS[tone] ?? null;
                     const { action } = toast.content;
                     return (
                         <AriaToast
                             toast={toast}
-                            className={cx('panneau-toast', styles.toast, styles[tone])}
+                            className={cx(
+                                'panneau-toast',
+                                styles.toast,
+                                toneClass(tone),
+                                tone !== 'neutral' && styles.toned,
+                            )}
                         >
                             {icon !== null ? (
                                 <Icon icon={icon} size="lg" className={styles.icon} />

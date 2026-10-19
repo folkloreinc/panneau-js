@@ -1,0 +1,70 @@
+/*
+ * Built-in tones (decision 0024): each one sets the local --panneau-tone-* variables that
+ * components read, from the semantic tokens of the theme, so they follow the theme and the color
+ * scheme. A theme's own tones are written by getThemeCss() with the same class names
+ * (panneau-tone-<name>), and can redefine these.
+ */
+
+.neutral {
+    --panneau-tone-text: var(--panneau-color-text);
+    --panneau-tone-subtle: var(--panneau-color-surface-sunken);
+    --panneau-tone-border: var(--panneau-color-border);
+    --panneau-tone-outline: var(--panneau-color-border-control);
+    --panneau-tone-solid: var(--panneau-color-text);
+    --panneau-tone-solid-hover: var(--panneau-color-text-muted);
+    --panneau-tone-solid-text: var(--panneau-color-bg);
+}
+
+.accent {
+    --panneau-tone-text: var(--panneau-color-accent);
+    --panneau-tone-subtle: var(--panneau-color-accent-subtle);
+    --panneau-tone-border: color-mix(
+        in srgb,
+        var(--panneau-color-accent) 35%,
+        var(--panneau-color-surface)
+    );
+    --panneau-tone-outline: var(--panneau-color-accent);
+    --panneau-tone-solid: var(--panneau-color-accent);
+    --panneau-tone-solid-hover: var(--panneau-color-accent-hover);
+    --panneau-tone-solid-text: var(--panneau-color-accent-text);
+}
+
+.success {
+    --panneau-tone-text: var(--panneau-color-success);
+    --panneau-tone-subtle: var(--panneau-color-success-subtle);
+    --panneau-tone-border: var(--panneau-color-success-border);
+    --panneau-tone-outline: var(--panneau-color-success);
+    --panneau-tone-solid: var(--panneau-color-success-solid);
+    --panneau-tone-solid-hover: var(--panneau-color-success-solid-hover);
+    --panneau-tone-solid-text: var(--panneau-color-success-solid-text);
+}
+
+.warning {
+    --panneau-tone-text: var(--panneau-color-warning);
+    --panneau-tone-subtle: var(--panneau-color-warning-subtle);
+    --panneau-tone-border: var(--panneau-color-warning-border);
+    --panneau-tone-outline: var(--panneau-color-warning);
+    --panneau-tone-solid: var(--panneau-color-warning-solid);
+    --panneau-tone-solid-hover: var(--panneau-color-warning-solid-hover);
+    --panneau-tone-solid-text: var(--panneau-color-warning-solid-text);
+}
+
+.danger {
+    --panneau-tone-text: var(--panneau-color-danger);
+    --panneau-tone-subtle: var(--panneau-color-danger-subtle);
+    --panneau-tone-border: var(--panneau-color-danger-border);
+    --panneau-tone-outline: var(--panneau-color-danger);
+    --panneau-tone-solid: var(--panneau-color-danger-solid);
+    --panneau-tone-solid-hover: var(--panneau-color-danger-solid-hover);
+    --panneau-tone-solid-text: var(--panneau-color-danger-solid-text);
+}
+
+.info {
+    --panneau-tone-text: var(--panneau-color-info);
+    --panneau-tone-subtle: var(--panneau-color-info-subtle);
+    --panneau-tone-border: var(--panneau-color-info-border);
+    --panneau-tone-outline: var(--panneau-color-info);
+    --panneau-tone-solid: var(--panneau-color-info-solid);
+    --panneau-tone-solid-hover: var(--panneau-color-info-solid-hover);
+    --panneau-tone-solid-text: var(--panneau-color-info-solid-text);
+}
