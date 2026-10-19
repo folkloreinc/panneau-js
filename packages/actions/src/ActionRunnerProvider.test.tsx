@@ -288,10 +288,19 @@ describe('ActionRunnerProvider', () => {
 
         it('follows a run until it ends, then shows its result', async () => {
             const result: ActionResult = { message: '200 pages exported.', refresh: 'none' };
+            // The run only ends once the test has seen it running: a quick second poll could
+            // otherwise replace the running state before it is checked.
+            let finishRun = () => {};
+            const checkedRunning = new Promise<void>((resolve) => {
+                finishRun = resolve;
+            });
             const getActionRun = vi
                 .fn<ActionAdapter['getActionRun']>()
                 .mockResolvedValueOnce({ ...queued, status: 'running', progress: 50 })
-                .mockResolvedValue({ ...queued, status: 'succeeded', progress: 200, result });
+                .mockImplementation(async () => {
+                    await checkedRunning;
+                    return { ...queued, status: 'succeeded', progress: 200, result };
+                });
             const adapter = createAdapter({
                 runAction: () => Promise.resolve({ run: queued }),
                 getActionRun,
@@ -313,6 +322,7 @@ describe('ActionRunnerProvider', () => {
                 'aria-valuenow',
                 '50',
             );
+            finishRun();
             expect(await screen.findByText('200 pages exported.')).toBeInTheDocument();
             expect(within(runs).getByText('Done')).toBeInTheDocument();
             expect(onResult).toHaveBeenCalledTimes(1);
