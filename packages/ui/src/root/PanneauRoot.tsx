@@ -91,7 +91,7 @@ export function PanneauRoot({
     const root = (
         <div
             {...props}
-            className={cx('panneau-root', styles.root, className)}
+            className={cx('panneau-root', styles.root, styles.container, className)}
             data-color-scheme={colorScheme}
             data-panneau-theme={scope}
         >

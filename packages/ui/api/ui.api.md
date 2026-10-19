@@ -103,6 +103,17 @@ export interface BadgeVariants {
 export const bootstrapTheme: Theme;
 
 // @public
+export type Breakpoint = keyof typeof BREAKPOINTS;
+
+// @public
+export const BREAKPOINTS: Readonly<{
+    sm: "40rem";
+    md: "48rem";
+    lg: "64rem";
+    xl: "80rem";
+}>;
+
+// @public
 export const BUILT_IN_TONES: readonly ["neutral", "accent", "success", "warning", "danger", "info"];
 
 // @public
@@ -240,23 +251,38 @@ export const componentTokens: Readonly<{
     calendar: Readonly<Record<"panneau-calendar-cell-size" | "panneau-calendar-cell-radius" | "panneau-calendar-selected-color" | "panneau-calendar-selected-bg", string>>;
     card: Readonly<Record<"panneau-card-radius" | "panneau-card-gap" | "panneau-card-padding-y" | "panneau-card-padding-x" | "panneau-card-border-width" | "panneau-card-title-font-weight" | "panneau-card-bg" | "panneau-card-border-color" | "panneau-card-shadow" | "panneau-card-header-padding-y" | "panneau-card-title-font-size", string>>;
     checkbox: Readonly<Record<"panneau-checkbox-size" | "panneau-checkbox-radius" | "panneau-checkbox-bg" | "panneau-checkbox-border-color" | "panneau-checkbox-checked-color" | "panneau-checkbox-checked-bg", string>>;
-    dialog: Readonly<Record<"panneau-dialog-width" | "panneau-dialog-radius" | "panneau-dialog-padding-x" | "panneau-dialog-title-font-weight" | "panneau-dialog-bg" | "panneau-dialog-shadow" | "panneau-dialog-title-font-size" | "panneau-dialog-backdrop" | "panneau-dialog-width-sm" | "panneau-dialog-width-lg", string>>;
+    container: Readonly<Record<"panneau-container-padding-x" | "panneau-container-width-sm" | "panneau-container-width-md" | "panneau-container-width-lg" | "panneau-container-width-xl", string>>;
+    dialog: Readonly<Record<"panneau-dialog-width" | "panneau-dialog-radius" | "panneau-dialog-padding-x" | "panneau-dialog-title-font-weight" | "panneau-dialog-bg" | "panneau-dialog-shadow" | "panneau-dialog-title-font-size" | "panneau-dialog-width-sm" | "panneau-dialog-width-lg" | "panneau-dialog-backdrop", string>>;
     disclosure: Readonly<Record<"panneau-disclosure-gap" | "panneau-disclosure-title-font-weight" | "panneau-disclosure-title-font-size", string>>;
+    divider: Readonly<Record<"panneau-divider-color" | "panneau-divider-width", string>>;
     field: Readonly<Record<"panneau-field-gap" | "panneau-field-label-font-size" | "panneau-field-label-font-weight", string>>;
+    grid: Readonly<Record<"panneau-grid-gap", string>>;
     heading: Readonly<Record<"panneau-heading-color" | "panneau-heading-font-family" | "panneau-heading-display-font-family" | "panneau-heading-1-font-size" | "panneau-heading-1-font-weight" | "panneau-heading-1-line-height" | "panneau-heading-1-letter-spacing" | "panneau-heading-2-font-size" | "panneau-heading-2-font-weight" | "panneau-heading-2-line-height" | "panneau-heading-2-letter-spacing" | "panneau-heading-3-font-size" | "panneau-heading-3-font-weight" | "panneau-heading-3-line-height" | "panneau-heading-3-letter-spacing" | "panneau-heading-4-font-size" | "panneau-heading-4-font-weight" | "panneau-heading-4-line-height" | "panneau-heading-4-letter-spacing" | "panneau-heading-display-1-font-size" | "panneau-heading-display-1-font-weight" | "panneau-heading-display-1-line-height" | "panneau-heading-display-1-letter-spacing" | "panneau-heading-display-2-font-size" | "panneau-heading-display-2-font-weight" | "panneau-heading-display-2-line-height" | "panneau-heading-display-2-letter-spacing", string>>;
+    inline: Readonly<Record<"panneau-inline-gap", string>>;
     input: Readonly<Record<"panneau-input-radius" | "panneau-input-padding-x" | "panneau-input-border-width" | "panneau-input-bg" | "panneau-input-border-color" | "panneau-input-border-color-hover", string>>;
     'list-box': Readonly<Record<"panneau-list-box-padding" | "panneau-list-box-item-padding-y" | "panneau-list-box-item-padding-x" | "panneau-list-box-item-radius" | "panneau-list-box-item-bg-hover", string>>;
     'number-input': Readonly<Record<"panneau-number-input-stepper-width", string>>;
-    popover: Readonly<Record<"panneau-popover-radius" | "panneau-popover-bg" | "panneau-popover-border-color" | "panneau-popover-shadow" | "panneau-popover-padding", string>>;
+    popover: Readonly<Record<"panneau-popover-radius" | "panneau-popover-padding" | "panneau-popover-bg" | "panneau-popover-border-color" | "panneau-popover-shadow", string>>;
     prose: Readonly<Record<"panneau-prose-gap" | "panneau-prose-border-color" | "panneau-prose-line-height" | "panneau-prose-heading-gap" | "panneau-prose-list-indent" | "panneau-prose-link-color" | "panneau-prose-code-font-size" | "panneau-prose-code-bg" | "panneau-prose-code-radius" | "panneau-prose-quote-border-color" | "panneau-prose-quote-color", string>>;
     radio: Readonly<Record<"panneau-radio-size" | "panneau-radio-bg" | "panneau-radio-border-color" | "panneau-radio-checked-color" | "panneau-radio-checked-border-width", string>>;
     spinner: Readonly<Record<"panneau-spinner-border-width", string>>;
+    stack: Readonly<Record<"panneau-stack-gap", string>>;
     switch: Readonly<Record<"panneau-switch-height" | "panneau-switch-width" | "panneau-switch-radius" | "panneau-switch-checked-bg" | "panneau-switch-track-bg" | "panneau-switch-thumb-size" | "panneau-switch-thumb-bg" | "panneau-switch-checked-thumb-bg", string>>;
     tabs: Readonly<Record<"panneau-tabs-gap" | "panneau-tabs-border-color" | "panneau-tabs-tab-padding-x" | "panneau-tabs-tab-font-weight" | "panneau-tabs-tab-color" | "panneau-tabs-indicator-height" | "panneau-tabs-tab-color-selected" | "panneau-tabs-indicator-color", string>>;
     text: Readonly<Record<"panneau-text-muted-color", string>>;
     toast: Readonly<Record<"panneau-toast-width" | "panneau-toast-radius" | "panneau-toast-bg" | "panneau-toast-border-color" | "panneau-toast-shadow" | "panneau-toast-tone-width", string>>;
     tooltip: Readonly<Record<"panneau-tooltip-color" | "panneau-tooltip-radius" | "panneau-tooltip-padding-y" | "panneau-tooltip-padding-x" | "panneau-tooltip-font-size" | "panneau-tooltip-bg", string>>;
 }>;
+
+// @public
+export function Container(input: ContainerProps): JSX.Element;
+
+// @public (undocumented)
+export interface ContainerProps extends HTMLAttributes<HTMLElement> {
+    as?: 'div' | 'section' | 'main' | 'article' | 'header' | 'footer';
+    flush?: boolean;
+    size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+}
 
 // @public
 export function DatePicker(input: DatePickerProps): JSX.Element;
@@ -335,6 +361,14 @@ export interface DisclosureProps {
 }
 
 // @public
+export function Divider(input: DividerProps): JSX.Element;
+
+// @public (undocumented)
+export interface DividerProps extends HTMLAttributes<HTMLElement> {
+    orientation?: 'horizontal' | 'vertical';
+}
+
+// @public
 export interface FieldChromeProps {
     className?: string;
     description?: ReactNode;
@@ -378,6 +412,27 @@ export function findUnknownTokens(theme: Theme): string[];
 
 // @public
 export function getNamedIcon(name: string): IconComponent;
+
+// @public
+export function Grid(input: GridProps): JSX.Element;
+
+// @public
+export function GridItem(input: GridItemProps): JSX.Element;
+
+// @public (undocumented)
+export interface GridItemProps extends HTMLAttributes<HTMLElement> {
+    as?: 'div' | 'section' | 'article' | 'li';
+    span?: Responsive<number | 'full'>;
+}
+
+// @public (undocumented)
+export interface GridProps extends HTMLAttributes<HTMLElement> {
+    align?: Responsive<'start' | 'center' | 'end' | 'stretch'>;
+    as?: 'div' | 'section' | 'ul' | 'ol' | 'dl';
+    columns?: Responsive<number>;
+    gap?: Responsive<Space>;
+    minItemWidth?: string;
+}
 
 // @public
 export function Heading(input: HeadingProps): JSX.Element;
@@ -435,6 +490,21 @@ export interface IconProps {
 
 // @public (undocumented)
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
+// @public
+export function Inline(input: InlineProps): JSX.Element;
+
+// @public (undocumented)
+export interface InlineProps extends HTMLAttributes<HTMLElement> {
+    align?: Responsive<'start' | 'center' | 'end' | 'stretch' | 'baseline'>;
+    as?: 'div' | 'section' | 'header' | 'footer' | 'nav' | 'ul' | 'ol' | 'span';
+    gap?: Responsive<Space>;
+    justify?: Responsive<Justification>;
+    wrap?: boolean;
+}
+
+// @public
+export type Justification = 'start' | 'center' | 'end' | 'between';
 
 // @public
 export function loadNamedIcon(name: string): Promise<IconComponent | null>;
@@ -579,6 +649,9 @@ export interface RadioGroupProps extends Omit<RadioGroupProps_2, 'className' | '
 }
 
 // @public
+export type Responsive<T> = T | Partial<Record<'base' | Breakpoint, T>>;
+
+// @public
 export function Select(props: SelectProps): JSX.Element;
 
 // @public
@@ -636,6 +709,9 @@ export interface SingleSelectProps extends SelectBaseProps {
 }
 
 // @public
+export type Space = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 8 | 10;
+
+// @public
 export function Spinner(input: SpinnerProps): JSX.Element;
 
 // @public (undocumented)
@@ -646,6 +722,17 @@ export interface SpinnerProps {
     showLabel?: boolean;
     // (undocumented)
     size?: 'sm' | 'md' | 'lg';
+}
+
+// @public
+export function Stack(input: StackProps): JSX.Element;
+
+// @public (undocumented)
+export interface StackProps extends HTMLAttributes<HTMLElement> {
+    align?: Responsive<'start' | 'center' | 'end' | 'stretch'>;
+    as?: 'div' | 'section' | 'article' | 'aside' | 'header' | 'footer' | 'nav' | 'main' | 'ul' | 'ol' | 'form';
+    gap?: Responsive<Space>;
+    justify?: Responsive<Justification>;
 }
 
 // @public

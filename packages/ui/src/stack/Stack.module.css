@@ -1,0 +1,135 @@
+/* A vertical stack: each prop can change at the breakpoints of the nearest container. */
+
+.stack {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+/* Responsive values are set inline; children reset them so that they aren't inherited. */
+.stack > * {
+    --_panneau-stack-gap-base: initial;
+    --_panneau-stack-gap-sm: initial;
+    --_panneau-stack-gap-md: initial;
+    --_panneau-stack-gap-lg: initial;
+    --_panneau-stack-gap-xl: initial;
+    --_panneau-stack-align-base: initial;
+    --_panneau-stack-align-sm: initial;
+    --_panneau-stack-align-md: initial;
+    --_panneau-stack-align-lg: initial;
+    --_panneau-stack-align-xl: initial;
+    --_panneau-stack-justify-base: initial;
+    --_panneau-stack-justify-sm: initial;
+    --_panneau-stack-justify-md: initial;
+    --_panneau-stack-justify-lg: initial;
+    --_panneau-stack-justify-xl: initial;
+}
+
+.stack {
+    gap: var(--_panneau-stack-gap-base, var(--panneau-stack-gap, var(--panneau-space-4)));
+    align-items: var(--_panneau-stack-align-base, stretch);
+    justify-content: var(--_panneau-stack-justify-base, start);
+}
+
+@container (min-width: 40rem) {
+    .stack {
+        gap: var(
+            --_panneau-stack-gap-sm,
+            var(--_panneau-stack-gap-base, var(--panneau-stack-gap, var(--panneau-space-4)))
+        );
+        align-items: var(--_panneau-stack-align-sm, var(--_panneau-stack-align-base, stretch));
+        justify-content: var(
+            --_panneau-stack-justify-sm,
+            var(--_panneau-stack-justify-base, start)
+        );
+    }
+}
+
+@container (min-width: 48rem) {
+    .stack {
+        gap: var(
+            --_panneau-stack-gap-md,
+            var(
+                --_panneau-stack-gap-sm,
+                var(--_panneau-stack-gap-base, var(--panneau-stack-gap, var(--panneau-space-4)))
+            )
+        );
+        align-items: var(
+            --_panneau-stack-align-md,
+            var(--_panneau-stack-align-sm, var(--_panneau-stack-align-base, stretch))
+        );
+        justify-content: var(
+            --_panneau-stack-justify-md,
+            var(--_panneau-stack-justify-sm, var(--_panneau-stack-justify-base, start))
+        );
+    }
+}
+
+@container (min-width: 64rem) {
+    .stack {
+        gap: var(
+            --_panneau-stack-gap-lg,
+            var(
+                --_panneau-stack-gap-md,
+                var(
+                    --_panneau-stack-gap-sm,
+                    var(--_panneau-stack-gap-base, var(--panneau-stack-gap, var(--panneau-space-4)))
+                )
+            )
+        );
+        align-items: var(
+            --_panneau-stack-align-lg,
+            var(
+                --_panneau-stack-align-md,
+                var(--_panneau-stack-align-sm, var(--_panneau-stack-align-base, stretch))
+            )
+        );
+        justify-content: var(
+            --_panneau-stack-justify-lg,
+            var(
+                --_panneau-stack-justify-md,
+                var(--_panneau-stack-justify-sm, var(--_panneau-stack-justify-base, start))
+            )
+        );
+    }
+}
+
+@container (min-width: 80rem) {
+    .stack {
+        gap: var(
+            --_panneau-stack-gap-xl,
+            var(
+                --_panneau-stack-gap-lg,
+                var(
+                    --_panneau-stack-gap-md,
+                    var(
+                        --_panneau-stack-gap-sm,
+                        var(
+                            --_panneau-stack-gap-base,
+                            var(--panneau-stack-gap, var(--panneau-space-4))
+                        )
+                    )
+                )
+            )
+        );
+        align-items: var(
+            --_panneau-stack-align-xl,
+            var(
+                --_panneau-stack-align-lg,
+                var(
+                    --_panneau-stack-align-md,
+                    var(--_panneau-stack-align-sm, var(--_panneau-stack-align-base, stretch))
+                )
+            )
+        );
+        justify-content: var(
+            --_panneau-stack-justify-xl,
+            var(
+                --_panneau-stack-justify-lg,
+                var(
+                    --_panneau-stack-justify-md,
+                    var(--_panneau-stack-justify-sm, var(--_panneau-stack-justify-base, start))
+                )
+            )
+        );
+    }
+}

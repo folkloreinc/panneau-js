@@ -1,0 +1,32 @@
+/*
+ * A centered column with a maximum width. It is a size container: the responsive props of the
+ * primitives inside it follow its width.
+ */
+
+.container {
+    box-sizing: border-box;
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: var(--panneau-container-padding-x, var(--panneau-space-4));
+    container-type: inline-size;
+}
+
+.sm {
+    max-width: var(--panneau-container-width-sm, 40rem);
+}
+
+.md {
+    max-width: var(--panneau-container-width-md, 48rem);
+}
+
+.lg {
+    max-width: var(--panneau-container-width-lg, 64rem);
+}
+
+.xl {
+    max-width: var(--panneau-container-width-xl, 80rem);
+}
+
+.flush {
+    padding-inline: 0;
+}

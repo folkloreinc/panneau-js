@@ -3,18 +3,23 @@ import { badgeTokens } from '../badge/tokens';
 import { buttonTokens } from '../button/tokens';
 import { cardTokens } from '../card/tokens';
 import { checkboxTokens } from '../checkbox/tokens';
+import { containerTokens } from '../container/tokens';
 import { calendarTokens } from '../date-picker/calendarTokens';
 import { dialogTokens } from '../dialog/tokens';
 import { disclosureTokens } from '../disclosure/tokens';
+import { dividerTokens } from '../divider/tokens';
 import { inputTokens } from '../field/inputTokens';
 import { fieldTokens } from '../field/tokens';
+import { gridTokens } from '../grid/tokens';
 import { headingTokens } from '../heading/tokens';
+import { inlineTokens } from '../inline/tokens';
 import { numberInputTokens } from '../number-input/tokens';
 import { popoverTokens } from '../popover/tokens';
 import { proseTokens } from '../prose/tokens';
 import { radioTokens } from '../radio-group/tokens';
 import { listBoxTokens } from '../select/listBoxTokens';
 import { spinnerTokens } from '../spinner/tokens';
+import { stackTokens } from '../stack/tokens';
 import { switchTokens } from '../switch/tokens';
 import { tabsTokens } from '../tabs/tokens';
 import { textTokens } from '../text/tokens';
@@ -32,10 +37,14 @@ export const componentTokens = Object.freeze({
     calendar: calendarTokens.tokens,
     card: cardTokens.tokens,
     checkbox: checkboxTokens.tokens,
+    container: containerTokens.tokens,
     dialog: dialogTokens.tokens,
     disclosure: disclosureTokens.tokens,
+    divider: dividerTokens.tokens,
     field: fieldTokens.tokens,
+    grid: gridTokens.tokens,
     heading: headingTokens.tokens,
+    inline: inlineTokens.tokens,
     input: inputTokens.tokens,
     'list-box': listBoxTokens.tokens,
     'number-input': numberInputTokens.tokens,
@@ -43,6 +52,7 @@ export const componentTokens = Object.freeze({
     prose: proseTokens.tokens,
     radio: radioTokens.tokens,
     spinner: spinnerTokens.tokens,
+    stack: stackTokens.tokens,
     switch: switchTokens.tokens,
     tabs: tabsTokens.tokens,
     text: textTokens.tokens,

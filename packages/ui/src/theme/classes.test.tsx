@@ -9,18 +9,23 @@ import { Button } from '../button/Button';
 import { Card } from '../card/Card';
 import { Checkbox } from '../checkbox/Checkbox';
 import { ComboBox } from '../combo-box/ComboBox';
+import { Container } from '../container/Container';
 import { DatePicker } from '../date-picker/DatePicker';
 import { Disclosure } from '../disclosure/Disclosure';
+import { Divider } from '../divider/Divider';
 import { Fieldset } from '../field/Fieldset';
+import { Grid, GridItem } from '../grid/Grid';
 import { Heading } from '../heading/Heading';
 import { IconButton } from '../icon-button/IconButton';
 import { Icon } from '../icon/Icon';
+import { Inline } from '../inline/Inline';
 import { NumberInput } from '../number-input/NumberInput';
 import { Prose } from '../prose/Prose';
 import { RadioGroup } from '../radio-group/RadioGroup';
 import { PanneauRoot } from '../root/PanneauRoot';
 import { Select } from '../select/Select';
 import { Spinner } from '../spinner/Spinner';
+import { Stack } from '../stack/Stack';
 import { Switch } from '../switch/Switch';
 import { Tab, TabList, TabPanel, Tabs } from '../tabs/Tabs';
 import { TextArea } from '../text-area/TextArea';
@@ -39,19 +44,25 @@ const cases: [string, ReactNode][] = [
     ['button', <Button key="button">Save</Button>],
     ['card', <Card key="card">Body</Card>],
     ['checkbox', <Checkbox key="checkbox">Published</Checkbox>],
+    ['container', <Container key="container" />],
     ['combo-box', <ComboBox key="combo-box" label="Author" items={[]} />],
     ['date-picker', <DatePicker key="date-picker" label="Date" />],
     ['disclosure', <Disclosure key="disclosure" title="More" />],
+    ['divider', <Divider key="divider" />],
     ['fieldset', <Fieldset key="fieldset" legend="Group" />],
+    ['grid', <Grid key="grid" />],
+    ['grid-item', <GridItem key="grid-item" />],
     ['heading', <Heading key="heading">Title</Heading>],
     ['icon', <Icon key="icon" icon={Plus} />],
     ['icon-button', <IconButton key="icon-button" icon={Plus} label="Add" showTooltip={false} />],
+    ['inline', <Inline key="inline" />],
     ['number-input', <NumberInput key="number-input" label="Count" />],
     ['prose', <Prose key="prose" />],
     ['radio-group', <RadioGroup key="radio-group" label="Choice" options={options} />],
     ['radio', <RadioGroup key="radio" label="Choice" options={options} />],
     ['select', <Select key="select" label="Choice" options={options} />],
     ['spinner', <Spinner key="spinner" label="Loading" />],
+    ['stack', <Stack key="stack" />],
     ['switch', <Switch key="switch">Active</Switch>],
     [
         'tabs',

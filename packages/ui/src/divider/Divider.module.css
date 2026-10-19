@@ -1,0 +1,16 @@
+/* A line between groups: the space around it comes from the stack or row it is in. */
+
+.divider {
+    flex-shrink: 0;
+    margin: 0;
+    border: 0;
+    border-top: var(--panneau-divider-width, var(--panneau-border-width)) solid
+        var(--panneau-divider-color, var(--panneau-color-border));
+}
+
+.vertical {
+    align-self: stretch;
+    border-top: 0;
+    border-left: var(--panneau-divider-width, var(--panneau-border-width)) solid
+        var(--panneau-divider-color, var(--panneau-color-border));
+}
