@@ -38,6 +38,7 @@ export function Popover({
     }
     return (
         <AriaPopover
+            data-panneau="popover"
             {...props}
             offset={offset}
             className={cx(styles.popover, className)}
@@ -63,6 +64,7 @@ export function PopoverSurface({
     }
     return (
         <AriaPopover
+            data-panneau="popover"
             {...props}
             offset={offset}
             className={cx(styles.popover, className)}

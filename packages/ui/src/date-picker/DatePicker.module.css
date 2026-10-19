@@ -92,12 +92,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
+    width: var(--panneau-calendar-cell-size, 2.25rem);
+    height: var(--panneau-calendar-cell-size, 2.25rem);
     font-size: var(--panneau-font-size-md);
     font-variant-numeric: tabular-nums;
     cursor: pointer;
-    border-radius: var(--panneau-radius-md);
+    border-radius: var(--panneau-calendar-cell-radius, var(--panneau-radius-md));
     outline: none;
 }
 
@@ -110,8 +110,8 @@
 }
 
 .cell[data-selected] {
-    color: var(--panneau-color-accent-text);
-    background-color: var(--panneau-color-accent);
+    color: var(--panneau-calendar-selected-color, var(--panneau-color-accent-text));
+    background-color: var(--panneau-calendar-selected-bg, var(--panneau-color-accent));
 }
 
 .cell[data-today]:not([data-selected]) {

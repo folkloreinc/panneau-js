@@ -42,6 +42,7 @@ export function TimeInput({
 }: TimeInputProps) {
     return (
         <TimeField
+            data-panneau="time-input"
             {...props}
             isRequired={isRequired}
             isReadOnly={isReadOnly}

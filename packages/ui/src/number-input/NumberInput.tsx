@@ -75,6 +75,7 @@ export function NumberInput({
     const invalid = errors.length > 0;
     return (
         <NumberField
+            data-panneau="number-input"
             {...props}
             value={toAria(value)}
             defaultValue={toAria(defaultValue)}

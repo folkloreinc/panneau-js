@@ -55,6 +55,7 @@ export function TextInput({
     const adorned = prefix !== undefined || suffix !== undefined;
     return (
         <TextField
+            data-panneau="text-input"
             {...props}
             isRequired={isRequired}
             isReadOnly={isReadOnly}

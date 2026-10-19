@@ -41,6 +41,7 @@ export function TextArea({
 }: TextAreaProps) {
     return (
         <TextField
+            data-panneau="text-area"
             {...props}
             isRequired={isRequired}
             isInvalid={errors.length > 0}

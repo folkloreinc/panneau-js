@@ -31,7 +31,7 @@ export function Menu<T extends object>({
 }: MenuProps<T>) {
     return (
         <PopoverSurface placement={placement} className={popoverClassName}>
-            <AriaMenu {...props} className={cx(styles.listBox, className)} />
+            <AriaMenu data-panneau="menu" {...props} className={cx(styles.listBox, className)} />
         </PopoverSurface>
     );
 }
@@ -57,6 +57,7 @@ export function MenuItem({
 }: MenuItemProps) {
     return (
         <AriaMenuItem
+            data-panneau="menu-item"
             {...props}
             textValue={textValue ?? (typeof children === 'string' ? children : undefined)}
             className={cx(styles.item, className)}

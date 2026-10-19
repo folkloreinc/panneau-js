@@ -39,6 +39,7 @@ export function Card({
     const Heading = `h${headingLevel}` as const;
     return (
         <Element
+            data-panneau="card"
             className={cx(styles.card, className)}
             aria-labelledby={hasTitle && Element !== 'div' ? titleId : undefined}
         >

@@ -62,6 +62,7 @@ export function DatePicker({
     const invalid = errors.length > 0;
     return (
         <AriaDatePicker
+            data-panneau="date-picker"
             {...props}
             isRequired={isRequired}
             isReadOnly={isReadOnly}

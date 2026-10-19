@@ -182,6 +182,7 @@ export function Select(props: SelectProps) {
         const { value, onChange } = props;
         return (
             <AriaSelect
+                data-panneau="select"
                 {...shared}
                 selectionMode="multiple"
                 value={
@@ -209,6 +210,7 @@ export function Select(props: SelectProps) {
     const { value, onChange } = props;
     return (
         <AriaSelect
+            data-panneau="select"
             {...shared}
             selectionMode="single"
             value={

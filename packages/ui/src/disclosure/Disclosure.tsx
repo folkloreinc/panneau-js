@@ -40,7 +40,11 @@ export function Disclosure({
     ...props
 }: DisclosureProps) {
     return (
-        <AriaDisclosure {...props} className={cx(styles.disclosure, className)}>
+        <AriaDisclosure
+            data-panneau="disclosure"
+            {...props}
+            className={cx(styles.disclosure, className)}
+        >
             <Heading level={headingLevel} className={styles.heading}>
                 <Button slot="trigger" className={cx(styles.trigger, triggerClassName)}>
                     <Icon icon={ChevronRight} className={styles.chevron} />

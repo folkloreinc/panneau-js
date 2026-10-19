@@ -31,6 +31,7 @@ export function IconButton({
 }: IconButtonProps) {
     const button = (
         <Button
+            data-panneau="icon-button"
             {...props}
             variant={variant}
             size={size}

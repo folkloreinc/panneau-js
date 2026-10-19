@@ -2,19 +2,20 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--panneau-space-1);
-    min-width: 1.25rem;
-    height: 1.25rem;
-    padding: 0 var(--panneau-space-2);
-    font-size: var(--panneau-font-size-xs);
-    font-weight: var(--panneau-font-weight-medium);
+    gap: var(--panneau-badge-gap, var(--panneau-space-1));
+    min-width: var(--panneau-badge-height, 1.25rem);
+    height: var(--panneau-badge-height, 1.25rem);
+    padding: 0 var(--panneau-badge-padding-x, var(--panneau-space-2));
+    font-size: var(--panneau-badge-font-size, var(--panneau-font-size-xs));
+    font-weight: var(--panneau-badge-font-weight, var(--panneau-font-weight-medium));
     font-variant-numeric: tabular-nums;
     line-height: 1;
     white-space: nowrap;
     color: var(--panneau-color-text);
     background-color: var(--panneau-color-surface-sunken);
-    border: var(--panneau-border-width) solid var(--panneau-color-border);
-    border-radius: var(--panneau-radius-full);
+    border: var(--panneau-badge-border-width, var(--panneau-border-width)) solid
+        var(--panneau-color-border);
+    border-radius: var(--panneau-badge-radius, var(--panneau-radius-full));
 }
 
 .success {

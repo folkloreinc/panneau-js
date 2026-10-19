@@ -97,6 +97,7 @@ export function ComboBox({
     const invalid = errors.length > 0;
     return (
         <AriaComboBox
+            data-panneau="combo-box"
             {...props}
             items={items}
             selectedKey={value}

@@ -2,10 +2,11 @@
     min-width: var(--trigger-width, 10rem);
     max-width: calc(100vw - 2 * var(--panneau-space-4));
     color: var(--panneau-color-text);
-    background-color: var(--panneau-color-surface-raised);
-    border: var(--panneau-border-width) solid var(--panneau-color-border);
-    border-radius: var(--panneau-radius-lg);
-    box-shadow: var(--panneau-shadow-lg);
+    background-color: var(--panneau-popover-bg, var(--panneau-color-surface-raised));
+    border: var(--panneau-border-width) solid
+        var(--panneau-popover-border-color, var(--panneau-color-border));
+    border-radius: var(--panneau-popover-radius, var(--panneau-radius-lg));
+    box-shadow: var(--panneau-popover-shadow, var(--panneau-shadow-lg));
     outline: none;
     overflow: auto;
     z-index: var(--panneau-z-overlay);
@@ -20,7 +21,7 @@
 }
 
 .dialog {
-    padding: var(--panneau-space-3);
+    padding: var(--panneau-popover-padding, var(--panneau-space-3));
     outline: none;
 }
 

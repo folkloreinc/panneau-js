@@ -63,6 +63,7 @@ export function Alert({
     const shown = icon === undefined ? TONE_ICONS[tone] : icon;
     return (
         <div
+            data-panneau="alert"
             ref={ref}
             id={id}
             role={role}

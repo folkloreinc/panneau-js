@@ -3,13 +3,13 @@
 .field {
     display: flex;
     flex-direction: column;
-    gap: var(--panneau-space-1);
+    gap: var(--panneau-field-gap, var(--panneau-space-1));
     min-width: 0;
 }
 
 .label {
-    font-size: var(--panneau-font-size-md);
-    font-weight: var(--panneau-font-weight-medium);
+    font-size: var(--panneau-field-label-font-size, var(--panneau-font-size-md));
+    font-weight: var(--panneau-field-label-font-weight, var(--panneau-font-weight-medium));
     line-height: var(--panneau-line-height-tight);
     color: var(--panneau-color-text);
     overflow-wrap: anywhere;
@@ -43,13 +43,14 @@
     width: 100%;
     min-width: 0;
     min-height: var(--panneau-control-height);
-    padding: 0 var(--panneau-space-3);
+    padding: 0 var(--panneau-input-padding-x, var(--panneau-space-3));
     font-size: var(--panneau-font-size-control);
     line-height: var(--panneau-line-height-tight);
     color: var(--panneau-color-text);
-    background-color: var(--panneau-color-surface);
-    border: var(--panneau-border-width) solid var(--panneau-color-border-control);
-    border-radius: var(--panneau-radius-md);
+    background-color: var(--panneau-input-bg, var(--panneau-color-surface));
+    border: var(--panneau-input-border-width, var(--panneau-border-width)) solid
+        var(--panneau-input-border-color, var(--panneau-color-border-control));
+    border-radius: var(--panneau-input-radius, var(--panneau-radius-md));
     transition:
         border-color var(--panneau-duration),
         box-shadow var(--panneau-duration);
@@ -62,7 +63,7 @@
 
 .control[data-hovered],
 .control:hover {
-    border-color: var(--panneau-color-text-muted);
+    border-color: var(--panneau-input-border-color-hover, var(--panneau-color-text-muted));
 }
 
 .control[data-focused],

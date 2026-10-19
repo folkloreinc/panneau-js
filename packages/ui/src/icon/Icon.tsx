@@ -40,6 +40,7 @@ export function Icon({ icon: Component, size = 'md', label, className }: IconPro
     const pixels = typeof size === 'number' ? size : SIZES[size];
     return (
         <Component
+            data-panneau="icon"
             size={pixels}
             strokeWidth={2}
             absoluteStrokeWidth={pixels < 16}

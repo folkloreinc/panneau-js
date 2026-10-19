@@ -55,6 +55,7 @@ export function RadioGroup({
     const index = value === undefined ? undefined : options.findIndex((o) => o.value === value);
     return (
         <AriaRadioGroup
+            data-panneau="radio-group"
             {...props}
             orientation={orientation}
             isRequired={isRequired}
@@ -79,6 +80,7 @@ export function RadioGroup({
             <div className={styles.options}>
                 {options.map((option, position) => (
                     <Radio
+                        data-panneau="radio"
                         key={position}
                         value={String(position)}
                         isDisabled={option.disabled}

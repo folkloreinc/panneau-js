@@ -20,6 +20,7 @@ export function Spinner({ label, showLabel = false, size = 'md', className }: Sp
     const text = label ?? intl.formatMessage(messages.loading);
     return (
         <ProgressBar
+            data-panneau="spinner"
             isIndeterminate
             aria-label={text}
             className={cx(styles.spinner, styles[size], className)}

@@ -30,6 +30,41 @@ Every Panneau interface renders inside a `PanneauRoot`. It scopes the base style
 
 The default theme and the icon set are explained in [decision 0020](../../docs/decisions/0020-default-theme-and-icons.md).
 
+### Component tokens
+
+Every component reads its own tokens, `--panneau-<component>-<token>`, which default to semantic tokens. Set one to restyle a single component, in a theme, on the root, or on any element around the components:
+
+```css
+.my-panneau {
+    --panneau-badge-radius: var(--panneau-radius-sm); /* square badges, nothing else changes */
+}
+
+.my-toolbar {
+    --panneau-button-padding-x: var(--panneau-space-2);
+}
+```
+
+`componentTokens` lists every component token and its default, by component, and `ComponentTokenName` is their type. Some tokens style parts that several components share:
+
+- `input`: the box of text inputs, selects, combo boxes and pickers;
+- `field`: labels, descriptions and errors;
+- `list-box`: options of selects, combo boxes and menus;
+- `calendar`.
+
+### Hooks
+
+The root element of every component carries `data-panneau="<component>"` (`button`, `badge`, `text-input`…), a public hook for a project's CSS:
+
+```css
+.my-panneau [data-panneau='badge'] {
+    letter-spacing: 0.02em;
+}
+```
+
+Class names are hashed CSS Modules and can change in any release: target `data-panneau` hooks instead.
+
+The theme model is described in [decision 0024](../../docs/decisions/0024-theme-model.md).
+
 ## Primitives
 
 `Button`, `IconButton`, `TextInput`, `TextArea`, `NumberInput`, `Select` (single or multiple), `ComboBox`, `Checkbox`, `Switch`, `RadioGroup`, `DatePicker`, `TimeInput`, `Fieldset`, `Dialog`, `Popover`, `Menu`, `Tabs`, `Tooltip`, toasts (`useToast()`), `Alert`, `Badge`, `Spinner`, `Card`, `Disclosure` and `Icon`.

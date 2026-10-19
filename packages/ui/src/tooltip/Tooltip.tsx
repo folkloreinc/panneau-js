@@ -41,6 +41,7 @@ export function Tooltip({
         <TooltipTrigger delay={delay} isDisabled={isDisabled}>
             {children}
             <AriaTooltip
+                data-panneau="tooltip"
                 placement={placement}
                 offset={6}
                 className={cx(styles.tooltip, className)}
