@@ -50,7 +50,7 @@ export const bootstrapTheme: Theme = {
         'panneau-color-info-solid': 'var(--bs-info)',
         'panneau-color-info-solid-hover': 'color-mix(in srgb, var(--bs-info), #000 10%)',
         'panneau-color-info-solid-text': 'var(--bs-dark)',
-        'panneau-font-family': 'var(--bs-body-font-family)',
+        'panneau-font-family-body': 'var(--bs-body-font-family)',
         'panneau-font-family-mono': 'var(--bs-font-monospace)',
         'panneau-font-size-md': 'var(--bs-body-font-size)',
         'panneau-font-size-control': 'var(--bs-body-font-size)',

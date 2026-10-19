@@ -58,6 +58,12 @@
                         },
                         "additionalProperties": {}
                     }
+                },
+                "fonts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/ThemeFont"
+                    }
                 }
             },
             "required": [
@@ -145,6 +151,69 @@
                     "additionalProperties": {}
                 }
             ]
+        },
+        "ThemeFont": {
+            "anyOf": [
+                {
+                    "$ref": "#/$defs/ThemeFontFace"
+                },
+                {
+                    "$ref": "#/$defs/ThemeFontStylesheet"
+                }
+            ]
+        },
+        "ThemeFontFace": {
+            "type": "object",
+            "properties": {
+                "family": {
+                    "type": "string",
+                    "pattern": "^[^{}<;\"\\\\]+$"
+                },
+                "src": {
+                    "type": "string",
+                    "pattern": "^[^{}<]+$"
+                },
+                "weight": {
+                    "type": "string",
+                    "pattern": "^[^{}<;]*$"
+                },
+                "style": {
+                    "type": "string",
+                    "pattern": "^[^{}<;]*$"
+                },
+                "display": {
+                    "type": "string",
+                    "enum": [
+                        "auto",
+                        "block",
+                        "swap",
+                        "fallback",
+                        "optional"
+                    ]
+                },
+                "unicodeRange": {
+                    "type": "string",
+                    "pattern": "^[^{}<;]*$"
+                }
+            },
+            "required": [
+                "family",
+                "src"
+            ],
+            "additionalProperties": {}
+        },
+        "ThemeFontStylesheet": {
+            "type": "object",
+            "properties": {
+                "stylesheet": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            },
+            "required": [
+                "stylesheet"
+            ],
+            "additionalProperties": {}
         }
     }
 }

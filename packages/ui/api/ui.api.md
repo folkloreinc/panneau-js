@@ -243,14 +243,17 @@ export const componentTokens: Readonly<{
     dialog: Readonly<Record<"panneau-dialog-width" | "panneau-dialog-radius" | "panneau-dialog-padding-x" | "panneau-dialog-title-font-weight" | "panneau-dialog-bg" | "panneau-dialog-shadow" | "panneau-dialog-title-font-size" | "panneau-dialog-backdrop" | "panneau-dialog-width-sm" | "panneau-dialog-width-lg", string>>;
     disclosure: Readonly<Record<"panneau-disclosure-gap" | "panneau-disclosure-title-font-weight" | "panneau-disclosure-title-font-size", string>>;
     field: Readonly<Record<"panneau-field-gap" | "panneau-field-label-font-size" | "panneau-field-label-font-weight", string>>;
+    heading: Readonly<Record<"panneau-heading-color" | "panneau-heading-font-family" | "panneau-heading-display-font-family" | "panneau-heading-1-font-size" | "panneau-heading-1-font-weight" | "panneau-heading-1-line-height" | "panneau-heading-1-letter-spacing" | "panneau-heading-2-font-size" | "panneau-heading-2-font-weight" | "panneau-heading-2-line-height" | "panneau-heading-2-letter-spacing" | "panneau-heading-3-font-size" | "panneau-heading-3-font-weight" | "panneau-heading-3-line-height" | "panneau-heading-3-letter-spacing" | "panneau-heading-4-font-size" | "panneau-heading-4-font-weight" | "panneau-heading-4-line-height" | "panneau-heading-4-letter-spacing" | "panneau-heading-display-1-font-size" | "panneau-heading-display-1-font-weight" | "panneau-heading-display-1-line-height" | "panneau-heading-display-1-letter-spacing" | "panneau-heading-display-2-font-size" | "panneau-heading-display-2-font-weight" | "panneau-heading-display-2-line-height" | "panneau-heading-display-2-letter-spacing", string>>;
     input: Readonly<Record<"panneau-input-radius" | "panneau-input-padding-x" | "panneau-input-border-width" | "panneau-input-bg" | "panneau-input-border-color" | "panneau-input-border-color-hover", string>>;
     'list-box': Readonly<Record<"panneau-list-box-padding" | "panneau-list-box-item-padding-y" | "panneau-list-box-item-padding-x" | "panneau-list-box-item-radius" | "panneau-list-box-item-bg-hover", string>>;
     'number-input': Readonly<Record<"panneau-number-input-stepper-width", string>>;
     popover: Readonly<Record<"panneau-popover-radius" | "panneau-popover-bg" | "panneau-popover-border-color" | "panneau-popover-shadow" | "panneau-popover-padding", string>>;
+    prose: Readonly<Record<"panneau-prose-gap" | "panneau-prose-border-color" | "panneau-prose-line-height" | "panneau-prose-heading-gap" | "panneau-prose-list-indent" | "panneau-prose-link-color" | "panneau-prose-code-font-size" | "panneau-prose-code-bg" | "panneau-prose-code-radius" | "panneau-prose-quote-border-color" | "panneau-prose-quote-color", string>>;
     radio: Readonly<Record<"panneau-radio-size" | "panneau-radio-bg" | "panneau-radio-border-color" | "panneau-radio-checked-color" | "panneau-radio-checked-border-width", string>>;
     spinner: Readonly<Record<"panneau-spinner-border-width", string>>;
     switch: Readonly<Record<"panneau-switch-height" | "panneau-switch-width" | "panneau-switch-radius" | "panneau-switch-checked-bg" | "panneau-switch-track-bg" | "panneau-switch-thumb-size" | "panneau-switch-thumb-bg" | "panneau-switch-checked-thumb-bg", string>>;
     tabs: Readonly<Record<"panneau-tabs-gap" | "panneau-tabs-border-color" | "panneau-tabs-tab-padding-x" | "panneau-tabs-tab-font-weight" | "panneau-tabs-tab-color" | "panneau-tabs-indicator-height" | "panneau-tabs-tab-color-selected" | "panneau-tabs-indicator-color", string>>;
+    text: Readonly<Record<"panneau-text-muted-color", string>>;
     toast: Readonly<Record<"panneau-toast-width" | "panneau-toast-radius" | "panneau-toast-bg" | "panneau-toast-border-color" | "panneau-toast-shadow" | "panneau-toast-tone-width", string>>;
     tooltip: Readonly<Record<"panneau-tooltip-color" | "panneau-tooltip-radius" | "panneau-tooltip-padding-y" | "panneau-tooltip-padding-x" | "panneau-tooltip-font-size" | "panneau-tooltip-bg", string>>;
 }>;
@@ -375,6 +378,21 @@ export function findUnknownTokens(theme: Theme): string[];
 
 // @public
 export function getNamedIcon(name: string): IconComponent;
+
+// @public
+export function Heading(input: HeadingProps): JSX.Element;
+
+// @public
+export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+
+// @public (undocumented)
+export interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
+    level?: HeadingLevel;
+    size?: HeadingSize;
+}
+
+// @public
+export type HeadingSize = 1 | 2 | 3 | 4 | 'display-1' | 'display-2';
 
 // @public
 export function Icon(input: IconProps): JSX.Element;
@@ -538,6 +556,14 @@ export interface PopoverProps extends Omit<PopoverProps_2, 'className' | 'style'
 }
 
 // @public
+export function Prose(input: ProseProps): JSX.Element;
+
+// @public (undocumented)
+export interface ProseProps extends HTMLAttributes<HTMLElement> {
+    as?: 'div' | 'article' | 'section';
+}
+
+// @public
 export function RadioGroup(input: RadioGroupProps): JSX.Element;
 
 // @public (undocumented)
@@ -595,7 +621,7 @@ export interface SelectOption {
 export type SelectProps = SingleSelectProps | MultipleSelectProps;
 
 // @public
-export const SEMANTIC_TOKENS: readonly ["panneau-color-bg", "panneau-color-surface", "panneau-color-surface-sunken", "panneau-color-surface-raised", "panneau-color-hover", "panneau-color-pressed", "panneau-color-backdrop", "panneau-color-text", "panneau-color-text-muted", "panneau-color-link", "panneau-color-border", "panneau-color-border-control", "panneau-color-accent", "panneau-color-accent-hover", "panneau-color-accent-text", "panneau-color-accent-subtle", "panneau-color-focus", "panneau-color-danger", "panneau-color-danger-subtle", "panneau-color-danger-border", "panneau-color-danger-solid", "panneau-color-danger-solid-hover", "panneau-color-danger-solid-text", "panneau-color-success", "panneau-color-success-subtle", "panneau-color-success-border", "panneau-color-success-solid", "panneau-color-success-solid-hover", "panneau-color-success-solid-text", "panneau-color-warning", "panneau-color-warning-subtle", "panneau-color-warning-border", "panneau-color-warning-solid", "panneau-color-warning-solid-hover", "panneau-color-warning-solid-text", "panneau-color-info", "panneau-color-info-subtle", "panneau-color-info-border", "panneau-color-info-solid", "panneau-color-info-solid-hover", "panneau-color-info-solid-text", "panneau-font-family", "panneau-font-family-mono", "panneau-font-size-xs", "panneau-font-size-sm", "panneau-font-size-md", "panneau-font-size-lg", "panneau-font-size-xl", "panneau-font-size-control", "panneau-line-height", "panneau-line-height-tight", "panneau-font-weight-normal", "panneau-font-weight-medium", "panneau-font-weight-bold", "panneau-space-1", "panneau-space-2", "panneau-space-3", "panneau-space-4", "panneau-space-5", "panneau-space-6", "panneau-space-8", "panneau-space-10", "panneau-radius-sm", "panneau-radius-md", "panneau-radius-lg", "panneau-radius-full", "panneau-border-width", "panneau-shadow-sm", "panneau-shadow-md", "panneau-shadow-lg", "panneau-control-height", "panneau-control-height-sm", "panneau-focus-width", "panneau-duration", "panneau-z-overlay", "panneau-z-toast"];
+export const SEMANTIC_TOKENS: readonly ["panneau-color-bg", "panneau-color-surface", "panneau-color-surface-sunken", "panneau-color-surface-raised", "panneau-color-hover", "panneau-color-pressed", "panneau-color-backdrop", "panneau-color-text", "panneau-color-text-muted", "panneau-color-link", "panneau-color-border", "panneau-color-border-control", "panneau-color-accent", "panneau-color-accent-hover", "panneau-color-accent-text", "panneau-color-accent-subtle", "panneau-color-focus", "panneau-color-danger", "panneau-color-danger-subtle", "panneau-color-danger-border", "panneau-color-danger-solid", "panneau-color-danger-solid-hover", "panneau-color-danger-solid-text", "panneau-color-success", "panneau-color-success-subtle", "panneau-color-success-border", "panneau-color-success-solid", "panneau-color-success-solid-hover", "panneau-color-success-solid-text", "panneau-color-warning", "panneau-color-warning-subtle", "panneau-color-warning-border", "panneau-color-warning-solid", "panneau-color-warning-solid-hover", "panneau-color-warning-solid-text", "panneau-color-info", "panneau-color-info-subtle", "panneau-color-info-border", "panneau-color-info-solid", "panneau-color-info-solid-hover", "panneau-color-info-solid-text", "panneau-font-family-body", "panneau-font-family-heading", "panneau-font-family-display", "panneau-font-family-mono", "panneau-font-family", "panneau-font-numeric", "panneau-font-size-xs", "panneau-font-size-sm", "panneau-font-size-md", "panneau-font-size-lg", "panneau-font-size-xl", "panneau-font-size-control", "panneau-line-height", "panneau-line-height-tight", "panneau-font-weight-normal", "panneau-font-weight-medium", "panneau-font-weight-bold", "panneau-space-1", "panneau-space-2", "panneau-space-3", "panneau-space-4", "panneau-space-5", "panneau-space-6", "panneau-space-8", "panneau-space-10", "panneau-radius-sm", "panneau-radius-md", "panneau-radius-lg", "panneau-radius-full", "panneau-border-width", "panneau-shadow-sm", "panneau-shadow-md", "panneau-shadow-lg", "panneau-control-height", "panneau-control-height-sm", "panneau-focus-width", "panneau-duration", "panneau-z-overlay", "panneau-z-toast"];
 
 // @public
 export type SemanticTokenName = (typeof SEMANTIC_TOKENS)[number];
@@ -671,6 +697,10 @@ export interface TabsProps extends Omit<TabsProps_2, 'className' | 'style'> {
 }
 
 // @public
+function Text_2(input: TextProps): JSX.Element;
+export { Text_2 as Text }
+
+// @public
 export function TextArea(input: TextAreaProps): JSX.Element;
 
 // @public (undocumented)
@@ -681,6 +711,9 @@ export interface TextAreaProps extends Omit<TextFieldProps, 'className' | 'style
     // (undocumented)
     textAreaClassName?: string;
 }
+
+// @public
+export type TextFamily = 'body' | 'heading' | 'display' | 'mono';
 
 // @public
 export function TextInput(input: TextInputProps): JSX.Element;
@@ -698,6 +731,21 @@ export interface TextInputProps extends Omit<TextFieldProps, 'className' | 'styl
     type?: 'text' | 'email' | 'url' | 'tel' | 'password' | 'search';
 }
 
+// @public (undocumented)
+export interface TextProps extends HTMLAttributes<HTMLElement> {
+    as?: 'p' | 'span' | 'div' | 'small' | 'strong' | 'em';
+    family?: TextFamily;
+    muted?: boolean;
+    numeric?: boolean;
+    size?: TextSize;
+    tone?: Tone;
+    truncate?: boolean;
+    weight?: 'normal' | 'medium' | 'bold';
+}
+
+// @public
+export type TextSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
 // @public
 export type Theme = {
     label?: string;
@@ -708,6 +756,7 @@ export type Theme = {
     components?: Record<string, {
         variants?: Record<string, Record<string, string>>;
     }>;
+    fonts?: ThemeFont[];
 };
 
 // @public
@@ -731,11 +780,30 @@ export interface ThemeDefinition {
     }>;
     dark?: ThemeTokens;
     extends?: Theme | readonly Theme[];
+    fonts?: ThemeFont[];
     label?: string;
     palette?: Record<string, string>;
     tokens?: ThemeTokens;
     tones?: Record<string, ToneInput>;
 }
+
+// @public
+export type ThemeFont = ThemeFontFace | ThemeFontStylesheet;
+
+// @public
+export type ThemeFontFace = {
+    family: string;
+    src: string;
+    weight?: string;
+    style?: string;
+    display?: 'auto' | 'block' | 'swap' | 'fallback' | 'optional';
+    unicodeRange?: string;
+};
+
+// @public
+export type ThemeFontStylesheet = {
+    stylesheet: string;
+};
 
 // @public (undocumented)
 export interface ThemeReport {

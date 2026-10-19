@@ -27,6 +27,37 @@ export const ToneInput = z
     ])
     .meta({ description: 'A tone: one color, or every value with dark scheme overrides.' });
 
+export const ThemeFontFace = z
+    .looseObject({
+        family: z.string().regex(/^[^{}<;"\\]+$/),
+        src: z
+            .string()
+            .regex(/^[^{}<]+$/)
+            .meta({
+                description: "The `src` descriptor: `url(/fonts/geist.woff2) format('woff2')`.",
+            }),
+        weight: z
+            .string()
+            .regex(/^[^{}<;]*$/)
+            .optional(),
+        style: z
+            .string()
+            .regex(/^[^{}<;]*$/)
+            .optional(),
+        display: z.enum(['auto', 'block', 'swap', 'fallback', 'optional']).optional(),
+        unicodeRange: z
+            .string()
+            .regex(/^[^{}<;]*$/)
+            .optional(),
+    })
+    .meta({ description: 'A font face, written as an `@font-face` rule.' });
+
+export const ThemeFontStylesheet = z
+    .looseObject({ stylesheet: z.string().min(1) })
+    .meta({ description: 'A hosted stylesheet that declares font faces.' });
+
+export const ThemeFont = z.union([ThemeFontFace, ThemeFontStylesheet]);
+
 const themeShape = {
     label: z.string().optional(),
     tokens: ThemeTokens.meta({
@@ -51,6 +82,9 @@ const themeShape = {
             description:
                 'Named variants of components: tokens applied by `panneau-<component>-variant-<name>`.',
         }),
+    fonts: z.array(ThemeFont).optional().meta({
+        description: 'Font faces and font stylesheets, added to the page once.',
+    }),
 };
 
 export const Theme = z
@@ -77,3 +111,6 @@ export type ToneValues = z.infer<typeof ToneValues>;
 export type ToneInput = z.infer<typeof ToneInput>;
 export type Theme = z.infer<typeof Theme>;
 export type DefinitionTheme = z.infer<typeof DefinitionTheme>;
+export type ThemeFontFace = z.infer<typeof ThemeFontFace>;
+export type ThemeFontStylesheet = z.infer<typeof ThemeFontStylesheet>;
+export type ThemeFont = z.infer<typeof ThemeFont>;

@@ -4,13 +4,17 @@ import { IntlContext, IntlProvider, type IntlShape } from 'react-intl';
 
 import { getPanneauMessages } from '@panneau/intl';
 
+import { getFontFaceCss, getFontStylesheets } from '../theme/fonts';
 import { type ColorScheme, type Theme, getThemeCss, hashString } from '../theme/theme';
 import { ToastProvider } from '../toast/Toast';
 import { cx } from '../utils/cx';
 import styles from './PanneauRoot.module.css';
 
 export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
-    /** Tokens that override the default theme: `bootstrapTheme`, or a project's own. */
+    /**
+     * Tokens, tones, variants and fonts that override the default theme: `bootstrapTheme`, or a
+     * project's own (`defineTheme()`).
+     */
     theme?: Theme | null;
     /** Defaults to `light`. `auto` follows the system setting. */
     colorScheme?: ColorScheme;
@@ -83,6 +87,7 @@ export function PanneauRoot({
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const css = theme !== null ? getThemeCss(theme, '§') : '';
     const scope = css !== '' ? hashString(css) : undefined;
+    const fontCss = getFontFaceCss(theme?.fonts);
     const root = (
         <div
             {...props}
@@ -95,6 +100,14 @@ export function PanneauRoot({
                     {css.replaceAll('§', scope)}
                 </style>
             ) : null}
+            {fontCss !== '' ? (
+                <style href={`panneau-fonts-${hashString(fontCss)}`} precedence="panneau">
+                    {fontCss}
+                </style>
+            ) : null}
+            {getFontStylesheets(theme?.fonts).map((href) => (
+                <link key={href} rel="stylesheet" href={href} precedence="panneau" />
+            ))}
             <I18nProvider locale={locale ?? intl?.locale}>
                 <PortalContext value={container}>
                     <ToastProvider

@@ -65,6 +65,13 @@ A token can also style a part shared by several components: `input` (the box of 
 - **No element styling by default.** The base stylesheet styles no element beyond its reset, since Panneau is often embedded in someone else's page. An opt-in `Prose` container styles headings, lists, tables and code in rich content.
 - **Fonts in the theme:** `@font-face` rules or a hosted stylesheet, written by the root and deduplicated.
 
+As built:
+
+- `--panneau-font-family-heading` defaults to the body family, and `-display` to the heading family, so a theme that sets the body changes all three. `--panneau-font-family` is kept as a deprecated alias of the body, declared as `var(--panneau-font-family-body)`: a theme that sets the alias still changes the body text, but not the headings.
+- `--panneau-font-numeric` is a `font-variant-numeric` value (`tabular-nums`), used by every component that shows numbers.
+- The heading and display tokens are the component tokens of `Heading`: size, weight, line height and letter spacing for sizes 1 to 4 and `display-1`, `display-2`. `Prose` reads the same tokens for the headings of rich content, so a theme sets them once.
+- `fonts` in a theme holds font faces (`family`, `src`, `weight`, `style`, `display`, `unicodeRange`) and stylesheets (`{ stylesheet }`). Extended themes' fonts add up. `PanneauRoot` writes the faces in one `<style>` and the stylesheets as `<link>`, both hoisted and deduplicated by React. Values that could break out of the rule are ignored, as for tokens; `src` can hold `;`, for data URLs.
+
 ### 4. Layout primitives and breakpoints
 
 - **Primitives:** `Stack`, `Inline`, `Grid`, `Container` and `Divider`.

@@ -58,10 +58,16 @@
     --panneau-color-info-solid-hover: #1e40af;
     --panneau-color-info-solid-text: #ffffff;
 
-    /* Typography */
-    --panneau-font-family:
+    /* Typography: font roles. Headings and display text follow the body unless a theme sets them. */
+    --panneau-font-family-body:
         system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --panneau-font-family-heading: var(--panneau-font-family-body);
+    --panneau-font-family-display: var(--panneau-font-family-heading);
     --panneau-font-family-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    /* Deprecated alias of the body family: set --panneau-font-family-body instead. */
+    --panneau-font-family: var(--panneau-font-family-body);
+    /* Numbers that line up: stats, dates, ids (font-variant-numeric). */
+    --panneau-font-numeric: tabular-nums;
     --panneau-font-size-xs: 0.75rem;
     --panneau-font-size-sm: 0.8125rem;
     --panneau-font-size-md: 0.875rem;

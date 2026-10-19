@@ -1,4 +1,5 @@
 import { type ComponentTokenName, componentTokens } from './components';
+import type { ThemeFont } from './fonts';
 import { SEMANTIC_TOKENS, type SemanticTokenName } from './semanticTokens';
 import type { Theme } from './theme';
 import type { ToneInput } from './tones';
@@ -49,6 +50,8 @@ export interface ThemeDefinition {
     tones?: Record<string, ToneInput>;
     /** Named variants of components. Declare them in `BadgeVariants` (and the like). */
     components?: Record<string, { variants?: Record<string, ThemeTokens> }>;
+    /** Font faces and font stylesheets. */
+    fonts?: ThemeFont[];
 }
 
 function mergeRecords<T>(
@@ -90,11 +93,22 @@ function mergeComponents(
     );
 }
 
+function mergeFonts(first: Theme['fonts'], second: Theme['fonts']): Theme['fonts'] {
+    if (first === undefined && second === undefined) {
+        return undefined;
+    }
+    const fonts = [...(first ?? []), ...(second ?? [])];
+    return fonts.filter(
+        (font, index) =>
+            fonts.findIndex((other) => JSON.stringify(other) === JSON.stringify(font)) === index,
+    );
+}
+
 /**
  * Merges themes, in order: each one overrides the tokens, palette colors, tones and variants of
  * those before it. A token a theme sets in `tokens` but not in `dark` applies to both schemes, so it
  * also replaces the dark value of earlier themes. Variants merge token by token; tones are replaced
- * whole. The label is the last one set. Same as `mergeThemes()` of `@panneau/protocol`.
+ * whole; fonts add up. The label is the last one set. Same as `mergeThemes()` of `@panneau/protocol`.
  */
 export function mergeThemes(...themes: readonly Partial<Theme>[]): Theme {
     return themes.reduce<Theme>(
@@ -119,6 +133,7 @@ export function mergeThemes(...themes: readonly Partial<Theme>[]): Theme {
                 palette: mergeRecords(merged.palette, theme.palette),
                 tones: mergeRecords(merged.tones, theme.tones),
                 components: mergeComponents(merged.components, theme.components),
+                fonts: mergeFonts(merged.fonts, theme.fonts),
             };
             return Object.fromEntries(
                 Object.entries(result).filter(([, value]) => value !== undefined),

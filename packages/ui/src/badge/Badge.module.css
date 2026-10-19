@@ -8,7 +8,7 @@
     padding: 0 var(--panneau-badge-padding-x, var(--panneau-space-2));
     font-size: var(--panneau-badge-font-size, var(--panneau-font-size-xs));
     font-weight: var(--panneau-badge-font-weight, var(--panneau-font-weight-medium));
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: var(--panneau-font-numeric);
     line-height: 1;
     white-space: nowrap;
     border: var(--panneau-badge-border-width, var(--panneau-border-width)) solid transparent;

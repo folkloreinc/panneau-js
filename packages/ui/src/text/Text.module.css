@@ -1,0 +1,74 @@
+/* Text: sizes, weights and families of the theme, as modifiers. */
+
+.text {
+    margin: 0;
+}
+
+.size-xs {
+    font-size: var(--panneau-font-size-xs);
+}
+
+.size-sm {
+    font-size: var(--panneau-font-size-sm);
+}
+
+.size-md {
+    font-size: var(--panneau-font-size-md);
+}
+
+.size-lg {
+    font-size: var(--panneau-font-size-lg);
+}
+
+.size-xl {
+    font-size: var(--panneau-font-size-xl);
+}
+
+.weight-normal {
+    font-weight: var(--panneau-font-weight-normal);
+}
+
+.weight-medium {
+    font-weight: var(--panneau-font-weight-medium);
+}
+
+.weight-bold {
+    font-weight: var(--panneau-font-weight-bold);
+}
+
+.family-body {
+    font-family: var(--panneau-font-family-body);
+}
+
+.family-heading {
+    font-family: var(--panneau-font-family-heading);
+}
+
+.family-display {
+    font-family: var(--panneau-font-family-display);
+}
+
+.family-mono {
+    font-family: var(--panneau-font-family-mono);
+}
+
+.muted {
+    color: var(--panneau-text-muted-color, var(--panneau-color-text-muted));
+}
+
+/* A tone colors the text with the tone's text color, readable on surfaces. */
+.toned {
+    color: var(--panneau-tone-text);
+}
+
+.numeric {
+    font-variant-numeric: var(--panneau-font-numeric);
+}
+
+/* One line, cut with an ellipsis: the element needs a constrained width (a block, a flex item). */
+.truncate {
+    overflow: hidden;
+    min-width: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

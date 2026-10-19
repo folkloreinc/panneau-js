@@ -3162,6 +3162,72 @@
                 ],
                 "description": "A tone: one color, or every value with dark scheme overrides."
             },
+            "ThemeFontFace": {
+                "type": "object",
+                "properties": {
+                    "family": {
+                        "type": "string",
+                        "pattern": "^[^{}<;\"\\\\]+$"
+                    },
+                    "src": {
+                        "type": "string",
+                        "pattern": "^[^{}<]+$",
+                        "description": "The `src` descriptor: `url(/fonts/geist.woff2) format('woff2')`."
+                    },
+                    "weight": {
+                        "type": "string",
+                        "pattern": "^[^{}<;]*$"
+                    },
+                    "style": {
+                        "type": "string",
+                        "pattern": "^[^{}<;]*$"
+                    },
+                    "display": {
+                        "type": "string",
+                        "enum": [
+                            "auto",
+                            "block",
+                            "swap",
+                            "fallback",
+                            "optional"
+                        ]
+                    },
+                    "unicodeRange": {
+                        "type": "string",
+                        "pattern": "^[^{}<;]*$"
+                    }
+                },
+                "required": [
+                    "family",
+                    "src"
+                ],
+                "additionalProperties": {},
+                "description": "A font face, written as an `@font-face` rule."
+            },
+            "ThemeFontStylesheet": {
+                "type": "object",
+                "properties": {
+                    "stylesheet": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "required": [
+                    "stylesheet"
+                ],
+                "additionalProperties": {},
+                "description": "A hosted stylesheet that declares font faces."
+            },
+            "ThemeFont": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/ThemeFontFace"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ThemeFontStylesheet"
+                    }
+                ]
+            },
             "Theme": {
                 "type": "object",
                 "properties": {
@@ -3221,6 +3287,13 @@
                                 }
                             },
                             "additionalProperties": {}
+                        }
+                    },
+                    "fonts": {
+                        "description": "Font faces and font stylesheets, added to the page once.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ThemeFont"
                         }
                     }
                 },
@@ -3289,6 +3362,13 @@
                                 }
                             },
                             "additionalProperties": {}
+                        }
+                    },
+                    "fonts": {
+                        "description": "Font faces and font stylesheets, added to the page once.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ThemeFont"
                         }
                     },
                     "colorScheme": {

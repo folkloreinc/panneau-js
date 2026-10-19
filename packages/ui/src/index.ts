@@ -20,6 +20,7 @@ export {
     type ButtonVariants,
 } from './button/Button';
 export { Card, type CardProps } from './card/Card';
+export { Heading, type HeadingLevel, type HeadingProps, type HeadingSize } from './heading/Heading';
 export { Checkbox, type CheckboxProps } from './checkbox/Checkbox';
 export { type ChoiceChromeProps } from './checkbox/ChoiceChrome';
 export { ComboBox, type ComboBoxItem, type ComboBoxProps } from './combo-box/ComboBox';
@@ -53,6 +54,7 @@ export {
     type SelectProps,
     type SingleSelectProps,
 } from './select/Select';
+export { Prose, type ProseProps } from './prose/Prose';
 export { Spinner, type SpinnerProps } from './spinner/Spinner';
 export { Switch, type SwitchProps } from './switch/Switch';
 export {
@@ -65,6 +67,7 @@ export {
     Tabs,
     type TabsProps,
 } from './tabs/Tabs';
+export { Text, type TextFamily, type TextProps, type TextSize } from './text/Text';
 export { TextArea, type TextAreaProps } from './text-area/TextArea';
 export { TextInput, type TextInputProps } from './text-input/TextInput';
 export { bootstrapTheme } from './theme/bootstrap';
@@ -82,6 +85,7 @@ export {
     mergeThemes,
 } from './theme/defineTheme';
 export { SEMANTIC_TOKENS, type SemanticTokenName } from './theme/semanticTokens';
+export { type ThemeFont, type ThemeFontFace, type ThemeFontStylesheet } from './theme/fonts';
 export { type ColorScheme, type Theme } from './theme/theme';
 export {
     BUILT_IN_TONES,

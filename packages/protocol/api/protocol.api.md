@@ -895,8 +895,8 @@ export const Definition: z.ZodObject<{
         tokens: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
         colorScheme: z.ZodOptional<z.ZodEnum<{
             dark: "dark";
-            light: "light";
             auto: "auto";
+            light: "light";
         }>>;
         extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         label: z.ZodOptional<z.ZodString>;
@@ -923,6 +923,22 @@ export const Definition: z.ZodObject<{
         components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
             variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
         }, z.core.$loose>>>;
+        fonts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+            family: z.ZodString;
+            src: z.ZodString;
+            weight: z.ZodOptional<z.ZodString>;
+            style: z.ZodOptional<z.ZodString>;
+            display: z.ZodOptional<z.ZodEnum<{
+                optional: "optional";
+                auto: "auto";
+                block: "block";
+                swap: "swap";
+                fallback: "fallback";
+            }>>;
+            unicodeRange: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>, z.ZodObject<{
+            stylesheet: z.ZodString;
+        }, z.core.$loose>]>>>;
     }, z.core.$loose>>;
     user: z.ZodOptional<z.ZodNullable<z.ZodObject<{
         id: z.ZodString;
@@ -944,8 +960,8 @@ export const DefinitionTheme: z.ZodObject<{
     tokens: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
     colorScheme: z.ZodOptional<z.ZodEnum<{
         dark: "dark";
-        light: "light";
         auto: "auto";
+        light: "light";
     }>>;
     extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
     label: z.ZodOptional<z.ZodString>;
@@ -972,6 +988,22 @@ export const DefinitionTheme: z.ZodObject<{
     components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
         variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
     }, z.core.$loose>>>;
+    fonts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        family: z.ZodString;
+        src: z.ZodString;
+        weight: z.ZodOptional<z.ZodString>;
+        style: z.ZodOptional<z.ZodString>;
+        display: z.ZodOptional<z.ZodEnum<{
+            optional: "optional";
+            auto: "auto";
+            block: "block";
+            swap: "swap";
+            fallback: "fallback";
+        }>>;
+        unicodeRange: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>, z.ZodObject<{
+        stylesheet: z.ZodString;
+    }, z.core.$loose>]>>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -2214,6 +2246,39 @@ export const namedSchemas: {
             solidText: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>;
     }, z.core.$loose>]>;
+    ThemeFontFace: z.ZodObject<{
+        family: z.ZodString;
+        src: z.ZodString;
+        weight: z.ZodOptional<z.ZodString>;
+        style: z.ZodOptional<z.ZodString>;
+        display: z.ZodOptional<z.ZodEnum<{
+            optional: "optional";
+            auto: "auto";
+            block: "block";
+            swap: "swap";
+            fallback: "fallback";
+        }>>;
+        unicodeRange: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>;
+    ThemeFontStylesheet: z.ZodObject<{
+        stylesheet: z.ZodString;
+    }, z.core.$loose>;
+    ThemeFont: z.ZodUnion<readonly [z.ZodObject<{
+        family: z.ZodString;
+        src: z.ZodString;
+        weight: z.ZodOptional<z.ZodString>;
+        style: z.ZodOptional<z.ZodString>;
+        display: z.ZodOptional<z.ZodEnum<{
+            optional: "optional";
+            auto: "auto";
+            block: "block";
+            swap: "swap";
+            fallback: "fallback";
+        }>>;
+        unicodeRange: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>, z.ZodObject<{
+        stylesheet: z.ZodString;
+    }, z.core.$loose>]>;
     Theme: z.ZodObject<{
         label: z.ZodOptional<z.ZodString>;
         tokens: z.ZodRecord<z.ZodString, z.ZodString>;
@@ -2240,13 +2305,29 @@ export const namedSchemas: {
         components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
             variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
         }, z.core.$loose>>>;
+        fonts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+            family: z.ZodString;
+            src: z.ZodString;
+            weight: z.ZodOptional<z.ZodString>;
+            style: z.ZodOptional<z.ZodString>;
+            display: z.ZodOptional<z.ZodEnum<{
+                optional: "optional";
+                auto: "auto";
+                block: "block";
+                swap: "swap";
+                fallback: "fallback";
+            }>>;
+            unicodeRange: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>, z.ZodObject<{
+            stylesheet: z.ZodString;
+        }, z.core.$loose>]>>>;
     }, z.core.$loose>;
     DefinitionTheme: z.ZodObject<{
         tokens: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
         colorScheme: z.ZodOptional<z.ZodEnum<{
             dark: "dark";
-            light: "light";
             auto: "auto";
+            light: "light";
         }>>;
         extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         label: z.ZodOptional<z.ZodString>;
@@ -2273,6 +2354,22 @@ export const namedSchemas: {
         components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
             variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
         }, z.core.$loose>>>;
+        fonts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+            family: z.ZodString;
+            src: z.ZodString;
+            weight: z.ZodOptional<z.ZodString>;
+            style: z.ZodOptional<z.ZodString>;
+            display: z.ZodOptional<z.ZodEnum<{
+                optional: "optional";
+                auto: "auto";
+                block: "block";
+                swap: "swap";
+                fallback: "fallback";
+            }>>;
+            unicodeRange: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>, z.ZodObject<{
+            stylesheet: z.ZodString;
+        }, z.core.$loose>]>>>;
     }, z.core.$loose>;
     Definition: z.ZodObject<{
         protocol: z.ZodLiteral<1>;
@@ -2650,8 +2747,8 @@ export const namedSchemas: {
             tokens: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
             colorScheme: z.ZodOptional<z.ZodEnum<{
                 dark: "dark";
-                light: "light";
                 auto: "auto";
+                light: "light";
             }>>;
             extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             label: z.ZodOptional<z.ZodString>;
@@ -2678,6 +2775,22 @@ export const namedSchemas: {
             components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
                 variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
             }, z.core.$loose>>>;
+            fonts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+                family: z.ZodString;
+                src: z.ZodString;
+                weight: z.ZodOptional<z.ZodString>;
+                style: z.ZodOptional<z.ZodString>;
+                display: z.ZodOptional<z.ZodEnum<{
+                    optional: "optional";
+                    auto: "auto";
+                    block: "block";
+                    swap: "swap";
+                    fallback: "fallback";
+                }>>;
+                unicodeRange: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>, z.ZodObject<{
+                stylesheet: z.ZodString;
+            }, z.core.$loose>]>>>;
         }, z.core.$loose>>;
         user: z.ZodOptional<z.ZodNullable<z.ZodObject<{
             id: z.ZodString;
@@ -3589,10 +3702,74 @@ export const Theme: z.ZodObject<{
     components: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
         variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodRecord<z.ZodString, z.ZodString>>>;
     }, z.core.$loose>>>;
+    fonts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        family: z.ZodString;
+        src: z.ZodString;
+        weight: z.ZodOptional<z.ZodString>;
+        style: z.ZodOptional<z.ZodString>;
+        display: z.ZodOptional<z.ZodEnum<{
+            optional: "optional";
+            auto: "auto";
+            block: "block";
+            swap: "swap";
+            fallback: "fallback";
+        }>>;
+        unicodeRange: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>, z.ZodObject<{
+        stylesheet: z.ZodString;
+    }, z.core.$loose>]>>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
 export type Theme = z.infer<typeof Theme>;
+
+// @public (undocumented)
+export const ThemeFont: z.ZodUnion<readonly [z.ZodObject<{
+    family: z.ZodString;
+    src: z.ZodString;
+    weight: z.ZodOptional<z.ZodString>;
+    style: z.ZodOptional<z.ZodString>;
+    display: z.ZodOptional<z.ZodEnum<{
+        optional: "optional";
+        auto: "auto";
+        block: "block";
+        swap: "swap";
+        fallback: "fallback";
+    }>>;
+    unicodeRange: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>, z.ZodObject<{
+    stylesheet: z.ZodString;
+}, z.core.$loose>]>;
+
+// @public (undocumented)
+export type ThemeFont = z.infer<typeof ThemeFont>;
+
+// @public (undocumented)
+export const ThemeFontFace: z.ZodObject<{
+    family: z.ZodString;
+    src: z.ZodString;
+    weight: z.ZodOptional<z.ZodString>;
+    style: z.ZodOptional<z.ZodString>;
+    display: z.ZodOptional<z.ZodEnum<{
+        optional: "optional";
+        auto: "auto";
+        block: "block";
+        swap: "swap";
+        fallback: "fallback";
+    }>>;
+    unicodeRange: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ThemeFontFace = z.infer<typeof ThemeFontFace>;
+
+// @public (undocumented)
+export const ThemeFontStylesheet: z.ZodObject<{
+    stylesheet: z.ZodString;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ThemeFontStylesheet = z.infer<typeof ThemeFontStylesheet>;
 
 // @public (undocumented)
 export const ThemeTokens: z.ZodRecord<z.ZodString, z.ZodString>;

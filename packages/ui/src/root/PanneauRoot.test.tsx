@@ -56,6 +56,31 @@ describe('PanneauRoot', () => {
         expect(root).toHaveAttribute('data-color-scheme', 'auto');
     });
 
+    it('adds the fonts of a theme to the page', () => {
+        render(
+            <PanneauRoot
+                theme={{
+                    tokens: { 'panneau-font-family-heading': "'Panneau Serif', serif" },
+                    fonts: [
+                        { family: 'Panneau Serif', src: 'local("Georgia")' },
+                        { stylesheet: 'https://fonts.example.com/serif.css' },
+                    ],
+                }}
+            >
+                <p>Hello</p>
+            </PanneauRoot>,
+        );
+        const style = [...document.querySelectorAll('style[data-href^="panneau-fonts-"]')];
+        expect(style.map((element) => element.textContent)).toContain(
+            '@font-face{font-family:"Panneau Serif";src:local("Georgia");font-display:swap;}',
+        );
+        expect(
+            document.querySelector(
+                'link[rel="stylesheet"][href="https://fonts.example.com/serif.css"]',
+            ),
+        ).not.toBeNull();
+    });
+
     it('gives overlays a container inside the root', () => {
         render(
             <PanneauRoot>
