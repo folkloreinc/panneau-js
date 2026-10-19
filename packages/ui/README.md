@@ -225,6 +225,24 @@ const roomy = defineTheme({
 });
 ```
 
+### Chart colors
+
+Charts (dashboard widgets, reports) use only the chart tokens of the theme, in both schemes:
+
+- `--panneau-chart-categorical-1` to `-8`: series, in a fixed order;
+- `--panneau-chart-sequential-1` to `-5`: a ramp from low to high, for quantities;
+- `--panneau-chart-diverging-negative`, `-neutral` and `-positive`: values below and above a reference.
+
+`chartColors` gives them as CSS variables for `fill` and `stroke`, so that charts follow the theme, the color scheme and the scope:
+
+```tsx
+<rect fill={chartColors.categorical(index)} />
+<rect fill={chartColors.sequential(5)} />
+<rect fill={chartColors.diverging.negative} />
+```
+
+Each default categorical color reaches 3:1 against the surface (WCAG non-text contrast), and the eight stay distinct for people with protanopia, deuteranopia or tritanopia: a test checks it. `checkTheme()` runs the same checks on the chart colors a theme sets, and `checkColorDifferences(colors)` on any palette.
+
 ### Classes
 
 Class names are stable and readable, without a hash, like Bootstrap's: target them in a project's CSS.

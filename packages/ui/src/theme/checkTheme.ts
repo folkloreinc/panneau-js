@@ -1,4 +1,5 @@
 import { type Rgb, WHITE, contrastRatio, mixColors, parseColor } from './color';
+import { type ColorDifferenceCheck, checkColorDifferences } from './colorVision';
 import { type Theme, paletteVariables, resolveReference } from './theme';
 import { MIN_CONTRAST_RATIO, SUBTLE_AMOUNTS, resolveTone } from './tones';
 
@@ -21,6 +22,11 @@ export interface ThemeReport {
     failures: ThemeContrastCheck[];
     /** Pairs with a color Panneau can't read: check them in a browser. */
     unchecked: ThemeContrastCheck[];
+    /**
+     * Categorical chart colors of the theme that look too alike, for typical vision or with a
+     * color vision deficiency.
+     */
+    colorDifferences: (ColorDifferenceCheck & { scheme: 'light' | 'dark' })[];
 }
 
 /** Surfaces of the default theme, used when a theme doesn't set its own. */
@@ -28,6 +34,14 @@ const DEFAULT_SURFACES: Record<'light' | 'dark', Rgb> = {
     light: WHITE,
     dark: { r: 24, g: 24, b: 27 },
 };
+
+/** Chart colors that must stand out from the surface: series, the high step and diverging ends. */
+const CHART_TOKENS = [
+    ...Array.from({ length: 8 }, (_, index) => `panneau-chart-categorical-${index + 1}`),
+    'panneau-chart-sequential-5',
+    'panneau-chart-diverging-negative',
+    'panneau-chart-diverging-positive',
+];
 
 /** Non-text elements (borders of controls, outlines) need 3:1 (WCAG 2 non-text contrast). */
 const MIN_NON_TEXT_RATIO = 3;
@@ -59,13 +73,15 @@ const TOKEN_PAIRS: [name: string, foreground: string, background: string, minimu
 /**
  * Checks the contrast of a theme, like Bootstrap's `$min-contrast-ratio`, but as a report: text
  * tokens against backgrounds (4.5:1), control borders (3:1), and every tone of the theme (its text
- * on the surface, its solid text on the solid background and its hover). Pairs where a color comes
+ * on the surface, its solid text on the solid background and its hover), and chart colors (3:1
+ * against the surface, and categorical colors distinct with color vision deficiencies). Pairs where a color comes
  * from the default theme and is not set by the theme are skipped, except the surface, which falls
  * back to the default one. Values that refer to the theme's palette or tokens with `var()` are
  * checked as what they refer to; colors Panneau can't read are listed as unchecked.
  */
 export function checkTheme(theme: Theme): ThemeReport {
     const checks: ThemeContrastCheck[] = [];
+    const colorDifferences: ThemeReport['colorDifferences'] = [];
     const palette = paletteVariables(theme.palette);
     (['light', 'dark'] as const).forEach((scheme) => {
         const variables = {
@@ -108,6 +124,26 @@ export function checkTheme(theme: Theme): ThemeReport {
                 add(`tokens: ${name}`, foregroundValue, backgroundValue, minimum);
             }
         });
+        // Chart colors are graphics: 3:1 against the surface, and distinct from each other.
+        const surfaceValue = surface ?? (scheme === 'light' ? '#ffffff' : '#18181b');
+        CHART_TOKENS.forEach((token) => {
+            const value = tokens[token];
+            if (value !== undefined) {
+                add(
+                    `chart: ${token.replace('panneau-chart-', '')} on surface`,
+                    value,
+                    surfaceValue,
+                    MIN_NON_TEXT_RATIO,
+                    surfaceColor,
+                );
+            }
+        });
+        const categorical = CHART_TOKENS.filter((token) => token.includes('categorical')).flatMap(
+            (token) => (tokens[token] !== undefined ? [tokens[token]] : []),
+        );
+        colorDifferences.push(
+            ...checkColorDifferences(categorical).map((check) => ({ ...check, scheme })),
+        );
         Object.entries(theme.tones ?? {}).forEach(([tone, toneInput]) => {
             const input =
                 typeof toneInput === 'string' ? resolveReference(toneInput, palette) : toneInput;
@@ -152,5 +188,6 @@ export function checkTheme(theme: Theme): ThemeReport {
         checks,
         failures: checks.filter((check) => check.ratio !== null && check.ratio < check.minimum),
         unchecked: checks.filter((check) => check.ratio === null),
+        colorDifferences,
     };
 }

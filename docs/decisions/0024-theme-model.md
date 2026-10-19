@@ -141,6 +141,12 @@ The first version of this decision used `data-panneau` attributes. The maintaine
 
 Data visualization tokens in both schemes: 8 categorical colors, a sequential ramp and a diverging pair, checked in CI.
 
+As built:
+
+- The tokens are `--panneau-chart-categorical-1…8`, `--panneau-chart-sequential-1…5` and `--panneau-chart-diverging-negative|neutral|positive`, with values for both schemes. `chartColors` gives them as CSS variables.
+- The categorical palette was searched, not picked by hand. It maximizes the smallest difference between two colors (CIE76 in CIELAB), for typical vision and under protanopia, deuteranopia and tritanopia (simulation of Machado, Oliveira and Fernandes, 2009), among colors that reach 3:1 against the surface with a moderate chroma. The smallest difference is 14 with a deficiency and 30 without. The sequential ramp moves away from the surface step by step, and the diverging pair is orange and blue, which every deficiency tells apart.
+- CI checks the default palette (`chartColors.test.ts`). `checkTheme()` checks the chart colors a theme sets: contrast as non-text (3:1), and `colorDifferences` for categorical colors closer than 10.
+
 ### Tooling
 
 - **A reference theme** in Storybook and the tests, not in the public API. It is very different from the default (square corners, serif headings, extra tones and named variants), and the stories, the axe checks and `checkTheme()` run against it.
