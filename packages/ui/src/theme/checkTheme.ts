@@ -1,6 +1,6 @@
 import { type Rgb, WHITE, contrastRatio, mixColors, parseColor } from './color';
 import { type ColorDifferenceCheck, checkColorDifferences } from './colorVision';
-import { type Theme, paletteVariables, resolveReference } from './theme';
+import { type Theme, paletteVariables, resolveReference, themeSurfaces } from './theme';
 import { MIN_CONTRAST_RATIO, SUBTLE_AMOUNTS, resolveTone } from './tones';
 
 /** A pair of colors that a theme must keep readable. */
@@ -83,6 +83,7 @@ export function checkTheme(theme: Theme): ThemeReport {
     const checks: ThemeContrastCheck[] = [];
     const colorDifferences: ThemeReport['colorDifferences'] = [];
     const palette = paletteVariables(theme.palette);
+    const surfaces = themeSurfaces(theme);
     (['light', 'dark'] as const).forEach((scheme) => {
         const variables = {
             ...palette,
@@ -147,7 +148,7 @@ export function checkTheme(theme: Theme): ThemeReport {
         Object.entries(theme.tones ?? {}).forEach(([tone, toneInput]) => {
             const input =
                 typeof toneInput === 'string' ? resolveReference(toneInput, palette) : toneInput;
-            const values = resolveTone(input)[scheme];
+            const values = resolveTone(input, surfaces)[scheme];
             add(
                 `tone ${tone}: text on surface`,
                 values.text,

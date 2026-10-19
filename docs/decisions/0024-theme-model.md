@@ -153,6 +153,17 @@ As built:
 - **`checkTheme()`:** a contrast report.
 - **`bootstrapTheme`** maps component tokens to Bootstrap's component variables where they exist.
 
+As built:
+
+- The reference theme is `packages/ui/src/theme/__fixtures__/referenceTheme.ts`: warm surfaces, a green accent from a palette, square corners, serif headings, larger comfortable controls, the `signal` (derived) and `members` (explicit) tones, and the `tag` and `pill` variants. Storybook's toolbar offers it next to the default and Bootstrap themes, with the density. The `Theme/Themes` story renders the same components with each theme in both schemes, with axe checks, and a test runs `checkTheme()` on it.
+- The reference theme found a flaw right away: tones derived from one color were readable on the default surfaces only. `deriveTone()` now takes the surfaces of the theme, which `getThemeCss()` and `checkTheme()` pass.
+- The `Themes` story found two flaws of `bootstrapTheme`:
+    - the accent tone used `--bs-primary` as text on its subtle background (3.4:1), where Bootstrap uses `--bs-primary-text-emphasis`;
+    - `Prose` code took the color of Bootstrap's global `code` rule.
+      `bootstrapTone()` builds tones from Bootstrap's variables, and `Prose` code has a `code-color` token that inherits.
+- `--bs-btn-*`, `--bs-badge-*` and `--bs-card-*` are declared on Bootstrap's component classes, not on the root, so `bootstrapTheme` can't read them. Component tokens map to the root variables those components default to.
+- `panneau-check-theme`, a binary of `@panneau/ui`, runs `checkTheme()` on a JSON theme or a module export. It imports `@panneau/ui/theme`, an entry without components or CSS that Node can load (a test keeps it free of CSS). The smoke test runs it from the packed package.
+
 ## Consequences
 
 - Any component can be restyled through its tokens, in a theme, a scope or a project's CSS, or through its stable classes.

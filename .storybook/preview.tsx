@@ -4,19 +4,38 @@ import bootstrapCss from 'bootstrap/dist/css/bootstrap.min.css?inline';
 import { IntlProvider } from 'react-intl';
 
 import { panneauMessages } from '@panneau/intl';
-import { type ColorScheme, type Density, PanneauRoot, bootstrapTheme } from '@panneau/ui';
+import {
+    type ColorScheme,
+    type Density,
+    PanneauRoot,
+    type Theme,
+    bootstrapTheme,
+} from '@panneau/ui';
+
+import { referenceTheme } from '../packages/ui/src/theme/__fixtures__/referenceTheme';
+
+/**
+ * Themes of the toolbar: the default one, Bootstrap's (with Bootstrap's CSS), and the reference
+ * theme, which is as different from the default as a project's could be.
+ */
+const THEMES: Record<string, Theme | null> = {
+    default: null,
+    bootstrap: bootstrapTheme,
+    reference: referenceTheme,
+};
 
 /** Every story renders in a PanneauRoot, with the locale, color scheme and theme of the toolbar. */
 const withPanneau: Decorator = (Story, { globals }) => {
     const locale = String(globals.locale ?? 'en');
     const colorScheme = (globals.colorScheme as ColorScheme | undefined) ?? 'light';
     const density = (globals.density as Density | undefined) ?? 'auto';
-    const theme = globals.theme === 'bootstrap' ? bootstrapTheme : null;
+    const theme = THEMES[String(globals.theme)] ?? null;
+    const bootstrap = theme === bootstrapTheme;
     return (
         <IntlProvider locale={locale} messages={panneauMessages[locale]} defaultLocale="en">
-            {theme !== null ? <style>{bootstrapCss}</style> : null}
+            {bootstrap ? <style>{bootstrapCss}</style> : null}
             <PanneauRoot
-                data-bs-theme={theme !== null && colorScheme !== 'auto' ? colorScheme : undefined}
+                data-bs-theme={bootstrap && colorScheme !== 'auto' ? colorScheme : undefined}
                 colorScheme={colorScheme}
                 density={density}
                 theme={theme}
@@ -69,6 +88,7 @@ const preview: Preview = {
                 items: [
                     { value: 'default', title: 'Default' },
                     { value: 'bootstrap', title: 'Bootstrap' },
+                    { value: 'reference', title: 'Reference' },
                 ],
                 dynamicTitle: true,
             },

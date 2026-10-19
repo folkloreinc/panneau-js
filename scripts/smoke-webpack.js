@@ -93,6 +93,20 @@ writeFileSync(
 );
 
 run('npm', ['install', '--no-audit', '--no-fund', '--no-package-lock'], app);
+
+// `@panneau/ui/theme` loads in Node, without CSS, and `panneau-check-theme` checks a theme from a
+// JSON file and from a module.
+writeFileSync(
+    join(app, 'theme.json'),
+    JSON.stringify({ tokens: { 'panneau-color-text': '#111111', 'panneau-color-bg': '#ffffff' } }),
+);
+writeFileSync(
+    join(app, 'theme.mjs'),
+    "import { defineTheme } from '@panneau/ui/theme';\n" +
+        "export default defineTheme({ tones: { signal: '#f25c05' } });\n",
+);
+run('npx', ['panneau-check-theme', 'theme.json'], app);
+run('npx', ['panneau-check-theme', 'theme.mjs'], app);
 run(
     'npx',
     [

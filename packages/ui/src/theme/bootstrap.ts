@@ -1,5 +1,27 @@
 import type { ThemeDefinition } from './defineTheme';
 import type { Theme } from './theme';
+import type { ToneValues } from './tones';
+
+/**
+ * A tone from one of Bootstrap's theme colors, read from its CSS variables (`--bs-<color>`,
+ * `-text-emphasis`, `-bg-subtle`, `-border-subtle`), so that a site's custom colors carry over:
+ * `tones: { brand: bootstrapTone('brand') }`. Text on the subtle background uses the emphasis
+ * color, as Bootstrap's alerts do. Light colors need dark solid text: `{ solidText: 'var(--bs-dark)' }`.
+ */
+export function bootstrapTone(
+    color: string,
+    { solidText = 'var(--bs-white)' }: { solidText?: string } = {},
+): ToneValues {
+    return {
+        text: `var(--bs-${color}-text-emphasis)`,
+        subtle: `var(--bs-${color}-bg-subtle)`,
+        border: `var(--bs-${color}-border-subtle)`,
+        outline: `var(--bs-${color})`,
+        solid: `var(--bs-${color})`,
+        solidHover: `color-mix(in srgb, var(--bs-${color}), #000 15%)`,
+        solidText,
+    };
+}
 
 /**
  * Maps Panneau's tokens to the CSS variables of Bootstrap 5.3, for sites that use Bootstrap: Panneau
@@ -62,6 +84,24 @@ export const bootstrapTheme: Theme = {
         'panneau-shadow-sm': 'var(--bs-box-shadow-sm)',
         'panneau-shadow-md': 'var(--bs-box-shadow)',
         'panneau-shadow-lg': 'var(--bs-box-shadow-lg)',
+        // Bootstrap 5.3 declares its component variables (--bs-btn-*, --bs-card-*) on the classes
+        // of its components, out of reach: components map to the root variables those default to.
+        'panneau-heading-color': 'var(--bs-heading-color)',
+        'panneau-badge-radius': 'var(--bs-border-radius)',
+        'panneau-card-radius': 'var(--bs-border-radius)',
+        'panneau-card-border-color': 'var(--bs-border-color-translucent)',
+        'panneau-popover-radius': 'var(--bs-border-radius)',
+        'panneau-popover-border-color': 'var(--bs-border-color-translucent)',
+        'panneau-tooltip-bg': 'var(--bs-emphasis-color)',
+        'panneau-tooltip-color': 'var(--bs-body-bg)',
+        'panneau-tooltip-radius': 'var(--bs-border-radius)',
+    },
+    // Bootstrap's theme colors as tones: accent is primary, and primary and secondary are there by
+    // their Bootstrap names (declare them in PanneauTones to use them).
+    tones: {
+        accent: bootstrapTone('primary'),
+        primary: bootstrapTone('primary'),
+        secondary: bootstrapTone('secondary'),
     },
     // Bootstrap's sizes of controls are those of the comfortable density: the others keep Panneau's.
     densities: {
