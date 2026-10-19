@@ -906,6 +906,19 @@ export interface ThemeReport {
 }
 
 // @public
+export function ThemeScope(input: ThemeScopeProps): JSX.Element;
+
+// @public (undocumented)
+export interface ThemeScopeProps extends HTMLAttributes<HTMLElement> {
+    as?: 'div' | 'section' | 'aside' | 'nav' | 'header' | 'footer' | 'main' | 'article';
+    // (undocumented)
+    children?: ReactNode;
+    colorScheme?: ColorScheme;
+    density?: Density;
+    theme?: Theme | null;
+}
+
+// @public
 export type ThemeTokens = {
     [Name in SemanticTokenName | ComponentTokenName | (keyof PanneauTokens & string)]?: string;
 } & {

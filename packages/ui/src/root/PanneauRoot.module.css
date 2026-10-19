@@ -115,7 +115,51 @@
     color-scheme: light;
 }
 
-:where(.root[data-color-scheme='dark']) {
+/*
+ * A ThemeScope with its own color scheme (.scheme) takes the light colors back, since the root
+ * around it may be dark. Scopes without one inherit the colors of their parent.
+ */
+:where(.scheme[data-color-scheme='light'], .scheme[data-color-scheme='auto']) {
+    --panneau-color-bg: #ffffff;
+    --panneau-color-surface: #ffffff;
+    --panneau-color-surface-sunken: #f4f4f5;
+    --panneau-color-surface-raised: #ffffff;
+    --panneau-color-hover: rgb(24 24 27 / 0.06);
+    --panneau-color-pressed: rgb(24 24 27 / 0.1);
+    --panneau-color-backdrop: rgb(9 9 11 / 0.45);
+    --panneau-color-text: #18181b;
+    --panneau-color-text-muted: #52525b;
+    --panneau-color-link: #1d4ed8;
+    --panneau-color-border: #e4e4e7;
+    --panneau-color-border-control: #8b8b94;
+    --panneau-color-accent: #18181b;
+    --panneau-color-accent-hover: #3f3f46;
+    --panneau-color-accent-text: #ffffff;
+    --panneau-color-accent-subtle: #f4f4f5;
+    --panneau-color-focus: #2563eb;
+    --panneau-color-danger: #b91c1c;
+    --panneau-color-danger-subtle: #fef2f2;
+    --panneau-color-danger-border: #fca5a5;
+    --panneau-color-danger-solid: #b91c1c;
+    --panneau-color-danger-solid-hover: #991b1b;
+    --panneau-color-danger-solid-text: #ffffff;
+    --panneau-color-success: #15803d;
+    --panneau-color-success-subtle: #f0fdf4;
+    --panneau-color-success-border: #86efac;
+    --panneau-color-warning: #a16207;
+    --panneau-color-warning-subtle: #fefce8;
+    --panneau-color-warning-border: #fcd34d;
+    --panneau-color-info: #1d4ed8;
+    --panneau-color-info-subtle: #eff6ff;
+    --panneau-color-info-border: #93c5fd;
+    --panneau-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
+    --panneau-shadow-md: 0 1px 3px rgb(0 0 0 / 0.08), 0 4px 12px rgb(0 0 0 / 0.08);
+    --panneau-shadow-lg: 0 4px 8px rgb(0 0 0 / 0.08), 0 16px 40px rgb(0 0 0 / 0.16);
+
+    color-scheme: light;
+}
+
+:where(.root[data-color-scheme='dark'], .scheme[data-color-scheme='dark']) {
     --panneau-color-bg: #09090b;
     --panneau-color-surface: #18181b;
     --panneau-color-surface-sunken: #111113;
@@ -156,7 +200,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-    :where(.root[data-color-scheme='auto']) {
+    :where(.root[data-color-scheme='auto'], .scheme[data-color-scheme='auto']) {
         --panneau-color-bg: #09090b;
         --panneau-color-surface: #18181b;
         --panneau-color-surface-sunken: #111113;
@@ -202,7 +246,16 @@
  * inputs so that iOS doesn't zoom on focus. `auto`, the default, is touch on coarse pointers (touch
  * screens) and comfortable otherwise.
  */
-:where(.root[data-density='compact']) {
+/* A ThemeScope with its own density (.density) takes the comfortable values back. */
+:where(.density[data-density='comfortable'], .density[data-density='auto']) {
+    --panneau-control-height: 2.25rem;
+    --panneau-control-height-sm: 1.875rem;
+    --panneau-font-size-control: 0.875rem;
+    --panneau-control-padding-x: 0.75rem;
+    --panneau-row-padding-y: 0.5rem;
+}
+
+:where(.root[data-density='compact'], .density[data-density='compact']) {
     --panneau-control-height: 2rem;
     --panneau-control-height-sm: 1.625rem;
     --panneau-font-size-control: 0.8125rem;
@@ -210,7 +263,7 @@
     --panneau-row-padding-y: 0.25rem;
 }
 
-:where(.root[data-density='touch']) {
+:where(.root[data-density='touch'], .density[data-density='touch']) {
     --panneau-control-height: 2.75rem;
     --panneau-control-height-sm: 2.25rem;
     --panneau-font-size-control: 1rem;
@@ -219,7 +272,7 @@
 }
 
 @media (pointer: coarse) {
-    :where(.root[data-density='auto']) {
+    :where(.root[data-density='auto'], .density[data-density='auto']) {
         --panneau-control-height: 2.75rem;
         --panneau-control-height-sm: 2.25rem;
         --panneau-font-size-control: 1rem;
@@ -291,6 +344,21 @@
 :where(.root) :where(:focus-visible) {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
     outline-offset: 2px;
+}
+
+/*
+ * A ThemeScope applies the text styles of its tokens again, since inherited values were computed
+ * on the root. One with its own color scheme or theme paints its background too.
+ */
+:where(.scope) {
+    font-family: var(--panneau-font-family);
+    font-size: var(--panneau-font-size-md);
+    line-height: var(--panneau-line-height);
+    color: var(--panneau-color-text);
+}
+
+:where(.scope.scheme, .scope[data-panneau-theme]) {
+    background-color: var(--panneau-color-bg);
 }
 
 /* Overlays (dialogs, popovers, menus, tooltips) render here, so that they get the tokens. */

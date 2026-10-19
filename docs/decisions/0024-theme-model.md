@@ -107,6 +107,13 @@ As built:
 
 `ThemeScope` applies a theme, a color scheme or a density to a subtree, with its own portal container so that overlays opened inside it keep its tokens.
 
+As built:
+
+- A scope always writes the color scheme and the density in effect, `data-color-scheme` and `data-density`, the ones it sets or those of its parent through context, so that the dark and density rules of a theme apply in it.
+- The default tokens of a scheme or a density apply to a scope only when it sets one (classes `panneau-root-scheme` and `panneau-root-density`). For that, the light colors and the comfortable values are written again for scopes. Redeclaring them in every scope would reset the theme of the root: a scope with only a density would lose the brand colors. A test checks that these blocks match the default ones.
+- A scope applies the text styles of its tokens again (font, size, color), since inherited values were computed on the root. One with its own color scheme or theme paints its background.
+- Its theme's `<style>` is shared with roots: `useThemeStyles()` writes the CSS and the fonts of both.
+
 ### 8. Stable class names and standard state attributes
 
 Projects target components with **stable, readable class names**, like Bootstrap's `.btn` and `.card-header`, not with attributes of Panneau's own.

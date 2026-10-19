@@ -48,6 +48,7 @@ export { NumberInput, type NumberInputProps } from './number-input/NumberInput';
 export { Popover, type PopoverProps, PopoverTrigger } from './popover/Popover';
 export { RadioGroup, type RadioGroupProps } from './radio-group/RadioGroup';
 export { PanneauRoot, type PanneauRootProps, usePortalContainer } from './root/PanneauRoot';
+export { ThemeScope, type ThemeScopeProps } from './root/ThemeScope';
 export {
     type MultipleSelectProps,
     type OptionValue,
