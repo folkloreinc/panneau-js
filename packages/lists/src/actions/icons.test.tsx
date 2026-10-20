@@ -3,7 +3,8 @@ import { Archive, Pencil } from 'lucide-react';
 import { describe, expect, it } from 'vitest';
 
 import type { Action } from '@panneau/protocol';
-import { Icon, getNamedIcon } from '@panneau/ui';
+import { Icon, PanneauRoot, getNamedIcon } from '@panneau/ui';
+import { lucideIconLoader } from '@panneau/ui/named-icons';
 
 import { edit, publish } from '../__fixtures__/pages';
 import { getActionIcon } from './icons';
@@ -19,10 +20,10 @@ describe('getActionIcon', () => {
         const icon = getActionIcon(send);
         expect(icon).toBe(getNamedIcon('send'));
         const { findByText, container } = render(
-            <>
+            <PanneauRoot iconLoader={lucideIconLoader}>
                 <Icon icon={icon as NonNullable<typeof icon>} />
                 <span>rendered</span>
-            </>,
+            </PanneauRoot>,
         );
         await findByText('rendered');
         await expect.poll(() => container.querySelector('svg.lucide-send')).not.toBeNull();

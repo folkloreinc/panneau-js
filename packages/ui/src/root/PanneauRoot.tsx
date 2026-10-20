@@ -4,6 +4,7 @@ import { IntlContext, IntlProvider, type IntlShape } from 'react-intl';
 
 import { getPanneauMessages } from '@panneau/intl';
 
+import { type NamedIconLoader, NamedIconLoaderContext } from '../icon/namedIcons';
 import { getFontFaceCss, getFontStylesheets } from '../theme/fonts';
 import {
     type ColorScheme,
@@ -29,6 +30,12 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
      * `auto`: `touch` on touch screens, `comfortable` otherwise.
      */
     density?: Density;
+    /**
+     * Loads the icons that definitions name (`"icon": "send"`), for `getNamedIcon()`: pass
+     * `lucideIconLoader` from `@panneau/ui/named-icons`, or a loader of only the icons the app
+     * uses. Without it, named icons render an empty space.
+     */
+    iconLoader?: NamedIconLoader | null;
     /**
      * Locale of dates and numbers in React Aria components. Defaults to the react-intl locale, or
      * to the browser's without an `IntlProvider`.
@@ -130,6 +137,7 @@ export function PanneauRoot({
     theme = null,
     colorScheme = 'light',
     density = 'auto',
+    iconLoader = null,
     locale,
     className,
     children,
@@ -148,20 +156,22 @@ export function PanneauRoot({
         >
             {themeStyles}
             <I18nProvider locale={locale ?? intl?.locale}>
-                <ScopeContext value={{ colorScheme, density }}>
-                    <PortalContext value={container}>
-                        <ToastProvider
-                            regionClassName={styles.root}
-                            regionProps={{
-                                'data-color-scheme': colorScheme,
-                                'data-density': density,
-                                'data-panneau-theme': scope,
-                            }}
-                        >
-                            {children}
-                        </ToastProvider>
-                    </PortalContext>
-                </ScopeContext>
+                <NamedIconLoaderContext value={iconLoader}>
+                    <ScopeContext value={{ colorScheme, density }}>
+                        <PortalContext value={container}>
+                            <ToastProvider
+                                regionClassName={styles.root}
+                                regionProps={{
+                                    'data-color-scheme': colorScheme,
+                                    'data-density': density,
+                                    'data-panneau-theme': scope,
+                                }}
+                            >
+                                {children}
+                            </ToastProvider>
+                        </PortalContext>
+                    </ScopeContext>
+                </NamedIconLoaderContext>
                 <div ref={setContainer} className={styles.portal} />
             </I18nProvider>
         </div>

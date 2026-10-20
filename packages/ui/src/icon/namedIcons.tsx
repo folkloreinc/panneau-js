@@ -1,16 +1,33 @@
-import { useEffect, useSyncExternalStore } from 'react';
+import { createContext, use, useEffect, useSyncExternalStore } from 'react';
 
 import type { IconComponent } from './Icon';
 
-type IconImports = Readonly<Record<string, () => Promise<{ default: IconComponent }>>>;
+/**
+ * Loads an icon component from its name, as definitions name icons (`"icon": "send"`), or
+ * resolves with `null` for a name it doesn't know. `lucideIconLoader` of `@panneau/ui/named-icons`
+ * loads any Lucide icon; an app can load only the icons its definitions use.
+ */
+export type NamedIconLoader = (name: string) => Promise<IconComponent | null>;
 
 type Entry =
     { status: 'loading' } | { status: 'loaded'; icon: IconComponent } | { status: 'missing' };
 
-const entries = new Map<string, Entry>();
+/** Icons by name, for each loader. */
+const caches = new WeakMap<NamedIconLoader, Map<string, Entry>>();
 const components = new Map<string, IconComponent>();
 const listeners = new Set<() => void>();
-let imports: Promise<IconImports> | null = null;
+
+/** The loader of named icons, set by `PanneauRoot`'s `iconLoader`. */
+export const NamedIconLoaderContext = createContext<NamedIconLoader | null>(null);
+
+function cache(loader: NamedIconLoader): Map<string, Entry> {
+    let entries = caches.get(loader);
+    if (entries === undefined) {
+        entries = new Map();
+        caches.set(loader, entries);
+    }
+    return entries;
+}
 
 function subscribe(listener: () => void): () => void {
     listeners.add(listener);
@@ -19,18 +36,24 @@ function subscribe(listener: () => void): () => void {
     };
 }
 
-function setEntry(name: string, entry: Entry) {
-    entries.set(name, entry);
+function setEntry(loader: NamedIconLoader, name: string, entry: Entry | undefined) {
+    if (entry === undefined) {
+        cache(loader).delete(name);
+    } else {
+        cache(loader).set(name, entry);
+    }
     listeners.forEach((listener) => listener());
 }
 
 /**
- * Loads a Lucide icon by its name (`send`, `calendar-days`: the names of lucide.dev/icons), and
- * resolves with its component, or with `null` for a name Lucide doesn't have. Each icon is its own
- * module, and so is the list of names: neither is in the bundle until a named icon is used.
+ * Loads an icon by its name with a loader, once per loader and name, and resolves with its
+ * component, or with `null` for a name the loader doesn't know.
  */
-export function loadNamedIcon(name: string): Promise<IconComponent | null> {
-    const entry = entries.get(name);
+export function loadNamedIcon(
+    name: string,
+    loader: NamedIconLoader,
+): Promise<IconComponent | null> {
+    const entry = cache(loader).get(name);
     if (entry?.status === 'loaded') {
         return Promise.resolve(entry.icon);
     }
@@ -38,41 +61,34 @@ export function loadNamedIcon(name: string): Promise<IconComponent | null> {
         return Promise.resolve(null);
     }
     if (entry === undefined) {
-        setEntry(name, { status: 'loading' });
+        setEntry(loader, name, { status: 'loading' });
     }
-    imports ??= import('lucide-react/dynamicIconImports.mjs').then(
-        (module) => module.default as unknown as IconImports,
+    return loader(name).then(
+        (icon) => {
+            if (icon === null) {
+                console.warn(`[panneau] No icon named "${name}".`);
+                setEntry(loader, name, { status: 'missing' });
+            } else {
+                setEntry(loader, name, { status: 'loaded', icon });
+            }
+            return icon;
+        },
+        (error: unknown) => {
+            // A chunk that failed to load (offline): the icon is loaded again when it mounts.
+            setEntry(loader, name, undefined);
+            throw error;
+        },
     );
-    return imports
-        .then((all) => {
-            const load = Object.hasOwn(all, name) ? all[name] : undefined;
-            return load !== undefined ? load().then((module) => module.default) : null;
-        })
-        .then(
-            (icon) => {
-                if (icon === null) {
-                    console.warn(`[panneau] Lucide has no icon named "${name}".`);
-                    setEntry(name, { status: 'missing' });
-                } else {
-                    setEntry(name, { status: 'loaded', icon });
-                }
-                return icon;
-            },
-            (error: unknown) => {
-                // A chunk that failed to load (offline): the icon is loaded again when it mounts.
-                entries.delete(name);
-                imports = null;
-                throw error;
-            },
-        );
 }
 
+let warnedWithoutLoader = false;
+
 /**
- * An icon component for a Lucide icon name, as definitions name them (`"icon": "send"`). It goes
+ * An icon component for an icon name, as definitions name them (`"icon": "send"`). It goes
  * wherever an icon component goes (`<Button icon={getNamedIcon('send')}>`), and is the same
- * component for the same name. It loads the icon the first time it renders (`loadNamedIcon()`),
- * and renders an empty space of the same size until then. A name Lucide doesn't have renders
- * nothing.
+ * component for the same name. It loads the icon with the `iconLoader` of `PanneauRoot` the first
+ * time it renders, and renders an empty space of the same size until then, or without a loader. A
+ * name the loader doesn't know renders nothing.
  */
 export function getNamedIcon(name: string): IconComponent {
     const existing = components.get(name);
@@ -80,16 +96,26 @@ export function getNamedIcon(name: string): IconComponent {
         return existing;
     }
     const NamedIcon: IconComponent = ({ size = 24, className, ...props }) => {
+        const loader = use(NamedIconLoaderContext);
         const entry = useSyncExternalStore(
             subscribe,
-            () => entries.get(name),
-            () => entries.get(name),
+            () => (loader !== null ? cache(loader).get(name) : undefined),
+            () => (loader !== null ? cache(loader).get(name) : undefined),
         );
         useEffect(() => {
-            if (entries.get(name) === undefined) {
-                loadNamedIcon(name).catch(() => undefined);
+            if (loader === null) {
+                if (!warnedWithoutLoader) {
+                    warnedWithoutLoader = true;
+                    console.warn(
+                        `[panneau] The icon "${name}" is named, but PanneauRoot has no iconLoader: pass lucideIconLoader from @panneau/ui/named-icons.`,
+                    );
+                }
+                return;
             }
-        }, []);
+            if (cache(loader).get(name) === undefined) {
+                loadNamedIcon(name, loader).catch(() => undefined);
+            }
+        }, [loader]);
         if (entry?.status === 'loaded') {
             const Loaded = entry.icon;
             return <Loaded size={size} className={className} {...props} />;

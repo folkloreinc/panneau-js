@@ -23,6 +23,11 @@
             "types": "./dist/locales/index.d.ts",
             "default": "./dist/locales/index.js"
         },
+        "./named-icons": {
+            "@panneau/source": "./src/named-icons/index.ts",
+            "types": "./dist/named-icons/index.d.ts",
+            "default": "./dist/named-icons/index.js"
+        },
         "./theme": {
             "@panneau/source": "./src/theme/index.ts",
             "types": "./dist/theme/index.d.ts",

@@ -15,11 +15,12 @@ import { Button, PanneauRoot, TextInput, bootstrapTheme } from '@panneau/ui';
 </PanneauRoot>;
 ```
 
-| Export                | Content                                                                                                 |
-| --------------------- | ------------------------------------------------------------------------------------------------------- |
-| `@panneau/ui`         | `PanneauRoot`, themes, the primitives, `Icon`, `getNamedIcon()`, `useToast()`, `usePanneauIntl()`       |
-| `@panneau/ui/theme`   | Themes as data, without components or CSS, for Node: `defineTheme()`, `checkTheme()`, `bootstrapTheme`… |
-| `@panneau/ui/locales` | Deprecated: the UI messages by locale, `en` and `fr`. Use `@panneau/intl`                               |
+| Export                    | Content                                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `@panneau/ui`             | `PanneauRoot`, themes, the primitives, `Icon`, `getNamedIcon()`, `useToast()`, `usePanneauIntl()`       |
+| `@panneau/ui/named-icons` | `lucideIconLoader`: loads any Lucide icon by name, for `PanneauRoot`'s `iconLoader`                     |
+| `@panneau/ui/theme`       | Themes as data, without components or CSS, for Node: `defineTheme()`, `checkTheme()`, `bootstrapTheme`… |
+| `@panneau/ui/locales`     | Deprecated: the UI messages by locale, `en` and `fr`. Use `@panneau/intl`                               |
 
 ## Root, tokens and themes
 
@@ -299,18 +300,23 @@ The theme model is described in [decision 0024](../../docs/decisions/0024-theme-
 
 Components take icons as components: any Lucide icon (`icon={Pencil}`), or a component with the same props.
 
-Definitions name their icons (`"icon": "send"`, a name of [lucide.dev/icons](https://lucide.dev/icons)). `getNamedIcon(name)` turns a name into an icon component that goes wherever an icon component goes:
+Definitions name their icons (`"icon": "send"`, a name of [lucide.dev/icons](https://lucide.dev/icons)). `getNamedIcon(name)` turns a name into an icon component that goes wherever an icon component goes, and loads it with the `iconLoader` of `PanneauRoot`:
 
 ```tsx
-import { Button, getNamedIcon } from '@panneau/ui';
+import { Button, PanneauRoot, getNamedIcon } from '@panneau/ui';
+import { lucideIconLoader } from '@panneau/ui/named-icons';
 
-<Button icon={getNamedIcon('send')}>Send</Button>;
+<PanneauRoot iconLoader={lucideIconLoader}>
+    <Button icon={getNamedIcon('send')}>Send</Button>
+</PanneauRoot>;
 ```
 
-- It loads that one icon the first time it renders, through Lucide's dynamic imports, and renders an empty space of the same size until then. The list of names is loaded on demand too: the whole set is never in the bundle, but bundlers emit one small chunk per icon.
-- It returns the same component for the same name. A name Lucide doesn't have renders nothing, with a warning in the console.
-- `loadNamedIcon(name)` loads an icon ahead of time, and resolves with its component (or `null`).
-- **Vite apps, in development:** add `optimizeDeps: { exclude: ['lucide-react/dynamicIconImports.mjs'] }` to the Vite config. When Vite optimizes it together with `lucide-react`, it splits `lucide-react` into one chunk per icon (about 1,900 requests on every page load). Production builds are not affected.
+- **Loading icons by name is opt-in.** `lucideIconLoader` loads any Lucide icon, one chunk per icon the first time it renders, but bundlers emit a chunk for every Lucide icon (about 1,900) and the map of them in the runtime of every page. So it lives in its own entry point, `@panneau/ui/named-icons`: apps that only pass icon components (`icon={Send}`, `actionIcons`) don't pay for it.
+- An app can instead load only the icons its definitions use: `iconLoader={(name) => Promise.resolve(({ send: Send, archive: Archive })[name] ?? null)}`.
+- Without a loader, a named icon renders an empty space of the same size, with one warning in the console.
+- `getNamedIcon()` returns the same component for the same name, renders an empty space while the icon loads, and nothing for a name the loader doesn't know (with a warning).
+- `loadNamedIcon(name, loader)` loads an icon ahead of time, and resolves with its component (or `null`).
+- **Vite apps, in development:** with `lucideIconLoader`, add `optimizeDeps: { exclude: ['lucide-react/dynamicIconImports.mjs'] }` to the Vite config. When Vite optimizes it together with `lucide-react`, it splits `lucide-react` into one chunk per icon (about 1,900 requests on every page load). Production builds are not affected.
 
 ## Messages
 
