@@ -11,6 +11,7 @@ import {
     type Theme,
     bootstrapTheme,
 } from '@panneau/ui';
+import { lucideIconLoader } from '@panneau/ui/named-icons';
 
 import { referenceTheme } from '../packages/ui/src/theme/__fixtures__/referenceTheme';
 
@@ -39,6 +40,7 @@ const withPanneau: Decorator = (Story, { globals }) => {
                 colorScheme={colorScheme}
                 density={density}
                 theme={theme}
+                iconLoader={lucideIconLoader}
                 style={{ padding: '1rem', minHeight: '100vh' }}
             >
                 <Story />

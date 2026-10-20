@@ -7,6 +7,7 @@ import { Form } from '@panneau/forms';
 import { withPanneauMessages } from '@panneau/intl';
 import { List } from '@panneau/lists';
 import { PanneauRoot } from '@panneau/ui';
+import { lucideIconLoader } from '@panneau/ui/named-icons';
 
 // A form as a product without a Panneau definition uses it: a list of fields and an `onSubmit`.
 const fields = [
@@ -66,7 +67,7 @@ function Pages() {
 function App() {
     return (
         <IntlProvider locale="fr" messages={withPanneauMessages('fr')}>
-            <PanneauRoot id="root-element">
+            <PanneauRoot id="root-element" iconLoader={lucideIconLoader}>
                 <TextField label="Champ seul" value="Une valeur" />
                 <Form
                     fields={fields}

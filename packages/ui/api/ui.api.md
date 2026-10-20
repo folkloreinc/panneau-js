@@ -552,7 +552,7 @@ export interface InlineProps extends HTMLAttributes<HTMLElement> {
 export type Justification = 'start' | 'center' | 'end' | 'between';
 
 // @public
-export function loadNamedIcon(name: string): Promise<IconComponent | null>;
+export function loadNamedIcon(name: string, loader: NamedIconLoader): Promise<IconComponent | null>;
 
 // @public
 export function Menu<T extends object>(input: MenuProps<T>): JSX.Element;
@@ -601,6 +601,9 @@ export interface MultipleSelectProps extends SelectBaseProps {
 }
 
 // @public
+export type NamedIconLoader = (name: string) => Promise<IconComponent | null>;
+
+// @public
 export function NumberInput(input: NumberInputProps): JSX.Element;
 
 // @public (undocumented)
@@ -633,6 +636,7 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
     children?: ReactNode;
     colorScheme?: ColorScheme;
     density?: Density;
+    iconLoader?: NamedIconLoader | null;
     locale?: string;
     theme?: Theme | null;
 }
