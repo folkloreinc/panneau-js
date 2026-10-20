@@ -91,7 +91,7 @@ const { data, isFetching, error } = useResourceList('pages', query); // @panneau
 
 An action shows the icon it names (`"icon": "send"`, through `getNamedIcon()` of `@panneau/ui`, which needs an `iconLoader` on `PanneauRoot`, such as `lucideIconLoader` of `@panneau/ui/named-icons`), or the icon of a built-in action (`edit`, `delete`…). Actions written in code can get icon components by id instead, which win over names: `actionIcons={{ archive: Archive }}`.
 
-Lists confirm an action when it has `confirm` (its title and message are ICU messages with `{count}`), or when some selected items don't allow it, then call `onAction` with the action, its scope, the item or the `Selection` of the protocol, the count and the skipped items. A promise shows the action as pending; when it rejects, a toast says that it failed. After a selection action, the selection is cleared.
+Lists confirm an action when it has `confirm` (its title and message are ICU messages with `{count}`), or when some selected items don't allow it. For every item matching a query, they only know the current page: with `previewAction` (`useActionPreview()` of `@panneau/actions`), an action that declares `dryRun` asks the backend first, and the confirmation gives its count of skipped items. Then they call `onAction` with the action, its scope, the item or the `Selection` of the protocol, the count and the skipped items. A promise shows the action as pending; when it rejects, a toast says that it failed. After a selection action, the selection is cleared.
 
 A `relation` filter keeps ids in the query (`filter[author]=7`). Its chip and picker show the labels of the items it picked, and those of ids from the URL once the relation source's `resolve()` gives them.
 

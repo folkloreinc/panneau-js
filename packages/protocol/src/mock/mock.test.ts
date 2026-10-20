@@ -144,6 +144,26 @@ describe('createMockBackend', () => {
         expect(backend.items('pages').map((item) => item.id)).toEqual(['1', '3']);
     });
 
+    it('answers a dry run of an action with dryRun, without changing anything', async () => {
+        const backend = createBackend();
+        const before = backend.items('pages').map((item) => item.id);
+        const response = await backend.fetch(
+            '/panneau/api/resources/pages/actions/publish',
+            json({ selection: { query: {} }, dryRun: true }, { method: 'POST' }),
+        );
+        expect(response.status).toBe(200);
+        expect(await response.json()).toMatchObject({
+            summary: { succeeded: before.length, failed: 0, skipped: 0 },
+        });
+        expect(backend.items('pages').map((item) => item.id)).toEqual(before);
+        const unsupported = await backend.fetch(
+            '/panneau/api/resources/pages/actions/delete',
+            json({ selection: { query: {} }, dryRun: true }, { method: 'POST' }),
+        );
+        expect(unsupported.status).toBe(400);
+        expect(backend.items('pages').map((item) => item.id)).toEqual(before);
+    });
+
     it('answers unknown routes with a 404 problem', async () => {
         const response = await createBackend().fetch('/panneau/api/resources/unknown');
         expect(response.status).toBe(404);

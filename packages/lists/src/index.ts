@@ -1,5 +1,9 @@
 export { type ListActions, getActionHref, groupListActions, isAllowedOn } from './actions/actions';
-export { ConfirmDialog, type ConfirmDialogProps } from './actions/ConfirmDialog';
+export {
+    ConfirmDialog,
+    type ConfirmDialogProps,
+    type ConfirmPreview,
+} from './actions/ConfirmDialog';
 export { type ActionIcons, getActionIcon } from './actions/icons';
 export {
     BooleanDisplay,
@@ -44,6 +48,8 @@ export type {
     FilterEntry,
     ListActionEvent,
     ListActionHandler,
+    ListActionPreview,
+    ListActionPreviewer,
     ListColumn,
     ListItem,
     ListLayoutEntry,

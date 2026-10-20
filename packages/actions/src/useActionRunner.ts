@@ -1,6 +1,7 @@
 import { use } from 'react';
 
 import { ActionRunnerContext } from './context';
+import { type ActionPreview, previewAction } from './preview';
 import type { ActionOutcome, ActionTarget, FollowedRun } from './types';
 
 /**
@@ -23,6 +24,24 @@ export function useActionRunner(
         throw new Error('useActionRunner() must be used inside <ActionRunnerProvider>.');
     }
     return (target) => context.run(resource, target);
+}
+
+/**
+ * Asks the backend how many items of a query selection an action would skip, before the list
+ * confirms it (a dry run, for actions with `dryRun`). It is the `previewAction` of a list:
+ *
+ * ```tsx
+ * <ListView onAction={useActionRunner('pages')} previewAction={useActionPreview('pages')} … />
+ * ```
+ */
+export function useActionPreview(
+    resource: string,
+): (target: ActionTarget) => Promise<ActionPreview | null> {
+    const context = use(ActionRunnerContext);
+    if (context === null) {
+        throw new Error('useActionPreview() must be used inside <ActionRunnerProvider>.');
+    }
+    return (target) => previewAction(context.adapter, resource, target);
 }
 
 /** The queued runs of the closest `ActionRunnerProvider`, to cancel or dismiss them. */

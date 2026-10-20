@@ -344,6 +344,21 @@ All paths are relative to `api.baseUrl`.
 
 **Single item.** A `403` or `404` on the only item of an `item` action is returned as an error, not as a skipped result.
 
+**Dry run.** An action with `"dryRun": true` in the definition answers dry runs: the same request with `"dryRun": true` answers what the action would do, without running it. Lists use it before they confirm an action on every item matching a query ("Select all N items"): they only know the abilities of the current page, and say how many items will be skipped (decision 0017).
+
+```jsonc
+// Request
+{ "selection": { "query": { "filter": { "status": "draft" } } }, "dryRun": true }
+
+// Response: 200
+{ "summary": { "succeeded": 28, "failed": 0, "skipped": 12 }, "results": [{ "id": "15", "status": "skipped", "reason": "forbidden" }] }
+```
+
+- **No side effects:** nothing changes, nothing is queued, and the answer is never `202`.
+- **`summary`** counts the items that would succeed and those that would be skipped. `results` may list the first skipped items.
+- **No values:** a dry run comes before the parameters, so the backend doesn't validate `values`.
+- **Opt-in:** the UI only sends `dryRun` to actions that declare it, since a backend that ignores the field would run the action.
+
 **Long-running actions.** A queued action, or a selection above the backend's synchronous limit, answers `202 Accepted`:
 
 ```json

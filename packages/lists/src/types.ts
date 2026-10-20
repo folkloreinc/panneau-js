@@ -68,6 +68,18 @@ export interface ListActionEvent {
     skipped: readonly ListItem[];
 }
 
+/** What the backend told about an action on a query selection: how many items it would skip. */
+export interface ListActionPreview {
+    skipped: number;
+}
+
+/**
+ * Asks the backend what an action would do on a query selection, before the list confirms it (a
+ * dry run, for actions with `dryRun`), or resolves with `null` when it can't tell.
+ * `useActionPreview()` of `@panneau/actions` is one.
+ */
+export type ListActionPreviewer = (event: ListActionEvent) => Promise<ListActionPreview | null>;
+
 /**
  * Runs an action. Lists ask for confirmation first when the action has `confirm`. A returned
  * promise shows the action as pending until it settles; after a selection action succeeds, the

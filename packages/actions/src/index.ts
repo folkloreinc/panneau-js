@@ -3,6 +3,7 @@ export { ActionRuns, type ActionRunsProps } from './ActionRuns';
 export { ParametersDialog, type ParametersDialogProps } from './ParametersDialog';
 export { ResultsDialog, type ResultsDialogProps } from './ResultsDialog';
 export { describeItemResult, describeResult } from './describe';
+export { type ActionPreview, canPreviewAction, previewAction } from './preview';
 export { buildActionRequest, getLinkTarget, getResultCounts } from './request';
 export type {
     ActionAdapter,
@@ -14,4 +15,4 @@ export type {
     ClientActionProps,
     FollowedRun,
 } from './types';
-export { useActionRunner, useActionRuns } from './useActionRunner';
+export { useActionPreview, useActionRunner, useActionRuns } from './useActionRunner';

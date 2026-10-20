@@ -2,7 +2,7 @@ import type { z } from 'zod';
 
 import { type FilterRange, toSearchParams } from '../query';
 import { Definition, type Resource } from '../schemas';
-import { ItemResponse, ListResponse, Problem } from '../schemas/api';
+import { ActionResult, ItemResponse, ListResponse, Problem } from '../schemas/api';
 import { isFilled } from '../values';
 import { PROBLEM_CONTENT_TYPE } from '../version';
 
@@ -280,6 +280,64 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                 check.expect(
                     future.meta.total === 0,
                     `Filtered from 9999-12-31, the list has ${future.meta.total} items, expected 0.`,
+                );
+            }
+        },
+    );
+
+    await run(
+        'action.dry-run',
+        'A dry run of an action counts what it would do, and changes nothing',
+        async (check) => {
+            const action = (resource as Resource | null)?.actions?.find(
+                (candidate) =>
+                    candidate.dryRun === true &&
+                    candidate.kind === 'server' &&
+                    candidate.scope.includes('selection'),
+            );
+            if (action === undefined) {
+                check.skip('The resource declares no selection action with dryRun.');
+                return;
+            }
+            const page = async (label: string) => {
+                const reply = await request(`${resourcePath()}?page=1&perPage=20`);
+                return check.expectStatus(reply, 200)
+                    ? check.expectSchema(ListResponse, reply.body, label)
+                    : null;
+            };
+            const before = await page('The list before the dry run');
+            const reply = await request(
+                `${resourcePath()}/actions/${encodeURIComponent(action.id)}`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ selection: { query: {} }, dryRun: true }),
+                },
+            );
+            if (!check.expectStatus(reply, 200)) {
+                return;
+            }
+            const result = check.expectSchema(ActionResult, reply.body, 'The dry run result');
+            if (result !== null && before !== null) {
+                check.expect(
+                    result.summary !== undefined,
+                    'A dry run result must have a summary of the items that would succeed and be skipped.',
+                );
+                if (result.summary !== undefined) {
+                    const counted =
+                        result.summary.succeeded + result.summary.failed + result.summary.skipped;
+                    check.expect(
+                        counted === before.meta.total,
+                        `The dry run counts ${counted} items; the list has ${before.meta.total}.`,
+                    );
+                }
+            }
+            const after = await page('The list after the dry run');
+            if (before !== null && after !== null) {
+                const versions = (list: typeof before) =>
+                    JSON.stringify(list.data.map((item) => [item.id, item.version ?? null]));
+                check.expect(
+                    after.meta.total === before.meta.total && versions(after) === versions(before),
+                    'A dry run must not change the items.',
                 );
             }
         },

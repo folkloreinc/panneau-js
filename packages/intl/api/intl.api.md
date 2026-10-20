@@ -255,6 +255,7 @@ export const listsMessages: {
     confirmSkipped: PanneauMessage<    {
     count: number;
     }>;
+    confirmChecking: PanneauMessage<Record<never, never>>;
     cancel: PanneauMessage<Record<never, never>>;
     actionFailed: PanneauMessage<    {
     action: string;

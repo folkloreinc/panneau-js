@@ -38,6 +38,7 @@ export const listsFr: Record<string, string> = {
         '« {action} » s’appliquera à {count, plural, one {# élément} other {# éléments}}.',
     'panneau.lists.confirmSkipped':
         '{count, plural, one {# élément sélectionné ne le permet pas et sera ignoré.} other {# éléments sélectionnés ne le permettent pas et seront ignorés.}}',
+    'panneau.lists.confirmChecking': 'Vérification des éléments qui le permettent…',
     'panneau.lists.cancel': 'Annuler',
     'panneau.lists.actionFailed': '« {action} » a échoué.',
     'panneau.lists.empty': 'Aucun élément pour l’instant.',

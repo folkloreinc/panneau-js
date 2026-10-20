@@ -40,6 +40,10 @@ export const Action = z
             .boolean()
             .optional()
             .meta({ description: 'The action always answers `202` with a run.' }),
+        dryRun: z.boolean().optional().meta({
+            description:
+                'The backend answers dry runs of this action (`dryRun` in the request): lists ask it how many items of a query selection will be skipped. Without it, the UI never sends `dryRun`, since a backend that ignores it would run the action.',
+        }),
         url: z
             .string()
             .optional()

@@ -33,6 +33,7 @@ An **action** is an operation a user applies to one item, to a selection of item
 - **Permissions:**
     - The definition says whether the user can run the action on the resource.
     - Each item lists the actions allowed on it in its `abilities`. The UI hides an action on an item that doesn't allow it. For a selection, it says how many items will be skipped before running it.
+    - For a selection of every item matching a query, only the backend knows: an action that declares `dryRun` answers a dry run (`"dryRun": true`), which lists ask before they confirm (#44).
     - The backend checks every item again. In a selection, an item that is not allowed is skipped and reported; it doesn't fail the whole action.
 - **Built-in actions:**
     - links: `show`, `edit`;

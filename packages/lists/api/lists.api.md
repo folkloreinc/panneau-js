@@ -59,7 +59,15 @@ export interface ConfirmDialogProps {
     onCancel: () => void;
     // (undocumented)
     onConfirm: (event: ListActionEvent) => void;
+    preview?: ConfirmPreview | null;
 }
+
+// @public
+export type ConfirmPreview = {
+    status: 'loading';
+} | ({
+    status: 'done';
+} & ListActionPreview);
 
 // @public
 export function countSelected(selection: ListSelection, total: number): number;
@@ -148,6 +156,15 @@ export interface ListActionEvent {
 
 // @public
 export type ListActionHandler = (event: ListActionEvent) => unknown;
+
+// @public
+export interface ListActionPreview {
+    // (undocumented)
+    skipped: number;
+}
+
+// @public
+export type ListActionPreviewer = (event: ListActionEvent) => Promise<ListActionPreview | null>;
 
 // @public
 export type ListActions = readonly Action[] | Partial<Record<ActionPlacement, readonly Action[]>>;
@@ -251,6 +268,7 @@ export interface ListViewProps {
     // (undocumented)
     onRetry?: () => void;
     perPageOptions?: readonly number[];
+    previewAction?: ListActionPreviewer;
     search?: boolean;
     selectable?: boolean;
     toolbar?: ReactNode;
