@@ -1,5 +1,5 @@
 /* Doubled class: overrides the shared control, whatever the CSS order. */
-.textArea.textArea {
+.control.control {
     display: block;
     min-height: calc(var(--panneau-control-height) * 2);
     padding: var(--panneau-space-2) var(--panneau-space-3);

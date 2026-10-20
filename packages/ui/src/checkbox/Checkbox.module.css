@@ -5,7 +5,7 @@
     min-width: 0;
 }
 
-.checkbox {
+.control {
     display: inline-flex;
     align-items: flex-start;
     gap: var(--panneau-space-2);
@@ -16,7 +16,7 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-.checkbox[data-disabled] {
+.control[data-disabled] {
     cursor: not-allowed;
     opacity: 0.55;
 }
@@ -39,26 +39,26 @@
         border-color var(--panneau-duration);
 }
 
-.checkbox[data-hovered] .box {
+.control[data-hovered] .box {
     border-color: var(--panneau-color-text-muted);
 }
 
-.checkbox[data-selected] .box,
-.checkbox[data-indeterminate] .box {
+.control[data-selected] .box,
+.control[data-indeterminate] .box {
     background-color: var(--panneau-checkbox-checked-bg, var(--panneau-color-accent));
     border-color: var(--panneau-checkbox-checked-bg, var(--panneau-color-accent));
 }
 
-.checkbox[data-invalid] .box {
+.control[data-invalid] .box {
     border-color: var(--panneau-color-danger);
 }
 
-.checkbox[data-focus-visible] .box {
+.control[data-focus-visible] .box {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
     outline-offset: 2px;
 }
 
-.checkbox[data-readonly] {
+.control[data-readonly] {
     cursor: default;
 }
 
@@ -69,7 +69,7 @@
 
 /* Touch screens: a taller row, so the whole label is an easy target. */
 @media (pointer: coarse) {
-    .checkbox {
+    .control {
         min-height: 2.75rem;
         align-items: center;
     }

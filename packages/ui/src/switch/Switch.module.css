@@ -1,4 +1,4 @@
-.switch {
+.control {
     display: inline-flex;
     align-items: center;
     gap: var(--panneau-space-2);
@@ -9,12 +9,12 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-.switch[data-disabled] {
+.control[data-disabled] {
     cursor: not-allowed;
     opacity: 0.55;
 }
 
-.switch[data-readonly] {
+.control[data-readonly] {
     cursor: default;
 }
 
@@ -42,11 +42,11 @@
     transition: transform var(--panneau-duration);
 }
 
-.switch[data-selected] .track {
+.control[data-selected] .track {
     background-color: var(--panneau-switch-checked-bg, var(--panneau-color-accent));
 }
 
-.switch[data-selected] .thumb {
+.control[data-selected] .thumb {
     background-color: var(--panneau-switch-checked-thumb-bg, var(--panneau-color-accent-text));
     /* The thumb travels the width of the track minus its height (both ends keep the same inset). */
     transform: translateX(
@@ -54,7 +54,7 @@
     );
 }
 
-.switch[data-selected] .thumb:dir(rtl) {
+.control[data-selected] .thumb:dir(rtl) {
     transform: translateX(
         calc(
             -1 * calc(var(--panneau-switch-width, 2.25rem) - var(--panneau-switch-height, 1.25rem))
@@ -62,7 +62,7 @@
     );
 }
 
-.switch[data-focus-visible] .track {
+.control[data-focus-visible] .track {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
     outline-offset: 2px;
 }
@@ -72,7 +72,7 @@
 }
 
 @media (pointer: coarse) {
-    .switch {
+    .control {
         min-height: 2.75rem;
     }
 }
