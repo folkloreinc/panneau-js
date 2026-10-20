@@ -1,5 +1,16 @@
 # @panneau/app
 
+## 5.0.0-alpha.3
+
+### Patch Changes
+
+- Updated dependencies [3af252d]
+- Updated dependencies [5a2ae0c]
+- Updated dependencies [3c68628]
+  - @panneau/protocol@5.0.0-alpha.3
+  - @panneau/data@5.0.0-alpha.3
+  - @panneau/core@5.0.0-alpha.3
+
 ## 5.0.0-alpha.2
 
 ### Patch Changes

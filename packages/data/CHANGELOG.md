@@ -1,5 +1,17 @@
 # @panneau/data
 
+## 5.0.0-alpha.3
+
+### Minor Changes
+
+- 3c68628: The pieces of the adapters are exported for an app's own endpoints: `readProblem()` reads the problem of a failed response (`application/problem+json`, Laravel's `{ message, errors }`, or the status), and `@panneau/data/laravel` adds `getLaravelHeaders()` (`X-Requested-With` and the CSRF token from Laravel's cookie) and `createLaravelError()` (`419` as `UnauthorizedError`). The Laravel adapter uses them.
+
+### Patch Changes
+
+- Updated dependencies [3af252d]
+- Updated dependencies [5a2ae0c]
+  - @panneau/protocol@5.0.0-alpha.3
+
 ## 5.0.0-alpha.2
 
 ### Patch Changes
