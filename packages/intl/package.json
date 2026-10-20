@@ -1,6 +1,6 @@
 {
     "name": "@panneau/intl",
-    "version": "5.0.0-alpha.1",
+    "version": "5.0.0-alpha.2",
     "description": "The UI messages of the Panneau packages, in English and French, with helpers to merge them with an app's messages.",
     "type": "module",
     "license": "MIT",

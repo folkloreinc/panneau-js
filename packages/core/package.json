@@ -1,6 +1,6 @@
 {
     "name": "@panneau/core",
-    "version": "5.0.0-alpha.1",
+    "version": "5.0.0-alpha.2",
     "description": "The engine of Panneau: plugin registry, definition to forms and lists, form and list state, with React hooks. No UI.",
     "type": "module",
     "license": "MIT",
@@ -33,6 +33,6 @@
         "react": "^19.2.0"
     },
     "dependencies": {
-        "@panneau/protocol": "5.0.0-alpha.1"
+        "@panneau/protocol": "5.0.0-alpha.2"
     }
 }
