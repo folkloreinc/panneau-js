@@ -357,7 +357,7 @@
     }
 }
 
-/* Base stylesheet, scoped to the root, without specificity: components and projects override it. */
+/* Base stylesheet, scoped to the root, with less weight than any class: components and projects override it. */
 
 .root {
     /* The class is mostly a hook for the rules below, which use :where(). */
@@ -388,9 +388,46 @@
     box-sizing: border-box;
 }
 
-:where(.root) :where(h1, h2, h3, h4, h5, h6, p, ul, ol, dl, figure, fieldset, legend) {
+/*
+ * Element resets weigh two element selectors, (0,0,2), by repeating :is(): more than the global
+ * element rules of a site, such as Bootstrap's Reboot (`h5 { margin-bottom: 0.5rem }` weighs
+ * (0,0,1)), less than any class, so that components and projects still override them.
+ */
+:where(.root)
+    :is(
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        ul,
+        ol,
+        dl,
+        dd,
+        figure,
+        blockquote,
+        pre,
+        hr,
+        fieldset,
+        legend
+    ):is(h1, h2, h3, h4, h5, h6, p, ul, ol, dl, dd, figure, blockquote, pre, hr, fieldset, legend) {
     margin: 0;
     padding: 0;
+}
+
+/* Reboot floats legends and scales their text. */
+:where(.root) :is(legend):is(legend) {
+    float: none;
+    width: auto;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+/* Reboot fades rules to 25% opacity. */
+:where(.root) :is(hr):is(hr) {
+    opacity: 1;
 }
 
 :where(.root) :where(fieldset) {
@@ -403,7 +440,7 @@
     color: inherit;
 }
 
-:where(.root) :where(a) {
+:where(.root) :is(a):is(a) {
     color: var(--panneau-color-link);
 }
 

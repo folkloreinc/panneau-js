@@ -11,6 +11,7 @@
     background-color: var(--panneau-color-surface-sunken);
     border: var(--panneau-border-width) dashed var(--panneau-color-border-control);
     border-radius: var(--panneau-radius-md);
+    margin: 0;
 }
 
 .label {

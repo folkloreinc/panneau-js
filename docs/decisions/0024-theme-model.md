@@ -135,7 +135,12 @@ Projects target components with **stable, readable class names**, like Bootstrap
 
 The first version of this decision used `data-panneau` attributes. The maintainers preferred stable class names, which are the usual way to target a component, and need no Panneau-specific attribute.
 
-**Cascade layers are deferred.** Unlayered CSS beats layered CSS whatever its specificity. Putting the component styles in `@layer` would therefore let a site's global element rules override Panneau components, for example Bootstrap's Reboot on `button`, `a`, `h1`–`h6`, `label` and `legend`, on any Bootstrap site. Today Panneau's class selectors win over those element selectors. Layers wait for a design that keeps that guarantee.
+**No cascade layers.** Unlayered CSS beats layered CSS whatever its specificity. Putting the component styles in `@layer` would therefore let a site's global element rules override Panneau components, for example Bootstrap's Reboot on `button`, `a`, `h1`–`h6`, `label` and `legend`, on any Bootstrap site. Panneau's styles stay unlayered, and two rules guard against global element rules instead:
+
+- **The reset of the root weighs (0,0,2)**, two element selectors (`:where(.root) :is(h1, p, …):is(h1, p, …)`): more than a site's element rules, such as the Reboot (0,0,1), and less than any class, so that components and projects still override it. It used to have no weight at all (`:where()`), and the Reboot's margins leaked into Panneau: a `h5` card title got `margin-bottom: 0.5rem` in the pilot project.
+- **Components reset the elements they render** in their own classes (`margin: 0` on a card title, `float: none` on a legend, `opacity: 1` on a divider), which makes what they want explicit.
+
+The `Theme/Bootstrap Reboot` story renders components and bare elements with Bootstrap's CSS loaded, and checks that none of the Reboot reaches them.
 
 ### 9. Chart colors
 
