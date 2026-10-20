@@ -5,6 +5,7 @@ coverage/
 package-lock.json
 CHANGELOG.md
 .changeset/*.md
+.changeset/pre/
 packages/*/schema/
 packages/*/api/
 storybook-static
