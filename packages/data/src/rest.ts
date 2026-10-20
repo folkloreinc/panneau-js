@@ -5,7 +5,6 @@ import {
     type ListQuery,
     PROBLEM_CONTENT_TYPE,
     type Problem,
-    isProblem,
     toSearchParams,
     validate,
 } from '@panneau/protocol';
@@ -20,6 +19,7 @@ import type {
 
 import type { ActionResponse, DataAdapter, Values } from './adapter';
 import { type ApiError, InvalidResponseError, createApiError } from './errors';
+import { readProblem } from './problem';
 
 export interface RestAdapterOptions {
     /** URL of the API, as `api.baseUrl` in the definition (`/panneau/api`). */
@@ -87,39 +87,6 @@ function appendFormData(data: FormData, key: string, value: unknown) {
 
 function encode(path: string): string {
     return encodeURIComponent(path);
-}
-
-/** Builds the problem of a failed response, from its body when it is one. */
-async function readProblem(response: Response): Promise<Problem> {
-    const body: unknown = await response
-        .clone()
-        .json()
-        .catch(() => null);
-    if (isProblem(body)) {
-        return body;
-    }
-    const record =
-        body !== null && typeof body === 'object' ? (body as Record<string, unknown>) : {};
-    const problem: Problem = {
-        type: 'about:blank',
-        title:
-            typeof record.title === 'string'
-                ? record.title
-                : typeof record.message === 'string'
-                  ? record.message
-                  : response.statusText || `HTTP ${response.status}`,
-        status: response.status,
-    };
-    const errors = record.errors;
-    if (errors !== null && typeof errors === 'object' && !Array.isArray(errors)) {
-        problem.errors = Object.fromEntries(
-            Object.entries(errors).map(([path, messages]) => [
-                path,
-                (Array.isArray(messages) ? messages : [messages]).map(String),
-            ]),
-        );
-    }
-    return problem;
 }
 
 /**

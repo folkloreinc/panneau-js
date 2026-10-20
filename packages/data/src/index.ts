@@ -18,4 +18,5 @@ export {
     createApiError,
     isApiError,
 } from './errors';
+export { readProblem } from './problem';
 export { type RestAdapterOptions, createRestAdapter } from './rest';
