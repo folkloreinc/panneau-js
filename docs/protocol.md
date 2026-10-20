@@ -357,7 +357,7 @@ All paths are relative to `api.baseUrl`.
 - **No side effects:** nothing changes, nothing is queued, and the answer is never `202`.
 - **`summary`** counts the items that would succeed and those that would be skipped. `results` may list the first skipped items.
 - **No values:** a dry run comes before the parameters, so the backend doesn't validate `values`.
-- **Opt-in:** the UI only sends `dryRun` to actions that declare it, since a backend that ignores the field would run the action.
+- **Opt-in:** the UI only sends `dryRun` to actions that declare it, since a backend that ignores the field would run the action. A dry run of an action that doesn't declare `dryRun` answers `400` and runs nothing.
 
 **Long-running actions.** A queued action, or a selection above the backend's synchronous limit, answers `202 Accepted`:
 
