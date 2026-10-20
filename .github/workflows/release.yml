@@ -38,6 +38,29 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            # Checks that npm accepts the OIDC token of this workflow for trusted publishing. When it
+            # doesn't, npm only logs the reason at the verbose level, falls back to the placeholder
+            # token of setup-node and fails with a 404, and changesets doesn't show npm's logs. This
+            # step prints the claims npm matches against the trusted publisher, and npm's answer
+            # without the token it may return.
+            - name: Check npm trusted publishing
+              continue-on-error: true
+              run: |
+                  id_token=$(curl -sS -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+                      "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm:registry.npmjs.org" | jq -r '.value')
+                  echo "::add-mask::$id_token"
+                  ID_TOKEN="$id_token" node -e '
+                      const claims = JSON.parse(Buffer.from(process.env.ID_TOKEN.split(".")[1], "base64url"));
+                      const { repository, ref, workflow_ref, job_workflow_ref, environment, event_name } = claims;
+                      console.log("Claims:", JSON.stringify({ repository, ref, workflow_ref, job_workflow_ref, environment, event_name }));'
+                  status=$(curl -sS -o exchange.json -w '%{http_code}' -X POST \
+                      -H "Authorization: Bearer $id_token" \
+                      https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/@panneau%2fintl)
+                  token=$(jq -r '.token // empty' exchange.json)
+                  if [ -n "$token" ]; then echo "::add-mask::$token"; fi
+                  echo "Token exchange for @panneau/intl: HTTP $status $(jq -c 'del(.token)' exchange.json)"
+                  rm exchange.json
+
             # v2 is the first version that reads changesets 3 (its pre-release state lives in
             # .changeset/pre/). npm authenticates through trusted publishing (id-token).
             - uses: changesets/action@v2
