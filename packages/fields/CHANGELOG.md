@@ -1,5 +1,30 @@
 # @panneau/fields
 
+## 5.0.0-alpha.2
+
+### Minor Changes
+
+- 3befc22: Class names are now stable and readable, without a hash, so that projects can target them like Bootstrap's: `.panneau-card`, `.panneau-card-header`, `.panneau-button-sm` (decision 0024). Each package lists its classes in `api/<package>.classes.md`. They are public API.
+
+### Patch Changes
+
+- f86c757: Global element rules of a site, such as Bootstrap's Reboot, no longer leak into Panneau: a `h5` card title no longer gets `margin-bottom: 0.5rem`, legends no longer float, and dividers are no longer faded. The reset of the root now weighs two element selectors, more than a site's element rules and less than any class, and components reset the elements they render (titles, legends, paragraphs, lists, rules) in their own classes.
+- 27a1e08: Typography roles and fonts in themes (decision 0024, step 4). `@panneau/ui` adds the font roles `--panneau-font-family-body`, `-heading` and `-display` (`--panneau-font-family` is now a deprecated alias of the body family), `--panneau-font-numeric`, the `Heading` component with its size tokens (1 to 4, `display-1`, `display-2`), `Text`, and an opt-in `Prose` container for rich content. Themes take `fonts`, font faces or hosted stylesheets, which `PanneauRoot` adds to the page once. `bootstrapTheme` now sets the body family. `@panneau/protocol` adds `fonts` to the `Theme` schema. Numbers in fields and lists use `--panneau-font-numeric`.
+- Updated dependencies [deb08a8]
+- Updated dependencies [8c15647]
+- Updated dependencies [5af1673]
+- Updated dependencies [1a76a03]
+- Updated dependencies [f86c757]
+- Updated dependencies [3befc22]
+- Updated dependencies [3b5c39f]
+- Updated dependencies [7ee3af3]
+- Updated dependencies [e4cb313]
+- Updated dependencies [d5cd252]
+- Updated dependencies [27a1e08]
+  - @panneau/ui@5.0.0-alpha.2
+  - @panneau/protocol@5.0.0-alpha.2
+  - @panneau/intl@5.0.0-alpha.2
+
 ## 5.0.0-alpha.1
 
 ### Major Changes

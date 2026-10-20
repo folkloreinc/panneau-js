@@ -1,6 +1,6 @@
 {
     "name": "@panneau/protocol",
-    "version": "5.0.0-alpha.1",
+    "version": "5.0.0-alpha.2",
     "description": "The Panneau protocol: definition schema, HTTP API spec and conformance kit",
     "type": "module",
     "license": "MIT",
