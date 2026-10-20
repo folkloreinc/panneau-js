@@ -123,6 +123,7 @@ export function createExampleDefinition(): DefinitionInput {
                         placement: ['row', 'toolbar'],
                         confirm: { message: 'Publier {count} pages ?' },
                         fields: [{ name: 'notify', type: 'boolean' }],
+                        dryRun: true,
                     },
                     {
                         id: 'edit',

@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 
 import type { List } from '@panneau/core';
 import { usePlugins } from '@panneau/core';
@@ -7,7 +7,7 @@ import { Alert, Button, Checkbox, Spinner, usePanneauIntl, useToast } from '@pan
 
 import styles from './ListView.module.css';
 import { ActionButton } from './actions/ActionButton';
-import { ConfirmDialog, needsConfirmation } from './actions/ConfirmDialog';
+import { ConfirmDialog, type ConfirmPreview, needsConfirmation } from './actions/ConfirmDialog';
 import { RowActions } from './actions/RowActions';
 import {
     type ListActions,
@@ -32,6 +32,7 @@ import type {
     FilterEntry,
     ListActionEvent,
     ListActionHandler,
+    ListActionPreviewer,
     ListColumn,
     ListItem,
     ListLayoutEntry,
@@ -77,6 +78,12 @@ export interface ListViewProps {
     actions?: ListActions;
     /** Runs an action, after its confirmation. */
     onAction?: ListActionHandler;
+    /**
+     * Asks the backend how many items of a query selection ("Select all N items") an action will
+     * skip, before the confirmation: the list only knows the abilities of the current page. Only
+     * for actions with `dryRun`. `useActionPreview()` of `@panneau/actions` is one.
+     */
+    previewAction?: ListActionPreviewer;
     /**
      * Icons of actions by action id (`{ archive: Archive }`), for actions written in code. They
      * win over the Lucide icon an action names (`"icon": "archive"`).
@@ -130,6 +137,7 @@ export function ListView({
     selectable: selectableProp,
     actions: actionsProp,
     onAction,
+    previewAction,
     actionIcons,
     itemTitle,
     getItemLabel: getItemLabelProp,
@@ -149,6 +157,9 @@ export function ListView({
     const filterLabels = useFilterLabels();
     const [uncontrolledLayout, setLayout] = useState<string | null>(null);
     const [confirming, setConfirming] = useState<ListActionEvent | null>(null);
+    const [preview, setPreview] = useState<ConfirmPreview | null>(null);
+    // The confirmation a dry run belongs to: a later one, or a cancel, discards its answer.
+    const confirmation = useRef(0);
     const [pending, setPending] = useState<string | null>(null);
 
     const label = ariaLabel ?? intl.formatMessage(messages.list);
@@ -228,8 +239,14 @@ export function ListView({
         );
     };
 
-    const execute = async (event: ListActionEvent) => {
+    const closeConfirmation = () => {
+        confirmation.current += 1;
         setConfirming(null);
+        setPreview(null);
+    };
+
+    const execute = async (event: ListActionEvent) => {
+        closeConfirmation();
         setPending(keyOf(event.action, event.item));
         try {
             const outcome = await onAction?.(event);
@@ -251,6 +268,44 @@ export function ListView({
     };
 
     const run = (event: ListActionEvent) => {
+        const { action, selection } = event;
+        if (
+            previewAction !== undefined &&
+            action.dryRun === true &&
+            selection !== undefined &&
+            'query' in selection
+        ) {
+            // Every item matching a query: only the backend knows how many it would skip.
+            const current = ++confirmation.current;
+            const asks = action.confirm !== undefined && action.confirm !== false;
+            setConfirming(event);
+            setPreview({ status: 'loading' });
+            previewAction(event).then(
+                (result) => {
+                    if (confirmation.current !== current) {
+                        return;
+                    }
+                    const skipped = result?.skipped ?? event.skipped.length;
+                    if (skipped === 0 && !asks) {
+                        void execute(event);
+                    } else {
+                        setPreview(result !== null ? { status: 'done', ...result } : null);
+                    }
+                },
+                () => {
+                    // Without an answer, the list confirms with what it knows.
+                    if (confirmation.current !== current) {
+                        return;
+                    }
+                    if (needsConfirmation(event)) {
+                        setPreview(null);
+                    } else {
+                        void execute(event);
+                    }
+                },
+            );
+            return;
+        }
         if (needsConfirmation(event)) {
             setConfirming(event);
         } else {
@@ -526,8 +581,9 @@ export function ListView({
             ) : null}
             <ConfirmDialog
                 event={confirming}
+                preview={preview}
                 onConfirm={(event) => void execute(event)}
-                onCancel={() => setConfirming(null)}
+                onCancel={closeConfirmation}
             />
         </div>
     );

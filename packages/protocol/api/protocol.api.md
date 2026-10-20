@@ -144,6 +144,7 @@ export const Action: z.ZodObject<{
         children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
     }, z.core.$loose>>>;
     queued: z.ZodOptional<z.ZodBoolean>;
+    dryRun: z.ZodOptional<z.ZodBoolean>;
     url: z.ZodOptional<z.ZodString>;
     route: z.ZodOptional<z.ZodString>;
     component: z.ZodOptional<z.ZodString>;
@@ -204,6 +205,7 @@ export const ActionRequest: z.ZodObject<{
         except: z.ZodOptional<z.ZodArray<z.ZodString>>;
     }, z.core.$loose>]>>;
     values: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    dryRun: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -809,6 +811,7 @@ export const Definition: z.ZodObject<{
                 children: z.ZodOptional<z.ZodArray<LayoutNode>>;
             }, z.core.$loose>>>;
             queued: z.ZodOptional<z.ZodBoolean>;
+            dryRun: z.ZodOptional<z.ZodBoolean>;
             url: z.ZodOptional<z.ZodString>;
             route: z.ZodOptional<z.ZodString>;
             component: z.ZodOptional<z.ZodString>;
@@ -1852,6 +1855,7 @@ export const namedSchemas: {
             children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
         }, z.core.$loose>>>;
         queued: z.ZodOptional<z.ZodBoolean>;
+        dryRun: z.ZodOptional<z.ZodBoolean>;
         url: z.ZodOptional<z.ZodString>;
         route: z.ZodOptional<z.ZodString>;
         component: z.ZodOptional<z.ZodString>;
@@ -2151,6 +2155,7 @@ export const namedSchemas: {
                 children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
             }, z.core.$loose>>>;
             queued: z.ZodOptional<z.ZodBoolean>;
+            dryRun: z.ZodOptional<z.ZodBoolean>;
             url: z.ZodOptional<z.ZodString>;
             route: z.ZodOptional<z.ZodString>;
             component: z.ZodOptional<z.ZodString>;
@@ -2699,6 +2704,7 @@ export const namedSchemas: {
                     children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
                 }, z.core.$loose>>>;
                 queued: z.ZodOptional<z.ZodBoolean>;
+                dryRun: z.ZodOptional<z.ZodBoolean>;
                 url: z.ZodOptional<z.ZodString>;
                 route: z.ZodOptional<z.ZodString>;
                 component: z.ZodOptional<z.ZodString>;
@@ -2913,6 +2919,7 @@ export const namedSchemas: {
             except: z.ZodOptional<z.ZodArray<z.ZodString>>;
         }, z.core.$loose>]>>;
         values: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+        dryRun: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>;
     ActionItemResult: z.ZodObject<{
         id: z.ZodString;
@@ -3561,6 +3568,7 @@ export const Resource: z.ZodObject<{
             children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
         }, z.core.$loose>>>;
         queued: z.ZodOptional<z.ZodBoolean>;
+        dryRun: z.ZodOptional<z.ZodBoolean>;
         url: z.ZodOptional<z.ZodString>;
         route: z.ZodOptional<z.ZodString>;
         component: z.ZodOptional<z.ZodString>;

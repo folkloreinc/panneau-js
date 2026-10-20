@@ -267,6 +267,71 @@ describe('ListView', () => {
         await waitFor(() => expect(screen.queryByText(/selected/)).not.toBeInTheDocument());
     });
 
+    it('asks the backend how many matching items an action will skip (a dry run)', async () => {
+        const user = userEvent.setup();
+        const list = createList({ query: { filter: { status: 'draft' } } });
+        const onAction = vi.fn();
+        let answer: (preview: { skipped: number }) => void = () => undefined;
+        const previewAction = vi.fn(
+            () =>
+                new Promise<{ skipped: number }>((resolve) => {
+                    answer = resolve;
+                }),
+        );
+        renderList(
+            <ListView
+                list={list}
+                columns={columns}
+                items={pages.slice(1)}
+                total={40}
+                actions={[{ ...publish, dryRun: true }]}
+                onAction={onAction}
+                previewAction={previewAction}
+            />,
+        );
+        await user.click(screen.getByRole('checkbox', { name: 'Select every item of the page' }));
+        await user.click(screen.getByRole('button', { name: 'Select all 40 items' }));
+        const bar = screen.getByText(/selected, on every page/).parentElement as HTMLElement;
+        await user.click(within(bar).getByRole('button', { name: 'Publish' }));
+        expect(previewAction).toHaveBeenCalledWith(
+            expect.objectContaining({ selection: { query: { filter: { status: 'draft' } } } }),
+        );
+        const dialog = await screen.findByRole('alertdialog', { name: 'Publish?' });
+        expect(dialog).toHaveTextContent('Checking which items allow it…');
+        expect(within(dialog).getByRole('button', { name: 'Publish' })).toBeDisabled();
+        act(() => answer({ skipped: 12 }));
+        await waitFor(() =>
+            expect(dialog).toHaveTextContent(
+                '12 selected items don’t allow it and will be skipped.',
+            ),
+        );
+        await user.click(within(dialog).getByRole('button', { name: 'Publish' }));
+        expect(onAction).toHaveBeenCalledWith(expect.objectContaining({ count: 40 }));
+    });
+
+    it('runs at once when the dry run skips nothing and the action asks no confirmation', async () => {
+        const user = userEvent.setup();
+        const list = createList();
+        const onAction = vi.fn();
+        renderList(
+            <ListView
+                list={list}
+                columns={columns}
+                items={pages}
+                total={40}
+                actions={[{ ...publish, confirm: undefined, dryRun: true }]}
+                onAction={onAction}
+                previewAction={() => Promise.resolve({ skipped: 0 })}
+            />,
+        );
+        await user.click(screen.getByRole('checkbox', { name: 'Select every item of the page' }));
+        await user.click(screen.getByRole('button', { name: 'Select all 40 items' }));
+        const bar = screen.getByText(/selected, on every page/).parentElement as HTMLElement;
+        await user.click(within(bar).getByRole('button', { name: 'Publish' }));
+        await waitFor(() => expect(onAction).toHaveBeenCalledTimes(1));
+        expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    });
+
     it('keeps the selection when the action handler gives false', async () => {
         const user = userEvent.setup();
         const list = createList();

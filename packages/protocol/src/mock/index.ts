@@ -276,10 +276,32 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
             if (method !== 'POST') {
                 return problem(405, 'Method not allowed.');
             }
-            if (segments[3] !== 'delete') {
+            const actionId = segments[3];
+            const action = (resource.actions ?? []).find((candidate) => candidate.id === actionId);
+            const body = await readBody();
+            if (body.dryRun === true) {
+                // A dry run counts what the action would do, and changes nothing.
+                if (action?.dryRun !== true) {
+                    return problem(400, 'This action does not support dry runs.');
+                }
+                const selected = selectItems(list, body.selection as Selection | undefined);
+                const allowed = selected.filter((item) => item.abilities?.[actionId] !== false);
+                const result: ActionResult = {
+                    summary: {
+                        succeeded: allowed.length,
+                        failed: 0,
+                        skipped: selected.length - allowed.length,
+                    },
+                    results: selected
+                        .filter((item) => !allowed.includes(item))
+                        .slice(0, 20)
+                        .map((item) => ({ id: item.id, status: 'skipped', reason: 'forbidden' })),
+                };
+                return json(200, result);
+            }
+            if (actionId !== 'delete') {
                 return problem(404, 'Action not found.');
             }
-            const body = await readBody();
             const selected = selectItems(list, body.selection as Selection | undefined);
             store.set(
                 resource.id,

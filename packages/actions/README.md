@@ -5,7 +5,12 @@ Runs the actions of lists and forms: parameters in a dialog, the action through 
 ```tsx
 import { useQueryClient } from '@tanstack/react-query';
 
-import { ActionRunnerProvider, ActionRuns, useActionRunner } from '@panneau/actions';
+import {
+    ActionRunnerProvider,
+    ActionRuns,
+    useActionPreview,
+    useActionRunner,
+} from '@panneau/actions';
 import { createRestAdapter } from '@panneau/data';
 import { invalidateActionResult } from '@panneau/data/query';
 import { ListView } from '@panneau/lists';
@@ -33,6 +38,7 @@ function App() {
 
 function Pages() {
     const runAction = useActionRunner('pages');
+    const previewAction = useActionPreview('pages');
     return (
         <ListView
             list={list}
@@ -40,14 +46,15 @@ function Pages() {
             columns={columns}
             actions={actions}
             onAction={runAction}
+            previewAction={previewAction}
         />
     );
 }
 ```
 
-| Export             | Content                                                                                                                                               |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@panneau/actions` | `ActionRunnerProvider`, `useActionRunner()`, `ActionRuns` and `useActionRuns()`, the dialogs (`ParametersDialog`, `ResultsDialog`), and their helpers |
+| Export             | Content                                                                                                                                                                     |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@panneau/actions` | `ActionRunnerProvider`, `useActionRunner()`, `useActionPreview()`, `ActionRuns` and `useActionRuns()`, the dialogs (`ParametersDialog`, `ResultsDialog`), and their helpers |
 
 ## What the runner does
 
@@ -61,6 +68,8 @@ function Pages() {
 - **Queued runs** (`202`): a toast says that the action runs in the background, the runner checks the run every `pollInterval` until it ends, then shows its result as above. `ActionRuns` lists the runs, with their progress, a button to cancel them (when the adapter has `cancelActionRun()`), and one to dismiss them once they have ended.
 - **`link` actions** go to their `url` (with `{id}`) or `route`, through `onNavigate`.
 - **`client` actions** render the handler that their `component` names: one of `clientActions`, or of the plugins of `PanneauProvider` (`definePlugin({ actions: { 'share-dialog': ShareDialog } })`). It gets `ClientActionProps`, and ends with `onDone(result?)` or `onCancel()`.
+
+**Dry runs.** `useActionPreview(resource)` is a list's `previewAction`. For an action that declares `dryRun`, on every item matching a query ("Select all N items"), it asks the backend what the action would do without running it (`"dryRun": true`), so that the list's confirmation says how many items will really be skipped: the list only knows the abilities of the current page. `previewAction(adapter, resource, target)` does the same outside of React.
 
 The function resolves with what happened (`{ status: 'done', result }`, `{ status: 'queued', run }` or `{ status: 'navigated', to }`), with `false` when the user cancelled the parameters (a list then keeps its selection), and rejects when the action failed (a list then shows it in a toast).
 

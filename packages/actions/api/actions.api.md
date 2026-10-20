@@ -38,6 +38,14 @@ export type ActionOutcome = {
 };
 
 // @public
+export interface ActionPreview {
+    // (undocumented)
+    skipped: number;
+    // (undocumented)
+    succeeded: number;
+}
+
+// @public
 export interface ActionResultContext {
     // (undocumented)
     resource: string;
@@ -87,6 +95,9 @@ export interface ActionTarget {
 
 // @public
 export function buildActionRequest(target: ActionTarget, values?: Record<string, unknown>): ActionRequest;
+
+// @public
+export function canPreviewAction(target: ActionTarget): boolean;
 
 // @public
 export type ClientActionHandler = ComponentType<ClientActionProps>;
@@ -147,6 +158,11 @@ export interface ParametersDialogProps {
 }
 
 // @public
+export function previewAction(adapter: Pick<ActionAdapter, 'runAction'>, resource: string, target: ActionTarget, options?: {
+    signal?: AbortSignal;
+}): Promise<ActionPreview | null>;
+
+// @public
 export function ResultsDialog(input: ResultsDialogProps): JSX.Element;
 
 // @public (undocumented)
@@ -157,6 +173,9 @@ export interface ResultsDialogProps {
     // (undocumented)
     result: ActionResult;
 }
+
+// @public
+export function useActionPreview(resource: string): (target: ActionTarget) => Promise<ActionPreview | null>;
 
 // @public
 export function useActionRunner(resource: string): (target: ActionTarget) => Promise<ActionOutcome | false>;

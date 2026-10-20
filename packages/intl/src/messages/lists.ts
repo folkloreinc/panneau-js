@@ -94,6 +94,10 @@ export const listsMessages = {
         defaultMessage:
             '{count, plural, one {# selected item doesn’t allow it and will be skipped.} other {# selected items don’t allow it and will be skipped.}}',
     }),
+    confirmChecking: defineMessage({
+        id: 'panneau.lists.confirmChecking',
+        defaultMessage: 'Checking which items allow it…',
+    }),
     cancel: defineMessage({ id: 'panneau.lists.cancel', defaultMessage: 'Cancel' }),
     actionFailed: defineMessage<{ action: string }>({
         id: 'panneau.lists.actionFailed',

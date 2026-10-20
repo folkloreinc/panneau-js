@@ -60,6 +60,10 @@ export const ActionRequest = z.looseObject({
         description: 'Omitted for actions on the whole resource.',
     }),
     values: z.record(z.string(), z.unknown()).optional(),
+    dryRun: z.boolean().optional().meta({
+        description:
+            'Answer what the action would do without running it: a `200` action result whose `summary` counts the items that would succeed and those that would be skipped. Only for actions with `dryRun: true`.',
+    }),
 });
 
 export const ActionItemResult = z.looseObject({
