@@ -53,7 +53,7 @@ export function TextArea({
             <AriaTextArea
                 placeholder={placeholder}
                 rows={rows}
-                className={cx(fieldStyles.control, styles.textArea, textAreaClassName)}
+                className={cx(fieldStyles.control, styles.control, textAreaClassName)}
             />
             <FieldDescription className={descriptionClassName}>{description}</FieldDescription>
             <FieldErrors errors={errors} className={errorsClassName} />

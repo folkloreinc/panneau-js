@@ -45,7 +45,7 @@ export function Checkbox({
                     aria-describedby={describedBy}
                     isInvalid={errors.length > 0}
                     validationBehavior="aria"
-                    className={cx(styles.checkbox, checkboxClassName)}
+                    className={cx(styles.control, checkboxClassName)}
                 >
                     {({ isSelected, isIndeterminate }) => (
                         <>

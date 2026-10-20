@@ -36,7 +36,7 @@ export function Switch({
                 <AriaSwitch
                     {...props}
                     aria-describedby={describedBy}
-                    className={cx(styles.switch, switchClassName)}
+                    className={cx(styles.control, switchClassName)}
                 >
                     <span className={styles.track} aria-hidden="true">
                         <span className={styles.thumb} />
