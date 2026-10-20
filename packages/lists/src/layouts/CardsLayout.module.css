@@ -44,6 +44,12 @@
     font-size: var(--panneau-font-size-md);
 }
 
+.values dt,
+.values dd {
+    margin: 0;
+    font-weight: inherit;
+}
+
 .value {
     display: grid;
     grid-template-columns: minmax(5rem, 40%) 1fr;

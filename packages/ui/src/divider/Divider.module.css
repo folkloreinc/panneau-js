@@ -6,6 +6,7 @@
     border: 0;
     border-top: var(--panneau-divider-width, var(--panneau-border-width)) solid
         var(--panneau-divider-color, var(--panneau-color-border));
+    opacity: 1;
 }
 
 .vertical {

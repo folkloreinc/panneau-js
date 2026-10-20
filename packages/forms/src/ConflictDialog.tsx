@@ -121,7 +121,7 @@ export function ConflictDialog({
             }
         >
             <div className={styles.body}>
-                <p>{intl.formatMessage(messages.conflictMessage)}</p>
+                <p className={styles.message}>{intl.formatMessage(messages.conflictMessage)}</p>
                 {theirs === null ? (
                     <p className={styles.muted}>{intl.formatMessage(messages.conflictUnknown)}</p>
                 ) : changed.length > 0 ? (

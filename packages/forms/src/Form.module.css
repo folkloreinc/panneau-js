@@ -68,6 +68,10 @@
     gap: var(--panneau-space-1);
 }
 
+.sectionDescription {
+    margin: 0;
+}
+
 .sectionTitle {
     display: flex;
     align-items: center;
@@ -75,12 +79,14 @@
     font-size: var(--panneau-font-size-lg);
     font-weight: var(--panneau-font-weight-bold);
     line-height: var(--panneau-line-height-tight);
+    margin: 0;
 }
 
 .sectionDescription,
 .text {
     font-size: var(--panneau-font-size-md);
     color: var(--panneau-color-text-muted);
+    margin: 0;
 }
 
 .sidebar {

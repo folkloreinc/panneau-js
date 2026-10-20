@@ -4,12 +4,17 @@
     gap: var(--panneau-space-4);
 }
 
+.message {
+    margin: 0;
+}
+
 .muted {
     color: var(--panneau-color-text-muted);
+    margin: 0;
 }
 
 .heading {
-    margin-bottom: var(--panneau-space-2);
+    margin: 0 0 var(--panneau-space-2);
     font-size: var(--panneau-font-size-md);
     font-weight: var(--panneau-font-weight-bold);
 }

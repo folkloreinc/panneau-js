@@ -66,6 +66,7 @@
     font-weight: var(--panneau-dialog-title-font-weight, var(--panneau-font-weight-bold));
     line-height: var(--panneau-line-height-tight);
     overflow-wrap: anywhere;
+    margin: 0;
 }
 
 .body {
