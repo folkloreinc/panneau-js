@@ -19,6 +19,7 @@ const ok = (description: string, schema?: JsonObject, headers?: JsonObject): Jso
 });
 
 const PROBLEMS: Record<number, string> = {
+    400: 'Bad request, such as a dry run of an action that does not declare `dryRun`.',
     401: 'Not authenticated.',
     403: 'Not allowed.',
     404: 'Not found.',
@@ -225,7 +226,7 @@ export function createOpenApiDocument(): JsonObject {
                     responses: {
                         200: ok('The result.', ref('ActionResult')),
                         202: ok('The action runs in the background.', ref('ActionRunResponse')),
-                        ...problems(401, 403, 404, 409, 422),
+                        ...problems(400, 401, 403, 404, 409, 422),
                     },
                 },
             },
