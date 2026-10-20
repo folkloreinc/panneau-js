@@ -112,6 +112,9 @@ export class NotFoundError extends ApiError {
     readonly name: string;
 }
 
+// @public
+export function readProblem(response: Response): Promise<Problem>;
+
 // @public (undocumented)
 export interface RequestOptions {
     signal?: AbortSignal;

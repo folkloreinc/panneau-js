@@ -18,11 +18,11 @@ try {
 }
 ```
 
-| Export                  | Content                                                                                                                                                                                      |
-| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@panneau/data`         | The `DataAdapter` interface, `createRestAdapter()`, and the errors: `ApiError`, `ValidationError`, `ConflictError`, `UnauthorizedError`, `ForbiddenError`, `NotFoundError`                   |
-| `@panneau/data/laravel` | `createLaravelAdapter()`: the REST adapter with credentials, the `X-XSRF-TOKEN` header from Laravel's cookie, and `419` as unauthorized                                                      |
-| `@panneau/data/query`   | `DataAdapterProvider` and the TanStack Query hooks: `useDefinition`, `useResourceList`, `useResourceItem`, `useCreateItem`, `useUpdateItem`, `useDeleteItem`, `useRunAction`, `useActionRun` |
+| Export                  | Content                                                                                                                                                                                                              |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@panneau/data`         | The `DataAdapter` interface, `createRestAdapter()`, the errors (`ApiError`, `ValidationError`, `ConflictError`, `UnauthorizedError`, `ForbiddenError`, `NotFoundError`), `createApiError()` and `readProblem()`      |
+| `@panneau/data/laravel` | `createLaravelAdapter()`: the REST adapter with credentials, the `X-XSRF-TOKEN` header from Laravel's cookie, and `419` as unauthorized; `getLaravelHeaders()` and `createLaravelError()` for an app's own endpoints |
+| `@panneau/data/query`   | `DataAdapterProvider` and the TanStack Query hooks: `useDefinition`, `useResourceList`, `useResourceItem`, `useCreateItem`, `useUpdateItem`, `useDeleteItem`, `useRunAction`, `useActionRun`                         |
 
 ## Adapters
 
@@ -35,6 +35,29 @@ A `DataAdapter` is everything the engine and the app need from a backend: the de
     - values that contain a `Blob` (imports, uploads) are sent as `multipart/form-data`.
 - **`createLaravelAdapter()`** is the preset for `laravel-panneau` with session authentication. Laravel specifics stay there, not in the protocol.
 - **A custom adapter** implements `DataAdapter` over another API. A product that only needs a few resources can throw from the methods it doesn't support.
+
+### An app's own endpoints
+
+An app that uses Panneau usually has its own JSON endpoints too. The pieces of the adapters are exported, so that its client gets the same errors, and can pass a `ValidationError` to a Panneau form or handle `UnauthorizedError` in one place:
+
+```ts
+import { readProblem } from '@panneau/data';
+import { createLaravelError, getLaravelHeaders } from '@panneau/data/laravel';
+
+const response = await fetch('/api/subscriptions', {
+    method: 'POST',
+    credentials: 'include',
+    headers: getLaravelHeaders({ headers: { 'Content-Type': 'application/json' } }),
+    body: JSON.stringify(values),
+});
+if (!response.ok) {
+    throw createLaravelError(await readProblem(response));
+}
+```
+
+- `readProblem(response)` reads an `application/problem+json` body, or builds a problem from Laravel's `{ message, errors }` body or from the status. It reads a clone, so the response stays readable.
+- `createApiError(problem)` maps a problem to its typed error by status; `createLaravelError(problem)` also treats `419` (an expired CSRF token or session) as `UnauthorizedError`.
+- `getLaravelHeaders({ headers, xsrfCookie, xsrfHeader, cookies })` adds `X-Requested-With` and the CSRF token from Laravel's cookie.
 
 ## Query hooks
 

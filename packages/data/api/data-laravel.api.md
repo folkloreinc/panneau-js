@@ -22,10 +22,24 @@ import type { Session } from '@panneau/protocol';
 // @public
 export function createLaravelAdapter(input: LaravelAdapterOptions): DataAdapter;
 
+// Warning: (ae-forgotten-export) The symbol "ApiError" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function createLaravelError(problem: Problem): ApiError;
+
+// @public
+export function getLaravelHeaders(input?: LaravelSessionOptions & {
+    headers?: HeadersInit;
+}): Headers;
+
 // Warning: (ae-forgotten-export) The symbol "RestAdapterOptions" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export interface LaravelAdapterOptions extends RestAdapterOptions {
+export interface LaravelAdapterOptions extends RestAdapterOptions, LaravelSessionOptions {
+}
+
+// @public
+export interface LaravelSessionOptions {
     cookies?: () => string;
     xsrfCookie?: string;
     xsrfHeader?: string;
