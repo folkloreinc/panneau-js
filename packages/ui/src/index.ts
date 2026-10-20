@@ -83,7 +83,7 @@ export {
 export { Text, type TextFamily, type TextProps, type TextSize } from './text/Text';
 export { TextArea, type TextAreaProps } from './text-area/TextArea';
 export { TextInput, type TextInputProps } from './text-input/TextInput';
-export { bootstrapTheme } from './theme/bootstrap';
+export { bootstrapTheme, bootstrapTone } from './theme/bootstrap';
 export { CHART_CATEGORICAL_COUNT, CHART_SEQUENTIAL_COUNT, chartColors } from './theme/chartColors';
 export { type ThemeContrastCheck, type ThemeReport, checkTheme } from './theme/checkTheme';
 export {
@@ -91,6 +91,7 @@ export {
     type ColorVisionDeficiency,
     checkColorDifferences,
 } from './theme/colorVision';
+export { type Rgb } from './theme/color';
 export { type ComponentTokens, defineComponentTokens } from './theme/componentTokens';
 export { type ComponentTokenName, componentTokens } from './theme/components';
 export {
@@ -111,6 +112,7 @@ export {
     type PanneauTones,
     type Tone,
     type ToneInput,
+    type ToneSurfaces,
     type ToneValues,
     deriveTone,
     toneClassName,

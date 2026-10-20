@@ -75,6 +75,7 @@
 }
 
 .prose :where(code, kbd, samp, pre) {
+    color: var(--panneau-prose-code-color, inherit);
     font-family: var(--panneau-font-family-mono);
     font-size: var(--panneau-prose-code-font-size, 0.875em);
 }

@@ -23,11 +23,20 @@
             "types": "./dist/locales/index.d.ts",
             "default": "./dist/locales/index.js"
         },
+        "./theme": {
+            "@panneau/source": "./src/theme/index.ts",
+            "types": "./dist/theme/index.d.ts",
+            "default": "./dist/theme/index.js"
+        },
         "./package.json": "./package.json"
     },
     "files": [
-        "dist"
+        "dist",
+        "bin"
     ],
+    "bin": {
+        "panneau-check-theme": "./bin/check-theme.js"
+    },
     "scripts": {
         "build": "vite build && tsc -p tsconfig.build.json",
         "typecheck": "tsc --noEmit",

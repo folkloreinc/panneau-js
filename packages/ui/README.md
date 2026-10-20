@@ -15,10 +15,11 @@ import { Button, PanneauRoot, TextInput, bootstrapTheme } from '@panneau/ui';
 </PanneauRoot>;
 ```
 
-| Export                | Content                                                                                           |
-| --------------------- | ------------------------------------------------------------------------------------------------- |
-| `@panneau/ui`         | `PanneauRoot`, themes, the primitives, `Icon`, `getNamedIcon()`, `useToast()`, `usePanneauIntl()` |
-| `@panneau/ui/locales` | Deprecated: the UI messages by locale, `en` and `fr`. Use `@panneau/intl`                         |
+| Export                | Content                                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------------------- |
+| `@panneau/ui`         | `PanneauRoot`, themes, the primitives, `Icon`, `getNamedIcon()`, `useToast()`, `usePanneauIntl()`       |
+| `@panneau/ui/theme`   | Themes as data, without components or CSS, for Node: `defineTheme()`, `checkTheme()`, `bootstrapTheme`… |
+| `@panneau/ui/locales` | Deprecated: the UI messages by locale, `en` and `fr`. Use `@panneau/intl`                               |
 
 ## Root, tokens and themes
 
@@ -242,6 +243,27 @@ Charts (dashboard widgets, reports) use only the chart tokens of the theme, in b
 ```
 
 Each default categorical color reaches 3:1 against the surface (WCAG non-text contrast), and the eight stay distinct for people with protanopia, deuteranopia or tritanopia: a test checks it. `checkTheme()` runs the same checks on the chart colors a theme sets, and `checkColorDifferences(colors)` on any palette.
+
+### Checking a theme
+
+`checkTheme(theme)` reports what a theme makes hard to read: text tokens against backgrounds (4.5:1), control borders and chart colors (3:1), the text of each tone on the surface and on its subtle background, and categorical chart colors that look alike with a color vision deficiency. The `panneau-check-theme` command runs it on a JSON theme or on an export of a module, and exits with 1 when a check fails, for CI:
+
+```sh
+npx panneau-check-theme themes/brand.json
+npx panneau-check-theme src/theme.mjs --export brand --json
+```
+
+`@panneau/ui/theme` exports the theme functions without components or CSS, so that Node scripts (a build step, a backend that stores themes) can import them.
+
+### Bootstrap
+
+`bootstrapTheme` maps Panneau's tokens to the CSS variables of Bootstrap 5.3: colors, fonts, radii, shadows, the color mode (`data-bs-theme`), and the size of controls in the comfortable density. Bootstrap's theme colors become tones: `accent` is `primary`, and `primary` and `secondary` keep their names. `bootstrapTone(color)` turns any theme color of a site, custom ones included, into a tone:
+
+```ts
+const site = defineTheme({ extends: bootstrapTheme, tones: { brand: bootstrapTone('brand') } });
+```
+
+Bootstrap 5.3 declares the variables of its components (`--bs-btn-*`, `--bs-card-*`) on their classes, where Panneau's components can't read them: `bootstrapTheme` maps component tokens to the root variables those default to (`--bs-border-radius`, `--bs-border-color-translucent`, `--bs-heading-color`).
 
 ### Classes
 

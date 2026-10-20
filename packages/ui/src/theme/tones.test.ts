@@ -7,6 +7,17 @@ const ratio = (a: string, b: string) =>
     contrastRatio(parseColor(a) ?? WHITE, parseColor(b) ?? WHITE);
 
 describe('deriveTone', () => {
+    it('makes text readable on the surfaces it is given', () => {
+        const surface = { r: 27, g: 30, b: 23 };
+        const { dark } = deriveTone('#c2410c', { dark: surface });
+        const subtle = {
+            r: 27 + 0.22 * (194 - 27),
+            g: 30 + 0.22 * (65 - 30),
+            b: 23 + 0.22 * (12 - 23),
+        };
+        expect(contrastRatio(parseColor(dark.text) ?? WHITE, subtle)).toBeGreaterThanOrEqual(4.5);
+    });
+
     it('derives readable values in both schemes from one color', () => {
         const { light, dark } = deriveTone('#f25c05');
         expect(light.solid).toBe('#f25c05');

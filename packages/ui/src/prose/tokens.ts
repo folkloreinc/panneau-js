@@ -14,6 +14,8 @@ export const proseTokens = defineComponentTokens('prose', {
     'link-color': 'var(--panneau-color-link)',
     /** Font size of code, relative to the text around it. */
     'code-font-size': '0.875em',
+    /** Text color of code: inherited, so that a site's global `code` color doesn't apply. */
+    'code-color': 'inherit',
     /** Background of code and code blocks. */
     'code-bg': 'var(--panneau-color-surface-sunken)',
     /** Corner radius of code and code blocks. */

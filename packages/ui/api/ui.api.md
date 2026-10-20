@@ -103,6 +103,11 @@ export interface BadgeVariants {
 export const bootstrapTheme: Theme;
 
 // @public
+export function bootstrapTone(color: string, input?: {
+    solidText?: string;
+}): ToneValues;
+
+// @public
 export type Breakpoint = keyof typeof BREAKPOINTS;
 
 // @public
@@ -300,7 +305,7 @@ export const componentTokens: Readonly<{
     'list-box': Readonly<Record<"panneau-list-box-padding" | "panneau-list-box-item-padding-y" | "panneau-list-box-item-padding-x" | "panneau-list-box-item-radius" | "panneau-list-box-item-bg-hover", string>>;
     'number-input': Readonly<Record<"panneau-number-input-stepper-width", string>>;
     popover: Readonly<Record<"panneau-popover-radius" | "panneau-popover-padding" | "panneau-popover-bg" | "panneau-popover-border-color" | "panneau-popover-shadow", string>>;
-    prose: Readonly<Record<"panneau-prose-gap" | "panneau-prose-border-color" | "panneau-prose-line-height" | "panneau-prose-heading-gap" | "panneau-prose-list-indent" | "panneau-prose-link-color" | "panneau-prose-code-font-size" | "panneau-prose-code-bg" | "panneau-prose-code-radius" | "panneau-prose-quote-border-color" | "panneau-prose-quote-color", string>>;
+    prose: Readonly<Record<"panneau-prose-gap" | "panneau-prose-border-color" | "panneau-prose-line-height" | "panneau-prose-heading-gap" | "panneau-prose-list-indent" | "panneau-prose-link-color" | "panneau-prose-code-font-size" | "panneau-prose-code-color" | "panneau-prose-code-bg" | "panneau-prose-code-radius" | "panneau-prose-quote-border-color" | "panneau-prose-quote-color", string>>;
     radio: Readonly<Record<"panneau-radio-size" | "panneau-radio-bg" | "panneau-radio-border-color" | "panneau-radio-checked-color" | "panneau-radio-checked-border-width", string>>;
     spinner: Readonly<Record<"panneau-spinner-border-width", string>>;
     stack: Readonly<Record<"panneau-stack-gap", string>>;
@@ -342,7 +347,7 @@ export function defineTheme(definition: ThemeDefinition): Theme;
 export type Density = 'compact' | 'comfortable' | 'touch' | 'auto';
 
 // @public
-export function deriveTone(color: string): {
+export function deriveTone(color: string, surfaces?: ToneSurfaces): {
     light: ToneValues;
     dark: ToneValues;
 };
@@ -693,6 +698,16 @@ export interface RadioGroupProps extends Omit<RadioGroupProps_2, 'className' | '
 export type Responsive<T> = T | Partial<Record<'base' | Breakpoint, T>>;
 
 // @public
+export interface Rgb {
+    // (undocumented)
+    b: number;
+    // (undocumented)
+    g: number;
+    // (undocumented)
+    r: number;
+}
+
+// @public
 export function Select(props: SelectProps): JSX.Element;
 
 // @public
@@ -1016,6 +1031,9 @@ export function toneClassName(tone: string): string;
 export type ToneInput = string | (ToneValues & {
     dark?: Partial<ToneValues>;
 });
+
+// @public
+export type ToneSurfaces = Partial<Record<'light' | 'dark', Rgb>>;
 
 // @public
 export type ToneValues = {

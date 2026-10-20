@@ -1,4 +1,5 @@
 import {
+    type Rgb,
     WHITE,
     contrastRatio,
     ensureContrast,
@@ -83,7 +84,10 @@ export function toneClassName(tone: string): string {
 }
 
 /** Surfaces text must be readable on, in each scheme of the default theme. */
-const SURFACES = { light: WHITE, dark: { r: 24, g: 24, b: 27 } };
+const SURFACES: Record<'light' | 'dark', Rgb> = { light: WHITE, dark: { r: 24, g: 24, b: 27 } };
+
+/** The surfaces of a theme, in each scheme, when it sets ones Panneau can read. */
+export type ToneSurfaces = Partial<Record<'light' | 'dark', Rgb>>;
 
 /** How much of the tone's color the subtle background mixes into the surface, per scheme. */
 export const SUBTLE_AMOUNTS = { light: 0.12, dark: 0.22 };
@@ -104,8 +108,14 @@ export const MIN_CONTRAST_RATIO = 4.5;
  *
  * A color Panneau can't read (a CSS variable, a named color) is used as is, with `color-mix()` for
  * the hover and white text: `checkTheme()` reports it as unchecked.
+ *
+ * Text is made readable on the surfaces of the default theme, or on those given, which themes pass
+ * so that a tone stays readable on their own surfaces.
  */
-export function deriveTone(color: string): { light: ToneValues; dark: ToneValues } {
+export function deriveTone(
+    color: string,
+    surfaces: ToneSurfaces = {},
+): { light: ToneValues; dark: ToneValues } {
     const subtle = (amount: number) =>
         `color-mix(in srgb, ${color} ${amount}%, var(--panneau-color-surface))`;
     const parsed = parseColor(color);
@@ -138,7 +148,7 @@ export function deriveTone(color: string): { light: ToneValues; dark: ToneValues
         toHex(
             ensureContrast(
                 parsed,
-                mixColors(SURFACES[scheme], parsed, SUBTLE_AMOUNTS[scheme]),
+                mixColors(surfaces[scheme] ?? SURFACES[scheme], parsed, SUBTLE_AMOUNTS[scheme]),
                 MIN_CONTRAST_RATIO,
             ),
         );
@@ -162,10 +172,13 @@ export function deriveTone(color: string): { light: ToneValues; dark: ToneValues
     };
 }
 
-/** The values of a tone input, in both schemes. */
-export function resolveTone(input: ToneInput): { light: ToneValues; dark: ToneValues } {
+/** The values of a tone input, in both schemes, derived on the given surfaces if it is one color. */
+export function resolveTone(
+    input: ToneInput,
+    surfaces: ToneSurfaces = {},
+): { light: ToneValues; dark: ToneValues } {
     if (typeof input === 'string') {
-        return deriveTone(input);
+        return deriveTone(input, surfaces);
     }
     const { dark, ...light } = input;
     return { light, dark: { ...light, ...dark } };

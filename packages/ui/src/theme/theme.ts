@@ -1,7 +1,9 @@
+import { parseColor } from './color';
 import type { ThemeFont } from './fonts';
 import {
     TONE_VARIABLES,
     type ToneInput,
+    type ToneSurfaces,
     type ToneValues,
     resolveTone,
     toneClassName,
@@ -122,6 +124,28 @@ function toneDeclarations(values: ToneValues): string {
 }
 
 /**
+ * The surfaces of a theme in each scheme, when it sets ones Panneau can read: tones derived from
+ * one color are made readable on them.
+ */
+export function themeSurfaces(theme: Theme): ToneSurfaces {
+    const palette = paletteVariables(theme.palette);
+    const surface = (tokens: Record<string, string>) => {
+        const variables = { ...palette, ...tokens };
+        const value = variables['panneau-color-surface'];
+        return value !== undefined ? parseColor(resolveReference(value, variables)) : null;
+    };
+    const light = surface(theme.tokens);
+    const dark =
+        theme.dark?.['panneau-color-surface'] !== undefined
+            ? surface({ ...theme.tokens, ...theme.dark })
+            : null;
+    return {
+        ...(light !== null && { light }),
+        ...(dark !== null && { dark }),
+    };
+}
+
+/**
  * The rules of the densities of a theme. `auto` takes the comfortable values on fine pointers and
  * the touch ones on coarse pointers, like the default theme.
  */
@@ -155,6 +179,7 @@ export function getThemeCss(theme: Theme, scope: string): string {
     const rule = (selector: string, body: string) => (body !== '' ? `${selector}{${body}}` : '');
 
     const palette = paletteVariables(theme.palette);
+    const surfaces = themeSurfaces(theme);
     light.push(rule(root, declarations({ ...palette, ...theme.tokens })));
     light.push(densityCss(root, theme.densities));
     if (theme.dark !== undefined) {
@@ -166,6 +191,7 @@ export function getThemeCss(theme: Theme, scope: string): string {
             // A tone from a palette color derives from the color itself.
             const values = resolveTone(
                 typeof input === 'string' ? resolveReference(input, palette) : input,
+                surfaces,
             );
             const selector = `.${toneClassName(name)}`;
             light.push(rule(`${root} ${selector}`, toneDeclarations(values.light)));
