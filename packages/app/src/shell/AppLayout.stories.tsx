@@ -116,9 +116,11 @@ export const Phone: Story = {
         // Only shown below the `lg` width of the root.
         if (open !== null && open.checkVisibility()) {
             await userEvent.click(open);
-            await expect(
-                await body.findByRole('dialog', { name: 'Main navigation' }),
-            ).toBeVisible();
+            const drawer = await body.findByRole('dialog', { name: 'Main navigation' });
+            await expect(within(drawer).getByRole('link', { name: 'Articles' })).toHaveAttribute(
+                'aria-current',
+                'page',
+            );
         }
     },
 };
