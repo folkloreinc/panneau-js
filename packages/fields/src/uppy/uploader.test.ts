@@ -1,13 +1,11 @@
 import type { Body, Meta, Uppy } from '@uppy/core';
 import { describe, expect, it, vi } from 'vitest';
 
-import type { PresignedUploads } from '@panneau/data/uploads';
-
-import { formatSize, matchesMime } from './files';
-import { type UploadedFile, createUploader } from './uploader';
+import type { UploadedFile } from '../upload/types';
+import { type PresignedUploadsLike, createUppyUploadSource, createUppyUploader } from './uploader';
 
 /** Signs nothing, and completes each key as an upload named after it. */
-function createUploads(complete?: PresignedUploads['complete']): PresignedUploads {
+function createUploads(complete?: PresignedUploadsLike['complete']): PresignedUploadsLike {
     return {
         signRequest: () => Promise.resolve({ url: 'https://storage.test/x' }),
         complete:
@@ -48,14 +46,12 @@ function installFake(uppy: Uppy<Meta, Body>) {
 const file = (name: string, type: string, size = 10) =>
     new File([new Uint8Array(size)], name, { type });
 
-describe('createUploader', () => {
+describe('createUppyUploader', () => {
     it('completes each upload with the backend, and gives its reference', async () => {
         const onUploaded = vi.fn<(file: UploadedFile) => void>();
-        const uploader = createUploader({
-            uploads: createUploads(),
-            onUploaded,
+        const uploader = createUppyUploadSource(createUploads(), {
             install: installFake,
-        });
+        }).createUploader({ onUploaded });
 
         uploader.add([file('terms.pdf', 'application/pdf'), file('photo.jpg', 'image/jpeg', 20)]);
 
@@ -67,36 +63,10 @@ describe('createUploader', () => {
         expect(uploader.getItems()).toEqual([]);
     });
 
-    it('refuses files of other types, or too large, before sending them', () => {
-        const onRejected = vi.fn();
-        const uploader = createUploader({
-            uploads: createUploads(),
-            accept: ['image/*'],
-            maxSize: 100,
-            onUploaded: vi.fn(),
-            onRejected,
-            install: () => undefined,
-        });
-
-        uploader.add([file('terms.pdf', 'application/pdf'), file('big.jpg', 'image/jpeg', 200)]);
-
-        expect(
-            onRejected.mock.calls.map(([refused, reason]) => [(refused as File).name, reason]),
-        ).toEqual([
-            ['terms.pdf', 'accept'],
-            ['big.jpg', 'maxSize'],
-        ]);
-        expect(uploader.getItems()).toEqual([]);
-    });
-
     it('keeps a failed file with its error, and sends it again on retry', async () => {
         const onUploaded = vi.fn();
         const listener = vi.fn();
-        const uploader = createUploader({
-            uploads: createUploads(),
-            onUploaded,
-            install: installFake,
-        });
+        const uploader = createUppyUploader(createUploads(), { onUploaded, install: installFake });
         uploader.subscribe(listener);
 
         uploader.add([file('fail.csv', 'text/csv')]);
@@ -116,11 +86,10 @@ describe('createUploader', () => {
     });
 
     it('fails a file whose completion the backend refuses, and cancels it', async () => {
-        const uploader = createUploader({
-            uploads: createUploads(() => Promise.reject(new Error('Upload not found.'))),
-            onUploaded: vi.fn(),
-            install: installFake,
-        });
+        const uploader = createUppyUploader(
+            createUploads(() => Promise.reject(new Error('Upload not found.'))),
+            { onUploaded: vi.fn(), install: installFake },
+        );
 
         uploader.add([file('clip.mp4', 'video/mp4')]);
 
@@ -132,15 +101,5 @@ describe('createUploader', () => {
         );
         uploader.cancel(uploader.getItems()[0]?.id ?? '');
         expect(uploader.getItems()).toEqual([]);
-    });
-});
-
-describe('files', () => {
-    it('matches MIME types and formats sizes', () => {
-        expect(matchesMime('image/png', ['image/*'])).toBe(true);
-        expect(matchesMime('application/pdf', ['image/*', 'text/csv'])).toBe(false);
-        expect(formatSize(512, 'en')).toBe('512 B');
-        expect(formatSize(1536, 'en')).toBe('1.5 KB');
-        expect(formatSize(25 * 1024 * 1024, 'fr')).toBe('25 MB');
     });
 });

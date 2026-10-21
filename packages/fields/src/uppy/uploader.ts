@@ -1,80 +1,35 @@
 import AwsS3 from '@uppy/aws-s3';
 import Uppy, { type Body, type Meta, type UppyFile } from '@uppy/core';
 
-import type { PresignedUploads } from '@panneau/data/uploads';
-import type { Upload } from '@panneau/protocol';
+import type { Upload, UploadSignRequest } from '@panneau/protocol';
 
-import { matchesMime } from './files';
-
-/** Where a file is: sent to storage, paused, completed with the backend, or failed. */
-export type UploadItemStatus = 'uploading' | 'paused' | 'completing' | 'failed';
-
-/** A file being uploaded, as an upload list shows it. */
-export interface UploadItem {
-    id: string;
-    name: string;
-    size: number | null;
-    mime: string | null;
-    /** From 0 to 1, or null until the upload reports one. */
-    progress: number | null;
-    status: UploadItemStatus;
-    /** Why it failed. */
-    error: string | null;
-    /** Whether it can pause: only a file sent in parts can. */
-    canPause: boolean;
-}
+import type {
+    UploadItem,
+    UploadItemStatus,
+    UploadSource,
+    UploadedFile,
+    Uploader,
+} from '../upload/types';
 
 /**
- * A file uploaded directly to storage: the reference that values send (`{ upload }`), with what
- * the browser knows of the file, so that fields can show it and check it before saving. Backends
- * only trust `upload`.
+ * Signs and completes direct uploads: `adapter.presignedUploads()` of `@panneau/data` (or
+ * `createPresignedUploads()`) gives one.
  */
-export interface UploadedFile {
-    upload: string;
-    name: string;
-    mime: string | null;
-    size: number | null;
+export interface PresignedUploadsLike {
+    signRequest(
+        request: UploadSignRequest,
+    ): Promise<{ url: string; key?: string; headers?: Record<string, string> }>;
+    complete(key: string, options?: { name?: string }): Promise<Upload>;
 }
 
-/** Why a file was refused before it was sent. */
-export type UploadRejection = 'accept' | 'maxSize';
-
-export interface UploaderOptions {
-    /** Signs and completes uploads: `adapter.presignedUploads()` of `@panneau/data`. */
-    uploads: PresignedUploads;
-    /** Accepted MIME types (`image/*`). Others are refused before they are sent. */
-    accept?: readonly string[] | null;
-    /** Largest file, in bytes. Larger ones are refused before they are sent. */
-    maxSize?: number | null;
-    /** Called with each file once its upload is complete. */
-    onUploaded: (file: UploadedFile, upload: Upload) => void;
-    /** Called with each file refused before it was sent. */
-    onRejected?: (file: File, reason: UploadRejection) => void;
+export interface UppyUploadSourceOptions {
     /** Files larger than this, in bytes, are sent in parts, which can pause and resume. Defaults to 10 MB. */
     multipartThreshold?: number;
     /**
-     * Installs what sends files on the Uppy instance: `@uppy/aws-s3` with the backend's
+     * Installs what sends files on each Uppy instance: `@uppy/aws-s3` with the backend's
      * signatures by default. Tests install a fake one.
      */
-    install?: (uppy: Uppy<Meta, Body>, uploads: PresignedUploads) => void;
-}
-
-/** Uploads files directly to storage, with Uppy, and keeps their state for an upload list. */
-export interface Uploader {
-    /** The files being uploaded, in the order they were added. Done files leave the list. */
-    getItems(): readonly UploadItem[];
-    /** Calls the listener when the items change. Returns a function that unsubscribes. */
-    subscribe(listener: () => void): () => void;
-    /** Checks and sends files. */
-    add(files: Iterable<File>): void;
-    pause(id: string): void;
-    resume(id: string): void;
-    /** Stops a file and removes it from the list. */
-    cancel(id: string): void;
-    /** Sends a failed file again. */
-    retry(id: string): void;
-    /** Stops every upload. The uploader can't be used after. */
-    destroy(): void;
+    install?: (uppy: Uppy<Meta, Body>, uploads: PresignedUploadsLike) => void;
 }
 
 const MB = 1024 * 1024;
@@ -83,7 +38,7 @@ function errorMessage(error: unknown): string {
     return error instanceof Error ? error.message : String(error);
 }
 
-function installAwsS3(uppy: Uppy<Meta, Body>, uploads: PresignedUploads, threshold: number) {
+function installAwsS3(uppy: Uppy<Meta, Body>, uploads: PresignedUploadsLike, threshold: number) {
     uppy.use(AwsS3<Meta, Body>, {
         // Uppy's request types are interfaces; the protocol's schema is an open object.
         signRequest: (request) => uploads.signRequest({ ...request }),
@@ -93,17 +48,16 @@ function installAwsS3(uppy: Uppy<Meta, Body>, uploads: PresignedUploads, thresho
 
 /**
  * An uploader on Uppy 6: files go to S3-compatible storage with URLs that the backend signs, in
- * parts when they are large, then each upload is completed with the backend (decision 0025).
+ * parts when they are large, then each upload is completed with the backend.
  */
-export function createUploader({
-    uploads,
-    accept = null,
-    maxSize = null,
-    onUploaded,
-    onRejected,
-    multipartThreshold = 10 * MB,
-    install = (uppy, presigned) => installAwsS3(uppy, presigned, multipartThreshold),
-}: UploaderOptions): Uploader {
+export function createUppyUploader(
+    uploads: PresignedUploadsLike,
+    {
+        onUploaded,
+        multipartThreshold = 10 * MB,
+        install = (uppy, presigned) => installAwsS3(uppy, presigned, multipartThreshold),
+    }: UppyUploadSourceOptions & { onUploaded: (file: UploadedFile, upload: Upload) => void },
+): Uploader {
     const uppy = new Uppy<Meta, Body>({ autoProceed: true, allowMultipleUploadBatches: true });
     install(uppy, uploads);
 
@@ -200,13 +154,7 @@ export function createUploader({
         },
         add(files) {
             for (const file of files) {
-                if (accept !== null && accept.length > 0 && !matchesMime(file.type, accept)) {
-                    onRejected?.(file, 'accept');
-                } else if (maxSize !== null && file.size > maxSize) {
-                    onRejected?.(file, 'maxSize');
-                } else {
-                    uppy.addFile({ name: file.name, type: file.type, data: file });
-                }
+                uppy.addFile({ name: file.name, type: file.type, data: file });
             }
         },
         pause(id) {
@@ -235,5 +183,23 @@ export function createUploader({
             listeners.clear();
             uppy.destroy();
         },
+    };
+}
+
+/**
+ * The upload source of fields on Uppy 6 (`@uppy/core` and `@uppy/aws-s3`, optional peer
+ * dependencies of this entry point): pass it as `uploadSource` to `FieldsProvider` or
+ * `FormView`, with the signing routes of the backend.
+ *
+ * ```ts
+ * const uploadSource = createUppyUploadSource(adapter.presignedUploads());
+ * ```
+ */
+export function createUppyUploadSource(
+    uploads: PresignedUploadsLike,
+    options: UppyUploadSourceOptions = {},
+): UploadSource {
+    return {
+        createUploader: ({ onUploaded }) => createUppyUploader(uploads, { ...options, onUploaded }),
     };
 }
