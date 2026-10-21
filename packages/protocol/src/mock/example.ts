@@ -2,7 +2,8 @@ import type { DefinitionInput } from '../schemas';
 
 /**
  * A small but complete definition: pages with localized titles, a status, a publication date shown
- * for published pages, an author and typed blocks, in tabs and a sidebar, plus authors. For tests
+ * for published pages, an author, an attachment and typed blocks, in tabs and a sidebar, plus
+ * authors. For tests
  * and stories, with `createMockBackend()`.
  */
 export function createExampleDefinition(): DefinitionInput {
@@ -75,6 +76,12 @@ export function createExampleDefinition(): DefinitionInput {
                             },
                         ],
                     },
+                    {
+                        name: 'attachment',
+                        type: 'file',
+                        label: 'Pièce jointe',
+                        rules: [{ rule: 'accept', value: ['application/pdf'] }],
+                    },
                 ],
                 form: {
                     layout: [
@@ -97,7 +104,13 @@ export function createExampleDefinition(): DefinitionInput {
                                 },
                             ],
                         },
-                        { type: 'sidebar', children: [{ type: 'field', name: 'published_at' }] },
+                        {
+                            type: 'sidebar',
+                            children: [
+                                { type: 'field', name: 'published_at' },
+                                { type: 'field', name: 'attachment' },
+                            ],
+                        },
                     ],
                 },
                 list: {

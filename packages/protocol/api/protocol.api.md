@@ -3092,6 +3092,12 @@ export const namedSchemas: {
             y: z.ZodNumber;
         }, z.core.$loose>>;
     }, z.core.$loose>;
+    StoredFile: z.ZodObject<{
+        name: z.ZodString;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        size: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    }, z.core.$loose>;
     UploadReference: z.ZodObject<{
         upload: z.ZodString;
     }, z.core.$loose>;
@@ -3805,6 +3811,17 @@ export const Session: z.ZodObject<{
 
 // @public (undocumented)
 export type Session = z.infer<typeof Session>;
+
+// @public (undocumented)
+export const StoredFile: z.ZodObject<{
+    name: z.ZodString;
+    url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    size: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type StoredFile = z.infer<typeof StoredFile>;
 
 // @public (undocumented)
 export const Theme: z.ZodObject<{

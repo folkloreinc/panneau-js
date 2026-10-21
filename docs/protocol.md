@@ -83,7 +83,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - `text`, `textarea`, `richtext`, `number`, `boolean`;
     - `date`, `datetime`, `time`;
     - `select`, `email`, `url`, `color`;
-    - `media`, `relation`, `group`, `repeater`, `slug`.
+    - `media`, `file`, `relation`, `group`, `repeater`, `slug`.
 - **`localized`** makes the value an object keyed by locale (`{ "fr": "…", "en": "…" }`). It replaces the separate `localized` field and the `*Localized` PHP classes of v1.
 - **`group`** has `fields`, for a nested object.
 - **`repeater`** has `fields`, or `types` for typed blocks, for an array.
@@ -99,6 +99,10 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 - **`media` values:**
     - In items, a value is a [media item](#media), or a list of them with `multiple`.
     - In requests, the client sends media ids, or the media items; the backend reads their `id`. `accept` and `maxSize` are checked on the `mime` and `size` of media items.
+- **`file` values** are files that belong to the item, outside the media library: an attachment, a PDF, a CSV ([0025](decisions/0025-presigned-uploads.md)).
+    - In items, a value is a stored file, `{ "name": "terms.pdf", "url": "https://…", "mime": "application/pdf", "size": 52000 }`, or `null`. With `multiple`, it is a list of them.
+    - In requests, the client sends `{ "upload": "upl_…" }` for a file uploaded directly to storage, the stored file it received to keep it, or `null` to remove it. Without direct uploads, it sends the file itself, in `multipart/form-data`.
+    - `accept` and `maxSize` are checked on the file the backend receives. The client can also send the `name`, `mime` and `size` of an upload next to its `upload`, so that it checks them first.
 - **`rules`** use the portable rules below. A backend can also enforce rules that it doesn't expose.
 
 ### Portable validation rules
@@ -110,7 +114,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 | `pattern`           | text                                    |
 | `email`, `url`      | text                                    |
 | `in`                | select values                           |
-| `accept`, `maxSize` | media (MIME types, bytes)               |
+| `accept`, `maxSize` | media and files (MIME types, bytes)     |
 | `before`, `after`   | dates (value or other field)            |
 
 The frontend checks these rules before sending. The server checks them again, together with server-only rules (uniqueness, existence, business rules).

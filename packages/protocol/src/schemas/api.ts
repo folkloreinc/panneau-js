@@ -134,6 +134,20 @@ export const UploadReference = z.looseObject({ upload: z.string().min(1) }).meta
         'A file uploaded directly to storage, by the id of its upload: in a file value, an action parameter, or `POST /media`.',
 });
 
+export const StoredFile = z
+    .looseObject({
+        name: z.string().meta({ description: 'The name of the file, as the user knows it.' }),
+        url: z.string().nullable().optional().meta({
+            description: 'Where to download it. A private file gets a temporary URL.',
+        }),
+        mime: z.string().nullable().optional(),
+        size: z.number().int().nonnegative().nullable().optional(),
+    })
+    .meta({
+        description:
+            'A file stored by the backend: the value of a `file` field in items. Requests send it back to keep the file, `{ "upload" }` to replace it, or `null` to remove it.',
+    });
+
 export const Upload = z
     .looseObject({
         id: z.string().min(1).meta({ description: 'The id of the upload: `upl_…`.' }),
@@ -238,6 +252,7 @@ export type ActionRun = z.infer<typeof ActionRun>;
 export type ActionRunResponse = z.infer<typeof ActionRunResponse>;
 export type MediaTransform = z.infer<typeof MediaTransform>;
 export type UploadReference = z.infer<typeof UploadReference>;
+export type StoredFile = z.infer<typeof StoredFile>;
 export type Upload = z.infer<typeof Upload>;
 export type UploadResponse = z.infer<typeof UploadResponse>;
 export type UploadSignRequest = z.infer<typeof UploadSignRequest>;
