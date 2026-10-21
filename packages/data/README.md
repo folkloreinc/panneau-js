@@ -22,6 +22,7 @@ try {
 | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@panneau/data`         | The `DataAdapter` interface, `createRestAdapter()`, the errors (`ApiError`, `ValidationError`, `ConflictError`, `UnauthorizedError`, `ForbiddenError`, `NotFoundError`), `createApiError()` and `readProblem()`      |
 | `@panneau/data/laravel` | `createLaravelAdapter()`: the REST adapter with credentials, the `X-XSRF-TOKEN` header from Laravel's cookie, and `419` as unauthorized; `getLaravelHeaders()` and `createLaravelError()` for an app's own endpoints |
+| `@panneau/data/uploads` | `createPresignedUploads()`: direct uploads to S3 with URLs that the backend signs, for Uppy 6's `@uppy/aws-s3`                                                                                                       |
 | `@panneau/data/query`   | `DataAdapterProvider` and the TanStack Query hooks: `useDefinition`, `useResourceList`, `useResourceItem`, `useCreateItem`, `useUpdateItem`, `useDeleteItem`, `useRunAction`, `useActionRun`                         |
 
 ## Adapters
@@ -59,6 +60,33 @@ if (!response.ok) {
 - `createApiError(problem)` maps a problem to its typed error by status; `createLaravelError(problem)` also treats `419` (an expired CSRF token or session) as `UnauthorizedError`.
 - `getLaravelHeaders({ headers, xsrfCookie, xsrfHeader, cookies })` adds `X-Requested-With` and the CSRF token from Laravel's cookie.
 
+### Direct uploads
+
+Large files (videos of several gigabytes) go from the browser to S3-compatible storage, in parts, with URLs that the backend signs: the `presigned` mode of the protocol ([0025](../../docs/decisions/0025-presigned-uploads.md)). `createPresignedUploads()` gives Uppy 6 its `signRequest`, and completes each upload. An upload is not a media: values reference it as `{ upload: 'upl_…' }`, and `uploadMedia()` makes it one.
+
+```ts
+import AwsS3 from '@uppy/aws-s3';
+import Uppy from '@uppy/core';
+
+import { createLaravelError, getLaravelHeaders } from '@panneau/data/laravel';
+import { createPresignedUploads } from '@panneau/data/uploads';
+
+const uploads = createPresignedUploads({
+    baseUrl: definition.api.baseUrl, // the routes are under {baseUrl}/uploads, or at uploads.endpoint
+    headers: () => getLaravelHeaders(),
+    createError: createLaravelError,
+});
+const uppy = new Uppy().use(AwsS3, { signRequest: uploads.signRequest });
+uppy.on('upload-success', async (file, response) => {
+    const upload = await uploads.complete(response.body.key, { name: file.name });
+    const media = await adapter.uploadMedia({ upload: upload.id }); // media.status: 'processing'
+});
+```
+
+It is plain `fetch` and doesn't import Uppy. Small files can still use `uploadMedia(file)`.
+
+The REST adapter gives the same object, with its own base URL, headers, credentials and errors: `adapter.presignedUploads({ endpoint: definition.uploads.endpoint })` (optional in `DataAdapter`). The fields of `@panneau/fields` and `@panneau/media` upload through it with `createUppyUploadSource()` of `@panneau/fields/uppy`.
+
 ## Query hooks
 
 The hooks need TanStack Query v5 and React (optional peer dependencies, only for this entry point), with a `QueryClientProvider` and a `DataAdapterProvider` above them.
@@ -83,6 +111,7 @@ function Pages() {
 
 - Mutations update the cache: create and update cache the item and refetch the lists of the resource; delete removes the item and refetches the lists.
 - `useRunAction()` refreshes what the action result asks (`refresh`: `none`, `items` or `list`, the default). A queued action returns a run instead: `useActionRun(run.id)` follows it until it finishes, then refreshes.
+- `useDataAdapter()` gives the adapter of `DataAdapterProvider`, and throws without one. `useOptionalDataAdapter()` gives `null` instead, for components that also work without a backend, such as the media field.
 - `queryKeys` and the `*QueryOptions()` functions give the keys and options of the hooks, to prefetch or invalidate their data.
 
 The package layout, scripts and API reports are explained in [`docs/packages.md`](../../docs/packages.md).

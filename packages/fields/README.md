@@ -4,6 +4,7 @@ Controlled field components for the protocol's built-in field types, built on [`
 
 ```bash
 npm install @panneau/fields@^5.0.0-alpha.0 @panneau/ui@^5.0.0-alpha.0 react-aria-components react-intl
+npm install @uppy/core@^6.3.0 @uppy/aws-s3@^6.3.0   # only for @panneau/fields/uppy
 ```
 
 ```tsx
@@ -37,6 +38,8 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 | `@panneau/fields/group`     | `GroupField`                                 | an object                                      |
 | `@panneau/fields/repeater`  | `RepeaterField` (items or typed blocks)      | a list of objects; blocks have a `type`        |
 | `@panneau/fields/relation`  | `RelationField`, `createRelationSource()`    | `{ id, label }`, or a list with `multiple`     |
+| `@panneau/fields/file`      | `FileField`                                  | a file, or a list with `multiple` (below)      |
+| `@panneau/fields/uppy`      | `createUppyUploadSource()`                   | the upload source on Uppy 6 (below)            |
 | `@panneau/fields/locales`   | `en`, `fr`                                   | deprecated: use `@panneau/intl`                |
 
 ## From a definition
@@ -65,7 +68,39 @@ import {
 - **Relations** search a `RelationSource`. `createRelationSource()` makes one from any adapter with a `list()` method, such as the `DataAdapter` of `@panneau/data`. Labels come from the resource's `itemTitle`. Without a source, a relation field shows its references, read-only.
     - **Plain ids.** Values can be ids (`"12"`, `["12", "13"]`), as a product's own API gives them. The field shows their labels once the source's optional `resolve(resource, ids)` gives them (`createRelationSource()` implements it with the adapter's `get()`), and their ids until then. Fields that show the same ids share one request. `useRelationReferences()` does the same for other components.
     - **Creating from the picker.** When the source has `create(resource, text)`, the picker offers "Create “…”" for a text that matches no item, and adds the new item. `createRelationSource(adapter, { create: true })` creates it with the adapter's `create()`, with the text as its `itemTitle` (in every locale when it is localized), on the resources that allow `create`; a function gives other values. A field's `onCreate` prop replaces the source's, and can open a dialog with a full form: it resolves with the new reference, or `null`. `onCreate={null}` turns creating off.
-- **Plugin slot:** a type without an entry, such as `richtext` and `media` until Phase 2, renders a placeholder that names it. A plugin that provides the type replaces it.
+- **Files** upload through the `uploadSource` of the provider (below). Without one, the value holds the files themselves.
+- **Plugin slot:** a type without an entry, such as `richtext` and `media` without their plugins (`@panneau/editor`, `@panneau/media`), renders a placeholder that names it. A plugin that provides the type replaces it.
+
+## Files and uploads
+
+`FileField` (the `file` type) holds files that belong to an item, outside the media library: an attachment, a PDF, a CSV ([decision 0025](../../docs/decisions/0025-presigned-uploads.md)). Its value is a file, or a list of them with `multiple`:
+
+- a **stored file**, `{ name, url, mime, size }`, as items give it: the field shows it with a link;
+- an **uploaded file**, `{ upload, name, mime, size }`, once the browser sent the file to storage: requests send its `upload`;
+- the **`File` itself**, without an upload source: the adapter sends it in `multipart/form-data`.
+
+A new file replaces the file of a single value, and is added to a multiple one. `accept` and `maxSize` (from the field's `accept`, its `accept` rule and its `maxSize` rule) refuse files before they are sent. A read-only field only shows its files.
+
+**Upload sources.** An `UploadSource` makes an uploader for each field, which reports each file's progress and gives its upload once it is done. `createUppyUploadSource()` of `@panneau/fields/uppy` makes one on Uppy 6: files go to S3-compatible storage with URLs that the backend signs, in parts when they are large (they can pause and resume), and each upload is completed with the backend. `@uppy/core` and `@uppy/aws-s3` 6 are optional peer dependencies, only for that entry point: nothing else in the package imports Uppy. Make the source once, and pass it as `uploadSource` to `FieldsProvider`, or to `FormView` of `@panneau/forms`, when the definition announces direct uploads:
+
+```tsx
+import { createUppyUploadSource } from '@panneau/fields/uppy';
+
+const uploadSource =
+    definition.uploads?.mode === 'presigned' && adapter.presignedUploads !== undefined
+        ? createUppyUploadSource(
+              adapter.presignedUploads({ endpoint: definition.uploads.endpoint }),
+          )
+        : null;
+
+<FieldsProvider components={builtInFields} uploadSource={uploadSource}>
+    …
+</FieldsProvider>;
+```
+
+`adapter.presignedUploads()` comes from `@panneau/data`; `createUppyUploadSource()` only needs an object with its `signRequest()` and `complete()` (`PresignedUploadsLike`), so fields don't depend on `@panneau/data`. A field's `uploadSource` prop overrides the provider's, and `null` turns uploads off.
+
+**Building blocks.** `@panneau/fields` also exports what the file field is made of, for other fields that take files (the media field of `@panneau/media`): `useUploads()` (checks files, uploads them through a source, and gives their state), `UploadList` (a progress bar per file, with pause, resume, cancel and retry), `FilePicker` (a button and a drop zone), and `formatSize()`, `matchesMime()`, `getAccept()`, `getMaxSize()`.
 
 ## Messages
 

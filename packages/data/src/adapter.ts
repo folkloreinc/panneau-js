@@ -10,7 +10,10 @@ import type {
     MediaListResponse,
     SearchResponse,
     Session,
+    UploadReference,
 } from '@panneau/protocol';
+
+import type { PresignedUploads } from './uploads';
 
 /** Values of an item's fields, keyed by field name. */
 export type Values = Record<string, unknown>;
@@ -87,7 +90,22 @@ export interface DataAdapter {
     /** One media item. */
     getMedia(id: string, options?: RequestOptions): Promise<Media>;
     /** Uploads a file, with optional metadata. */
-    uploadMedia(file: Blob, values?: Values, options?: RequestOptions): Promise<Media>;
+    /**
+     * Creates a media from a file (`multipart/form-data`), or from a file uploaded directly to
+     * storage (`{ upload: 'upl_…' }`, from `createPresignedUploads().complete()`).
+     */
+    uploadMedia(
+        file: Blob | UploadReference,
+        values?: Values,
+        options?: RequestOptions,
+    ): Promise<Media>;
+    /**
+     * Direct uploads to storage through this adapter, with its headers, cookies and errors, when
+     * the definition announces `"uploads": { "mode": "presigned" }`. `endpoint` is the definition's
+     * `uploads.endpoint`, when the routes are not under the API. Optional: an adapter without it
+     * sends files through `uploadMedia()` and multipart requests only.
+     */
+    presignedUploads?(options?: { endpoint?: string }): PresignedUploads;
     /** Updates the metadata or the transform of a media item. */
     updateMedia(id: string, values: Values, options?: RequestOptions): Promise<Media>;
     /** Deletes a media item. */

@@ -75,6 +75,7 @@ describe('runConformance', () => {
             .map((check) => check.id);
         expect(report.passed).toBe(false);
         expect(failed).toEqual([
+            'uploads.sign',
             'list.unknown-resource',
             'item',
             'item.missing',

@@ -101,7 +101,7 @@ Heavier features live in their own packages, so projects only load what they use
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@panneau/actions` | Runs actions: parameters in a dialog, the request through the adapter, results and queued runs ([decisions/0023](decisions/0023-action-runner.md)) |
 | `@panneau/editor`  | Rich text field built on TipTap 3                                                                                                                  |
-| `@panneau/media`   | Media library, upload (Uppy), image editing (crop, rotate, focal point)                                                                            |
+| `@panneau/media`   | The media field and the media library, image editing (crop, rotate, focal point). Uploads are in `@panneau/fields` (Uppy in `./uppy`)              |
 | `@panneau/auth`    | Auth forms and flows: login, OAuth providers, password reset, 2FA, passkeys, email verification                                                    |
 | `@panneau/intl`    | UI translations (French, English) and the locale loading helpers                                                                                   |
 | `@panneau/collab`  | (5.x) Presence and realtime collaboration through Yjs                                                                                              |

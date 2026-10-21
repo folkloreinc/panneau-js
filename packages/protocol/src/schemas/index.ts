@@ -20,6 +20,12 @@ import {
     SearchResponse,
     Selection,
     Session,
+    StoredFile,
+    Upload,
+    UploadReference,
+    UploadResponse,
+    UploadSignRequest,
+    UploadSignResponse,
 } from './api';
 import { Abilities, Condition, Id, Option, RouteReference } from './common';
 import {
@@ -106,6 +112,12 @@ export const namedSchemas = {
     ActionRun,
     ActionRunResponse,
     MediaTransform,
+    StoredFile,
+    UploadReference,
+    Upload,
+    UploadResponse,
+    UploadSignRequest,
+    UploadSignResponse,
     Media,
     MediaResponse,
     MediaListResponse,

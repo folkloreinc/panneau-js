@@ -21,6 +21,9 @@ import { ReactNode } from 'react';
 import type { SearchResponse } from '@panneau/protocol';
 import type { Selection as Selection_2 } from '@panneau/protocol';
 import type { Session } from '@panneau/protocol';
+import type { Upload } from '@panneau/protocol';
+import type { UploadReference } from '@panneau/protocol';
+import type { UploadSignRequest } from '@panneau/protocol';
 import { UseMutationResult } from '@tanstack/react-query';
 import { UseQueryOptions } from '@tanstack/react-query';
 import { UseQueryResult } from '@tanstack/react-query';
@@ -104,6 +107,9 @@ export function useDefinition(options?: QueryHookOptions<Definition, ReturnType<
 
 // @public
 export function useDeleteItem(resource: string): UseMutationResult<void, Error, string>;
+
+// @public
+export function useOptionalDataAdapter(): DataAdapter | null;
 
 // @public
 export function useResourceItem(resource: string, id: string | null | undefined, options?: QueryHookOptions<Item, ReturnType<typeof queryKeys.item>>): UseQueryResult<Item>;

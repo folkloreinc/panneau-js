@@ -5,5 +5,6 @@ export { appMessages } from './messages/app';
 export { fieldsMessages } from './messages/fields';
 export { formsMessages } from './messages/forms';
 export { listsMessages } from './messages/lists';
+export { mediaMessages } from './messages/media';
 export { uiMessages } from './messages/ui';
 export { getPanneauMessages, withPanneauMessages } from './merge';

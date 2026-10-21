@@ -20,6 +20,7 @@ import type {
 import type { ActionResponse, DataAdapter, Values } from './adapter';
 import { type ApiError, InvalidResponseError, createApiError } from './errors';
 import { readProblem } from './problem';
+import { createPresignedUploads } from './uploads';
 
 export interface RestAdapterOptions {
     /** URL of the API, as `api.baseUrl` in the definition (`/panneau/api`). */
@@ -245,8 +246,22 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
             return data<Media>({
                 method: 'POST',
                 path: '/media',
-                body: { ...values, file },
+                // A Blob goes as multipart/form-data, an upload reference as JSON.
+                body:
+                    file instanceof Blob ? { ...values, file } : { ...values, upload: file.upload },
                 signal,
+            });
+        },
+        presignedUploads({ endpoint } = {}) {
+            return createPresignedUploads({
+                baseUrl,
+                ...(endpoint !== undefined && { endpoint }),
+                fetch: fetcher,
+                ...(options.headers !== undefined && { headers: options.headers }),
+                // The default of `fetch`, as the adapter's other requests
+                credentials: options.credentials ?? 'same-origin',
+                createError: (problem, response) =>
+                    options.createError?.(problem, response) ?? createApiError(problem),
             });
         },
         updateMedia(id, values, { signal } = {}) {

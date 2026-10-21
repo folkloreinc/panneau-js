@@ -1,7 +1,15 @@
 import { type ListQuery, fromSearchParams, isFilterRange, matchesFilterRange } from '../query';
 import { type RuleFailure, checkValues } from '../rules';
 import type { DefinitionInput, ResourceInput } from '../schemas';
-import type { ActionResult, Item, Problem, Selection } from '../schemas/api';
+import type {
+    ActionResult,
+    Item,
+    Problem,
+    Selection,
+    StoredFile,
+    Upload,
+    UploadSignResponse,
+} from '../schemas/api';
 import { isRecord } from '../values';
 import { PROBLEM_CONTENT_TYPE } from '../version';
 
@@ -210,6 +218,101 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
         return applyQuery(list, query).filter((item) => !except.includes(item.id));
     };
 
+    // Direct uploads: the open uploads by id, with their key. The mock signs fake URLs, and
+    // trusts the client when it completes an upload.
+    const uploads = new Map<string, Upload>();
+    let nextUpload = 1;
+
+    const handleUploads = async (
+        segments: string[],
+        method: string,
+        readBody: () => Promise<Values>,
+    ): Promise<Response> => {
+        if (definition.uploads?.mode !== 'presigned') {
+            return problem(404, 'Not found.');
+        }
+        if (method !== 'POST') {
+            return problem(405, 'Method not allowed.');
+        }
+        if (segments.length === 2 && segments[1] === 'sign') {
+            const body = await readBody();
+            const opens =
+                body.uploadId === undefined && (body.method === 'POST' || body.method === 'PUT');
+            if (opens) {
+                const id = `upl_${nextUpload++}`;
+                const upload: Upload = { id, key: `uploads/${id}` };
+                uploads.set(id, upload);
+                const response: UploadSignResponse = {
+                    url: `https://storage.test/${upload.key}?signature=mock`,
+                    key: upload.key,
+                    upload: id,
+                };
+                return json(200, response);
+            }
+            const upload = [...uploads.values()].find((candidate) => candidate.key === body.key);
+            if (upload === undefined) {
+                return problem(404, 'Upload not found.');
+            }
+            return json(200, { url: `https://storage.test/${upload.key}?signature=mock` });
+        }
+        if (segments.length === 3 && segments[2] === 'complete' && segments[1] !== undefined) {
+            const upload = uploads.get(segments[1]);
+            if (upload === undefined) {
+                return problem(404, 'Upload not found.');
+            }
+            const { name } = await readBody();
+            if (typeof name === 'string') {
+                upload.name = name;
+            }
+            return json(200, { data: upload });
+        }
+        return problem(404, 'Not found.');
+    };
+
+    // The values of `file` fields at the top of a resource: an upload becomes a stored file, and
+    // a stored file or null is kept. Returns the paths of uploads that don't exist.
+    const resolveFiles = (
+        resource: ResourceInput,
+        values: Values,
+    ): { values: Values; missing: string[] } => {
+        const missing: string[] = [];
+        const resolved = { ...values };
+        const toFile = (value: unknown, path: string): unknown => {
+            if (!isRecord(value) || typeof value.upload !== 'string') {
+                return value;
+            }
+            const upload = uploads.get(value.upload);
+            if (upload === undefined) {
+                missing.push(path);
+                return value;
+            }
+            const file: StoredFile = {
+                name: upload.name ?? (typeof value.name === 'string' ? value.name : upload.id),
+                url: `https://storage.test/${upload.key ?? upload.id}`,
+                mime: upload.mime ?? (typeof value.mime === 'string' ? value.mime : null),
+                size: upload.size ?? (typeof value.size === 'number' ? value.size : null),
+            };
+            return file;
+        };
+        resource.fields
+            .filter((field) => field.type === 'file' && field.name in values)
+            .forEach((field) => {
+                const value = values[field.name];
+                resolved[field.name] = Array.isArray(value)
+                    ? value.map((entry, index) => toFile(entry, `${field.name}.${String(index)}`))
+                    : toFile(value, field.name);
+            });
+        return { values: resolved, missing };
+    };
+
+    const missingUploads = (paths: string[]) =>
+        problem(422, 'The given data was invalid.', {
+            type: 'urn:panneau:problem:validation',
+            errors: Object.fromEntries(
+                paths.map((path) => [path, ['This upload does not exist.']]),
+            ),
+        });
+
     const handle = async (request: Request): Promise<Response> => {
         const url = new URL(request.url, 'http://panneau.test');
         if (!url.pathname.startsWith(basePath)) {
@@ -228,6 +331,9 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
 
         if (segments.length === 1 && segments[0] === 'definition' && method === 'GET') {
             return json(200, definition);
+        }
+        if (segments[0] === 'uploads') {
+            return handleUploads(segments, method, readBody);
         }
         if (segments[0] !== 'resources' || segments[1] === undefined) {
             return problem(404, 'Not found.');
@@ -260,10 +366,14 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
                 });
             }
             if (method === 'POST') {
-                const values = await readBody();
-                const invalid = validationProblem(resource, values, 'create');
+                const body = await readBody();
+                const invalid = validationProblem(resource, body, 'create');
                 if (invalid !== null) {
                     return invalid;
+                }
+                const { values, missing } = resolveFiles(resource, body);
+                if (missing.length > 0) {
+                    return missingUploads(missing);
                 }
                 const item = makeItem(resource, { ...values, id: undefined });
                 list.push(item);
@@ -340,10 +450,14 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
                     current,
                 });
             }
-            const values = await readBody();
-            const invalid = validationProblem(resource, values, 'update');
+            const body = await readBody();
+            const invalid = validationProblem(resource, body, 'update');
             if (invalid !== null) {
                 return invalid;
+            }
+            const { values, missing } = resolveFiles(resource, body);
+            if (missing.length > 0) {
+                return missingUploads(missing);
             }
             const updates = Object.fromEntries(
                 Object.entries(values).filter(([key]) => !RESERVED_KEYS.has(key)),

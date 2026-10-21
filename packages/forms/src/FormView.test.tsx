@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import { useForm } from '@panneau/core';
+import { type UploadSource, useFieldsContext } from '@panneau/fields';
 import type { Field } from '@panneau/protocol';
 
 import { FormView } from './FormView';
@@ -30,5 +31,28 @@ describe('FormView', () => {
         expect(screen.getByText('dirty')).toBeInTheDocument();
         await userEvent.click(screen.getByRole('button', { name: 'Save' }));
         await waitFor(() => expect(onSubmit).toHaveBeenCalled());
+    });
+
+    it('gives its upload source to the fields', () => {
+        const uploadSource: UploadSource = { createUploader: vi.fn() };
+        const fields: Field[] = [{ name: 'attachment', type: 'probe' }];
+        function Probe() {
+            const context = useFieldsContext();
+            return <p>{context.uploadSource === uploadSource ? 'source' : 'none'}</p>;
+        }
+        function Editor() {
+            const { form } = useForm({ fields, onSubmit: vi.fn() });
+            return (
+                <FormView
+                    form={form}
+                    fields={fields}
+                    components={{ probe: Probe }}
+                    uploadSource={uploadSource}
+                    aria-label="Editor"
+                />
+            );
+        }
+        renderForm(<Editor />);
+        expect(screen.getByText('source')).toBeInTheDocument();
     });
 });

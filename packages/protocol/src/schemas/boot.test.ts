@@ -77,7 +77,7 @@ describe('BootConfig', () => {
         expect(result.success).toBe(false);
         if (!result.success) {
             expect(result.issues.map((issue) => issue.path)).toContain(
-                'definition.resources.0.fields.5.name',
+                'definition.resources.0.fields.6.name',
             );
         }
     });

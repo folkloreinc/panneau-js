@@ -17,6 +17,7 @@ import { ReactNode } from 'react';
 import type { Ref } from 'react';
 import { RelationSource } from '@panneau/fields';
 import type { RuleFailure } from '@panneau/protocol';
+import { UploadSource } from '@panneau/fields';
 
 // @public
 export function ConflictDialog(input: ConflictDialogProps): JSX.Element;
@@ -96,6 +97,7 @@ export interface FormViewProps {
     submitLabel?: ReactNode;
     // (undocumented)
     summaryClassName?: string;
+    uploadSource?: UploadSource | null;
 }
 
 // @public (undocumented)

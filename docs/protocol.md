@@ -83,7 +83,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - `text`, `textarea`, `richtext`, `number`, `boolean`;
     - `date`, `datetime`, `time`;
     - `select`, `email`, `url`, `color`;
-    - `media`, `relation`, `group`, `repeater`, `slug`.
+    - `media`, `file`, `relation`, `group`, `repeater`, `slug`.
 - **`localized`** makes the value an object keyed by locale (`{ "fr": "…", "en": "…" }`). It replaces the separate `localized` field and the `*Localized` PHP classes of v1.
 - **`group`** has `fields`, for a nested object.
 - **`repeater`** has `fields`, or `types` for typed blocks, for an array.
@@ -99,6 +99,10 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 - **`media` values:**
     - In items, a value is a [media item](#media), or a list of them with `multiple`.
     - In requests, the client sends media ids, or the media items; the backend reads their `id`. `accept` and `maxSize` are checked on the `mime` and `size` of media items.
+- **`file` values** are files that belong to the item, outside the media library: an attachment, a PDF, a CSV ([0025](decisions/0025-presigned-uploads.md)).
+    - In items, a value is a stored file, `{ "name": "terms.pdf", "url": "https://…", "mime": "application/pdf", "size": 52000 }`, or `null`. With `multiple`, it is a list of them.
+    - In requests, the client sends `{ "upload": "upl_…" }` for a file uploaded directly to storage, the stored file it received to keep it, or `null` to remove it. Without direct uploads, it sends the file itself, in `multipart/form-data`.
+    - `accept` and `maxSize` are checked on the file the backend receives. The client can also send the `name`, `mime` and `size` of an upload next to its `upload`, so that it checks them first.
 - **`rules`** use the portable rules below. A backend can also enforce rules that it doesn't expose.
 
 ### Portable validation rules
@@ -110,7 +114,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 | `pattern`           | text                                    |
 | `email`, `url`      | text                                    |
 | `in`                | select values                           |
-| `accept`, `maxSize` | media (MIME types, bytes)               |
+| `accept`, `maxSize` | media and files (MIME types, bytes)     |
 | `before`, `after`   | dates (value or other field)            |
 
 The frontend checks these rules before sending. The server checks them again, together with server-only rules (uniqueness, existence, business rules).
@@ -419,15 +423,41 @@ Errors use [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) `application/probl
 
 ### Media
 
-| Operation             | Request                                                                                          |
-| --------------------- | ------------------------------------------------------------------------------------------------ |
-| List and search       | `GET /media?q=&filter[type]=image&filter[tags][]=`                                               |
-| Show, update metadata | `GET`/`PATCH /media/{id}`                                                                        |
-| Upload                | `POST /media` (multipart), or a TUS or presigned flow announced in the definition                |
-| Replace the file      | `POST /media/{id}/file`                                                                          |
-| Edit an image         | `PATCH /media/{id}` with `{ "transform": { "crop": {...}, "rotate": 90, "focalPoint": {...} } }` |
-| Delete, restore       | `DELETE /media/{id}`, `POST /media/{id}/restore`                                                 |
-| Tags                  | `GET /media/tags`                                                                                |
+| Operation             | Request                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------ |
+| List and search       | `GET /media?q=&filter[type]=image&filter[tags][]=`                                                     |
+| Show, update metadata | `GET`/`PATCH /media/{id}`                                                                              |
+| Upload                | `POST /media` (multipart, or JSON with an `upload`), after a direct upload announced in the definition |
+| Replace the file      | `POST /media/{id}/file`                                                                                |
+| Edit an image         | `PATCH /media/{id}` with `{ "transform": { "crop": {...}, "rotate": 90, "focalPoint": {...} } }`       |
+| Delete, restore       | `DELETE /media/{id}`, `POST /media/{id}/restore`                                                       |
+| Tags                  | `GET /media/tags`                                                                                      |
+
+**Direct uploads.** With `"uploads": { "mode": "presigned" }` in the definition, the browser can also send files to S3-compatible storage itself, in parts for large ones, with URLs that the backend signs ([0025](decisions/0025-presigned-uploads.md)). An upload is not a media: values reference it.
+
+```jsonc
+// POST /uploads/sign: the request to sign, as Uppy 6's signRequest gives it
+{ "method": "POST", "key": "video.mp4" }
+// 200: the presigned URL, and for a new file the key and the upload the backend chose
+{ "url": "https://bucket.s3…?X-Amz-Signature=…", "key": "uploads/upl_01H…", "upload": "upl_01H…" }
+
+// POST /uploads/{upload}/complete, once the browser completed the upload in storage, with the file's name
+{ "name": "video.mp4" }
+// 200: the upload
+{ "data": { "id": "upl_01H…", "key": "uploads/upl_01H…", "name": "video.mp4", "mime": "video/mp4", "size": 2147483648 } }
+
+// A value that takes a file takes the upload instead: a file field, an import parameter…
+{ "values": { "file": { "upload": "upl_01H…" } } }
+
+// POST /media in JSON: a media from the upload
+{ "upload": "upl_01H…", "name": "Interview" }
+```
+
+- **Signing:** the first request of a file (`CreateMultipartUpload`, or `PutObject` for a small file) creates the upload and its key. Later requests (`UploadPart`, `ListParts`, `CompleteMultipartUpload`, `AbortMultipartUpload`) are signed only for a key of the same user's open uploads, and get `404` otherwise. `headers` lists the headers a URL was signed with.
+- **Completion** checks that the object exists, and gives the upload. Its optional `name` names the file, since the key the backend chose doesn't keep it.
+- **Both ways stay:** `POST /media` in `multipart/form-data`, and multipart requests with files, keep working for small files.
+- **`uploads.endpoint`** moves the two routes elsewhere, for a backend whose upload routes are not under its API.
+- **`status`** of a media is `pending` or `processing` until its renditions are made, then `ready` or `failed`. Without it, a media is ready.
 
 Media items are referenced from field values by id. A media item also exposes:
 

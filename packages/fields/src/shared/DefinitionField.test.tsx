@@ -60,6 +60,7 @@ describe('fieldsPlugin', () => {
                 'color',
                 'date',
                 'datetime',
+                'file',
                 'group',
                 'number',
                 'relation',
