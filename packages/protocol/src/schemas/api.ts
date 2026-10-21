@@ -115,19 +115,38 @@ export const ActionRun = z.looseObject({
 
 export const ActionRunResponse = z.looseObject({ run: ActionRun });
 
-export const MediaTransform = z.looseObject({
-    crop: z
-        .looseObject({ x: z.number(), y: z.number(), width: z.number(), height: z.number() })
-        .optional()
-        .meta({ description: 'In pixels of the original image.' }),
-    rotate: z.union([z.literal(0), z.literal(90), z.literal(180), z.literal(270)]).optional(),
-    flipX: z.boolean().optional(),
-    flipY: z.boolean().optional(),
-    focalPoint: z
-        .looseObject({ x: z.number().min(0).max(1), y: z.number().min(0).max(1) })
-        .optional()
-        .meta({ description: 'Relative to the width and height, from 0 to 1.' }),
-});
+export const MediaTransform = z
+    .looseObject({
+        crop: z
+            .looseObject({
+                x: z.number().int().nonnegative(),
+                y: z.number().int().nonnegative(),
+                width: z.number().int().positive(),
+                height: z.number().int().positive(),
+            })
+            .optional()
+            .meta({
+                description:
+                    'In whole pixels of the upright original image (after its EXIF orientation), from its top left corner.',
+            }),
+        rotate: z
+            .union([z.literal(0), z.literal(90), z.literal(180), z.literal(270)])
+            .optional()
+            .meta({ description: 'Clockwise, in degrees.' }),
+        flipX: z.boolean().optional().meta({ description: 'Mirrors left to right (horizontal).' }),
+        flipY: z.boolean().optional().meta({ description: 'Mirrors top to bottom (vertical).' }),
+        focalPoint: z
+            .looseObject({ x: z.number().min(0).max(1), y: z.number().min(0).max(1) })
+            .optional()
+            .meta({
+                description:
+                    'From 0 to 1, relative to the width and height of the upright original image, not of the crop: changing the crop does not move it. Renderers map it into the transformed image and clamp it to the crop.',
+            }),
+    })
+    .meta({
+        description:
+            'Non-destructive edits of an image, applied in this order: crop, then rotate, then flip.',
+    });
 
 export const Media = Item.extend({
     type: z

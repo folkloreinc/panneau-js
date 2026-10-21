@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { createDefinition } from '../__fixtures__/definition';
 import { lintDefinition } from '../lint';
 import { validate, validateDefinition } from '../validate';
-import { Action, Definition, Field, Item, ListResponse, Problem } from './index';
+import { Action, Definition, Field, Item, ListResponse, MediaTransform, Problem } from './index';
 
 describe('Definition', () => {
     it('accepts a complete definition', () => {
@@ -169,5 +169,27 @@ describe('lintDefinition', () => {
         definition.resources[0]?.fields.push({ name: 'title', type: 'text' });
         const result = validateDefinition(definition);
         expect(result.success).toBe(false);
+    });
+});
+
+describe('MediaTransform', () => {
+    it('accepts the shared shape of image edits', () => {
+        const transform = {
+            crop: { x: 120, y: 0, width: 1600, height: 900 },
+            rotate: 90,
+            flipX: true,
+            focalPoint: { x: 0.42, y: 0.35 },
+        };
+        expect(MediaTransform.safeParse(transform).success).toBe(true);
+    });
+
+    it('refuses a crop in fractional or negative pixels, or empty', () => {
+        const crop = (values: Record<string, number>) =>
+            MediaTransform.safeParse({ crop: { x: 0, y: 0, width: 10, height: 10, ...values } })
+                .success;
+        expect(crop({ x: 1.5 })).toBe(false);
+        expect(crop({ y: -1 })).toBe(false);
+        expect(crop({ width: 0 })).toBe(false);
+        expect(crop({})).toBe(true);
     });
 });

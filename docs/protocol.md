@@ -436,6 +436,23 @@ Media items are referenced from field values by id. A media item also exposes:
 - `type`, `mime`, `size`, `metadata`;
 - `transform`, the non-destructive edits.
 
+**Transform.** The non-destructive edits of an image, which renderers (`laravel-image`) apply in this order: crop, then rotate, then flip.
+
+```json
+{
+    "crop": { "x": 120, "y": 0, "width": 1600, "height": 900 },
+    "rotate": 90,
+    "flipX": true,
+    "focalPoint": { "x": 0.42, "y": 0.35 }
+}
+```
+
+- **`crop`**: whole pixels of the upright original image, after its EXIF orientation, which is what an editor shows. `x` and `y` are from the top left corner.
+- **`rotate`**: `0`, `90`, `180` or `270` degrees, clockwise.
+- **`flipX`** mirrors left to right, **`flipY`** top to bottom.
+- **`focalPoint`**: from `0` to `1`, relative to the upright original, not to the crop, so changing the crop doesn't move it. Renderers map it into the transformed image and clamp it to the crop.
+- The shape is shared by Panneau, `laravel-mediatheque` 2 (the media's `transform` field) and `laravel-image` 2 (folkloreinc/laravel-image#88).
+
 ### Auth
 
 These endpoints only exist with `auth.mode = "panneau"`:
