@@ -30,3 +30,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0022](0022-lists-render-core-state.md)  | Lists render the list state of the engine                        | Accepted |
 | [0023](0023-action-runner.md)            | An action runner in its own package                              | Accepted |
 | [0024](0024-theme-model.md)              | A theme model as extensible as Bootstrap's                       | Accepted |
+| [0025](0025-presigned-uploads.md)        | Direct uploads to S3 through presigned requests                  | Proposed |

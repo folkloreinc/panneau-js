@@ -1336,6 +1336,12 @@ export const Media: z.ZodObject<{
         }, z.core.$loose>>;
     }, z.core.$loose>>>;
     tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    status: z.ZodOptional<z.ZodEnum<{
+        failed: "failed";
+        pending: "pending";
+        processing: "processing";
+        ready: "ready";
+    }>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -1375,6 +1381,12 @@ export const MediaListResponse: z.ZodObject<{
             }, z.core.$loose>>;
         }, z.core.$loose>>>;
         tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        status: z.ZodOptional<z.ZodEnum<{
+            failed: "failed";
+            pending: "pending";
+            processing: "processing";
+            ready: "ready";
+        }>>;
     }, z.core.$loose>>;
     meta: z.ZodObject<{
         page: z.ZodNumber;
@@ -1421,6 +1433,12 @@ export const MediaResponse: z.ZodObject<{
             }, z.core.$loose>>;
         }, z.core.$loose>>>;
         tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        status: z.ZodOptional<z.ZodEnum<{
+            failed: "failed";
+            pending: "pending";
+            processing: "processing";
+            ready: "ready";
+        }>>;
     }, z.core.$loose>;
 }, z.core.$loose>;
 
@@ -3106,6 +3124,12 @@ export const namedSchemas: {
             }, z.core.$loose>>;
         }, z.core.$loose>>>;
         tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        status: z.ZodOptional<z.ZodEnum<{
+            failed: "failed";
+            pending: "pending";
+            processing: "processing";
+            ready: "ready";
+        }>>;
     }, z.core.$loose>;
     MediaResponse: z.ZodObject<{
         data: z.ZodObject<{
@@ -3140,6 +3164,12 @@ export const namedSchemas: {
                 }, z.core.$loose>>;
             }, z.core.$loose>>>;
             tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            status: z.ZodOptional<z.ZodEnum<{
+                failed: "failed";
+                pending: "pending";
+                processing: "processing";
+                ready: "ready";
+            }>>;
         }, z.core.$loose>;
     }, z.core.$loose>;
     MediaListResponse: z.ZodObject<{
@@ -3175,6 +3205,12 @@ export const namedSchemas: {
                 }, z.core.$loose>>;
             }, z.core.$loose>>>;
             tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            status: z.ZodOptional<z.ZodEnum<{
+                failed: "failed";
+                pending: "pending";
+                processing: "processing";
+                ready: "ready";
+            }>>;
         }, z.core.$loose>>;
         meta: z.ZodObject<{
             page: z.ZodNumber;

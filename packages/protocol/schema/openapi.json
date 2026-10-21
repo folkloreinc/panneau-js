@@ -3019,9 +3019,11 @@
                             "multipart",
                             "tus",
                             "presigned"
-                        ]
+                        ],
+                        "description": "`multipart`: `POST /media`. `presigned`: the browser sends files to storage with URLs that `endpoint` signs (`POST {endpoint}/sign`, then `POST {endpoint}/{upload}/complete`)."
                     },
                     "endpoint": {
+                        "description": "`presigned`: the base URL of its routes.",
                         "type": "string"
                     },
                     "maxSize": {
@@ -4150,6 +4152,16 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "status": {
+                        "description": "Where the ingest of the media is: `pending` and `processing` until its renditions are made, then `ready` or `failed`. Without it, the media is ready.",
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "processing",
+                            "ready",
+                            "failed"
+                        ]
                     }
                 },
                 "required": [

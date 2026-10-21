@@ -22,6 +22,7 @@ try {
 | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@panneau/data`         | The `DataAdapter` interface, `createRestAdapter()`, the errors (`ApiError`, `ValidationError`, `ConflictError`, `UnauthorizedError`, `ForbiddenError`, `NotFoundError`), `createApiError()` and `readProblem()`      |
 | `@panneau/data/laravel` | `createLaravelAdapter()`: the REST adapter with credentials, the `X-XSRF-TOKEN` header from Laravel's cookie, and `419` as unauthorized; `getLaravelHeaders()` and `createLaravelError()` for an app's own endpoints |
+| `@panneau/data/uploads` | `createPresignedUploads()`: direct uploads to S3 with URLs that the backend signs, for Uppy 6's `@uppy/aws-s3`                                                                                                       |
 | `@panneau/data/query`   | `DataAdapterProvider` and the TanStack Query hooks: `useDefinition`, `useResourceList`, `useResourceItem`, `useCreateItem`, `useUpdateItem`, `useDeleteItem`, `useRunAction`, `useActionRun`                         |
 
 ## Adapters
@@ -58,6 +59,30 @@ if (!response.ok) {
 - `readProblem(response)` reads an `application/problem+json` body, or builds a problem from Laravel's `{ message, errors }` body or from the status. It reads a clone, so the response stays readable.
 - `createApiError(problem)` maps a problem to its typed error by status; `createLaravelError(problem)` also treats `419` (an expired CSRF token or session) as `UnauthorizedError`.
 - `getLaravelHeaders({ headers, xsrfCookie, xsrfHeader, cookies })` adds `X-Requested-With` and the CSRF token from Laravel's cookie.
+
+### Direct uploads
+
+Large files (videos of several gigabytes) go from the browser to S3-compatible storage, in parts, with URLs that the backend signs: the `presigned` mode of the protocol ([0025](../../docs/decisions/0025-presigned-uploads.md)). `createPresignedUploads()` gives Uppy 6 its `signRequest`, and completes each upload, so that the backend ingests the file:
+
+```ts
+import AwsS3 from '@uppy/aws-s3';
+import Uppy from '@uppy/core';
+
+import { createLaravelError, getLaravelHeaders } from '@panneau/data/laravel';
+import { createPresignedUploads } from '@panneau/data/uploads';
+
+const uploads = createPresignedUploads({
+    endpoint: definition.uploads.endpoint, // the mediatheque's routes: '/media-library/uploads'
+    headers: () => getLaravelHeaders(),
+    createError: createLaravelError,
+});
+const uppy = new Uppy().use(AwsS3, { signRequest: uploads.signRequest });
+uppy.on('upload-success', async (file, response) => {
+    const media = await uploads.complete(response.body.key); // media.status: 'processing'
+});
+```
+
+It is plain `fetch` and doesn't import Uppy. Small files can still use `uploadMedia()`.
 
 ## Query hooks
 

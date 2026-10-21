@@ -76,8 +76,14 @@ export const Widget = z.looseObject({
 });
 
 export const Uploads = z.looseObject({
-    mode: z.enum(['multipart', 'tus', 'presigned']),
-    endpoint: z.string().optional(),
+    mode: z.enum(['multipart', 'tus', 'presigned']).meta({
+        description:
+            '`multipart`: `POST /media`. `presigned`: the browser sends files to storage with URLs that `endpoint` signs (`POST {endpoint}/sign`, then `POST {endpoint}/{upload}/complete`).',
+    }),
+    endpoint: z
+        .string()
+        .optional()
+        .meta({ description: '`presigned`: the base URL of its routes.' }),
     maxSize: z.number().int().positive().optional(),
 });
 

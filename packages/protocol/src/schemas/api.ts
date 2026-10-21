@@ -151,6 +151,10 @@ export const Media = Item.extend({
     metadata: z.record(z.string(), z.unknown()).optional(),
     transform: MediaTransform.nullable().optional(),
     tags: z.array(z.string()).optional(),
+    status: z.enum(['pending', 'processing', 'ready', 'failed']).optional().meta({
+        description:
+            'Where the ingest of the media is: `pending` and `processing` until its renditions are made, then `ready` or `failed`. Without it, the media is ready.',
+    }),
 });
 
 export const MediaResponse = z.looseObject({ data: Media });

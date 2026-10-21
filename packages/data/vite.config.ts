@@ -6,6 +6,7 @@ export default definePackageConfig({
         index: 'src/index.ts',
         'laravel/index': 'src/laravel/index.ts',
         'query/index': 'src/query/index.ts',
+        'uploads/index': 'src/uploads/index.ts',
     },
     react: true,
     environment: 'jsdom',

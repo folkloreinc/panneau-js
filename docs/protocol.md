@@ -429,6 +429,23 @@ Errors use [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) `application/probl
 | Delete, restore       | `DELETE /media/{id}`, `POST /media/{id}/restore`                                                 |
 | Tags                  | `GET /media/tags`                                                                                |
 
+**Presigned uploads.** With `"uploads": { "mode": "presigned", "endpoint": "/media-library/uploads" }` in the definition, the browser sends files to S3-compatible storage itself, in parts for large files, with URLs that the backend signs ([0025](decisions/0025-presigned-uploads.md)):
+
+```jsonc
+// POST {endpoint}/sign: the request to sign, as Uppy 6's signRequest gives it
+{ "method": "POST", "key": "video.mp4" }
+// 200: the presigned URL, and for a new upload the key and the upload the backend chose
+{ "url": "https://bucket.s3…?X-Amz-Signature=…", "key": "uploads/upl_01H…", "upload": "upl_01H…" }
+
+// POST {endpoint}/{upload}/complete, once the browser completed the upload on S3
+// 200 or 201: the media, whose status says where its ingest is
+{ "data": { "id": "med_01H…", "status": "processing", … } }
+```
+
+- **Signing:** the first request of a file (`CreateMultipartUpload`, or `PutObject` for a small file) creates the upload and its key. Later requests (`UploadPart`, `ListParts`, `CompleteMultipartUpload`, `AbortMultipartUpload`) are signed only for a key of the same user's open uploads, and get `404` otherwise. `headers` lists the headers a URL was signed with.
+- **Completion** checks that the object exists, then ingests it.
+- **`status`** of a media is `pending` or `processing` until its renditions are made, then `ready` or `failed`. Without it, a media is ready.
+
 Media items are referenced from field values by id. A media item also exposes:
 
 - `url` and `thumbnailUrl`;

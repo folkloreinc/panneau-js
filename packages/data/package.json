@@ -26,6 +26,11 @@
             "types": "./dist/query/index.d.ts",
             "default": "./dist/query/index.js"
         },
+        "./uploads": {
+            "@panneau/source": "./src/uploads/index.ts",
+            "types": "./dist/uploads/index.d.ts",
+            "default": "./dist/uploads/index.js"
+        },
         "./package.json": "./package.json"
     },
     "files": [
