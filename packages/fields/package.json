@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "5.0.0-alpha.2",
+    "version": "5.0.0-alpha.3",
     "description": "Controlled field components of Panneau for the protocol's built-in field types, one subpath per field.",
     "type": "module",
     "license": "MIT",
@@ -122,9 +122,9 @@
     },
     "dependencies": {
         "@internationalized/date": "^3.12.4",
-        "@panneau/intl": "5.0.0-alpha.2",
-        "@panneau/protocol": "5.0.0-alpha.2",
-        "@panneau/ui": "5.0.0-alpha.2",
+        "@panneau/intl": "5.0.0-alpha.3",
+        "@panneau/protocol": "5.0.0-alpha.3",
+        "@panneau/ui": "5.0.0-alpha.3",
         "lucide-react": "^1.57.0"
     }
 }

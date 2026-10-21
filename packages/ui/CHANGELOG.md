@@ -1,5 +1,17 @@
 # @panneau/ui
 
+## 5.0.0-alpha.3
+
+### Minor Changes
+
+- 2b657fd: Loading icons by name is now opt-in, so that apps that never name icons no longer get one chunk per Lucide icon (about 1,900) and their map in the runtime of every page. `PanneauRoot` takes an `iconLoader`: pass `lucideIconLoader` from the new `@panneau/ui/named-icons` entry point, or a loader of only the icons the app uses. Without one, named icons render an empty space, with a warning. **Breaking:** `loadNamedIcon(name, loader)` takes the loader, and apps whose definitions name icons (actions with `"icon"`) must set `iconLoader`.
+
+### Patch Changes
+
+- 4ad084e: `TextArea`, `Checkbox` and `Switch` no longer style their wrapper with the rules of their inner control. The inner element had the class named after the component (`panneau-text-area`, `panneau-checkbox`, `panneau-switch`), which is also the root class of the component, so a text area's wrapper got the padding of the textarea, and a checkbox's wrapper was laid out and dimmed like the checkbox itself. The inner element is now `panneau-text-area-control`, `panneau-checkbox-control` and `panneau-switch-control`, and the class named after a component only names its root.
+- Updated dependencies [5a2ae0c]
+  - @panneau/intl@5.0.0-alpha.3
+
 ## 5.0.0-alpha.2
 
 ### Minor Changes
