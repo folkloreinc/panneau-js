@@ -1,0 +1,125 @@
+import { type ResolvedResource, getItemValues, resolveForm } from '@panneau/core';
+import { useCreateItem, useDataAdapter, useResourceItem, useUpdateItem } from '@panneau/data/query';
+import { createRelationSource } from '@panneau/fields';
+import { Form } from '@panneau/forms';
+import { appMessages } from '@panneau/intl';
+import type { Definition, Item } from '@panneau/protocol';
+import { Alert, Button, Spinner, usePanneauIntl } from '@panneau/ui';
+
+import { navigate } from '../location';
+import { capitalize } from '../navigation';
+import { routePath } from '../routes';
+import { PageHeader } from './PageHeader';
+import styles from './pages.module.css';
+
+export interface ResourceFormPageProps {
+    definition: Definition;
+    resolved: ResolvedResource;
+    basePath: string;
+    /** The item to edit, or `null` to create one. */
+    id: string | null;
+}
+
+function getTitle(item: Item | undefined, itemTitle: string | undefined, locale: string) {
+    const value = itemTitle !== undefined ? item?.[itemTitle] : undefined;
+    if (typeof value === 'string') {
+        return value;
+    }
+    if (value !== null && typeof value === 'object') {
+        const localized = (value as Record<string, unknown>)[locale];
+        const first = localized ?? Object.values(value)[0];
+        return typeof first === 'string' ? first : null;
+    }
+    return null;
+}
+
+/**
+ * The form to create or edit an item: saved through the adapter, with validation errors from the
+ * server, version conflicts and a guard on unsaved changes. A new item opens in its edit page.
+ */
+export function ResourceFormPage({ definition, resolved, basePath, id }: ResourceFormPageProps) {
+    const intl = usePanneauIntl();
+    const adapter = useDataAdapter();
+    const { resource } = resolved;
+    const mode = id === null ? 'create' : 'update';
+    const itemQuery = useResourceItem(resource.id, id);
+    const createItem = useCreateItem(resource.id);
+    const updateItem = useUpdateItem(resource.id);
+    const relationSource = createRelationSource(adapter, { definition });
+    const { fields, layout } = resolveForm(resource, { mode });
+    const item = itemQuery.data;
+    const singular = resource.label.singular;
+    const title =
+        mode === 'create'
+            ? intl.formatMessage(appMessages.create, { resource: singular })
+            : (getTitle(item, resource.itemTitle, definition.locale) ??
+              intl.formatMessage(appMessages.edit, { resource: singular }));
+    const back = {
+        href: routePath({ name: 'resource.index', resource: resource.id }, basePath),
+        label: capitalize(resource.label.plural, definition.locale),
+    };
+
+    let content;
+    if (mode === 'update' && item === undefined) {
+        content = itemQuery.isError ? (
+            <Alert tone="danger">
+                <p>{intl.formatMessage(appMessages.itemLoadError, { resource: singular })}</p>
+                <Button size="sm" onPress={() => void itemQuery.refetch()}>
+                    {intl.formatMessage(appMessages.retry)}
+                </Button>
+            </Alert>
+        ) : (
+            <Spinner showLabel />
+        );
+    } else {
+        content = (
+            <Form
+                key={item?.version ?? item?.id ?? 'new'}
+                aria-label={title}
+                fields={fields}
+                layout={layout}
+                values={
+                    item !== undefined
+                        ? getItemValues(
+                              item,
+                              fields.map((field) => field.name),
+                          )
+                        : undefined
+                }
+                version={item?.version ?? null}
+                mode={mode}
+                locales={definition.locales}
+                relationSource={relationSource}
+                guardUnsavedChanges
+                showSavedToast
+                onSubmit={(values, { version, changes }) =>
+                    id === null
+                        ? createItem.mutateAsync(values)
+                        : updateItem.mutateAsync({ id, values: changes, version })
+                }
+                onSubmitted={(result) => {
+                    if (id === null) {
+                        navigate(
+                            routePath(
+                                {
+                                    name: 'resource.edit',
+                                    resource: resource.id,
+                                    id: (result as Item).id,
+                                },
+                                basePath,
+                            ),
+                        );
+                    }
+                }}
+                onReload={() => void itemQuery.refetch()}
+            />
+        );
+    }
+
+    return (
+        <div className={`${styles.page} ${styles.narrow}`}>
+            <PageHeader title={title} back={back} />
+            {content}
+        </div>
+    );
+}

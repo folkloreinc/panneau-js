@@ -14,6 +14,7 @@ export default defineConfig([
         '**/temp/',
         'coverage/',
         'storybook-static/',
+        'playground-dist/',
     ]),
     js.configs.recommended,
     tseslint.configs.strict,

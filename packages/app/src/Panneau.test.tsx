@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -28,6 +28,8 @@ function createAdapter(getDefinition: () => Promise<unknown>) {
     };
 }
 
+const navigation = () => within(screen.getByRole('navigation', { name: 'Main navigation' }));
+
 const createQueryClient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
 function renderPanneau(
@@ -47,9 +49,9 @@ describe('Panneau', () => {
             Promise.resolve(parse(createBootConfig({ definition: createDefinition() })).definition),
         );
         renderPanneau({ adapter });
-        expect(screen.getByRole('status')).toHaveTextContent('Loading…');
+        expect(screen.getByRole('progressbar', { name: 'Loading…' })).toBeInTheDocument();
         expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'pages' })).toHaveAttribute(
+        expect(navigation().getByRole('link', { name: 'Pages' })).toHaveAttribute(
             'href',
             '/panneau/resources/pages',
         );
@@ -69,9 +71,13 @@ describe('Panneau', () => {
             adapter: createAdapter(() => Promise.reject(new Error('Not called.'))),
             config: createBootConfig({ definition: createDefinition() }),
         });
-        await user.click(screen.getByRole('link', { name: 'authors' }));
+        await user.click(navigation().getByRole('link', { name: 'Authors' }));
         expect(window.location.pathname).toBe('/panneau/resources/authors');
-        expect(screen.getByRole('heading', { name: 'authors' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Authors' })).toBeInTheDocument();
+        expect(navigation().getByRole('link', { name: 'Authors' })).toHaveAttribute(
+            'aria-current',
+            'page',
+        );
 
         await act(async () => {
             window.history.back();
@@ -88,7 +94,10 @@ describe('Panneau', () => {
             adapter: createAdapter(() => Promise.reject(new Error('Not called.'))),
             config: createBootConfig({ definition: createDefinition() }),
         });
-        expect(screen.getByRole('heading', { name: 'Edit page 12' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Edit the page' })).toBeInTheDocument();
+        expect(
+            within(screen.getByRole('main')).getByRole('link', { name: 'Pages' }),
+        ).toHaveAttribute('href', '/panneau/resources/pages');
     });
 
     it('shows an error with a retry when the definition fails to load', async () => {

@@ -65,6 +65,49 @@ export const actionsMessages: {
 };
 
 // @public
+export const appMessages: {
+    loading: PanneauMessage<Record<never, never>>;
+    loadError: PanneauMessage<Record<never, never>>;
+    retry: PanneauMessage<Record<never, never>>;
+    sessionEnded: PanneauMessage<Record<never, never>>;
+    logIn: PanneauMessage<Record<never, never>>;
+    skipToContent: PanneauMessage<Record<never, never>>;
+    navigation: PanneauMessage<Record<never, never>>;
+    collapseSidebar: PanneauMessage<Record<never, never>>;
+    expandSidebar: PanneauMessage<Record<never, never>>;
+    openMenu: PanneauMessage<Record<never, never>>;
+    closeMenu: PanneauMessage<Record<never, never>>;
+    colorScheme: PanneauMessage<    {
+    scheme: string;
+    }>;
+    home: PanneauMessage<Record<never, never>>;
+    welcome: PanneauMessage<    {
+    name: string;
+    }>;
+    create: PanneauMessage<    {
+    resource: string;
+    }>;
+    edit: PanneauMessage<    {
+    resource: string;
+    }>;
+    created: PanneauMessage<    {
+    resource: string;
+    }>;
+    saved: PanneauMessage<    {
+    resource: string;
+    }>;
+    itemLoadError: PanneauMessage<    {
+    resource: string;
+    }>;
+    notFound: PanneauMessage<Record<never, never>>;
+    notFoundText: PanneauMessage<Record<never, never>>;
+    backHome: PanneauMessage<Record<never, never>>;
+    missingPage: PanneauMessage<    {
+    component: string;
+    }>;
+};
+
+// @public
 export const en: MessageCatalog;
 
 // @public

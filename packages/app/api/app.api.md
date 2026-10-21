@@ -8,6 +8,7 @@ import { BootConfig } from '@panneau/protocol';
 import type { BootConfigInput } from '@panneau/protocol';
 import { DataAdapter } from '@panneau/data';
 import { JSX } from 'react';
+import { NamedIconLoader } from '@panneau/ui';
 import { PanneauPlugin } from '@panneau/core';
 import { QueryClient } from '@tanstack/react-query';
 
@@ -28,6 +29,7 @@ export interface PanneauAppOptions {
     adapter?: DataAdapter;
     config?: BootConfigInput;
     element: Element;
+    iconLoader?: NamedIconLoader | null;
     onUnauthorized?: (context: UnauthorizedContext) => void;
     plugins?: readonly PanneauPlugin[];
     queryClient?: QueryClient;
@@ -37,6 +39,7 @@ export interface PanneauAppOptions {
 export interface PanneauProps {
     adapter?: DataAdapter;
     config: BootConfig;
+    iconLoader?: NamedIconLoader | null;
     onUnauthorized?: (context: UnauthorizedContext) => void;
     plugins?: readonly PanneauPlugin[];
     queryClient?: QueryClient;

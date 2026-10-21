@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { DataAdapter } from '@panneau/data';
@@ -89,7 +89,8 @@ describe('createPanneauApp', () => {
             });
         });
 
-        expect(screen.getByRole('link', { name: 'pages' })).toHaveAttribute(
+        const navigation = screen.getByRole('navigation', { name: 'Main navigation' });
+        expect(within(navigation).getByRole('link', { name: 'Pages' })).toHaveAttribute(
             'href',
             '/resources/pages',
         );

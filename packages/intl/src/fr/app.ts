@@ -1,0 +1,27 @@
+/** The French messages of `@panneau/app`, by id. */
+export const appFr: Record<string, string> = {
+    'panneau.app.loading': 'Chargement…',
+    'panneau.app.loadError': 'Le panneau d’administration n’a pas pu être chargé.',
+    'panneau.app.retry': 'Réessayer',
+    'panneau.app.sessionEnded': 'Votre session a pris fin.',
+    'panneau.app.logIn': 'Se connecter',
+    'panneau.app.skipToContent': 'Aller au contenu',
+    'panneau.app.navigation': 'Navigation principale',
+    'panneau.app.collapseSidebar': 'Réduire la barre latérale',
+    'panneau.app.expandSidebar': 'Déployer la barre latérale',
+    'panneau.app.openMenu': 'Ouvrir le menu',
+    'panneau.app.closeMenu': 'Fermer le menu',
+    'panneau.app.colorScheme':
+        'Apparence : {scheme, select, light {claire} dark {sombre} other {celle du système}}',
+    'panneau.app.home': 'Accueil',
+    'panneau.app.welcome': 'Bienvenue, {name}.',
+    'panneau.app.create': 'Créer : {resource}',
+    'panneau.app.edit': 'Modifier : {resource}',
+    'panneau.app.created': 'Création réussie : {resource}.',
+    'panneau.app.saved': 'Enregistrement réussi : {resource}.',
+    'panneau.app.itemLoadError': 'Impossible de charger cet élément ({resource}).',
+    'panneau.app.notFound': 'Page introuvable',
+    'panneau.app.notFoundText': 'Cette page n’existe pas, ou vous ne pouvez pas la voir.',
+    'panneau.app.backHome': 'Retour à l’accueil',
+    'panneau.app.missingPage': 'Aucun plugin ne fournit la page « {component} ».',
+};
