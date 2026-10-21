@@ -55,6 +55,8 @@ Goal: the pieces work on their own, and Niche can start using them.
 
 Goal: a complete admin panel, ready for client projects.
 
+**Pilot: the contests platform.** Folklore's contest platform (multi-tenant, with internal, agency and client users) moves its whole admin to the 5.0 betas, one item at a time, starting with the app shell. Niche keeps pulling what its product needs from this phase. What doesn't fit becomes an issue here, labelled `contests`.
+
 - **App shell:** routing, layout, menus, replaceable pages, error pages.
 - **Auth:**
     - password login, password reset, 2FA, passkeys, email verification;
@@ -74,7 +76,7 @@ Goal: a complete admin panel, ready for client projects.
 - **Rich text:** TipTap 3 field (HTML storage by default, ProseMirror JSON as an option).
 - **Media:** media fields and a basic library on the protocol's media API; `laravel-mediatheque` adapter.
 - **Folklore plugin:** Pages, Blocks and PageSlug fields with their JS, shipped by `laravel-folklore`.
-- **Migration:** guide, codemods for JS, Rector rules for PHP.
+- **Migration:** guide, codemods for JS, Rector rules for PHP, tried on the contests platform's admin (custom fields, pages and controllers) before 5.0.
 
 ## 5.0.0
 

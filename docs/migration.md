@@ -16,10 +16,11 @@ These lines only get fixes and security patches. New features go to 5.x.
 ## Order
 
 1. **Niche**, during the alphas and betas: the pilot project. It starts directly on 5.x.
-2. **Projects on `laravel-panneau` v1.4 and `panneau-js` v4**, after 5.0.0. They are the closest to 5.
-3. **Projects on v1.3 and v4.**
-4. **Projects on v1.3 with v3 or older (React 18).** These need React 19 as well. They migrate when a redesign or a major update happens, not on their own.
-5. **Heavily customized projects** last. Their custom fields and controllers are the best test of the migration tools, so they serve as test cases from the betas onward.
+2. **The contests platform**, during the betas: the pilot of phase 2 (app shell, auth, permissions, lists, actions). It moves from v1.3 and v4 one item at a time, and its heavily customized admin is the first test case of the migration tools.
+3. **Projects on `laravel-panneau` v1.4 and `panneau-js` v4**, after 5.0.0. They are the closest to 5.
+4. **Projects on v1.3 and v4.**
+5. **Projects on v1.3 with v3 or older (React 18).** These need React 19 as well. They migrate when a redesign or a major update happens, not on their own.
+6. **Heavily customized projects** last. Their custom fields and controllers are the best test of the migration tools, so they serve as test cases from the betas onward.
 
 `micromag-js` stays on v4. Micromag will eventually be replaced by Niche.
 
