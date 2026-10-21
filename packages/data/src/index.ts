@@ -2,7 +2,6 @@ export type {
     ActionResponse,
     DataAdapter,
     LoginCredentials,
-    MediaQuery,
     RequestOptions,
     UpdateOptions,
     Values,

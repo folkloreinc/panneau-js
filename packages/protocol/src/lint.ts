@@ -64,6 +64,21 @@ function checkResource(resource: ResourceInput, path: string, issues: Validation
             );
         }
     });
+    if (resource.kind === 'media') {
+        const file = resource.fields.findIndex((field) => field.name === 'file');
+        const field = resource.fields[file];
+        if (field === undefined) {
+            issues.push({
+                path: `${path}.fields`,
+                message: 'A resource of kind `media` needs a `file` field.',
+            });
+        } else if (field.type !== 'file' || field.multiple === true) {
+            issues.push({
+                path: `${path}.fields.${file}`,
+                message: 'The `file` field of a `media` resource must be a single `file`.',
+            });
+        }
+    }
     resource.fields.forEach((field, index) => {
         if (field.type === 'relation' && field.resource === undefined) {
             issues.push({
@@ -76,11 +91,15 @@ function checkResource(resource: ResourceInput, path: string, issues: Validation
 
 /**
  * Checks what the schema can't: references between parts of a definition (layout nodes and
- * columns that name existing fields, relations that name a resource, unique names).
+ * columns that name existing fields, relations and media fields that name a resource, unique
+ * names), and the `file` field of `media` resources.
  */
 export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
     const issues: ValidationIssue[] = [];
     const resourceIds = new Set(definition.resources.map((resource) => resource.id));
+    const libraries = definition.resources
+        .filter((resource) => resource.kind === 'media')
+        .map((resource) => resource.id);
     definition.resources.forEach((resource, index) => {
         checkResource(resource, `resources.${index}`, issues);
         resource.fields.forEach((field, fieldIndex) => {
@@ -93,6 +112,25 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
                     path: `resources.${index}.fields.${fieldIndex}.resource`,
                     message: `No resource \`${field.resource}\`.`,
                 });
+            }
+            if (field.type === 'media') {
+                const fieldPath = `resources.${index}.fields.${fieldIndex}.resource`;
+                if (field.resource === undefined) {
+                    if (libraries.length !== 1) {
+                        issues.push({
+                            path: fieldPath,
+                            message:
+                                libraries.length === 0
+                                    ? 'A `media` field needs a resource of kind `media`.'
+                                    : 'A `media` field needs a `resource` when there are several libraries.',
+                        });
+                    }
+                } else if (!libraries.includes(field.resource)) {
+                    issues.push({
+                        path: fieldPath,
+                        message: `No resource of kind \`media\` named \`${field.resource}\`.`,
+                    });
+                }
             }
         });
     });

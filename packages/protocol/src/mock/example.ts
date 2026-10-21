@@ -3,7 +3,7 @@ import type { DefinitionInput } from '../schemas';
 /**
  * A small but complete definition: pages with localized titles, a status, a publication date shown
  * for published pages, an author, an attachment and typed blocks, in tabs and a sidebar, plus
- * authors. For tests
+ * authors with a photo, and a media library. For tests
  * and stories, with `createMockBackend()`.
  */
 export function createExampleDefinition(): DefinitionInput {
@@ -151,7 +151,41 @@ export function createExampleDefinition(): DefinitionInput {
             {
                 id: 'authors',
                 label: { singular: 'auteur', plural: 'auteurs' },
-                fields: [{ name: 'name', type: 'text', rules: [{ rule: 'required' }] }],
+                fields: [
+                    { name: 'name', type: 'text', rules: [{ rule: 'required' }] },
+                    { name: 'photo', type: 'media', accept: ['image/*'] },
+                ],
+            },
+            {
+                id: 'media',
+                kind: 'media',
+                label: { singular: 'média', plural: 'médias' },
+                itemTitle: 'name',
+                fields: [
+                    {
+                        name: 'file',
+                        type: 'file',
+                        accept: ['image/*', 'video/*', 'application/pdf'],
+                        rules: [{ rule: 'required' }],
+                    },
+                    { name: 'name', type: 'text' },
+                    { name: 'alt', type: 'text', localized: true },
+                ],
+                list: {
+                    filters: [
+                        {
+                            id: 'type',
+                            type: 'select',
+                            options: [
+                                { value: 'image', label: 'Images' },
+                                { value: 'video', label: 'Vidéos' },
+                                { value: 'document', label: 'Documents' },
+                            ],
+                        },
+                    ],
+                    search: true,
+                },
+                abilities: { viewAny: true, create: true },
             },
         ],
         menus: { main: [{ type: 'resources' }, { type: 'link', label: 'Site', url: '/' }] },

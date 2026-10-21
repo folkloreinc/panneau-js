@@ -1,6 +1,6 @@
 # 0010: Media through the protocol, non-destructive image editing
 
-- Status: accepted
+- Status: accepted, amended by [0026](0026-media-libraries.md): media libraries are resources
 - Date: 2026-10-14
 
 ## Context

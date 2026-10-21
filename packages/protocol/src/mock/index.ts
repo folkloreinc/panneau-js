@@ -4,6 +4,8 @@ import type { DefinitionInput, ResourceInput } from '../schemas';
 import type {
     ActionResult,
     Item,
+    MediaInfo,
+    MediaReference,
     Problem,
     Selection,
     StoredFile,
@@ -106,7 +108,9 @@ function applyQuery(items: Item[], query: Pick<ListQuery, 'filter' | 'q' | 'sort
         }
         const accepted = (Array.isArray(expected) ? expected : [expected]).map(String);
         result = result.filter((item) => {
-            const value = item[key];
+            // A filter that isn't a value of the item reads its `media`: `filter[type]=image`.
+            const value =
+                key in item ? item[key] : isRecord(item.media) ? item.media[key] : undefined;
             const values = Array.isArray(value) ? value : [value];
             return values.some((candidate) => accepted.includes(String(candidate)));
         });
@@ -134,6 +138,28 @@ function applyQuery(items: Item[], query: Pick<ListQuery, 'filter' | 'q' | 'sort
         });
     }
     return result;
+}
+
+/** The type of a media, from its MIME type. */
+function mediaType(mime: string | null | undefined): string {
+    const family = (mime ?? '').split('/')[0] ?? '';
+    if (family === 'image' || family === 'video' || family === 'audio') {
+        return family;
+    }
+    return mime === 'application/pdf' || family === 'text' ? 'document' : 'other';
+}
+
+/** What the mock computes about a stored file: no renditions, ready at once. */
+function mediaOf(file: StoredFile): MediaInfo {
+    const type = mediaType(file.mime);
+    return {
+        type,
+        mime: file.mime ?? null,
+        size: file.size ?? null,
+        url: file.url ?? null,
+        thumbnailUrl: type === 'image' ? (file.url ?? null) : null,
+        status: 'ready',
+    };
 }
 
 /**
@@ -305,6 +331,12 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
         return { values: resolved, missing };
     };
 
+    const missingMedia = (paths: string[]) =>
+        problem(422, 'The given data was invalid.', {
+            type: 'urn:panneau:problem:validation',
+            errors: Object.fromEntries(paths.map((path) => [path, ['This media does not exist.']])),
+        });
+
     const missingUploads = (paths: string[]) =>
         problem(422, 'The given data was invalid.', {
             type: 'urn:panneau:problem:validation',
@@ -312,6 +344,79 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
                 paths.map((path) => [path, ['This upload does not exist.']]),
             ),
         });
+
+    // The values of `media` fields at the top of a resource: an id, or `{ id, transform }`,
+    // becomes a reference to a media of its library. Returns the paths of media that don't exist.
+    const resolveMedia = (
+        resource: ResourceInput,
+        values: Values,
+    ): { values: Values; missing: string[] } => {
+        const missing: string[] = [];
+        const resolved = { ...values };
+        const libraries = definition.resources.filter((candidate) => candidate.kind === 'media');
+        resource.fields
+            .filter((field) => field.type === 'media' && field.name in values)
+            .forEach((field) => {
+                const library = libraries.find((candidate) =>
+                    field.resource !== undefined ? candidate.id === field.resource : true,
+                );
+                const toReference = (value: unknown, path: string): unknown => {
+                    const id = isRecord(value) ? value.id : value;
+                    if (typeof id !== 'string' && typeof id !== 'number') {
+                        return value;
+                    }
+                    const media = (store.get(library?.id ?? '') ?? []).find(
+                        (candidate) => candidate.id === String(id),
+                    );
+                    if (media === undefined || library === undefined) {
+                        missing.push(path);
+                        return value;
+                    }
+                    const title = media[library.itemTitle ?? 'name'];
+                    const reference: MediaReference = {
+                        id: media.id,
+                        ...(typeof title === 'string' ? { label: title } : {}),
+                        ...(isRecord(media.media) ? { media: media.media as MediaInfo } : {}),
+                        ...(isRecord(value) && isRecord(value.transform)
+                            ? { transform: value.transform }
+                            : {}),
+                    };
+                    return reference;
+                };
+                const value = values[field.name];
+                resolved[field.name] = Array.isArray(value)
+                    ? value.map((entry, index) =>
+                          toReference(entry, `${field.name}.${String(index)}`),
+                      )
+                    : toReference(value, field.name);
+            });
+        return { values: resolved, missing };
+    };
+
+    // Resolves the files and media of the values, and computes the `media` of a media item from
+    // its file. The client never sets `media`.
+    const resolveValues = (
+        resource: ResourceInput,
+        body: Values,
+    ): { values: Values; problem: Response | null } => {
+        const sent = { ...body };
+        if (resource.kind === 'media') {
+            delete sent.media;
+        }
+        const files = resolveFiles(resource, sent);
+        if (files.missing.length > 0) {
+            return { values: body, problem: missingUploads(files.missing) };
+        }
+        const media = resolveMedia(resource, files.values);
+        if (media.missing.length > 0) {
+            return { values: body, problem: missingMedia(media.missing) };
+        }
+        const values = media.values;
+        if (resource.kind === 'media' && isRecord(values.file)) {
+            values.media = mediaOf(values.file as StoredFile);
+        }
+        return { values, problem: null };
+    };
 
     const handle = async (request: Request): Promise<Response> => {
         const url = new URL(request.url, 'http://panneau.test');
@@ -371,9 +476,9 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
                 if (invalid !== null) {
                     return invalid;
                 }
-                const { values, missing } = resolveFiles(resource, body);
-                if (missing.length > 0) {
-                    return missingUploads(missing);
+                const { values, problem: unresolved } = resolveValues(resource, body);
+                if (unresolved !== null) {
+                    return unresolved;
                 }
                 const item = makeItem(resource, { ...values, id: undefined });
                 list.push(item);
@@ -455,9 +560,9 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
             if (invalid !== null) {
                 return invalid;
             }
-            const { values, missing } = resolveFiles(resource, body);
-            if (missing.length > 0) {
-                return missingUploads(missing);
+            const { values, problem: unresolved } = resolveValues(resource, body);
+            if (unresolved !== null) {
+                return unresolved;
             }
             const updates = Object.fromEntries(
                 Object.entries(values).filter(([key]) => !RESERVED_KEYS.has(key)),

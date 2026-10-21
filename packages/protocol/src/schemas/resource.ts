@@ -30,6 +30,10 @@ export const ResourceFeatures = z.looseObject({
 export const Resource = z
     .looseObject({
         id: z.string().min(1),
+        kind: z.string().min(1).optional().meta({
+            description:
+                "What the resource is. `media`: a library of media (decision 0026), with a `file` field and a `media` on each item. Without it, an ordinary resource. Clients treat a kind they don't know as an ordinary resource.",
+        }),
         label: z.looseObject({ singular: z.string(), plural: z.string() }),
         description: z.string().optional(),
         icon: z.string().optional(),

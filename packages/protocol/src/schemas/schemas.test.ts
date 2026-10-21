@@ -33,7 +33,7 @@ describe('Definition', () => {
         expect(result.success).toBe(false);
         if (!result.success) {
             expect(result.issues).toContainEqual({
-                path: 'resources.2.id',
+                path: 'resources.3.id',
                 message: 'Duplicate resource id `pages`.',
             });
         }
@@ -135,6 +135,37 @@ describe('API payloads', () => {
 });
 
 describe('lintDefinition', () => {
+    it('checks the file field of media resources, and the library of media fields', () => {
+        const definition = createDefinition();
+        expect(lintDefinition(definition)).toEqual([]);
+        const library = definition.resources.find((resource) => resource.id === 'media');
+        if (library === undefined) {
+            throw new Error('Fixture has no media resource.');
+        }
+        const libraryIndex = definition.resources.indexOf(library);
+        definition.resources.push({ ...library, id: 'documents' });
+        library.fields = library.fields.map((field) =>
+            field.name === 'file' ? { ...field, multiple: true } : field,
+        );
+        const authors = definition.resources.find((resource) => resource.id === 'authors');
+        authors?.fields.push({ name: 'cv', type: 'media', resource: 'pages' });
+
+        expect(lintDefinition(definition)).toEqual([
+            {
+                path: 'resources.1.fields.1.resource',
+                message: 'A `media` field needs a `resource` when there are several libraries.',
+            },
+            {
+                path: 'resources.1.fields.2.resource',
+                message: 'No resource of kind `media` named `pages`.',
+            },
+            {
+                path: `resources.${String(libraryIndex)}.fields.0`,
+                message: 'The `file` field of a `media` resource must be a single `file`.',
+            },
+        ]);
+    });
+
     it('finds no issue in a consistent definition', () => {
         expect(lintDefinition(createDefinition())).toEqual([]);
     });

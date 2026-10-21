@@ -27,7 +27,7 @@ try {
 
 ## Adapters
 
-A `DataAdapter` is everything the engine and the app need from a backend: the definition, resources (list, get, create, update, delete), actions and their runs, media, the auth session, search and widget data. Methods reject with an `ApiError` when the backend answers with an error.
+A `DataAdapter` is everything the engine and the app need from a backend: the definition, resources (list, get, create, update, delete), actions and their runs, the auth session, search and widget data. Media are items of resources of kind `media` ([0026](../../docs/decisions/0026-media-libraries.md)), through the resource methods. Methods reject with an `ApiError` when the backend answers with an error.
 
 - **`createRestAdapter({ baseUrl, fetch, headers, credentials })`** implements the HTTP API of the protocol:
     - `application/problem+json` errors become typed errors, by status: `401` `UnauthorizedError`, `403` `ForbiddenError`, `404` `NotFoundError`, `412` `ConflictError` (with `current`), `422` `ValidationError` (with `errors` keyed by dot path), others `ApiError`. Responses that are not problems get a problem built from their status;
@@ -62,7 +62,7 @@ if (!response.ok) {
 
 ### Direct uploads
 
-Large files (videos of several gigabytes) go from the browser to S3-compatible storage, in parts, with URLs that the backend signs: the `presigned` mode of the protocol ([0025](../../docs/decisions/0025-presigned-uploads.md)). `createPresignedUploads()` gives Uppy 6 its `signRequest`, and completes each upload. An upload is not a media: values reference it as `{ upload: 'upl_…' }`, and `uploadMedia()` makes it one.
+Large files (videos of several gigabytes) go from the browser to S3-compatible storage, in parts, with URLs that the backend signs: the `presigned` mode of the protocol ([0025](../../docs/decisions/0025-presigned-uploads.md)). `createPresignedUploads()` gives Uppy 6 its `signRequest`, and completes each upload. An upload is not a media: values reference it as `{ upload: 'upl_…' }`, such as the `file` of a media.
 
 ```ts
 import AwsS3 from '@uppy/aws-s3';
@@ -79,11 +79,11 @@ const uploads = createPresignedUploads({
 const uppy = new Uppy().use(AwsS3, { signRequest: uploads.signRequest });
 uppy.on('upload-success', async (file, response) => {
     const upload = await uploads.complete(response.body.key, { name: file.name });
-    const media = await adapter.uploadMedia({ upload: upload.id }); // media.status: 'processing'
+    const media = await adapter.create('media', { file: { upload: upload.id } }); // media.media.status: 'processing'
 });
 ```
 
-It is plain `fetch` and doesn't import Uppy. Small files can still use `uploadMedia(file)`.
+It is plain `fetch` and doesn't import Uppy. Without direct uploads, `create()` sends a file in `multipart/form-data`.
 
 The REST adapter gives the same object, with its own base URL, headers, credentials and errors: `adapter.presignedUploads({ endpoint: definition.uploads.endpoint })` (optional in `DataAdapter`). The fields of `@panneau/fields` and `@panneau/media` upload through it with `createUppyUploadSource()` of `@panneau/fields/uppy`.
 
