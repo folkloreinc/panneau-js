@@ -129,6 +129,56 @@ export const MediaTransform = z.looseObject({
         .meta({ description: 'Relative to the width and height, from 0 to 1.' }),
 });
 
+export const UploadReference = z.looseObject({ upload: z.string().min(1) }).meta({
+    description:
+        'A file uploaded directly to storage, by the id of its upload: in a file value, an action parameter, or `POST /media`.',
+});
+
+export const Upload = z
+    .looseObject({
+        id: z.string().min(1).meta({ description: 'The id of the upload: `upl_…`.' }),
+        key: z.string().optional().meta({ description: 'The key of the object in storage.' }),
+        name: z.string().optional(),
+        mime: z.string().optional(),
+        size: z.number().int().nonnegative().optional(),
+    })
+    .meta({
+        description:
+            'A file the browser uploaded to storage, before it becomes a media, an import or another value.',
+    });
+
+export const UploadResponse = z.looseObject({ data: Upload });
+
+export const UploadSignRequest = z
+    .looseObject({
+        method: z.enum(['GET', 'POST', 'PUT', 'DELETE']),
+        key: z.string().min(1),
+        uploadId: z.string().optional().meta({ description: 'The S3 multipart upload.' }),
+        partNumber: z.number().int().positive().optional(),
+        contentType: z.string().optional(),
+        expiresIn: z.number().int().positive().optional(),
+    })
+    .meta({
+        description: "A request of the browser's S3 client to sign (Uppy 6's `signRequest`).",
+    });
+
+export const UploadSignResponse = z
+    .looseObject({
+        url: z.string(),
+        key: z
+            .string()
+            .optional()
+            .meta({ description: 'The key the backend chose, for the first request of a file.' }),
+        headers: z.record(z.string(), z.string()).optional().meta({
+            description: 'Headers the URL was signed with, which the browser sends.',
+        }),
+        upload: z
+            .string()
+            .optional()
+            .meta({ description: 'The upload the first request of a file created: `upl_…`.' }),
+    })
+    .meta({ description: 'A presigned request.' });
+
 export const Media = Item.extend({
     type: z
         .string()
@@ -187,6 +237,11 @@ export type ActionResult = z.infer<typeof ActionResult>;
 export type ActionRun = z.infer<typeof ActionRun>;
 export type ActionRunResponse = z.infer<typeof ActionRunResponse>;
 export type MediaTransform = z.infer<typeof MediaTransform>;
+export type UploadReference = z.infer<typeof UploadReference>;
+export type Upload = z.infer<typeof Upload>;
+export type UploadResponse = z.infer<typeof UploadResponse>;
+export type UploadSignRequest = z.infer<typeof UploadSignRequest>;
+export type UploadSignResponse = z.infer<typeof UploadSignResponse>;
 export type Media = z.infer<typeof Media>;
 export type MediaResponse = z.infer<typeof MediaResponse>;
 export type MediaListResponse = z.infer<typeof MediaListResponse>;

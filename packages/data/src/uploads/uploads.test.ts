@@ -4,17 +4,7 @@ import { UnauthorizedError, ValidationError } from '../errors';
 import { createLaravelError } from '../laravel';
 import { createPresignedUploads } from './index';
 
-const media = {
-    id: 'med_1',
-    version: null,
-    abilities: {},
-    type: 'video',
-    name: 'video.mp4',
-    mime: 'video/mp4',
-    size: 1000,
-    url: '/media/med_1',
-    status: 'processing',
-};
+const upload = { id: 'upl_1', key: 'uploads/upl_1', name: 'video.mp4', size: 1000 };
 
 function backend(answers: Record<string, () => Response>) {
     const requests: { url: string; init: RequestInit }[] = [];
@@ -37,10 +27,10 @@ describe('createPresignedUploads', () => {
         const { fetch, requests } = backend({
             '/uploads/sign': () =>
                 json({ url: 'https://s3.test/signed', key: 'uploads/upl_1', upload: 'upl_1' }),
-            '/uploads/upl_1/complete': () => json({ data: media }, 201),
+            '/uploads/upl_1/complete': () => json({ data: upload }),
         });
         const uploads = createPresignedUploads({
-            endpoint: '/media-library/uploads/',
+            baseUrl: '/panneau/api/',
             fetch,
             headers: { 'X-XSRF-TOKEN': 'token' },
         });
@@ -48,7 +38,7 @@ describe('createPresignedUploads', () => {
             url: 'https://s3.test/signed',
             key: 'uploads/upl_1',
         });
-        expect(requests[0]?.url).toBe('/media-library/uploads/sign');
+        expect(requests[0]?.url).toBe('/panneau/api/uploads/sign');
         expect(JSON.parse(String(requests[0]?.init.body))).toEqual({
             method: 'POST',
             key: 'video.mp4',
@@ -56,15 +46,15 @@ describe('createPresignedUploads', () => {
         expect(new Headers(requests[0]?.init.headers).get('X-XSRF-TOKEN')).toBe('token');
         expect(requests[0]?.init.credentials).toBe('include');
 
-        await expect(uploads.complete('uploads/upl_1')).resolves.toEqual(media);
-        expect(requests[1]?.url).toBe('/media-library/uploads/upl_1/complete');
+        await expect(uploads.complete('uploads/upl_1')).resolves.toEqual(upload);
+        expect(requests[1]?.url).toBe('/panneau/api/uploads/upl_1/complete');
         expect(requests[1]?.init.body).toBeUndefined();
     });
 
-    it('reads the upload from the key when the backend does not name it', async () => {
+    it('reads the upload from the key when the backend does not name it, at its own endpoint', async () => {
         const { fetch, requests } = backend({
             '/uploads/sign': () => json({ url: 'https://s3.test/signed', key: 'uploads/upl_2' }),
-            '/uploads/upl_2/complete': () => json({ data: media }),
+            '/uploads/upl_2/complete': () => json({ data: { id: 'upl_2' } }),
         });
         const uploads = createPresignedUploads({ endpoint: '/uploads', fetch });
         await uploads.signRequest({ method: 'PUT', key: 'image.jpg', contentType: 'image/jpeg' });

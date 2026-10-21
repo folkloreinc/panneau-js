@@ -1,23 +1,12 @@
-import type { Media, Problem } from '@panneau/protocol';
+import type { Problem, Upload, UploadSignRequest, UploadSignResponse } from '@panneau/protocol';
 
 import { type ApiError, InvalidResponseError, createApiError } from '../errors';
 import { readProblem } from '../problem';
 
-/**
- * A request to sign, as `signRequest` of `@uppy/aws-s3` 6 gives it: the first request of a file
- * (`POST` to create a multipart upload, or `PUT` for a single object), a part, or the end of a
- * multipart upload.
- */
-export interface PresignableRequest {
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-    key: string;
-    uploadId?: string;
-    partNumber?: number;
-    contentType?: string;
-    expiresIn?: number;
-}
+/** A request to sign, as `signRequest` of `@uppy/aws-s3` 6 gives it. */
+export type PresignableRequest = UploadSignRequest;
 
-/** A signed request, as `signRequest` of `@uppy/aws-s3` 6 answers it. */
+/** A signed request, as `signRequest` of `@uppy/aws-s3` 6 takes it. */
 export interface PresignedResponse {
     url: string;
     /** The key the backend chose for a new upload. */
@@ -27,8 +16,10 @@ export interface PresignedResponse {
 }
 
 export interface PresignedUploadsOptions {
-    /** The `endpoint` of the definition's `uploads`: the base URL of `sign` and `complete`. */
-    endpoint: string;
+    /** URL of the API, as `api.baseUrl` in the definition: the routes are under `/uploads`. */
+    baseUrl?: string;
+    /** The `endpoint` of the definition's `uploads`, when the routes are elsewhere. */
+    endpoint?: string;
     /** The `fetch` function to use. Defaults to the global one. */
     fetch?: (input: string, init: RequestInit) => Promise<Response>;
     /**
@@ -47,33 +38,36 @@ export interface PresignedUploads {
     signRequest: (request: PresignableRequest) => Promise<PresignedResponse>;
     /**
      * Tells the backend that the upload of a key is complete, once Uppy reports it
-     * (`upload-success`, with the key in `response.body.key`), and resolves with the media, whose
-     * `status` says where its ingest is.
+     * (`upload-success`, with the key in `response.body.key`), and resolves with the upload.
+     * Values reference it as `{ upload: upload.id }`: a file field, an import, or
+     * `uploadMedia({ upload: upload.id })` to make it a media.
      */
-    complete: (key: string) => Promise<Media>;
+    complete: (key: string) => Promise<Upload>;
 }
 
 /**
  * Direct uploads to S3-compatible storage with URLs that the backend signs, the `presigned` mode
  * of the protocol (decision 0025): the browser sends files itself, in parts for large ones, then
- * the backend ingests them.
+ * completes each upload, which values reference.
  *
  * ```ts
- * const uploads = createPresignedUploads({ endpoint: definition.uploads.endpoint, headers: () => getLaravelHeaders() });
+ * const uploads = createPresignedUploads({ baseUrl: definition.api.baseUrl, headers: () => getLaravelHeaders() });
  * uppy.use(AwsS3, { signRequest: uploads.signRequest });
  * uppy.on('upload-success', async (file, response) => {
- *     const media = await uploads.complete(response.body.key);
+ *     const upload = await uploads.complete(response.body.key);
+ *     const media = await adapter.uploadMedia({ upload: upload.id });
  * });
  * ```
  */
 export function createPresignedUploads({
+    baseUrl,
     endpoint,
     fetch: fetcher = (input, init) => globalThis.fetch(input, init),
     headers,
     credentials = 'include',
     createError = (problem) => createApiError(problem),
 }: PresignedUploadsOptions): PresignedUploads {
-    const base = endpoint.replace(/\/+$/, '');
+    const base = (endpoint ?? `${(baseUrl ?? '').replace(/\/+$/, '')}/uploads`).replace(/\/+$/, '');
     // The upload of each key, from the response that created it.
     const uploads = new Map<string, string>();
 
@@ -96,7 +90,7 @@ export function createPresignedUploads({
 
     return {
         async signRequest(request) {
-            const body = (await post('/sign', request)) as PresignedResponse & { upload?: string };
+            const body = (await post('/sign', request)) as UploadSignResponse;
             if (typeof body?.url !== 'string') {
                 throw new InvalidResponseError('The signed request has no URL.', []);
             }
@@ -116,10 +110,10 @@ export function createPresignedUploads({
             // segment of the key it chose (`uploads/upl_01H…`).
             const upload = uploads.get(key) ?? key.split('/').pop() ?? key;
             const body = (await post(`/${encodeURIComponent(upload)}/complete`)) as {
-                data?: Media;
+                data?: Upload;
             };
-            if (body?.data === undefined) {
-                throw new InvalidResponseError('The completed upload has no media.', []);
+            if (typeof body?.data?.id !== 'string') {
+                throw new InvalidResponseError('The completed upload has no id.', []);
             }
             uploads.delete(key);
             return body.data;

@@ -62,7 +62,7 @@ if (!response.ok) {
 
 ### Direct uploads
 
-Large files (videos of several gigabytes) go from the browser to S3-compatible storage, in parts, with URLs that the backend signs: the `presigned` mode of the protocol ([0025](../../docs/decisions/0025-presigned-uploads.md)). `createPresignedUploads()` gives Uppy 6 its `signRequest`, and completes each upload, so that the backend ingests the file:
+Large files (videos of several gigabytes) go from the browser to S3-compatible storage, in parts, with URLs that the backend signs: the `presigned` mode of the protocol ([0025](../../docs/decisions/0025-presigned-uploads.md)). `createPresignedUploads()` gives Uppy 6 its `signRequest`, and completes each upload. An upload is not a media: values reference it as `{ upload: 'upl_…' }`, and `uploadMedia()` makes it one.
 
 ```ts
 import AwsS3 from '@uppy/aws-s3';
@@ -72,17 +72,18 @@ import { createLaravelError, getLaravelHeaders } from '@panneau/data/laravel';
 import { createPresignedUploads } from '@panneau/data/uploads';
 
 const uploads = createPresignedUploads({
-    endpoint: definition.uploads.endpoint, // the mediatheque's routes: '/media-library/uploads'
+    baseUrl: definition.api.baseUrl, // the routes are under {baseUrl}/uploads, or at uploads.endpoint
     headers: () => getLaravelHeaders(),
     createError: createLaravelError,
 });
 const uppy = new Uppy().use(AwsS3, { signRequest: uploads.signRequest });
 uppy.on('upload-success', async (file, response) => {
-    const media = await uploads.complete(response.body.key); // media.status: 'processing'
+    const upload = await uploads.complete(response.body.key);
+    const media = await adapter.uploadMedia({ upload: upload.id }); // media.status: 'processing'
 });
 ```
 
-It is plain `fetch` and doesn't import Uppy. Small files can still use `uploadMedia()`.
+It is plain `fetch` and doesn't import Uppy. Small files can still use `uploadMedia(file)`.
 
 ## Query hooks
 

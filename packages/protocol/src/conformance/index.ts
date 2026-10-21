@@ -2,7 +2,13 @@ import type { z } from 'zod';
 
 import { type FilterRange, toSearchParams } from '../query';
 import { Definition, type Resource } from '../schemas';
-import { ActionResult, ItemResponse, ListResponse, Problem } from '../schemas/api';
+import {
+    ActionResult,
+    ItemResponse,
+    ListResponse,
+    Problem,
+    UploadSignResponse,
+} from '../schemas/api';
 import { isFilled } from '../values';
 import { PROBLEM_CONTENT_TYPE } from '../version';
 
@@ -340,6 +346,51 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                     'A dry run must not change the items.',
                 );
             }
+        },
+    );
+
+    await run(
+        'uploads.sign',
+        'POST /uploads/sign signs the first request of a file, and only the keys of open uploads',
+        async (check) => {
+            const uploads = (definition as Definition | null)?.uploads;
+            if (uploads?.mode !== 'presigned') {
+                check.skip('The definition has no presigned uploads.');
+                return;
+            }
+            if (uploads.endpoint !== undefined) {
+                check.skip('The upload routes are not at {api.baseUrl}/uploads.');
+                return;
+            }
+            const sign = (body: unknown) =>
+                request('/uploads/sign', { method: 'POST', body: JSON.stringify(body) });
+            const reply = await sign({ method: 'POST', key: 'panneau-conformance.txt' });
+            if (check.expectStatus(reply, 200)) {
+                const signed = check.expectSchema(
+                    UploadSignResponse,
+                    reply.body,
+                    'The signed request',
+                );
+                if (signed !== null) {
+                    check.expect(
+                        signed.key !== undefined && signed.upload !== undefined,
+                        'The first request of a file must answer the key and the upload the backend chose.',
+                    );
+                }
+            }
+            check.expectProblem(
+                await sign({
+                    method: 'PUT',
+                    key: 'not-an-upload-of-this-user',
+                    uploadId: 'unknown',
+                    partNumber: 1,
+                }),
+                404,
+            );
+            check.expectProblem(
+                await request(`/uploads/${UNKNOWN}/complete`, { method: 'POST' }),
+                404,
+            );
         },
     );
 

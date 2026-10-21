@@ -16,6 +16,7 @@ import type { MediaListResponse } from '@panneau/protocol';
 import { Problem } from '@panneau/protocol';
 import type { SearchResponse } from '@panneau/protocol';
 import type { Session } from '@panneau/protocol';
+import type { UploadReference } from '@panneau/protocol';
 import type { ValidationIssue } from '@panneau/protocol';
 
 // @public
@@ -71,7 +72,7 @@ export interface DataAdapter {
     search(q: string, options?: RequestOptions): Promise<SearchResponse>;
     update(resource: string, id: string, values: Values, options?: UpdateOptions): Promise<Item>;
     updateMedia(id: string, values: Values, options?: RequestOptions): Promise<Media>;
-    uploadMedia(file: Blob, values?: Values, options?: RequestOptions): Promise<Media>;
+    uploadMedia(file: Blob | UploadReference, values?: Values, options?: RequestOptions): Promise<Media>;
 }
 
 // @public

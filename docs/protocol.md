@@ -419,31 +419,39 @@ Errors use [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) `application/probl
 
 ### Media
 
-| Operation             | Request                                                                                          |
-| --------------------- | ------------------------------------------------------------------------------------------------ |
-| List and search       | `GET /media?q=&filter[type]=image&filter[tags][]=`                                               |
-| Show, update metadata | `GET`/`PATCH /media/{id}`                                                                        |
-| Upload                | `POST /media` (multipart), or a TUS or presigned flow announced in the definition                |
-| Replace the file      | `POST /media/{id}/file`                                                                          |
-| Edit an image         | `PATCH /media/{id}` with `{ "transform": { "crop": {...}, "rotate": 90, "focalPoint": {...} } }` |
-| Delete, restore       | `DELETE /media/{id}`, `POST /media/{id}/restore`                                                 |
-| Tags                  | `GET /media/tags`                                                                                |
+| Operation             | Request                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------ |
+| List and search       | `GET /media?q=&filter[type]=image&filter[tags][]=`                                                     |
+| Show, update metadata | `GET`/`PATCH /media/{id}`                                                                              |
+| Upload                | `POST /media` (multipart, or JSON with an `upload`), after a direct upload announced in the definition |
+| Replace the file      | `POST /media/{id}/file`                                                                                |
+| Edit an image         | `PATCH /media/{id}` with `{ "transform": { "crop": {...}, "rotate": 90, "focalPoint": {...} } }`       |
+| Delete, restore       | `DELETE /media/{id}`, `POST /media/{id}/restore`                                                       |
+| Tags                  | `GET /media/tags`                                                                                      |
 
-**Presigned uploads.** With `"uploads": { "mode": "presigned", "endpoint": "/media-library/uploads" }` in the definition, the browser sends files to S3-compatible storage itself, in parts for large files, with URLs that the backend signs ([0025](decisions/0025-presigned-uploads.md)):
+**Direct uploads.** With `"uploads": { "mode": "presigned" }` in the definition, the browser can also send files to S3-compatible storage itself, in parts for large ones, with URLs that the backend signs ([0025](decisions/0025-presigned-uploads.md)). An upload is not a media: values reference it.
 
 ```jsonc
-// POST {endpoint}/sign: the request to sign, as Uppy 6's signRequest gives it
+// POST /uploads/sign: the request to sign, as Uppy 6's signRequest gives it
 { "method": "POST", "key": "video.mp4" }
-// 200: the presigned URL, and for a new upload the key and the upload the backend chose
+// 200: the presigned URL, and for a new file the key and the upload the backend chose
 { "url": "https://bucket.s3…?X-Amz-Signature=…", "key": "uploads/upl_01H…", "upload": "upl_01H…" }
 
-// POST {endpoint}/{upload}/complete, once the browser completed the upload on S3
-// 200 or 201: the media, whose status says where its ingest is
-{ "data": { "id": "med_01H…", "status": "processing", … } }
+// POST /uploads/{upload}/complete, once the browser completed the upload in storage
+// 200: the upload
+{ "data": { "id": "upl_01H…", "key": "uploads/upl_01H…", "name": "video.mp4", "mime": "video/mp4", "size": 2147483648 } }
+
+// A value that takes a file takes the upload instead: a file field, an import parameter…
+{ "values": { "file": { "upload": "upl_01H…" } } }
+
+// POST /media in JSON: a media from the upload
+{ "upload": "upl_01H…", "name": "Interview" }
 ```
 
 - **Signing:** the first request of a file (`CreateMultipartUpload`, or `PutObject` for a small file) creates the upload and its key. Later requests (`UploadPart`, `ListParts`, `CompleteMultipartUpload`, `AbortMultipartUpload`) are signed only for a key of the same user's open uploads, and get `404` otherwise. `headers` lists the headers a URL was signed with.
-- **Completion** checks that the object exists, then ingests it.
+- **Completion** checks that the object exists, and gives the upload.
+- **Both ways stay:** `POST /media` in `multipart/form-data`, and multipart requests with files, keep working for small files.
+- **`uploads.endpoint`** moves the two routes elsewhere, for a backend whose upload routes are not under its API.
 - **`status`** of a media is `pending` or `processing` until its renditions are made, then `ready` or `failed`. Without it, a media is ready.
 
 Media items are referenced from field values by id. A media item also exposes:

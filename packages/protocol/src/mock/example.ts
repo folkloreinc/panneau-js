@@ -143,5 +143,6 @@ export function createExampleDefinition(): DefinitionInput {
         ],
         menus: { main: [{ type: 'resources' }, { type: 'link', label: 'Site', url: '/' }] },
         auth: { mode: 'panneau', password: true, providers: [{ id: 'google', label: 'Google' }] },
+        uploads: { mode: 'presigned' },
     };
 }

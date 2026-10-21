@@ -258,6 +258,30 @@ export function createOpenApiDocument(): JsonObject {
                     responses: { 204: ok('Cancelled.'), ...problems(401, 403, 404, 409) },
                 },
             },
+            '/uploads/sign': {
+                post: {
+                    operationId: 'signUpload',
+                    summary:
+                        "Signs a request of the browser's S3 client. The first request of a file creates its upload.",
+                    requestBody: { required: true, content: json(ref('UploadSignRequest')) },
+                    responses: {
+                        200: ok('The presigned request.', ref('UploadSignResponse')),
+                        ...problems(401, 403, 404, 422),
+                    },
+                },
+            },
+            '/uploads/{upload}/complete': {
+                parameters: [pathParameter('upload', 'Upload id: `upl_…`.')],
+                post: {
+                    operationId: 'completeUpload',
+                    summary:
+                        'Once the browser completed the upload in storage, checks the object and gives the upload, which values reference.',
+                    responses: {
+                        200: ok('The upload.', ref('UploadResponse')),
+                        ...problems(401, 403, 404, 422),
+                    },
+                },
+            },
             '/media': {
                 get: {
                     operationId: 'listMedia',
@@ -286,6 +310,19 @@ export function createOpenApiDocument(): JsonObject {
                                     },
                                 },
                             },
+                            ...json({
+                                allOf: [
+                                    ref('UploadReference'),
+                                    {
+                                        type: 'object',
+                                        properties: {
+                                            name: { type: 'string' },
+                                            tags: { type: 'array', items: { type: 'string' } },
+                                        },
+                                    },
+                                ],
+                                description: 'A media from a file uploaded directly to storage.',
+                            }),
                         },
                     },
                     responses: {

@@ -21,6 +21,7 @@ import { ReactNode } from 'react';
 import type { SearchResponse } from '@panneau/protocol';
 import type { Selection as Selection_2 } from '@panneau/protocol';
 import type { Session } from '@panneau/protocol';
+import type { UploadReference } from '@panneau/protocol';
 import { UseMutationResult } from '@tanstack/react-query';
 import { UseQueryOptions } from '@tanstack/react-query';
 import { UseQueryResult } from '@tanstack/react-query';

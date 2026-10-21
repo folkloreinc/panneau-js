@@ -4,27 +4,15 @@
 
 ```ts
 
-import type { Media } from '@panneau/protocol';
 import type { Problem } from '@panneau/protocol';
+import type { Upload } from '@panneau/protocol';
+import type { UploadSignRequest } from '@panneau/protocol';
 
 // @public
 export function createPresignedUploads(input: PresignedUploadsOptions): PresignedUploads;
 
 // @public
-export interface PresignableRequest {
-    // (undocumented)
-    contentType?: string;
-    // (undocumented)
-    expiresIn?: number;
-    // (undocumented)
-    key: string;
-    // (undocumented)
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-    // (undocumented)
-    partNumber?: number;
-    // (undocumented)
-    uploadId?: string;
-}
+export type PresignableRequest = UploadSignRequest;
 
 // @public
 export interface PresignedResponse {
@@ -36,16 +24,17 @@ export interface PresignedResponse {
 
 // @public (undocumented)
 export interface PresignedUploads {
-    complete: (key: string) => Promise<Media>;
+    complete: (key: string) => Promise<Upload>;
     signRequest: (request: PresignableRequest) => Promise<PresignedResponse>;
 }
 
 // @public (undocumented)
 export interface PresignedUploadsOptions {
+    baseUrl?: string;
     // Warning: (ae-forgotten-export) The symbol "ApiError" needs to be exported by the entry point index.d.ts
     createError?: (problem: Problem, response: Response) => ApiError;
     credentials?: RequestCredentials;
-    endpoint: string;
+    endpoint?: string;
     fetch?: (input: string, init: RequestInit) => Promise<Response>;
     headers?: HeadersInit | (() => HeadersInit | Promise<HeadersInit>);
 }
