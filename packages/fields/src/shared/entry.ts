@@ -58,3 +58,20 @@ export function getFieldProps(
 export function asString(value: unknown): string | null {
     return typeof value === 'string' ? value : null;
 }
+
+/** The accepted MIME types of a field that takes files: its `accept`, or its `accept` rule. */
+export function getAccept(field: Field): string[] | null {
+    if (field.accept !== undefined && field.accept.length > 0) {
+        return field.accept;
+    }
+    const rule = findRule(field, 'accept');
+    return rule !== undefined && 'value' in rule && Array.isArray(rule.value)
+        ? rule.value.filter(isString)
+        : null;
+}
+
+/** The largest file of a field, in bytes: its `maxSize` rule. */
+export function getMaxSize(field: Field): number | null {
+    const rule = findRule(field, 'maxSize');
+    return rule !== undefined && 'value' in rule && isNumber(rule.value) ? rule.value : null;
+}

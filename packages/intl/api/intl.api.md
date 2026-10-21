@@ -106,6 +106,41 @@ export const fieldsMessages: {
     text: string;
     }>;
     relationUnavailable: PanneauMessage<Record<never, never>>;
+    chooseFile: PanneauMessage<Record<never, never>>;
+    chooseFiles: PanneauMessage<Record<never, never>>;
+    replaceFile: PanneauMessage<Record<never, never>>;
+    dropHere: PanneauMessage<Record<never, never>>;
+    dropZone: PanneauMessage<Record<never, never>>;
+    noFile: PanneauMessage<Record<never, never>>;
+    removeFile: PanneauMessage<    {
+    name: string;
+    }>;
+    rejectedType: PanneauMessage<    {
+    name: string;
+    }>;
+    rejectedSize: PanneauMessage<    {
+    name: string;
+    size: string;
+    }>;
+    uploads: PanneauMessage<Record<never, never>>;
+    uploading: PanneauMessage<Record<never, never>>;
+    uploadCompleting: PanneauMessage<Record<never, never>>;
+    uploadPaused: PanneauMessage<Record<never, never>>;
+    uploadFailed: PanneauMessage<    {
+    error: string;
+    }>;
+    pauseUpload: PanneauMessage<    {
+    name: string;
+    }>;
+    resumeUpload: PanneauMessage<    {
+    name: string;
+    }>;
+    cancelUpload: PanneauMessage<    {
+    name: string;
+    }>;
+    retryUpload: PanneauMessage<    {
+    name: string;
+    }>;
     missingPlugin: PanneauMessage<    {
     type: string;
     }>;
@@ -277,6 +312,15 @@ export const listsMessages: {
     previousPage: PanneauMessage<Record<never, never>>;
     nextPage: PanneauMessage<Record<never, never>>;
     perPage: PanneauMessage<Record<never, never>>;
+};
+
+// @public
+export const mediaMessages: {
+    noMedia: PanneauMessage<Record<never, never>>;
+    statusPending: PanneauMessage<Record<never, never>>;
+    statusProcessing: PanneauMessage<Record<never, never>>;
+    statusFailed: PanneauMessage<Record<never, never>>;
+    unavailable: PanneauMessage<Record<never, never>>;
 };
 
 // @public

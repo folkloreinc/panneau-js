@@ -53,6 +53,57 @@ export const fieldsMessages = {
         id: 'panneau.fields.relationUnavailable',
         defaultMessage: 'Items can’t be searched here.',
     }),
+    chooseFile: defineMessage({ id: 'panneau.fields.chooseFile', defaultMessage: 'Choose a file' }),
+    chooseFiles: defineMessage({
+        id: 'panneau.fields.chooseFiles',
+        defaultMessage: 'Choose files',
+    }),
+    replaceFile: defineMessage({
+        id: 'panneau.fields.replaceFile',
+        defaultMessage: 'Replace the file',
+    }),
+    dropHere: defineMessage({ id: 'panneau.fields.dropHere', defaultMessage: 'or drop them here' }),
+    dropZone: defineMessage({ id: 'panneau.fields.dropZone', defaultMessage: 'Drop files here' }),
+    noFile: defineMessage({ id: 'panneau.fields.noFile', defaultMessage: 'No file' }),
+    removeFile: defineMessage<{ name: string }>({
+        id: 'panneau.fields.removeFile',
+        defaultMessage: 'Remove {name}',
+    }),
+    rejectedType: defineMessage<{ name: string }>({
+        id: 'panneau.fields.rejectedType',
+        defaultMessage: '{name}: this type of file is not accepted.',
+    }),
+    rejectedSize: defineMessage<{ name: string; size: string }>({
+        id: 'panneau.fields.rejectedSize',
+        defaultMessage: '{name}: files can’t be larger than {size}.',
+    }),
+    uploads: defineMessage({ id: 'panneau.fields.uploads', defaultMessage: 'Uploads' }),
+    uploading: defineMessage({ id: 'panneau.fields.uploading', defaultMessage: 'Uploading' }),
+    uploadCompleting: defineMessage({
+        id: 'panneau.fields.uploadCompleting',
+        defaultMessage: 'Finishing',
+    }),
+    uploadPaused: defineMessage({ id: 'panneau.fields.uploadPaused', defaultMessage: 'Paused' }),
+    uploadFailed: defineMessage<{ error: string }>({
+        id: 'panneau.fields.uploadFailed',
+        defaultMessage: 'Failed: {error}',
+    }),
+    pauseUpload: defineMessage<{ name: string }>({
+        id: 'panneau.fields.pauseUpload',
+        defaultMessage: 'Pause {name}',
+    }),
+    resumeUpload: defineMessage<{ name: string }>({
+        id: 'panneau.fields.resumeUpload',
+        defaultMessage: 'Resume {name}',
+    }),
+    cancelUpload: defineMessage<{ name: string }>({
+        id: 'panneau.fields.cancelUpload',
+        defaultMessage: 'Cancel {name}',
+    }),
+    retryUpload: defineMessage<{ name: string }>({
+        id: 'panneau.fields.retryUpload',
+        defaultMessage: 'Retry {name}',
+    }),
     missingPlugin: defineMessage<{ type: string }>({
         id: 'panneau.fields.missingPlugin',
         defaultMessage: 'This field needs a plugin for the “{type}” type.',

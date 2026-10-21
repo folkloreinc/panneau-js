@@ -12,6 +12,7 @@ import { JSX } from 'react';
 import type { ListQuery } from '@panneau/protocol';
 import { ReactNode } from 'react';
 import type { Rule } from '@panneau/protocol';
+import type { StoredFile } from '@panneau/protocol';
 
 // @public
 export interface BoundFieldProps {
@@ -109,6 +110,7 @@ export interface FieldsContextValue {
     components: Readonly<Record<string, FieldEntry>>;
     locales: readonly string[];
     relationSource: RelationSource | null;
+    uploadSource: UploadSource | null;
 }
 
 // @public
@@ -132,15 +134,60 @@ export interface FieldsProviderProps {
     locales?: readonly string[];
     // (undocumented)
     relationSource?: RelationSource | null;
+    uploadSource?: UploadSource | null;
 }
+
+// @public
+export function FileField(props: FileFieldProps): JSX.Element;
+
+// @public (undocumented)
+export interface FileFieldBaseProps extends Omit<FieldProps<never>, 'value' | 'onChange'> {
+    accept?: readonly string[] | null;
+    maxSize?: number | null;
+    uploadSource?: UploadSource | null;
+}
+
+// @public
+export function FileFieldEntry(props: FieldEntryProps): JSX.Element;
+
+// @public (undocumented)
+export type FileFieldProps = SingleFileFieldProps | MultipleFileFieldProps;
+
+// @public
+export function FilePicker(input: FilePickerProps): JSX.Element;
+
+// @public (undocumented)
+export interface FilePickerProps {
+    accept?: readonly string[] | null;
+    // (undocumented)
+    className?: string;
+    // (undocumented)
+    isDisabled?: boolean;
+    label?: string;
+    // (undocumented)
+    multiple?: boolean;
+    onSelect: (files: File[]) => void;
+}
+
+// @public
+export type FileValue = StoredFile | UploadedFile | File;
 
 // @public
 export function findRule(field: Field, rule: Rule['rule']): Rule | undefined;
 
 // @public
+export function formatSize(bytes: number, locale?: string): string;
+
+// @public
+export function getAccept(field: Field): string[] | null;
+
+// @public
 export function getFieldProps(props: FieldEntryProps): Omit<FieldProps<never>, 'value' | 'onChange'> & {
     placeholder?: string;
 };
+
+// @public
+export function getMaxSize(field: Field): number | null;
 
 // @public
 export function getParentPath(path: string): string;
@@ -149,10 +196,25 @@ export function getParentPath(path: string): string;
 export function getRuleNumber(field: Field, rule: 'min' | 'max'): number | undefined;
 
 // @public
+export function isFileValue(value: unknown): value is FileValue;
+
+// @public
 export function isRequired(field: Field): boolean;
 
 // @public
+export function matchesMime(mime: string, patterns: readonly string[]): boolean;
+
+// @public
 export function MissingFieldEntry(input: FieldEntryProps): JSX.Element;
+
+// @public (undocumented)
+export interface MultipleFileFieldProps extends FileFieldBaseProps {
+    // (undocumented)
+    multiple: true;
+    onChange?: (value: FileValue[] | null) => void;
+    // (undocumented)
+    value?: readonly FileValue[] | null;
+}
 
 // @public
 export function NestedField(input: NestedFieldProps): JSX.Element | null;
@@ -219,14 +281,132 @@ export interface RelationSourceOptions {
     perPage?: number;
 }
 
+// @public (undocumented)
+export interface SingleFileFieldProps extends FileFieldBaseProps {
+    // (undocumented)
+    multiple?: false;
+    // (undocumented)
+    onChange?: (value: FileValue | null) => void;
+    // (undocumented)
+    value?: FileValue | null;
+}
+
+// @public
+export function toFiles(value: unknown): FileValue[];
+
 // @public
 export function toReferences(value: unknown): RelationReference[];
+
+// @public
+export interface UploadedFile {
+    // (undocumented)
+    mime: string | null;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    size: number | null;
+    // (undocumented)
+    upload: string;
+}
+
+// @public
+export interface Uploader {
+    add(files: Iterable<File>): void;
+    cancel(id: string): void;
+    destroy(): void;
+    getItems(): readonly UploadItem[];
+    // (undocumented)
+    pause(id: string): void;
+    // (undocumented)
+    resume(id: string): void;
+    retry(id: string): void;
+    subscribe(listener: () => void): () => void;
+}
+
+// @public
+export interface UploadItem {
+    canPause: boolean;
+    error: string | null;
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    mime: string | null;
+    // (undocumented)
+    name: string;
+    progress: number | null;
+    // (undocumented)
+    size: number | null;
+    // (undocumented)
+    status: UploadItemStatus;
+}
+
+// @public
+export type UploadItemStatus = 'uploading' | 'paused' | 'completing' | 'failed';
+
+// @public
+export function UploadList(input: UploadListProps): JSX.Element | null;
+
+// @public (undocumented)
+export interface UploadListProps {
+    'aria-label'?: string;
+    // (undocumented)
+    className?: string;
+    items: readonly UploadItem[];
+    // (undocumented)
+    onCancel?: (id: string) => void;
+    // (undocumented)
+    onPause?: (id: string) => void;
+    // (undocumented)
+    onResume?: (id: string) => void;
+    // (undocumented)
+    onRetry?: (id: string) => void;
+}
+
+// @public
+export type UploadRejection = 'accept' | 'maxSize';
+
+// @public
+export interface UploadSource {
+    createUploader(options: {
+        onUploaded: (file: UploadedFile) => void;
+    }): Uploader;
+}
 
 // @public
 export function useFieldsContext(): FieldsContextValue;
 
 // @public
+export function useRejectionMessage(maxSize: number | null | undefined): (file: File, reason: UploadRejection) => string;
+
+// @public
 export function useRelationReferences(source: RelationSource | null, resource: string, references: readonly RelationReference[]): RelationReference[];
+
+// @public
+export function useUploads(options: UseUploadsOptions): UseUploadsResult;
+
+// @public (undocumented)
+export interface UseUploadsOptions {
+    accept?: readonly string[] | null;
+    maxSize?: number | null;
+    onRejected?: (file: File, reason: UploadRejection) => void;
+    onUploaded: (file: UploadedFile | File) => void;
+    source: UploadSource | null;
+}
+
+// @public (undocumented)
+export interface UseUploadsResult {
+    // (undocumented)
+    add: (files: Iterable<File>) => void;
+    // (undocumented)
+    cancel: (id: string) => void;
+    items: readonly UploadItem[];
+    // (undocumented)
+    pause: (id: string) => void;
+    // (undocumented)
+    resume: (id: string) => void;
+    // (undocumented)
+    retry: (id: string) => void;
+}
 
 // (No @packageDocumentation comment for this package)
 

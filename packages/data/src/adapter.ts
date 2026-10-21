@@ -13,6 +13,8 @@ import type {
     UploadReference,
 } from '@panneau/protocol';
 
+import type { PresignedUploads } from './uploads';
+
 /** Values of an item's fields, keyed by field name. */
 export type Values = Record<string, unknown>;
 
@@ -97,6 +99,13 @@ export interface DataAdapter {
         values?: Values,
         options?: RequestOptions,
     ): Promise<Media>;
+    /**
+     * Direct uploads to storage through this adapter, with its headers, cookies and errors, when
+     * the definition announces `"uploads": { "mode": "presigned" }`. `endpoint` is the definition's
+     * `uploads.endpoint`, when the routes are not under the API. Optional: an adapter without it
+     * sends files through `uploadMedia()` and multipart requests only.
+     */
+    presignedUploads?(options?: { endpoint?: string }): PresignedUploads;
     /** Updates the metadata or the transform of a media item. */
     updateMedia(id: string, values: Values, options?: RequestOptions): Promise<Media>;
     /** Deletes a media item. */
