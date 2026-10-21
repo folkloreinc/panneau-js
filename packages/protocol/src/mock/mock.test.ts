@@ -208,6 +208,53 @@ describe('createMockBackend', () => {
         });
     });
 
+    it('makes media from uploads, filters them by type, and references them', async () => {
+        const backend = createMockBackend({ definition: createExampleDefinition() });
+        const post = async (path: string, body: unknown) =>
+            backend.fetch(`/panneau/api${path}`, json(body, { method: 'POST' }));
+        const signed = (await (
+            await post('/uploads/sign', { method: 'PUT', key: 'portrait.jpg' })
+        ).json()) as { upload: string };
+        await post(`/uploads/${signed.upload}/complete`, { name: 'portrait.jpg' });
+
+        const created = await post('/resources/media', {
+            file: { upload: signed.upload, mime: 'image/jpeg', size: 2048 },
+            name: 'Portrait',
+            media: { type: 'video' },
+        });
+        expect(created.status).toBe(201);
+        const media = ((await created.json()) as { data: { id: string; media: unknown } }).data;
+        expect(media.media).toEqual({
+            type: 'image',
+            mime: 'image/jpeg',
+            size: 2048,
+            url: `https://storage.test/uploads/${signed.upload}`,
+            thumbnailUrl: `https://storage.test/uploads/${signed.upload}`,
+            status: 'ready',
+        });
+
+        const images = await backend.fetch('/panneau/api/resources/media?filter[type]=image');
+        expect(((await images.json()) as { data: unknown[] }).data).toHaveLength(1);
+        const videos = await backend.fetch('/panneau/api/resources/media?filter[type]=video');
+        expect(((await videos.json()) as { data: unknown[] }).data).toHaveLength(0);
+
+        const author = await post('/resources/authors', {
+            name: 'Ada',
+            photo: { id: media.id, transform: { rotate: 90 } },
+        });
+        expect(((await author.json()) as { data: Record<string, unknown> }).data.photo).toEqual({
+            id: media.id,
+            label: 'Portrait',
+            media: expect.objectContaining({ type: 'image' }),
+            transform: { rotate: 90 },
+        });
+        const unknown = await post('/resources/authors', { name: 'Grace', photo: 'med_unknown' });
+        expect(unknown.status).toBe(422);
+        expect(await unknown.json()).toMatchObject({
+            errors: { photo: ['This media does not exist.'] },
+        });
+    });
+
     it('answers unknown routes with a 404 problem', async () => {
         const response = await createBackend().fetch('/panneau/api/resources/unknown');
         expect(response.status).toBe(404);

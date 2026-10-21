@@ -6,11 +6,8 @@ import type {
     Item,
     ListQuery,
     ListResponse,
-    Media,
-    MediaListResponse,
     SearchResponse,
     Session,
-    UploadReference,
 } from '@panneau/protocol';
 
 import type { PresignedUploads } from './uploads';
@@ -34,9 +31,6 @@ export interface UpdateOptions extends RequestOptions {
 /** Answer of an action: its result, or a run when the backend queued it (`202`). */
 export type ActionResponse =
     { result: ActionResult; run?: undefined } | { run: ActionRun; result?: undefined };
-
-/** Query of the media list: a list query whose filters include `type` and `tags`. */
-export type MediaQuery = ListQuery;
 
 /** Credentials of a password login. */
 export interface LoginCredentials {
@@ -85,31 +79,14 @@ export interface DataAdapter {
     /** Cancels a run that hasn't finished. */
     cancelActionRun(id: string, options?: RequestOptions): Promise<void>;
 
-    /** A page of the media library. */
-    listMedia(query?: MediaQuery, options?: RequestOptions): Promise<MediaListResponse>;
-    /** One media item. */
-    getMedia(id: string, options?: RequestOptions): Promise<Media>;
-    /** Uploads a file, with optional metadata. */
-    /**
-     * Creates a media from a file (`multipart/form-data`), or from a file uploaded directly to
-     * storage (`{ upload: 'upl_…' }`, from `createPresignedUploads().complete()`).
-     */
-    uploadMedia(
-        file: Blob | UploadReference,
-        values?: Values,
-        options?: RequestOptions,
-    ): Promise<Media>;
     /**
      * Direct uploads to storage through this adapter, with its headers, cookies and errors, when
      * the definition announces `"uploads": { "mode": "presigned" }`. `endpoint` is the definition's
      * `uploads.endpoint`, when the routes are not under the API. Optional: an adapter without it
-     * sends files through `uploadMedia()` and multipart requests only.
+     * sends files in multipart requests only. Media are items of resources of kind `media`
+     * (decision 0026): `create()` makes one from `{ file: { upload } }`.
      */
     presignedUploads?(options?: { endpoint?: string }): PresignedUploads;
-    /** Updates the metadata or the transform of a media item. */
-    updateMedia(id: string, values: Values, options?: RequestOptions): Promise<Media>;
-    /** Deletes a media item. */
-    deleteMedia(id: string, options?: RequestOptions): Promise<void>;
 
     /** The current session. Rejects with an `UnauthorizedError` without one. */
     getSession(options?: RequestOptions): Promise<Session>;

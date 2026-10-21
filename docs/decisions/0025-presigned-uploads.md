@@ -1,6 +1,6 @@
 # 0025: Direct uploads to storage, separate from media
 
-- Status: accepted
+- Status: accepted, amended by [0026](0026-media-libraries.md): `POST /media` became the creation of an item of a library
 - Date: 2026-10-21
 - Issue: [#79](https://github.com/folkloreinc/panneau-js/issues/79)
 - Changes: the `presigned` upload mode of the protocol ([0010](0010-media.md)), which was named but not specified

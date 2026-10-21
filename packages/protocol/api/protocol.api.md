@@ -531,6 +531,7 @@ export const Definition: z.ZodObject<{
     }, z.core.$loose>;
     resources: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
+        kind: z.ZodOptional<z.ZodString>;
         label: z.ZodObject<{
             singular: z.ZodString;
             plural: z.ZodString;
@@ -1304,22 +1305,90 @@ export type ListResponse = z.infer<typeof ListResponse>;
 export function matchesFilterRange(value: unknown, range: FilterRange): boolean;
 
 // @public (undocumented)
-export const Media: z.ZodObject<{
-    id: z.ZodString;
-    version: z.ZodNullable<z.ZodString>;
-    abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+export const MediaInfo: z.ZodObject<{
     type: z.ZodString;
-    name: z.ZodString;
-    mime: z.ZodString;
-    size: z.ZodNumber;
-    url: z.ZodString;
+    mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    size: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     thumbnailUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
         url: z.ZodString;
         width: z.ZodOptional<z.ZodNumber>;
         height: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>>>;
+    width: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    height: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    duration: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    status: z.ZodOptional<z.ZodEnum<{
+        failed: "failed";
+        pending: "pending";
+        processing: "processing";
+        ready: "ready";
+    }>>;
     metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type MediaInfo = z.infer<typeof MediaInfo>;
+
+// @public (undocumented)
+export const MediaItem: z.ZodObject<{
+    id: z.ZodString;
+    version: z.ZodNullable<z.ZodString>;
+    abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+    media: z.ZodObject<{
+        type: z.ZodString;
+        mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        size: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        thumbnailUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
+            url: z.ZodString;
+            width: z.ZodOptional<z.ZodNumber>;
+            height: z.ZodOptional<z.ZodNumber>;
+        }, z.core.$loose>>>;
+        width: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        height: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        duration: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        status: z.ZodOptional<z.ZodEnum<{
+            failed: "failed";
+            pending: "pending";
+            processing: "processing";
+            ready: "ready";
+        }>>;
+        metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    }, z.core.$loose>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type MediaItem = z.infer<typeof MediaItem>;
+
+// @public (undocumented)
+export const MediaReference: z.ZodObject<{
+    id: z.ZodString;
+    label: z.ZodOptional<z.ZodString>;
+    media: z.ZodOptional<z.ZodObject<{
+        type: z.ZodString;
+        mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        size: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        thumbnailUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
+            url: z.ZodString;
+            width: z.ZodOptional<z.ZodNumber>;
+            height: z.ZodOptional<z.ZodNumber>;
+        }, z.core.$loose>>>;
+        width: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        height: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        duration: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        status: z.ZodOptional<z.ZodEnum<{
+            failed: "failed";
+            pending: "pending";
+            processing: "processing";
+            ready: "ready";
+        }>>;
+        metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    }, z.core.$loose>>;
     transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
         crop: z.ZodOptional<z.ZodObject<{
             x: z.ZodNumber;
@@ -1335,115 +1404,10 @@ export const Media: z.ZodObject<{
             y: z.ZodNumber;
         }, z.core.$loose>>;
     }, z.core.$loose>>>;
-    tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
-    status: z.ZodOptional<z.ZodEnum<{
-        failed: "failed";
-        pending: "pending";
-        processing: "processing";
-        ready: "ready";
-    }>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
-export type Media = z.infer<typeof Media>;
-
-// @public (undocumented)
-export const MediaListResponse: z.ZodObject<{
-    data: z.ZodArray<z.ZodObject<{
-        id: z.ZodString;
-        version: z.ZodNullable<z.ZodString>;
-        abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
-        type: z.ZodString;
-        name: z.ZodString;
-        mime: z.ZodString;
-        size: z.ZodNumber;
-        url: z.ZodString;
-        thumbnailUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-        variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
-            url: z.ZodString;
-            width: z.ZodOptional<z.ZodNumber>;
-            height: z.ZodOptional<z.ZodNumber>;
-        }, z.core.$loose>>>;
-        metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
-        transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
-            crop: z.ZodOptional<z.ZodObject<{
-                x: z.ZodNumber;
-                y: z.ZodNumber;
-                width: z.ZodNumber;
-                height: z.ZodNumber;
-            }, z.core.$loose>>;
-            rotate: z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<0>, z.ZodLiteral<90>, z.ZodLiteral<180>, z.ZodLiteral<270>]>>;
-            flipX: z.ZodOptional<z.ZodBoolean>;
-            flipY: z.ZodOptional<z.ZodBoolean>;
-            focalPoint: z.ZodOptional<z.ZodObject<{
-                x: z.ZodNumber;
-                y: z.ZodNumber;
-            }, z.core.$loose>>;
-        }, z.core.$loose>>>;
-        tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
-        status: z.ZodOptional<z.ZodEnum<{
-            failed: "failed";
-            pending: "pending";
-            processing: "processing";
-            ready: "ready";
-        }>>;
-    }, z.core.$loose>>;
-    meta: z.ZodObject<{
-        page: z.ZodNumber;
-        perPage: z.ZodNumber;
-        total: z.ZodNumber;
-        lastPage: z.ZodNumber;
-    }, z.core.$loose>;
-}, z.core.$loose>;
-
-// @public (undocumented)
-export type MediaListResponse = z.infer<typeof MediaListResponse>;
-
-// @public (undocumented)
-export const MediaResponse: z.ZodObject<{
-    data: z.ZodObject<{
-        id: z.ZodString;
-        version: z.ZodNullable<z.ZodString>;
-        abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
-        type: z.ZodString;
-        name: z.ZodString;
-        mime: z.ZodString;
-        size: z.ZodNumber;
-        url: z.ZodString;
-        thumbnailUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-        variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
-            url: z.ZodString;
-            width: z.ZodOptional<z.ZodNumber>;
-            height: z.ZodOptional<z.ZodNumber>;
-        }, z.core.$loose>>>;
-        metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
-        transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
-            crop: z.ZodOptional<z.ZodObject<{
-                x: z.ZodNumber;
-                y: z.ZodNumber;
-                width: z.ZodNumber;
-                height: z.ZodNumber;
-            }, z.core.$loose>>;
-            rotate: z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<0>, z.ZodLiteral<90>, z.ZodLiteral<180>, z.ZodLiteral<270>]>>;
-            flipX: z.ZodOptional<z.ZodBoolean>;
-            flipY: z.ZodOptional<z.ZodBoolean>;
-            focalPoint: z.ZodOptional<z.ZodObject<{
-                x: z.ZodNumber;
-                y: z.ZodNumber;
-            }, z.core.$loose>>;
-        }, z.core.$loose>>>;
-        tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
-        status: z.ZodOptional<z.ZodEnum<{
-            failed: "failed";
-            pending: "pending";
-            processing: "processing";
-            ready: "ready";
-        }>>;
-    }, z.core.$loose>;
-}, z.core.$loose>;
-
-// @public (undocumented)
-export type MediaResponse = z.infer<typeof MediaResponse>;
+export type MediaReference = z.infer<typeof MediaReference>;
 
 // @public (undocumented)
 export const MediaTransform: z.ZodObject<{
@@ -1893,6 +1857,7 @@ export const namedSchemas: {
     }, z.core.$loose>;
     Resource: z.ZodObject<{
         id: z.ZodString;
+        kind: z.ZodOptional<z.ZodString>;
         label: z.ZodObject<{
             singular: z.ZodString;
             plural: z.ZodString;
@@ -2442,6 +2407,7 @@ export const namedSchemas: {
         }, z.core.$loose>;
         resources: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
+            kind: z.ZodOptional<z.ZodString>;
             label: z.ZodObject<{
                 singular: z.ZodString;
                 plural: z.ZodString;
@@ -3136,22 +3102,80 @@ export const namedSchemas: {
         headers: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
         upload: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>;
-    Media: z.ZodObject<{
-        id: z.ZodString;
-        version: z.ZodNullable<z.ZodString>;
-        abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+    MediaInfo: z.ZodObject<{
         type: z.ZodString;
-        name: z.ZodString;
-        mime: z.ZodString;
-        size: z.ZodNumber;
-        url: z.ZodString;
+        mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        size: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         thumbnailUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
             url: z.ZodString;
             width: z.ZodOptional<z.ZodNumber>;
             height: z.ZodOptional<z.ZodNumber>;
         }, z.core.$loose>>>;
+        width: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        height: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        duration: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        status: z.ZodOptional<z.ZodEnum<{
+            failed: "failed";
+            pending: "pending";
+            processing: "processing";
+            ready: "ready";
+        }>>;
         metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    }, z.core.$loose>;
+    MediaItem: z.ZodObject<{
+        id: z.ZodString;
+        version: z.ZodNullable<z.ZodString>;
+        abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+        media: z.ZodObject<{
+            type: z.ZodString;
+            mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            size: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            thumbnailUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
+                url: z.ZodString;
+                width: z.ZodOptional<z.ZodNumber>;
+                height: z.ZodOptional<z.ZodNumber>;
+            }, z.core.$loose>>>;
+            width: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            height: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            duration: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            status: z.ZodOptional<z.ZodEnum<{
+                failed: "failed";
+                pending: "pending";
+                processing: "processing";
+                ready: "ready";
+            }>>;
+            metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+        }, z.core.$loose>;
+    }, z.core.$loose>;
+    MediaReference: z.ZodObject<{
+        id: z.ZodString;
+        label: z.ZodOptional<z.ZodString>;
+        media: z.ZodOptional<z.ZodObject<{
+            type: z.ZodString;
+            mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            size: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            thumbnailUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
+                url: z.ZodString;
+                width: z.ZodOptional<z.ZodNumber>;
+                height: z.ZodOptional<z.ZodNumber>;
+            }, z.core.$loose>>>;
+            width: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            height: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            duration: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            status: z.ZodOptional<z.ZodEnum<{
+                failed: "failed";
+                pending: "pending";
+                processing: "processing";
+                ready: "ready";
+            }>>;
+            metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+        }, z.core.$loose>>;
         transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
             crop: z.ZodOptional<z.ZodObject<{
                 x: z.ZodNumber;
@@ -3167,101 +3191,6 @@ export const namedSchemas: {
                 y: z.ZodNumber;
             }, z.core.$loose>>;
         }, z.core.$loose>>>;
-        tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
-        status: z.ZodOptional<z.ZodEnum<{
-            failed: "failed";
-            pending: "pending";
-            processing: "processing";
-            ready: "ready";
-        }>>;
-    }, z.core.$loose>;
-    MediaResponse: z.ZodObject<{
-        data: z.ZodObject<{
-            id: z.ZodString;
-            version: z.ZodNullable<z.ZodString>;
-            abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
-            type: z.ZodString;
-            name: z.ZodString;
-            mime: z.ZodString;
-            size: z.ZodNumber;
-            url: z.ZodString;
-            thumbnailUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-            variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
-                url: z.ZodString;
-                width: z.ZodOptional<z.ZodNumber>;
-                height: z.ZodOptional<z.ZodNumber>;
-            }, z.core.$loose>>>;
-            metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
-            transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
-                crop: z.ZodOptional<z.ZodObject<{
-                    x: z.ZodNumber;
-                    y: z.ZodNumber;
-                    width: z.ZodNumber;
-                    height: z.ZodNumber;
-                }, z.core.$loose>>;
-                rotate: z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<0>, z.ZodLiteral<90>, z.ZodLiteral<180>, z.ZodLiteral<270>]>>;
-                flipX: z.ZodOptional<z.ZodBoolean>;
-                flipY: z.ZodOptional<z.ZodBoolean>;
-                focalPoint: z.ZodOptional<z.ZodObject<{
-                    x: z.ZodNumber;
-                    y: z.ZodNumber;
-                }, z.core.$loose>>;
-            }, z.core.$loose>>>;
-            tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
-            status: z.ZodOptional<z.ZodEnum<{
-                failed: "failed";
-                pending: "pending";
-                processing: "processing";
-                ready: "ready";
-            }>>;
-        }, z.core.$loose>;
-    }, z.core.$loose>;
-    MediaListResponse: z.ZodObject<{
-        data: z.ZodArray<z.ZodObject<{
-            id: z.ZodString;
-            version: z.ZodNullable<z.ZodString>;
-            abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
-            type: z.ZodString;
-            name: z.ZodString;
-            mime: z.ZodString;
-            size: z.ZodNumber;
-            url: z.ZodString;
-            thumbnailUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-            variants: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
-                url: z.ZodString;
-                width: z.ZodOptional<z.ZodNumber>;
-                height: z.ZodOptional<z.ZodNumber>;
-            }, z.core.$loose>>>;
-            metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
-            transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
-                crop: z.ZodOptional<z.ZodObject<{
-                    x: z.ZodNumber;
-                    y: z.ZodNumber;
-                    width: z.ZodNumber;
-                    height: z.ZodNumber;
-                }, z.core.$loose>>;
-                rotate: z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<0>, z.ZodLiteral<90>, z.ZodLiteral<180>, z.ZodLiteral<270>]>>;
-                flipX: z.ZodOptional<z.ZodBoolean>;
-                flipY: z.ZodOptional<z.ZodBoolean>;
-                focalPoint: z.ZodOptional<z.ZodObject<{
-                    x: z.ZodNumber;
-                    y: z.ZodNumber;
-                }, z.core.$loose>>;
-            }, z.core.$loose>>>;
-            tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
-            status: z.ZodOptional<z.ZodEnum<{
-                failed: "failed";
-                pending: "pending";
-                processing: "processing";
-                ready: "ready";
-            }>>;
-        }, z.core.$loose>>;
-        meta: z.ZodObject<{
-            page: z.ZodNumber;
-            perPage: z.ZodNumber;
-            total: z.ZodNumber;
-            lastPage: z.ZodNumber;
-        }, z.core.$loose>;
     }, z.core.$loose>;
     Session: z.ZodObject<{
         user: z.ZodObject<{
@@ -3368,6 +3297,7 @@ export const PROTOCOL_VERSION = 1;
 // @public (undocumented)
 export const Resource: z.ZodObject<{
     id: z.ZodString;
+    kind: z.ZodOptional<z.ZodString>;
     label: z.ZodObject<{
         singular: z.ZodString;
         plural: z.ZodString;

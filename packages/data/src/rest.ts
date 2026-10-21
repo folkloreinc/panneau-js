@@ -8,16 +8,9 @@ import {
     toSearchParams,
     validate,
 } from '@panneau/protocol';
-import type {
-    Item,
-    ListResponse,
-    Media,
-    MediaListResponse,
-    SearchResponse,
-    Session,
-} from '@panneau/protocol';
+import type { Item, ListResponse, SearchResponse, Session } from '@panneau/protocol';
 
-import type { ActionResponse, DataAdapter, Values } from './adapter';
+import type { ActionResponse, DataAdapter } from './adapter';
 import { type ApiError, InvalidResponseError, createApiError } from './errors';
 import { readProblem } from './problem';
 import { createPresignedUploads } from './uploads';
@@ -232,26 +225,6 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
             await send({ method: 'DELETE', path: `/actions/runs/${encode(id)}`, signal });
         },
 
-        listMedia(query: ListQuery = {}, { signal } = {}) {
-            return json<MediaListResponse>({
-                path: '/media',
-                query: toSearchParams(query),
-                signal,
-            });
-        },
-        getMedia(id, { signal } = {}) {
-            return data<Media>({ path: `/media/${encode(id)}`, signal });
-        },
-        uploadMedia(file, values: Values = {}, { signal } = {}) {
-            return data<Media>({
-                method: 'POST',
-                path: '/media',
-                // A Blob goes as multipart/form-data, an upload reference as JSON.
-                body:
-                    file instanceof Blob ? { ...values, file } : { ...values, upload: file.upload },
-                signal,
-            });
-        },
         presignedUploads({ endpoint } = {}) {
             return createPresignedUploads({
                 baseUrl,
@@ -264,18 +237,6 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
                     options.createError?.(problem, response) ?? createApiError(problem),
             });
         },
-        updateMedia(id, values, { signal } = {}) {
-            return data<Media>({
-                method: 'PATCH',
-                path: `/media/${encode(id)}`,
-                body: values,
-                signal,
-            });
-        },
-        async deleteMedia(id, { signal } = {}) {
-            await send({ method: 'DELETE', path: `/media/${encode(id)}`, signal });
-        },
-
         getSession({ signal } = {}) {
             return json<Session>({ path: '/auth/session', signal });
         },

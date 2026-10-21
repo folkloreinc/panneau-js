@@ -84,10 +84,10 @@ export const Field = z
             .boolean()
             .optional()
             .meta({ description: '`select`, `relation`, `media`, `file`: the value is an array.' }),
-        resource: z
-            .string()
-            .optional()
-            .meta({ description: '`relation`: id of the related resource.' }),
+        resource: z.string().optional().meta({
+            description:
+                '`relation`: id of the related resource. `media`: id of a resource of kind `media`, optional when the definition has only one.',
+        }),
         accept: z
             .array(z.string())
             .optional()

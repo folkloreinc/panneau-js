@@ -40,7 +40,7 @@ export interface PresignedUploads {
      * Tells the backend that the upload of a key is complete, once Uppy reports it
      * (`upload-success`, with the key in `response.body.key`), and resolves with the upload.
      * Values reference it as `{ upload: upload.id }`: a file field, an import, or
-     * `uploadMedia({ upload: upload.id })` to make it a media.
+     * the `file` of a media (`create('media', { file: { upload: upload.id } })`).
      */
     complete: (key: string, options?: { name?: string }) => Promise<Upload>;
 }
@@ -55,7 +55,7 @@ export interface PresignedUploads {
  * uppy.use(AwsS3, { signRequest: uploads.signRequest });
  * uppy.on('upload-success', async (file, response) => {
  *     const upload = await uploads.complete(response.body.key, { name: file.name });
- *     const media = await adapter.uploadMedia({ upload: upload.id });
+ *     const media = await adapter.create('media', { file: { upload: upload.id } });
  * });
  * ```
  */

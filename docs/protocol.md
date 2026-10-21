@@ -43,6 +43,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 ```jsonc
 {
     "id": "pages",
+    "kind": null, // "media" for a media library
     "label": { "singular": "page", "plural": "pages" },
     "fields": [ /* Field */ ],
     "form": { "layout": [ /* LayoutNode */ ] },
@@ -96,9 +97,9 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 - **`relation` values:**
     - In items, a value is a reference to the related item, `{ "id": "12", "label": "Ada" }`, where `label` is the value of the related resource's `itemTitle`. With `multiple`, it is a list of references. Lists can show related items without fetching them.
     - In requests, the client sends ids: `"12"`, or `["12", "13"]`. A backend also accepts the references it sent, and reads their `id`. It refuses ids that don't exist within the related resource's scope.
-- **`media` values:**
-    - In items, a value is a [media item](#media), or a list of them with `multiple`.
-    - In requests, the client sends media ids, or the media items; the backend reads their `id`. `accept` and `maxSize` are checked on the `mime` and `size` of media items.
+- **`media` values** reference media of a library, a resource of kind `media` ([Media](#media)). The field's `resource` names the library; it can be left out when the definition has only one.
+    - In items, a value is a reference, or a list of them with `multiple`: `{ "id": "med_01H…", "label": "Portrait", "media": { "type": "image", "thumbnailUrl": "…" }, "transform": { … } }` (`MediaReference`). `label` is the media's `itemTitle`, `media` what lists and fields show without fetching it, and `transform` the edits of the image for this use only.
+    - In requests, the client sends ids (`"med_01H…"`), or `{ "id", "transform" }`. The backend refuses ids outside the library's scope, as for relations.
 - **`file` values** are files that belong to the item, outside the media library: an attachment, a PDF, a CSV ([0025](decisions/0025-presigned-uploads.md)).
     - In items, a value is a stored file, `{ "name": "terms.pdf", "url": "https://…", "mime": "application/pdf", "size": 52000 }`, or `null`. With `multiple`, it is a list of them.
     - In requests, the client sends `{ "upload": "upl_…" }` for a file uploaded directly to storage, the stored file it received to keep it, or `null` to remove it. Without direct uploads, it sends the file itself, in `multipart/form-data`.
@@ -114,7 +115,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 | `pattern`           | text                                    |
 | `email`, `url`      | text                                    |
 | `in`                | select values                           |
-| `accept`, `maxSize` | media and files (MIME types, bytes)     |
+| `accept`, `maxSize` | files (MIME types, bytes)               |
 | `before`, `after`   | dates (value or other field)            |
 
 The frontend checks these rules before sending. The server checks them again, together with server-only rules (uniqueness, existence, business rules).
@@ -421,17 +422,7 @@ Errors use [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) `application/probl
     | `429`  | rate limited             |
     | `5xx`  | server error             |
 
-### Media
-
-| Operation             | Request                                                                                                |
-| --------------------- | ------------------------------------------------------------------------------------------------------ |
-| List and search       | `GET /media?q=&filter[type]=image&filter[tags][]=`                                                     |
-| Show, update metadata | `GET`/`PATCH /media/{id}`                                                                              |
-| Upload                | `POST /media` (multipart, or JSON with an `upload`), after a direct upload announced in the definition |
-| Replace the file      | `POST /media/{id}/file`                                                                                |
-| Edit an image         | `PATCH /media/{id}` with `{ "transform": { "crop": {...}, "rotate": 90, "focalPoint": {...} } }`       |
-| Delete, restore       | `DELETE /media/{id}`, `POST /media/{id}/restore`                                                       |
-| Tags                  | `GET /media/tags`                                                                                      |
+### Uploads
 
 **Direct uploads.** With `"uploads": { "mode": "presigned" }` in the definition, the browser can also send files to S3-compatible storage itself, in parts for large ones, with URLs that the backend signs ([0025](decisions/0025-presigned-uploads.md)). An upload is not a media: values reference it.
 
@@ -446,25 +437,83 @@ Errors use [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) `application/probl
 // 200: the upload
 { "data": { "id": "upl_01H…", "key": "uploads/upl_01H…", "name": "video.mp4", "mime": "video/mp4", "size": 2147483648 } }
 
-// A value that takes a file takes the upload instead: a file field, an import parameter…
+// A value that takes a file takes the upload instead: a file field, the file of a media, an import parameter…
 { "values": { "file": { "upload": "upl_01H…" } } }
-
-// POST /media in JSON: a media from the upload
-{ "upload": "upl_01H…", "name": "Interview" }
 ```
 
 - **Signing:** the first request of a file (`CreateMultipartUpload`, or `PutObject` for a small file) creates the upload and its key. Later requests (`UploadPart`, `ListParts`, `CompleteMultipartUpload`, `AbortMultipartUpload`) are signed only for a key of the same user's open uploads, and get `404` otherwise. `headers` lists the headers a URL was signed with.
 - **Completion** checks that the object exists, and gives the upload. Its optional `name` names the file, since the key the backend chose doesn't keep it.
-- **Both ways stay:** `POST /media` in `multipart/form-data`, and multipart requests with files, keep working for small files.
+- **Without direct uploads**, requests with files are sent in `multipart/form-data`.
 - **`uploads.endpoint`** moves the two routes elsewhere, for a backend whose upload routes are not under its API.
-- **`status`** of a media is `pending` or `processing` until its renditions are made, then `ready` or `failed`. Without it, a media is ready.
 
-Media items are referenced from field values by id. A media item also exposes:
+### Media
 
-- `url` and `thumbnailUrl`;
-- `variants`, a map of named sizes;
-- `type`, `mime`, `size`, `metadata`;
-- `transform`, the non-destructive edits.
+A media library is a resource of kind `media` ([0026](decisions/0026-media-libraries.md)). A definition can have several, each with its own fields, list, scope and policies: "Images" and "Documents", or one library per product.
+
+```jsonc
+{
+    "id": "media",
+    "kind": "media",
+    "label": { "singular": "média", "plural": "médias" },
+    "itemTitle": "name",
+    "fields": [
+        {
+            "name": "file",
+            "type": "file",
+            "accept": ["image/*", "application/pdf"],
+            "rules": [{ "rule": "required" }],
+        },
+        { "name": "name", "type": "text" },
+        { "name": "alt", "type": "text", "localized": true },
+    ],
+    "list": { "filters": [{ "id": "type", "type": "select" }], "search": true },
+}
+```
+
+- **The `file` field**, of type `file` and not `multiple`, holds the original. Its `accept` and `maxSize` are the library's.
+- **Items have a `media`**, which the backend computes from the file. It is read-only: clients never send it.
+
+    ```jsonc
+    {
+        "id": "med_01H…",
+        "name": "Portrait",
+        "file": {
+            "name": "portrait.heic",
+            "url": "https://…",
+            "mime": "image/heic",
+            "size": 3145728,
+        },
+        "media": {
+            "type": "image", // image, video, audio, document, font, or another type
+            "mime": "image/heic",
+            "size": 3145728,
+            "url": "https://…", // the main file to show or play
+            "thumbnailUrl": "https://…",
+            "variants": { "large": { "url": "…", "width": 1600, "height": 2000 } },
+            "width": 3024,
+            "height": 3780,
+            "duration": null,
+            "status": "ready", // pending or processing until its renditions are made, then ready or failed; ready without it
+        },
+        "version": "3",
+        "abilities": { "update": true, "delete": true },
+    }
+    ```
+
+- **Operations** are those of resources:
+
+    | Operation              | Request                                                                                        |
+    | ---------------------- | ---------------------------------------------------------------------------------------------- |
+    | List, search, filter   | `GET /resources/{library}?q=&filter[type]=image`                                               |
+    | Show, update metadata  | `GET`/`PATCH /resources/{library}/{id}`                                                        |
+    | Make a media of a file | `POST /resources/{library}` with `{ "file": { "upload": "upl_…" } }`, or the file in multipart |
+    | Replace the file       | `PATCH /resources/{library}/{id}` with a new `file`                                            |
+    | Edit an image          | `PATCH` of the library's `transform` field                                                     |
+    | Delete, restore        | `DELETE /resources/{library}/{id}`, and the `restore` action                                   |
+
+- **`filter[type]`** (`image`, `video`, `audio`, `document`, `other`) is supported by every library, for pickers.
+- **Scope.** A library holds the media of its scope, like any resource: by type, by a column of the project, by tenant. It gives its scope to the media it makes.
+- **Ids** are opaque, as for every resource. A backend may give globally unique ids (`med_…`), which content references.
 
 **Transform.** The non-destructive edits of an image, which renderers (`laravel-image`) apply in this order: crop, then rotate, then flip.
 

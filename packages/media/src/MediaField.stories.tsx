@@ -2,20 +2,17 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
-import type { Media } from '@panneau/protocol';
+import type { Item, MediaInfo, MediaReference } from '@panneau/protocol';
 
 import { type MediaAdapter, MediaField } from './MediaField';
 
-const media = (overrides: Partial<Media> = {}): Media => ({
+const reference = (
+    media: Partial<MediaInfo> = {},
+    overrides: Partial<MediaReference> = {},
+): MediaReference => ({
     id: 'med_1',
-    version: null,
-    abilities: {},
-    type: 'video',
-    name: 'interview.mp4',
-    mime: 'video/mp4',
-    size: 2_147_483_648,
-    url: 'https://files.example/interview.mp4',
-    thumbnailUrl: null,
+    label: 'interview.mp4',
+    media: { type: 'video', size: 2_147_483_648, thumbnailUrl: null, ...media },
     ...overrides,
 });
 
@@ -23,28 +20,36 @@ const media = (overrides: Partial<Media> = {}): Media => ({
 function createExampleAdapter(): MediaAdapter {
     let next = 1;
     const reads = new Map<string, number>();
-    const created = new Map<string, Media>();
+    const created = new Map<string, Item>();
     return {
-        uploadMedia(file) {
+        create(_resource, values) {
+            const file = values.file;
             const name = file instanceof File ? file.name : 'upload';
-            const item = media({
+            const item: Item = {
                 id: `med_${String(next++)}`,
+                version: '1',
+                abilities: {},
                 name,
-                type: name.endsWith('.jpg') ? 'image' : 'video',
-                mime: file instanceof File ? file.type : 'video/mp4',
-                size: file instanceof File ? file.size : 0,
-                status: 'pending',
-            });
+                media: {
+                    type: name.endsWith('.jpg') ? 'image' : 'video',
+                    mime: file instanceof File ? file.type : 'video/mp4',
+                    size: file instanceof File ? file.size : 0,
+                    status: 'pending',
+                },
+            };
             created.set(item.id, item);
             return Promise.resolve(item);
         },
-        getMedia(id) {
+        get(_resource, id) {
             const count = (reads.get(id) ?? 0) + 1;
             reads.set(id, count);
-            const item = created.get(id) ?? media({ id });
-            return Promise.resolve({ ...item, status: count < 2 ? 'processing' : 'ready' });
+            const item = created.get(id) ?? { id, version: '1', abilities: {} };
+            return Promise.resolve({
+                ...item,
+                media: { ...(item.media as MediaInfo), status: count < 2 ? 'processing' : 'ready' },
+            });
         },
-    } as MediaAdapter;
+    };
 }
 
 const fileInput = (container: HTMLElement) => {
@@ -58,7 +63,7 @@ const fileInput = (container: HTMLElement) => {
 const meta = {
     title: 'Media/MediaField',
     component: MediaField,
-    args: { label: 'Video', refreshInterval: 300 },
+    args: { label: 'Video', resource: 'media', refreshInterval: 300 },
 } satisfies Meta<typeof MediaField>;
 
 export default meta;
@@ -68,10 +73,11 @@ type Story = StoryObj<typeof meta>;
 export const Ingest: Story = {
     render: function Render(args) {
         const [adapter] = useState(createExampleAdapter);
-        const [value, setValue] = useState<Media | null>(null);
+        const [value, setValue] = useState<MediaReference | null>(null);
         return (
             <MediaField
                 label={args.label}
+                resource="media"
                 adapter={adapter}
                 uploadSource={null}
                 refreshInterval={args.refreshInterval ?? 300}
@@ -101,14 +107,15 @@ export const Ingest: Story = {
 export const Gallery: Story = {
     render: function Render() {
         const [adapter] = useState(createExampleAdapter);
-        const [value, setValue] = useState<Media[] | null>([
-            media(),
-            media({ id: 'med_2', type: 'image', name: 'poster.jpg', size: 320_000 }),
-            media({ id: 'med_3', type: 'image', name: 'broken.jpg', status: 'failed' }),
+        const [value, setValue] = useState<MediaReference[] | null>([
+            reference(),
+            reference({ type: 'image', size: 320_000 }, { id: 'med_2', label: 'poster.jpg' }),
+            reference({ type: 'image', status: 'failed' }, { id: 'med_3', label: 'broken.jpg' }),
         ]);
         return (
             <MediaField
                 label="Gallery"
+                resource="media"
                 multiple
                 adapter={adapter}
                 uploadSource={null}
@@ -129,7 +136,9 @@ export const Gallery: Story = {
 
 /** Without an adapter, the field only shows its media, and says why. */
 export const WithoutAdapter: Story = {
-    render: (args) => <MediaField label={args.label} adapter={null} value={media()} />,
+    render: (args) => (
+        <MediaField label={args.label} resource="media" adapter={null} value={reference()} />
+    ),
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         await expect(canvas.getByText(/Files can’t be uploaded here./)).toBeVisible();
