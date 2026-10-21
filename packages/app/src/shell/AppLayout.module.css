@@ -7,7 +7,7 @@
     grid-template-rows: auto minmax(0, 1fr);
     grid-template-columns: minmax(0, 1fr);
     min-height: 100dvh;
-    background: var(--panneau-color-surface-sunken);
+    background: var(--panneau-shell-bg, var(--panneau-color-surface-sunken));
 }
 
 .topBar {
@@ -20,7 +20,7 @@
     min-height: 3.25rem;
     padding: var(--panneau-space-1) var(--panneau-space-3) var(--panneau-space-1)
         var(--panneau-space-1);
-    background: var(--panneau-color-surface-sunken);
+    background: var(--panneau-shell-bg, var(--panneau-color-surface-sunken));
     border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);
 }
 
@@ -54,7 +54,7 @@
 .panel {
     min-height: 100%;
     padding: var(--panneau-space-5) var(--panneau-space-4) var(--panneau-space-8);
-    background: var(--panneau-color-surface);
+    background: var(--panneau-shell-panel-bg, var(--panneau-color-surface));
 }
 
 /* The drawer of a small screen. */
@@ -74,7 +74,7 @@
     inset-block: 0;
     inset-inline-start: 0;
     width: min(18rem, 85vw);
-    background: var(--panneau-color-surface-sunken);
+    background: var(--panneau-shell-bg, var(--panneau-color-surface-sunken));
     box-shadow: var(--panneau-shadow-lg);
 }
 
@@ -125,12 +125,12 @@
 @container panneau-root (min-width: 64rem) {
     .layout {
         grid-template-rows: minmax(0, 1fr);
-        grid-template-columns: 15rem minmax(0, 1fr);
+        grid-template-columns: var(--panneau-sidebar-width, 15rem) minmax(0, 1fr);
         transition: grid-template-columns 200ms ease-out;
     }
 
     .layout.collapsed {
-        grid-template-columns: 3.5rem minmax(0, 1fr);
+        grid-template-columns: var(--panneau-sidebar-width-collapsed, 3.5rem) minmax(0, 1fr);
     }
 
     .topBar {
@@ -144,18 +144,25 @@
         height: 100dvh;
         min-width: 0;
         overflow: hidden;
+        background: var(--panneau-sidebar-bg, transparent);
+        border-inline-end: var(--panneau-sidebar-border, 0 none);
     }
 
     .main {
-        padding: var(--panneau-space-2) var(--panneau-space-2) var(--panneau-space-2) 0;
+        padding: var(--panneau-shell-inset, var(--panneau-space-2));
+        padding-inline-start: 0;
     }
 
     .panel {
-        min-height: calc(100dvh - 2 * var(--panneau-space-2));
-        padding: var(--panneau-space-6) var(--panneau-space-8) var(--panneau-space-10);
-        border: var(--panneau-border-width) solid var(--panneau-color-border);
-        border-radius: calc(var(--panneau-radius-lg) * 1.5);
-        box-shadow: var(--panneau-shadow-sm);
+        min-height: calc(100dvh - 2 * var(--panneau-shell-inset, var(--panneau-space-2)));
+        padding: var(--panneau-space-6) var(--panneau-shell-panel-padding-x, var(--panneau-space-8))
+            var(--panneau-space-10);
+        border: var(
+            --panneau-shell-panel-border,
+            var(--panneau-border-width) solid var(--panneau-color-border)
+        );
+        border-radius: var(--panneau-shell-panel-radius, calc(var(--panneau-radius-lg) * 1.5));
+        box-shadow: var(--panneau-shell-panel-shadow, var(--panneau-shadow-sm));
     }
 }
 

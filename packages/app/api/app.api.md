@@ -6,11 +6,18 @@
 
 import { BootConfig } from '@panneau/protocol';
 import type { BootConfigInput } from '@panneau/protocol';
+import { ComponentTokens } from '@panneau/ui';
 import { DataAdapter } from '@panneau/data';
 import { JSX } from 'react';
 import { NamedIconLoader } from '@panneau/ui';
 import { PanneauPlugin } from '@panneau/core';
 import { QueryClient } from '@tanstack/react-query';
+
+// @public
+export const appComponentTokens: Readonly<{
+    shell: Readonly<Record<"panneau-shell-bg" | "panneau-shell-inset" | "panneau-shell-panel-bg" | "panneau-shell-panel-border" | "panneau-shell-panel-radius" | "panneau-shell-panel-shadow" | "panneau-shell-panel-padding-x", string>>;
+    sidebar: Readonly<Record<"panneau-sidebar-border" | "panneau-sidebar-width" | "panneau-sidebar-bg" | "panneau-sidebar-width-collapsed" | "panneau-sidebar-link-color" | "panneau-sidebar-link-hover-bg" | "panneau-sidebar-link-radius" | "panneau-sidebar-link-current-color" | "panneau-sidebar-link-current-bg" | "panneau-sidebar-link-current-border" | "panneau-sidebar-link-current-shadow" | "panneau-sidebar-logo-bg" | "panneau-sidebar-logo-color", string>>;
+}>;
 
 // @public
 export function createPanneauApp(input: PanneauAppOptions): PanneauApp;
@@ -47,6 +54,12 @@ export interface PanneauProps {
 
 // @public
 export function readBootConfig(target?: Document): BootConfig;
+
+// @public
+export const shellTokens: ComponentTokens<"shell", "panneau-shell-bg" | "panneau-shell-inset" | "panneau-shell-panel-bg" | "panneau-shell-panel-border" | "panneau-shell-panel-radius" | "panneau-shell-panel-shadow" | "panneau-shell-panel-padding-x">;
+
+// @public
+export const sidebarTokens: ComponentTokens<"sidebar", "panneau-sidebar-border" | "panneau-sidebar-width" | "panneau-sidebar-bg" | "panneau-sidebar-width-collapsed" | "panneau-sidebar-link-color" | "panneau-sidebar-link-hover-bg" | "panneau-sidebar-link-radius" | "panneau-sidebar-link-current-color" | "panneau-sidebar-link-current-bg" | "panneau-sidebar-link-current-border" | "panneau-sidebar-link-current-shadow" | "panneau-sidebar-logo-bg" | "panneau-sidebar-logo-color">;
 
 // @public
 export interface UnauthorizedContext {

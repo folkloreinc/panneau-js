@@ -1,8 +1,10 @@
 # @panneau/app
 
-The Panneau admin panel: the app entry (`createPanneauApp`), and the shell, routes and pages to come.
+The Panneau admin panel: the app entry (`createPanneauApp`), the shell with its sidebar, and the pages of resources.
 
-The shell is a placeholder until Phase 2 of the [roadmap](../../docs/roadmap.md): it loads the definition, lists the resources and follows the client routes. The entry contract below is stable: see [decisions/0019](../../docs/decisions/0019-app-entry.md).
+The shell is a first version, for Phase 2 of the [roadmap](../../docs/roadmap.md): a sidebar from the `main` menu of the definition, collapsible to a rail of icons (Ctrl+\\ or ⌘+\\), the page on a raised panel, a drawer on small screens, and the home, list, create, edit and plugin pages, built with `@panneau/lists`, `@panneau/forms` and `@panneau/actions`. The show page is the edit form for now. The entry contract below is stable: see [decisions/0019](../../docs/decisions/0019-app-entry.md).
+
+Try it with `npm run playground` at the root of the repository: the whole app on the mock backend of `@panneau/protocol` (`?theme=flat` for a flat frame).
 
 ```ts
 // resources/js/panneau.tsx
@@ -20,9 +22,9 @@ The page writes the boot config next to the root element ([protocol.md](../../do
 </script>
 ```
 
-| Export         | Content                                                                                            |
-| -------------- | -------------------------------------------------------------------------------------------------- |
-| `@panneau/app` | `createPanneauApp()`, the `<Panneau>` component, `readBootConfig()` and the types of their options |
+| Export         | Content                                                                                                                               |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `@panneau/app` | `createPanneauApp()`, the `<Panneau>` component, `readBootConfig()` and the types of their options, the component tokens of the shell |
 
 ## Setup
 
@@ -33,7 +35,31 @@ npm install --save-dev vite @vitejs/plugin-react
 
 - Add `@vitejs/plugin-react` to the Vite config, and the entry to its inputs.
 - The entry imports no CSS and no theme: packages import their own styles, and themes come from plugins.
+- Named icons (`"icon": "users"` in the definition) are Lucide icons, each loaded when shown. Pass `iconLoader` to load fewer, or `null` for none.
 - Without `adapter`, the app uses the Laravel preset of the REST adapter (`@panneau/data/laravel`) on `apiBaseUrl`.
 - When the API answers `401` (or `419` from Laravel), the app sends the browser to the login URL. Pass `onUnauthorized` to do something else.
+
+## Theming the shell
+
+The frame reads component tokens ([decisions/0024](../../docs/decisions/0024-theme-model.md)), which a theme sets like those of `@panneau/ui` once `@panneau/app` is imported:
+
+| Tokens                | What they style                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------ |
+| `--panneau-shell-*`   | The window's background (`bg`), the inset of the page (`inset`) and its panel (`panel-*`)        |
+| `--panneau-sidebar-*` | The width (expanded and collapsed), background and border of the sidebar, its links and its logo |
+
+```ts
+import { defineTheme } from '@panneau/ui';
+
+// A flat frame: the sidebar on a surface, and the page flush against it.
+export const flatTheme = defineTheme({
+    tokens: {
+        'panneau-shell-inset': '0',
+        'panneau-shell-panel-radius': '0',
+        'panneau-sidebar-bg': 'var(--panneau-color-surface)',
+        'panneau-sidebar-border': 'var(--panneau-border-width) solid var(--panneau-color-border)',
+    },
+});
+```
 
 The package layout, scripts and API reports are explained in [`docs/packages.md`](../../docs/packages.md).

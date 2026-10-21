@@ -124,16 +124,23 @@ export function DateRangeFilter({ label, value, onChange }: FilterControlProps) 
         );
     return (
         <Fieldset legend={label} className={styles.range}>
-            <DateField
-                label={intl.formatMessage(messages.from)}
-                value={from !== '' ? from : null}
-                onChange={(next) => set(next ?? '', to)}
-            />
-            <DateField
-                label={intl.formatMessage(messages.to)}
-                value={to !== '' ? to : null}
-                onChange={(next) => set(from, next ?? '')}
-            />
+            {/* One row, like the other filters: the legend names the range, and each end is named
+                for assistive technologies only. */}
+            <div className={styles.rangeInputs}>
+                <DateField
+                    aria-label={intl.formatMessage(messages.from)}
+                    value={from !== '' ? from : null}
+                    onChange={(next) => set(next ?? '', to)}
+                />
+                <span className={styles.rangeDash} aria-hidden="true">
+                    –
+                </span>
+                <DateField
+                    aria-label={intl.formatMessage(messages.to)}
+                    value={to !== '' ? to : null}
+                    onChange={(next) => set(from, next ?? '')}
+                />
+            </div>
         </Fieldset>
     );
 }

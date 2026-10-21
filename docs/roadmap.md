@@ -57,7 +57,11 @@ Goal: a complete admin panel, ready for client projects.
 
 **Pilot: the contests platform.** Folklore's contest platform (multi-tenant, with internal, agency and client users) moves its whole admin to the 5.0 betas, one item at a time, starting with the app shell. Niche keeps pulling what its product needs from this phase. What doesn't fit becomes an issue here, labelled `contests`.
 
+**The interface is worked on in parallel.** The look and the interactions of the app (shell, sidebar, pages) are designed on the playground (`npm run playground`), at the same time as the contests platform migrates, instead of waiting for each of its slices.
+
 - **App shell:** routing, layout, menus, replaceable pages, error pages.
+    - First version: a sidebar from the `main` menu, collapsible to a rail of icons, with the page on a raised panel as in recent browsers, a drawer on small screens, and themable through the `shell` and `sidebar` component tokens. Home, list, create, edit, plugin and not found pages.
+    - **Show page:** the edit form for now. It should become, depending on the context, a link to the item on the site (its public URL), or a preview: in a dialog, or in a panel that opens on the right of the list. To decide in a decision record, with the preview of 5.x.
 - **Auth:**
     - password login, password reset, 2FA, passkeys, email verification;
     - OAuth providers (continues [#5](https://github.com/folkloreinc/panneau-js/issues/5) and laravel-panneau#34);
