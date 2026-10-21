@@ -10,6 +10,7 @@ import { actionsMessages } from './messages/actions';
 import { fieldsMessages } from './messages/fields';
 import { formsMessages } from './messages/forms';
 import { listsMessages } from './messages/lists';
+import { mediaMessages } from './messages/media';
 import { uiMessages } from './messages/ui';
 
 const GROUPS = {
@@ -18,6 +19,7 @@ const GROUPS = {
     forms: formsMessages,
     lists: listsMessages,
     actions: actionsMessages,
+    media: mediaMessages,
 };
 
 /** The names of the arguments of an ICU message (`{count, plural, …}` gives `count`). */

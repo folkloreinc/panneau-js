@@ -1,0 +1,50 @@
+{
+    "name": "@panneau/media",
+    "version": "5.0.0-alpha.3",
+    "description": "Uploads with Uppy 6 and the media of Panneau: an upload list, and the file and media fields.",
+    "type": "module",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git",
+        "directory": "packages/media"
+    },
+    "sideEffects": [
+        "*.css"
+    ],
+    "exports": {
+        ".": {
+            "@panneau/source": "./src/index.ts",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "vite build && tsc -p tsconfig.build.json",
+        "typecheck": "tsc --noEmit",
+        "api": "tsc -p tsconfig.build.json && node ../../scripts/api-report.js"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "peerDependencies": {
+        "react": "^19.2.0",
+        "react-aria-components": "^1.22.0",
+        "react-intl": "^12.0.0"
+    },
+    "dependencies": {
+        "@panneau/core": "5.0.0-alpha.3",
+        "@panneau/data": "5.0.0-alpha.3",
+        "@panneau/fields": "5.0.0-alpha.3",
+        "@panneau/intl": "5.0.0-alpha.3",
+        "@panneau/protocol": "5.0.0-alpha.3",
+        "@panneau/ui": "5.0.0-alpha.3",
+        "@uppy/aws-s3": "^6.3.0",
+        "@uppy/core": "^6.3.0",
+        "lucide-react": "^1.57.0"
+    }
+}

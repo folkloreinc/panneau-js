@@ -1,4 +1,9 @@
-export { DataAdapterProvider, type DataAdapterProviderProps, useDataAdapter } from './context';
+export {
+    DataAdapterProvider,
+    type DataAdapterProviderProps,
+    useDataAdapter,
+    useOptionalDataAdapter,
+} from './context';
 export {
     type QueryHookOptions,
     type RunActionVariables,
