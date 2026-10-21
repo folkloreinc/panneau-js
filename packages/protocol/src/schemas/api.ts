@@ -148,6 +148,70 @@ export const MediaTransform = z
             'Non-destructive edits of an image, applied in this order: crop, then rotate, then flip.',
     });
 
+export const UploadReference = z.looseObject({ upload: z.string().min(1) }).meta({
+    description:
+        'A file uploaded directly to storage, by the id of its upload: in a file value, an action parameter, or `POST /media`.',
+});
+
+export const StoredFile = z
+    .looseObject({
+        name: z.string().meta({ description: 'The name of the file, as the user knows it.' }),
+        url: z.string().nullable().optional().meta({
+            description: 'Where to download it. A private file gets a temporary URL.',
+        }),
+        mime: z.string().nullable().optional(),
+        size: z.number().int().nonnegative().nullable().optional(),
+    })
+    .meta({
+        description:
+            'A file stored by the backend: the value of a `file` field in items. Requests send it back to keep the file, `{ "upload" }` to replace it, or `null` to remove it.',
+    });
+
+export const Upload = z
+    .looseObject({
+        id: z.string().min(1).meta({ description: 'The id of the upload: `upl_…`.' }),
+        key: z.string().optional().meta({ description: 'The key of the object in storage.' }),
+        name: z.string().optional(),
+        mime: z.string().optional(),
+        size: z.number().int().nonnegative().optional(),
+    })
+    .meta({
+        description:
+            'A file the browser uploaded to storage, before it becomes a media, an import or another value.',
+    });
+
+export const UploadResponse = z.looseObject({ data: Upload });
+
+export const UploadSignRequest = z
+    .looseObject({
+        method: z.enum(['GET', 'POST', 'PUT', 'DELETE']),
+        key: z.string().min(1),
+        uploadId: z.string().optional().meta({ description: 'The S3 multipart upload.' }),
+        partNumber: z.number().int().positive().optional(),
+        contentType: z.string().optional(),
+        expiresIn: z.number().int().positive().optional(),
+    })
+    .meta({
+        description: "A request of the browser's S3 client to sign (Uppy 6's `signRequest`).",
+    });
+
+export const UploadSignResponse = z
+    .looseObject({
+        url: z.string(),
+        key: z
+            .string()
+            .optional()
+            .meta({ description: 'The key the backend chose, for the first request of a file.' }),
+        headers: z.record(z.string(), z.string()).optional().meta({
+            description: 'Headers the URL was signed with, which the browser sends.',
+        }),
+        upload: z
+            .string()
+            .optional()
+            .meta({ description: 'The upload the first request of a file created: `upl_…`.' }),
+    })
+    .meta({ description: 'A presigned request.' });
+
 export const Media = Item.extend({
     type: z
         .string()
@@ -170,6 +234,10 @@ export const Media = Item.extend({
     metadata: z.record(z.string(), z.unknown()).optional(),
     transform: MediaTransform.nullable().optional(),
     tags: z.array(z.string()).optional(),
+    status: z.enum(['pending', 'processing', 'ready', 'failed']).optional().meta({
+        description:
+            'Where the ingest of the media is: `pending` and `processing` until its renditions are made, then `ready` or `failed`. Without it, the media is ready.',
+    }),
 });
 
 export const MediaResponse = z.looseObject({ data: Media });
@@ -202,6 +270,12 @@ export type ActionResult = z.infer<typeof ActionResult>;
 export type ActionRun = z.infer<typeof ActionRun>;
 export type ActionRunResponse = z.infer<typeof ActionRunResponse>;
 export type MediaTransform = z.infer<typeof MediaTransform>;
+export type UploadReference = z.infer<typeof UploadReference>;
+export type StoredFile = z.infer<typeof StoredFile>;
+export type Upload = z.infer<typeof Upload>;
+export type UploadResponse = z.infer<typeof UploadResponse>;
+export type UploadSignRequest = z.infer<typeof UploadSignRequest>;
+export type UploadSignResponse = z.infer<typeof UploadSignResponse>;
 export type Media = z.infer<typeof Media>;
 export type MediaResponse = z.infer<typeof MediaResponse>;
 export type MediaListResponse = z.infer<typeof MediaListResponse>;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { createDefinition } from '../__fixtures__/definition';
-import { createMockBackend } from './index';
+import { createExampleDefinition, createMockBackend } from './index';
 
 function createBackend() {
     return createMockBackend({
@@ -162,6 +162,50 @@ describe('createMockBackend', () => {
         );
         expect(unsupported.status).toBe(400);
         expect(backend.items('pages').map((item) => item.id)).toEqual(before);
+    });
+
+    it('stores the upload a file value references, and refuses an unknown one', async () => {
+        const backend = createMockBackend({ definition: createExampleDefinition() });
+        const signed = (await (
+            await backend.fetch(
+                '/panneau/api/uploads/sign',
+                json(
+                    { method: 'PUT', key: 'terms.pdf', contentType: 'application/pdf' },
+                    { method: 'POST' },
+                ),
+            )
+        ).json()) as { upload: string };
+        await backend.fetch(
+            `/panneau/api/uploads/${signed.upload}/complete`,
+            json({ name: 'terms.pdf' }, { method: 'POST' }),
+        );
+        const values = { title: { fr: 'Conditions', en: 'Terms' }, status: 'draft' };
+
+        const created = await backend.fetch(
+            '/panneau/api/resources/pages',
+            json(
+                { ...values, attachment: { upload: signed.upload, mime: 'application/pdf' } },
+                { method: 'POST' },
+            ),
+        );
+        expect(created.status).toBe(201);
+        expect(
+            ((await created.json()) as { data: Record<string, unknown> }).data.attachment,
+        ).toEqual({
+            name: 'terms.pdf',
+            url: `https://storage.test/uploads/${signed.upload}`,
+            mime: 'application/pdf',
+            size: null,
+        });
+
+        const unknown = await backend.fetch(
+            '/panneau/api/resources/pages',
+            json({ ...values, attachment: { upload: 'upl_unknown' } }, { method: 'POST' }),
+        );
+        expect(unknown.status).toBe(422);
+        expect(await unknown.json()).toMatchObject({
+            errors: { attachment: ['This upload does not exist.'] },
+        });
     });
 
     it('answers unknown routes with a 404 problem', async () => {

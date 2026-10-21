@@ -245,7 +245,9 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
             return data<Media>({
                 method: 'POST',
                 path: '/media',
-                body: { ...values, file },
+                // A Blob goes as multipart/form-data, an upload reference as JSON.
+                body:
+                    file instanceof Blob ? { ...values, file } : { ...values, upload: file.upload },
                 signal,
             });
         },

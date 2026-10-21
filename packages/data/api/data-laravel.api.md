@@ -16,6 +16,7 @@ import type { MediaListResponse } from '@panneau/protocol';
 import { Problem } from '@panneau/protocol';
 import type { SearchResponse } from '@panneau/protocol';
 import type { Session } from '@panneau/protocol';
+import type { UploadReference } from '@panneau/protocol';
 
 // Warning: (ae-forgotten-export) The symbol "DataAdapter" needs to be exported by the entry point index.d.ts
 //

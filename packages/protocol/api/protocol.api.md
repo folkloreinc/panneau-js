@@ -1336,6 +1336,12 @@ export const Media: z.ZodObject<{
         }, z.core.$loose>>;
     }, z.core.$loose>>>;
     tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    status: z.ZodOptional<z.ZodEnum<{
+        failed: "failed";
+        pending: "pending";
+        processing: "processing";
+        ready: "ready";
+    }>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -1375,6 +1381,12 @@ export const MediaListResponse: z.ZodObject<{
             }, z.core.$loose>>;
         }, z.core.$loose>>>;
         tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        status: z.ZodOptional<z.ZodEnum<{
+            failed: "failed";
+            pending: "pending";
+            processing: "processing";
+            ready: "ready";
+        }>>;
     }, z.core.$loose>>;
     meta: z.ZodObject<{
         page: z.ZodNumber;
@@ -1421,6 +1433,12 @@ export const MediaResponse: z.ZodObject<{
             }, z.core.$loose>>;
         }, z.core.$loose>>>;
         tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        status: z.ZodOptional<z.ZodEnum<{
+            failed: "failed";
+            pending: "pending";
+            processing: "processing";
+            ready: "ready";
+        }>>;
     }, z.core.$loose>;
 }, z.core.$loose>;
 
@@ -3074,6 +3092,50 @@ export const namedSchemas: {
             y: z.ZodNumber;
         }, z.core.$loose>>;
     }, z.core.$loose>;
+    StoredFile: z.ZodObject<{
+        name: z.ZodString;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        size: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    }, z.core.$loose>;
+    UploadReference: z.ZodObject<{
+        upload: z.ZodString;
+    }, z.core.$loose>;
+    Upload: z.ZodObject<{
+        id: z.ZodString;
+        key: z.ZodOptional<z.ZodString>;
+        name: z.ZodOptional<z.ZodString>;
+        mime: z.ZodOptional<z.ZodString>;
+        size: z.ZodOptional<z.ZodNumber>;
+    }, z.core.$loose>;
+    UploadResponse: z.ZodObject<{
+        data: z.ZodObject<{
+            id: z.ZodString;
+            key: z.ZodOptional<z.ZodString>;
+            name: z.ZodOptional<z.ZodString>;
+            mime: z.ZodOptional<z.ZodString>;
+            size: z.ZodOptional<z.ZodNumber>;
+        }, z.core.$loose>;
+    }, z.core.$loose>;
+    UploadSignRequest: z.ZodObject<{
+        method: z.ZodEnum<{
+            GET: "GET";
+            POST: "POST";
+            PUT: "PUT";
+            DELETE: "DELETE";
+        }>;
+        key: z.ZodString;
+        uploadId: z.ZodOptional<z.ZodString>;
+        partNumber: z.ZodOptional<z.ZodNumber>;
+        contentType: z.ZodOptional<z.ZodString>;
+        expiresIn: z.ZodOptional<z.ZodNumber>;
+    }, z.core.$loose>;
+    UploadSignResponse: z.ZodObject<{
+        url: z.ZodString;
+        key: z.ZodOptional<z.ZodString>;
+        headers: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        upload: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>;
     Media: z.ZodObject<{
         id: z.ZodString;
         version: z.ZodNullable<z.ZodString>;
@@ -3106,6 +3168,12 @@ export const namedSchemas: {
             }, z.core.$loose>>;
         }, z.core.$loose>>>;
         tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        status: z.ZodOptional<z.ZodEnum<{
+            failed: "failed";
+            pending: "pending";
+            processing: "processing";
+            ready: "ready";
+        }>>;
     }, z.core.$loose>;
     MediaResponse: z.ZodObject<{
         data: z.ZodObject<{
@@ -3140,6 +3208,12 @@ export const namedSchemas: {
                 }, z.core.$loose>>;
             }, z.core.$loose>>>;
             tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            status: z.ZodOptional<z.ZodEnum<{
+                failed: "failed";
+                pending: "pending";
+                processing: "processing";
+                ready: "ready";
+            }>>;
         }, z.core.$loose>;
     }, z.core.$loose>;
     MediaListResponse: z.ZodObject<{
@@ -3175,6 +3249,12 @@ export const namedSchemas: {
                 }, z.core.$loose>>;
             }, z.core.$loose>>>;
             tags: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            status: z.ZodOptional<z.ZodEnum<{
+                failed: "failed";
+                pending: "pending";
+                processing: "processing";
+                ready: "ready";
+            }>>;
         }, z.core.$loose>>;
         meta: z.ZodObject<{
             page: z.ZodNumber;
@@ -3733,6 +3813,17 @@ export const Session: z.ZodObject<{
 export type Session = z.infer<typeof Session>;
 
 // @public (undocumented)
+export const StoredFile: z.ZodObject<{
+    name: z.ZodString;
+    url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    size: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type StoredFile = z.infer<typeof StoredFile>;
+
+// @public (undocumented)
 export const Theme: z.ZodObject<{
     label: z.ZodOptional<z.ZodString>;
     tokens: z.ZodRecord<z.ZodString, z.ZodString>;
@@ -3880,6 +3971,40 @@ export type ToneValues = z.infer<typeof ToneValues>;
 export function toSearchParams(query: ListQuery): URLSearchParams;
 
 // @public (undocumented)
+export const Upload: z.ZodObject<{
+    id: z.ZodString;
+    key: z.ZodOptional<z.ZodString>;
+    name: z.ZodOptional<z.ZodString>;
+    mime: z.ZodOptional<z.ZodString>;
+    size: z.ZodOptional<z.ZodNumber>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type Upload = z.infer<typeof Upload>;
+
+// @public (undocumented)
+export const UploadReference: z.ZodObject<{
+    upload: z.ZodString;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type UploadReference = z.infer<typeof UploadReference>;
+
+// @public (undocumented)
+export const UploadResponse: z.ZodObject<{
+    data: z.ZodObject<{
+        id: z.ZodString;
+        key: z.ZodOptional<z.ZodString>;
+        name: z.ZodOptional<z.ZodString>;
+        mime: z.ZodOptional<z.ZodString>;
+        size: z.ZodOptional<z.ZodNumber>;
+    }, z.core.$loose>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type UploadResponse = z.infer<typeof UploadResponse>;
+
+// @public (undocumented)
 export const Uploads: z.ZodObject<{
     mode: z.ZodEnum<{
         multipart: "multipart";
@@ -3892,6 +4017,35 @@ export const Uploads: z.ZodObject<{
 
 // @public (undocumented)
 export type Uploads = z.infer<typeof Uploads>;
+
+// @public (undocumented)
+export const UploadSignRequest: z.ZodObject<{
+    method: z.ZodEnum<{
+        GET: "GET";
+        POST: "POST";
+        PUT: "PUT";
+        DELETE: "DELETE";
+    }>;
+    key: z.ZodString;
+    uploadId: z.ZodOptional<z.ZodString>;
+    partNumber: z.ZodOptional<z.ZodNumber>;
+    contentType: z.ZodOptional<z.ZodString>;
+    expiresIn: z.ZodOptional<z.ZodNumber>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type UploadSignRequest = z.infer<typeof UploadSignRequest>;
+
+// @public (undocumented)
+export const UploadSignResponse: z.ZodObject<{
+    url: z.ZodString;
+    key: z.ZodOptional<z.ZodString>;
+    headers: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+    upload: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type UploadSignResponse = z.infer<typeof UploadSignResponse>;
 
 // @public (undocumented)
 export const User: z.ZodObject<{

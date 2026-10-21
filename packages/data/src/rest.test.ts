@@ -304,4 +304,15 @@ describe('createRestAdapter', () => {
             password: 'secret',
         });
     });
+
+    it('creates a media from a file uploaded directly to storage', async () => {
+        const { fetch, requests } = createStubFetch(() =>
+            jsonResponse(201, { data: { id: 'med_1', status: 'processing' } }),
+        );
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
+        await adapter.uploadMedia({ upload: 'upl_1' }, { name: 'Video' });
+        const request = requests[0];
+        expect(request?.headers.get('Content-Type')).toBe('application/json');
+        expect(await request?.json()).toEqual({ name: 'Video', upload: 'upl_1' });
+    });
 });

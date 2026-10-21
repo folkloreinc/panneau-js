@@ -10,6 +10,7 @@ import type {
     MediaListResponse,
     SearchResponse,
     Session,
+    UploadReference,
 } from '@panneau/protocol';
 
 /** Values of an item's fields, keyed by field name. */
@@ -87,7 +88,15 @@ export interface DataAdapter {
     /** One media item. */
     getMedia(id: string, options?: RequestOptions): Promise<Media>;
     /** Uploads a file, with optional metadata. */
-    uploadMedia(file: Blob, values?: Values, options?: RequestOptions): Promise<Media>;
+    /**
+     * Creates a media from a file (`multipart/form-data`), or from a file uploaded directly to
+     * storage (`{ upload: 'upl_…' }`, from `createPresignedUploads().complete()`).
+     */
+    uploadMedia(
+        file: Blob | UploadReference,
+        values?: Values,
+        options?: RequestOptions,
+    ): Promise<Media>;
     /** Updates the metadata or the transform of a media item. */
     updateMedia(id: string, values: Values, options?: RequestOptions): Promise<Media>;
     /** Deletes a media item. */

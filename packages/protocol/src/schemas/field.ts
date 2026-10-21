@@ -83,7 +83,7 @@ export const Field = z
         multiple: z
             .boolean()
             .optional()
-            .meta({ description: '`select`, `relation`, `media`: the value is an array.' }),
+            .meta({ description: '`select`, `relation`, `media`, `file`: the value is an array.' }),
         resource: z
             .string()
             .optional()
@@ -91,7 +91,7 @@ export const Field = z
         accept: z
             .array(z.string())
             .optional()
-            .meta({ description: '`media`: accepted MIME types.' }),
+            .meta({ description: '`media`, `file`: accepted MIME types.' }),
         from: z
             .string()
             .optional()
