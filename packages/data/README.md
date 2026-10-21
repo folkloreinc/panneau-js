@@ -85,6 +85,8 @@ uppy.on('upload-success', async (file, response) => {
 
 It is plain `fetch` and doesn't import Uppy. Small files can still use `uploadMedia(file)`.
 
+The REST adapter gives the same object, with its own base URL, headers, credentials and errors: `adapter.presignedUploads({ endpoint: definition.uploads.endpoint })` (optional in `DataAdapter`). The fields of `@panneau/fields` and `@panneau/media` upload through it with `createUppyUploadSource()` of `@panneau/fields/uppy`.
+
 ## Query hooks
 
 The hooks need TanStack Query v5 and React (optional peer dependencies, only for this entry point), with a `QueryClientProvider` and a `DataAdapterProvider` above them.
@@ -109,6 +111,7 @@ function Pages() {
 
 - Mutations update the cache: create and update cache the item and refetch the lists of the resource; delete removes the item and refetches the lists.
 - `useRunAction()` refreshes what the action result asks (`refresh`: `none`, `items` or `list`, the default). A queued action returns a run instead: `useActionRun(run.id)` follows it until it finishes, then refreshes.
+- `useDataAdapter()` gives the adapter of `DataAdapterProvider`, and throws without one. `useOptionalDataAdapter()` gives `null` instead, for components that also work without a backend, such as the media field.
 - `queryKeys` and the `*QueryOptions()` functions give the keys and options of the hooks, to prefetch or invalidate their data.
 
 The package layout, scripts and API reports are explained in [`docs/packages.md`](../../docs/packages.md).

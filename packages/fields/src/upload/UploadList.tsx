@@ -3,11 +3,11 @@ import { ProgressBar } from 'react-aria-components';
 
 import { IconButton, usePanneauIntl } from '@panneau/ui';
 
+import { cx } from '../shared/cx';
+import { messages } from '../shared/messages';
 import styles from './UploadList.module.css';
-import { cx } from './cx';
 import { formatSize } from './files';
-import { messages } from './messages';
-import type { UploadItem } from './uploader';
+import type { UploadItem } from './types';
 
 export interface UploadListProps {
     /** The files being uploaded, from `useUploads()`. */
@@ -49,9 +49,9 @@ export function UploadList({
                 const indeterminate = item.progress === null || item.status === 'completing';
                 const status = {
                     uploading: intl.formatMessage(messages.uploading),
-                    paused: intl.formatMessage(messages.paused),
-                    completing: intl.formatMessage(messages.completing),
-                    failed: intl.formatMessage(messages.failed, { error: item.error ?? '' }),
+                    paused: intl.formatMessage(messages.uploadPaused),
+                    completing: intl.formatMessage(messages.uploadCompleting),
+                    failed: intl.formatMessage(messages.uploadFailed, { error: item.error ?? '' }),
                 }[item.status];
                 const percent = item.progress === null ? null : Math.round(item.progress * 100);
                 return (
@@ -65,7 +65,7 @@ export function UploadList({
                                 <IconButton
                                     icon={Pause}
                                     size="sm"
-                                    label={intl.formatMessage(messages.pause, { name })}
+                                    label={intl.formatMessage(messages.pauseUpload, { name })}
                                     onPress={() => onPause(item.id)}
                                 />
                             ) : null}
@@ -73,7 +73,7 @@ export function UploadList({
                                 <IconButton
                                     icon={Play}
                                     size="sm"
-                                    label={intl.formatMessage(messages.resume, { name })}
+                                    label={intl.formatMessage(messages.resumeUpload, { name })}
                                     onPress={() => onResume(item.id)}
                                 />
                             ) : null}
@@ -81,7 +81,7 @@ export function UploadList({
                                 <IconButton
                                     icon={RotateCcw}
                                     size="sm"
-                                    label={intl.formatMessage(messages.retry, { name })}
+                                    label={intl.formatMessage(messages.retryUpload, { name })}
                                     onPress={() => onRetry(item.id)}
                                 />
                             ) : null}
@@ -89,7 +89,7 @@ export function UploadList({
                                 <IconButton
                                     icon={X}
                                     size="sm"
-                                    label={intl.formatMessage(messages.cancel, { name })}
+                                    label={intl.formatMessage(messages.cancelUpload, { name })}
                                     onPress={() => onCancel(item.id)}
                                 />
                             ) : null}

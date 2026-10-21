@@ -71,6 +71,12 @@ export const EXAMPLE_FIELDS: Field[] = [
     { name: 'author', type: 'relation', label: 'Author', resource: 'authors' },
     { name: 'guests', type: 'relation', label: 'Guests', resource: 'authors', multiple: true },
     {
+        name: 'transcript',
+        type: 'file',
+        label: 'Transcript',
+        rules: [{ rule: 'accept', value: ['application/pdf', 'text/*'] }],
+    },
+    {
         name: 'sharing',
         type: 'group',
         label: 'Sharing',
@@ -114,6 +120,12 @@ export const EXAMPLE_VALUES: Record<string, unknown> = {
     status: 'draft',
     platforms: ['web'],
     author: { id: '1', label: 'Ada Lovelace' },
+    transcript: {
+        name: 'transcript.pdf',
+        url: 'https://files.example/transcript.pdf',
+        mime: 'application/pdf',
+        size: 52000,
+    },
     blocks: [{ type: 'quote', text: 'Hello.', author: 'Ada' }],
 };
 

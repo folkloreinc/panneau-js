@@ -20,3 +20,4 @@ export {
 } from './errors';
 export { readProblem } from './problem';
 export { type RestAdapterOptions, createRestAdapter } from './rest';
+export type { PresignableRequest, PresignedResponse, PresignedUploads } from './uploads';

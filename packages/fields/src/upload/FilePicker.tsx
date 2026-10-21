@@ -3,9 +3,9 @@ import { type DropItem, DropZone, FileTrigger } from 'react-aria-components';
 
 import { Button, usePanneauIntl } from '@panneau/ui';
 
+import { cx } from '../shared/cx';
+import { messages } from '../shared/messages';
 import styles from './FilePicker.module.css';
-import { cx } from './cx';
-import { messages } from './messages';
 
 export interface FilePickerProps {
     /** Called with the files chosen or dropped. */

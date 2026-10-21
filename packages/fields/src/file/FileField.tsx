@@ -1,19 +1,20 @@
 import { FileText, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-import type { PresignedUploads } from '@panneau/data/uploads';
-import { type FieldEntryProps, type FieldProps, getFieldProps } from '@panneau/fields';
 import type { StoredFile } from '@panneau/protocol';
 import { Fieldset, IconButton, usePanneauIntl } from '@panneau/ui';
 
+import { useFieldsContext } from '../shared/context';
+import { getAccept, getFieldProps, getMaxSize } from '../shared/entry';
+import { messages } from '../shared/messages';
+import type { FieldEntryProps, FieldProps } from '../shared/types';
+import { FilePicker } from '../upload/FilePicker';
+import { UploadList } from '../upload/UploadList';
+import { formatSize } from '../upload/files';
+import type { UploadSource, UploadedFile } from '../upload/types';
+import { useRejectionMessage } from '../upload/useRejectionMessage';
+import { useUploads } from '../upload/useUploads';
 import styles from './FileField.module.css';
-import { FilePicker } from './FilePicker';
-import { UploadList } from './UploadList';
-import { formatSize } from './files';
-import { messages } from './messages';
-import { getAccept, getMaxSize, useMediaServices } from './services';
-import type { UploadRejection, UploadedFile } from './uploader';
-import { useUploads } from './useUploads';
 
 /**
  * A file of a `file` value: a stored file, as items give it; an upload, once the browser sent the
@@ -21,16 +22,17 @@ import { useUploads } from './useUploads';
  */
 export type FileValue = StoredFile | UploadedFile | File;
 
-interface FileFieldBaseProps extends Omit<FieldProps<never>, 'value' | 'onChange'> {
+export interface FileFieldBaseProps extends Omit<FieldProps<never>, 'value' | 'onChange'> {
     /** Accepted MIME types (`application/pdf`, `image/*`). Others are refused before they are sent. */
     accept?: readonly string[] | null;
     /** Largest file, in bytes. Larger ones are refused before they are sent. */
     maxSize?: number | null;
     /**
-     * Direct uploads to storage (`adapter.presignedUploads()`). Without them, the value is the
-     * file itself, which the adapter sends in `multipart/form-data`.
+     * Where files are uploaded directly to storage. Defaults to the one of the fields context.
+     * Without one, the value holds the files themselves, which the adapter sends in
+     * `multipart/form-data`.
      */
-    uploads?: PresignedUploads | null;
+    uploadSource?: UploadSource | null;
 }
 
 export interface SingleFileFieldProps extends FileFieldBaseProps {
@@ -47,10 +49,6 @@ export interface MultipleFileFieldProps extends FileFieldBaseProps {
 }
 
 export type FileFieldProps = SingleFileFieldProps | MultipleFileFieldProps;
-
-function fileName(file: FileValue): string {
-    return file.name;
-}
 
 function fileSize(file: FileValue): number | null {
     return typeof file.size === 'number' ? file.size : null;
@@ -82,30 +80,20 @@ export function toFiles(value: unknown): FileValue[] {
     return isFileValue(value) ? [value] : [];
 }
 
-/** The message of a file refused before it was sent. */
-export function useRejectionMessage(maxSize: number | null | undefined) {
-    const intl = usePanneauIntl();
-    return (file: File, reason: UploadRejection) =>
-        reason === 'accept'
-            ? intl.formatMessage(messages.rejectedType, { name: file.name })
-            : intl.formatMessage(messages.rejectedSize, {
-                  name: file.name,
-                  size: formatSize(maxSize ?? 0, intl.locale),
-              });
-}
-
 /**
  * Files that belong to an item, outside the media library: an attachment, a PDF, a CSV (the
- * `file` type). With direct uploads, files go to storage with Uppy, in parts when they are large,
- * and the value references each upload (`{ upload, name, mime, size }`). Without them, the value
- * is the file itself. Items give stored files, which the field shows with a link.
+ * `file` type). With an upload source, files go directly to storage, and the value references
+ * each upload (`{ upload, name, mime, size }`). Without one, the value is the file itself. Items
+ * give stored files, which the field shows with a link. A new file replaces the file of a single
+ * value, and is added to a multiple one.
  */
 export function FileField(props: FileFieldProps) {
     const intl = usePanneauIntl();
+    const context = useFieldsContext();
     const {
         accept = null,
         maxSize = null,
-        uploads = null,
+        uploadSource = context.uploadSource,
         label,
         description,
         errors = [],
@@ -138,7 +126,7 @@ export function FileField(props: FileFieldProps) {
     };
 
     const upload = useUploads({
-        uploads,
+        source: uploadSource,
         accept,
         maxSize,
         onUploaded: (file) => set(multiple ? [...latest.current, file] : [file]),
@@ -162,7 +150,7 @@ export function FileField(props: FileFieldProps) {
                 {files.length > 0 ? (
                     <ul className={styles.files}>
                         {files.map((file, index) => {
-                            const name = fileName(file);
+                            const { name } = file;
                             const url = fileUrl(file);
                             const size = fileSize(file);
                             return (
@@ -189,7 +177,9 @@ export function FileField(props: FileFieldProps) {
                                         <IconButton
                                             icon={X}
                                             size="sm"
-                                            label={intl.formatMessage(messages.remove, { name })}
+                                            label={intl.formatMessage(messages.removeFile, {
+                                                name,
+                                            })}
                                             onPress={() =>
                                                 set(latest.current.filter((_, at) => at !== index))
                                             }
@@ -199,9 +189,9 @@ export function FileField(props: FileFieldProps) {
                             );
                         })}
                     </ul>
-                ) : (
+                ) : upload.items.length === 0 ? (
                     <span className={styles.none}>{intl.formatMessage(messages.noFile)}</span>
-                )}
+                ) : null}
                 <UploadList
                     items={upload.items}
                     onPause={upload.pause}
@@ -228,17 +218,15 @@ export function FileField(props: FileFieldProps) {
 }
 
 /**
- * The registry entry of the `file` type: the field's `multiple`, `accept` and `maxSize`, with the
- * direct uploads that the definition announces, through the adapter of `@panneau/data`.
+ * The registry entry of the `file` type: the field's `multiple`, `accept` (or its `accept` rule)
+ * and `maxSize` rule, with the upload source of the fields context.
  */
 export function FileFieldEntry(props: FieldEntryProps) {
     const { field, value, onChange } = props;
-    const { uploads } = useMediaServices();
     const common = {
         ...getFieldProps(props),
         accept: getAccept(field),
         maxSize: getMaxSize(field),
-        uploads,
     };
     return field.multiple === true ? (
         <FileField {...common} multiple value={toFiles(value)} onChange={onChange} />

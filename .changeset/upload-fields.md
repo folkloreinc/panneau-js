@@ -1,0 +1,5 @@
+---
+'@panneau/fields': minor
+---
+
+The `file` field and uploads to storage (decision 0025). `FileField` (`@panneau/fields/file`, built in as the `file` type) holds files that belong to an item: stored files (`{ name, url, mime, size }`), uploads (`{ upload, name, mime, size }`) or the files themselves, single or a list with `multiple`, with remove and replace, and `accept` and `maxSize` checked before sending. Fields upload through an `UploadSource`, given to `FieldsProvider` as `uploadSource` like the relation source; without one, values hold the files themselves. The upload core is exported for other fields: `useUploads()`, `UploadList` (progress, pause, resume, cancel, retry), `FilePicker` (button and drop zone), `formatSize()`, `matchesMime()`, `getAccept()`, `getMaxSize()`. `@panneau/fields/uppy` adds `createUppyUploadSource()`, on Uppy 6 with the backend's signatures: `@uppy/core` and `@uppy/aws-s3` 6.3 are optional peer dependencies, only for that entry point. `react-aria-components` is now a peer dependency.

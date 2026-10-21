@@ -2,6 +2,7 @@ import { type ComponentType, type ReactNode, createContext, use } from 'react';
 
 import type { Field } from '@panneau/protocol';
 
+import type { UploadSource } from '../upload/types';
 import type { RelationSource } from './relation';
 import type { FieldEntry } from './types';
 
@@ -38,6 +39,11 @@ export interface FieldsContextValue {
     locales: readonly string[];
     /** Where relation fields search for items. */
     relationSource: RelationSource | null;
+    /**
+     * Where fields that take files upload them directly to storage. Without one, they give the
+     * files themselves.
+     */
+    uploadSource: UploadSource | null;
     binding: FieldBinding | null;
 }
 
@@ -45,6 +51,7 @@ const FieldsContext = createContext<FieldsContextValue>({
     components: {},
     locales: [],
     relationSource: null,
+    uploadSource: null,
     binding: null,
 });
 
@@ -58,19 +65,22 @@ export interface FieldsProviderProps {
     components?: Readonly<Record<string, FieldEntry>>;
     locales?: readonly string[];
     relationSource?: RelationSource | null;
+    /** Make it once, outside of render: fields make an uploader for each source they get. */
+    uploadSource?: UploadSource | null;
     binding?: FieldBinding | null;
     children?: ReactNode;
 }
 
 /**
  * Provides what fields rendered from a definition need: the components of each type, the locales
- * of localized values, a relation source and a binding. Values not given come from the parent
+ * of localized values, a relation source, an upload source and a binding. Values not given come from the parent
  * provider.
  */
 export function FieldsProvider({
     components,
     locales,
     relationSource,
+    uploadSource,
     binding,
     children,
 }: FieldsProviderProps) {
@@ -80,6 +90,7 @@ export function FieldsProvider({
             components !== undefined ? { ...parent.components, ...components } : parent.components,
         locales: locales ?? parent.locales,
         relationSource: relationSource === undefined ? parent.relationSource : relationSource,
+        uploadSource: uploadSource === undefined ? parent.uploadSource : uploadSource,
         binding: binding === undefined ? parent.binding : binding,
     };
     return <FieldsContext value={value}>{children}</FieldsContext>;

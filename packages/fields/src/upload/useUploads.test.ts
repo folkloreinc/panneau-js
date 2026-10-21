@@ -4,6 +4,8 @@ import { describe, expect, it, vi } from 'vitest';
 import type { UploadSource, UploadedFile, Uploader } from './types';
 import { useUploads } from './useUploads';
 
+const NO_ITEMS: never[] = [];
+
 const file = (name: string, type: string, size = 10) =>
     new File([new Uint8Array(size)], name, { type });
 
@@ -14,7 +16,7 @@ function createSource(): UploadSource & { destroyed: number } {
         createUploader({ onUploaded }: { onUploaded: (file: UploadedFile) => void }): Uploader {
             let next = 1;
             return {
-                getItems: () => [],
+                getItems: () => NO_ITEMS,
                 subscribe: () => () => undefined,
                 add(files) {
                     for (const added of files) {

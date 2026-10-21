@@ -2,13 +2,47 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
+import type { DataAdapter } from '@panneau/data';
+import { DataAdapterProvider } from '@panneau/data/query';
+import { FieldsProvider, type UploadSource, type UploadedFile } from '@panneau/fields';
 import type { Media } from '@panneau/protocol';
 
-import { type MediaAdapter, MediaField } from './MediaField';
+import { type MediaAdapter, MediaField, MediaFieldEntry } from './MediaField';
 import { Controlled, file, fileInput, renderInRoot } from './__fixtures__/render';
+import { mediaPlugin } from './plugin';
+
+const NO_ITEMS: never[] = [];
+
+/** A source that uploads each file at once, as `upl_1`, `upl_2`… */
+const instantSource: UploadSource = {
+    createUploader({ onUploaded }: { onUploaded: (file: UploadedFile) => void }) {
+        let next = 1;
+        return {
+            getItems: () => NO_ITEMS,
+            subscribe: () => () => undefined,
+            add(files) {
+                for (const added of files) {
+                    onUploaded({
+                        upload: `upl_${String(next++)}`,
+                        name: added.name,
+                        mime: added.type,
+                        size: added.size,
+                    });
+                }
+            },
+            pause: () => undefined,
+            resume: () => undefined,
+            cancel: () => undefined,
+            retry: () => undefined,
+            destroy: () => undefined,
+        };
+    },
+};
 
 const media = (overrides: Partial<Media> = {}): Media => ({
     id: 'med_1',
+    version: null,
+    abilities: {},
     type: 'video',
     name: 'clip.mp4',
     mime: 'video/mp4',
@@ -106,5 +140,45 @@ describe('MediaField', () => {
         expect(screen.getByText('Processing failed')).toBeInTheDocument();
         expect(screen.getByText(/Files can’t be uploaded here./)).toBeInTheDocument();
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    });
+
+    it('makes a media of an upload, with the adapter and the upload source of its providers', async () => {
+        const uploadMedia = vi
+            .fn<MediaAdapter['uploadMedia']>()
+            .mockResolvedValue(media({ name: 'photo.jpg', type: 'image' }));
+        const adapter = { uploadMedia, getMedia: vi.fn() } as unknown as DataAdapter;
+        const onChange = vi.fn();
+        const { container } = renderInRoot(
+            <DataAdapterProvider adapter={adapter}>
+                <FieldsProvider uploadSource={instantSource}>
+                    <MediaFieldEntry
+                        field={{
+                            name: 'gallery',
+                            type: 'media',
+                            label: 'Gallery',
+                            multiple: true,
+                            rules: [{ rule: 'accept', value: ['image/*'] }],
+                        }}
+                        path="gallery"
+                        value={null}
+                        onChange={onChange}
+                    />
+                </FieldsProvider>
+            </DataAdapterProvider>,
+        );
+
+        expect(fileInput(container)).toHaveAttribute('accept', 'image/*');
+        await userEvent.upload(fileInput(container), file('photo.jpg', 'image/jpeg'));
+
+        expect(uploadMedia).toHaveBeenCalledWith({ upload: 'upl_1' }, { name: 'photo.jpg' });
+        await waitFor(() =>
+            expect(onChange).toHaveBeenCalledWith([expect.objectContaining({ name: 'photo.jpg' })]),
+        );
+    });
+});
+
+describe('mediaPlugin', () => {
+    it('provides the media type only: the file type is built into the fields', () => {
+        expect(Object.keys(mediaPlugin.fields)).toEqual(['media']);
     });
 });

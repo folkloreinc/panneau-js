@@ -14,6 +14,7 @@ import {
     type FieldEntry,
     FieldsProvider,
     type RelationSource,
+    type UploadSource,
     builtInFields,
 } from '@panneau/fields';
 import type { Field, LayoutNode } from '@panneau/protocol';
@@ -40,6 +41,11 @@ export interface FormViewProps {
     locales?: readonly string[];
     /** Where relation fields search. Defaults to the one of a parent `FieldsProvider`. */
     relationSource?: RelationSource | null;
+    /**
+     * Where fields that take files upload them directly to storage. Defaults to the one of a
+     * parent `FieldsProvider`. Without one, values hold the files themselves.
+     */
+    uploadSource?: UploadSource | null;
     /** Field entries by type, over the built-in ones and those of the plugins. */
     components?: Readonly<Record<string, FieldEntry>>;
     /** Label of the submit button. Defaults to "Save". `null` hides the button. */
@@ -113,6 +119,7 @@ export function FormView({
     layout = [],
     locales,
     relationSource,
+    uploadSource,
     components,
     submitLabel,
     actions,
@@ -226,6 +233,7 @@ export function FormView({
                     components={entries}
                     locales={locales ?? definition?.locales ?? []}
                     {...(relationSource !== undefined ? { relationSource } : {})}
+                    {...(uploadSource !== undefined ? { uploadSource } : {})}
                     binding={FormBinding}
                 >
                     <form
