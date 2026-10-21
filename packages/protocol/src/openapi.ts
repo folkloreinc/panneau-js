@@ -276,6 +276,19 @@ export function createOpenApiDocument(): JsonObject {
                     operationId: 'completeUpload',
                     summary:
                         'Once the browser completed the upload in storage, checks the object and gives the upload, which values reference.',
+                    requestBody: {
+                        required: false,
+                        content: json({
+                            type: 'object',
+                            properties: {
+                                name: {
+                                    type: 'string',
+                                    description:
+                                        "The file's name, which the key doesn't keep, since the backend chose it.",
+                                },
+                            },
+                        }),
+                    },
                     responses: {
                         200: ok('The upload.', ref('UploadResponse')),
                         ...problems(401, 403, 404, 422),

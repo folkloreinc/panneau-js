@@ -46,9 +46,11 @@ describe('createPresignedUploads', () => {
         expect(new Headers(requests[0]?.init.headers).get('X-XSRF-TOKEN')).toBe('token');
         expect(requests[0]?.init.credentials).toBe('include');
 
-        await expect(uploads.complete('uploads/upl_1')).resolves.toEqual(upload);
+        await expect(uploads.complete('uploads/upl_1', { name: 'video.mp4' })).resolves.toEqual(
+            upload,
+        );
         expect(requests[1]?.url).toBe('/panneau/api/uploads/upl_1/complete');
-        expect(requests[1]?.init.body).toBeUndefined();
+        expect(JSON.parse(String(requests[1]?.init.body))).toEqual({ name: 'video.mp4' });
     });
 
     it('reads the upload from the key when the backend does not name it, at its own endpoint', async () => {

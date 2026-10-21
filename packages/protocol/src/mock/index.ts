@@ -256,9 +256,14 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
         }
         if (segments.length === 3 && segments[2] === 'complete' && segments[1] !== undefined) {
             const upload = uploads.get(segments[1]);
-            return upload !== undefined
-                ? json(200, { data: upload })
-                : problem(404, 'Upload not found.');
+            if (upload === undefined) {
+                return problem(404, 'Upload not found.');
+            }
+            const { name } = await readBody();
+            if (typeof name === 'string') {
+                upload.name = name;
+            }
+            return json(200, { data: upload });
         }
         return problem(404, 'Not found.');
     };

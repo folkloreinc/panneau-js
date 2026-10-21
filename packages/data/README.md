@@ -78,7 +78,7 @@ const uploads = createPresignedUploads({
 });
 const uppy = new Uppy().use(AwsS3, { signRequest: uploads.signRequest });
 uppy.on('upload-success', async (file, response) => {
-    const upload = await uploads.complete(response.body.key);
+    const upload = await uploads.complete(response.body.key, { name: file.name });
     const media = await adapter.uploadMedia({ upload: upload.id }); // media.status: 'processing'
 });
 ```

@@ -914,6 +914,22 @@
             "post": {
                 "operationId": "completeUpload",
                 "summary": "Once the browser completed the upload in storage, checks the object and gives the upload, which values reference.",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "The file's name, which the key doesn't keep, since the backend chose it."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "The upload.",

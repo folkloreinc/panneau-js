@@ -42,7 +42,7 @@ export interface PresignedUploads {
      * Values reference it as `{ upload: upload.id }`: a file field, an import, or
      * `uploadMedia({ upload: upload.id })` to make it a media.
      */
-    complete: (key: string) => Promise<Upload>;
+    complete: (key: string, options?: { name?: string }) => Promise<Upload>;
 }
 
 /**
@@ -54,7 +54,7 @@ export interface PresignedUploads {
  * const uploads = createPresignedUploads({ baseUrl: definition.api.baseUrl, headers: () => getLaravelHeaders() });
  * uppy.use(AwsS3, { signRequest: uploads.signRequest });
  * uppy.on('upload-success', async (file, response) => {
- *     const upload = await uploads.complete(response.body.key);
+ *     const upload = await uploads.complete(response.body.key, { name: file.name });
  *     const media = await adapter.uploadMedia({ upload: upload.id });
  * });
  * ```
@@ -105,11 +105,14 @@ export function createPresignedUploads({
             };
         },
 
-        async complete(key) {
+        async complete(key, { name } = {}) {
             // The backend names the upload in the sign response; without it, it is the last
             // segment of the key it chose (`uploads/upl_01H…`).
             const upload = uploads.get(key) ?? key.split('/').pop() ?? key;
-            const body = (await post(`/${encodeURIComponent(upload)}/complete`)) as {
+            const body = (await post(
+                `/${encodeURIComponent(upload)}/complete`,
+                name !== undefined ? { name } : undefined,
+            )) as {
                 data?: Upload;
             };
             if (typeof body?.data?.id !== 'string') {

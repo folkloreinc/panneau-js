@@ -17,7 +17,7 @@ Not every upload is a media: an import or a file field doesn't belong in the med
 
 - **An upload is not a media.** With `"uploads": { "mode": "presigned" }` in the definition, the Panneau API has two routes:
     - `POST /uploads/sign`, with Uppy's request as its JSON body. It answers `{ url, key?, headers?, upload? }`: the presigned URL, the key the backend chose for a new file, the headers the URL was signed with, and the upload a new file created (`upl_…`). The backend signs later requests only for keys of the same user's open uploads, and answers `404` otherwise.
-    - `POST /uploads/{upload}/complete`, without a body. The backend checks that the object exists, and answers the upload: `{ "data": { "id": "upl_…", "key", "name", "mime", "size" } }`.
+    - `POST /uploads/{upload}/complete`, with the file's name (`{ "name" }`, optional, since the key the backend chose doesn't keep it). The backend checks that the object exists, and answers the upload: `{ "data": { "id": "upl_…", "key", "name", "mime", "size" } }`.
 - **Values reference uploads.** A value that takes a file (a file field, an action parameter such as an import) also takes `{ "upload": "upl_…" }`, which the backend resolves. A media is one use of an upload: `POST /media` takes `{ "upload": "upl_…" }` in JSON, as well as a file in `multipart/form-data`.
 - **Both ways stay.** `POST /media` and multipart requests keep working, for small files and for backends without direct uploads. A field picks the direct upload for large files.
 - **`Media.status`** (`pending`, `processing`, `ready`, `failed`) says where the ingest of a media is. Without it, a media is ready. A field shows it and refreshes the media until it is ready or failed.

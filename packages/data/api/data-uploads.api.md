@@ -24,7 +24,9 @@ export interface PresignedResponse {
 
 // @public (undocumented)
 export interface PresignedUploads {
-    complete: (key: string) => Promise<Upload>;
+    complete: (key: string, options?: {
+        name?: string;
+    }) => Promise<Upload>;
     signRequest: (request: PresignableRequest) => Promise<PresignedResponse>;
 }
 

@@ -437,7 +437,8 @@ Errors use [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) `application/probl
 // 200: the presigned URL, and for a new file the key and the upload the backend chose
 { "url": "https://bucket.s3…?X-Amz-Signature=…", "key": "uploads/upl_01H…", "upload": "upl_01H…" }
 
-// POST /uploads/{upload}/complete, once the browser completed the upload in storage
+// POST /uploads/{upload}/complete, once the browser completed the upload in storage, with the file's name
+{ "name": "video.mp4" }
 // 200: the upload
 { "data": { "id": "upl_01H…", "key": "uploads/upl_01H…", "name": "video.mp4", "mime": "video/mp4", "size": 2147483648 } }
 
@@ -449,7 +450,7 @@ Errors use [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) `application/probl
 ```
 
 - **Signing:** the first request of a file (`CreateMultipartUpload`, or `PutObject` for a small file) creates the upload and its key. Later requests (`UploadPart`, `ListParts`, `CompleteMultipartUpload`, `AbortMultipartUpload`) are signed only for a key of the same user's open uploads, and get `404` otherwise. `headers` lists the headers a URL was signed with.
-- **Completion** checks that the object exists, and gives the upload.
+- **Completion** checks that the object exists, and gives the upload. Its optional `name` names the file, since the key the backend chose doesn't keep it.
 - **Both ways stay:** `POST /media` in `multipart/form-data`, and multipart requests with files, keep working for small files.
 - **`uploads.endpoint`** moves the two routes elsewhere, for a backend whose upload routes are not under its API.
 - **`status`** of a media is `pending` or `processing` until its renditions are made, then `ready` or `failed`. Without it, a media is ready.
