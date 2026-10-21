@@ -1,0 +1,47 @@
+{
+    "name": "@panneau/media",
+    "version": "5.0.0-alpha.3",
+    "description": "The media of Panneau: the media field, which makes media of uploads and follows their ingest.",
+    "type": "module",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git",
+        "directory": "packages/media"
+    },
+    "sideEffects": [
+        "*.css"
+    ],
+    "exports": {
+        ".": {
+            "@panneau/source": "./src/index.ts",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "vite build && tsc -p tsconfig.build.json",
+        "typecheck": "tsc --noEmit",
+        "api": "tsc -p tsconfig.build.json && node ../../scripts/api-report.js"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "peerDependencies": {
+        "@tanstack/react-query": "^5.0.0",
+        "react": "^19.2.0",
+        "react-intl": "^12.0.0"
+    },
+    "dependencies": {
+        "@panneau/data": "5.0.0-alpha.3",
+        "@panneau/fields": "5.0.0-alpha.3",
+        "@panneau/intl": "5.0.0-alpha.3",
+        "@panneau/protocol": "5.0.0-alpha.3",
+        "@panneau/ui": "5.0.0-alpha.3",
+        "lucide-react": "^1.57.0"
+    }
+}

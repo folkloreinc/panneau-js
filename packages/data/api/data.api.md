@@ -16,7 +16,9 @@ import type { MediaListResponse } from '@panneau/protocol';
 import { Problem } from '@panneau/protocol';
 import type { SearchResponse } from '@panneau/protocol';
 import type { Session } from '@panneau/protocol';
+import type { Upload } from '@panneau/protocol';
 import type { UploadReference } from '@panneau/protocol';
+import type { UploadSignRequest } from '@panneau/protocol';
 import type { ValidationIssue } from '@panneau/protocol';
 
 // @public
@@ -68,6 +70,9 @@ export interface DataAdapter {
     listMedia(query?: MediaQuery, options?: RequestOptions): Promise<MediaListResponse>;
     login(credentials: LoginCredentials, options?: RequestOptions): Promise<Session>;
     logout(options?: RequestOptions): Promise<void>;
+    presignedUploads?(options?: {
+        endpoint?: string;
+    }): PresignedUploads;
     runAction(resource: string, action: string, request: ActionRequest, options?: RequestOptions): Promise<ActionResponse>;
     search(q: string, options?: RequestOptions): Promise<SearchResponse>;
     update(resource: string, id: string, values: Values, options?: UpdateOptions): Promise<Item>;
@@ -111,6 +116,25 @@ export type MediaQuery = ListQuery;
 export class NotFoundError extends ApiError {
     // (undocumented)
     readonly name: string;
+}
+
+// @public
+export type PresignableRequest = UploadSignRequest;
+
+// @public
+export interface PresignedResponse {
+    headers?: Record<string, string>;
+    key?: string;
+    // (undocumented)
+    url: string;
+}
+
+// @public (undocumented)
+export interface PresignedUploads {
+    complete: (key: string, options?: {
+        name?: string;
+    }) => Promise<Upload>;
+    signRequest: (request: PresignableRequest) => Promise<PresignedResponse>;
 }
 
 // @public

@@ -315,4 +315,57 @@ describe('createRestAdapter', () => {
         expect(request?.headers.get('Content-Type')).toBe('application/json');
         expect(await request?.json()).toEqual({ name: 'Video', upload: 'upl_1' });
     });
+
+    it('signs and completes direct uploads with its headers, cookies and errors', async () => {
+        const responses = [
+            jsonResponse(200, {
+                url: 'https://storage.test/u/upl_1?sig',
+                key: 'u/upl_1',
+                upload: 'upl_1',
+            }),
+            jsonResponse(200, { data: { id: 'upl_1', key: 'u/upl_1', name: 'clip.mp4' } }),
+            jsonResponse(
+                404,
+                { title: 'Upload not found.', status: 404 },
+                'application/problem+json',
+            ),
+        ];
+        const { fetch, requests } = createStubFetch(
+            () => responses.shift() ?? jsonResponse(500, {}),
+        );
+        const adapter = createRestAdapter({
+            baseUrl: BASE_URL,
+            fetch,
+            headers: { 'X-Test': '1' },
+            credentials: 'include',
+        });
+        const uploads = adapter.presignedUploads?.();
+
+        expect(await uploads?.signRequest({ method: 'POST', key: 'clip.mp4' })).toEqual({
+            url: 'https://storage.test/u/upl_1?sig',
+            key: 'u/upl_1',
+        });
+        expect(await uploads?.complete('u/upl_1', { name: 'clip.mp4' })).toMatchObject({
+            id: 'upl_1',
+        });
+        await expect(uploads?.complete('u/upl_2')).rejects.toBeInstanceOf(NotFoundError);
+
+        expect(requests.map((request) => new URL(request.url).pathname)).toEqual([
+            '/panneau/api/uploads/sign',
+            '/panneau/api/uploads/upl_1/complete',
+            '/panneau/api/uploads/upl_2/complete',
+        ]);
+        expect(requests[0]?.headers.get('X-Test')).toBe('1');
+        expect(requests[0]?.credentials).toBe('include');
+    });
+
+    it('sends direct uploads to the endpoint of the definition', async () => {
+        const { fetch, requests } = createStubFetch(() =>
+            jsonResponse(200, { url: 'https://storage.test/x', key: 'x', upload: 'upl_1' }),
+        );
+        await createRestAdapter({ baseUrl: BASE_URL, fetch })
+            .presignedUploads?.({ endpoint: 'https://files.test/uploads' })
+            .signRequest({ method: 'PUT', key: 'x' });
+        expect(requests[0]?.url).toBe('https://files.test/uploads/sign');
+    });
 });

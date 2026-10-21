@@ -9,7 +9,7 @@ import { BASE_URL, createBackend } from '../__fixtures__/backend';
 import type { DataAdapter } from '../adapter';
 import { ConflictError, ValidationError } from '../errors';
 import { createRestAdapter } from '../rest';
-import { DataAdapterProvider, useDataAdapter } from './context';
+import { DataAdapterProvider, useDataAdapter, useOptionalDataAdapter } from './context';
 import {
     useActionRun,
     useCreateItem,
@@ -38,6 +38,7 @@ describe('query hooks', () => {
     it('need a DataAdapterProvider', () => {
         vi.spyOn(console, 'error').mockImplementation(() => undefined);
         expect(() => renderHook(() => useDataAdapter())).toThrow(/DataAdapterProvider/);
+        expect(renderHook(() => useOptionalDataAdapter()).result.current).toBeNull();
         vi.restoreAllMocks();
     });
 

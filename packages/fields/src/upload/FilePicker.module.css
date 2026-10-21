@@ -1,0 +1,24 @@
+.zone {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    padding: var(--panneau-space-3);
+    border: var(--panneau-border-width) dashed var(--panneau-color-border-control);
+    border-radius: var(--panneau-radius-md);
+}
+
+.zone[data-drop-target] {
+    background-color: var(--panneau-color-accent-subtle);
+    border-color: var(--panneau-color-accent);
+}
+
+.zone[data-focus-visible] {
+    outline: 2px solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.hint {
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+}

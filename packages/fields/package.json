@@ -1,7 +1,7 @@
 {
     "name": "@panneau/fields",
     "version": "5.0.0-alpha.3",
-    "description": "Controlled field components of Panneau for the protocol's built-in field types, one subpath per field.",
+    "description": "Controlled field components of Panneau for the protocol's built-in field types, one subpath per field, and uploads to storage (Uppy 6 in its own entry point).",
     "type": "module",
     "license": "MIT",
     "repository": {
@@ -98,10 +98,20 @@
             "types": "./dist/relation/index.d.ts",
             "default": "./dist/relation/index.js"
         },
+        "./file": {
+            "@panneau/source": "./src/file/index.ts",
+            "types": "./dist/file/index.d.ts",
+            "default": "./dist/file/index.js"
+        },
         "./locales": {
             "@panneau/source": "./src/locales/index.ts",
             "types": "./dist/locales/index.d.ts",
             "default": "./dist/locales/index.js"
+        },
+        "./uppy": {
+            "@panneau/source": "./src/uppy/index.ts",
+            "types": "./dist/uppy/index.d.ts",
+            "default": "./dist/uppy/index.js"
         },
         "./package.json": "./package.json"
     },
@@ -117,8 +127,19 @@
         "access": "public"
     },
     "peerDependencies": {
+        "@uppy/aws-s3": "^6.3.0",
+        "@uppy/core": "^6.3.0",
         "react": "^19.2.0",
+        "react-aria-components": "^1.22.0",
         "react-intl": "^12.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@uppy/aws-s3": {
+            "optional": true
+        },
+        "@uppy/core": {
+            "optional": true
+        }
     },
     "dependencies": {
         "@internationalized/date": "^3.12.4",
@@ -126,5 +147,9 @@
         "@panneau/protocol": "5.0.0-alpha.3",
         "@panneau/ui": "5.0.0-alpha.3",
         "lucide-react": "^1.57.0"
+    },
+    "devDependencies": {
+        "@uppy/aws-s3": "^6.3.0",
+        "@uppy/core": "^6.3.0"
     }
 }

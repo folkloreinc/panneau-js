@@ -26,3 +26,11 @@ export function useDataAdapter(): DataAdapter {
     }
     return adapter;
 }
+
+/**
+ * The adapter of the closest `DataAdapterProvider`, or `null` without one: for components that
+ * also work without a backend, such as fields that can upload.
+ */
+export function useOptionalDataAdapter(): DataAdapter | null {
+    return use(DataAdapterContext);
+}
