@@ -66,6 +66,47 @@
     color: var(--panneau-color-text-muted);
 }
 
+/* What the search is narrowed to, before the field. */
+.scope {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: var(--panneau-space-1);
+    max-width: 50%;
+    padding: 0 var(--panneau-space-1) 0 var(--panneau-space-2);
+    border-radius: var(--panneau-radius-full);
+    background-color: var(--panneau-color-surface-sunken);
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-medium);
+}
+
+.scopeLabel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.scopeRemove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--panneau-space-1);
+    border: 0;
+    border-radius: var(--panneau-radius-full);
+    background: none;
+    color: var(--panneau-color-text-muted);
+    cursor: pointer;
+    outline: none;
+}
+
+.scopeRemove[data-hovered] {
+    color: var(--panneau-color-text);
+}
+
+.scopeRemove[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+}
+
 .input {
     flex: 1 1 auto;
     min-width: 0;

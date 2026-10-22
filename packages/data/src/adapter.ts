@@ -21,6 +21,14 @@ export interface RequestOptions {
     signal?: AbortSignal;
 }
 
+/** Options of the global search (`GET /search`). */
+export interface SearchOptions extends RequestOptions {
+    /** Items per resource, from 1 to 20. The backend defaults to 5. */
+    limit?: number;
+    /** The searchable resources to search. Defaults to every one. */
+    resources?: readonly string[];
+}
+
 export interface UpdateOptions extends RequestOptions {
     /**
      * The version of the item the values were edited from. The update fails with a
@@ -108,8 +116,8 @@ export interface DataAdapter {
         options?: RequestOptions,
     ): Promise<PreviewResponse>;
 
-    /** Searches every searchable resource. */
-    search(q: string, options?: RequestOptions): Promise<SearchResponse>;
+    /** Searches the searchable resources: every one, or those of `resources`. */
+    search(q: string, options?: SearchOptions): Promise<SearchResponse>;
     /** Data of a dashboard widget, in the shape its type defines. */
     getWidgetData(widget: string, options?: RequestOptions): Promise<unknown>;
 }

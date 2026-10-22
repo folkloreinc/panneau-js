@@ -1,5 +1,11 @@
 import type { ListQuery } from '@panneau/protocol';
 
+/** What a search is keyed by besides its query: its `limit` and `resources`. */
+export interface SearchKeyOptions {
+    limit?: number;
+    resources?: readonly string[];
+}
+
 /**
  * Query keys of the hooks, to read, prefetch or invalidate their data with the query client.
  * Keys are nested: invalidating `queryKeys.resource('pages')` covers its lists and items.
@@ -16,7 +22,9 @@ export const queryKeys = {
     /** Under the item's key: refetching or invalidating the item refreshes its preview. */
     itemPreview: (resource: string, id: string, values: Record<string, unknown> = {}) =>
         ['panneau', 'resources', resource, 'item', id, 'preview', values] as const,
-    search: (q: string) => ['panneau', 'search', q] as const,
+    /** Under `['panneau', 'search']`: invalidating it refreshes every search. */
+    search: (q: string, options: SearchKeyOptions = {}) =>
+        ['panneau', 'search', q, options] as const,
     actionRuns: () => ['panneau', 'actions', 'runs'] as const,
     actionRun: (id: string) => ['panneau', 'actions', 'runs', id] as const,
 };

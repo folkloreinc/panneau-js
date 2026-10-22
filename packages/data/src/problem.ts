@@ -45,3 +45,19 @@ export async function readProblem(response: Response): Promise<Problem> {
     }
     return problem;
 }
+
+/**
+ * The seconds to wait that a response gives in `Retry-After`, as seconds or as a date, or `null`.
+ * Pass it to `createApiError()` with the problem: a `429` becomes a `RateLimitedError`.
+ */
+export function readRetryAfter(response: Response): number | null {
+    const value = response.headers.get('Retry-After')?.trim();
+    if (value === undefined || value === '') {
+        return null;
+    }
+    if (/^\d+$/.test(value)) {
+        return Number(value);
+    }
+    const date = Date.parse(value);
+    return Number.isNaN(date) ? null : Math.max(0, Math.ceil((date - Date.now()) / 1000));
+}

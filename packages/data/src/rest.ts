@@ -6,6 +6,7 @@ import {
     PROBLEM_CONTENT_TYPE,
     type Problem,
     toSearchParams,
+    toSearchQueryParams,
     validate,
 } from '@panneau/protocol';
 import type {
@@ -18,7 +19,7 @@ import type {
 
 import type { ActionResponse, DataAdapter } from './adapter';
 import { type ApiError, InvalidResponseError, createApiError } from './errors';
-import { readProblem } from './problem';
+import { readProblem, readRetryAfter } from './problem';
 import { createPresignedUploads } from './uploads';
 
 export interface RestAdapterOptions {
@@ -141,7 +142,10 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
         );
         if (!response.ok) {
             const problem = await readProblem(response);
-            throw options.createError?.(problem, response) ?? createApiError(problem);
+            throw (
+                options.createError?.(problem, response) ??
+                createApiError(problem, { retryAfter: readRetryAfter(response) })
+            );
         }
         return response;
     };
@@ -240,7 +244,8 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
                 // The default of `fetch`, as the adapter's other requests
                 credentials: options.credentials ?? 'same-origin',
                 createError: (problem, response) =>
-                    options.createError?.(problem, response) ?? createApiError(problem),
+                    options.createError?.(problem, response) ??
+                    createApiError(problem, { retryAfter: readRetryAfter(response) }),
             });
         },
         getSession({ signal } = {}) {
@@ -266,10 +271,14 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
                 signal,
             });
         },
-        search(q, { signal } = {}) {
+        search(q, { signal, limit, resources } = {}) {
             return json<SearchResponse>({
                 path: '/search',
-                query: new URLSearchParams({ q }),
+                query: toSearchQueryParams({
+                    q,
+                    ...(limit !== undefined && { limit }),
+                    ...(resources !== undefined && { resources }),
+                }),
                 signal,
             });
         },

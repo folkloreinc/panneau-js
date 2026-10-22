@@ -37,7 +37,13 @@ export const appFr: Record<string, string> = {
     'panneau.app.groupCreate': 'Créer',
     'panneau.app.groupCommands': 'Commandes',
     'panneau.app.groupActions': 'Actions',
+    'panneau.app.groupSearchIn': 'Rechercher dans',
+    'panneau.app.searchPlaceholder': 'Rechercher…',
+    'panneau.app.searchMinLength':
+        'Tapez au moins {count, plural, one {# caractère} other {# caractères}}.',
+    'panneau.app.seeAllResults': 'Voir {count, plural, one {le résultat} other {les # résultats}}',
     'panneau.app.searching': 'Recherche…',
+    'panneau.app.searchRateLimited': 'Trop de recherches. Patientez un instant avant la suivante.',
     'panneau.app.searchError': 'La recherche a échoué. Les autres résultats restent là.',
     'panneau.app.notFound': 'Page introuvable',
     'panneau.app.notFoundText': 'Cette page n’existe pas, ou vous ne pouvez pas la voir.',

@@ -95,7 +95,7 @@ Minor releases, each one additive:
 - **Image editing:** crop, rotate, flip and focal point. Edits are non-destructive and rendered through `laravel-image`.
 - **Media library:** conversions, tags, search, usage tracking. Depends on the `laravel-mediatheque` roadmap.
 - **Home page:** dashboards with widgets (stats, charts, recent items, shortcuts, custom), defined per project and per role.
-- **Global search:** a "Go to…" command palette (⌘K), started in Phase 2 ([#97](https://github.com/folkloreinc/panneau-js/issues/97), [decisions/0029](decisions/0029-go-to-palette.md)): recent items, navigation, create, commands of plugins and results of `GET /search` grouped by resource. Later: `laravel-panneau`'s endpoint on Laravel Scout (MySQL database engine or Meilisearch), a scope per resource, recent items on the server.
+- **Global search:** a "Go to…" command palette (⌘K), started in Phase 2 ([#97](https://github.com/folkloreinc/panneau-js/issues/97), [decisions/0029](decisions/0029-go-to-palette.md)): recent items, navigation, create, commands of plugins and results of `GET /search` grouped by resource. Then the `limit` and `resources` parameters, the `422` and `429` problems, conformance checks and a scope per resource ([decisions/0030](decisions/0030-search-parameters-and-scope.md)), and `laravel-panneau`'s endpoint, on Laravel Scout when the model is searchable ([folkloreinc/laravel-panneau#96](https://github.com/folkloreinc/laravel-panneau/issues/96)). Later: recent items on the server.
 - **Preview:** component previews and iframe previews of the real site fed with unsaved values.
 - **Drafts and revisions:** per resource.
 - **Collaboration:**

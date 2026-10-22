@@ -9,16 +9,19 @@ import {
     PanelLeftClose,
     PanelLeftOpen,
     Plus,
+    Search,
     Sun,
     Terminal,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { getCommands, getSearchableResources, resolveResource, usePlugins } from '@panneau/core';
+import { isApiError } from '@panneau/data';
 import { useSearch } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import { toText } from '@panneau/lists';
 import type { Definition, Item, Resource } from '@panneau/protocol';
+import { SEARCH_MAX_LIMIT, SEARCH_MIN_LENGTH, toSearchParams } from '@panneau/protocol/runtime';
 import {
     CommandPalette,
     type CommandPaletteGroup,
@@ -34,8 +37,7 @@ import { readRecentItems, useRecentScope } from '../recentItems';
 import { routePath } from '../routes';
 import { COLOR_SCHEMES, type ColorSchemePreference } from './Sidebar';
 
-/** Characters before the palette searches the server, and the pause after typing. */
-const SEARCH_MIN_LENGTH = 2;
+/** The pause after typing before the palette searches the server. */
 const SEARCH_DELAY = 300;
 
 const SCHEME_ICONS: Record<ColorSchemePreference, IconComponent> = {
@@ -90,7 +92,8 @@ function imageOf(item: Item, resource: Resource): string | undefined {
 /**
  * The "Go to…" palette of the app (decision 0029): recent items, navigation, "New {resource}",
  * the commands of plugins, the app's actions, then the results of the server's search, grouped by
- * resource. An item opens its edit form.
+ * resource. An item opens its edit form. "Search in" narrows the palette to the results of one
+ * resource, 20 of them, until Backspace in the empty field.
  */
 export function GoTo({
     definition,
@@ -107,6 +110,8 @@ export function GoTo({
     const user = useRecentScope();
     const [query, setQuery] = useState('');
     const [debounced, setDebounced] = useState('');
+    // The resource the search is narrowed to
+    const [scope, setScope] = useState<string | null>(null);
     const locale = definition.locale;
     const searchable = getSearchableResources(definition);
     const searchEnabled = definition.search?.enabled !== false && searchable.length > 0;
@@ -116,10 +121,18 @@ export function GoTo({
         return () => window.clearTimeout(timeout);
     }, [query]);
 
+    const resourceOf = (id: string) => definition.resources.find((resource) => resource.id === id);
+    const scoped = scope !== null ? (resourceOf(scope) ?? null) : null;
     const search = useSearch(debounced, {
         enabled: isOpen && searchEnabled && debounced.length >= SEARCH_MIN_LENGTH,
+        ...(scoped !== null && { limit: SEARCH_MAX_LIMIT, resources: [scoped.id] }),
     });
-    const resourceOf = (id: string) => definition.resources.find((resource) => resource.id === id);
+    const changeOpen = (open: boolean) => {
+        if (!open) {
+            setScope(null);
+        }
+        onOpenChange(open);
+    };
     const editPath = (resource: string, id: string) =>
         routePath({ name: 'resource.edit', resource, id }, basePath);
 
@@ -210,20 +223,50 @@ export function GoTo({
         })),
     ];
 
-    const results: CommandPaletteGroup[] =
-        searchEnabled && query.trim().length >= SEARCH_MIN_LENGTH
-            ? (search.data?.data ?? []).flatMap(({ resource: id, items }) => {
-                  const resource = resourceOf(id);
-                  if (resource === undefined) {
-                      return [];
-                  }
-                  const subtitle = resource.itemSubtitle;
-                  return [
-                      {
-                          id: `search-${id}`,
-                          label: capitalize(resource.label.plural, locale),
-                          matched: true,
-                          items: items.map((item) => ({
+    const searchIn: CommandPaletteItem[] = searchEnabled
+        ? searchable.map((resource) => ({
+              id: resource.id,
+              label: capitalize(resource.label.plural, locale),
+              keywords: [resource.label.singular],
+              icon: resource.icon !== undefined ? getNamedIcon(resource.icon) : Search,
+              keepsOpen: true,
+              onAction: () => {
+                  setScope(resource.id);
+                  setQuery('');
+              },
+          }))
+        : [];
+
+    const searching = searchEnabled && query.trim().length >= SEARCH_MIN_LENGTH;
+    const results: CommandPaletteGroup[] = searching
+        ? (search.data?.data ?? []).flatMap(({ resource: id, items, total }) => {
+              const resource = resourceOf(id);
+              if (resource === undefined || (scoped !== null && id !== scoped.id)) {
+                  return [];
+              }
+              const subtitle = resource.itemSubtitle;
+              const icon = resource.icon !== undefined ? getNamedIcon(resource.icon) : List;
+              // The list of the resource, searched, has every result
+              const more: CommandPaletteItem[] =
+                  total !== undefined && total > items.length
+                      ? [
+                            {
+                                id: `${id}:all`,
+                                label: intl.formatMessage(appMessages.seeAllResults, {
+                                    count: total,
+                                }),
+                                icon: Search,
+                                href: `${routePath({ name: 'resource.index', resource: id }, basePath)}?${toSearchParams({ q: query.trim() })}`,
+                            },
+                        ]
+                      : [];
+              return [
+                  {
+                      id: `search-${id}`,
+                      label: capitalize(resource.label.plural, locale),
+                      matched: true,
+                      items: [
+                          ...items.map((item) => ({
                               id: item.id,
                               label: getItemTitle(item, resource.itemTitle, locale) ?? item.id,
                               description:
@@ -231,51 +274,80 @@ export function GoTo({
                                       ? toText(item[subtitle], locale) || undefined
                                       : undefined,
                               imageUrl: imageOf(item, resource),
-                              icon:
-                                  resource.icon !== undefined ? getNamedIcon(resource.icon) : List,
+                              icon,
                               href: editPath(id, item.id),
                           })),
-                      },
-                  ];
-              })
-            : [];
+                          ...more,
+                      ],
+                  },
+              ];
+          })
+        : [];
 
-    const searching = searchEnabled && query.trim().length >= SEARCH_MIN_LENGTH;
-    const status =
-        searching && search.isError
-            ? intl.formatMessage(appMessages.searchError)
-            : searching && (search.isFetching || debounced !== query.trim())
-              ? intl.formatMessage(appMessages.searching)
-              : undefined;
+    const status = !searching
+        ? scoped !== null
+            ? intl.formatMessage(appMessages.searchMinLength, { count: SEARCH_MIN_LENGTH })
+            : undefined
+        : search.isError
+          ? intl.formatMessage(
+                isApiError(search.error) && search.error.status === 429
+                    ? appMessages.searchRateLimited
+                    : appMessages.searchError,
+            )
+          : search.isFetching || debounced !== query.trim()
+            ? intl.formatMessage(appMessages.searching)
+            : undefined;
+
+    const local: CommandPaletteGroup[] =
+        scoped === null
+            ? [
+                  {
+                      id: 'recent',
+                      label: intl.formatMessage(appMessages.groupRecent),
+                      items: recent,
+                  },
+                  {
+                      id: 'navigation',
+                      label: intl.formatMessage(appMessages.groupNavigation),
+                      items: navigation,
+                  },
+                  {
+                      id: 'create',
+                      label: intl.formatMessage(appMessages.groupCreate),
+                      items: create,
+                  },
+                  ...[...commandGroups].map(([label, items]) => ({
+                      id: `commands-${label}`,
+                      label,
+                      items,
+                  })),
+                  {
+                      id: 'actions',
+                      label: intl.formatMessage(appMessages.groupActions),
+                      items: actions,
+                  },
+                  {
+                      id: 'search-in',
+                      label: intl.formatMessage(appMessages.groupSearchIn),
+                      items: searchIn,
+                  },
+              ]
+            : [];
 
     return (
         <CommandPalette
             isOpen={isOpen}
-            onOpenChange={onOpenChange}
+            onOpenChange={changeOpen}
             inputValue={query}
             onInputChange={setQuery}
             aria-label={intl.formatMessage(appMessages.goTo)}
+            placeholder={
+                scoped !== null ? intl.formatMessage(appMessages.searchPlaceholder) : undefined
+            }
+            scope={scoped !== null ? capitalize(scoped.label.plural, locale) : null}
+            onScopeRemove={() => setScope(null)}
             status={status}
-            groups={[
-                { id: 'recent', label: intl.formatMessage(appMessages.groupRecent), items: recent },
-                {
-                    id: 'navigation',
-                    label: intl.formatMessage(appMessages.groupNavigation),
-                    items: navigation,
-                },
-                { id: 'create', label: intl.formatMessage(appMessages.groupCreate), items: create },
-                ...[...commandGroups].map(([label, items]) => ({
-                    id: `commands-${label}`,
-                    label,
-                    items,
-                })),
-                {
-                    id: 'actions',
-                    label: intl.formatMessage(appMessages.groupActions),
-                    items: actions,
-                },
-                ...results,
-            ]}
+            groups={[...local, ...results]}
         />
     );
 }

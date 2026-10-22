@@ -100,6 +100,18 @@ describe('query hooks', () => {
         expect(new URL(backend.requests[0]?.url ?? '').search).toBe('?q=abo');
     });
 
+    it('search the resources asked for, with a limit', async () => {
+        const { wrapper, backend } = setup();
+        const { result } = renderHook(() => useSearch('abo', { limit: 20, resources: ['pages'] }), {
+            wrapper,
+        });
+        await waitFor(() => expect(result.current.isSuccess).toBe(true));
+        expect(result.current.data?.data.map(({ resource }) => resource)).toEqual(['pages']);
+        expect(new URL(backend.requests[0]?.url ?? '').search).toBe(
+            '?q=abo&limit=20&resources=pages',
+        );
+    });
+
     it('get an item, and wait for an id', async () => {
         const { wrapper, backend } = setup();
         const { result, rerender } = renderHook(

@@ -2,6 +2,7 @@ import { ArrowDownUp, CornerDownLeft, Search, X } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import {
     Autocomplete,
+    Button,
     Dialog,
     Header,
     Input,
@@ -37,8 +38,15 @@ export interface CommandPaletteProps {
     /** Accessible name of the palette and its field. Defaults to "Search". */
     'aria-label'?: string;
     placeholder?: string;
-    /** A line under the results: loading or failed results of a server. */
+    /** A line under the results, and in place of them when there are none: loading or failed
+     * results of a server, a query too short to search. */
     status?: ReactNode;
+    /**
+     * What the search is narrowed to, such as one resource, shown as a chip before the field.
+     * Backspace in the empty field, or the chip's button, calls `onScopeRemove`.
+     */
+    scope?: string | null;
+    onScopeRemove?: () => void;
     className?: string;
 }
 
@@ -46,7 +54,8 @@ export interface CommandPaletteProps {
  * A command palette: a search field over groups of items to go to or run, in a dialog near the top
  * of the screen. Typing matches the items without case or accents, every word having to match,
  * the best matches first. Arrow keys move through the items, Enter opens one and closes the
- * palette, Escape clears the field, then closes it. It knows no data or router: links go through
+ * palette, Escape clears the field, then closes it. A `scope` narrows what it searches, as a chip
+ * before the field. It knows no data or router: links go through
  * the app's `RouterProvider`. `useCommandShortcut()` opens it with ⌘K or Ctrl+K.
  */
 export function CommandPalette({
@@ -58,6 +67,8 @@ export function CommandPalette({
     'aria-label': ariaLabel,
     placeholder,
     status,
+    scope = null,
+    onScopeRemove,
     className,
 }: CommandPaletteProps) {
     const intl = usePanneauIntl();
@@ -97,11 +108,40 @@ export function CommandPalette({
                 >
                     <Autocomplete inputValue={value} onInputChange={setValue}>
                         <div className={styles.field}>
-                            <SearchField aria-label={label} autoFocus className={styles.search}>
+                            <SearchField
+                                aria-label={scope !== null ? `${label}: ${scope}` : label}
+                                autoFocus
+                                className={styles.search}
+                            >
                                 <Icon icon={Search} size="md" className={styles.fieldIcon} />
+                                {scope !== null ? (
+                                    <span className={styles.scope}>
+                                        <span className={styles.scopeLabel}>{scope}</span>
+                                        <Button
+                                            aria-label={intl.formatMessage(
+                                                messages.commandRemoveScope,
+                                                { scope },
+                                            )}
+                                            className={styles.scopeRemove}
+                                            onPress={onScopeRemove}
+                                        >
+                                            <Icon icon={X} size="xs" />
+                                        </Button>
+                                    </span>
+                                ) : null}
                                 <Input
                                     placeholder={placeholder ?? label}
                                     className={styles.input}
+                                    onKeyDown={(event) => {
+                                        if (
+                                            event.key === 'Backspace' &&
+                                            value === '' &&
+                                            scope !== null
+                                        ) {
+                                            event.preventDefault();
+                                            onScopeRemove?.();
+                                        }
+                                    }}
                                 />
                             </SearchField>
                             {/* Touch screens have no Escape key. */}
@@ -117,9 +157,11 @@ export function CommandPalette({
                         <Menu
                             aria-label={label}
                             className={styles.list}
+                            // Without results, the status says why: loading, failed, too short…
                             renderEmptyState={() => (
                                 <p className={styles.empty}>
-                                    {intl.formatMessage(messages.commandResults, { count: 0 })}
+                                    {status ??
+                                        intl.formatMessage(messages.commandResults, { count: 0 })}
                                 </p>
                             )}
                         >
@@ -134,7 +176,9 @@ export function CommandPalette({
                                             href={item.href}
                                             onAction={() => {
                                                 item.onAction?.();
-                                                changeOpen(false);
+                                                if (item.keepsOpen !== true) {
+                                                    changeOpen(false);
+                                                }
                                             }}
                                             className={styles.item}
                                         >

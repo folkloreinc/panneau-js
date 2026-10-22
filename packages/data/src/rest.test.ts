@@ -8,6 +8,7 @@ import {
     ForbiddenError,
     InvalidResponseError,
     NotFoundError,
+    RateLimitedError,
     UnauthorizedError,
     ValidationError,
 } from './errors';
@@ -212,6 +213,26 @@ describe('createRestAdapter', () => {
         expect(server).toMatchObject({ status: 500, message: 'Server Error' });
     });
 
+    it('rejects too many requests with a RateLimitedError that says how long to wait', async () => {
+        const problem = { type: 'about:blank', title: 'Too many requests.', status: 429 };
+        const responses = [
+            new Response(JSON.stringify(problem), {
+                status: 429,
+                headers: { 'Content-Type': 'application/problem+json', 'Retry-After': '12' },
+            }),
+            jsonResponse(429, problem),
+        ];
+        const { fetch } = createStubFetch(() => responses.shift() ?? jsonResponse(200, {}));
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
+
+        const limited = await adapter.search('été').catch((caught: unknown) => caught);
+        expect(limited).toBeInstanceOf(RateLimitedError);
+        expect(limited).toMatchObject({ status: 429, retryAfter: 12 });
+        expect(await adapter.search('été').catch((caught: unknown) => caught)).toMatchObject({
+            retryAfter: null,
+        });
+    });
+
     it('adds headers and credentials to every request', async () => {
         const { fetch, requests } = createStubFetch(() => jsonResponse(200, { data: [] }));
         let token = 'a';
@@ -267,6 +288,7 @@ describe('createRestAdapter', () => {
         await adapter.login({ email: 'ada@example.com', password: 'secret' });
         await adapter.logout();
         await adapter.search('été');
+        await adapter.search('été', { limit: 20, resources: ['pages', 'articles'] });
         await adapter.getWidgetData('pages-count');
 
         expect(
@@ -281,6 +303,7 @@ describe('createRestAdapter', () => {
             'POST /panneau/api/auth/login',
             'POST /panneau/api/auth/logout',
             'GET /panneau/api/search?q=%C3%A9t%C3%A9',
+            'GET /panneau/api/search?q=%C3%A9t%C3%A9&limit=20&resources=pages%2Carticles',
             'GET /panneau/api/dashboard/widgets/pages-count',
         ]);
         expect(await requests[3]?.json()).toEqual({

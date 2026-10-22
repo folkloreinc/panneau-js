@@ -16,7 +16,7 @@ import type {
 } from '@panneau/protocol';
 
 import type { DataAdapter, Values } from '../adapter';
-import { queryKeys } from './keys';
+import { type SearchKeyOptions, queryKeys } from './keys';
 
 /**
  * Query options made by the `*QueryOptions()` functions. Their key is tagged with the type of the
@@ -92,16 +92,22 @@ export function itemPreviewQueryOptions(
 }
 
 /**
- * Query options of the global search (decision 0029). The previous results stay while the next
- * ones load. Debounce `q`, and only enable the query from 2 characters.
+ * Query options of the global search (decision 0029): every searchable resource, or those of
+ * `resources`, `limit` items each. The previous results stay while the next ones load. Debounce
+ * `q`, and only enable the query from 2 characters.
  */
 export function searchQueryOptions(
     adapter: DataAdapter,
     q: string,
+    { limit, resources }: SearchKeyOptions = {},
 ): DataQueryOptions<SearchResponse, ReturnType<typeof queryKeys.search>> {
+    const options: SearchKeyOptions = {
+        ...(limit !== undefined && { limit }),
+        ...(resources !== undefined && { resources }),
+    };
     return queryOptions({
-        queryKey: queryKeys.search(q),
-        queryFn: ({ signal }) => adapter.search(q, { signal }),
+        queryKey: queryKeys.search(q, options),
+        queryFn: ({ signal }) => adapter.search(q, { ...options, signal }),
         placeholderData: keepPreviousData,
         staleTime: 30_000,
     });
