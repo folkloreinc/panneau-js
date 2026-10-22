@@ -195,6 +195,38 @@ export const DateRange: Story = {
     },
 };
 
+/**
+ * Every filter control on one line: a select, a switch centered on the line of the controls, and
+ * the two ends of a date range side by side, below the labels.
+ */
+export const FiltersOnOneLine: Story = {
+    args: {
+        filters: [
+            { id: 'role', type: 'select', label: 'Role' },
+            { id: 'active', type: 'toggle', label: 'Active only' },
+            { id: 'joined_on', type: 'date-range', label: 'Joined' },
+        ],
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const rect = (element: Element | null) => {
+            if (element === null) {
+                throw new Error('Missing element.');
+            }
+            return element.getBoundingClientRect();
+        };
+        const center = (box: DOMRect) => box.top + box.height / 2;
+        const select = rect(canvas.getByRole('button', { name: /Role/ }));
+        const toggle = rect(canvas.getByRole('switch', { name: 'Active only' }).closest('label'));
+        const range = canvas.getByRole('group', { name: 'Joined' });
+        const from = rect(within(range).getByRole('group', { name: 'From' }));
+        const to = rect(within(range).getByRole('group', { name: 'To' }));
+        await expect(Math.abs(center(toggle) - center(select))).toBeLessThan(2);
+        await expect(Math.abs(from.top - to.top)).toBeLessThan(1);
+        await expect(Math.abs(center(from) - center(select))).toBeLessThan(2);
+    },
+};
+
 export const Cards: Story = {
     args: { layouts: ['cards', 'table'] },
     play: async ({ canvasElement }) => {

@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import type { PanneauPlugin } from '@panneau/core';
 import type { DataAdapter } from '@panneau/data';
 import type { BootConfig, BootConfigInput } from '@panneau/protocol';
+import type { NamedIconLoader } from '@panneau/ui';
 
 import { Panneau, type UnauthorizedContext } from './Panneau';
 import { parseBootConfig, readBootConfig } from './boot';
@@ -24,6 +25,8 @@ export interface PanneauAppOptions {
     config?: BootConfigInput;
     /** The TanStack Query client. Defaults to a new one. */
     queryClient?: QueryClient;
+    /** Loads the Lucide icons that the definition names. Defaults to every Lucide icon. */
+    iconLoader?: NamedIconLoader | null;
     /**
      * Called once when the API answers that the user isn't authenticated. Defaults to sending the
      * browser to the login URL, when there is one.

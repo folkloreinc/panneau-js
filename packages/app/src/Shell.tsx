@@ -1,75 +1,150 @@
-import type { Definition } from '@panneau/protocol';
+import { useQueryClient } from '@tanstack/react-query';
+import { createElement } from 'react';
+import { RouterProvider } from 'react-aria-components';
 
-import { Link, usePathname } from './location';
+import { ActionRunnerProvider, ActionRuns } from '@panneau/actions';
+import { findResource, resolveResource, usePlugins } from '@panneau/core';
+import { invalidateActionResult, useDataAdapter } from '@panneau/data/query';
+import { appMessages } from '@panneau/intl';
+import type { Definition, RouteReference } from '@panneau/protocol';
+import { Alert, usePanneauIntl } from '@panneau/ui';
+
+import { navigate, usePathname } from './location';
+import { HomePage } from './pages/HomePage';
+import { NotFoundPage } from './pages/NotFoundPage';
+import { ResourceFormPage } from './pages/ResourceFormPage';
+import { ResourceListPage } from './pages/ResourceListPage';
 import { type AppRoute, matchRoute, routePath } from './routes';
+import { AppLayout } from './shell/AppLayout';
+import type { ColorSchemePreference } from './shell/Sidebar';
 
 export interface ShellProps {
     definition: Definition;
     basePath: string;
+    colorScheme: ColorSchemePreference;
+    onColorSchemeChange: (scheme: ColorSchemePreference) => void;
 }
 
-function getTitle(route: AppRoute, definition: Definition): string {
-    if (route.name === 'home') {
-        return definition.name;
+/** The path of a named route of the definition (`routes`), with its parameters filled in. */
+function resolveRoute(definition: Definition, { route, params = {} }: RouteReference) {
+    const path = definition.routes?.[route];
+    if (path === undefined) {
+        console.warn(`[panneau] The definition has no route "${route}".`);
+        return null;
     }
-    if (route.name === 'page') {
-        const page = definition.pages?.[route.page];
-        return page === undefined ? 'Page not found' : (page.label ?? route.page);
-    }
-    if (route.name === 'not-found') {
-        return 'Page not found';
-    }
-    const resource = definition.resources.find(({ id }) => id === route.resource);
-    if (resource === undefined) {
-        return 'Page not found';
-    }
+    return path.replace(/\{(\w+)\}/g, (match, name: string) =>
+        params[name] !== undefined ? encodeURIComponent(String(params[name])) : match,
+    );
+}
+
+function Page({
+    definition,
+    basePath,
+    route,
+}: {
+    definition: Definition;
+    basePath: string;
+    route: AppRoute;
+}) {
+    const intl = usePanneauIntl();
+    const plugins = usePlugins();
+    const notFound = <NotFoundPage homeHref={routePath({ name: 'home' }, basePath)} />;
     switch (route.name) {
-        case 'resource.index':
-            return resource.label.plural;
-        case 'resource.create':
-            return `New ${resource.label.singular}`;
-        case 'resource.show':
-            return `${resource.label.singular} ${route.id}`;
-        case 'resource.edit':
-            return `Edit ${resource.label.singular} ${route.id}`;
+        case 'home':
+            return <HomePage definition={definition} basePath={basePath} />;
+        case 'not-found':
+            return notFound;
+        case 'page': {
+            const page = definition.pages?.[route.page];
+            if (page === undefined) {
+                return notFound;
+            }
+            const Component = plugins.pages.get(page.component);
+            return Component !== undefined ? (
+                createElement(Component, { ...page.props, definition })
+            ) : (
+                <Alert tone="warning">
+                    {intl.formatMessage(appMessages.missingPage, { component: page.component })}
+                </Alert>
+            );
+        }
+        default: {
+            const resource = findResource(definition, route.resource);
+            if (resource === undefined) {
+                return notFound;
+            }
+            const resolved = resolveResource(resource);
+            if (route.name === 'resource.index') {
+                return resolved.abilities.viewAny ? (
+                    <ResourceListPage
+                        key={resource.id}
+                        resolved={resolved}
+                        basePath={basePath}
+                        locale={definition.locale}
+                    />
+                ) : (
+                    notFound
+                );
+            }
+            // The show page is the edit form until Phase 2 adds read-only pages.
+            return (
+                <ResourceFormPage
+                    key={`${resource.id}/${route.name === 'resource.create' ? '' : route.id}`}
+                    definition={definition}
+                    resolved={resolved}
+                    basePath={basePath}
+                    id={route.name === 'resource.create' ? null : route.id}
+                />
+            );
+        }
     }
 }
 
 /**
- * Placeholder of the app shell: the site name, the resources, and the title of the current route.
- * The real shell (layout, menus, pages) comes in Phase 2.
+ * The app shell: the layout with its sidebar, and the page of the current route. Links go
+ * through the history of the browser without reloading the page, and actions run through the
+ * adapter, refreshing what their result changed.
  */
-export function Shell({ definition, basePath }: ShellProps) {
+export function Shell({ definition, basePath, colorScheme, onColorSchemeChange }: ShellProps) {
     const pathname = usePathname();
+    const queryClient = useQueryClient();
+    const adapter = useDataAdapter();
     const route = matchRoute(pathname, basePath) ?? { name: 'not-found' };
+    // Paths outside the app (a link to the site) load their page.
+    const go = (href: string) => {
+        const url = new URL(href, window.location.href);
+        if (url.origin === window.location.origin && matchRoute(url.pathname, basePath) !== null) {
+            navigate(`${url.pathname}${url.search}${url.hash}`);
+        } else {
+            window.location.assign(url);
+        }
+    };
     return (
-        <div data-panneau-shell="">
-            <header>
-                <Link href={routePath({ name: 'home' }, basePath)}>{definition.name}</Link>
-                {definition.user !== undefined && definition.user !== null ? (
-                    <span>{definition.user.name}</span>
-                ) : null}
-            </header>
-            <nav aria-label="Resources">
-                <ul>
-                    {definition.resources.map((resource) => (
-                        <li key={resource.id}>
-                            <Link
-                                href={routePath(
-                                    { name: 'resource.index', resource: resource.id },
-                                    basePath,
-                                )}
-                            >
-                                {resource.label.plural}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
-            <main>
-                <h1>{getTitle(route, definition)}</h1>
-                <p>The Panneau 5 app shell is not built yet.</p>
-            </main>
-        </div>
+        <RouterProvider navigate={go}>
+            <ActionRunnerProvider
+                adapter={adapter}
+                locales={definition.locales}
+                onResult={(result, { resource, target }) =>
+                    invalidateActionResult(queryClient, resource, result, target.selection)
+                }
+                onNavigate={(to) => {
+                    const path = typeof to === 'string' ? to : resolveRoute(definition, to);
+                    if (path !== null) {
+                        go(path);
+                    }
+                }}
+            >
+                <AppLayout
+                    definition={definition}
+                    basePath={basePath}
+                    route={route}
+                    colorScheme={colorScheme}
+                    onColorSchemeChange={onColorSchemeChange}
+                >
+                    <ActionRuns />
+                    <Page definition={definition} basePath={basePath} route={route} />
+                </AppLayout>
+            </ActionRunnerProvider>
+        </RouterProvider>
     );
 }

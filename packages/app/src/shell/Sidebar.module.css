@@ -1,0 +1,235 @@
+/* The sidebar sits on the window's background, like the tab strip of a browser: no surface of its
+ * own, and the current link raised on a surface. Collapsed, it is a rail of icons. */
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-4);
+    min-width: 0;
+    height: 100%;
+    padding: var(--panneau-space-3) var(--panneau-space-2);
+}
+
+.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--panneau-space-2);
+    min-width: 0;
+}
+
+.brand {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-width: 0;
+    min-height: var(--panneau-control-height-sm);
+    padding-inline: var(--panneau-space-1);
+    border-radius: var(--panneau-radius-md);
+    color: var(--panneau-color-text);
+    font-weight: var(--panneau-font-weight-bold);
+    text-decoration: none;
+    outline: none;
+}
+
+.logo {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--panneau-radius-md);
+    background: var(--panneau-sidebar-logo-bg, var(--panneau-color-accent));
+    color: var(--panneau-sidebar-logo-color, var(--panneau-color-accent-text));
+    font-size: var(--panneau-font-size-sm);
+    line-height: 1;
+}
+
+.toggle {
+    flex: none;
+    color: var(--panneau-color-text-muted);
+}
+
+.nav {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--panneau-space-3);
+    min-height: 0;
+    overflow-y: auto;
+    /* Room for the focus ring of the links. */
+    margin-inline: calc(-1 * var(--panneau-focus-width));
+    padding-inline: var(--panneau-focus-width);
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+}
+
+.sectionLabel {
+    padding: var(--panneau-space-1) var(--panneau-space-2) 0;
+    color: var(--panneau-color-text-muted);
+    font-size: var(--panneau-font-size-xs);
+    font-weight: var(--panneau-font-weight-medium);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.separator {
+    width: 100%;
+    margin: 0;
+    border: 0;
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-height: var(--panneau-control-height-sm);
+    padding: 0 var(--panneau-space-2);
+    border: var(--panneau-border-width) solid transparent;
+    border-radius: var(--panneau-sidebar-link-radius, var(--panneau-radius-md));
+    color: var(--panneau-sidebar-link-color, var(--panneau-color-text-muted));
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-medium);
+    text-decoration: none;
+    outline: none;
+    cursor: pointer;
+    transition:
+        background-color var(--panneau-duration),
+        color var(--panneau-duration);
+}
+
+.link[data-hovered] {
+    background: var(--panneau-sidebar-link-hover-bg, var(--panneau-color-hover));
+    color: var(--panneau-sidebar-link-current-color, var(--panneau-color-text));
+}
+
+.link[data-pressed] {
+    background: var(--panneau-color-pressed);
+}
+
+.link[aria-current='page'] {
+    border-color: var(--panneau-sidebar-link-current-border, var(--panneau-color-border));
+    background: var(--panneau-sidebar-link-current-bg, var(--panneau-color-surface));
+    color: var(--panneau-sidebar-link-current-color, var(--panneau-color-text));
+    box-shadow: var(--panneau-sidebar-link-current-shadow, var(--panneau-shadow-sm));
+}
+
+.link[data-focus-visible],
+.brand[data-focus-visible] {
+    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+.linkIcon {
+    flex: none;
+}
+
+.label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--panneau-space-2);
+    padding-top: var(--panneau-space-3);
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.user {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-width: 0;
+    padding-inline: var(--panneau-space-1);
+}
+
+.avatar {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-full);
+    background: var(--panneau-color-surface);
+    color: var(--panneau-color-text);
+    font-size: var(--panneau-font-size-xs);
+    font-weight: var(--panneau-font-weight-bold);
+    object-fit: cover;
+}
+
+.userText {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: var(--panneau-line-height-tight);
+}
+
+.userName {
+    overflow: hidden;
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-medium);
+    text-overflow: ellipsis;
+}
+
+.userEmail {
+    overflow: hidden;
+    color: var(--panneau-color-text-muted);
+    font-size: var(--panneau-font-size-xs);
+    text-overflow: ellipsis;
+}
+
+/* The rail: icons only, centered, the labels in tooltips. */
+.collapsed {
+    align-items: center;
+    padding-inline: var(--panneau-space-1);
+}
+
+.collapsed .top,
+.collapsed .footer {
+    flex-direction: column;
+}
+
+.collapsed .brand {
+    flex: none;
+    padding: 0;
+}
+
+.collapsed .label,
+.collapsed .sectionLabel {
+    display: none;
+}
+
+.collapsed .link {
+    justify-content: center;
+    width: var(--panneau-control-height-sm);
+    padding: 0;
+}
+
+.collapsed .list {
+    align-items: center;
+}
+
+.collapsed .user {
+    flex: none;
+    padding: 0;
+}

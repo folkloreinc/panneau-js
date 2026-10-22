@@ -33,7 +33,9 @@
         "build-storybook": "storybook build",
         "test:storybook": "vitest run --config vitest.storybook.config.ts",
         "test:smoke": "node scripts/smoke-webpack.js",
-        "verify": "node scripts/verify.js"
+        "verify": "node scripts/verify.js",
+        "playground": "vite --config playground/vite.config.ts",
+        "build-playground": "vite build --config playground/vite.config.ts --outDir ../playground-dist --emptyOutDir"
     },
     "devDependencies": {
         "@babel/core": "^8.0.7",

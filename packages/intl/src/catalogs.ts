@@ -1,4 +1,5 @@
 import { actionsFr } from './fr/actions';
+import { appFr } from './fr/app';
 import { fieldsFr } from './fr/fields';
 import { formsFr } from './fr/forms';
 import { listsFr } from './fr/lists';
@@ -6,6 +7,7 @@ import { mediaFr } from './fr/media';
 import { uiFr } from './fr/ui';
 import type { PanneauMessage } from './message';
 import { actionsMessages } from './messages/actions';
+import { appMessages } from './messages/app';
 import { fieldsMessages } from './messages/fields';
 import { formsMessages } from './messages/forms';
 import { listsMessages } from './messages/lists';
@@ -39,6 +41,7 @@ export const en: MessageCatalog = {
     ...getDefaultMessages(formsMessages),
     ...getDefaultMessages(listsMessages),
     ...getDefaultMessages(actionsMessages),
+    ...getDefaultMessages(appMessages),
     ...getDefaultMessages(mediaMessages),
 };
 
@@ -49,6 +52,7 @@ export const fr: MessageCatalog = {
     ...formsFr,
     ...listsFr,
     ...actionsFr,
+    ...appFr,
     ...mediaFr,
 };
 

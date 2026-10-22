@@ -11,6 +11,8 @@
         "config/**/*.ts",
         ".storybook/**/*.ts",
         ".storybook/**/*.tsx",
+        "playground/**/*.ts",
+        "playground/**/*.tsx",
         "mockups/**/*.ts",
         "mockups/**/*.tsx"
     ]

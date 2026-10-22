@@ -1,0 +1,176 @@
+/* The frame of the app. One column on a small screen, with a bar on top. From Panneau's `lg`
+ * breakpoint (64rem, measured on the Panneau root, a size container): the sidebar on the window's
+ * background, and the page on a panel inset from the edges, as in recent browsers. */
+
+.layout {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 100dvh;
+    background: var(--panneau-shell-bg, var(--panneau-color-surface-sunken));
+}
+
+.topBar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-height: 3.25rem;
+    padding: var(--panneau-space-1) var(--panneau-space-3) var(--panneau-space-1)
+        var(--panneau-space-1);
+    background: var(--panneau-shell-bg, var(--panneau-color-surface-sunken));
+    border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.topBarName {
+    overflow: hidden;
+    color: var(--panneau-color-text);
+    font-weight: var(--panneau-font-weight-bold);
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    outline: none;
+}
+
+.topBarName[data-focus-visible] {
+    border-radius: var(--panneau-radius-sm);
+    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+.sidebar {
+    display: none;
+}
+
+.main {
+    min-width: 0;
+}
+
+.main:focus {
+    outline: none;
+}
+
+.panel {
+    min-height: 100%;
+    padding: var(--panneau-space-5) var(--panneau-space-4) var(--panneau-space-8);
+    background: var(--panneau-shell-panel-bg, var(--panneau-color-surface));
+}
+
+/* The drawer of a small screen. */
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: var(--panneau-z-overlay);
+    background: var(--panneau-color-backdrop);
+}
+
+.backdrop[data-entering] {
+    animation: fade var(--panneau-duration) ease-out;
+}
+
+.drawer {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: min(18rem, 85vw);
+    background: var(--panneau-shell-bg, var(--panneau-color-surface-sunken));
+    box-shadow: var(--panneau-shadow-lg);
+}
+
+.drawer[data-entering] {
+    animation: slide 200ms ease-out;
+}
+
+.drawerDialog {
+    height: 100%;
+    outline: none;
+}
+
+/* Keyboard users jump past the navigation. */
+.skipLink {
+    position: absolute;
+    top: var(--panneau-space-2);
+    left: var(--panneau-space-2);
+    z-index: 100;
+    padding: var(--panneau-space-2) var(--panneau-space-3);
+    border-radius: var(--panneau-radius-md);
+    background: var(--panneau-color-accent);
+    color: var(--panneau-color-accent-text);
+    font-weight: var(--panneau-font-weight-medium);
+    text-decoration: none;
+}
+
+.skipLink:not(:focus) {
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes slide {
+    from {
+        transform: translateX(-100%);
+    }
+}
+
+@container panneau-root (min-width: 64rem) {
+    .layout {
+        grid-template-rows: minmax(0, 1fr);
+        grid-template-columns: var(--panneau-sidebar-width, 15rem) minmax(0, 1fr);
+        transition: grid-template-columns 200ms ease-out;
+    }
+
+    .layout.collapsed {
+        grid-template-columns: var(--panneau-sidebar-width-collapsed, 3.5rem) minmax(0, 1fr);
+    }
+
+    .topBar {
+        display: none;
+    }
+
+    .sidebar {
+        position: sticky;
+        top: 0;
+        display: block;
+        height: 100dvh;
+        min-width: 0;
+        overflow: hidden;
+        background: var(--panneau-sidebar-bg, transparent);
+        border-inline-end: var(--panneau-sidebar-border, 0 none);
+    }
+
+    .main {
+        padding: var(--panneau-shell-inset, var(--panneau-space-2));
+        padding-inline-start: 0;
+    }
+
+    .panel {
+        min-height: calc(100dvh - 2 * var(--panneau-shell-inset, var(--panneau-space-2)));
+        padding: var(--panneau-space-6) var(--panneau-shell-panel-padding-x, var(--panneau-space-8))
+            var(--panneau-space-10);
+        border: var(
+            --panneau-shell-panel-border,
+            var(--panneau-border-width) solid var(--panneau-color-border)
+        );
+        border-radius: var(--panneau-shell-panel-radius, calc(var(--panneau-radius-lg) * 1.5));
+        box-shadow: var(--panneau-shell-panel-shadow, var(--panneau-shadow-sm));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .layout,
+    .backdrop[data-entering],
+    .drawer[data-entering] {
+        animation: none;
+        transition: none;
+    }
+}

@@ -10,23 +10,33 @@
     max-width: 100%;
 }
 
-.toggle {
-    align-self: center;
-    min-height: var(--panneau-control-height);
+/* On the line of the controls, below the labels of the other filters. The switch's own wrapper
+ * is a column: two classes outweigh it. */
+.filters .toggle {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    align-self: flex-end;
+    min-height: var(--panneau-control-height);
 }
 
 .range {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--panneau-space-2);
     max-width: 100%;
 }
 
-.range > :not(legend) {
-    width: 11rem;
-    max-width: 100%;
+.rangeInputs {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+}
+
+.rangeInputs > :not(.rangeDash) {
+    width: 10.5rem;
+    min-width: 0;
+}
+
+.rangeDash {
+    color: var(--panneau-color-text-muted);
 }
 
 .chips {
@@ -64,8 +74,12 @@
 @container panneau-list (max-width: 40rem) {
     .filters,
     .control,
-    .range,
-    .range > :not(legend) {
+    .range {
         width: 100%;
+    }
+
+    .rangeInputs > :not(.rangeDash) {
+        flex: 1 1 0;
+        width: auto;
     }
 }
