@@ -42,6 +42,7 @@ export function createDefinition(): DefinitionInput {
                     sorts: ['title'],
                     defaultSort: 'title',
                     perPage: 2,
+                    search: true,
                 },
                 actions: [
                     {

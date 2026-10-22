@@ -275,6 +275,52 @@ export interface ComboBoxProps extends Omit<ComboBoxProps_2<ComboBoxItem>, 'clas
 }
 
 // @public
+export function CommandPalette(input: CommandPaletteProps): JSX.Element | null;
+
+// @public
+export interface CommandPaletteGroup {
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    items: readonly CommandPaletteItem[];
+    // (undocumented)
+    label: string;
+    matched?: boolean;
+}
+
+// @public
+export interface CommandPaletteItem {
+    description?: string;
+    href?: string;
+    // (undocumented)
+    icon?: IconComponent;
+    id: string;
+    imageUrl?: string;
+    keywords?: readonly string[];
+    // (undocumented)
+    label: string;
+    onAction?: () => void;
+}
+
+// @public (undocumented)
+export interface CommandPaletteProps {
+    'aria-label'?: string;
+    // (undocumented)
+    className?: string;
+    groups: readonly CommandPaletteGroup[];
+    inputValue?: string;
+    // (undocumented)
+    isOpen: boolean;
+    // (undocumented)
+    onInputChange?: (value: string) => void;
+    // (undocumented)
+    onOpenChange: (isOpen: boolean) => void;
+    // (undocumented)
+    placeholder?: string;
+    status?: ReactNode;
+}
+
+// @public
 export type ComponentTokenName = {
     [Component in keyof typeof componentTokens]: keyof (typeof componentTokens)[Component];
 }[keyof typeof componentTokens];
@@ -293,6 +339,7 @@ export const componentTokens: Readonly<{
     calendar: Readonly<Record<"panneau-calendar-cell-size" | "panneau-calendar-cell-radius" | "panneau-calendar-selected-color" | "panneau-calendar-selected-bg", string>>;
     card: Readonly<Record<"panneau-card-radius" | "panneau-card-gap" | "panneau-card-padding-y" | "panneau-card-padding-x" | "panneau-card-border-width" | "panneau-card-title-font-weight" | "panneau-card-bg" | "panneau-card-border-color" | "panneau-card-shadow" | "panneau-card-header-padding-y" | "panneau-card-title-font-size", string>>;
     checkbox: Readonly<Record<"panneau-checkbox-size" | "panneau-checkbox-radius" | "panneau-checkbox-bg" | "panneau-checkbox-border-color" | "panneau-checkbox-checked-color" | "panneau-checkbox-checked-bg", string>>;
+    'command-palette': Readonly<Record<"panneau-command-palette-width" | "panneau-command-palette-radius" | "panneau-command-palette-bg" | "panneau-command-palette-offset-top" | "panneau-command-palette-list-max-height" | "panneau-command-palette-item-radius" | "panneau-command-palette-item-active-bg", string>>;
     container: Readonly<Record<"panneau-container-padding-x" | "panneau-container-width-sm" | "panneau-container-width-md" | "panneau-container-width-lg" | "panneau-container-width-xl", string>>;
     dialog: Readonly<Record<"panneau-dialog-width" | "panneau-dialog-radius" | "panneau-dialog-padding-x" | "panneau-dialog-title-font-weight" | "panneau-dialog-bg" | "panneau-dialog-shadow" | "panneau-dialog-title-font-size" | "panneau-dialog-width-sm" | "panneau-dialog-width-lg" | "panneau-dialog-width-xl" | "panneau-dialog-backdrop", string>>;
     disclosure: Readonly<Record<"panneau-disclosure-gap" | "panneau-disclosure-title-font-weight" | "panneau-disclosure-title-font-size", string>>;
@@ -302,7 +349,7 @@ export const componentTokens: Readonly<{
     heading: Readonly<Record<"panneau-heading-color" | "panneau-heading-font-family" | "panneau-heading-display-font-family" | "panneau-heading-1-font-size" | "panneau-heading-1-font-weight" | "panneau-heading-1-line-height" | "panneau-heading-1-letter-spacing" | "panneau-heading-2-font-size" | "panneau-heading-2-font-weight" | "panneau-heading-2-line-height" | "panneau-heading-2-letter-spacing" | "panneau-heading-3-font-size" | "panneau-heading-3-font-weight" | "panneau-heading-3-line-height" | "panneau-heading-3-letter-spacing" | "panneau-heading-4-font-size" | "panneau-heading-4-font-weight" | "panneau-heading-4-line-height" | "panneau-heading-4-letter-spacing" | "panneau-heading-display-1-font-size" | "panneau-heading-display-1-font-weight" | "panneau-heading-display-1-line-height" | "panneau-heading-display-1-letter-spacing" | "panneau-heading-display-2-font-size" | "panneau-heading-display-2-font-weight" | "panneau-heading-display-2-line-height" | "panneau-heading-display-2-letter-spacing", string>>;
     inline: Readonly<Record<"panneau-inline-gap", string>>;
     input: Readonly<Record<"panneau-input-radius" | "panneau-input-padding-x" | "panneau-input-border-width" | "panneau-input-bg" | "panneau-input-border-color" | "panneau-input-border-color-hover", string>>;
-    'list-box': Readonly<Record<"panneau-list-box-padding" | "panneau-list-box-item-padding-y" | "panneau-list-box-item-padding-x" | "panneau-list-box-item-radius" | "panneau-list-box-item-bg-hover", string>>;
+    'list-box': Readonly<Record<"panneau-list-box-padding" | "panneau-list-box-item-radius" | "panneau-list-box-item-padding-y" | "panneau-list-box-item-padding-x" | "panneau-list-box-item-bg-hover", string>>;
     'number-input': Readonly<Record<"panneau-number-input-stepper-width", string>>;
     popover: Readonly<Record<"panneau-popover-radius" | "panneau-popover-padding" | "panneau-popover-bg" | "panneau-popover-border-color" | "panneau-popover-shadow", string>>;
     prose: Readonly<Record<"panneau-prose-gap" | "panneau-prose-border-color" | "panneau-prose-line-height" | "panneau-prose-heading-gap" | "panneau-prose-list-indent" | "panneau-prose-link-color" | "panneau-prose-code-font-size" | "panneau-prose-code-color" | "panneau-prose-code-bg" | "panneau-prose-code-radius" | "panneau-prose-quote-border-color" | "panneau-prose-quote-color", string>>;
@@ -551,10 +598,16 @@ export interface InlineProps extends HTMLAttributes<HTMLElement> {
 }
 
 // @public
+export function isApplePlatform(): boolean;
+
+// @public
 export type Justification = 'start' | 'center' | 'end' | 'between';
 
 // @public
 export function loadNamedIcon(name: string, loader: NamedIconLoader): Promise<IconComponent | null>;
+
+// @public
+export function matchCommands(groups: readonly CommandPaletteGroup[], query: string, locale?: string): CommandPaletteGroup[];
 
 // @public
 export function Menu<T extends object>(input: MenuProps<T>): JSX.Element;
@@ -604,6 +657,9 @@ export interface MultipleSelectProps extends SelectBaseProps {
 
 // @public
 export type NamedIconLoader = (name: string) => Promise<IconComponent | null>;
+
+// @public
+export function normalizeSearch(text: string, locale?: string): string;
 
 // @public
 export function NumberInput(input: NumberInputProps): JSX.Element;
@@ -1105,6 +1161,12 @@ export interface TooltipProps {
     // (undocumented)
     placement?: TooltipProps_2['placement'];
 }
+
+// @public
+export function useCommandShortcut(onToggle: () => void, input?: {
+    isOpen?: boolean;
+    enabled?: boolean;
+}): void;
 
 // @public
 export function usePanneauIntl(): IntlShape;

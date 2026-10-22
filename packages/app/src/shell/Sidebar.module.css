@@ -51,6 +51,58 @@
     color: var(--panneau-color-text-muted);
 }
 
+/* "Go to…": a button that looks like a search field, with its shortcut. */
+.goTo {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-height: var(--panneau-control-height-sm);
+    padding: 0 var(--panneau-space-2);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-sidebar-link-radius, var(--panneau-radius-md));
+    background: var(--panneau-color-surface);
+    color: var(--panneau-color-text-muted);
+    font: inherit;
+    font-size: var(--panneau-font-size-sm);
+    text-align: start;
+    cursor: pointer;
+    outline: none;
+}
+
+.goTo[data-hovered] {
+    border-color: var(--panneau-color-border-control);
+    color: var(--panneau-color-text);
+}
+
+.goTo[data-focus-visible] {
+    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+.goToSearch {
+    flex: none;
+}
+
+.goToLabel {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.goToKey {
+    flex: none;
+    padding: 0 var(--panneau-space-1);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-sm);
+    font-family: inherit;
+    font-size: var(--panneau-font-size-xs);
+}
+
+.goToIcon {
+    flex: none;
+    color: var(--panneau-color-text-muted);
+}
+
 .nav {
     display: flex;
     flex: 1 1 auto;

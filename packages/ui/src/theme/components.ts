@@ -3,6 +3,7 @@ import { badgeTokens } from '../badge/tokens';
 import { buttonTokens } from '../button/tokens';
 import { cardTokens } from '../card/tokens';
 import { checkboxTokens } from '../checkbox/tokens';
+import { commandPaletteTokens } from '../command-palette/tokens';
 import { containerTokens } from '../container/tokens';
 import { calendarTokens } from '../date-picker/calendarTokens';
 import { dialogTokens } from '../dialog/tokens';
@@ -38,6 +39,7 @@ export const componentTokens = Object.freeze({
     calendar: calendarTokens.tokens,
     card: cardTokens.tokens,
     checkbox: checkboxTokens.tokens,
+    'command-palette': commandPaletteTokens.tokens,
     container: containerTokens.tokens,
     dialog: dialogTokens.tokens,
     disclosure: disclosureTokens.tokens,

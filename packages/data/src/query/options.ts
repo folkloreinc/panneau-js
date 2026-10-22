@@ -6,7 +6,14 @@ import {
     queryOptions,
 } from '@tanstack/react-query';
 
-import type { Definition, Item, ListQuery, ListResponse, PreviewResponse } from '@panneau/protocol';
+import type {
+    Definition,
+    Item,
+    ListQuery,
+    ListResponse,
+    PreviewResponse,
+    SearchResponse,
+} from '@panneau/protocol';
 
 import type { DataAdapter, Values } from '../adapter';
 import { queryKeys } from './keys';
@@ -81,5 +88,21 @@ export function itemPreviewQueryOptions(
         placeholderData: keepPreviousData,
         // Preview URLs are signed for a short time: a new one when the panel opens again later.
         staleTime: 60_000,
+    });
+}
+
+/**
+ * Query options of the global search (decision 0029). The previous results stay while the next
+ * ones load. Debounce `q`, and only enable the query from 2 characters.
+ */
+export function searchQueryOptions(
+    adapter: DataAdapter,
+    q: string,
+): DataQueryOptions<SearchResponse, ReturnType<typeof queryKeys.search>> {
+    return queryOptions({
+        queryKey: queryKeys.search(q),
+        queryFn: ({ signal }) => adapter.search(q, { signal }),
+        placeholderData: keepPreviousData,
+        staleTime: 30_000,
     });
 }

@@ -2349,7 +2349,7 @@
                         ]
                     },
                     "search": {
-                        "description": "Whether the resource is in the global search.",
+                        "description": "Whether the resource is in the global search. Defaults to whether its list has a search (`list.search`).",
                         "type": "boolean"
                     }
                 },
@@ -2391,6 +2391,14 @@
                     },
                     "itemTitle": {
                         "description": "The field used as the title of an item, in lists and pickers.",
+                        "type": "string"
+                    },
+                    "itemSubtitle": {
+                        "description": "The field shown under the title of an item, in search results, cards and pickers.",
+                        "type": "string"
+                    },
+                    "itemImage": {
+                        "description": "The field that holds the image of an item (a media or a URL), in search results, cards and pickers.",
                         "type": "string"
                     },
                     "fields": {

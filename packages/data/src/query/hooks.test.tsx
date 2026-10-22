@@ -18,6 +18,7 @@ import {
     useResourceItem,
     useResourceList,
     useRunAction,
+    useSearch,
     useUpdateItem,
 } from './hooks';
 import { queryKeys } from './keys';
@@ -80,6 +81,23 @@ describe('query hooks', () => {
         expect(result.current.data?.meta.page).toBe(1);
         await waitFor(() => expect(result.current.data?.meta.page).toBe(2));
         expect(result.current.data?.data.map((item) => item.id)).toEqual(['1']);
+    });
+
+    it('search the searchable resources, once enabled', async () => {
+        const { wrapper, backend } = setup();
+        const { result, rerender } = renderHook(
+            ({ q }: { q: string }) => useSearch(q, { enabled: q.length >= 2 }),
+            { wrapper, initialProps: { q: 'a' } },
+        );
+        expect(result.current.fetchStatus).toBe('idle');
+        expect(backend.requests).toHaveLength(0);
+
+        rerender({ q: 'abo' });
+        await waitFor(() => expect(result.current.isSuccess).toBe(true));
+        expect(result.current.data?.data.map(({ resource, total }) => [resource, total])).toEqual([
+            ['pages', 1],
+        ]);
+        expect(new URL(backend.requests[0]?.url ?? '').search).toBe('?q=abo');
     });
 
     it('get an item, and wait for an id', async () => {

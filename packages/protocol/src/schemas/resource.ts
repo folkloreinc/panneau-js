@@ -21,10 +21,10 @@ export const ResourceFeatures = z.looseObject({
             }),
         ])
         .optional(),
-    search: z
-        .boolean()
-        .optional()
-        .meta({ description: 'Whether the resource is in the global search.' }),
+    search: z.boolean().optional().meta({
+        description:
+            'Whether the resource is in the global search. Defaults to whether its list has a search (`list.search`).',
+    }),
 });
 
 export const Resource = z
@@ -41,6 +41,14 @@ export const Resource = z
             .string()
             .optional()
             .meta({ description: 'The field used as the title of an item, in lists and pickers.' }),
+        itemSubtitle: z.string().optional().meta({
+            description:
+                'The field shown under the title of an item, in search results, cards and pickers.',
+        }),
+        itemImage: z.string().optional().meta({
+            description:
+                'The field that holds the image of an item (a media or a URL), in search results, cards and pickers.',
+        }),
         fields: z.array(Field),
         form: z.looseObject({ layout: z.array(LayoutNode).optional() }).optional(),
         list: ListDefinition.optional(),

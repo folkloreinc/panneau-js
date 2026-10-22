@@ -3,11 +3,15 @@
  * icons, and the page on a raised panel. Below the `lg` width, a bar opens the sidebar as a drawer.
  */
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
 import { expect, userEvent, within } from 'storybook/test';
 
+import { createRestAdapter } from '@panneau/data';
+import { DataAdapterProvider } from '@panneau/data/query';
 import { type DefinitionInput, validateDefinition } from '@panneau/protocol';
+import { createMockBackend } from '@panneau/protocol/mock';
 import { Heading, Text } from '@panneau/ui';
 
 import { AppLayout } from './AppLayout';
@@ -55,21 +59,35 @@ function getDefinition() {
     return result.data;
 }
 
+function createData() {
+    const backend = createMockBackend({ definition: input });
+    return {
+        adapter: createRestAdapter({ baseUrl: '/api', fetch: backend.fetch }),
+        client: new QueryClient({ defaultOptions: { queries: { retry: false } } }),
+    };
+}
+
 function Layout() {
     const [colorScheme, setColorScheme] = useState<ColorSchemePreference>('light');
+    // The "Go to…" palette searches through the data adapter.
+    const [{ adapter, client }] = useState(createData);
     return (
-        <RouterProvider navigate={() => undefined}>
-            <AppLayout
-                definition={getDefinition()}
-                basePath="/admin"
-                route={{ name: 'resource.index', resource: 'articles' }}
-                colorScheme={colorScheme}
-                onColorSchemeChange={setColorScheme}
-            >
-                <Heading level={1}>Articles</Heading>
-                <Text muted>The page of the current route.</Text>
-            </AppLayout>
-        </RouterProvider>
+        <QueryClientProvider client={client}>
+            <DataAdapterProvider adapter={adapter}>
+                <RouterProvider navigate={() => undefined}>
+                    <AppLayout
+                        definition={getDefinition()}
+                        basePath="/admin"
+                        route={{ name: 'resource.index', resource: 'articles' }}
+                        colorScheme={colorScheme}
+                        onColorSchemeChange={setColorScheme}
+                    >
+                        <Heading level={1}>Articles</Heading>
+                        <Text muted>The page of the current route.</Text>
+                    </AppLayout>
+                </RouterProvider>
+            </DataAdapterProvider>
+        </QueryClientProvider>
     );
 }
 
@@ -122,5 +140,19 @@ export const Phone: Story = {
                 'page',
             );
         }
+    },
+};
+
+/** "Go to…" opens the command palette, with the navigation and the app's actions. */
+export const GoTo: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(
+            within(canvas.getByRole('complementary')).getByRole('button', { name: /Go to…/ }),
+        );
+        const field = await body.findByRole('searchbox', { name: 'Go to…' });
+        await userEvent.type(field, 'arti');
+        await expect(body.getByRole('menuitem', { name: 'Articles' })).toBeInTheDocument();
     },
 };

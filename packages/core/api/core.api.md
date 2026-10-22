@@ -32,6 +32,28 @@ export function can(abilities: Abilities | undefined, ability: string): boolean;
 export function canRunAction(action: Action): boolean;
 
 // @public
+export interface Command {
+    // (undocumented)
+    description?: string;
+    group?: string;
+    href?: string;
+    icon?: string;
+    id: string;
+    keywords?: readonly string[];
+    // (undocumented)
+    label: string;
+    perform?: () => void;
+}
+
+// @public
+export interface CommandContext {
+    definition: Definition | null;
+}
+
+// @public
+export type CommandSource = readonly Command[] | ((context: CommandContext) => readonly Command[]);
+
+// @public
 export function createForm(options: FormOptions): Form;
 
 // @public
@@ -136,6 +158,9 @@ export interface FormStore {
 export function getActionPlacements(action: Action): ActionPlacement[];
 
 // @public
+export function getCommands(sources: readonly CommandSource[], context: CommandContext): Command[];
+
+// @public
 export function getDefaultValues(fields: readonly Field[], values?: Values): Values;
 
 // @public (undocumented)
@@ -153,6 +178,9 @@ export function getLayoutFieldNames(layout: readonly LayoutNode[]): string[];
 export function getProblem(error: unknown): Problem | null;
 
 // @public
+export function getSearchableResources(definition: Definition): Resource[];
+
+// @public
 export function groupActions(actions: readonly Action[]): Record<ActionPlacement, Action[]>;
 
 // @public
@@ -163,6 +191,9 @@ export function isEqual(a: unknown, b: unknown): boolean;
 
 // @public
 export function isItem(value: unknown): value is Item;
+
+// @public
+export function isSearchable(resource: Resource): boolean;
 
 // @public
 export interface List {
@@ -253,6 +284,7 @@ export interface PanneauContextValue {
 // @public
 export interface PanneauPlugin {
     actions?: Record<string, PluginComponent>;
+    commands?: CommandSource;
     components?: Record<string, PluginComponent>;
     displays?: Record<string, PluginComponent>;
     fields?: Record<string, PluginComponent>;
@@ -293,6 +325,7 @@ export type PluginComponentKind = 'fields' | 'displays' | 'listLayouts' | 'actio
 export interface PluginRegistry {
     // (undocumented)
     actions: ReadonlyMap<string, PluginComponent>;
+    commands: readonly CommandSource[];
     // (undocumented)
     components: ReadonlyMap<string, PluginComponent>;
     // (undocumented)

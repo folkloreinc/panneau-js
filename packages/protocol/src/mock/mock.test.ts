@@ -338,6 +338,20 @@ describe('createMockBackend', () => {
         ).toBe(404);
     });
 
+    it('searches the resources with a list search, from 2 characters', async () => {
+        const backend = createBackend();
+        const search = async (q: string) =>
+            (await (
+                await backend.fetch(`/panneau/api/search?q=${encodeURIComponent(q)}`)
+            ).json()) as {
+                data: { resource: string; items: { title: unknown }[]; total: number }[];
+            };
+        const { data } = await search('acc');
+        expect(data.map(({ resource, total }) => [resource, total])).toEqual([['pages', 1]]);
+        expect(data[0]?.items[0]?.title).toEqual({ fr: 'Accueil' });
+        expect((await search('a')).data).toEqual([]);
+    });
+
     it('answers unknown routes with a 404 problem', async () => {
         const response = await createBackend().fetch('/panneau/api/resources/unknown');
         expect(response.status).toBe(404);

@@ -39,7 +39,24 @@ if (element === null) {
 
 createPanneauApp({
     element,
-    plugins: [{ id: 'playground', themes: { flat: flatTheme }, previews: { page: PagePreview } }],
+    plugins: [
+        {
+            id: 'playground',
+            themes: { flat: flatTheme },
+            previews: { page: PagePreview },
+            // A command of the "Go to…" palette, as a project's plugin adds it.
+            commands: [
+                {
+                    id: 'docs',
+                    label: 'Panneau documentation',
+                    group: 'Help',
+                    keywords: ['help', 'docs'],
+                    icon: 'book-open',
+                    href: 'https://github.com/folkloreinc/panneau-js/tree/v5.x/docs',
+                },
+            ],
+        },
+    ],
     adapter: createRestAdapter({ baseUrl: definition.api.baseUrl, fetch: backend.fetch }),
     config: { protocol: 1, apiBaseUrl: definition.api.baseUrl, basePath, locale: 'en', definition },
 });

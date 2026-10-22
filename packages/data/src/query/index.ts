@@ -18,6 +18,7 @@ export {
     useResourceItem,
     useResourceList,
     useRunAction,
+    useSearch,
     useUpdateItem,
 } from './hooks';
 export { queryKeys } from './keys';
@@ -27,5 +28,6 @@ export {
     itemPreviewQueryOptions,
     resourceItemQueryOptions,
     resourceListQueryOptions,
+    searchQueryOptions,
 } from './options';
 export { invalidateActionResult } from './refresh';

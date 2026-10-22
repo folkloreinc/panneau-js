@@ -23,6 +23,7 @@ import {
 import { cx } from '../cx';
 import { navigate } from '../location';
 import { usePreference } from '../preferences';
+import { useRecordRecentItem } from '../recentItems';
 import { routePath } from '../routes';
 import styles from './ItemPanel.module.css';
 import { ItemPreview } from './ItemPreview';
@@ -62,6 +63,7 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
     const label = intl.formatMessage(appMessages.itemPanel, { resource: singular });
     const title =
         getItemTitle(item, resource.itemTitle, locale) ?? (item !== undefined ? item.id : '');
+    useRecordRecentItem(basePath, item !== undefined ? { resource: resource.id, id, title } : null);
 
     // Focus moves to the panel when it opens or shows another item.
     useEffect(() => {

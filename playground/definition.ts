@@ -57,6 +57,7 @@ export function createPlaygroundDefinition(): DefinitionInput {
                 icon: 'newspaper',
                 features: { preview: { mode: 'iframe' } },
                 itemTitle: 'title',
+                itemSubtitle: 'category',
                 fields: [
                     { name: 'title', type: 'text', label: 'Title', rules: [{ rule: 'required' }] },
                     { name: 'summary', type: 'textarea', label: 'Summary' },
@@ -141,6 +142,7 @@ export function createPlaygroundDefinition(): DefinitionInput {
                 label: { singular: 'author', plural: 'authors' },
                 icon: 'pen-line',
                 itemTitle: 'name',
+                itemSubtitle: 'email',
                 fields: [
                     { name: 'name', type: 'text', label: 'Name', rules: [{ rule: 'required' }] },
                     { name: 'email', type: 'email', label: 'Email' },
@@ -159,6 +161,7 @@ export function createPlaygroundDefinition(): DefinitionInput {
                 description: 'Who can sign in to this admin panel.',
                 icon: 'users',
                 itemTitle: 'name',
+                itemSubtitle: 'email',
                 fields: [
                     { name: 'name', type: 'text', label: 'Name', rules: [{ rule: 'required' }] },
                     {

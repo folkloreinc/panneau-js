@@ -3,6 +3,8 @@ import type { ComponentType } from 'react';
 import type { DefinitionTheme, Theme } from '@panneau/protocol';
 import { mergeThemes } from '@panneau/protocol/runtime';
 
+import type { CommandSource } from './commands';
+
 /** A theme of `@panneau/ui`, as plain data: what plugins register (decision 0024). */
 export type { Theme };
 
@@ -42,6 +44,8 @@ export interface PanneauPlugin {
      * (`{ "mode": "component", "component": "page" }`). They get `PreviewProps`.
      */
     previews?: Record<string, PluginComponent>;
+    /** Commands of the "Go to…" palette, or a function that makes them for the definition. */
+    commands?: CommandSource;
     /** UI messages, by locale. Messages of later plugins override earlier ones. */
     locales?: Record<string, MessagesLoader>;
     /** Themes, by id, that the theme of the definition can extend. */
@@ -82,6 +86,8 @@ export interface PluginRegistry {
     widgets: ReadonlyMap<string, PluginComponent>;
     components: ReadonlyMap<string, PluginComponent>;
     previews: ReadonlyMap<string, PluginComponent>;
+    /** The commands of the plugins, in plugin order: `getCommands()` makes them. */
+    commands: readonly CommandSource[];
     /** Message loaders of each locale, in plugin order. */
     locales: ReadonlyMap<string, readonly MessagesLoader[]>;
     themes: ReadonlyMap<string, Theme>;
@@ -121,6 +127,9 @@ export function createPluginRegistry(plugins: readonly PanneauPlugin[]): PluginR
         ...components,
         locales,
         themes: new Map(plugins.flatMap((plugin) => Object.entries(plugin.themes ?? {}))),
+        commands: plugins.flatMap((plugin) =>
+            plugin.commands !== undefined ? [plugin.commands] : [],
+        ),
     };
 }
 

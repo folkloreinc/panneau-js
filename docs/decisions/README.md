@@ -34,3 +34,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0026](0026-media-libraries.md)          | Media libraries are resources                                      | Amended by 0027 |
 | [0027](0027-media-picker.md)             | A media picker on a source that products can implement             | Accepted        |
 | [0028](0028-item-panel.md)               | The show route opens an item's details in a panel next to its list | Accepted        |
+| [0029](0029-go-to-palette.md)            | A "Go to…" command palette that products can use without the app   | Accepted        |
