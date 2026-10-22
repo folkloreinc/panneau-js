@@ -539,6 +539,8 @@ export const Definition: z.ZodObject<{
         description: z.ZodOptional<z.ZodString>;
         icon: z.ZodOptional<z.ZodString>;
         itemTitle: z.ZodOptional<z.ZodString>;
+        itemSubtitle: z.ZodOptional<z.ZodString>;
+        itemImage: z.ZodOptional<z.ZodString>;
         fields: z.ZodArray<z.ZodObject<{
             name: z.ZodString;
             type: z.ZodString;
@@ -1880,6 +1882,8 @@ export const namedSchemas: {
         description: z.ZodOptional<z.ZodString>;
         icon: z.ZodOptional<z.ZodString>;
         itemTitle: z.ZodOptional<z.ZodString>;
+        itemSubtitle: z.ZodOptional<z.ZodString>;
+        itemImage: z.ZodOptional<z.ZodString>;
         fields: z.ZodArray<z.ZodObject<{
             name: z.ZodString;
             type: z.ZodString;
@@ -2430,6 +2434,8 @@ export const namedSchemas: {
             description: z.ZodOptional<z.ZodString>;
             icon: z.ZodOptional<z.ZodString>;
             itemTitle: z.ZodOptional<z.ZodString>;
+            itemSubtitle: z.ZodOptional<z.ZodString>;
+            itemImage: z.ZodOptional<z.ZodString>;
             fields: z.ZodArray<z.ZodObject<{
                 name: z.ZodString;
                 type: z.ZodString;
@@ -3321,6 +3327,8 @@ export const Resource: z.ZodObject<{
     description: z.ZodOptional<z.ZodString>;
     icon: z.ZodOptional<z.ZodString>;
     itemTitle: z.ZodOptional<z.ZodString>;
+    itemSubtitle: z.ZodOptional<z.ZodString>;
+    itemImage: z.ZodOptional<z.ZodString>;
     fields: z.ZodArray<z.ZodObject<{
         name: z.ZodString;
         type: z.ZodString;

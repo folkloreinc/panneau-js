@@ -8,10 +8,11 @@ import {
     Moon,
     PanelLeftClose,
     PanelLeftOpen,
+    Search,
     Sun,
     X,
 } from 'lucide-react';
-import { Link } from 'react-aria-components';
+import { Button, Link } from 'react-aria-components';
 
 import { appMessages } from '@panneau/intl';
 import type { Definition } from '@panneau/protocol';
@@ -21,6 +22,7 @@ import {
     type IconComponent,
     Tooltip,
     getNamedIcon,
+    isApplePlatform,
     usePanneauIntl,
 } from '@panneau/ui';
 
@@ -72,6 +74,8 @@ export interface SidebarProps {
     onNavigate?: () => void;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
+    /** Opens the "Go to…" palette. Without it, the sidebar has no such button. */
+    onGoTo?: () => void;
     className?: string;
 }
 
@@ -89,6 +93,7 @@ export function Sidebar({
     onNavigate,
     colorScheme,
     onColorSchemeChange,
+    onGoTo,
     className,
 }: SidebarProps) {
     const intl = usePanneauIntl();
@@ -157,6 +162,9 @@ export function Sidebar({
     };
 
     const user = definition.user ?? null;
+    const apple = isApplePlatform();
+    const shortcut = apple ? '⌘K' : 'Ctrl+K';
+    const keyShortcuts = apple ? 'Meta+K' : 'Control+K';
     const nextScheme =
         COLOR_SCHEMES[(COLOR_SCHEMES.indexOf(colorScheme) + 1) % COLOR_SCHEMES.length] ?? 'light';
 
@@ -196,6 +204,32 @@ export function Sidebar({
                     />
                 ) : null}
             </div>
+            {onGoTo !== undefined ? (
+                collapsed ? (
+                    <IconButton
+                        icon={Search}
+                        label={`${intl.formatMessage(appMessages.goTo)} (${shortcut})`}
+                        aria-haspopup="dialog"
+                        aria-keyshortcuts={keyShortcuts}
+                        size="sm"
+                        className={styles.goToIcon}
+                        onPress={onGoTo}
+                    />
+                ) : (
+                    <Button
+                        aria-haspopup="dialog"
+                        aria-keyshortcuts={keyShortcuts}
+                        className={styles.goTo}
+                        onPress={onGoTo}
+                    >
+                        <Icon icon={Search} size="sm" className={styles.goToSearch} />
+                        <span className={styles.goToLabel}>
+                            {intl.formatMessage(appMessages.goTo)}
+                        </span>
+                        <kbd className={styles.goToKey}>{shortcut}</kbd>
+                    </Button>
+                )
+            ) : null}
             <nav aria-label={intl.formatMessage(appMessages.navigation)} className={styles.nav}>
                 {sections.map((section) =>
                     section.links.length === 0 ? (

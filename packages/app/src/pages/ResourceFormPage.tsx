@@ -8,6 +8,7 @@ import { Alert, Button, Spinner, usePanneauIntl } from '@panneau/ui';
 
 import { navigate } from '../location';
 import { capitalize } from '../navigation';
+import { useRecordRecentItem } from '../recentItems';
 import { routePath } from '../routes';
 import { PageHeader } from './PageHeader';
 import { getItemTitle } from './itemTitle';
@@ -42,6 +43,16 @@ export function ResourceFormPage({ definition, resolved, basePath, id }: Resourc
             ? intl.formatMessage(appMessages.create, { resource: singular })
             : (getItemTitle(item, resource.itemTitle, definition.locale) ??
               intl.formatMessage(appMessages.edit, { resource: singular }));
+    useRecordRecentItem(
+        basePath,
+        id !== null && item !== undefined
+            ? {
+                  resource: resource.id,
+                  id,
+                  title: getItemTitle(item, resource.itemTitle, definition.locale) ?? id,
+              }
+            : null,
+    );
     const back = {
         href: routePath({ name: 'resource.index', resource: resource.id }, basePath),
         label: capitalize(resource.label.plural, definition.locale),

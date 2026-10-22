@@ -96,6 +96,20 @@ export const appMessages = {
         id: 'panneau.app.closePanel',
         defaultMessage: 'Close the details',
     }),
+    goTo: defineMessage({ id: 'panneau.app.goTo', defaultMessage: 'Go to…' }),
+    groupRecent: defineMessage({ id: 'panneau.app.groupRecent', defaultMessage: 'Recent' }),
+    groupNavigation: defineMessage({
+        id: 'panneau.app.groupNavigation',
+        defaultMessage: 'Navigation',
+    }),
+    groupCreate: defineMessage({ id: 'panneau.app.groupCreate', defaultMessage: 'Create' }),
+    groupCommands: defineMessage({ id: 'panneau.app.groupCommands', defaultMessage: 'Commands' }),
+    groupActions: defineMessage({ id: 'panneau.app.groupActions', defaultMessage: 'Actions' }),
+    searching: defineMessage({ id: 'panneau.app.searching', defaultMessage: 'Searching…' }),
+    searchError: defineMessage({
+        id: 'panneau.app.searchError',
+        defaultMessage: 'The search failed. The other results are still here.',
+    }),
     notFound: defineMessage({ id: 'panneau.app.notFound', defaultMessage: 'Page not found' }),
     notFoundText: defineMessage({
         id: 'panneau.app.notFoundText',

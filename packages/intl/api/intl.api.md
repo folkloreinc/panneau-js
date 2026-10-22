@@ -116,6 +116,14 @@ export const appMessages: {
     widenPanel: PanneauMessage<Record<never, never>>;
     narrowPanel: PanneauMessage<Record<never, never>>;
     closePanel: PanneauMessage<Record<never, never>>;
+    goTo: PanneauMessage<Record<never, never>>;
+    groupRecent: PanneauMessage<Record<never, never>>;
+    groupNavigation: PanneauMessage<Record<never, never>>;
+    groupCreate: PanneauMessage<Record<never, never>>;
+    groupCommands: PanneauMessage<Record<never, never>>;
+    groupActions: PanneauMessage<Record<never, never>>;
+    searching: PanneauMessage<Record<never, never>>;
+    searchError: PanneauMessage<Record<never, never>>;
     notFound: PanneauMessage<Record<never, never>>;
     notFoundText: PanneauMessage<Record<never, never>>;
     backHome: PanneauMessage<Record<never, never>>;
@@ -535,6 +543,13 @@ export const uiMessages: {
     showOptions: PanneauMessage<Record<never, never>>;
     clear: PanneauMessage<Record<never, never>>;
     moreActions: PanneauMessage<Record<never, never>>;
+    commandPalette: PanneauMessage<Record<never, never>>;
+    commandResults: PanneauMessage<    {
+    count: number;
+    }>;
+    commandHintMove: PanneauMessage<Record<never, never>>;
+    commandHintOpen: PanneauMessage<Record<never, never>>;
+    commandHintClose: PanneauMessage<Record<never, never>>;
 };
 
 // @public

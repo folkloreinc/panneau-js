@@ -19,4 +19,15 @@ export const uiMessages = {
     showOptions: defineMessage({ id: 'panneau.ui.showOptions', defaultMessage: 'Show options' }),
     clear: defineMessage({ id: 'panneau.ui.clear', defaultMessage: 'Clear' }),
     moreActions: defineMessage({ id: 'panneau.ui.moreActions', defaultMessage: 'More actions' }),
+    commandPalette: defineMessage({
+        id: 'panneau.ui.commandPalette',
+        defaultMessage: 'Search',
+    }),
+    commandResults: defineMessage<{ count: number }>({
+        id: 'panneau.ui.commandResults',
+        defaultMessage: '{count, plural, =0 {No results} one {# result} other {# results}}',
+    }),
+    commandHintMove: defineMessage({ id: 'panneau.ui.commandHintMove', defaultMessage: 'Move' }),
+    commandHintOpen: defineMessage({ id: 'panneau.ui.commandHintOpen', defaultMessage: 'Open' }),
+    commandHintClose: defineMessage({ id: 'panneau.ui.commandHintClose', defaultMessage: 'Close' }),
 };

@@ -69,6 +69,7 @@ export const queryKeys: {
     items: (resource: string) => readonly ["panneau", "resources", string, "item"];
     item: (resource: string, id: string) => readonly ["panneau", "resources", string, "item", string];
     itemPreview: (resource: string, id: string, values?: Record<string, unknown>) => readonly ["panneau", "resources", string, "item", string, "preview", Record<string, unknown>];
+    search: (q: string) => readonly ["panneau", "search", string];
     actionRuns: () => readonly ["panneau", "actions", "runs"];
     actionRun: (id: string) => readonly ["panneau", "actions", "runs", string];
 };
@@ -83,6 +84,9 @@ export function resourceListQueryOptions(adapter: DataAdapter, resource: string,
 export interface RunActionVariables extends ActionRequest {
     action: string;
 }
+
+// @public
+export function searchQueryOptions(adapter: DataAdapter, q: string): DataQueryOptions<SearchResponse, ReturnType<typeof queryKeys.search>>;
 
 // @public (undocumented)
 export interface UpdateItemVariables {
@@ -127,6 +131,9 @@ export function useResourceList(resource: string, query?: ListQuery, options?: Q
 //
 // @public
 export function useRunAction(resource: string): UseMutationResult<ActionResponse, Error, RunActionVariables>;
+
+// @public
+export function useSearch(q: string, options?: QueryHookOptions<SearchResponse, ReturnType<typeof queryKeys.search>>): UseQueryResult<SearchResponse>;
 
 // @public
 export function useUpdateItem(resource: string): UseMutationResult<Item, Error, UpdateItemVariables>;

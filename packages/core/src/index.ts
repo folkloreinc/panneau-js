@@ -70,6 +70,14 @@ export {
     loadMessages,
     resolveTheme,
 } from './plugins';
+export {
+    type Command,
+    type CommandContext,
+    type CommandSource,
+    getCommands,
+    getSearchableResources,
+    isSearchable,
+} from './commands';
 export { type PreviewProps } from './preview';
 export {
     PanneauProvider,

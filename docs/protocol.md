@@ -557,6 +557,11 @@ With `auth.mode = "external"`, the frontend only calls `GET /auth/session` and s
 | `GET /dashboard/widgets/{widget}`         | data for one widget, with the widget's own shape declared in the definition              |
 | `POST /resources/{resource}/{id}/preview` | sends the unsaved values; returns `{ "url": "…", "expiresAt": "…" }` for iframe previews |
 
+Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
+
+- A resource is searched when its `features.search` is `true`, or, without it, when its list has a search (`list.search`).
+- Results are items, at most 5 per resource and 20 in all, from 2 characters. Their title is their resource's `itemTitle`; `itemSubtitle` and `itemImage` name the fields shown under it and next to it, in search results, cards and pickers.
+
 ## Conformance
 
 `@panneau/protocol` ships:

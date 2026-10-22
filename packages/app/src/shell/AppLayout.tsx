@@ -1,15 +1,16 @@
-import { Menu } from 'lucide-react';
+import { Menu, Search } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { Dialog, Link, Modal, ModalOverlay } from 'react-aria-components';
 
 import { appMessages } from '@panneau/intl';
 import type { Definition } from '@panneau/protocol';
-import { IconButton, usePanneauIntl, usePortalContainer } from '@panneau/ui';
+import { IconButton, useCommandShortcut, usePanneauIntl, usePortalContainer } from '@panneau/ui';
 
 import { cx } from '../cx';
 import { usePreference } from '../preferences';
 import { type AppRoute, routePath } from '../routes';
 import styles from './AppLayout.module.css';
+import { GoTo } from './GoTo';
 import { type ColorSchemePreference, Sidebar } from './Sidebar';
 
 const CONTENT_ID = 'panneau-content';
@@ -49,6 +50,12 @@ export function AppLayout({
     const portalContainer = usePortalContainer();
     const [sidebar, setSidebar] = usePreference('sidebar', SIDEBAR_STATES);
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [goToOpen, setGoToOpen] = useState(false);
+    useCommandShortcut(() => setGoToOpen((open) => !open), { isOpen: goToOpen });
+    const openGoTo = () => {
+        setDrawerOpen(false);
+        setGoToOpen(true);
+    };
     const collapsed = sidebar === 'collapsed';
     const toggle = () => setSidebar(collapsed ? 'expanded' : 'collapsed');
 
@@ -68,7 +75,14 @@ export function AppLayout({
         return () => window.removeEventListener('keydown', onKeyDown);
     });
 
-    const sidebarProps = { definition, basePath, route, colorScheme, onColorSchemeChange };
+    const sidebarProps = {
+        definition,
+        basePath,
+        route,
+        colorScheme,
+        onColorSchemeChange,
+        onGoTo: openGoTo,
+    };
 
     return (
         <div className={cx(styles.layout, collapsed && styles.collapsed)}>
@@ -85,6 +99,13 @@ export function AppLayout({
                 <Link href={routePath({ name: 'home' }, basePath)} className={styles.topBarName}>
                     {definition.name}
                 </Link>
+                <IconButton
+                    icon={Search}
+                    label={intl.formatMessage(appMessages.goTo)}
+                    aria-haspopup="dialog"
+                    className={styles.topBarSearch}
+                    onPress={openGoTo}
+                />
             </header>
             <aside className={styles.sidebar}>
                 <Sidebar {...sidebarProps} collapsed={collapsed} onToggle={toggle} />
@@ -92,6 +113,16 @@ export function AppLayout({
             <main id={CONTENT_ID} tabIndex={-1} className={styles.main}>
                 <div className={styles.panel}>{children}</div>
             </main>
+            <GoTo
+                definition={definition}
+                basePath={basePath}
+                isOpen={goToOpen}
+                onOpenChange={setGoToOpen}
+                sidebarCollapsed={collapsed}
+                onToggleSidebar={toggle}
+                colorScheme={colorScheme}
+                onColorSchemeChange={onColorSchemeChange}
+            />
             {portalContainer !== null ? (
                 <ModalOverlay
                     isOpen={drawerOpen}

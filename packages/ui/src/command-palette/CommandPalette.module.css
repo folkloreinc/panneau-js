@@ -1,0 +1,258 @@
+/* A dialog near the top of the screen: the search field over the results, and a footer with the
+ * count and the keys. The whole screen on a phone. */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--panneau-z-overlay);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: var(--panneau-command-palette-offset-top, 12dvh) var(--panneau-space-4)
+        var(--panneau-space-4);
+    background-color: var(--panneau-color-backdrop);
+}
+
+.overlay[data-entering] {
+    animation: fade var(--panneau-duration) ease-out;
+}
+
+.modal {
+    display: flex;
+    width: 100%;
+    max-width: var(--panneau-command-palette-width, 40rem);
+    outline: none;
+}
+
+.modal[data-entering] {
+    animation: rise var(--panneau-duration) ease-out;
+}
+
+.dialog {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-command-palette-bg, var(--panneau-color-surface-raised));
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-command-palette-radius, var(--panneau-radius-lg));
+    box-shadow: var(--panneau-shadow-lg);
+    outline: none;
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    padding: var(--panneau-space-3) var(--panneau-space-4);
+    border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.search {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-width: 0;
+}
+
+.close {
+    display: none;
+}
+
+.fieldIcon {
+    flex: none;
+    color: var(--panneau-color-text-muted);
+}
+
+.input {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: var(--panneau-space-1) 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: var(--panneau-font-size-lg);
+    outline: none;
+}
+
+.input::placeholder {
+    color: var(--panneau-color-text-muted);
+}
+
+/* The browser's own clear button: Escape clears the field. */
+.input::-webkit-search-cancel-button {
+    appearance: none;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+    max-height: var(--panneau-command-palette-list-max-height, 60dvh);
+    padding: var(--panneau-space-2);
+    overflow-y: auto;
+    outline: none;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+}
+
+.groupLabel {
+    padding: var(--panneau-space-1) var(--panneau-space-2);
+    color: var(--panneau-color-text-muted);
+    font-size: var(--panneau-font-size-xs);
+    font-weight: var(--panneau-font-weight-medium);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-3);
+    min-height: var(--panneau-control-height);
+    padding: var(--panneau-space-1) var(--panneau-space-2);
+    border-radius: var(--panneau-command-palette-item-radius, var(--panneau-radius-md));
+    color: var(--panneau-color-text);
+    text-decoration: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.item[data-focused],
+.item[data-hovered] {
+    background-color: var(--panneau-command-palette-item-active-bg, var(--panneau-color-hover));
+}
+
+.item[data-focus-visible] {
+    box-shadow: inset 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+.icon,
+.image {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--panneau-radius-sm);
+    color: var(--panneau-color-text-muted);
+    background-color: var(--panneau-color-surface-sunken);
+    object-fit: cover;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.label,
+.description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.description {
+    color: var(--panneau-color-text-muted);
+    font-size: var(--panneau-font-size-sm);
+}
+
+.empty {
+    margin: 0;
+    padding: var(--panneau-space-6) var(--panneau-space-2);
+    color: var(--panneau-color-text-muted);
+    text-align: center;
+}
+
+.footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--panneau-space-2);
+    padding: var(--panneau-space-2) var(--panneau-space-4);
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+    color: var(--panneau-color-text-muted);
+    font-size: var(--panneau-font-size-xs);
+}
+
+.hints {
+    display: flex;
+    gap: var(--panneau-space-3);
+}
+
+.hint {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+}
+
+.key {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 var(--panneau-space-1);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-sm);
+    background: var(--panneau-color-surface);
+    font-family: inherit;
+    font-size: var(--panneau-font-size-xs);
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes rise {
+    from {
+        transform: translateY(-0.5rem);
+        opacity: 0;
+    }
+}
+
+/* A phone: the whole screen, without the keys, which a touch screen has no use for. */
+@container panneau-root (max-width: 40rem) {
+    .overlay {
+        padding: 0;
+    }
+
+    .modal {
+        max-width: none;
+        height: 100dvh;
+    }
+
+    .dialog {
+        border: 0;
+        border-radius: 0;
+    }
+
+    .list {
+        flex: 1 1 auto;
+        max-height: none;
+    }
+
+    .hints {
+        display: none;
+    }
+
+    .close {
+        display: inline-flex;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .overlay[data-entering],
+    .modal[data-entering] {
+        animation: none;
+    }
+}

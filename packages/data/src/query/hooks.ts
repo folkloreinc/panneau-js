@@ -16,6 +16,7 @@ import type {
     ListQuery,
     ListResponse,
     PreviewResponse,
+    SearchResponse,
 } from '@panneau/protocol';
 
 import type { ActionResponse, Values } from '../adapter';
@@ -26,6 +27,7 @@ import {
     itemPreviewQueryOptions,
     resourceItemQueryOptions,
     resourceListQueryOptions,
+    searchQueryOptions,
 } from './options';
 import { invalidateActionResult } from './refresh';
 
@@ -78,6 +80,18 @@ export function useItemPreview(
 ): UseQueryResult<PreviewResponse> {
     const adapter = useDataAdapter();
     return useQuery({ ...itemPreviewQueryOptions(adapter, resource, id, values), ...options });
+}
+
+/**
+ * The global search: items of every searchable resource, grouped by resource (decision 0029).
+ * Pass `enabled: false` until there is a query worth sending (2 characters), and debounce `q`.
+ */
+export function useSearch(
+    q: string,
+    options: QueryHookOptions<SearchResponse, ReturnType<typeof queryKeys.search>> = {},
+): UseQueryResult<SearchResponse> {
+    const adapter = useDataAdapter();
+    return useQuery({ ...searchQueryOptions(adapter, q), ...options });
 }
 
 /** Creates an item, then refetches the lists of the resource. */

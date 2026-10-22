@@ -9,6 +9,7 @@ import type {
     MediaReference,
     PreviewResponse,
     Problem,
+    SearchResponse,
     Selection,
     StoredFile,
     Upload,
@@ -39,6 +40,10 @@ export interface MockBackend {
 }
 
 const RESERVED_KEYS = new Set(['id', 'version', 'abilities']);
+
+const SEARCH_MIN_LENGTH = 2;
+const SEARCH_RESOURCE_LIMIT = 5;
+const SEARCH_TOTAL_LIMIT = 20;
 
 function escapeHtml(text: string): string {
     return text.replace(/[&<>"']/g, (character) => `&#${character.charCodeAt(0)};`);
@@ -456,6 +461,26 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         return { values, problem: null };
     };
 
+    // The global search (decision 0029): searchable resources, 5 items each, 20 in all, from 2
+    // characters.
+    const search = (q: string): SearchResponse => {
+        if (q.trim().length < SEARCH_MIN_LENGTH) {
+            return { data: [] };
+        }
+        let left = SEARCH_TOTAL_LIMIT;
+        const data = definition.resources.flatMap((resource) => {
+            const searchable = resource.features?.search ?? resource.list?.search ?? false;
+            if (!searchable || left === 0) {
+                return [];
+            }
+            const found = applyQuery(store.get(resource.id) ?? [], { q });
+            const items = found.slice(0, Math.min(SEARCH_RESOURCE_LIMIT, left));
+            left -= items.length;
+            return items.length > 0 ? [{ resource: resource.id, items, total: found.length }] : [];
+        });
+        return { data };
+    };
+
     const handle = async (request: Request): Promise<Response> => {
         const url = new URL(request.url, 'http://panneau.test');
         if (!url.pathname.startsWith(basePath)) {
@@ -474,6 +499,9 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
 
         if (segments.length === 1 && segments[0] === 'definition' && method === 'GET') {
             return json(200, definition);
+        }
+        if (segments.length === 1 && segments[0] === 'search' && method === 'GET') {
+            return json(200, search(url.searchParams.get('q') ?? ''));
         }
         if (segments[0] === 'uploads') {
             return handleUploads(segments, method, readBody);

@@ -20,6 +20,14 @@ export {
     type ButtonVariants,
 } from './button/Button';
 export { Card, type CardProps } from './card/Card';
+export { CommandPalette, type CommandPaletteProps } from './command-palette/CommandPalette';
+export {
+    type CommandPaletteGroup,
+    type CommandPaletteItem,
+    matchCommands,
+    normalizeSearch,
+} from './command-palette/match';
+export { isApplePlatform, useCommandShortcut } from './command-palette/useCommandShortcut';
 export { Container, type ContainerProps } from './container/Container';
 export { Divider, type DividerProps } from './divider/Divider';
 export { Grid, GridItem, type GridItemProps, type GridProps } from './grid/Grid';

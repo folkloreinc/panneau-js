@@ -200,6 +200,12 @@
                 "itemTitle": {
                     "type": "string"
                 },
+                "itemSubtitle": {
+                    "type": "string"
+                },
+                "itemImage": {
+                    "type": "string"
+                },
                 "fields": {
                     "type": "array",
                     "items": {
