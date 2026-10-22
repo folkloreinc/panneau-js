@@ -1182,6 +1182,9 @@ export function isFilterRange(value: unknown): value is FilterRange;
 // @public
 export function isProblem(value: unknown): value is Problem;
 
+// @public
+export function isSearchableResource(resource: Omit<SearchableResource, 'id'>): boolean;
+
 // @public (undocumented)
 export const Item: z.ZodObject<{
     id: z.ZodString;
@@ -3316,6 +3319,20 @@ export const PROBLEM_CONTENT_TYPE = "application/problem+json";
 // @public
 export const PROTOCOL_VERSION = 1;
 
+// @public
+export function readSearchQuery(params: URLSearchParams, definition: {
+    resources: readonly SearchableResource[];
+}): ReadSearchQueryResult;
+
+// @public
+export type ReadSearchQueryResult = {
+    query: Required<SearchQuery>;
+    errors?: undefined;
+} | {
+    query?: undefined;
+    errors: Record<string, string[]>;
+};
+
 // @public (undocumented)
 export const Resource: z.ZodObject<{
     id: z.ZodString;
@@ -3721,6 +3738,40 @@ export interface RuleFailure {
     value?: unknown;
 }
 
+// @public
+export const SEARCH_DEFAULT_LIMIT = 5;
+
+// @public
+export const SEARCH_MAX_LENGTH = 255;
+
+// @public
+export const SEARCH_MAX_LIMIT = 20;
+
+// @public
+export const SEARCH_MIN_LENGTH = 2;
+
+// @public
+export interface SearchableResource {
+    // (undocumented)
+    features?: {
+        search?: boolean | undefined;
+    } | undefined;
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    list?: {
+        search?: boolean | undefined;
+    } | undefined;
+}
+
+// @public
+export interface SearchQuery {
+    limit?: number;
+    // (undocumented)
+    q: string;
+    resources?: readonly string[];
+}
+
 // @public (undocumented)
 export const SearchResponse: z.ZodObject<{
     data: z.ZodArray<z.ZodObject<{
@@ -3923,6 +3974,9 @@ export type ToneValues = z.infer<typeof ToneValues>;
 
 // @public
 export function toSearchParams(query: ListQuery): URLSearchParams;
+
+// @public
+export function toSearchQueryParams(query: SearchQuery): URLSearchParams;
 
 // @public (undocumented)
 export const Upload: z.ZodObject<{

@@ -88,6 +88,9 @@ export function isFilterRange(value: unknown): value is FilterRange;
 // @public
 export function isProblem(value: unknown): value is Problem;
 
+// @public
+export function isSearchableResource(resource: Omit<SearchableResource, 'id'>): boolean;
+
 // Warning: (ae-forgotten-export) The symbol "DefinitionInput" needs to be exported by the entry point index.d.ts
 //
 // @public
@@ -140,6 +143,20 @@ export const PROBLEM_CONTENT_TYPE = "application/problem+json";
 export const PROTOCOL_VERSION = 1;
 
 // @public
+export function readSearchQuery(params: URLSearchParams, definition: {
+    resources: readonly SearchableResource[];
+}): ReadSearchQueryResult;
+
+// @public
+export type ReadSearchQueryResult = {
+    query: Required<SearchQuery>;
+    errors?: undefined;
+} | {
+    query?: undefined;
+    errors: Record<string, string[]>;
+};
+
+// @public
 export interface RuleFailure {
     message?: string;
     // (undocumented)
@@ -148,7 +165,44 @@ export interface RuleFailure {
 }
 
 // @public
+export const SEARCH_DEFAULT_LIMIT = 5;
+
+// @public
+export const SEARCH_MAX_LENGTH = 255;
+
+// @public
+export const SEARCH_MAX_LIMIT = 20;
+
+// @public
+export const SEARCH_MIN_LENGTH = 2;
+
+// @public
+export interface SearchableResource {
+    // (undocumented)
+    features?: {
+        search?: boolean | undefined;
+    } | undefined;
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    list?: {
+        search?: boolean | undefined;
+    } | undefined;
+}
+
+// @public
+export interface SearchQuery {
+    limit?: number;
+    // (undocumented)
+    q: string;
+    resources?: readonly string[];
+}
+
+// @public
 export function toSearchParams(query: ListQuery): URLSearchParams;
+
+// @public
+export function toSearchQueryParams(query: SearchQuery): URLSearchParams;
 
 // @public (undocumented)
 export interface ValidationIssue {
