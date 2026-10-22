@@ -51,16 +51,16 @@ Under a `PanneauProvider`, forms use the field components of the plugins and the
 
 ## What a form does
 
-| Feature           | How                                                                                                                     |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Layout            | `row` (12-column widths), `column`, `section` (collapsible), `tabs`, `sidebar`, `text`, `component`, and `visibleWhen`  |
-| Phones            | Rows stack and the sidebar goes under the form when the form is narrow (container queries)                              |
-| Errors            | Next to each field, nested fields included (`blocks.2.body`), in a summary with links, and counted on tabs and sections |
-| First error       | After a failed submit, its tab or section opens, and the field scrolls into view and gets focus                         |
-| Server errors     | An alert with a retry in the form, and a toast                                                                          |
-| Unsaved changes   | The page asks before closing (`guardUnsavedChanges`); `useLeaveConfirmation()` guards in-app navigation with a dialog   |
-| Broken fields     | Each field has an error boundary: a field that throws shows a message, the rest of the form keeps working               |
-| Version conflicts | A dialog shows the values that differ, then loads the current version or saves the local one over it                    |
+| Feature           | How                                                                                                                                                                                                                        |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Layout            | `row` (12-column widths), `column`, `section` (collapsible), `tabs`, `sidebar`, `text`, `component`, and `visibleWhen`                                                                                                     |
+| Phones            | Rows stack and the sidebar goes under the form when the form is narrow (container queries)                                                                                                                                 |
+| Errors            | Next to each field, nested fields included (`blocks.2.body`), in a summary with links, and counted on tabs and sections                                                                                                    |
+| First error       | After a failed submit, its tab or section opens, and the field scrolls into view and gets focus                                                                                                                            |
+| Server errors     | An alert with a retry in the form, and a toast                                                                                                                                                                             |
+| Unsaved changes   | The page asks before closing (`guardUnsavedChanges`). Under a `LeaveGuardsProvider` of `@panneau/core`, leaving through the app's router asks in a dialog too; `useLeaveConfirmation()` gives that dialog to other routers |
+| Broken fields     | Each field has an error boundary: a field that throws shows a message, the rest of the form keeps working                                                                                                                  |
+| Version conflicts | A dialog shows the values that differ, then loads the current version or saves the local one over it                                                                                                                       |
 
 `Form` creates its state with `useForm()`. To keep the state outside, use `useForm()` and `FormView`.
 

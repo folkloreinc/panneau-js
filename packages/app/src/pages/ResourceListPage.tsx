@@ -2,16 +2,18 @@ import { Plus } from 'lucide-react';
 
 import { useActionPreview, useActionRunner } from '@panneau/actions';
 import { type ResolvedResource, useList } from '@panneau/core';
-import { useResourceList } from '@panneau/data/query';
+import { useResourceItem, useResourceList } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import { ListView } from '@panneau/lists';
 import { Icon, usePanneauIntl } from '@panneau/ui';
 
 import { cx } from '../cx';
+import { useDocumentTitle } from '../documentTitle';
 import { capitalize } from '../navigation';
 import { routePath } from '../routes';
 import { ItemPanel } from './ItemPanel';
 import { LinkButton, PageHeader } from './PageHeader';
+import { getItemTitle } from './itemTitle';
 import styles from './pages.module.css';
 
 export interface ResourceListPageProps {
@@ -42,6 +44,14 @@ export function ResourceListPage({
     const runAction = useActionRunner(resource.id);
     const previewAction = useActionPreview(resource.id);
     const title = capitalize(resource.label.plural, locale);
+    // The item of the panel, which the panel fetches too
+    const { data: selected } = useResourceItem(resource.id, selectedId);
+    useDocumentTitle([
+        selectedId !== null
+            ? (getItemTitle(selected, resource.itemTitle, locale) ?? selectedId)
+            : null,
+        title,
+    ]);
     // The list keeps its query in the URL: the panel opens and closes without losing it.
     const search = window.location.search;
     const indexPath = routePath({ name: 'resource.index', resource: resource.id }, basePath);

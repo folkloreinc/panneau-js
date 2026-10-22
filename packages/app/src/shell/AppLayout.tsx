@@ -1,5 +1,5 @@
 import { Menu, Search } from 'lucide-react';
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { Dialog, Link, Modal, ModalOverlay } from 'react-aria-components';
 
 import { appMessages } from '@panneau/intl';
@@ -32,11 +32,50 @@ function isEditable(target: EventTarget | null): boolean {
     );
 }
 
+/** Whether two routes are the same list, with or without the panel of an item. */
+function isSameList(a: AppRoute, b: AppRoute): boolean {
+    return (
+        (a.name === 'resource.index' || a.name === 'resource.show') &&
+        (b.name === 'resource.index' || b.name === 'resource.show') &&
+        a.resource === b.resource
+    );
+}
+
+/**
+ * Where focus goes when the route changes, so that screen readers announce the new page: its
+ * title, or the page itself without one. Closing the panel of an item goes back to the item's
+ * link in the list; opening it is left to the panel.
+ */
+function focusPage(main: HTMLElement, previous: AppRoute, route: AppRoute, basePath: string) {
+    if (isSameList(previous, route)) {
+        if (previous.name === 'resource.show' && route.name === 'resource.index') {
+            const href = routePath(previous, basePath);
+            const link = [...main.querySelectorAll<HTMLAnchorElement>('a[href]')].find(
+                (candidate) => {
+                    const value = candidate.getAttribute('href') ?? '';
+                    return value === href || value.startsWith(`${href}?`);
+                },
+            );
+            link?.focus();
+        }
+        return;
+    }
+    main.scrollTop = 0;
+    window.scrollTo({ top: 0 });
+    const heading = main.querySelector<HTMLElement>('h1');
+    if (heading !== null && !heading.hasAttribute('tabindex')) {
+        heading.tabIndex = -1;
+    }
+    (heading ?? main).focus({ preventScroll: true });
+}
+
 /**
  * The frame of the app. From the `lg` width of the Panneau root (64rem): the sidebar on the
  * window's background and the page on a raised panel, like the vertical tabs of recent browsers.
  * The sidebar collapses to a rail of icons (with its button, or Ctrl+\ / ⌘+\), and the browser
  * remembers it. On a smaller screen: a bar at the top, whose button opens the sidebar as a drawer.
+ * When the route changes, focus moves to the title of the new page, and the page scrolls to the
+ * top.
  */
 export function AppLayout({
     definition,
@@ -58,6 +97,25 @@ export function AppLayout({
     };
     const collapsed = sidebar === 'collapsed';
     const toggle = () => setSidebar(collapsed ? 'expanded' : 'collapsed');
+
+    const main = useRef<HTMLElement>(null);
+    const previousRoute = useRef<AppRoute | null>(null);
+    const routeKey = JSON.stringify(route);
+    useEffect(() => {
+        const next = JSON.parse(routeKey) as AppRoute;
+        const previous = previousRoute.current;
+        previousRoute.current = next;
+        // The first page keeps the focus where the browser put it
+        if (previous === null || main.current === null) {
+            return undefined;
+        }
+        const element = main.current;
+        // After the page renders, and after a dialog that navigated gave focus back
+        const frame = window.requestAnimationFrame(() =>
+            focusPage(element, previous, next, basePath),
+        );
+        return () => window.cancelAnimationFrame(frame);
+    }, [routeKey, basePath]);
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
@@ -110,7 +168,7 @@ export function AppLayout({
             <aside className={styles.sidebar}>
                 <Sidebar {...sidebarProps} collapsed={collapsed} onToggle={toggle} />
             </aside>
-            <main id={CONTENT_ID} tabIndex={-1} className={styles.main}>
+            <main ref={main} id={CONTENT_ID} tabIndex={-1} className={styles.main}>
                 <div className={styles.panel}>{children}</div>
             </main>
             <GoTo

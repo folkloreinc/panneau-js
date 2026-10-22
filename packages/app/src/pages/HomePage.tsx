@@ -6,6 +6,7 @@ import { appMessages } from '@panneau/intl';
 import type { Definition } from '@panneau/protocol';
 import { Icon, getNamedIcon, usePanneauIntl } from '@panneau/ui';
 
+import { useDocumentTitle } from '../documentTitle';
 import { capitalize } from '../navigation';
 import { routePath } from '../routes';
 import { PageHeader } from './PageHeader';
@@ -24,6 +25,7 @@ export function HomePage({ definition, basePath }: HomePageProps) {
     const intl = usePanneauIntl();
     const resources = definition.resources.filter((resource) => can(resource.abilities, 'viewAny'));
     const user = definition.user ?? null;
+    useDocumentTitle([]);
     return (
         <div className={styles.page}>
             <PageHeader title={definition.name} />

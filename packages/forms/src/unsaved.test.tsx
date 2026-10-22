@@ -1,8 +1,9 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 
+import { LeaveGuardsProvider, createLeaveGuards } from '@panneau/core';
 import type { Field } from '@panneau/protocol';
 import { PanneauRoot } from '@panneau/ui';
 
@@ -24,6 +25,26 @@ describe('unsaved changes', () => {
         expect(unloadPrevented()).toBe(false);
         await userEvent.type(screen.getByRole('textbox'), 'a');
         expect(unloadPrevented()).toBe(true);
+    });
+
+    it("guards the app's router while the form is dirty", async () => {
+        const guards = createLeaveGuards();
+        renderForm(
+            <LeaveGuardsProvider guards={guards}>
+                <Form fields={FIELDS} />
+            </LeaveGuardsProvider>,
+        );
+        expect(guards.isBlocking()).toBe(false);
+        await userEvent.type(screen.getByRole('textbox'), 'a');
+        expect(guards.isBlocking()).toBe(true);
+
+        let leave: Promise<boolean> = Promise.resolve(true);
+        act(() => {
+            leave = guards.confirmLeave();
+        });
+        const dialog = await screen.findByRole('alertdialog', { name: 'Leave without saving?' });
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Stay' }));
+        await expect(leave).resolves.toBe(false);
     });
 
     it('can leave the page alone', async () => {

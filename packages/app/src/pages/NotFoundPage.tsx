@@ -1,6 +1,7 @@
 import { appMessages } from '@panneau/intl';
 import { Heading, usePanneauIntl } from '@panneau/ui';
 
+import { useDocumentTitle } from '../documentTitle';
 import { LinkButton } from './PageHeader';
 import styles from './pages.module.css';
 
@@ -11,6 +12,7 @@ export interface NotFoundPageProps {
 /** The page of the paths that match no route, resource or page. */
 export function NotFoundPage({ homeHref }: NotFoundPageProps) {
     const intl = usePanneauIntl();
+    useDocumentTitle([intl.formatMessage(appMessages.notFound)]);
     return (
         <div className={styles.center}>
             <Heading level={1}>{intl.formatMessage(appMessages.notFound)}</Heading>

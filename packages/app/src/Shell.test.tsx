@@ -4,15 +4,16 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createRestAdapter } from '@panneau/data';
-import { validateBootConfig } from '@panneau/protocol';
+import { type DefinitionInput, validateBootConfig } from '@panneau/protocol';
 import { createMockBackend } from '@panneau/protocol/mock';
 
 import { Panneau } from './Panneau';
 import { createBootConfig, createDefinition } from './__fixtures__/definition';
 
-function renderApp() {
+function renderApp(overrides: Partial<DefinitionInput> = {}) {
     const definition = createDefinition({
         menus: { main: [{ type: 'resources' }, { type: 'link', label: 'Site', url: '/' }] },
+        ...overrides,
     });
     const backend = createMockBackend({
         definition,
@@ -145,5 +146,76 @@ describe('the app shell', () => {
             'href',
             '/panneau',
         );
+    });
+
+    it('asks before leaving a form with unsaved changes through a link', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/authors/1/edit');
+        renderApp();
+        const field = await screen.findByRole('textbox', { name: /name/i });
+        await user.type(field, ' Lovelace');
+
+        await user.click(navigation().getByRole('link', { name: 'Pages' }));
+        const dialog = await screen.findByRole('alertdialog', { name: 'Leave without saving?' });
+        await user.click(within(dialog).getByRole('button', { name: 'Stay' }));
+        expect(window.location.pathname).toBe('/panneau/resources/authors/1/edit');
+        expect(screen.getByRole('textbox', { name: /name/i })).toHaveValue('Ada Lovelace');
+
+        await user.click(navigation().getByRole('link', { name: 'Pages' }));
+        await user.click(
+            within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Leave' }),
+        );
+        await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/pages'));
+    });
+
+    it('asks before going back from a form with unsaved changes', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/authors');
+        renderApp();
+        await user.click(await screen.findByRole('link', { name: 'Ada' }));
+        await user.click(
+            within(await screen.findByRole('region', { name: 'Details of the author' })).getByRole(
+                'link',
+                { name: 'Edit' },
+            ),
+        );
+        await waitFor(() =>
+            expect(window.location.pathname).toBe('/panneau/resources/authors/1/edit'),
+        );
+        await user.type(await screen.findByRole('textbox', { name: /name/i }), '!');
+
+        window.history.back();
+        const dialog = await screen.findByRole('alertdialog', { name: 'Leave without saving?' });
+        // The browser is back on the form while the dialog asks
+        await waitFor(() =>
+            expect(window.location.pathname).toBe('/panneau/resources/authors/1/edit'),
+        );
+        await user.click(within(dialog).getByRole('button', { name: 'Leave' }));
+        // Back on the panel the form was opened from
+        await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/authors/1'));
+    });
+
+    it('names the tab after the page, and moves focus to its title', async () => {
+        const user = userEvent.setup();
+        const resources = createDefinition().resources.map((resource) => ({
+            ...resource,
+            itemTitle: resource.fields[0]?.name,
+        }));
+        renderApp({ resources });
+        await waitFor(() => expect(document.title).toBe('Test site'));
+
+        await user.click(navigation().getByRole('link', { name: 'Pages' }));
+        await waitFor(() => expect(document.title).toBe('Pages · Test site'));
+        await waitFor(() =>
+            expect(screen.getByRole('heading', { level: 1, name: 'Pages' })).toHaveFocus(),
+        );
+
+        await user.click(await screen.findByRole('link', { name: 'Contact' }));
+        await waitFor(() => expect(document.title).toBe('Contact · Pages · Test site'));
+        // The panel takes focus, then closing it gives it back to the item's link
+        const panel = await screen.findByRole('region', { name: 'Details of the page' });
+        await waitFor(() => expect(panel).toHaveFocus());
+        await user.keyboard('{Escape}');
+        await waitFor(() => expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus());
     });
 });

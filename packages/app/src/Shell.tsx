@@ -1,15 +1,22 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { createElement } from 'react';
+import { createElement, useEffect, useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
 
 import { ActionRunnerProvider, ActionRuns } from '@panneau/actions';
-import { findResource, resolveResource, usePlugins } from '@panneau/core';
+import {
+    LeaveGuardsProvider,
+    createLeaveGuards,
+    findResource,
+    resolveResource,
+    usePlugins,
+} from '@panneau/core';
 import { invalidateActionResult, useDataAdapter } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import type { Definition, RouteReference } from '@panneau/protocol';
 import { Alert, usePanneauIntl } from '@panneau/ui';
 
-import { navigate, usePathname } from './location';
+import { DocumentTitle } from './documentTitle';
+import { navigate, setHistoryGuard, usePathname } from './location';
 import { HomePage } from './pages/HomePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ResourceFormPage } from './pages/ResourceFormPage';
@@ -60,12 +67,20 @@ function Page({
                 return notFound;
             }
             const Component = plugins.pages.get(page.component);
-            return Component !== undefined ? (
-                createElement(Component, { ...page.props, definition })
-            ) : (
-                <Alert tone="warning">
-                    {intl.formatMessage(appMessages.missingPage, { component: page.component })}
-                </Alert>
+            // Before the page: a page that sets its own title sets it last
+            return (
+                <>
+                    <DocumentTitle parts={[page.label]} />
+                    {Component !== undefined ? (
+                        createElement(Component, { ...page.props, definition })
+                    ) : (
+                        <Alert tone="warning">
+                            {intl.formatMessage(appMessages.missingPage, {
+                                component: page.component,
+                            })}
+                        </Alert>
+                    )}
+                </>
             );
         }
         default: {
@@ -105,48 +120,58 @@ function Page({
 /**
  * The app shell: the layout with its sidebar, and the page of the current route. Links go
  * through the history of the browser without reloading the page, and actions run through the
- * adapter, refreshing what their result changed.
+ * adapter, refreshing what their result changed. Leaving a page with unsaved changes, by a link
+ * or by going back or forward, asks first.
  */
 export function Shell({ definition, basePath, colorScheme, onColorSchemeChange }: ShellProps) {
     const pathname = usePathname();
     const queryClient = useQueryClient();
     const adapter = useDataAdapter();
     const route = matchRoute(pathname, basePath) ?? { name: 'not-found' };
-    // Paths outside the app (a link to the site) load their page.
+    // Forms with unsaved changes guard leaving their page
+    const [guards] = useState(createLeaveGuards);
+    useEffect(() => setHistoryGuard(guards), [guards]);
+    // Paths outside the app (a link to the site) load their page: the browser guards them.
     const go = (href: string) => {
         const url = new URL(href, window.location.href);
         if (url.origin === window.location.origin && matchRoute(url.pathname, basePath) !== null) {
-            navigate(`${url.pathname}${url.search}${url.hash}`);
+            void guards.confirmLeave().then((leave) => {
+                if (leave) {
+                    navigate(`${url.pathname}${url.search}${url.hash}`);
+                }
+            });
         } else {
             window.location.assign(url);
         }
     };
     return (
-        <RouterProvider navigate={go}>
-            <ActionRunnerProvider
-                adapter={adapter}
-                locales={definition.locales}
-                onResult={(result, { resource, target }) =>
-                    invalidateActionResult(queryClient, resource, result, target.selection)
-                }
-                onNavigate={(to) => {
-                    const path = typeof to === 'string' ? to : resolveRoute(definition, to);
-                    if (path !== null) {
-                        go(path);
+        <LeaveGuardsProvider guards={guards}>
+            <RouterProvider navigate={go}>
+                <ActionRunnerProvider
+                    adapter={adapter}
+                    locales={definition.locales}
+                    onResult={(result, { resource, target }) =>
+                        invalidateActionResult(queryClient, resource, result, target.selection)
                     }
-                }}
-            >
-                <AppLayout
-                    definition={definition}
-                    basePath={basePath}
-                    route={route}
-                    colorScheme={colorScheme}
-                    onColorSchemeChange={onColorSchemeChange}
+                    onNavigate={(to) => {
+                        const path = typeof to === 'string' ? to : resolveRoute(definition, to);
+                        if (path !== null) {
+                            go(path);
+                        }
+                    }}
                 >
-                    <ActionRuns />
-                    <Page definition={definition} basePath={basePath} route={route} />
-                </AppLayout>
-            </ActionRunnerProvider>
-        </RouterProvider>
+                    <AppLayout
+                        definition={definition}
+                        basePath={basePath}
+                        route={route}
+                        colorScheme={colorScheme}
+                        onColorSchemeChange={onColorSchemeChange}
+                    >
+                        <ActionRuns />
+                        <Page definition={definition} basePath={basePath} route={route} />
+                    </AppLayout>
+                </ActionRunnerProvider>
+            </RouterProvider>
+        </LeaveGuardsProvider>
     );
 }

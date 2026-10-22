@@ -7,6 +7,7 @@ import {
     getProblem,
     resolveFields,
     selectVisible,
+    useLeaveGuard,
     usePanneau,
     usePlugins,
 } from '@panneau/core';
@@ -28,7 +29,7 @@ import { FormContext, RevealContext, createRevealRegistry, useFormState } from '
 import { cx } from './cx';
 import { LayoutNodes } from './layout/Layout';
 import { messages } from './messages';
-import { useBeforeUnloadGuard } from './unsaved';
+import { useBeforeUnloadGuard, useLeaveConfirmation } from './unsaved';
 
 export interface FormViewProps {
     /** The form state, from `useForm()` or `createForm()` of `@panneau/core`. */
@@ -59,7 +60,10 @@ export interface FormViewProps {
      * current item: fetch it, and `form.reset()` with it.
      */
     onReload?: () => void;
-    /** Asks for confirmation before the page is left with unsaved changes. Defaults to true. */
+    /**
+     * Asks for confirmation before the page is left with unsaved changes: closed or reloaded, or,
+     * under a `LeaveGuardsProvider`, left through the app's router. Defaults to true.
+     */
     guardUnsavedChanges?: boolean;
     /** Shows a toast after a successful submit. Defaults to true. */
     showSavedToast?: boolean;
@@ -143,7 +147,11 @@ export function FormView({
     const [registry] = useState(createRevealRegistry);
     const [resolving, setResolving] = useState(false);
     const root = useRef<HTMLFormElement>(null);
-    useBeforeUnloadGuard(guardUnsavedChanges && state.dirty);
+    const guarded = guardUnsavedChanges && state.dirty;
+    useBeforeUnloadGuard(guarded);
+    // Leaving through the app's router asks first, in a dialog
+    const leave = useLeaveConfirmation(guarded);
+    useLeaveGuard(guarded, leave.confirmLeave);
 
     const resolved = resolveFields(fields, layout);
     const main = resolved.layout.filter((node) => node.type !== 'sidebar');
@@ -323,6 +331,7 @@ export function FormView({
                         onReload={() => void resolve('reload')}
                         onOverwrite={() => void resolve('overwrite')}
                     />
+                    {leave.dialog}
                 </FieldsProvider>
             </RevealContext>
         </FormContext>
