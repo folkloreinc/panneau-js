@@ -60,6 +60,9 @@ export function createForm(options: FormOptions): Form;
 export function createHistoryRouter(target?: Window): Router;
 
 // @public
+export function createLeaveGuards(): LeaveGuards;
+
+// @public
 export function createList(options?: ListOptions): List;
 
 // @public
@@ -194,6 +197,27 @@ export function isItem(value: unknown): value is Item;
 
 // @public
 export function isSearchable(resource: Resource): boolean;
+
+// @public
+export type LeaveGuard = () => Promise<boolean>;
+
+// @public
+export interface LeaveGuards {
+    add(guard: LeaveGuard): () => void;
+    confirmLeave(): Promise<boolean>;
+    isBlocking(): boolean;
+}
+
+// @public
+export function LeaveGuardsProvider(input: LeaveGuardsProviderProps): JSX.Element;
+
+// @public (undocumented)
+export interface LeaveGuardsProviderProps {
+    // (undocumented)
+    children?: ReactNode;
+    // (undocumented)
+    guards: LeaveGuards;
+}
 
 // @public
 export interface List {
@@ -512,6 +536,12 @@ export interface UseFormFieldResult {
 export interface UseFormResult extends FormState {
     form: Form;
 }
+
+// @public
+export function useLeaveGuard(active: boolean, guard: LeaveGuard): void;
+
+// @public
+export function useLeaveGuards(): LeaveGuards | null;
 
 // @public
 export function useList(options?: ListOptions): UseListResult;
