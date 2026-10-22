@@ -7,11 +7,12 @@ import { SOURCE_CONDITION, cssModules } from '../config/vite.package.ts';
 
 /**
  * Storybook for the v5 packages: the stories next to each component, built from the sources (the
- * `@panneau/source` condition) with the React Compiler, like the packages.
+ * `@panneau/source` condition) with the React Compiler, like the packages. Also the mockups of
+ * `mockups/`, which are not in any package.
  */
 const config: StorybookConfig = {
     framework: '@storybook/react-vite',
-    stories: ['../packages/*/src/**/*.stories.@(ts|tsx)'],
+    stories: ['../packages/*/src/**/*.stories.@(ts|tsx)', '../mockups/**/*.stories.@(ts|tsx)'],
     addons: ['@storybook/addon-a11y', '@storybook/addon-vitest'],
     core: { disableTelemetry: true },
     async viteFinal(viteConfig) {

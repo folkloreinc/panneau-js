@@ -6,5 +6,12 @@
         "customConditions": ["@panneau/source"],
         "allowImportingTsExtensions": true
     },
-    "include": ["*.ts", "config/**/*.ts", ".storybook/**/*.ts", ".storybook/**/*.tsx"]
+    "include": [
+        "*.ts",
+        "config/**/*.ts",
+        ".storybook/**/*.ts",
+        ".storybook/**/*.tsx",
+        "mockups/**/*.ts",
+        "mockups/**/*.tsx"
+    ]
 }
