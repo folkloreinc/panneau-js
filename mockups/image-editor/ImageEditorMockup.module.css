@@ -1,0 +1,359 @@
+/*
+ * The image editor: `--panneau-*` tokens only, so a project's theme applies. The stage stays dark
+ * in both schemes, as photo editors do, so that the image reads the same.
+ */
+
+.dialog {
+    height: min(48rem, calc(100dvh - 2 * var(--panneau-space-4)));
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    padding-top: var(--panneau-space-2);
+    overflow: hidden;
+}
+
+.baseChoice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-2);
+}
+
+.layout {
+    display: grid;
+    flex: 1 1 auto;
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    gap: var(--panneau-space-4);
+    min-height: 0;
+}
+
+.stageColumn {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+    min-height: 0;
+}
+
+.stage {
+    --stage-padding: var(--panneau-space-4);
+
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 12rem;
+    background-color: #17181c;
+    background-image:
+        linear-gradient(45deg, #1d1f24 25%, transparent 25%),
+        linear-gradient(-45deg, #1d1f24 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1d1f24 75%),
+        linear-gradient(-45deg, transparent 75%, #1d1f24 75%);
+    background-position:
+        0 0,
+        0 0.5rem,
+        0.5rem -0.5rem,
+        -0.5rem 0;
+    background-size: 1rem 1rem;
+    border-radius: var(--panneau-radius-md);
+}
+
+.canvas {
+    position: absolute;
+    inset: var(--stage-padding);
+    width: calc(100% - 2 * var(--stage-padding));
+    height: calc(100% - 2 * var(--stage-padding));
+    overflow: visible;
+    touch-action: none;
+}
+
+.dim {
+    fill: rgb(0 0 0 / 55%);
+    pointer-events: none;
+}
+
+.frame {
+    outline: none;
+}
+
+.frameArea {
+    cursor: move;
+    fill: transparent;
+}
+
+.frameBorder {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 2px;
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+}
+
+.frame:focus-visible .frameBorder {
+    stroke: var(--panneau-color-focus);
+    stroke-width: 3px;
+}
+
+.thirds line {
+    stroke: rgb(255 255 255 / 45%);
+    stroke-width: 1px;
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+}
+
+.handle {
+    fill: #ffffff;
+    stroke: rgb(0 0 0 / 50%);
+    stroke-width: 1px;
+    vector-effect: non-scaling-stroke;
+}
+
+.handle[data-handle='nw'],
+.handle[data-handle='se'] {
+    cursor: nwse-resize;
+}
+
+.handle[data-handle='ne'],
+.handle[data-handle='sw'] {
+    cursor: nesw-resize;
+}
+
+.handle[data-handle='n'],
+.handle[data-handle='s'] {
+    cursor: ns-resize;
+}
+
+.handle[data-handle='e'],
+.handle[data-handle='w'] {
+    cursor: ew-resize;
+}
+
+.focal {
+    cursor: grab;
+    outline: none;
+}
+
+.focalRing {
+    fill: rgb(255 255 255 / 15%);
+    stroke: #ffffff;
+    stroke-width: 3px;
+    vector-effect: non-scaling-stroke;
+}
+
+.focal:focus-visible .focalRing {
+    stroke: var(--panneau-color-focus);
+    stroke-width: 4px;
+}
+
+.focalDot {
+    fill: #ffffff;
+}
+
+.hint {
+    min-height: 1.5em;
+}
+
+.side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-4);
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.baseNote {
+    font-size: var(--panneau-font-size-sm);
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-3);
+}
+
+.panelLabel {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    margin-bottom: var(--panneau-space-2);
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-medium);
+}
+
+.ratios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(4.25rem, 1fr));
+    gap: var(--panneau-space-2);
+}
+
+.ratio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--panneau-space-1);
+    min-height: calc(var(--panneau-control-height) * 1.6);
+    padding: var(--panneau-space-2) var(--panneau-space-1) var(--panneau-space-1);
+    font-size: var(--panneau-font-size-xs);
+    cursor: pointer;
+    background-color: var(--panneau-color-surface);
+    border: var(--panneau-border-width) solid var(--panneau-color-border-control);
+    border-radius: var(--panneau-radius-md);
+}
+
+.ratio[data-hovered] {
+    background-color: var(--panneau-color-hover);
+}
+
+.ratio[data-selected] {
+    color: var(--panneau-color-accent);
+    background-color: var(--panneau-color-accent-subtle);
+    border-color: var(--panneau-color-accent);
+}
+
+.ratio[data-focus-visible] {
+    outline: 2px solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.ratioShape {
+    display: block;
+    border: 2px solid currentcolor;
+    border-radius: 2px;
+}
+
+.ratioFree {
+    display: block;
+    border: 2px dashed currentcolor;
+    border-radius: 2px;
+}
+
+.numbers {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--panneau-space-2) var(--panneau-space-3);
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--panneau-space-2);
+}
+
+.focalPreviews {
+    display: grid;
+    grid-template-columns: 1fr 0.8fr 1.6fr;
+    align-items: end;
+    gap: var(--panneau-space-2);
+}
+
+.focalPreview {
+    display: grid;
+    gap: var(--panneau-space-1);
+    margin: 0;
+    font-size: var(--panneau-font-size-xs);
+    color: var(--panneau-color-text-muted);
+    text-align: center;
+}
+
+.focalPreviewImage {
+    display: block;
+    width: 100%;
+    height: auto;
+    background-color: var(--panneau-color-surface-sunken);
+    border-radius: var(--panneau-radius-sm);
+}
+
+.result {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    align-items: center;
+    gap: var(--panneau-space-3);
+    padding-top: var(--panneau-space-3);
+    margin-top: auto;
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.resultImage {
+    display: block;
+    width: 6rem;
+    height: 4.5rem;
+    background-color: var(--panneau-color-surface-sunken);
+    border-radius: var(--panneau-radius-sm);
+}
+
+.resultText {
+    display: grid;
+    gap: var(--panneau-space-1);
+}
+
+.saved {
+    font-size: var(--panneau-font-size-sm);
+}
+
+.json {
+    margin: 0;
+    padding: var(--panneau-space-2);
+    overflow-x: auto;
+    font-family: var(--panneau-font-family-mono);
+    font-size: var(--panneau-font-size-xs);
+    background-color: var(--panneau-color-surface-sunken);
+    border-radius: var(--panneau-radius-sm);
+}
+
+.footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    width: 100%;
+}
+
+.footerEnd {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--panneau-space-2);
+    margin-inline-start: auto;
+}
+
+/* Tablets and phones: the image on top, the tools under it. */
+@media (max-width: 48rem) {
+    .layout {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(14rem, 1fr) auto;
+        overflow-y: auto;
+    }
+
+    .stage {
+        --stage-padding: var(--panneau-space-2);
+    }
+
+    .side {
+        overflow: visible;
+    }
+
+    .result {
+        display: none;
+    }
+}
+
+/* Phones: a full-screen sheet, whose close button cancels. */
+@media (max-width: 30rem) {
+    .dialog {
+        height: 100%;
+    }
+
+    .cancel,
+    .reset {
+        display: none;
+    }
+
+    .footerEnd {
+        flex: 1 1 auto;
+    }
+
+    .footerEnd > :last-child {
+        flex: 1 1 auto;
+    }
+}
