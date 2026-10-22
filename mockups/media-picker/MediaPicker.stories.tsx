@@ -176,15 +176,26 @@ export const Upload: Story = {
     },
 };
 
-/** Two libraries: a segmented control. Uploads go to the library shown. */
+/**
+ * Two libraries: a segmented control. Uploads go to the library shown. The opener restricts the
+ * picker to the libraries it gives (here two of the definition's four), and a multiple selection
+ * spans them.
+ */
 export const TwoLibraries: Story = {
     args: {
+        multiple: true,
+        title: 'Add media',
+        confirmLabel: countLabel,
         libraries: [
             { id: 'images', label: 'Images', items: visuals, total: 196 },
             { id: 'documents', label: 'Documents', items: documents },
         ],
         library: 'documents',
-        selected: [documents[0]?.id ?? ''],
+        selected: [visuals[0]?.id ?? '', documents[0]?.id ?? '', documents[1]?.id ?? ''],
+    },
+    play: async ({ canvasElement }) => {
+        const dialog = await within(canvasElement.ownerDocument.body).findByRole('dialog');
+        await expect(within(dialog).getByText('3 selected in 2 libraries')).toBeInTheDocument();
     },
 };
 
@@ -202,6 +213,71 @@ export const ManyLibraries: Story = {
 };
 
 /**
+ * Sorts (newest, oldest, name, file size, dimensions, duration, and the library's own), the
+ * library's filters (tags, orientation), and a filter the opener applies, which the user can't
+ * change.
+ */
+export const SortAndFilters: Story = {
+    args: {
+        sort: '-size',
+        filters: [
+            {
+                id: 'tags',
+                label: 'Tags',
+                multiple: true,
+                options: ['nature', 'travel', 'summer', 'spring issue', 'harbour'],
+            },
+            { id: 'orientation', label: 'Orientation', options: ['Landscape', 'Portrait'] },
+        ],
+        filterValues: { tags: ['nature'] },
+        lockedFilters: ['Rights: cleared for the web'],
+        selected: [images[5]?.id ?? ''],
+    },
+    play: async ({ canvasElement }) => {
+        const dialog = await within(canvasElement.ownerDocument.body).findByRole('dialog');
+        await expect(within(dialog).getByRole('button', { name: /Filters/ })).toHaveAttribute(
+            'aria-expanded',
+            'true',
+        );
+        await expect(within(dialog).getAllByRole('row')).toHaveLength(4);
+    },
+};
+
+/** The library doesn't let the user edit its media: the details are read-only. */
+export const ReadOnlyDetails: Story = {
+    args: {
+        libraries: [{ id: 'media', label: 'Media', items: images, total: 248, canUpdate: false }],
+        selected: selectedIds(1),
+    },
+};
+
+/**
+ * Opt-in `confirmOnUpload`, for a single media: the picker confirms as soon as the file is
+ * uploaded and made a media, without the primary button.
+ */
+export const ConfirmOnUpload: Story = {
+    args: {
+        title: 'Insert an image',
+        confirmLabel: 'Insert',
+        accept: ['image/*'],
+        confirmOnUpload: true,
+        tab: 'upload',
+        uploads: [
+            {
+                id: 'u9',
+                name: 'workshop-group-photo.jpg',
+                size: 4_200_000,
+                mime: 'image/jpeg',
+                progress: 0.74,
+                status: 'uploading',
+                error: null,
+                canPause: false,
+            },
+        ],
+    },
+};
+
+/**
  * Opened by a product's own screen (an editor inserting an image), with its title and button, in
  * the reference theme: nothing in the picker is Panneau's admin.
  */
@@ -214,6 +290,20 @@ export const OpenedByAProduct: Story = {
         selected: selectedIds(1, 3),
     },
     globals: { theme: 'reference' },
+};
+
+/** Compact density: smaller cards, more of them in a row. */
+export const DensityCompact: Story = {
+    ...SingleSelection,
+    play: undefined,
+    globals: { density: 'compact' },
+};
+
+/** Touch density: larger cards and controls. */
+export const DensityTouch: Story = {
+    ...SingleSelection,
+    play: undefined,
+    globals: { density: 'touch' },
 };
 
 export const DarkSingle: Story = {
@@ -246,6 +336,18 @@ export const PhoneSingle: Story = {
 
 export const PhoneMultiple: Story = {
     ...MultipleSelection,
+    play: undefined,
+    globals: phone,
+};
+
+/** On phones and tablets, the details of a media open over the grid, from its card. */
+export const PhoneDetails: Story = {
+    args: { selected: selectedIds(1), detailsOpen: true },
+    globals: phone,
+};
+
+export const PhoneFilters: Story = {
+    ...SortAndFilters,
     play: undefined,
     globals: phone,
 };

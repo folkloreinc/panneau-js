@@ -31,6 +31,8 @@ interface MediaOptions {
     duration?: number;
     status?: PickerMedia['media']['status'];
     alt?: string;
+    description?: string;
+    tags?: string[];
     createdAt?: string;
 }
 
@@ -45,7 +47,9 @@ function media({
     duration,
     status,
     alt,
-    createdAt = '2026-10-14',
+    description,
+    tags,
+    createdAt,
 }: MediaOptions): PickerMedia {
     next += 1;
     const thumbnail =
@@ -56,8 +60,12 @@ function media({
         id: `med_${String(next).padStart(3, '0')}`,
         label: name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '),
         fileName: name,
-        alt: alt ?? null,
-        createdAt,
+        createdAt: createdAt ?? `2026-10-${String(20 - (next % 19)).padStart(2, '0')}`,
+        values: {
+            ...(alt !== undefined ? { alt } : {}),
+            ...(description !== undefined ? { description } : {}),
+            ...(tags !== undefined ? { tags } : {}),
+        },
         media: {
             type,
             mime,
@@ -84,6 +92,8 @@ export const images: PickerMedia[] = [
         width: 4032,
         height: 3024,
         alt: 'Fishing boats in a harbour at dawn',
+        description: 'Cover of the spring issue.',
+        tags: ['harbour', 'spring issue'],
     }),
     media({
         name: 'team-portrait.heic',
@@ -102,6 +112,8 @@ export const images: PickerMedia[] = [
         hue: 30,
         width: 2400,
         height: 1600,
+        alt: 'A path through a forest in autumn',
+        tags: ['nature', 'autumn'],
     }),
     media({
         name: 'logo-wordmark.svg',
@@ -130,6 +142,7 @@ export const images: PickerMedia[] = [
         hue: 170,
         width: 6000,
         height: 4000,
+        tags: ['nature', 'summer'],
     }),
     media({
         name: 'press-kit.pdf',
@@ -145,6 +158,7 @@ export const images: PickerMedia[] = [
         hue: 230,
         width: 3840,
         height: 2160,
+        tags: ['travel'],
     }),
     media({
         name: 'episode-12.mp3',
@@ -161,6 +175,7 @@ export const images: PickerMedia[] = [
         hue: 40,
         width: 2048,
         height: 1365,
+        tags: ['nature', 'travel'],
     }),
     media({
         name: 'subscribers.csv',
@@ -176,6 +191,7 @@ export const images: PickerMedia[] = [
         hue: 110,
         width: 1600,
         height: 1600,
+        tags: ['nature', 'spring issue'],
     }),
 ];
 

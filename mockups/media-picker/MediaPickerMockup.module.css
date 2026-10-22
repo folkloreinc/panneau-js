@@ -1,7 +1,14 @@
-/* The mockup of the media picker: only `--panneau-*` tokens, so a project's theme applies. */
+/*
+ * The mockup of the media picker: only `--panneau-*` tokens, so a project's theme applies. The size
+ * of the cards follows the density (through the control height), and a theme can set it.
+ */
 
 .overlay {
     --panneau-dialog-width-lg: 72rem;
+    --media-picker-card-size: var(
+        --panneau-media-picker-card-size,
+        calc(var(--panneau-control-height) * 5 - 1.75rem)
+    );
 }
 
 .dialog {
@@ -106,11 +113,39 @@
 }
 
 .search {
-    flex: 1 1 16rem;
+    flex: 1 1 14rem;
 }
 
-.typeFilter {
-    flex: 0 0 11rem;
+.typeFilter,
+.sort {
+    flex: 0 0 10rem;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    padding: var(--panneau-space-2);
+    background-color: var(--panneau-color-surface-sunken);
+    border-radius: var(--panneau-radius-md);
+}
+
+.filter {
+    flex: 0 1 12rem;
+}
+
+.lockedFilter {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+    min-height: var(--panneau-control-height-sm);
+    padding: 0 var(--panneau-space-2);
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+    background-color: var(--panneau-color-surface);
+    border: var(--panneau-border-width) dashed var(--panneau-color-border-control);
+    border-radius: var(--panneau-radius-full);
 }
 
 .constraints {
@@ -120,7 +155,7 @@
 .browse {
     display: grid;
     flex: 1 1 auto;
-    grid-template-columns: minmax(0, 1fr) 17rem;
+    grid-template-columns: minmax(0, 1fr) 19rem;
     gap: var(--panneau-space-4);
     min-height: 0;
 }
@@ -133,12 +168,13 @@
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(var(--media-picker-card-size), 1fr));
     gap: var(--panneau-space-3);
     outline: none;
 }
 
 .card {
+    position: relative;
     display: grid;
     align-content: start;
     gap: var(--panneau-space-1);
@@ -268,6 +304,16 @@
     border-radius: var(--panneau-radius-sm);
 }
 
+.cardText {
+    display: grid;
+    gap: var(--panneau-space-1);
+    min-width: 0;
+}
+
+.detailsButton {
+    display: none;
+}
+
 .cardName {
     overflow: hidden;
     font-size: var(--panneau-font-size-sm);
@@ -312,6 +358,21 @@
     background-color: var(--panneau-color-surface-sunken);
     border-radius: var(--panneau-radius-md);
     margin-bottom: var(--panneau-space-4);
+}
+
+.backButton {
+    display: none;
+    align-self: start;
+}
+
+.form {
+    display: grid;
+    gap: var(--panneau-space-3);
+}
+
+.formActions {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .preview {
@@ -528,8 +589,36 @@
     }
 }
 
-/* Tablets: the details panel goes, the Upload tab is one column. */
+/*
+ * Tablets: the details panel goes, and each card gets a button that opens its details over the
+ * grid. The Upload tab is one column.
+ */
 @media (max-width: 48rem) {
+    .browse[data-details-open] > .scroll {
+        display: none;
+    }
+
+    .browse[data-details-open] > .details {
+        display: flex;
+        align-self: stretch;
+    }
+
+    .backButton {
+        display: inline-flex;
+    }
+
+    .cardMeta,
+    .reason {
+        padding-inline-end: var(--panneau-control-height-sm);
+    }
+
+    .detailsButton {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        display: inline-flex;
+    }
+
     .upload {
         grid-template-areas: 'drop' 'rejected' 'added' 'sending';
         grid-template-rows: none;
@@ -578,13 +667,28 @@
         padding-bottom: var(--panneau-space-2);
     }
 
-    .typeFilter {
-        flex: 1 1 8rem;
+    .overlay {
+        --media-picker-card-size: var(
+            --panneau-media-picker-card-size-sm,
+            calc(var(--panneau-control-height) * 2.5)
+        );
     }
 
     .grid {
-        grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
         gap: var(--panneau-space-2);
+    }
+
+    .search {
+        flex-basis: 100%;
+    }
+
+    .typeFilter,
+    .sort {
+        flex: 1 1 6rem;
+    }
+
+    .filters > * {
+        flex: 1 1 100%;
     }
 
     .footer {
