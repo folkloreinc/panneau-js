@@ -84,7 +84,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - `text`, `textarea`, `richtext`, `number`, `boolean`;
     - `date`, `datetime`, `time`;
     - `select`, `email`, `url`, `color`;
-    - `media`, `file`, `relation`, `group`, `repeater`, `slug`.
+    - `media`, `image`, `file`, `relation`, `group`, `repeater`, `slug`.
 - **`localized`** makes the value an object keyed by locale (`{ "fr": "…", "en": "…" }`). It replaces the separate `localized` field and the `*Localized` PHP classes of v1.
 - **`group`** has `fields`, for a nested object.
 - **`repeater`** has `fields`, or `types` for typed blocks, for an array.
@@ -100,6 +100,23 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 - **`media` values** reference media of the libraries the field allows, resources of kind `media` ([Media](#media)). The field's `resource` names one library, or lists several, in the order a picker shows them. Without it, the field allows every library of the definition ([0027](decisions/0027-media-picker.md)).
     - In items, a value is a reference, or a list of them with `multiple`: `{ "id": "med_01H…", "resource": "images", "label": "Portrait", "media": { "type": "image", "thumbnailUrl": "…" }, "transform": { … } }` (`MediaReference`). `resource` is the media's library, `label` its `itemTitle`, `media` what lists and fields show without fetching it, and `transform` the edits of the image for this use only.
     - In requests, the client sends ids (`"med_01H…"`), or `{ "id", "resource", "transform" }`. Ids are unique only within their library, so **a field that allows several libraries needs `resource`** for each media, and the backend refuses an id without it. The backend refuses ids outside the library's scope, as for relations.
+- **`image` fields** are `media` fields for images, with an image editor ([0031](decisions/0031-image-editor-and-image-field.md)). Their values, libraries and requests are those of `media` fields, and their `accept` defaults to `["image/*"]`.
+
+    ```jsonc
+    {
+        "name": "cover",
+        "type": "image",
+        "ratios": ["16:9", "4:3"], // the ratios the editor suggests
+        "rotate": true, // the editor offers rotation and flips (true by default)
+        "focalPoint": true, // the editor offers the focal point (true by default)
+        "transformBase": "media", // media (the default), original, or choose
+        "rules": [{ "rule": "crop", "value": { "ratios": ["16:9", "1:1"], "required": true } }],
+    }
+    ```
+
+    - The `transform` of a value is the edits of the image for this use ([Transform](#media)). `transformBase` sets what it starts from: the media's own transform (`media`), the original file (`original`), or the user's choice in the editor (`choose`).
+    - The `crop` rule enforces ratios, and can require a crop for each image.
+
 - **`file` values** are files that belong to the item, outside the media library: an attachment, a PDF, a CSV ([0025](decisions/0025-presigned-uploads.md)).
     - In items, a value is a stored file, `{ "name": "terms.pdf", "url": "https://…", "mime": "application/pdf", "size": 52000 }`, or `null`. With `multiple`, it is a list of them.
     - In requests, the client sends `{ "upload": "upl_…" }` for a file uploaded directly to storage, the stored file it received to keep it, or `null` to remove it. Without direct uploads, it sends the file itself, in `multipart/form-data`.
@@ -117,6 +134,11 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 | `in`                | select values                           |
 | `accept`, `maxSize` | files (MIME types, bytes)               |
 | `before`, `after`   | dates (value or other field)            |
+| `crop`              | `image` and `media` values              |
+
+- **`crop`** checks the transform of each image of a value: `{ "rule": "crop", "value": { "ratios": ["16:9", "1:1"], "required": true } }`.
+    - With `required`, each image needs a crop for this use. An id alone has none.
+    - With `ratios`, a crop must have one of them once rendered (a quarter turn swaps its width and height). A crop has a ratio when its height is within one pixel of its width divided by the ratio, since crops are in whole pixels.
 
 The frontend checks these rules before sending. The server checks them again, together with server-only rules (uniqueness, existence, business rules).
 
@@ -471,7 +493,7 @@ A media library is a resource of kind `media` ([0026](decisions/0026-media-libra
 ```
 
 - **The `file` field**, of type `file` and not `multiple`, holds the original. Its `accept` and `maxSize` are the library's.
-- **Items have a `media`**, which the backend computes from the file. It is read-only: clients never send it.
+- **Items have a `media`**, which the backend computes from the file. It is read-only: clients never send it. Its `transform` is the media's own transform, from the library's `transform` field: references give it to the fields, which draw a transform for one use over it ([0031](decisions/0031-image-editor-and-image-field.md)).
 
     ```jsonc
     {
@@ -494,6 +516,7 @@ A media library is a resource of kind `media` ([0026](decisions/0026-media-libra
             "height": 3780,
             "duration": null,
             "status": "ready", // pending or processing until its renditions are made, then ready or failed; ready without it
+            "transform": { "rotate": 90 }, // the media's own transform, from its transform field
         },
         "version": "3",
         "abilities": { "update": true, "delete": true },
@@ -530,6 +553,20 @@ A media library is a resource of kind `media` ([0026](decisions/0026-media-libra
 - **`rotate`**: `0`, `90`, `180` or `270` degrees, clockwise.
 - **`flipX`** mirrors left to right, **`flipY`** top to bottom.
 - **`focalPoint`**: from `0` to `1`, relative to the upright original, not to the crop, so changing the crop doesn't move it. Renderers map it into the transformed image and clamp it to the crop.
+- **`base`**: what a transform for one use starts from ([0031](decisions/0031-image-editor-and-image-field.md)).
+    - Without it, the transform starts from the original file, as above.
+    - With `"media"`, it applies over the media's own transform: its crop and focal point are relative to the media's version instead of the original.
+    - **`baseTransform`** is then the media's own transform it was made on. When the media's transform is no longer the same, clients ask to check the crop, and renderers clamp it to the image.
+
+    ```json
+    {
+        "base": "media",
+        "baseTransform": { "rotate": 90 },
+        "crop": { "x": 0, "y": 900, "width": 3024, "height": 1701 }
+    }
+    ```
+
+- **Other keys** can be added by editor tools. Renderers ignore the keys they don't know.
 - The shape is shared by Panneau, `laravel-mediatheque` 2 (the media's `transform` field) and `laravel-image` 2 (folkloreinc/laravel-image#88).
 
 ### Auth

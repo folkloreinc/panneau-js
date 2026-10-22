@@ -59,6 +59,48 @@ describe('checkRules', () => {
     });
 });
 
+describe('the crop rule', () => {
+    const crop = (width: number, height: number, rotate?: 0 | 90 | 180 | 270) => ({
+        id: 'med_1',
+        transform: {
+            crop: { x: 0, y: 0, width, height },
+            ...(rotate !== undefined ? { rotate } : {}),
+        },
+    });
+    const failed = (value: { ratios?: string[]; required?: boolean }, entry: unknown) =>
+        checkRules([{ rule: 'crop', value }], entry).map((failure) => failure.rule);
+
+    it('requires a crop for each image: an id alone, or a value without one, has none', () => {
+        const required = { required: true };
+        expect(failed(required, 'med_1')).toEqual(['crop']);
+        expect(failed(required, { id: 'med_1', transform: { rotate: 90 } })).toEqual(['crop']);
+        expect(failed(required, [crop(1600, 900), { id: 'med_2' }])).toEqual(['crop']);
+        expect(failed(required, [crop(1600, 900), crop(900, 900)])).toEqual([]);
+        expect(failed({}, 'med_1')).toEqual([]);
+    });
+
+    it('checks the ratio of a crop once rendered, within one pixel', () => {
+        const ratios = { ratios: ['16:9', '1:1'] };
+        expect(failed(ratios, crop(1600, 900))).toEqual([]);
+        expect(failed(ratios, crop(1601, 900))).toEqual([]);
+        expect(failed(ratios, crop(1200, 900))).toEqual(['crop']);
+        // A quarter turn makes a 9:16 crop 16:9.
+        expect(failed(ratios, crop(900, 1600, 90))).toEqual([]);
+        expect(failed(ratios, crop(1600, 900, 90))).toEqual(['crop']);
+        // Without `required`, an image without a crop passes.
+        expect(failed(ratios, { id: 'med_1' })).toEqual([]);
+    });
+
+    it('keeps its parameter and message when it fails', () => {
+        expect(
+            checkRules(
+                [{ rule: 'crop', value: { required: true }, message: 'Crop the cover.' }],
+                'med_1',
+            ),
+        ).toEqual([{ rule: 'crop', value: { required: true }, message: 'Crop the cover.' }]);
+    });
+});
+
 describe('checkValues', () => {
     it('keys failures by dot path, with locales and repeater indexes', () => {
         const failures = checkValues(

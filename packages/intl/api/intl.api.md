@@ -288,6 +288,10 @@ export const formsMessages: {
         maxSize: PanneauMessage<Record<never, never>>;
         before: PanneauMessage<Record<never, never>>;
         after: PanneauMessage<Record<never, never>>;
+        crop: PanneauMessage<Record<never, never>>;
+        cropRatios: PanneauMessage<    {
+        ratios: string;
+        }>;
         invalid: PanneauMessage<Record<never, never>>;
     };
 };

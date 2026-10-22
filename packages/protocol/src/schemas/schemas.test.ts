@@ -231,4 +231,78 @@ describe('MediaTransform', () => {
         expect(crop({ width: 0 })).toBe(false);
         expect(crop({})).toBe(true);
     });
+
+    it('says its base, with the media transform it was made on (decision 0031)', () => {
+        expect(
+            MediaTransform.safeParse({
+                base: 'media',
+                baseTransform: { rotate: 90 },
+                crop: { x: 0, y: 900, width: 3024, height: 1701 },
+            }).success,
+        ).toBe(true);
+        expect(MediaTransform.safeParse({ base: 'library' }).success).toBe(false);
+        expect(MediaTransform.safeParse({ baseTransform: { rotate: 45 } }).success).toBe(false);
+    });
+
+    it('keeps the keys that editor tools add', () => {
+        expect(MediaTransform.parse({ rotate: 90, filter: 'sepia' })).toEqual({
+            rotate: 90,
+            filter: 'sepia',
+        });
+    });
+});
+
+describe('the image field', () => {
+    it('accepts its options and the crop rule', () => {
+        const field = {
+            name: 'cover',
+            type: 'image',
+            ratios: ['16:9', '4:3'],
+            rotate: false,
+            focalPoint: true,
+            transformBase: 'choose',
+            rules: [{ rule: 'crop', value: { ratios: ['16:9', '1:1'], required: true } }],
+        };
+        expect(Field.safeParse(field).success).toBe(true);
+    });
+
+    it('refuses ratios it cannot read, and an unknown base', () => {
+        expect(Field.safeParse({ name: 'cover', type: 'image', ratios: ['16/9'] }).success).toBe(
+            false,
+        );
+        expect(
+            Field.safeParse({
+                name: 'cover',
+                type: 'image',
+                rules: [{ rule: 'crop', value: { ratios: ['wide'] } }],
+            }).success,
+        ).toBe(false);
+        expect(
+            Field.safeParse({ name: 'cover', type: 'image', transformBase: 'library' }).success,
+        ).toBe(false);
+    });
+
+    it('names libraries, as a media field does', () => {
+        const definition = createDefinition();
+        const authors = definition.resources.find((resource) => resource.id === 'authors');
+        authors?.fields.push({ name: 'cover', type: 'image' });
+        authors?.fields.push({ name: 'banner', type: 'image', resource: 'pages' });
+        expect(lintDefinition(definition)).toEqual([
+            {
+                path: 'resources.1.fields.3.resource',
+                message: 'No resource of kind `media` named `pages`.',
+            },
+        ]);
+        definition.resources = definition.resources.filter((resource) => resource.kind !== 'media');
+        const fields = definition.resources[1]?.fields ?? [];
+        expect(
+            lintDefinition(definition).find(
+                (issue) =>
+                    issue.path === `resources.1.fields.${String(fields.length - 2)}.resource`,
+            ),
+        ).toEqual({
+            path: `resources.1.fields.${String(fields.length - 2)}.resource`,
+            message: 'An `image` field needs a resource of kind `media`.',
+        });
+    });
 });

@@ -71,6 +71,12 @@ const DEFAULT_MESSAGES: Record<string, (failure: RuleFailure) => string> = {
     maxSize: () => 'This file is too large.',
     before: () => 'This date is too late.',
     after: () => 'This date is too early.',
+    crop: (failure) => {
+        const ratios = isRecord(failure.value) ? failure.value.ratios : undefined;
+        return Array.isArray(ratios) && ratios.length > 0
+            ? `Crop this image to ${ratios.join(' or ')}.`
+            : 'Crop this image.';
+    },
 };
 
 function message(failure: RuleFailure): string {
@@ -185,6 +191,21 @@ function mediaOf(file: StoredFile): MediaInfo {
         url: file.url ?? null,
         thumbnailUrl: type === 'image' ? (file.url ?? null) : null,
         status: 'ready',
+    };
+}
+
+/**
+ * A media item with its own transform (its `transform` field) in its `media`, where references
+ * give it to clients (decision 0031).
+ */
+function withOwnTransform(resource: ResourceInput, item: Item): Item {
+    if (resource.kind !== 'media' || !isRecord(item.media)) {
+        return item;
+    }
+    const { transform: _previous, ...media } = item.media;
+    return {
+        ...item,
+        media: isRecord(item.transform) ? { ...media, transform: item.transform } : media,
     };
 }
 
@@ -374,9 +395,10 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             ),
         });
 
-    // The values of `media` fields at the top of a resource: an id, or `{ id, resource, transform }`,
-    // becomes a reference to a media of one of its libraries. A field that allows several
-    // libraries needs the library of each media (decision 0027). Returns the problems by path.
+    // The values of `media` and `image` fields at the top of a resource: an id, or
+    // `{ id, resource, transform }`, becomes a reference to a media of one of its libraries. A
+    // field that allows several libraries needs the library of each media (decision 0027).
+    // Returns the problems by path.
     const resolveMedia = (
         resource: ResourceInput,
         values: Values,
@@ -384,7 +406,10 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         const missing: Record<string, string> = {};
         const resolved = { ...values };
         resource.fields
-            .filter((field) => field.type === 'media' && field.name in values)
+            .filter(
+                (field) =>
+                    (field.type === 'media' || field.type === 'image') && field.name in values,
+            )
             .forEach((field) => {
                 const allowed = getMediaLibraries(definition, field);
                 const toReference = (value: unknown, path: string): unknown => {
@@ -547,7 +572,10 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 if (unresolved !== null) {
                     return unresolved;
                 }
-                const item = makeItem(resource, { ...values, id: undefined });
+                const item = withOwnTransform(
+                    resource,
+                    makeItem(resource, { ...values, id: undefined }),
+                );
                 list.push(item);
                 return json(201, { data: item }, etag(item));
             }
@@ -652,11 +680,11 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             const updates = Object.fromEntries(
                 Object.entries(values).filter(([key]) => !RESERVED_KEYS.has(key)),
             );
-            const updated: Item = {
+            const updated = withOwnTransform(resource, {
                 ...current,
                 ...updates,
                 version: current.version === null ? null : String(Number(current.version) + 1),
-            };
+            });
             list[index] = updated;
             return json(200, { data: updated }, etag(updated));
         }

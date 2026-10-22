@@ -134,6 +134,14 @@ export const formsMessages = {
             id: 'panneau.forms.rule.after',
             defaultMessage: 'This date is too early.',
         }),
+        crop: defineMessage({
+            id: 'panneau.forms.rule.crop',
+            defaultMessage: 'Crop the image for this use.',
+        }),
+        cropRatios: defineMessage<{ ratios: string }>({
+            id: 'panneau.forms.rule.cropRatios',
+            defaultMessage: 'Crop the image to {ratios}.',
+        }),
         invalid: defineMessage({
             id: 'panneau.forms.rule.invalid',
             defaultMessage: 'This value is invalid.',
