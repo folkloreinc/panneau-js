@@ -80,6 +80,15 @@ export {
 } from './commands';
 export { type PreviewProps } from './preview';
 export {
+    type LeaveGuard,
+    type LeaveGuards,
+    LeaveGuardsProvider,
+    type LeaveGuardsProviderProps,
+    createLeaveGuards,
+    useLeaveGuard,
+    useLeaveGuards,
+} from './react/leaveGuards';
+export {
     PanneauProvider,
     type PanneauContextValue,
     type PanneauProviderProps,

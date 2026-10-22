@@ -6,6 +6,7 @@ import { appMessages } from '@panneau/intl';
 import type { Definition, Item } from '@panneau/protocol';
 import { Alert, Button, Spinner, usePanneauIntl } from '@panneau/ui';
 
+import { useDocumentTitle } from '../documentTitle';
 import { navigate } from '../location';
 import { capitalize } from '../navigation';
 import { useRecordRecentItem } from '../recentItems';
@@ -57,6 +58,7 @@ export function ResourceFormPage({ definition, resolved, basePath, id }: Resourc
         href: routePath({ name: 'resource.index', resource: resource.id }, basePath),
         label: capitalize(resource.label.plural, definition.locale),
     };
+    useDocumentTitle([title, back.label]);
 
     let content;
     if (mode === 'update' && item === undefined) {

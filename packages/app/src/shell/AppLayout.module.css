@@ -178,3 +178,8 @@
         transition: none;
     }
 }
+
+/* The title of a page takes focus when the route changes, for screen readers: no ring. */
+.main :global(h1[tabindex='-1']:focus) {
+    outline: none;
+}
