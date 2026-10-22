@@ -23,6 +23,11 @@ export interface DialogProps extends Pick<
     title: ReactNode;
     /** Content, or a function that gets `close()`. */
     children?: ReactNode | ((close: () => void) => ReactNode);
+    /**
+     * More content in the header, between the title and the close button: a switcher, a few
+     * actions. On phones, it goes under the title. A function gets `close()`.
+     */
+    headerContent?: ReactNode | ((close: () => void) => ReactNode);
     /** Buttons at the bottom, or a function that gets `close()`. */
     footer?: ReactNode | ((close: () => void) => ReactNode);
     /**
@@ -32,7 +37,13 @@ export interface DialogProps extends Pick<
     isDismissable?: boolean;
     /** `alertdialog` for confirmations and interruptions. Defaults to `dialog`. */
     role?: 'dialog' | 'alertdialog';
-    size?: 'sm' | 'md' | 'lg';
+    /** Maximum width: `sm`, `md` (the default), `lg`, or `xl` for pickers and editors. */
+    size?: 'sm' | 'md' | 'lg' | 'xl';
+    /**
+     * On phones, takes the whole screen instead of opening as a sheet at the bottom: for dialogs
+     * that need all the room they can get, such as pickers.
+     */
+    fullScreenOnPhone?: boolean;
     className?: string;
     overlayClassName?: string;
     headerClassName?: string;
@@ -43,15 +54,18 @@ export interface DialogProps extends Pick<
 /**
  * A modal dialog. Controlled with `isOpen` and `onOpenChange`, or inside a `DialogTrigger` with
  * its button as the first child. It traps focus, closes with Escape, and returns focus when it
- * closes. On phones, it opens as a sheet at the bottom of the screen.
+ * closes. On phones, it opens as a sheet at the bottom of the screen, or takes the whole screen with
+ * `fullScreenOnPhone`.
  */
 export function Dialog({
     title,
     children,
+    headerContent,
     footer,
     isDismissable = true,
     role = 'dialog',
     size = 'md',
+    fullScreenOnPhone = false,
     className,
     overlayClassName,
     headerClassName,
@@ -71,7 +85,13 @@ export function Dialog({
             className={cx(styles.overlay, overlayClassName)}
             UNSTABLE_portalContainer={container}
         >
-            <Modal className={cx(styles.modal, styles[size])}>
+            <Modal
+                className={cx(
+                    styles.modal,
+                    styles[size],
+                    fullScreenOnPhone && styles.fullScreenOnPhone,
+                )}
+            >
                 <AriaDialog role={role} className={cx('panneau-dialog', styles.dialog, className)}>
                     {({ close }) => (
                         <>
@@ -79,6 +99,13 @@ export function Dialog({
                                 <Heading slot="title" className={styles.title}>
                                     {title}
                                 </Heading>
+                                {headerContent !== undefined && headerContent !== null ? (
+                                    <div className={styles.headerContent}>
+                                        {typeof headerContent === 'function'
+                                            ? headerContent(close)
+                                            : headerContent}
+                                    </div>
+                                ) : null}
                                 {isDismissable ? (
                                     <IconButton
                                         icon={X}

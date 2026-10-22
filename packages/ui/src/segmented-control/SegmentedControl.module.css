@@ -1,0 +1,83 @@
+.group {
+    --segmented-control-height: var(--panneau-control-height);
+
+    display: inline-flex;
+    gap: 2px;
+    max-width: 100%;
+    padding: var(--panneau-segmented-control-padding, 2px);
+    background-color: var(--panneau-segmented-control-bg, var(--panneau-color-surface-sunken));
+    border: var(--panneau-border-width) solid
+        var(--panneau-segmented-control-border-color, var(--panneau-color-border));
+    border-radius: var(--panneau-segmented-control-radius, var(--panneau-radius-md));
+}
+
+.sm {
+    --segmented-control-height: var(--panneau-control-height-sm);
+}
+
+.fullWidth {
+    display: flex;
+    width: 100%;
+}
+
+.segment {
+    display: inline-flex;
+    flex: 0 1 auto;
+    align-items: center;
+    justify-content: center;
+    gap: var(--panneau-space-2);
+    min-width: 0;
+    min-height: calc(
+        var(--segmented-control-height) - 2 * var(--panneau-segmented-control-padding, 2px) - 2 *
+            var(--panneau-border-width)
+    );
+    padding: 0 var(--panneau-segmented-control-segment-padding-x, var(--panneau-space-3));
+    font: inherit;
+    font-size: var(--panneau-font-size-control);
+    font-weight: var(
+        --panneau-segmented-control-segment-font-weight,
+        var(--panneau-font-weight-medium)
+    );
+    line-height: var(--panneau-line-height-tight);
+    color: var(--panneau-segmented-control-segment-color, var(--panneau-color-text-muted));
+    white-space: nowrap;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    border-radius: calc(
+        var(--panneau-segmented-control-radius, var(--panneau-radius-md)) -
+            var(--panneau-segmented-control-padding, 2px)
+    );
+    outline: none;
+    transition:
+        background-color var(--panneau-duration),
+        color var(--panneau-duration);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.fullWidth .segment {
+    flex: 1 1 0;
+}
+
+.segment[data-hovered],
+.segment[data-selected] {
+    color: var(--panneau-segmented-control-segment-color-selected, var(--panneau-color-text));
+}
+
+.segment[data-selected] {
+    background-color: var(
+        --panneau-segmented-control-segment-bg-selected,
+        var(--panneau-color-surface-raised)
+    );
+    box-shadow: var(--panneau-segmented-control-segment-shadow-selected, var(--panneau-shadow-sm));
+}
+
+.segment[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 1px;
+}
+
+.segment[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+}

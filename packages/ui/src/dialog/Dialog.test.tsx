@@ -45,6 +45,37 @@ describe('Dialog', () => {
         expect(onOpenChange).toHaveBeenLastCalledWith(false);
     });
 
+    it('shows content in its header, between the title and the close button', async () => {
+        const onOpenChange = vi.fn();
+        render(
+            <PanneauRoot>
+                <Dialog
+                    title="Choose media"
+                    isOpen
+                    onOpenChange={onOpenChange}
+                    size="xl"
+                    fullScreenOnPhone
+                    headerContent={(close) => <Button onPress={close}>Done</Button>}
+                >
+                    Content
+                </Dialog>
+            </PanneauRoot>,
+        );
+        const dialog = screen.getByRole('dialog', { name: 'Choose media' });
+        const heading = screen.getByRole('heading', { name: 'Choose media' });
+        const done = screen.getByRole('button', { name: 'Done' });
+        const closeButton = screen.getByRole('button', { name: 'Close' });
+        expect(dialog).toContainElement(done);
+        expect(
+            heading.compareDocumentPosition(done) & Node.DOCUMENT_POSITION_FOLLOWING,
+        ).toBeTruthy();
+        expect(
+            done.compareDocumentPosition(closeButton) & Node.DOCUMENT_POSITION_FOLLOWING,
+        ).toBeTruthy();
+        await userEvent.click(done);
+        expect(onOpenChange).toHaveBeenLastCalledWith(false);
+    });
+
     it('can require an answer, as an alert dialog', () => {
         render(
             <PanneauRoot>
