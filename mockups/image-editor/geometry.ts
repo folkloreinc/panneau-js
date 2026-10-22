@@ -174,3 +174,11 @@ export function ratioLabel(width: number, height: number): string {
     }
     return `${ratio.toFixed(2)}:1`;
 }
+
+/**
+ * Whether a crop has a ratio: its height is within one pixel of its width divided by the ratio, as
+ * crops are in whole pixels.
+ */
+export function matchesRatio(width: number, height: number, ratio: number): boolean {
+    return Math.abs(width / ratio - height) <= 1;
+}

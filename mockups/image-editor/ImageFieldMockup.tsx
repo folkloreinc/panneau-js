@@ -17,6 +17,8 @@ export interface ImageValue {
     image: MockImage;
     transform?: Transform;
     base?: TransformBase;
+    /** The media's transform changed since this crop was made on it. */
+    mediaChanged?: boolean;
 }
 
 const toPickerMedia = (image: MockImage): PickerMedia => ({
@@ -124,6 +126,7 @@ export function ImageFieldMockup({
             {...(ratios !== undefined ? { ratios } : {})}
             enforceRatios={enforceRatios}
             cropRequired={cropRequired}
+            mediaChanged={entry?.mediaChanged === true}
             title={entry === null ? 'Crop for this use' : 'Edit image'}
             applyLabel={entry === null ? 'Use this crop' : 'Apply'}
             isOpen
@@ -184,6 +187,9 @@ export function ImageFieldMockup({
                 <Badge tone="info">Cropped for this use</Badge>
             ) : cropRequired ? (
                 <Badge tone="warning">Needs a crop</Badge>
+            ) : null}
+            {entry.mediaChanged === true ? (
+                <Badge tone="warning">Library version changed: check the crop</Badge>
             ) : null}
             {entry.image.mediaTransform !== undefined ? (
                 <Badge tone="neutral">
@@ -265,7 +271,9 @@ export function ImageFieldMockup({
                                     <Button
                                         icon={Crop}
                                         variant={
-                                            cropRequired && single.transform?.crop === undefined
+                                            (cropRequired &&
+                                                single.transform?.crop === undefined) ||
+                                            single.mediaChanged === true
                                                 ? 'primary'
                                                 : undefined
                                         }

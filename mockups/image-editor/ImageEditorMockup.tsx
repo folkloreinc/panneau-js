@@ -36,6 +36,7 @@ import {
     cropInView,
     focalInView,
     fromView,
+    matchesRatio,
     ratioLabel,
     rectFromView,
     svgTransform,
@@ -238,7 +239,7 @@ export function ImageEditorMockup({
         (id) =>
             id !== 'free' &&
             transform.crop !== undefined &&
-            Math.abs((ratioValue(id) ?? 0) - crop.width / crop.height) < 0.01,
+            matchesRatio(crop.width, crop.height, ratioValue(id) ?? 0),
     );
     const [ratio, setRatio] = useState<string>(
         matching ?? (enforceRatios ? (offered[0] ?? 'free') : 'free'),
@@ -383,8 +384,8 @@ export function ImageEditorMockup({
                 : 'Crop the image to apply.'
             : enforceRatios &&
                 transform.crop !== undefined &&
-                !(fieldRatios ?? []).some(
-                    (id) => Math.abs(parseRatio(id) - crop.width / crop.height) < 0.01,
+                !(fieldRatios ?? []).some((id) =>
+                    matchesRatio(crop.width, crop.height, parseRatio(id)),
                 )
               ? `The crop must be ${listOf(fieldRatios ?? [])}.`
               : null;
@@ -398,10 +399,13 @@ export function ImageEditorMockup({
         ...(canRotate ? [{ value: 'rotate', label: 'Rotate', icon: RotateCw }] : []),
         ...(canFocus ? [{ value: 'focal', label: 'Focal point', icon: Focus }] : []),
     ];
-    const saved: Transform & { base?: TransformBase } = {
-        ...transform,
-        ...(own !== undefined ? { base } : {}),
-    };
+    // What the value keeps: the transform, with its base and the media's transform it was made on.
+    const saved: Transform & { base?: TransformBase; baseTransform?: Transform } =
+        own === undefined
+            ? transform
+            : base === 'media'
+              ? { base, baseTransform: own, ...transform }
+              : { base, ...transform };
 
     return (
         <Dialog

@@ -87,6 +87,29 @@ export const OverTheLibraryVersion: Story = {
     },
 };
 
+/**
+ * The library's version of the image changed since its crop was made (the value keeps the media's
+ * transform it was made on): the field asks to check the crop, without blocking the form.
+ */
+export const LibraryVersionChanged: Story = {
+    args: {
+        value: [
+            {
+                image: hiker,
+                transform: { crop: { x: 0, y: 1200, width: 3024, height: 1701 } },
+                base: 'media',
+                mediaChanged: true,
+            },
+        ],
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText('Library version changed: check the crop')).toBeVisible();
+        // Edit leads: it opens the editor, which says the same.
+        await expect(canvas.getByRole('button', { name: 'Edit' })).toBeVisible();
+    },
+};
+
 /** A gallery: each image has its own crop for this use. */
 export const Gallery: Story = {
     args: {
