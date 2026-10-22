@@ -87,4 +87,63 @@ export const mediaFr: Record<string, string> = {
     'panneau.media.picker.uploadToConfirm':
         'Le fichier est ajouté à {library} et utilisé dès qu’il est téléversé.',
     'panneau.media.picker.createFailed': '{name} n’a pas pu être ajouté : {error}',
+    'panneau.media.editor.title': 'Modifier l’image',
+    'panneau.media.editor.apply': 'Appliquer',
+    'panneau.media.editor.cancel': 'Annuler',
+    'panneau.media.editor.reset': 'Réinitialiser',
+    'panneau.media.editor.back': 'Retour à la médiathèque',
+    'panneau.media.editor.startFrom': 'Partir de',
+    'panneau.media.editor.baseMedia': 'Version de la médiathèque',
+    'panneau.media.editor.baseOriginal': 'Fichier original',
+    'panneau.media.editor.baseMediaNote':
+        'Part de la version de l’image dans la médiathèque : cette retouche s’applique par-dessus.',
+    'panneau.media.editor.baseOriginalNote':
+        'Part du fichier original : les retouches de la médiathèque ne s’appliquent pas.',
+    'panneau.media.editor.mediaChangedTitle':
+        'La version de cette image dans la médiathèque a changé',
+    'panneau.media.editor.mediaChanged':
+        'Le recadrage de cet usage a été fait sur la version précédente. Il a été déplacé dans la nouvelle : vérifiez-le avant d’appliquer.',
+    'panneau.media.editor.tools': 'Outil',
+    'panneau.media.editor.canvas': '{name}, tel qu’il sera rendu',
+    'panneau.media.editor.result': 'Résultat',
+    'panneau.media.editor.resultSize': '{width} × {height} · {ratio}',
+    'panneau.media.editor.tool.crop': 'Recadrer',
+    'panneau.media.editor.tool.rotate': 'Pivoter',
+    'panneau.media.editor.tool.focalPoint': 'Point focal',
+    'panneau.media.editor.ratio': 'Proportions',
+    'panneau.media.editor.ratioFree': 'Libre',
+    'panneau.media.editor.ratioOriginal': 'Originales',
+    'panneau.media.editor.ratioRequired': 'Exigées par le champ',
+    'panneau.media.editor.cropX': 'X',
+    'panneau.media.editor.cropY': 'Y',
+    'panneau.media.editor.cropWidth': 'Largeur',
+    'panneau.media.editor.cropHeight': 'Hauteur',
+    'panneau.media.editor.cropPixels':
+        'En pixels de l’image telle que rendue : {width} × {height}.',
+    'panneau.media.editor.cropProposed':
+        'Le champ exige un recadrage : celui-ci est proposé autour du point focal. Ajustez-le, ou choisissez d’autres proportions.',
+    'panneau.media.editor.cropFrame': 'Recadrage, {width} par {height} pixels',
+    'panneau.media.editor.cropFrameRole': 'cadre de recadrage',
+    'panneau.media.editor.cropHint':
+        'Faites glisser le cadre ou ses coins. Au clavier : les flèches le déplacent, Maj + flèches le redimensionnent.',
+    'panneau.media.editor.rotateLeft': 'Pivoter à gauche',
+    'panneau.media.editor.rotateRight': 'Pivoter à droite',
+    'panneau.media.editor.flipHorizontal': 'Miroir horizontal',
+    'panneau.media.editor.flipVertical': 'Miroir vertical',
+    'panneau.media.editor.rotated': 'Pivotée de {degrees}°.',
+    'panneau.media.editor.rotateKeepsRatio':
+        'Le recadrage garde ses proportions {ratio} et suit l’image.',
+    'panneau.media.editor.rotateHint': 'L’image est montrée telle qu’elle sera rendue.',
+    'panneau.media.editor.focalIntro':
+        'Les recadrages automatiques gardent ce point visible, pour les formats qu’un site demande :',
+    'panneau.media.editor.focalPreview': 'Recadrage automatique {ratio}',
+    'panneau.media.editor.focalLeft': 'Depuis la gauche',
+    'panneau.media.editor.focalTop': 'Depuis le haut',
+    'panneau.media.editor.focalPoint': 'Point focal, à {x} % de la gauche, {y} % du haut',
+    'panneau.media.editor.focalRole': 'point focal',
+    'panneau.media.editor.focalHint':
+        'Cliquez ou glissez là où est le sujet. Au clavier : les flèches déplacent le point.',
+    'panneau.media.editor.cropRequired': 'Recadrez l’image pour appliquer.',
+    'panneau.media.editor.cropRequiredRatios': 'Recadrez l’image en {ratios} pour appliquer.',
+    'panneau.media.editor.cropRatios': 'Le recadrage doit être en {ratios}.',
 };

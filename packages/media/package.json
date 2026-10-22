@@ -23,6 +23,11 @@
             "types": "./dist/picker/index.d.ts",
             "default": "./dist/picker/index.js"
         },
+        "./editor": {
+            "@panneau/source": "./src/editor/index.ts",
+            "types": "./dist/editor/index.d.ts",
+            "default": "./dist/editor/index.js"
+        },
         "./package.json": "./package.json"
     },
     "files": [
