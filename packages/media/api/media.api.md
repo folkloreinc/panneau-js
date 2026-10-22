@@ -14,7 +14,7 @@ import type { MediaReference } from '@panneau/protocol';
 import { UploadSource } from '@panneau/fields';
 
 // @public
-export function getLibrary(definition: Pick<Definition, 'resources'> | null, resource: string | undefined): Definition['resources'][number] | null;
+export function getLibrary(definition: Pick<Definition, 'resources'> | null, resource: string | readonly string[] | undefined): Definition['resources'][number] | null;
 
 // @public
 export function isProcessing(reference: MediaReference): boolean;

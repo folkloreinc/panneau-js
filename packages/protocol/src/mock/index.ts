@@ -1,3 +1,4 @@
+import { getMediaLibraries } from '../libraries';
 import { type ListQuery, fromSearchParams, isFilterRange, matchesFilterRange } from '../query';
 import { type RuleFailure, checkValues } from '../rules';
 import type { DefinitionInput, ResourceInput } from '../schemas';
@@ -331,10 +332,12 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
         return { values: resolved, missing };
     };
 
-    const missingMedia = (paths: string[]) =>
+    const missingMedia = (paths: Record<string, string>) =>
         problem(422, 'The given data was invalid.', {
             type: 'urn:panneau:problem:validation',
-            errors: Object.fromEntries(paths.map((path) => [path, ['This media does not exist.']])),
+            errors: Object.fromEntries(
+                Object.entries(paths).map(([path, message]) => [path, [message]]),
+            ),
         });
 
     const missingUploads = (paths: string[]) =>
@@ -345,36 +348,47 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
             ),
         });
 
-    // The values of `media` fields at the top of a resource: an id, or `{ id, transform }`,
-    // becomes a reference to a media of its library. Returns the paths of media that don't exist.
+    // The values of `media` fields at the top of a resource: an id, or `{ id, resource, transform }`,
+    // becomes a reference to a media of one of its libraries. A field that allows several
+    // libraries needs the library of each media (decision 0027). Returns the problems by path.
     const resolveMedia = (
         resource: ResourceInput,
         values: Values,
-    ): { values: Values; missing: string[] } => {
-        const missing: string[] = [];
+    ): { values: Values; missing: Record<string, string> } => {
+        const missing: Record<string, string> = {};
         const resolved = { ...values };
-        const libraries = definition.resources.filter((candidate) => candidate.kind === 'media');
         resource.fields
             .filter((field) => field.type === 'media' && field.name in values)
             .forEach((field) => {
-                const library = libraries.find((candidate) =>
-                    field.resource !== undefined ? candidate.id === field.resource : true,
-                );
+                const allowed = getMediaLibraries(definition, field);
                 const toReference = (value: unknown, path: string): unknown => {
                     const id = isRecord(value) ? value.id : value;
                     if (typeof id !== 'string' && typeof id !== 'number') {
                         return value;
                     }
+                    const named =
+                        isRecord(value) && typeof value.resource === 'string'
+                            ? value.resource
+                            : undefined;
+                    if (named === undefined && allowed.length > 1) {
+                        missing[path] = 'This field allows several libraries: name the library.';
+                        return value;
+                    }
+                    const libraryId = named ?? allowed[0];
+                    const library = definition.resources.find(
+                        (candidate) => candidate.id === libraryId && allowed.includes(candidate.id),
+                    );
                     const media = (store.get(library?.id ?? '') ?? []).find(
                         (candidate) => candidate.id === String(id),
                     );
                     if (media === undefined || library === undefined) {
-                        missing.push(path);
+                        missing[path] = 'This media does not exist.';
                         return value;
                     }
                     const title = media[library.itemTitle ?? 'name'];
                     const reference: MediaReference = {
                         id: media.id,
+                        ...(allowed.length > 1 ? { resource: library.id } : {}),
                         ...(typeof title === 'string' ? { label: title } : {}),
                         ...(isRecord(media.media) ? { media: media.media as MediaInfo } : {}),
                         ...(isRecord(value) && isRecord(value.transform)
@@ -408,7 +422,7 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
             return { values: body, problem: missingUploads(files.missing) };
         }
         const media = resolveMedia(resource, files.values);
-        if (media.missing.length > 0) {
+        if (Object.keys(media.missing).length > 0) {
             return { values: body, problem: missingMedia(media.missing) };
         }
         const values = media.values;

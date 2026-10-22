@@ -148,15 +148,23 @@ describe('lintDefinition', () => {
             field.name === 'file' ? { ...field, multiple: true } : field,
         );
         const authors = definition.resources.find((resource) => resource.id === 'authors');
+        // Without a `resource`, the field allows every library (decision 0027): its `photo`
+        // field is fine with two libraries.
         authors?.fields.push({ name: 'cv', type: 'media', resource: 'pages' });
+        authors?.fields.push({ name: 'files', type: 'media', resource: ['documents', 'pages'] });
+        authors?.fields.push({ name: 'mentor', type: 'relation', resource: ['authors'] });
 
         expect(lintDefinition(definition)).toEqual([
             {
-                path: 'resources.1.fields.1.resource',
-                message: 'A `media` field needs a `resource` when there are several libraries.',
+                path: 'resources.1.fields.4.resource',
+                message: 'A `relation` field names one resource.',
             },
             {
                 path: 'resources.1.fields.2.resource',
+                message: 'No resource of kind `media` named `pages`.',
+            },
+            {
+                path: 'resources.1.fields.3.resource.1',
                 message: 'No resource of kind `media` named `pages`.',
             },
             {

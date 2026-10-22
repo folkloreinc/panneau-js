@@ -255,6 +255,60 @@ describe('createMockBackend', () => {
         });
     });
 
+    it('needs the library of the media of a field that allows several', async () => {
+        const definition = createExampleDefinition();
+        const library = definition.resources.find((resource) => resource.id === 'media');
+        const authors = definition.resources.find((resource) => resource.id === 'authors');
+        if (library === undefined || authors === undefined) {
+            throw new Error('The example has no media library or no authors.');
+        }
+        definition.resources.push({ ...library, id: 'documents' });
+        authors.fields.push({ name: 'files', type: 'media', multiple: true });
+        const backend = createMockBackend({ definition });
+        const post = async (path: string, body: unknown) =>
+            backend.fetch(`/panneau/api${path}`, json(body, { method: 'POST' }));
+        const make = async (resource: string, name: string) => {
+            const signed = (await (
+                await post('/uploads/sign', { method: 'PUT', key: `${name}.pdf` })
+            ).json()) as { upload: string };
+            await post(`/uploads/${signed.upload}/complete`, { name: `${name}.pdf` });
+            const created = await post(`/resources/${resource}`, {
+                file: { upload: signed.upload, mime: 'application/pdf', size: 1024 },
+                name,
+            });
+            return ((await created.json()) as { data: { id: string } }).data.id;
+        };
+        const image = await make('media', 'Poster');
+        const document = await make('documents', 'Contract');
+
+        const author = await post('/resources/authors', {
+            name: 'Ada',
+            files: [
+                { id: image, resource: 'media' },
+                { id: document, resource: 'documents' },
+            ],
+        });
+        expect(author.status).toBe(201);
+        expect(((await author.json()) as { data: Record<string, unknown> }).data.files).toEqual([
+            expect.objectContaining({ id: image, resource: 'media', label: 'Poster' }),
+            expect.objectContaining({ id: document, resource: 'documents', label: 'Contract' }),
+        ]);
+
+        // Ids are unique only within their library: an id alone is ambiguous.
+        const unnamed = await post('/resources/authors', { name: 'Grace', files: [image] });
+        expect(unnamed.status).toBe(422);
+        expect(await unnamed.json()).toMatchObject({
+            errors: { 'files.0': ['This field allows several libraries: name the library.'] },
+        });
+        const elsewhere = await post('/resources/authors', {
+            name: 'Grace',
+            files: [{ id: image, resource: 'documents' }],
+        });
+        expect(await elsewhere.json()).toMatchObject({
+            errors: { 'files.0': ['This media does not exist.'] },
+        });
+    });
+
     it('answers unknown routes with a 404 problem', async () => {
         const response = await createBackend().fetch('/panneau/api/resources/unknown');
         expect(response.status).toBe(404);

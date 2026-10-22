@@ -113,7 +113,7 @@ export const Action: z.ZodObject<{
             disabled: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>>;
         multiple: z.ZodOptional<z.ZodBoolean>;
-        resource: z.ZodOptional<z.ZodString>;
+        resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
         from: z.ZodOptional<z.ZodString>;
         display: z.ZodOptional<z.ZodString>;
@@ -612,7 +612,7 @@ export const Definition: z.ZodObject<{
                 disabled: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>>;
             multiple: z.ZodOptional<z.ZodBoolean>;
-            resource: z.ZodOptional<z.ZodString>;
+            resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
             from: z.ZodOptional<z.ZodString>;
             display: z.ZodOptional<z.ZodString>;
@@ -781,7 +781,7 @@ export const Definition: z.ZodObject<{
                     disabled: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>>>;
                 multiple: z.ZodOptional<z.ZodBoolean>;
-                resource: z.ZodOptional<z.ZodString>;
+                resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
                 accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 from: z.ZodOptional<z.ZodString>;
                 display: z.ZodOptional<z.ZodString>;
@@ -1112,7 +1112,7 @@ export const Field: z.ZodObject<{
         disabled: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>>;
     multiple: z.ZodOptional<z.ZodBoolean>;
-    resource: z.ZodOptional<z.ZodString>;
+    resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
     accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
     from: z.ZodOptional<z.ZodString>;
     display: z.ZodOptional<z.ZodString>;
@@ -1156,6 +1156,11 @@ export type FilterValue = string | number | boolean | Array<string | number | bo
 
 // @public
 export function fromSearchParams(params: URLSearchParams): ListQuery;
+
+// @public
+export function getMediaLibraries(definition: MediaLibrariesDefinition | null, field: {
+    resource?: string | readonly string[] | undefined;
+}): string[];
 
 // @public
 export function getValue(values: unknown, path: string): unknown;
@@ -1363,9 +1368,19 @@ export const MediaItem: z.ZodObject<{
 // @public (undocumented)
 export type MediaItem = z.infer<typeof MediaItem>;
 
+// @public
+export interface MediaLibrariesDefinition {
+    // (undocumented)
+    resources: readonly {
+        id: string;
+        kind?: string | undefined;
+    }[];
+}
+
 // @public (undocumented)
 export const MediaReference: z.ZodObject<{
     id: z.ZodString;
+    resource: z.ZodOptional<z.ZodString>;
     label: z.ZodOptional<z.ZodString>;
     media: z.ZodOptional<z.ZodObject<{
         type: z.ZodString;
@@ -1595,7 +1610,7 @@ export const namedSchemas: {
             disabled: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>>;
         multiple: z.ZodOptional<z.ZodBoolean>;
-        resource: z.ZodOptional<z.ZodString>;
+        resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
         from: z.ZodOptional<z.ZodString>;
         display: z.ZodOptional<z.ZodString>;
@@ -1806,7 +1821,7 @@ export const namedSchemas: {
                 disabled: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>>;
             multiple: z.ZodOptional<z.ZodBoolean>;
-            resource: z.ZodOptional<z.ZodString>;
+            resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
             from: z.ZodOptional<z.ZodString>;
             display: z.ZodOptional<z.ZodString>;
@@ -1938,7 +1953,7 @@ export const namedSchemas: {
                 disabled: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>>;
             multiple: z.ZodOptional<z.ZodBoolean>;
-            resource: z.ZodOptional<z.ZodString>;
+            resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
             from: z.ZodOptional<z.ZodString>;
             display: z.ZodOptional<z.ZodString>;
@@ -2107,7 +2122,7 @@ export const namedSchemas: {
                     disabled: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>>>;
                 multiple: z.ZodOptional<z.ZodBoolean>;
-                resource: z.ZodOptional<z.ZodString>;
+                resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
                 accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 from: z.ZodOptional<z.ZodString>;
                 display: z.ZodOptional<z.ZodString>;
@@ -2488,7 +2503,7 @@ export const namedSchemas: {
                     disabled: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>>>;
                 multiple: z.ZodOptional<z.ZodBoolean>;
-                resource: z.ZodOptional<z.ZodString>;
+                resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
                 accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 from: z.ZodOptional<z.ZodString>;
                 display: z.ZodOptional<z.ZodString>;
@@ -2657,7 +2672,7 @@ export const namedSchemas: {
                         disabled: z.ZodOptional<z.ZodBoolean>;
                     }, z.core.$loose>>>;
                     multiple: z.ZodOptional<z.ZodBoolean>;
-                    resource: z.ZodOptional<z.ZodString>;
+                    resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
                     accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
                     from: z.ZodOptional<z.ZodString>;
                     display: z.ZodOptional<z.ZodString>;
@@ -3153,6 +3168,7 @@ export const namedSchemas: {
     }, z.core.$loose>;
     MediaReference: z.ZodObject<{
         id: z.ZodString;
+        resource: z.ZodOptional<z.ZodString>;
         label: z.ZodOptional<z.ZodString>;
         media: z.ZodOptional<z.ZodObject<{
             type: z.ZodString;
@@ -3378,7 +3394,7 @@ export const Resource: z.ZodObject<{
             disabled: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>>;
         multiple: z.ZodOptional<z.ZodBoolean>;
-        resource: z.ZodOptional<z.ZodString>;
+        resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
         from: z.ZodOptional<z.ZodString>;
         display: z.ZodOptional<z.ZodString>;
@@ -3547,7 +3563,7 @@ export const Resource: z.ZodObject<{
                 disabled: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>>;
             multiple: z.ZodOptional<z.ZodBoolean>;
-            resource: z.ZodOptional<z.ZodString>;
+            resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
             from: z.ZodOptional<z.ZodString>;
             display: z.ZodOptional<z.ZodString>;

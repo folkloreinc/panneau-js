@@ -6,6 +6,7 @@ export { PROBLEM_CONTENT_TYPE, PROTOCOL_VERSION } from '../version';
 export * from '../constants';
 export { type CheckOptions, type RuleFailure, checkRules, checkValues } from '../rules';
 export { evaluateCondition } from '../conditions';
+export { getMediaLibraries, type MediaLibrariesDefinition } from '../libraries';
 export { lintDefinition } from '../lint';
 export type { ValidationIssue } from '../validate';
 export {

@@ -1917,8 +1917,21 @@
                         "type": "boolean"
                     },
                     "resource": {
-                        "description": "`relation`: id of the related resource. `media`: id of a resource of kind `media`, optional when the definition has only one.",
-                        "type": "string"
+                        "description": "`relation`: id of the related resource. `media`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027).",
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            {
+                                "minItems": 1,
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 1
+                                }
+                            }
+                        ]
                     },
                     "accept": {
                         "description": "`media`, `file`: accepted MIME types.",
@@ -4007,6 +4020,10 @@
                     "id": {
                         "$ref": "#/components/schemas/Id"
                     },
+                    "resource": {
+                        "description": "The library of the media. Required for a field that allows several libraries, since ids are unique only within their resource (decision 0027).",
+                        "type": "string"
+                    },
                     "label": {
                         "description": "The `itemTitle` of the media.",
                         "type": "string"
@@ -4030,7 +4047,7 @@
                     "id"
                 ],
                 "additionalProperties": {},
-                "description": "The value of a `media` field in items: the media, with what lists and fields show, and its edits for this use. Requests send the id, or `{ id, transform }`."
+                "description": "The value of a `media` field in items: the media, with what lists and fields show, and its edits for this use. Requests send the id, or `{ id, resource, transform }`: `resource` is required when the field allows several libraries."
             },
             "Session": {
                 "type": "object",
