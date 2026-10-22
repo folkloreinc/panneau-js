@@ -28,6 +28,7 @@ export const BUILT_IN_FIELD_TYPES = [
     'url',
     'color',
     'media',
+    'image',
     'relation',
     'group',
     'repeater',
@@ -48,6 +49,7 @@ export const PORTABLE_RULES = [
     'maxSize',
     'before',
     'after',
+    'crop',
 ] as const;
 export type PortableRule = (typeof PORTABLE_RULES)[number];
 

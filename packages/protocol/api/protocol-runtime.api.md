@@ -13,7 +13,7 @@ export const BOOT_CONFIG_ELEMENT_ID = "panneau-boot";
 export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", "restore", "export", "import"];
 
 // @public
-export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "relation", "group", "repeater", "slug"];
+export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug"];
 
 // @public
 export const BUILT_IN_LAYOUT_NODE_TYPES: readonly ["row", "column", "section", "tabs", "tab", "sidebar", "field", "text", "component"];
@@ -114,6 +114,9 @@ export interface ListQuery {
 export function matchesFilterRange(value: unknown, range: FilterRange): boolean;
 
 // @public
+export function matchesRatio(width: number, height: number, ratio: number | string): boolean;
+
+// @public
 export interface MediaLibrariesDefinition {
     // (undocumented)
     resources: readonly {
@@ -128,10 +131,13 @@ export interface MediaLibrariesDefinition {
 export function mergeThemes(...themes: readonly PartialTheme[]): Theme;
 
 // @public
+export function parseRatio(ratio: string): number | null;
+
+// @public
 export type PartialTheme = Partial<Theme>;
 
 // @public
-export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "in", "accept", "maxSize", "before", "after"];
+export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "in", "accept", "maxSize", "before", "after", "crop"];
 
 // @public (undocumented)
 export type PortableRule = (typeof PORTABLE_RULES)[number];
@@ -155,6 +161,14 @@ export type ReadSearchQueryResult = {
     query?: undefined;
     errors: Record<string, string[]>;
 };
+
+// Warning: (ae-forgotten-export) The symbol "MediaTransform" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function renderedCropSize(transform: Pick<MediaTransform, 'crop' | 'rotate'>): {
+    width: number;
+    height: number;
+} | null;
 
 // @public
 export interface RuleFailure {

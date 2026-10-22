@@ -142,10 +142,21 @@ export const MediaTransform = z
                 description:
                     'From 0 to 1, relative to the width and height of the upright original image, not of the crop: changing the crop does not move it. Renderers map it into the transformed image and clamp it to the crop.',
             }),
+        base: z.enum(['media', 'original']).optional().meta({
+            description:
+                "What a transform for one use starts from: the original file by default, or the media's own transform (`media`). With `media`, the crop and the focal point are relative to the media's version instead of the original (decision 0031).",
+        }),
+        // Return types are written out so that declaration files keep the recursion.
+        get baseTransform(): z.ZodOptional<typeof MediaTransform> {
+            return MediaTransform.optional().meta({
+                description:
+                    'With `base: "media"`: the media\'s own transform this one was made on. When the media\'s transform is no longer the same, clients ask to check the crop, and renderers clamp it.',
+            });
+        },
     })
     .meta({
         description:
-            'Non-destructive edits of an image, applied in this order: crop, then rotate, then flip.',
+            "Non-destructive edits of an image, applied in this order: crop, then rotate, then flip. Renderers ignore the keys they don't know, which editor tools can add.",
     });
 
 export const UploadReference = z.looseObject({ upload: z.string().min(1) }).meta({
@@ -244,6 +255,10 @@ export const MediaInfo = z
                 'Where the processing of the file is: `pending` and `processing` until its renditions are made, then `ready` or `failed`. Without it, the media is ready.',
         }),
         metadata: z.record(z.string(), z.unknown()).optional(),
+        transform: MediaTransform.nullable().optional().meta({
+            description:
+                "The media's own transform, from its library, which clients need to draw a transform for one use made over it (decision 0031).",
+        }),
     })
     .meta({
         description:
@@ -267,12 +282,13 @@ export const MediaReference = z
         label: z.string().optional().meta({ description: 'The `itemTitle` of the media.' }),
         media: MediaInfo.optional(),
         transform: MediaTransform.nullable().optional().meta({
-            description: 'The edits of the image for this use only, over those of the media.',
+            description:
+                'The edits of the image for this use only: from the original file, or over the media\'s own transform with `base: "media"`.',
         }),
     })
     .meta({
         description:
-            'The value of a `media` field in items: the media, with what lists and fields show, and its edits for this use. Requests send the id, or `{ id, resource, transform }`: `resource` is required when the field allows several libraries.',
+            'The value of a `media` or `image` field in items: the media, with what lists and fields show, and its edits for this use. Requests send the id, or `{ id, resource, transform }`: `resource` is required when the field allows several libraries.',
     });
 
 export const Session = z.looseObject({ user: User });

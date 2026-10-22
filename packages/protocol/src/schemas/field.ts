@@ -8,6 +8,11 @@ const message = z
     .optional()
     .meta({ description: 'Message shown when the rule fails, instead of the default one.' });
 
+const Ratio = z
+    .string()
+    .regex(/^[1-9][0-9]*:[1-9][0-9]*$/)
+    .meta({ description: 'An aspect ratio, as `width:height`: `16:9`.' });
+
 const DateBound = z.union([
     z.string().meta({ description: 'An ISO 8601 date or date-time.' }),
     z.looseObject({ field: z.string().min(1) }).meta({ description: 'Another field of the form.' }),
@@ -32,6 +37,20 @@ export const Rule = z
         z.looseObject({ rule: z.literal('accept'), value: z.array(z.string().min(1)), message }),
         z.looseObject({ rule: z.literal('maxSize'), value: z.number().int().positive(), message }),
         z.looseObject({ rule: z.enum(['before', 'after']), value: DateBound, message }),
+        z.looseObject({
+            rule: z.literal('crop'),
+            value: z.looseObject({
+                ratios: z.array(Ratio).optional().meta({
+                    description:
+                        'A crop must have one of them: its height is within one pixel of its width divided by the ratio, after its rotation.',
+                }),
+                required: z
+                    .boolean()
+                    .optional()
+                    .meta({ description: 'Each image needs a crop for this use.' }),
+            }),
+            message,
+        }),
         z
             .looseObject({
                 rule: z
@@ -46,7 +65,7 @@ export const Rule = z
     ])
     .meta({
         description:
-            'A portable validation rule. `min` and `max` apply to numbers, and to the length of text and arrays. `accept` lists MIME types (`image/*`). `maxSize` is in bytes.',
+            'A portable validation rule. `min` and `max` apply to numbers, and to the length of text and arrays. `accept` lists MIME types (`image/*`). `maxSize` is in bytes. `crop` checks the transform of each image of an `image` or `media` value (decision 0031).',
     });
 
 export const BlockType = z.looseObject({
@@ -80,21 +99,34 @@ export const Field = z
         rules: z.array(Rule).optional(),
         visibleWhen: Condition.optional(),
         options: z.array(Option).optional().meta({ description: '`select`: the choices.' }),
-        multiple: z
-            .boolean()
-            .optional()
-            .meta({ description: '`select`, `relation`, `media`, `file`: the value is an array.' }),
+        multiple: z.boolean().optional().meta({
+            description: '`select`, `relation`, `media`, `image`, `file`: the value is an array.',
+        }),
         resource: z
             .union([z.string().min(1), z.array(z.string().min(1)).min(1)])
             .optional()
             .meta({
                 description:
-                    '`relation`: id of the related resource. `media`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027).',
+                    '`relation`: id of the related resource. `media`, `image`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027).',
             }),
-        accept: z
-            .array(z.string())
-            .optional()
-            .meta({ description: '`media`, `file`: accepted MIME types.' }),
+        accept: z.array(z.string()).optional().meta({
+            description:
+                '`media`, `image`, `file`: accepted MIME types. `image` defaults to `image/*`.',
+        }),
+        ratios: z.array(Ratio).optional().meta({
+            description:
+                '`image`: ratios the editor suggests. The `crop` rule enforces ratios (decision 0031).',
+        }),
+        rotate: z.boolean().optional().meta({
+            description: '`image`: whether the editor offers rotation and flips. Defaults to true.',
+        }),
+        focalPoint: z.boolean().optional().meta({
+            description: '`image`: whether the editor offers the focal point. Defaults to true.',
+        }),
+        transformBase: z.enum(['media', 'original', 'choose']).optional().meta({
+            description:
+                "`image`: what a transform for one use starts from: the media's own transform (`media`, the default), the original file, or the user's choice in the editor (decision 0031).",
+        }),
         from: z
             .string()
             .optional()

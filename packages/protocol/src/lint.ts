@@ -96,8 +96,8 @@ function checkResource(resource: ResourceInput, path: string, issues: Validation
 
 /**
  * Checks what the schema can't: references between parts of a definition (layout nodes and
- * columns that name existing fields, relations and media fields that name a resource, unique
- * names), and the `file` field of `media` resources.
+ * columns that name existing fields, relations, `media` and `image` fields that name a resource,
+ * unique names), and the `file` field of `media` resources.
  */
 export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
     const issues: ValidationIssue[] = [];
@@ -118,14 +118,14 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
                     message: `No resource \`${field.resource}\`.`,
                 });
             }
-            if (field.type === 'media') {
+            if (field.type === 'media' || field.type === 'image') {
                 const fieldPath = `resources.${index}.fields.${fieldIndex}.resource`;
                 if (field.resource === undefined) {
                     // Every library of the definition (decision 0027).
                     if (libraries.length === 0) {
                         issues.push({
                             path: fieldPath,
-                            message: 'A `media` field needs a resource of kind `media`.',
+                            message: `${field.type === 'image' ? 'An' : 'A'} \`${field.type}\` field needs a resource of kind \`media\`.`,
                         });
                     }
                 } else {

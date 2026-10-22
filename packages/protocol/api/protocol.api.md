@@ -94,6 +94,13 @@ export const Action: z.ZodObject<{
             }, z.core.$loose>]>;
             message: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"crop">;
+            value: z.ZodObject<{
+                ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                required: z.ZodOptional<z.ZodBoolean>;
+            }, z.core.$loose>;
+            message: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodString;
             message: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>]>>>;
@@ -115,6 +122,14 @@ export const Action: z.ZodObject<{
         multiple: z.ZodOptional<z.ZodBoolean>;
         resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        rotate: z.ZodOptional<z.ZodBoolean>;
+        focalPoint: z.ZodOptional<z.ZodBoolean>;
+        transformBase: z.ZodOptional<z.ZodEnum<{
+            media: "media";
+            original: "original";
+            choose: "choose";
+        }>>;
         from: z.ZodOptional<z.ZodString>;
         display: z.ZodOptional<z.ZodString>;
         fields: z.ZodOptional<z.ZodArray<typeof Field>>;
@@ -433,7 +448,7 @@ export type BootConfigInput = z.input<typeof BootConfig>;
 export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", "restore", "export", "import"];
 
 // @public
-export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "relation", "group", "repeater", "slug"];
+export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug"];
 
 // @public
 export const BUILT_IN_LAYOUT_NODE_TYPES: readonly ["row", "column", "section", "tabs", "tab", "sidebar", "field", "text", "component"];
@@ -595,6 +610,13 @@ export const Definition: z.ZodObject<{
                 }, z.core.$loose>]>;
                 message: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"crop">;
+                value: z.ZodObject<{
+                    ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                    required: z.ZodOptional<z.ZodBoolean>;
+                }, z.core.$loose>;
+                message: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodString;
                 message: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>]>>>;
@@ -616,6 +638,14 @@ export const Definition: z.ZodObject<{
             multiple: z.ZodOptional<z.ZodBoolean>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            rotate: z.ZodOptional<z.ZodBoolean>;
+            focalPoint: z.ZodOptional<z.ZodBoolean>;
+            transformBase: z.ZodOptional<z.ZodEnum<{
+                media: "media";
+                original: "original";
+                choose: "choose";
+            }>>;
             from: z.ZodOptional<z.ZodString>;
             display: z.ZodOptional<z.ZodString>;
             fields: z.ZodOptional<z.ZodArray<Field>>;
@@ -764,6 +794,13 @@ export const Definition: z.ZodObject<{
                     }, z.core.$loose>]>;
                     message: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"crop">;
+                    value: z.ZodObject<{
+                        ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                        required: z.ZodOptional<z.ZodBoolean>;
+                    }, z.core.$loose>;
+                    message: z.ZodOptional<z.ZodString>;
+                }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodString;
                     message: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>]>>>;
@@ -785,6 +822,14 @@ export const Definition: z.ZodObject<{
                 multiple: z.ZodOptional<z.ZodBoolean>;
                 resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
                 accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                rotate: z.ZodOptional<z.ZodBoolean>;
+                focalPoint: z.ZodOptional<z.ZodBoolean>;
+                transformBase: z.ZodOptional<z.ZodEnum<{
+                    media: "media";
+                    original: "original";
+                    choose: "choose";
+                }>>;
                 from: z.ZodOptional<z.ZodString>;
                 display: z.ZodOptional<z.ZodString>;
                 fields: z.ZodOptional<z.ZodArray<Field>>;
@@ -1095,6 +1140,13 @@ export const Field: z.ZodObject<{
         }, z.core.$loose>]>;
         message: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>, z.ZodObject<{
+        rule: z.ZodLiteral<"crop">;
+        value: z.ZodObject<{
+            ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            required: z.ZodOptional<z.ZodBoolean>;
+        }, z.core.$loose>;
+        message: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodString;
         message: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>]>>>;
@@ -1116,6 +1168,14 @@ export const Field: z.ZodObject<{
     multiple: z.ZodOptional<z.ZodBoolean>;
     resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
     accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    rotate: z.ZodOptional<z.ZodBoolean>;
+    focalPoint: z.ZodOptional<z.ZodBoolean>;
+    transformBase: z.ZodOptional<z.ZodEnum<{
+        media: "media";
+        original: "original";
+        choose: "choose";
+    }>>;
     from: z.ZodOptional<z.ZodString>;
     display: z.ZodOptional<z.ZodString>;
     fields: z.ZodOptional<z.ZodArray<typeof Field>>;
@@ -1314,6 +1374,9 @@ export type ListResponse = z.infer<typeof ListResponse>;
 // @public
 export function matchesFilterRange(value: unknown, range: FilterRange): boolean;
 
+// @public
+export function matchesRatio(width: number, height: number, ratio: number | string): boolean;
+
 // @public (undocumented)
 export const MediaInfo: z.ZodObject<{
     type: z.ZodString;
@@ -1336,6 +1399,26 @@ export const MediaInfo: z.ZodObject<{
         ready: "ready";
     }>>;
     metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+        crop: z.ZodOptional<z.ZodObject<{
+            x: z.ZodNumber;
+            y: z.ZodNumber;
+            width: z.ZodNumber;
+            height: z.ZodNumber;
+        }, z.core.$loose>>;
+        rotate: z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<0>, z.ZodLiteral<90>, z.ZodLiteral<180>, z.ZodLiteral<270>]>>;
+        flipX: z.ZodOptional<z.ZodBoolean>;
+        flipY: z.ZodOptional<z.ZodBoolean>;
+        focalPoint: z.ZodOptional<z.ZodObject<{
+            x: z.ZodNumber;
+            y: z.ZodNumber;
+        }, z.core.$loose>>;
+        base: z.ZodOptional<z.ZodEnum<{
+            media: "media";
+            original: "original";
+        }>>;
+        baseTransform: z.ZodOptional<typeof MediaTransform>;
+    }, z.core.$loose>>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -1367,6 +1450,26 @@ export const MediaItem: z.ZodObject<{
             ready: "ready";
         }>>;
         metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+        transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            crop: z.ZodOptional<z.ZodObject<{
+                x: z.ZodNumber;
+                y: z.ZodNumber;
+                width: z.ZodNumber;
+                height: z.ZodNumber;
+            }, z.core.$loose>>;
+            rotate: z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<0>, z.ZodLiteral<90>, z.ZodLiteral<180>, z.ZodLiteral<270>]>>;
+            flipX: z.ZodOptional<z.ZodBoolean>;
+            flipY: z.ZodOptional<z.ZodBoolean>;
+            focalPoint: z.ZodOptional<z.ZodObject<{
+                x: z.ZodNumber;
+                y: z.ZodNumber;
+            }, z.core.$loose>>;
+            base: z.ZodOptional<z.ZodEnum<{
+                media: "media";
+                original: "original";
+            }>>;
+            baseTransform: z.ZodOptional<typeof MediaTransform>;
+        }, z.core.$loose>>>;
     }, z.core.$loose>;
 }, z.core.$loose>;
 
@@ -1408,6 +1511,26 @@ export const MediaReference: z.ZodObject<{
             ready: "ready";
         }>>;
         metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+        transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            crop: z.ZodOptional<z.ZodObject<{
+                x: z.ZodNumber;
+                y: z.ZodNumber;
+                width: z.ZodNumber;
+                height: z.ZodNumber;
+            }, z.core.$loose>>;
+            rotate: z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<0>, z.ZodLiteral<90>, z.ZodLiteral<180>, z.ZodLiteral<270>]>>;
+            flipX: z.ZodOptional<z.ZodBoolean>;
+            flipY: z.ZodOptional<z.ZodBoolean>;
+            focalPoint: z.ZodOptional<z.ZodObject<{
+                x: z.ZodNumber;
+                y: z.ZodNumber;
+            }, z.core.$loose>>;
+            base: z.ZodOptional<z.ZodEnum<{
+                media: "media";
+                original: "original";
+            }>>;
+            baseTransform: z.ZodOptional<typeof MediaTransform>;
+        }, z.core.$loose>>>;
     }, z.core.$loose>>;
     transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
         crop: z.ZodOptional<z.ZodObject<{
@@ -1423,6 +1546,11 @@ export const MediaReference: z.ZodObject<{
             x: z.ZodNumber;
             y: z.ZodNumber;
         }, z.core.$loose>>;
+        base: z.ZodOptional<z.ZodEnum<{
+            media: "media";
+            original: "original";
+        }>>;
+        baseTransform: z.ZodOptional<typeof MediaTransform>;
     }, z.core.$loose>>>;
 }, z.core.$loose>;
 
@@ -1444,6 +1572,11 @@ export const MediaTransform: z.ZodObject<{
         x: z.ZodNumber;
         y: z.ZodNumber;
     }, z.core.$loose>>;
+    base: z.ZodOptional<z.ZodEnum<{
+        media: "media";
+        original: "original";
+    }>>;
+    baseTransform: z.ZodOptional<typeof MediaTransform>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -1533,6 +1666,13 @@ export const namedSchemas: {
         }, z.core.$loose>]>;
         message: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>, z.ZodObject<{
+        rule: z.ZodLiteral<"crop">;
+        value: z.ZodObject<{
+            ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            required: z.ZodOptional<z.ZodBoolean>;
+        }, z.core.$loose>;
+        message: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodString;
         message: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>]>;
@@ -1596,6 +1736,13 @@ export const namedSchemas: {
             }, z.core.$loose>]>;
             message: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"crop">;
+            value: z.ZodObject<{
+                ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                required: z.ZodOptional<z.ZodBoolean>;
+            }, z.core.$loose>;
+            message: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodString;
             message: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>]>>>;
@@ -1617,6 +1764,14 @@ export const namedSchemas: {
         multiple: z.ZodOptional<z.ZodBoolean>;
         resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        rotate: z.ZodOptional<z.ZodBoolean>;
+        focalPoint: z.ZodOptional<z.ZodBoolean>;
+        transformBase: z.ZodOptional<z.ZodEnum<{
+            media: "media";
+            original: "original";
+            choose: "choose";
+        }>>;
         from: z.ZodOptional<z.ZodString>;
         display: z.ZodOptional<z.ZodString>;
         fields: z.ZodOptional<z.ZodArray<typeof Field>>;
@@ -1807,6 +1962,13 @@ export const namedSchemas: {
                 }, z.core.$loose>]>;
                 message: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"crop">;
+                value: z.ZodObject<{
+                    ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                    required: z.ZodOptional<z.ZodBoolean>;
+                }, z.core.$loose>;
+                message: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodString;
                 message: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>]>>>;
@@ -1828,6 +1990,14 @@ export const namedSchemas: {
             multiple: z.ZodOptional<z.ZodBoolean>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            rotate: z.ZodOptional<z.ZodBoolean>;
+            focalPoint: z.ZodOptional<z.ZodBoolean>;
+            transformBase: z.ZodOptional<z.ZodEnum<{
+                media: "media";
+                original: "original";
+                choose: "choose";
+            }>>;
             from: z.ZodOptional<z.ZodString>;
             display: z.ZodOptional<z.ZodString>;
             fields: z.ZodOptional<z.ZodArray<typeof Field>>;
@@ -1941,6 +2111,13 @@ export const namedSchemas: {
                 }, z.core.$loose>]>;
                 message: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"crop">;
+                value: z.ZodObject<{
+                    ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                    required: z.ZodOptional<z.ZodBoolean>;
+                }, z.core.$loose>;
+                message: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodString;
                 message: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>]>>>;
@@ -1962,6 +2139,14 @@ export const namedSchemas: {
             multiple: z.ZodOptional<z.ZodBoolean>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            rotate: z.ZodOptional<z.ZodBoolean>;
+            focalPoint: z.ZodOptional<z.ZodBoolean>;
+            transformBase: z.ZodOptional<z.ZodEnum<{
+                media: "media";
+                original: "original";
+                choose: "choose";
+            }>>;
             from: z.ZodOptional<z.ZodString>;
             display: z.ZodOptional<z.ZodString>;
             fields: z.ZodOptional<z.ZodArray<typeof Field>>;
@@ -2110,6 +2295,13 @@ export const namedSchemas: {
                     }, z.core.$loose>]>;
                     message: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"crop">;
+                    value: z.ZodObject<{
+                        ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                        required: z.ZodOptional<z.ZodBoolean>;
+                    }, z.core.$loose>;
+                    message: z.ZodOptional<z.ZodString>;
+                }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodString;
                     message: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>]>>>;
@@ -2131,6 +2323,14 @@ export const namedSchemas: {
                 multiple: z.ZodOptional<z.ZodBoolean>;
                 resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
                 accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                rotate: z.ZodOptional<z.ZodBoolean>;
+                focalPoint: z.ZodOptional<z.ZodBoolean>;
+                transformBase: z.ZodOptional<z.ZodEnum<{
+                    media: "media";
+                    original: "original";
+                    choose: "choose";
+                }>>;
                 from: z.ZodOptional<z.ZodString>;
                 display: z.ZodOptional<z.ZodString>;
                 fields: z.ZodOptional<z.ZodArray<typeof Field>>;
@@ -2493,6 +2693,13 @@ export const namedSchemas: {
                     }, z.core.$loose>]>;
                     message: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"crop">;
+                    value: z.ZodObject<{
+                        ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                        required: z.ZodOptional<z.ZodBoolean>;
+                    }, z.core.$loose>;
+                    message: z.ZodOptional<z.ZodString>;
+                }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodString;
                     message: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>]>>>;
@@ -2514,6 +2721,14 @@ export const namedSchemas: {
                 multiple: z.ZodOptional<z.ZodBoolean>;
                 resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
                 accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                rotate: z.ZodOptional<z.ZodBoolean>;
+                focalPoint: z.ZodOptional<z.ZodBoolean>;
+                transformBase: z.ZodOptional<z.ZodEnum<{
+                    media: "media";
+                    original: "original";
+                    choose: "choose";
+                }>>;
                 from: z.ZodOptional<z.ZodString>;
                 display: z.ZodOptional<z.ZodString>;
                 fields: z.ZodOptional<z.ZodArray<typeof Field>>;
@@ -2662,6 +2877,13 @@ export const namedSchemas: {
                         }, z.core.$loose>]>;
                         message: z.ZodOptional<z.ZodString>;
                     }, z.core.$loose>, z.ZodObject<{
+                        rule: z.ZodLiteral<"crop">;
+                        value: z.ZodObject<{
+                            ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                            required: z.ZodOptional<z.ZodBoolean>;
+                        }, z.core.$loose>;
+                        message: z.ZodOptional<z.ZodString>;
+                    }, z.core.$loose>, z.ZodObject<{
                         rule: z.ZodString;
                         message: z.ZodOptional<z.ZodString>;
                     }, z.core.$loose>]>>>;
@@ -2683,6 +2905,14 @@ export const namedSchemas: {
                     multiple: z.ZodOptional<z.ZodBoolean>;
                     resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
                     accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                    ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                    rotate: z.ZodOptional<z.ZodBoolean>;
+                    focalPoint: z.ZodOptional<z.ZodBoolean>;
+                    transformBase: z.ZodOptional<z.ZodEnum<{
+                        media: "media";
+                        original: "original";
+                        choose: "choose";
+                    }>>;
                     from: z.ZodOptional<z.ZodString>;
                     display: z.ZodOptional<z.ZodString>;
                     fields: z.ZodOptional<z.ZodArray<typeof Field>>;
@@ -3081,6 +3311,11 @@ export const namedSchemas: {
             x: z.ZodNumber;
             y: z.ZodNumber;
         }, z.core.$loose>>;
+        base: z.ZodOptional<z.ZodEnum<{
+            media: "media";
+            original: "original";
+        }>>;
+        baseTransform: z.ZodOptional<typeof MediaTransform>;
     }, z.core.$loose>;
     StoredFile: z.ZodObject<{
         name: z.ZodString;
@@ -3147,6 +3382,26 @@ export const namedSchemas: {
             ready: "ready";
         }>>;
         metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+        transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            crop: z.ZodOptional<z.ZodObject<{
+                x: z.ZodNumber;
+                y: z.ZodNumber;
+                width: z.ZodNumber;
+                height: z.ZodNumber;
+            }, z.core.$loose>>;
+            rotate: z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<0>, z.ZodLiteral<90>, z.ZodLiteral<180>, z.ZodLiteral<270>]>>;
+            flipX: z.ZodOptional<z.ZodBoolean>;
+            flipY: z.ZodOptional<z.ZodBoolean>;
+            focalPoint: z.ZodOptional<z.ZodObject<{
+                x: z.ZodNumber;
+                y: z.ZodNumber;
+            }, z.core.$loose>>;
+            base: z.ZodOptional<z.ZodEnum<{
+                media: "media";
+                original: "original";
+            }>>;
+            baseTransform: z.ZodOptional<typeof MediaTransform>;
+        }, z.core.$loose>>>;
     }, z.core.$loose>;
     MediaItem: z.ZodObject<{
         id: z.ZodString;
@@ -3173,6 +3428,26 @@ export const namedSchemas: {
                 ready: "ready";
             }>>;
             metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+            transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+                crop: z.ZodOptional<z.ZodObject<{
+                    x: z.ZodNumber;
+                    y: z.ZodNumber;
+                    width: z.ZodNumber;
+                    height: z.ZodNumber;
+                }, z.core.$loose>>;
+                rotate: z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<0>, z.ZodLiteral<90>, z.ZodLiteral<180>, z.ZodLiteral<270>]>>;
+                flipX: z.ZodOptional<z.ZodBoolean>;
+                flipY: z.ZodOptional<z.ZodBoolean>;
+                focalPoint: z.ZodOptional<z.ZodObject<{
+                    x: z.ZodNumber;
+                    y: z.ZodNumber;
+                }, z.core.$loose>>;
+                base: z.ZodOptional<z.ZodEnum<{
+                    media: "media";
+                    original: "original";
+                }>>;
+                baseTransform: z.ZodOptional<typeof MediaTransform>;
+            }, z.core.$loose>>>;
         }, z.core.$loose>;
     }, z.core.$loose>;
     MediaReference: z.ZodObject<{
@@ -3200,6 +3475,26 @@ export const namedSchemas: {
                 ready: "ready";
             }>>;
             metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+            transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+                crop: z.ZodOptional<z.ZodObject<{
+                    x: z.ZodNumber;
+                    y: z.ZodNumber;
+                    width: z.ZodNumber;
+                    height: z.ZodNumber;
+                }, z.core.$loose>>;
+                rotate: z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<0>, z.ZodLiteral<90>, z.ZodLiteral<180>, z.ZodLiteral<270>]>>;
+                flipX: z.ZodOptional<z.ZodBoolean>;
+                flipY: z.ZodOptional<z.ZodBoolean>;
+                focalPoint: z.ZodOptional<z.ZodObject<{
+                    x: z.ZodNumber;
+                    y: z.ZodNumber;
+                }, z.core.$loose>>;
+                base: z.ZodOptional<z.ZodEnum<{
+                    media: "media";
+                    original: "original";
+                }>>;
+                baseTransform: z.ZodOptional<typeof MediaTransform>;
+            }, z.core.$loose>>>;
         }, z.core.$loose>>;
         transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
             crop: z.ZodOptional<z.ZodObject<{
@@ -3215,6 +3510,11 @@ export const namedSchemas: {
                 x: z.ZodNumber;
                 y: z.ZodNumber;
             }, z.core.$loose>>;
+            base: z.ZodOptional<z.ZodEnum<{
+                media: "media";
+                original: "original";
+            }>>;
+            baseTransform: z.ZodOptional<typeof MediaTransform>;
         }, z.core.$loose>>>;
     }, z.core.$loose>;
     Session: z.ZodObject<{
@@ -3278,10 +3578,13 @@ export const Pagination: z.ZodObject<{
 export type Pagination = z.infer<typeof Pagination>;
 
 // @public
+export function parseRatio(ratio: string): number | null;
+
+// @public
 export type PartialTheme = Partial<Theme>;
 
 // @public
-export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "in", "accept", "maxSize", "before", "after"];
+export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "in", "accept", "maxSize", "before", "after", "crop"];
 
 // @public (undocumented)
 export type PortableRule = (typeof PORTABLE_RULES)[number];
@@ -3332,6 +3635,12 @@ export type ReadSearchQueryResult = {
     query?: undefined;
     errors: Record<string, string[]>;
 };
+
+// @public
+export function renderedCropSize(transform: Pick<MediaTransform, 'crop' | 'rotate'>): {
+    width: number;
+    height: number;
+} | null;
 
 // @public (undocumented)
 export const Resource: z.ZodObject<{
@@ -3400,6 +3709,13 @@ export const Resource: z.ZodObject<{
             }, z.core.$loose>]>;
             message: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"crop">;
+            value: z.ZodObject<{
+                ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                required: z.ZodOptional<z.ZodBoolean>;
+            }, z.core.$loose>;
+            message: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodString;
             message: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>]>>>;
@@ -3421,6 +3737,14 @@ export const Resource: z.ZodObject<{
         multiple: z.ZodOptional<z.ZodBoolean>;
         resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        rotate: z.ZodOptional<z.ZodBoolean>;
+        focalPoint: z.ZodOptional<z.ZodBoolean>;
+        transformBase: z.ZodOptional<z.ZodEnum<{
+            media: "media";
+            original: "original";
+            choose: "choose";
+        }>>;
         from: z.ZodOptional<z.ZodString>;
         display: z.ZodOptional<z.ZodString>;
         fields: z.ZodOptional<z.ZodArray<typeof Field>>;
@@ -3569,6 +3893,13 @@ export const Resource: z.ZodObject<{
                 }, z.core.$loose>]>;
                 message: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"crop">;
+                value: z.ZodObject<{
+                    ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                    required: z.ZodOptional<z.ZodBoolean>;
+                }, z.core.$loose>;
+                message: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodString;
                 message: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>]>>>;
@@ -3590,6 +3921,14 @@ export const Resource: z.ZodObject<{
             multiple: z.ZodOptional<z.ZodBoolean>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             accept: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            rotate: z.ZodOptional<z.ZodBoolean>;
+            focalPoint: z.ZodOptional<z.ZodBoolean>;
+            transformBase: z.ZodOptional<z.ZodEnum<{
+                media: "media";
+                original: "original";
+                choose: "choose";
+            }>>;
             from: z.ZodOptional<z.ZodString>;
             display: z.ZodOptional<z.ZodString>;
             fields: z.ZodOptional<z.ZodArray<typeof Field>>;
@@ -3721,6 +4060,13 @@ export const Rule: z.ZodUnion<readonly [z.ZodObject<{
     value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
         field: z.ZodString;
     }, z.core.$loose>]>;
+    message: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>, z.ZodObject<{
+    rule: z.ZodLiteral<"crop">;
+    value: z.ZodObject<{
+        ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        required: z.ZodOptional<z.ZodBoolean>;
+    }, z.core.$loose>;
     message: z.ZodOptional<z.ZodString>;
 }, z.core.$loose>, z.ZodObject<{
     rule: z.ZodString;

@@ -25,4 +25,15 @@ describe('useFormatRuleFailure', () => {
         expect(format({ rule: 'unique' }, 'title')).toBe('This value is invalid.');
         expect(format({ rule: 'required', message: 'Custom.' }, 'title')).toBe('Custom.');
     });
+
+    it('names the ratios of a crop', () => {
+        const { result } = renderHook(() => useFormatRuleFailure(FIELDS));
+        const format = result.current;
+        expect(format({ rule: 'crop', value: { ratios: ['16:9', '1:1'] } }, 'title')).toBe(
+            'Crop the image to 16:9 or 1:1.',
+        );
+        expect(format({ rule: 'crop', value: { required: true } }, 'title')).toBe(
+            'Crop the image for this use.',
+        );
+    });
 });

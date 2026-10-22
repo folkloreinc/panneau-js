@@ -8,8 +8,8 @@ const COUNTED = new Set(['repeater', 'relation', 'media', 'select']);
 
 /**
  * Translates the failures of the portable rules with react-intl, for `formatError`. `min` and
- * `max` say "characters" for texts and "items" for lists, from the field at the path. A rule's own
- * `message` wins.
+ * `max` say "characters" for texts and "items" for lists, from the field at the path, and `crop`
+ * names its ratios. A rule's own `message` wins.
  */
 export function useFormatRuleFailure(
     fields: readonly Field[],
@@ -40,13 +40,33 @@ export function useFormatRuleFailure(
                     : 'maxLength';
             return intl.formatMessage(messages.rule[key], { value });
         }
+        if (failure.rule === 'crop') {
+            const given =
+                typeof failure.value === 'object' && failure.value !== null
+                    ? (failure.value as { ratios?: unknown }).ratios
+                    : undefined;
+            const ratios = Array.isArray(given)
+                ? given.filter((ratio): ratio is string => typeof ratio === 'string')
+                : [];
+            return ratios.length > 0
+                ? intl.formatMessage(messages.rule.cropRatios, {
+                      ratios: intl.formatList(ratios, { type: 'disjunction' }),
+                  })
+                : intl.formatMessage(messages.rule.crop);
+        }
         const rule = failure.rule as keyof typeof messages.rule;
         if (rule in messages.rule && rule !== 'min' && rule !== 'max') {
             return intl.formatMessage(
                 messages.rule[
                     rule as Exclude<
                         typeof rule,
-                        'min' | 'max' | 'minLength' | 'maxLength' | 'minItems' | 'maxItems'
+                        | 'min'
+                        | 'max'
+                        | 'minLength'
+                        | 'maxLength'
+                        | 'minItems'
+                        | 'maxItems'
+                        | 'cropRatios'
                     >
                 ],
             );

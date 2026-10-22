@@ -100,8 +100,11 @@ describe('@panneau/protocol/runtime', () => {
             'isSearchableResource',
             'lintDefinition',
             'matchesFilterRange',
+            'matchesRatio',
             'mergeThemes',
+            'parseRatio',
             'readSearchQuery',
+            'renderedCropSize',
             'toSearchParams',
             'toSearchQueryParams',
         ]);

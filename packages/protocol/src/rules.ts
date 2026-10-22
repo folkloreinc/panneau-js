@@ -1,6 +1,7 @@
 import { evaluateCondition } from './conditions';
 import { PORTABLE_RULES } from './constants';
 import type { Field, Rule } from './schemas/field';
+import { matchesRatio, renderedCropSize } from './transforms';
 import { getValue, isFilled, isRecord } from './values';
 
 /** A rule that a value doesn't satisfy. */
@@ -71,6 +72,26 @@ function mediaList(value: unknown): Record<string, unknown>[] {
     return list.filter(isRecord);
 }
 
+/**
+ * Whether each image of a value has the crop the `crop` rule asks for (decision 0031): a crop when
+ * it is required, and one of the ratios once rendered. An id alone has no crop.
+ */
+function hasCrop(value: unknown, rule: { ratios?: string[]; required?: boolean }): boolean {
+    const entries = Array.isArray(value) ? value : [value];
+    return entries.every((entry) => {
+        const transform = isRecord(entry) && isRecord(entry.transform) ? entry.transform : {};
+        const size = renderedCropSize(transform);
+        if (size === null) {
+            return rule.required !== true;
+        }
+        const ratios = rule.ratios ?? [];
+        return (
+            ratios.length === 0 ||
+            ratios.some((ratio) => matchesRatio(size.width, size.height, ratio))
+        );
+    });
+}
+
 function toTime(value: unknown): number | null {
     if (typeof value !== 'string' && typeof value !== 'number') {
         return null;
@@ -137,6 +158,9 @@ export function checkRules(
                     (media) =>
                         typeof media.size !== 'number' || media.size <= (rule.value as number),
                 );
+                break;
+            case 'crop':
+                valid = !isRecord(rule.value) || hasCrop(value, rule.value);
                 break;
             case 'before':
             case 'after': {

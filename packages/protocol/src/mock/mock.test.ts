@@ -255,6 +255,70 @@ describe('createMockBackend', () => {
         });
     });
 
+    it('references images, checks the crop rule, and gives the own transform of a media', async () => {
+        const definition = createExampleDefinition();
+        const library = definition.resources.find((resource) => resource.id === 'media');
+        const authors = definition.resources.find((resource) => resource.id === 'authors');
+        if (library === undefined || authors === undefined) {
+            throw new Error('The example has no media library or no authors.');
+        }
+        library.fields.push({ name: 'transform', type: 'transform' });
+        authors.fields.push({
+            name: 'cover',
+            type: 'image',
+            rules: [{ rule: 'crop', value: { ratios: ['16:9'], required: true } }],
+        });
+        const backend = createMockBackend({ definition });
+        const post = async (path: string, body: unknown) =>
+            backend.fetch(`/panneau/api${path}`, json(body, { method: 'POST' }));
+        const signed = (await (
+            await post('/uploads/sign', { method: 'PUT', key: 'hiker.jpg' })
+        ).json()) as { upload: string };
+        await post(`/uploads/${signed.upload}/complete`, { name: 'hiker.jpg' });
+
+        // A photo stored sideways, which its library turns upright.
+        const created = await post('/resources/media', {
+            file: { upload: signed.upload, mime: 'image/jpeg', size: 2048 },
+            name: 'Hiker',
+            transform: { rotate: 90 },
+        });
+        const media = ((await created.json()) as { data: { id: string; media: unknown } }).data;
+        expect(media.media).toEqual(expect.objectContaining({ transform: { rotate: 90 } }));
+
+        const uncropped = await post('/resources/authors', { name: 'Ada', cover: media.id });
+        expect(uncropped.status).toBe(422);
+        expect(await uncropped.json()).toMatchObject({
+            errors: { cover: ['Crop this image to 16:9.'] },
+        });
+
+        const transform = {
+            base: 'media',
+            baseTransform: { rotate: 90 },
+            crop: { x: 0, y: 900, width: 3024, height: 1701 },
+        };
+        const author = await post('/resources/authors', {
+            name: 'Ada',
+            cover: { id: media.id, transform },
+        });
+        expect(author.status).toBe(201);
+        const cover = ((await author.json()) as { data: Record<string, unknown> }).data.cover;
+        expect(cover).toEqual({
+            id: media.id,
+            label: 'Hiker',
+            media: expect.objectContaining({ transform: { rotate: 90 } }),
+            transform,
+        });
+
+        // The media's own transform changes: its references give the new one.
+        const updated = await backend.fetch(
+            `/panneau/api/resources/media/${media.id}`,
+            json({ transform: { rotate: 270 } }, { method: 'PATCH' }),
+        );
+        expect(((await updated.json()) as { data: { media: unknown } }).data.media).toEqual(
+            expect.objectContaining({ transform: { rotate: 270 } }),
+        );
+    });
+
     it('needs the library of the media of a field that allows several', async () => {
         const definition = createExampleDefinition();
         const library = definition.resources.find((resource) => resource.id === 'media');
