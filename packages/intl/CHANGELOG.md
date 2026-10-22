@@ -1,5 +1,11 @@
 # @panneau/intl
 
+## 5.0.0-alpha.4
+
+### Minor Changes
+
+- 3974fb5: Messages of the upload fields, in English and French: those of the file field and the upload list in `fieldsMessages` (`panneau.fields.*`), and those of the media field in a new `mediaMessages` (`panneau.media.*`).
+
 ## 5.0.0-alpha.3
 
 ### Minor Changes
