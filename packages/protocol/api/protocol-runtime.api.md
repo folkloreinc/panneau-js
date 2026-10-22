@@ -70,6 +70,11 @@ export type FilterValue = string | number | boolean | Array<string | number | bo
 export function fromSearchParams(params: URLSearchParams): ListQuery;
 
 // @public
+export function getMediaLibraries(definition: MediaLibrariesDefinition | null, field: {
+    resource?: string | readonly string[] | undefined;
+}): string[];
+
+// @public
 export function getValue(values: unknown, path: string): unknown;
 
 // @public
@@ -104,6 +109,15 @@ export interface ListQuery {
 
 // @public
 export function matchesFilterRange(value: unknown, range: FilterRange): boolean;
+
+// @public
+export interface MediaLibrariesDefinition {
+    // (undocumented)
+    resources: readonly {
+        id: string;
+        kind?: string | undefined;
+    }[];
+}
 
 // Warning: (ae-forgotten-export) The symbol "Theme" needs to be exported by the entry point index.d.ts
 //

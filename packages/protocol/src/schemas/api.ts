@@ -260,6 +260,10 @@ export const MediaItem = Item.extend({
 export const MediaReference = z
     .looseObject({
         id: Id,
+        resource: z.string().optional().meta({
+            description:
+                'The library of the media. Required for a field that allows several libraries, since ids are unique only within their resource (decision 0027).',
+        }),
         label: z.string().optional().meta({ description: 'The `itemTitle` of the media.' }),
         media: MediaInfo.optional(),
         transform: MediaTransform.nullable().optional().meta({
@@ -268,7 +272,7 @@ export const MediaReference = z
     })
     .meta({
         description:
-            'The value of a `media` field in items: the media, with what lists and fields show, and its edits for this use. Requests send the id, or `{ id, transform }`.',
+            'The value of a `media` field in items: the media, with what lists and fields show, and its edits for this use. Requests send the id, or `{ id, resource, transform }`: `resource` is required when the field allows several libraries.',
     });
 
 export const Session = z.looseObject({ user: User });

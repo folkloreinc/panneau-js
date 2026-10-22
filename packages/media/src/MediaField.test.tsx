@@ -230,6 +230,77 @@ describe('MediaField', () => {
         );
     });
 
+    it('reads each media in its own library: ids are unique only within one', async () => {
+        const get = vi
+            .fn<MediaAdapter['get']>()
+            .mockImplementation((resource, id) =>
+                Promise.resolve(item({ status: 'ready' }, { id, title: `${resource}/${id}` })),
+            );
+        const adapter: MediaAdapter = { create: vi.fn<MediaAdapter['create']>(), get };
+        const onChange = vi.fn();
+        renderInRoot(
+            <MediaField
+                label="Files"
+                resource="documents"
+                itemTitle="title"
+                multiple
+                adapter={adapter}
+                refreshInterval={10}
+                value={[
+                    reference({ status: 'processing' }, { resource: 'media' }),
+                    reference({ status: 'processing' }, { resource: 'documents' }),
+                ]}
+                onChange={onChange}
+            />,
+        );
+
+        await waitFor(() =>
+            expect(onChange).toHaveBeenCalledWith([
+                expect.objectContaining({ resource: 'media', label: 'media/med_1' }),
+                expect.objectContaining({ resource: 'documents', label: 'documents/med_1' }),
+            ]),
+        );
+        expect(get).toHaveBeenCalledWith('media', 'med_1', expect.anything());
+        expect(get).toHaveBeenCalledWith('documents', 'med_1', expect.anything());
+    });
+
+    it('uploads to the first library it allows, and references the media with its library', async () => {
+        const create = vi.fn<MediaAdapter['create']>().mockResolvedValue(item());
+        const adapter = { create, get: vi.fn() } as unknown as DataAdapter;
+        const definition = {
+            resources: [...library.resources, { ...library.resources[0], id: 'documents' }],
+        } as unknown as Definition;
+        const onChange = vi.fn();
+        const { container } = renderInRoot(
+            <PanneauProvider definition={definition}>
+                <DataAdapterProvider adapter={adapter}>
+                    <MediaFieldEntry
+                        field={{
+                            name: 'files',
+                            type: 'media',
+                            label: 'Files',
+                            multiple: true,
+                            resource: ['documents', 'media'],
+                        }}
+                        path="files"
+                        value={null}
+                        onChange={onChange}
+                    />
+                </DataAdapterProvider>
+            </PanneauProvider>,
+        );
+
+        const chosen = file('notes.pdf', 'application/pdf');
+        await userEvent.upload(fileInput(container), chosen);
+
+        expect(create).toHaveBeenCalledWith('documents', { file: chosen });
+        await waitFor(() =>
+            expect(onChange).toHaveBeenCalledWith([
+                expect.objectContaining({ id: 'med_1', resource: 'documents' }),
+            ]),
+        );
+    });
+
     it('only shows its media without a library in the definition', () => {
         renderInRoot(
             <MediaFieldEntry

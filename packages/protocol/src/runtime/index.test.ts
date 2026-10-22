@@ -88,6 +88,7 @@ describe('@panneau/protocol/runtime', () => {
             'checkValues',
             'evaluateCondition',
             'fromSearchParams',
+            'getMediaLibraries',
             'getValue',
             'isFilled',
             'isFilterRange',

@@ -352,7 +352,9 @@ export function RelationField(props: RelationFieldProps) {
 export function RelationFieldEntry(props: FieldEntryProps) {
     const { field } = props;
     const references = toReferences(props.value);
-    const shared = { ...getFieldProps(props), resource: field.resource ?? '' };
+    // A relation names one resource: `lintDefinition()` reports a list (only `media` fields take one).
+    const resource = typeof field.resource === 'string' ? field.resource : '';
+    const shared = { ...getFieldProps(props), resource };
     if (field.multiple === true) {
         return <RelationField {...shared} multiple value={references} onChange={props.onChange} />;
     }

@@ -85,6 +85,11 @@ function checkResource(resource: ResourceInput, path: string, issues: Validation
                 path: `${path}.fields.${index}.resource`,
                 message: 'A `relation` field needs a `resource`.',
             });
+        } else if (field.type === 'relation' && Array.isArray(field.resource)) {
+            issues.push({
+                path: `${path}.fields.${index}.resource`,
+                message: 'A `relation` field names one resource.',
+            });
         }
     });
 }
@@ -105,7 +110,7 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
         resource.fields.forEach((field, fieldIndex) => {
             if (
                 field.type === 'relation' &&
-                field.resource !== undefined &&
+                typeof field.resource === 'string' &&
                 !resourceIds.has(field.resource)
             ) {
                 issues.push({
@@ -116,19 +121,26 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
             if (field.type === 'media') {
                 const fieldPath = `resources.${index}.fields.${fieldIndex}.resource`;
                 if (field.resource === undefined) {
-                    if (libraries.length !== 1) {
+                    // Every library of the definition (decision 0027).
+                    if (libraries.length === 0) {
                         issues.push({
                             path: fieldPath,
-                            message:
-                                libraries.length === 0
-                                    ? 'A `media` field needs a resource of kind `media`.'
-                                    : 'A `media` field needs a `resource` when there are several libraries.',
+                            message: 'A `media` field needs a resource of kind `media`.',
                         });
                     }
-                } else if (!libraries.includes(field.resource)) {
-                    issues.push({
-                        path: fieldPath,
-                        message: `No resource of kind \`media\` named \`${field.resource}\`.`,
+                } else {
+                    const named =
+                        typeof field.resource === 'string' ? [field.resource] : field.resource;
+                    named.forEach((id, idIndex) => {
+                        if (!libraries.includes(id)) {
+                            issues.push({
+                                path:
+                                    typeof field.resource === 'string'
+                                        ? fieldPath
+                                        : `${fieldPath}.${String(idIndex)}`,
+                                message: `No resource of kind \`media\` named \`${id}\`.`,
+                            });
+                        }
                     });
                 }
             }

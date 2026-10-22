@@ -20,6 +20,7 @@ import {
 } from '@panneau/fields';
 import { fieldsMessages, mediaMessages as messages } from '@panneau/intl';
 import type { Definition, Item, MediaInfo, MediaReference } from '@panneau/protocol';
+import { getMediaLibraries } from '@panneau/protocol/runtime';
 import { Badge, Fieldset, IconButton, Spinner, usePanneauIntl } from '@panneau/ui';
 
 import styles from './MediaField.module.css';
@@ -75,12 +76,15 @@ export function toMediaReference(value: unknown, itemTitle = 'name'): MediaRefer
     if (typeof value !== 'object' || value === null) {
         return null;
     }
-    const { id, label, media, transform } = value as Record<string, unknown>;
+    const { id, resource, label, media, transform } = value as Record<string, unknown>;
     if (typeof id !== 'string' && typeof id !== 'number') {
         return null;
     }
     const title = (value as Record<string, unknown>)[itemTitle];
     const reference: MediaReference = { id: String(id) };
+    if (typeof resource === 'string') {
+        reference.resource = resource;
+    }
     if (typeof label === 'string') {
         reference.label = label;
     } else if (typeof title === 'string') {
@@ -110,20 +114,16 @@ export function isProcessing(reference: MediaReference): boolean {
 }
 
 /**
- * The library of a `media` field: its `resource`, or the only resource of kind `media` of the
- * definition.
+ * The first library a `media` field allows (decision 0027): the one its `resource` names, the
+ * first one it lists, or the first resource of kind `media` of the definition when it names none.
+ * The field uploads to it.
  */
 export function getLibrary(
     definition: Pick<Definition, 'resources'> | null,
-    resource: string | undefined,
+    resource: string | readonly string[] | undefined,
 ): Definition['resources'][number] | null {
-    const libraries = (definition?.resources ?? []).filter(
-        (candidate) => candidate.kind === 'media',
-    );
-    if (resource !== undefined) {
-        return libraries.find((candidate) => candidate.id === resource) ?? null;
-    }
-    return libraries.length === 1 ? (libraries[0] ?? null) : null;
+    const [first] = getMediaLibraries(definition, { resource });
+    return definition?.resources.find((candidate) => candidate.id === first) ?? null;
 }
 
 /**
@@ -135,25 +135,37 @@ function useMediaRefresh(
     resource: string,
     adapter: MediaAdapter | null,
     interval: number,
-    onRefresh: (refreshed: Item[]) => void,
+    onRefresh: (refreshed: { resource: string; item: Item }[]) => void,
 ) {
     const latest = useRef(onRefresh);
     useEffect(() => {
         latest.current = onRefresh;
     });
+    // Each media is read in its own library: ids are unique only within a library.
     const waiting = media
         .filter(isProcessing)
-        .map((item) => `${item.id}:${item.media?.status ?? ''}`);
-    const key = waiting.join(',');
+        .map((item) =>
+            JSON.stringify([item.resource ?? resource, item.id, item.media?.status ?? '']),
+        );
+    const key = waiting.join('\n');
 
     useEffect(() => {
         if (adapter === null || key === '') {
             return undefined;
         }
-        const ids = key.split(',').map((entry) => entry.slice(0, entry.lastIndexOf(':')));
+        const entries = key.split('\n').map((entry) => {
+            const [library, id] = JSON.parse(entry) as [string, string];
+            return { library, id };
+        });
         const controller = new AbortController();
         const timer = setTimeout(() => {
-            Promise.all(ids.map((id) => adapter.get(resource, id, { signal: controller.signal })))
+            Promise.all(
+                entries.map(({ library, id }) =>
+                    adapter
+                        .get(library, id, { signal: controller.signal })
+                        .then((item) => ({ resource: library, item })),
+                ),
+            )
                 .then((refreshed) => {
                     if (!controller.signal.aborted) {
                         latest.current(refreshed);
@@ -222,7 +234,11 @@ export function MediaField(props: MediaFieldProps) {
     useMediaRefresh(media, resource, adapter, refreshInterval, (refreshed) =>
         set(
             latest.current.map((reference) => {
-                const item = refreshed.find((candidate) => candidate.id === reference.id);
+                const item = refreshed.find(
+                    (candidate) =>
+                        candidate.item.id === reference.id &&
+                        candidate.resource === (reference.resource ?? resource),
+                )?.item;
                 const fresh = item !== undefined ? toMediaReference(item, itemTitle) : null;
                 return fresh !== null
                     ? { ...reference, ...fresh, transform: reference.transform }
@@ -244,7 +260,11 @@ export function MediaField(props: MediaFieldProps) {
             adapter
                 .create(resource, { file: file instanceof File ? file : { upload: file.upload } })
                 .then((item) => {
-                    const created = toMediaReference(item, itemTitle) ?? { id: item.id };
+                    // With its library, which a field that allows several needs (decision 0027).
+                    const created = {
+                        ...(toMediaReference(item, itemTitle) ?? { id: item.id }),
+                        resource,
+                    };
                     set(multiple ? [...latest.current, created] : [created]);
                 })
                 .catch((error: unknown) =>
@@ -383,8 +403,8 @@ export function MediaField(props: MediaFieldProps) {
 }
 
 /**
- * The registry entry of the `media` type: the field's library (`resource`, or the only `media`
- * resource of the definition), `multiple`, `accept` (or its `accept` rule) and `maxSize` rule,
+ * The registry entry of the `media` type: the field's first library (`getLibrary()`), which it
+ * uploads to, `multiple`, `accept` (or its `accept` rule) and `maxSize` rule,
  * with the adapter of `@panneau/data` and the upload source of the fields context. Without a
  * library, the field shows its media and can't add any.
  */
@@ -395,7 +415,7 @@ export function MediaFieldEntry(props: FieldEntryProps) {
     const itemTitle = library?.itemTitle ?? 'name';
     const common = {
         ...getFieldProps(props),
-        resource: library?.id ?? field.resource ?? '',
+        resource: library?.id ?? (typeof field.resource === 'string' ? field.resource : ''),
         itemTitle,
         accept: getAccept(field),
         maxSize: getMaxSize(field),
