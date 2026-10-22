@@ -277,15 +277,23 @@ export const MediaReference = z
 
 export const Session = z.looseObject({ user: User });
 
-export const SearchResponse = z.looseObject({
-    data: z.array(
-        z.looseObject({
-            resource: z.string(),
-            items: z.array(Item),
-            total: z.number().int().nonnegative().optional(),
-        }),
-    ),
-});
+export const SearchResponse = z
+    .looseObject({
+        data: z.array(
+            z.looseObject({
+                resource: z.string().meta({ description: 'The id of the resource.' }),
+                items: z.array(Item),
+                total: z.number().int().nonnegative().optional().meta({
+                    description:
+                        'How many items of the resource match, when the backend counts them: the list of the resource, searched, shows them all.',
+                }),
+            }),
+        ),
+    })
+    .meta({
+        description:
+            'The results of the global search: the resources with results, in the order of the definition.',
+    });
 
 export const PreviewResponse = z.looseObject({ url: z.string(), expiresAt: z.string().optional() });
 

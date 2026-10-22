@@ -1413,7 +1413,30 @@
                         "name": "q",
                         "in": "query",
                         "required": true,
-                        "description": "Search terms.",
+                        "description": "Search terms, trimmed.",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 2,
+                            "maxLength": 255
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "description": "Items per resource.",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 20,
+                            "default": 5
+                        }
+                    },
+                    {
+                        "name": "resources",
+                        "in": "query",
+                        "required": false,
+                        "description": "Comma-separated ids of the searchable resources to search. Defaults to every one.",
                         "schema": {
                             "type": "string"
                         }
@@ -1421,7 +1444,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Results grouped by resource.",
+                        "description": "Results grouped by resource, in the order of the definition: at most `limit` items per resource, and 20 in all.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1432,6 +1455,26 @@
                     },
                     "401": {
                         "description": "Not authenticated.",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid values: messages are in `errors`, keyed by dot path.",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: `Retry-After` gives the seconds to wait.",
                         "content": {
                             "application/problem+json": {
                                 "schema": {
@@ -4078,7 +4121,8 @@
                             "type": "object",
                             "properties": {
                                 "resource": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "description": "The id of the resource."
                                 },
                                 "items": {
                                     "type": "array",
@@ -4087,6 +4131,7 @@
                                     }
                                 },
                                 "total": {
+                                    "description": "How many items of the resource match, when the backend counts them: the list of the resource, searched, shows them all.",
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 9007199254740991
@@ -4103,7 +4148,8 @@
                 "required": [
                     "data"
                 ],
-                "additionalProperties": {}
+                "additionalProperties": {},
+                "description": "The results of the global search: the resources with results, in the order of the definition."
             },
             "PreviewResponse": {
                 "type": "object",

@@ -340,16 +340,40 @@ describe('createMockBackend', () => {
 
     it('searches the resources with a list search, from 2 characters', async () => {
         const backend = createBackend();
-        const search = async (q: string) =>
-            (await (
-                await backend.fetch(`/panneau/api/search?q=${encodeURIComponent(q)}`)
-            ).json()) as {
-                data: { resource: string; items: { title: unknown }[]; total: number }[];
+        const search = async (query: string) => {
+            const response = await backend.fetch(`/panneau/api/search?${query}`);
+            return {
+                status: response.status,
+                body: (await response.json()) as {
+                    data: { resource: string; items: { title: unknown }[]; total: number }[];
+                    errors?: Record<string, string[]>;
+                },
             };
-        const { data } = await search('acc');
-        expect(data.map(({ resource, total }) => [resource, total])).toEqual([['pages', 1]]);
-        expect(data[0]?.items[0]?.title).toEqual({ fr: 'Accueil' });
-        expect((await search('a')).data).toEqual([]);
+        };
+        const { body } = await search('q=acc');
+        expect(body.data.map(({ resource, total }) => [resource, total])).toEqual([['pages', 1]]);
+        expect(body.data[0]?.items[0]?.title).toEqual({ fr: 'Accueil' });
+
+        // "Accueil" and "Contact"
+        const limited = await search('q=ac&limit=1&resources=pages');
+        expect(limited.status).toBe(200);
+        expect(limited.body.data.map(({ items, total }) => [items.length, total])).toEqual([
+            [1, 2],
+        ]);
+    });
+
+    it('refuses an invalid search with a 422 problem', async () => {
+        const backend = createBackend();
+        const errors = async (query: string) => {
+            const response = await backend.fetch(`/panneau/api/search?${query}`);
+            expect(response.status).toBe(422);
+            expect(response.headers.get('Content-Type')).toBe('application/problem+json');
+            return Object.keys(((await response.json()) as { errors: object }).errors);
+        };
+        expect(await errors('q=a')).toEqual(['q']);
+        expect(await errors('q=acc&limit=0')).toEqual(['limit']);
+        expect(await errors('q=acc&limit=21')).toEqual(['limit']);
+        expect(await errors('q=acc&resources=unknown')).toEqual(['resources']);
     });
 
     it('answers unknown routes with a 404 problem', async () => {

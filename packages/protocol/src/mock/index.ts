@@ -15,6 +15,7 @@ import type {
     Upload,
     UploadSignResponse,
 } from '../schemas/api';
+import { SEARCH_MAX_LIMIT, readSearchQuery } from '../search';
 import { isRecord } from '../values';
 import { PROBLEM_CONTENT_TYPE } from '../version';
 
@@ -40,10 +41,6 @@ export interface MockBackend {
 }
 
 const RESERVED_KEYS = new Set(['id', 'version', 'abilities']);
-
-const SEARCH_MIN_LENGTH = 2;
-const SEARCH_RESOURCE_LIMIT = 5;
-const SEARCH_TOTAL_LIMIT = 20;
 
 function escapeHtml(text: string): string {
     return text.replace(/[&<>"']/g, (character) => `&#${character.charCodeAt(0)};`);
@@ -461,24 +458,28 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         return { values, problem: null };
     };
 
-    // The global search (decision 0029): searchable resources, 5 items each, 20 in all, from 2
-    // characters.
-    const search = (q: string): SearchResponse => {
-        if (q.trim().length < SEARCH_MIN_LENGTH) {
-            return { data: [] };
+    // The global search (decision 0029): the searchable resources asked for, `limit` items each
+    // (5 by default), 20 in all, from 2 characters.
+    const search = (params: URLSearchParams): Response => {
+        const read = readSearchQuery(params, definition);
+        if (read.errors !== undefined) {
+            return problem(422, 'The given data was invalid.', {
+                type: 'urn:panneau:problem:validation',
+                errors: read.errors,
+            });
         }
-        let left = SEARCH_TOTAL_LIMIT;
-        const data = definition.resources.flatMap((resource) => {
-            const searchable = resource.features?.search ?? resource.list?.search ?? false;
-            if (!searchable || left === 0) {
+        const { q, limit, resources } = read.query;
+        let left = SEARCH_MAX_LIMIT;
+        const data: SearchResponse['data'] = resources.flatMap((id) => {
+            if (left === 0) {
                 return [];
             }
-            const found = applyQuery(store.get(resource.id) ?? [], { q });
-            const items = found.slice(0, Math.min(SEARCH_RESOURCE_LIMIT, left));
+            const found = applyQuery(store.get(id) ?? [], { q });
+            const items = found.slice(0, Math.min(limit, left));
             left -= items.length;
-            return items.length > 0 ? [{ resource: resource.id, items, total: found.length }] : [];
+            return items.length > 0 ? [{ resource: id, items, total: found.length }] : [];
         });
-        return { data };
+        return json(200, { data } satisfies SearchResponse);
     };
 
     const handle = async (request: Request): Promise<Response> => {
@@ -501,7 +502,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             return json(200, definition);
         }
         if (segments.length === 1 && segments[0] === 'search' && method === 'GET') {
-            return json(200, search(url.searchParams.get('q') ?? ''));
+            return search(url.searchParams);
         }
         if (segments[0] === 'uploads') {
             return handleUploads(segments, method, readBody);

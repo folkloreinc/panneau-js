@@ -84,6 +84,10 @@ describe('@panneau/protocol/runtime', () => {
             'PORTABLE_RULES',
             'PROBLEM_CONTENT_TYPE',
             'PROTOCOL_VERSION',
+            'SEARCH_DEFAULT_LIMIT',
+            'SEARCH_MAX_LENGTH',
+            'SEARCH_MAX_LIMIT',
+            'SEARCH_MIN_LENGTH',
             'checkRules',
             'checkValues',
             'evaluateCondition',
@@ -93,10 +97,13 @@ describe('@panneau/protocol/runtime', () => {
             'isFilled',
             'isFilterRange',
             'isProblem',
+            'isSearchableResource',
             'lintDefinition',
             'matchesFilterRange',
             'mergeThemes',
+            'readSearchQuery',
             'toSearchParams',
+            'toSearchQueryParams',
         ]);
     });
 

@@ -79,6 +79,7 @@ describe('runConformance', () => {
             'list.unknown-resource',
             'item',
             'item.missing',
+            'search.invalid',
             'create.invalid',
             'update.conflict',
             'delete',
@@ -106,6 +107,56 @@ describe('runConformance', () => {
         expect(range?.status).toBe('failed');
         expect(range?.issues).toEqual([
             'Filtered from 9999-12-31, the list has 2 items, expected 0.',
+        ]);
+    });
+
+    it('reports a backend that ignores the parameters of the search', async () => {
+        const backend = createMockBackend({
+            definition: createDefinition(),
+            items: { pages: [{ title: { fr: 'Page 1' } }, { title: { fr: 'Page 2' } }] },
+        });
+        // A backend that only reads `q`, and never refuses it.
+        const qOnly = (input: string, init?: RequestInit) => {
+            const url = new URL(input);
+            if (url.pathname.endsWith('/search')) {
+                const q = url.searchParams.get('q') ?? '';
+                return backend.fetch(
+                    `${url.origin}${url.pathname}?q=${encodeURIComponent(q.padEnd(2, q))}`,
+                    init,
+                );
+            }
+            return backend.fetch(input, init);
+        };
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: qOnly,
+        });
+        expect(report.checks.find((check) => check.id === 'search')?.status).toBe('passed');
+        expect(
+            report.checks
+                .filter((check) => check.id.startsWith('search.'))
+                .map((check) => [check.id, check.status]),
+        ).toEqual([
+            ['search.scope', 'failed'],
+            ['search.invalid', 'failed'],
+        ]);
+    });
+
+    it('skips the search checks when the definition disables the global search', async () => {
+        const definition = { ...createDefinition(), search: { enabled: false } };
+        const backend = createMockBackend({ definition });
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: backend.fetch,
+        });
+        expect(
+            report.checks
+                .filter((check) => check.id.startsWith('search'))
+                .map((check) => [check.status, ...check.issues]),
+        ).toEqual([
+            ['skipped', 'The definition disables the global search.'],
+            ['skipped', 'The definition disables the global search.'],
+            ['skipped', 'The definition disables the global search.'],
         ]);
     });
 
