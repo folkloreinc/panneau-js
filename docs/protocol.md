@@ -551,16 +551,24 @@ With `auth.mode = "external"`, the frontend only calls `GET /auth/session` and s
 
 ### Search, dashboard, preview
 
-| Endpoint                                  | Purpose                                                                                  |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `GET /search?q=`                          | results grouped by resource: `{ "data": [ { "resource": "pages", "items": [...] } ] }`   |
-| `GET /dashboard/widgets/{widget}`         | data for one widget, with the widget's own shape declared in the definition              |
-| `POST /resources/{resource}/{id}/preview` | sends the unsaved values; returns `{ "url": "…", "expiresAt": "…" }` for iframe previews |
+| Endpoint                                  | Purpose                                                                                             |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `GET /search?q=&limit=&resources=`        | results grouped by resource: `{ "data": [ { "resource": "pages", "items": [...], "total": 34 } ] }` |
+| `GET /dashboard/widgets/{widget}`         | data for one widget, with the widget's own shape declared in the definition                         |
+| `POST /resources/{resource}/{id}/preview` | sends the unsaved values; returns `{ "url": "…", "expiresAt": "…" }` for iframe previews            |
 
 Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 
-- A resource is searched when its `features.search` is `true`, or, without it, when its list has a search (`list.search`).
-- Results are items, at most 5 per resource and 20 in all, from 2 characters. Their title is their resource's `itemTitle`; `itemSubtitle` and `itemImage` name the fields shown under it and next to it, in search results, cards and pickers.
+- **Searchable resources.** A resource is searched when its `features.search` is `true`, or, without it, when its list has a search (`list.search`), and the user can list it. With `"search": { "enabled": false }` in the definition, clients don't call `GET /search`.
+- **Parameters:**
+    - `q`: the search, trimmed, from 2 to 255 characters. The backend searches it the way the list of each resource reads `q`, within the same scope.
+    - `limit`: items per resource, an integer from 1 to 20. Defaults to 5.
+    - `resources`: comma-separated ids of searchable resources, to search only those (`resources=pages`). Defaults to every searchable resource.
+- **Results.** The resources with results, in the order of the definition, at most `limit` items each and 20 in all. Items are serialized as in lists. `total`, when the backend counts it, is how many items of the resource match: the list of the resource, with `q`, shows them all. An item's title is its resource's `itemTitle`; `itemSubtitle` and `itemImage` name the fields shown under it and next to it, in search results, cards and pickers.
+- **Errors:**
+    - an invalid parameter is a `422` problem, with `errors` keyed by parameter (`q`, `limit`, `resources`): a search shorter than 2 characters, a limit out of bounds, or a resource that isn't searchable;
+    - a backend can limit how often a user searches: `429`, with `Retry-After` in seconds. Clients wait for the next search, and say so.
+- **Reference.** `readSearchQuery()` of `@panneau/protocol/runtime` reads and validates these parameters; `toSearchQueryParams()` writes them.
 
 ## Conformance
 
@@ -576,7 +584,7 @@ Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 - **a light entry point for browsers** (`@panneau/protocol/runtime`): the constants and the helpers above that don't need the schemas (`checkValues()`, `evaluateCondition()`, `lintDefinition()`, the list query helpers, `isProblem()`), without loading zod. UI packages import them from there, and only types from the main entry point.
 - **generated files**: `@panneau/protocol/definition.schema.json` and `@panneau/protocol/boot.schema.json` (JSON Schema 2020-12), and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
 - **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes.
-- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one.
+- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`.
 
 ```ts
 import { formatReport, runConformance } from '@panneau/protocol/conformance';

@@ -21,7 +21,7 @@ import type {
 
 import type { ActionResponse, Values } from '../adapter';
 import { useDataAdapter } from './context';
-import { queryKeys } from './keys';
+import { type SearchKeyOptions, queryKeys } from './keys';
 import {
     definitionQueryOptions,
     itemPreviewQueryOptions,
@@ -83,15 +83,22 @@ export function useItemPreview(
 }
 
 /**
- * The global search: items of every searchable resource, grouped by resource (decision 0029).
- * Pass `enabled: false` until there is a query worth sending (2 characters), and debounce `q`.
+ * The global search: items of every searchable resource, or of those of `resources`, grouped by
+ * resource (decision 0029). Pass `enabled: false` until there is a query worth sending (2
+ * characters), and debounce `q`. A `429` fails with a
+ * `RateLimitedError`: don't retry it before its `retryAfter`.
  */
 export function useSearch(
     q: string,
-    options: QueryHookOptions<SearchResponse, ReturnType<typeof queryKeys.search>> = {},
+    {
+        limit,
+        resources,
+        ...options
+    }: QueryHookOptions<SearchResponse, ReturnType<typeof queryKeys.search>> &
+        SearchKeyOptions = {},
 ): UseQueryResult<SearchResponse> {
     const adapter = useDataAdapter();
-    return useQuery({ ...searchQueryOptions(adapter, q), ...options });
+    return useQuery({ ...searchQueryOptions(adapter, q, { limit, resources }), ...options });
 }
 
 /** Creates an item, then refetches the lists of the resource. */

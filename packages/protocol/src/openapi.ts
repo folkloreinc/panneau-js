@@ -4,6 +4,12 @@ import { createSchemaRegistry } from './schemas';
 import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
 import { Theme } from './schemas/theme';
+import {
+    SEARCH_DEFAULT_LIMIT,
+    SEARCH_MAX_LENGTH,
+    SEARCH_MAX_LIMIT,
+    SEARCH_MIN_LENGTH,
+} from './search';
 import { PROBLEM_CONTENT_TYPE, PROTOCOL_VERSION } from './version';
 
 type JsonObject = Record<string, unknown>;
@@ -26,6 +32,7 @@ const PROBLEMS: Record<number, string> = {
     409: 'Conflict with a business rule.',
     412: 'Version conflict: `If-Match` does not match the current version, which is in `current`.',
     422: 'Invalid values: messages are in `errors`, keyed by dot path.',
+    429: 'Too many requests: `Retry-After` gives the seconds to wait.',
 };
 
 function problems(...statuses: number[]): JsonObject {
@@ -449,13 +456,31 @@ export function createOpenApiDocument(): JsonObject {
                     operationId: 'search',
                     parameters: [
                         {
-                            ...queryParameter('q', 'Search terms.', { type: 'string' }),
+                            ...queryParameter('q', 'Search terms, trimmed.', {
+                                type: 'string',
+                                minLength: SEARCH_MIN_LENGTH,
+                                maxLength: SEARCH_MAX_LENGTH,
+                            }),
                             required: true,
                         },
+                        queryParameter('limit', 'Items per resource.', {
+                            type: 'integer',
+                            minimum: 1,
+                            maximum: SEARCH_MAX_LIMIT,
+                            default: SEARCH_DEFAULT_LIMIT,
+                        }),
+                        queryParameter(
+                            'resources',
+                            'Comma-separated ids of the searchable resources to search. Defaults to every one.',
+                            { type: 'string' },
+                        ),
                     ],
                     responses: {
-                        200: ok('Results grouped by resource.', ref('SearchResponse')),
-                        ...problems(401),
+                        200: ok(
+                            `Results grouped by resource, in the order of the definition: at most \`limit\` items per resource, and ${SEARCH_MAX_LIMIT} in all.`,
+                            ref('SearchResponse'),
+                        ),
+                        ...problems(401, 422, 429),
                     },
                 },
             },

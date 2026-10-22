@@ -27,6 +27,10 @@ export const uiMessages = {
         id: 'panneau.ui.commandResults',
         defaultMessage: '{count, plural, =0 {No results} one {# result} other {# results}}',
     }),
+    commandRemoveScope: defineMessage<{ scope: string }>({
+        id: 'panneau.ui.commandRemoveScope',
+        defaultMessage: 'Stop searching in {scope}',
+    }),
     commandHintMove: defineMessage({ id: 'panneau.ui.commandHintMove', defaultMessage: 'Move' }),
     commandHintOpen: defineMessage({ id: 'panneau.ui.commandHintOpen', defaultMessage: 'Open' }),
     commandHintClose: defineMessage({ id: 'panneau.ui.commandHintClose', defaultMessage: 'Close' }),

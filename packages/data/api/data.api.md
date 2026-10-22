@@ -38,6 +38,11 @@ export class ApiError extends Error {
 }
 
 // @public
+export interface ApiErrorOptions extends ErrorOptions {
+    retryAfter?: number | null;
+}
+
+// @public
 export class ConflictError extends ApiError {
     constructor(problem: Problem, options?: ErrorOptions);
     readonly current: Item | null;
@@ -46,7 +51,7 @@ export class ConflictError extends ApiError {
 }
 
 // @public
-export function createApiError(problem: Problem, options?: ErrorOptions): ApiError;
+export function createApiError(problem: Problem, options?: ApiErrorOptions): ApiError;
 
 // @public
 export function createRestAdapter(options: RestAdapterOptions): DataAdapter;
@@ -70,7 +75,7 @@ export interface DataAdapter {
     }): PresignedUploads;
     previewItem?(resource: string, id: string, values: Values, options?: RequestOptions): Promise<PreviewResponse>;
     runAction(resource: string, action: string, request: ActionRequest, options?: RequestOptions): Promise<ActionResponse>;
-    search(q: string, options?: RequestOptions): Promise<SearchResponse>;
+    search(q: string, options?: SearchOptions): Promise<SearchResponse>;
     update(resource: string, id: string, values: Values, options?: UpdateOptions): Promise<Item>;
 }
 
@@ -129,7 +134,18 @@ export interface PresignedUploads {
 }
 
 // @public
+export class RateLimitedError extends ApiError {
+    constructor(problem: Problem, options?: ApiErrorOptions);
+    // (undocumented)
+    readonly name: string;
+    readonly retryAfter: number | null;
+}
+
+// @public
 export function readProblem(response: Response): Promise<Problem>;
+
+// @public
+export function readRetryAfter(response: Response): number | null;
 
 // @public (undocumented)
 export interface RequestOptions {
@@ -143,6 +159,12 @@ export interface RestAdapterOptions {
     credentials?: RequestCredentials;
     fetch?: (input: string, init: RequestInit) => Promise<Response>;
     headers?: HeadersInit | (() => HeadersInit | Promise<HeadersInit>);
+}
+
+// @public
+export interface SearchOptions extends RequestOptions {
+    limit?: number;
+    resources?: readonly string[];
 }
 
 // @public

@@ -11,6 +11,7 @@ export const uiFr: Record<string, string> = {
     'panneau.ui.commandPalette': 'Rechercher',
     'panneau.ui.commandResults':
         '{count, plural, =0 {Aucun résultat} one {# résultat} other {# résultats}}',
+    'panneau.ui.commandRemoveScope': 'Ne plus chercher dans {scope}',
     'panneau.ui.commandHintMove': 'Choisir',
     'panneau.ui.commandHintOpen': 'Ouvrir',
     'panneau.ui.commandHintClose': 'Fermer',

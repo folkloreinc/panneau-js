@@ -21,7 +21,7 @@ export {
     useSearch,
     useUpdateItem,
 } from './hooks';
-export { queryKeys } from './keys';
+export { type SearchKeyOptions, queryKeys } from './keys';
 export {
     type DataQueryOptions,
     definitionQueryOptions,

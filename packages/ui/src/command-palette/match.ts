@@ -16,6 +16,8 @@ export interface CommandPaletteItem {
     href?: string;
     /** Runs when the item is chosen, after which the palette closes. */
     onAction?: () => void;
+    /** The palette stays open after `onAction`, such as an item that narrows the search. */
+    keepsOpen?: boolean;
 }
 
 /** A titled group of items. */

@@ -105,7 +105,24 @@ export const appMessages = {
     groupCreate: defineMessage({ id: 'panneau.app.groupCreate', defaultMessage: 'Create' }),
     groupCommands: defineMessage({ id: 'panneau.app.groupCommands', defaultMessage: 'Commands' }),
     groupActions: defineMessage({ id: 'panneau.app.groupActions', defaultMessage: 'Actions' }),
+    groupSearchIn: defineMessage({ id: 'panneau.app.groupSearchIn', defaultMessage: 'Search in' }),
+    searchPlaceholder: defineMessage({
+        id: 'panneau.app.searchPlaceholder',
+        defaultMessage: 'Search…',
+    }),
+    searchMinLength: defineMessage<{ count: number }>({
+        id: 'panneau.app.searchMinLength',
+        defaultMessage: 'Type at least {count, plural, one {# character} other {# characters}}.',
+    }),
+    seeAllResults: defineMessage<{ count: number }>({
+        id: 'panneau.app.seeAllResults',
+        defaultMessage: 'See all {count, plural, one {# result} other {# results}}',
+    }),
     searching: defineMessage({ id: 'panneau.app.searching', defaultMessage: 'Searching…' }),
+    searchRateLimited: defineMessage({
+        id: 'panneau.app.searchRateLimited',
+        defaultMessage: 'Too many searches. Wait a moment before the next one.',
+    }),
     searchError: defineMessage({
         id: 'panneau.app.searchError',
         defaultMessage: 'The search failed. The other results are still here.',

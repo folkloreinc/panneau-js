@@ -2,7 +2,7 @@ import type { Item, Problem, ValidationIssue } from '@panneau/protocol';
 
 /**
  * An error response of the API, parsed from `application/problem+json`. Subclasses cover the
- * statuses a client handles differently. Other statuses (`409`, `429`, `5xx`…) are an `ApiError`.
+ * statuses a client handles differently. Other statuses (`409`, `5xx`…) are an `ApiError`.
  */
 export class ApiError extends Error {
     override readonly name: string = 'ApiError';
@@ -57,6 +57,24 @@ export class NotFoundError extends ApiError {
     override readonly name: string = 'NotFoundError';
 }
 
+/** Options of `createApiError()`: what the response says besides its problem. */
+export interface ApiErrorOptions extends ErrorOptions {
+    /** Seconds to wait before the next request, from `Retry-After`. */
+    retryAfter?: number | null;
+}
+
+/** `429`: too many requests. The next one can be sent after `retryAfter` seconds. */
+export class RateLimitedError extends ApiError {
+    override readonly name: string = 'RateLimitedError';
+    /** Seconds to wait, from `Retry-After`, or `null` when the backend didn't say. */
+    readonly retryAfter: number | null;
+
+    constructor(problem: Problem, options?: ApiErrorOptions) {
+        super(problem, options);
+        this.retryAfter = options?.retryAfter ?? null;
+    }
+}
+
 /** A successful response whose body doesn't match the protocol. */
 export class InvalidResponseError extends Error {
     override readonly name: string = 'InvalidResponseError';
@@ -70,7 +88,7 @@ export class InvalidResponseError extends Error {
 }
 
 /** Creates the error that matches the status of a problem. */
-export function createApiError(problem: Problem, options?: ErrorOptions): ApiError {
+export function createApiError(problem: Problem, options?: ApiErrorOptions): ApiError {
     switch (problem.status) {
         case 401:
             return new UnauthorizedError(problem, options);
@@ -82,6 +100,8 @@ export function createApiError(problem: Problem, options?: ErrorOptions): ApiErr
             return new ConflictError(problem, options);
         case 422:
             return new ValidationError(problem, options);
+        case 429:
+            return new RateLimitedError(problem, options);
         default:
             return new ApiError(problem, options);
     }

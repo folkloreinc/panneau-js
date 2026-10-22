@@ -1,4 +1,5 @@
 import type { Definition, Resource } from '@panneau/protocol';
+import { isSearchableResource } from '@panneau/protocol/runtime';
 
 import { can } from './definition/abilities';
 
@@ -42,7 +43,7 @@ export function getCommands(sources: readonly CommandSource[], context: CommandC
  * list has a search (`list.search`), so one setting serves both (decision 0029).
  */
 export function isSearchable(resource: Resource): boolean {
-    return resource.features?.search ?? resource.list?.search ?? false;
+    return isSearchableResource(resource);
 }
 
 /** The resources of the global search that the user can list. */

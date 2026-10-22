@@ -108,4 +108,51 @@ describe('CommandPalette', () => {
         expect(screen.queryByRole('dialog')).toBeNull();
         editor.remove();
     });
+
+    it('narrows the search to a scope, until Backspace or its button removes it', async () => {
+        const user = userEvent.setup();
+        function Scoped() {
+            const [scope, setScope] = useState<string | null>(null);
+            return (
+                <PanneauRoot>
+                    <CommandPalette
+                        isOpen
+                        onOpenChange={vi.fn()}
+                        aria-label="Go to…"
+                        scope={scope}
+                        onScopeRemove={() => setScope(null)}
+                        groups={
+                            scope === null
+                                ? [
+                                      {
+                                          id: 'scopes',
+                                          label: 'Search in',
+                                          items: [
+                                              {
+                                                  id: 'pages',
+                                                  label: 'Pages',
+                                                  keepsOpen: true,
+                                                  onAction: () => setScope('Pages'),
+                                              },
+                                          ],
+                                      },
+                                  ]
+                                : []
+                        }
+                    />
+                </PanneauRoot>
+            );
+        }
+        render(<Scoped />);
+        await user.click(await screen.findByRole('menuitem', { name: 'Pages' }));
+        // The palette stays open, narrowed to pages.
+        const field = screen.getByRole('searchbox', { name: 'Go to…: Pages' });
+        await user.click(field);
+        await user.keyboard('{Backspace}');
+        expect(screen.getByRole('searchbox', { name: 'Go to…' })).toBeInTheDocument();
+
+        await user.click(screen.getByRole('menuitem', { name: 'Pages' }));
+        await user.click(screen.getByRole('button', { name: 'Stop searching in Pages' }));
+        expect(screen.getByRole('menuitem', { name: 'Pages' })).toBeInTheDocument();
+    });
 });

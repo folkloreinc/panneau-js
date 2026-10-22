@@ -296,6 +296,7 @@ export interface CommandPaletteItem {
     icon?: IconComponent;
     id: string;
     imageUrl?: string;
+    keepsOpen?: boolean;
     keywords?: readonly string[];
     // (undocumented)
     label: string;
@@ -316,7 +317,10 @@ export interface CommandPaletteProps {
     // (undocumented)
     onOpenChange: (isOpen: boolean) => void;
     // (undocumented)
+    onScopeRemove?: () => void;
+    // (undocumented)
     placeholder?: string;
+    scope?: string | null;
     status?: ReactNode;
 }
 

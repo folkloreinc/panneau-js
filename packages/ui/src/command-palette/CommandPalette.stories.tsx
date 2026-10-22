@@ -50,9 +50,10 @@ const groups: CommandPaletteGroup[] = [
     },
 ];
 
-function Palette({ results = false }: { results?: boolean }) {
+function Palette({ results = false, scoped = false }: { results?: boolean; scoped?: boolean }) {
     const [isOpen, setOpen] = useState(true);
     const [query, setQuery] = useState('');
+    const [scope, setScope] = useState<string | null>(scoped ? 'Articles' : null);
     useCommandShortcut(() => setOpen((open) => !open), { isOpen });
     const searched: CommandPaletteGroup[] =
         results && query.length >= 2
@@ -79,10 +80,16 @@ function Palette({ results = false }: { results?: boolean }) {
             <CommandPalette
                 isOpen={isOpen}
                 onOpenChange={setOpen}
-                groups={[...groups, ...searched]}
+                groups={scope !== null ? searched : [...groups, ...searched]}
                 inputValue={query}
                 onInputChange={setQuery}
                 aria-label="Go to…"
+                placeholder={scope !== null ? 'Search…' : undefined}
+                scope={scope}
+                onScopeRemove={() => setScope(null)}
+                status={
+                    scope !== null && query.length < 2 ? 'Type at least 2 characters.' : undefined
+                }
             />
         </RouterProvider>
     );
@@ -122,5 +129,22 @@ export const WithServerResults: Story = {
         await expect(
             body.getByRole('menuitem', { name: /Bike lanes, one year later/ }),
         ).toBeInTheDocument();
+    },
+};
+
+/** Narrowed to one resource: a chip before the field, removed by Backspace in the empty field. */
+export const Scoped: Story = {
+    args: { results: true, scoped: true },
+    play: async ({ canvasElement }) => {
+        const body = within(canvasElement.ownerDocument.body);
+        const field = await body.findByRole('searchbox', { name: 'Go to…: Articles' });
+        await expect(body.getByRole('menu')).toHaveTextContent('Type at least 2 characters.');
+        await userEvent.type(field, 'bike');
+        await expect(
+            body.getByRole('menuitem', { name: /Bike lanes, one year later/ }),
+        ).toBeInTheDocument();
+        await userEvent.clear(field);
+        await userEvent.type(field, '{Backspace}');
+        await expect(body.getByRole('searchbox', { name: 'Go to…' })).toBeInTheDocument();
     },
 };

@@ -69,7 +69,7 @@ export const queryKeys: {
     items: (resource: string) => readonly ["panneau", "resources", string, "item"];
     item: (resource: string, id: string) => readonly ["panneau", "resources", string, "item", string];
     itemPreview: (resource: string, id: string, values?: Record<string, unknown>) => readonly ["panneau", "resources", string, "item", string, "preview", Record<string, unknown>];
-    search: (q: string) => readonly ["panneau", "search", string];
+    search: (q: string, options?: SearchKeyOptions) => readonly ["panneau", "search", string, SearchKeyOptions];
     actionRuns: () => readonly ["panneau", "actions", "runs"];
     actionRun: (id: string) => readonly ["panneau", "actions", "runs", string];
 };
@@ -86,7 +86,15 @@ export interface RunActionVariables extends ActionRequest {
 }
 
 // @public
-export function searchQueryOptions(adapter: DataAdapter, q: string): DataQueryOptions<SearchResponse, ReturnType<typeof queryKeys.search>>;
+export interface SearchKeyOptions {
+    // (undocumented)
+    limit?: number;
+    // (undocumented)
+    resources?: readonly string[];
+}
+
+// @public
+export function searchQueryOptions(adapter: DataAdapter, q: string, input?: SearchKeyOptions): DataQueryOptions<SearchResponse, ReturnType<typeof queryKeys.search>>;
 
 // @public (undocumented)
 export interface UpdateItemVariables {
@@ -133,7 +141,7 @@ export function useResourceList(resource: string, query?: ListQuery, options?: Q
 export function useRunAction(resource: string): UseMutationResult<ActionResponse, Error, RunActionVariables>;
 
 // @public
-export function useSearch(q: string, options?: QueryHookOptions<SearchResponse, ReturnType<typeof queryKeys.search>>): UseQueryResult<SearchResponse>;
+export function useSearch(q: string, input?: QueryHookOptions<SearchResponse, ReturnType<typeof queryKeys.search>> & SearchKeyOptions): UseQueryResult<SearchResponse>;
 
 // @public
 export function useUpdateItem(resource: string): UseMutationResult<Item, Error, UpdateItemVariables>;
