@@ -6,8 +6,9 @@ export {
     type MediaFieldProps,
     type MultipleMediaFieldProps,
     type SingleMediaFieldProps,
-    isMedia,
+    getLibrary,
     isProcessing,
-    toMedia,
+    toMediaReference,
+    toMediaReferences,
 } from './MediaField';
 export { mediaPlugin } from './plugin';

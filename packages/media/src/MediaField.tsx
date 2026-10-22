@@ -1,6 +1,7 @@
 import { FileImage, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
+import { usePanneau } from '@panneau/core';
 import type { DataAdapter } from '@panneau/data';
 import { useOptionalDataAdapter } from '@panneau/data/query';
 import {
@@ -18,23 +19,29 @@ import {
     useUploads,
 } from '@panneau/fields';
 import { fieldsMessages, mediaMessages as messages } from '@panneau/intl';
-import type { Media } from '@panneau/protocol';
+import type { Definition, Item, MediaInfo, MediaReference } from '@panneau/protocol';
+import { getMediaLibraries } from '@panneau/protocol/runtime';
 import { Badge, Fieldset, IconButton, Spinner, usePanneauIntl } from '@panneau/ui';
 
 import styles from './MediaField.module.css';
 
 /** What the media field needs from an adapter: `@panneau/data`'s `DataAdapter` has it. */
-export type MediaAdapter = Pick<DataAdapter, 'uploadMedia' | 'getMedia'>;
+export type MediaAdapter = Pick<DataAdapter, 'create' | 'get'>;
 
 export interface MediaFieldBaseProps extends Omit<FieldProps<never>, 'value' | 'onChange'> {
+    /** The library: a resource of kind `media`, whose items the field references. */
+    resource: string;
+    /** The field that titles the media of the library, for the label of new references. Defaults to `name`. */
+    itemTitle?: string;
     /**
-     * Creates media from uploads, and reads their status. Defaults to the adapter of
-     * `DataAdapterProvider`. Without one, the field is read-only.
+     * Creates media in the library from uploads (`create(resource, { file })`), and reads them
+     * again until they are processed (`get()`). Defaults to the adapter of `DataAdapterProvider`.
+     * Without one, the field is read-only.
      */
     adapter?: MediaAdapter | null;
     /**
      * Where files are uploaded directly to storage. Defaults to the one of the fields context.
-     * Without one, files go to `POST /media` in `multipart/form-data`.
+     * Without one, files are sent in `multipart/form-data` when the media is created.
      */
     uploadSource?: UploadSource | null;
     accept?: readonly string[] | null;
@@ -45,40 +52,78 @@ export interface MediaFieldBaseProps extends Omit<FieldProps<never>, 'value' | '
 
 export interface SingleMediaFieldProps extends MediaFieldBaseProps {
     multiple?: false;
-    value?: Media | null;
-    onChange?: (value: Media | null) => void;
+    value?: MediaReference | null;
+    onChange?: (value: MediaReference | null) => void;
 }
 
 export interface MultipleMediaFieldProps extends MediaFieldBaseProps {
     multiple: true;
-    value?: readonly Media[] | null;
+    value?: readonly MediaReference[] | null;
     /** Called with the media. An empty list is `null`. */
-    onChange?: (value: Media[] | null) => void;
+    onChange?: (value: MediaReference[] | null) => void;
 }
 
 export type MediaFieldProps = SingleMediaFieldProps | MultipleMediaFieldProps;
 
-/** Whether a value is a media item. */
-export function isMedia(value: unknown): value is Media {
-    return (
-        typeof value === 'object' &&
-        value !== null &&
-        typeof (value as { id?: unknown }).id === 'string' &&
-        typeof (value as { name?: unknown }).name === 'string'
-    );
-}
-
-/** The media of a value, single or multiple. */
-export function toMedia(value: unknown): Media[] {
-    if (Array.isArray(value)) {
-        return value.filter(isMedia);
+/**
+ * The reference of a value: a reference, a media item (its `media` and title), or an id, as a
+ * product's own API may give them.
+ */
+export function toMediaReference(value: unknown, itemTitle = 'name'): MediaReference | null {
+    if (typeof value === 'string' || typeof value === 'number') {
+        return { id: String(value) };
     }
-    return isMedia(value) ? [value] : [];
+    if (typeof value !== 'object' || value === null) {
+        return null;
+    }
+    const { id, resource, label, media, transform } = value as Record<string, unknown>;
+    if (typeof id !== 'string' && typeof id !== 'number') {
+        return null;
+    }
+    const title = (value as Record<string, unknown>)[itemTitle];
+    const reference: MediaReference = { id: String(id) };
+    if (typeof resource === 'string') {
+        reference.resource = resource;
+    }
+    if (typeof label === 'string') {
+        reference.label = label;
+    } else if (typeof title === 'string') {
+        reference.label = title;
+    }
+    if (typeof media === 'object' && media !== null) {
+        reference.media = media as MediaInfo;
+    }
+    if (typeof transform === 'object') {
+        reference.transform = transform as MediaReference['transform'];
+    }
+    return reference;
 }
 
-/** Whether a media is still being ingested. */
-export function isProcessing(media: Media): boolean {
-    return media.status === 'pending' || media.status === 'processing';
+/** The references of a value, single or multiple. */
+export function toMediaReferences(value: unknown, itemTitle?: string): MediaReference[] {
+    const values: unknown[] = Array.isArray(value) ? value : [value];
+    return values
+        .map((entry) => toMediaReference(entry, itemTitle))
+        .filter((reference): reference is MediaReference => reference !== null);
+}
+
+/** Whether the file of a media is still being processed. */
+export function isProcessing(reference: MediaReference): boolean {
+    const status = reference.media?.status;
+    return status === 'pending' || status === 'processing';
+}
+
+/**
+ * The first library a `media` field allows (decision 0027): the one its `resource` names, the
+ * first one it lists, or the first resource of kind `media` of the definition when it names none.
+ * The field uploads to it.
+ */
+export function getLibrary(
+    definition: Pick<Definition, 'resources'> | null,
+    resource: string | readonly string[] | undefined,
+): Definition['resources'][number] | null {
+    const [first] = getMediaLibraries(definition, { resource });
+    return definition?.resources.find((candidate) => candidate.id === first) ?? null;
 }
 
 /**
@@ -86,26 +131,41 @@ export function isProcessing(media: Media): boolean {
  * `onRefresh` with the media that changed.
  */
 function useMediaRefresh(
-    media: readonly Media[],
+    media: readonly MediaReference[],
+    resource: string,
     adapter: MediaAdapter | null,
     interval: number,
-    onRefresh: (refreshed: Media[]) => void,
+    onRefresh: (refreshed: { resource: string; item: Item }[]) => void,
 ) {
     const latest = useRef(onRefresh);
     useEffect(() => {
         latest.current = onRefresh;
     });
-    const waiting = media.filter(isProcessing).map((item) => `${item.id}:${item.status ?? ''}`);
-    const key = waiting.join(',');
+    // Each media is read in its own library: ids are unique only within a library.
+    const waiting = media
+        .filter(isProcessing)
+        .map((item) =>
+            JSON.stringify([item.resource ?? resource, item.id, item.media?.status ?? '']),
+        );
+    const key = waiting.join('\n');
 
     useEffect(() => {
         if (adapter === null || key === '') {
             return undefined;
         }
-        const ids = key.split(',').map((entry) => entry.slice(0, entry.lastIndexOf(':')));
+        const entries = key.split('\n').map((entry) => {
+            const [library, id] = JSON.parse(entry) as [string, string];
+            return { library, id };
+        });
         const controller = new AbortController();
         const timer = setTimeout(() => {
-            Promise.all(ids.map((id) => adapter.getMedia(id, { signal: controller.signal })))
+            Promise.all(
+                entries.map(({ library, id }) =>
+                    adapter
+                        .get(library, id, { signal: controller.signal })
+                        .then((item) => ({ resource: library, item })),
+                ),
+            )
                 .then((refreshed) => {
                     if (!controller.signal.aborted) {
                         latest.current(refreshed);
@@ -117,14 +177,16 @@ function useMediaRefresh(
             clearTimeout(timer);
             controller.abort();
         };
-    }, [adapter, key, interval]);
+    }, [adapter, resource, key, interval]);
 }
 
 /**
- * Media of the media library (the `media` type): a file chosen or dropped becomes a media through
- * the adapter (`uploadMedia()`), sent directly to storage first when there is an upload source.
- * The field shows each media with its thumbnail and its status, and reads a media again until its
- * ingest is done. Picking media already in the library comes with the library.
+ * Media of a library (the `media` type, decision 0026): a file chosen or dropped becomes a media
+ * of the library, an item of its resource (`create(resource, { file })`), sent directly to storage
+ * first when there is an upload source. Values are references to the media, with their `media`
+ * and their `transform` for this use. The field shows each media with its thumbnail and its
+ * status, and reads it again until its file is processed. Picking media already in the library
+ * comes with the media picker.
  */
 export function MediaField(props: MediaFieldProps) {
     const intl = usePanneauIntl();
@@ -136,6 +198,8 @@ export function MediaField(props: MediaFieldProps) {
         accept = null,
         maxSize = null,
         refreshInterval = 3000,
+        resource,
+        itemTitle = 'name',
         label,
         description,
         errors = [],
@@ -148,7 +212,7 @@ export function MediaField(props: MediaFieldProps) {
         errorsClassName,
     } = props;
     const multiple = props.multiple === true;
-    const media = toMedia(props.value);
+    const media = toMediaReferences(props.value, itemTitle);
     const editable = adapter !== null && disabled !== true && readOnly !== true;
     const [problems, setProblems] = useState<string[]>([]);
     const [creating, setCreating] = useState<string[]>([]);
@@ -158,7 +222,7 @@ export function MediaField(props: MediaFieldProps) {
     useEffect(() => {
         latest.current = media;
     });
-    const set = (next: Media[]) => {
+    const set = (next: MediaReference[]) => {
         latest.current = next;
         if (props.multiple === true) {
             props.onChange?.(next.length > 0 ? next : null);
@@ -167,11 +231,19 @@ export function MediaField(props: MediaFieldProps) {
         }
     };
 
-    useMediaRefresh(media, adapter, refreshInterval, (refreshed) =>
+    useMediaRefresh(media, resource, adapter, refreshInterval, (refreshed) =>
         set(
-            latest.current.map(
-                (item) => refreshed.find((candidate) => candidate.id === item.id) ?? item,
-            ),
+            latest.current.map((reference) => {
+                const item = refreshed.find(
+                    (candidate) =>
+                        candidate.item.id === reference.id &&
+                        candidate.resource === (reference.resource ?? resource),
+                )?.item;
+                const fresh = item !== undefined ? toMediaReference(item, itemTitle) : null;
+                return fresh !== null
+                    ? { ...reference, ...fresh, transform: reference.transform }
+                    : reference;
+            }),
         ),
     );
 
@@ -185,12 +257,16 @@ export function MediaField(props: MediaFieldProps) {
             }
             const name = file.name;
             setCreating((current) => [...current, name]);
-            const request =
-                file instanceof File
-                    ? adapter.uploadMedia(file)
-                    : adapter.uploadMedia({ upload: file.upload }, { name });
-            request
-                .then((created) => set(multiple ? [...latest.current, created] : [created]))
+            adapter
+                .create(resource, { file: file instanceof File ? file : { upload: file.upload } })
+                .then((item) => {
+                    // With its library, which a field that allows several needs (decision 0027).
+                    const created = {
+                        ...(toMediaReference(item, itemTitle) ?? { id: item.id }),
+                        resource,
+                    };
+                    set(multiple ? [...latest.current, created] : [created]);
+                })
                 .catch((error: unknown) =>
                     setProblems((current) => [
                         ...current,
@@ -210,15 +286,15 @@ export function MediaField(props: MediaFieldProps) {
             setProblems((current) => [...current, rejectionMessage(file, reason)]),
     });
 
-    const statusBadge = (item: Media) => {
-        if (item.status === 'failed') {
+    const statusBadge = (item: MediaReference) => {
+        if (item.media?.status === 'failed') {
             return <Badge tone="danger">{intl.formatMessage(messages.statusFailed)}</Badge>;
         }
         if (isProcessing(item)) {
             return (
                 <Badge tone="warning">
                     {intl.formatMessage(
-                        item.status === 'pending'
+                        item.media?.status === 'pending'
                             ? messages.statusPending
                             : messages.statusProcessing,
                     )}
@@ -251,41 +327,49 @@ export function MediaField(props: MediaFieldProps) {
             <div className={styles.field}>
                 {media.length > 0 ? (
                     <ul className={styles.media}>
-                        {media.map((item) => (
-                            <li key={item.id} className={styles.item}>
-                                <span className={styles.thumbnail}>
-                                    {typeof item.thumbnailUrl === 'string' ? (
-                                        <img src={item.thumbnailUrl} alt="" />
-                                    ) : (
-                                        <FileImage aria-hidden />
-                                    )}
-                                </span>
-                                <span className={styles.details}>
-                                    <span className={styles.name}>{item.name}</span>
-                                    <span className={styles.meta}>
-                                        <span>{item.type}</span>
-                                        <span>{formatSize(item.size, intl.locale)}</span>
-                                        {statusBadge(item)}
+                        {media.map((item) => {
+                            const name = item.label ?? item.id;
+                            const size = item.media?.size;
+                            return (
+                                <li key={item.id} className={styles.item}>
+                                    <span className={styles.thumbnail}>
+                                        {typeof item.media?.thumbnailUrl === 'string' ? (
+                                            <img src={item.media.thumbnailUrl} alt="" />
+                                        ) : (
+                                            <FileImage aria-hidden />
+                                        )}
                                     </span>
-                                </span>
-                                {editable ? (
-                                    <IconButton
-                                        icon={X}
-                                        size="sm"
-                                        label={intl.formatMessage(fieldsMessages.removeFile, {
-                                            name: item.name,
-                                        })}
-                                        onPress={() =>
-                                            set(
-                                                latest.current.filter(
-                                                    (entry) => entry.id !== item.id,
-                                                ),
-                                            )
-                                        }
-                                    />
-                                ) : null}
-                            </li>
-                        ))}
+                                    <span className={styles.details}>
+                                        <span className={styles.name}>{name}</span>
+                                        <span className={styles.meta}>
+                                            {item.media !== undefined ? (
+                                                <span>{item.media.type}</span>
+                                            ) : null}
+                                            {typeof size === 'number' ? (
+                                                <span>{formatSize(size, intl.locale)}</span>
+                                            ) : null}
+                                            {statusBadge(item)}
+                                        </span>
+                                    </span>
+                                    {editable ? (
+                                        <IconButton
+                                            icon={X}
+                                            size="sm"
+                                            label={intl.formatMessage(fieldsMessages.removeFile, {
+                                                name,
+                                            })}
+                                            onPress={() =>
+                                                set(
+                                                    latest.current.filter(
+                                                        (entry) => entry.id !== item.id,
+                                                    ),
+                                                )
+                                            }
+                                        />
+                                    ) : null}
+                                </li>
+                            );
+                        })}
                     </ul>
                 ) : creating.length === 0 && upload.items.length === 0 ? (
                     <span className={styles.none}>{intl.formatMessage(messages.noMedia)}</span>
@@ -319,20 +403,28 @@ export function MediaField(props: MediaFieldProps) {
 }
 
 /**
- * The registry entry of the `media` type: the field's `multiple`, `accept` (or its `accept` rule)
- * and `maxSize` rule, with the adapter of `@panneau/data` and the upload source of the fields
- * context.
+ * The registry entry of the `media` type: the field's first library (`getLibrary()`), which it
+ * uploads to, `multiple`, `accept` (or its `accept` rule) and `maxSize` rule,
+ * with the adapter of `@panneau/data` and the upload source of the fields context. Without a
+ * library, the field shows its media and can't add any.
  */
 export function MediaFieldEntry(props: FieldEntryProps) {
     const { field, value, onChange } = props;
+    const { definition } = usePanneau();
+    const library = getLibrary(definition, field.resource);
+    const itemTitle = library?.itemTitle ?? 'name';
     const common = {
         ...getFieldProps(props),
+        resource: library?.id ?? (typeof field.resource === 'string' ? field.resource : ''),
+        itemTitle,
         accept: getAccept(field),
         maxSize: getMaxSize(field),
+        ...(library === null ? { adapter: null } : {}),
     };
+    const references = toMediaReferences(value, itemTitle);
     return field.multiple === true ? (
-        <MediaField {...common} multiple value={toMedia(value)} onChange={onChange} />
+        <MediaField {...common} multiple value={references} onChange={onChange} />
     ) : (
-        <MediaField {...common} value={toMedia(value)[0] ?? null} onChange={onChange} />
+        <MediaField {...common} value={references[0] ?? null} onChange={onChange} />
     );
 }

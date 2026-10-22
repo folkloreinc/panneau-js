@@ -43,7 +43,7 @@ describe('OpenAPI document', () => {
                 '/resources/{resource}/{id}',
                 '/resources/{resource}/actions/{action}',
                 '/actions/runs/{run}',
-                '/media',
+                '/uploads/sign',
                 '/auth/session',
                 '/search',
             ]),

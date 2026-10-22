@@ -85,9 +85,12 @@ export const Field = z
             .optional()
             .meta({ description: '`select`, `relation`, `media`, `file`: the value is an array.' }),
         resource: z
-            .string()
+            .union([z.string().min(1), z.array(z.string().min(1)).min(1)])
             .optional()
-            .meta({ description: '`relation`: id of the related resource.' }),
+            .meta({
+                description:
+                    '`relation`: id of the related resource. `media`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027).',
+            }),
         accept: z
             .array(z.string())
             .optional()

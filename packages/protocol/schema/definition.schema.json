@@ -137,6 +137,10 @@
                     "type": "string",
                     "minLength": 1
                 },
+                "kind": {
+                    "type": "string",
+                    "minLength": 1
+                },
                 "label": {
                     "type": "object",
                     "properties": {
@@ -268,7 +272,20 @@
                     "type": "boolean"
                 },
                 "resource": {
-                    "type": "string"
+                    "anyOf": [
+                        {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        {
+                            "minItems": 1,
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "minLength": 1
+                            }
+                        }
+                    ]
                 },
                 "accept": {
                     "type": "array",

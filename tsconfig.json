@@ -12,6 +12,8 @@
         ".storybook/**/*.ts",
         ".storybook/**/*.tsx",
         "playground/**/*.ts",
-        "playground/**/*.tsx"
+        "playground/**/*.tsx",
+        "mockups/**/*.ts",
+        "mockups/**/*.tsx"
     ]
 }

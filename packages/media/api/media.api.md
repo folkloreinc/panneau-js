@@ -5,21 +5,22 @@
 ```ts
 
 import type { DataAdapter } from '@panneau/data';
+import type { Definition } from '@panneau/protocol';
 import type { FieldEntry } from '@panneau/fields';
 import { FieldEntryProps } from '@panneau/fields';
 import { FieldProps } from '@panneau/fields';
 import { JSX } from 'react';
-import type { Media } from '@panneau/protocol';
+import type { MediaReference } from '@panneau/protocol';
 import { UploadSource } from '@panneau/fields';
 
 // @public
-export function isMedia(value: unknown): value is Media;
+export function getLibrary(definition: Pick<Definition, 'resources'> | null, resource: string | readonly string[] | undefined): Definition['resources'][number] | null;
 
 // @public
-export function isProcessing(media: Media): boolean;
+export function isProcessing(reference: MediaReference): boolean;
 
 // @public
-export type MediaAdapter = Pick<DataAdapter, 'uploadMedia' | 'getMedia'>;
+export type MediaAdapter = Pick<DataAdapter, 'create' | 'get'>;
 
 // @public
 export function MediaField(props: MediaFieldProps): JSX.Element;
@@ -29,9 +30,11 @@ export interface MediaFieldBaseProps extends Omit<FieldProps<never>, 'value' | '
     // (undocumented)
     accept?: readonly string[] | null;
     adapter?: MediaAdapter | null;
+    itemTitle?: string;
     // (undocumented)
     maxSize?: number | null;
     refreshInterval?: number;
+    resource: string;
     uploadSource?: UploadSource | null;
 }
 
@@ -51,9 +54,9 @@ export const mediaPlugin: {
 export interface MultipleMediaFieldProps extends MediaFieldBaseProps {
     // (undocumented)
     multiple: true;
-    onChange?: (value: Media[] | null) => void;
+    onChange?: (value: MediaReference[] | null) => void;
     // (undocumented)
-    value?: readonly Media[] | null;
+    value?: readonly MediaReference[] | null;
 }
 
 // @public (undocumented)
@@ -61,13 +64,16 @@ export interface SingleMediaFieldProps extends MediaFieldBaseProps {
     // (undocumented)
     multiple?: false;
     // (undocumented)
-    onChange?: (value: Media | null) => void;
+    onChange?: (value: MediaReference | null) => void;
     // (undocumented)
-    value?: Media | null;
+    value?: MediaReference | null;
 }
 
 // @public
-export function toMedia(value: unknown): Media[];
+export function toMediaReference(value: unknown, itemTitle?: string): MediaReference | null;
+
+// @public
+export function toMediaReferences(value: unknown, itemTitle?: string): MediaReference[];
 
 // (No @packageDocumentation comment for this package)
 

@@ -1,6 +1,6 @@
 {
     "name": "@panneau/app",
-    "version": "5.0.0-alpha.3",
+    "version": "5.0.0-alpha.4",
     "description": "The Panneau admin panel: the app entry (createPanneauApp), the shell with its sidebar, and the pages of resources.",
     "type": "module",
     "license": "MIT",
@@ -39,15 +39,15 @@
         "react-intl": "^12.0.0"
     },
     "dependencies": {
-        "@panneau/actions": "5.0.0-alpha.3",
-        "@panneau/core": "5.0.0-alpha.3",
-        "@panneau/data": "5.0.0-alpha.3",
-        "@panneau/fields": "5.0.0-alpha.3",
-        "@panneau/forms": "5.0.0-alpha.3",
-        "@panneau/intl": "5.0.0-alpha.3",
-        "@panneau/lists": "5.0.0-alpha.3",
-        "@panneau/protocol": "5.0.0-alpha.3",
-        "@panneau/ui": "5.0.0-alpha.3",
+        "@panneau/actions": "5.0.0-alpha.4",
+        "@panneau/core": "5.0.0-alpha.4",
+        "@panneau/data": "5.0.0-alpha.4",
+        "@panneau/fields": "5.0.0-alpha.4",
+        "@panneau/forms": "5.0.0-alpha.4",
+        "@panneau/intl": "5.0.0-alpha.4",
+        "@panneau/lists": "5.0.0-alpha.4",
+        "@panneau/protocol": "5.0.0-alpha.4",
+        "@panneau/ui": "5.0.0-alpha.4",
         "lucide-react": "^1.57.0"
     }
 }

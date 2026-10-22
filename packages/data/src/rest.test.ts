@@ -239,20 +239,11 @@ describe('createRestAdapter', () => {
     });
 
     it('calls the other endpoints of the protocol', async () => {
-        const media = { id: 'm1', version: '1', abilities: {}, type: 'image' };
         const run = { id: 'run/1', action: 'export', resource: 'pages', status: 'running' };
         const { fetch, requests } = createStubFetch((request) => {
             const { pathname } = new URL(request.url);
             if (request.method === 'DELETE' || pathname.endsWith('/logout')) {
                 return new Response(null, { status: 204 });
-            }
-            if (pathname.startsWith('/panneau/api/media')) {
-                return jsonResponse(200, {
-                    data:
-                        pathname === '/panneau/api/media' && request.method === 'GET'
-                            ? [media]
-                            : media,
-                });
             }
             if (pathname.startsWith('/panneau/api/actions/runs/')) {
                 return jsonResponse(200, { run });
@@ -260,17 +251,9 @@ describe('createRestAdapter', () => {
             return jsonResponse(200, { user: { id: 'u1', name: 'Ada' }, data: [] });
         });
         const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
-        const file = new Blob(['image'], { type: 'image/png' });
 
         expect(await adapter.getActionRun('run/1')).toEqual(run);
         await adapter.cancelActionRun('run/1');
-        expect((await adapter.listMedia({ filter: { type: 'image' }, q: 'cat' })).data).toEqual([
-            media,
-        ]);
-        expect(await adapter.getMedia('m1')).toEqual(media);
-        expect(await adapter.uploadMedia(file, { name: 'Cat' })).toEqual(media);
-        expect(await adapter.updateMedia('m1', { transform: { rotate: 90 } })).toEqual(media);
-        await adapter.deleteMedia('m1');
         expect(await adapter.getSession()).toMatchObject({ user: { name: 'Ada' } });
         await adapter.login({ email: 'ada@example.com', password: 'secret' });
         await adapter.logout();
@@ -285,21 +268,13 @@ describe('createRestAdapter', () => {
         ).toEqual([
             'GET /panneau/api/actions/runs/run%2F1',
             'DELETE /panneau/api/actions/runs/run%2F1',
-            'GET /panneau/api/media?filter%5Btype%5D=image&q=cat',
-            'GET /panneau/api/media/m1',
-            'POST /panneau/api/media',
-            'PATCH /panneau/api/media/m1',
-            'DELETE /panneau/api/media/m1',
             'GET /panneau/api/auth/session',
             'POST /panneau/api/auth/login',
             'POST /panneau/api/auth/logout',
             'GET /panneau/api/search?q=%C3%A9t%C3%A9',
             'GET /panneau/api/dashboard/widgets/pages-count',
         ]);
-        const upload = await requests[4]?.formData();
-        expect(upload?.get('file')).toBeInstanceOf(Blob);
-        expect(upload?.get('name')).toBe('Cat');
-        expect(await requests[8]?.json()).toEqual({
+        expect(await requests[3]?.json()).toEqual({
             email: 'ada@example.com',
             password: 'secret',
         });
@@ -307,13 +282,14 @@ describe('createRestAdapter', () => {
 
     it('creates a media from a file uploaded directly to storage', async () => {
         const { fetch, requests } = createStubFetch(() =>
-            jsonResponse(201, { data: { id: 'med_1', status: 'processing' } }),
+            jsonResponse(201, { data: { id: 'med_1', version: '1', abilities: {} } }),
         );
         const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
-        await adapter.uploadMedia({ upload: 'upl_1' }, { name: 'Video' });
+        await adapter.create('media', { file: { upload: 'upl_1' }, name: 'Video' });
         const request = requests[0];
+        expect(new URL(request?.url ?? '').pathname).toBe('/panneau/api/resources/media');
         expect(request?.headers.get('Content-Type')).toBe('application/json');
-        expect(await request?.json()).toEqual({ name: 'Video', upload: 'upl_1' });
+        expect(await request?.json()).toEqual({ file: { upload: 'upl_1' }, name: 'Video' });
     });
 
     it('signs and completes direct uploads with its headers, cookies and errors', async () => {

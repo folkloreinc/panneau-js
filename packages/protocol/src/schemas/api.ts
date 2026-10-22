@@ -150,7 +150,7 @@ export const MediaTransform = z
 
 export const UploadReference = z.looseObject({ upload: z.string().min(1) }).meta({
     description:
-        'A file uploaded directly to storage, by the id of its upload: in a file value, an action parameter, or `POST /media`.',
+        'A file uploaded directly to storage, by the id of its upload: in a file value, such as the `file` of a media, or an action parameter.',
 });
 
 export const StoredFile = z
@@ -212,37 +212,68 @@ export const UploadSignResponse = z
     })
     .meta({ description: 'A presigned request.' });
 
-export const Media = Item.extend({
-    type: z
-        .string()
-        .meta({ description: '`image`, `video`, `audio`, `document`, `font`, or another type.' }),
-    name: z.string(),
-    mime: z.string(),
-    size: z.number().int().nonnegative(),
-    url: z.string(),
-    thumbnailUrl: z.string().nullable().optional(),
-    variants: z
-        .record(
-            z.string(),
-            z.looseObject({
-                url: z.string(),
-                width: z.number().optional(),
-                height: z.number().optional(),
-            }),
-        )
-        .optional(),
-    metadata: z.record(z.string(), z.unknown()).optional(),
-    transform: MediaTransform.nullable().optional(),
-    tags: z.array(z.string()).optional(),
-    status: z.enum(['pending', 'processing', 'ready', 'failed']).optional().meta({
+export const MediaInfo = z
+    .looseObject({
+        type: z.string().meta({
+            description:
+                '`image`, `video`, `audio`, `document`, `font`, or another type the backend knows.',
+        }),
+        mime: z.string().nullable().optional(),
+        size: z.number().int().nonnegative().nullable().optional(),
+        url: z.string().nullable().optional().meta({
+            description:
+                'The main file to show or play: a rendition, or the original until it exists.',
+        }),
+        thumbnailUrl: z.string().nullable().optional(),
+        variants: z
+            .record(
+                z.string(),
+                z.looseObject({
+                    url: z.string(),
+                    width: z.number().optional(),
+                    height: z.number().optional(),
+                }),
+            )
+            .optional()
+            .meta({ description: 'Named renditions: sizes of an image, qualities of a video.' }),
+        width: z.number().nullable().optional(),
+        height: z.number().nullable().optional(),
+        duration: z.number().nullable().optional().meta({ description: 'In seconds.' }),
+        status: z.enum(['pending', 'processing', 'ready', 'failed']).optional().meta({
+            description:
+                'Where the processing of the file is: `pending` and `processing` until its renditions are made, then `ready` or `failed`. Without it, the media is ready.',
+        }),
+        metadata: z.record(z.string(), z.unknown()).optional(),
+    })
+    .meta({
         description:
-            'Where the ingest of the media is: `pending` and `processing` until its renditions are made, then `ready` or `failed`. Without it, the media is ready.',
-    }),
+            'What the backend computed about the file of a media item: the `media` of the items of a `media` resource, and of the values of `media` fields. Read-only: the editable properties of a media are the fields of its resource.',
+    });
+
+export const MediaItem = Item.extend({
+    media: MediaInfo,
+}).meta({
+    description:
+        'An item of a resource of kind `media`: the values of its fields (`file`, the original, and those of the project), and the `media` the backend computed.',
 });
 
-export const MediaResponse = z.looseObject({ data: Media });
-
-export const MediaListResponse = z.looseObject({ data: z.array(Media), meta: Pagination });
+export const MediaReference = z
+    .looseObject({
+        id: Id,
+        resource: z.string().optional().meta({
+            description:
+                'The library of the media. Required for a field that allows several libraries, since ids are unique only within their resource (decision 0027).',
+        }),
+        label: z.string().optional().meta({ description: 'The `itemTitle` of the media.' }),
+        media: MediaInfo.optional(),
+        transform: MediaTransform.nullable().optional().meta({
+            description: 'The edits of the image for this use only, over those of the media.',
+        }),
+    })
+    .meta({
+        description:
+            'The value of a `media` field in items: the media, with what lists and fields show, and its edits for this use. Requests send the id, or `{ id, resource, transform }`: `resource` is required when the field allows several libraries.',
+    });
 
 export const Session = z.looseObject({ user: User });
 
@@ -276,9 +307,9 @@ export type Upload = z.infer<typeof Upload>;
 export type UploadResponse = z.infer<typeof UploadResponse>;
 export type UploadSignRequest = z.infer<typeof UploadSignRequest>;
 export type UploadSignResponse = z.infer<typeof UploadSignResponse>;
-export type Media = z.infer<typeof Media>;
-export type MediaResponse = z.infer<typeof MediaResponse>;
-export type MediaListResponse = z.infer<typeof MediaListResponse>;
+export type MediaInfo = z.infer<typeof MediaInfo>;
+export type MediaItem = z.infer<typeof MediaItem>;
+export type MediaReference = z.infer<typeof MediaReference>;
 export type Session = z.infer<typeof Session>;
 export type SearchResponse = z.infer<typeof SearchResponse>;
 export type PreviewResponse = z.infer<typeof PreviewResponse>;

@@ -2,10 +2,11 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
+import { PanneauProvider } from '@panneau/core';
 import type { DataAdapter } from '@panneau/data';
 import { DataAdapterProvider } from '@panneau/data/query';
 import { FieldsProvider, type UploadSource, type UploadedFile } from '@panneau/fields';
-import type { Media } from '@panneau/protocol';
+import type { Definition, Item, MediaInfo, MediaReference } from '@panneau/protocol';
 
 import { type MediaAdapter, MediaField, MediaFieldEntry } from './MediaField';
 import { Controlled, file, fileInput, renderInRoot } from './__fixtures__/render';
@@ -39,39 +40,68 @@ const instantSource: UploadSource = {
     },
 };
 
-const media = (overrides: Partial<Media> = {}): Media => ({
+/** A media item of the library, as `get()` and `create()` give it. */
+const item = (media: Partial<MediaInfo> = {}, values: Record<string, unknown> = {}): Item => ({
     id: 'med_1',
-    version: null,
+    version: '1',
     abilities: {},
-    type: 'video',
     name: 'clip.mp4',
-    mime: 'video/mp4',
-    size: 2048,
-    url: 'https://files.test/clip.mp4',
-    thumbnailUrl: null,
+    media: {
+        type: 'video',
+        mime: 'video/mp4',
+        size: 2048,
+        url: 'https://files.test/clip.mp4',
+        thumbnailUrl: null,
+        ...media,
+    },
+    ...values,
+});
+
+/** The reference a field value holds. */
+const reference = (
+    media: Partial<MediaInfo> = {},
+    overrides: Partial<MediaReference> = {},
+): MediaReference => ({
+    id: 'med_1',
+    label: 'clip.mp4',
+    media: { type: 'video', size: 2048, thumbnailUrl: null, ...media },
     ...overrides,
 });
 
+const library = {
+    resources: [
+        {
+            id: 'media',
+            kind: 'media',
+            label: { singular: 'media', plural: 'media' },
+            itemTitle: 'title',
+            fields: [
+                { name: 'file', type: 'file' },
+                { name: 'title', type: 'text' },
+            ],
+        },
+    ],
+} as unknown as Definition;
+
 describe('MediaField', () => {
     it('makes a media of a chosen file, and reads it again until it is ready', async () => {
-        const getMedia = vi
-            .fn<MediaAdapter['getMedia']>()
-            .mockResolvedValueOnce(media({ status: 'processing' }))
+        const get = vi
+            .fn<MediaAdapter['get']>()
+            .mockResolvedValueOnce(item({ status: 'processing' }))
             .mockResolvedValue(
-                media({ status: 'ready', thumbnailUrl: 'https://files.test/poster.jpg' }),
+                item({ status: 'ready', thumbnailUrl: 'https://files.test/poster.jpg' }),
             );
         const adapter: MediaAdapter = {
-            uploadMedia: vi
-                .fn<MediaAdapter['uploadMedia']>()
-                .mockResolvedValue(media({ status: 'pending' })),
-            getMedia,
+            create: vi.fn<MediaAdapter['create']>().mockResolvedValue(item({ status: 'pending' })),
+            get,
         };
         const onChange = vi.fn();
         const { container } = renderInRoot(
-            <Controlled<Media | null> initial={null} onChange={onChange}>
+            <Controlled<MediaReference | null> initial={null} onChange={onChange}>
                 {(value, setValue) => (
                     <MediaField
                         label="Video"
+                        resource="media"
                         adapter={adapter}
                         refreshInterval={10}
                         value={value}
@@ -84,13 +114,18 @@ describe('MediaField', () => {
         const chosen = file('clip.mp4', 'video/mp4');
         await userEvent.upload(fileInput(container), chosen);
 
-        expect(adapter.uploadMedia).toHaveBeenCalledWith(chosen);
+        expect(adapter.create).toHaveBeenCalledWith('media', { file: chosen });
         expect(await screen.findByText('Waiting')).toBeInTheDocument();
         expect(await screen.findByText('Processing')).toBeInTheDocument();
         await waitFor(() => expect(screen.queryByText('Processing')).not.toBeInTheDocument());
         expect(onChange).toHaveBeenLastCalledWith(
-            expect.objectContaining({ id: 'med_1', status: 'ready' }),
+            expect.objectContaining({
+                id: 'med_1',
+                label: 'clip.mp4',
+                media: expect.objectContaining({ status: 'ready' }),
+            }),
         );
+        expect(get).toHaveBeenCalledWith('media', 'med_1', expect.anything());
         expect(container.querySelector('img')).toHaveAttribute(
             'src',
             'https://files.test/poster.jpg',
@@ -99,13 +134,17 @@ describe('MediaField', () => {
 
     it('shows why a media could not be made', async () => {
         const adapter: MediaAdapter = {
-            uploadMedia: vi
-                .fn<MediaAdapter['uploadMedia']>()
-                .mockRejectedValue(new Error('Too large.')),
-            getMedia: vi.fn<MediaAdapter['getMedia']>(),
+            create: vi.fn<MediaAdapter['create']>().mockRejectedValue(new Error('Too large.')),
+            get: vi.fn<MediaAdapter['get']>(),
         };
         const { container } = renderInRoot(
-            <MediaField label="Image" adapter={adapter} value={null} onChange={vi.fn()} />,
+            <MediaField
+                label="Image"
+                resource="media"
+                adapter={adapter}
+                value={null}
+                onChange={vi.fn()}
+            />,
         );
 
         await userEvent.upload(fileInput(container), file('photo.jpg', 'image/jpeg'));
@@ -116,15 +155,19 @@ describe('MediaField', () => {
     it('removes a media from a multiple value', async () => {
         const onChange = vi.fn();
         const adapter: MediaAdapter = {
-            uploadMedia: vi.fn<MediaAdapter['uploadMedia']>(),
-            getMedia: vi.fn<MediaAdapter['getMedia']>(),
+            create: vi.fn<MediaAdapter['create']>(),
+            get: vi.fn<MediaAdapter['get']>(),
         };
         renderInRoot(
             <MediaField
                 label="Gallery"
+                resource="media"
                 multiple
                 adapter={adapter}
-                value={[media(), media({ id: 'med_2', name: 'photo.jpg', type: 'image' })]}
+                value={[
+                    reference(),
+                    reference({ type: 'image' }, { id: 'med_2', label: 'photo.jpg' }),
+                ]}
                 onChange={onChange}
             />,
         );
@@ -135,7 +178,14 @@ describe('MediaField', () => {
     });
 
     it('is read-only without an adapter, and says so', () => {
-        renderInRoot(<MediaField label="Video" value={media({ status: 'failed' })} />);
+        renderInRoot(
+            <MediaField
+                label="Video"
+                resource="media"
+                adapter={null}
+                value={reference({ status: 'failed' })}
+            />,
+        );
 
         expect(screen.getByText('Processing failed')).toBeInTheDocument();
         expect(screen.getByText(/Files can’t be uploaded here./)).toBeInTheDocument();
@@ -143,37 +193,126 @@ describe('MediaField', () => {
     });
 
     it('makes a media of an upload, with the adapter and the upload source of its providers', async () => {
-        const uploadMedia = vi
-            .fn<MediaAdapter['uploadMedia']>()
-            .mockResolvedValue(media({ name: 'photo.jpg', type: 'image' }));
-        const adapter = { uploadMedia, getMedia: vi.fn() } as unknown as DataAdapter;
+        const create = vi
+            .fn<MediaAdapter['create']>()
+            .mockResolvedValue(item({ type: 'image' }, { title: 'Photo' }));
+        const adapter = { create, get: vi.fn() } as unknown as DataAdapter;
         const onChange = vi.fn();
         const { container } = renderInRoot(
-            <DataAdapterProvider adapter={adapter}>
-                <FieldsProvider uploadSource={instantSource}>
-                    <MediaFieldEntry
-                        field={{
-                            name: 'gallery',
-                            type: 'media',
-                            label: 'Gallery',
-                            multiple: true,
-                            rules: [{ rule: 'accept', value: ['image/*'] }],
-                        }}
-                        path="gallery"
-                        value={null}
-                        onChange={onChange}
-                    />
-                </FieldsProvider>
-            </DataAdapterProvider>,
+            <PanneauProvider definition={library}>
+                <DataAdapterProvider adapter={adapter}>
+                    <FieldsProvider uploadSource={instantSource}>
+                        <MediaFieldEntry
+                            field={{
+                                name: 'gallery',
+                                type: 'media',
+                                label: 'Gallery',
+                                multiple: true,
+                                rules: [{ rule: 'accept', value: ['image/*'] }],
+                            }}
+                            path="gallery"
+                            value={null}
+                            onChange={onChange}
+                        />
+                    </FieldsProvider>
+                </DataAdapterProvider>
+            </PanneauProvider>,
         );
 
         expect(fileInput(container)).toHaveAttribute('accept', 'image/*');
         await userEvent.upload(fileInput(container), file('photo.jpg', 'image/jpeg'));
 
-        expect(uploadMedia).toHaveBeenCalledWith({ upload: 'upl_1' }, { name: 'photo.jpg' });
+        expect(create).toHaveBeenCalledWith('media', { file: { upload: 'upl_1' } });
         await waitFor(() =>
-            expect(onChange).toHaveBeenCalledWith([expect.objectContaining({ name: 'photo.jpg' })]),
+            expect(onChange).toHaveBeenCalledWith([
+                expect.objectContaining({ id: 'med_1', label: 'Photo' }),
+            ]),
         );
+    });
+
+    it('reads each media in its own library: ids are unique only within one', async () => {
+        const get = vi
+            .fn<MediaAdapter['get']>()
+            .mockImplementation((resource, id) =>
+                Promise.resolve(item({ status: 'ready' }, { id, title: `${resource}/${id}` })),
+            );
+        const adapter: MediaAdapter = { create: vi.fn<MediaAdapter['create']>(), get };
+        const onChange = vi.fn();
+        renderInRoot(
+            <MediaField
+                label="Files"
+                resource="documents"
+                itemTitle="title"
+                multiple
+                adapter={adapter}
+                refreshInterval={10}
+                value={[
+                    reference({ status: 'processing' }, { resource: 'media' }),
+                    reference({ status: 'processing' }, { resource: 'documents' }),
+                ]}
+                onChange={onChange}
+            />,
+        );
+
+        await waitFor(() =>
+            expect(onChange).toHaveBeenCalledWith([
+                expect.objectContaining({ resource: 'media', label: 'media/med_1' }),
+                expect.objectContaining({ resource: 'documents', label: 'documents/med_1' }),
+            ]),
+        );
+        expect(get).toHaveBeenCalledWith('media', 'med_1', expect.anything());
+        expect(get).toHaveBeenCalledWith('documents', 'med_1', expect.anything());
+    });
+
+    it('uploads to the first library it allows, and references the media with its library', async () => {
+        const create = vi.fn<MediaAdapter['create']>().mockResolvedValue(item());
+        const adapter = { create, get: vi.fn() } as unknown as DataAdapter;
+        const definition = {
+            resources: [...library.resources, { ...library.resources[0], id: 'documents' }],
+        } as unknown as Definition;
+        const onChange = vi.fn();
+        const { container } = renderInRoot(
+            <PanneauProvider definition={definition}>
+                <DataAdapterProvider adapter={adapter}>
+                    <MediaFieldEntry
+                        field={{
+                            name: 'files',
+                            type: 'media',
+                            label: 'Files',
+                            multiple: true,
+                            resource: ['documents', 'media'],
+                        }}
+                        path="files"
+                        value={null}
+                        onChange={onChange}
+                    />
+                </DataAdapterProvider>
+            </PanneauProvider>,
+        );
+
+        const chosen = file('notes.pdf', 'application/pdf');
+        await userEvent.upload(fileInput(container), chosen);
+
+        expect(create).toHaveBeenCalledWith('documents', { file: chosen });
+        await waitFor(() =>
+            expect(onChange).toHaveBeenCalledWith([
+                expect.objectContaining({ id: 'med_1', resource: 'documents' }),
+            ]),
+        );
+    });
+
+    it('only shows its media without a library in the definition', () => {
+        renderInRoot(
+            <MediaFieldEntry
+                field={{ name: 'cover', type: 'media', label: 'Cover' }}
+                path="cover"
+                value="med_1"
+                onChange={vi.fn()}
+            />,
+        );
+
+        expect(screen.getByText('med_1')).toBeInTheDocument();
+        expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
 });
 

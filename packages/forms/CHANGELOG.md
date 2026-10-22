@@ -1,5 +1,24 @@
 # @panneau/forms
 
+## 5.0.0-alpha.4
+
+### Minor Changes
+
+- 3974fb5: `FormView` takes an `uploadSource`, which it gives to its fields, like `relationSource`.
+
+### Patch Changes
+
+- Updated dependencies [b9852a0]
+- Updated dependencies [ecc77a6]
+- Updated dependencies [db1f253]
+- Updated dependencies [3974fb5]
+- Updated dependencies [3974fb5]
+  - @panneau/protocol@5.0.0-alpha.4
+  - @panneau/intl@5.0.0-alpha.4
+  - @panneau/fields@5.0.0-alpha.4
+  - @panneau/core@5.0.0-alpha.4
+  - @panneau/ui@5.0.0-alpha.4
+
 ## 5.0.0-alpha.3
 
 ### Patch Changes

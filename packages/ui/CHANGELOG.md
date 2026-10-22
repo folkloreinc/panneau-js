@@ -1,5 +1,12 @@
 # @panneau/ui
 
+## 5.0.0-alpha.4
+
+### Patch Changes
+
+- Updated dependencies [3974fb5]
+  - @panneau/intl@5.0.0-alpha.4
+
 ## 5.0.0-alpha.3
 
 ### Minor Changes

@@ -11,13 +11,10 @@ import type { Definition } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';
 import type { ListQuery } from '@panneau/protocol';
 import type { ListResponse } from '@panneau/protocol';
-import type { Media } from '@panneau/protocol';
-import type { MediaListResponse } from '@panneau/protocol';
 import { Problem } from '@panneau/protocol';
 import type { SearchResponse } from '@panneau/protocol';
 import type { Session } from '@panneau/protocol';
 import type { Upload } from '@panneau/protocol';
-import type { UploadReference } from '@panneau/protocol';
 import type { UploadSignRequest } from '@panneau/protocol';
 import type { ValidationIssue } from '@panneau/protocol';
 
@@ -58,16 +55,13 @@ export interface DataAdapter {
     cancelActionRun(id: string, options?: RequestOptions): Promise<void>;
     create(resource: string, values: Values, options?: RequestOptions): Promise<Item>;
     delete(resource: string, id: string, options?: RequestOptions): Promise<void>;
-    deleteMedia(id: string, options?: RequestOptions): Promise<void>;
     get(resource: string, id: string, options?: RequestOptions): Promise<Item>;
     getActionRun(id: string, options?: RequestOptions): Promise<ActionRun>;
     getDefinition(options?: RequestOptions): Promise<Definition>;
-    getMedia(id: string, options?: RequestOptions): Promise<Media>;
     getSession(options?: RequestOptions): Promise<Session>;
     getWidgetData(widget: string, options?: RequestOptions): Promise<unknown>;
     list(resource: string, query?: ListQuery, options?: RequestOptions): Promise<ListResponse>;
     listActionRuns(options?: RequestOptions): Promise<ActionRun[]>;
-    listMedia(query?: MediaQuery, options?: RequestOptions): Promise<MediaListResponse>;
     login(credentials: LoginCredentials, options?: RequestOptions): Promise<Session>;
     logout(options?: RequestOptions): Promise<void>;
     presignedUploads?(options?: {
@@ -76,8 +70,6 @@ export interface DataAdapter {
     runAction(resource: string, action: string, request: ActionRequest, options?: RequestOptions): Promise<ActionResponse>;
     search(q: string, options?: RequestOptions): Promise<SearchResponse>;
     update(resource: string, id: string, values: Values, options?: UpdateOptions): Promise<Item>;
-    updateMedia(id: string, values: Values, options?: RequestOptions): Promise<Media>;
-    uploadMedia(file: Blob | UploadReference, values?: Values, options?: RequestOptions): Promise<Media>;
 }
 
 // @public
@@ -108,9 +100,6 @@ export interface LoginCredentials {
     // (undocumented)
     remember?: boolean;
 }
-
-// @public
-export type MediaQuery = ListQuery;
 
 // @public
 export class NotFoundError extends ApiError {
