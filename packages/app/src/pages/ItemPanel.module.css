@@ -1,0 +1,93 @@
+/* The details of an item next to its list. Beside the list on a wide screen, over it otherwise. */
+
+.panel {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-end: 0;
+    z-index: var(--panneau-z-overlay);
+    display: flex;
+    flex-direction: column;
+    width: min(100%, var(--panneau-item-panel-width, 24rem));
+    background: var(--panneau-item-panel-bg, var(--panneau-color-surface));
+    border-inline-start: var(--panneau-border-width) solid var(--panneau-color-border);
+    box-shadow: var(--panneau-shadow-lg);
+    outline: none;
+}
+
+.panel:focus-visible {
+    box-shadow:
+        var(--panneau-shadow-lg),
+        inset 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--panneau-space-2);
+    padding: var(--panneau-space-4) var(--panneau-space-4) var(--panneau-space-2);
+}
+
+.title {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-2);
+    padding: 0 var(--panneau-space-4) var(--panneau-space-3);
+    border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+    min-height: var(--panneau-control-height-sm);
+    padding: 0 var(--panneau-space-3);
+    border: var(--panneau-border-width) solid var(--panneau-color-border-control);
+    border-radius: var(--panneau-radius-md);
+    color: var(--panneau-color-text);
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-medium);
+    text-decoration: none;
+    outline: none;
+}
+
+.action[data-hovered] {
+    background: var(--panneau-color-hover);
+}
+
+.action[data-focus-visible] {
+    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+.body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: var(--panneau-space-4);
+    overflow-y: auto;
+}
+
+/* From the `xl` width of the root: beside the list, in the flow of the page. */
+@container panneau-root (min-width: 80rem) {
+    .panel {
+        position: sticky;
+        top: var(--panneau-space-4);
+        z-index: auto;
+        width: auto;
+        max-height: calc(100dvh - 2 * var(--panneau-space-4));
+        border: var(--panneau-border-width) solid var(--panneau-color-border);
+        border-radius: var(--panneau-item-panel-radius, var(--panneau-radius-lg));
+        box-shadow: var(--panneau-item-panel-shadow, var(--panneau-shadow-md));
+    }
+
+    .panel:focus-visible {
+        box-shadow:
+            var(--panneau-item-panel-shadow, var(--panneau-shadow-md)),
+            0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+    }
+}

@@ -52,13 +52,29 @@ export const sidebarTokens = defineComponentTokens('sidebar', {
     'logo-color': 'var(--panneau-color-accent-text)',
 });
 
+/** Tokens of the panel of an item's details, next to its list. */
+export const itemPanelTokens = defineComponentTokens('item-panel', {
+    /** Width, beside the list or over it. */
+    width: '24rem',
+    /** Background. */
+    bg: 'var(--panneau-color-surface)',
+    /** Corner radius, beside the list. */
+    radius: 'var(--panneau-radius-lg)',
+    /** Shadow, beside the list. */
+    shadow: 'var(--panneau-shadow-md)',
+});
+
 /** The component tokens of `@panneau/app`, by component (decision 0024). */
 export const appComponentTokens = Object.freeze({
     shell: shellTokens.tokens,
     sidebar: sidebarTokens.tokens,
+    'item-panel': itemPanelTokens.tokens,
 });
 
-type AppTokenName = keyof typeof shellTokens.tokens | keyof typeof sidebarTokens.tokens;
+type AppTokenName =
+    | keyof typeof shellTokens.tokens
+    | keyof typeof sidebarTokens.tokens
+    | keyof typeof itemPanelTokens.tokens;
 
 declare module '@panneau/ui' {
     // Lets `defineTheme()` take the tokens of the app.

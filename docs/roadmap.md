@@ -61,7 +61,7 @@ Goal: a complete admin panel, ready for client projects.
 
 - **App shell:** routing, layout, menus, replaceable pages, error pages.
     - First version: a sidebar from the `main` menu, collapsible to a rail of icons, with the page on a raised panel as in recent browsers, a drawer on small screens, and themable through the `shell` and `sidebar` component tokens. Home, list, create, edit, plugin and not found pages.
-    - **Show page:** the edit form for now. It should become, depending on the context, a link to the item on the site (its public URL), or a preview: in a dialog, or in a panel that opens on the right of the list. To decide in a decision record, with the preview of 5.x.
+    - **Show page:** the show route opens the item's details in a panel next to its list: its values, a link to edit it, and its `link` actions, such as its page on the site ([decisions/0028](decisions/0028-item-panel.md)). Previews of 5.x will go in this panel.
 - **Auth:**
     - password login, password reset, 2FA, passkeys, email verification;
     - OAuth providers (continues [#5](https://github.com/folkloreinc/panneau-js/issues/5) and laravel-panneau#34);

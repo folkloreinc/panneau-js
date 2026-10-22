@@ -2,7 +2,7 @@
 
 The Panneau admin panel: the app entry (`createPanneauApp`), the shell with its sidebar, and the pages of resources.
 
-The shell is a first version, for Phase 2 of the [roadmap](../../docs/roadmap.md): a sidebar from the `main` menu of the definition, collapsible to a rail of icons (Ctrl+\\ or ⌘+\\), the page on a raised panel, a drawer on small screens, and the home, list, create, edit and plugin pages, built with `@panneau/lists`, `@panneau/forms` and `@panneau/actions`. The show page is the edit form for now. The entry contract below is stable: see [decisions/0019](../../docs/decisions/0019-app-entry.md).
+The shell is a first version, for Phase 2 of the [roadmap](../../docs/roadmap.md): a sidebar from the `main` menu of the definition, collapsible to a rail of icons (Ctrl+\\ or ⌘+\\), the page on a raised panel, a drawer on small screens, and the home, list, create, edit and plugin pages, built with `@panneau/lists`, `@panneau/forms` and `@panneau/actions`. The show route opens the item's details in a panel next to its list ([decisions/0028](../../docs/decisions/0028-item-panel.md)). The entry contract below is stable: see [decisions/0019](../../docs/decisions/0019-app-entry.md).
 
 Try it with `npm run playground` at the root of the repository: the whole app on the mock backend of `@panneau/protocol` (`?theme=flat` for a flat frame).
 
@@ -43,10 +43,11 @@ npm install --save-dev vite @vitejs/plugin-react
 
 The frame reads component tokens ([decisions/0024](../../docs/decisions/0024-theme-model.md)), which a theme sets like those of `@panneau/ui` once `@panneau/app` is imported:
 
-| Tokens                | What they style                                                                                  |
-| --------------------- | ------------------------------------------------------------------------------------------------ |
-| `--panneau-shell-*`   | The window's background (`bg`), the inset of the page (`inset`) and its panel (`panel-*`)        |
-| `--panneau-sidebar-*` | The width (expanded and collapsed), background and border of the sidebar, its links and its logo |
+| Tokens                   | What they style                                                                                  |
+| ------------------------ | ------------------------------------------------------------------------------------------------ |
+| `--panneau-shell-*`      | The window's background (`bg`), the inset of the page (`inset`) and its panel (`panel-*`)        |
+| `--panneau-item-panel-*` | The width, background, radius and shadow of the panel of an item's details                       |
+| `--panneau-sidebar-*`    | The width (expanded and collapsed), background and border of the sidebar, its links and its logo |
 
 ```ts
 import { defineTheme } from '@panneau/ui';

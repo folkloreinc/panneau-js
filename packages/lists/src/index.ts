@@ -34,6 +34,7 @@ export {
 export { CardsLayout } from './layouts/CardsLayout';
 export { TableLayout } from './layouts/TableLayout';
 export { builtInLayouts } from './layouts/builtIn';
+export { ItemDetails, type ItemDetailsProps } from './ItemDetails';
 export { List, type ListProps } from './List';
 export { ListView, type ListViewProps } from './ListView';
 export { listsPlugin } from './plugin';

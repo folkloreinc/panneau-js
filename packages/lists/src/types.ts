@@ -118,6 +118,8 @@ export interface ListLayoutProps {
     getItemLabel: (item: ListItem) => string;
     /** A link to the item, when the list has one. */
     getItemHref?: ((item: ListItem) => string | null) | undefined;
+    /** Whether the item is the one shown next to the list, such as in a panel of its details. */
+    isCurrent?: ((item: ListItem) => boolean) | undefined;
     /** Whether items have checkboxes. */
     selectable: boolean;
     isSelected: (item: ListItem) => boolean;

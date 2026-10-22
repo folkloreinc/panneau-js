@@ -18,7 +18,6 @@ import {
 } from './actions/actions';
 import type { ActionIcons } from './actions/icons';
 import { cx } from './cx';
-import { builtInDisplays } from './displays/displays';
 import { FilterChips, FilterControls, useFilterLabels } from './filters/Filters';
 import { builtInLayouts } from './layouts/builtIn';
 import { messages } from './messages';
@@ -38,6 +37,7 @@ import type {
     ListLayoutEntry,
 } from './types';
 import { useListState } from './useListState';
+import { useRenderValue } from './useRenderValue';
 import { getColumnValue, toText } from './values';
 
 export interface ListViewProps {
@@ -95,6 +95,11 @@ export interface ListViewProps {
     getItemLabel?: (item: ListItem) => string;
     /** A link to an item, on its title. */
     getItemHref?: (item: ListItem) => string | null;
+    /**
+     * The item shown next to the list, such as in a panel of its details: its row is marked, and
+     * the link of its title is the current page.
+     */
+    currentItemId?: string | null;
     /** Displays by name, over the built-in ones and those of the plugins. */
     displays?: Readonly<Record<string, DisplayEntry>>;
     /** Layouts by id, over the built-in ones and those of the plugins. */
@@ -142,6 +147,7 @@ export function ListView({
     itemTitle,
     getItemLabel: getItemLabelProp,
     getItemHref,
+    currentItemId = null,
     displays,
     layoutComponents,
     filterControls,
@@ -169,11 +175,6 @@ export function ListView({
     const filterValues = query.filter ?? {};
     const hasQuery = Object.keys(filterValues).length > 0 || (query.q ?? '') !== '';
 
-    const allDisplays: Record<string, DisplayEntry> = {
-        ...builtInDisplays,
-        ...(Object.fromEntries(plugins.displays) as Record<string, DisplayEntry>),
-        ...displays,
-    };
     const allLayouts: Record<string, ListLayoutEntry> = {
         ...builtInLayouts,
         ...(Object.fromEntries(plugins.listLayouts) as Record<string, ListLayoutEntry>),
@@ -218,26 +219,7 @@ export function ListView({
         return title !== '' ? title : item.id;
     };
 
-    const renderValue = (item: ListItem, column: ListColumn): ReactNode => {
-        if (column.render !== undefined) {
-            return column.render(item);
-        }
-        const Display =
-            (column.display !== undefined && column.display !== null
-                ? allDisplays[column.display]
-                : undefined) ?? builtInDisplays.text;
-        if (Display === undefined) {
-            return null;
-        }
-        return (
-            <Display
-                value={getColumnValue(item, column, intl.locale)}
-                item={item}
-                column={column}
-                field={column.field ?? null}
-            />
-        );
-    };
+    const renderValue = useRenderValue(displays);
 
     const closeConfirmation = () => {
         confirmation.current += 1;
@@ -428,6 +410,7 @@ export function ListView({
                 renderValue={renderValue}
                 getItemLabel={getItemLabel}
                 getItemHref={getItemHref}
+                isCurrent={(item) => item.id === currentItemId}
                 selectable={selectable}
                 isSelected={(item) => isItemSelected(selection, item.id)}
                 onToggle={(item) => list.toggle(item.id)}

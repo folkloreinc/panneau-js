@@ -12,6 +12,7 @@ export function CardsLayout({
     renderValue,
     getItemLabel,
     getItemHref,
+    isCurrent,
     selectable,
     isSelected,
     onToggle,
@@ -28,15 +29,17 @@ export function CardsLayout({
                 {items.map((item) => {
                     const selected = selectable && isSelected(item);
                     const actions = renderActions(item);
+                    const current = isCurrent?.(item) ?? false;
                     return (
                         <li
                             key={item.id}
                             className={styles.card}
                             data-selected={selected || undefined}
+                            data-current={current || undefined}
                         >
                             <div className={styles.header}>
                                 <div className={styles.title}>
-                                    <ItemTitle href={getItemHref?.(item) ?? null}>
+                                    <ItemTitle href={getItemHref?.(item) ?? null} current={current}>
                                         {title !== undefined
                                             ? renderValue(item, title)
                                             : getItemLabel(item)}

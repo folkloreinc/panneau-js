@@ -61,6 +61,15 @@ export const appMessages = {
         id: 'panneau.app.itemLoadError',
         defaultMessage: 'The {resource} could not be loaded.',
     }),
+    itemPanel: defineMessage<{ resource: string }>({
+        id: 'panneau.app.itemPanel',
+        defaultMessage: 'Details of the {resource}',
+    }),
+    editItem: defineMessage({ id: 'panneau.app.editItem', defaultMessage: 'Edit' }),
+    closePanel: defineMessage({
+        id: 'panneau.app.closePanel',
+        defaultMessage: 'Close the details',
+    }),
     notFound: defineMessage({ id: 'panneau.app.notFound', defaultMessage: 'Page not found' }),
     notFoundText: defineMessage({
         id: 'panneau.app.notFoundText',

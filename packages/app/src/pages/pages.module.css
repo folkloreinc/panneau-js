@@ -10,6 +10,24 @@
     max-width: 64rem;
 }
 
+/* With the details of an item next to the list, the page takes the whole width. */
+.withPanel {
+    max-width: none;
+}
+
+.split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: var(--panneau-space-4);
+}
+
+@container panneau-root (min-width: 80rem) {
+    .withPanel .split {
+        grid-template-columns: minmax(0, 1fr) var(--panneau-item-panel-width, 24rem);
+    }
+}
+
 .header {
     display: flex;
     flex-wrap: wrap;

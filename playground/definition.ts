@@ -107,7 +107,18 @@ export function createPlaygroundDefinition(): DefinitionInput {
                     perPage: 20,
                     search: true,
                 },
-                actions: [DELETE],
+                actions: [
+                    {
+                        id: 'view',
+                        label: 'View on the site',
+                        icon: 'globe',
+                        kind: 'link',
+                        url: 'https://example.com/articles/{id}',
+                        scope: ['item'],
+                        placement: ['menu'],
+                    },
+                    DELETE,
+                ],
                 abilities: { viewAny: true, create: true },
             },
             {

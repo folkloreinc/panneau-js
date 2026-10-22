@@ -27,12 +27,27 @@
     background-color: var(--panneau-color-surface-sunken);
 }
 
+/* The title stays readable in a narrow list, such as next to an item's details: the table
+ * scrolls instead. */
+.table td.title {
+    min-width: 12rem;
+}
+
 .table tbody tr:last-child td {
     border-bottom: 0;
 }
 
 .table tbody tr[data-selected] {
     background-color: var(--panneau-color-accent-subtle);
+}
+
+/* The item shown next to the list: a bar on its first cell. */
+.table tbody tr[data-current] td:first-child {
+    box-shadow: inset 3px 0 0 var(--panneau-color-accent);
+}
+
+.table tbody tr[data-current] {
+    background-color: var(--panneau-color-hover);
 }
 
 .center {
@@ -161,6 +176,7 @@
 
     .table td.title {
         display: block;
+        min-width: 0;
         padding-inline-end: var(--panneau-space-10);
         font-weight: var(--panneau-font-weight-medium);
     }

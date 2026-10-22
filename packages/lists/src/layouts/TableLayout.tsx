@@ -37,6 +37,7 @@ export function TableLayout({
     renderValue,
     getItemLabel,
     getItemHref,
+    isCurrent,
     selectable,
     isSelected,
     onToggle,
@@ -113,8 +114,13 @@ export function TableLayout({
                     {items.map((item, row) => {
                         const selected = selectable && isSelected(item);
                         const href = getItemHref?.(item) ?? null;
+                        const current = isCurrent?.(item) ?? false;
                         return (
-                            <tr key={item.id} data-selected={selected || undefined}>
+                            <tr
+                                key={item.id}
+                                data-selected={selected || undefined}
+                                data-current={current || undefined}
+                            >
                                 {selectable ? (
                                     <td className={styles.check}>
                                         <Checkbox
@@ -139,7 +145,7 @@ export function TableLayout({
                                         </span>
                                         <span>
                                             {index === 0 ? (
-                                                <ItemTitle href={href}>
+                                                <ItemTitle href={href} current={current}>
                                                     {renderValue(item, column)}
                                                 </ItemTitle>
                                             ) : (

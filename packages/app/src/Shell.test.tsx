@@ -79,7 +79,7 @@ describe('the app shell', () => {
         expect(screen.getByRole('button', { name: 'Collapse the sidebar' })).toBeInTheDocument();
     });
 
-    it('lists the items of a resource, and opens one in its form', async () => {
+    it('lists the items of a resource, and shows one in a panel next to the list', async () => {
         const user = userEvent.setup();
         renderApp();
         await user.click(navigation().getByRole('link', { name: 'Pages' }));
@@ -87,14 +87,39 @@ describe('the app shell', () => {
         await waitFor(() => expect(within(table).getAllByRole('row')).toHaveLength(3));
 
         await user.click(within(table).getByRole('link', { name: 'Contact' }));
-        expect(window.location.pathname).toBe('/panneau/resources/pages/2/edit');
-        // Without an `itemTitle`, the heading names the resource.
-        expect(screen.getByRole('heading', { name: 'Edit the page' })).toBeInTheDocument();
-        expect(await screen.findByRole('textbox', { name: /title/i })).toHaveValue('Contact');
+        expect(window.location.pathname).toBe('/panneau/resources/pages/2');
+        const panel = await screen.findByRole('region', { name: 'Details of the page' });
+        expect(await within(panel).findByText('Contact')).toBeInTheDocument();
+        await waitFor(() => expect(panel).toHaveFocus());
+        // The list stays, with the item marked as the current one.
+        expect(within(table).getByRole('link', { name: 'Contact' })).toHaveAttribute(
+            'aria-current',
+            'page',
+        );
         expect(navigation().getByRole('link', { name: 'Pages' })).toHaveAttribute(
             'aria-current',
             'page',
         );
+
+        await user.click(within(panel).getByRole('link', { name: 'Edit' }));
+        expect(window.location.pathname).toBe('/panneau/resources/pages/2/edit');
+        // Without an `itemTitle`, the heading names the resource.
+        expect(screen.getByRole('heading', { name: 'Edit the page' })).toBeInTheDocument();
+        expect(await screen.findByRole('textbox', { name: /title/i })).toHaveValue('Contact');
+    });
+
+    it('opens the panel of the show route over its list, and closes it without losing the query', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages/1?sort=-title');
+        renderApp();
+        const panel = await screen.findByRole('region', { name: 'Details of the page' });
+        expect(await within(panel).findByText('About us')).toBeInTheDocument();
+        expect(await screen.findByRole('table', { name: 'Pages' })).toBeInTheDocument();
+
+        await user.keyboard('{Escape}');
+        expect(window.location.pathname).toBe('/panneau/resources/pages');
+        expect(window.location.search).toBe('?sort=-title');
+        expect(screen.queryByRole('region', { name: 'Details of the page' })).toBeNull();
     });
 
     it('creates an item, then opens its edit page', async () => {
